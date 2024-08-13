@@ -33,7 +33,9 @@ enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 
 # Sidekiq's `strict_args!` raises an exception by default in 7.0
 # https://github.com/sidekiq/sidekiq/blob/31bceff64e10d501323bc06ac0552652a47c082e/docs/7.0-Upgrade.md?plain=1#L59
-Sidekiq.strict_args!(false)
+# We set :warn in development/test to pick out workers that try to serialise complex args
+strict_args_mode = Gitlab.dev_or_test_env? ? :warn : false
+Sidekiq.strict_args!(strict_args_mode)
 
 # Perform version check before configuring server with the custome scheduled job enqueue class
 unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.1.6')

@@ -49,7 +49,7 @@ To avoid confusion, when the commit is signed, the signature should belong to th
 
 This is why you should [configure](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
 the `Committer` field to point to the instance itself.
-For example, when this feature becomes enabled on GitLab.com, the `Committer` field will be: `GitLab <noreply@gitlab.com>`.
+For example, when this feature becomes enabled on GitLab.com, the `Committer` field is: `GitLab <noreply@gitlab.com>`.
 
 GitLab provides multiple security features that rely on the `Committer` field to be set to the user who creates the commit.
 For example:

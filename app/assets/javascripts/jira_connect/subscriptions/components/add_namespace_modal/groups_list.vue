@@ -146,7 +146,7 @@ export default {
       />
     </ul>
 
-    <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+    <div class="gl-flex gl-justify-center gl-mt-5">
       <gl-pagination
         v-if="showPagination"
         v-model="page"

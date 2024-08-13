@@ -514,7 +514,7 @@ export default {
           @action="track('click_dropdown')"
         >
           <template #list-item>
-            <span class="text-danger">
+            <span class="gl-text-danger">
               {{ deleteButtonText }}
             </span>
           </template>

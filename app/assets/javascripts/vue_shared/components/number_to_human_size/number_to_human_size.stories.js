@@ -30,5 +30,5 @@ export const CustomStyles = Template.bind({});
 CustomStyles.args = {
   ...Default.args,
   class: 'gl-font-bold',
-  labelClass: 'gl-font-sm gl-text-gray-500',
+  labelClass: 'gl-text-sm gl-text-gray-500',
 };

@@ -1,6 +1,6 @@
-import { GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlSprintf, GlSkeletonLoader, GlButton, GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective } from 'helpers/vue_mock_directive';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DeleteButton from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
@@ -34,20 +34,23 @@ describe('Image List Row', () => {
   const findListItemComponent = () => wrapper.findComponent(ListItem);
   const findShowFullPathButton = () => wrapper.findComponent(GlButton);
   const findPublishMessage = () => wrapper.findComponent(PublishMessage);
+  const findProtectedBadge = () => wrapper.findComponent(GlBadge);
 
-  const mountComponent = ({ props = {}, config = {} } = {}) => {
+  const mountComponent = ({ props = {}, config = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(Component, {
       stubs: {
         RouterLink,
         ListItem,
         GlButton,
         GlSprintf,
+        GlBadge,
       },
       propsData: {
         item,
         ...props,
       },
       provide: {
+        ...provide,
         config: {
           ...config,
         },
@@ -267,6 +270,56 @@ describe('Image List Row', () => {
         projectName: 'gitlab-test',
         projectUrl: 'http://localhost:3000/gitlab-org/gitlab-test',
         publishDate: item.createdAt,
+      });
+    });
+  });
+
+  describe('badge "protected"', () => {
+    const mountComponentForProtectedBadge = ({
+      itemProtectionRuleExists = true,
+      glFeaturesContainerRegistryProtectedContainers = true,
+    } = {}) => {
+      return mountComponent({
+        props: { item: { ...item, protectionRuleExists: itemProtectionRuleExists } },
+        provide: {
+          glFeatures: {
+            containerRegistryProtectedContainers: glFeaturesContainerRegistryProtectedContainers,
+          },
+        },
+      });
+    };
+
+    describe('when image has new badge', () => {
+      beforeEach(() => {
+        mountComponentForProtectedBadge();
+      });
+
+      it('shows badge', () => {
+        expect(findProtectedBadge().text()).toBe('protected');
+      });
+
+      it('binds tooltip directive', () => {
+        const ProtectedBadgeTooltipBinding = getBinding(findProtectedBadge().element, 'gl-tooltip');
+        expect(ProtectedBadgeTooltipBinding).toBeDefined();
+        expect(findProtectedBadge().attributes('title')).toMatch(
+          'A protection rule exists for this container repository.',
+        );
+      });
+    });
+
+    describe('when image does not have new badge', () => {
+      it('does not show badge', () => {
+        mountComponentForProtectedBadge({ itemProtectionRuleExists: false });
+
+        expect(findProtectedBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when feature flag "containerRegistryProtectedContainers" disabled', () => {
+      it('does not show badge', () => {
+        mountComponentForProtectedBadge({ glFeaturesContainerRegistryProtectedContainers: false });
+
+        expect(findProtectedBadge().exists()).toBe(false);
       });
     });
   });

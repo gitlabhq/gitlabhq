@@ -1,7 +1,7 @@
 import { editor as monacoEditor } from 'monaco-editor';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import { initLegacyWebIDE } from '~/ide';
+import { initLegacyWebIDE } from '~/ide/init_legacy_web_ide';
 import extendStore from '~/ide/stores/extend';
 import { getProject, getEmptyProject } from 'jest/../frontend_integration/test_helpers/fixtures';
 import { IDE_DATASET } from './mock_data';

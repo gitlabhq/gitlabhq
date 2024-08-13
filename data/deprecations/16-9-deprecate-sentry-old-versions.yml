@@ -7,7 +7,7 @@
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: sguyon
-  stage: manage
+  stage: Foundations
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435791
   body: |  # (required) Don't change this line.
     Support for self-hosted Sentry versions 21.4.1 and earlier is deprecated and will be removed in GitLab 17.0.

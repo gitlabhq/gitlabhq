@@ -30,7 +30,7 @@ module Gitlab
 
           begin
             prev_ignored_tables = context[:ignored_tables]
-            context[:ignored_tables] = prev_ignored_tables + tables
+            context[:ignored_tables] = prev_ignored_tables + tables.map(&:to_s)
             yield
           ensure
             context[:ignored_tables] = prev_ignored_tables

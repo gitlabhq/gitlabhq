@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.shared_examples 'board lists create mutation' do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
   let(:list_create_params) { {} }
 
   subject { mutation.resolve(board_id: board.to_global_id, **list_create_params) }
@@ -27,7 +27,7 @@ RSpec.shared_examples 'board lists create mutation' do
   describe '#resolve' do
     context 'with proper permissions' do
       before_all do
-        group.add_reporter(user)
+        group.add_reporter(current_user)
       end
 
       describe 'backlog list' do
@@ -76,7 +76,7 @@ RSpec.shared_examples 'board lists create mutation' do
 
     context 'without proper permissions' do
       before_all do
-        group.add_guest(user)
+        group.add_guest(current_user)
       end
 
       it 'raises an error' do

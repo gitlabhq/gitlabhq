@@ -3,7 +3,7 @@ const sensitiveDataPatterns = () => {
 
   return [
     {
-      name: 'GitLab Personal Access Token',
+      name: 'GitLab personal access token',
       regex: `${patPrefix}[0-9a-zA-Z_-]{20}`,
     },
     {

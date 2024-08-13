@@ -7,6 +7,9 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
     workItem(iid: $iid) {
       id
       iid
+      namespace {
+        id
+      }
       widgets {
         ... on WorkItemWidgetNotes {
           type

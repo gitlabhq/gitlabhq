@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User Settings > Personal Access Tokens', :js, feature_category: :system_access do
+RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
   include Features::AccessTokenHelpers
 

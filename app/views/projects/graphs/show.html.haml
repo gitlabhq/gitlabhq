@@ -2,4 +2,6 @@
 - graph_path = project_graph_path(@project, current_ref, ref_type: @ref_type, format: :json)
 - commits_path = project_commits_path(@project, current_ref, ref_type: @ref_type)
 
+= render ::Layouts::PageHeadingComponent.new( _('Contributor analytics'))
+
 .js-contributors-graph{ class: container_class, data: { project_graph_path: graph_path, project_branch: current_ref, default_branch: @project.default_branch, project_id: @project.id, commits_path: commits_path } }

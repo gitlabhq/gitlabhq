@@ -41,8 +41,7 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
-    push_frontend_feature_flag(:group_multi_select_tokens, group)
-    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?)
+    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?(current_user))
   end
 
   before_action only: :merge_requests do
@@ -154,9 +153,14 @@ class GroupsController < Groups::ApplicationController
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
-      notice = "Group '#{@group.name}' was successfully updated."
 
-      redirect_to edit_group_origin_location, notice: notice
+      if @group.namespace_settings.errors.present?
+        flash[:alert] = group.namespace_settings.errors.full_messages.to_sentence
+      else
+        flash[:notice] = "Group '#{@group.name}' was successfully updated."
+      end
+
+      redirect_to edit_group_origin_location
     else
       @group.reset
       render action: "edit"

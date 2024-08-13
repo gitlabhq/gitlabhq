@@ -116,7 +116,8 @@
     "ConanMetadata",
     "MavenMetadata",
     "NugetMetadata",
-    "PypiMetadata"
+    "PypiMetadata",
+    "TerraformModuleMetadata"
   ],
   "Registrable": [
     "CiSecureFileRegistry",
@@ -147,6 +148,11 @@
   "Service": [
     "BaseService",
     "JiraService"
+  ],
+  "TerraformModuleMetadataSharedFields": [
+    "TerraformModuleMetadataExample",
+    "TerraformModuleMetadataRoot",
+    "TerraformModuleMetadataSubmodule"
   ],
   "TimeboxReportInterface": [
     "Iteration",
@@ -203,6 +209,7 @@
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",
     "WorkItemWidgetColor",
+    "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
@@ -228,6 +235,7 @@
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionGeneric",
+    "WorkItemWidgetDefinitionHealthStatus",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
     "WorkItemWidgetDefinitionWeight"

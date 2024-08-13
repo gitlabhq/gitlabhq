@@ -46,12 +46,10 @@ export default {
 <template>
   <gl-button
     category="tertiary"
-    class="gl-display-flex gl-align-items-center gl-justify-content-start! gl-mb-2 gl-w-full"
+    class="gl-mb-2 gl-flex gl-w-full gl-items-center !gl-justify-start"
     @click="onClick"
   >
-    <div
-      class="gl-display-flex gl-align-items-center gl-flex-wrap project-namespace-name-container"
-    >
+    <div class="project-namespace-name-container gl-flex gl-flex-wrap gl-items-center">
       <gl-icon v-if="selected" data-testid="selected-icon" name="mobile-issue-close" />
       <project-avatar
         :project-id="project.id"

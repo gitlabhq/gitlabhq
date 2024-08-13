@@ -1,35 +1,25 @@
 - expanded = expanded_by_default?
 
-%section.settings.no-animate#js-protected-tags-settings{ class: ('expanded' if expanded), data: { testid: 'protected-tag-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_("ProtectedTag|Protected tags")
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_("ProtectedTag|Limit access to creating and updating tags.")
-      = link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_("ProtectedTag|Protected tags"),
+  id: 'js-protected-tags-settings',
+  testid: 'protected-tag-settings-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_("ProtectedTag|Limit access to creating and updating tags.")
+    = link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")
+  - c.with_body do
     %p.gl-text-secondary
       = s_("ProtectedTag|By default, protected tags restrict who can modify the tag.")
       = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags", anchor: "who-can-modify-a-protected-tag")
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h3.gl-new-card-title
-            = _('Protected tags')
-          .gl-new-card-count
-            = sprite_icon('tag', css_class: 'gl-mr-2')
-            = @protected_tags_count
-        - if can? current_user, :admin_project, @project
-          .gl-new-card-actions
-            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
-              = _('Add tag')
+    = render ::Layouts::CrudComponent.new(_('Protected tags'),
+      icon: 'tag',
+      count: @protected_tags_count,
+      toggle_text: _('Add tag')) do |c|
       - c.with_body do
-        - if can? current_user, :admin_project, @project
-          .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
-            %h4.gl-mt-0
-              = _('Protect a tag')
-            = yield :create_protected_tag
         = yield :tag_list
+      - c.with_form do
+        - if can? current_user, :admin_project, @project
+          %h4.gl-mt-0
+            = _('Protect a tag')
+          = yield :create_protected_tag

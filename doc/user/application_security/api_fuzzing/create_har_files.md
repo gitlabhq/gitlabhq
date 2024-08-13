@@ -74,9 +74,7 @@ Install GitLab HAR Recorder:
 To verify the HAR contains all requests, use an online HAR viewer, for example:
 
 - [HAR Viewer](http://www.softwareishard.com/har/viewer/)
-<!-- vale gitlab.Admin = NO -->
 - [Google Admin Toolbox HAR Analyzer](https://toolbox.googleapps.com/apps/har_analyzer/)
-<!-- vale gitlab.Admin = YES -->
 
 ### Insomnia API Client
 
@@ -197,9 +195,7 @@ a text editor.
 Tools recommended for viewing HAR files include:
 
 - [HAR Viewer](http://www.softwareishard.com/har/viewer/) - (online)
-<!-- vale gitlab.Admin = NO -->
 - [Google Admin Toolbox HAR Analyzer](https://toolbox.googleapps.com/apps/har_analyzer/) - (online)
-<!-- vale gitlab.Admin = YES -->
 - [Fiddler](https://www.telerik.com/fiddler) - local
 - [Insomnia API Client](https://insomnia.rest/) - local
 

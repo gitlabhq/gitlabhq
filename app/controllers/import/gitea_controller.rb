@@ -65,7 +65,7 @@ class Import::GiteaController < Import::GithubController
   def provider_auth
     if session[access_token_key].blank? || provider_url.blank?
       redirect_to new_import_gitea_url,
-        alert: _('You need to specify both an Access Token and a Host URL.')
+        alert: _('You need to specify both an access token and a Host URL.')
     end
   end
 

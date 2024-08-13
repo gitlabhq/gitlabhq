@@ -78,8 +78,8 @@ export default {
         :key="branch.id"
         :value="branch.name"
       >
-        <div class="gl-display-flex">
-          <span class="gl-display-inline-block gl-mr-3 gl-p-3"></span>
+        <div class="gl-flex">
+          <span class="gl-mr-3 gl-inline-block gl-p-3"></span>
           {{ branch.name }}
         </div>
       </gl-filtered-search-suggestion>

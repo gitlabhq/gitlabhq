@@ -33,11 +33,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    isEnvironmentRequired: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     areEnvironmentsLoading: {
       type: Boolean,
       required: true,
@@ -50,6 +45,16 @@ export default {
     environments: {
       type: Array,
       required: true,
+    },
+    isEnvironmentRequired: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    placeholderText: {
+      type: String,
+      required: false,
+      default: __('Select environment or create wildcard'),
     },
     selectedEnvironmentScope: {
       type: String,
@@ -116,6 +121,9 @@ export default {
     sortedEnvironments() {
       return [...this.environments].sort();
     },
+    toggleText() {
+      return this.environmentScopeLabel || this.placeholderText;
+    },
   },
   methods: {
     debouncedSearch: debounce(function debouncedSearch(searchTerm) {
@@ -151,7 +159,7 @@ export default {
     :items="searchedEnvironments"
     :loading="isDropdownLoading"
     :searching="isDropdownSearching"
-    :toggle-text="environmentScopeLabel"
+    :toggle-text="toggleText"
     @search="debouncedSearch"
     @select="selectEnvironment"
     @shown="toggleDropdownShown(true)"

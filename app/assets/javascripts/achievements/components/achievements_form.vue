@@ -265,7 +265,7 @@ export default {
                   type="file"
                   accept="image/*"
                   name="avatar_file"
-                  class="gl-display-none"
+                  class="gl-hidden"
                   @change="selectFile"
                 />
               </div>

@@ -21,7 +21,7 @@ for binary files.
 When file locking is setup, lockable files are **read-only** by default.
 
 When a file is locked, only the user who locked the file may modify it. This
-user is said to "hold the lock" or have "taken the lock", since only one user
+user is said to "hold the lock" or have "taken the lock", because only one user
 can lock a file at a time. When a file or directory is unlocked, the user is
 said to have "released the lock".
 
@@ -182,7 +182,7 @@ lock it again to keep it locked.
 
 ### Edit lockable files
 
-Once the file is [configured as lockable](#configure-exclusive-file-locks), it is set to read-only.
+After the file is [configured as lockable](#configure-exclusive-file-locks), it is set to read-only.
 Therefore, you need to lock it before editing it.
 
 Suggested workflow for shared projects:

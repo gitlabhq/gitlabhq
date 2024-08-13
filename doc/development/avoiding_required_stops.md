@@ -146,11 +146,8 @@ We can't add required stops to every milestone, as this hurts our user experienc
 while upgrading GitLab. The Distribution group is responsible for helping planing and defining
 when required stops are introduced.
 
-If you plan to introduce a required stop, the first step is to find the next required
-stop planning issue and communicate your intent to introduce a required stop there. This
-issue tells you on which milestone we're planning to introduce the next stop. You
-can find this issue by opening the "Next Required Stop" bookmark on the `#g_distribution`
-Slack channel.
+From GitLab 17.5, we will introduce required stops in the X.2, X.5, X.8, and X.11 minor milestones. If you introduce code changes or features that require an upgrade stop, you
+must align your changes with these milestones in mind.
 
 ### Before the required stop is released
 
@@ -182,7 +179,7 @@ is identified after release, the following steps must still be completed:
 1. Update `Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION` in `lib/gitlab/database.rb` to the
    new required stop versions. Do not change `Gitlab::Database::MIN_SCHEMA_VERSION`.
 1. In the `charts` project, update the
-   [upgrade check hook](https://gitlab.com/gitlab-org/charts/gitlab/-/blame/master/templates/_runcheck.tpl#L32)
+   [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop.html)
    to the required stop version.
 
 ## GitLab-maintained projects which depend on `upgrade_path.yml`

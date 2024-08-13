@@ -5,7 +5,6 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import Item from '~/ide/components/branches/item.vue';
 import List from '~/ide/components/branches/search_list.vue';
-import { __ } from '~/locale';
 import { branches } from '../../mock_data';
 
 Vue.use(Vuex);
@@ -51,7 +50,7 @@ describe('IDE branches search list', () => {
     wrapper.find('input[type="search"]').setValue('something');
 
     await nextTick();
-    expect(wrapper.text()).toContain(__('No branches found'));
+    expect(wrapper.text()).toContain('No branches found');
   });
 
   describe('with branches', () => {

@@ -46,7 +46,7 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
         POSTGRES_DB: $POSTGRES_DB
         POSTGRES_USER: $POSTGRES_USER
         POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-       POSTGRES_HOST_AUTH_METHOD: trust
+        POSTGRES_HOST_AUTH_METHOD: trust
    ```
 
    For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).

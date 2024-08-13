@@ -79,18 +79,36 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
       it_behaves_like 'raising an error', 'package.json file too large'
     end
 
-    context 'with multiple package.json entries' do
+    context 'with custom root folder name' do
       before do
-        allow(Gem::Package::TarReader).to receive(:new).and_return([
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'package/package.json'),
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'package2/package.json'),
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'package3/package.json')
-        ])
+        allow_next_instance_of(Gem::Package::TarReader::Entry) do |instance|
+          allow(instance).to receive(:full_name).and_return('custom/package.json')
+        end
       end
 
-      it 'yeilds only one package.json entry' do
+      it_behaves_like 'processing the package file'
+    end
+
+    context 'with multiple package.json entries' do
+      let(:archives) do
+        [
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg1/foo/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg1/foo/bar/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg1/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'package/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg2/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg3/package.json')
+        ]
+      end
+
+      before do
+        allow(Gem::Package::TarReader).to receive(:new).and_return(archives)
+        allow(archives).to receive(:rewind).and_return(0)
+      end
+
+      it 'yeilds last root package.json entry' do
         expect { |b| service.send(:with_package_json_entry, &b) }.to yield_with_args(
-          instance_of(RSpec::Mocks::InstanceVerifyingDouble)
+          archives.find { |e| e.full_name == 'pkg3/package.json' }
         )
       end
     end

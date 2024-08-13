@@ -26,7 +26,7 @@
 
 .settings {
   // border-top for each item except the top one
-  border-top: 1px solid var(--border-color, $border-color);
+  border-top: 1px solid var(--gl-border-color-default);
 
   &:first-of-type {
     margin-top: 10px;
@@ -36,7 +36,7 @@
 
   + div .settings:first-of-type {
     margin-top: 0;
-    border-top: 1px solid var(--border-color, $border-color);
+    border-top: 1px solid var(--gl-border-color-default);
   }
 
   &.animating {
@@ -47,7 +47,7 @@
 .vue-settings-block {
   // top border and padding for all settings blocks except the first one
   &:not(:first-of-type) {
-    border-top: 1px solid var(--border-color, $border-color);
+    border-top: 1px solid var(--gl-border-color-default);
     padding-top: $gl-spacing-scale-5;
   }
 
@@ -126,7 +126,7 @@
   .sub-section {
     margin-bottom: 32px;
     padding: 16px;
-    border: 1px solid var(--border-color, $border-color);
+    border: 1px solid var(--gl-border-color-default);
     background-color: var(--gl-background-color-subtle);
   }
 
@@ -138,6 +138,7 @@
   }
 
   .instance-runners-info {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-alert-body {
       p:last-child {
         margin-bottom: 0;
@@ -166,12 +167,14 @@
 }
 
 .prometheus-metrics-monitoring {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-card {
     .badge.badge-pill {
       font-size: 12px;
       line-height: 12px;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card-header .label-count {
       color: var(--white, $white);
       background: var(--gray-800, $gray-800);
@@ -218,7 +221,7 @@
 
       /* Ensure we don't add border if there's only single li */
       + li {
-        border-top: 1px solid var(--border-color, $border-color);
+        border-top: 1px solid var(--gl-border-color-default);
       }
     }
   }

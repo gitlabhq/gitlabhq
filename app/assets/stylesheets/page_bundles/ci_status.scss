@@ -1,7 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 .ci-status {
-  border: 1px solid var(--border-color, $border-color);
+  border: 1px solid var(--gl-border-color-default);
 
   &:hover,
   &:focus {
@@ -29,7 +29,7 @@
   &.ci-disabled,
   &.ci-scheduled,
   &.ci-manual {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
     border-color: currentColor;
 
     &:not(span):hover {

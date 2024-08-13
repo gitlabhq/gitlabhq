@@ -123,11 +123,11 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:incoming_email:check`
 - `gitlab:ldap:check`
 - `gitlab:app:check`
+- `gitlab:geo:check` (only if you're running [Geo](../geo/replication/troubleshooting/common.md#health-check-rake-task))
 
 It checks that each component was set up according to the installation guide and suggest fixes
 for issues found. This command must be run from your application server and doesn't work correctly on
 component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
-If you're running Geo, see also the [Geo Health check Rake task](../geo/replication/troubleshooting/common.md#health-check-rake-task).
 
 You may also have a look at our troubleshooting guides for:
 
@@ -457,18 +457,6 @@ You should not use the task for routine checks as database inconsistencies might
 
 ```shell
 gitlab-rake gitlab:db:schema_checker:run
-```
-
-## Import common metrics
-
-Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
-
-This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics).
-
-To re-import the metrics you can run:
-
-```shell
-sudo gitlab-rake metrics:setup_common_metrics
 ```
 
 ## Troubleshooting

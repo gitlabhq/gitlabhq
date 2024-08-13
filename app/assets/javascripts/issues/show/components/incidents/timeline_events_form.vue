@@ -289,7 +289,8 @@ export default {
         </gl-button>
         <gl-button
           v-if="isEditing"
-          class="gl-ml-auto btn-danger"
+          variant="danger"
+          class="gl-ml-auto"
           :disabled="isEventProcessed"
           @click="$emit('delete')"
         >

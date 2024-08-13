@@ -81,6 +81,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       height: 2rem;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-avatar {
       border-color: var(--gray-50, $gray-50);
     }
@@ -343,6 +344,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
       .suggestions {
         margin-top: 4px;
+        z-index: auto;
       }
     }
 
@@ -378,6 +380,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         text-transform: lowercase;
       }
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       a:not(.gl-link) {
         color: $blue-600;
       }
@@ -823,10 +826,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     text-decoration: underline;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-label-link:hover {
     text-decoration: none;
     color: inherit;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-label-text:last-of-type {
       text-decoration: underline;
     }
@@ -989,56 +994,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   a:not(.learn-more) {
     color: $blue-600;
-  }
-}
-
-.line-resolve-btn {
-  position: relative;
-  top: 0;
-  padding: 0;
-  background-color: transparent;
-  border: 0;
-  outline: 0;
-  transition: color $general-hover-transition-duration $general-hover-transition-curve;
-
-  &[disabled] {
-    padding: 0 8px !important;
-    box-shadow: none !important;
-
-    .gl-button-loading-indicator {
-      margin-right: 0 !important;
-    }
-  }
-
-  &.is-disabled {
-    cursor: default;
-  }
-
-  &:not(.is-disabled) {
-    &:hover,
-    &:focus {
-      svg {
-        color: $green-600;
-      }
-    }
-  }
-
-  &.is-active {
-    svg {
-      color: $green-500;
-    }
-
-    &:hover,
-    &:focus {
-      svg {
-        color: $green-700;
-      }
-    }
-  }
-
-  .loading {
-    margin: 0;
-    height: auto;
   }
 }
 

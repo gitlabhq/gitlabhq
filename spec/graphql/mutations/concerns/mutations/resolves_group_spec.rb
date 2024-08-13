@@ -3,13 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::ResolvesGroup do
+  include GraphqlHelpers
+
+  let(:current_user) { create(:user) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: current_user }) }
   let(:mutation_class) do
     Class.new(Mutations::BaseMutation) do
       include Mutations::ResolvesGroup
     end
   end
-
-  let(:context) { {} }
 
   subject(:mutation) { mutation_class.new(object: nil, context: context, field: nil) }
 

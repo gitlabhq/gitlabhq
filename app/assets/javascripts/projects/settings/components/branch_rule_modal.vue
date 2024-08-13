@@ -3,9 +3,10 @@ import { GlModal, GlCollapsibleListbox, GlFormGroup, GlSprintf, GlLink } from '@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import getProtectableBranches from '../graphql/queries/protectable_branches.query.graphql';
-import { WILDCARDS_HELP_PATH } from '../constants';
 
-const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
+const wildcardsHelpDocLink = helpPagePath('user/project/protected_branches', {
+  anchor: 'protect-multiple-branches-with-wildcard-rules',
+});
 export default {
   name: 'BranchRuleModal',
   wildcardsHelpDocLink,
@@ -135,7 +136,7 @@ export default {
           <code>{{ searchQuery }}</code>
         </template>
       </gl-collapsible-listbox>
-      <span data-testid="help-text" class="gl-text-secondary">
+      <div data-testid="help-text" class="gl-text-subtle gl-mt-2">
         <gl-sprintf :message="formDescriptionText">
           <template #link="{ content }">
             <gl-link :href="$options.wildcardsHelpDocLink">
@@ -143,7 +144,7 @@ export default {
             </gl-link>
           </template>
         </gl-sprintf>
-      </span>
+      </div>
     </gl-form-group>
   </gl-modal>
 </template>

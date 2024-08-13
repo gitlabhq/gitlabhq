@@ -88,7 +88,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       visit(merge_request_path(merge_request, anchor: 'note_123'))
     end
 
-    it 'accepts a merge request' do
+    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462685' do
       check('Delete source branch')
       click_merge_button
 

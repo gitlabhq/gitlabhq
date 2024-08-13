@@ -41,6 +41,7 @@ describe('DesignPresentation', () => {
    * @param {Float} scrollTopPerc 0 < x < 1
    * @param {Float} scrollLeftPerc  0 < x < 1
    */
+  // eslint-disable-next-line max-params
   function mockRefDimensions(
     ref,
     viewportDimensions,

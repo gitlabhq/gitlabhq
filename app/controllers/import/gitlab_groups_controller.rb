@@ -22,6 +22,7 @@ class Import::GitlabGroupsController < ApplicationController
       .with_defaults(organization_id: Current.organization_id)
 
     response = ::Groups::CreateService.new(current_user, group_data).execute
+
     group = response[:group]
 
     if response.success?

@@ -95,7 +95,7 @@ export default {
     </gl-toggle>
   </div>
   <div v-else class="gl-mb-5">
-    <div class="gl-display-flex gl-align-items-center">
+    <div class="gl-flex gl-items-center">
       <gl-icon :data-testid="iconDataTestId" :size="14" :name="iconName" :class="iconClass" />
       <strong class="gl-ml-2">{{ iconTitle }}</strong>
     </div>

@@ -114,8 +114,8 @@ with additional functions on the instance level:
 
    Even though Source Editor itself is extremely slim, it still depends on Monaco editor,
    which adds weight. Every time you add Source Editor to a view, the JavaScript bundle's
-   size significantly increases, affecting your view's loading performance. We recommend
-   you import the editor on demand if either:
+   size significantly increases, affecting your view's loading performance. You should
+   import the editor on demand if either:
 
    - You're uncertain if the view needs the editor.
    - The editor is a secondary element of the view.

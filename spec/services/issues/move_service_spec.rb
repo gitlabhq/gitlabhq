@@ -151,18 +151,6 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
             [old_issue, task1, task2].map(&:title)
           )
         end
-
-        context 'when move_issue_children feature flag is disabled' do
-          before do
-            stub_feature_flags(move_issue_children: false)
-          end
-
-          it "does not move the issue's children", :aggregate_failures do
-            expect { move_service.execute(old_issue, new_project) }.to change { Issue.count }.by(1)
-            expect(new_project.issues.count).to eq(1)
-            expect(new_project.issues.pluck(:title)).to contain_exactly(old_issue.title)
-          end
-        end
       end
 
       context 'issue with award emoji' do
@@ -381,6 +369,18 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
           expect(new_issue.designs.size).to eq(1)
           expect(new_issue.designs.first.notes.size).to eq(1)
+        end
+      end
+
+      context 'issue with timelogs' do
+        before do
+          create(:timelog, issue: old_issue)
+        end
+
+        it 'calls CopyTimelogsWorker' do
+          expect(WorkItems::CopyTimelogsWorker).to receive(:perform_async).with(old_issue.id, kind_of(Integer))
+
+          move_service.execute(old_issue, new_project)
         end
       end
 

@@ -56,7 +56,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
-          ".build-job > a[title='test - failed - (unknown failure)']")
+          ".build-job > a[title='test - Failed - (unknown failure)']")
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
         wait_for_all_requests
         within('.builds-container') do
           expect(page).to have_selector(
-            ".build-job > a[title='test - failed - (unknown failure)']")
+            ".build-job > a[title='test - Failed - (unknown failure)']")
         end
       end
     end
@@ -82,7 +82,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
-          ".build-job > a[title='test - failed - (unknown failure) (retried)']")
+          ".build-job > a[title='test - Failed - (unknown failure) (retried)']")
       end
     end
   end

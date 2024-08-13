@@ -115,7 +115,7 @@ Check the [currently supported languages](#currently-supported-languages).
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 NOTE:
 Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
@@ -123,7 +123,7 @@ Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689)
 Cloud Native Buildpacks, and only buildpacks that implement the
 [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Currently supported languages
 

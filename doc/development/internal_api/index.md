@@ -16,8 +16,7 @@ GitLab Pages.
 ## Add new endpoints
 
 API endpoints should be externally accessible by default, with proper authentication and authorization.
-Before adding a new internal endpoint, consider if the API would potentially be
-useful to the wider GitLab community and can be made externally accessible.
+Before adding a new internal endpoint, consider if the API would benefit the wider GitLab community and can be made externally accessible.
 
 One reason we might favor internal API endpoints sometimes is when using such an endpoint requires
 internal data that external actors cannot have. For example, in the internal Pages API we might use
@@ -44,7 +43,7 @@ To authenticate using that token, clients:
 
 ## Git Authentication
 
-This is called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
+Called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
@@ -247,7 +246,7 @@ Example response:
 
 ## Instance information
 
-This gets some generic information about the instance. This is used
+This gets some generic information about the instance. It's used
 by Geo nodes to get information about each other.
 
 ```plaintext
@@ -324,7 +323,7 @@ Example response:
 
 ## Get new personal access-token
 
-This is called from GitLab Shell and allows users to generate a new
+Called from GitLab Shell and allows users to generate a new
 personal access token.
 
 | Attribute | Type   | Required | Description |
@@ -536,8 +535,8 @@ metric counters.
 | `unique_counters["k8s_api_proxy_requests_unique_agents_via_ci_access"]`   | integer array | no       | The set of unique agent ids that have interacted a CI Tunnel via `ci_access` to track the `k8s_api_proxy_requests_unique_agents_via_ci_access` metric event     |
 | `unique_counters["k8s_api_proxy_requests_unique_users_via_user_access"]`  | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_users_via_user_access` metric event   |
 | `unique_counters["k8s_api_proxy_requests_unique_agents_via_user_access"]` | integer array | no       | The set of unique agent ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_agents_via_user_access` metric event |
-| `unique_counters["k8s_api_proxy_requests_unique_users_via_pat_access"]`   | integer array | no       | The set of unique user ids that have used the KAS Kubernetes API proxy via PAT to track the `k8s_api_proxy_requests_unique_users_via_pat_access` metric event   |
-| `unique_counters["k8s_api_proxy_requests_unique_agents_via_pat_access"]`  | integer array | no       | The set of unique agent ids that have used the KAS Kubernetes API proxy via PAT to track the `k8s_api_proxy_requests_unique_agents_via_pat_access` metric event |
+| `unique_counters["k8s_api_proxy_requests_unique_users_via_pat_access"]`   | integer array | no       | The set of unique user ids that have used the KAS Kubernetes API proxy with PAT to track the `k8s_api_proxy_requests_unique_users_via_pat_access` metric event   |
+| `unique_counters["k8s_api_proxy_requests_unique_agents_via_pat_access"]`  | integer array | no       | The set of unique agent ids that have used the KAS Kubernetes API proxy with PAT to track the `k8s_api_proxy_requests_unique_agents_via_pat_access` metric event |
 | `unique_counters["flux_git_push_notified_unique_projects"]`               | integer array | no       | The set of unique projects ids that have been notified to reconcile their Flux workloads to track the `flux_git_push_notified_unique_projects` metric event     |
 
 ```plaintext
@@ -741,7 +740,7 @@ Example response:
 
 ## Subscriptions
 
-The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
+The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscriptions including trials, and add-on purchases, for personal namespaces, or top-level groups in GitLab.com.
 
 ### Create a subscription
 
@@ -969,7 +968,7 @@ Example response:
 
 ## Subscription add-on purchases (excluding storage and compute packs)
 
-The subscription add-on purchase endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscription add-on purchases like Code Suggestions for personal namespaces, or top-level groups within GitLab.com. It is not used to apply storage and compute pack purchases.
+The subscription add-on purchase endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscription add-on purchases like Code Suggestions for personal namespaces, or top-level groups in GitLab.com. It is not used to apply storage and compute pack purchases.
 
 ### Create a subscription add-on purchase
 
@@ -1109,10 +1108,38 @@ Example response:
 
 - CustomersDot
 
+### Update Credit Card Validation (internal API)
+
+Use a PUT command to update the User's credit card validation
+
+```plaintext
+PUT /internal/gitlab_subscriptions/users/:user_id/credit_card_validation
+```
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" \
+     --data '{"credit_card_validated_at": "2020-01-01 00:00:00 UTC", "credit_card_expiration_year": "2010", "credit_card_expiration_month": "12", "credit_card_holder_name": "John Smith", "credit_card_type": "American Express", "credit_card_mask_number": "1111", "zuora_payment_method_xid": "abc123", "stripe_setup_intent_xid": "seti_abc123", "stripe_payment_method_xid": "pm_abc123", "stripe_card_fingerprint": "card123"}' \
+     "https://gitlab.com/api/v4/internal/gitlab_subscriptions/users/:user_id/credit_card_validation"
+```
+
+Example response:
+
+```json
+{
+  "success": {}
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
-These endpoints can only be consumed in the Admin area of GitLab.com.
+These endpoints can only be consumed in the **Admin** area of GitLab.com.
 
 ### Retrieve storage limit exclusions
 
@@ -1208,7 +1235,7 @@ Example response:
 
 ### Known consumers
 
-- GitLab.com Admin area
+- GitLab.com **Admin** area
 
 ## Compute quota provisioning
 
@@ -1305,7 +1332,9 @@ to update upcoming reconciliations for namespaces.
 
 Use a PUT command to update `upcoming_reconciliations`.
 
-#### Old API (deprecated, [New API](#new-update-upcoming_reconciliations-api))
+#### Old API (deprecated)
+
+For the new API, see **New Update upcoming_reconciliations API** below.
 
 ```plaintext
 PUT /internal/upcoming_reconciliations
@@ -1370,9 +1399,11 @@ Example response:
 
 ### Delete an `upcoming_reconciliation`
 
-#### Old API (deprecated, [New API](#new-delete-upcoming_reconciliations-api))
+#### Old API (deprecated)
 
 Use a DELETE command to delete an `upcoming_reconciliation`.
+
+For the new API, see **New delete upcoming_reconciliations API** below.
 
 ```plaintext
 DELETE /internal/upcoming_reconciliations
@@ -1447,7 +1478,7 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 
 - Is not an internal API.
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
-- Gets, checks, updates, and deletes SCIM identities within groups.
+- Gets, checks, updates, and deletes SCIM identities in groups.
 
 NOTE:
 This API does not require the `Gitlab-Shell-Api-Request` header.
@@ -1603,7 +1634,7 @@ Example response:
 Returns a `201` status code if successful.
 
 NOTE:
-After you create a group SCIM identity for a user, you can see that SCIM identity in the Admin area.
+After you create a group SCIM identity for a user, you can see that SCIM identity in the **Admin** area.
 
 ### Update a single SCIM provisioned user
 

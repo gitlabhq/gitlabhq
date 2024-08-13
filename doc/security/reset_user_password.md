@@ -23,7 +23,7 @@ The user's new password must meet all [password requirements](../user/profile/us
 
 To reset a user's password in the UI:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user whose password you want to update, select **Edit**.
 1. In the **Password** area, type a password and password confirmation.
@@ -171,4 +171,4 @@ requirements. Ensure the password you are attempting to set meets all
 
 ### Expired password
 
-You might not be able to reset a user's expired password due to the [Password Expired error on Git Fetch via SSH for LDAP users](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-via-ssh-for-ldap-user).
+You might not be able to reset a user's expired password due to the [Password Expired error on Git Fetch via SSH for LDAP users](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-with-ssh-for-ldap-user).

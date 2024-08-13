@@ -19,6 +19,16 @@ module Gitlab
           store_name = if unroutable_class?(job_class)
                          'main'
                        else
+                         # When a worker's routing behaviour is updated by attribute or routing rule change,
+                         # jobs could be rerouted using the wrong combination
+                         # of either (1) old queue with new store or (2) new queue with old store.
+                         #
+                         # Update job hash's queue key to match this process's job_class configuration
+                         # this ensures that the queue + store combination is valid.
+                         if job_class.get_sidekiq_options['queue']
+                           job_hash["queue"] = job_class.get_sidekiq_options['queue']
+                         end
+
                          job_class.get_sidekiq_options['store']
                        end
 

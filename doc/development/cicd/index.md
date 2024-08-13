@@ -143,7 +143,7 @@ This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/
 
 There are 3 top level queries that this service uses to gather the majority of the jobs and they are selected based on the level where the runner is registered to:
 
-- Select jobs for shared runner (instance level)
+- Select jobs for shared runner (instance-wide)
   - Utilizes a fair scheduling algorithm which prioritizes projects with fewer running builds
 - Select jobs for group runner
 - Select jobs for project runner

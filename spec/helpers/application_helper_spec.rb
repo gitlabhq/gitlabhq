@@ -654,7 +654,7 @@ RSpec.describe ApplicationHelper do
 
   describe '#profile_social_links' do
     context 'when discord is set' do
-      let_it_be(:user) { build(:user) }
+      let(:user) { build(:user) }
       let(:discord) { discord_url(user) }
 
       it 'returns an empty string if discord is not set' do
@@ -668,8 +668,23 @@ RSpec.describe ApplicationHelper do
       end
     end
 
+    context 'when bluesky is set' do
+      let(:user) { build(:user) }
+      let(:bluesky) { bluesky_url(user) }
+
+      it 'returns an empty string if bluesky did id is not set' do
+        expect(bluesky).to eq('')
+      end
+
+      it 'returns bluesky url when bluesky did id is set' do
+        user.bluesky = 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
+
+        expect(bluesky).to eq(external_redirect_path(url: 'https://bsky.app/profile/did:plc:ewvi7nxzyoun6zhxrhs64oiz'))
+      end
+    end
+
     context 'when mastodon is set' do
-      let_it_be(:user) { build(:user) }
+      let(:user) { build(:user) }
       let(:mastodon) { mastodon_url(user) }
 
       it 'returns an empty string if mastodon username is not set' do
@@ -763,21 +778,7 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'with-top-bar' do
-      context 'when @hide_top_bar_padding is false' do
-        before do
-          helper.instance_variable_set(:@hide_top_bar_padding, false)
-        end
-
-        it { is_expected.to include('with-top-bar') }
-      end
-
-      context 'when @hide_top_bar_padding is true' do
-        before do
-          helper.instance_variable_set(:@hide_top_bar_padding, true)
-        end
-
-        it { is_expected.not_to include('with-top-bar') }
-      end
+      it { is_expected.to include('with-top-bar') }
     end
   end
 
@@ -866,12 +867,6 @@ RSpec.describe ApplicationHelper do
         expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
         expect(helper.dispensable_render_if_exists).to eq('foo')
       end
-    end
-  end
-
-  describe 'stylesheet_link_tag_defer' do
-    it 'uses media="all" in stylesheet' do
-      expect(helper.stylesheet_link_tag_defer('test')).to eq('<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
     end
   end
 

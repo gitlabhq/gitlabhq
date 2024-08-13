@@ -1,0 +1,23 @@
+---
+description: Packaged pushed to the registry
+internal_events: true
+action: push_package_to_registry
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The name of the package type
+  property:
+    description: The auth type. Either 'guest', 'user' or 'deploy_token'
+product_group: package_registry
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161199
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

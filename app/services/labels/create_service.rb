@@ -27,5 +27,3 @@ module Labels
     end
   end
 end
-
-Labels::CreateService.prepend_mod_with('Labels::CreateService')

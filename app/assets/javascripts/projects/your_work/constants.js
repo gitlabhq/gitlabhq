@@ -21,3 +21,17 @@ export const MEMBER_TAB = {
 };
 
 export const PROJECT_DASHBOARD_TABS = [CONTRIBUTED_TAB, STARRED_TAB, PERSONAL_TAB, MEMBER_TAB];
+
+export const BASE_ROUTE = '/dashboard/projects';
+
+export const ROOT_ROUTE_NAME = 'root';
+
+export const DASHBOARD_ROUTE_NAME = 'dashboard';
+
+export const PROJECTS_DASHBOARD_ROUTE_NAME = 'projects-dashboard';
+
+export const CUSTOM_DASHBOARD_ROUTE_NAMES = [
+  ROOT_ROUTE_NAME,
+  DASHBOARD_ROUTE_NAME,
+  PROJECTS_DASHBOARD_ROUTE_NAME,
+];

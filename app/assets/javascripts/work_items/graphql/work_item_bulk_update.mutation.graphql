@@ -1,0 +1,5 @@
+mutation workItemBulkUpdate($input: WorkItemBulkUpdateInput!) {
+  workItemBulkUpdate(input: $input) @client {
+    updatedIssueCount
+  }
+}

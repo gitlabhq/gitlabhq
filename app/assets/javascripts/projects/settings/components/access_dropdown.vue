@@ -20,7 +20,7 @@ export const i18n = {
   groupsSectionHeader: s__('AccessDropdown|Groups'),
   usersSectionHeader: s__('AccessDropdown|Users'),
   noRole: s__('AccessDropdown|No role'),
-  deployKeysSectionHeader: s__('AccessDropdown|Deploy Keys'),
+  deployKeysSectionHeader: s__('AccessDropdown|Deploy keys'),
   ownedBy: __('Owned by %{image_tag}'),
 };
 

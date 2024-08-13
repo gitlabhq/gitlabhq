@@ -1,11 +1,16 @@
-ARG DOCKER_VERSION=24.0.5
-ARG CHROME_VERSION=123
-ARG RUBY_VERSION=3.2.4
 ARG BUILD_OS=debian
+ARG CHROME_VERSION=123
+ARG DOCKER_VERSION=24.0.5
+ARG GCLOUD_VERSION=413
+ARG GIT_VERSION=2.45
+ARG HELM_VERSION=3.14
+ARG KUBECTL_VERSION=1.28
+ARG LFS_VERSION=2.9
 ARG OS_VERSION=bookworm
 ARG QA_BUILD_TARGET=ee
+ARG RUBY_VERSION=3.2.4
 
-FROM registry.gitlab.com/gitlab-org/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23 AS foss
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-${GCLOUD_VERSION}-kubectl-${KUBECTL_VERSION}-helm-${HELM_VERSION} AS foss
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"

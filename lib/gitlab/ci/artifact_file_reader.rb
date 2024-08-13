@@ -7,26 +7,30 @@ module Gitlab
   module Ci
     class ArtifactFileReader
       Error = Class.new(StandardError)
-
-      MAX_ARCHIVE_SIZE = 5.megabytes
       TMP_ARTIFACT_EXTRACTION_DIR = "extracted_artifacts_job_%{id}"
 
-      def initialize(job)
+      def initialize(
+        job,
+        max_archive_size:)
         @job = job
-
+        @max_archive_size = max_archive_size
         raise Error, "Job doesn't exist" unless @job
         raise Error, "Job `#{@job.name}` (#{@job.id}) does not have artifacts" unless @job.artifacts?
 
-        validate!
+        validate!(max_archive_size: max_archive_size)
       end
 
-      def read(path)
+      def read(path, max_size:)
+        @max_file_size = max_size
         return unless job.artifacts_metadata
 
         metadata_entry = job.artifacts_metadata_entry(path)
-
-        if metadata_entry.total_size > MAX_ARCHIVE_SIZE
-          raise Error, "Artifacts archive for job `#{job.name}` is too large: max #{max_archive_size_in_mb}"
+        file_size = metadata_entry.total_size
+        if file_size > max_size
+          raise Error,
+            "The file `#{path}` in job `#{job.name}` is too large: " \
+              "#{bytes_to_human_size(file_size)} " \
+              "exceeds maximum of #{bytes_to_human_size(max_size)}"
         end
 
         read_zip_file!(path)
@@ -36,9 +40,12 @@ module Gitlab
 
       attr_reader :job
 
-      def validate!
-        if job.job_artifacts_archive.size > MAX_ARCHIVE_SIZE
-          raise Error, "Artifacts archive for job `#{job.name}` is too large: max #{max_archive_size_in_mb}"
+      def validate!(max_archive_size:)
+        if job.job_artifacts_archive.size > @max_archive_size
+          raise Error,
+            "Artifacts archive for job `#{job.name}` is too large: " \
+              "#{bytes_to_human_size(job.job_artifacts_archive.size)} " \
+              "exceeds maximum of #{bytes_to_human_size(max_archive_size)}"
         end
 
         unless job.artifacts_metadata?
@@ -63,8 +70,8 @@ module Gitlab
         raise Error, "Path `#{file_path}` was expected to be a file but it was a directory!"
       end
 
-      def max_archive_size_in_mb
-        ActiveSupport::NumberHelper.number_to_human_size(MAX_ARCHIVE_SIZE)
+      def bytes_to_human_size(size)
+        ActiveSupport::NumberHelper.number_to_human_size(size)
       end
     end
   end

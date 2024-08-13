@@ -15,7 +15,7 @@ Set the number of branches or tags to limit the number of single push events
 allowed at once. If the number of events is greater than this, GitLab creates
 bulk push event instead.
 
-For example, if 4 branches are pushed and the limit is currently set to 3,
+For example, if 4 branches are pushed and the limit is set to 3,
 the activity feed displays:
 
 ![Bulk push event](img/bulk_push_event_v12_4.png)
@@ -27,8 +27,8 @@ the activity feed.
 
 To modify this setting:
 
-- In the Admin area:
-  1. On the left sidebar, at the bottom, select **Admin area**.
+- In the **Admin** area:
+  1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
 - Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)

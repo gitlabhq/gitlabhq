@@ -35,6 +35,7 @@ query getProjectContainerRepositories(
           id
           path
         }
+        protectionRuleExists
         userPermissions {
           destroyContainerRepository
         }
@@ -78,6 +79,7 @@ query getProjectContainerRepositories(
           path
           webUrl
         }
+        protectionRuleExists
         userPermissions {
           destroyContainerRepository
         }

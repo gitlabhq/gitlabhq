@@ -10,8 +10,8 @@ Git is a version control system you use to track changes to your code
 and collaborate with others. GitLab is a web-based Git repository manager
 that provides CI/CD and other features to help you manage your software development lifecycle.
 
-To use GitLab, you don't need to know how to use Git. However, if you're going to
-use GitLab for source control, it can be useful to understand how to use Git.
+To use GitLab, you don't need to know how to use Git. However, if you
+use GitLab for source control, it's beneficial to understand it.
 
 Learning Git is part of a larger workflow:
 
@@ -85,7 +85,7 @@ For more information, see:
 
 ## Step 4: Familiarize yourself with Git commands
 
-To work with Git from the command line, you'll need to use various Git commands.
+To work with Git from the command line, you need to use various Git commands.
 Some of the most commonly used commands include:
 
 - `git clone`: Clone a repository to your local machine

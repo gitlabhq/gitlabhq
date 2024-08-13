@@ -4,21 +4,20 @@
   - if Gitlab.config.pages.namespace_in_path
     - pages_url_text = "#{pages_url} (Beta)"
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card', data: { testid: 'access-page-container' } }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-p-5 gl-flex gl-flex-col gl-gap-3' }, footer_options: { class: 'gl-alert-warning' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h2.gl-new-card-title
-          = s_('GitLabPages|Access pages')
-          .gl-new-card-count
-            = sprite_icon('doc-text', css_class: 'gl-mr-2')
-            %span= @project.pages_domains.size + (pages_url ? 1 : 0)
+  = render ::Layouts::CrudComponent.new(s_('GitLabPages|Access pages'),
+    icon: 'doc-text',
+    count: @project.pages_domains.size + (pages_url ? 1 : 0),
+    options: { class: 'gl-mt-5', data: { testid: 'access-page-container' } },
+    footer_options: { class: 'gl-bg-red-50' }) do |c|
     - c.with_body do
-      %p.gl-m-0
-        = external_link(pages_url_text, pages_url)
+      %ul.content-list
+        %li
+          = external_link(pages_url_text, pages_url)
 
-      - @project.pages_domains.each do |domain|
-        %p.gl-m-0
-          = external_link(domain.url, domain.url)
+        - @project.pages_domains.each do |domain|
+          %li
+            = external_link(domain.url, domain.url)
+
     - unless @project.public_pages?
       - c.with_footer do
         - help_page = help_page_path('user/project/pages/pages_access_control')

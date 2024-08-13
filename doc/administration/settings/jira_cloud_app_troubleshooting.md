@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -50,7 +50,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.8 and later:
 
-  1. On the left sidebar, at the bottom, select **Admin area**.
+  1. On the left sidebar, at the bottom, select **Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
@@ -91,7 +91,7 @@ Depending on how you installed the app, you might want to check the following:
 - If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
   switch between GitLab versions in the GitLab for Jira Cloud app:
 
-<!-- markdownlint-disable MD044 -->
+  <!-- markdownlint-disable MD044 -->
 
   1. In Jira, on the top bar, select **Apps > Manage your apps**.
   1. Expand **GitLab for Jira (gitlab.com)**.
@@ -103,7 +103,7 @@ Depending on how you installed the app, you might want to check the following:
   1. Select all checkboxes, then select **Next**.
   1. Enter your **GitLab instance URL**, then select **Save**.
 
-<!-- markdownlint-enable MD044 -->
+  <!-- markdownlint-enable MD044 -->
 
   If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
   Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
@@ -257,14 +257,27 @@ When you link a group, you might get the following error:
 Failed to link group. Please try again.
 ```
 
-A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+This error can be returned for multiple reasons.
 
-To resolve this issue, ensure the Jira user that installs and configures the app
-meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
+- A `403 Forbidden` can be returned if the user information cannot be fetched from Jira because of insufficient permissions.
+  To resolve this issue, ensure the Jira user that installs and configures the app
+  meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
 
-This error might also occur if you use a rewrite or subfilter with a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy).
-The app key used in requests contains part of the server hostname, which some reverse proxy filters might capture.
-The app key in Atlassian and GitLab must match for authentication to work correctly.
+- This error might also occur if you use a rewrite or subfilter with a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy).
+  The app key used in requests contains part of the server hostname, which some reverse proxy filters might capture.
+  The app key in Atlassian and GitLab must match for authentication to work correctly.
+
+- This error can happen if the GitLab instance was initially misconfigured when the
+  GitLab for Jira Cloud app was first installed. In this case, data in the `jira_connect_installation`
+  table might need to be deleted. Only delete this data if you are sure that no existing
+  GitLab for Jira app installations need to be kept.
+
+  1. Uninstall the GitLab for Jira Cloud app from any Jira projects.
+  1. To delete the records, run this command in the [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session):
+
+     ```ruby
+     JiraConnectInstallation.delete_all
+     ```
 
 ## `Failed to load Jira Connect Application ID`
 
@@ -290,7 +303,7 @@ To resolve this issue:
    ```
 
 1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
-   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.
+   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` with no trailing slash.
 
 ## `Missing required parameter: client_id`
 

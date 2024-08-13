@@ -3,31 +3,66 @@ import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
   deriveSortKey,
+  getDefaultWorkItemTypes,
   getInitialPageParams,
-} from '~/issues/list/utils';
+  getTypeTokenOptions,
+} from 'ee_else_ce/issues/list/utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import {
+  STATUS_ALL,
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  WORKSPACE_GROUP,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
+import { AutocompleteCache } from '~/issues/dashboard/utils';
+import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { fetchPolicies } from '~/lib/graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
 import {
   OPERATORS_IS,
+  OPERATORS_IS_NOT_OR,
+  TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_GROUP,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_GROUP,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { STATE_CLOSED } from '../../constants';
 import { sortOptions, urlSortParams } from '../constants';
 import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
 
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const GroupToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/group_token.vue');
+const LabelToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
 export default {
@@ -39,12 +74,28 @@ export default {
     IssueCardStatistics,
     IssueCardTimeInfo,
   },
-  inject: ['fullPath', 'initialSort', 'isSignedIn', 'workItemType'],
+  mixins: [glFeatureFlagMixin()],
+  inject: [
+    'autocompleteAwardEmojisPath',
+    'fullPath',
+    'hasEpicsFeature',
+    'hasOkrsFeature',
+    'hasQualityManagementFeature',
+    'initialSort',
+    'isGroup',
+    'isSignedIn',
+    'workItemType',
+  ],
   props: {
-    eeCreatedWorkItemsCount: {
+    eeWorkItemUpdateCount: {
       type: Number,
       required: false,
       default: 0,
+    },
+    showBulkEditSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -73,7 +124,8 @@ export default {
           search: this.searchQuery,
           ...this.apiFilterParams,
           ...this.pageParams,
-          types: [this.workItemType],
+          includeDescendants: !this.apiFilterParams.fullPath,
+          types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
         };
       },
       update(data) {
@@ -106,6 +158,13 @@ export default {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
+    defaultWorkItemTypes() {
+      return getDefaultWorkItemTypes({
+        hasEpicsFeature: this.hasEpicsFeature,
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
+    },
     hasSearch() {
       return Boolean(this.searchQuery);
     },
@@ -114,6 +173,9 @@ export default {
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;
+    },
+    namespace() {
+      return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -130,7 +192,20 @@ export default {
         });
       }
 
-      return [
+      const tokens = [
+        {
+          type: TOKEN_TYPE_ASSIGNEE,
+          title: TOKEN_TITLE_ASSIGNEE,
+          icon: 'user',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS_NOT_OR,
+          fullPath: this.fullPath,
+          isProject: !this.isGroup,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
+          preloadedUsers,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
+        },
         {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
@@ -138,11 +213,42 @@ export default {
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
-          operators: OPERATORS_IS,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.fullPath,
-          isProject: false,
+          isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedUsers,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
+        },
+        {
+          type: TOKEN_TYPE_GROUP,
+          icon: 'group',
+          title: TOKEN_TITLE_GROUP,
+          unique: true,
+          token: GroupToken,
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+        },
+        {
+          type: TOKEN_TYPE_LABEL,
+          title: TOKEN_TITLE_LABEL,
+          icon: 'labels',
+          token: LabelToken,
+          operators: OPERATORS_IS_NOT_OR,
+          fetchLabels: this.fetchLabels,
+          fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
+        },
+        {
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
+          icon: 'milestone',
+          token: MilestoneToken,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
+          shouldSkipSort: true,
+          fullPath: this.fullPath,
+          isProject: !this.isGroup,
         },
         {
           type: TOKEN_TYPE_SEARCH_WITHIN,
@@ -157,6 +263,46 @@ export default {
           ],
         },
       ];
+
+      if (!this.workItemType) {
+        tokens.push({
+          type: TOKEN_TYPE_TYPE,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'issues',
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          options: this.typeTokenOptions,
+        });
+      }
+
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_CONFIDENTIAL,
+          title: TOKEN_TITLE_CONFIDENTIAL,
+          icon: 'eye-slash',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'eye-slash', value: 'yes', title: __('Yes') },
+            { icon: 'eye', value: 'no', title: __('No') },
+          ],
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-my_reaction`,
+        });
+      }
+
+      tokens.sort((a, b) => a.title.localeCompare(b.title));
+
+      return tokens;
     },
     showPaginationControls() {
       return !this.isLoading && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
@@ -164,9 +310,16 @@ export default {
     showPageSizeSelector() {
       return this.workItems.length > 0;
     },
+    typeTokenOptions() {
+      return getTypeTokenOptions({
+        hasEpicsFeature: this.hasEpicsFeature,
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
+    },
   },
   watch: {
-    eeCreatedWorkItemsCount() {
+    eeWorkItemUpdateCount() {
       // Only reset isInitialAllCountSet when there's no issues to minimize unmounting IssuableList
       if (!this.hasAnyIssues) {
         this.isInitialAllCountSet = false;
@@ -174,7 +327,38 @@ export default {
       this.$apollo.queries.workItems.refetch();
     },
   },
+  created() {
+    this.autocompleteCache = new AutocompleteCache();
+  },
   methods: {
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        cacheName: 'emojis',
+        searchProperty: 'name',
+        search,
+      });
+    },
+    fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
+      return this.$apollo
+        .query({
+          query: searchLabelsQuery,
+          variables: { fullPath: this.fullPath, search, isProject: !this.isGroup },
+          fetchPolicy,
+        })
+        .then(({ data }) => {
+          // TODO remove once we can search by title-only on the backend
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
+          const labels = data[this.namespace]?.labels.nodes;
+          return labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase()));
+        });
+    },
+    fetchLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search);
+    },
+    fetchLatestLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
+    },
     getStatus(issue) {
       return issue.state === STATE_CLOSED ? __('Closed') : undefined;
     },
@@ -253,9 +437,11 @@ export default {
     :initial-sort-by="sortKey"
     :issuables="workItems"
     :issuables-loading="isLoading"
+    :show-bulk-edit-sidebar="showBulkEditSidebar"
     namespace="work-items"
     recent-searches-storage-key="issues"
     :search-tokens="searchTokens"
+    show-filtered-search-friendly-text
     :show-page-size-selector="showPageSizeSelector"
     :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon
@@ -293,6 +479,14 @@ export default {
 
     <template #list-body>
       <slot name="list-body"></slot>
+    </template>
+
+    <template #bulk-edit-actions="{ checkedIssuables }">
+      <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
+    </template>
+
+    <template #sidebar-items="{ checkedIssuables }">
+      <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
     </template>
   </issuable-list>
 

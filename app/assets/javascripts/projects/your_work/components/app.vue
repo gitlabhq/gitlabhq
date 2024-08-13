@@ -1,8 +1,11 @@
 <script>
 import { GlTabs, GlTab, GlBadge, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { joinPaths, updateHistory, pathSegments } from '~/lib/utils/url_utility';
-import { PROJECT_DASHBOARD_TABS, CONTRIBUTED_TAB } from 'ee_else_ce/projects/your_work/constants';
+import {
+  PROJECT_DASHBOARD_TABS,
+  CONTRIBUTED_TAB,
+  CUSTOM_DASHBOARD_ROUTE_NAMES,
+} from 'ee_else_ce/projects/your_work/constants';
 
 export default {
   name: 'YourWorkProjectsApp',
@@ -18,7 +21,7 @@ export default {
   },
   data() {
     return {
-      activeTabIndex: 0,
+      activeTabIndex: this.initActiveTabIndex(),
     };
   },
   computed: {
@@ -26,21 +29,11 @@ export default {
       return PROJECT_DASHBOARD_TABS.map((tab) => ({ ...tab, count: 0 }));
     },
   },
-  created() {
-    this.getTabFromUrl();
-  },
   methods: {
-    getTabFromUrl() {
-      const tab = pathSegments(window.location)?.pop();
-      const tabIndex = PROJECT_DASHBOARD_TABS.findIndex(({ value }) => value === tab);
-
-      this.activeTabIndex = tabIndex > 0 ? tabIndex : 0;
-    },
-    setTabInUrl() {
-      const tab = PROJECT_DASHBOARD_TABS[this.activeTabIndex] || CONTRIBUTED_TAB;
-      const url = joinPaths(gon.relative_url_root || '/', `/dashboard/projects/${tab.value}`);
-
-      updateHistory({ url, replace: true });
+    initActiveTabIndex() {
+      return CUSTOM_DASHBOARD_ROUTE_NAMES.includes(this.$route.name)
+        ? 0
+        : PROJECT_DASHBOARD_TABS.findIndex((tab) => tab.value === this.$route.name);
     },
     onTabUpdate(index) {
       // This return will prevent us overwriting the root `/` and `/dashboard/projects` paths
@@ -48,7 +41,9 @@ export default {
       if (index === this.activeTabIndex) return;
 
       this.activeTabIndex = index;
-      this.setTabInUrl();
+
+      const tab = PROJECT_DASHBOARD_TABS[index] || CONTRIBUTED_TAB;
+      this.$router.push({ name: tab.value });
     },
   },
 };

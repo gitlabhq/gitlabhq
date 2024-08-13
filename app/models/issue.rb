@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include EachBatch
   include PgFullTextSearchable
   include IgnorableColumns
+  include Gitlab::DueAtFilterable
 
   extend ::Gitlab::Utils::Override
 
@@ -58,7 +59,6 @@ class Issue < ApplicationRecord
 
   # prevent caching this column by rails, as we want to easily remove it after the backfilling
   ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -118,7 +118,7 @@ class Issue < ApplicationRecord
   validates :confidential, inclusion: { in: [true, false], message: 'must be a boolean' }
 
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
-  validate :due_date_after_start_date
+  validate :due_date_after_start_date, if: :validate_due_date?
   validate :parent_link_confidentiality
 
   alias_attribute :external_author, :service_desk_reply_to
@@ -228,7 +228,7 @@ class Issue < ApplicationRecord
   # e.g:
   #
   #   .by_project_id_and_iid({project_id: 1, iid: 2})
-  #   .by_project_id_and_iid([]) # returns ActiveRecord::NullRelation
+  #   .by_project_id_and_iid([]) # returns Issue.none
   #   .by_project_id_and_iid([
   #     {project_id: 1, iid: 1},
   #     {project_id: 2, iid: 1},
@@ -769,6 +769,12 @@ class Issue < ApplicationRecord
     project_id.blank?
   end
 
+  def autoclose_by_merged_closing_merge_request?
+    return false if group_level?
+
+    project.autoclose_referenced_issues
+  end
+
   private
 
   def project_level_readable_by?(user)
@@ -885,6 +891,10 @@ class Issue < ApplicationRecord
       'issue_links.target_id as issue_link_source_id',
       'issue_links.created_at as issue_link_created_at',
       'issue_links.updated_at as issue_link_updated_at'])
+  end
+
+  def validate_due_date?
+    true
   end
 end
 

@@ -86,6 +86,9 @@ class Todo < ApplicationRecord
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
   scope :for_internal_notes, -> { joins(:note).where(note: { confidential: true }) }
   scope :with_preloaded_user, -> { preload(:user) }
+  scope :without_banned_user, -> { joins("LEFT JOIN banned_users ON todos.author_id = banned_users.user_id").where(banned_users: { user_id: nil }) }
+  scope :pending_without_hidden, -> { pending.without_banned_user }
+  scope :all_without_hidden, -> { without_banned_user.or(where.not(state: :pending)) }
 
   enum resolved_by_action: { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, _prefix: :resolved_by
 

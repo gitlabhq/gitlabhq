@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -23,7 +23,7 @@ Google to avoid your application being rejected by Google.
 
 In particular, note:
 
-<!-- vale gitlab.InclusionCultural = NO -->
+<!-- vale gitlab_base.InclusiveLanguage = NO -->
 
 - The email account used by GitLab to send notification emails must:
   - Have a "Consistent history of sending a high volume of mail from your domain
@@ -37,6 +37,6 @@ In particular, note:
   registering. You can also go into the Rails console on the GitLab server and
   trigger sending the email from there.
 
-<!-- vale gitlab.InclusionCultural = YES -->
+<!-- vale gitlab_base.InclusiveLanguage = YES -->
 
 You can check how it looks going through all the steps laid out in the "Registering with Google" doc in [this GitLab.com issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/1517).

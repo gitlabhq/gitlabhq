@@ -1,8 +1,8 @@
 - content_for(:title, 'Encoding Error')
-%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
+
+.error-container
+  = image_tag('illustrations/error/error-500-lg.svg', alt: '500', lazy: false)
   %h1
-    500
-.container
-  %h3 Encoding Error
-  %hr
-  %p Page can't be loaded because of an encoding error.
+    = s_('500|500: Encoding error')
+  %p
+    = s_("500|Page cannot be loaded because of an encoding error.")

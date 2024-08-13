@@ -1,7 +1,6 @@
 import { GlCollapse, GlSkeletonLoader, GlTableLite } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { __ } from '~/locale';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -24,8 +23,8 @@ describe('RunnerJobs', () => {
   let wrapper;
   let mockRunnerManagersHandler;
 
-  const findShowDetails = () => wrapper.findByText(__('Show details'));
-  const findHideDetails = () => wrapper.findByText(__('Hide details'));
+  const findShowDetails = () => wrapper.findByText('Show details');
+  const findHideDetails = () => wrapper.findByText('Hide details');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findCollapse = () => wrapper.findComponent(GlCollapse);

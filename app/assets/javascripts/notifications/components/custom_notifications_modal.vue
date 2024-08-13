@@ -85,7 +85,7 @@ export default {
       const index = this.events.findIndex((e) => e.id === event.id);
 
       // update loading state for the given event
-      this.$set(this.events, index, { ...this.events[index], loading: true });
+      this.events.splice(index, 1, { ...this.events[index], loading: true });
 
       try {
         const {

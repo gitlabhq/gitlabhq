@@ -50,9 +50,9 @@ By achieving a specific outcome (key result), you create progress for the linked
 
 To know if your OKR makes sense, you can use this sentence:
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 > I/we will accomplish (objective) by (date) through attaining and achieving the following metrics (key results).
-<!-- vale gitlab.FutureTense = YES -->
+<!-- vale gitlab_base.FutureTense = YES -->
 
 To learn how to create better OKRs and how we use them at GitLab, see the
 [Objectives and Key Results handbook page](https://handbook.gitlab.com/handbook/company/okrs/).
@@ -90,7 +90,7 @@ To view a key result:
    for `Type = key_result`.
 1. Select the title of a key result from the list.
 
-Alternatively, you can access a key result from the **Child objectives and key results** section in
+Alternatively, you can access a key result from the **Child items** section in
 its parent's objective.
 
 ## Edit title and description
@@ -296,7 +296,7 @@ In your workflow, use key results to measure the goal described in the objective
 You can add child objectives to a total of 9 levels. An objective can have up to 100 child OKRs.
 Key results are children of objectives and cannot have children items themselves.
 
-Child objectives and key results are available in the **Child objectives and key results** section
+Child objectives and key results are available in the **Child items** section
 below an objective's description.
 
 ### Add a child objective
@@ -309,7 +309,7 @@ Prerequisites:
 
 To add a new objective to an objective:
 
-1. In an objective, in the **Child objectives and key results** section, select **Add** and then
+1. In an objective, in the **Child items** section, select **Add** and then
    select **New objective**.
 1. Enter a title for the new objective.
 1. Select a [project](project/organize_work_with_projects.md) to create the new objective in.
@@ -317,7 +317,7 @@ To add a new objective to an objective:
 
 To add an existing objective to an objective:
 
-1. In an objective, in the **Child objectives and key results** section, select **Add** and then
+1. In an objective, in the **Child items** section, select **Add** and then
    select **Existing objective**.
 1. Search for the desired objective by entering part of its title, then selecting the
    desired match.
@@ -335,7 +335,7 @@ Prerequisites:
 
 To add a new key result to an objective:
 
-1. In an objective, in the **Child objectives and key results** section, select **Add** and then
+1. In an objective, in the **Child items** section, select **Add** and then
    select **New key result**.
 1. Enter a title for the new key result.
 1. Select a [project](project/organize_work_with_projects.md) to create the new key result in.
@@ -343,7 +343,7 @@ To add a new key result to an objective:
 
 To add an existing key result to an objective:
 
-1. In an objective, in the **Child objectives and key results** section, select **Add** and then
+1. In an objective, in the **Child items** section, select **Add** and then
    select **Existing key result**.
 1. Search for the desired OKR by entering part of its title, then selecting the
    desired match.

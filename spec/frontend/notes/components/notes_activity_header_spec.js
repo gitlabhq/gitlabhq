@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { __ } from '~/locale';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
 import TimelineToggle from '~/notes/components/timeline_toggle.vue';
@@ -30,7 +29,7 @@ describe('~/notes/components/notes_activity_header.vue', () => {
     });
 
     it('renders title', () => {
-      expect(findTitle().text()).toBe(__('Activity'));
+      expect(findTitle().text()).toBe('Activity');
     });
 
     it('renders discussion filter', () => {

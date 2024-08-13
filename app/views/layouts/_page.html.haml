@@ -12,13 +12,12 @@
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
-      = dispensable_render 'shared/new_nav_for_everyone_announcement'
       = dispensable_render 'shared/outdated_browser'
       = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
       = dispensable_render_if_exists "layouts/header/token_expiry_notification"
       -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
       = dispensable_render_if_exists "layouts/header/account_notification"
-      = dispensable_render_if_exists "shared/projects/pending_deletion_alert"
+      = dispensable_render_if_exists "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
       = dispensable_render "shared/projects/inactive_project_deletion_alert"
       = dispensable_render "shared/projects/archived_alert"
       = dispensable_render_if_exists "shared/token_expiration_banner"

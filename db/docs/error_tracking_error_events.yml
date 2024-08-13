@@ -19,3 +19,4 @@ desired_sharding_key:
         table: error_tracking_errors
         sharding_key: project_id
         belongs_to: error
+desired_sharding_key_migration_job_name: BackfillErrorTrackingErrorEventsProjectId

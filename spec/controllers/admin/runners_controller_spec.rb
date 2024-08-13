@@ -151,4 +151,25 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
       expect(json_response).to have_key("errors")
     end
   end
+
+  describe 'GET #tag_list' do
+    let_it_be(:linux_tag) { create(:ci_tag, name: 'linux') }
+    let_it_be(:oxs_tag) { create(:ci_tag, name: 'osx') }
+
+    it 'renders a list of tags matching the search' do
+      get :tag_list, params: { search: 'lin' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to contain_exactly(a_hash_including({ 'id' => linux_tag.id }))
+    end
+
+    it 'applies the limit' do
+      stub_const("#{described_class.name}::TAGS_LIMIT", 1)
+
+      get :tag_list, params: {}
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(1)
+    end
+  end
 end

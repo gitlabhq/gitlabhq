@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective, GlBadge } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { n__, __ } from '~/locale';
 import { accessLevelsConfig } from './constants';
 
 const AVATAR_TOOLTIP_MAX_CHARS = 100;
@@ -8,6 +8,9 @@ export const MAX_VISIBLE_AVATARS = 4;
 export const AVATAR_SIZE = 24;
 
 export default {
+  i18n: {
+    sharedSecret: __('HMAC enabled'),
+  },
   name: 'ProtectionRow',
   AVATAR_TOOLTIP_MAX_CHARS,
   MAX_VISIBLE_AVATARS,
@@ -48,6 +51,11 @@ export default {
       required: false,
       default: null,
     },
+    hmac: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     avatarBadgeSrOnlyText() {
@@ -66,13 +74,13 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-gap-7 gl-border-gray-100 gl-mb-4 gl-border-t-1"
-    :class="{ 'gl-border-t-solid gl-pt-4': showDivider }"
+    class="gl-mb-4 gl-flex gl-items-center gl-gap-7 gl-border-t-1 gl-border-gray-100"
+    :class="{ 'gl-pt-4 gl-border-t-solid': showDivider }"
   >
-    <div class="gl-display-flex gl-w-full gl-align-items-center">
-      <div class="gl-flex-basis-quarter">{{ title }}</div>
+    <div class="gl-flex gl-w-full gl-items-center">
+      <div class="gl-basis-1/4">{{ title }}</div>
 
-      <div v-if="statusCheckUrl" class="gl-flex-grow-1">{{ statusCheckUrl }}</div>
+      <div v-if="statusCheckUrl" class="gl-grow">{{ statusCheckUrl }}</div>
 
       <gl-avatars-inline
         v-if="usersAndGroups.length"
@@ -103,6 +111,10 @@ export default {
           </gl-avatar-link>
         </template>
       </gl-avatars-inline>
+
+      <gl-badge v-if="hmac" data-testid="shared-secret" class="gl-mr-2">{{
+        $options.i18n.sharedSecret
+      }}</gl-badge>
 
       <gl-badge
         v-for="(item, index) in accessLevels"

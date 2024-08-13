@@ -16,6 +16,7 @@ const createSpan = (content, classList) => {
 const wrapSpacesWithSpans = (text) =>
   text.replace(/ /g, createSpan(' ').outerHTML).replace(/\t/g, createSpan('	').outerHTML);
 
+// eslint-disable-next-line max-params
 const wrapTextWithSpan = (el, text, classList, dataset) => {
   if (isTextNode(el) && isMatch(el.textContent, text)) {
     const newEl = createSpan(text.trim(), classList);

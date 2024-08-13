@@ -190,17 +190,24 @@ RSpec.shared_examples "redis_shared_examples" do
       context 'with new format' do
         let(:config_file_name) { config_new_format_host }
 
-        where(:rails_env, :host) do
+        where(:rails_env, :host, :username) do
           [
-            %w[development development-host],
-            %w[test test-host],
-            %w[production production-host]
+            %w[development development-host] << nil,
+            %w[test test-host redis-test-user],
+            %w[production production-host redis-prod-user]
           ]
         end
 
         with_them do
-          it 'returns hash with host, port, db, and password' do
+          it 'returns hash with host, port, db, username, and password' do
             is_expected.to include(name: host, password: 'mynewpassword', db: redis_database)
+
+            if username
+              is_expected.to include(username: username)
+            else
+              is_expected.not_to have_key(:username)
+            end
+
             is_expected.not_to have_key(:url)
           end
 

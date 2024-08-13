@@ -20,6 +20,10 @@ module NamespaceSettings
         user_policy: :change_prevent_sharing_groups_outside_hierarchy
       )
       validate_settings_param_for_root_group(
+        param_key: :seat_control,
+        user_policy: :change_seat_control
+      )
+      validate_settings_param_for_root_group(
         param_key: :new_user_signups_cap,
         user_policy: :change_new_user_signups_cap
       )
@@ -36,6 +40,7 @@ module NamespaceSettings
         user_policy: :update_git_access_protocol
       )
 
+      handle_default_branch_name
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
       handle_early_access_program_participation
 
@@ -47,6 +52,17 @@ module NamespaceSettings
     end
 
     private
+
+    def handle_default_branch_name
+      default_branch_key = :default_branch_name
+
+      return if settings_params[default_branch_key].blank?
+
+      unless Gitlab::GitRefValidator.validate(settings_params[default_branch_key])
+        settings_params.delete(default_branch_key)
+        group.namespace_settings.errors.add(default_branch_key, _('is invalid.'))
+      end
+    end
 
     def handle_default_branch_protection
       # We are migrating default_branch_protection from an integer

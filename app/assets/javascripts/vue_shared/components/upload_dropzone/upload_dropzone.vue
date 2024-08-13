@@ -75,7 +75,7 @@ export default {
     iconStyles() {
       return {
         size: this.displayAsCard ? 24 : 16,
-        class: this.displayAsCard ? 'gl-mb-2' : 'gl-mr-3 gl-text-gray-500',
+        class: this.displayAsCard ? 'gl-mb-2' : 'gl-mr-3',
       };
     },
     validMimeTypeString() {
@@ -149,7 +149,7 @@ export default {
 
 <template>
   <div
-    class="gl-w-full gl-relative"
+    class="gl-relative gl-w-full"
     @dragstart.prevent.stop
     @dragend.prevent.stop
     @dragover.prevent.stop
@@ -159,13 +159,13 @@ export default {
   >
     <slot>
       <button
-        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+        class="card upload-dropzone-card upload-dropzone-border gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-px-5 gl-py-4"
         type="button"
         @click="openFileUpload"
       >
         <div
-          :class="{ 'gl-flex-direction-column': displayAsCard }"
-          class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center"
+          :class="{ 'gl-flex-col': displayAsCard }"
+          class="gl-flex gl-items-center gl-justify-center gl-text-center"
           data-testid="dropzone-area"
         >
           <gl-icon name="upload" :size="iconStyles.size" :class="iconStyles.class" />
@@ -196,11 +196,11 @@ export default {
     <transition name="upload-dropzone-fade">
       <div
         v-show="dragging && !enableDragBehavior"
-        class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+        class="card upload-dropzone-border upload-dropzone-overlay gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
       >
         <div v-show="!isDragDataValid" class="mw-50 gl-text-center">
           <slot name="invalid-drag-data-slot">
-            <h3 :class="{ 'gl-font-base gl-display-inline': !displayAsCard }">
+            <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
               {{ __('Oh no!') }}
             </h3>
             <span>{{
@@ -212,7 +212,7 @@ export default {
         </div>
         <div v-show="isDragDataValid" class="mw-50 gl-text-center">
           <slot name="valid-drag-data-slot">
-            <h3 :class="{ 'gl-font-base gl-display-inline': !displayAsCard }">
+            <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
               {{ __('Incoming!') }}
             </h3>
             <span>{{ dropToStartMessage }}</span>

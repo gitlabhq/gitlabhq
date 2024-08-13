@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use GitLab to facilitate Kanban
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 This tutorial guides you through the steps on using GitLab issue boards to manage your tasks in a Kanban workflow.
 By setting up groups, projects, boards, and organizing issues, you can enhance transparency, collaboration, and delivery.

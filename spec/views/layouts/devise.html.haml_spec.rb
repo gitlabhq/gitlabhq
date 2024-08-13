@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'layouts/devise', feature_category: :user_management do
-  it_behaves_like 'a layout which reflects the application theme setting'
+  it_behaves_like 'a layout which reflects the application color mode setting'
   it_behaves_like 'a layout which reflects the preferred language'
 
   describe 'logo' do

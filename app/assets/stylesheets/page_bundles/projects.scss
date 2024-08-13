@@ -43,7 +43,7 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid var(--border-color, $border-color);
+      border: 1px solid var(--gl-border-color-default);
       max-width: 100%;
       flex-grow: 1;
     }
@@ -115,7 +115,7 @@
   margin: 0;
 
   a {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 
   .dropdown-menu {
@@ -137,7 +137,7 @@
     padding: 16px 0;
 
     &:not(:first-child) {
-      border-top: 1px solid var(--border-color, $border-color);
+      border-top: 1px solid var(--gl-border-color-default);
     }
 
     .controls {
@@ -264,7 +264,7 @@
 .project-row {
   .description p {
     margin-bottom: 0;
-    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
+    color: var(--gl-text-color-subtle);
     @include str-truncated(100%);
   }
 }
@@ -441,7 +441,7 @@
   .form-control {
     @include gl-font-monospace;
     background-color: var(--white, $white);
-    border-color: var(--border-color, $border-color);
+    border-color: var(--gl-border-color-default);
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -449,19 +449,8 @@
 }
 
 .compare-revision-cards {
-  @media (max-width: $breakpoint-lg) {
-    .swap-button {
-      display: none;
-    }
-  }
-
-  @media (max-width: $breakpoint-lg) {
-    .swap-button-mobile {
-      display: flex;
-    }
-  }
-
   @media (min-width: $breakpoint-lg) {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card {
       width: calc(50% - 15px);
     }

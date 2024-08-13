@@ -2,7 +2,6 @@ import { GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
-import { __ } from '~/locale';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -64,7 +63,7 @@ describe('CsvImportModal', () => {
       });
 
       it('displays the correct primary button action text', () => {
-        expect(findModal().props('actionPrimary')).toEqual({ text: __('Import issues') });
+        expect(findModal().props('actionPrimary')).toEqual({ text: 'Import issues' });
       });
 
       it('submits the form when the primary action is clicked', () => {
@@ -74,7 +73,7 @@ describe('CsvImportModal', () => {
       });
 
       it('displays the cancel button', () => {
-        expect(findModal().props('actionCancel')).toEqual({ text: __('Cancel') });
+        expect(findModal().props('actionCancel')).toEqual({ text: 'Cancel' });
       });
     });
   });

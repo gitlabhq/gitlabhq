@@ -2,7 +2,7 @@
 <script>
 import { GlLoadingIcon, GlTableLite, GlTabs, GlTab, GlBadge, GlKeysetPagination } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import DeleteItem from './delete_item.vue';
 
 export default {
@@ -63,7 +63,7 @@ export default {
       });
     },
     formatDate(date) {
-      return formatDate(date, 'mmmm d, yyyy');
+      return localeDateFormat.asDate.format(date);
     },
   },
   fields: [

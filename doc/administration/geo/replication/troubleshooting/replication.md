@@ -237,13 +237,14 @@ The following Geo data types exist:
   - `Upload`
   - `DependencyProxy::Manifest`
   - `DependencyProxy::Blob`
-- **Repository types:**
-  - `ContainerRepositoryRegistry`
+- **Git Repository types:**
   - `DesignManagement::Repository`
   - `ProjectRepository`
   - `ProjectWikiRepository`
   - `SnippetRepository`
   - `GroupWikiRepository`
+- **Other types:**
+  - `ContainerRepository`
 
 The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
 
@@ -353,7 +354,7 @@ to enact the following, basic troubleshooting steps:
 #### Resync and reverify multiple components
 
 NOTE:
-There is an [issue to implement this functionality in the Admin area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+There is an [issue to implement this functionality in the **Admin** area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -444,6 +445,90 @@ begin
 end
 p "#{uploads_deleted} remote objects were destroyed."
 ```
+
+### Error: `Error syncing repository: 13:fatal: could not read Username`
+
+The `last_sync_failure` error
+`Error syncing repository: 13:fatal: could not read Username for 'https://gitlab.example.com': terminal prompts disabled`
+indicates that JWT authentication is failing during a Geo clone or fetch request.
+See [Geo (development) > Authentication](../../../../development/geo.md#authentication) for more context.
+
+First, check that system clocks are synced. Run the [Health check Rake task](common.md#health-check-rake-task), or
+manually check that `date`, on all Sidekiq nodes on the secondary site and all Puma nodes on the primary site, are the
+same.
+
+If system clocks are synced, then the JWT token may be expiring while Git fetch is performing calculations between its
+two separate HTTP requests. See [issue 464101](https://gitlab.com/gitlab-org/gitlab/-/issues/464101), which existed in
+all GitLab versions until it was fixed in GitLab 17.1.0, 17.0.5, and 16.11.7.
+
+To validate if you are experiencing this issue:
+
+1. Monkey patch the code in a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to increase the validity period of the token from 1 minute to 10 minutes. Run
+   this in Rails console on the secondary site:
+
+   ```ruby
+   module Gitlab; module Geo; class BaseRequest
+     private
+     def geo_auth_token(message)
+       signed_data = Gitlab::Geo::SignedData.new(geo_node: requesting_node, validity_period: 10.minutes).sign_and_encode_data(message)
+
+       "#{GITLAB_GEO_AUTH_TOKEN_TYPE} #{signed_data}"
+     end
+   end;end;end
+   ```
+
+1. In the same Rails console, resync an affected project:
+
+   ```ruby
+   Project.find_by_full_path('mygroup/mysubgroup/myproject').replicator.resync
+   ```
+
+1. Look at the sync state:
+
+   ```ruby
+   Project.find_by_full_path('mygroup/mysubgroup/myproject').replicator.registry
+   ```
+
+1. If `last_sync_failure` no longer includes the error `fatal: could not read Username`, then you are
+   affected by this issue. The state should now be `2`, meaning "synced". If so, then you should upgrade to
+   a GitLab version with the fix. You may also wish to upvote or comment on
+   [issue 466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681) which would have reduced the severity of this
+   issue.
+
+To workaround the issue, you must hot-patch all Sidekiq nodes in the secondary site to extend the JWT expiration time:
+
+1. Edit `/opt/gitlab/embedded/service/gitlab-rails/ee/lib/gitlab/geo/signed_data.rb`.
+1. Find `Gitlab::Geo::SignedData.new(geo_node: requesting_node)` and add `, validity_period: 10.minutes` to it:
+
+   ```diff
+   - Gitlab::Geo::SignedData.new(geo_node: requesting_node)
+   + Gitlab::Geo::SignedData.new(geo_node: requesting_node, validity_period: 10.minutes)
+   ```
+
+1. Restart Sidekiq:
+
+   ```shell
+   sudo gitlab-ctl restart sidekiq
+   ```
+
+1. Unless you upgrade to a version containing the fix, you would have to repeat this workaround after every GitLab upgrade.
+
+### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
+
+If Git fetch fails at exactly three hours while syncing a Git repository:
+
+1. Edit `/etc/gitlab/gitlab.rb` to increase the Git timeout from the default of 10800 seconds:
+
+   ```ruby
+   # Git timeout in seconds
+   gitlab_rails['gitlab_shell_git_timeout'] = 21600
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 ## Investigate causes of database replication lag
 

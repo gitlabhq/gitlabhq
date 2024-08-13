@@ -1,0 +1,9 @@
+---
+name: improved_hide_heuristics
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474824
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161192
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474825
+milestone: '17.3'
+group: group::design system
+type: gitlab_com_derisk
+default_enabled: false

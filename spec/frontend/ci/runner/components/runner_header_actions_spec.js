@@ -1,5 +1,4 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
@@ -65,7 +64,7 @@ describe('RunnerHeaderActions', () => {
   it('renders disclosure dropdown with no caret and accesible text', () => {
     expect(findDropdown().props()).toMatchObject({
       icon: 'ellipsis_v',
-      toggleText: s__('Runner|Runner actions'),
+      toggleText: 'Runner actions',
       textSrOnly: true,
       category: 'tertiary',
       noCaret: true,

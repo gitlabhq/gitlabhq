@@ -28,8 +28,14 @@ module WorkItems
 
       # overriden in EE
       def move_link(link, adjacent_work_item, relative_position)
-        link.move_before(adjacent_work_item.parent_link) if relative_position == 'BEFORE'
-        link.move_after(adjacent_work_item.parent_link) if relative_position == 'AFTER'
+        if relative_position
+          link.move_before(adjacent_work_item.parent_link) if relative_position == 'BEFORE'
+          link.move_after(adjacent_work_item.parent_link) if relative_position == 'AFTER'
+        elsif link.changes.include?(:work_item_parent_id)
+          # position item at the start of the list if parent changed and relative_position is not provided
+          link.move_to_start
+        end
+
         link.save
       end
 

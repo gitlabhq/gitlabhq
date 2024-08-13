@@ -204,6 +204,36 @@ module Gitlab
         end
       end
 
+      def diff_hunks
+        [].tap do |hunks|
+          lines_text = []
+          hunk = {}
+
+          diff_lines.each do |line|
+            if line.type == 'match'
+              unless lines_text.empty?
+                # Ending previous hunk
+                hunk[:text] = lines_text.join("\n")
+                hunks << hunk
+
+                # Starting a new hunk
+                lines_text = []
+                hunk = {}
+              end
+            elsif !line.meta?
+              # Add new line
+              hunk[:last_removed_line_pos] = line.old_pos if line.removed?
+              hunk[:last_added_line_pos] = line.new_pos if line.added?
+              lines_text << line.text
+            end
+          end
+
+          # Handle the last diff_line
+          hunk[:text] = lines_text.join("\n")
+          hunks << hunk
+        end
+      end
+
       # Changes diff_lines according to the given position. That is,
       # it checks whether the position requires blob lines into the diff
       # in order to be presented.
@@ -355,6 +385,11 @@ module Gitlab
         return @rich_viewer if defined?(@rich_viewer)
 
         @rich_viewer = rich_viewer_class&.new(self)
+      end
+
+      # This is going to be updated with viewer components
+      def view_component_viewer
+        has_renderable? ? rendered.viewer : viewer
       end
 
       def alternate_viewer

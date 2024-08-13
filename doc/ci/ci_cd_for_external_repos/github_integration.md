@@ -22,7 +22,7 @@ Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/91
 [GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
 cannot be used to authenticate with GitHub as an external CI/CD repository.
 
-## Connect with Personal Access Token
+## Connect with personal access token
 
 Personal access tokens can only be used to connect GitHub.com
 repositories to GitLab, and the GitHub user must have the [owner role](https://docs.github.com/en/get-started/learning-about-github/access-permissions-on-github).
@@ -32,7 +32,7 @@ repositories:
 
 1. In GitHub, create a token:
    1. Open <https://github.com/settings/tokens/new>.
-   1. Create a **Personal Access Token**.
+   1. Create a personal access token.
    1. Enter a **Token description** and update the scope to allow
       `repo` and `admin:repo_hook` so that GitLab can access your project,
       update commit statuses, and create a web hook to notify GitLab of new commits.
@@ -60,7 +60,7 @@ To manually enable GitLab CI/CD for your repository:
 
 1. In GitHub, create a token:
    1. Open <https://github.com/settings/tokens/new>.
-   1. Create a **Personal Access Token**.
+   1. Create a **personal access token**.
    1. Enter a **Token description** and update the scope to allow
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:
@@ -74,7 +74,7 @@ To manually enable GitLab CI/CD for your repository:
    1. On the left sidebar, select **Settings > Integrations**.
    1. Select the **Active** checkbox.
    1. Paste your personal access token and HTTPS repository URL into the form and select **Save**.
-1. In GitLab, create a **Personal Access Token** with `API` scope to
+1. In GitLab, create a **personal access token** with `API` scope to
    authenticate the GitHub web hook notifying GitLab of new commits.
 1. In GitHub, from **Settings > Webhooks**, create a web hook to notify GitLab of
    new commits.

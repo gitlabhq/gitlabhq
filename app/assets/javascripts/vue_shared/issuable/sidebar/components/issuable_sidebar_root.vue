@@ -82,7 +82,7 @@ export default {
         v-gl-tooltip.hover.left
         category="tertiary"
         size="small"
-        class="gl-float-right gutter-toggle toggle-right-sidebar-button js-toggle-right-sidebar-button !gl-shadow-none"
+        class="gutter-toggle toggle-right-sidebar-button js-toggle-right-sidebar-button gl-float-right !gl-shadow-none"
         :class="collapsedToggleClass"
         data-testid="toggle-right-sidebar-button"
         :icon="toggleIcon"

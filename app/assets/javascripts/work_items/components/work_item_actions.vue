@@ -37,11 +37,12 @@ import {
   I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
   I18N_WORK_ITEM_ERROR_COPY_EMAIL,
   TEST_ID_LOCK_ACTION,
+  TEST_ID_REPORT_ABUSE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
-import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 
 export default {
@@ -55,6 +56,7 @@ export default {
     referenceCopied: __('Reference copied'),
     emailAddressCopied: __('Email address copied'),
     moreActions: __('More actions'),
+    reportAbuse: __('Report abuse'),
   },
   components: {
     GlDisclosureDropdown,
@@ -79,6 +81,7 @@ export default {
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
   lockDiscussionTestId: TEST_ID_LOCK_ACTION,
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
+  reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
   props: {
     fullPath: {
       type: String,
@@ -86,7 +89,8 @@ export default {
     },
     workItemState: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     workItemId: {
       type: String,
@@ -163,6 +167,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemAuthorId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -172,7 +181,7 @@ export default {
   },
   apollo: {
     workItemTypes: {
-      query: projectWorkItemTypesQuery,
+      query: namespaceWorkItemTypesQuery,
       variables() {
         return {
           fullPath: this.fullPath,
@@ -226,6 +235,9 @@ export default {
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
+    },
+    isAuthor() {
+      return this.workItemAuthorId === window.gon.current_user_id;
     },
   },
   methods: {
@@ -355,6 +367,10 @@ export default {
     emitStateToggleError(error) {
       this.$emit('error', error);
     },
+    handleToggleReportAbuseModal() {
+      this.$emit('toggleReportAbuseModal', true);
+      this.closeDropdown();
+    },
   },
 };
 </script>
@@ -403,6 +419,7 @@ export default {
         :full-path="fullPath"
         show-as-dropdown-item
         @error="emitStateToggleError"
+        @workItemStateUpdated="$emit('workItemStateUpdated')"
       />
 
       <gl-disclosure-dropdown-item
@@ -450,15 +467,23 @@ export default {
         <template #list-item>{{ i18n.copyCreateNoteEmail }}</template>
       </gl-disclosure-dropdown-item>
 
+      <gl-dropdown-divider />
+      <gl-disclosure-dropdown-item
+        v-if="!isAuthor"
+        :data-testid="$options.reportAbuseActionTestId"
+        @action="handleToggleReportAbuseModal"
+      >
+        <template #list-item>{{ $options.i18n.reportAbuse }}</template>
+      </gl-disclosure-dropdown-item>
+
       <template v-if="canDelete">
-        <gl-dropdown-divider />
         <gl-disclosure-dropdown-item
           :data-testid="$options.deleteActionTestId"
           variant="danger"
           @action="handleDelete"
         >
           <template #list-item>
-            <span class="text-danger">{{ i18n.deleteWorkItem }}</span>
+            <span class="gl-text-danger gl-font-bold">{{ i18n.deleteWorkItem }}</span>
           </template>
         </gl-disclosure-dropdown-item>
       </template>

@@ -220,6 +220,7 @@ export default {
 
       scrollToElement(this.$el);
     },
+    // eslint-disable-next-line max-params
     handleRowToggle(toggleDetails, hasArtifacts, id, detailsShowing) {
       if (!hasArtifacts) return;
       toggleDetails();

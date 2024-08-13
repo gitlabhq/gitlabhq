@@ -4,7 +4,7 @@ RSpec.shared_examples 'resource access tokens missing access rights' do
   it 'does not show access token page' do
     visit resource_settings_access_tokens_path
 
-    expect(page).to have_content("Page Not Found")
+    expect(page).to have_content("Page not found")
   end
 end
 
@@ -129,6 +129,21 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
     find("[data-testid='active-tokens']")
   end
 
+  def inactive_access_tokens
+    find("[data-testid='inactive-access-tokens']")
+  end
+
+  context 'when feature flag is disabled' do
+    before do
+      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+    end
+
+    it 'does not show inactive tokens' do
+      visit resource_settings_access_tokens_path
+      expect(page).to have_no_selector("[data-testid='inactive-access-tokens']")
+    end
+  end
+
   it 'allows revocation of an active token' do
     visit resource_settings_access_tokens_path
     accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
@@ -141,6 +156,15 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
     visit resource_settings_access_tokens_path
 
     expect(active_access_tokens).to have_text(no_active_tokens_text)
+    expect(inactive_access_tokens).to have_text(resource_access_token.name)
+  end
+
+  it 'removes revoked tokens from active section' do
+    resource_access_token.revoke!
+    visit resource_settings_access_tokens_path
+
+    expect(active_access_tokens).to have_text(no_active_tokens_text)
+    expect(inactive_access_tokens).to have_text(resource_access_token.name)
   end
 
   context 'when resource access token creation is not allowed' do

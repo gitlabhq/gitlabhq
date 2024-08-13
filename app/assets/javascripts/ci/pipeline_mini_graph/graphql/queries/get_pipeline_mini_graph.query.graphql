@@ -32,16 +32,20 @@ query getPipelineMiniGraph($fullPath: ID!, $iid: ID!) {
       downstream {
         nodes {
           id
-          path
-          project {
-            id
-            name
-          }
           detailedStatus {
             id
             detailsPath
             icon
             label
+          }
+          path
+          project {
+            id
+            name
+          }
+          sourceJob {
+            id
+            retried
           }
         }
       }

@@ -336,7 +336,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You're also able to create lists of a milestone. These are lists that filter issues by the assigned
+You can create milestone lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board.
 
 Prerequisites:
@@ -464,9 +464,9 @@ DETAILS:
 If an issue is [blocked by another issue](issues/related_issues.md#blocking-issues), an icon appears next to its title to indicate its blocked
 status.
 
-When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
+When you hover over the blocked icon (**{entity-blocked}**), a detailed information popover is displayed.
 
-![Blocked issues](img/issue_boards_blocked_icon_v17_1.png)
+![Blocked issues](img/issue_boards_blocked_icon_v17_3.png)
 
 ## Actions you can take on an issue board
 

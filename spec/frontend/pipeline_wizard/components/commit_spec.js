@@ -1,7 +1,7 @@
 import { GlButton, GlFormGroup } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { __, s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { mountExtended } from 'jest/__helpers__/vue_test_utils_helper';
 import CommitStep, { i18n } from '~/pipeline_wizard/components/commit.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -19,8 +19,8 @@ import {
 
 Vue.use(VueApollo);
 
-const COMMIT_MESSAGE_ADD_FILE = s__('PipelineWizardDefaultCommitMessage|Add %{filename}');
-const COMMIT_MESSAGE_UPDATE_FILE = s__('PipelineWizardDefaultCommitMessage|Update %{filename}');
+const COMMIT_MESSAGE_ADD_FILE = 'Add %{filename}';
+const COMMIT_MESSAGE_UPDATE_FILE = 'Update %{filename}';
 
 describe('Pipeline Wizard - Commit Page', () => {
   const createCommitMutationHandler = jest.fn();
@@ -89,11 +89,11 @@ describe('Pipeline Wizard - Commit Page', () => {
     });
 
     it('shows a back button', () => {
-      expect(getButtonWithLabel(__('Back')).exists()).toBe(true);
+      expect(getButtonWithLabel('Back').exists()).toBe(true);
     });
 
     it('does not show a next button', () => {
-      expect(getButtonWithLabel(__('Next')).exists()).toBe(false);
+      expect(getButtonWithLabel('Next').exists()).toBe(false);
     });
   });
 
@@ -124,7 +124,7 @@ describe('Pipeline Wizard - Commit Page', () => {
       beforeEach(async () => {
         createComponent();
         await waitForPromises();
-        await getButtonWithLabel(__('Commit')).trigger('click');
+        await getButtonWithLabel('Commit').trigger('click');
         await waitForPromises();
       });
 
@@ -133,9 +133,7 @@ describe('Pipeline Wizard - Commit Page', () => {
       });
 
       it('will show a toast message', () => {
-        expect($toast.show).toHaveBeenCalledWith(
-          s__('PipelineWizard|The file has been committed.'),
-        );
+        expect($toast.show).toHaveBeenCalledWith('The file has been committed.');
       });
 
       it('emits a done event', () => {
@@ -147,7 +145,7 @@ describe('Pipeline Wizard - Commit Page', () => {
       beforeEach(async () => {
         createComponent({}, getMockApollo({ commitHasError: true }));
         await waitForPromises();
-        await getButtonWithLabel(__('Commit')).trigger('click');
+        await getButtonWithLabel('Commit').trigger('click');
         await waitForPromises();
       });
 
@@ -237,7 +235,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         });
 
         it('sends the expected commit mutation', async () => {
-          await getButtonWithLabel(__('Commit')).trigger('click');
+          await getButtonWithLabel('Commit').trigger('click');
 
           expect(createCommitMutationHandler).toHaveBeenCalledWith({
             input: {

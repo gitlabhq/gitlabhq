@@ -2100,6 +2100,20 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
       end
+
+      context 'when async is requested', :sidekiq_inline do
+        let(:request) do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/pipelines", authenticated_user), params: { async: true }
+        end
+
+        it 'creates the pipeline async' do
+          expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).and_call_original
+
+          expect { request }.to change(Ci::Pipeline, :count).by(1)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+      end
     end
 
     context 'when unauthorized' do
@@ -3601,9 +3615,17 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   describe 'GET :id/merge_requests/:merge_request_iid/closes_issues' do
     it 'returns the issue that will be closed on merge' do
+      group = create(:group, :public, developers: user)
+      project_without_auto_close = create(:project, :public, group: group, autoclose_referenced_issues: false)
+      group_issue = create(:issue, :group_level, namespace: group)
+      no_close_issue = create(:issue, project: project_without_auto_close)
       issue = create(:issue, project: project)
       mr = merge_request.tap do |mr|
-        mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
+        mr.update_attribute(
+          :description,
+          "Closes #{issue.to_reference(mr.project)} Closes #{group_issue.to_reference(mr.project)} " \
+            "Closes #{no_close_issue.to_reference(mr.project)}"
+        )
         mr.cache_merge_request_closes_issues!
       end
 

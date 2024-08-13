@@ -8,9 +8,9 @@ class Admin::GroupsController < Admin::ApplicationController
   feature_category :groups_and_projects, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
 
   def index
-    @groups = groups.sort_by_attribute(@sort = params[:sort])
-    @groups = @groups.search(params[:name]) if params[:name].present?
-    @groups = @groups.page(params[:page])
+    @groups = groups.sort_by_attribute(@sort = pagination_params[:sort])
+    @groups = @groups.search(safe_params[:name]) if safe_params[:name].present?
+    @groups = @groups.page(pagination_params[:page])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -21,10 +21,10 @@ class Admin::GroupsController < Admin::ApplicationController
     # the Group with statistics).
     @group = Group.with_statistics.find(group&.id)
     @members = present_members(
-      group_members.order("access_level DESC").page(params[:members_page]))
+      group_members.order("access_level DESC").page(safe_params[:members_page]))
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user))
-    @projects = @group.projects.with_statistics.page(params[:projects_page])
+    @projects = @group.projects.with_statistics.page(safe_params[:projects_page])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -79,7 +79,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group
-    @group ||= Group.find_by_full_path(params[:id])
+    @group ||= Group.find_by_full_path(params.permit(:id)[:id])
   end
 
   def group_members
@@ -110,6 +110,10 @@ class Admin::GroupsController < Admin::ApplicationController
         :note
       ] }
     ]
+  end
+
+  def safe_params
+    params.permit(:name, :members_page, :projects_page)
   end
 end
 

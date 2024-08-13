@@ -30,6 +30,18 @@ module Gitlab
         end
       end
 
+      def normalize_email(email = '')
+        return unless EMAIL_REGEXP.match(email)
+
+        portions = email.split('@')
+        username = portions.shift
+        rest = portions.join
+
+        no_dots = username.tr('.', '')
+        before_plus = no_dots.split('+')[0]
+        "#{before_plus}@#{rest}"
+      end
+
       class Masker
         attr_reader :local_part, :sub_domain, :toplevel_domain, :at, :dot
 

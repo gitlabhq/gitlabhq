@@ -34,7 +34,17 @@ func mustParseAddress(address, scheme string) string {
 
 // NewBackendRoundTripper returns a new RoundTripper instance using the provided values
 func NewBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout time.Duration, developmentMode bool) http.RoundTripper {
-	return newBackendRoundTripper(backend, socket, proxyHeadersTimeout, developmentMode, nil)
+	var tlsConf *tls.Config
+
+	if developmentMode {
+		// GitLab Observability Backend uses a LetsEncyrpt staging cert during development.
+		// We do not want to add them to the trust store: https://letsencrypt.org/docs/staging-environment/
+		//nolint:gosec
+		tlsConf = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
+	return newBackendRoundTripper(backend, socket, proxyHeadersTimeout, developmentMode, tlsConf)
 }
 
 func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout time.Duration, developmentMode bool, tlsConf *tls.Config) http.RoundTripper {

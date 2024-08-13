@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::CreateService, feature_category: :importers do
+RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include GraphqlHelpers
 
   let(:user) { create(:user) }
@@ -367,6 +367,36 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           user: user,
           extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
         )
+      end
+
+      it 'enables importer_user_mapping' do
+        subject.execute
+
+        expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(true)
+      end
+
+      context 'when importer_user_mapping feature flag is disable' do
+        before do
+          stub_feature_flags(importer_user_mapping: false)
+        end
+
+        it 'does not enable importer_user_mapping' do
+          subject.execute
+
+          expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(false)
+        end
+      end
+
+      context 'when bulk_import_importer_user_mapping feature flag is disable' do
+        before do
+          stub_feature_flags(bulk_import_importer_user_mapping: false)
+        end
+
+        it 'does not enable importer_user_mapping' do
+          subject.execute
+
+          expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(false)
+        end
       end
 
       context 'on the same instance' do

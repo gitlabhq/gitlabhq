@@ -16,4 +16,3 @@ When working with Geo, you might encounter the following issues:
 - [Client and HTTP response code errors](client_http.md)
 - [Replication errors](replication.md)
 - [Synchronization errors](synchronization.md)
-- [Failover errors](failover.md)

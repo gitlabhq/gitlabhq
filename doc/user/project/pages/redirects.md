@@ -18,18 +18,18 @@ Not all
 [special options offered by Netlify](https://docs.netlify.com/routing/redirects/redirect-options/)
 are supported.
 
-| Feature | Supported | Example |
-| ------- | --------- | ------- |
-| [Redirects (`301`, `302`)](#redirects) | **{check-circle}** Yes  | `/wardrobe.html /narnia.html 302` |
-| [Rewrites (`200`)](#rewrites)          | **{check-circle}** Yes  | `/* / 200` |
-| [Splats](#splats)                      | **{check-circle}** Yes  | `/news/*  /blog/:splat` |
-| [Placeholders](#placeholders)          | **{check-circle}** Yes  | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
-| Rewrites (other than `200`)            | **{dotted-circle}** No  | `/en/* /en/404.html 404` |
-| Query parameters | **{dotted-circle}** No | `/store id=:id  /blog/:id  301` |
+| Feature                                           | Supported              | Example |
+|---------------------------------------------------|------------------------|---------|
+| [Redirects (`301`, `302`)](#redirects)            | **{check-circle}** Yes | `/wardrobe.html /narnia.html 302` |
+| [Rewrites (`200`)](#rewrites)                     | **{check-circle}** Yes | `/* / 200` |
+| [Splats](#splats)                                 | **{check-circle}** Yes | `/news/*  /blog/:splat` |
+| [Placeholders](#placeholders)                     | **{check-circle}** Yes | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
+| Rewrites (other than `200`)                       | **{dotted-circle}** No | `/en/* /en/404.html 404` |
+| Query parameters                                  | **{dotted-circle}** No | `/store id=:id  /blog/:id  301` |
 | Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | **{dotted-circle}** No | `/app/  /app/index.html  200!` |
 | [Domain-level redirects](#domain-level-redirects) | **{check-circle}** Yes | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
-| Redirect by country or language | **{dotted-circle}** No | `/  /anz     302  Country=au,nz` |
-| Redirect by role | **{dotted-circle}** No | `/admin/*  200!  Role=admin` |
+| Redirect by country or language                   | **{dotted-circle}** No | `/  /anz     302  Country=au,nz` |
+| Redirect by role                                  | **{dotted-circle}** No | `/admin/*  200!  Role=admin` |
 
 NOTE:
 The [matching behavior test cases](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/redirects/matching_test.go)

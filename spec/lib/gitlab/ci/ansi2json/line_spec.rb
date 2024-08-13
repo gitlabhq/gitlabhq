@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line, feature_category: :continuous_integr
   describe '#update_style' do
     let(:expected_style) do
       Gitlab::Ci::Ansi2json::Style.new(
-        fg: 'term-fg-l-yellow',
+        fg: 'term-fg-yellow',
         bg: 'term-bg-blue',
         mask: 1)
     end

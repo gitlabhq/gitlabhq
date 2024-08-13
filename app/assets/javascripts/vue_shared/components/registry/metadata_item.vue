@@ -50,9 +50,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-inline-flex gl-align-items-center">
-    <gl-icon v-if="icon" :name="icon" class="gl-text-gray-500 gl-min-w-5 gl-mr-3" />
-    <tooltip-on-truncate v-if="link" :title="text" class="gl-text-truncate" :class="sizeClass">
+  <div class="gl-inline-flex gl-items-center">
+    <gl-icon v-if="icon" :name="icon" class="gl-mr-3 gl-min-w-5 gl-text-gray-500" />
+    <tooltip-on-truncate v-if="link" :title="text" class="gl-truncate" :class="sizeClass">
       <gl-link :href="link" class="gl-font-bold">
         {{ text }}
       </gl-link>
@@ -60,10 +60,10 @@ export default {
     <div
       v-else
       data-testid="metadata-item-text"
-      class="gl-font-bold gl-inline-flex"
+      class="gl-inline-flex gl-font-bold"
       :class="sizeClass"
     >
-      <tooltip-on-truncate v-if="!textTooltip" :title="text" class="gl-text-truncate">
+      <tooltip-on-truncate v-if="!textTooltip" :title="text" class="gl-truncate">
         {{ text }}
       </tooltip-on-truncate>
       <span v-else v-gl-tooltip="{ title: textTooltip }" data-testid="text-tooltip-container">

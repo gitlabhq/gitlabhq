@@ -14,7 +14,7 @@ import {
 import updateDependencyProxySettings from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_settings.mutation.graphql';
 import updateDependencyProxyImageTtlGroupPolicy from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_image_ttl_group_policy.mutation.graphql';
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import {
   updateGroupDependencyProxySettingsOptimisticResponse,
   updateDependencyProxyImageTtlGroupPolicyOptimisticResponse,
@@ -68,7 +68,6 @@ describe('DependencyProxySettings', () => {
       stubs: {
         GlSprintf,
         GlToggle,
-        SettingsBlock,
       },
     });
   };
@@ -82,7 +81,7 @@ describe('DependencyProxySettings', () => {
       .mockResolvedValue(dependencyProxyUpdateTllPolicyMutationMock());
   });
 
-  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
+  const findSettingsSection = () => wrapper.findComponent(SettingsSection);
   const findEnableProxyToggle = () => wrapper.findByTestId('dependency-proxy-setting-toggle');
   const findEnableTtlPoliciesToggle = () =>
     wrapper.findByTestId('dependency-proxy-ttl-policies-toggle');
@@ -98,17 +97,17 @@ describe('DependencyProxySettings', () => {
     });
   };
 
-  it('renders a settings block', () => {
+  it('renders a settings section', () => {
     mountComponent();
 
-    expect(findSettingsBlock().exists()).toBe(true);
+    expect(findSettingsSection().exists()).toBe(true);
   });
 
   it('has the correct header text and description', () => {
     mountComponent();
 
-    expect(wrapper.text()).toContain(DEPENDENCY_PROXY_HEADER);
-    expect(wrapper.text()).toContain(DEPENDENCY_PROXY_DESCRIPTION);
+    expect(findSettingsSection().props('heading')).toContain(DEPENDENCY_PROXY_HEADER);
+    expect(findSettingsSection().props('description')).toContain(DEPENDENCY_PROXY_DESCRIPTION);
   });
 
   describe('enable toggle', () => {

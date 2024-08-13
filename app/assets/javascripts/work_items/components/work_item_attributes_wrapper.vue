@@ -1,6 +1,7 @@
 <script>
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { ListType } from '~/boards/constants';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -15,7 +16,7 @@ import {
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
-  WIDGET_TYPE_DEVELOPMENT,
+  WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -25,8 +26,10 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
+import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
+  ListType,
   components: {
     Participants,
     WorkItemLabels,
@@ -36,6 +39,7 @@ export default {
     WorkItemParent,
     WorkItemTimeTracking,
     WorkItemDevelopment,
+    WorkItemCrmContacts,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -85,11 +89,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
     },
     workItemWeight() {
-      /** TODO remove this check after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158021 is merged */
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC) {
-        return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
-      }
-      return false;
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    isWorkItemWeightEditable() {
+      return this.workItemWeight?.widgetDefinition?.editable;
     },
     workItemParticipants() {
       return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
@@ -132,8 +135,11 @@ export default {
     workItemAuthor() {
       return this.workItem?.author;
     },
-    workItemDevelopment() {
-      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsAlpha;
+    hasParent() {
+      return this.workItemHierarchy?.hasParent;
+    },
+    workItemCrmContacts() {
+      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
     },
   },
   methods: {
@@ -159,6 +165,18 @@ export default {
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"
         @error="$emit('error', $event)"
+        @assigneesUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
+        "
+      />
+    </template>
+    <template v-if="workItemCrmContacts">
+      <work-item-crm-contacts
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
       />
     </template>
     <template v-if="workItemLabels">
@@ -170,9 +188,10 @@ export default {
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
+        @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
       />
     </template>
-    <template v-if="workItemWeight">
+    <template v-if="isWorkItemWeightEditable">
       <work-item-weight
         class="gl-mb-5"
         :can-update="canUpdate"
@@ -207,6 +226,9 @@ export default {
         :work-item-type="workItemType"
         :can-update="canUpdate"
         @error="$emit('error', $event)"
+        @milestoneUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.milestone, ids: [$event] })
+        "
       />
     </template>
     <template v-if="workItemIteration">
@@ -219,6 +241,9 @@ export default {
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
+        @iterationUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
+        "
       />
     </template>
     <template v-if="workItemDueDate && !showRolledupDates">
@@ -245,8 +270,6 @@ export default {
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         class="gl-mb-5"
-        :health-status="workItemHealthStatus.healthStatus"
-        :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
@@ -270,15 +293,14 @@ export default {
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
         :parent="workItemParent"
+        :has-parent="hasParent"
         :group-path="groupPath"
         @error="$emit('error', $event)"
       />
     </template>
     <work-item-development
-      v-if="workItemDevelopment"
-      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
-      :can-update="canUpdate"
       :work-item-iid="workItem.iid"
+      :work-item-id="workItem.id"
       :work-item-full-path="fullPath"
       @error="$emit('error', $event)"
     />

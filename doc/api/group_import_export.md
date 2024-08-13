@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -97,7 +97,7 @@ returns either:
 The maximum import file size can be set by the Administrator on self-managed instances (default is `0` (unlimited)).
 As an administrator, you can modify the maximum import file size either:
 
-- In the [Admin area](../administration/settings/import_and_export_settings.md).
+- In the [**Admin** area](../administration/settings/import_and_export_settings.md).
 - By using the `max_import_size` option in the [Application settings API](settings.md#change-application-settings).
 
 For information on the maximum import file size on GitLab.com, see

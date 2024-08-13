@@ -110,7 +110,7 @@ module Gitlab
         access_token&.user || raise(UnauthorizedError)
       end
 
-      # We allow Private Access Tokens with `api` scope to be used by web
+      # We allow private access tokens with `api` scope to be used by web
       # requests on RSS feeds or ICS files for backwards compatibility.
       # It is also used by GraphQL/API requests.
       # And to allow accessing /archive programatically as it was a big pain point

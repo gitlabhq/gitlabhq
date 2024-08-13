@@ -34,12 +34,8 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-wrap gl-gap-2">
-    <runner-status-badge
-      :contacted-at="contactedAt"
-      :status="status"
-      class="gl-max-w-full gl-text-truncate"
-    />
-    <runner-paused-badge v-if="paused" class="gl-max-w-full gl-text-truncate" />
+    <runner-status-badge :contacted-at="contactedAt" :status="status" />
+    <runner-paused-badge v-if="paused" />
     <slot :runner="runner" name="runner-job-status-badge"></slot>
   </div>
 </template>

@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     it 'returns an array of entries having desired sharding key migration job' do
       entries = dictionary.find_all_having_desired_sharding_key_migration_job
       expect(entries).to all(be_instance_of(Gitlab::Database::Dictionary::Entry))
-      expect(entries).to all(have_attributes(desired_sharding_key_migration_job_name: String))
+      expect(entries.map(&:desired_sharding_key_migration_job_name)).to all(be_present)
     end
   end
 

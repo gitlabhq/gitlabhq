@@ -9,18 +9,20 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import { defaultTypeTokenOptions, i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
-import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
   deriveSortKey,
+  getDefaultWorkItemTypes,
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
-} from '~/issues/list/utils';
+  getTypeTokenOptions,
+} from 'ee_else_ce/issues/list/utils';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -90,19 +92,14 @@ export default {
     'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
+    'hasOkrsFeature',
+    'hasQualityManagementFeature',
     'hasScopedLabelsFeature',
     'initialSort',
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'rssPath',
   ],
-  props: {
-    eeTypeTokenOptions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-  },
   data() {
     const state = getParameterByName(PARAM_STATE);
 
@@ -162,6 +159,12 @@ export default {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
+    defaultWorkItemTypes() {
+      return getDefaultWorkItemTypes({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
+    },
     dropdownItems() {
       return [
         { href: this.rssPath, text: __('Subscribe to RSS feed') },
@@ -205,6 +208,7 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
+        types: this.apiFilterParams.types || this.defaultWorkItemTypes,
       };
     },
     renderedIssues() {
@@ -361,7 +365,10 @@ export default {
       };
     },
     typeTokenOptions() {
-      return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
+      return getTypeTokenOptions({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens);

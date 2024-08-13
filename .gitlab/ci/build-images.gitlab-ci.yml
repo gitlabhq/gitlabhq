@@ -36,6 +36,34 @@ follow-up:build-qa-image:
   needs:
     - manual:e2e-test-pipeline-generate
 
+retag-gdk-image:
+  extends:
+    - .base-image-build
+    - .build-images:rules:retag-gdk-image
+  tags:
+    - docker
+  stage: build-images
+  needs: []
+  script:
+    - |
+      image="registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main"
+      tag=$(awk '/ARG GDK_SHA=/ {print $2}' qa/gdk/Dockerfile.gdk | sed 's/.*=//g')
+      skopeo login -u $RETAG_GDK_IMAGE_TOKEN_NAME -p $RETAG_GDK_IMAGE_TOKEN $CI_REGISTRY
+      skopeo copy docker://${image}:${tag} docker://${image}:stable-${tag}
+
+build-gdk-image:
+  extends:
+    - .base-image-build-buildx
+    - .build-images:rules:build-gdk-image
+  tags:
+    - docker
+  stage: build-images
+  needs:
+    - job: retag-gdk-image
+      optional: true
+  script:
+    - run_timed_command "scripts/build_gdk_image"
+
 # NOTE: release-tools verifies the presence on this job for a commit that is
 # candidate to an auto-deploy package. This job name can't be changed without
 # changing the code in release-tools.

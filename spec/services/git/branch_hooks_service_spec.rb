@@ -175,6 +175,12 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to be > 1
       end
+
+      it 'correctly marks branch as protected' do
+        execute_service
+
+        expect(ProtectedBranch.protected?(project, branch)).to eq(true)
+      end
     end
 
     context "with a new non-default branch" do

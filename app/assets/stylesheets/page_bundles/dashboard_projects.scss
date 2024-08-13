@@ -4,6 +4,9 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
   gap: $gl-spacing-scale-5;
-  max-width: 90ch;
   margin: auto;
+}
+
+.dashboard-projects {
+  max-width: 90ch;
 }

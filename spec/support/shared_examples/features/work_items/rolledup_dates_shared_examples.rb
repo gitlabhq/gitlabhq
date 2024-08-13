@@ -5,6 +5,20 @@ RSpec.shared_examples 'work items rolled up dates' do
   let(:work_item_start_due_dates_selector) { '[data-testid="work-item-start-due-dates"]' }
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
+  def expect_sync_to_epic
+    dates_source = work_item.dates_source
+    epic = work_item.synced_epic
+
+    expect(dates_source.start_date_is_fixed).to eq(epic.start_date_is_fixed)
+    expect(dates_source.start_date_fixed).to eq(epic.start_date_fixed)
+    expect(dates_source.due_date_is_fixed).to eq(epic.due_date_is_fixed)
+    expect(dates_source.due_date_fixed).to eq(epic.due_date_fixed)
+    expect(dates_source.start_date_sourcing_milestone_id).to eq(epic.start_date_sourcing_milestone_id)
+    expect(dates_source.due_date_sourcing_milestone_id).to eq(epic.due_date_sourcing_milestone_id)
+    expect(dates_source.start_date_sourcing_work_item_id).to eq(epic.start_date_sourcing_epic&.issue_id)
+    expect(dates_source.due_date_sourcing_work_item_id).to eq(epic.due_date_sourcing_epic&.issue_id)
+  end
+
   context 'when feature flag is disabled' do
     before do
       stub_feature_flags(work_items_rolledup_dates: false)
@@ -21,6 +35,7 @@ RSpec.shared_examples 'work items rolled up dates' do
   context 'when feature flag is enabled' do
     before do
       stub_feature_flags(work_items_rolledup_dates: true)
+      stub_licensed_features(epics: true, subepics: true, epic_colors: true)
 
       page.refresh
       wait_for_all_requests
@@ -79,6 +94,9 @@ RSpec.shared_examples 'work items rolled up dates' do
         within_testid('work-item-milestone') do
           fill_in 'Milestone', with: milestone
         end
+
+        page.refresh
+        wait_for_all_requests
       end
 
       def update_child_date(title:, start_date:, due_date:)
@@ -87,10 +105,10 @@ RSpec.shared_examples 'work items rolled up dates' do
           wait_for_all_requests
         end
 
-        find_and_click_edit work_item_start_due_dates_selector
-        # set empty value before the value to ensure
-        # the current value don't mess with the new value input
-        within_testid('work-item-start-due-dates') do
+        within_testid('work-item-detail-modal') do
+          find_and_click_edit work_item_rolledup_dates_selector
+          # set empty value before the value to ensure
+          # the current value don't mess with the new value input
           fill_in 'Start', with: ""
           fill_in 'Start', with: start_date
           fill_in 'Due', with: "" # ensure to reset the input first to avoid wrong date values
@@ -107,11 +125,11 @@ RSpec.shared_examples 'work items rolled up dates' do
       def add_new_child(title:, milestone: nil, start_date: nil, due_date: nil)
         within_testid('work-item-tree') do
           click_button 'Add'
-          click_button 'New issue'
+          click_button 'New epic'
           wait_for_all_requests
 
           fill_in 'Add a title', with: title
-          click_button 'Create issue'
+          click_button 'Create epic'
           wait_for_all_requests
         end
 
@@ -122,10 +140,10 @@ RSpec.shared_examples 'work items rolled up dates' do
         update_child_milestone(title: title, milestone: milestone) if milestone.present?
       end
 
-      def add_existing_child(child_work_item)
+      def add_existing_child(child_work_item, type)
         within_testid('work-item-tree') do
           click_button 'Add'
-          click_button 'Existing issue'
+          click_button "Existing #{type}"
 
           find_by_testid('work-item-token-select-input').set(child_work_item.title)
           wait_for_all_requests
@@ -133,17 +151,20 @@ RSpec.shared_examples 'work items rolled up dates' do
 
           send_keys :escape
 
-          click_button 'Add issue'
+          click_button "Add #{type}"
 
           wait_for_all_requests
         end
+
+        page.refresh
+        wait_for_all_requests
       end
 
       context 'when adding existing work item with fixed dates as children' do
         let_it_be(:child_work_item) do
           create(
             :work_item,
-            :issue,
+            :epic_with_legacy_epic,
             namespace: work_item.namespace,
             title: 'Existing child issue',
             start_date: 1.day.ago,
@@ -152,17 +173,22 @@ RSpec.shared_examples 'work items rolled up dates' do
         end
 
         it 'rolled up child dates' do
-          add_existing_child(child_work_item)
+          add_existing_child(child_work_item, :epic)
 
           within work_item_rolledup_dates_selector do
             expect(page).to have_text("Start: #{child_work_item.start_date.to_fs(:medium)}")
             expect(page).to have_text("Due: #{child_work_item.due_date.to_fs(:medium)}")
           end
+
+          expect_sync_to_epic
         end
       end
 
       context 'when updating child work item dates' do
         it 'rolled up child dates' do
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+
           child_title = 'A child issue'
           add_new_child(title: child_title, start_date: '2020-12-01', due_date: '2020-12-02')
 
@@ -177,11 +203,16 @@ RSpec.shared_examples 'work items rolled up dates' do
             expect(page).to have_text('Start: Jan 3, 2021')
             expect(page).to have_text('Due: Jan 5, 2021')
           end
+
+          expect_sync_to_epic
         end
       end
 
       context 'when removing all children' do
         it 'rolled up child dates' do
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
+
           add_new_child(title: 'child issue 1', start_date: '2020-11-01', due_date: '2020-12-02')
           add_new_child(title: 'child issue 2', start_date: '2020-12-01', due_date: '2021-01-02')
 
@@ -213,6 +244,8 @@ RSpec.shared_examples 'work items rolled up dates' do
             expect(page).to have_text('Start: None')
             expect(page).to have_text('Due: None')
           end
+
+          expect_sync_to_epic
         end
       end
 
@@ -237,17 +270,22 @@ RSpec.shared_examples 'work items rolled up dates' do
         end
 
         it 'rolled up child dates' do
-          add_existing_child(child_work_item)
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
+
+          add_existing_child(child_work_item, :issue)
 
           within work_item_rolledup_dates_selector do
             expect(page).to have_text("Start: #{milestone.start_date.to_fs(:medium)}")
             expect(page).to have_text("Due: #{milestone.due_date.to_fs(:medium)}")
           end
+
+          expect_sync_to_epic
         end
 
         context 'when milestone dates are changed' do
           it 'rolled up child dates' do
-            add_existing_child(child_work_item)
+            add_existing_child(child_work_item, :issue)
 
             within work_item_rolledup_dates_selector do
               expect(page).to have_text("Start: #{milestone.start_date.to_fs(:medium)}")
@@ -269,6 +307,8 @@ RSpec.shared_examples 'work items rolled up dates' do
               expect(page).to have_text("Start: Nov 16, 2016")
               expect(page).to have_text("Due: Dec 16, 2016")
             end
+
+            expect_sync_to_epic
           end
         end
       end

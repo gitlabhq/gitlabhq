@@ -19,14 +19,14 @@ RSpec.describe 'Secure Files', :js, feature_category: :source_code_management do
 
     it 'does not show the secure files settings' do
       visit project_settings_ci_cd_path(project)
-      expect(page).not_to have_content('Secure Files')
+      expect(page).not_to have_content('Secure files')
     end
   end
 
   context 'authenticated user with admin permissions' do
     it 'shows the secure files settings' do
       visit project_settings_ci_cd_path(project)
-      expect(page).to have_content('Secure Files')
+      expect(page).to have_content('Secure files')
     end
   end
 

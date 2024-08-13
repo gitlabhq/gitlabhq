@@ -60,6 +60,7 @@ For deprecation reviewers (Technical Writers only):
 ### <%= deprecation["title"] %>
 
 <div class="deprecation-notes">
+
 - Announced in GitLab <span class="milestone"><%= deprecation["announcement_milestone"]%></span>
 <% if deprecation["end_of_support_milestone"] -%>
 - End of Support in GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
@@ -70,6 +71,7 @@ For deprecation reviewers (Technical Writers only):
 <% if deprecation["issue_url"] -%>
 - To discuss this change or learn more, see the [deprecation issue](<%= deprecation["issue_url"]%>).
 <%- end -%>
+
 </div>
 
 <%= deprecation["body"] -%>

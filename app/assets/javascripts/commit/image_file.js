@@ -22,7 +22,7 @@ export default class ImageFile {
 
   initViewModes() {
     const viewMode = viewModes[0];
-    $('.view-modes', this.file).removeClass('gl-display-none');
+    $('.view-modes', this.file).removeClass('gl-hidden');
     $('.view-modes-menu', this.file).on('click', 'li', (event) => {
       if (!$(event.currentTarget).hasClass('active')) {
         return this.activateViewMode(event.currentTarget.className);
@@ -37,8 +37,8 @@ export default class ImageFile {
       .filter(`.${viewMode}`)
       .addClass('active');
 
-    $(`.view:visible:not(.${viewMode})`, this.file).addClass('gl-display-none');
-    $(`.view.${viewMode}`, this.file).removeClass('gl-display-none');
+    $(`.view:visible:not(.${viewMode})`, this.file).addClass('gl-hidden');
+    $(`.view.${viewMode}`, this.file).removeClass('gl-hidden');
 
     return this.initView(viewMode);
   }
@@ -111,7 +111,7 @@ export default class ImageFile {
         return this.requestImageInfo($('img', wrap), (width, height) => {
           $('.image-info .meta-width', wrap).text(`${width}px`);
           $('.image-info .meta-height', wrap).text(`${height}px`);
-          return $('.image-info', wrap).removeClass('gl-display-none');
+          return $('.image-info', wrap).removeClass('gl-hidden');
         });
       });
     },

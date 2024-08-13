@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Retried do
       let(:status) { Gitlab::Ci::Status::Build::Failed.new(failed_status) }
 
       it 'does override status_tooltip' do
-        expect(subject.status_tooltip).to eq 'failed - (unknown failure) (retried)'
+        expect(subject.status_tooltip).to eq 'Failed - (unknown failure) (retried)'
       end
     end
 

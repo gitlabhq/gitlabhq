@@ -1,17 +1,16 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
+import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 
 export default {
   name: 'WorkItemLoading',
   loader: {
-    repeat: 10,
-    width: 1000,
-    height: 40,
     descriptionRepeat: 2,
     attributesRepeat: 6,
   },
   components: {
     GlSkeletonLoader,
+    WorkItemNotesLoading,
   },
 };
 </script>
@@ -84,17 +83,7 @@ export default {
       <!--- END work item notes activity placeholder -->
 
       <!--- START work item notes -->
-      <gl-skeleton-loader
-        v-for="i in $options.loader.repeat"
-        :key="i"
-        data-testid="work-item-notes-loading"
-        :width="$options.loader.width"
-        :height="$options.loader.height"
-        preserve-aspect-ratio="xMinYMax meet"
-      >
-        <circle cx="20" cy="20" r="16" />
-        <rect width="950" x="45" y="15" height="10" rx="4" />
-      </gl-skeleton-loader>
+      <work-item-notes-loading />
       <!--- END work item notes -->
     </section>
 

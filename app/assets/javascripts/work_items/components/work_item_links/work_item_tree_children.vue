@@ -27,6 +27,11 @@ export default {
       required: false,
       default: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     onClick(event, child) {
@@ -50,6 +55,7 @@ export default {
       :issuable-gid="workItemId"
       :child-item="child"
       :work-item-type="workItemType"
+      :work-item-full-path="workItemFullPath"
       :show-labels="showLabels"
       @removeChild="$emit('removeChild', $event)"
       @click="onClick($event, child)"

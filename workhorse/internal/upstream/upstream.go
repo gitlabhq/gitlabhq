@@ -275,8 +275,8 @@ func (u *upstream) updateGeoProxyFieldsFromData(geoProxyData *apipkg.GeoProxyDat
 		proxypkg.WithCustomHeaders(geoProxyWorkhorseHeaders),
 		proxypkg.WithForcedTargetHostHeader(),
 	)
-	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
-	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())
+	u.geoProxyCableRoute = u.wsRoute(newRoute(`^/-/cable\z`, "geo_action_cable", railsBackend), geoProxyUpstream)
+	u.geoProxyRoute = u.route("", newRoute("", "proxy", geoPrimaryBackend), geoProxyUpstream, withGeoProxy())
 }
 
 func httpError(w http.ResponseWriter, r *http.Request, error string, code int) {

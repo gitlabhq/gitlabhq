@@ -109,6 +109,7 @@ function getFilterParamName(filterName, operator, filterToQueryMapping) {
  *        it adds { attr_name: 'foo', attr_value: 'bar'} to `searchParams`
  *
  */
+// eslint-disable-next-line max-params
 function handleAttributeFilter(filterValue, filterOperator, searchParams, nameParam, valueParam) {
   const [attrName, attrValue] = filterValue.split('=');
   if (attrName && attrValue) {
@@ -429,6 +430,7 @@ function addMetricsGroupByFilterToQueryParams(groupByFilter, params) {
   }
 }
 
+// eslint-disable-next-line max-params
 async function fetchMetric(searchUrl, name, type, options = {}) {
   try {
     if (!name) {

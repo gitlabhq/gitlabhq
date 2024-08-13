@@ -18,7 +18,7 @@ This document describes a drop-in replacement for the
 drop-in replacement.
 
 Regular SSH operations become slow as the number of users grows because OpenSSH
-searches for a key to authorize a user via a linear search. In the worst case,
+searches for a key to authorize a user with a linear search. In the worst case,
 such as when the user is not authorized to access GitLab, OpenSSH scans the
 entire file to search for a key. This can take significant time and disk I/O,
 which delays users attempting to push or pull to a repository. Making
@@ -26,7 +26,7 @@ matters worse, if users add or remove keys frequently, the operating system may
 not be able to cache the `authorized_keys` file, which causes the disk to be
 accessed repeatedly.
 
-GitLab Shell solves this by providing a way to authorize SSH users via a fast,
+GitLab Shell solves this by providing a way to authorize SSH users with a fast,
 indexed lookup in the GitLab database. This page describes how to enable the fast
 lookup of authorized SSH keys.
 
@@ -48,7 +48,7 @@ getent passwd git | cut -d: -f6 | awk '{print $1"/.ssh/authorized_keys"}'
 
 The `authorized_keys` file contains all the public SSH keys for users allowed to access GitLab. However, to maintain a
 single source of truth, [Geo](../geo/index.md) must be configured to perform SSH fingerprint
-lookups via database lookup.
+lookups with database lookup.
 
 As part of [setting up Geo](../geo/index.md#setup-instructions),
 you are required to follow the steps outlined below for both the primary and
@@ -58,7 +58,7 @@ automatically on the secondary if database replication is working.
 
 ## Set up fast lookup
 
-GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup
+GitLab Shell provides a way to authorize SSH users with a fast, indexed lookup
 to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to
 check whether the user is authorized to access GitLab.
 
@@ -130,13 +130,13 @@ users as long as a large file exists.
 
 To disable writes to the `authorized_keys` file:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Performance optimization**.
 1. Clear the **Use authorized_keys file to authenticate SSH keys** checkbox.
 1. Select **Save changes**.
 
-Again, confirm that SSH is working by removing your user's SSH key in the UI,
+Confirm that SSH is working by removing your user's SSH key in the UI,
 adding a new one, and attempting to pull a repository.
 
 Then you can back up and delete your `authorized_keys` file for best performance.
@@ -149,7 +149,7 @@ This overview is brief. Refer to the above instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.
    1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.
@@ -162,7 +162,7 @@ This overview is brief. Refer to the above instructions for more context.
 GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
 
 Because the SELinux policy is static, GitLab doesn't support the ability to change
-internal webserver ports at the moment. Administrators would have to create a special `.te`
+internal web server ports at the moment. Administrators would have to create a special `.te`
 file for the environment, as it isn't generated dynamically.
 
 ### Additional documentation

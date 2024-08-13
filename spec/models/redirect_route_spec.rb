@@ -16,6 +16,46 @@ RSpec.describe RedirectRoute do
     it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
   end
 
+  describe '.for_source_type' do
+    subject { described_class.for_source_type(source_type) }
+
+    context 'when Project' do
+      let(:source_type) { Project }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when Namespace' do
+      let(:source_type) { Namespace }
+
+      it { is_expected.to match_array(redirect_route) }
+    end
+  end
+
+  describe '.by_paths' do
+    subject { described_class.by_paths(paths) }
+
+    let!(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
+
+    context 'when no matches' do
+      let(:paths) { ['unknown'] }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when some matches' do
+      let(:paths) { %w[unknown gitlabb] }
+
+      it { is_expected.to match_array([redirect_route]) }
+    end
+
+    context 'when multiple matches' do
+      let(:paths) { ['unknown', 'gitlabb', 'gitlabb/test'] }
+
+      it { is_expected.to match_array([redirect_route, redirect2]) }
+    end
+  end
+
   describe '.matching_path_and_descendants' do
     let!(:redirect2) { group.redirect_routes.create!(path: 'gitlabb/test') }
     let!(:redirect3) { group.redirect_routes.create!(path: 'gitlabb/test/foo') }

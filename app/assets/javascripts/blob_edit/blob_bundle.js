@@ -42,8 +42,8 @@ export default () => {
     });
 
     commitButton.on('click', () => {
-      commitButton.addClass('gl-display-none');
-      commitButtonLoading.removeClass('gl-display-none');
+      commitButton.addClass('gl-hidden');
+      commitButtonLoading.removeClass('gl-hidden');
       window.onbeforeunload = null;
     });
 

@@ -1,0 +1,77 @@
+---
+# Warning: gitlab.SubstitutionWarning
+#
+# Checks for misused terms or common shorthand that should not be used at GitLab, but can't be flagged as errors.
+# Substitutions.yml also exists.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: substitution
+message: "Use '%s' instead of '%s' when possible."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+level: warning
+ignorecase: true
+swap:
+  active user: "billable user"
+  active users: "billable users"
+  agnostic: "platform-independent' or 'vendor-neutral"
+  air(?:-| )?gapped: "offline environment"
+  bullet: "list item"
+  (?<!right-)click(?!-through): "select"
+  cancelled: "canceled"
+  cancelling: "canceling"
+  code base: "codebase"
+  config: "configuration"
+  confirmation box: "confirmation dialog"
+  confirmation dialog box: "confirmation dialog"
+  deselect: "clear"
+  deselected: "cleared"
+  dialog box: "dialog"
+  distro: "distribution"
+  docs: "documentation"
+  e-mail: "email"
+  emojis: "emoji"
+  ex: "for example"
+  file name: "filename"
+  filesystem: "file system"
+  fullscreen: "full screen"
+  info: "information"
+  installation from source: self-compiled installation
+  installations from source: self-compiled installations
+  it is recommended: "you should"
+  log in: "sign in"
+  log-in: "sign in"
+  logged in user: "authenticated user"
+  logged-in user: "authenticated user"
+  machine-learning: "machine learning"
+  modal dialog: "dialog"
+  modal window: "dialog"
+  modal: "dialog"
+  n/a: "not applicable"
+  navigate to: "go to"
+  normally: "usually' or 'typically"
+  normal: "typical' or 'standard"
+  OAuth2: "OAuth 2.0"
+  omnibus gitlab: "Linux package"
+  'omnibus(?!\))': "Linux package"
+  once that: "after that"
+  once the: "after the"
+  once you: "after you"
+  open telemetry: "OpenTelemetry"
+  pack file: packfile
+  pack files: packfiles
+  pop-up window: "dialog"
+  pop-up: "dialog"
+  popup: "dialog"
+  repo: "repository"
+  signed in user: "authenticated user"
+  signed-in user: "authenticated user"
+  since: "because' or 'after"
+  source (?:install|installation): self-compiled installation
+  source (?:installs|installations): self-compiled installations
+  sub-group: "subgroup"
+  sub-groups: "subgroups"
+  timezone: "time zone"
+  utiliz(?:es?|ing): "use"
+  VSCode: "VS Code"
+  we recommend: "you should"
+  within: "in"

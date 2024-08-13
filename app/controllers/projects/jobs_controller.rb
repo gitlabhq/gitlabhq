@@ -23,6 +23,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_ai_build_failure_cause, only: [:show]
+  before_action :push_filter_by_name, only: [:index]
   layout 'project'
 
   feature_category :continuous_integration
@@ -280,6 +281,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_ai_build_failure_cause
     push_frontend_feature_flag(:ai_build_failure_cause, @project)
+  end
+
+  def push_filter_by_name
+    push_frontend_feature_flag(:populate_and_use_build_names_table, @project)
   end
 end
 

@@ -120,6 +120,9 @@ To enable the PROXY protocol:
    gitlab_sshd['proxy_policy'] = "use"
    ```
 
+   For more information about the `gitlab_sshd['proxy_policy']` options, see the
+   [`go-proxyproto` library](https://github.com/pires/go-proxyproto/blob/4ba2eb817d7a57a4aafdbd3b82ef0410806b533d/policy.go#L20-L35).
+
 1. Save the file and reconfigure GitLab:
 
    ```shell

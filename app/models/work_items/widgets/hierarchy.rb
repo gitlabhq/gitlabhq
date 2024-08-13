@@ -19,6 +19,20 @@ module WorkItems
         parent.present?
       end
 
+      def rolled_up_counts_by_type
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/474913
+        [
+          {
+            work_item_type: WorkItems::Type.default_by_type(:issue),
+            counts_by_state: { all: 0, opened: 0, closed: 0 }
+          },
+          {
+            work_item_type: WorkItems::Type.default_by_type(:task),
+            counts_by_state: { all: 0, opened: 0, closed: 0 }
+          }
+        ]
+      end
+
       def self.quick_action_commands
         [:set_parent, :add_child, :remove_parent, :remove_child]
       end

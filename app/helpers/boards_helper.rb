@@ -24,8 +24,13 @@ module BoardsHelper
       board_type: board.to_type,
       has_missing_boards: has_missing_boards?.to_s,
       multiple_boards_available: multiple_boards_available?.to_s,
-      board_base_url: board_base_url
+      board_base_url: board_base_url,
+      wi: work_items_show_data(board_namespace)
     }
+  end
+
+  def board_namespace
+    board.group_board? ? @group : @project
   end
 
   def group_id

@@ -2,7 +2,6 @@ import { GlModal, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
-import { __ } from '~/locale';
 
 describe('CsvExportModal', () => {
   let wrapper;
@@ -61,7 +60,7 @@ describe('CsvExportModal', () => {
       });
 
       it('displays the cancel button', () => {
-        expect(findModal().props('actionCancel')).toEqual({ text: __('Cancel') });
+        expect(findModal().props('actionCancel')).toEqual({ text: 'Cancel' });
       });
     });
 

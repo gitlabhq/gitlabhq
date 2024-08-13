@@ -1,7 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 .report-block-container {
-  border-top: 1px solid var(--border-color, $border-color);
+  border-top: 1px solid var(--gl-border-color-default);
   padding: $gl-padding - 2;
   background-color: var(--gl-background-color-subtle);
 

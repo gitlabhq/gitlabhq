@@ -27,7 +27,7 @@
   .file-title {
     position: relative;
     background-color: var(--gray-10, $gray-10);
-    border-bottom: 1px solid  var(--border-color, $border-color);
+    border-bottom: 1px solid  var(--gl-border-color-default);
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;
@@ -242,7 +242,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    background-color: $gray-10;
+    background-color: var(--gl-background-color-subtle);
     border-bottom: 1px solid $border-color;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;

@@ -116,7 +116,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST proxy-based](dast/proxy-based.md) and [browser-based](dast/browser/index.md) engines are updated on a periodic basis. [DAST proxy-based](dast/proxy-based.md) analyzer downloads the scanning rules at scan runtime. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L27). [DAST browser-based](dast/browser/index.md) rules run [different vulnerability checks](dast/browser/checks/index.md). |
-| [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#adding-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
+| [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
@@ -365,7 +365,7 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 ### GitLab Workflow extension for VS Code
 
-You can now see security findings directly in Visual Studio Code (VS Code) using [GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md), just as you would in a merge request.
+You can now see security findings directly in Visual Studio Code (VS Code) using [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md), just as you would in a merge request.
 
 For more details, see [extension page](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
 
@@ -582,7 +582,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   - Scan execution enforcement is required for scanners external to GitLab.
   - Scan execution enforcement is required for custom jobs other than security scans.
 
-- [Scan execution policies](policies/scan-execution-policies.md)
+- [Scan execution policies](policies/scan_execution_policies.md)
   are recommended when:
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.

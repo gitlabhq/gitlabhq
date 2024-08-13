@@ -18,6 +18,8 @@ import {
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
   COPY_IMAGE_PATH_TITLE,
+  OCI_INDEX_TOOLTIP,
+  DOCKER_MANIFEST_LIST_TOOLTIP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
@@ -28,6 +30,8 @@ import { ListItem } from '../../stubs';
 describe('tags list row', () => {
   let wrapper;
   const tag = tagsMock[0];
+  const tagWithOCIMediaType = tagsMock[2];
+  const tagWithListMediaType = tagsMock[3];
 
   const defaultProps = { tag, isMobile: false, index: 0 };
 
@@ -47,6 +51,7 @@ describe('tags list row', () => {
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findSignedBadge = () => wrapper.findComponent(GlBadge);
+  const findLabelsIcon = () => wrapper.findByTestId('labels-icon');
   const findSignatureDetailsModal = () => wrapper.findComponent(SignatureDetailsModal);
   const getTooltipFor = (component) => getBinding(component.element, 'gl-tooltip');
 
@@ -526,6 +531,28 @@ describe('tags list row', () => {
           });
         });
       });
+    });
+  });
+
+  describe('media type', () => {
+    it('without media type', () => {
+      mountComponent();
+
+      expect(findLabelsIcon().exists()).toBe(false);
+    });
+
+    it('with OCI index media type', () => {
+      mountComponent({ ...defaultProps, tag: tagWithOCIMediaType });
+
+      expect(findLabelsIcon().exists()).toBe(true);
+      expect(getTooltipFor(findLabelsIcon()).value).toBe(OCI_INDEX_TOOLTIP);
+    });
+
+    it('with Docker manifest list media type', () => {
+      mountComponent({ ...defaultProps, tag: tagWithListMediaType });
+
+      expect(findLabelsIcon().exists()).toBe(true);
+      expect(getTooltipFor(findLabelsIcon()).value).toBe(DOCKER_MANIFEST_LIST_TOOLTIP);
     });
   });
 });

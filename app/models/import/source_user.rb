@@ -2,7 +2,17 @@
 
 module Import
   class SourceUser < ApplicationRecord
+    include Gitlab::SQL::Pattern
+    include EachBatch
+
     self.table_name = 'import_source_users'
+
+    SORT_ORDERS = {
+      source_name_asc: { order_by: 'source_name', sort: 'asc' },
+      source_name_desc: { order_by: 'source_name', sort: 'desc' },
+      status_asc: { order_by: 'status', sort: 'asc' },
+      status_desc: { order_by: 'status', sort: 'desc' }
+    }.freeze
 
     belongs_to :placeholder_user, class_name: 'User', optional: true
     belongs_to :reassign_to_user, class_name: 'User', optional: true
@@ -10,28 +20,43 @@ module Import
     belongs_to :namespace
 
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
+    validates :placeholder_user_id, presence: true, unless: :completed?
+    validates :reassign_to_user_id, presence: true, if: -> { reassignment_in_progress? || completed? }
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
+    scope :by_statuses, ->(statuses) { where(status: statuses) }
+    scope :awaiting_reassignment, -> { where(status: [0, 1, 2, 3, 4]) }
+    scope :reassigned, -> { where(status: [5, 6]) }
+
+    STATUSES = {
+      pending_reassignment: 0,
+      awaiting_approval: 1,
+      reassignment_in_progress: 2,
+      rejected: 3,
+      failed: 4,
+      completed: 5,
+      keep_as_placeholder: 6
+    }.freeze
+
+    ACCEPTED_STATUSES = %i[reassignment_in_progress completed failed].freeze
+    REASSIGNABLE_STATUSES = %i[pending_reassignment rejected].freeze
+    CANCELABLE_STATUSES = %i[awaiting_approval rejected].freeze
 
     state_machine :status, initial: :pending_reassignment do
-      state :pending_reassignment, value: 0
-      state :awaiting_approval, value: 1
-      state :reassignment_in_progress, value: 2
-      state :rejected, value: 3
-      state :failed, value: 4
-      state :completed, value: 5
-      state :keep_as_placeholder, value: 6
+      STATUSES.each do |status_name, value|
+        state status_name, value: value
+      end
 
       event :reassign do
-        transition [:pending_reassignment, :rejected] => :awaiting_approval
+        transition REASSIGNABLE_STATUSES => :awaiting_approval
       end
 
       event :cancel_reassignment do
-        transition [:awaiting_approval, :rejected] => :pending_reassignment
+        transition CANCELABLE_STATUSES => :pending_reassignment
       end
 
       event :keep_as_placeholder do
-        transition [:pending_reassignment, :rejected] => :keep_as_placeholder
+        transition REASSIGNABLE_STATUSES => :keep_as_placeholder
       end
 
       event :accept do
@@ -55,23 +80,45 @@ module Import
       end
     end
 
-    def self.find_source_user(source_user_identifier:, namespace:, source_hostname:, import_type:)
-      return unless namespace
+    class << self
+      def find_source_user(source_user_identifier:, namespace:, source_hostname:, import_type:)
+        return unless namespace
 
-      find_by(
-        source_user_identifier: source_user_identifier,
-        namespace_id: namespace.id,
-        source_hostname: source_hostname,
-        import_type: import_type
-      )
+        find_by(
+          source_user_identifier: source_user_identifier,
+          namespace_id: namespace.id,
+          source_hostname: source_hostname,
+          import_type: import_type
+        )
+      end
+
+      def search(query)
+        return none unless query.is_a?(String)
+
+        fuzzy_search(query, [:source_name, :source_username])
+      end
+
+      def sort_by_attribute(method)
+        sort_order = SORT_ORDERS[method&.to_sym] || SORT_ORDERS[:source_name_asc]
+
+        reorder(sort_order[:order_by] => sort_order[:sort])
+      end
+    end
+
+    def mapped_user
+      accepted_status? ? reassign_to_user : placeholder_user
+    end
+
+    def accepted_status?
+      STATUSES.slice(*ACCEPTED_STATUSES).value?(status)
     end
 
     def reassignable_status?
-      pending_reassignment? || rejected?
+      STATUSES.slice(*REASSIGNABLE_STATUSES).value?(status)
     end
 
     def cancelable_status?
-      awaiting_approval? || rejected?
+      STATUSES.slice(*CANCELABLE_STATUSES).value?(status)
     end
   end
 end

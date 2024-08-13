@@ -145,7 +145,7 @@ export default {
         <div class="deploy-board-information gl-w-full">
           <section class="deploy-board-status">
             <span v-gl-tooltip :title="instanceIsCompletedText">
-              <span ref="percentage" class="gl-text-center text-plain gl-font-lg"
+              <span ref="percentage" class="gl-text-center gl-text-default gl-text-lg"
                 >{{ deployBoardData.completion }}%</span
               >
               <span class="text text-center text-secondary">{{ __('Complete') }}</span>

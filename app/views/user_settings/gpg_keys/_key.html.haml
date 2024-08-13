@@ -1,12 +1,12 @@
 %tr.key-list-item
   %td{ data: { label: s_('Profiles|Key') } }
-    %div{ class: 'gl-display-flex! gl-pl-0!' }
+    %div{ class: '!gl-flex !gl-pl-0' }
       = sprite_icon('key', css_class: "settings-list-icon gl-hidden sm:gl-inline gl-mr-2")
       .gl-display-flex.gl-flex-direction-column.gl-text-truncate
         %p.gl-text-truncate.gl-m-0
           %code= key.fingerprint
         - if key.subkeys.present?
-          .subkeys.gl-mt-3{ class: 'gl-text-left!' }
+          .gl-mt-3{ class: '!gl-text-left' }
             %span.gl-font-sm
               = _('Subkeys:')
             %ul.subkeys-list
@@ -18,13 +18,23 @@
   %td{ data: { label: _('Status') } }
     - if !require_external_verification || key.externally_verified?
       - key.emails_with_verified_status.map do |email, verified|
-        %div{ class: 'gl-text-left!' }
+        %div{ class: '!gl-text-left' }
           = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }
 
   %td{ data: { label: _('Created') } }
     = html_escape(s_('Created %{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at) }
 
-  %td{ class: 'gl-py-3!', data: { label: _('Actions') } }
-    = link_button_to nil, user_settings_gpg_key_path(key), data: { confirm: _('Are you sure? Removing this GPG key does not affect already signed commits.'), confirm_btn_variant: 'danger' }, method: :delete, class: 'has-tooltip', icon: 'remove', category: :secondary, 'title': _('Remove'), 'aria-label': _('Remove')
-    = link_button_to revoke_user_settings_gpg_key_path(key), data: { confirm: _('Are you sure? All commits that were signed with this GPG key will be unverified.'), confirm_btn_variant: 'danger' }, method: :put, class: 'gl-ml-3', category: :secondary, variant: :danger, 'aria-label': _('Revoke') do
+  %td{ class: '!gl-py-4 gl-text-right', data: { label: _('Actions') } }
+    = render Pajamas::ButtonComponent.new(href: revoke_user_settings_gpg_key_path(key),
+      method: :put,
+      category: :secondary,
+      variant: :danger,
+      size: :small,
+      button_options: { data: { confirm: _('Are you sure? All commits that were signed with this GPG key will be unverified.'), confirm_btn_variant: 'danger' } }) do
       = _('Revoke')
+
+    = render Pajamas::ButtonComponent.new(href: user_settings_gpg_key_path(key),
+      method: :delete,
+      category: :tertiary,
+      icon: 'remove',
+      button_options: { class: 'gl-ml-2 has-tooltip', title: _('Remove'), 'aria-label': _('Remove'), data: { confirm: _('Are you sure? Removing this GPG key does not affect already signed commits.'), confirm_btn_variant: 'danger' } })

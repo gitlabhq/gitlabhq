@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-
 import { parseBoolean } from '~/lib/utils/common_utils';
 import settingsPanel from './components/settings_panel.vue';
 
@@ -20,12 +19,12 @@ export default function initProjectPermissionsSettings() {
   const componentProps = JSON.parse(componentPropsEl.innerHTML);
 
   const {
-    targetFormId,
     additionalInformation,
-    confirmDangerMessage,
     confirmButtonText,
-    showVisibilityConfirmModal,
+    confirmDangerMessage,
     htmlConfirmationMessage,
+    showVisibilityConfirmModal,
+    targetFormId,
     phrase: confirmationPhrase,
   } = mountPoint.dataset;
 

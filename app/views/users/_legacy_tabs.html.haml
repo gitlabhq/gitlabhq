@@ -1,0 +1,11 @@
+- if allowable_actions.include?(action.to_sym)
+  #js-legacy-tabs-container{ data: { action: action, endpoint: endpoint } }
+    - case action
+    - when 'overview'
+      = render "users/overview"
+    - when 'activity'
+      .flash-container
+      - if can?(current_user, :read_cross_project)
+        .content_list.user-activity-content{ data: { href: user_activity_path } }
+        .loading
+          = render Pajamas::SpinnerComponent.new(size: :md)

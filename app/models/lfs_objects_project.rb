@@ -6,6 +6,7 @@ class LfsObjectsProject < ApplicationRecord
   belongs_to :project
   belongs_to :lfs_object
 
+  before_validation :ensure_uniqueness
   validates :lfs_object_id, presence: true
   validates :lfs_object_id, uniqueness: { scope: [:project_id, :repository_type], message: "already exists in repository" }
   validates :project_id, presence: true
@@ -32,6 +33,17 @@ class LfsObjectsProject < ApplicationRecord
   end
 
   private
+
+  def ensure_uniqueness
+    return if project_id.nil? || lfs_object_id.nil?
+    return unless Feature.enabled?(:ensure_lfs_object_project_uniqueness, project, type: :beta)
+
+    lock_key = [project_id, lfs_object_id, repository_type.presence || 'null'].join('-')
+
+    lock_expression = "hashtext(#{connection.quote(lock_key)})"
+
+    connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
+  end
 
   def update_project_statistics
     self.class.update_statistics_for_project_id(project_id)

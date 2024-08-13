@@ -97,11 +97,21 @@ module Tooling
         end
       end
 
-      def modified_config_files
-        helper.modified_files.select { |f| f.include?('config/metrics') && f.end_with?('yml') }
+      def warn_about_migrated_redis_keys_specs!
+        override_files_changes = ["lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml",
+          "lib/gitlab/usage_data_counters/total_counter_redis_key_overrides.yml"].map do |filename|
+          helper.changed_lines(filename).filter { |line| line.start_with?("+") }
+        end
+        return if override_files_changes.flatten.none?
+
+        warn "Redis keys overrides were added. Please consider cover keys merging with specs. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475191) for details"
       end
 
       private
+
+      def modified_config_files
+        helper.modified_files.select { |f| f.include?('config/metrics') && f.end_with?('yml') }
+      end
 
       def comment_removed_metric(filename, has_removed_url, has_removed_milestone)
         mr_has_milestone = !helper.mr_milestone.nil?

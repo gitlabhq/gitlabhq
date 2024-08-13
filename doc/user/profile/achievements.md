@@ -303,6 +303,31 @@ If you don't want to display achievements on your profile, you can opt out. To d
 1. In the **Main settings** section, clear the **Display achievements on your profile** checkbox.
 1. Select **Update profile settings**.
 
+## Change visibility of specific achievements
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161225) in GitLab 17.3.
+
+If you don't want to display all achievements on your profile, you can change the visibility of specific achievements.
+
+To hide one of your achievements, call the [`userAchievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsupdate).
+
+```graphql
+mutation {
+  userAchievementsUpdate(input: {
+    userAchievementId: "gid://gitlab/Achievements::UserAchievement/<user achievement id>"
+    showOnProfile: false
+  }) {
+    userAchievement {
+      id
+      showOnProfile
+    }
+    errors
+  }
+}
+```
+
+To show one of your achievements again, call the same mutation with the value `true` for the `showOnProfile` argument.
+
 ## Reorder achievements
 
 By default, achievements on your profile are displayed in ascending order by awarded date.

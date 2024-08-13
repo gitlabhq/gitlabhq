@@ -76,7 +76,7 @@ export default {
     },
   },
   HELP_LABELS_PAGE_PATH: helpPagePath('ci/runners/configure_runners', {
-    anchor: 'use-tags-to-control-which-jobs-a-runner-can-run',
+    anchor: 'control-jobs-that-a-runner-can-run',
   }),
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,

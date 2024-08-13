@@ -23,11 +23,11 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
       end
 
       create_table :_test_bulk_insert_items_with_composite_pk, id: false, force: true do |t|
-        t.integer :id, null: true
+        t.integer :instance_id, null: true
         t.string :name, null: true
       end
 
-      execute("ALTER TABLE _test_bulk_insert_items_with_composite_pk ADD PRIMARY KEY (id,name);")
+      execute("ALTER TABLE _test_bulk_insert_items_with_composite_pk ADD PRIMARY KEY (instance_id,name);")
     end
   end
 
@@ -255,12 +255,14 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
         end
       end
 
-      let(:new_object) { bulk_insert_items_with_composite_pk_class.new(id: 1, name: 'composite') }
+      let(:new_object) { bulk_insert_items_with_composite_pk_class.new(instance_id: 1, name: 'composite') }
 
       it 'successfully inserts an item' do
         expect(ActiveRecord::InsertAll).to receive(:new)
           .with(
-            bulk_insert_items_with_composite_pk_class.insert_all_proxy_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
+            bulk_insert_items_with_composite_pk_class.insert_all_proxy_class,
+            [new_object.as_json],
+            on_duplicate: :raise, returning: false, unique_by: %w[instance_id name]
           ).and_call_original
 
         expect { bulk_insert_items_with_composite_pk_class.bulk_insert!([new_object]) }.to(

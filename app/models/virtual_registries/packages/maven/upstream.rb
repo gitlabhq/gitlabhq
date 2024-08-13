@@ -9,6 +9,9 @@ module VirtualRegistries
           class_name: 'VirtualRegistries::Packages::Maven::RegistryUpstream',
           inverse_of: :upstream
         has_one :registry, class_name: 'VirtualRegistries::Packages::Maven::Registry', through: :registry_upstream
+        has_many :cached_responses,
+          class_name: 'VirtualRegistries::Packages::Maven::CachedResponse',
+          inverse_of: :upstream
 
         attr_encrypted :credentials,
           mode: :per_attribute_iv,
@@ -28,16 +31,45 @@ module VirtualRegistries
         validates :url, :username, :password, length: { maximum: 255 }
 
         after_initialize :read_credentials
+        after_validation :reset_credentials, if: -> { persisted? && url_changed? }
         before_save :write_credentials
+
+        def url_for(path)
+          full_url = File.join(url, path)
+          Addressable::URI.parse(full_url).to_s
+        end
+
+        def headers
+          return {} unless username.present? && password.present?
+
+          authorization = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+
+          { Authorization: authorization }
+        end
 
         private
 
         def read_credentials
+          self.credentials ||= {}
+
+          # if credentials are blank we might have a username + password from initializer. Don't reset them.
+          return if credentials.blank?
+
           self.username, self.password = (credentials || {}).values_at('username', 'password')
+          clear_username_change
+          clear_password_change
         end
 
         def write_credentials
           self.credentials = (credentials || {}).merge('username' => username, 'password' => password)
+        end
+
+        def reset_credentials
+          return if username_changed? && password_changed?
+
+          self.username = nil
+          self.password = nil
+          self.credentials = {}
         end
       end
     end

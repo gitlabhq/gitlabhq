@@ -37,7 +37,7 @@ The last way to set a due date is by using [quick actions](../quick_actions.md),
 
 ## Making use of due dates
 
-You can see issues with their due dates in the issues list.
+You can see issues with their due dates in the **Issues** page.
 Overdue issues have their icon and date colored red.
 To sort issues by their due dates, select **Due date** from the dropdown list on the right.
 Issues are then sorted from the earliest due date to the latest.
@@ -53,7 +53,7 @@ server's time zone.
 
 Issues with due dates can also be exported as an iCalendar feed. The URL of the
 feed can be added to calendar applications. The feed is accessible by selecting
-the **Subscribe to calendar** option in the  **Actions** (**{ellipsis_v}**) dropdown
+the **Subscribe to calendar** option in the **Actions** (**{ellipsis_v}**) dropdown
 list on the following pages:
 
 - The **Assigned Issues** page linked on the right side of the GitLab header

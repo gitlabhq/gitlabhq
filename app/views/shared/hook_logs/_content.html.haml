@@ -1,8 +1,8 @@
 %span.gl-display-flex.gl-align-items-center
   %h5
-    = gl_badge_tag "POST", { size: :sm }, { variant: :info }
+    = gl_badge_tag "POST", { variant: :info }
     = hook_log.url
-  = gl_badge_tag hook_log.trigger.singularize.titleize, { size: :sm }, { class: 'gl-ml-3' }
+  = gl_badge_tag hook_log.trigger.singularize.titleize, { class: 'gl-ml-3' }
 
 %p
   = _('Completed in %{duration_seconds} seconds (%{relative_time})').html_safe % { duration_seconds: number_with_precision(hook_log.execution_duration, precision: 2), relative_time: time_ago_with_tooltip(hook_log.created_at) }

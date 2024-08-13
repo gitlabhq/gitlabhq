@@ -6,6 +6,7 @@
       width: 100%;
       order: -1;
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       .gl-dropdown,
       .split-content-button {
         width: 100%;
@@ -21,11 +22,8 @@
   }
 }
 
-.cluster-button-container:focus-within {
-  @include gl-focus;
-}
-
 .select-agent-dropdown {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button-text {
     flex-grow: 1;
   }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillNoteDiscussionId do
+RSpec.describe Gitlab::BackgroundMigration::BackfillNoteDiscussionId, feature_category: :importers do
   let(:migration) { described_class.new }
   let(:notes_table) { table(:notes) }
   let(:existing_discussion_id) { Digest::SHA1.hexdigest('test') }

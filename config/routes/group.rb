@@ -113,7 +113,11 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :group_members, only: [:index, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
-      delete :leave, on: :collection
+
+      collection do
+        get :bulk_reassignment_file
+        delete :leave
+      end
     end
 
     resources :group_links, only: [:update, :destroy], constraints: { id: /\d+|:id/ }

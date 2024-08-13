@@ -275,10 +275,10 @@ class Repository
     false
   end
 
-  def rm_branch(user, branch_name)
+  def rm_branch(user, branch_name, target_sha: nil)
     before_remove_branch
 
-    raw_repository.rm_branch(branch_name, user: user)
+    raw_repository.rm_branch(branch_name, user: user, target_sha: target_sha)
 
     after_remove_branch
     true

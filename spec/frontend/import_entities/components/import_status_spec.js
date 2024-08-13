@@ -1,6 +1,5 @@
 import { GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { __, s__ } from '~/locale';
 
 import ImportStatus from '~/import_entities/components/import_status.vue';
 import { STATUSES } from '~/import_entities/constants';
@@ -27,7 +26,7 @@ describe('Import entities status component', () => {
       createComponent({
         status: STATUSES.FINISHED,
       });
-      expect(getStatusText()).toBe(__('Complete'));
+      expect(getStatusText()).toBe('Complete');
     });
 
     it('displays finished status as complete when all stats items were processed', () => {
@@ -39,7 +38,7 @@ describe('Import entities status component', () => {
         },
       });
 
-      expect(getStatusText()).toBe(__('Complete'));
+      expect(getStatusText()).toBe('Complete');
       expect(getStatusIcon()).toBe('status-success');
     });
 
@@ -52,7 +51,7 @@ describe('Import entities status component', () => {
         },
       });
 
-      expect(getStatusText()).toBe(s__('Import|Partially completed'));
+      expect(getStatusText()).toBe('Partially completed');
       expect(getStatusIcon()).toBe('status-alert');
     });
   });

@@ -51,6 +51,7 @@ FactoryBot.define do
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
     author { association(:author, :with_namespace) }
+    organization { association :organization, :default }
     project { nil }
 
     trait :secret do

@@ -3,7 +3,6 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { s__ } from '~/locale';
 import EnvironmentFluxResourceSelector from '~/environments/components/environment_flux_resource_selector.vue';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
 import { mockKasTunnelUrl } from './mock_data';
@@ -100,11 +99,11 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
 
       expect(findFluxResourceSelector().props('items')).toEqual([
         {
-          text: s__('Environments|Kustomizations'),
+          text: 'Kustomizations',
           options: [{ value: kustomizationValue, text: kustomizationItem.metadata.name }],
         },
         {
-          text: s__('Environments|HelmReleases'),
+          text: 'HelmReleases',
           options: [{ value: helmReleaseValue, text: helmReleaseItem.metadata.name }],
         },
       ]);
@@ -123,7 +122,7 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
 
       expect(findFluxResourceSelector().props('items')).toEqual([
         {
-          text: s__('Environments|Kustomizations'),
+          text: 'Kustomizations',
           options: [{ value: kustomizationValue, text: kustomizationItem.metadata.name }],
         },
       ]);
@@ -159,9 +158,7 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
       await waitForPromises();
 
       expect(findAlert().text()).toContain(
-        s__(
-          'Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again',
-        ),
+        'Unable to access the following resources from this environment. Check your authorization on the following and try again',
       );
       expect(findAlert().text()).toContain('Kustomization');
       expect(findAlert().text()).toContain('HelmRelease');
@@ -174,9 +171,7 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
       await waitForPromises();
 
       expect(findAlert().text()).toContain(
-        s__(
-          'Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again',
-        ),
+        'Unable to access the following resources from this environment. Check your authorization on the following and try again',
       );
       expect(findAlert().text()).toContain('Kustomization');
       expect(findAlert().text()).not.toContain('HelmRelease');

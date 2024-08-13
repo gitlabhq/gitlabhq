@@ -45,7 +45,7 @@ Each level of alert contains a uniquely shaped and color-coded icon to help you 
 
 Alerts contain one of the following icons:
 
-<!-- vale gitlab.SubstitutionWarning = NO -->
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
 
 | Severity | Icon                    | Color (hexadecimal) |
 |----------|-------------------------|---------------------|
@@ -56,7 +56,7 @@ Alerts contain one of the following icons:
 | Info     | **{severity-info}**     | `#418cd8`           |
 | Unknown  | **{severity-unknown}**  | `#bababa`           |
 
-<!-- vale gitlab.SubstitutionWarning = YES -->
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 ## Alert details page
 

@@ -11,7 +11,7 @@ module Sidebars
 
         override :title
         def title
-          s_('Admin|Deploy Keys')
+          s_('Admin|Deploy keys')
         end
 
         override :sprite_icon

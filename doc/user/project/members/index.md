@@ -354,11 +354,12 @@ You can prevent users from requesting access to a project.
 Prerequisites:
 
 - You must have the Owner role for the project.
+- The project must be public.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Under **Project visibility**, select **Users can request access**.
+1. Under **Project visibility**, ensure the **Users can request access** checkbox is not selected.
 1. Select **Save changes**.
 
 ## Membership and visibility rights

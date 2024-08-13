@@ -10,7 +10,7 @@ export default class LegacyTemplateSelector {
     this.$dropdownContainer = wrapper;
     this.$filenameInput = $input || $('#file_name');
     this.dropdownIcon = dropdown[0].querySelector('.dropdown-menu-toggle-icon');
-    this.loadingIcon = loadingIconForLegacyJS({ classes: ['gl-display-none'] });
+    this.loadingIcon = loadingIconForLegacyJS({ classes: ['gl-hidden'] });
     this.dropdownIcon.parentNode.insertBefore(this.loadingIcon, this.dropdownIcon.nextSibling);
 
     this.initDropdown(dropdown, data);
@@ -99,12 +99,12 @@ export default class LegacyTemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.loadingIcon.classList.remove('gl-display-none');
-    this.dropdownIcon.classList.add('gl-display-none');
+    this.loadingIcon.classList.remove('gl-hidden');
+    this.dropdownIcon.classList.add('gl-hidden');
   }
 
   stopLoadingSpinner() {
-    this.loadingIcon.classList.add('gl-display-none');
-    this.dropdownIcon.classList.remove('gl-display-none');
+    this.loadingIcon.classList.add('gl-hidden');
+    this.dropdownIcon.classList.remove('gl-hidden');
   }
 }

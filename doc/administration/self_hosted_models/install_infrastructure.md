@@ -119,7 +119,8 @@ python3 scripts/custom_models/create_index.py --version_tag="{gitlab-version}"
 #### Find the AI Gateway release
 
 In a production environment, you should set your deployment to a specific
-GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example:
+GitLab AI Gateway. In the [AI Gateway container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&sort=desc&search[]=gitlab), find the image that corresponds to the [version of your GitLab instance](../../user/version.md). For example, if your GitLab instance
+has version `17.2.0-ee`, then use `registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:gitlab-v17.2.0`.
 
 ```shell
 docker run -e AIGW_CUSTOM_MODELS__ENABLED=true \
@@ -128,10 +129,8 @@ docker run -e AIGW_CUSTOM_MODELS__ENABLED=true \
    -e AIGW_AUTH__BYPASS_EXTERNAL=true \
    -e AIGW_FASTAPI__DOCS_URL="/docs"\
    -e AIGW_FASTAPI__API_PORT=5052 \
-   registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.11.0`
+   <image>
 ```
-
-To set your deployment to the latest stable release, use the `latest` tag to run the latest stable release.
 
 The arguments `AIGW_FASTAPI__OPENAPI_URL` and `AIGW_FASTAPI__DOCS_URL` are not
 mandatory, but are useful for debugging. From the host, accessing `http://localhost:5052/docs`

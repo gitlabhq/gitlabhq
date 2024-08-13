@@ -1,0 +1,10 @@
+#import "../fragments/job.fragment.graphql"
+
+mutation retryPipelineMiniGraphJob($id: CiProcessableID!) {
+  jobRetry(input: { id: $id }) {
+    job {
+      ...Job
+    }
+    errors
+  }
+}

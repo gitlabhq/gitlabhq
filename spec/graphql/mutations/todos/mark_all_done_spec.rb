@@ -50,6 +50,8 @@ RSpec.describe Mutations::Todos::MarkAllDone do
   end
 
   def mutation_for(user)
-    described_class.new(object: nil, context: { current_user: user }, field: nil)
+    query = GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {})
+    query_context = GraphQL::Query::Context.new(query: query, values: { current_user: user })
+    described_class.new(object: nil, context: query_context, field: nil)
   end
 end

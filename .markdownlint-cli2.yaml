@@ -16,7 +16,12 @@ config:
     style: "atx"
   hr-style:                         # MD035
     style: "---"
-  line-length: false                # MD013
+  line-length:                      # MD013
+    code_blocks: false
+    tables: false
+    headings: true
+    heading_line_length: 100
+    line_length: 800
   no-duplicate-heading:             # MD024
     siblings_only: true
   no-emphasis-as-heading: false     # MD036

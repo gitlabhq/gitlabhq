@@ -73,7 +73,7 @@
 .todo-body {
   p {
     display: inline;
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 
   pre.code.highlight {
@@ -86,9 +86,10 @@
     border-radius: $gl-border-radius-base;
     display: inline-flex;
     background: var(--gray-50, $gray-50);
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-label-scoped {
     --label-inset-border: inset 0 0 0 1px currentColor;
   }

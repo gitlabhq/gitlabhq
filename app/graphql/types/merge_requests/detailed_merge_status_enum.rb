@@ -57,6 +57,15 @@ module Types
       value 'APPROVALS_SYNCING',
         value: :approvals_syncing,
         description: 'Merge request approvals currently syncing.'
+      value 'LOCKED_PATHS',
+        value: :locked_paths,
+        description: 'Merge request includes locked paths.'
+      value 'LOCKED_LFS_FILES',
+        value: :locked_lfs_files,
+        description: 'Merge request includes locked LFS files.'
+      value 'SECURITY_POLICIES_EVALUATING',
+        value: :security_policy_evaluation,
+        description: 'All security policies must be evaluated.'
     end
   end
 end

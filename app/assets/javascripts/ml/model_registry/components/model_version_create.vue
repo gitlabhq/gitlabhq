@@ -173,7 +173,7 @@ export default {
       :title="$options.modal.title"
       :action-primary="actionPrimary"
       :action-secondary="$options.modal.actionSecondary"
-      size="sm"
+      size="lg"
       @primary="create"
       @secondary="resetModal"
     >

@@ -266,6 +266,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
         context 'when new_broadcast_message_dismissal feature flag is enabled' do
           before do
+            allow(Gitlab::AppLogger).to receive(:info).and_call_original
             stub_feature_flags(new_broadcast_message_dismissal: true)
           end
 
@@ -771,6 +772,31 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
         expect(response).to redirect_to(new_user_session_path)
         expect(controller.current_user).to be_nil
+      end
+    end
+
+    context 'clearing browser data' do
+      let(:user) { create(:user) }
+
+      before do
+        cookies[:test_cookie] = 'test-value'
+        cookies.encrypted[:test_encrypted_cookie] = 'test-value'
+        cookies.signed[:test_signed_cookie] = 'test-value'
+      end
+
+      it 'clears all cookies known by Rails' do
+        delete :destroy
+
+        %w[test_cookie test_encrypted_cookie test_signed_cookie].each do |key|
+          expect(response.cookies).to have_key(key)
+          expect(response.cookies[key]).to be_nil
+        end
+      end
+
+      it 'sends Clear-Site-Data header for all non-cookie data' do
+        delete :destroy
+
+        expect(response.headers['Clear-Site-Data']).to eq('"cache", "storage", "executionContexts", "clientHints"')
       end
     end
   end

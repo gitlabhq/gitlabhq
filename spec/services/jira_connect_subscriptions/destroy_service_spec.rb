@@ -17,43 +17,11 @@ RSpec.describe JiraConnectSubscriptions::DestroyService, feature_category: :inte
     subject(:result) { described_class.new(subscription, jira_user).execute }
 
     context 'when subscription namespace has descendants with inheriting Jira Cloud app integration' do
-      let_it_be(:subgroup_1) { create(:group, parent: group) }
-      let_it_be(:subgroup_2) { create(:group, parent: group) }
-      let_it_be(:project_1) { create(:project, group: subgroup_1) }
+      it 'destroys the subscription, and schedules JiraCloudAppDeactivationWorker' do
+        expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group.id)
 
-      let_it_be(:group_integration) { create(:jira_cloud_app_integration, :group, group: group) }
-      let_it_be(:non_inheriting_asana_integration) do
-        create(:asana_integration, :group, group: subgroup_2, inherit_from_id: nil)
-      end
-
-      let_it_be(:non_inheriting_jira_cloud_app_integration) do
-        create(:jira_cloud_app_integration, :group, group: subgroup_2, inherit_from_id: nil)
-      end
-
-      let_it_be(:inheriting_jira_cloud_app_integration) do
-        create(:jira_cloud_app_integration, :group, group: subgroup_1, inherit_from_id: group_integration.id)
-      end
-
-      let_it_be(:inheriting_jira_cloud_app_project_integration) do
-        create(:jira_cloud_app_integration, project: project_1, inherit_from_id: group_integration.id)
-      end
-
-      it 'destroys the subscription, deactivates the integration, and schedules PropagateIntegrationWorker' do
         expect { result }.to change { JiraConnectSubscription.count }.by(-1)
-        expect(inheriting_jira_cloud_app_integration.reload).not_to be_active
-        expect(inheriting_jira_cloud_app_project_integration.reload).not_to be_active
-        expect(non_inheriting_jira_cloud_app_integration.reload).not_to be_active
-        expect(non_inheriting_asana_integration.reload).to be_active
-        expect(result).to be_success
-      end
-    end
 
-    context 'when subscription namespace does not have a Jira Cloud app integration' do
-      let_it_be(:other_integration) { create(:jira_cloud_app_integration) }
-
-      it 'destroys the subscription but does not schedule PropagateIntegrationWorker' do
-        expect { result }.to change { JiraConnectSubscription.count }.by(-1)
-        expect(other_integration.reload).to be_active
         expect(result).to be_success
       end
     end
@@ -64,9 +32,10 @@ RSpec.describe JiraConnectSubscriptions::DestroyService, feature_category: :inte
       end
 
       it 'returns an error' do
-        expect(Integration).not_to receive(:descendants_from_self_or_ancestors_from)
+        expect(JiraConnect::JiraCloudAppDeactivationWorker).not_to receive(:perform_async)
 
         expect { result }.not_to change { JiraConnectSubscription.count }
+
         expect(result).to be_error
       end
     end
@@ -75,9 +44,10 @@ RSpec.describe JiraConnectSubscriptions::DestroyService, feature_category: :inte
       subject(:result) { described_class.new(nil, jira_user).execute }
 
       it 'returns an error' do
-        expect(Integration).not_to receive(:descendants_from_self_or_ancestors_from)
+        expect(JiraConnect::JiraCloudAppDeactivationWorker).not_to receive(:perform_async)
 
         expect { result }.not_to change { JiraConnectSubscription.count }
+
         expect(result).to be_error
       end
     end
@@ -86,7 +56,7 @@ RSpec.describe JiraConnectSubscriptions::DestroyService, feature_category: :inte
       let(:jira_user_is_admin) { false }
 
       it 'returns an error with a forbidden message' do
-        expect(Integration).not_to receive(:descendants_from_self_or_ancestors_from)
+        expect(JiraConnect::JiraCloudAppDeactivationWorker).not_to receive(:perform_async)
 
         expect { result }.not_to change { JiraConnectSubscription.count }
         expect(result).to be_error

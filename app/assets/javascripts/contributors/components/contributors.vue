@@ -203,24 +203,24 @@ export default {
     </div>
 
     <template v-else-if="showChart">
-      <div class="gl-border-b gl-border-gray-100 gl-mb-6 gl-bg-gray-10 gl-py-5">
-        <div class="gl-display-flex">
-          <div class="gl-mr-3">
-            <ref-selector
-              v-model="selectedBranch"
-              :project-id="projectId"
-              :enabled-ref-types="$options.refTypes"
-              :translations="$options.i18n.refSelectorTranslations"
-              @input="visitBranch"
-            />
-          </div>
-          <gl-button :href="commitsPath" data-testid="history-button"
-            >{{ $options.i18n.history }}
-          </gl-button>
+      <div class="gl-flex">
+        <div class="gl-mr-3">
+          <ref-selector
+            v-model="selectedBranch"
+            :project-id="projectId"
+            :enabled-ref-types="$options.refTypes"
+            :translations="$options.i18n.refSelectorTranslations"
+            @input="visitBranch"
+          />
         </div>
+        <gl-button :href="commitsPath" data-testid="history-button"
+          >{{ $options.i18n.history }}
+        </gl-button>
       </div>
 
-      <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
+      <h4 class="gl-mb-2 gl-mt-5">
+        {{ __('Commits to') }} <code>{{ branch }}</code>
+      </h4>
       <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
       <contributor-area-chart
         class="gl-mb-5"

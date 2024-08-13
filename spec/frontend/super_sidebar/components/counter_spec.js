@@ -1,6 +1,5 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { __ } from '~/locale';
 import Counter from '~/super_sidebar/components/counter.vue';
 
 describe('Counter component', () => {
@@ -10,7 +9,7 @@ describe('Counter component', () => {
     count: 3,
     href: '',
     icon: 'issues',
-    label: __('Issues'),
+    label: 'Issues',
   };
 
   const findButton = () => wrapper.find('button');

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+<report name="gitlab-jacoco-coverage-test">
+  <sessioninfo id="runner--azerasq-project-36665609-concurrent-0-54d28570" start="1654178605407" dump="1654178652125" />
+  <package name="org/acme">
+    <class name="org/acme/ExampleResource" sourcefilename="ExampleResource.java">
+      <method name="&lt;init&gt;" desc="()V" line="9">
+        <counter type="INSTRUCTION" missed="0" covered="3" />
+        <counter type="LINE" missed="0" covered="1" />
+        <counter type="COMPLEXITY" missed="0" covered="1" />
+        <counter type="METHOD" missed="0" covered="1" />
+      </method>
+      <method name="hello" desc="()Ljava/lang/String;" line="14">
+        <counter type="INSTRUCTION" missed="0" covered="2" />
+        <counter type="LINE" missed="0" covered="1" />
+        <counter type="COMPLEXITY" missed="0" covered="1" />
+        <counter type="METHOD" missed="0" covered="1" />
+      </method>
+      <counter type="INSTRUCTION" missed="0" covered="5" />
+      <counter type="LINE" missed="0" covered="2" />
+      <counter type="COMPLEXITY" missed="0" covered="2" />
+      <counter type="METHOD" missed="0" covered="2" />
+      <counter type="CLASS" missed="0" covered="1" />
+    </class>
+    <class name="org/acme/AnotherResource" sourcefilename="AnotherResource.java">
+      <method name="&lt;init&gt;" desc="()V" line="9">
+        <counter type="INSTRUCTION" missed="3" covered="0" />
+        <counter type="LINE" missed="1" covered="0" />
+        <counter type="COMPLEXITY" missed="1" covered="0" />
+        <counter type="METHOD" missed="1" covered="0" />
+      </method>
+      <method name="coucou" desc="()Ljava/lang/String;" line="14">
+        <counter type="INSTRUCTION" missed="2" covered="0" />
+        <counter type="LINE" missed="1" covered="0" />
+        <counter type="COMPLEXITY" missed="1" covered="0" />
+        <counter type="METHOD" missed="1" covered="0" />
+      </method>
+      <counter type="INSTRUCTION" missed="5" covered="0" />
+      <counter type="LINE" missed="2" covered="0" />
+      <counter type="COMPLEXITY" missed="2" covered="0" />
+      <counter type="METHOD" missed="2" covered="0" />
+      <counter type="CLASS" missed="1" covered="0" />
+    </class>
+    <sourcefile name="AnotherResource.java">
+      <line nr="9" mi="3" ci="0" mb="0" cb="0" />
+      <line nr="14" mi="2" ci="0" mb="0" cb="0" />
+      <counter type="INSTRUCTION" missed="5" covered="0" />
+      <counter type="LINE" missed="2" covered="0" />
+      <counter type="COMPLEXITY" missed="2" covered="0" />
+      <counter type="METHOD" missed="2" covered="0" />
+      <counter type="CLASS" missed="1" covered="0" />
+    </sourcefile>
+    <sourcefile name="ExampleResource.java">
+      <line nr="9" mi="0" ci="3" mb="0" cb="0" />
+      <line nr="14" mi="0" ci="2" mb="0" cb="0" />
+      <counter type="INSTRUCTION" missed="0" covered="5" />
+      <counter type="LINE" missed="0" covered="2" />
+      <counter type="COMPLEXITY" missed="0" covered="2" />
+      <counter type="METHOD" missed="0" covered="2" />
+      <counter type="CLASS" missed="0" covered="1" />
+    </sourcefile>
+    <counter type="INSTRUCTION" missed="5" covered="5" />
+    <counter type="LINE" missed="2" covered="2" />
+    <counter type="COMPLEXITY" missed="2" covered="2" />
+    <counter type="METHOD" missed="2" covered="2" />
+    <counter type="CLASS" missed="1" covered="1" />
+  </package>
+  <counter type="INSTRUCTION" missed="5" covered="5" />
+  <counter type="LINE" missed="2" covered="2" />
+  <counter type="COMPLEXITY" missed="2" covered="2" />
+  <counter type="METHOD" missed="2" covered="2" />
+  <counter type="CLASS" missed="1" covered="1" />
+</report>

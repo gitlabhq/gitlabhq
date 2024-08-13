@@ -77,7 +77,7 @@ Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching bui
 Depending on your instance type, you can enable or disable Auto DevOps at the
 following levels:
 
-| Instance type       | [Project](#at-the-project-level) | [Group](#at-the-group-level) | [Instance](#at-the-instance-level) (Admin area)  |
+| Instance type       | [Project](#per-project) | [Group](#per-group) | [Instance](#per-instance) (**Admin** area) |
 |---------------------|------------------------|------------------------|------------------------|
 | GitLab SaaS         | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 | GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
@@ -85,12 +85,12 @@ following levels:
 Before enabling Auto DevOps, consider [preparing it for deployment](requirements.md). If you don't, Auto DevOps can build and test your app,
 but cannot deploy it.
 
-#### At the project level
+#### Per project
 
 To use Auto DevOps for individual projects, you can enable it in a
 project-by-project basis. If you intend to use it for more projects,
-you can enable it for a [group](#at-the-group-level) or an
-[instance](#at-the-instance-level). This can save you the time of
+you can enable it for a [group](#per-group) or an
+[instance](#per-instance). This can save you the time of
 enabling it in each project.
 
 Prerequisites:
@@ -114,9 +114,9 @@ GitLab triggers the Auto DevOps pipeline on the default branch.
 To disable it, follow the same process and clear the
 **Default to Auto DevOps pipeline** checkbox.
 
-#### At the group level
+#### Per group
 
-When you enable Auto DevOps at the group level, the subgroups and
+When you enable Auto DevOps for a group, the subgroups and
 projects in that group inherit the configuration. You can save time by
 enabling Auto DevOps for a group instead of enabling it for each
 subgroup or project.
@@ -136,10 +136,10 @@ To enable Auto DevOps for a group:
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Select **Save changes**.
 
-To disable Auto DevOps at the group level, follow the same process and
+To disable Auto DevOps for a group, follow the same process and
 clear the **Default to Auto DevOps pipeline** checkbox.
 
-After enabling Auto DevOps at the group level, you can trigger the
+After enabling Auto DevOps for a group, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -147,18 +147,18 @@ Auto DevOps pipeline for any project that belongs to that group:
 1. Select **Build > Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
 
-#### At the instance level
+#### Per instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-To enable Auto DevOps by default for all projects, you can enable it at the instance level.
+To enable Auto DevOps by default for all projects, you can enable it for the entire instance.
 You can still disable Auto DevOps for each group and project
 where you don't want to run it.
 
 Even when disabled for an instance, group Owners and project Maintainers
-can still enable Auto DevOps at the group and project levels.
+can still enable Auto DevOps for specific groups and projects.
 
 Prerequisites:
 
@@ -166,7 +166,7 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -180,7 +180,7 @@ GitLab administrators can change this in the [Auto DevOps settings](../../admini
 If a `.gitlab-ci.yml` file is present,
 it remains unchanged and Auto DevOps does not affect it.
 
-To disable Auto DevOps in the instance level, follow the same process
+To disable Auto DevOps for the instance, follow the same process
 and clear the **Default to Auto DevOps pipeline** checkbox.
 
 ### Deploy your app to a cloud provider

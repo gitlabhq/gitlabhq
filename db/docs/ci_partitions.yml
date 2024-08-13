@@ -8,4 +8,4 @@ description: Database partitioning metadata for CI tables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96856
 milestone: '15.4'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458492
+exempt_from_sharding: true  # to be leveraged via Org Mover

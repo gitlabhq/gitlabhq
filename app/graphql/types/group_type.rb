@@ -336,6 +336,12 @@ module Types
       method: :math_rendering_limits_enabled?,
       description: 'Indicates if math rendering limits are used for this group.'
 
+    field :is_linked_to_subscription,
+      GraphQL::Types::Boolean,
+      null: true,
+      method: :linked_to_subscription?,
+      description: 'Indicates if group is linked to a subscription.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

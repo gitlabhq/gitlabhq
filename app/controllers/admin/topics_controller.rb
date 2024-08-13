@@ -9,7 +9,7 @@ class Admin::TopicsController < Admin::ApplicationController
   feature_category :groups_and_projects
 
   def index
-    @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(params[:page]).without_count
+    @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(pagination_params[:page]).without_count
   end
 
   def new
@@ -60,7 +60,7 @@ class Admin::TopicsController < Admin::ApplicationController
   private
 
   def topic
-    @topic ||= Projects::Topic.find(params[:id])
+    @topic ||= Projects::Topic.find(params.permit(:id)[:id])
   end
 
   def topic_params

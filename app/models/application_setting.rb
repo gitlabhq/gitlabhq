@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationSetting < MainClusterwide::ApplicationRecord
+class ApplicationSetting < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
@@ -16,10 +16,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
   ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
-  ignore_columns %i[toggle_security_policies_policy_scope lock_toggle_security_policies_policy_scope], remove_with: '17.2', remove_after: '2024-07-12'
+  ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
+  ignore_columns %i[openai_api_key anthropic_api_key vertex_ai_credentials vertex_ai_access_token], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'
 
-  columns_changing_default :security_policy_scheduled_scans_max_concurrency
+  columns_changing_default %i[ci_max_total_yaml_size_bytes max_yaml_size_bytes]
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -526,18 +527,20 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :ai_action_api_rate_limit,
       :bulk_import_concurrent_pipeline_batch_limit,
       :code_suggestions_api_rate_limit,
-      :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
+      :concurrent_github_import_jobs_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
       :inactive_projects_delete_after_months,
+      :max_artifacts_content_include_size,
       :max_artifacts_size,
       :max_attachment_size,
       :max_yaml_depth,
       :max_yaml_size_bytes,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
       :project_jobs_api_rate_limit,
+      :session_expire_delay,
       :snippet_size_limit,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
@@ -580,6 +583,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :downstream_pipeline_trigger_limit_per_project_user_sha,
       :gitlab_shell_operation_limit,
       :group_api_limit,
+      :group_invited_groups_api_limit,
       :group_projects_api_limit,
       :group_shared_groups_api_limit,
       :groups_api_limit,
@@ -603,7 +607,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :raw_blob_request_limit,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
-      :session_expire_delay,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :terminal_max_session_time,
@@ -619,6 +622,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
     downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
     group_api_limit: [:integer, { default: 400 }],
+    group_invited_groups_api_limit: [:integer, { default: 60 }],
     group_projects_api_limit: [:integer, { default: 600 }],
     group_shared_groups_api_limit: [:integer, { default: 60 }],
     groups_api_limit: [:integer, { default: 200 }],
@@ -770,10 +774,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
-  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
-  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create

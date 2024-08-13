@@ -21,8 +21,9 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     let(:chunk_code) { 200 }
+    let(:chunk_content) { 'some chunk context' }
     let(:chunk_double) do
-      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: 'some chunk context')
+      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: chunk_content)
     end
 
     subject(:service) do
@@ -350,6 +351,38 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
         it 'raises an error when the filename is not provided in the request header' do
           expect(subject.execute).to eq(File.join(tmpdir, "x.b"))
+        end
+      end
+    end
+
+    context 'when logging a chunk context' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:file_size_limit) { 1 }
+      let(:import_logger) { instance_double(BulkImports::Logger) }
+
+      before do
+        allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
+        allow(import_logger).to receive(:warn)
+      end
+
+      where(:input, :output) do
+        String.new("\x8d\x21\x3f\xad\x76", encoding: 'UTF-8') | "�!?�v"
+        String.new("\x1F\x8B\b\x00\x1F", encoding: 'ASCII-8BIT') | "\u001F�\b\u0000\u001F"
+      end
+
+      with_them do
+        let(:chunk_content) { input }
+
+        it 'scrubs non-printable characters from the chunk' do
+          expect(import_logger).to receive(:warn).once.with(
+            a_hash_including(last_chunk_context: output)
+          )
+
+          expect { service.execute }.to raise_error(
+            described_class::ServiceError,
+            'File size 100 B exceeds limit of 1 B'
+          )
         end
       end
     end

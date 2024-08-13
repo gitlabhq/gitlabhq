@@ -22,7 +22,7 @@ describe('ml/model_registry/components/empty_state.vue', () => {
         description: 'Store and manage your machine learning models and versions',
         primaryButtonText: 'Add a model',
         primaryButtonLink:
-          '/help/user/project/ml/model_registry/index#creating-machine-learning-models-and-model-versions',
+          '/help/user/project/ml/model_registry/index#create-machine-learning-models-by-using-the-ui',
         svgPath: 'file-mock',
       });
     });
@@ -39,7 +39,7 @@ describe('ml/model_registry/components/empty_state.vue', () => {
         description: 'Use versions to track performance, parameters, and metadata',
         primaryButtonText: 'Create a model version',
         primaryButtonLink:
-          '/help/user/project/ml/model_registry/index#creating-machine-learning-models-and-model-versions',
+          '/help/user/project/ml/model_registry/index#create-a-model-version-by-using-the-ui',
         svgPath: 'file-mock',
       });
     });

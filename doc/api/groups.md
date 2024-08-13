@@ -454,7 +454,7 @@ To distinguish between a project in the group and a project shared to the group,
 
 ## List a group's shared groups
 
-Get a list of groups shared to this group. When accessed without authentication, only public shared groups are returned.
+Get a list of groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
@@ -463,10 +463,12 @@ Parameters:
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `skip_groups`                         | array of integers | no       | Skip the specified group IDs |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
 ```plaintext
@@ -523,6 +525,79 @@ Example response:
     "shared_runners_setting": "enabled",
     "ldap_cn": "nil",
     "ldap_access": "nil",
+    "wiki_access_level": "enabled"
+  }
+]
+```
+
+## List a group's invited groups
+
+Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+```plaintext
+GET /groups/:id/invited_groups
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 33,
+    "web_url": "http://gitlab.example.com/groups/flightjs",
+    "name": "Flightjs",
+    "path": "flightjs",
+    "description": "Illo dolorum tempore eligendi minima ducimus provident.",
+    "visibility": "public",
+    "share_with_group_lock": false,
+    "require_two_factor_authentication": false,
+    "two_factor_grace_period": 48,
+    "project_creation_level": "developer",
+    "auto_devops_enabled": null,
+    "subgroup_creation_level": "maintainer",
+    "emails_disabled": false,
+    "emails_enabled": true,
+    "mentions_disabled": null,
+    "lfs_enabled": true,
+    "math_rendering_limits_enabled": true,
+    "lock_math_rendering_limits_enabled": false,
+    "default_branch": null,
+    "default_branch_protection": 2,
+    "default_branch_protection_defaults": {
+      "allowed_to_push": [
+        {
+          "access_level": 40
+        }
+      ],
+      "allow_force_push": false,
+      "allowed_to_merge": [
+        {
+          "access_level": 40
+        }
+      ],
+      "developer_can_initial_push": false
+    },
+    "avatar_url": null,
+    "request_access_enabled": true,
+    "full_name": "Flightjs",
+    "full_path": "flightjs",
+    "created_at": "2024-07-09T10:31:08.307Z",
+    "parent_id": null,
+    "organization_id": 1,
+    "shared_runners_setting": "enabled",
+    "ldap_cn": null,
+    "ldap_access": null,
     "wiki_access_level": "enabled"
   }
 ]
@@ -1321,7 +1396,7 @@ Parameters:
 The response is `202 Accepted` if the user has authorization.
 
 NOTE:
-A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
+A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-group) with a different group.
 
 ## Restore group marked for deletion
 
@@ -1633,7 +1708,7 @@ Supported attributes:
 | `id`          | integer | yes      | ID of a service account user.                            |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this service account user. |
 
-### Create Personal Access Token for Service Account User
+### Create personal access token for Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
@@ -1670,7 +1745,7 @@ Example response:
 | `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 | `expires_at`      | date | no      | Personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
-### Rotate a Personal Access Token for Service Account User
+### Rotate a personal access token for Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
@@ -1803,6 +1878,10 @@ DETAILS:
 Also called Group hooks and Webhooks.
 These are different from [system hooks](system_hooks.md) that are system wide and [project hooks](projects.md#hooks) that are limited to one project.
 
+Prerequisites:
+
+- You must be an Administrator or have the Owner role for the group.
+
 ### List group hooks
 
 Get a list of group hooks
@@ -1865,6 +1944,271 @@ GET /groups/:id/hooks/:hook_id
     }
   ]
 }
+```
+
+### Get group hook events
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+
+Get a list of events for a specific group hook in the past 7 days from start date.
+
+```plaintext
+GET /groups/:id/hooks/:hook_id/events
+```
+
+| Attribute | Type              | Required | Description                                                                                                                                                                                 |
+|-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                                                                                                          |
+| `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
+| `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
+| `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
+| `per_page`         | integer | No | Number of records to return per page. Defaults to `20`.                                                                                                                                     |
+
+```json
+[
+  {
+    "id": 1,
+    "url": "https://example.net/",
+    "trigger": "push_hooks",
+    "request_headers": {
+      "Content-Type": "application/json",
+      "User-Agent": "GitLab/17.1.0-pre",
+      "X-Gitlab-Event": "Push Hook",
+      "X-Gitlab-Webhook-UUID": "3c5c0404-c866-44bc-a5f6-452bb1bfc76e",
+      "X-Gitlab-Instance": "https://gitlab.example.com",
+      "X-Gitlab-Event-UUID": "9cebe914-4827-408f-b014-cfa23a47a35f",
+      "X-Gitlab-Token": "[REDACTED]"
+    },
+    "request_data": {
+      "object_kind": "push",
+      "event_name": "push"
+    }
+      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "ref": "refs/heads/master",
+      "ref_protected": true,
+      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "message": null,
+      "user_id": 1,
+      "user_name": "Administrator",
+      "user_username": "root",
+      "user_email": null,
+      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
+      "project_id": 7,
+      "project": {
+        "id": 7,
+        "name": "Flight",
+        "description": "Incidunt ea ab officia a veniam.",
+        "web_url": "https://gitlab.example.com/flightjs/Flight",
+        "avatar_url": null,
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "namespace": "Flightjs",
+        "visibility_level": 10,
+        "path_with_namespace": "flightjs/Flight",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
+      },
+      "commits": [
+        {
+          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
+          "message": "v1.5.2\n",
+          "title": "v1.5.2",
+          "timestamp": "2017-06-19T14:39:53-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
+          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
+          "timestamp": "2017-06-16T10:26:39-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "author": {
+            "name": "angus croll",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
+          "message": "publish lib and index to npm\n",
+          "title": "publish lib and index to npm",
+          "timestamp": "2017-06-16T10:23:04-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        }
+      ],
+      "total_commits_count": 3,
+      "push_options": {},
+      "repository": {
+        "name": "Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "description": "Incidunt ea ab officia a veniam.",
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "visibility_level": 10
+      }
+    },
+    "response_headers": {
+      "Date": "Sun, 26 May 2024 03:03:17 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "16",
+      "Connection": "close",
+      "X-Powered-By": "Express",
+      "Access-Control-Allow-Origin": "*",
+      "X-Pd-Status": "sent to primary"
+    },
+    "response_body": "{\"success\":true}",
+    "execution_duration": 1.0906479999999874,
+    "response_status": "200"
+  },
+  {
+    "id": 2,
+    "url": "https://example.net/",
+    "trigger": "push_hooks",
+    "request_headers": {
+      "Content-Type": "application/json",
+      "User-Agent": "GitLab/17.1.0-pre",
+      "X-Gitlab-Event": "Push Hook",
+      "X-Gitlab-Webhook-UUID": "a753eedb-1d72-4549-9ca7-eac8ea8e50dd",
+      "X-Gitlab-Instance": "https://gitlab.example.com:3000",
+      "X-Gitlab-Event-UUID": "842d7c3e-3114-4396-8a95-66c084d53cb1",
+      "X-Gitlab-Token": "[REDACTED]"
+    },
+    "request_data": {
+      "object_kind": "push",
+      "event_name": "push",
+      "before": "468abc807a2b2572f43e72c743b76cee6db24025",
+      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "ref": "refs/heads/master",
+      "ref_protected": true,
+      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "message": null,
+      "user_id": 1,
+      "user_name": "Administrator",
+      "user_username": "root",
+      "user_email": null,
+      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
+      "project_id": 7,
+      "project": {
+        "id": 7,
+        "name": "Flight",
+        "description": "Incidunt ea ab officia a veniam.",
+        "web_url": "https://gitlab.example.com/flightjs/Flight",
+        "avatar_url": null,
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "namespace": "Flightjs",
+        "visibility_level": 10,
+        "path_with_namespace": "flightjs/Flight",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
+      },
+      "commits": [
+        {
+          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
+          "message": "v1.5.2\n",
+          "title": "v1.5.2",
+          "timestamp": "2017-06-19T14:39:53-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
+          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
+          "timestamp": "2017-06-16T10:26:39-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "author": {
+            "name": "angus croll",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
+          "message": "publish lib and index to npm\n",
+          "title": "publish lib and index to npm",
+          "timestamp": "2017-06-16T10:23:04-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        }
+      ],
+      "total_commits_count": 3,
+      "push_options": {},
+      "repository": {
+        "name": "Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "description": "Incidunt ea ab officia a veniam.",
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "visibility_level": 10
+      }
+    },
+    "response_headers": {
+      "Date": "Sun, 26 May 2024 03:03:19 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "16",
+      "Connection": "close",
+      "X-Powered-By": "Express",
+      "Access-Control-Allow-Origin": "*",
+      "X-Pd-Status": "sent to primary"
+    },
+    "response_body": "{\"success\":true}",
+    "execution_duration": 1.0716120000000728,
+    "response_status": "200"
+  }
+]
 ```
 
 ### Add group hook
@@ -2013,13 +2357,13 @@ DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
 
 On success, this endpoint returns the response code `204 No Content`.
 
-## Group Audit Events
+## Group audit events
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
+Group audit events can be accessed via the [Group audit events API](audit_events.md#group-audit-events)
 
 ## Sync group with LDAP
 
@@ -2354,7 +2698,7 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules
+## Push rules
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -2538,9 +2882,9 @@ The following criteria must be met:
 - The group must be a top-level group.
 - You must have the Owner role in the group.
 - The token type is one of:
-  - Personal Access Token
-  - Group Access Token
-  - Project Access Token
+  - Personal access token
+  - Group access token
+  - Project access token
   - Group Deploy Token
 
 Additional token types may be supported at a later date.
@@ -2558,13 +2902,13 @@ If successful, returns [`200 OK`](rest/index.md#status-codes) and
 a JSON representation of the token. The attributes returned will vary by
 token type.
 
-Example request:
+Example request
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --data '{"token":"glpat-1234567890abcdefghij"}' \
+  --data '{"token":"glpat-EXAMPLE"}' \
   --url "https://gitlab.example.com/api/v4/groups/63/tokens/revoke"
 ```
 

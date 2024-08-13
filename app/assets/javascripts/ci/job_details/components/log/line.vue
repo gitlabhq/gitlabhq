@@ -93,7 +93,7 @@ export default {
         h(
           'span',
           {
-            class: 'gl-flex-grow-1 gl-whitespace-pre-wrap',
+            class: 'job-log-line-content',
           },
           parts,
         ),

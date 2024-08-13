@@ -26,12 +26,6 @@ FactoryBot.define do
       after(:build) { |project_member, _| project_member.user.block! }
     end
 
-    trait :banned do
-      after(:create) do |member|
-        create(:namespace_ban, namespace: member.member_namespace.root_ancestor, user: member.user) unless member.owner?
-      end
-    end
-
     trait :awaiting do
       after(:create) do |member|
         member.update!(state: ::Member::STATE_AWAITING)

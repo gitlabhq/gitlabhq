@@ -20,7 +20,7 @@ module ContainerRegistry
       limit: 3,
       cookies: [],
       callback: ->(response_env, request_env) do
-        request_env.request_headers.delete(::FaradayMiddleware::FollowRedirects::AUTH_HEADER)
+        request_env.request_headers.delete(::Faraday::FollowRedirects::Middleware::AUTH_HEADER)
 
         redirect_to = request_env.url
         unless redirect_to.scheme.in?(ALLOWED_REDIRECT_SCHEMES)
@@ -161,7 +161,7 @@ module ContainerRegistry
       @faraday_blob ||= faraday_base do |conn|
         initialize_connection(conn, @options)
 
-        conn.use ::FaradayMiddleware::FollowRedirects, REDIRECT_OPTIONS
+        conn.use ::Faraday::FollowRedirects::Middleware, REDIRECT_OPTIONS
       end
     end
   end

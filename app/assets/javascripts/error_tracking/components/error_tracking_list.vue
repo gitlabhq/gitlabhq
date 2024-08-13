@@ -179,7 +179,7 @@ export default {
       return this.pagination.next ? this.$options.NEXT_PAGE : null;
     },
     errorTrackingHelpUrl() {
-      return helpPagePath('operations/error_tracking.html#integrated-error-tracking');
+      return helpPagePath('operations/integrated_error_tracking');
     },
     showIntegratedDisabledAlert() {
       return !this.isAlertDismissed && this.showIntegratedTrackingDisabledAlert;

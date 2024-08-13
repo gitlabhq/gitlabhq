@@ -90,7 +90,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('does not display active checkmark', () => {
-      expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(true);
+      expect(findActiveIconByIndex(0).classes('gl-invisible')).toBe(true);
     });
 
     describe('when isEnvironmentRequired is false', () => {
@@ -114,6 +114,16 @@ describe('Ci environments dropdown', () => {
     it('shows the `All environments` text and not the wildcard', () => {
       expect(findListboxText()).toContain('All (default)');
       expect(findListboxText()).not.toContain(wildcardScope);
+    });
+  });
+
+  describe('when no environment is selected', () => {
+    beforeEach(() => {
+      createComponent({ props: { selectedEnvironmentScope: '' } });
+    });
+
+    it('shows the placeholder text', () => {
+      expect(findListboxText()).toContain('Select environment or create wildcard');
     });
   });
 

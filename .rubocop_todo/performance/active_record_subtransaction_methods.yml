@@ -40,5 +40,4 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'lib/gitlab/ci/pipeline/seed/processable/resource_group.rb'
     - 'lib/gitlab/ci/trace/chunked_io.rb'
-    - 'lib/gitlab/composer/cache.rb'
     - 'lib/gitlab/issuables_count_for_state.rb'

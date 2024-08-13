@@ -62,6 +62,11 @@ export default {
       required: false,
       default: () => [],
     },
+    workItemAuthorId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   computed: {
     canUpdate() {
@@ -98,7 +103,7 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="isStickyHeaderShowing"
-        class="issue-sticky-header gl-fixed gl-bg-white gl-border-b gl-z-3 gl-py-2"
+        class="issue-sticky-header gl-fixed gl-bg-default gl-border-b gl-z-3 gl-py-2"
         data-testid="work-item-sticky-header"
       >
         <div
@@ -153,12 +158,15 @@ export default {
             :work-item-create-note-email="workItem.createNoteEmail"
             :work-item-state="workItem.state"
             :is-modal="isModal"
+            :work-item-author-id="workItemAuthorId"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)
             "
             @error="$emit('error')"
             @promotedToObjective="$emit('promotedToObjective')"
+            @workItemStateUpdated="$emit('workItemStateUpdated')"
+            @toggleReportAbuseModal="$emit('toggleReportAbuseModal', true)"
           />
         </div>
       </div>

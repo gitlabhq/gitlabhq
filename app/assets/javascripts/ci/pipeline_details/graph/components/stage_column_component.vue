@@ -79,7 +79,7 @@ export default {
   jobClasses: [
     'gl-p-3',
     'gl-border-0',
-    'gl-rounded',
+    'gl-rounded-base',
     'hover:gl-bg-strong',
     'focus:gl-bg-strong',
     'gl-hover-text-gray-900',
@@ -180,7 +180,7 @@ export default {
     <template #stages>
       <div
         data-testid="stage-column-title"
-        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-bold gl-pipeline-job-width gl-text-truncate gl-leading-36 gl-pl-4 -gl-mb-2"
+        class="stage-column-title gl-flex gl-justify-between gl-relative gl-font-bold gl-pipeline-job-width gl-text-truncate gl-leading-36 gl-pl-4 -gl-mb-2"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-17/20">
           {{ name }}

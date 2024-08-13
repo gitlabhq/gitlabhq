@@ -376,6 +376,25 @@ This saves reviewers time and helps authors catch mistakes earlier.
 
 Reviewers are responsible for reviewing the specifics of the chosen solution.
 
+If you are unavailable to review an assigned merge request:
+
+1. Inform the author that you're not available.
+1. Use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) to select a new reviewer. 
+1. Assign the new reviewer to the merge request.  
+
+This demonstrates a [bias for action](https://handbook.gitlab.com/handbook/values/#operate-with-a-bias-for-action) and ensures an efficient MR review progress.
+
+Add a comment like the following:
+
+```plaintext
+Hi <@mr-author>, I'm unavailable for review but I've [spun the roulette wheel](https://gitlab-org.gitlab.io/gitlab-roulette/) for this project and it has selected <@new-reviewer>.
+
+@new-reviewer may you please review this MR when you have time? If you're unavailable, please [spin the roulette wheel](https://gitlab-org.gitlab.io/gitlab-roulette/) again and select and assign a new reviewer, thank-you.
+
+/assign_reviewer <@new-reviewer>
+/unassign_reviewer me
+```
+
 [Review the merge request](#reviewing-a-merge-request) thoroughly.
 
 Verify that the merge request meets all [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).

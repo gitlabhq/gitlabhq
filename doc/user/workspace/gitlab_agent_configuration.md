@@ -1,8 +1,8 @@
 ---
 stage: Create
-group: IDE
+group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure the GitLab agent for remote development as part of setting up a workspace."
+description: "Configure the GitLab agent for workspaces."
 ---
 
 # GitLab agent configuration
@@ -15,7 +15,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-As part of [setting up workspace infrastructure](configuration.md#set-up-workspace-infrastructure), you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab Agent is already installed in the Kubernetes cluster.
+When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure), you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab agent is already installed in the Kubernetes cluster.
 
 Prerequisites:
 
@@ -23,7 +23,7 @@ Prerequisites:
 - The agent must be **allowed** in a group for the purpose of creating workspaces. During workspace creation, users can select allowed agents that are associated with any parent group of the workspace project.
 - The workspace creator must have the Developer role to the project of the agent.
 
-## Agent authorization in a Group for creating workspaces
+## Agent authorization in a group for creating workspaces
 
 > - New authorization strategy [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14025) in GitLab 17.2.
 
@@ -41,7 +41,7 @@ graph TD;
     topGroup[Top Group, allowed Agent 1]
     subgroup1[Subgroup 1, allowed Agent 2]
     subgroup2[Subgroup 2, allowed Agent 3]
-    wp(Woekspace Project, Agent 1, 2 & 3 all available)
+    wp(Workspace Project, Agent 1, 2 & 3 all available)
 
     topGroup --> subgroup1
     subgroup1 --> subgroup2
@@ -86,7 +86,8 @@ To remove an allowed cluster agent from a group:
 
 The status of the selected agent is updated to **Blocked**, and the agent is removed from the **Allowed agents** tab.
 
-Removing an allowed cluster agent from a group does not immediately stop running workspaces using this agent. Running workspaces will stop after the configured termation period, or being manually stopped.
+Removing an allowed cluster agent from a group does not immediately stop running workspaces using this agent.
+Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Legacy agent authorization strategy
 

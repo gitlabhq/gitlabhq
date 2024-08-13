@@ -16,6 +16,7 @@ const DEPENDENCY_REGEX = new RegExp(
   'gm',
 );
 
+// eslint-disable-next-line max-params
 const handleReplace = (original, packageName, version, dependenciesToLink) => {
   const unescapedPackageName = unescape(packageName);
   const unescapedVersion = unescape(version);

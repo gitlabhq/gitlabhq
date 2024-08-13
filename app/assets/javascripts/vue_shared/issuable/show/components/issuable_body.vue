@@ -186,12 +186,12 @@ export default {
           :task-list-update-path="taskListUpdatePath"
         />
         <slot name="secondary-content"></slot>
-        <small v-if="isUpdated" class="edited-text gl-font-sm! gl-text-secondary">
+        <small v-if="isUpdated" class="edited-text !gl-text-sm gl-text-secondary">
           {{ __('Edited') }}
           <time-ago-tooltip :time="issuable.updatedAt" tooltip-placement="bottom" />
           <span v-if="updatedBy">
             {{ __('by') }}
-            <gl-link :href="updatedBy.webUrl" class="author-link gl-font-sm! gl-text-secondary">
+            <gl-link :href="updatedBy.webUrl" class="author-link !gl-text-sm gl-text-secondary">
               <span>{{ updatedBy.name }}</span>
             </gl-link>
           </span>

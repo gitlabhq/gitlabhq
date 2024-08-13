@@ -10,7 +10,12 @@ import axios from '~/lib/utils/axios_utils';
 
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
-import { mergeUrlParams, getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
+import {
+  mergeUrlParams,
+  getLocationHash,
+  getParameterValues,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
@@ -69,7 +74,6 @@ import {
   getNoteFormData,
   convertExpandLines,
   idleCallback,
-  allDiscussionWrappersExpanded,
   prepareLineForRenamedFile,
   parseUrlHashAsFileHash,
   isUrlHashNoteLink,
@@ -405,7 +409,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
 export const setHighlightedRow = ({ commit }, { lineCode, event }) => {
   if (event && event.target.href) {
     event.preventDefault();
-    window.history.replaceState(null, undefined, event.target.href);
+    window.history.replaceState(null, undefined, removeParams(['pin'], event.target.href));
   }
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
@@ -594,11 +598,11 @@ export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {
  * @param {Object} discussion
  */
 export const toggleFileDiscussion = ({ commit }, discussion) => {
-  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, discussion);
+  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, { discussion });
 };
 
-export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
-  const discussionWrappersExpanded = allDiscussionWrappersExpanded(diff);
+export const toggleFileDiscussionWrappers = ({ commit, getters }, diff) => {
+  const discussionWrappersExpanded = getters.diffHasExpandedDiscussions(diff);
   const lineCodesWithDiscussions = new Set();
   const lineHasDiscussion = (line) => Boolean(line?.discussions.length);
   const registerDiscussionLine = (line) => lineCodesWithDiscussions.add(line.line_code);
@@ -612,6 +616,17 @@ export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
         expanded: !discussionWrappersExpanded,
         lineCode,
       });
+    });
+  }
+
+  if (diff.discussions.length) {
+    diff.discussions.forEach((discussion) => {
+      if (discussion.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+        commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, {
+          discussion,
+          expandedOnDiff: !discussionWrappersExpanded,
+        });
+      }
     });
   }
 };

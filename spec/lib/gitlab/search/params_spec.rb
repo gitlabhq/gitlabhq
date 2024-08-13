@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
 
   let(:search) { 'search' }
   let(:group_id) { 123 }
-  let(:params) { { group_id: 123, search: search } }
+  let(:params) { ActionController::Parameters.new(group_id: 123, search: search) }
   let(:detect_abuse) { true }
 
   describe 'detect_abuse conditional' do
@@ -172,7 +172,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     describe 'for confidential' do
-      let(:params) { { group_id: 123, search: search, confidential: input } }
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, confidential: input) }
 
       include_context 'with inputs'
 
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     describe 'for include_archived' do
-      let(:params) { { group_id: 123, search: search, include_archived: input } }
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, include_archived: input) }
 
       include_context 'with inputs'
 
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     describe 'for include_forked' do
-      let(:params) { { group_id: 123, search: search, include_forked: input } }
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, include_forked: input) }
 
       include_context 'with inputs'
 
@@ -204,6 +204,33 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
         it 'transforms param' do
           expect(search_params[:include_forked]).to eq(expected)
         end
+      end
+    end
+  end
+
+  describe 'converts not params' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:input, :expected_key, :expected_value) do
+      { not: { source_branch: 'good-bye' } }              | 'not_source_branch' | 'good-bye'
+      { not: { label_name: %w[hello-world labelName] } }  | 'not_label_name'    | %w[hello-world labelName]
+      { label_name: %w[hello-world labelName] }           | 'label_name'        | %w[hello-world labelName]
+      { source_branch: 'foo-bar' }                        | 'source_branch'     | 'foo-bar'
+    end
+
+    let(:params) { ActionController::Parameters.new(group_id: 123, search: search, **input) }
+
+    with_them do
+      it 'transforms param' do
+        expect(search_params[expected_key]).to eq(expected_value)
+      end
+    end
+
+    context 'when not param is not a hash' do
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, not: 'test') }
+
+      it 'ignores the not param and removes it from params' do
+        expect(search_params['not']).to be_nil
       end
     end
   end

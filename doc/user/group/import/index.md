@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -68,7 +68,7 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-
 
 - Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
 - In GitLab 16.1 and earlier, you should **not** use direct transfer with
-  [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
+  [scheduled scan execution policies](../../../user/application_security/policies/scan_execution_policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
 - In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
   `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
@@ -122,7 +122,7 @@ There's no exact formula to reliably estimate a migration. However, the average 
 | Auto DevOps                 | 0.1                                          |
 | Pipeline Schedules          | 0.5                                          |
 | References                  | 5                                            |
-| Push Rule                   | 0.1                                          |
+| Push rule                   | 0.1                                          |
 
 Though it's difficult to predict migration duration, we've seen:
 
@@ -160,7 +160,6 @@ sidekiq['routing_rules'] = [
   ['*', 'default']
 ]
 
-sidekiq['queue_selector'] = false
 sidekiq['queue_groups'] = [
   # Run two processes just for importers
   'importers',
@@ -170,6 +169,13 @@ sidekiq['queue_groups'] = [
   # Run one 'catchall' process on the default and mailers queues
   'default,mailers'
 ]
+```
+
+If you are using GitLab 16.11 and earlier, explicitly disable any
+[queue selectors](../../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+```ruby
+sidekiq['queue_selector'] = false
 ```
 
 Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches, available by default from GitLab 16.8, makes having enough available workers on

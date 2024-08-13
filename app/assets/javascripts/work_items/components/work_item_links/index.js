@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import WorkItemLinks from './work_item_links.vue';
 
@@ -15,7 +14,6 @@ export default function initWorkItemLinks() {
 
   const {
     fullPath,
-    isGroup,
     registerPath,
     signInPath,
     wiCanAdminLabel,
@@ -34,7 +32,6 @@ export default function initWorkItemLinks() {
     apolloProvider,
     provide: {
       fullPath,
-      isGroup: parseBoolean(isGroup),
       registerPath,
       signInPath,
       // for work item modal

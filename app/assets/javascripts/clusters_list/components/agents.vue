@@ -7,6 +7,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
+import getTreeList from '../graphql/queries/get_tree_list.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
@@ -27,12 +28,10 @@ export default {
       query: getAgentsQuery,
       variables() {
         return {
-          defaultBranchName: this.defaultBranchName,
           projectPath: this.projectPath,
         };
       },
       update(data) {
-        this.updateTreeList(data);
         return data;
       },
       result() {
@@ -40,6 +39,19 @@ export default {
       },
       error() {
         this.queryErrored = true;
+      },
+    },
+    treeList: {
+      query: getTreeList,
+      variables() {
+        return {
+          defaultBranchName: this.defaultBranchName,
+          projectPath: this.projectPath,
+        };
+      },
+      update(data) {
+        this.updateTreeList(data);
+        return data;
       },
     },
   },

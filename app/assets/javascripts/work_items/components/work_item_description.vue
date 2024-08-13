@@ -8,13 +8,18 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import {
+  newWorkItemId,
   newWorkItemFullPath,
   autocompleteDataSources,
   markdownPreviewPath,
 } from '~/work_items/utils';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
+import {
+  i18n,
+  NEW_WORK_ITEM_IID,
+  TRACKING_CATEGORY_SHOW,
+  WIDGET_TYPE_DESCRIPTION,
+} from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 
 export default {
@@ -65,11 +70,6 @@ export default {
       required: false,
       default: true,
     },
-    createFlow: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemTypeName: {
       type: String,
       required: false,
@@ -96,9 +96,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       skip() {
         return !this.workItemIid;
       },
@@ -122,6 +120,9 @@ export default {
     },
   },
   computed: {
+    createFlow() {
+      return this.workItemId === newWorkItemId(this.workItemType);
+    },
     workItemFullPath() {
       return this.createFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)
@@ -167,6 +168,12 @@ export default {
     lastEditedByPath() {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
+    isGroupWorkItem() {
+      return this.workItemNamespaceId.includes('Group');
+    },
+    workItemNamespaceId() {
+      return this.workItem?.namespace?.id || '';
+    },
     markdownPreviewPath() {
       const {
         fullPath,
@@ -176,9 +183,10 @@ export default {
       return markdownPreviewPath({ fullPath, iid, isGroup });
     },
     autocompleteDataSources() {
+      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
       return autocompleteDataSources({
         fullPath: this.fullPath,
-        isGroup: this.isGroup,
+        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
         iid: this.workItemIid,
         workItemTypeId: this.workItem?.workItemType?.id,
       });

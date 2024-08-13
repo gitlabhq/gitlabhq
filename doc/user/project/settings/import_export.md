@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -12,6 +12,11 @@ DETAILS:
 
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
+
+## Known issue
+
+Because of a known issue, you might see error `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.
+For more information, see [troubleshooting information](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
 
 ## Migrate projects by uploading an export file
 
@@ -105,7 +110,7 @@ Before you can migrate projects on a self-managed GitLab instance using file exp
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -273,7 +278,7 @@ DETAILS:
 Administrators can set the maximum import file size one of two ways:
 
 - With the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-- In the [Admin area UI](../../../administration/settings/import_and_export_settings.md#max-import-size).
+- In the [**Admin** area UI](../../../administration/settings/import_and_export_settings.md#max-import-size).
 
 The default is `0` (unlimited).
 
@@ -329,7 +334,7 @@ The maximum import file size depends on whether you import to a GitLab self-mana
 - If importing to a GitLab self-managed instance, you can import a import file of any size. Administrators can change
   this behavior using either:
   - The `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-  - The [Admin area](../../../administration/settings/account_and_limit_settings.md).
+  - The [**Admin** area](../../../administration/settings/account_and_limit_settings.md).
 - On GitLab.com, you can import groups using import files of no more than
   [5 GB](../../gitlab_com/index.md#account-and-limit-settings) in size.
 

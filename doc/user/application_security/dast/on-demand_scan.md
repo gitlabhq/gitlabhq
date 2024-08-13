@@ -195,7 +195,7 @@ The site profile is saved, for use in an on-demand scan.
 
 NOTE:
 If a site profile is linked to a security policy, you cannot edit the profile from this page. See
-[Scan execution policies](../policies/scan-execution-policies.md) for more information.
+[Scan execution policies](../policies/scan_execution_policies.md) for more information.
 
 NOTE:
 If a site profile's Target URL or Authenticated URL is updated, the request headers and password fields associated with that profile are cleared.
@@ -216,7 +216,7 @@ To edit a site profile:
 
 NOTE:
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
-See [Scan execution policies](../policies/scan-execution-policies.md) for more information.
+See [Scan execution policies](../policies/scan_execution_policies.md) for more information.
 
 To delete a site profile:
 
@@ -369,7 +369,7 @@ To create a scanner profile:
 
 NOTE:
 If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
-For more information, see [Scan execution policies](../policies/scan-execution-policies.md).
+For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
 
 To edit a scanner profile:
 
@@ -385,7 +385,7 @@ To edit a scanner profile:
 
 NOTE:
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
-page. For more information, see [Scan execution policies](../policies/scan-execution-policies.md).
+page. For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
 
 To delete a scanner profile:
 

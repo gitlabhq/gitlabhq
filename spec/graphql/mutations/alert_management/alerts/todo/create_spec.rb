@@ -2,17 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::AlertManagement::Alerts::Todo::Create do
-  subject(:mutation) { described_class.new(object: project, context: { current_user: current_user }, field: nil) }
+RSpec.describe Mutations::AlertManagement::Alerts::Todo::Create, feature_category: :api do
+  include GraphqlHelpers
 
   let_it_be(:alert) { create(:alert_management_alert) }
   let_it_be(:project) { alert.project }
 
   let(:current_user) { project.first_owner }
-
   let(:args) { { project_path: project.full_path, iid: alert.iid } }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_alert_management_alert) }
+
+  subject(:mutation) { described_class.new(object: project, context: query_context, field: nil) }
 
   describe '#resolve' do
     subject(:resolve) { mutation.resolve(args) }

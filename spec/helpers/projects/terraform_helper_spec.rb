@@ -12,7 +12,7 @@ RSpec.describe Projects::TerraformHelper do
 
     it 'includes image path' do
       image_path = ActionController::Base.helpers.image_path(
-        'illustrations/empty-state/empty-serverless-lg.svg'
+        'illustrations/empty-state/empty-environment-md.svg'
       )
 
       expect(subject[:empty_state_image]).to eq(image_path)

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "GitLab's development guidelines for Integrations"
@@ -375,9 +375,10 @@ Sensitive fields are not exposed over the API. Sensitive fields are those fields
 
 ## Availability of integrations
 
-By default, integrations are available on the project, group, and instance level.
+By default, integrations can apply to a specific project or group, or
+to an entire instance.
 Most integrations only act in a project context, but can be still configured
-from the group and instance levels.
+for the group and instance.
 
 For some integrations it can make sense to only make it available on the project level.
 To do that, the integration must be removed from `Integration::INTEGRATION_NAMES` and
@@ -429,7 +430,7 @@ You must announce any deprecation [no later than the third milestone preceding i
 To deprecate an integration:
 
 - [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).
-- [Mark the integration documentation as deprecated](../../development/documentation/versions.md#deprecate-a-page-or-topic).
+- [Mark the integration documentation as deprecated](../../development/documentation/styleguide/deprecations_and_removals.md).
 - Optional. To prevent any new project-level records from
   being created, add the integration to `Project#disabled_integrations` (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114835)).
 
@@ -442,7 +443,7 @@ In the major milestone of intended removal (M.0), disable the integration and de
 - Remove the integration from `Integration::INTEGRATION_NAMES`.
 - Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
 - Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
-- [Mark the integration documentation as removed](../../development/documentation/versions.md#remove-a-page).
+- [Mark the integration documentation as removed](../../development/documentation/styleguide/deprecations_and_removals.md#remove-a-page).
 - [Update the integration API documentation](../../api/integrations.md).
 
 In the next minor release (M.1):

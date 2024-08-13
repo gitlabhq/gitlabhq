@@ -7,7 +7,7 @@ module ClickHouseHelpers
     clickhouse_fixture(:events, events.map do |event|
       {
         id: event.id,
-        path: "#{event.project.reload.project_namespace.traversal_ids.join('/')}/",
+        path: event.project.reload.project_namespace.traversal_path,
         author_id: event.author_id,
         target_id: event.target_id,
         target_type: event.target_type,

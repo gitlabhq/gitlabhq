@@ -160,14 +160,14 @@ describe('Upload dropzone component', () => {
 
   it('applies correct classes when displaying as a standalone item', () => {
     createComponent({ props: { displayAsCard: false } });
-    expect(findDropzoneArea().classes()).not.toContain('gl-flex-direction-column');
-    expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-500']);
+    expect(findDropzoneArea().classes()).not.toContain('gl-flex-col');
+    expect(findIcon().classes()).toEqual(['gl-mr-3']);
     expect(findIcon().props('size')).toBe(16);
   });
 
   it('applies correct classes when displaying in card mode', () => {
     createComponent({ props: { displayAsCard: true } });
-    expect(findDropzoneArea().classes()).toContain('gl-flex-direction-column');
+    expect(findDropzoneArea().classes()).toContain('gl-flex-col');
     expect(findIcon().classes()).toEqual(['gl-mb-2']);
     expect(findIcon().props('size')).toBe(24);
   });

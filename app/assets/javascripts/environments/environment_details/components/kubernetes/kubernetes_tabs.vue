@@ -1,10 +1,7 @@
 <script>
-import { GlTabs, GlDrawer } from '@gitlab/ui';
-import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { GlTabs } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
-import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesServices from './kubernetes_services.vue';
 import KubernetesSummary from './kubernetes_summary.vue';
@@ -18,8 +15,6 @@ export default {
     KubernetesPods,
     KubernetesServices,
     KubernetesSummary,
-    GlDrawer,
-    WorkloadDetails,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -46,14 +41,9 @@ export default {
       activeTabIndex: this.glFeatures.k8sTreeView
         ? tabsWithSummary.indexOf(this.value)
         : defaultTabs.indexOf(this.value),
-      selectedItem: {},
-      showDetailsDrawer: false,
     };
   },
   computed: {
-    drawerHeaderHeight() {
-      return getContentWrapperHeight();
-    },
     renderTreeView() {
       return this.glFeatures.k8sTreeView;
     },
@@ -66,16 +56,6 @@ export default {
       this.$emit('input', this.tabs[newValue]);
     },
   },
-  methods: {
-    showResourceDetails(item) {
-      this.selectedItem = item;
-      this.showDetailsDrawer = true;
-    },
-    closeDetailsDrawer() {
-      this.showDetailsDrawer = false;
-    },
-  },
-  DRAWER_Z_INDEX,
 };
 </script>
 <template>
@@ -94,33 +74,18 @@ export default {
         @loading="$emit('loading', $event)"
         @update-failed-state="$emit('update-failed-state', $event)"
         @cluster-error="$emit('cluster-error', $event)"
-        @show-resource-details="showResourceDetails"
-        @remove-selection="closeDetailsDrawer"
+        @show-resource-details="$emit('show-resource-details', $event)"
+        @remove-selection="$emit('remove-selection')"
+        @delete-pod="$emit('delete-pod', $event)"
       />
 
       <kubernetes-services
         :namespace="namespace"
         :configuration="configuration"
         @cluster-error="$emit('cluster-error', $event)"
-        @show-resource-details="showResourceDetails"
-        @remove-selection="closeDetailsDrawer"
+        @show-resource-details="$emit('show-resource-details', $event)"
+        @remove-selection="$emit('remove-selection')"
       />
     </gl-tabs>
-
-    <gl-drawer
-      :open="showDetailsDrawer"
-      :header-height="drawerHeaderHeight"
-      :z-index="$options.DRAWER_Z_INDEX"
-      @close="closeDetailsDrawer"
-    >
-      <template #title>
-        <h4 class="gl-font-bold gl-font-size-h2 gl-m-0 gl-break-anywhere">
-          {{ selectedItem.name }}
-        </h4>
-      </template>
-      <template #default>
-        <workload-details :item="selectedItem" />
-      </template>
-    </gl-drawer>
   </div>
 </template>

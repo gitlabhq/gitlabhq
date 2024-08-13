@@ -129,6 +129,8 @@ module Tooling
           (spec/)?lib/generators/gitlab/usage_metric_definition/redis_hll_generator(_spec)?\.rb |
           lib/generators/rails/usage_metric_definition_generator\.rb |
           spec/lib/generators/usage_metric_definition_generator_spec\.rb |
+          spec/support/matchers/internal_events_matchers\.rb |
+          spec/support_specs/matchers/internal_events_matchers_spec\.rb |
           generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :analytics_instrumentation],
         %r{gitlab/usage_data(_spec)?\.rb} => [:analytics_instrumentation],
         [%r{\.haml\z}, %r{data: \{ track}] => [:analytics_instrumentation],

@@ -6,6 +6,7 @@ export default class GroupsService {
     this.initialSort = initialSort;
   }
 
+  // eslint-disable-next-line max-params
   getGroups(parentId, page, filterGroups, sort) {
     const params = {};
 

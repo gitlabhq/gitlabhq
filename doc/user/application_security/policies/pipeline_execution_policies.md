@@ -10,12 +10,11 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default. [Feature flag removed in GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/454278).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 Use Pipeline execution policies to enforce CI/CD jobs for all applicable projects.
 
@@ -60,6 +59,7 @@ Note the following:
 - The `override_project_ci` strategy will not override other security policy configurations.
 - The `override_project_ci` strategy takes precedence over other policies using the `inject` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored.
 - You should choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names and it can lead to unwanted results if a job exists multiple times in the same pipeline. The `needs` keyword, for example makes one job dependent on another. In case of multiple jobs with the same name, it will randomly depend on one of them.
+- Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 
 ### Job naming best practice
 
@@ -85,7 +85,11 @@ Examples:
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
-### Example security policies project
+### Examples
+
+These examples demonstrate what you can achieve with pipeline execution policies.
+
+#### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):
@@ -106,4 +110,28 @@ pipeline_execution_policy:
     projects:
       including:
       - id: 361
+```
+
+##### Customize enforced jobs based on project variables
+
+You can customize enforced jobs, based on the presence of a project variable. In this example,
+the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
+also defines the value of `CS_IMAGE`, that value is used instead. The CI/CD variable must be a
+predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
+
+```yaml
+variables:
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:7"
+  CS_IMAGE: alpine:latest
+
+policy::container-security:
+  stage: .pipeline-policy-pre
+  rules:
+    - if: $CS_IMAGE
+      variables:
+        CS_IMAGE: $PROJECT_CS_IMAGE
+    - when: always
+  script:
+    - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
+    - echo "CS_IMAGE:$CS_IMAGE"
 ```

@@ -1,5 +1,5 @@
 %div
-  = gitlab_ui_form_for [:user_settings, @gpg_key], html: { class: 'js-requires-input' } do |f|
+  = gitlab_ui_form_for [:user_settings, @gpg_key] do |f|
     = form_errors(@gpg_key)
 
     .form-group

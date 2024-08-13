@@ -23,7 +23,15 @@ module InternalEventsCli
     introduced_by_url: 'TODO'
   }.freeze
 
-  ExistingEvent = Struct.new(*NEW_EVENT_FIELDS, :file_path, keyword_init: true)
+  ExistingEvent = Struct.new(*NEW_EVENT_FIELDS, :file_path, keyword_init: true) do
+    def identifiers
+      self[:identifiers] || []
+    end
+
+    def available_filters
+      additional_properties&.keys || []
+    end
+  end
 
   NewEvent = Struct.new(*NEW_EVENT_FIELDS, keyword_init: true) do
     def formatted_output

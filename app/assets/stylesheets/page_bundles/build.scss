@@ -10,7 +10,7 @@
     border-radius: 2px 2px 0 0;
     color: var(--orange-600, $orange-600);
     background-color: var(--orange-50, $orange-50);
-    border: 1px solid var(--border-color, $border-color);
+    border: 1px solid var(--gl-border-color-default);
   }
 
   .top-bar {
@@ -42,7 +42,7 @@
   }
 
   .environment-information {
-    border: 1px solid var(--border-color, $border-color);
+    border: 1px solid var(--gl-border-color-default);
     padding: 8px $gl-padding 12px;
     border-radius: $gl-border-radius-base;
   }
@@ -61,7 +61,7 @@
 
   .header-content {
     a {
-      color: var(--gl-text-color, $gl-text-color);
+      color: var(--gl-text-color-default);
 
       &:hover {
         color: var(--blue-600, $blue-600);
@@ -186,8 +186,7 @@
 
 .job-log-line {
   display: flex;
-  padding: 1px $gl-padding-8 1px $gl-padding-8;
-  min-height: $gl-line-height-20;
+  padding: 0 $gl-padding-8;
 }
 
 .job-log-line-number {
@@ -212,6 +211,16 @@
   color: $gray-500;
   user-select: none;
   flex-shrink: 0;
+
+  display: none;
+  @include media-breakpoint-up(sm) {
+    display: block;
+  }
+}
+
+.job-log-line-content {
+  flex-grow: 1;
+  white-space: pre-wrap;
 }
 
 .job-log-line-header {

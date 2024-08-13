@@ -18,7 +18,7 @@ RSpec.describe Security::CiConfiguration::SastParserService, feature_category: :
 
     it 'parses the configuration for SAST' do
       expect(secure_analyzers['default_value']).to eql(secure_analyzers_prefix)
-      expect(sast_excluded_paths['default_value']).to eql('spec, test, tests, tmp')
+      expect(sast_excluded_paths['default_value']).to eql('$DEFAULT_SAST_EXCLUDED_PATHS')
       expect(sast_pipeline_stage['default_value']).to eql('test')
       expect(sast_search_max_depth['default_value']).to eql('4')
       expect(brakeman['enabled']).to be(true)
@@ -52,7 +52,7 @@ RSpec.describe Security::CiConfiguration::SastParserService, feature_category: :
         it 'populates the current values with the default values' do
           allow(project.repository).to receive(:blob_data_at).and_return(nil)
           expect(secure_analyzers['value']).to eql(secure_analyzers_prefix)
-          expect(sast_excluded_paths['value']).to eql('spec, test, tests, tmp')
+          expect(sast_excluded_paths['value']).to eql('$DEFAULT_SAST_EXCLUDED_PATHS')
           expect(sast_pipeline_stage['value']).to eql('test')
           expect(sast_search_max_depth['value']).to eql('4')
           expect(brakeman['enabled']).to be(true)
@@ -69,7 +69,7 @@ RSpec.describe Security::CiConfiguration::SastParserService, feature_category: :
 
         it 'populates the current values with the default values' do
           expect(secure_analyzers['value']).to eql(secure_analyzers_prefix)
-          expect(sast_excluded_paths['value']).to eql('spec, test, tests, tmp')
+          expect(sast_excluded_paths['value']).to eql('$DEFAULT_SAST_EXCLUDED_PATHS')
           expect(sast_pipeline_stage['value']).to eql('test')
           expect(sast_search_max_depth['value']).to eql('4')
           expect(brakeman['enabled']).to be(true)

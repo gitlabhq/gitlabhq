@@ -22,29 +22,13 @@ The agent runs in the cluster, and you can use it to:
 
 For more details about the agent's purpose and architecture, see the [architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md).
 
-## Workflows
+You must deploy a separate agent to every cluster you want to connect to GitLab.
+The agent was designed with strong multi-tenancy support. To simplify maintenance and operations you should run only one agent per cluster.
 
-You can choose from two primary workflows. The GitOps workflow is recommended.
-
-### GitOps workflow
-
-You should use Flux for GitOps. To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md)
-
-### GitLab CI/CD workflow
-
-In a [**CI/CD** workflow](ci_cd_workflow.md):
-
-- You configure GitLab CI/CD to use the Kubernetes API to query and update your cluster.
-
-This workflow is considered **push-based**, because GitLab is pushing requests
-from GitLab CI/CD to your cluster.
-
-Use this workflow:
-
-- When you have a heavily pipeline-oriented processes.
-- When you need to migrate to the agent but the GitOps workflow cannot support the use case you need.
-
-This workflow has a weaker security model and is not recommended for production deployments.
+An agent is always registered in a GitLab project. 
+After an agent is registered and installed, the agent connection to the cluster can be shared with other projects, groups, and users.
+This approach means you can manage and configure your agent instances from GitLab itself,
+and you can scale a single installation to multiple tenants.
 
 ## Supported Kubernetes versions for GitLab features
 
@@ -77,11 +61,29 @@ Support for deprecated APIs can be removed from the GitLab codebase when we drop
 
 Some GitLab features might work on versions not listed here. [This epic](https://gitlab.com/groups/gitlab-org/-/epics/4827) tracks support for Kubernetes versions.
 
-## Migrate to the agent from the legacy certificate-based integration
+## Kubernetes deployment workflows
 
-Read about how to [migrate to the agent for Kubernetes](../../infrastructure/clusters/migrate_to_gitlab_agent.md) from the certificate-based integration.
+You can choose from two primary workflows. The GitOps workflow is recommended.
 
-## Agent connection
+### GitOps workflow
+
+GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md).
+
+### GitLab CI/CD workflow
+
+In a [**CI/CD** workflow](ci_cd_workflow.md), you configure GitLab CI/CD to use the Kubernetes API to query and update your cluster.
+
+This workflow is considered **push-based**, because GitLab pushes requests
+from GitLab CI/CD to your cluster.
+
+Use this workflow:
+
+- When you have pipeline-driven processes.
+- When you need to migrate to the agent, but the GitOps workflow doesn't support your use case.
+
+This workflow has a weaker security model. You should not use a CI/CD workflow for production deployments.
+
+## Agent connection technical details
 
 The agent opens a bidirectional channel to KAS for communication.
 This channel is used for all communication between the agent and KAS:
@@ -115,6 +117,7 @@ This glossary provides definitions for terms related to the GitLab Kubernetes in
 - [GitLab CI/CD workflow](ci_cd_workflow.md)
 - [Install the agent](install/index.md)
 - [Work with the agent](work_with_agent.md)
+- [Migrate to the agent for Kubernetes from the legacy certificate-based integration](../../infrastructure/clusters/migrate_to_gitlab_agent.md)
 - [Troubleshooting](troubleshooting.md)
 - [Guided explorations for a production ready GitOps setup](https://gitlab.com/groups/guided-explorations/gl-k8s-agent/gitops/-/wikis/home#gitlab-agent-for-kubernetes-gitops-working-examples)
 - [CI/CD for Kubernetes examples and learning materials](ci_cd_workflow.md#related-topics)

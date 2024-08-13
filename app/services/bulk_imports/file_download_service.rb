@@ -49,7 +49,7 @@ module BulkImports
     private
 
     attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types,
-      :response_headers, :last_chunk_context, :response_code
+      :response_headers, :response_code
 
     def download_file
       File.open(filepath, 'wb') do |file|
@@ -67,7 +67,7 @@ module BulkImports
 
           @response_code = chunk.code
           @response_headers ||= Gitlab::HTTP::Response::Headers.new(chunk.http_response.to_hash)
-          @last_chunk_context = chunk.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT)
+          @last_chunk_context = chunk
 
           unless @remote_content_validated
             validate_content_type
@@ -140,6 +140,12 @@ module BulkImports
 
     def default_file_size_limit
       Gitlab::CurrentSettings.current_application_settings.bulk_import_max_download_file_size.megabytes
+    end
+
+    # Before logging, we truncate the context to a reasonable length and scrub
+    # any non-printable characters.
+    def last_chunk_context
+      @last_chunk_context.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT).force_encoding('utf-8').scrub
     end
   end
 end

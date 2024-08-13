@@ -50,6 +50,7 @@ export const TRACKING_ACTION_CLICK_SHOW_FULL_PATH = 'click_show_full_path';
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';
 export const IMAGE_MIGRATING_STATE = 'importing';
 export const GRAPHQL_PAGE_SIZE = 10;
+export const GRAPHQL_PAGE_SIZE_METADATA_ENABLED = 20;
 
 export const SORT_FIELDS = [
   { orderBy: 'UPDATED', label: __('Updated') },

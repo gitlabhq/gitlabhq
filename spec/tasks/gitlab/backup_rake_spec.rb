@@ -60,7 +60,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
 
   describe 'lock parallel backups' do
     let(:progress) { $stdout }
-    let(:delete_message) { /-- Deleting backup and restore PID file/ }
+    let(:delete_message) { /-- Deleting backup and restore PID file at/ }
     let(:pid_file) do
       File.open(backup_restore_pid_path, File::RDWR | File::CREAT)
     end

@@ -1,0 +1,19 @@
+- title: "Compliance pipelines"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.3"
+  breaking_change: true
+  reporter: khornergit
+  stage: Govern
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11275
+  body: |
+    Currently, there are two ways to ensure compliance- or security-related jobs are run in a project pipeline:
+
+    - [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html).
+    - [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/).
+
+    To provide a single place for ensuing required jobs are run in all pipelines for a project, we have deprecated
+    compliance pipelines GitLab 17.3 and will remove the feature in GitLab 18.0.
+
+    Customers should migrate from compliance pipelines to the new
+    [pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
+    as soon as possible.

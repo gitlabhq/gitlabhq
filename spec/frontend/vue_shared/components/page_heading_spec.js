@@ -47,7 +47,7 @@ describe('Pagination links component', () => {
     describe('rendering', () => {
       it('renders the correct heading', () => {
         expect(heading().text()).toBe('Page heading');
-        expect(heading().classes()).toEqual(['gl-heading-1', '!gl-m-0']);
+        expect(heading().classes()).toEqual(expect.arrayContaining(['gl-heading-1', '!gl-m-0']));
         expect(heading().element.tagName.toLowerCase()).toBe('h1');
       });
 
@@ -57,7 +57,9 @@ describe('Pagination links component', () => {
 
       it('renders its description slot content', () => {
         expect(description().text()).toBe('Description go here');
-        expect(description().classes()).toEqual(['gl-w-full', 'gl-mt-2', 'gl-text-secondary']);
+        expect(description().classes()).toEqual(
+          expect.arrayContaining(['gl-w-full', 'gl-mt-2', 'gl-text-secondary']),
+        );
       });
 
       it('renders the heading slot if provided', () => {

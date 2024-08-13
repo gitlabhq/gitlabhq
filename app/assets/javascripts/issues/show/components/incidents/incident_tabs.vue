@@ -129,7 +129,7 @@ export default {
 
         lineSeparator.classList.toggle('gl-border-b-0', !isSummaryTab);
 
-        itemsToHide.forEach(function hide(item) {
+        itemsToHide.forEach((item) => {
           item.classList.toggle('gl-hidden', !isSummaryTab);
         });
 

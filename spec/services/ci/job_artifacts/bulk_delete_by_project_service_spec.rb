@@ -70,7 +70,7 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
         project.add_maintainer(current_user)
       end
 
-      it 'is successful' do
+      it 'is successful', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444864' do
         result = execute
 
         expect(result).to be_success

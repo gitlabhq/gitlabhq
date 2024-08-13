@@ -115,6 +115,7 @@ class Namespace < ApplicationRecord
   has_one :import_user, class_name: 'User', through: :namespace_import_user, foreign_key: :user_id
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
+  validates :organization, presence: true, if: :require_organization?
   validates :name,
     presence: true,
     length: { maximum: 255 }
@@ -207,6 +208,7 @@ class Namespace < ApplicationRecord
   scope :include_route, -> { includes(:route) }
   scope :by_parent, ->(parent) { where(parent_id: parent) }
   scope :by_root_id, ->(root_id) { where('traversal_ids[1] IN (?)', root_id) }
+  scope :by_not_in_root_id, ->(root_id) { where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
   scope :filter_by_path, ->(query) { where('lower(path) = :query', query: query.downcase) }
   scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
@@ -304,9 +306,9 @@ class Namespace < ApplicationRecord
     # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L68 and
     # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L1053
     def gfm_autocomplete_search(query)
-      without_project_namespaces
-        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-        .joins(:route)
+      # This scope does not work with `ProjectNamespace` records because they don't have a corresponding `route` association.
+      # We do not chain the `without_project_namespaces` scope because it results in an expensive query plan in certain cases
+      joins(:route)
         .where(
           "REPLACE(routes.name, ' ', '') ILIKE :pattern OR routes.path ILIKE :pattern",
           pattern: "%#{sanitize_sql_like(query)}%"
@@ -349,6 +351,15 @@ class Namespace < ApplicationRecord
 
       coalesce = Arel::Nodes::NamedFunction.new('COALESCE', [sum, 0])
       coalesce.as(column.to_s)
+    end
+
+    def with_disabled_organization_validation
+      current_value = Gitlab::SafeRequestStore[:require_organization]
+      Gitlab::SafeRequestStore[:require_organization] = false
+
+      yield
+    ensure
+      Gitlab::SafeRequestStore[:require_organization] = current_value
     end
   end
 
@@ -609,7 +620,7 @@ class Namespace < ApplicationRecord
     root? && actual_plan.paid?
   end
 
-  def prevent_delete?
+  def linked_to_subscription?
     paid?
   end
 

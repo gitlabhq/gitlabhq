@@ -99,7 +99,7 @@ export default {
         v-if="canUpdate"
         category="tertiary"
         size="small"
-        class="gl-text-gray-900! gl-ml-5 js-sidebar-dropdown-toggle edit-link"
+        class="gl-ml-5 js-sidebar-dropdown-toggle edit-link"
         data-testid="edit-button"
         @click="toggle"
       >

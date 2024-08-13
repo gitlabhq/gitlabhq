@@ -222,6 +222,7 @@ class HastToProseMirrorConverterState {
    * @param {Object} attrs Mark attributes
    * @param {Object} factorySpec Specifications on how th mark should be created
    */
+  // eslint-disable-next-line max-params
   openMark(schemaType, hastNode, attrs, factorySpec) {
     const mark = schemaType.create(attrs);
     this.stack.push({
@@ -253,6 +254,7 @@ class HastToProseMirrorConverterState {
    * @param {*} attrs Node’s attributes
    * @param {*} factorySpec The factory spec used to create the node factory
    */
+  // eslint-disable-next-line max-params
   openNode(schemaType, hastNode, attrs, factorySpec) {
     this.stack.push({
       type: 'node',
@@ -347,6 +349,7 @@ const createProseMirrorNodeFactories = (
   proseMirrorFactorySpecs,
   attributeTransformer,
   markdown,
+  // eslint-disable-next-line max-params
 ) => {
   const getAttrs = getAttrsFactory({ attributeTransformer, markdown });
   const factories = {

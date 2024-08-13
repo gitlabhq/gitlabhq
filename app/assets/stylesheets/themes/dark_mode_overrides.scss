@@ -10,9 +10,6 @@
   --dark-icon-color-orange-1: #665349;
   --dark-icon-color-orange-2: #b37a5d;
 
-  --gl-text-color: #{$gray-900};
-  --border-color: #{$border-color};
-
   --svg-status-bg: #{$white};
 }
 
@@ -20,26 +17,11 @@
   // redefine some colors and values to prevent sourcegraph conflicts
   color-scheme: dark;
   --gray-10: #{$gray-10};
-  --border-color: #{$border-color};
   --white: #{$white};
   --black: #{$black};
 }
 
 .gl-dark {
-  .gl-button.gl-button,
-  .gl-button.gl-button.btn-block {
-    &.btn-default,
-    &.btn-dashed,
-    &.btn-info,
-    &.btn-success,
-    &.btn-danger,
-    &.btn-confirm {
-      &-tertiary {
-        mix-blend-mode: screen;
-      }
-    }
-  }
-
   .gl-datepicker-theme {
     .pika-prev,
     .pika-next {

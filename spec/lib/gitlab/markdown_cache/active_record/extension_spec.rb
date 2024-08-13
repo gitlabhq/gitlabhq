@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
+RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category: :wiki do
   let_it_be(:project) { create(:project) }
 
   let(:klass) do

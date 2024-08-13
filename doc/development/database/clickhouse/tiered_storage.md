@@ -13,14 +13,14 @@ for details on setup and further explanation.
 
 Quoting from the [MergeTree documentation](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes):
 
-<!-- vale gitlab.Simplicity = NO -->
+<!-- vale gitlab_base.Simplicity = NO -->
 
 > MergeTree family table engines can store data on multiple block devices. For example,
 > it can be useful when the data of a certain table are implicitly split into "hot" and "cold".
 > The most recent data is regularly requested but requires only a small amount of space.
 > On the contrary, the fat-tailed historical data is requested rarely.
 
-<!-- vale gitlab.Simplicity = YES -->
+<!-- vale gitlab_base.Simplicity = YES -->
 
 When used with remote storage backends such as
 [Amazon S3](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-s3),

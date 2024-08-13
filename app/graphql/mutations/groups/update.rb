@@ -5,9 +5,10 @@ module Mutations
     class Update < Mutations::BaseMutation
       graphql_name 'GroupUpdate'
 
+      include ::Gitlab::Allowable
       include Mutations::ResolvesGroup
 
-      authorize :admin_group
+      authorize :admin_group_or_admin_runner
 
       field :group, Types::GroupType,
         null: true,
@@ -38,7 +39,7 @@ module Mutations
       def resolve(full_path:, **args)
         group = authorized_find!(full_path: full_path)
 
-        unless ::Groups::UpdateService.new(group, current_user, args).execute
+        unless ::Groups::UpdateService.new(group, current_user, authorized_args(group, args)).execute
           return { group: nil, errors: group.errors.full_messages }
         end
 
@@ -49,6 +50,16 @@ module Mutations
 
       def find_object(full_path:)
         resolve_group(full_path: full_path)
+      end
+
+      def authorized_args(group, args)
+        return args if can?(current_user, :admin_group, group)
+
+        if can?(current_user, :admin_runner, group) && args.keys == [:shared_runners_setting]
+          return { shared_runners_setting: args[:shared_runners_setting] }
+        end
+
+        raise_resource_not_available_error!
       end
     end
   end

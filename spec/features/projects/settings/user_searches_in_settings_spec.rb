@@ -26,7 +26,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
     it_behaves_like 'can highlight results', 'third-party applications'
   end
 
-  context 'in Access Tokens page' do
+  context 'in access tokens page' do
     before do
       visit project_settings_access_tokens_path(project)
     end

@@ -54,6 +54,11 @@ export default {
       }
       this.collapsedSections = new Set(this.collapsedSections); // `Set` is not reactive in Vue 2, create new instance it to trigger reactivity
     },
+    parseTime(rawTime) {
+      const DATE_PLUS_T_LENGTH = 11; // 2024-05-30T
+      const TIME_LENGTH = 8; // 00:00:00
+      return `${rawTime.slice(DATE_PLUS_T_LENGTH, DATE_PLUS_T_LENGTH + TIME_LENGTH)}Z`;
+    },
   },
 };
 </script>
@@ -81,6 +86,7 @@ export default {
           index + 1
         }}</a>
       </div>
+      <time v-if="line.timestamp" :datetime="line.timestamp">{{ parseTime(line.timestamp) }}</time>
       <div>
         <span v-for="(c, j) in line.content" :key="j" :class="c.style">{{ c.text }}</span>
       </div>

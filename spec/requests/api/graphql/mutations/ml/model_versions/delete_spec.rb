@@ -56,7 +56,7 @@ RSpec.describe 'Destroying a model version', feature_category: :mlops do
       where(:user_role, :mutation_behavior) do
         :maintainer | 'destroying the model'
         :developer  | 'destroying the model'
-        :reporter   | 'destroying the model'
+        :reporter   | 'a mutation that returns a top-level access error'
         :guest      | 'a mutation that returns a top-level access error'
         :anonymous  | 'a mutation that returns a top-level access error'
       end

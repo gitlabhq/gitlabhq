@@ -6,6 +6,7 @@ $work-item-overview-right-sidebar-width: 20rem;
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-token-selector-token-container {
   display: flex;
   align-items: center;
@@ -32,12 +33,14 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-due-date {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-datepicker-input.gl-form-input.form-control {
     width: 10rem;
 
     &:not(:focus, :hover) {
       box-shadow: none;
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       ~ .gl-datepicker-actions {
         display: none;
       }
@@ -47,12 +50,14 @@ $work-item-overview-gap-width: 2rem;
       background-color: var(--white, $white);
       box-shadow: none;
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       ~ .gl-datepicker-actions {
         display: none;
       }
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-datepicker-actions:focus,
   .gl-datepicker-actions:hover {
     display: flex !important;
@@ -60,10 +65,12 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-labels {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-token {
     padding-left: $gl-spacing-scale-1;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-token-close {
     display: none;
   }
@@ -78,15 +85,18 @@ $work-item-overview-gap-width: 2rem;
 
 
 .work-item-notifications-form {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle {
     margin-left: auto;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle-label {
     font-weight: $gl-font-weight-normal;
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-modal .work-item-view,
 .work-item-drawer .work-item-view:not(:has(.design-detail)) {
   container-name: work-item-view;
@@ -172,6 +182,7 @@ $work-item-overview-gap-width: 2rem;
     max-width: 65%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   &.gl-form-select {
     &:hover,
     &:focus {
@@ -194,10 +205,12 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-notification-toggle {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle {
     margin-left: auto;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle-label {
     font-weight: normal;
   }
@@ -345,6 +358,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .work-item-sidebar-dropdown .gl-new-dropdown-panel {
     width: 100% !important;
     max-width: 19rem !important;

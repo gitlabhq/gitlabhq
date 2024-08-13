@@ -16,6 +16,7 @@ module Projects
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
         push_frontend_feature_flag(:allow_push_repository_for_job_token, @project)
+        push_frontend_feature_flag(:ci_hidden_variables, @project.root_ancestor)
       end
 
       helper_method :highlight_badge

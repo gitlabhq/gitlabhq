@@ -1,8 +1,0 @@
----
-name: order_builds_for_group_runner
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94815
-rollout_issue_url: 
-milestone: '15.4'
-type: development
-group: group::runner
-default_enabled: true

@@ -212,7 +212,7 @@ describe('ProjectsListItem', () => {
       expect(tooltip.value).toBe(ProjectsListItem.i18n.mergeRequests);
       expect(mergeRequestsLink.attributes('href')).toBe(`${project.webUrl}/-/merge_requests`);
       expect(mergeRequestsLink.text()).toBe('5');
-      expect(mergeRequestsLink.findComponent(GlIcon).props('name')).toBe('git-merge');
+      expect(mergeRequestsLink.findComponent(GlIcon).props('name')).toBe('merge-request');
     });
   });
 

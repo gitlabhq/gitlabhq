@@ -39,6 +39,7 @@ module Groups
           parent: last_group,
           visibility_level: visibility_level
         )
+        new_params.delete(:organization_id) if new_params[:parent]
 
         last_group = namespace_or_group(partial_path) ||
           Groups::CreateService.new(current_user, new_params).execute[:group]

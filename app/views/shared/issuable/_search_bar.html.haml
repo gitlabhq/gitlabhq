@@ -33,24 +33,23 @@
                 %ul.tokens-container.list-unstyled
                   %li.input-token
                     %input.form-control.filtered-search{ search_filter_input_options(type, placeholder) }
-              #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              #js-dropdown-hint.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-inline-flex') do
                       -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                       -# haml lint's ClassAttributeWithStaticValue
                       %svg
                         %use{ 'xlink:href': "#{'{{icon}}'}" }
-                      %span.js-filter-hint
-                        {{formattedKey}}
-              #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
+                      {{ formattedKey }}
+              #js-dropdown-operator.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
                   %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-inline-flex gl-justify-between gl-w-full') do
                       {{ title }}
-                      %span.btn-helptext
+                      %span.gl-text-subtle
                         {{ help }}
-              #js-dropdown-author.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-author.gl-filtered-search-suggestion-list.dropdown-menu
                 - if current_user
                   %ul{ data: { dropdown: true } }
                     = render 'shared/issuable/user_dropdown_item',
@@ -59,13 +58,13 @@
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
-              #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-assignee.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('None')
                   %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Any')
                   %li.divider.droplab-item-ignore
                   - if current_user
@@ -75,13 +74,13 @@
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
-              #js-dropdown-reviewer.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-reviewer.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('None')
                   %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Any')
                   %li.divider.droplab-item-ignore
                   - if current_user
@@ -91,118 +90,119 @@
                   = render 'shared/issuable/user_dropdown_item',
                     user: User.new(username: '{{username}}', name: '{{name}}'),
                     avatar: { lazy: true, url: '{{avatar_url}}' }
+
               = render_if_exists 'shared/issuable/approver_dropdown'
               = render_if_exists 'shared/issuable/approved_by_dropdown'
               = render_if_exists 'shared/issuable/merge_user_dropdown'
-              #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
+
+              #js-dropdown-milestone.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('None')
                   %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Any')
                   %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Upcoming')
                   %li.filter-dropdown-item{ data: { value: 'Started' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Started')
                   %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item
-                    %button.btn.btn-link.js-data-value{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-data-value' }) do
                       {{title}}
               = render_if_exists 'shared/issuable/filter_iteration', type: type
               - unless disable_releases
-                #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
+                #js-dropdown-release.gl-filtered-search-suggestion-list.dropdown-menu
                   %ul{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'None' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
                         = _('None')
                     %li.filter-dropdown-item{ data: { value: 'Any' } }
-                      %button.btn.btn-link{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
                         = _('Any')
                     %li.divider.droplab-item-ignore
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-data-value' }) do
                         {{title}}
-              #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-label.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('None')
                   %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Any')
                   %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item
-                    %button.btn.btn-link{ type: 'button' }
-                      %span.dropdown-label-box{ style: 'background: {{color}}' }
+                    = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-inline-flex gl-gap-3') do
+                      %span.dropdown-label-box.gl-m-0{ style: 'background: {{color}}' }
                       %span.label-title.js-data-value
                         {{title}}
-              #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-my-reaction.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('None')
                   %li.filter-dropdown-item{ data: { value: 'Any' } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Any')
                   %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-inline-flex gl-gap-1') do
                       %gl-emoji
-                      %span.js-data-value.gl-ml-3
+                      %span.js-data-value
                         {{name}}
-              #js-dropdown-wip.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-wip.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul.filter-dropdown{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Yes')
                   %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('No')
               - if ::Feature.enabled?(:mr_approved_filter, type: :ops)
-                #js-dropdown-approved.filtered-search-input-dropdown-menu.dropdown-menu
+                #js-dropdown-approved.gl-filtered-search-suggestion-list.dropdown-menu
                   %ul.filter-dropdown{ data: { dropdown: true } }
                     %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
                         = _('Yes')
                     %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                      %button.btn.btn-link{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link) do
                         = _('No')
-              #js-dropdown-confidential.filtered-search-input-dropdown-menu.dropdown-menu
+              #js-dropdown-confidential.gl-filtered-search-suggestion-list.dropdown-menu
                 %ul.filter-dropdown{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('Yes')
                   %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                    %button.btn.btn-link{ type: 'button' }
+                    = render Pajamas::ButtonComponent.new(variant: :link) do
                       = _('No')
               - unless disable_target_branch
-                #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
+                #js-dropdown-target-branch.gl-filtered-search-suggestion-list.dropdown-menu
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value.monospace
+                      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'gl-font-monospace js-data-value' }) do
                         {{title}}
-                #js-dropdown-source-branch.filtered-search-input-dropdown-menu.dropdown-menu
+                #js-dropdown-source-branch.gl-filtered-search-suggestion-list.dropdown-menu
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value.monospace
+                      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'gl-font-monospace js-data-value' }) do
                         {{title}}
               - unless disable_environments
-                #js-dropdown-environment.filtered-search-input-dropdown-menu.dropdown-menu
+                #js-dropdown-environment.gl-filtered-search-suggestion-list.dropdown-menu
                   %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                     %li.filter-dropdown-item
-                      %button.btn.btn-link.js-data-value{ type: 'button' }
+                      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-data-value' }) do
                         {{title}}
 
               = render_if_exists 'shared/issuable/filter_weight', type: type
-
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'clear', icon_classes: "clear-search-icon", button_options: { class: 'clear-search hidden gl-align-self-center gl-mr-1 has-tooltip', title: _('Clear') })

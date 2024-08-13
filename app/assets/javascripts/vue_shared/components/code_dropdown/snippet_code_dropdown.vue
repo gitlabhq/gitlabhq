@@ -78,7 +78,7 @@ export default {
       :link="link"
       :test-id="`${testId}-button`"
       :data-testid="testId"
-      label-class="gl-font-sm! gl-pt-2!"
+      label-class="!gl-text-sm !gl-pt-2"
     />
   </gl-disclosure-dropdown>
 </template>

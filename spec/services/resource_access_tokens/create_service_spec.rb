@@ -405,18 +405,22 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
       end
     end
 
-    context 'when resource organization is not set', :enable_admin_mode do
-      let_it_be(:resource) { create(:project, :private, organization: nil) }
-      let_it_be(:default_organization) { Organizations::Organization.default_organization }
-      let(:user) { create(:admin) }
+    context 'when require_organization feature is disabled' do
+      before_all do
+        stub_feature_flags(require_organization: false)
+      end
 
-      it 'uses database default' do
-        response = subject
+      context 'when resource organization is not set', :enable_admin_mode do
+        let_it_be(:resource) { create(:project, :private, organization_id: nil) }
+        let_it_be(:default_organization) { Organizations::Organization.default_organization }
+        let(:user) { create(:admin) }
 
-        access_token = response.payload[:access_token]
-        expect(access_token.user.namespace.organization).to eq(
-          default_organization
-        )
+        it 'uses database default' do
+          response = subject
+
+          access_token = response.payload[:access_token]
+          expect(access_token.user.namespace.organization).to eq(default_organization)
+        end
       end
     end
   end

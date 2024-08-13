@@ -4,4 +4,4 @@
 - if text_only
   %span.has-tooltip.gl-leading-normal.gl-font-sm{ title: tooltip_title }= _('Imported')
 - else
-  = render Pajamas::BadgeComponent.new(_('Imported'), size: :sm, title: tooltip_title, class: 'has-tooltip')
+  = render Pajamas::BadgeComponent.new(_('Imported'), title: tooltip_title, class: 'has-tooltip')

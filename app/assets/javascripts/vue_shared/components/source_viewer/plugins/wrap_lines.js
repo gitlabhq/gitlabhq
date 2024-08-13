@@ -4,7 +4,9 @@
  *
  * Plugin API: https://github.com/highlightjs/highlight.js/blob/main/docs/plugin-api.rst
  *
- * @param {Object} Result - an object that represents the highlighted result from Highlight.js
+ * @param content - represents the highlighted content
+ * @param number - represents the highlighted line number
+ * @param language - represents the highlighted language
  */
 
 function wrapLine(content, number, language) {

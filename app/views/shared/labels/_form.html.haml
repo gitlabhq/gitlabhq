@@ -1,7 +1,7 @@
 - add_page_specific_style 'page_bundles/labels'
 - show_lock_on_merge = local_assigns.fetch(:show_lock_on_merge, false)
 
-= gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit js-requires-input' } do |f|
+= gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit' } do |f|
   = form_errors(@label)
 
   .form-group.row

@@ -22,6 +22,3 @@ export const CC_VALIDATION_REQUIRED_ERROR = __(
 export const IDENTITY_VERIFICATION_REQUIRED_ERROR = __(
   'Shared runners enabled cannot be enabled until identity verification is completed',
 );
-
-export const WILDCARDS_HELP_PATH =
-  'user/project/protected_branches#protect-multiple-branches-with-wildcard-rules';

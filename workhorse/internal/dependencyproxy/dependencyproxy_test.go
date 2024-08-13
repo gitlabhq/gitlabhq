@@ -415,6 +415,8 @@ func TestLongUploadRequest(t *testing.T) {
 		res, err := rt.RoundTrip(r)
 
 		assert.NoError(t, err, "RoundTripper should not receive an error")
+		defer res.Body.Close()
+
 		assert.Equal(t, http.StatusOK, res.StatusCode, "RoundTripper should receive a 200 status code")
 		w.WriteHeader(res.StatusCode)
 	}

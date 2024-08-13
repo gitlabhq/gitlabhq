@@ -1,11 +1,16 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Vue from 'vue';
+import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
-import { deleteTaskListItem, insertNextToTaskListItemText } from '~/issues/show/utils';
-import { isDragging } from '~/sortable/utils';
+import {
+  convertDescriptionWithNewSort,
+  deleteTaskListItem,
+  insertNextToTaskListItemText,
+} from '~/issues/show/utils';
+import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -79,6 +84,11 @@ export default {
       },
       immediate: true,
     },
+    isUpdating: {
+      handler(isUpdating) {
+        this.sortable.option('disabled', isUpdating);
+      },
+    },
   },
   mounted() {
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
@@ -97,10 +107,47 @@ export default {
       if (this.canEdit) {
         this.initCheckboxes();
         this.removeAllPointerEventListeners();
+        this.renderSortableLists();
         this.renderTaskListItemActions();
       }
 
       this.truncateLongDescription();
+    },
+    renderSortableLists() {
+      // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
+      const lists = this.$el.querySelectorAll?.(
+        '.description ul:not(.section-nav), .description ul:not(.section-nav) ul, .description ol',
+      );
+
+      lists?.forEach((list) => {
+        if (list.children.length <= 1) {
+          return;
+        }
+
+        Array.from(list.children).forEach((listItem) => {
+          listItem.prepend(this.createDragIconElement());
+          this.addPointerEventListeners(listItem, '.drag-icon');
+        });
+
+        this.sortable = Sortable.create(
+          list,
+          getSortableDefaultOptions({
+            handle: '.drag-icon',
+            onUpdate: (event) => {
+              const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
+              this.$emit('descriptionUpdated', description);
+            },
+          }),
+        );
+      });
+    },
+    createDragIconElement() {
+      const container = document.createElement('div');
+      // eslint-disable-next-line no-unsanitized/property
+      container.innerHTML = `<svg class="drag-icon s14 gl-icon gl-cursor-grab gl-opacity-0" role="img" aria-hidden="true">
+        <use href="${gon.sprite_icons}#grip"></use>
+      </svg>`;
+      return container.firstChild;
     },
     initCheckboxes() {
       this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
@@ -135,9 +182,11 @@ export default {
       const pointeroverListener = (event) => {
         const element = event.target.closest('li').querySelector(elementSelector);
         if (!element || isDragging() || this.isUpdating) {
+          element.classList.remove('gl-cursor-grab');
           return;
         }
         element.classList.add(FULL_OPACITY);
+        element.classList.add('gl-cursor-grab');
       };
       const pointeroutListener = (event) => {
         const element = event.target.closest('li').querySelector(elementSelector);

@@ -113,9 +113,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-p-5 gl-bg-gray-10 gl-border-t gl-border-b">
-    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3">
-      <div class="gl-flex-grow-1">
+  <div class="gl-border-t gl-border-b gl-bg-gray-10 gl-p-5">
+    <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+      <div class="gl-grow">
         <filtered-search-bar
           :namespace="filteredSearchNamespace"
           :tokens="filteredSearchTokens"
@@ -132,7 +132,7 @@ export default {
       </div>
       <div v-if="shouldShowSort" data-testid="groups-projects-sort">
         <gl-sorting
-          class="gl-display-flex"
+          class="gl-flex"
           dropdown-class="gl-w-full"
           block
           :text="activeSortOption.text"

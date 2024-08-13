@@ -129,7 +129,10 @@ namespace :gitlab do
     def insert_db_identifier(db_config)
       ActiveRecord::Base.establish_connection(db_config) # rubocop: disable Database/EstablishConnection
 
-      if ActiveRecord::InternalMetadata.table_exists?
+      if ::Gitlab.next_rails?
+        internal_metadata = ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+        internal_metadata[DB_CONFIG_NAME_KEY] = db_config.name if internal_metadata.table_exists?
+      elsif ActiveRecord::InternalMetadata.table_exists?
         ts = Time.zone.now
 
         ActiveRecord::InternalMetadata.upsert(
@@ -151,8 +154,15 @@ namespace :gitlab do
     def get_db_identifier(db_config)
       ActiveRecord::Base.establish_connection(db_config) # rubocop: disable Database/EstablishConnection
 
+      internal_metadata =
+        if ::Gitlab.next_rails?
+          ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+        else
+          ActiveRecord::InternalMetadata
+        end
+
       # rubocop:disable Database/MultipleDatabases
-      if ActiveRecord::InternalMetadata.table_exists?
+      if internal_metadata.table_exists?
         ActiveRecord::Base.connection.select_one(
           DB_IDENTIFIER_WITH_DB_CONFIG_NAME_SQL, nil, [DB_CONFIG_NAME_KEY])
       else

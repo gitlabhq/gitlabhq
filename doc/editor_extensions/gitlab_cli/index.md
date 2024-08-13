@@ -73,8 +73,8 @@ glab mr merge
 ## GitLab Duo for the CLI
 
 DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** Experiment, Self-managed, GitLab Dedicated
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The GitLab CLI includes features powered by [GitLab Duo](../../user/ai_features.md). These include:
 

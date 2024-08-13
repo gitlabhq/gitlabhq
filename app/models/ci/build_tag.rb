@@ -11,7 +11,7 @@ module Ci
 
     belongs_to :build, ->(build_tag) { in_partition(build_tag) }, # rubocop:disable Rails/InverseOf -- Will be added once association on build is added
       class_name: 'Ci::Build', partition_foreign_key: :partition_id, optional: false
-    belongs_to :tag, class_name: 'ActsAsTaggableOn::Tag', optional: false
+    belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :project_id, presence: true
   end

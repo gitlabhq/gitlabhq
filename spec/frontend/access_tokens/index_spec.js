@@ -5,15 +5,17 @@ import {
   initAccessTokenTableApp,
   initExpiresAtField,
   initNewAccessTokenApp,
+  initInactiveAccessTokenTableApp,
   initTokensApp,
 } from '~/access_tokens';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
+import InactiveAccessTokenTableApp from '~/access_tokens/components/inactive_access_token_table_app.vue';
 import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
 import TokensApp from '~/access_tokens/components/tokens_app.vue';
 import { FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 
 describe('access tokens', () => {
   let wrapper;
@@ -50,7 +52,7 @@ describe('access tokens', () => {
         initialActiveAccessTokens,
 
         // Default values
-        noActiveTokensMessage: sprintf(__('This user has no active %{accessTokenTypePlural}.'), {
+        noActiveTokensMessage: sprintf('This user has no active %{accessTokenTypePlural}.', {
           accessTokenTypePlural,
         }),
         showRole: false,
@@ -171,6 +173,83 @@ describe('access tokens', () => {
 
     it('returns `null`', () => {
       expect(initNewAccessTokenApp()).toBe(null);
+    });
+  });
+
+  describe('initInactiveAccessTokenTableApp', () => {
+    const accessTokenType = 'group access token';
+    const accessTokenTypePlural = 'group access tokens';
+    const initialInactiveAccessTokens = [
+      {
+        name: 'a',
+        scopes: ['api'],
+        created_at: '2023-05-01T00:00:00.000Z',
+        last_used_at: null,
+        expired: false,
+        expires_at: null,
+        revoked: true,
+        role: 'Maintainer',
+      },
+    ];
+
+    it('mounts the component and provides required values', () => {
+      setHTMLFixture(
+        `<div id="js-inactive-access-token-table-app"
+        data-access-token-type="${accessTokenType}"
+        data-access-token-type-plural="${accessTokenTypePlural}"
+        data-initial-inactive-access-tokens=${JSON.stringify(initialInactiveAccessTokens)}
+        >
+        </div>`,
+      );
+
+      const vueInstance = initInactiveAccessTokenTableApp();
+      wrapper = createWrapper(vueInstance);
+      const component = wrapper.findComponent({ name: 'InactiveAccessTokenTableRoot' });
+
+      expect(component.exists()).toBe(true);
+      expect(wrapper.findComponent(InactiveAccessTokenTableApp).vm).toMatchObject({
+        // Required value
+        accessTokenType,
+        accessTokenTypePlural,
+        initialInactiveAccessTokens,
+
+        // Default values
+        noInactiveTokensMessage: sprintf(
+          'This resource has no inactive %{accessTokenTypePlural}.',
+          {
+            accessTokenTypePlural,
+          },
+        ),
+      });
+    });
+
+    it('mounts the component and provides all values', () => {
+      const noInactiveTokensMessage = 'This group has no inactive access tokens.';
+      setHTMLFixture(
+        `<div id="js-inactive-access-token-table-app"
+          data-access-token-type="${accessTokenType}"
+          data-access-token-type-plural="${accessTokenTypePlural}"
+          data-initial-inactive-access-tokens=${JSON.stringify(initialInactiveAccessTokens)}
+          data-no-inactive-tokens-message="${noInactiveTokensMessage}"
+          >
+        </div>`,
+      );
+
+      const vueInstance = initInactiveAccessTokenTableApp();
+      wrapper = createWrapper(vueInstance);
+      const component = wrapper.findComponent({ name: 'InactiveAccessTokenTableRoot' });
+
+      expect(component.exists()).toBe(true);
+      expect(component.findComponent(InactiveAccessTokenTableApp).vm).toMatchObject({
+        accessTokenType,
+        accessTokenTypePlural,
+        initialInactiveAccessTokens,
+        noInactiveTokensMessage,
+      });
+    });
+
+    it('returns `null`', () => {
+      expect(initInactiveAccessTokenTableApp()).toBe(null);
     });
   });
 });

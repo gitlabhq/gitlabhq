@@ -45,7 +45,7 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC.
@@ -64,7 +64,7 @@ all projects that have visibility level set to [Internal](../../user/public_acce
 To create a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Select **Add new token**
 1. Enter a name. The token name is visible to any user with permissions to view
    the group or project.
@@ -212,7 +212,7 @@ runners to Google Compute Engine:
 Now that you've automated your runner creation and automation, you can view
 the runners that use the same configuration in the GitLab UI.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,

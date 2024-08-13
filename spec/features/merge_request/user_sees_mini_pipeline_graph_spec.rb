@@ -9,9 +9,10 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
   let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
   let(:build) { create(:ci_build, pipeline: pipeline, stage: 'test') }
 
-  dropdown_selector = '[data-testid="mini-pipeline-graph-dropdown"]'
+  dropdown_selector = '[data-testid="pipeline-mini-graph-dropdown"]'
 
   before do
+    stub_feature_flags(ci_graphql_pipeline_mini_graph: false)
     build.run
     build.trace.set('hello')
     sign_in(user)
@@ -80,19 +81,19 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
     end
 
     it 'pens when toggle is clicked' do
-      expect(toggle.find(:xpath, '..')).to have_selector('.mini-pipeline-graph-dropdown-menu')
+      expect(toggle.find(:xpath, '..')).to have_selector('[data-testid="pipeline-mini-graph-dropdown-menu-list"]')
     end
 
     it 'closes when toggle is clicked again' do
       toggle.click
 
-      expect(toggle.find(:xpath, '..')).not_to have_selector('.mini-pipeline-graph-dropdown-menu')
+      expect(toggle.find(:xpath, '..')).not_to have_selector('[data-testid="pipeline-mini-graph-dropdown-menu-list"]')
     end
 
     it 'closes when clicking somewhere else' do
       find('body').click
 
-      expect(toggle.find(:xpath, '..')).not_to have_selector('.mini-pipeline-graph-dropdown-menu')
+      expect(toggle.find(:xpath, '..')).not_to have_selector('[data-testid="pipeline-mini-graph-dropdown-menu"]')
     end
 
     describe 'build list build item' do

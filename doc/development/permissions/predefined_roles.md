@@ -17,7 +17,7 @@ Each user can be one of the following types:
 - [Internal users](../internal_users.md) - system created.
 - [Auditor](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/base_policy.rb#L9):
   - No access to projects or groups settings menu.
-  - No access to Admin area.
+  - No access to **Admin** area.
   - Read-only access to everything else.
 - [Administrator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/policies/base_policy.rb#L6) - read-write access.
 

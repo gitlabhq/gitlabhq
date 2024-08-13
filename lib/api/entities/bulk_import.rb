@@ -8,6 +8,7 @@ module API
         type: 'string', example: 'finished', values: %w[created started finished timeout failed]
       }
       expose :source_type, documentation: { type: 'string', example: 'gitlab' }
+      expose :source_url, documentation: { type: 'string', example: 'https://source.gitlab.com/' }
       expose :created_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
       expose :updated_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
       expose :has_failures, documentation: { type: 'boolean', example: false }

@@ -222,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end gl-w-full" data-testid="merge-request-actions">
+  <div class="gl-flex gl-w-full gl-justify-end" data-testid="merge-request-actions">
     <gl-disclosure-dropdown
       id="new-actions-header-dropdown"
       ref="mrMoreActionsDropdown"
@@ -237,10 +237,10 @@ export default {
       @hidden="hideDropdown"
     >
       <template #toggle>
-        <div class="gl-min-h-7 gl-mb-2 gl-sm-mb-0!">
+        <div class="gl-mb-2 gl-min-h-7 sm:!gl-mb-0">
           <gl-button
-            class="sm:!gl-hidden gl-new-dropdown-toggle gl-w-full"
-            button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
+            class="gl-new-dropdown-toggle gl-w-full sm:!gl-hidden"
+            button-text-classes="gl-flex gl-justify-between gl-w-full"
             category="secondary"
             tabindex="0"
             :aria-label="$options.i18n.mergeRequestActions"
@@ -249,7 +249,7 @@ export default {
             <gl-icon class="dropdown-chevron" name="chevron-down" />
           </gl-button>
           <gl-button
-            class="gl-hidden sm:!gl-flex gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+            class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden sm:!gl-flex"
             category="tertiary"
             icon="ellipsis_v"
             tabindex="0"
@@ -270,7 +270,7 @@ export default {
       <gl-disclosure-dropdown-group
         bordered
         :class="{
-          'gl-mt-0! gl-pt-0! gl-border-t-0!': !isLoggedIn || isNotificationsTodosButtons,
+          '!gl-mt-0 !gl-border-t-0 !gl-pt-0': !isLoggedIn || isNotificationsTodosButtons,
         }"
       >
         <gl-disclosure-dropdown-item
@@ -351,7 +351,7 @@ export default {
       <gl-disclosure-dropdown-group
         v-if="!isCurrentUser"
         bordered
-        :class="{ 'gl-mt-0! gl-pt-0! gl-border-t-0!': !canUpdateMergeRequest }"
+        :class="{ '!gl-mt-0 !gl-border-t-0 !gl-pt-0': !canUpdateMergeRequest }"
       >
         <gl-disclosure-dropdown-item
           class="js-report-abuse-dropdown-item"

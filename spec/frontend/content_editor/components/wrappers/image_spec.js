@@ -13,14 +13,17 @@ jest.mock('~/content_editor/services/upload_helpers', () => ({
 describe('content/components/wrappers/image_spec', () => {
   let wrapper;
   let tiptapEditor;
+  let updateAttributes;
 
   const createWrapper = (node = {}) => {
     tiptapEditor = createTestEditor();
+    updateAttributes = jest.fn();
     wrapper = shallowMountExtended(ImageWrapper, {
       propsData: {
         editor: tiptapEditor,
         node,
         getPos: jest.fn().mockReturnValue(12),
+        updateAttributes,
       },
     });
   };
@@ -102,6 +105,8 @@ describe('content/components/wrappers/image_spec', () => {
     const finalMousePosition = { screenX: 300, screenY: 300 };
 
     beforeEach(() => {
+      jest.spyOn(window, 'getComputedStyle').mockReturnValue({ width: '400px', height: '100px' });
+
       createWrapper({
         type: { name: 'image' },
         attrs: { src: 'image.png', alt: 'My Image', width: 400, height: 100 },
@@ -116,20 +121,38 @@ describe('content/components/wrappers/image_spec', () => {
       expect(findImage().attributes()).toMatchObject(htmlElementAttributes);
     });
 
-    it('updates prosemirror doc state on mouse release with final size', () => {
-      const commands = mockChainedCommands(tiptapEditor, [
-        'focus',
-        'updateAttributes',
-        'setNodeSelection',
-        'run',
-      ]);
+    describe('when mouse is released', () => {
+      let commands;
+      beforeEach(() => {
+        commands = mockChainedCommands(tiptapEditor, ['focus', 'setNodeSelection', 'run']);
+        document.dispatchEvent(new MouseEvent('mouseup'));
+      });
 
-      document.dispatchEvent(new MouseEvent('mouseup'));
+      it('updates image attributes to resized attributes', () => {
+        document.dispatchEvent(new MouseEvent('mouseup'));
 
-      expect(commands.focus).toHaveBeenCalled();
-      expect(commands.updateAttributes).toHaveBeenCalledWith('image', tiptapNodeAttributes);
-      expect(commands.setNodeSelection).toHaveBeenCalledWith(12);
-      expect(commands.run).toHaveBeenCalled();
+        expect(updateAttributes).toHaveBeenCalledWith(tiptapNodeAttributes);
+      });
+
+      it('sets focus back to the image', () => {
+        expect(commands.setNodeSelection).toHaveBeenCalledWith(12);
+        expect(commands.focus).toHaveBeenCalled();
+        expect(commands.run).toHaveBeenCalled();
+      });
+    });
+  });
+
+  it('resize image when its attributes are updated', async () => {
+    createWrapper({
+      type: { name: 'image' },
+      attrs: { src: 'image.png', alt: 'My Image', width: 400, height: 100 },
+    });
+
+    await wrapper.setProps({ node: { attrs: { width: 150, height: 150 } } });
+
+    expect(findImage().attributes()).toMatchObject({
+      width: '150',
+      height: '150',
     });
   });
 });

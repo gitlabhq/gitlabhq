@@ -434,17 +434,22 @@ Follow these best practices for best results:
 - Consider adding a retry limit if there is potential for the migration to fail.
   This ensures that migrations can be halted if an issue occurs.
 
-## Deleting advanced search migrations in a major version upgrade
+## Cleaning up advanced search migrations
 
-Because our advanced search migrations usually require us to support multiple
+Because advanced search migrations usually require us to support multiple
 code paths for a long period of time, it's important to clean those up when we
 safely can.
 
-We choose to use GitLab major version upgrades as a safe time to remove
+We choose to use GitLab [required stops](../database/required_stops.md) as a safe time to remove
 backwards compatibility for indices that have not been fully migrated. We
 [document this in our upgrade documentation](../../update/index.md#upgrading-to-a-new-major-version).
-We also choose to replace the migration code with the halted migration
-and remove tests so that:
+
+[GitLab Housekeeper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md)
+is used to automate the cleanup process. This process includes
+marking existing migrations as obsolete and deleting obsolete migrations.
+When a migration is marked as obsolete, the migration code is replaced with
+obsolete migration code and tests are replaced with obsolete migration shared
+examples so that:
 
 - We don't need to maintain any code that is called from our advanced search
   migrations.
@@ -453,14 +458,13 @@ and remove tests so that:
 - Operators who have not run this migration and who upgrade directly to the
   target version see a message prompting them to reindex from scratch.
 
-To be extra safe, we do not delete migrations that were created in the last
-minor version before the major upgrade. So, if we are upgrading to `%14.0`,
-we should not delete migrations that were only added in `%13.12`. This
-extra safety net allows for migrations that might
-take multiple weeks to finish on GitLab.com. It would be bad if we upgraded
-GitLab.com to `%14.0` before the migrations in `%13.12` were finished. Because
-our deployments to GitLab.com are automated and we don't have
-automated checks to prevent this, the extra precaution is warranted.
+To be extra safe, we do not clean up migrations that were created in the last
+minor version before the last required stop. For example, if the last required stop
+was `%14.0`, we should not clean up migrations that were only added in `%13.12`.
+This extra safety net allows for migrations that might take multiple weeks to
+finish on GitLab.com. Because our deployments to GitLab.com
+are automated and we do not have automated checks to prevent this cleanup,
+the extra precaution is warranted.
 Additionally, even if we did have automated checks to prevent it, we wouldn't
 actually want to hold up GitLab.com deployments on advanced search migrations,
 as they may still have another week to go, and that's too long to block
@@ -468,29 +472,42 @@ deployments.
 
 ### Process for marking migrations as obsolete
 
-For every migration that was created 2 minor versions before the major version
-being upgraded to, we do the following:
+Run the [`Keeps::MarkOldAdvancedSearchMigrationsAsObsolete` Keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md#running-for-real)
+manually to mark migrations as obsolete.
 
-1. Confirm the migration has actually completed successfully for GitLab.com.
-1. Replace the content of the migration with:
+For every migration that was created two versions before the last required stop,
+the Keep:
+
+1. Retains the content of the migration and adds a prepend to the bottom:
 
    ```ruby
-   include Elastic::MigrationObsolete
+    ClassName.prepend ::Elastic::MigrationObsolete
    ```
 
-1. When marking a skippable migration as obsolete, keep the `skip_if` condition.
-1. Delete any spec files to support this migration.
-1. Verify that there are no references of the migration in the `.rubocop_todo/` directory.
-1. Remove any logic handling backwards compatibility for this migration. You
-   can find this by looking for
-   `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
-1. Create a merge request with these changes. Noting that we should not
-   accidentally merge this before the major release is started.
+1. Replaces the spec file content with the `'a deprecated Advanced Search migration'` shared example.
+1. Randomly selects a Global Search backend engineer as an assignee.
+1. Updates the dictionary file to mark the migration as obsolete.
 
-### Process for removing migrations
+The MR assignee must:
 
-1. Select migrations that were marked as obsolete before the current major release
-1. If the step above includes all obsolete migrations, keep one last migration as a safeguard for customers with unapplied migrations
-1. Delete migration files and spec files for those migrations
-1. Verify that there are no references of the migrations in the `.rubocop_todo/` directory.
-1. Create a merge request and assign it to a team member from the global search team.
+1. Ensure the dictionary file has the correct `marked_obsolete_by_url` and `marked_obsolete_in_milestone`.
+1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
+1. Remove any logic-handling backwards compatibility for this migration by
+   looking for `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
+1. Push any required changes to the merge request.
+
+### Process for removing obsolete migrations
+
+Run the [`Keeps::DeleteObsoleteAdvancedSearchMigrations` Keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md#running-for-real)
+manually to remove obsolete migrations and specs. The Keep removes all but the most
+recent obsolete migration.
+
+1. Select obsolete migrations that were marked as obsolete before the last required stop.
+1. If the first step includes all obsolete migrations, keep one obsolete migration as a safeguard for customers with unapplied migrations.
+1. Delete migration files and spec files for those migrations.
+1. Create a merge request and assign it to a Global Search team member.
+
+The MR assignee must:
+
+1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
+1. Push any required changes to the merge request.

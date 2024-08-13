@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlIcon,
   GlModal,
   GlModalDirective,
   GlProgressBar,
@@ -33,7 +32,6 @@ export default {
     TimeTrackingReport,
     CreateTimelogForm,
     GlButton,
-    GlIcon,
     GlModal,
     GlProgressBar,
     GlSprintf,
@@ -108,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="work-item-time-tracking">
     <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
       <h3 class="gl-heading-5 gl-mb-2!">
         {{ __('Time tracking') }}
@@ -118,12 +116,11 @@ export default {
         v-gl-modal="$options.createTimelogModalId"
         v-gl-tooltip.top
         category="tertiary"
+        icon="plus"
         size="small"
         :title="__('Add time entry')"
         :aria-label="__('Add time entry')"
-      >
-        <gl-icon name="plus" class="gl-text-gray-900!" />
-      </gl-button>
+      />
     </div>
 
     <div
@@ -211,6 +208,7 @@ export default {
 
     <gl-modal
       modal-id="time-tracking-report"
+      data-testid="time-tracking-report-modal"
       hide-footer
       size="lg"
       :title="__('Time tracking report')"

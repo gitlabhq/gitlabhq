@@ -96,7 +96,6 @@ db:check-migrations:
   script:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
     - scripts/validate_migration_schema
-  allow_failure: true
 
 db:check-migrations-single-db:
   extends:

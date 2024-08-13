@@ -14,7 +14,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
 
   let_it_be(:other_user_todo) { create(:todo, user: other_user, author: author, state: :done) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   describe '#resolve' do
     it 'restores a single todo' do

@@ -373,7 +373,7 @@ export default {
       <div
         class="board-title-text"
         :class="{
-          'gl-display-none': list.collapsed && isSwimlanesHeader,
+          'gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-flex-grow-0 gl-my-3 gl-mx-0': list.collapsed,
           'gl-flex-grow-1': !list.collapsed,
           'gl-rotate-90': list.collapsed,

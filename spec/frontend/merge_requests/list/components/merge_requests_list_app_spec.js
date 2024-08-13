@@ -1,5 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,6 +17,8 @@ import {
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
+  OPERATOR_IS,
+  OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
@@ -25,17 +28,26 @@ import getMergeRequestsCountQuery from '~/merge_requests/list/queries/get_merge_
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 let wrapper;
+let router;
+let getQueryResponseMock;
+let getCountsQueryResponseMock;
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
 
 function createComponent({ provide = {} } = {}) {
+  getQueryResponseMock = jest.fn().mockResolvedValue(getQueryResponse);
+  getCountsQueryResponseMock = jest.fn().mockResolvedValue(getCountsQueryResponse);
   const apolloProvider = createMockApollo([
-    [getMergeRequestsCountQuery, jest.fn().mockResolvedValue(getCountsQueryResponse)],
-    [getMergeRequestsQuery, jest.fn().mockResolvedValue(getQueryResponse)],
+    [getMergeRequestsCountQuery, getCountsQueryResponseMock],
+    [getMergeRequestsQuery, getQueryResponseMock],
   ]);
+  router = new VueRouter({ mode: 'history' });
+  router.push = jest.fn();
+
   wrapper = shallowMountExtended(MergeRequestsListApp, {
     provide: {
       fullPath: 'gitlab-org/gitlab',
@@ -48,6 +60,7 @@ function createComponent({ provide = {} } = {}) {
       ...provide,
     },
     apolloProvider,
+    router,
   });
 }
 
@@ -181,6 +194,86 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
+      });
+    });
+  });
+
+  describe('events', () => {
+    describe('when "filter" event is emitted by IssuableList', () => {
+      it('updates IssuableList with url params', async () => {
+        createComponent();
+
+        findIssuableList().vm.$emit('filter', [
+          {
+            type: 'assignee',
+            value: { data: ['root'], operator: OPERATOR_IS },
+          },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_IS },
+          },
+        ]);
+        await nextTick();
+
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({
+            'assignee_username[]': ['root'],
+            reviewer_username: 'root',
+          }),
+        });
+      });
+
+      it('fetches new data with "not" variable', async () => {
+        createComponent();
+
+        findIssuableList().vm.$emit('filter', [
+          {
+            type: 'assignee',
+            value: { data: ['root'], operator: OPERATOR_NOT },
+          },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_NOT },
+          },
+        ]);
+
+        await nextTick();
+
+        expect(getQueryResponseMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
+          }),
+        );
+
+        expect(getCountsQueryResponseMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
+          }),
+        );
+      });
+
+      it('pushes new route with "not" values', async () => {
+        createComponent();
+
+        findIssuableList().vm.$emit('filter', [
+          {
+            type: 'assignee',
+            value: { data: ['root'], operator: OPERATOR_NOT },
+          },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_NOT },
+          },
+        ]);
+
+        await nextTick();
+
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({
+            'not[assignee_username][]': ['root'],
+            'not[reviewer_username]': 'root',
+          }),
+        });
       });
     });
   });

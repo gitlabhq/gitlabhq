@@ -46,7 +46,7 @@ export default {
 <template>
   <div class="top-area">
     <gl-tabs
-      class="gl-display-flex gl-flex-grow-1 gl-p-0 gl-m-0 mobile-separator issuable-state-filters"
+      class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0"
       nav-class="gl-border-b-0"
     >
       <gl-tab

@@ -108,7 +108,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
       markdown = "x \\#\n\n#{'mliteralcmliteral-' * 450000}mliteral"
 
       expect do
-        Timeout.timeout(2.seconds) { described_class.to_html(markdown, project: project) }
+        Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { described_class.to_html(markdown, project: project) }
       end.not_to raise_error
     end
   end

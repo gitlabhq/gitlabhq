@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-GitLab provides Rake tasks for managing users. Administrators can also use the Admin area to
+GitLab provides Rake tasks for managing users. Administrators can also use the **Admin** area to
 [manage users](../administration/admin_area.md#administering-users).
 
 ## Add user as a developer to all projects

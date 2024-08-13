@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Discover
 
-Allows users to identify themselves on an instance via SSH. The command helps to
+Allows users to identify themselves on an instance with SSH. The command helps to
 confirm quickly whether a user has SSH access to the instance:
 
 ```shell
@@ -40,7 +40,7 @@ It limits the set of commands to predefined Git commands:
 ## Generate new 2FA recovery codes
 
 Enables users to
-[generate new 2FA recovery codes](../../user/profile/account/two_factor_authentication.md#generate-new-recovery-codes-using-ssh):
+[generate new 2FA recovery codes](../../user/profile/account/two_factor_authentication_troubleshooting.md#generate-new-recovery-codes-using-ssh):
 
 ```shell
 $ ssh git@<hostname> 2fa_recovery_codes
@@ -78,7 +78,7 @@ $ ssh git@<hostname> git-lfs-authenticate <project-path> <upload/download>
 
 ## Personal access token
 
-Enables users to use personal access tokens via SSH:
+Enables users to use personal access tokens with SSH:
 
 ```shell
 $ ssh git@<hostname> personal_access_token <name> <scope1[,scope2,...]> [ttl_days]

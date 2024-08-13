@@ -130,11 +130,11 @@ idle_in_transaction_session_timeout = 60s
 
 Quoting from issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 > "If a deadlock is hit, and we resolve it through aborting the transaction after a short period, then the retry mechanisms we already have will make the deadlocked piece of work try again, and it's unlikely we'll deadlock multiple times in a row."
 
-<!-- vale gitlab.FutureTense = YES -->
+<!-- vale gitlab_base.FutureTense = YES -->
 
 NOTE:
 In Support, our general approach to reconfiguring timeouts (applies also to the

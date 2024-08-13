@@ -2,7 +2,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { memoize, cloneDeep, isNumber, uniqueId } from 'lodash';
-import Vue from 'vue';
 import { s__ } from '~/locale';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -114,7 +113,7 @@ export default {
 
     deleteStrategy(s) {
       if (isNumber(s.id)) {
-        Vue.set(s, 'shouldBeDestroyed', true);
+        Object.assign(s, { shouldBeDestroyed: true });
       } else {
         this.formStrategies = this.formStrategies.filter((strategy) => strategy !== s);
       }

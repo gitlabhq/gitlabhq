@@ -25,7 +25,7 @@ RSpec.describe 'Group integrations', :js, feature_category: :integrations do
     it 'returns a 404 for the prometheus edit page' do
       visit edit_group_settings_integration_path(group, :prometheus)
 
-      expect(page).to have_content "Page Not Found"
+      expect(page).to have_content "Page not found"
     end
   end
 end

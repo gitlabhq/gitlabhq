@@ -834,3 +834,117 @@ RSpec.shared_examples 'test web-hook endpoint' do
     end
   end
 end
+
+RSpec.shared_examples 'get web-hook event endpoint' do
+  describe 'hooks events' do
+    let_it_be(:log_200) { create(:web_hook_log, web_hook: hook) }
+    let_it_be(:log_400) { create(:web_hook_log, web_hook: hook, response_status: '400') }
+    let_it_be(:log_404) { create(:web_hook_log, web_hook: hook, response_status: '404') }
+    let_it_be(:log_500) { create(:web_hook_log, web_hook: hook, response_status: '500') }
+    let_it_be(:log_502) { create(:web_hook_log, web_hook: hook, response_status: '502') }
+    let_it_be(:log_internal_error) { create(:web_hook_log, web_hook: hook, response_status: 'internal error') }
+    let(:path) { "#{hook_uri}/events" }
+    let(:recent_logs) { [log_200, log_400, log_404, log_500, log_502, log_internal_error] }
+
+    describe "authorize user" do
+      it 'returns an array of web hook logs for the past 7 days' do
+        create(:web_hook_log, web_hook: hook, created_at: 8.days.ago)
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.pluck('id')).to contain_exactly(*recent_logs.map(&:id))
+      end
+
+      it 'returns 404 when web hook not found' do
+        get api("/projects/#{project.id}/hooks/#{non_existing_record_id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Not found')
+      end
+
+      describe 'pagination' do
+        it 'returns the correct page' do
+          page = 2
+          get api(path, user), params: { page: page, per_page: 2 }
+
+          expect(response.headers['X-Page']).to eq(page.to_s)
+        end
+
+        it 'returns the correct page size' do
+          get api(path, user), params: { page: 1, per_page: 2 }
+
+          expect(json_response.length).to eq 2
+        end
+
+        it 'returns invalid value if per_page exceed 20' do
+          get api(path, user), params: { page: 2, per_page: 21 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('per_page does not have a valid value')
+        end
+      end
+
+      describe 'filter by status' do
+        it 'can filter by response_status number' do
+          get api("#{path}?status=400", user)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.pluck('id')).to contain_exactly(log_400.id)
+        end
+
+        describe 'filter by status string' do
+          it 'can filter by status client_failure' do
+            get api("#{path}?status=client_failure", user)
+
+            expect(json_response.pluck('id')).to contain_exactly(*[log_400, log_404].map(&:id))
+          end
+
+          it 'can filter by status server_failure' do
+            get api("#{path}?status=server_failure", user)
+
+            expect(json_response.pluck('id')).to contain_exactly(*[log_500, log_502, log_internal_error].map(&:id))
+          end
+
+          it 'can filter by status successful' do
+            get api("#{path}?status=successful", user)
+
+            expect(json_response.pluck('id')).to contain_exactly(*[log_200].map(&:id))
+          end
+
+          it 'can filter by multiple status' do
+            get api("#{path}?status=successful,server_failure", user)
+
+            expect(json_response.pluck('id')).to contain_exactly(*[log_200, log_500, log_502,
+              log_internal_error].map(&:id))
+          end
+
+          it 'return 400 when invalid status' do
+            get api("#{path}?status=invalid", user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('status does not have a valid value')
+          end
+        end
+      end
+    end
+
+    describe "unauthorized user" do
+      it 'returns 403' do
+        get api(path, unauthorized_user, admin_mode: false)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    describe "when user is not authenticated" do
+      it 'returns 401' do
+        get api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+end

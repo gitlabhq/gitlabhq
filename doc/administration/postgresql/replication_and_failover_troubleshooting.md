@@ -193,12 +193,13 @@ To fix the problem, ensure the loopback interface is included in the CIDR addres
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Check that [all the replicas are synchronized](../../administration/postgresql/replication_and_failover.md#check-replication-status)
 
-## Errors in Patroni logs: the requested start point is ahead of the Write Ahead Log (WAL) flush position
+## Error: requested start point is ahead of the Write Ahead Log (WAL) flush position
 
-This error indicates that the database is not replicating:
+This error in Patroni logs indicates that the database is not replicating:
 
 ```plaintext
-FATAL:  could not receive data from WAL stream: ERROR:  requested starting point 0/5000000 is ahead of the WAL flush position of this server 0/4000388
+FATAL:  could not receive data from WAL stream:
+ERROR:  requested starting point 0/5000000 is ahead of the WAL flush position of this server 0/4000388
 ```
 
 This example error is from a replica that was initially misconfigured, and had never replicated.

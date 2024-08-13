@@ -80,7 +80,7 @@ export default {
         :items="items"
         :fields="$options.fields"
         show-empty
-        thead-class="gl-display-none"
+        thead-class="gl-hidden"
       />
       <div
         v-if="isTooLarge"

@@ -5,80 +5,60 @@
   <title>The page you're looking for could not be found (404)</title>
   <style>
     body {
-      color: #666;
+      color: #333238;
       text-align: center;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      margin: auto;
-      font-size: 14px;
+      font-family: "Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     h1 {
-      font-size: 56px;
-      line-height: 100px;
-      font-weight: 400;
-      color: #456;
+      font-size: 1.75rem;
+      line-height: 2.25rem;
+      margin: 1rem 0;
     }
 
-    h2 {
-      font-size: 24px;
-      color: #666;
-      line-height: 1.5em;
-    }
-
-    h3 {
-      color: #456;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 28px;
-    }
-
-    hr {
-      max-width: 800px;
-      margin: 18px auto;
-      border: 0;
-      border-top: 1px solid #EEE;
-      border-bottom: 1px solid white;
+    p {
+      margin-bottom: .5rem;
     }
 
     img {
-      max-width: 40vw;
       display: block;
-      margin: 40px auto;
+      margin: 0 auto;
     }
 
     a {
-      line-height: 100px;
-      font-weight: 400;
-      color: #4A8BEE;
-      font-size: 18px;
       text-decoration: none;
+      color: #1068bf;
     }
 
-    .container {
-      margin: auto 20px;
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .error-container {
+      max-width: 65ch;
+      margin: auto;
+      padding: 1rem 0;
+    }
+
+    .action-container {
+      margin-top: 1.5rem;
     }
 
     .go-back {
       display: none;
     }
-
   </style>
 </head>
 
 <body>
-  <a href="/">
-    <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDI1IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Im0yNC41MDcgOS41LS4wMzQtLjA5TDIxLjA4Mi41NjJhLjg5Ni44OTYgMCAwIDAtMS42OTQuMDkxbC0yLjI5IDcuMDFINy44MjVMNS41MzUuNjUzYS44OTguODk4IDAgMCAwLTEuNjk0LS4wOUwuNDUxIDkuNDExLjQxNiA5LjVhNi4yOTcgNi4yOTcgMCAwIDAgMi4wOSA3LjI3OGwuMDEyLjAxLjAzLjAyMiA1LjE2IDMuODY3IDIuNTYgMS45MzUgMS41NTQgMS4xNzZhMS4wNTEgMS4wNTEgMCAwIDAgMS4yNjggMGwxLjU1NS0xLjE3NiAyLjU2LTEuOTM1IDUuMTk3LTMuODkuMDE0LS4wMUE2LjI5NyA2LjI5NyAwIDAgMCAyNC41MDcgOS41WiIKICAgICAgICBmaWxsPSIjRTI0MzI5Ii8+CiAgPHBhdGggZD0ibTI0LjUwNyA5LjUtLjAzNC0uMDlhMTEuNDQgMTEuNDQgMCAwIDAtNC41NiAyLjA1MWwtNy40NDcgNS42MzIgNC43NDIgMy41ODQgNS4xOTctMy44OS4wMTQtLjAxQTYuMjk3IDYuMjk3IDAgMCAwIDI0LjUwNyA5LjVaIgogICAgICAgIGZpbGw9IiNGQzZEMjYiLz4KICA8cGF0aCBkPSJtNy43MDcgMjAuNjc3IDIuNTYgMS45MzUgMS41NTUgMS4xNzZhMS4wNTEgMS4wNTEgMCAwIDAgMS4yNjggMGwxLjU1NS0xLjE3NiAyLjU2LTEuOTM1LTQuNzQzLTMuNTg0LTQuNzU1IDMuNTg0WiIKICAgICAgICBmaWxsPSIjRkNBMzI2Ii8+CiAgPHBhdGggZD0iTTUuMDEgMTEuNDYxYTExLjQzIDExLjQzIDAgMCAwLTQuNTYtMi4wNUwuNDE2IDkuNWE2LjI5NyA2LjI5NyAwIDAgMCAyLjA5IDcuMjc4bC4wMTIuMDEuMDMuMDIyIDUuMTYgMy44NjcgNC43NDUtMy41ODQtNy40NDQtNS42MzJaIgogICAgICAgIGZpbGw9IiNGQzZEMjYiLz4KPC9zdmc+Cg==' alt="GitLab"/>
-  </a>
-  <h1>
-    404
-  </h1>
-  <div class="container">
-    <h3>The page could not be found or you don't have permission to view it.</h3>
-    <hr />
-    <p>The resource that you are attempting to access does not exist or you don't have the necessary permissions to view it.</p>
-    <p>Make sure the address is correct and that the page hasn't moved.</p>
+  <div class="error-container">
+    <img src='/-/error-illustrations/error-404-lg.svg' alt="404 error"/>
+    <h1>404: Page not found</h1>
+    <p>Make sure the address is correct and the page has not moved.</p>
     <p>Please contact your GitLab administrator if you think this is a mistake.</p>
-    <a href="javascript:history.back()" class="js-go-back go-back">Go back</a>
+    <div class="action-container">
+      <a href="javascript:history.back()" class="js-go-back go-back">Go back</a>
+    </div>
   </div>
   <script>
     (function () {

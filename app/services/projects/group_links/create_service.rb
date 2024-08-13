@@ -57,6 +57,10 @@ module Projects
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )
       end
+
+      def remove_unallowed_params
+        # no-op
+      end
     end
   end
 end

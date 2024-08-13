@@ -14,7 +14,7 @@ module Gitlab
           private
 
           def target
-            ::Backup::Targets::Files.new(nil, storage_path, options: options, excludes: ['tmp'])
+            check_object_storage(::Backup::Targets::Files.new(nil, storage_path, options: options, excludes: ['tmp']))
           end
 
           def storage_path = context.upload_path

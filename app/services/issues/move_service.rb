@@ -22,6 +22,7 @@ module Issues
 
       copy_email_participants
       queue_copy_designs
+      copy_timelogs
 
       new_entity
     end
@@ -36,8 +37,6 @@ module Issues
     end
 
     def move_children
-      return if Feature.disabled?(:move_issue_children, original_entity.resource_parent, type: :beta)
-
       WorkItems::ParentLink.for_parents(original_entity).each do |link|
         new_child = self.class.new(
           container: container,
@@ -143,6 +142,12 @@ module Issues
       ).execute
 
       log_error(response.message) if response.error?
+    end
+
+    def copy_timelogs
+      return if original_entity.timelogs.empty?
+
+      WorkItems::CopyTimelogsWorker.perform_async(original_entity.id, new_entity.id)
     end
 
     def mark_as_moved

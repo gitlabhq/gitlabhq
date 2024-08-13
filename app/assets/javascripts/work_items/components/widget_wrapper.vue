@@ -57,14 +57,19 @@ export default {
 </script>
 
 <template>
-  <div :id="widgetName" class="gl-new-card">
+  <div
+    :id="widgetName"
+    data-testid="widget-wrapper"
+    class="gl-new-card"
+    :class="{ 'is-collapsed': !isOpen }"
+  >
     <div class="gl-new-card-header">
       <div class="gl-new-card-title-wrapper">
         <h2 class="gl-new-card-title">
           <div aria-hidden="true">
             <gl-link
               :id="anchorLinkId"
-              class="gl-text-decoration-none gl-display-none"
+              class="gl-text-decoration-none gl-hidden"
               :href="anchorLink"
             />
           </div>
@@ -82,6 +87,7 @@ export default {
           :aria-label="toggleLabel"
           data-testid="widget-toggle"
           :aria-expanded="isOpenString"
+          :aria-controls="widgetName"
           @click="toggle"
         />
       </div>

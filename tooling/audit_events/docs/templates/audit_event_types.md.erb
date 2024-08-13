@@ -67,6 +67,6 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %>| <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
+<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %> | <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
 <% end %>
 <% end %>

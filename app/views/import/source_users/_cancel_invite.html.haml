@@ -1,0 +1,6 @@
+= render Pajamas::AlertComponent.new(variant: :danger, title: s_('UserMapping|Reassignment cancelled'), alert_options: { class: 'gl-mt-4' }) do |c|
+  - c.with_body do
+    = s_('UserMapping|The reassignment has been cancelled by the group owner.')
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/group/import/index'), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
+      = _('Learn more')

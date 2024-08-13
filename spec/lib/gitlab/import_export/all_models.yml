@@ -27,6 +27,7 @@ issues:
 - own_resource_state_events
 - own_resource_label_events
 - own_description_versions
+- own_events
 - sync_object
 - last_edited_by
 - todos
@@ -79,6 +80,7 @@ issues:
 - email
 - issuable_resource_links
 - synced_epic
+- observability_metrics
 work_item_type:
 - issues
 - namespace
@@ -268,6 +270,9 @@ merge_requests:
 - scan_result_policy_violations
 - applicable_post_merge_approval_rules
 - requested_changes
+- scan_result_policy_reads_through_violations
+- scan_result_policy_reads_through_approval_rules
+- running_scan_result_policy_violations
 external_pull_requests:
 - project
 merge_request_diff:
@@ -429,6 +434,7 @@ builds:
 - job_artifacts_lsif
 - job_artifacts_dotenv
 - job_artifacts_cobertura
+- job_artifacts_jacoco
 - job_artifacts_terraform
 - job_artifacts_accessibility
 - job_artifacts_cluster_applications
@@ -459,6 +465,7 @@ builds:
 - job_annotations
 - job_artifacts_annotations
 - project_mirror
+- build_source
 bridges:
 - user
 - pipeline
@@ -598,6 +605,7 @@ project:
 - google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
+- matrix_integration
 - slack_slash_commands_integration
 - harbor_integration
 - irker_integration
@@ -861,6 +869,8 @@ project:
 - design_management_repository
 - design_management_repository_state
 - compliance_standards_adherence
+- compliance_requirements
+- compliance_checks
 - scan_result_policy_reads
 - scan_result_policy_violations
 - project_state
@@ -876,6 +886,10 @@ project:
 - security_policy_project_linked_namespaces
 - relation_import_trackers
 - saved_replies
+- security_policy_project_links
+- security_policies
+- approval_policy_rule_project_links
+- approval_policy_rules
 award_emoji:
 - awardable
 - user
@@ -1035,6 +1049,7 @@ epic:
 - own_resource_state_events
 - own_resource_label_events
 - own_description_versions
+- own_events
 - sync_object
 - todos
 - metrics
@@ -1131,6 +1146,7 @@ approval_rules:
   - approval_project_rules_users
   - approval_project_rules_protected_branches
   - scan_result_policy_read
+  - approval_policy_rules
 approval_project_rules_users:
   - user
   - approval_project_rule

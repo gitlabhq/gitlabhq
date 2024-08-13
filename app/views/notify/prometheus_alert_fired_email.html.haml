@@ -15,13 +15,6 @@
     = _('Environment:')
     = env_name
 
-- if metric_query = @alert.prometheus_alert&.full_query
-  %p
-    = _('Metric:')
-
-    %pre
-      = metric_query
-
 - if @alert.show_incident_issues_link?
   %p
     = link_to(_('View incident issues.'), @alert.incident_issues_link)

@@ -1,4 +1,4 @@
-= gitlab_ui_form_for [@project, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
+= gitlab_ui_form_for [@project, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit' } do |f|
   = form_errors(@milestone)
 
   - if @conflict

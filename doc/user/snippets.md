@@ -21,7 +21,7 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets with:
 
 - The GitLab user interface.
-- The [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md).
+- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md).
 - The [`glab` CLI](../editor_extensions/gitlab_cli/index.md).
 
 ![Example of a snippet](img/snippet_sample_v16_6.png)
@@ -53,7 +53,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
-     - If you installed the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md),
+     - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select
      **Create new** (**{plus}**). Below **In this project**, select **New snippet**.
@@ -249,7 +249,7 @@ GitLab forwards the spam to Akismet.
 
 ### Snippet limitations
 
-- There are no limits as to how many snippets you can create.
+- No limits exist as to how many snippets you can create.
 - Binary files are not supported.
 - Creating or deleting branches is not supported. Only the default branch is used.
 - Git tags are not supported in snippet repositories.

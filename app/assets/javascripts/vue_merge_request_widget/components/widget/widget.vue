@@ -141,7 +141,7 @@ export default {
     widgetName: {
       type: String,
       required: true,
-      // see https://docs.gitlab.com/ee/development/fe_guide/merge_request_widget_extensions.html#add-new-widgets
+      // see https://docs.gitlab.com/ee/development/fe_guide/merge_request_widgets.html#add-new-widgets
       validator: (val) => val.startsWith(WIDGET_PREFIX),
     },
     telemetry: {

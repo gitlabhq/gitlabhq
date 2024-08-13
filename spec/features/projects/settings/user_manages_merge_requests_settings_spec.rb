@@ -59,7 +59,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings', feat
 
         visit project_settings_merge_requests_path(project)
 
-        expect(page).to have_content "Page Not Found"
+        expect(page).to have_content "Page not found"
       end
     end
 

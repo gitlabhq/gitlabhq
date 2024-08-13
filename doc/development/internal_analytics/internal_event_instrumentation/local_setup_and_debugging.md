@@ -13,7 +13,7 @@ Internal events are using a tool called Snowplow under the hood. To develop and 
 
 | Testing Tool                                 | Frontend Tracking  | Backend Tracking    | Local Development Environment | Production Environment | Shows individual events |
 |----------------------------------------------|--------------------|---------------------|-------------------------------|------------------------|------------------------|
-| [Internal Events Monitor](#internal-events-monitor) | Yes | Yes | Yes  | Yes     | Yes, if running [Snowplow Micro](#snowplow-micro)    |
+| [Internal Events Monitor](#internal-events-monitor) | Yes | Yes | Yes  | Yes     | Yes    |
 | [Snowplow Micro](#snowplow-micro) | Yes | Yes  | Yes            | No    | Yes    |
 | [Manual check in GDK](#manual-check-in-gdk) | Yes | Yes | Yes            | Yes     | No     |
 | [Snowplow Analytics Debugger Chrome Extension](#snowplow-analytics-debugger-chrome-extension) | Yes | No | Yes            | Yes     | Yes     |
@@ -150,7 +150,7 @@ On GitLab.com events are sent to a collector configured by GitLab. By default, s
 
 You can configure your self-managed GitLab instance to use a custom Snowplow collector.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Snowplow**.
 1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example if your custom snowplow collector is available at `your-snowplow-collector.net`:

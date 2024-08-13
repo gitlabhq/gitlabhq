@@ -65,12 +65,12 @@ translate between the human-readable project name and the hashed storage path. Y
 
 Administrators can look up a project's hashed path from its name or ID using:
 
-- The [Admin area](../administration/admin_area.md#administering-projects).
+- The [**Admin** area](../administration/admin_area.md#administering-projects).
 - A Rails console.
 
-To look up a project's hash path in the Admin area:
+To look up a project's hash path in the **Admin** area:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Projects** and select the project.
 1. Locate the **Relative path** field. The value is similar to:
 
@@ -227,7 +227,7 @@ LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-
 
 After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration.html#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Repository**.
 1. Expand **Repository storage**.
 1. Enter values in the **Storage nodes for new repositories** fields.

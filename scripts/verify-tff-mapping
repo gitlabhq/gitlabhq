@@ -100,17 +100,17 @@ tests = [
   {
     explanation: 'FOSS Snowplow definitions map to event validation spec',
     changed_file: 'config/events/status_page_incident_unpublished.yml',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
+    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
   },
   {
     explanation: 'EE Snowplow definitions map to event validation spec',
     changed_file: 'ee/config/events/licenses_list_viewed.yml',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
+    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
   },
   {
     explanation: 'Snowplow schema maps to event validation spec',
     changed_file: 'config/events/schema.json',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
+    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
   },
 
   {
@@ -400,6 +400,7 @@ tests = [
       spec/db/docs_spec.rb
       spec/lib/gitlab/database/dictionary_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
+      spec/lib/gitlab/database/no_new_tables_with_gitlab_pm_schema_spec.rb
       spec/lib/gitlab/database/sharding_key_spec.rb
     ]
   }

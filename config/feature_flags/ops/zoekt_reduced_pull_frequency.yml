@@ -1,0 +1,9 @@
+---
+name: zoekt_reduced_pull_frequency
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160575
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474248
+milestone: '17.3'
+group: group::global search
+type: ops
+default_enabled: false

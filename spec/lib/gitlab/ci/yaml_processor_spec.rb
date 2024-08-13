@@ -52,6 +52,74 @@ module Gitlab
           end
         end
 
+        context 'with execution config' do
+          let(:config) do
+            YAML.dump(
+              hello_steps: {
+                artifacts: { access: 'developer' },
+                run: [
+                  name: 'hello_steps',
+                  step: 'some_step_reference',
+                  inputs: {
+                    echo: 'hello steps!!'
+                  }
+                ]
+              }
+            )
+          end
+
+          it 'returns valid build attributes with execution config' do
+            expect(builds).to eq([{
+              stage: 'test',
+              stage_idx: 2,
+              name: 'hello_steps',
+              options: { artifacts: { access: 'developer' } },
+              allow_failure: false,
+              execution_config: {
+                run_steps: [{
+                  inputs: { echo: 'hello steps!!' },
+                  name: 'hello_steps',
+                  step: 'some_step_reference'
+                }]
+              },
+              when: 'on_success',
+              job_variables: [],
+              only: { refs: %w[branches tags] },
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            }])
+          end
+
+          context 'when run steps is empty' do
+            let(:config) do
+              YAML.dump(
+                hello_steps: {
+                  artifacts: { access: 'developer' },
+                  run: []
+                }
+              )
+            end
+
+            it 'returns valid build attributes with empty run config' do
+              expect(builds).to eq([{
+                stage: 'test',
+                stage_idx: 2,
+                name: 'hello_steps',
+                options: { artifacts: { access: 'developer' } },
+                allow_failure: false,
+                execution_config: {
+                  run_steps: []
+                },
+                when: 'on_success',
+                job_variables: [],
+                only: { refs: %w[branches tags] },
+                root_variables_inheritance: true,
+                scheduling_type: :stage
+              }])
+            end
+          end
+        end
+
         context 'with job rules' do
           let(:config) do
             YAML.dump(

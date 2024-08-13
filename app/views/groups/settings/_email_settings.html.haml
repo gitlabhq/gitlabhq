@@ -5,10 +5,9 @@
       s_('GroupSettings|Enable email notifications'),
       checkbox_options: { checked: @group.emails_enabled?, disabled: !can_disable_group_emails?(@group) },
       help_text: s_('GroupSettings|Enable sending email notifications for this group and all its subgroups and projects')
-  - if Feature.enabled?(:diff_preview_in_email, @group)
-    .gl-px-7
-      = f.gitlab_ui_checkbox_component :show_diff_preview_in_email,
-          s_('GroupSettings|Include diff previews'),
-          checkbox_options: { checked: @group.show_diff_preview_in_email? & @group.emails_enabled?,
-                            disabled: !@group.emails_enabled? || !can_set_group_diff_preview_in_email?(@group) },
-          help_text: s_('GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.')
+  .gl-px-7
+    = f.gitlab_ui_checkbox_component :show_diff_preview_in_email,
+        s_('GroupSettings|Include diff previews'),
+        checkbox_options: { checked: @group.show_diff_preview_in_email? & @group.emails_enabled?,
+                          disabled: !@group.emails_enabled? || !can_set_group_diff_preview_in_email?(@group) },
+        help_text: s_('GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.')

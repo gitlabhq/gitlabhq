@@ -5,55 +5,49 @@
 - expanded = expanded_by_default?
 - general_expanded = @group.errors.empty? ? expanded : true
 
+%h1.gl-sr-only= @breadcrumb_title
+
 -# Given we only have one field in this form which is also admin-only,
 -# we don't want to show an empty section to non-admin users,
 - if can?(current_user, :update_max_artifacts_size, @group)
-  %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("General pipelines")
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Customize your pipeline configuration.")
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_("General pipelines"),
+    id: 'js-general-pipeline-settings',
+    expanded: general_expanded) do |c|
+    - c.with_description do
+      = _("Customize your pipeline configuration.")
+    - c.with_body do
       = render 'groups/settings/ci_cd/form', group: @group
 
 - if can?(current_user, :admin_cicd_variables, @group)
-  %section.settings#ci-variables.no-animate{ class: ('expanded' if expanded) }
-    .settings-header
-      = render 'ci/variables/header', expanded: expanded
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Variables'),
+    id: 'ci-variables',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = render "ci/variables/content", entity: @entity, variable_limit: @variable_limit
+    - c.with_body do
       = render 'ci/variables/index', save_endpoint: group_variables_path
 
 - if can?(current_user, :admin_runner, @group)
-  %section.settings#runners-settings.no-animate{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _('Runners')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-        = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
+    id: 'runners-settings',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
+      = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
       = render 'groups/runners/settings'
 
 - if can?(current_user, :admin_group, @group)
-  %section.settings#auto-devops-settings.no-animate{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _('Auto DevOps')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        - auto_devops_url = help_page_path('topics/autodevops/index')
-        - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
-        - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
-        - quickstart_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: quickstart_url }
-        = html_escape(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}')) % { auto_devops_start: auto_devops_start, auto_devops_end: '</a>'.html_safe, quickstart_start: quickstart_start, quickstart_end: '</a>'.html_safe }
-
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Auto DevOps'),
+    id: 'auto-devops-settings',
+    expanded: expanded) do |c|
+    - c.with_description do
+      - auto_devops_url = help_page_path('topics/autodevops/index')
+      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
+      - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
+      - quickstart_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: quickstart_url }
+      = html_escape(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}')) % { auto_devops_start: auto_devops_start, auto_devops_end: '</a>'.html_safe, quickstart_start: quickstart_start, quickstart_end: '</a>'.html_safe }
+    - c.with_body do
       = render 'groups/settings/ci_cd/auto_devops_form', group: @group
 
   = render_if_exists 'groups/settings/ci_cd/protected_environments', expanded: expanded

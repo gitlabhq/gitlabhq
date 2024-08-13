@@ -1,14 +1,13 @@
 <script>
 import { isEmpty } from 'lodash';
 import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
-import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
@@ -26,14 +25,14 @@ import {
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_VALUE_TASK,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  WIDGET_TYPE_WEIGHT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
-import { findHierarchyWidgetChildren, findHierarchyWidgetDefinition } from '../utils';
+import { findHierarchyWidgetDefinition } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -50,9 +49,11 @@ import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
+import WorkItemAbuseModal from './work_item_abuse_modal.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 
 export default {
+  name: 'WorkItemDetail',
   i18n,
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -73,15 +74,15 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
-    AbuseCategorySelector,
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
     WorkItemLoading,
+    WorkItemAbuseModal,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
+  inject: ['fullPath', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -113,19 +114,18 @@ export default {
       modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       modalWorkItemNamespaceFullPath: '',
-      isReportDrawerOpen: false,
+      isReportModalOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
       isStickyHeaderShowing: false,
       editMode: false,
       draftData: {},
+      hasChildren: false,
     };
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
@@ -201,6 +201,9 @@ export default {
     workItemTypeId() {
       return this.workItem.workItemType?.id;
     },
+    workItemAuthorId() {
+      return getIdFromGraphQLId(this.workItem.author?.id);
+    },
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
@@ -228,7 +231,7 @@ export default {
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
-    showAncestors() {
+    hasParent() {
       // TODO: This is a temporary check till the issue work item migration is completed
       // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
       const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
@@ -241,7 +244,12 @@ export default {
         return hasSubepicsFeature && parentWorkItem;
       }
 
-      return parentWorkItem;
+      return Boolean(parentWorkItem);
+    },
+    shouldShowAncestors() {
+      // Checks whether current work item has parent
+      // or it is in hierarchy but there is no permission to view the parent
+      return this.hasParent || this.workItemHierarchy?.hasParent;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
@@ -249,14 +257,11 @@ export default {
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
     },
-    noAccessSvgPath() {
-      return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
-    },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
     },
     hasDesignWidget() {
-      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS);
+      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS) && this.$router;
     },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
@@ -282,11 +287,14 @@ export default {
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
-    children() {
-      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
+    workItemWeight() {
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
-    hasChildren() {
-      return !isEmpty(this.children);
+    showRolledUpWeight() {
+      return this.workItemWeight?.widgetDefinition?.rollUp;
+    },
+    rolledUpWeight() {
+      return this.workItemWeight?.rolledUpWeight;
     },
     workItemBodyClass() {
       return {
@@ -304,16 +312,16 @@ export default {
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden gl-mt-3': this.showAncestors,
-        'sm:!gl-block': !this.showAncestors,
-        'gl-w-full': !this.showAncestors && !this.editMode,
-        'editable-wi-title': this.editMode && !this.showAncestors,
+        'sm:!gl-hidden gl-mt-3': this.shouldShowAncestors,
+        'sm:!gl-block': !this.shouldShowAncestors,
+        'gl-w-full': !this.shouldShowAncestors && !this.editMode,
+        'editable-wi-title': this.editMode && !this.shouldShowAncestors,
       };
     },
     titleClassComponent() {
       return {
-        'sm:!gl-block': !this.showAncestors,
-        'gl-hidden sm:!gl-block gl-mt-3': this.showAncestors,
+        'sm:!gl-block': !this.shouldShowAncestors,
+        'gl-hidden sm:!gl-block gl-mt-3': this.shouldShowAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
@@ -417,17 +425,17 @@ export default {
       );
       this.$refs.modal.show();
     },
-    openReportAbuseDrawer(reply) {
+    openReportAbuseModal(reply) {
       if (this.isModal) {
         this.$emit('openReportAbuse', reply);
       } else {
-        this.toggleReportAbuseDrawer(true, reply);
+        this.toggleReportAbuseModal(true, reply);
       }
     },
-    toggleReportAbuseDrawer(isOpen, reply = {}) {
-      this.isReportDrawerOpen = isOpen;
-      this.reportedUrl = reply.url || {};
-      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    toggleReportAbuseModal(isOpen, workItem = this.workItem) {
+      this.isReportModalOpen = isOpen;
+      this.reportedUrl = workItem.webUrl || workItem.url || {};
+      this.reportedUserId = workItem.author ? getIdFromGraphQLId(workItem.author.id) : 0;
     },
     hideStickyHeader() {
       this.isStickyHeaderShowing = false;
@@ -477,6 +485,7 @@ export default {
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
+  noAccessSvg,
 };
 </script>
 
@@ -493,6 +502,7 @@ export default {
       :work-item="workItem"
       :is-sticky-header-showing="isStickyHeaderShowing"
       :work-item-notifications-subscribed="workItemNotificationsSubscribed"
+      :work-item-author-id="workItemAuthorId"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -500,6 +510,8 @@ export default {
       @error="updateError = $event"
       @promotedToObjective="$emit('promotedToObjective', workItemIid)"
       @toggleEditMode="enableEditMode"
+      @workItemStateUpdated="$emit('workItemStateUpdated')"
+      @toggleReportAbuseModal="toggleReportAbuseModal"
     />
     <section class="work-item-view">
       <section v-if="updateError" class="flash-container flash-container-page sticky">
@@ -524,12 +536,11 @@ export default {
           v-else-if="error"
           :title="$options.i18n.fetchErrorTitle"
           :description="error"
-          :svg-path="noAccessSvgPath"
-          :svg-height="null"
+          :svg-path="$options.noAccessSvg"
         />
         <div v-else data-testid="detail-wrapper">
           <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
-            <work-item-ancestors v-if="showAncestors" :work-item="workItem" class="gl-mb-1" />
+            <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
                 v-if="workItem.title"
@@ -586,10 +597,13 @@ export default {
                 :is-modal="isModal"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
+                :work-item-author-id="workItemAuthorId"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+                @workItemStateUpdated="$emit('workItemStateUpdated')"
+                @toggleReportAbuseModal="toggleReportAbuseModal"
               />
             </div>
             <gl-button
@@ -604,7 +618,7 @@ export default {
           </div>
           <div :class="{ 'gl-mt-3': !editMode }">
             <work-item-title
-              v-if="workItem.title && showAncestors"
+              v-if="workItem.title && shouldShowAncestors"
               ref="title"
               :is-editing="editMode"
               :class="titleClassComponent"
@@ -655,6 +669,7 @@ export default {
                 :work-item="workItem"
                 :group-path="groupPath"
                 @error="updateError = $event"
+                @attributesUpdated="$emit('attributesUpdated', $event)"
               />
             </aside>
 
@@ -672,13 +687,15 @@ export default {
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :children="children"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
+              :rolled-up-weight="rolledUpWeight"
+              :show-rolled-up-weight="showRolledUpWeight"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
+              @childrenLoaded="hasChildren = $event"
             />
             <work-item-relationships
               v-if="workItemLinkedItems"
@@ -704,7 +721,7 @@ export default {
               :use-h2="!isModal"
               @error="updateError = $event"
               @has-notes="updateHasNotes"
-              @openReportAbuse="openReportAbuseDrawer"
+              @openReportAbuse="openReportAbuseModal"
             />
           </div>
         </div>
@@ -718,14 +735,14 @@ export default {
       :work-item-full-path="modalWorkItemNamespaceFullPath"
       :show="true"
       @close="updateUrl"
-      @openReportAbuse="toggleReportAbuseDrawer(true, $event)"
+      @openReportAbuse="toggleReportAbuseModal(true, $event)"
     />
-    <abuse-category-selector
-      v-if="isReportDrawerOpen"
+    <work-item-abuse-modal
+      v-if="isReportModalOpen"
+      :show-modal="isReportModalOpen"
       :reported-user-id="reportedUserId"
       :reported-from-url="reportedUrl"
-      :show-drawer="true"
-      @close-drawer="toggleReportAbuseDrawer(false)"
+      @close-modal="toggleReportAbuseModal(false)"
     />
   </div>
 </template>

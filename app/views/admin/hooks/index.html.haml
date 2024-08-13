@@ -1,7 +1,9 @@
 - page_title @hook.pluralized_name
 
-.settings-section{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_hooks_pageload' } }
-  = render 'shared/web_hooks/title_and_docs', hook: @hook
-  = render 'shared/web_hooks/index', hooks: @hooks, title: @hook.pluralized_name, partial: 'form', url: admin_hooks_path
+= render ::Layouts::SettingsSectionComponent.new(page_title, options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_hooks_pageload' } }) do |c|
+  - c.with_description do
+    = render 'shared/web_hooks/description', hook: @hook
+  - c.with_body do
+    = render 'shared/web_hooks/index', hooks: @hooks, title: @hook.pluralized_name, partial: 'form', url: admin_hooks_path
 
 = render 'shared/file_hooks/index'

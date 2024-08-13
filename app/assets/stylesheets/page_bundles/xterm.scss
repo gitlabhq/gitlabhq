@@ -1,286 +1,6 @@
 @import 'framework/variables';
 
 .build-page {
-  // color codes are based on http://en.wikipedia.org/wiki/File:Xterm_256color_chart.svg
-  // see also: https://gist.github.com/jasonm23/2868981
-
-  $black: #000;
-  $red: #ea1010;
-  $green: #090;
-  $yellow: #990;
-  $blue: #0073e6;
-  $magenta: #d411d4;
-  $cyan: #099;
-  $white: #ccc;
-  $l-black: #373b41;
-  $l-red: #ff6161;
-  $l-green: #00d600;
-  $l-yellow: #bdbd00;
-  $l-blue: #5797ff;
-  $l-magenta: #d96dd9;
-  $l-cyan: #00bdbd;
-  $l-white: #fff;
-
-  /*
-  * xterm colors
-  */
-  $xterm-fg-0: $black;
-  $xterm-fg-1: #800000;
-  $xterm-fg-2: #008000;
-  $xterm-fg-3: #808000;
-  $xterm-fg-4: #000080;
-  $xterm-fg-5: #800080;
-  $xterm-fg-6: #008080;
-  $xterm-fg-7: #c0c0c0;
-  $xterm-fg-8: #808080;
-  $xterm-fg-9: #f00;
-  $xterm-fg-10: #0f0;
-  $xterm-fg-11: #ff0;
-  $xterm-fg-12: #00f;
-  $xterm-fg-13: #f0f;
-  $xterm-fg-14: #0ff;
-  $xterm-fg-15: $white;
-  $xterm-fg-16: $black;
-  $xterm-fg-17: #00005f;
-  $xterm-fg-18: #000087;
-  $xterm-fg-19: #0000af;
-  $xterm-fg-20: #0000d7;
-  $xterm-fg-21: #00f;
-  $xterm-fg-22: #005f00;
-  $xterm-fg-23: #005f5f;
-  $xterm-fg-24: #005f87;
-  $xterm-fg-25: #005faf;
-  $xterm-fg-26: #005fd7;
-  $xterm-fg-27: #005fff;
-  $xterm-fg-28: #008700;
-  $xterm-fg-29: #00875f;
-  $xterm-fg-30: #008787;
-  $xterm-fg-31: #0087af;
-  $xterm-fg-32: #0087d7;
-  $xterm-fg-33: #0087ff;
-  $xterm-fg-34: #00af00;
-  $xterm-fg-35: #00af5f;
-  $xterm-fg-36: #00af87;
-  $xterm-fg-37: #00afaf;
-  $xterm-fg-38: #00afd7;
-  $xterm-fg-39: #00afff;
-  $xterm-fg-40: #00d700;
-  $xterm-fg-41: #00d75f;
-  $xterm-fg-42: #00d787;
-  $xterm-fg-43: #00d7af;
-  $xterm-fg-44: #00d7d7;
-  $xterm-fg-45: #00d7ff;
-  $xterm-fg-46: #0f0;
-  $xterm-fg-47: #00ff5f;
-  $xterm-fg-48: #00ff87;
-  $xterm-fg-49: #00ffaf;
-  $xterm-fg-50: #00ffd7;
-  $xterm-fg-51: #0ff;
-  $xterm-fg-52: #5f0000;
-  $xterm-fg-53: #5f005f;
-  $xterm-fg-54: #5f0087;
-  $xterm-fg-55: #5f00af;
-  $xterm-fg-56: #5f00d7;
-  $xterm-fg-57: #5f00ff;
-  $xterm-fg-58: #5f5f00;
-  $xterm-fg-59: #5f5f5f;
-  $xterm-fg-60: #5f5f87;
-  $xterm-fg-61: #5f5faf;
-  $xterm-fg-62: #5f5fd7;
-  $xterm-fg-63: #5f5fff;
-  $xterm-fg-64: #5f8700;
-  $xterm-fg-65: #5f875f;
-  $xterm-fg-66: #5f8787;
-  $xterm-fg-67: #5f87af;
-  $xterm-fg-68: #5f87d7;
-  $xterm-fg-69: #5f87ff;
-  $xterm-fg-70: #5faf00;
-  $xterm-fg-71: #5faf5f;
-  $xterm-fg-72: #5faf87;
-  $xterm-fg-73: #5fafaf;
-  $xterm-fg-74: #5fafd7;
-  $xterm-fg-75: #5fafff;
-  $xterm-fg-76: #5fd700;
-  $xterm-fg-77: #5fd75f;
-  $xterm-fg-78: #5fd787;
-  $xterm-fg-79: #5fd7af;
-  $xterm-fg-80: #5fd7d7;
-  $xterm-fg-81: #5fd7ff;
-  $xterm-fg-82: #5fff00;
-  $xterm-fg-83: #5fff5f;
-  $xterm-fg-84: #5fff87;
-  $xterm-fg-85: #5fffaf;
-  $xterm-fg-86: #5fffd7;
-  $xterm-fg-87: #5fffff;
-  $xterm-fg-88: #870000;
-  $xterm-fg-89: #87005f;
-  $xterm-fg-90: #870087;
-  $xterm-fg-91: #8700af;
-  $xterm-fg-92: #8700d7;
-  $xterm-fg-93: #8700ff;
-  $xterm-fg-94: #875f00;
-  $xterm-fg-95: #875f5f;
-  $xterm-fg-96: #875f87;
-  $xterm-fg-97: #875faf;
-  $xterm-fg-98: #875fd7;
-  $xterm-fg-99: #875fff;
-  $xterm-fg-100: #878700;
-  $xterm-fg-101: #87875f;
-  $xterm-fg-102: #878787;
-  $xterm-fg-103: #8787af;
-  $xterm-fg-104: #8787d7;
-  $xterm-fg-105: #8787ff;
-  $xterm-fg-106: #87af00;
-  $xterm-fg-107: #87af5f;
-  $xterm-fg-108: #87af87;
-  $xterm-fg-109: #87afaf;
-  $xterm-fg-110: #87afd7;
-  $xterm-fg-111: #87afff;
-  $xterm-fg-112: #87d700;
-  $xterm-fg-113: #87d75f;
-  $xterm-fg-114: #87d787;
-  $xterm-fg-115: #87d7af;
-  $xterm-fg-116: #87d7d7;
-  $xterm-fg-117: #87d7ff;
-  $xterm-fg-118: #87ff00;
-  $xterm-fg-119: #87ff5f;
-  $xterm-fg-120: #87ff87;
-  $xterm-fg-121: #87ffaf;
-  $xterm-fg-122: #87ffd7;
-  $xterm-fg-123: #87ffff;
-  $xterm-fg-124: #af0000;
-  $xterm-fg-125: #af005f;
-  $xterm-fg-126: #af0087;
-  $xterm-fg-127: #af00af;
-  $xterm-fg-128: #af00d7;
-  $xterm-fg-129: #af00ff;
-  $xterm-fg-130: #af5f00;
-  $xterm-fg-131: #af5f5f;
-  $xterm-fg-132: #af5f87;
-  $xterm-fg-133: #af5faf;
-  $xterm-fg-134: #af5fd7;
-  $xterm-fg-135: #af5fff;
-  $xterm-fg-136: #af8700;
-  $xterm-fg-137: #af875f;
-  $xterm-fg-138: #af8787;
-  $xterm-fg-139: #af87af;
-  $xterm-fg-140: #af87d7;
-  $xterm-fg-141: #af87ff;
-  $xterm-fg-142: #afaf00;
-  $xterm-fg-143: #afaf5f;
-  $xterm-fg-144: #afaf87;
-  $xterm-fg-145: #afafaf;
-  $xterm-fg-146: #afafd7;
-  $xterm-fg-147: #afafff;
-  $xterm-fg-148: #afd700;
-  $xterm-fg-149: #afd75f;
-  $xterm-fg-150: #afd787;
-  $xterm-fg-151: #afd7af;
-  $xterm-fg-152: #afd7d7;
-  $xterm-fg-153: #afd7ff;
-  $xterm-fg-154: #afff00;
-  $xterm-fg-155: #afff5f;
-  $xterm-fg-156: #afff87;
-  $xterm-fg-157: #afffaf;
-  $xterm-fg-158: #afffd7;
-  $xterm-fg-159: #afffff;
-  $xterm-fg-160: #d70000;
-  $xterm-fg-161: #d7005f;
-  $xterm-fg-162: #d70087;
-  $xterm-fg-163: #d700af;
-  $xterm-fg-164: #d700d7;
-  $xterm-fg-165: #d700ff;
-  $xterm-fg-166: #d75f00;
-  $xterm-fg-167: #d75f5f;
-  $xterm-fg-168: #d75f87;
-  $xterm-fg-169: #d75faf;
-  $xterm-fg-170: #d75fd7;
-  $xterm-fg-171: #d75fff;
-  $xterm-fg-172: #d78700;
-  $xterm-fg-173: #d7875f;
-  $xterm-fg-174: #d78787;
-  $xterm-fg-175: #d787af;
-  $xterm-fg-176: #d787d7;
-  $xterm-fg-177: #d787ff;
-  $xterm-fg-178: #d7af00;
-  $xterm-fg-179: #d7af5f;
-  $xterm-fg-180: #d7af87;
-  $xterm-fg-181: #d7afaf;
-  $xterm-fg-182: #d7afd7;
-  $xterm-fg-183: #d7afff;
-  $xterm-fg-184: #d7d700;
-  $xterm-fg-185: #d7d75f;
-  $xterm-fg-186: #d7d787;
-  $xterm-fg-187: #d7d7af;
-  $xterm-fg-188: #d7d7d7;
-  $xterm-fg-189: #d7d7ff;
-  $xterm-fg-190: #d7ff00;
-  $xterm-fg-191: #d7ff5f;
-  $xterm-fg-192: #d7ff87;
-  $xterm-fg-193: #d7ffaf;
-  $xterm-fg-194: #d7ffd7;
-  $xterm-fg-195: #d7ffff;
-  $xterm-fg-196: #f00;
-  $xterm-fg-197: #ff005f;
-  $xterm-fg-198: #ff0087;
-  $xterm-fg-199: #ff00af;
-  $xterm-fg-200: #ff00d7;
-  $xterm-fg-201: #f0f;
-  $xterm-fg-202: #ff5f00;
-  $xterm-fg-203: #ff5f5f;
-  $xterm-fg-204: #ff5f87;
-  $xterm-fg-205: #ff5faf;
-  $xterm-fg-206: #ff5fd7;
-  $xterm-fg-207: #ff5fff;
-  $xterm-fg-208: #ff8700;
-  $xterm-fg-209: #ff875f;
-  $xterm-fg-210: #ff8787;
-  $xterm-fg-211: #ff87af;
-  $xterm-fg-212: #ff87d7;
-  $xterm-fg-213: #ff87ff;
-  $xterm-fg-214: #ffaf00;
-  $xterm-fg-215: #ffaf5f;
-  $xterm-fg-216: #ffaf87;
-  $xterm-fg-217: #ffafaf;
-  $xterm-fg-218: #ffafd7;
-  $xterm-fg-219: #ffafff;
-  $xterm-fg-220: #ffd700;
-  $xterm-fg-221: #ffd75f;
-  $xterm-fg-222: #ffd787;
-  $xterm-fg-223: #ffd7af;
-  $xterm-fg-224: #ffd7d7;
-  $xterm-fg-225: #ffd7ff;
-  $xterm-fg-226: #ff0;
-  $xterm-fg-227: #ffff5f;
-  $xterm-fg-228: #ffff87;
-  $xterm-fg-229: #ffffaf;
-  $xterm-fg-230: #ffffd7;
-  $xterm-fg-231: $white;
-  $xterm-fg-232: #080808;
-  $xterm-fg-233: #121212;
-  $xterm-fg-234: #1c1c1c;
-  $xterm-fg-235: #262626;
-  $xterm-fg-236: #303030;
-  $xterm-fg-237: #3a3a3a;
-  $xterm-fg-238: #444;
-  $xterm-fg-239: #4e4e4e;
-  $xterm-fg-240: #585858;
-  $xterm-fg-241: #626262;
-  $xterm-fg-242: #6c6c6c;
-  $xterm-fg-243: #767676;
-  $xterm-fg-244: #808080;
-  $xterm-fg-245: #8a8a8a;
-  $xterm-fg-246: #949494;
-  $xterm-fg-247: #9e9e9e;
-  $xterm-fg-248: #a8a8a8;
-  $xterm-fg-249: #b2b2b2;
-  $xterm-fg-250: #bcbcbc;
-  $xterm-fg-251: #c6c6c6;
-  $xterm-fg-252: #d0d0d0;
-  $xterm-fg-253: #dadada;
-  $xterm-fg-254: #e4e4e4;
-  $xterm-fg-255: #eee;
-
   .term-bold {
     font-weight: $gl-font-weight-bold;
   }
@@ -301,1155 +21,324 @@
     text-decoration: line-through;
   }
 
-  .term-fg-black {
-    color: $black;
-  }
-
-  .term-fg-red {
-    color: $red;
-  }
-
-  .term-fg-green {
-    color: $green;
-  }
-
-  .term-fg-yellow {
-    color: $yellow;
-  }
-
-  .term-fg-blue {
-    color: $blue;
-  }
-
-  .term-fg-magenta {
-    color: $magenta;
-  }
-
-  .term-fg-cyan {
-    color: $cyan;
-  }
-
-  .term-fg-white {
-    color: $white;
-  }
-
-  .term-fg-l-black {
-    color: $l-black;
-  }
-
-  .term-fg-l-red {
-    color: $l-red;
-  }
-
-  .term-fg-l-green {
-    color: $l-green;
-  }
-
-  .term-fg-l-yellow {
-    color: $l-yellow;
-  }
-
-  .term-fg-l-blue {
-    color: $l-blue;
-  }
-
-  .term-fg-l-magenta {
-    color: $l-magenta;
-  }
-
-  .term-fg-l-cyan {
-    color: $l-cyan;
-  }
-
-  .term-fg-l-white {
-    color: $l-white;
-  }
-
-  .term-bg-black {
-    background-color: $black;
-  }
-
-  .term-bg-red {
-    background-color: $red;
-  }
-
-  .term-bg-green {
-    background-color: $green;
-  }
-
-  .term-bg-yellow {
-    background-color: $yellow;
-  }
-
-  .term-bg-blue {
-    background-color: $blue;
-  }
-
-  .term-bg-magenta {
-    background-color: $magenta;
-  }
-
-  .term-bg-cyan {
-    background-color: $cyan;
-  }
-
-  .term-bg-white {
-    background-color: $white;
-  }
-
-  .term-bg-l-black {
-    background-color: $l-black;
-  }
-
-  .term-bg-l-red {
-    background-color: $l-red;
-  }
-
-  .term-bg-l-green {
-    background-color: $l-green;
-  }
-
-  .term-bg-l-yellow {
-    background-color: $l-yellow;
-  }
-
-  .term-bg-l-blue {
-    background-color: $l-blue;
-  }
-
-  .term-bg-l-magenta {
-    background-color: $l-magenta;
-  }
-
-  .term-bg-l-cyan {
-    background-color: $l-cyan;
-  }
-
-  .term-bg-l-white {
-    background-color: $l-white;
-  }
-
-  .xterm-fg-0 {
-    color: $xterm-fg-0;
-  }
-
-  .xterm-fg-1 {
-    color: $xterm-fg-1;
-  }
-
-  .xterm-fg-2 {
-    color: $xterm-fg-2;
-  }
-
-  .xterm-fg-3 {
-    color: $xterm-fg-3;
-  }
-
-  .xterm-fg-4 {
-    color: $xterm-fg-4;
-  }
-
-  .xterm-fg-5 {
-    color: $xterm-fg-5;
-  }
-
-  .xterm-fg-6 {
-    color: $xterm-fg-6;
-  }
-
-  .xterm-fg-7 {
-    color: $xterm-fg-7;
-  }
-
-  .xterm-fg-8 {
-    color: $xterm-fg-8;
-  }
-
-  .xterm-fg-9 {
-    color: $xterm-fg-9;
-  }
-
-  .xterm-fg-10 {
-    color: $xterm-fg-10;
-  }
-
-  .xterm-fg-11 {
-    color: $xterm-fg-11;
-  }
-
-  .xterm-fg-12 {
-    color: $xterm-fg-12;
-  }
-
-  .xterm-fg-13 {
-    color: $xterm-fg-13;
-  }
-
-  .xterm-fg-14 {
-    color: $xterm-fg-14;
-  }
-
-  .xterm-fg-15 {
-    color: $white;
-  }
-
-  .xterm-fg-16 {
-    color: $black;
-  }
-
-  .xterm-fg-17 {
-    color: $xterm-fg-17;
-  }
-
-  .xterm-fg-18 {
-    color: $xterm-fg-18;
-  }
-
-  .xterm-fg-19 {
-    color: $xterm-fg-19;
-  }
-
-  .xterm-fg-20 {
-    color: $xterm-fg-20;
-  }
-
-  .xterm-fg-21 {
-    color: $xterm-fg-21;
-  }
-
-  .xterm-fg-22 {
-    color: $xterm-fg-22;
-  }
-
-  .xterm-fg-23 {
-    color: $xterm-fg-23;
-  }
-
-  .xterm-fg-24 {
-    color: $xterm-fg-24;
-  }
-
-  .xterm-fg-25 {
-    color: $xterm-fg-25;
-  }
-
-  .xterm-fg-26 {
-    color: $xterm-fg-26;
-  }
-
-  .xterm-fg-27 {
-    color: $xterm-fg-27;
-  }
-
-  .xterm-fg-28 {
-    color: $xterm-fg-28;
-  }
-
-  .xterm-fg-29 {
-    color: $xterm-fg-29;
-  }
-
-  .xterm-fg-30 {
-    color: $xterm-fg-30;
-  }
-
-  .xterm-fg-31 {
-    color: $xterm-fg-31;
-  }
-
-  .xterm-fg-32 {
-    color: $xterm-fg-32;
-  }
-
-  .xterm-fg-33 {
-    color: $xterm-fg-33;
-  }
-
-  .xterm-fg-34 {
-    color: $xterm-fg-34;
-  }
-
-  .xterm-fg-35 {
-    color: $xterm-fg-35;
-  }
-
-  .xterm-fg-36 {
-    color: $xterm-fg-36;
-  }
-
-  .xterm-fg-37 {
-    color: $xterm-fg-37;
-  }
-
-  .xterm-fg-38 {
-    color: $xterm-fg-38;
-  }
-
-  .xterm-fg-39 {
-    color: $xterm-fg-39;
-  }
-
-  .xterm-fg-40 {
-    color: $xterm-fg-40;
-  }
-
-  .xterm-fg-41 {
-    color: $xterm-fg-41;
-  }
-
-  .xterm-fg-42 {
-    color: $xterm-fg-42;
-  }
-
-  .xterm-fg-43 {
-    color: $xterm-fg-43;
-  }
-
-  .xterm-fg-44 {
-    color: $xterm-fg-44;
-  }
-
-  .xterm-fg-45 {
-    color: $xterm-fg-45;
-  }
-
-  .xterm-fg-46 {
-    color: $xterm-fg-46;
-  }
-
-  .xterm-fg-47 {
-    color: $xterm-fg-47;
-  }
-
-  .xterm-fg-48 {
-    color: $xterm-fg-48;
-  }
-
-  .xterm-fg-49 {
-    color: $xterm-fg-49;
-  }
-
-  .xterm-fg-50 {
-    color: $xterm-fg-50;
-  }
-
-  .xterm-fg-51 {
-    color: $xterm-fg-51;
-  }
-
-  .xterm-fg-52 {
-    color: $xterm-fg-52;
-  }
-
-  .xterm-fg-53 {
-    color: $xterm-fg-53;
-  }
-
-  .xterm-fg-54 {
-    color: $xterm-fg-54;
-  }
-
-  .xterm-fg-55 {
-    color: $xterm-fg-55;
-  }
-
-  .xterm-fg-56 {
-    color: $xterm-fg-56;
-  }
-
-  .xterm-fg-57 {
-    color: $xterm-fg-57;
-  }
-
-  .xterm-fg-58 {
-    color: $xterm-fg-58;
-  }
-
-  .xterm-fg-59 {
-    color: $xterm-fg-59;
-  }
-
-  .xterm-fg-60 {
-    color: $xterm-fg-60;
-  }
-
-  .xterm-fg-61 {
-    color: $xterm-fg-61;
-  }
-
-  .xterm-fg-62 {
-    color: $xterm-fg-62;
-  }
-
-  .xterm-fg-63 {
-    color: $xterm-fg-63;
-  }
-
-  .xterm-fg-64 {
-    color: $xterm-fg-64;
-  }
-
-  .xterm-fg-65 {
-    color: $xterm-fg-65;
-  }
-
-  .xterm-fg-66 {
-    color: $xterm-fg-66;
-  }
-
-  .xterm-fg-67 {
-    color: $xterm-fg-67;
-  }
-
-  .xterm-fg-68 {
-    color: $xterm-fg-68;
-  }
-
-  .xterm-fg-69 {
-    color: $xterm-fg-69;
-  }
-
-  .xterm-fg-70 {
-    color: $xterm-fg-70;
-  }
-
-  .xterm-fg-71 {
-    color: $xterm-fg-71;
-  }
-
-  .xterm-fg-72 {
-    color: $xterm-fg-72;
-  }
-
-  .xterm-fg-73 {
-    color: $xterm-fg-73;
-  }
-
-  .xterm-fg-74 {
-    color: $xterm-fg-74;
-  }
-
-  .xterm-fg-75 {
-    color: $xterm-fg-75;
-  }
-
-  .xterm-fg-76 {
-    color: $xterm-fg-76;
-  }
-
-  .xterm-fg-77 {
-    color: $xterm-fg-77;
-  }
-
-  .xterm-fg-78 {
-    color: $xterm-fg-78;
-  }
-
-  .xterm-fg-79 {
-    color: $xterm-fg-79;
-  }
-
-  .xterm-fg-80 {
-    color: $xterm-fg-80;
-  }
-
-  .xterm-fg-81 {
-    color: $xterm-fg-81;
-  }
-
-  .xterm-fg-82 {
-    color: $xterm-fg-82;
-  }
-
-  .xterm-fg-83 {
-    color: $xterm-fg-83;
-  }
-
-  .xterm-fg-84 {
-    color: $xterm-fg-84;
-  }
-
-  .xterm-fg-85 {
-    color: $xterm-fg-85;
-  }
-
-  .xterm-fg-86 {
-    color: $xterm-fg-86;
-  }
-
-  .xterm-fg-87 {
-    color: $xterm-fg-87;
-  }
-
-  .xterm-fg-88 {
-    color: $xterm-fg-88;
-  }
-
-  .xterm-fg-89 {
-    color: $xterm-fg-89;
-  }
-
-  .xterm-fg-90 {
-    color: $xterm-fg-90;
-  }
-
-  .xterm-fg-91 {
-    color: $xterm-fg-91;
-  }
-
-  .xterm-fg-92 {
-    color: $xterm-fg-92;
-  }
-
-  .xterm-fg-93 {
-    color: $xterm-fg-93;
-  }
-
-  .xterm-fg-94 {
-    color: $xterm-fg-94;
-  }
-
-  .xterm-fg-95 {
-    color: $xterm-fg-95;
-  }
-
-  .xterm-fg-96 {
-    color: $xterm-fg-96;
-  }
-
-  .xterm-fg-97 {
-    color: $xterm-fg-97;
-  }
-
-  .xterm-fg-98 {
-    color: $xterm-fg-98;
-  }
-
-  .xterm-fg-99 {
-    color: $xterm-fg-99;
-  }
-
-  .xterm-fg-100 {
-    color: $xterm-fg-100;
-  }
-
-  .xterm-fg-101 {
-    color: $xterm-fg-101;
-  }
-
-  .xterm-fg-102 {
-    color: $xterm-fg-102;
-  }
-
-  .xterm-fg-103 {
-    color: $xterm-fg-103;
-  }
-
-  .xterm-fg-104 {
-    color: $xterm-fg-104;
-  }
-
-  .xterm-fg-105 {
-    color: $xterm-fg-105;
-  }
-
-  .xterm-fg-106 {
-    color: $xterm-fg-106;
-  }
-
-  .xterm-fg-107 {
-    color: $xterm-fg-107;
-  }
-
-  .xterm-fg-108 {
-    color: $xterm-fg-108;
-  }
-
-  .xterm-fg-109 {
-    color: $xterm-fg-109;
-  }
-
-  .xterm-fg-110 {
-    color: $xterm-fg-110;
-  }
-
-  .xterm-fg-111 {
-    color: $xterm-fg-111;
-  }
-
-  .xterm-fg-112 {
-    color: $xterm-fg-112;
-  }
-
-  .xterm-fg-113 {
-    color: $xterm-fg-113;
-  }
-
-  .xterm-fg-114 {
-    color: $xterm-fg-114;
-  }
-
-  .xterm-fg-115 {
-    color: $xterm-fg-115;
-  }
-
-  .xterm-fg-116 {
-    color: $xterm-fg-116;
-  }
-
-  .xterm-fg-117 {
-    color: $xterm-fg-117;
-  }
-
-  .xterm-fg-118 {
-    color: $xterm-fg-118;
-  }
-
-  .xterm-fg-119 {
-    color: $xterm-fg-119;
-  }
-
-  .xterm-fg-120 {
-    color: $xterm-fg-120;
-  }
-
-  .xterm-fg-121 {
-    color: $xterm-fg-121;
-  }
-
-  .xterm-fg-122 {
-    color: $xterm-fg-122;
-  }
-
-  .xterm-fg-123 {
-    color: $xterm-fg-123;
-  }
-
-  .xterm-fg-124 {
-    color: $xterm-fg-124;
-  }
-
-  .xterm-fg-125 {
-    color: $xterm-fg-125;
-  }
-
-  .xterm-fg-126 {
-    color: $xterm-fg-126;
-  }
-
-  .xterm-fg-127 {
-    color: $xterm-fg-127;
-  }
-
-  .xterm-fg-128 {
-    color: $xterm-fg-128;
-  }
-
-  .xterm-fg-129 {
-    color: $xterm-fg-129;
-  }
-
-  .xterm-fg-130 {
-    color: $xterm-fg-130;
-  }
-
-  .xterm-fg-131 {
-    color: $xterm-fg-131;
-  }
-
-  .xterm-fg-132 {
-    color: $xterm-fg-132;
-  }
-
-  .xterm-fg-133 {
-    color: $xterm-fg-133;
-  }
-
-  .xterm-fg-134 {
-    color: $xterm-fg-134;
-  }
-
-  .xterm-fg-135 {
-    color: $xterm-fg-135;
-  }
-
-  .xterm-fg-136 {
-    color: $xterm-fg-136;
-  }
-
-  .xterm-fg-137 {
-    color: $xterm-fg-137;
-  }
-
-  .xterm-fg-138 {
-    color: $xterm-fg-138;
-  }
-
-  .xterm-fg-139 {
-    color: $xterm-fg-139;
-  }
-
-  .xterm-fg-140 {
-    color: $xterm-fg-140;
-  }
-
-  .xterm-fg-141 {
-    color: $xterm-fg-141;
-  }
-
-  .xterm-fg-142 {
-    color: $xterm-fg-142;
-  }
-
-  .xterm-fg-143 {
-    color: $xterm-fg-143;
-  }
-
-  .xterm-fg-144 {
-    color: $xterm-fg-144;
-  }
-
-  .xterm-fg-145 {
-    color: $xterm-fg-145;
-  }
-
-  .xterm-fg-146 {
-    color: $xterm-fg-146;
-  }
-
-  .xterm-fg-147 {
-    color: $xterm-fg-147;
-  }
-
-  .xterm-fg-148 {
-    color: $xterm-fg-148;
-  }
-
-  .xterm-fg-149 {
-    color: $xterm-fg-149;
-  }
-
-  .xterm-fg-150 {
-    color: $xterm-fg-150;
-  }
-
-  .xterm-fg-151 {
-    color: $xterm-fg-151;
-  }
-
-  .xterm-fg-152 {
-    color: $xterm-fg-152;
-  }
-
-  .xterm-fg-153 {
-    color: $xterm-fg-153;
-  }
-
-  .xterm-fg-154 {
-    color: $xterm-fg-154;
-  }
-
-  .xterm-fg-155 {
-    color: $xterm-fg-155;
-  }
-
-  .xterm-fg-156 {
-    color: $xterm-fg-156;
-  }
-
-  .xterm-fg-157 {
-    color: $xterm-fg-157;
-  }
-
-  .xterm-fg-158 {
-    color: $xterm-fg-158;
-  }
-
-  .xterm-fg-159 {
-    color: $xterm-fg-159;
-  }
-
-  .xterm-fg-160 {
-    color: $xterm-fg-160;
-  }
-
-  .xterm-fg-161 {
-    color: $xterm-fg-161;
-  }
-
-  .xterm-fg-162 {
-    color: $xterm-fg-162;
-  }
-
-  .xterm-fg-163 {
-    color: $xterm-fg-163;
-  }
-
-  .xterm-fg-164 {
-    color: $xterm-fg-164;
-  }
-
-  .xterm-fg-165 {
-    color: $xterm-fg-165;
-  }
-
-  .xterm-fg-166 {
-    color: $xterm-fg-166;
-  }
-
-  .xterm-fg-167 {
-    color: $xterm-fg-167;
-  }
-
-  .xterm-fg-168 {
-    color: $xterm-fg-168;
-  }
-
-  .xterm-fg-169 {
-    color: $xterm-fg-169;
-  }
-
-  .xterm-fg-170 {
-    color: $xterm-fg-170;
-  }
-
-  .xterm-fg-171 {
-    color: $xterm-fg-171;
-  }
-
-  .xterm-fg-172 {
-    color: $xterm-fg-172;
-  }
-
-  .xterm-fg-173 {
-    color: $xterm-fg-173;
-  }
-
-  .xterm-fg-174 {
-    color: $xterm-fg-174;
-  }
-
-  .xterm-fg-175 {
-    color: $xterm-fg-175;
-  }
-
-  .xterm-fg-176 {
-    color: $xterm-fg-176;
-  }
-
-  .xterm-fg-177 {
-    color: $xterm-fg-177;
-  }
-
-  .xterm-fg-178 {
-    color: $xterm-fg-178;
-  }
-
-  .xterm-fg-179 {
-    color: $xterm-fg-179;
-  }
-
-  .xterm-fg-180 {
-    color: $xterm-fg-180;
-  }
-
-  .xterm-fg-181 {
-    color: $xterm-fg-181;
-  }
-
-  .xterm-fg-182 {
-    color: $xterm-fg-182;
-  }
-
-  .xterm-fg-183 {
-    color: $xterm-fg-183;
-  }
-
-  .xterm-fg-184 {
-    color: $xterm-fg-184;
-  }
-
-  .xterm-fg-185 {
-    color: $xterm-fg-185;
-  }
-
-  .xterm-fg-186 {
-    color: $xterm-fg-186;
-  }
-
-  .xterm-fg-187 {
-    color: $xterm-fg-187;
-  }
-
-  .xterm-fg-188 {
-    color: $xterm-fg-188;
-  }
-
-  .xterm-fg-189 {
-    color: $xterm-fg-189;
-  }
-
-  .xterm-fg-190 {
-    color: $xterm-fg-190;
-  }
-
-  .xterm-fg-191 {
-    color: $xterm-fg-191;
-  }
-
-  .xterm-fg-192 {
-    color: $xterm-fg-192;
-  }
-
-  .xterm-fg-193 {
-    color: $xterm-fg-193;
-  }
-
-  .xterm-fg-194 {
-    color: $xterm-fg-194;
-  }
-
-  .xterm-fg-195 {
-    color: $xterm-fg-195;
-  }
-
-  .xterm-fg-196 {
-    color: $xterm-fg-196;
-  }
-
-  .xterm-fg-197 {
-    color: $xterm-fg-197;
-  }
-
-  .xterm-fg-198 {
-    color: $xterm-fg-198;
-  }
-
-  .xterm-fg-199 {
-    color: $xterm-fg-199;
-  }
-
-  .xterm-fg-200 {
-    color: $xterm-fg-200;
-  }
-
-  .xterm-fg-201 {
-    color: $xterm-fg-201;
-  }
-
-  .xterm-fg-202 {
-    color: $xterm-fg-202;
-  }
-
-  .xterm-fg-203 {
-    color: $xterm-fg-203;
-  }
-
-  .xterm-fg-204 {
-    color: $xterm-fg-204;
-  }
-
-  .xterm-fg-205 {
-    color: $xterm-fg-205;
-  }
-
-  .xterm-fg-206 {
-    color: $xterm-fg-206;
-  }
-
-  .xterm-fg-207 {
-    color: $xterm-fg-207;
-  }
-
-  .xterm-fg-208 {
-    color: $xterm-fg-208;
-  }
-
-  .xterm-fg-209 {
-    color: $xterm-fg-209;
-  }
-
-  .xterm-fg-210 {
-    color: $xterm-fg-210;
-  }
-
-  .xterm-fg-211 {
-    color: $xterm-fg-211;
-  }
-
-  .xterm-fg-212 {
-    color: $xterm-fg-212;
-  }
-
-  .xterm-fg-213 {
-    color: $xterm-fg-213;
-  }
-
-  .xterm-fg-214 {
-    color: $xterm-fg-214;
-  }
-
-  .xterm-fg-215 {
-    color: $xterm-fg-215;
-  }
-
-  .xterm-fg-216 {
-    color: $xterm-fg-216;
-  }
-
-  .xterm-fg-217 {
-    color: $xterm-fg-217;
-  }
-
-  .xterm-fg-218 {
-    color: $xterm-fg-218;
-  }
-
-  .xterm-fg-219 {
-    color: $xterm-fg-219;
-  }
-
-  .xterm-fg-220 {
-    color: $xterm-fg-220;
-  }
-
-  .xterm-fg-221 {
-    color: $xterm-fg-221;
-  }
-
-  .xterm-fg-222 {
-    color: $xterm-fg-222;
-  }
-
-  .xterm-fg-223 {
-    color: $xterm-fg-223;
-  }
-
-  .xterm-fg-224 {
-    color: $xterm-fg-224;
-  }
-
-  .xterm-fg-225 {
-    color: $xterm-fg-225;
-  }
-
-  .xterm-fg-226 {
-    color: $xterm-fg-226;
-  }
-
-  .xterm-fg-227 {
-    color: $xterm-fg-227;
-  }
-
-  .xterm-fg-228 {
-    color: $xterm-fg-228;
-  }
-
-  .xterm-fg-229 {
-    color: $xterm-fg-229;
-  }
-
-  .xterm-fg-230 {
-    color: $xterm-fg-230;
-  }
-
-  .xterm-fg-231 {
-    color: $xterm-fg-231;
-  }
-
-  .xterm-fg-232 {
-    color: $xterm-fg-232;
-  }
-
-  .xterm-fg-233 {
-    color: $xterm-fg-233;
-  }
-
-  .xterm-fg-234 {
-    color: $xterm-fg-234;
-  }
-
-  .xterm-fg-235 {
-    color: $xterm-fg-235;
-  }
-
-  .xterm-fg-236 {
-    color: $xterm-fg-236;
-  }
-
-  .xterm-fg-237 {
-    color: $xterm-fg-237;
-  }
-
-  .xterm-fg-238 {
-    color: $xterm-fg-238;
-  }
-
-  .xterm-fg-239 {
-    color: $xterm-fg-239;
-  }
-
-  .xterm-fg-240 {
-    color: $xterm-fg-240;
-  }
-
-  .xterm-fg-241 {
-    color: $xterm-fg-241;
-  }
-
-  .xterm-fg-242 {
-    color: $xterm-fg-242;
-  }
-
-  .xterm-fg-243 {
-    color: $xterm-fg-243;
-  }
-
-  .xterm-fg-244 {
-    color: $xterm-fg-244;
-  }
-
-  .xterm-fg-245 {
-    color: $xterm-fg-245;
-  }
-
-  .xterm-fg-246 {
-    color: $xterm-fg-246;
-  }
-
-  .xterm-fg-247 {
-    color: $xterm-fg-247;
-  }
-
-  .xterm-fg-248 {
-    color: $xterm-fg-248;
-  }
-
-  .xterm-fg-249 {
-    color: $xterm-fg-249;
-  }
-
-  .xterm-fg-250 {
-    color: $xterm-fg-250;
-  }
-
-  .xterm-fg-251 {
-    color: $xterm-fg-251;
-  }
-
-  .xterm-fg-252 {
-    color: $xterm-fg-252;
-  }
-
-  .xterm-fg-253 {
-    color: $xterm-fg-253;
-  }
-
-  .xterm-fg-254 {
-    color: $xterm-fg-254;
-  }
-
-  .xterm-fg-255 {
-    color: $xterm-fg-255;
+  // logs color palette
+  // see: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+  $black: #000;
+  $red: #ea1010;
+  $green: #090;
+  $yellow: #990;
+  $blue: #0073e6;
+  $magenta: #d411d4;
+  $cyan: #099;
+  $white: #ccc;
+  $l-black: #373b41;
+  $l-red: #ff6161;
+  $l-green: #00d600;
+  $l-yellow: #bdbd00;
+  $l-blue: #5797ff;
+  $l-magenta: #d96dd9;
+  $l-cyan: #00bdbd;
+  $l-white: #fff;
+
+  $colors: "black" $black $l-black,
+    "red" $red $l-red,
+    "green" $green $l-green,
+    "yellow" $yellow $l-yellow,
+    "blue" $blue $l-blue,
+    "magenta" $magenta $l-magenta,
+    "cyan" $cyan $l-cyan,
+    "white" $white $l-white;
+
+  @each $name, $color, $brightColor in $colors {
+    .term-fg-#{$name} {
+      color: $color;
+    }
+    .term-bold.term-fg-#{$name} {
+      // Most terminals show bold colored text in the bright color variant
+      // only 3 and 4-bit foreground colors are modified.
+      color: $brightColor;
+    }
+    .term-bg-#{$name} {
+      background-color: $color;
+    }
+
+    .term-fg-l-#{$name} {
+      color: $brightColor;
+    }
+    .term-bg-l-#{$name} {
+      background-color: $brightColor;
+    }
+  }
+
+  // 8-bit colors
+  // color codes are based on http://en.wikipedia.org/wiki/File:Xterm_256color_chart.svg
+  $xterm-colors: (
+    "0": $black,
+    "1": $red,
+    "2": $green,
+    "3": $yellow,
+    "4": $blue,
+    "5": $magenta,
+    "6": $cyan,
+    "7": $white,
+    "8": $l-black,
+    "9": $l-red,
+    "10": $l-green,
+    "11": $l-yellow,
+    "12": $l-blue,
+    "13": $l-magenta,
+    "14": $l-cyan,
+    "15": $l-white,
+
+    "16": #000,
+    "17": #00005f,
+    "18": #000087,
+    "19": #0000af,
+    "20": #0000d7,
+    "21": #00f,
+    "22": #005f00,
+    "23": #005f5f,
+    "24": #005f87,
+    "25": #005faf,
+    "26": #005fd7,
+    "27": #005fff,
+    "28": #008700,
+    "29": #00875f,
+    "30": #008787,
+    "31": #0087af,
+    "32": #0087d7,
+    "33": #0087ff,
+    "34": #00af00,
+    "35": #00af5f,
+    "36": #00af87,
+    "37": #00afaf,
+    "38": #00afd7,
+    "39": #00afff,
+    "40": #00d700,
+    "41": #00d75f,
+    "42": #00d787,
+    "43": #00d7af,
+    "44": #00d7d7,
+    "45": #00d7ff,
+    "46": #0f0,
+    "47": #00ff5f,
+    "48": #00ff87,
+    "49": #00ffaf,
+    "50": #00ffd7,
+    "51": #0ff,
+    "52": #5f0000,
+    "53": #5f005f,
+    "54": #5f0087,
+    "55": #5f00af,
+    "56": #5f00d7,
+    "57": #5f00ff,
+    "58": #5f5f00,
+    "59": #5f5f5f,
+    "60": #5f5f87,
+    "61": #5f5faf,
+    "62": #5f5fd7,
+    "63": #5f5fff,
+    "64": #5f8700,
+    "65": #5f875f,
+    "66": #5f8787,
+    "67": #5f87af,
+    "68": #5f87d7,
+    "69": #5f87ff,
+    "70": #5faf00,
+    "71": #5faf5f,
+    "72": #5faf87,
+    "73": #5fafaf,
+    "74": #5fafd7,
+    "75": #5fafff,
+    "76": #5fd700,
+    "77": #5fd75f,
+    "78": #5fd787,
+    "79": #5fd7af,
+    "80": #5fd7d7,
+    "81": #5fd7ff,
+    "82": #5fff00,
+    "83": #5fff5f,
+    "84": #5fff87,
+    "85": #5fffaf,
+    "86": #5fffd7,
+    "87": #5fffff,
+    "88": #870000,
+    "89": #87005f,
+    "90": #870087,
+    "91": #8700af,
+    "92": #8700d7,
+    "93": #8700ff,
+    "94": #875f00,
+    "95": #875f5f,
+    "96": #875f87,
+    "97": #875faf,
+    "98": #875fd7,
+    "99": #875fff,
+    "100": #878700,
+    "101": #87875f,
+    "102": #878787,
+    "103": #8787af,
+    "104": #8787d7,
+    "105": #8787ff,
+    "106": #87af00,
+    "107": #87af5f,
+    "108": #87af87,
+    "109": #87afaf,
+    "110": #87afd7,
+    "111": #87afff,
+    "112": #87d700,
+    "113": #87d75f,
+    "114": #87d787,
+    "115": #87d7af,
+    "116": #87d7d7,
+    "117": #87d7ff,
+    "118": #87ff00,
+    "119": #87ff5f,
+    "120": #87ff87,
+    "121": #87ffaf,
+    "122": #87ffd7,
+    "123": #87ffff,
+    "124": #af0000,
+    "125": #af005f,
+    "126": #af0087,
+    "127": #af00af,
+    "128": #af00d7,
+    "129": #af00ff,
+    "130": #af5f00,
+    "131": #af5f5f,
+    "132": #af5f87,
+    "133": #af5faf,
+    "134": #af5fd7,
+    "135": #af5fff,
+    "136": #af8700,
+    "137": #af875f,
+    "138": #af8787,
+    "139": #af87af,
+    "140": #af87d7,
+    "141": #af87ff,
+    "142": #afaf00,
+    "143": #afaf5f,
+    "144": #afaf87,
+    "145": #afafaf,
+    "146": #afafd7,
+    "147": #afafff,
+    "148": #afd700,
+    "149": #afd75f,
+    "150": #afd787,
+    "151": #afd7af,
+    "152": #afd7d7,
+    "153": #afd7ff,
+    "154": #afff00,
+    "155": #afff5f,
+    "156": #afff87,
+    "157": #afffaf,
+    "158": #afffd7,
+    "159": #afffff,
+    "160": #d70000,
+    "161": #d7005f,
+    "162": #d70087,
+    "163": #d700af,
+    "164": #d700d7,
+    "165": #d700ff,
+    "166": #d75f00,
+    "167": #d75f5f,
+    "168": #d75f87,
+    "169": #d75faf,
+    "170": #d75fd7,
+    "171": #d75fff,
+    "172": #d78700,
+    "173": #d7875f,
+    "174": #d78787,
+    "175": #d787af,
+    "176": #d787d7,
+    "177": #d787ff,
+    "178": #d7af00,
+    "179": #d7af5f,
+    "180": #d7af87,
+    "181": #d7afaf,
+    "182": #d7afd7,
+    "183": #d7afff,
+    "184": #d7d700,
+    "185": #d7d75f,
+    "186": #d7d787,
+    "187": #d7d7af,
+    "188": #d7d7d7,
+    "189": #d7d7ff,
+    "190": #d7ff00,
+    "191": #d7ff5f,
+    "192": #d7ff87,
+    "193": #d7ffaf,
+    "194": #d7ffd7,
+    "195": #d7ffff,
+    "196": #f00,
+    "197": #ff005f,
+    "198": #ff0087,
+    "199": #ff00af,
+    "200": #ff00d7,
+    "201": #f0f,
+    "202": #ff5f00,
+    "203": #ff5f5f,
+    "204": #ff5f87,
+    "205": #ff5faf,
+    "206": #ff5fd7,
+    "207": #ff5fff,
+    "208": #ff8700,
+    "209": #ff875f,
+    "210": #ff8787,
+    "211": #ff87af,
+    "212": #ff87d7,
+    "213": #ff87ff,
+    "214": #ffaf00,
+    "215": #ffaf5f,
+    "216": #ffaf87,
+    "217": #ffafaf,
+    "218": #ffafd7,
+    "219": #ffafff,
+    "220": #ffd700,
+    "221": #ffd75f,
+    "222": #ffd787,
+    "223": #ffd7af,
+    "224": #ffd7d7,
+    "225": #ffd7ff,
+    "226": #ff0,
+    "227": #ffff5f,
+    "228": #ffff87,
+    "229": #ffffaf,
+    "230": #ffffd7,
+    "231": #fff,
+    "232": #080808,
+    "233": #121212,
+    "234": #1c1c1c,
+    "235": #262626,
+    "236": #303030,
+    "237": #3a3a3a,
+    "238": #444,
+    "239": #4e4e4e,
+    "240": #585858,
+    "241": #626262,
+    "242": #6c6c6c,
+    "243": #767676,
+    "244": #808080,
+    "245": #8a8a8a,
+    "246": #949494,
+    "247": #9e9e9e,
+    "248": #a8a8a8,
+    "249": #b2b2b2,
+    "250": #bcbcbc,
+    "251": #c6c6c6,
+    "252": #d0d0d0,
+    "253": #dadada,
+    "254": #e4e4e4,
+    "255": #eee
+  );
+
+  @each $i, $color in $xterm-colors {
+    .xterm-fg-#{$i} {
+      color: $color;
+    }
+
+    .xterm-bg-#{$i} {
+      background-color: $color;
+    }
   }
 }

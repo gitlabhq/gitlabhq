@@ -29,7 +29,7 @@ export default {
       <gl-icon name="external-link" />
       {{ $options.I18N_VIEW_INSTRUCTIONS }}
     </gl-button>
-    <footer class="gl-display-flex gl-justify-content-end gl-pt-3">
+    <footer class="gl-flex gl-justify-end gl-pt-3">
       <gl-button @click="onClose()">{{ __('Close') }}</gl-button>
     </footer>
   </div>

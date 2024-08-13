@@ -17,6 +17,7 @@ export default function mountBranchRules(el, store) {
 
   const {
     projectPath,
+    projectId,
     protectedBranchesPath,
     branchRulesPath,
     approvalRulesPath,
@@ -33,6 +34,7 @@ export default function mountBranchRules(el, store) {
     apolloProvider,
     provide: {
       projectPath,
+      projectId: parseInt(projectId, 10),
       branchRulesPath,
       protectedBranchesPath,
       approvalRulesPath,

@@ -51,8 +51,13 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
       FOR VALUES IN (101);
     SQL
 
-    table("_test_target_table").create!(id: 1, parent_id: deleted_id, partition_id: 100)
-    table("_test_target_table").create!(id: 2, parent_id: deleted_id, partition_id: 101)
+    if ::Gitlab.next_rails?
+      table("_test_target_table").create!(id: [1, 100], parent_id: deleted_id)
+      table("_test_target_table").create!(id: [2, 101], parent_id: deleted_id)
+    else
+      table("_test_target_table").create!(id: 1, parent_id: deleted_id, partition_id: 100)
+      table("_test_target_table").create!(id: 2, parent_id: deleted_id, partition_id: 101)
+    end
   end
 
   describe 'query generation' do

@@ -1420,6 +1420,15 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
             expect { subject }.not_to change { group.reload.name }
           end
         end
+
+        context 'when default branch name is invalid' do
+          subject { put :update, params: { id: group.to_param, group: { default_branch_name: "***" } } }
+
+          it 'renders an error message' do
+            expect { subject }.not_to change { group.reload.name }
+            expect(flash[:alert]).to eq('Default branch name is invalid.')
+          end
+        end
       end
 
       describe 'DELETE #destroy' do

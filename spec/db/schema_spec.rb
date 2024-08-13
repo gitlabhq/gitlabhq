@@ -21,13 +21,16 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
-    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[partition_id upstream_pipeline_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
     ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
+    p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
     ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
@@ -49,7 +52,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     abuse_reports: %w[reporter_id user_id],
     abuse_report_notes: %w[discussion_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
-    approvals: %w[user_id],
+    approvals: %w[user_id project_id],
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
     analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id last_consistency_check_merge_requests_issuable_id],
@@ -67,7 +70,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
-    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id],
+    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
     ci_daily_build_group_report_results: %w[partition_id],
     ci_job_artifacts: %w[partition_id project_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
@@ -117,10 +120,11 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_request_diff_commits: %w[commit_author_id committer_id],
     # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
     # backfill. It will get foreign keys after the partitioning is finished.
-    merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id],
+    merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
     # merge_request_diff_files_99208b8fac is the temporary table for the merge_request_diff_commits partitioning
     # backfill. It will get foreign keys after the partitioning is finished.
-    merge_request_diff_files_99208b8fac: %w[merge_request_diff_id],
+    merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
+    merge_request_user_mentions: %w[project_id],
     namespaces: %w[owner_id parent_id],
     namespace_descendants: %w[namespace_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
@@ -129,7 +133,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
     oauth_device_grants: %w[resource_owner_id application_id],
-    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id],
+    packages_package_files: %w[project_id],
+    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
@@ -161,7 +166,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     user_agent_details: %w[subject_id],
     users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
     users_star_projects: %w[user_id],
+    vulnerability_occurrence_pipelines: %w[project_id],
+    vulnerability_finding_links: %w[project_id],
     vulnerability_identifiers: %w[external_id],
+    vulnerability_occurrence_identifiers: %w[project_id],
     vulnerability_scanners: %w[external_id],
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
     dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db

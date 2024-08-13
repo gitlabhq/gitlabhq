@@ -13,6 +13,7 @@ globals:
   IS_EE: false
 plugins:
   - no-jquery
+  - local-rules
 settings:
   import/resolver:
     webpack:
@@ -125,6 +126,22 @@ rules:
       message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
     - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
       message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+    # This can be removed once GitLab is on Vue 3
+    - selector: MemberExpression[object.type='ThisExpression'][property.name='$delete']
+      message: "$delete is not supported in Vue 3"
+  no-restricted-properties:
+    - error
+    - object: window
+      property: open
+      message: 'Use `visitUrl` in `jh_else_ce/lib/utils/url_utility` to avoid cross-site leaks.'
+    # This can be removed once GitLab is on Vue 3
+    - object: vm
+      property: $delete
+      message: '$delete is not supported in Vue 3'
+    # This can be removed once GitLab is on Vue 3
+    - object: Vue
+      property: delete
+      message: 'delete is not supported in Vue 3'
   no-restricted-imports:
     - error
     - paths:
@@ -152,6 +169,10 @@ rules:
         - '^router-link$'
         - '^router-view$'
         - '^gl-emoji$'
+  local-rules/require-valid-help-page-path: 'error'
+  max-params:
+    - error
+    - 3
 overrides:
   - files:
       - '{,ee/,jh/}spec/frontend*/**/*'
@@ -189,8 +210,32 @@ overrides:
           message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
         - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
           message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+        # This can be removed once GitLab is on Vue 3
+        - selector: CallExpression[callee.property.name="$delete"]
+          message: "$delete is restricted from being used. $delete is not supported in Vue 3"
+      no-restricted-properties:
+        - error
+        # This can be removed once GitLab is on Vue 3
+        - object: Vue
+          property: delete
+          message: 'delete is not supported in Vue 3'
       no-unsanitized/method: off
       no-unsanitized/property: off
+      local-rules/require-valid-help-page-path: off
+      no-restricted-imports:
+        - error
+        - paths:
+          - name: mousetrap
+            message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
+          - name: vuex
+            message: 'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.'
+          - name: '@sentry/browser'
+            message: Use "import * as Sentry from '~/sentry/sentry_browser_wrapper';" instead
+          - name: ~/locale
+            importNames:
+              - __
+              - s__
+            message: 'Do not externalize strings in specs: https://docs.gitlab.com/ee/development/i18n/externalization.html#test-files-jest'
   - files:
       - 'config/**/*'
       - 'scripts/**/*'
@@ -244,3 +289,11 @@ overrides:
       - 'ee/app/assets/javascripts/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql'
     rules:
       '@graphql-eslint/require-id-when-available': off
+  - files:
+      - '{,spec/}tooling/**/*'
+    rules:
+      'no-undef': off
+      'import/no-commonjs': off
+      'import/no-extraneous-dependencies': off
+      'no-restricted-syntax': off
+      '@gitlab/require-i18n-strings': off

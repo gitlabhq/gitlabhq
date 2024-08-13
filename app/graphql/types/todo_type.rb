@@ -9,6 +9,8 @@ module Types
 
     authorize :read_todo
 
+    connection_type_class Types::CountableConnectionType
+
     field :id, GraphQL::Types::ID,
       description: 'ID of the to-do item.',
       null: false

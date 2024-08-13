@@ -37,7 +37,7 @@ set values are presented as **Too large** are cannot be expanded in the UI.
 
 To configure these values:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Diff limits**.
 1. Enter a value for the diff limit.

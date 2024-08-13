@@ -178,16 +178,18 @@ export default {
       "Link %{issuableType}s together to show that they're related or that one is blocking others.",
     ),
   },
+  ariaControlsId: 'related-issues-card',
 };
 </script>
 
 <template>
   <div id="related-issues" class="related-issues-block">
     <gl-card
+      :id="$options.ariaControlsId"
       class="gl-new-card"
+      :class="{ 'is-collapsed': !isOpen }"
       header-class="gl-new-card-header"
       body-class="gl-new-card-body"
-      :aria-expanded="isOpen.toString()"
     >
       <template #header>
         <div class="gl-new-card-title-wrapper">
@@ -222,6 +224,8 @@ export default {
             size="small"
             :icon="toggleIcon"
             :aria-label="toggleLabel"
+            :aria-expanded="isOpen.toString()"
+            :aria-controls="$options.ariaControlsId"
             data-testid="toggle-links"
             @click="handleToggle"
           />

@@ -44,8 +44,8 @@ Prerequisites:
 
 To create global push rules:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Push Rules**.
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Push rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
@@ -291,6 +291,7 @@ to use them as standard characters in a match condition.
 - [Signing commits with SSH](signed_commits/ssh.md)
 - [Signing commits with X.509](signed_commits/x509.md)
 - [Protected branches](../protected_branches.md)
+- [Client-side secret detection](../../application_security/secret_detection/client/index.md)
 
 ## Troubleshooting
 
@@ -319,7 +320,7 @@ read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
 To update the push rules to be the same for all projects,
 you need to use [the rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
-or write a script to update each project using the [Push Rules API endpoint](../../../api/projects.md#push-rules).
+or write a script to update each project using the [push rules API endpoint](../../../api/projects.md#push-rules).
 
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
 and create a filter for allowing commits from a specific email domain only through rails console:

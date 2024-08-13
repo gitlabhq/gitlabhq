@@ -10,8 +10,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
 } from '../constants';
-import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
-import groupWorkItemTypesQuery from '../graphql/group_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
 
 export default {
@@ -21,7 +20,7 @@ export default {
     GlModal,
     GlDisclosureDropdownItem,
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['fullPath'],
   props: {
     workItemTypeName: {
       type: String,
@@ -43,7 +42,7 @@ export default {
   apollo: {
     workItemTypes: {
       query() {
-        return this.isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery;
+        return namespaceWorkItemTypesQuery;
       },
       variables() {
         return {
@@ -64,7 +63,6 @@ export default {
           return;
         }
         await setNewWorkItemCache(
-          this.isGroup,
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
@@ -95,7 +93,6 @@ export default {
       this.visible = false;
       if (this.workItemTypes && this.workItemTypes[0]) {
         setNewWorkItemCache(
-          this.isGroup,
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,

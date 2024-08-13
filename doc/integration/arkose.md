@@ -65,6 +65,14 @@ To enable Arkose Protect:
    ApplicationSetting.current.update(arkose_labs_private_api_key: '<your_private_api_key>')
    ```
 
+To disable Arkose Protect:
+
+To disable the ArkoseLabs integration, run the following command in the Rails console.
+
+   ```ruby
+   Feature.disable(:arkose_labs)
+   ```
+
 ## Triage and debug ArkoseLabs issues
 
 You can triage and debug issues raised by ArkoseLabs with:

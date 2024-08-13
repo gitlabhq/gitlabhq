@@ -128,13 +128,13 @@ While in the [experiment status](../policy/experiment-beta-support.md#experiment
   - Any added arguments must be ignored.
   - Any added fields must not be exposed.
 - The [API documentation](../api/api_resources.md) must [document the experimental status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
-- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) should not describe the changes.
+- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes (for example, using [the `hidden` option](https://github.com/ruby-grape/grape-swagger#hiding-an-endpoint-)).
 
 While in the [beta status](../policy/experiment-beta-support.md#beta):
 
 - Use a feature flag that is [on by default](feature_flags/index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
-- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) should not describe the changes.
+- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
 
 When the feature becomes [generally available](../policy/experiment-beta-support.md#generally-available-ga):
 

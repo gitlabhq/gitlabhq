@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
-import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import ListItem from '~/comment_templates/components/list_item.vue';
@@ -42,12 +41,6 @@ describe('Comment templates list item component', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findModal = () => wrapper.findComponent(GlModal);
 
-  it('renders list item', () => {
-    wrapper = createComponent({ template: { name: 'test', content: '/assign_reviewer' } });
-
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
   describe('comment template actions dropdown', () => {
     beforeEach(() => {
       wrapper = createComponent({ template: { name: 'test', content: '/assign_reviewer' } });
@@ -58,7 +51,7 @@ describe('Comment templates list item component', () => {
     });
 
     it('has correct toggle text', () => {
-      expect(findDropdown().props('toggleText')).toBe(__('Comment template actions'));
+      expect(findDropdown().props('toggleText')).toBe('Comment template actions');
     });
 
     it('has correct amount of dropdown items', () => {
@@ -72,7 +65,7 @@ describe('Comment templates list item component', () => {
       it('exists', () => {
         const items = findDropdownItems();
 
-        const editItem = items.filter((item) => item.text() === __('Edit'));
+        const editItem = items.filter((item) => item.text() === 'Edit');
 
         expect(editItem.exists()).toBe(true);
       });
@@ -80,7 +73,7 @@ describe('Comment templates list item component', () => {
       it('shows as first dropdown item', () => {
         const items = findDropdownItems();
 
-        expect(items.at(0).text()).toBe(__('Edit'));
+        expect(items.at(0).text()).toBe('Edit');
       });
     });
 
@@ -88,7 +81,7 @@ describe('Comment templates list item component', () => {
       it('exists', () => {
         const items = findDropdownItems();
 
-        const deleteItem = items.filter((item) => item.text() === __('Delete'));
+        const deleteItem = items.filter((item) => item.text() === 'Delete');
 
         expect(deleteItem.exists()).toBe(true);
       });
@@ -96,7 +89,7 @@ describe('Comment templates list item component', () => {
       it('shows as first dropdown item', () => {
         const items = findDropdownItems();
 
-        expect(items.at(1).text()).toBe(__('Delete'));
+        expect(items.at(1).text()).toBe('Delete');
       });
     });
   });
@@ -125,7 +118,7 @@ describe('Comment templates list item component', () => {
     });
 
     it('has correct title', () => {
-      expect(findModal().props('title')).toBe(__('Delete comment template'));
+      expect(findModal().props('title')).toBe('Delete comment template');
     });
 
     it('delete button calls Apollo mutate', async () => {

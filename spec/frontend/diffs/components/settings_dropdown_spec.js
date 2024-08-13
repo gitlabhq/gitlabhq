@@ -44,8 +44,8 @@ describe('Diff settings dropdown component', () => {
 
       wrapper = createComponent();
 
-      expect(findInlineListItemCheckbox().classes()).not.toContain('gl-visibility-hidden');
-      expect(findParallelListItemCheckbox().classes()).toContain('gl-visibility-hidden');
+      expect(findInlineListItemCheckbox().classes()).not.toContain('gl-invisible');
+      expect(findParallelListItemCheckbox().classes()).toContain('gl-invisible');
     });
 
     it('sets parallel button as selected', () => {
@@ -54,8 +54,8 @@ describe('Diff settings dropdown component', () => {
 
       wrapper = createComponent();
 
-      expect(findInlineListItemCheckbox().classes()).toContain('gl-visibility-hidden');
-      expect(findParallelListItemCheckbox().classes()).not.toContain('gl-visibility-hidden');
+      expect(findInlineListItemCheckbox().classes()).toContain('gl-invisible');
+      expect(findParallelListItemCheckbox().classes()).not.toContain('gl-invisible');
     });
 
     it('calls setDiffViewType when clicking inline button', () => {

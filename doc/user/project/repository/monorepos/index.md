@@ -122,6 +122,28 @@ test:
     - ls -al
 ```
 
+#### Avoid shallow clones for development
+
+Avoid shallow clones for development because they greatly increase the time it takes to push changes. Shallow clones
+work well with CI/CD jobs because the repository contents aren't changed after being checked out.
+
+Instead, for local development use
+[partial clones](https://www.git-scm.com/docs/git-clone#Documentation/git-clone.txt---filterltfilter-specgt) to:
+
+1. Filter out blobs:
+
+   ```shell
+   git clone --filter=blob:none
+   ```
+
+1. Filter out trees:
+
+   ```shell
+   git clone --filter=tree:0
+   ```
+
+For more information, see [Reduce clone size](../../../../topics/git/clone.md#reduce-clone-size).
+
 ### Git strategy
 
 Use `git fetch` instead of `git clone` on CI/CD systems if it's possible to keep

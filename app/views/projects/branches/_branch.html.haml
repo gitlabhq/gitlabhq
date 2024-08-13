@@ -4,16 +4,16 @@
 - mr_status = merge_request_status(related_merge_request)
 - is_default_branch = branch.name == @repository.root_ref
 
-%li{ class: "branch-item gl-display-flex! gl-align-items-center! js-branch-item js-branch-#{branch.name} gl-pl-5! gl-pr-2!", data: { name: branch.name, testid: 'branch-container', qa_name: branch.name } }
-  .branch-info{ class: 'gl-overflow-visible!' }
-    .gl-display-flex.gl-align-items-center
+%li{ class: "branch-item !gl-flex !gl-items-center js-branch-item js-branch-#{branch.name} !gl-pr-3", data: { name: branch.name, testid: 'branch-container', qa_name: branch.name } }
+  .branch-info{ class: '!gl-overflow-visible' }
+    .gl-flex.gl-items-center
       = link_to project_tree_path(@project, branch.name, ref_type: 'heads'), class: 'gl-link item-title str-truncated-100 ref-name', data: { testid: 'branch-link' } do
         = branch.name
       = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if is_default_branch
-        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info }, { class: 'gl-ml-2' }
       - if protected_branch?(@project, branch)
-        = gl_badge_tag s_('Branches|protected'), { variant: :neutral, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('Branches|protected'), { variant: :neutral }, { class: 'gl-ml-2' }
 
       = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 
@@ -21,7 +21,7 @@
       - if commit
         = render 'projects/branches/commit', commit: commit, project: @project, class_name: 'gl-p-2'
       - else
-        .gl-font-sm.gl-text-secondary.gl-p-2= s_('Branches|Can’t find HEAD commit for this branch')
+        .gl-text-sm.gl-text-subtle.gl-p-2= s_('Branches|Can’t find HEAD commit for this branch')
 
   - if branch.name != @repository.root_ref
     .js-branch-divergence-graph
@@ -33,19 +33,19 @@
       .gl-inline-flex.gl-align-middle.gl-mr-3
         %svg.s16
 
-  .right-block.gl-display-flex.gl-align-items-center.gl-justify-content-end
+  .right-block.gl-flex.gl-items-center.md:gl-justify-end
     .gl-mr-3
       - if mr_status.present? && can?(current_user, :read_merge_request, related_merge_request)
-        .issuable-reference.gl-display-flex.gl-justify-content-end.gl-overflow-hidden
+        .issuable-reference.gl-flex.gl-justify-end.gl-overflow-hidden
           = gl_badge_tag issuable_reference(related_merge_request),
-            { icon: mr_status[:icon], variant: mr_status[:variant], size: :md, href: merge_request_path(related_merge_request) },
-            { class: 'gl-block gl-text-truncate', title: mr_status[:title], data: { toggle: 'tooltip', container: 'body' } }
+            { icon: mr_status[:icon], variant: mr_status[:variant], href: merge_request_path(related_merge_request) },
+            { class: 'gl-text-truncate', title: mr_status[:title], data: { toggle: 'tooltip', container: 'body' } }
 
       - elsif mr_status.nil? && create_mr_button?(from: branch.name, source_project: @project)
         = render Pajamas::ButtonComponent.new(icon: 'merge-request', href: create_mr_path(from: branch.name, source_project: @project), button_options: { class: 'has-tooltip', title: _('New merge request') }) do
           = _('New')
 
-    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], css_class: 'gl-mr-2!'
+    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], css_class: '!gl-mr-2'
 
     .gl-w-7
       - if !is_default_branch

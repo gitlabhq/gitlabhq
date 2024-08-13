@@ -40,7 +40,7 @@ An administrator can flag a user as external by either of the following methods:
 
 - [Through the API](../api/users.md#user-modification).
 - Using the GitLab UI:
-  1. On the left sidebar, at the bottom, select **Admin area**.
+  1. On the left sidebar, at the bottom, select **Admin**.
   1. On the left sidebar, select **Overview > Users** to create a new user or edit an existing one.
      There, you can find the option to flag the user as external.
 
@@ -55,7 +55,7 @@ Additionally, users can be set as external users using:
 By default, new users are not set as external users. This behavior can be changed
 by an administrator:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
 

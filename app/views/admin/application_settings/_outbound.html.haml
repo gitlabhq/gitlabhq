@@ -10,7 +10,7 @@
           checkbox_options: { class: 'js-deny-all-requests' }
       = render Pajamas::AlertComponent.new(variant: :warning,
         dismissible: false,
-        alert_options: { class: "gl-mb-3 js-deny-all-requests-warning #{'gl-display-none' unless deny_all_requests}" }) do |c|
+        alert_options: { class: "gl-mb-3 js-deny-all-requests-warning #{'gl-hidden' unless deny_all_requests}" }) do |c|
         - c.with_body do
           = s_('OutboundRequests|Webhooks and integrations might not work properly. GitLab Duo will not work unless `cloud.gitlab.com` is in the following allowlist.')
       = f.gitlab_ui_checkbox_component :allow_local_requests_from_web_hooks_and_services,

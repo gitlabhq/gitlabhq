@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class User < MainClusterwide::ApplicationRecord
+class User < ApplicationRecord
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
@@ -443,6 +443,7 @@ class User < MainClusterwide::ApplicationRecord
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
   delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
+  delegate :bluesky, :bluesky=, to: :user_detail, allow_nil: true
   delegate :mastodon, :mastodon=, to: :user_detail, allow_nil: true
   delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
   delegate :twitter, :twitter=, to: :user_detail, allow_nil: true
@@ -546,6 +547,8 @@ class User < MainClusterwide::ApplicationRecord
     after_transition active: :banned do |user|
       user.create_banned_user
 
+      user.invalidate_authored_todo_user_pending_todo_cache_counts
+
       if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- this is always necessary on GitLab.com
         user.run_after_commit do
           deep_clean_ci = user.custom_attributes.by_key(UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED).exists?
@@ -562,6 +565,7 @@ class User < MainClusterwide::ApplicationRecord
 
     after_transition banned: :active do |user|
       user.banned_user&.destroy
+      user.invalidate_authored_todo_user_pending_todo_cache_counts
     end
 
     after_transition any => :active do |user|
@@ -591,6 +595,7 @@ class User < MainClusterwide::ApplicationRecord
   scope :non_external, -> { where(external: false) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
+  scope :without_active, -> { without_state(:active) }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
   scope :all_without_ghosts, -> { without_ghosts }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
@@ -2107,6 +2112,14 @@ class User < MainClusterwide::ApplicationRecord
 
   def invalidate_personal_projects_count
     Rails.cache.delete(['users', id, 'personal_projects_count'])
+  end
+
+  def invalidate_authored_todo_user_pending_todo_cache_counts
+    # Invalidate the todo cache counts for other users with pending todos authored by the user
+    cache_keys = authored_todos.pending.distinct.pluck(:user_id).map { |id| ['users', id, 'todos_pending_count'] }
+    Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      Rails.cache.delete_multi(cache_keys)
+    end
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth

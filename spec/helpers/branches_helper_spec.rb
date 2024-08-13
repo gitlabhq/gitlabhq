@@ -69,19 +69,19 @@ RSpec.describe BranchesHelper, feature_category: :source_code_management do
     end
 
     context 'when merge request is open' do
-      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :success) }
+      it { is_expected.to eq(icon: 'merge-request', title: "Open - #{title}", variant: :success) }
     end
 
     context 'when merge request is locked' do
       let(:merge_request) { build(:merge_request, :locked, title: title) }
 
-      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :success) }
+      it { is_expected.to eq(icon: 'merge-request', title: "Open - #{title}", variant: :success) }
     end
 
     context 'when merge request is draft' do
       let(:title) { 'Draft: Test MR' }
 
-      it { is_expected.to eq(icon: 'merge-request-open', title: "Open - #{title}", variant: :warning) }
+      it { is_expected.to eq(icon: 'merge-request', title: "Open - #{title}", variant: :warning) }
     end
 
     context 'when merge request is merged' do

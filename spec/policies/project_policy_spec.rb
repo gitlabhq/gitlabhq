@@ -2770,7 +2770,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let(:current_user) { developer }
         let(:project) { public_project }
         let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
-        let_it_be(:scope_project) { create(:project, :private) }
+        let(:scope_project) { create(:project, :private) }
 
         before do
           current_user.set_ci_job_token_scope!(job)
@@ -3049,7 +3049,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           project.project_feature.update!(container_registry_access_level: access_level)
-          current_user.update_column(:external, true)
+          allow(current_user).to receive(:external).and_return(true)
         end
 
         it 'allows/disallows the abilities based on the container_registry feature access level' do
@@ -3610,12 +3610,24 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
       false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:guest)      | Featurable::ENABLED  | true
-      true  | ref(:guest)      | Featurable::PRIVATE  | true
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::ENABLED  | false
       true  | ref(:non_member) | Featurable::PRIVATE  | false
       true  | ref(:non_member) | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::PRIVATE  | false
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | true
+      true  | ref(:reporter)   | Featurable::PRIVATE  | true
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:developer)  | Featurable::ENABLED  | true
+      true  | ref(:developer)  | Featurable::PRIVATE  | true
+      true  | ref(:developer)  | Featurable::DISABLED | false
+      true  | ref(:maintainer) | Featurable::ENABLED  | true
+      true  | ref(:maintainer) | Featurable::PRIVATE  | true
+      true  | ref(:maintainer) | Featurable::DISABLED | false
+      true  | ref(:owner)      | Featurable::ENABLED  | true
+      true  | ref(:owner)      | Featurable::PRIVATE  | true
+      true  | ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do
@@ -3636,11 +3648,24 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
       false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | true
-      true  | ref(:reporter)   | Featurable::PRIVATE  | true
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | false
       true  | ref(:non_member) | Featurable::ENABLED  | false
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::PRIVATE  | false
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | false
+      true  | ref(:reporter)   | Featurable::PRIVATE  | false
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:developer)  | Featurable::ENABLED  | true
+      true  | ref(:developer)  | Featurable::PRIVATE  | true
+      true  | ref(:developer)  | Featurable::DISABLED | false
+      true  | ref(:maintainer) | Featurable::ENABLED  | true
+      true  | ref(:maintainer) | Featurable::PRIVATE  | true
+      true  | ref(:maintainer) | Featurable::DISABLED | false
+      true  | ref(:owner)      | Featurable::ENABLED  | true
+      true  | ref(:owner)      | Featurable::PRIVATE  | true
+      true  | ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do
@@ -3661,12 +3686,24 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
       false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:guest)      | Featurable::ENABLED  | true
-      true  | ref(:guest)      | Featurable::PRIVATE  | true
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::ENABLED  | false
       true  | ref(:non_member) | Featurable::PRIVATE  | false
       true  | ref(:non_member) | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::PRIVATE  | false
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | true
+      true  | ref(:reporter)   | Featurable::PRIVATE  | true
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:developer)  | Featurable::ENABLED  | true
+      true  | ref(:developer)  | Featurable::PRIVATE  | true
+      true  | ref(:developer)  | Featurable::DISABLED | false
+      true  | ref(:maintainer) | Featurable::ENABLED  | true
+      true  | ref(:maintainer) | Featurable::PRIVATE  | true
+      true  | ref(:maintainer) | Featurable::DISABLED | false
+      true  | ref(:owner)      | Featurable::ENABLED  | true
+      true  | ref(:owner)      | Featurable::PRIVATE  | true
+      true  | ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do
@@ -3687,11 +3724,24 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
       false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | true
-      true  | ref(:reporter)   | Featurable::PRIVATE  | true
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | false
       true  | ref(:non_member) | Featurable::ENABLED  | false
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::PRIVATE  | false
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | false
+      true  | ref(:reporter)   | Featurable::PRIVATE  | false
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:developer)  | Featurable::ENABLED  | true
+      true  | ref(:developer)  | Featurable::PRIVATE  | true
+      true  | ref(:developer)  | Featurable::DISABLED | false
+      true  | ref(:maintainer) | Featurable::ENABLED  | true
+      true  | ref(:maintainer) | Featurable::PRIVATE  | true
+      true  | ref(:maintainer) | Featurable::DISABLED | false
+      true  | ref(:owner)      | Featurable::ENABLED  | true
+      true  | ref(:owner)      | Featurable::PRIVATE  | true
+      true  | ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do

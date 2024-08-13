@@ -98,8 +98,6 @@ describe('FollowersTab', () => {
         value: defaultPropsData.page,
         totalItems: defaultPropsData.totalItems,
         perPage: DEFAULT_PER_PAGE,
-        prevText: Follow.i18n.prev,
-        nextText: Follow.i18n.next,
       });
     });
 

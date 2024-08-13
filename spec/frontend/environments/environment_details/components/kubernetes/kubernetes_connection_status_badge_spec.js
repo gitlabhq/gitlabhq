@@ -28,6 +28,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_co
     [connectionStatus.connected, 'success', 'connected', undefined, 'Synced'],
     [connectionStatus.disconnected, 'warning', 'retry', '#', 'Refresh'],
     [connectionStatus.connecting, 'muted', 'spinner', undefined, 'Updating'],
+    // eslint-disable-next-line max-params
   ])('when connection status is %s', (status, variant, icon, href, text) => {
     beforeEach(() => {
       createComponent({ connectionStatus: status });

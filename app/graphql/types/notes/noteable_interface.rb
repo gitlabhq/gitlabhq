@@ -29,6 +29,9 @@ module Types
       end
 
       def commenters
+        # TODO: Implement as part of completion https://gitlab.com/gitlab-org/gitlab/-/issues/458264
+        return [] if object.is_a?(AbuseReport)
+
         object.commenters(user: current_user)
       end
     end

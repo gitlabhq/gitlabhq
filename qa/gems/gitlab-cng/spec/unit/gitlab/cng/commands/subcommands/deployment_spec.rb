@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
     it "defines kind deployment" do
       expect_command_to_include_attributes(command_name, {
         description: "Create CNG deployment against local kind k8s cluster where NAME is helm release name. " \
-                     "Default: gitlab",
+          "Default: gitlab",
         name: command_name,
         usage: "#{command_name} [NAME]"
       })
@@ -69,6 +69,18 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
       expect(Gitlab::Cng::Kind::Cluster).to have_received(:new)
         .with(name: "gitlab", ci: true, host_http_port: 80, host_ssh_port: 22)
       expect(cluster_instance).to have_received(:create)
+    end
+
+    it "passes extra environment options" do
+      invoke_command(command_name, [], {
+        namespace: "gitlab",
+        env: ["env1=val1", "env2=val2"]
+      })
+
+      expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
+        "gitlab",
+        hash_including(env: ["env1=val1", "env2=val2"])
+      )
     end
 
     it "only print arguments with --print-deploy-args option" do

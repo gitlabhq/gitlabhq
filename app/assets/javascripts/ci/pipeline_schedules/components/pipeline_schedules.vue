@@ -14,11 +14,18 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { reportToSentry } from '~/ci/utils';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import { ALL_SCOPE, SCHEDULES_PER_PAGE, DEFAULT_SORT_VALUE } from '../constants';
+import {
+  ALL_SCOPE,
+  SCHEDULES_PER_PAGE,
+  DEFAULT_SORT_VALUE,
+  TABLE_SORT_STORAGE_KEY,
+} from '../constants';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
@@ -33,6 +40,7 @@ const defaultPagination = {
 };
 
 export default {
+  name: 'PipelineSchedules',
   i18n: {
     schedulesFetchError: s__('PipelineSchedules|There was a problem fetching pipeline schedules.'),
     scheduleDeleteError: s__(
@@ -52,6 +60,7 @@ export default {
     ),
     planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
   },
+  sortStorageKey: TABLE_SORT_STORAGE_KEY,
   docsLink: helpPagePath('administration/instance_limits', {
     anchor: 'number-of-pipeline-schedules',
   }),
@@ -66,6 +75,7 @@ export default {
     GlTab,
     GlSprintf,
     GlLink,
+    LocalStorageSync,
     PipelineSchedulesTable,
     TakeOwnershipModal,
     PipelineScheduleEmptyState,
@@ -112,8 +122,8 @@ export default {
           planLimit: ciPipelineSchedules,
         };
       },
-      error() {
-        this.reportError(this.$options.i18n.schedulesFetchError);
+      error(error) {
+        this.reportError(this.$options.i18n.schedulesFetchError, error);
       },
     },
   },
@@ -205,6 +215,16 @@ export default {
     shouldDisableNewScheduleBtn() {
       return (this.hasReachedPlanLimit || this.hasNoAccess) && !this.hasUnlimitedSchedules;
     },
+    sortingState: {
+      get() {
+        return { sortValue: this.sortValue, sortBy: this.sortBy, sortDesc: this.sortDesc };
+      },
+      set(values) {
+        this.sortValue = values.sortValue;
+        this.sortBy = values.sortBy;
+        this.sortDesc = values.sortDesc;
+      },
+    },
   },
   watch: {
     // this watcher ensures that the count on the all tab
@@ -216,9 +236,11 @@ export default {
     },
   },
   methods: {
-    reportError(error) {
+    reportError(errorMessage, error) {
       this.hasError = true;
-      this.errorMessage = error;
+      this.errorMessage = errorMessage;
+
+      reportToSentry(this.$options.name, error);
     },
     setDeleteModal(id) {
       this.showDeleteModal = true;
@@ -250,8 +272,8 @@ export default {
           this.$apollo.queries.schedules.refetch();
           this.$toast.show(this.$options.i18n.deleteSuccess);
         }
-      } catch {
-        this.reportError(this.$options.i18n.scheduleDeleteError);
+      } catch (error) {
+        this.reportError(this.$options.i18n.scheduleDeleteError, error);
       }
     },
     async takeOwnership() {
@@ -281,8 +303,8 @@ export default {
             this.$toast.show(toastMsg);
           }
         }
-      } catch {
-        this.reportError(this.$options.i18n.takeOwnershipError);
+      } catch (error) {
+        this.reportError(this.$options.i18n.takeOwnershipError, error);
       }
     },
     async playPipelineSchedule(id) {
@@ -301,9 +323,10 @@ export default {
         } else {
           this.playSuccess = true;
         }
-      } catch {
+      } catch (error) {
         this.playSuccess = false;
-        this.reportError(this.$options.i18n.schedulePlayError);
+
+        this.reportError(this.$options.i18n.schedulePlayError, error);
       }
     },
     resetPagination() {
@@ -374,6 +397,8 @@ export default {
         {{ $options.i18n.planLimitReachedBtnText }}
       </gl-button>
     </gl-alert>
+
+    <local-storage-sync v-model="sortingState" :storage-key="$options.sortStorageKey" />
 
     <pipeline-schedule-empty-state v-if="showEmptyState" />
 

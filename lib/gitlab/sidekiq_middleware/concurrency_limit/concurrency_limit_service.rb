@@ -33,6 +33,8 @@ module Gitlab
           with_redis do |redis|
             redis.rpush(redis_key, serialize(args, context))
           end
+
+          deferred_job_counter.increment({ worker: worker_name })
         end
 
         def queue_size
@@ -95,6 +97,11 @@ module Gitlab
 
         def remove_processed_jobs(redis, limit:)
           redis.ltrim(redis_key, limit, -1)
+        end
+
+        def deferred_job_counter
+          @deferred_job_count ||= ::Gitlab::Metrics.counter(:sidekiq_concurrency_limit_deferred_jobs_total,
+            'Count of jobs deferred by the concurrency limit middleware.')
         end
       end
     end

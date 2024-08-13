@@ -65,6 +65,10 @@ class IssuePolicy < IssuablePolicy
     prevent :read_issue
   end
 
+  rule { can?(:read_issue) & notes_widget_enabled }.policy do
+    enable :read_note
+  end
+
   rule { ~can?(:read_issue) }.policy do
     prevent :create_note
     prevent :read_note

@@ -17,14 +17,6 @@ module Gitlab
         HTTP_PORT = 32080
         SSH_PORT = 32022
 
-        def initialize(ci:, name:, host_http_port:, host_ssh_port:, docker_hostname: nil)
-          @ci = ci
-          @name = name
-          @host_http_port = host_http_port
-          @host_ssh_port = host_ssh_port
-          @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
-        end
-
         # Destroy kind cluster
         #
         # @param [String] name
@@ -36,6 +28,14 @@ module Gitlab
           Helpers::Spinner.spin("destroying cluster") do
             puts execute_shell(%W[kind delete cluster --name #{name}])
           end
+        end
+
+        def initialize(ci:, name:, host_http_port:, host_ssh_port:, docker_hostname: nil)
+          @ci = ci
+          @name = name
+          @host_http_port = host_http_port
+          @host_ssh_port = host_ssh_port
+          @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
         end
 
         def create

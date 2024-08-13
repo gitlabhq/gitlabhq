@@ -4,10 +4,6 @@ module QA
   module Page
     module Component
       class Badges < Page::Base
-        view 'app/assets/javascripts/badges/components/badge_settings.vue' do
-          element 'show-badge-add-form'
-        end
-
         view 'app/assets/javascripts/badges/components/badge_form.vue' do
           element 'badge-name-field'
           element 'badge-link-url-field'
@@ -25,7 +21,7 @@ module QA
         end
 
         def show_badge_add_form
-          click_element 'show-badge-add-form'
+          click_element 'crud-form-toggle'
         end
 
         def fill_name(name)

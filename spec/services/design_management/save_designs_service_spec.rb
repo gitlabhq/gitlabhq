@@ -27,6 +27,8 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
   end
 
   before do
+    issue.instance_variable_set(:@design_collection, nil) # reload collection for each example
+
     if issue.design_collection.repository.exists?
       issue.design_collection.repository.expire_all_method_caches
       issue.design_collection.repository.raw.delete_all_refs_except([Gitlab::Git::SHA1_BLANK_SHA])

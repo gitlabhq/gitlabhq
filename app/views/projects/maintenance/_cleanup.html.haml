@@ -14,7 +14,7 @@
     rel: 'noopener noreferrer'
 
 - url = cleanup_namespace_project_settings_repository_path(@project.namespace, @project)
-= gitlab_ui_form_for @project, url: url, method: :post, authenticity_token: true, html: { class: 'js-requires-input' } do |f|
+= gitlab_ui_form_for @project, url: url, method: :post, authenticity_token: true do |f|
   %fieldset.gl-mt-0.gl-mb-3
     .gl-mb-3
       %h6.gl-mt-0

@@ -15,11 +15,6 @@ export default {
       type: String,
       required: true,
     },
-    buttonText: {
-      type: String,
-      required: false,
-      default: __('Delete project'),
-    },
     formPath: {
       type: String,
       required: true,
@@ -63,6 +58,9 @@ export default {
       this.isModalVisible = true;
     },
   },
+  i18n: {
+    deleteProject: __('Delete project'),
+  },
 };
 </script>
 
@@ -91,7 +89,7 @@ export default {
       variant="danger"
       data-testid="delete-button"
       @click="onButtonClick"
-      >{{ buttonText }}</gl-button
+      >{{ $options.i18n.deleteProject }}</gl-button
     >
   </gl-form>
 </template>

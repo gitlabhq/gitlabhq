@@ -302,16 +302,10 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService, feature_category: :sou
       context 'and first fragments are the same' do
         let(:lfs_content) { existing_lfs_object.file.read }
 
-        context 'when lfs_link_existing_object feature flag disabled' do
-          before do
-            stub_feature_flags(lfs_link_existing_object: false)
-          end
+        it 'calls link_existing_lfs_object!' do
+          expect(subject).to receive(:link_existing_lfs_object!)
 
-          it 'does not call link_existing_lfs_object!' do
-            expect(subject).not_to receive(:link_existing_lfs_object!)
-
-            subject.execute
-          end
+          subject.execute
         end
 
         it 'returns success' do

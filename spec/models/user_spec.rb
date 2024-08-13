@@ -129,6 +129,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:bluesky).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:bluesky=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:mastodon).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:mastodon=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -1480,6 +1483,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns users without ghosts users' do
         expect(described_class.without_ghosts).to match_array([user1, user2])
+      end
+    end
+
+    describe '.without_active' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user, :ghost) }
+      let_it_be(:user3) { create(:user, :external) }
+      let_it_be(:user4) { create(:user, state: 'blocked') }
+      let_it_be(:user5) { create(:user, state: 'banned') }
+      let_it_be(:user6) { create(:user, :deactivated) }
+
+      it 'returns users who are not active' do
+        expect(described_class.without_active).to match_array([user2, user4, user5, user6])
       end
     end
 
@@ -2990,6 +3006,25 @@ RSpec.describe User, feature_category: :user_profile do
       it 'creates a BannedUser record' do
         expect { user.ban }.to change { Users::BannedUser.count }.by(1)
         expect(Users::BannedUser.last.user_id).to eq(user.id)
+      end
+
+      context 'when the user authored todos' do
+        let_it_be(:todo_users) { create_list(:user, 3) }
+
+        it 'invalidates the cached todo count for users with pending todos authored by the user', :use_clean_rails_redis_caching do
+          todo_users.each do |todo_user|
+            create(:todo, :pending, author: user, user: todo_user)
+            create(:todo, :done, author: user, user: todo_user)
+          end
+
+          expect { user.ban }
+            .to change { todo_users.map(&:todos_pending_count).uniq }.from([1]).to([0])
+                .and not_change { todo_users.map(&:todos_done_count) }
+
+          expect { user.unban }
+          .to change { todo_users.map(&:todos_pending_count).uniq }.from([0]).to([1])
+              .and not_change { todo_users.map(&:todos_done_count) }
+        end
       end
 
       context 'when GitLab.com' do

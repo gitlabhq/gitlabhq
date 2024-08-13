@@ -52,6 +52,8 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
 
     if design_note?
       'Design'
+    elsif target.for_issue? || target.for_work_item?
+      target.noteable.issue_type
     else
       target.noteable_type.titleize
     end.downcase

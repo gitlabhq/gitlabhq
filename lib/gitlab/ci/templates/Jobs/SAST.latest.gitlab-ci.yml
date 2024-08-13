@@ -10,7 +10,8 @@ variables:
   SAST_IMAGE_SUFFIX: ""
 
   SAST_EXCLUDED_ANALYZERS: ""
-  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
 
 sast:
@@ -50,12 +51,14 @@ gitlab-advanced-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 0
+    SAST_ANALYZER_IMAGE_TAG: 1
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $GITLAB_ADVANCED_SAST_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_ENABLED != '1'
       when: never
       # Add the job to merge request pipelines if there's an open merge request.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -64,6 +67,13 @@ gitlab-advanced-sast:
         - '**/*.py'
         - '**/*.go'
         - '**/*.java'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
+        - '**/*.cs'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -73,6 +83,13 @@ gitlab-advanced-sast:
         - '**/*.py'
         - '**/*.go'
         - '**/*.java'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
+        - '**/*.cs'
 
 bandit-sast:
   extends: .sast-analyzer
@@ -183,13 +200,45 @@ semgrep-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
+    # Add the job to merge request pipelines if there's an open merge request.
+    ## In case gitlab-advanced-sast also runs, exclude files already scanned by gitlab-advanced-sast
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      variables:
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+      exists:
+        - '**/*.c'
+        - '**/*.cc'
+        - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
+        - '**/*.h'
+        - '**/*.hpp'
+        - '**/*.scala'
+        - '**/*.sc'
+        - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
+    ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       exists:
         - '**/*.py'
         - '**/*.js'
         - '**/*.jsx'
         - '**/*.ts'
         - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
         - '**/*.c'
         - '**/*.cc'
         - '**/*.cpp'
@@ -200,7 +249,6 @@ semgrep-sast:
         - '**/*.hpp'
         - '**/*.go'
         - '**/*.java'
-        - '**/*.html'
         - '**/*.cs'
         - '**/*.scala'
         - '**/*.sc'
@@ -211,13 +259,45 @@ semgrep-sast:
         - '**/*.kt'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    ## In case gitlab-advanced-sast also runs, exclude files already scanned by gitlab-advanced-sast
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      variables:
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+      exists:
+        - '**/*.c'
+        - '**/*.cc'
+        - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
+        - '**/*.h'
+        - '**/*.hpp'
+        - '**/*.scala'
+        - '**/*.sc'
+        - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
+    ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      when: never
+    - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.py'
         - '**/*.js'
         - '**/*.jsx'
         - '**/*.ts'
         - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
         - '**/*.c'
         - '**/*.cc'
         - '**/*.cpp'
@@ -228,7 +308,6 @@ semgrep-sast:
         - '**/*.hpp'
         - '**/*.go'
         - '**/*.java'
-        - '**/*.html'
         - '**/*.cs'
         - '**/*.scala'
         - '**/*.sc'

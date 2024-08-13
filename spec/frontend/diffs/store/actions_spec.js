@@ -745,6 +745,27 @@ describe('DiffsStoreActions', () => {
         { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
       ]);
     });
+
+    it('should prevent default event', () => {
+      const preventDefault = jest.fn();
+      const target = { href: TEST_HOST };
+      const event = { target, preventDefault };
+      testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+        { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+        { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
+      ]);
+      expect(preventDefault).toHaveBeenCalled();
+    });
+
+    it('should filter out pinned file param', () => {
+      const target = { href: `${TEST_HOST}/diffs?pin=foo#abc_11` };
+      const event = { target, preventDefault: jest.fn() };
+      testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
+        { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+        { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
+      ]);
+      expect(window.location.href).toBe(`${TEST_HOST}/diffs#abc_11`);
+    });
   });
 
   describe('assignDiscussionsToDiff', () => {

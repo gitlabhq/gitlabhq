@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: IDE
+group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster."
 ---
@@ -94,6 +94,7 @@ To register an app on your GitLab instance:
 
 1. [Configure GitLab as an OAuth 2.0 identity provider](../../integration/oauth_provider.md).
 1. Set the redirect URI to `https://${GITLAB_WORKSPACES_PROXY_DOMAIN}/auth/callback`.
+1. Select the **Trusted** checkbox.
 1. Set the scopes to `api`, `read_user`, `openid`, and `profile`.
 1. Export your `CLIENT_ID`, `CLIENT_SECRET`, and `REDIRECT_URI`:
 

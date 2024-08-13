@@ -15,7 +15,7 @@
           = sprite_icon('spam', size: '16')
 
       .snippet-info.gl-font-sm.gl-text-gray-500!
-        .gl-display-inline{ data: { testid: 'snippet-created-at'} }
+        .gl-inline{ data: { testid: 'snippet-created-at'} }
           - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
           - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-black-normal')
           #{snippet.to_reference} &middot;

@@ -64,16 +64,12 @@ export default {
 
 <template>
   <div class="gl-pt-6">
-    <div
-      class="gl-pb-3 gl-display-flex gl-justify-content-space-between gl-flex-direction-column gl-sm-flex-direction-row gl-align-items-center"
-    >
-      <h2 class="gl-font-size-h1 gl-mt-2 gl-mb-2">
+    <div class="gl-flex gl-flex-col gl-items-center gl-justify-between gl-pb-3 sm:gl-flex-row">
+      <h2 class="gl-mb-2 gl-mt-2 gl-text-size-h1">
         {{ $options.i18n.reportTypes[reportType] }}
       </h2>
 
-      <div
-        class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-sm-flex-direction-row gl-mt-3 gl-sm-mt-0"
-      >
+      <div class="gl-mt-3 gl-flex gl-flex-col gl-items-stretch sm:gl-mt-0 sm:gl-flex-row">
         <template v-if="report.screenshot">
           <gl-button data-testid="screenshot-button" @click="toggleScreenshotModal">
             {{ $options.i18n.viewScreenshot }}
@@ -87,7 +83,7 @@ export default {
             <img
               :src="report.screenshot"
               :alt="$options.i18n.screenshotTitle"
-              class="gl-w-full gl-h-auto"
+              class="gl-h-auto gl-w-full"
             />
           </gl-modal>
         </template>
@@ -95,7 +91,7 @@ export default {
           v-if="report.url"
           data-testid="report-url-button"
           :href="report.url"
-          class="gl-sm-ml-3 gl-mt-3 gl-sm-mt-0"
+          class="gl-mt-3 sm:gl-ml-3 sm:gl-mt-0"
         >
           {{ $options.i18n.goToType[reportType] }}
         </gl-button>
@@ -117,9 +113,9 @@ export default {
       </template>
       {{ $options.i18n.reportedBy }}
       <template #footer>
-        <div class="gl-display-flex gl-align-items-center gl-mb-2">
+        <div class="gl-mb-2 gl-flex gl-items-center">
           <gl-avatar :size="32" :src="reporter && reporter.avatarUrl" />
-          <div class="gl-display-flex gl-flex-wrap">
+          <div class="gl-flex gl-flex-wrap">
             <span class="gl-ml-3 gl-font-bold">
               {{ reporterName }}
             </span>
@@ -128,11 +124,11 @@ export default {
             </gl-link>
             <time-ago-tooltip
               :time="report.reportedAt"
-              class="gl-ml-3 gl-text-secondary gl-w-full gl-sm-w-auto"
+              class="gl-ml-3 gl-w-full gl-text-secondary sm:gl-w-auto"
             />
           </div>
         </div>
-        <p v-if="report.message" class="gl-pl-8 gl-mb-0">{{ report.message }}</p>
+        <p v-if="report.message" class="gl-mb-0 gl-pl-8">{{ report.message }}</p>
       </template>
     </gl-card>
   </div>

@@ -286,7 +286,8 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 
 In order to
 [restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),
-all images are to be published to the location below.
+all images are to be published to the location below. The container registry in the development
+project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641).
 
 - Group: [`https://gitlab.com/security-products/`](https://gitlab.com/security-products/)
 - Project path: `https://gitlab.com/security-products/<NAME>` ([example](https://gitlab.com/security-products/container-scanning))
@@ -321,7 +322,7 @@ This process only applies to the images used in versions of GitLab matching the 
 
 - the `MAJOR.MINOR.PATCH` image tag (e.g.: `4.1.7`)
 - the `MAJOR.MINOR` image tag(e.g.: `4.1`)
-- the `MAJOR`  image tag (e.g.: `4`)
+- the `MAJOR` image tag (e.g.: `4`)
 - the `latest` image tag
 
 The implementation of the rebuild process may vary [depending on the project](../../user/application_security/index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.

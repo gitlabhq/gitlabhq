@@ -6,7 +6,7 @@
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 module Banzai
   module Filter
-    class BlockquoteFenceLegacyFilter < TimeoutTextPipelineFilter
+    class BlockquoteFenceLegacyFilter < HTML::Pipeline::TextFilter
       MARKDOWN_CODE_BLOCK_REGEX = %r{
         (?<code>
           # Code blocks:
@@ -74,7 +74,7 @@ module Banzai
         super text, context, result
       end
 
-      def call_with_timeout
+      def call
         return @text if MarkdownFilter.glfm_markdown?(context)
 
         @text.gsub(REGEX) do

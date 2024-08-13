@@ -12,21 +12,6 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert do
 
   subject(:service) { described_class.new(statuses) }
 
-  describe 'gem version' do
-    let(:acceptable_version) { '10.0.0' }
-
-    let(:error_message) do
-      <<~MESSAGE
-      A mechanism depending on internals of 'act-as-taggable-on` has been designed
-      to bulk insert tags for Ci::Build/Ci::Runner records.
-      Please review the code carefully before updating the gem version
-      https://gitlab.com/gitlab-org/gitlab/-/issues/350053
-      MESSAGE
-    end
-
-    it { expect(ActsAsTaggableOn::VERSION).to eq(acceptable_version), error_message }
-  end
-
   describe '.bulk_insert_tags!' do
     let(:inserter) { instance_double(described_class) }
 

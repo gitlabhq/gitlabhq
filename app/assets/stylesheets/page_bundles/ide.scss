@@ -97,6 +97,7 @@ $ide-commit-header-height: 48px;
     border-right: 1px solid var(--ide-border-color, $border-color);
     border-bottom: 1px solid var(--ide-border-color, $border-color);
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.active,
     .gl-tab-nav-item-active {
       background-color: var(--ide-highlight-background, $white);
@@ -116,10 +117,12 @@ $ide-commit-header-height: 48px;
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tab-content {
     padding: 0;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tabs-nav {
     border-width: 0;
 
@@ -139,6 +142,7 @@ $ide-commit-header-height: 48px;
         border-right: 1px solid var(--ide-border-color, $border-color);
         border-bottom: 1px solid var(--ide-border-color, $border-color);
 
+        // stylelint-disable-next-line gitlab/no-gl-class
         &.gl-tab-nav-item-active {
           background-color: var(--ide-highlight-background, $white);
           border-color: var(--ide-border-color, $border-color);
@@ -562,6 +566,7 @@ $ide-commit-header-height: 48px;
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-form-radio,
   .gl-form-checkbox {
     color: var(--ide-text-color, $gl-text-color);
@@ -644,6 +649,7 @@ $ide-commit-header-height: 48px;
     height: 100%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .nav-links,
   .gl-tabs-nav {
     height: 30px;
@@ -925,6 +931,7 @@ $ide-commit-header-height: 48px;
     --svg-status-bg: var(--ide-background, #{$white});
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-empty-state {
     p {
       margin: $grid-size 0;
@@ -938,6 +945,7 @@ $ide-commit-header-height: 48px;
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tab-content {
     color: var(--ide-text-color, $gl-text-color);
   }
@@ -980,6 +988,7 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-nav-form {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .nav-links li,
   .gl-tabs-nav li {
     width: 50%;
@@ -991,11 +1000,13 @@ $ide-commit-header-height: 48px;
       font-size: 14px;
       line-height: 30px;
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       &:not(.active),
       &:not(.gl-tab-nav-item-active) {
         background-color: var(--ide-dropdown-background, $gray-10);
       }
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       &.gl-tab-nav-item-active {
         font-weight: bold;
       }

@@ -66,7 +66,6 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
       context 'by default (promotion)' do
         it 'does not apply introduction class' do
           expect(page).not_to have_css ".gl-banner-introduction"
-          expect(page).to have_css ".gl-banner.gl-bg-gray-10\\!"
         end
       end
 

@@ -1,27 +1,3 @@
-.commit-box {
-  border-top: 1px solid $border-color;
-  padding: $gl-padding 0;
-
-  .commit-title {
-    margin: 0;
-    color: $gl-text-color;
-  }
-}
-
-.pipeline-info {
-  .status-icon-container {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 3px;
-
-    svg {
-      display: block;
-      width: 22px;
-      height: 22px;
-    }
-  }
-}
-
 .branch-info .commit-icon {
   svg {
     top: 3px;
@@ -88,16 +64,6 @@
   }
 }
 
-.commit.flex-list {
-  display: flex;
-}
-
-.avatar-cell {
-  img {
-    margin-right: 0;
-  }
-}
-
 .commit-content {
   padding-right: 10px;
   white-space: normal;
@@ -114,11 +80,12 @@
       color: $gl-text-color;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-inline-flex {
       gap: 0.5ch;
     }
 
-    .commit-author-link.gl-text-truncate {
+    .commit-author-link {
       max-width: 19ch;
     }
   }
@@ -153,6 +120,7 @@
 .commit-sha-group {
   display: inline-flex;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .label,
   .btn:not(.gl-button) {
     padding: $gl-vert-padding $gl-btn-padding;

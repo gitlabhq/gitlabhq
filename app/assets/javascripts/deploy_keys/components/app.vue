@@ -1,7 +1,7 @@
 <script>
-import { GlButton, GlIcon, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -21,7 +21,6 @@ export default {
     ConfirmModal,
     KeysPanel,
     NavigationTabs,
-    GlButton,
     GlIcon,
     GlLoadingIcon,
     GlPagination,
@@ -90,11 +89,6 @@ export default {
   },
   i18n: {
     loading: s__('DeployKeys|Loading deploy keys'),
-    addButton: s__('DeployKeys|Add new key'),
-    prevPage: __('Go to previous page'),
-    nextPage: __('Go to next page'),
-    next: __('Next'),
-    prev: __('Prev'),
   },
   computed: {
     tabs() {
@@ -172,7 +166,7 @@ export default {
 <template>
   <div class="deploy-keys">
     <confirm-modal :visible="confirmModalVisible" @remove="removeKey" @cancel="cancel" />
-    <div class="gl-new-card-header gl-align-items-center gl-py-0 gl-pl-0">
+    <div class="gl-items-center gl-py-0 gl-pl-0">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-b-0">
         <div class="fade-left">
           <gl-icon name="chevron-lg-left" :size="12" />
@@ -187,16 +181,6 @@ export default {
           class="gl-rounded-lg"
           @onChangeTab="onChangeTab"
         />
-      </div>
-
-      <div class="gl-new-card-actions">
-        <gl-button
-          size="small"
-          class="js-toggle-button js-toggle-content"
-          data-testid="add-new-deploy-key-button"
-        >
-          {{ $options.i18n.addButton }}
-        </gl-button>
       </div>
     </div>
     <gl-loading-icon
@@ -216,10 +200,6 @@ export default {
         :total-items="pageInfo.total"
         :per-page="pageInfo.perPage"
         :value="currentPage"
-        :next="$options.i18n.next"
-        :prev="$options.i18n.prev"
-        :label-previous-page="$options.i18n.prevPage"
-        :label-next-page="$options.i18n.nextPage"
         @next="moveNext()"
         @previous="movePrevious()"
         @input="moveToPage"

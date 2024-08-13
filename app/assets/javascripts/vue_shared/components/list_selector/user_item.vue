@@ -40,9 +40,9 @@ export default {
 </script>
 
 <template>
-  <span class="gl-display-flex gl-align-items-center gl-gap-3">
+  <span class="gl-flex gl-items-center gl-gap-3">
     <gl-avatar :alt="name" :entity-name="name" :size="32" :src="avatarUrl" fallback-on-error />
-    <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
+    <span class="gl-flex gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ name }}</span>
       <span class="gl-text-gray-600">@{{ username }}</span>
     </span>

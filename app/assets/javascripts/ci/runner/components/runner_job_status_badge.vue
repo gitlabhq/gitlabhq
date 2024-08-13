@@ -45,10 +45,12 @@ export default {
   <gl-badge
     v-if="badge"
     v-bind="$attrs"
-    class="gl-max-w-full gl-text-truncate gl-bg-transparent!"
+    class="!gl-bg-transparent"
     variant="muted"
     :class="badge.classes"
   >
-    {{ badge.label }}
+    <span class="gl-truncate">
+      {{ badge.label }}
+    </span>
   </gl-badge>
 </template>

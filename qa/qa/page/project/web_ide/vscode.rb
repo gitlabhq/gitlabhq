@@ -84,7 +84,7 @@ module QA
           end
 
           def click_commit_button
-            click_element('div[aria-label="Commit to \'main\'"]')
+            click_element('div[aria-label="Commit and push to \'main\'"]')
           end
 
           def has_notification_box?
@@ -151,8 +151,9 @@ module QA
             end
           end
 
-          # Used for stablility, due to feature_caching of vscode_web_ide
-          def wait_for_ide_to_load
+          # Used for stability, due to feature_caching of vscode_web_ide
+          # @param file_name [string] wait for file to be loaded (optional)
+          def wait_for_ide_to_load(file_name = nil)
             page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
             # On test environments we have a broadcast message that can cover the buttons
             if has_element?('broadcast-notification-container', wait: 5)
@@ -166,12 +167,8 @@ module QA
               message: 'Waiting for VSCode file explorer') do
               has_file_explorer?
             end
-          end
 
-          def wait_for_file_to_load(filename)
-            Support::Waiter.wait_until(message: "Waiting for #{filename} to load in VSCode file explorer") do
-              has_file?(filename)
-            end
+            wait_for_file_to_load(file_name) if file_name
           end
 
           def create_new_folder(folder_name)
@@ -310,6 +307,12 @@ module QA
           end
 
           private
+
+          def wait_for_file_to_load(filename)
+            Support::Waiter.wait_until(message: "Waiting for #{filename} to load in VSCode file explorer") do
+              has_file?(filename)
+            end
+          end
 
           def click_monaco_button(label)
             click_element('.monaco-button', text: label)

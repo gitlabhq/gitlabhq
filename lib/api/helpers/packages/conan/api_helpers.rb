@@ -149,11 +149,13 @@ module API
           strong_memoize_attr :package
 
           def token
-            token = nil
-            token = ::Gitlab::ConanToken.from_personal_access_token(find_personal_access_token.user_id, access_token_from_request) if find_personal_access_token
-            token = ::Gitlab::ConanToken.from_deploy_token(deploy_token_from_request) if deploy_token_from_request
-            token = ::Gitlab::ConanToken.from_job(find_job_from_token) if find_job_from_token
-            token
+            if find_personal_access_token
+              ::Gitlab::ConanToken.from_personal_access_token(access_token_from_request, find_personal_access_token)
+            elsif deploy_token_from_request
+              ::Gitlab::ConanToken.from_deploy_token(deploy_token_from_request)
+            else
+              ::Gitlab::ConanToken.from_job(find_job_from_token)
+            end
           end
           strong_memoize_attr :token
 
@@ -229,7 +231,7 @@ module API
           # We override this method from auth_finders because we need to
           # extract the token from the Conan JWT which is specific to the Conan API
           def find_personal_access_token
-            PersonalAccessToken.find_by_token(access_token_from_request)
+            PersonalAccessToken.active.find_by_token(access_token_from_request)
           end
           strong_memoize_attr :find_personal_access_token
 

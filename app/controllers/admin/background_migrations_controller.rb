@@ -15,34 +15,34 @@ module Admin
         'finished' => batched_migration_class.with_status(:finished).queue_order.reverse_order
       }
 
-      @current_tab = @relations_by_tab.key?(params[:tab]) ? params[:tab] : 'queued'
-      @migrations = @relations_by_tab[@current_tab].page(params[:page])
+      @current_tab = @relations_by_tab.key?(safe_params[:tab]) ? safe_params[:tab] : 'queued'
+      @migrations = @relations_by_tab[@current_tab].page(pagination_params[:page])
       @successful_rows_counts = batched_migration_class.successful_rows_counts(@migrations.map(&:id))
       @databases = Gitlab::Database.db_config_names(with_schema: :gitlab_shared)
     end
 
     def show
-      @migration = batched_migration_class.find(params[:id])
+      @migration = batched_migration_class.find(safe_params[:id])
 
-      @failed_jobs = @migration.batched_jobs.with_status(:failed).page(params[:page])
+      @failed_jobs = @migration.batched_jobs.with_status(:failed).page(pagination_params[:page])
     end
 
     def pause
-      migration = batched_migration_class.find(params[:id])
+      migration = batched_migration_class.find(safe_params[:id])
       migration.pause!
 
       redirect_back fallback_location: { action: 'index' }
     end
 
     def resume
-      migration = batched_migration_class.find(params[:id])
+      migration = batched_migration_class.find(safe_params[:id])
       migration.execute!
 
       redirect_back fallback_location: { action: 'index' }
     end
 
     def retry
-      migration = batched_migration_class.find(params[:id])
+      migration = batched_migration_class.find(safe_params[:id])
       migration.retry_failed_jobs! if migration.failed?
 
       redirect_back fallback_location: { action: 'index' }
@@ -57,13 +57,17 @@ module Admin
     end
 
     def base_model
-      @selected_database = params[:database] || Gitlab::Database::MAIN_DATABASE_NAME
+      @selected_database = safe_params[:database] || Gitlab::Database::MAIN_DATABASE_NAME
 
       Gitlab::Database.database_base_models[@selected_database]
     end
 
     def batched_migration_class
       @batched_migration_class ||= Gitlab::Database::BackgroundMigration::BatchedMigration
+    end
+
+    def safe_params
+      params.permit(:id, :database, :tab)
     end
   end
 end

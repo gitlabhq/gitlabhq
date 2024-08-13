@@ -50,7 +50,7 @@ Prerequisites:
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
@@ -64,7 +64,7 @@ Prerequisites:
 
 You can index both existing and new root namespaces automatically. To index all root namespaces automatically:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Index root namespaces automatically** checkbox.
@@ -83,7 +83,7 @@ Prerequisites:
 
 To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Pause indexing for exact code search** checkbox.
@@ -91,3 +91,34 @@ To pause indexing for [exact code search](../../user/search/exact_code_search.md
 
 When you pause indexing for exact code search, all changes in your repository are queued.
 To resume indexing, clear the **Pause indexing for exact code search** checkbox.
+
+## Troubleshooting
+
+When working with Zoekt, you might encounter the following issues.
+
+### Namespace is not indexed
+
+When you [enable the setting](#index-root-namespaces-automatically), new namespaces get indexed automatically.
+If a namespace is not indexed automatically, inspect the Sidekiq logs to see if the jobs are being processed.
+`Search::Zoekt::SchedulingWorker` is responsible for indexing namespaces.
+
+In a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session), you can check:
+
+- Namespaces where Zoekt is not enabled:
+
+  ```ruby
+  Namespace.group_namespaces.root_namespaces_without_zoekt_enabled_namespace
+  ```
+
+- The status of Zoekt indices:
+
+  ```ruby
+  Search::Zoekt::Index.all.pluck(:state, :namespace_id)
+  ```
+
+To index a namespace manually, run this command:
+
+```ruby
+namespace = Namespace.find_by_full_path('<top-level-group-to-index>')
+Search::Zoekt::EnabledNamespace.find_or_create_by(namespace: namespace)
+```

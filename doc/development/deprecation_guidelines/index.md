@@ -102,4 +102,4 @@ Related Handbook pages:
 
 ## Update the related documentation
 
-When features are deprecated and removed, [update the related documentation](../documentation/versions.md#deprecations-and-removals).
+When features are deprecated and removed, [update the related documentation](../documentation/styleguide/deprecations_and_removals.md).

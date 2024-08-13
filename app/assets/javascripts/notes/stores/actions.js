@@ -581,6 +581,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 export const setFetchingState = ({ commit }, fetchingState) =>
   commit(types.SET_NOTES_FETCHING_STATE, fetchingState);
 
+// eslint-disable-next-line max-params
 const pollSuccessCallBack = async (resp, commit, state, getters, dispatch) => {
   if (state.isResolvingDiscussion) {
     return null;

@@ -56,7 +56,7 @@ export const CLUSTER_TYPES = {
 export const MAX_REQUESTS = 3;
 
 export const STATUSES = {
-  default: { className: 'bg-white', title: __('Unknown') },
+  default: { className: 'gl-bg-white', title: __('Unknown') },
   disabled: { className: 'disabled', title: __('Disabled') },
   created: { className: 'bg-success', title: __('Connected') },
   unreachable: { className: 'bg-danger', title: __('Unreachable') },
@@ -283,3 +283,5 @@ export const DELETE_AGENT_MODAL_ID = 'delete-agent-modal-%{agentName}';
 
 export const AGENT_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/342696';
 export const AGENT_FEEDBACK_KEY = 'agent_feedback_banner';
+
+export const CONNECT_MODAL_ID = 'connect-to-cluster-modal';

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 This tutorial provides step-by-step guidance on using agile planning and tracking features in GitLab
 to facilitate core Scrum ceremonies and workflows.
@@ -73,7 +73,7 @@ flowchart TD
     Issues .->|Visible in| Lists
     Issues .->|Assigned to| Iterations
     Issues .->|Assigned to| Milestones
-    Tasks  .->|Child of| Issues
+    Tasks .->|Child of| Issues
     Tasks .->|Assigned to| Iterations
     Tasks .->|Assigned to| Milestones
     Epics .->|Visible in| Boards
@@ -270,7 +270,7 @@ flowchart TD
 
 Epic["Epic: When using the application,<br>I need to create an account,<br> so I can use the application features"] --> Issue1["Issue: When creating my account,<br> I need to specify my email address,<br> so I can receive future updates from the application"]
     Epic --> Issue2["Issue: When creating my account,<br> I need to specify a password,<br> so my account remains secure"]
-    Epic --> Issue3["Issue: When creating my account<br> and entering the required info,<br> I need to finalize creating my account,<br> so I can log in"]
+    Epic --> Issue3["Issue: When creating my account<br> and entering the required info,<br> I need to finalize creating my account,<br> so I can sign in"]
 ```
 
 You've taken the feature of an unmodified account sign-up for an application and broke it down into
@@ -390,7 +390,7 @@ To create your first stories:
    ```
 
    ```plaintext
-   When creating my account and entering the required information, I need to finalize creating my account so that I can log in
+   When creating my account and entering the required information, I need to finalize creating my account so that I can sign in
    ```
 
 ### Refine your story backlog

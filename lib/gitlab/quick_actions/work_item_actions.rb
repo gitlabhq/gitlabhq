@@ -13,6 +13,7 @@ module Gitlab
         end
         types WorkItem
         params 'Task | Objective | Key Result | Issue'
+        condition { type_change_allowed? }
         command :type do |type_name|
           @execution_message[:type] = update_type(type_name, :type)
         end
@@ -132,6 +133,10 @@ module Gitlab
 
       def promotion_allowed?
         current_user.can?(:update_work_item, quick_action_target)
+      end
+
+      def type_change_allowed?
+        true
       end
 
       def supports_promote_to?(type_name)

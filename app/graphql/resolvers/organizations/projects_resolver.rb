@@ -19,3 +19,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Organizations::ProjectsResolver.prepend_mod

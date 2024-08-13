@@ -68,7 +68,7 @@ export default {
   wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
   i18n,
   learnMorePath: helpPagePath('ci/testing/unit_test_reports', {
-    anchor: 'viewing-unit-test-reports-on-gitlab',
+    anchor: 'view-unit-test-reports-on-gitlab',
   }),
 };
 </script>

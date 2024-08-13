@@ -94,6 +94,10 @@ module QA
         enabled?(ENV['COVERBAND_ENABLED'], default: false)
       end
 
+      def selective_execution_improved_enabled?
+        enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end
@@ -259,6 +263,10 @@ module QA
 
       def use_selenoid?
         enabled?(ENV['USE_SELENOID'], default: false)
+      end
+
+      def use_sha256_repository_object_storage
+        enabled?(ENV['QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE'], default: false)
       end
 
       def save_all_videos?

@@ -14,7 +14,7 @@ DETAILS:
 You can create users:
 
 - [Manually through the sign-in page](#create-users-on-sign-in-page).
-- [Manually in the Admin area](#create-users-in-admin-area).
+- [Manually in the **Admin** area](#create-users-in-admin-area).
 - [Manually using the API](../../../api/users.md).
 - [Automatically through user authentication integrations](#create-users-through-authentication-integrations).
 
@@ -37,7 +37,7 @@ Prerequisites:
 
 To create a user manually:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields, such as name, username, and email.

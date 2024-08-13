@@ -8,4 +8,5 @@ description: Stores hashes of Value Stream Analytics stage configurations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67259
 milestone: '14.2'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462758
+sharding_key:
+  organization_id: organizations

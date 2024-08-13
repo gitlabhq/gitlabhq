@@ -12,7 +12,7 @@ DETAILS:
 
 This setting defaults to `300` requests per minute, and allows you to rate limit the requests to raw endpoints:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Performance optimization**.
 

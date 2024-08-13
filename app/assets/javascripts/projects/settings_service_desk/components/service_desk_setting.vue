@@ -186,8 +186,8 @@ export default {
       });
     },
     issuesHelpPagePath() {
-      return helpPagePath('user/project/settings/index.md', {
-        anchor: 'configure-project-visibility-features-and-permissions',
+      return helpPagePath('user/project/settings/index', {
+        anchor: 'configure-project-features-and-permissions',
       });
     },
     areTicketsConfidentialByDefaultHelp() {

@@ -72,7 +72,9 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
 
   specify { expect(described_class.description).to eq('Machine learning model in the model registry') }
 
-  subject(:data_markdown) { GitlabSchema.execute(query_markdown, context: { current_user: project.owner }).as_json }
+  subject(:data_markdown) do
+    GitlabSchema.execute(query_markdown, context: { current_user: project_markdown.owner }).as_json
+  end
 
   it 'includes all the fields' do
     expected_fields = %w[id name versions candidates version_count _links created_at latest_version description

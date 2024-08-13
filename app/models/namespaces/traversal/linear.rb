@@ -88,6 +88,10 @@ module Namespaces
         read_attribute(:traversal_ids).presence || transient_traversal_ids || []
       end
 
+      def traversal_path
+        "#{traversal_ids.join('/')}/"
+      end
+
       def use_traversal_ids?
         traversal_ids.present?
       end

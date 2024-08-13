@@ -1,6 +1,21 @@
 - page_title _("Groups")
 
-= render_dashboard_ultimate_trial(current_user)
-= render 'dashboard/groups_head'
+%div{ data: { testid: 'groups-page' } }
+  = render_dashboard_ultimate_trial(current_user)
+  - if current_user.groups.exists?
+    = render 'dashboard/groups_head'
+    = render 'groups'
+  - else
+    - button_text = _("New group") if current_user.can_create_group?
+    - button_link = new_group_path if current_user.can_create_group?
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
+      title: s_('GroupsEmptyState|A group is a collection of several projects'),
+      primary_button_text: button_text,
+      primary_button_link: button_link,
+      primary_button_options: { data: { testid: "new-group-button" } },
+      secondary_button_text: _("Explore groups"),
+      secondary_button_link: explore_groups_path,
+      empty_state_options: { data: { testid: 'groups-empty-state' } }) do |c|
 
-= render 'groups'
+      - c.with_description do
+        = s_("GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group.")

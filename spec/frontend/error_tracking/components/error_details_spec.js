@@ -23,7 +23,6 @@ import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue';
 import { createAlert, VARIANT_WARNING } from '~/alert';
-import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
 
@@ -355,8 +354,8 @@ describe('ErrorDetails', () => {
         });
 
         it('displays Ignore and Resolve buttons', () => {
-          expect(findUpdateIgnoreStatusButton().text()).toBe(__('Ignore'));
-          expect(findUpdateResolveStatusButton().text()).toBe(__('Resolve'));
+          expect(findUpdateIgnoreStatusButton().text()).toBe('Ignore');
+          expect(findUpdateResolveStatusButton().text()).toBe('Resolve');
         });
 
         it('marks error as ignored when ignore button is clicked', () => {
@@ -382,8 +381,8 @@ describe('ErrorDetails', () => {
         });
 
         it('displays Undo Ignore and Resolve buttons', () => {
-          expect(findUpdateIgnoreStatusButton().text()).toBe(__('Undo ignore'));
-          expect(findUpdateResolveStatusButton().text()).toBe(__('Resolve'));
+          expect(findUpdateIgnoreStatusButton().text()).toBe('Undo ignore');
+          expect(findUpdateResolveStatusButton().text()).toBe('Resolve');
         });
 
         it('marks error as unresolved when ignore button is clicked', () => {
@@ -409,8 +408,8 @@ describe('ErrorDetails', () => {
         });
 
         it('displays Ignore and Unresolve buttons', () => {
-          expect(findUpdateIgnoreStatusButton().text()).toBe(__('Ignore'));
-          expect(findUpdateResolveStatusButton().text()).toBe(__('Unresolve'));
+          expect(findUpdateIgnoreStatusButton().text()).toBe('Ignore');
+          expect(findUpdateResolveStatusButton().text()).toBe('Unresolve');
         });
 
         it('marks error as ignored when ignore button is clicked', () => {

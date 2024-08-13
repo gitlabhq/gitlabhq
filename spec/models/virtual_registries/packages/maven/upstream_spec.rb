@@ -9,6 +9,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
   describe 'associations' do
     it do
+      is_expected.to have_many(:cached_responses)
+        .class_name('VirtualRegistries::Packages::Maven::CachedResponse')
+        .inverse_of(:upstream)
+    end
+
+    it do
       is_expected.to have_one(:registry_upstream)
         .class_name('VirtualRegistries::Packages::Maven::RegistryUpstream')
         .inverse_of(:upstream)
@@ -88,6 +94,32 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
           end
         end
       end
+
+      context 'when url is updated' do
+        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd, :expected_credentials) do
+          'http://original_url.test' | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
+          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
+          'http://update_url.test'   | :none  | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
+          'http://update_url.test'   | 'test' | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
+          'http://update_url.test'   | :none  | 'test' | nil    | nil    | { 'username' => nil, 'password' => nil }
+        end
+
+        with_them do
+          before do
+            upstream.update!(url: 'http://original_url.test', username: 'original_user', password: 'original_pwd')
+          end
+
+          it 'resets the username and the password when necessary' do
+            new_attributes = { url: new_url, username: new_user, password: new_pwd }.select { |_, v| v != :none }
+            upstream.update!(new_attributes)
+
+            expect(upstream.reload.url).to eq(new_url)
+            expect(upstream.username).to eq(expected_user)
+            expect(upstream.password).to eq(expected_pwd)
+            expect(upstream.credentials).to eq(expected_credentials)
+          end
+        end
+      end
     end
   end
 
@@ -101,6 +133,45 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
       upstream_read = upstream.reload
       expect(upstream_read.username).to eq('test')
       expect(upstream_read.password).to eq('test')
+    end
+  end
+
+  describe '#url_for' do
+    subject { upstream.url_for(path) }
+
+    where(:path, :expected_url) do
+      'path'      | 'http://test.maven/path'
+      ''          | 'http://test.maven/'
+      '/path'     | 'http://test.maven/path'
+      '/sub/path' | 'http://test.maven/sub/path'
+    end
+
+    with_them do
+      before do
+        upstream.url = 'http://test.maven/'
+      end
+
+      it { is_expected.to eq(expected_url) }
+    end
+  end
+
+  describe '#headers' do
+    subject { upstream.headers }
+
+    where(:username, :password, :expected_headers) do
+      'user' | 'pass' | { Authorization: 'Basic dXNlcjpwYXNz' }
+      'user' | ''     | {}
+      ''     | 'pass' | {}
+      ''     | ''     | {}
+    end
+
+    with_them do
+      before do
+        upstream.username = username
+        upstream.password = password
+      end
+
+      it { is_expected.to eq(expected_headers) }
     end
   end
 end

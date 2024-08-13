@@ -1,3 +1,5 @@
+@import '../highlight/common';
+
 .file-content.code {
   border: 0;
   box-shadow: none;
@@ -35,6 +37,23 @@
 
         &:empty::before, span:empty::before {
           content: '\200b';
+        }
+
+        .selected-inline-item-mark {
+          background: #2575c6 !important;
+        }
+
+        .inline-item-mark {
+          padding: 0 5px;
+          margin-right: 5px;
+          border-radius: 4px;
+          background: $gray-500;
+          color: $white;
+        }
+
+        .inline-section-marker {
+          padding-right: 2px;
+          border-radius: 4px;
         }
       }
     }
@@ -78,10 +97,15 @@
   }
 
   pre .line,
+  pre .plain-lines,
   .line-numbers a {
     font-size: 0.8125rem;
     line-height: 1.1875rem;
     min-height: 1.1875rem;
+  }
+
+  .mark-multiple-line-expand-button {
+    @include diff-expansion($gray-100, $gray-400, $gray-100, $gray-400);
   }
 }
 

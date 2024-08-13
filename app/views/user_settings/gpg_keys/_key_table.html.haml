@@ -1,5 +1,4 @@
 - is_admin = local_assigns.fetch(:admin, false)
-- hide_class = local_assigns.fetch(:hide_class, false)
 - require_external_verification = Integrations::BeyondIdentity.activated_for_instance?
 - if @gpg_keys.any?
   .table-holder
@@ -9,11 +8,11 @@
           %th= s_('Profiles|Key')
           %th= _('Status')
           %th= _('Created')
-          %th= _('Actions')
+          %th.gl-text-right= _('Actions')
       = render partial: 'user_settings/gpg_keys/key', collection: @gpg_keys, locals: { is_admin: is_admin, require_external_verification: require_external_verification }
 
 - else
-  %p.gl-new-card-empty.gl-px-5.gl-py-4.js-toggle-content{ class: hide_class }
+  %p.gl-text-subtle
     - if is_admin
       = _('There are no GPG keys associated with this account.')
     - else

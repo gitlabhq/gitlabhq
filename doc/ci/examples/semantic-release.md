@@ -95,7 +95,7 @@ As part of publishing a package, semantic-release increases the version number i
 <!-- markdownlint-disable MD044 -->
 
 1. On the left sidebar, select your avatar.
-1. Select **Preferences > Access Tokens**.
+1. Select **Preferences > Access tokens**.
 1. In the **Token name** box, enter a token name.
 1. Under **select scopes**, select the **api** checkbox.
 1. Select **Create project access token**.

@@ -102,7 +102,7 @@ RSpec.describe WorkItems::Widgets::Development, feature_category: :team_planning
     context 'when work item exists at the group level' do
       let_it_be_with_reload(:work_item) { create(:work_item, :group_level, namespace: group) }
 
-      it_behaves_like 'will_auto_close_by_merge_request field spec', true
+      it_behaves_like 'will_auto_close_by_merge_request field spec', false
     end
   end
 end

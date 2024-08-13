@@ -110,16 +110,19 @@ module API
         optional :provider, type: String, desc: 'The external provider'
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
+        optional :humans, type: Boolean, default: false, desc: 'Filters only human users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
-        optional :exclude_external, as: :non_external, type: Boolean, default: false, desc: 'Filters only non external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
         optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
-        optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
         optional :without_project_bots, type: Boolean, default: false, desc: 'Filters users without project bots'
         optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
         optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
+        optional :exclude_active, as: :without_active, type: Boolean, default: false, desc: 'Filters only non active users'
+        optional :exclude_external, as: :non_external, type: Boolean, default: false, desc: 'Filters only non external users'
+        optional :exclude_humans, as: :without_humans, type: Boolean, default: false, desc: 'Filters only non human users'
+        optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params_no_defaults
@@ -1317,8 +1320,10 @@ module API
 
         if service.success?
           present user.credit_card_validation, with: Entities::UserCreditCardValidations
+        elsif service.reason == :rate_limited
+          render_api_error!(service.message, 400)
         else
-          render_api_error!('400 Bad Request', 400)
+          bad_request!
         end
       end
 
@@ -1339,13 +1344,13 @@ module API
 
         attrs = declared_params(include_missing: false)
 
-        render_api_error!('400 Bad Request', 400) unless attrs
+        bad_request! unless attrs
 
         service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
         if service.success?
           present preferences, with: Entities::UserPreferences
         else
-          render_api_error!('400 Bad Request', 400)
+          bad_request!
         end
       end
 

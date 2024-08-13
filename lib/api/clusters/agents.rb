@@ -57,7 +57,7 @@ module API
 
           params = declared_params(include_missing: false)
 
-          result = ::Clusters::Agents::CreateService.new(user_project, current_user).execute(name: params[:name])
+          result = ::Clusters::Agents::CreateService.new(user_project, current_user, { name: params[:name] }).execute
 
           bad_request!(result[:message]) if result[:status] == :error
 
@@ -76,7 +76,11 @@ module API
 
           agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
-          destroy_conditionally!(agent)
+          destroy_conditionally!(agent) do |agent|
+            ::Clusters::Agents::DeleteService
+              .new(container: agent.project, current_user: current_user, params: { cluster_agent: agent })
+              .execute
+          end
         end
       end
     end

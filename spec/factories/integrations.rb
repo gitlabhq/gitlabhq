@@ -467,6 +467,15 @@ FactoryBot.define do
     google_play_protected_refs { true }
   end
 
+  factory :matrix_integration, class: 'Integrations::Matrix' do
+    project
+    type { 'Integrations::Matrix' }
+    active { true }
+
+    token { 'syt-zyx57W2v1u123ew11' }
+    room { '!qPKKM111FFKKsfoCVy:matrix.org' }
+  end
+
   factory :squash_tm_integration, class: 'Integrations::SquashTm' do
     project
     active { true }

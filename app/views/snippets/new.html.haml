@@ -1,7 +1,4 @@
-- page_title _("New Snippet")
+- page_title _("New snippet")
 
-.page-title-holder.gl-flex.gl-items-center
-  %h1.page-title.gl-font-size-h-display= _('New Snippet')
-
-.gl-mt-3
-  = render "shared/snippets/form", url: snippets_path(@snippet)
+= render ::Layouts::PageHeadingComponent.new(_('New snippet'))
+= render "shared/snippets/form", url: snippets_path(@snippet)

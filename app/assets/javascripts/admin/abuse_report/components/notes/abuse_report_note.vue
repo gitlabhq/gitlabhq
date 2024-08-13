@@ -89,7 +89,7 @@ export default {
         />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content gl-pb-4!">
+    <div class="timeline-content !gl-pb-4">
       <abuse-report-edit-note
         v-if="isEditing"
         :abuse-report-id="abuseReportId"

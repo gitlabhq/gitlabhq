@@ -27,6 +27,7 @@ module Gitlab
               validates :name, length: { maximum: 255 }
 
               validates :config, mutually_exclusive_keys: %i[script trigger]
+              validates :config, mutually_exclusive_keys: %i[run trigger]
 
               validates :config, disallowed_keys: {
                   in: %i[only except start_in],

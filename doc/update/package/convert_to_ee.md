@@ -72,7 +72,7 @@ The steps can be summed up to:
    NOTE:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
-   [Upgrade using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
+   [Upgrade using a manually downloaded package](index.md#download-a-package-manually),
    and then [add your license](../../administration/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically

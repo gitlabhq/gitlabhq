@@ -1,0 +1,14 @@
+---
+# Suggestion: gitlab.OutdatedVersions
+#
+# Checks for references to versions of GitLab that are no longer supported.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "If possible, remove the reference to '%s'."
+link: https://docs.gitlab.com/ee/development/documentation/versions.html
+level: suggestion
+nonword: true
+ignorecase: true
+tokens:
+  - "GitLab v?(2|3|4|5|6|7|8|9|10|11|12|13|14)"

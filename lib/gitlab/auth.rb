@@ -23,6 +23,8 @@ module Gitlab
     # Scopes for Duo
     AI_FEATURES = :ai_features
     AI_FEATURES_SCOPES = [AI_FEATURES].freeze
+    AI_WORKFLOW = :ai_workflows
+    AI_WORKFLOW_SCOPES = [AI_WORKFLOW].freeze
 
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
@@ -415,7 +417,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES + AI_WORKFLOW_SCOPES
       end
 
       def registry_scopes
@@ -448,7 +450,12 @@ module Gitlab
       end
 
       def unavailable_scopes_for_resource(resource)
-        unavailable_observability_scopes_for_resource(resource)
+        unavailable_ai_features_scopes +
+          unavailable_observability_scopes_for_resource(resource)
+      end
+
+      def unavailable_ai_features_scopes
+        AI_WORKFLOW_SCOPES
       end
 
       def unavailable_observability_scopes_for_resource(resource)

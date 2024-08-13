@@ -5,7 +5,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
 import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { createAlert, VARIANT_INFO } from '~/alert';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
 
@@ -74,10 +74,10 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       expect(InputCopyToggleVisibilityComponent.props('value')).toBe(newToken);
       expect(InputCopyToggleVisibilityComponent.props('readonly')).toBe(true);
       expect(InputCopyToggleVisibilityComponent.props('copyButtonTitle')).toBe(
-        sprintf(__('Copy %{accessTokenType}'), { accessTokenType }),
+        sprintf('Copy %{accessTokenType}', { accessTokenType }),
       );
       expect(InputCopyToggleVisibilityComponent.attributes('label')).toBe(
-        sprintf(__('Your new %{accessTokenType}'), { accessTokenType }),
+        sprintf('Your new %{accessTokenType}', { accessTokenType }),
       );
     });
 
@@ -85,7 +85,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       await triggerSuccess();
 
       expect(createAlert).toHaveBeenCalledWith({
-        message: sprintf(__('Your new %{accessTokenType} has been created.'), {
+        message: sprintf('Your new %{accessTokenType} has been created.', {
           accessTokenType,
         }),
         variant: VARIANT_INFO,
@@ -125,7 +125,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       expect(wrapper.findComponent(InputCopyToggleVisibility).exists()).toBe(false);
 
       let GlAlertComponent = findGlAlertError();
-      expect(GlAlertComponent.props('title')).toBe(__('The form contains the following errors:'));
+      expect(GlAlertComponent.props('title')).toBe('The form contains the following errors:');
       expect(GlAlertComponent.props('variant')).toBe('danger');
       let itemEls = wrapper.findAll('li');
       expect(itemEls).toHaveLength(2);
@@ -135,7 +135,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       await triggerError(['one']);
 
       GlAlertComponent = wrapper.findComponent(GlAlert);
-      expect(GlAlertComponent.props('title')).toBe(__('The form contains the following error:'));
+      expect(GlAlertComponent.props('title')).toBe('The form contains the following error:');
       expect(GlAlertComponent.props('variant')).toBe('danger');
       itemEls = wrapper.findAll('li');
       expect(itemEls).toHaveLength(1);

@@ -68,7 +68,7 @@ export default {
     :toggle-text="dropdownText"
     @shown="focusCommitMessageInput"
   >
-    <gl-form class="gl-display-flex gl-flex-direction-column gl-px-4! gl-mx-0! gl-my-2!">
+    <gl-form class="!gl-mx-0 !gl-my-2 gl-flex gl-flex-col !gl-px-4">
       <label for="commit-message">{{ __('Commit message') }}</label>
       <gl-alert v-if="errorMessage" variant="danger" :dismissible="false" class="gl-mb-4">
         {{ errorMessage }}
@@ -91,7 +91,7 @@ export default {
       </span>
 
       <gl-button
-        class="!gl-w-auto gl-mt-3 gl-align-self-end"
+        class="gl-mt-3 !gl-w-auto gl-self-end"
         category="primary"
         variant="confirm"
         data-testid="commit-with-custom-message-button"

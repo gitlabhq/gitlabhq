@@ -3,7 +3,7 @@
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: Andysoiron  # (required) GitLab username of the person reporting the change
-  stage: Manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387299  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.

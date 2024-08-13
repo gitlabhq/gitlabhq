@@ -9,17 +9,19 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
   let!(:lock)        { create(:lfs_file_lock, user: lock_author, project: project) }
   let(:params)       { {} }
 
-  subject { described_class.new(project, current_user, params) }
-
   describe '#execute' do
+    subject(:execute) { described_class.new(project, current_user, params).execute }
+
     context 'when not authorized' do
       it "doesn't succeed" do
-        result = subject.execute
+        result = execute
 
         expect(result[:status]).to eq(:error)
         expect(result[:http_status]).to eq(403)
         expect(result[:message]).to eq(_('You have no permissions'))
       end
+
+      it_behaves_like 'does not refresh project.lfs_file_locks_changed_epoch'
     end
 
     context 'when authorized' do
@@ -31,11 +33,13 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
         let(:params) { { id: 123 } }
 
         it "doesn't succeed" do
-          result = subject.execute
+          result = execute
 
           expect(result[:status]).to eq(:error)
           expect(result[:http_status]).to eq(404)
         end
+
+        it_behaves_like 'does not refresh project.lfs_file_locks_changed_epoch'
       end
 
       context 'when unlocked by the author' do
@@ -43,11 +47,13 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
         let(:params) { { id: lock.id } }
 
         it "succeeds" do
-          result = subject.execute
+          result = execute
 
           expect(result[:status]).to eq(:success)
           expect(result[:lock]).to be_present
         end
+
+        it_behaves_like 'refreshes project.lfs_file_locks_changed_epoch value'
       end
 
       context 'when unlocked by a different user' do
@@ -55,12 +61,14 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
         let(:params) { { id: lock.id } }
 
         it "doesn't succeed" do
-          result = subject.execute
+          result = execute
 
           expect(result[:status]).to eq(:error)
           expect(result[:message]).to match(/'README.md' is locked by @#{lock_author.username}/)
           expect(result[:http_status]).to eq(403)
         end
+
+        it_behaves_like 'does not refresh project.lfs_file_locks_changed_epoch'
       end
 
       context 'when forced' do
@@ -80,12 +88,14 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
           end
 
           it "doesn't succeed" do
-            result = subject.execute
+            result = execute
 
             expect(result[:status]).to eq(:error)
             expect(result[:message]).to eq(_('You must have maintainer access to force delete a lock'))
             expect(result[:http_status]).to eq(403)
           end
+
+          it_behaves_like 'does not refresh project.lfs_file_locks_changed_epoch'
         end
 
         context 'by a maintainer user' do
@@ -96,11 +106,13 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
           end
 
           it "succeeds" do
-            result = subject.execute
+            result = execute
 
             expect(result[:status]).to eq(:success)
             expect(result[:lock]).to be_present
           end
+
+          it_behaves_like 'refreshes project.lfs_file_locks_changed_epoch value'
         end
       end
     end

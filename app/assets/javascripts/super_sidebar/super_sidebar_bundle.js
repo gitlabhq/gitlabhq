@@ -19,7 +19,6 @@ Vue.use(VueApollo);
 const getTrialStatusWidgetData = (sidebarData) => {
   if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
     const {
-      containerId,
       trialDaysUsed,
       trialDuration,
       navIconImagePath,
@@ -36,7 +35,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
     return {
       showTrialStatusWidget: true,
       showDuoProTrialStatusWidget: false,
-      containerId,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
       navIconImagePath,
@@ -44,7 +42,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
       planName,
       plansHref,
       daysRemaining,
-      targetId: containerId,
       trialEndDate: new Date(trialEndDate),
       trialDiscoverPagePath,
     };
@@ -55,7 +52,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
     sidebarData.duo_pro_trial_status_popover_data_attrs
   ) {
     const {
-      containerId,
       trialDaysUsed,
       trialDuration,
       percentageComplete,
@@ -72,7 +68,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
     return {
       showDuoProTrialStatusWidget: true,
       showTrialStatusWidget: false,
-      containerId,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
@@ -81,7 +76,6 @@ const getTrialStatusWidgetData = (sidebarData) => {
       featureId,
       dismissEndpoint,
       daysRemaining,
-      targetId: containerId,
       trialEndDate: new Date(trialEndDate),
       purchaseNowUrl,
       learnAboutButtonUrl: widgetUrl,

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "How to install Git on your local machine."
 ---
 
-# Install and configure Git
+# Install Git
 
 To begin contributing to GitLab projects, you must download and install the Git client on your computer.
 
@@ -72,8 +72,44 @@ sudo apt-get update && sudo apt-get install git
 ## Configure Git
 
 To start using Git from your computer, you must enter your credentials
-to identify yourself as the author of your work. The full name and
-email address should match the ones you use in GitLab.
+to identify yourself as the author of your work.
+
+You can configure your Git identity locally or globally:
+
+- Locally: Use for the current project only.
+- Globally: Use for all current and future projects.
+
+::Tabs
+
+:::TabTitle Local setup
+
+Configure your Git identity locally to use it for the current project only.
+
+The full name and email address should match the ones you use in GitLab.
+
+1. In your terminal, add your full name. For example:
+
+   ```shell
+   git config --local user.name "Alex Smith"
+   ```
+
+1. Add your email address. For example:
+
+   ```shell
+   git config --local user.email "your_email_address@example.com"
+   ```
+
+1. To check the configuration, run:
+
+   ```shell
+   git config --local --list
+   ```
+
+:::TabTitle Global setup
+
+Configure your Git identity globally to use it for all current and future projects on your machine.
+
+The full name and email address should match the ones you use in GitLab.
 
 1. In your terminal, add your full name. For example:
 
@@ -93,9 +129,13 @@ email address should match the ones you use in GitLab.
    git config --global --list
    ```
 
-   The `--global` option tells Git to always use this information for anything you do on your system.
-   If you omit `--global` or use `--local`, the configuration applies only to the current
-   repository.
+::EndTabs
+
+To check your configured Git settings, run:
+
+```shell
+git config user.name && git config user.email
+```
 
 After you set your name and email address, you should add an SSH key.
 See [Use SSH keys to communicate with GitLab](../../../user/ssh.md).

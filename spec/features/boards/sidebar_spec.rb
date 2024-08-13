@@ -16,15 +16,32 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
 
   before do
     project.add_maintainer(user)
-
-    sign_in(user)
-
-    visit project_board_path(project, board)
-
-    wait_for_requests
   end
 
-  it_behaves_like 'issue boards sidebar'
+  context 'when issues drawer is disabled' do
+    before do
+      stub_feature_flags(issues_list_drawer: false)
+      sign_in(user)
+
+      visit project_board_path(project, board)
+
+      wait_for_requests
+    end
+
+    it_behaves_like 'issue boards sidebar'
+  end
+
+  context 'when issues drawer is enabled' do
+    before do
+      sign_in(user)
+
+      visit project_board_path(project, board)
+
+      wait_for_requests
+    end
+
+    it_behaves_like 'work item drawer'
+  end
 
   def first_card
     find('.board:nth-child(1)').first("[data-testid='board-card']")

@@ -23,8 +23,16 @@ module ActiveRecord
 
       def status_with_milestones
         # rubocop:disable Database/MultipleDatabases -- From Rails base code which doesn't follow our style guide
-        versions = ActiveRecord::SchemaMigration.all_versions.map(&:to_i)
-        ActiveRecord::Base.connection.migration_context.migrations.sort_by(&:version).map do |m|
+        conn = ActiveRecord::Base.connection
+
+        versions =
+          if ::Gitlab.next_rails?
+            conn.schema_migration.versions.map(&:to_i)
+          else
+            ActiveRecord::SchemaMigration.all_versions.map(&:to_i)
+          end
+
+        conn.migration_context.migrations.sort_by(&:version).map do |m|
           [
             (versions.include?(m.version.to_i) ? 'up' : 'down'),
             m.version.to_s,

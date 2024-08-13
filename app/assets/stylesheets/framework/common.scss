@@ -70,46 +70,8 @@
 }
 
 /** COLORS **/
-.cgray { color: $gl-text-color; }
-.clgray { color: $gray-200; }
-.cred { color: $red-500; }
-.cgreen { color: $green-600; }
-.cdark { color: $gray-800; }
-
-.fwhite { fill: $white; }
-.fgray { fill: $gray-500; }
-
-.text-plain,
-.text-plain:hover {
-  color: $gl-text-color;
-}
-
 .text-secondary {
   color: $gl-text-color-secondary;
-}
-
-.text-tertiary {
-  color: $gl-text-color-tertiary;
-}
-
-.text-primary,
-.text-primary:hover {
-  color: $brand-primary;
-}
-
-.text-success,
-.text-success:hover {
-  color: $brand-success;
-}
-
-.text-danger,
-.text-danger:hover {
-  color: $brand-danger;
-}
-
-.text-danger-muted,
-.text-danger-muted:hover {
-  color: $red-300;
 }
 
 .text-warning,
@@ -120,10 +82,6 @@
 .text-info,
 .text-info:hover {
   color: $brand-info;
-}
-
-.bg-white {
-  background-color: $white;
 }
 
 .bg-line-target-blue {
@@ -152,10 +110,6 @@
   margin-bottom: 12px;
   font-weight: $gl-font-weight-normal;
   line-height: 24px;
-}
-
-.bold {
-  font-weight: $gl-font-weight-bold;
 }
 
 .tab-content {
@@ -511,10 +465,6 @@ li.note {
   }
 }
 
-.gl-font-sm { font-size: $gl-font-size-small; }
-.gl-font-lg { font-size: $gl-font-size-large; }
-.gl-font-base { font-size: $gl-font-size-14; }
-
 .gl-font-size-0 { font-size: 0; }
 .gl-font-size-28 { font-size: $gl-font-size-28; }
 .gl-font-size-42 { font-size: $gl-font-size-42; }
@@ -572,4 +522,22 @@ li.note {
 .commit-sha-container {
   color: var(--gray-700, $gray-700) !important;
   background-color: var(--gray-50, $gray-50);
+}
+
+[readonly] {
+  cursor: default;
+}
+
+copy-code {
+  position: absolute;
+  @apply gl-transition-all;
+  opacity: 0;
+
+  top: $gl-spacing-scale-3;
+  right: $gl-spacing-scale-3;
+
+  .markdown-code-block:hover &,
+  &:focus-within {
+    opacity: 1;
+  }
 }

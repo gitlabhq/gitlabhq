@@ -59,7 +59,7 @@ module Gitlab
       CommitData.new.tap do |data|
         data.author_avatar = author_avatar(commit, size: 36, has_tooltip: false, lazy: true, project: project)
         data.age_map_class = age_map_class(commit.committed_date, project_duration)
-        data.commit_link = link_to commit.title, project_commit_path(project, commit.id), class: "cdark", title: commit.title
+        data.commit_link = link_to commit.title, project_commit_path(project, commit.id), title: commit.title
         data.commit_author_link = commit_author_link(commit, avatar: false)
         data.project_blame_link = project_blame_link(commit, previous_path)
         data.time_ago_tooltip = time_ago_with_tooltip(commit.committed_date)

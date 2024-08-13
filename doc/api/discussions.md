@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Discussions are a set of related notes on:
+Discussions are attached to:
 
 - Snippets
 - Issues
@@ -18,10 +18,23 @@ Discussions are a set of related notes on:
 - Merge requests
 - Commits
 
-This includes [comments and threads](../user/discussions/index.md) and system notes.
+This includes [comments, threads](../user/discussions/index.md), and system notes.
 System notes are notes about changes to the object (for example, when a milestone changes).
+
 Label notes are not part of this API, but recorded as separate events in
 [resource label events](resource_label_events.md).
+
+## Understand note types in the API
+
+Not all discussion types are equally available in the API:
+
+- **Note**: A comment left on the _root_ of an issue, merge request, commit,
+  or snippet.
+- **Discussion**: A collection, often called a _thread_, of `DiscussionNotes` in
+  an issue, merge request, commit, or snippet.
+- **DiscussionNote**: An individual item in a discussion on an issue, merge request,
+  commit, or snippet. These are not returned as part of the Note API.
+  Not available in the [Events API](events.md).
 
 ## Discussions pagination
 

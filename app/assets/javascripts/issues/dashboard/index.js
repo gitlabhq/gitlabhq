@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import IssuesDashboardApp from 'ee_else_ce/issues/dashboard/components/issues_dashboard_app.vue';
+import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
 import { gqlClient } from '~/issues/list/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -26,6 +26,7 @@ export async function mountIssuesDashboardApp() {
     hasIssueDateFilterFeature,
     hasIssueWeightsFeature,
     hasOkrsFeature,
+    hasQualityManagementFeature,
     hasScopedLabelsFeature,
     initialSort,
     isPublicVisibilityRestricted,
@@ -52,6 +53,7 @@ export async function mountIssuesDashboardApp() {
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
+      hasQualityManagementFeature: parseBoolean(hasQualityManagementFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       initialSort,
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),

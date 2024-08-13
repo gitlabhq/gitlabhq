@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Audit::DeployKeyAuthor do
 
     it 'sets default name when it is not provided' do
       expect(described_class.new)
-        .to have_attributes(id: -3, name: 'Deploy Key')
+        .to have_attributes(id: -3, name: 'Deploy key')
     end
   end
 end

@@ -17,10 +17,9 @@ import {
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-import { TEST_HOST } from 'spec/test_constants';
 import testAction from '../../__helpers__/vuex_action_helper';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
@@ -501,7 +500,7 @@ describe('DiffFileHeader component', () => {
     it('displays the path', () => {
       createComponent({ props: { diffFile: { ...diffFile, deleted_file: true } } });
       expect(findTitleLink().text()).toBe(
-        sprintf(__('%{filePath} deleted'), { filePath: diffFile.file_path }, false),
+        sprintf('%{filePath} deleted', { filePath: diffFile.file_path }, false),
       );
     });
 
@@ -716,24 +715,5 @@ describe('DiffFileHeader component', () => {
     });
 
     expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(true);
-  });
-
-  describe('pinned file', () => {
-    beforeEach(() => {
-      window.gon.features = { pinnedFile: true };
-    });
-
-    it('has pinned URL search param', () => {
-      createComponent();
-      const url = new URL(TEST_HOST + findTitleLink().attributes('href'));
-      expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
-    });
-
-    it('can unpin file', () => {
-      createComponent({ props: { addMergeRequestButtons: true, pinned: true } });
-      const unpinButton = wrapper.findComponentByTestId('unpin-button');
-      unpinButton.vm.$emit('click');
-      expect(mockStoreConfig.modules.diffs.actions.unpinFile).toHaveBeenCalled();
-    });
   });
 });

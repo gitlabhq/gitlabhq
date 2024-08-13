@@ -118,13 +118,13 @@ panels:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
-The [DORA metrics](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+The [DORA](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects for the last full calendar month.
 
 The chart is a breakdown of your project's DORA scores, [categorized](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out) as high, medium, or low.
 The chart aggregates all the child projects in the group.
 
-Each bar on the chart displays the sum of total projects per score category, calculated monthly.
-To exclude data from the chart (for example, **Not Included**), in the legend select the series you want to exclude.
+The chart bars display the total number of projects per score category, calculated monthly.
+To exclude data from the chart (for example, **Not included**), in the legend select the series you want to exclude.
 Hovering over each bar reveals a dialog that explains the score's definition.
 
 For example, if a project has a high score for deployment frequency (velocity), it means that the project has one or more deploys to production per day.
@@ -158,6 +158,7 @@ If multiple topics are provided, all topics must match for the project to be inc
 ### AI Impact analytics
 
 DETAILS:
+**Tier:** For a limited time, Ultimate. In the future, GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
@@ -165,15 +166,24 @@ DETAILS:
 
 AI Impact analytics displays SDLC metrics for a group or project in the month-to-date and the past six months. You can use this table to observe how changes in the AI usage metric correlate with changes in other metrics.
 
-The metric **Monthly Code Suggestions Usage rate** represents users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
+AI Impact analytics displays the following metrics for a group:
 
-The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
+- **GitLab Duo seats: Assigned and used**: Percentage of assigned licensed seats that have used at least one AI feature in the last 30 days.
+- **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
+- **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+- [**Cycle time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
+- [**Lead time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
+- [**Deployment frequency**](dora_metrics.md#deployment-frequency)
+- [**Change failure rate**](dora_metrics.md#change-failure-rate)
+- [**Critical vulnerabilities over time**](../application_security/vulnerability_report/index.md)
+- **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
+  - The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
+  - The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
+  - To analyze the performance of teams that use AI versus teams that don't, you can create a custom [Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator) based on the AI Impact view of projects and groups with and without GitLab Duo.
 
-The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
-
-NOTE:
-Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
-For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
+  NOTE:
+  Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
+  For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
 ## Enable or disable overview background aggregation
 
@@ -382,9 +392,17 @@ Filters for the `dora_performers_score` visualization.
 
 Filters for the `usage_overview` visualization.
 
+##### Group and subgroup namespaces
+
 |Filter|Description|Supported values|
 |---|---|---|
 |`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users`|
+
+##### Project namespaces
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`include`|Limits the metrics returned, by default displays all available| `issues`, `merge_requests`, `pipelines`|
 
 ## Dashboard metrics and drill-down reports
 

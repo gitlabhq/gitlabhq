@@ -432,7 +432,7 @@ module Gitlab
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = Array(commit.parent_ids)
-        @trailers = commit.trailers.to_h { |t| [t.key, t.value] }
+        @trailers = commit.trailers.to_h { |t| [t.key, encode!(t.value)] }
         @extended_trailers = parse_commit_trailers(commit.trailers)
         @referenced_by = Array(commit.referenced_by)
       end
@@ -440,7 +440,7 @@ module Gitlab
       # Turn the commit trailers into a hash of key: [value, value] arrays
       def parse_commit_trailers(trailers)
         trailers.each_with_object({}) do |trailer, hash|
-          (hash[trailer.key] ||= []) << trailer.value
+          (hash[trailer.key] ||= []) << encode!(trailer.value)
         end
       end
 

@@ -328,7 +328,7 @@ class IssuableFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def by_search(items)
     return items unless search
-    return items if items.is_a?(ActiveRecord::NullRelation)
+    return items if items.null_relation?
 
     return filter_by_full_text_search(items) if use_full_text_search?
 

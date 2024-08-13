@@ -36,8 +36,8 @@ describe('Merge request dashboard approval count FOSS component', () => {
 
   it.each`
     approvers | tooltipTitle
-    ${[1]}    | ${'1 approver'}
-    ${[1, 2]} | ${'2 approvers'}
+    ${[1]}    | ${'1 approval'}
+    ${[1, 2]} | ${'2 approvals'}
   `('renders badge with correct tooltip title', ({ approvers, tooltipTitle }) => {
     createComponent({
       mergeRequest: { approvedBy: { nodes: approvers } },

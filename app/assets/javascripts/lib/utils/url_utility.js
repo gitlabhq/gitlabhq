@@ -313,9 +313,11 @@ export const escapeFileUrl = (fileUrl) => encodeURIComponent(fileUrl).replace(/%
 
 export function webIDEUrl(route = undefined) {
   let returnUrl = `${gon.relative_url_root || ''}/-/ide/`;
+
   if (route) {
-    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}`), '')}`;
+    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}/`), '/')}`;
   }
+
   return escapeFileUrl(returnUrl);
 }
 
@@ -425,12 +427,19 @@ export function relativePathToAbsolute(path, basePath) {
 }
 
 /**
- * Checks if the provided URL is a safe URL (absolute http(s) or root-relative URL)
+ * Checks if the provided URL is a valid URL. Valid URLs are
+ * - absolute URLs (`http(s)://...`)
+ * - root-relative URLs (`/path/...`)
+ * - parsable by the `URL` constructor
+ * - has http or https protocol
+ *
+ * Relative URLs (`../path`), queries (`?...`), and hashes (`#...`) are not
+ * considered valid.
  *
  * @param {String} url that will be checked
  * @returns {Boolean}
  */
-export function isSafeURL(url) {
+export function isValidURL(url) {
   if (!isAbsoluteOrRootRelative(url)) {
     return false;
   }
@@ -450,7 +459,7 @@ export function isSafeURL(url) {
  * @returns {String}
  */
 export function sanitizeUrl(url) {
-  if (!isSafeURL(url)) {
+  if (!isValidURL(url)) {
     return 'about:blank';
   }
   return url;
@@ -576,6 +585,7 @@ export const setUrlParams = (
   clearParams = false,
   railsArraySyntax = false,
   decodeParams = false,
+  // eslint-disable-next-line max-params
 ) => {
   const urlObj = new URL(url);
   const queryString = urlObj.search;
@@ -721,7 +731,7 @@ export const removeLastSlashInUrlPath = (url) =>
  * Navigates to a URL.
  *
  * If destination is a querystring, it will be automatically transformed into a fully qualified URL.
- * If the URL is not a safe URL (see isSafeURL implementation), this function will log an exception into Sentry.
+ * If the URL is not valid (see isValidURL implementation), this function will log an exception into Sentry.
  * If the URL is external it calls window.open so it has no referrer header or reference to its opener.
  *
  * @param {*} destination - url to navigate to. This can be a fully qualified URL or a querystring.
@@ -736,15 +746,17 @@ export function visitUrl(destination, openWindow = false) {
     url = currentUrl.toString();
   }
 
-  if (!isSafeURL(url)) {
+  if (!isValidURL(url)) {
     throw new RangeError(`Only http and https protocols are allowed: ${url}`);
   }
 
   if (isExternal(url)) {
     const target = openWindow ? '_blank' : '_self';
     // Sets window.opener to null and avoids leaking referrer information.
+    // eslint-disable-next-line no-restricted-properties
     window.open(url, target, 'noreferrer');
   } else if (openWindow) {
+    // eslint-disable-next-line no-restricted-properties
     window.open(url);
   } else {
     window.location.assign(url);
@@ -755,7 +767,7 @@ export function visitUrl(destination, openWindow = false) {
  * Navigates to a URL and display alerts.
  *
  * If destination is a querystring, it will be automatically transformed into a fully qualified URL.
- * If the URL is not a safe URL (see isSafeURL implementation), this function will log an exception into Sentry.
+ * If the URL is not valid (see isValidURL implementation), this function will log an exception into Sentry.
  *
  * @param {*} destination - url to navigate to. This can be a fully qualified URL or a querystring.
  * @param {{id: String, title?: String, message: String, variant: String, dismissible?: Boolean, persistOnPages?: String[]}[]} alerts - Alerts to display

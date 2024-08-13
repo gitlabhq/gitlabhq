@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Duo Chat
 
 DETAILS:
-**Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
@@ -36,7 +36,7 @@ You can use GitLab Duo Chat in:
 
 - The GitLab UI
 - [The GitLab Web IDE (VS Code in the cloud)](../project/web_ide/index.md)
-- VS Code, with the [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+- VS Code, with the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - JetBrains IDEs, with the [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
 
 Visual Studio support is
@@ -51,22 +51,23 @@ Other times, you must be more specific with your request.
 
 In the GitLab UI, GitLab Duo Chat knows about these areas:
 
-| Area    | How to ask Chat  |
-|---------|------------------|
-| Epics   | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
-| Issues  | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Code files | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL. |
+| Area          | How to ask Chat                                                                                                  |
+|---------------|------------------------------------------------------------------------------------------------------------------|
+| Epics         | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                   |
+| Issues        | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                 |
+| Code files    | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                 |
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area    | How to ask Chat  |
-|---------|------------------|
-| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Epics   | Ask about the URL. |
-| Issues  | Ask about the URL. |
+| Area                          | How to ask Chat       |
+|-------------------------------|-----------------------|
+| Selected lines in the editor  | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.  |
+| Epics                         | Ask about the URL.    |
+| Issues                        | Ask about the URL.    |
+| Open files                    | Start working in a file, making sure that you have opened the files you want as used as context. For details, see [open tabs as context](../project/repository/code_suggestions/index.md#open-tabs-as-context). |
 
 In addition, in the IDEs, when you use any of the slash commands,
-like `/explain`, `/refactor`, or `/tests,` Duo Chat has access to the
+like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
 code you selected.
 
 Duo Chat always has access to:
@@ -119,8 +120,8 @@ GitLab Duo Chat is not available in the Web IDE on self-managed.
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
 1. Install and set up the Workflow extension for VS Code:
-   1. In VS Code, download and install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md#download-the-extension).
-   1. Configure the [GitLab Workflow extension](../../editor_extensions/visual_studio_code/index.md#configure-the-extension).
+   1. In VS Code, download and install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md).
+   1. Configure the [GitLab Workflow extension](../../editor_extensions/visual_studio_code/index.md).
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.

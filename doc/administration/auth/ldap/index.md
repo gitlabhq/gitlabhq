@@ -52,6 +52,12 @@ Users are considered inactive in LDAP when they:
 - Are marked as disabled or deactivated in Active Directory through the user account control attribute. This means attribute
   `userAccountControl:1.2.840.113556.1.4.803` has bit 2 set.
 
+To check if a user is active or inactive in LDAP, use the following PowerShell command and the [Active Directory Module](https://learn.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2022-ps) to check the Active Directory:
+
+```powershell
+Get-ADUser -Identity <username> -Properties userAccountControl | Select-Object Name, userAccountControl
+```
+
 GitLab checks LDAP users' status:
 
 - When signing in using any authentication provider.
@@ -488,6 +494,9 @@ required when `external_groups` is configured:
 | `admin_group`     | The CN of a group containing GitLab administrators. Not `cn=administrators` or the full DN. | `'administrators'` |
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
+
+NOTE:
+If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
 
 ### Use multiple LDAP servers
 

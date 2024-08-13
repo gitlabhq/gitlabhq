@@ -8,30 +8,33 @@ Shared styles for system note dot and icon styles used for MR, Issue, Work Item
     margin-left: 12px;
     margin-right: 8px;
     border: 2px solid var(--gray-50, $gray-50);
-    
+
     .gl-dark .modal-body & {
       border-color: var(--gray-100, $gray-100);
     }
   }
-  
+
   .system-note-icon {
     width: 20px;
     height: 20px;
     margin-left: 6px;
-  
+
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-bg-green-100 {
       --bg-color: var(--green-100, #{$green-100});
     }
-  
+
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-bg-red-100 {
       --bg-color: var(--red-100, #{$red-100});
     }
-  
+
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-bg-blue-100 {
       --bg-color: var(--blue-100, #{$blue-100});
     }
   }
-  
+
   .system-note-icon:not(.mr-system-note-empty)::before {
     content: '';
     display: block;
@@ -41,12 +44,12 @@ Shared styles for system note dot and icon styles used for MR, Issue, Work Item
     width: 2px;
     height: 20px;
     background: linear-gradient(to bottom, transparent, var(--bg-color));
-  
+
     .system-note:first-child & {
       display: none;
     }
   }
-  
+
   .system-note-icon:not(.mr-system-note-empty)::after {
     content: '';
     display: block;
@@ -56,7 +59,7 @@ Shared styles for system note dot and icon styles used for MR, Issue, Work Item
     width: 2px;
     height: 20px;
     background: linear-gradient(to bottom, var(--bg-color), transparent);
-  
+
     .system-note:last-child & {
       display: none;
     }

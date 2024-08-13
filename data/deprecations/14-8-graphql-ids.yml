@@ -56,7 +56,7 @@
     to one of the other two forms (using the correct appropriate type in the signature, or using
     an inline argument expression).
 # The following items are not published on the docs page, but may be used in the future.
-  stage: Manage
+  stage: Foundations
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257883'
   documentation_url:  # (optional) This is a link to the current documentation page

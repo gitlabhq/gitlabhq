@@ -19,6 +19,7 @@ describe('Markdown Extension for Source Editor', () => {
   const markdownPath = 'foo.md';
   let extensions;
 
+  // eslint-disable-next-line max-params
   const setSelection = (startLineNumber = 1, startColumn = 1, endLineNumber = 1, endColumn = 1) => {
     const selection = new Range(startLineNumber, startColumn, endLineNumber, endColumn);
     instance.setSelection(selection);

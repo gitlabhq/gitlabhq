@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/tags/index.html.haml' do
+  include RenderedHtml
+
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:git_tag)  { project.repository.tags.last }
   let_it_be(:release)  do
@@ -20,6 +22,17 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
     allow(view).to receive(:current_ref).and_return('master')
     allow(view).to receive(:current_user).and_return(project.namespace.owner)
+  end
+
+  context 'when project has no tags' do
+    before do
+      assign(:tags, [])
+    end
+
+    it 'show empty state' do
+      render
+      expect(rendered).to have_css('[data-testid="tags-empty-state"]')
+    end
   end
 
   context 'when tag is associated with a release' do
@@ -51,7 +64,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
   context 'build stats' do
     let(:tag) { 'v1.0.0' }
-    let(:page) { Capybara::Node::Simple.new(rendered) }
+    let(:page) { rendered_html }
 
     it 'shows build status or placeholder when pipelines present' do
       create(:ci_pipeline,
@@ -63,13 +76,13 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
     end
 
     it 'shows no build status or placeholder when no pipelines present' do
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
 
     it 'shows no build status or placeholder when pipelines are private' do
@@ -78,7 +91,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
   end
 

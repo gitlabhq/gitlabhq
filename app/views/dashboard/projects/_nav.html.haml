@@ -1,4 +1,0 @@
-.nav-block
-  = gl_tabs_nav do
-    = gl_tab_link_to s_('DashboardProjects|All'), dashboard_projects_path, { item_active: params[:personal].blank? }
-    = gl_tab_link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true), { item_active: params[:personal].present? }

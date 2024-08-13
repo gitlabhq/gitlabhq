@@ -221,7 +221,9 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
                 let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset&#{parameter}" }
 
                 it "passes the parameters correctly to the Container Registry API" do
-                  expect_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                  expect_next_instances_of(ContainerRegistry::GitlabApiClient, 1) do |client|
+                    allow(client).to receive(:supports_gitlab_api?).and_return(true)
+
                     expect(client).to receive(:tags).with(
                       root_repository.path,
                       page_size: per_page,

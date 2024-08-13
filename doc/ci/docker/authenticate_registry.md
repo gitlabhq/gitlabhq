@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Authenticate with registry in Docker-in-Docker
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 When you use Docker-in-Docker, the
 [standard authentication methods](using_docker_images.md#access-an-image-from-a-private-container-registry)
 do not work, because a fresh Docker daemon is started with the service.

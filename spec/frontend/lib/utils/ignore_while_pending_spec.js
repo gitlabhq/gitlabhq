@@ -10,15 +10,12 @@ describe('~/lib/utils/ignore_while_pending', () => {
   let subject;
 
   beforeEach(() => {
-    spy = jest.fn().mockImplementation(
-      // NOTE: We can't pass an arrow function here...
-      function foo() {
-        return new Promise((resolve, reject) => {
-          spyResolve = resolve;
-          spyReject = reject;
-        });
-      },
-    );
+    spy = jest.fn().mockImplementation(() => {
+      return new Promise((resolve, reject) => {
+        spyResolve = resolve;
+        spyReject = reject;
+      });
+    });
   });
 
   describe('with non-instance method', () => {

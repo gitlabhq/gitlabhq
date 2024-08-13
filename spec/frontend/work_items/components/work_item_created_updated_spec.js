@@ -8,23 +8,16 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import {
-  groupWorkItemByIidResponseFactory,
-  mockAssignees,
-  workItemByIidResponseFactory,
-} from '../mock_data';
+import { mockAssignees, workItemByIidResponseFactory } from '../mock_data';
 
 describe('WorkItemCreatedUpdated component', () => {
   let wrapper;
   let successHandler;
-  let groupSuccessHandler;
 
   Vue.use(VueApollo);
 
   const findCreatedAt = () => wrapper.find('[data-testid="work-item-created"]');
-  const findUpdatedAt = () => wrapper.find('[data-testid="work-item-updated"]');
 
   const findCreatedAtText = () => findCreatedAt().text().replace(/\s+/g, ' ');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
@@ -47,21 +40,11 @@ describe('WorkItemCreatedUpdated component', () => {
       confidential,
       discussionLocked,
     });
-    const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
-      author,
-      updatedAt,
-      confidential,
-      discussionLocked,
-    });
 
     successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-    groupSuccessHandler = jest.fn().mockResolvedValue(groupWorkItemQueryResponse);
 
     wrapper = shallowMount(WorkItemCreatedUpdated, {
-      apolloProvider: createMockApollo([
-        [workItemByIidQuery, successHandler],
-        [groupWorkItemByIidQuery, groupSuccessHandler],
-      ]),
+      apolloProvider: createMockApollo([[workItemByIidQuery, successHandler]]),
       provide: {
         isGroup,
       },
@@ -79,44 +62,16 @@ describe('WorkItemCreatedUpdated component', () => {
     await waitForPromises();
   };
 
-  describe('when project context', () => {
-    it('calls the project work item query', async () => {
-      await createComponent();
+  it('calls the work item query', async () => {
+    await createComponent();
 
-      expect(successHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query', async () => {
-      await createComponent();
-
-      expect(groupSuccessHandler).not.toHaveBeenCalled();
-    });
-
-    it('skips calling the project work item query when workItemIid is not defined', async () => {
-      await createComponent({ workItemIid: null });
-
-      expect(successHandler).not.toHaveBeenCalled();
-    });
+    expect(successHandler).toHaveBeenCalled();
   });
 
-  describe('when group context', () => {
-    it('skips calling the project work item query', async () => {
-      await createComponent({ isGroup: true });
+  it('skips calling the work item query when workItemIid is not defined', async () => {
+    await createComponent({ workItemIid: null });
 
-      expect(successHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', async () => {
-      await createComponent({ isGroup: true });
-
-      expect(groupSuccessHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query when workItemIid is not defined', async () => {
-      await createComponent({ isGroup: true, workItemIid: null });
-
-      expect(groupSuccessHandler).not.toHaveBeenCalled();
-    });
+    expect(successHandler).not.toHaveBeenCalled();
   });
 
   it('shows work item type metadata with type and icon', async () => {
@@ -144,18 +99,6 @@ describe('WorkItemCreatedUpdated component', () => {
     await createComponent({ author: null });
 
     expect(findCreatedAtText()).toBe('created');
-  });
-
-  it('shows updated time', async () => {
-    await createComponent();
-
-    expect(findUpdatedAt().exists()).toBe(true);
-  });
-
-  it('does not show updated time for new work items', async () => {
-    await createComponent({ updatedAt: null });
-
-    expect(findUpdatedAt().exists()).toBe(false);
   });
 
   describe('confidential badge', () => {

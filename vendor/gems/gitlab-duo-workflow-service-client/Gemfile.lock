@@ -1,0 +1,142 @@
+PATH
+  remote: .
+  specs:
+    gitlab-duo-workflow-service-client (0.1)
+      grpc
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (7.1.3.2)
+      base64
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      mutex_m
+      tzinfo (~> 2.0)
+    ast (2.4.2)
+    base64 (0.2.0)
+    bigdecimal (3.1.8)
+    binding_of_caller (1.0.1)
+      debug_inspector (>= 1.2.0)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
+    debug_inspector (1.2.0)
+    diff-lcs (1.5.1)
+    drb (2.2.1)
+    gitlab-styles (10.1.0)
+      rubocop (~> 1.50.2)
+      rubocop-graphql (~> 0.18)
+      rubocop-performance (~> 1.15)
+      rubocop-rails (~> 2.17)
+      rubocop-rspec (~> 2.22)
+    google-protobuf (4.27.3)
+      bigdecimal
+      rake (>= 13)
+    googleapis-common-protos-types (1.15.0)
+      google-protobuf (>= 3.18, < 5.a)
+    grpc (1.65.2)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc-tools (1.65.2)
+    i18n (1.14.5)
+      concurrent-ruby (~> 1.0)
+    json (2.7.1)
+    minitest (5.22.3)
+    mutex_m (0.2.0)
+    parallel (1.24.0)
+    parser (3.3.0.5)
+      ast (~> 2.4.1)
+      racc
+    proc_to_ast (0.2.0)
+      parser
+      rouge
+      unparser
+    racc (1.7.3)
+    rack (3.0.11)
+    rainbow (3.1.1)
+    rake (13.2.1)
+    regexp_parser (2.9.0)
+    rexml (3.2.6)
+    rouge (4.3.0)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.0)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-parameterized (1.0.2)
+      rspec-parameterized-core (< 2)
+      rspec-parameterized-table_syntax (< 2)
+    rspec-parameterized-core (1.0.1)
+      parser
+      proc_to_ast (>= 0.2.0)
+      rspec (>= 2.13, < 4)
+      unparser
+    rspec-parameterized-table_syntax (1.0.1)
+      binding_of_caller
+      rspec-parameterized-core (< 2)
+    rspec-support (3.13.0)
+    rubocop (1.50.2)
+      json (~> 2.3)
+      parallel (~> 1.10)
+      parser (>= 3.2.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.30.0)
+      parser (>= 3.2.1.0)
+    rubocop-capybara (2.20.0)
+      rubocop (~> 1.41)
+    rubocop-factory_bot (2.25.1)
+      rubocop (~> 1.41)
+    rubocop-graphql (0.19.0)
+      rubocop (>= 0.87, < 2)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rails (2.23.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rspec (2.29.2)
+      rubocop (~> 1.40)
+      rubocop-capybara (~> 2.17)
+      rubocop-factory_bot (~> 2.22)
+      rubocop-rspec_rails (~> 2.28)
+    rubocop-rspec_rails (2.28.3)
+      rubocop (~> 1.40)
+    ruby-progressbar (1.13.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    unicode-display_width (2.5.0)
+    unparser (0.6.15)
+      diff-lcs (~> 1.3)
+      parser (>= 3.3.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gitlab-duo-workflow-service-client!
+  gitlab-styles (~> 10.1.0)
+  grpc-tools
+  rspec (~> 3.0)
+  rspec-parameterized (~> 1.0.2)
+  rubocop (~> 1.21)
+
+BUNDLED WITH
+   2.4.4

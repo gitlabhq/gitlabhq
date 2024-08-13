@@ -36,10 +36,21 @@ module DraftNotes
         merge_request_activity_counter.track_create_review_note_action(user: current_user)
       end
 
+      after_execute
+
       draft_note
     end
 
     private
+
+    def after_execute
+      # Update reviewer state to `REVIEW_STARTED` when a new review has started
+      return unless draft_notes.one?
+
+      ::MergeRequests::UpdateReviewerStateService
+        .new(project: merge_request.project, current_user: current_user)
+        .execute(merge_request, 'review_started')
+    end
 
     def base_error(text)
       DraftNote.new.tap do |draft|

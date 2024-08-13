@@ -27,7 +27,7 @@ Compliance teams can:
 
 The following policy types are available:
 
-- [Scan execution policy](scan-execution-policies.md). Enforce security scans, either as part of the
+- [Scan execution policy](scan_execution_policies.md). Enforce security scans, either as part of the
   pipeline or on a specified schedule.
 - [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and
   approval rules based on scan results.
@@ -346,7 +346,7 @@ The workaround is to amend your group or instance push rules to allow branches f
 - Merge request approval policies created at the group or subgroup level can take some time to apply
   to all the merge requests in the group.
 - Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more
-  [about the schedule rule type](../policies/scan-execution-policies.md#schedule-rule-type).
+  [about the schedule rule type](../policies/scan_execution_policies.md#schedule-rule-type).
 - When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is
   based on your server time for self managed instances. When testing new policies, it may appear
   pipelines are not running properly when in fact they are scheduled in your server's time zone.

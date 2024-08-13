@@ -116,10 +116,10 @@ To add a design to an issue:
 1. Either:
    - Select **Upload designs** and then select images from your file browser. You can select up to
      10 files at once.
-   <!-- vale gitlab.SubstitutionWarning = NO -->
+   <!-- vale gitlab_base.SubstitutionWarning = NO -->
    - Select **click to upload** and then select images from your file browser. You can select up to
      10 files at once.
-   <!-- vale gitlab.SubstitutionWarning = YES -->
+   <!-- vale gitlab_base.SubstitutionWarning = YES -->
 
    - Drag a file from your file browser and drop it in the drop zone in the **Designs** section.
 
@@ -216,10 +216,10 @@ You can start [discussions](../../discussions/index.md) on uploaded designs. To 
 
 1. Go to an issue.
 1. Select the design.
-<!-- vale gitlab.SubstitutionWarning = NO -->
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
 <!-- Disable Vale so it doesn't catch "click" -->
 1. Click or tap the image. A pin is created in that spot, identifying the discussion's location.
-<!-- vale gitlab.SubstitutionWarning = YES -->
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Enter your message.
 1. Select **Comment**.
 

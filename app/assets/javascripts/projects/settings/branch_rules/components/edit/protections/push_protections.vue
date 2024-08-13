@@ -19,7 +19,7 @@ export default {
     GlLink,
     GlFormCheckbox,
   },
-  forcePushHelpPath: helpPagePath('topics/git/git_rebase', { anchor: 'force-push' }),
+  forcePushHelpPath: helpPagePath('topics/git/git_rebase', { anchor: 'force-pushing' }),
   props: {
     membersAllowedToPush: {
       type: Array,

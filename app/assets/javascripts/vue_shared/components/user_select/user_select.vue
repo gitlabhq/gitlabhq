@@ -311,7 +311,7 @@ export default {
 <template>
   <gl-dropdown ref="dropdown" :text="text" @toggle="$emit('toggle')" @shown="focusSearch">
     <template #header>
-      <p class="gl-font-bold gl-text-center gl-mt-2 gl-mb-4">{{ headerText }}</p>
+      <p class="gl-mb-4 gl-mt-2 gl-text-center gl-font-bold">{{ headerText }}</p>
       <gl-dropdown-divider />
       <gl-search-box-by-type
         ref="search"
@@ -325,7 +325,7 @@ export default {
         v-if="isLoading"
         data-testid="loading-participants"
         size="md"
-        class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
+        class="gl-absolute gl-left-0 gl-right-0 gl-top-0"
       />
       <template v-else>
         <template v-if="shouldShowParticipants">
@@ -364,7 +364,7 @@ export default {
             <sidebar-participant
               :user="currentUser"
               :issuable-type="issuableType"
-              class="gl-pl-6!"
+              class="!gl-pl-6"
             />
           </gl-dropdown-item>
         </template>
@@ -376,7 +376,7 @@ export default {
           <sidebar-participant
             :user="issuableAuthor"
             :issuable-type="issuableType"
-            class="gl-pl-6!"
+            class="!gl-pl-6"
           />
         </gl-dropdown-item>
         <gl-dropdown-item
@@ -391,10 +391,10 @@ export default {
           <sidebar-participant
             :user="unselectedUser"
             :issuable-type="issuableType"
-            class="gl-pl-6!"
+            class="!gl-pl-6"
           />
         </gl-dropdown-item>
-        <gl-dropdown-item v-if="noUsersFound" data-testid="empty-results" class="gl-pl-6!">
+        <gl-dropdown-item v-if="noUsersFound" data-testid="empty-results" class="!gl-pl-6">
           {{ __('No matching results') }}
         </gl-dropdown-item>
       </template>

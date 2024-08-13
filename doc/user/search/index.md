@@ -21,8 +21,8 @@ For code search, GitLab uses these types in this order:
   or when you search against a non-default branch.
   This type does not support group or global search.
 
-You can search in all GitLab or in a specific project and filter the results.
-Autocomplete suggestions are displayed as you type.
+When exact code search or advanced search is enabled, you can still use
+basic search by specifying the `basic_search=true` URL parameter.
 
 ## Global search scopes
 
@@ -42,7 +42,7 @@ by disabling one or more [`ops` feature flags](../../development/feature_flags/i
 | Epics          | `global_search_epics_tab`          | When enabled, global search includes epics.                                               |
 | Issues         | `global_search_issues_tab`         | When enabled, global search includes issues.                                              |
 | Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests.                                      |
-| Users          | `global_search_users_tab`          | When enabled, global search includes users.                                               |
+| Users          | `global_search_users_tab`          | When enabled, global search and command palette includes users.                                               |
 | Wiki           | `global_search_wiki_tab`           | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
 
 All global search scopes are enabled by default on self-managed instances.

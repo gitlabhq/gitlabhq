@@ -16,6 +16,7 @@ module Groups
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:ci_hidden_variables, group)
       end
 
       urgency :low

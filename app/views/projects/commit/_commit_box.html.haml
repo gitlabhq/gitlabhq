@@ -34,15 +34,15 @@
 .info-well
   .well-segment
     .icon-container.commit-icon
-      = custom_icon("icon_commit")
-    %span.cgray= n_('parent', 'parents', @commit.parents.count)
+      = sprite_icon('commit')
+    %span.gl-text-primary= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-  #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.short_id } }
+  #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.id } }
 
   .well-segment.merge-request-info
     .icon-container
-      = custom_icon('mr_bold')
+      = sprite_icon('merge-request')
     %span.commit-info.merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
       = gl_loading_icon(inline: true, css_class: 'gl-align-middle')
 

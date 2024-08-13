@@ -169,7 +169,6 @@ To change the location of project dashboards:
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
 1. Select **Settings > Analytics**.
-1. Select **Expand** to see custom dashboard projects.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 
@@ -270,7 +269,7 @@ After you save a visualization, you can add it to a new or existing custom dashb
 ### Generate a custom visualization with GitLab Duo
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

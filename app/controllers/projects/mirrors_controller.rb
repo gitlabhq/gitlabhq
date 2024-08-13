@@ -37,7 +37,14 @@ class Projects::MirrorsController < Projects::ApplicationController
         end
       end
     else
-      deprecated_pull_mirror_procedure
+      flash[:alert] = alert_error('Invalid mirror update request')
+
+      respond_to do |format|
+        format.html { redirect_to_repository_settings(project, anchor: 'js-push-remote-settings') }
+        format.json do
+          render json: { error: flash[:alert] }, status: :bad_request
+        end
+      end
     end
   end
 
@@ -77,7 +84,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def push_mirror_destroy?
-    mirror_params.dig(:remote_mirrors_attributes, '_destroy') == '1'
+    ::Gitlab::Utils.to_boolean(mirror_params.dig(:remote_mirrors_attributes, '_destroy'))
   end
 
   def push_mirror_attributes
@@ -106,27 +113,6 @@ class Projects::MirrorsController < Projects::ApplicationController
     push_mirror_to_destroy_id = safe_mirror_params.dig(:remote_mirrors_attributes, 'id')
 
     project.remote_mirrors.find(push_mirror_to_destroy_id)
-  end
-
-  def deprecated_pull_mirror_procedure
-    result = ::Projects::UpdateService.new(project, current_user, safe_mirror_params).execute
-
-    if result[:status] == :success
-      flash[:notice] = notice_message
-    else
-      flash[:alert] = project.errors.full_messages.join(', ').html_safe
-    end
-
-    respond_to do |format|
-      format.html { redirect_to_repository_settings(project, anchor: 'js-push-remote-settings') }
-      format.json do
-        if project.errors.present?
-          render json: project.errors, status: :unprocessable_entity
-        else
-          render json: ProjectMirrorSerializer.new.represent(project)
-        end
-      end
-    end
   end
 
   def remote_mirror

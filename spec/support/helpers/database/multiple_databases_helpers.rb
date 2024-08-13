@@ -96,13 +96,16 @@ module Database
         .connection_handler
         .connection_pool_names
         .map(&:constantize)
-        .index_with(&:connection_db_config)
+
+      connection_classes.delete(ActiveRecord::PendingMigrationConnection) if ::Gitlab.next_rails?
+
+      connection_class_to_config = connection_classes.index_with(&:connection_db_config)
 
       original_handler = ActiveRecord::Base.connection_handler
       new_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
       ActiveRecord::Base.connection_handler = new_handler
 
-      connection_classes.each { |klass, db_config| klass.establish_connection(db_config) } if reconnect
+      connection_class_to_config.each { |klass, db_config| klass.establish_connection(db_config) } if reconnect
 
       yield
     ensure

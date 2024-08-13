@@ -1,10 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
-import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 Vue.use(VueApollo);
@@ -12,15 +10,8 @@ Vue.use(VueApollo);
 describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
-  function createComponent(mergeRequest = {}, isShowingLabels = true) {
+  function createComponent(mergeRequest = {}) {
     const mockApollo = createMockApollo();
-
-    mockApollo.clients.defaultClient.cache.writeQuery({
-      query: isShowingLabelsQuery,
-      data: {
-        isShowingLabels,
-      },
-    });
 
     wrapper = shallowMountExtended(MergeRequest, {
       apolloProvider: mockApollo,
@@ -34,16 +25,6 @@ describe('Merge request dashboard merge request component', () => {
           },
           milestone: {
             title: '17.0',
-          },
-          labels: {
-            nodes: [
-              {
-                id: 'gid://gitlab/GroupLabel/992791',
-                color: '#428BCA',
-                title: 'Deliverable',
-                description: 'Label description',
-              },
-            ],
           },
           assignees: {
             nodes: [
@@ -80,6 +61,11 @@ describe('Merge request dashboard merge request component', () => {
           userDiscussionsCount: 5,
           createdAt: '2024-04-22T10:13:09Z',
           updatedAt: '2024-04-19T14:34:42Z',
+          diffStatsSummary: {
+            fileCount: 1,
+            additions: 100,
+            deletions: 50,
+          },
           ...mergeRequest,
         },
       },
@@ -112,15 +98,5 @@ describe('Merge request dashboard merge request component', () => {
       text: 'Passed',
       detailsPath: '/',
     });
-  });
-
-  it.each`
-    isShowingLabels | exists   | text
-    ${false}        | ${false} | ${'hides'}
-    ${true}         | ${true}  | ${'shows'}
-  `('$text labels when isShowingLabels is $isShowingLabels', ({ isShowingLabels, exists }) => {
-    createComponent({}, isShowingLabels);
-
-    expect(wrapper.findComponent(GlLabel).exists()).toBe(exists);
   });
 });

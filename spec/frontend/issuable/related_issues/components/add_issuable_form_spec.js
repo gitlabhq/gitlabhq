@@ -158,7 +158,7 @@ describe('AddIssuableForm', () => {
           });
 
           expect(findFormGroup().attributes('label')).toBe(contextHeader);
-          expect(wrapper.find('p.bold').text()).toContain(contextFooter);
+          expect(wrapper.text()).toContain(contextFooter);
         },
       );
     });

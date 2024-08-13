@@ -90,6 +90,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
     it { is_expected.to validate_presence_of(:owner) }
+    it { is_expected.to validate_presence_of(:organization) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     context 'validating the parent of a namespace' do
@@ -462,6 +463,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.by_not_in_root_id' do
+      it 'returns correct namespaces' do
+        expect(described_class.by_not_in_root_id(namespace1.id)).to contain_exactly(namespace, namespace2, namespace2sub)
+        expect(described_class.by_not_in_root_id(namespace2.id)).to contain_exactly(namespace, namespace1, namespace1sub)
+        expect(described_class.by_not_in_root_id(namespace1sub.id)).to match_array(described_class.all)
+      end
+    end
+
     describe '.filter_by_path' do
       it 'includes correct namespaces' do
         expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])
@@ -692,6 +701,78 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
     it { is_expected.to include_module(Namespaces::Traversal::RecursiveScopes) }
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
+  end
+
+  context 'when feature flag require_organization is disabled', :request_store do
+    before do
+      stub_feature_flags(require_organization: false)
+    end
+
+    it 'does not require organization' do
+      namespace.organization = nil
+
+      expect(namespace.valid?).to eq(true)
+    end
+
+    describe '.with_disabled_organization_validation' do
+      it 'does not require organization' do
+        namespace.organization = nil
+
+        Namespace.with_disabled_organization_validation do
+          expect(namespace.valid?).to eq(true)
+        end
+      end
+
+      context 'with nested calls' do
+        it 'validation will not be re-enabled' do
+          result = []
+          Namespace.with_disabled_organization_validation do
+            result << described_class.new.require_organization?
+            Namespace.with_disabled_organization_validation do
+              result << described_class.new.require_organization?
+            end
+            result << described_class.new.require_organization?
+          end
+
+          expect(result.any?(true)).to be false
+          expect(described_class.new.require_organization?).to be false
+        end
+      end
+    end
+  end
+
+  context 'when feature flag require_organization is enabled', :request_store do
+    it 'does require organization' do
+      namespace.organization = nil
+
+      expect(namespace.valid?).to eq(false)
+    end
+
+    describe '.with_disabled_organization_validation' do
+      it 'does not require organization' do
+        namespace.organization = nil
+
+        Namespace.with_disabled_organization_validation do
+          expect(namespace.valid?).to eq(true)
+        end
+      end
+
+      context 'with nested calls' do
+        it 'only last call will re-enable the validation' do
+          result = []
+          Namespace.with_disabled_organization_validation do
+            result << described_class.new.require_organization?
+            Namespace.with_disabled_organization_validation do
+              result << described_class.new.require_organization?
+            end
+            result << described_class.new.require_organization?
+          end
+
+          expect(result.any?(true)).to be false
+          expect(described_class.new.require_organization?).to be true
+        end
+      end
+    end
   end
 
   describe '#traversal_ids' do

@@ -13,6 +13,19 @@ module Gitlab
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
 
+        LOCK_RETRIES_TIMING_CONFIGURATION = [
+          [0.1.seconds, 0.05.seconds],
+          [0.1.seconds, 0.05.seconds],
+          [0.2.seconds, 0.05.seconds],
+          [0.3.seconds, 0.10.seconds],
+          [0.4.seconds, 0.15.seconds],
+          [0.5.seconds, 2.seconds],
+          [0.5.seconds, 2.seconds],
+          [0.5.seconds, 2.seconds],
+          [0.5.seconds, 2.seconds],
+          [1.second, 5.seconds]
+        ].freeze
+
         def initialize(model, connection: nil)
           @model = model
           @connection = connection || model.connection
@@ -135,6 +148,7 @@ module Gitlab
 
         def with_lock_retries(&block)
           Gitlab::Database::WithLockRetries.new(
+            timing_configuration: LOCK_RETRIES_TIMING_CONFIGURATION * 2,
             klass: self.class,
             logger: Gitlab::AppLogger,
             connection: connection

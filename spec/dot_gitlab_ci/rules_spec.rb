@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# NOTE: Do not remove the parentheses from this require statement!
+#       They are necessary so it doesn't match the regex in `scripts/run-fast-specs.sh`,
+#       and make the "fast" portion of that suite run slow.
+require('fast_spec_helper') # NOTE: Do not remove the parentheses from this require statement!
 
 PatternsList = Struct.new(:name, :patterns)
 
@@ -215,18 +218,19 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.prettierignore',
         '.projections.json.example',
         '.rubocop_revert_ignores.txt',
-        '.ruby-version',
         '.solargraph.yml.example',
         '.solargraph.yml',
         '.test_license_encryption_key.pub',
-        '.tool-versions',
         '.vale.ini',
         '.vscode/extensions.json',
         'ee/lib/ee/gitlab/background_migration/.rubocop.yml',
         'ee/LICENSE',
         'Gemfile.checksum',
+        'Gemfile.next.checksum',
         'gems/error_tracking_open_api/.openapi-generator/FILES',
         'gems/error_tracking_open_api/.openapi-generator/VERSION',
+        'gems/openbao_client/.openapi-generator/FILES',
+        'gems/openbao_client/.openapi-generator/VERSION',
         'Guardfile',
         'INSTALLATION_TYPE',
         'lib/gitlab/background_migration/.rubocop.yml',
@@ -278,7 +282,14 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       next unless name.end_with?('patterns')
 
       # Ignore EE-only patterns list when in FOSS context
-      relevant_patterns = foss_context ? patterns.reject { |pattern| pattern =~ %r|^{?ee/| } : patterns
+      relevant_patterns = if foss_context
+                            patterns.reject do |pattern|
+                              pattern =~ %r|^{?ee/| || pattern == '.tool-versions'
+                            end
+                          else
+                            patterns
+                          end
+
       next if relevant_patterns.empty?
       next if foss_context && name == '.custom-roles-patterns'
 

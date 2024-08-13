@@ -100,7 +100,6 @@ RSpec/AnyInstanceOf:
     - 'spec/features/projects/show/user_sees_setup_shortcut_buttons_spec.rb'
     - 'spec/features/snippets/embedded_snippet_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'
-    - 'spec/finders/prometheus_metrics_finder_spec.rb'
     - 'spec/graphql/mutations/alert_management/create_alert_issue_spec.rb'
     - 'spec/graphql/mutations/alert_management/http_integration/create_spec.rb'
     - 'spec/graphql/mutations/alert_management/http_integration/destroy_spec.rb'

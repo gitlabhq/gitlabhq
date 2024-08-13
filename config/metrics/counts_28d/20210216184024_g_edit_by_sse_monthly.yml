@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_sse_monthly
 description: Number of user editing files using the Static Site Editor
-product_group: ide
+product_group: remote_development
 value_type: number
 status: removed
 time_frame: 28d

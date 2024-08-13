@@ -5,7 +5,7 @@
 %h1.page-title.blob-new-page-title.gl-font-size-h-display
   = _('New file')
 .file-editor
-  = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit js-requires-input', data: blob_editor_paths(@project, 'post')) do
+  = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit', data: blob_editor_paths(@project, 'post')) do
     = render 'projects/blob/editor', ref: @ref, path: @path
     = render 'shared/new_commit_form', placeholder: "Add new file"
 

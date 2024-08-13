@@ -38,28 +38,3 @@ RSpec.shared_context 'self-managed prometheus alert attributes' do
     }
   end
 end
-
-RSpec.shared_context 'gitlab-managed prometheus alert attributes' do
-  let_it_be(:prometheus_alert) { create(:prometheus_alert, project: project) }
-  let(:prometheus_metric_id) { prometheus_alert.prometheus_metric_id }
-
-  let(:payload) do
-    {
-      'startsAt' => '2018-03-12T09:06:00Z',
-      'labels' => {
-        'gitlab_alert_id' => prometheus_metric_id
-      }
-    }
-  end
-
-  let(:dashboard_url_for_alert) do
-    Gitlab::Routing.url_helpers.metrics_dashboard_project_prometheus_alert_url(
-      project,
-      prometheus_metric_id,
-      environment_id: prometheus_alert.environment_id,
-      embedded: true,
-      end: '2018-03-12T09:36:00Z',
-      start: '2018-03-12T08:36:00Z'
-    )
-  end
-end

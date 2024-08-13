@@ -14,6 +14,7 @@ export default class FilteredSearchTokenizer {
     let lastToken = null;
     const searchToken =
       input
+        // eslint-disable-next-line max-params
         .replace(tokenRegex, (match, key, operator, symbol, v1, v2, v3) => {
           const prefixedTokens = ['~', '%', '@', '&'];
           const comparisonTokens = ['!=', '='];

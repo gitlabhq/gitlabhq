@@ -1,6 +1,5 @@
-%h1.page-title.gl-font-size-h-display
-  = _('New merge request')
-= gitlab_ui_form_for [@project, @merge_request], html: { class: 'merge-request-form common-note-form js-requires-input js-quick-submit' } do |f|
+= render ::Layouts::PageHeadingComponent.new(_('New merge request'))
+= gitlab_ui_form_for [@project, @merge_request], html: { class: 'merge-request-form common-note-form js-quick-submit' } do |f|
   = render 'shared/issuable/form', f: f, issuable: @merge_request, commits: @commits, presenter: @mr_presenter
   = f.hidden_field :source_project_id
   = f.hidden_field :source_branch
@@ -13,17 +12,17 @@
 .mr-compare.merge-request.js-merge-request-new-submit.gl-mt-5{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between
+      .merge-request-tabs-container.gl-flex.gl-justify-between
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
             = sprite_icon('chevron-lg-left', size: 12)
           %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
             = sprite_icon('chevron-lg-right', size: 12)
-          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
                 = _("Commits")
-                = gl_badge_tag @total_commit_count, { size: :sm }, { class: 'gl-tab-counter-badge' }
+                = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
 
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active
@@ -32,26 +31,26 @@
             = _("There are no commits yet.")
   - else
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between
+      .merge-request-tabs-container.gl-flex.gl-justify-between
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
             = sprite_icon('chevron-lg-left', size: 12)
           %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
             = sprite_icon('chevron-lg-right', size: 12)
-          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
                 = _("Commits")
-                = gl_badge_tag @total_commit_count, { size: :sm }, { class: 'gl-tab-counter-badge' }
+                = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
             - if @pipelines.any?
               %li.builds-tab
                 = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tabvue'} do
                   = _("Pipelines")
-                  = gl_badge_tag @pipelines.size, { size: :sm }, { class: 'gl-tab-counter-badge' }
+                  = gl_badge_tag @pipelines.size, { class: 'gl-tab-counter-badge' }
             %li.diffs-tab
               = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', testid: 'diffs-tab'} do
                 = _("Changes")
-                = gl_badge_tag @merge_request.diff_size, { size: :sm }, { class: 'gl-tab-counter-badge' }
+                = gl_badge_tag @merge_request.diff_size, { class: 'gl-tab-counter-badge' }
 
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active

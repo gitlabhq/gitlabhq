@@ -1,13 +1,9 @@
 - @force_desktop_expanded_sidebar = true
-- add_form_class = 'gl-hidden' if !form_errors(@application)
 - hide_class = 'gl-hidden' if form_errors(@application)
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title,
+  options: { class: 'gl-mt-5 js-search-settings-section' }) do |c|
+  - c.with_description do
     - if oauth_applications_enabled
       - if oauth_authorized_applications_enabled
         = _("Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account.")
@@ -15,94 +11,85 @@
         = _("Manage applications that use GitLab as an OAuth provider.")
     - else
       = _("Manage applications that you've authorized to use your account.")
-  - if oauth_applications_enabled
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container', data: { testid: 'oauth-applications' }}, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h3.gl-new-card-title
-            = _('Your applications')
-          .gl-new-card-count
-            = sprite_icon('applications', css_class: 'gl-mr-2')
-            = @applications.size
-        .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content #{hide_class}" }) do
-            = _('Add new application')
-      - c.with_body do
-        .gl-new-card-add-form.gl-m-3.js-toggle-content{ class: add_form_class }
+
+  - c.with_body do
+    - if oauth_applications_enabled
+      = render ::Layouts::CrudComponent.new(_('Your applications'),
+        icon: 'applications',
+        count: @applications.size,
+        toggle_text: _('Add new application'),
+        toggle_options: { class: hide_class },
+        form_options: { form_errors: form_errors(@application) },
+        options: { class: 'gl-mt-3', data: { testid: 'oauth-applications' } }) do |c|
+        - c.with_form do
           %h4.gl-mt-0
             = _('Add new application')
           = render 'shared/doorkeeper/applications/form', url: form_url, cancel: true
+        - c.with_body do
+          - if @applications.any?
+            .table-holder
+              %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
+                %thead.gl-hidden.md:gl-table-header-group
+                  %tr
+                    %th= _('Name')
+                    %th= _('Callback URL')
+                    %th= _('Clients')
+                    %th.gl-w-4
+                %tbody
+                  - @applications.each do |application|
+                    %tr{ id: "application_#{application.id}" }
+                      %td{ data: { label: _('Name') } }
+                        = link_to application.name, application_url.call(application)
+                      %td{ data: { label: _('Callback URL') } }
+                        - application.redirect_uri.split.each do |uri|
+                          = uri
+                      %td{ data: { label: _('Clients') } }
+                        = application.access_tokens.count
+                      %td{ class: '!gl-py-3', data: { label: _('Actions') } }
+                        %div{ class: '!gl-flex !gl-pl-0' }
+                          = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip gl-mr-3', 'title': _('Edit'), 'aria-label': _('Edit') })
+                          = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
+          - else
+            .gl-text-secondary= _("You don't have any applications.")
 
-        - if @applications.any?
-          .table-holder
-            %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
-              %thead.gl-hidden.md:gl-table-header-group
-                %tr
-                  %th= _('Name')
-                  %th= _('Callback URL')
-                  %th= _('Clients')
-                  %th.gl-w-4
-              %tbody
-                - @applications.each do |application|
-                  %tr{ id: "application_#{application.id}" }
-                    %td{ data: { label: _('Name') } }
-                      = link_to application.name, application_url.call(application)
-                    %td{ data: { label: _('Callback URL') } }
-                      - application.redirect_uri.split.each do |uri|
-                        = uri
-                    %td{ data: { label: _('Clients') } }
-                      = application.access_tokens.count
-                    %td{ class: 'gl-py-3!', data: { label: _('Actions') } }
-                      %div{ class: 'gl-display-flex! gl-pl-0!' }
-                        = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip gl-mr-3', 'title': _('Edit'), 'aria-label': _('Edit') })
-                        = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
-        - else
-          .gl-new-card-empty.gl-px-5.gl-py-4.js-toggle-content
-            = _("You don't have any applications.")
+    - else
+      = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+        - c.with_body do
+          = s_('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
 
-  - else
-    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-      - c.with_body do
-        = s_('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
-
-  - if oauth_authorized_applications_enabled
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card oauth-authorized-applications' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h3.gl-new-card-title
-            = _('Authorized applications')
-          .gl-new-card-count
-            = sprite_icon('applications', css_class: 'gl-mr-2')
-            = @authorized_tokens.size
-      - c.with_body do
-        - if @authorized_tokens.any?
-          .table-holder
-            %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
-              %thead.gl-hidden.md:gl-table-header-group
-                %tr
-                  %th= _('Name')
-                  %th= _('Authorized At')
-                  %th= _('Scope')
-                  %th
-              %tbody
-                - @authorized_tokens.each do |token|
-                  %tr{ id: ("application_#{token.application.id}" if token.application) }
-                    %td{ data: { label: _('Name') } }
-                      - if token.application
-                        = token.application.name
-                      - else
-                        = _('Anonymous')
-                        .form-text.text-muted
-                          %em= _("Authorization was granted by entering your username and password in the application.")
-                    %td{ data: { label: _('Authorized At') } }
-                      = token.created_at
-                    %td{ data: { label: _('Scope') } }
-                      = token.scopes
-                    %td{ class: 'gl-py-3!', data: { label: _('Actions') } }
-                      - if token.application
-                        = render 'doorkeeper/authorized_applications/delete_form', application: token.application
-                      - else
-                        = render 'doorkeeper/authorized_applications/delete_form', token: token
-        - else
-          .gl-new-card-empty.gl-px-5.gl-py-4{ class: hide_class }
-            = _("You don't have any authorized applications.")
+    - if oauth_authorized_applications_enabled
+      = render ::Layouts::CrudComponent.new(_('Authorized applications'),
+        icon: 'applications',
+        count: @authorized_tokens.size,
+        options: { class: 'gl-mt-5', data: { testid: 'oauth-authorized-applications' } }) do |c|
+        - c.with_body do
+          - if @authorized_tokens.any?
+            .table-holder
+              %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
+                %thead.gl-hidden.md:gl-table-header-group
+                  %tr
+                    %th= _('Name')
+                    %th= _('Authorized At')
+                    %th= _('Scope')
+                    %th
+                %tbody
+                  - @authorized_tokens.each do |token|
+                    %tr{ id: ("application_#{token.application.id}" if token.application) }
+                      %td{ data: { label: _('Name') } }
+                        - if token.application
+                          = token.application.name
+                        - else
+                          = _('Anonymous')
+                          .form-text.text-muted
+                            %em= _("Authorization was granted by entering your username and password in the application.")
+                      %td{ data: { label: _('Authorized At') } }
+                        = token.created_at
+                      %td{ data: { label: _('Scope') } }
+                        = token.scopes
+                      %td{ class: '!gl-py-3', data: { label: _('Actions') } }
+                        - if token.application
+                          = render 'doorkeeper/authorized_applications/delete_form', application: token.application
+                        - else
+                          = render 'doorkeeper/authorized_applications/delete_form', token: token
+          - else
+            .gl-text-secondary= _("You don't have any authorized applications.")

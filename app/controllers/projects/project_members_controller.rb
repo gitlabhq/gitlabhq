@@ -47,7 +47,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def filter_params
-    params.permit(:search).merge(sort: @sort)
+    params.permit(:search, :max_role).merge(sort: @sort)
   end
 
   def membershipable_members

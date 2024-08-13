@@ -66,7 +66,7 @@ export const diffHasExpandedDiscussions = () => (diff) => {
   const diffLineDiscussionsExpanded = diff[INLINE_DIFF_LINES_KEY].filter(
     (l) => l.discussions.length >= 1,
   ).some((l) => l.discussionsExpanded);
-  const diffFileDiscussionsExpanded = diff.discussions?.some((d) => d.expanded);
+  const diffFileDiscussionsExpanded = diff.discussions?.some((d) => d.expandedOnDiff);
 
   return diffFileDiscussionsExpanded || diffLineDiscussionsExpanded;
 };
@@ -107,6 +107,7 @@ export const diffHasDiscussions = () => (diff) => {
  * @param {Object} diff
  * @returns {Array}
  */
+// eslint-disable-next-line max-params
 export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) => (diff) =>
   rootGetters.discussions.filter(
     (discussion) => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,

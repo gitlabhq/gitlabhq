@@ -5,7 +5,8 @@ workflow:
   name: $PIPELINE_NAME
 
 include:
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.18.4"
+  - local: .gitlab/ci/version.yml
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.19.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -15,7 +16,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 8.18.4
+    ref: 8.19.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
@@ -199,7 +200,7 @@ dont-interrupt-me:
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
   rules:
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
+    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
       allow_failure: true
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       when: manual

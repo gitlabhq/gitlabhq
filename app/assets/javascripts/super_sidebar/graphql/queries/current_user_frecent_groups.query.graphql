@@ -3,7 +3,7 @@ query CurrentUserFrecentGroups {
     id
     name
     namespace: fullName
-    webUrl
     avatarUrl
+    fullPath
   }
 }

@@ -290,7 +290,7 @@
                 "coverage_format": {
                   "description": "Code coverage format used by the test framework.",
                   "enum": [
-                    "cobertura"
+                    "cobertura", "jacoco"
                   ]
                 },
                 "path": {
@@ -819,6 +819,15 @@
               ],
               "additionalProperties": false
             },
+            "akeyless": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
             "file": {
               "type": "boolean",
               "default": true,
@@ -843,6 +852,11 @@
             {
               "required": [
                 "gcp_secret_manager"
+              ]
+            },
+            {
+              "required": [
+                "akeyless"
               ]
             }
           ],

@@ -7,7 +7,7 @@ RSpec.describe Mutations::Security::CiConfiguration::ConfigureSecretDetection do
 
   let(:service) { ::Security::CiConfiguration::SecretDetectionCreateService }
 
-  subject { resolve(described_class, args: { project_path: project.full_path }, ctx: { current_user: user }) }
+  subject { resolve(described_class, args: { project_path: project.full_path }, ctx: query_context) }
 
   include_examples 'graphql mutations security ci configuration'
 end

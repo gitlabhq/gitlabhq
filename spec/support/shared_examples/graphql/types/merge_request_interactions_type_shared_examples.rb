@@ -8,7 +8,9 @@ RSpec.shared_examples "a user type with merge request interaction type" do
   it 'has the expected fields' do
     expected_fields = %w[
       id
+      active
       bot
+      human
       user_permissions
       snippets
       name

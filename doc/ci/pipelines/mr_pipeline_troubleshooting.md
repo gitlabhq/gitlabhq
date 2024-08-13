@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merge request pipeline troubleshooting
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 When working with merge request pipelines, you might encounter the following issues.
 
 ## Two pipelines when pushing to a branch

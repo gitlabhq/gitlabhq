@@ -6,7 +6,7 @@ import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/rel
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 
 Vue.use(Vuex);
 
@@ -48,7 +48,7 @@ describe('~/releases/components/confirm_delete_modal.vue', () => {
       await wrapper.findByRole('button', { name: 'Delete' }).trigger('click');
 
       const title = wrapper.findByText(
-        sprintf(__('Delete release %{release}?'), { release: release.name }),
+        sprintf('Delete release %{release}?', { release: release.name }),
       );
 
       expect(title.exists()).toBe(true);
@@ -61,7 +61,7 @@ describe('~/releases/components/confirm_delete_modal.vue', () => {
     });
 
     it('confirms the user wants to delete the release', () => {
-      const text = wrapper.findByText(__('Are you sure you want to delete this release?'));
+      const text = wrapper.findByText('Are you sure you want to delete this release?');
 
       expect(text.exists()).toBe(true);
     });

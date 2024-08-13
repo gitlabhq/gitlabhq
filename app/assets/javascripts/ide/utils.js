@@ -144,6 +144,7 @@ export function getFileEOL(content = '') {
  * @param {number} [randomize] Should randomize the numeric suffix instead of auto-incrementing?
  */
 export function addNumericSuffix(filename, randomize = false) {
+  // eslint-disable-next-line max-params
   return filename.replace(/([ _-]?)(\d*)(\..+?$|$)/, (_, before, number, after) => {
     const n = randomize ? Math.random().toString().substring(2, 7).slice(-5) : Number(number) + 1;
     return `${before || '-'}${n}${after}`;
@@ -155,6 +156,7 @@ export const measurePerformance = (
   measureName,
   measureStart = undefined,
   measureEnd = mark,
+  // eslint-disable-next-line max-params
 ) => {
   performanceMarkAndMeasure({
     mark,

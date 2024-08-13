@@ -27,12 +27,13 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
     let(:release) { create(:release, tag: '1.2.0', project: project, sha: project.repository.root_ref_sha) }
     let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-    context 'when the project is not a catalog resource' do
-      it 'does not create a version' do
-        project = create(:project, :repository)
-        release =  create(:release, tag: '1.2.1', project: project, sha: project.repository.root_ref_sha)
+    subject(:execute) { described_class.new(release).execute }
 
-        response = described_class.new(release).execute
+    context 'when the project is not a catalog resource' do
+      let(:release) { create(:release, tag: '1.2.1') }
+
+      it 'does not create a version' do
+        response = execute
 
         expect(response).to be_error
         expect(response.message).to include('Project is not a catalog resource')
@@ -40,8 +41,8 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
     end
 
     context 'when the catalog resource has different types of components and a release' do
-      it 'creates a version for the release' do
-        response = described_class.new(release).execute
+      it 'creates a version for the release and marks the catalog resource as published' do
+        response = execute
 
         expect(response).to be_success
 
@@ -51,58 +52,18 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         expect(version.semver.to_s).to eq(release.tag)
         expect(version.catalog_resource).to eq(catalog_resource)
         expect(version.catalog_resource.project).to eq(project)
-      end
-
-      it 'marks the catalog resource as published' do
-        described_class.new(release).execute
-
         expect(catalog_resource.reload.state).to eq('published')
-      end
-
-      context 'when there are at max 30 components' do
-        let(:files) do
-          num_components = 30
-          components = (0...num_components).map { |i| "templates/secret#{i}.yml" }
-          components << 'README.md'
-
-          components.index_with { |_file| '' }
-        end
-
-        it 'creates the components' do
-          response = described_class.new(release).execute
-
-          expect(response).to be_success
-          expect(project.ci_components.count).to eq(30)
-        end
-      end
-
-      context 'when there are more than 30 components' do
-        let(:files) do
-          num_components = 31
-          components = (0..num_components).map { |i| "templates/secret#{i}.yml" }
-          components << 'README.md'
-
-          components.index_with { |_file| '' }
-        end
-
-        it 'raises an error' do
-          response = described_class.new(release).execute
-
-          expect(response).to be_error
-          expect(response.message).to include('Release cannot contain more than 30 components')
-          expect(project.ci_components.count).to eq(0)
-        end
       end
 
       it 'bulk inserts all the components' do
         expect(Ci::Catalog::Resources::Component).to receive(:bulk_insert!).and_call_original
 
-        described_class.new(release).execute
+        execute
       end
 
       it 'creates components for the catalog resource' do
         expect(project.ci_components.count).to eq(0)
-        response = described_class.new(release).execute
+        response = execute
 
         expect(response).to be_success
 
@@ -132,6 +93,41 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
     end
 
+    context 'when there are at max 30 components' do
+      let(:files) do
+        num_components = 30
+        components = (0...num_components).map { |i| "templates/secret#{i}.yml" }
+        components << 'README.md'
+
+        components.index_with { |_file| '' }
+      end
+
+      it 'creates the components' do
+        response = execute
+
+        expect(response).to be_success
+        expect(project.ci_components.count).to eq(30)
+      end
+    end
+
+    context 'when there are more than 30 components' do
+      let(:files) do
+        num_components = 31
+        components = (0..num_components).map { |i| "templates/secret#{i}.yml" }
+        components << 'README.md'
+
+        components.index_with { |_file| '' }
+      end
+
+      it 'raises an error' do
+        response = execute
+
+        expect(response).to be_error
+        expect(response.message).to include('Release cannot contain more than 30 components')
+        expect(project.ci_components.count).to eq(0)
+      end
+    end
+
     context 'with invalid data' do
       let_it_be(:files) do
         {
@@ -141,7 +137,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
 
       it 'returns an error' do
-        response = described_class.new(release).execute
+        response = execute
 
         expect(response).to be_error
         expect(response.message).to include('mapping values are not allowed in this context')
@@ -157,7 +153,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
 
       it 'returns an error' do
-        response = described_class.new(release).execute
+        response = execute
 
         expect(response).to be_error
         expect(response.message).to include('Spec must be a valid json schema')

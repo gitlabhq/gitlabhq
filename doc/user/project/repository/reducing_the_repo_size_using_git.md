@@ -246,6 +246,7 @@ When using repository cleanup, note:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
+> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -340,7 +341,7 @@ If these actions are insufficient, you can also:
 
 Unfortunately, this workflow doesn't work. Deleting files in a commit doesn't actually reduce the
 size of the repository, because the earlier commits and blobs still exist. Instead, you must rewrite
-history. We recommend the open-source community-maintained tool
+history. You should use the open-source community-maintained tool
 [`git filter-repo`](https://github.com/newren/git-filter-repo).
 
 NOTE:

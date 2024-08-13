@@ -62,6 +62,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
+    it { is_expected.to have_one(:matrix_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
     it { is_expected.to have_one(:telegram_integration) }
     it { is_expected.to have_one(:unify_circuit_integration) }
@@ -706,9 +707,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
+    it { is_expected.to validate_presence_of(:organization) }
     it { is_expected.to validate_presence_of(:repository_storage) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
+
+    context 'when require_organization feature is disabled' do
+      before do
+        stub_feature_flags(require_organization: false)
+      end
+
+      it { is_expected.not_to validate_presence_of(:organization) }
+    end
 
     it 'validates name is case-sensitively unique within the scope of namespace_id' do
       project = create(:project)
@@ -1268,7 +1278,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
           'inbound_job_token_scope_enabled' => 'ci_',
           'push_repository_for_job_token_allowed' => 'ci_',
-          'job_token_scope_enabled' => 'ci_outbound_'
+          'job_token_scope_enabled' => 'ci_outbound_',
+          'id_token_sub_claim_components' => 'ci_'
         }
       end
 
@@ -2261,6 +2272,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       projects = described_class.sort_by_attribute(:storage_size_desc)
 
       expect(projects).to eq([project2, project3, project1])
+    end
+  end
+
+  describe '.by_not_in_root_id' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:group1_project) { create(:project, namespace: group1) }
+    let_it_be(:group2_project) { create(:project, namespace: group2) }
+    let_it_be(:subgroup_project) { create(:project, namespace: create(:group, parent: group1)) }
+
+    it 'returns correct namespaces' do
+      expect(described_class.by_not_in_root_id(group1.id)).to contain_exactly(group2_project)
+      expect(described_class.by_not_in_root_id(group2.id)).to contain_exactly(group1_project, subgroup_project)
     end
   end
 
@@ -8915,30 +8939,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#work_items_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-    it_behaves_like 'checks parent group feature flag' do
+    it_behaves_like 'checks parent group and self feature flag' do
       let(:feature_flag_method) { :work_items_feature_flag_enabled? }
       let(:feature_flag) { :work_items }
       let(:subject_project) { group_project }
     end
+  end
 
-    context 'when feature flag is enabled for the project' do
-      subject { subject_project.work_items_feature_flag_enabled? }
+  describe '#glql_integration_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-      before do
-        stub_feature_flags(work_items: subject_project)
-      end
-
-      context 'when project belongs to a group' do
-        let(:subject_project) { group_project }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when project does not belong to a group' do
-        let(:subject_project) { create(:project, namespace: create(:namespace)) }
-
-        it { is_expected.to be_truthy }
-      end
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
+      let(:feature_flag) { :glql_integration }
+      let(:subject_project) { group_project }
     end
   end
 
@@ -9558,5 +9572,50 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project) }
 
     it { expect(project.merge_trains_enabled?).to eq(false) }
+  end
+
+  describe '#lfs_file_locks_changed_epoch', :clean_gitlab_redis_cache do
+    let(:project) { build(:project, id: 1) }
+    let(:epoch) { Time.current.strftime('%s%L').to_i }
+
+    it 'returns a cached epoch value in milliseconds', :aggregate_failures, :freeze_time do
+      cold_cache_control = RedisCommands::Recorder.new do
+        expect(project.lfs_file_locks_changed_epoch).to eq epoch
+      end
+
+      expect(cold_cache_control.by_command('get').count).to eq 1
+      expect(cold_cache_control.by_command('set').count).to eq 1
+
+      warm_cache_control = RedisCommands::Recorder.new do
+        expect(project.lfs_file_locks_changed_epoch).to eq epoch
+      end
+
+      expect(warm_cache_control.by_command('get').count).to eq 1
+      expect(warm_cache_control.by_command('set').count).to eq 0
+    end
+  end
+
+  describe '#refresh_lfs_file_locks_changed_epoch' do
+    let(:project) { build(:project, id: 1) }
+    let(:original_time) { Time.current }
+    let(:refresh_time) { original_time + 1.second }
+    let(:original_epoch) { original_time.strftime('%s%L').to_i }
+    let(:refreshed_epoch) { original_epoch + 1.second.in_milliseconds }
+
+    it 'refreshes the cache and returns the new epoch value', :aggregate_failures, :freeze_time do
+      expect(project.lfs_file_locks_changed_epoch).to eq(original_epoch)
+
+      travel_to(refresh_time)
+
+      expect(project.lfs_file_locks_changed_epoch).to eq(original_epoch)
+
+      control = RedisCommands::Recorder.new do
+        expect(project.refresh_lfs_file_locks_changed_epoch).to eq(refreshed_epoch)
+      end
+      expect(control.by_command('get').count).to eq 0
+      expect(control.by_command('set').count).to eq 1
+
+      expect(project.lfs_file_locks_changed_epoch).to eq(refreshed_epoch)
+    end
   end
 end

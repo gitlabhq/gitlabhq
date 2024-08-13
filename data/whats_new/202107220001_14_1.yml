@@ -1,7 +1,7 @@
 - name: Track progress on overall DevOps adoption
   description: |
    See the total number of key DevOps features adopted across your organization using the new progress bars in DevOps Adoption. Progress bars help you understand the value that teams are getting from GitLab and evaluate the state of your DevOps transformation.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -13,7 +13,7 @@
   description: |
    Track which groups across your organization have enabled SAST and DAST scanning. This is helpful for verifying compliance with organizational requirements, responding to audit requests, and tracking progress on company initiatives to make applications more secure. To track adoption, go to the **Sec** tab in DevOps Adoption either at the group level or instance level.
    To see groups that have enabled fuzz testing and dependency scanning, use [the DevOps API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#devopsadoptionsnapshot). Fuzz testing and dependency scanning will be added to the DevOps Adoption UI in an upcoming release.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -118,7 +118,7 @@
    In the project, APIs for the status checks can be configured (using either the GitLab UI or the GitLab API) and then when a change is made to a merge request, that API is called with various details about the merge request. The external API can then respond with a return code to indicate if the check has passed. This result is then shown in the merge request.
 
    This allows teams to easily stay in sync and makes it easy to see that merge requests have met external requirements before being merged, adding an extra method to ensure compliance requirements are met.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -129,7 +129,7 @@
 - name: Pronouns viewable in user profile snapshot
   description: |
    You can now see pronouns on the snapshot view of a user profile when you hover over someone's name on an issue or merge request. This helps users better respond to comments using the correct pronouns without needing to navigate to the user's profile.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

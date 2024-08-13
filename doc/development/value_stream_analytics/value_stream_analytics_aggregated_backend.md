@@ -212,7 +212,7 @@ consistency is ensured by a background job (eventually consistent).
 The base query always includes the following filters:
 
 - `stage_event_hash_id` - partition key
-- `project_id` or `group_id` - depending if it's a project or group level query
+- `project_id` or `group_id` - depending on whether it's a project or group query
 - `end_event_timestamp` - date range filter (last 30 days)
 
 Example: Selecting review stage duration for the GitLab project

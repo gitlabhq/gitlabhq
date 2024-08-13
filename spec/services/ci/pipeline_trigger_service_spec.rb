@@ -185,8 +185,8 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
         end
       end
 
-      context 'when params have an existsed job token' do
-        context 'when params have an existsed ref' do
+      context 'when params have a valid job token' do
+        context 'when params have an existing ref' do
           let(:params) { { token: job.token, ref: 'master', variables: nil } }
 
           it 'triggers a pipeline' do

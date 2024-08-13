@@ -7,7 +7,7 @@ RSpec.describe CsvBuilder do
   end
 
   let(:subject) do
-    described_class.new(enumerable, **header_to_value_hash)
+    described_class.new(enumerable, header_to_value_hash)
   end
 
   shared_examples 'csv builder examples' do
@@ -113,6 +113,41 @@ RSpec.describe CsvBuilder do
     end
   end
 
+  shared_examples 'builder that replaces newlines' do
+    let(:object) { double(title: "title", description: "Line 1\n\nLine 2") }
+    let(:header_to_value_hash) { { 'Title' => 'title', 'Description' => 'description' } }
+    let(:items) { [object] }
+
+    it 'does not replace newlines by default' do
+      expect(csv_data).to eq("Title,Description\ntitle,\"Line 1\n\nLine 2\"\n")
+    end
+
+    context 'when replace_newlines is set to true' do
+      let(:subject) { described_class.new(enumerable, header_to_value_hash, replace_newlines: true) }
+
+      it 'replaces newlines with a literal "\n"' do
+        expect(csv_data).to eq("Title,Description\ntitle,Line 1\\n\\nLine 2\n")
+      end
+    end
+
+    context 'when line is nil' do
+      let(:object) { double(title: "title", description: nil) }
+
+      it 'gracefully generates CSV' do
+        expect(csv_data).to eq("Title,Description\ntitle,\n")
+      end
+    end
+
+    context 'when data is not a string' do
+      let(:object) { double(title: "title", created_at: Date.new(2001, 2, 3)) }
+      let(:header_to_value_hash) { { 'Title' => 'title', 'Created At' => 'created_at' } }
+
+      it 'gracefully generates CSV' do
+        expect(csv_data).to eq("Title,Created At\ntitle,2001-02-03\n")
+      end
+    end
+  end
+
   context 'when ActiveRecord::Relation like object is given' do
     let(:object) { double(question: :answer) }
     let(:enumerable) { described_class::FakeRelation.new(items) }
@@ -129,6 +164,7 @@ RSpec.describe CsvBuilder do
 
     it_behaves_like 'csv builder examples'
     it_behaves_like 'excel sanitization'
+    it_behaves_like 'builder that replaces newlines'
     it_behaves_like 'csv builder with truncation ability' do
       let(:big_object) { double(question: 'Long' * 1024) }
       let(:question_value) { big_object.question }
@@ -141,6 +177,7 @@ RSpec.describe CsvBuilder do
 
     it_behaves_like 'csv builder examples'
     it_behaves_like 'excel sanitization'
+    it_behaves_like 'builder that replaces newlines'
     it_behaves_like 'csv builder with truncation ability' do
       let(:big_object) { double(question: 'Long' * 1024) }
       let(:question_value) { big_object.question }
@@ -155,6 +192,7 @@ RSpec.describe CsvBuilder do
     end
 
     it_behaves_like 'csv builder examples'
+    it_behaves_like 'builder that replaces newlines'
 
     it_behaves_like 'excel sanitization' do
       let(:dangerous_title) { { title: "=cmd|' /C calc'!A0 title", description: "*safe_desc" } }

@@ -22,6 +22,9 @@ module Resolvers
       end
 
       def resolve_with_lookahead(**args)
+        # TODO: Implement as part of completion https://gitlab.com/gitlab-org/gitlab/-/issues/458264
+        return [] if object.is_a?(AbuseReport)
+
         notes = NotesFinder.new(current_user, build_params(args)).execute
         apply_lookahead(notes)
       end

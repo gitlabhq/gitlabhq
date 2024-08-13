@@ -47,9 +47,6 @@ For self-managed GitLab, before you can use GitLab for your Terraform state file
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 
-After you execute the `terraform init` command, you can use GitLab CI/CD
-to run `terraform` commands.
-
 Prerequisites:
 
 - To lock, unlock, and write to the state by using `terraform apply`, you must have at least the Maintainer role.
@@ -77,34 +74,30 @@ To configure GitLab CI/CD as a backend:
    ```
 
 1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use the
-   [`Terraform.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
-   template to populate it.
+   [OpenTofu CI/CD component](https://gitlab.com/components/opentofu) to from your `.gitlab-ci.yml`. Follow the [Terraform template recipes](terraform_template_recipes.md) documentation if you prefer using Terraform instead of OpenTofu.
 1. Push your project to GitLab. This action triggers a pipeline, which
-   runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
-   `gitlab-terraform plan` commands.
-1. Trigger the manual `deploy` job from the previous pipeline, which runs `gitlab-terraform apply` command, to provision the defined infrastructure.
+   runs the `gitlab-tofu init`, `gitlab-tofu validate`, and
+   `gitlab-tofu plan` commands.
+1. Trigger the manual `deploy` job from the previous pipeline, which runs `gitlab-tofu apply` command, to provision the defined infrastructure.
 
-The output from the above `terraform` commands should be viewable in the job logs.
+The output from the above commands should be viewable in the job logs.
 
-The `gitlab-terraform` CLI is a wrapper around the `terraform` CLI. For more information,
+The `gitlab-tofu`/`gitlab-terraform` CLI is a wrapper around the `tofu`/`terraform` CLI, respectively. For more information,
 see [GitLab Terraform helpers](gitlab_terraform_helpers.md),
 or [view the source code of `gitlab-terraform`](https://gitlab.com/gitlab-org/terraform-images/-/blob/master/src/bin/gitlab-terraform.sh).
 
-If you prefer to call the `terraform` commands explicitly, you can override
-the template, and instead, use it as reference for what you can achieve.
-
 ### Customizing your Terraform environment variables
 
-When you use the `Terraform.gitlab-ci.yml` template, you can use [Terraform HTTP configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) when you define your CI/CD jobs.
+You can use [Terraform HTTP configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) when you define your CI/CD jobs.
 
-To customize your `terraform init` and override the Terraform configuration,
-use environment variables instead of the `terraform init -backend-config=...` approach.
+To customize your `init` and override the Terraform configuration,
+use environment variables instead of the `init -backend-config=...` approach.
 When you use `-backend-config`, the configuration is:
 
-- Cached in the output of the `terraform plan` command.
-- Usually passed forward to the `terraform apply` command.
+- Cached in the output of the `plan` command.
+- Usually passed forward to the `apply` command.
 
-This configuration can lead to problems like [being unable to lock Terraform state files in CI jobs](troubleshooting.md#cant-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-with-a-previous-jobs-plan).
+This configuration can lead to problems like [being unable to lock the state files in CI jobs](troubleshooting.md#cant-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-with-a-previous-jobs-plan).
 
 ## Access the state from your local machine
 
@@ -135,6 +128,8 @@ GitLab-managed Terraform state.
 You should use a local terminal to run the commands needed for migrating to GitLab-managed Terraform state.
 
 The following example demonstrates how to change the state name. The same workflow is needed to migrate to GitLab-managed Terraform state from a different state storage backend.
+
+You should run these commands [on your local machine](#access-the-state-from-your-local-machine).
 
 ### Set up the initial backend
 
@@ -260,7 +255,7 @@ You can use a GitLab-managed Terraform state backend as a
    ```plaintext
    example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
    example_username = "<GitLab username>"
-   example_access_token = "<GitLab Personal Access Token>"
+   example_access_token = "<GitLab personal access token>"
    ```
 
 1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):
@@ -280,9 +275,9 @@ You can use a GitLab-managed Terraform state backend as a
    - **address**: The URL of the remote state backend you want to use as a data source.
      For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
    - **username**: The username to authenticate with the data source. If you are using
-     a [Personal Access Token](../../profile/personal_access_tokens.md) for
+     a [personal access token](../../profile/personal_access_tokens.md) for
      authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
-   - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
+   - **password**: The password to authenticate with the data source. If you are using a personal access token for
      authentication, this value is the token value (the token must have the **API** scope).
      If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
 

@@ -56,7 +56,7 @@ $diff-file-header: 41px;
     }
 
     &:hover {
-      background-color: $gray-50;
+      background-color: var(--gl-background-color-strong);
     }
 
     svg {
@@ -962,4 +962,9 @@ table.code {
 
 .diff-file.pinned-file .diff-content {
   border-color: $blue-200;
+}
+
+// This is not inside page_bundles because then it won't receive a proper color value for the dark theme
+.diff-file-row.is-active.is-pinned {
+  background-color: $blue-50;
 }

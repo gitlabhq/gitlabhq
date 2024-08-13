@@ -124,7 +124,8 @@ module Gitlab
       end
 
       def print_change_details(change, branch_name)
-        base_message = "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}."
+        base_message = "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}. " \
+                       "Squash commits enabled."
         base_message << " CI skipped." if change.push_options.ci_skip
 
         @logger.puts base_message.yellowish

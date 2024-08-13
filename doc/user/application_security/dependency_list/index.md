@@ -24,7 +24,16 @@ For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9
 
 ## Prerequisites
 
-To view your project's dependencies, ensure you meet the following requirements:
+To list your project's dependencies the SBOM document must:
+
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4` or `1.5`.
+- Be uploaded as [a CI/CD artifact report](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline on the default branch.
+
+NOTE:
+Although this is not mandatory for the dependency list, some security features also require the
+document to include and comply with the [GitLab CycloneDX property taxonomy](../../../development/sec/cyclonedx_property_taxonomy.md).
+
+GitLab already generates this document when the following requirements are met:
 
 - The [Dependency Scanning](../dependency_scanning/index.md)
   or [Container Scanning](../container_scanning/index.md)
@@ -39,15 +48,7 @@ To view your project's dependencies, ensure you meet the following requirements:
 ## View project dependencies
 
 > - In GitLab 17.2, the `location` field no longer links to the commit where the dependency was last detected when the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled. The flag is disabled by default.
-
-FLAG:
-When the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled,
-GitLab no longer keeps track of the last pipeline and the last commit
-where a particular dependency was detected.
-As a result, in new projects the `location` field
-links to the commit where the dependency was first detected.
-When disabled, it links to the last commit where the dependency was detected.
-Disabled by default.
+> - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
 
 To view the dependencies of a project or all projects in a group:
 

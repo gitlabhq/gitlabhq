@@ -1,23 +1,24 @@
 <script>
-export default {};
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+
+export default {
+  name: 'CommentTemplatesApp',
+  components: {
+    SettingsSection,
+  },
+};
 </script>
 
 <template>
-  <div class="settings-section gl-mt-3">
-    <div class="settings-sticky-header">
-      <div class="settings-sticky-header-inner">
-        <h4 class="gl-my-0">
-          {{ __('Comment templates') }}
-        </h4>
-      </div>
-    </div>
-    <p class="gl-text-secondary">
+  <settings-section :heading="__('Comment templates')" class="gl-mt-5">
+    <template #description>
       {{
         __(
           'Comment templates can be used when creating comments inside issues, merge requests, and epics.',
         )
       }}
-    </p>
+    </template>
+
     <keep-alive><router-view /></keep-alive>
-  </div>
+  </settings-section>
 </template>

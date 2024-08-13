@@ -5,6 +5,10 @@ module QA
     module Project
       module Settings
         class DeployKeys < Page::Base
+          view 'app/views/shared/deploy_keys/_index.html.haml' do
+            element 'add-new-deploy-key-button'
+          end
+
           view 'app/views/shared/deploy_keys/_form.html.haml' do
             element 'deploy-key-title-field'
             element 'deploy-key-field'
@@ -19,7 +23,6 @@ module QA
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
             element 'project-deploy-keys-container'
-            element 'add-new-deploy-key-button'
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do

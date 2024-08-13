@@ -4,7 +4,7 @@ module Gitlab
   module NoteableMetadata
     def noteable_meta_data(noteable_collection, collection_type)
       # ActiveRecord uses Object#extend for null relations.
-      if !(noteable_collection.singleton_class < ActiveRecord::NullRelation) &&
+      if !(noteable_collection.is_a?(ActiveRecord::Relation) && noteable_collection.null_relation?) &&
           noteable_collection.respond_to?(:limit_value) &&
           noteable_collection.limit_value.nil?
 

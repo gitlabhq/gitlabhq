@@ -122,11 +122,11 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
     it 'click on cancel hides the form' do
       click_button('Add new key')
 
-      expect(page).to have_css('.gl-new-card-add-form')
+      expect(page).to have_css('[data-testid="crud-form"]')
 
       click_button('Cancel')
 
-      expect(page).not_to have_css('.gl-new-card-add-form')
+      expect(page).not_to have_css('[data-testid="crud-form"]')
     end
   end
 

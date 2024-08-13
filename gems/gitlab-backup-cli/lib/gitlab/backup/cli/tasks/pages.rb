@@ -18,7 +18,9 @@ module Gitlab
           private
 
           def target
-            ::Backup::Targets::Files.new(nil, storage_path, options: options, excludes: [LEGACY_PAGES_TMP_PATH])
+            check_object_storage(
+              ::Backup::Targets::Files.new(nil, storage_path, options: options, excludes: [LEGACY_PAGES_TMP_PATH])
+            )
           end
 
           def storage_path = context.pages_path

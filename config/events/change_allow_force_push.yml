@@ -1,0 +1,21 @@
+---
+description: User changes allow force push protection.
+internal_events: true
+action: change_allow_force_push
+identifiers:
+- project
+- namespace
+- user
+product_group: source_code
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160591
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: location where the event happened - repository_settings or branch_rule_details 

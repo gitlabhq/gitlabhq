@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Personal Productivity
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
@@ -78,6 +78,6 @@ Then, on the left sidebar, **Your work** is displayed.
 
 ## Go to the Admin area
 
-The Admin area is also available on the left sidebar at the bottom:
+The **Admin** area is also available on the left sidebar at the bottom:
 
-![Admin area](img/admin_area_v16_7.png)
+![**Admin** area](img/admin_area_v16_7.png)

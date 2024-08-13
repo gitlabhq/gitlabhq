@@ -719,7 +719,7 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
-    def track_event(event_name, user:, send_snowplow_event: true, namespace_id: nil, project_id: nil, additional_properties: Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES)
+    def track_event(event_name, user:, send_snowplow_event: true, namespace_id: nil, project_id: nil, additional_properties: {})
       return unless user.present?
 
       namespace = Namespace.find(namespace_id) if namespace_id
@@ -828,7 +828,7 @@ module API
       end
 
       unless access_token
-        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
+        forbidden!('Must be authenticated using an OAuth or personal access token to use sudo')
       end
 
       validate_and_save_access_token!(scopes: [:sudo])

@@ -34,7 +34,7 @@ Parameters:
 | `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `order_by` | string            | no       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
 | `sort`     | string            | no       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
-| `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. No other regular expressions are supported. |
+| `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

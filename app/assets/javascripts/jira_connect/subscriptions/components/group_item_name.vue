@@ -18,9 +18,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
-    <gl-icon name="folder-o" class="gl-mr-3" />
-    <div class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3">
+  <div class="gl-flex gl-items-center">
+    <gl-icon name="folder" class="gl-mr-3" />
+    <div class="gl-hidden gl-flex-shrink-0 sm:gl-flex gl-mr-3">
       <gl-avatar
         :size="32"
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"

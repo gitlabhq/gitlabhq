@@ -41,7 +41,7 @@
             = _("Requested %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.requested_at) }
           - else
             = _("Given access %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.created_at) }
-          %span.js-expires-in{ class: ('gl-display-none' unless member.expires?) }
+          %span.js-expires-in{ class: ('gl-hidden' unless member.expires?) }
             &middot;
             %span.js-expires-in-text{ class: "has-tooltip#{' text-warning' if member.expires_soon?}", title: (member.expires_at.to_time.in_time_zone.to_fs(:medium) if member.expires?) }
               - if member.expires?

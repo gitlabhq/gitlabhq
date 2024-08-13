@@ -47,11 +47,13 @@ Please be mindful that the selected Docker image is compatible with the underlyi
 
 If no image is set, the default is `ruby:3.1`.
 
-## Docker in Docker support
+## Docker-in-Docker support
 
-The runners are configured to run in `privileged` mode to support
-[Docker in Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker)
-to build Docker images natively or run multiple containers within your isolated job.
+Runners with any of the `saas-linux-<size>-<architecture>` tags are configured to run in `privileged` mode
+to support [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
+With these runners, you can build Docker images natively or run multiple containers in your isolated job.
+
+Runners with the `gitlab-org` tag do not run in `privileged` mode and cannot be used for Docker-in-Docker builds.
 
 ## Example `.gitlab-ci.yml` file
 

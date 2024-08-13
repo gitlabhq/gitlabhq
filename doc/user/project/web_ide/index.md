@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: IDE
+group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use the Web IDE to edit multiple files in the GitLab UI, stage commits, and create merge requests."
 ---
@@ -24,6 +24,8 @@ You can use the Web IDE to make changes to multiple files directly from the GitL
 For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
 To pair the Web IDE with a remote development environment, see [Remote development](../remote_development/index.md).
+
+Support for improvements to Markdown preview when using GitLab Flavored Markdown in the Web IDE is proposed in [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
 
 ## Open the Web IDE
 

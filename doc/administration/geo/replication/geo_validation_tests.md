@@ -19,6 +19,8 @@ This section contains a journal of validation tests and links to the relevant is
 
 The following are GitLab upgrade validation tests we performed.
 
+<!-- vale gitlab_base.OutdatedVersions = NO -->
+
 ### July 2020
 
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/225359):

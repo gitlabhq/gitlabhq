@@ -132,6 +132,16 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
       expect(response).to have_gitlab_http_status(:found)
     end
 
+    it 'allows updating user specified bluesky did identifier', :aggregate_failures do
+      bluesky_did_id = 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
+      sign_in(user)
+
+      put :update, params: { user: { bluesky: bluesky_did_id } }
+
+      expect(user.reload.bluesky).to eq(bluesky_did_id)
+      expect(response).to have_gitlab_http_status(:found)
+    end
+
     it 'allows updating user specified mastodon username', :aggregate_failures do
       mastodon_username = '@robin@example.com'
       sign_in(user)

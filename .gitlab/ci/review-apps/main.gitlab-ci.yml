@@ -71,6 +71,7 @@ review-build-cng:
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+    auto_stop_in: 2 weeks
     on_stop: trigger-review-stop
 
 review-deploy:

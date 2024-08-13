@@ -10,7 +10,7 @@ import {
   SNIPPET_BLOB_ACTION_MOVE,
   SNIPPET_LIMITATIONS,
 } from '~/snippets/constants';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { testEntries, createBlobFromTestEntry } from '../test_utils';
 
 const TEST_BLOBS = [
@@ -291,9 +291,8 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
   });
 
   describe('isValid prop', () => {
-    const validationMessage = s__(
-      "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them.",
-    );
+    const validationMessage =
+      "Snippets can't contain empty files. Ensure all files have content, or delete them.";
 
     describe('when not present', () => {
       it('sets the label validation state to true', () => {

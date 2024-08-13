@@ -1,7 +1,8 @@
 <script>
-import { GlCard, GlLink, GlButton } from '@gitlab/ui';
+import { GlLink, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ProtectionRow from './protection_row.vue';
 
 export const i18n = {
@@ -13,10 +14,14 @@ export const i18n = {
 export default {
   name: 'ProtectionDetail',
   i18n,
-  components: { GlCard, GlLink, GlButton, ProtectionRow },
+  components: { GlLink, GlButton, ProtectionRow, CrudComponent },
   mixins: [glFeatureFlagsMixin()],
   props: {
     header: {
+      type: String,
+      required: true,
+    },
+    count: {
       type: String,
       required: true,
     },
@@ -90,29 +95,23 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="gl-new-card gl-mb-5"
-    header-class="gl-new-card-header gl-flex-wrap"
-    body-class="gl-new-card-body gl-px-5 gl-pt-4"
-  >
-    <template #header>
-      <strong>{{ header }}</strong>
+  <crud-component :title="header" icon="check-circle" :count="count" data-testid="status-checks">
+    <template v-if="showHelpText" #description>
+      {{ helpText }}
+    </template>
+    <template #actions>
       <gl-button
         v-if="glFeatures.editBranchRules && isEditAvailable"
         size="small"
         data-testid="edit-rule-button"
         @click="$emit('edit')"
-        >{{ __('Edit') }}</gl-button
-      >
+        >{{ __('Edit') }}
+      </gl-button>
       <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
-      <p v-if="showHelpText" class="gl-flex-basis-full gl-mb-0 gl-text-secondary">
-        {{ helpText }}
-      </p></template
-    >
-
-    <p v-if="showEmptyState" class="gl-text-secondary" data-testid="protection-empty-state">
+    </template>
+    <span v-if="showEmptyState" class="gl-text-subtle" data-testid="protection-empty-state">
       {{ emptyStateCopy }}
-    </p>
+    </span>
 
     <!-- Roles -->
     <protection-row v-if="roles.length" :title="$options.i18n.rolesTitle" :access-levels="roles" />
@@ -133,6 +132,7 @@ export default {
       :show-divider="index !== 0"
       :title="statusCheck.name"
       :status-check-url="statusCheck.externalUrl"
+      :hmac="statusCheck.hmac"
     />
-  </gl-card>
+  </crud-component>
 </template>

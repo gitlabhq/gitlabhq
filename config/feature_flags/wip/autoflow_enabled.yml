@@ -1,0 +1,9 @@
+---
+name: autoflow_enabled
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/12120
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160947
+rollout_issue_url:
+milestone: '17.3'
+group: group::environments
+type: wip
+default_enabled: false

@@ -3,6 +3,8 @@
 class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
+  TAGS_LIMIT = 20
+
   before_action :runner, only: [:show, :edit, :register, :update]
 
   feature_category :runner
@@ -34,9 +36,9 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def tag_list
-    tags = Autocomplete::ActsAsTaggableOn::TagsFinder.new(params: params).execute
+    tags = Ci::TagsFinder.new(params: params).execute.limit(TAGS_LIMIT)
 
-    render json: ActsAsTaggableOn::TagSerializer.new.represent(tags)
+    render json: Ci::TagSerializer.new.represent(tags)
   end
 
   def runner_setup_scripts

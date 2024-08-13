@@ -10,7 +10,7 @@ development:
       host: development-replica2
       port: 26379 # point to sentinel, not to redis port
 test:
-  url: redis://:mynewpassword@test-host:6379/99
+  url: redis://redis-test-user:mynewpassword@test-host:6379/99
   sentinels:
     -
       host: test-replica1
@@ -19,7 +19,7 @@ test:
       host: test-replica2
       port: 26379 # point to sentinel, not to redis port
 production:
-  url: redis://:mynewpassword@production-host:6379/99
+  url: redis://redis-prod-user:mynewpassword@production-host:6379/99
   sentinels:
     -
       host: production-replica1

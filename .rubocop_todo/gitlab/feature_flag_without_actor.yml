@@ -139,7 +139,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/views/projects/settings/merge_requests/_merge_trains_settings.html.haml'
     - 'ee/app/workers/elastic/migration_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/add_on_purchases/schedule_bulk_refresh_user_assignments_worker.rb'
-    - 'ee/app/workers/llm/vertex_ai_access_token_refresh_worker.rb'
     - 'ee/app/workers/search/index_curation_worker.rb'
     - 'ee/app/workers/search/zoekt/scheduling_worker.rb'
     - 'ee/app/workers/security/scan_execution_policies/create_pipeline_worker.rb'

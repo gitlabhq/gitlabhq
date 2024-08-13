@@ -14,8 +14,8 @@
 .navbar-empty {
   justify-content: center;
   height: var(--header-height);
-  background: $white;
-  border-bottom: 1px solid $gray-100;
+  background: var(--gl-background-color-default);
+  border-bottom: 1px solid var(--gl-border-color-default);
 
   .tanuki-logo,
   .brand-header-logo {

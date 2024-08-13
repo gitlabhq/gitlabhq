@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox, GlListboxItem, GlFormGroup } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -95,13 +95,15 @@ describe('TopicSelect', () => {
   });
 
   it('renders label', () => {
+    const labelText = 'my label';
+
     createComponent({
       props: {
-        labelText: 'my label',
+        labelText,
       },
     });
 
-    expect(wrapper.find('label').text()).toBe('my label');
+    expect(wrapper.findComponent(GlFormGroup).text()).toContain(labelText);
   });
 
   it('renders dropdown items', () => {

@@ -1340,7 +1340,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     it 'renders json in a correct format' do
-      post :preview_markdown, params: { namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text' }
+      post :preview_markdown, params: { namespace_id: public_project.namespace, project_id: public_project, text: '*Markdown* text' }
 
       expect(json_response.keys).to match_array(%w[body references])
     end
@@ -1349,7 +1349,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       let(:private_project) { create(:project, :private) }
 
       it 'returns 404' do
-        post :preview_markdown, params: { namespace_id: private_project.namespace, id: private_project, text: '*Markdown* text' }
+        post :preview_markdown, params: { namespace_id: private_project.namespace, project_id: private_project, text: '*Markdown* text' }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1363,7 +1363,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       it 'renders JSON body with state filter for issues' do
         post :preview_markdown, params: {
                                   namespace_id: public_project.namespace,
-                                  id: public_project,
+                                  project_id: public_project,
                                   text: issue.to_reference
                                 }
 
@@ -1373,7 +1373,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       it 'renders JSON body with state filter for MRs' do
         post :preview_markdown, params: {
                                   namespace_id: public_project.namespace,
-                                  id: public_project,
+                                  project_id: public_project,
                                   text: merge_request.to_reference
                                 }
 
@@ -1385,8 +1385,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       let(:project_with_repo) { create(:project, :repository) }
       let(:preview_markdown_params) do
         {
-          namespace_id: project_with_repo.namespace,
-          id: project_with_repo,
+          namespace_id: project_with_repo.namespace.full_path,
+          project_id: project_with_repo.path,
           text: "![](./logo-white.png)\n",
           path: 'files/images/README.md'
         }
@@ -1409,8 +1409,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       let(:project_with_repo) { create(:project, :repository) }
       let(:preview_markdown_params) do
         {
-          namespace_id: project_with_repo.namespace,
-          id: project_with_repo,
+          namespace_id: project_with_repo.namespace.full_path,
+          project_id: project_with_repo.path,
           text: "![](./logo-white.png)\n",
           ref: 'other_branch',
           path: 'files/images/README.md'

@@ -1,13 +1,14 @@
 - emails_disabled = project.emails_disabled?
 
-.notification-list-item.md:gl-flex.gl-justify-content-space-between.gl-align-items-center.gl-px-3.gl-py-4
-  .gl-mb-2.gl-md-mb-0
-    %span.gl-mr-2
-      = notification_icon(notification_icon_level(setting, emails_disabled))
+%li
+  .md:gl-flex.gl-justify-between.gl-items-center
+    .gl-mb-2.md:gl-mb-0
+      %span.gl-mr-2
+        = notification_icon(notification_icon_level(setting, emails_disabled))
 
-    %span
-      = link_to_project(project)
+      %span
+        = link_to_project(project)
 
-  .gl-display-flex.gl-gap-3.gl-flex-wrap
-    - if setting
-      .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }
+    .gl-flex.gl-gap-3.gl-flex-wrap
+      - if setting
+        .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: project.id, container_class: 'gl-mr-3', show_label: "true" } }

@@ -90,4 +90,4 @@ To assign topics to a project:
 ## Administer topics
 
 Instance administrators can administer all project topics from the
-[Admin area's Topics page](../../administration/admin_area.md#administering-topics).
+[**Admin** area's Topics page](../../administration/admin_area.md#administering-topics).

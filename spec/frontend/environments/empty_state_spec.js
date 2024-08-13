@@ -1,5 +1,4 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { s__ } from '~/locale';
 import EmptyState from '~/environments/components/empty_state.vue';
 import { ENVIRONMENTS_SCOPE } from '~/environments/constants';
 
@@ -11,7 +10,7 @@ describe('~/environments/components/empty_state.vue', () => {
 
   const findNewEnvironmentLink = () =>
     wrapper.findByRole('link', {
-      name: s__('Environments|Create an environment'),
+      name: 'Create an environment',
     });
 
   const findDocsLink = () =>
@@ -21,7 +20,7 @@ describe('~/environments/components/empty_state.vue', () => {
 
   const finfEnablingReviewButton = () =>
     wrapper.findByRole('button', {
-      name: s__('Environments|Enable review apps'),
+      name: 'Enable review apps',
     });
 
   const createWrapper = ({ propsData = {} } = {}) =>
@@ -41,7 +40,7 @@ describe('~/environments/components/empty_state.vue', () => {
 
     it('shows an empty state environments', () => {
       const title = wrapper.findByRole('heading', {
-        name: s__('Environments|Get started with environments'),
+        name: 'Get started with environments',
       });
 
       expect(title.exists()).toBe(true);
@@ -81,12 +80,12 @@ describe('~/environments/components/empty_state.vue', () => {
 
     it('should show text about searching', () => {
       const header = wrapper.findByRole('heading', {
-        name: s__('Environments|No results found'),
+        name: 'No results found',
       });
 
       expect(header.exists()).toBe(true);
 
-      const text = wrapper.findByText(s__('Environments|Edit your search and try again'));
+      const text = wrapper.findByText('Edit your search and try again');
 
       expect(text.exists()).toBe(true);
     });

@@ -124,13 +124,14 @@
   flex-flow: row wrap;
   width: 100%;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-float-right {
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
 }
 
-
+// stylelint-disable-next-line gitlab/no-gl-class
 .md-header .gl-tabs-nav {
   border-bottom: 0;
 }
@@ -319,10 +320,6 @@ table {
   .discussion-actions {
     display: table;
 
-    svg {
-      fill: $gray-500;
-    }
-
     .btn-group {
       display: table-cell;
 
@@ -430,12 +427,6 @@ table {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
-
-    .btn-success {
-      flex-grow: 1;
-      flex-shrink: 0;
-      width: auto;
-    }
 
     .dropdown-toggle {
       flex-grow: 0;

@@ -3,13 +3,13 @@
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div>
   <div
-    class="code file-content gl-display-flex js-syntax-highlight"
+    class="code file-content gl-flex js-syntax-highlight"
   >
     <div
-      class="gl-px-0! line-numbers"
+      class="!gl-px-0 line-numbers"
     >
       <div
-        class="diff-line-num gl-display-flex line-links"
+        class="diff-line-num gl-flex line-links"
       >
         <a
           class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
@@ -25,7 +25,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         </a>
       </div>
       <div
-        class="diff-line-num gl-display-flex line-links"
+        class="diff-line-num gl-flex line-links"
       >
         <a
           class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
@@ -41,7 +41,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         </a>
       </div>
       <div
-        class="diff-line-num gl-display-flex line-links"
+        class="diff-line-num gl-flex line-links"
       >
         <a
           class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
@@ -58,10 +58,10 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
       </div>
     </div>
     <div
-      class="blob-content gl-display-flex gl-flex-direction-column gl-overflow-y-auto gl-w-full"
+      class="blob-content gl-flex gl-flex-col gl-overflow-y-auto gl-w-full"
     >
       <pre
-        class="code gl-p-0! highlight"
+        class="!gl-p-0 code highlight"
       >
         <code
           data-blob-hash="foo-bar"

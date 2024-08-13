@@ -452,7 +452,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/metrics/requests_rack_middleware.rb'
     - 'lib/gitlab/metrics/subscribers/active_record.rb'
     - 'lib/gitlab/metrics/subscribers/load_balancing.rb'
-    - 'lib/gitlab/middleware/organizations/current.rb'
     - 'lib/gitlab/middleware/same_site_cookies.rb'
     - 'lib/gitlab/multi_destination_logger.rb'
     - 'lib/gitlab/pagination/keyset/order.rb'

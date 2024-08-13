@@ -9,7 +9,7 @@
   .note-search-caption.gl-max-w-full
     .gl-font-sm.gl-text-secondary.gl-float-right= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
     .gl-display-inline-block.gl-text-truncate.search-max-w-inherit.gl-align-bottom
-      .gl-font-bold= link_to_member(project, note.author, avatar: true, extra_class: 'gl-text-black-normal')
+      .gl-font-bold= link_to_member(note.author, avatar: true, extra_class: 'gl-text-black-normal')
       .gl-text-secondary
         = _("Commented on %{link_to_project}").html_safe % { link_to_project: link_to(project.full_name, project) }
     &middot;

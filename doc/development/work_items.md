@@ -3,7 +3,17 @@ stage: Plan
 group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
-# Work items and work item types
+
+# Work items development
+
+- Work item lists are only available at group level `http://gdk.test:3000/groups/flightjs/-/work_items`,
+  they are enabled with feature flags: `namespace_level_work_items` and `work_item_epics_rollout`.
+- The new work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/new`
+  after enabling the `work_items_alpha` feature flag.
+- The view/edit work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/:iid`
+  after enabling the `work_items_alpha` feature flag.
+
+You can find more detail about the feature flags in [epic 11777](https://gitlab.com/groups/gitlab-org/-/epics/11777#feature-flags).
 
 ## Challenges
 
@@ -64,7 +74,7 @@ Some terms have been used in the past but have since become confusing and are no
 | ---               | ---         | ---               | ---       |
 | issue type        | A former way to refer to classes of work item | _Tasks are an **issue type**_ | _Tasks are a **work item type**_ |
 
-### Migration strategy
+## Migration strategy
 
 WI model will be built on top of the existing `Issue` model and we'll gradually migrate `Issue`
 model code to the WI model.
@@ -94,7 +104,7 @@ NOTE:
 At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
 We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
 
-### Introducing `work_item_types` table
+## Introducing `work_item_types` table
 
 For example, suppose there are three root-level groups with IDs: `11`, `12`, and `13`. Also,
 assume the following base types: `issue: 0`, `incident: 1`, `test_case: 2`.
@@ -139,7 +149,7 @@ To introduce a new WIT there are two options:
   is created only when a customer opts in. However, this implies a lower discoverability
   of the newly introduced work item type.
 
-### Work item type widgets
+## Work item type widgets
 
 A widget is a single component that can exist on a work item. This component can be used on one or
 many work item types and can be lightly customized at the point of implementation.
@@ -162,7 +172,9 @@ Because any WIT can have any widget, we only need to define which widget is acti
 specific WIT. So, after switching the type of a specific work item, we display a different set
 of widgets.
 
-### Widgets metadata
+Read more about [work item widgets](work_items_widgets.md) and how to create a new one.
+
+## Widgets metadata
 
 In order to customize each WIT with corresponding active widgets we will need a data
 structure to map each WIT to specific widgets.
@@ -193,7 +205,7 @@ Until the architecture of WIT widgets is finalized, we are holding off on the cr
 types. If a new work item type is absolutely necessary, reach out to a
 member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
 
-### Creating a new work item type in the database
+## Creating a new work item type in the database
 
 We have completed the removal of the `issue_type` column from the issues table, in favor of using the new
 `work_item_types` table as described in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536)).
@@ -209,7 +221,7 @@ The following MRs demonstrate how to introduce new `work_item_types`:
 - [MR example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127482)
 - [MR example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127917)
 
-#### Write a database migration
+### Write a database migration
 
 First, write a database migration that creates the new record in the `work_item_types` table.
 
@@ -271,7 +283,7 @@ Keep the following in mind when you write your migration:
   There are different shared examples you should use for the different migration types (new work item type, new widget definition, etc) in
   [`add_work_item_widget_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/14c0a4df57a562a7c2dd4baed98f26d208a2e6ce/spec/support/shared_examples/migrations/add_work_item_widget_shared_examples.rb).
 
-##### Example of adding a ticket work item
+#### Example of adding a ticket work item
 
 The `Ticket` work item type already exists in the database, but we'll use it as an example migration.
 Note that for a new type you need to use a new name and ENUM value.
@@ -369,20 +381,20 @@ end
 ```
 
 <!-- markdownlint-disable-next-line MD044 -->
-#### Update Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter
+### Update Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter
 
 The [BaseTypeImporter](https://gitlab.com/gitlab-org/gitlab/-/blob/f816a369d7d6bbd1d8d53d6c0bca4ca3389fdba7/lib/gitlab/database_importers/work_items/base_type_importer.rb)
 is where we can clearly visualize the structure of the types we have and what widgets are associated with each of them.
 `BaseTypeImporter` is the single source of truth for fresh GitLab installs and also our test suite. This should always
 reflect what we change with migrations.
 
-### Custom work item types
+## Custom work item types
 
 With the WIT widget metadata and the workflow around mapping WIT to specific
 widgets, we will be able to expose custom WITs to the users. Users will be able
 to create their own WITs and customize them with widgets from the predefined pool.
 
-### Custom widgets
+## Custom widgets
 
 The end goal is to allow users to define custom widgets and use these custom
 widgets on any WIT. But this is a much further iteration and requires additional

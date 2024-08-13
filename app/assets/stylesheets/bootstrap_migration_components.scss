@@ -79,6 +79,7 @@ input[type='file'] {
 
 // Add to .label so that old system notes that are saved to the db
 // will still receive the correct styling
+// stylelint-disable-next-line gitlab/no-gl-class
 .badge:not(.gl-badge),
 .label {
   padding: 4px 5px;

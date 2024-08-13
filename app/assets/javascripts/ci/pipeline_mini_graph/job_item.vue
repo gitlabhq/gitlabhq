@@ -37,18 +37,18 @@ export default {
       return this.job.detailedStatus || {};
     },
     tooltipText() {
-      const { tooltip: statusTooltip } = this.status;
+      const statusTooltip = capitalizeFirstCharacter(this.status?.tooltip);
 
       if (this.isDelayedJob) {
         return sprintf(statusTooltip, { remainingTime: this.remainingTime });
       }
-      return capitalizeFirstCharacter(statusTooltip);
+      return statusTooltip;
     },
   },
 };
 </script>
 <template>
-  <gl-disclosure-dropdown-item :item="item">
+  <gl-disclosure-dropdown-item :item="item" class="ci-job-component">
     <template #list-item>
       <div class="gl-flex -gl-my-2 gl-h-6">
         <job-name-component

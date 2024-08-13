@@ -333,6 +333,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     it 'returns the correct data' do
       expected_data = {
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         full_path: project.full_path,
         is_public_visibility_restricted: 'false',
         is_signed_in: 'true',

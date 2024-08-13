@@ -21,7 +21,7 @@ while the project remains secure.
 
 To select a project to serve as the custom template repository:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Templates**.
 1. Expand **Templates**
 1. From the dropdown list, select the project to use as the template repository.
@@ -72,7 +72,7 @@ Your custom templates are displayed on the dropdown list when a new file is adde
 ![Custom template dropdown list](img/file_template_user_dropdown.png)
 
 If this feature is disabled or no templates are present,
-no **Custom** section displays in the selection dropdown.
+no **Custom** section displays in the selection dropdown list.
 
 <!-- ## Troubleshooting
 

@@ -44,7 +44,7 @@ const i18n = {
 };
 
 const ciCatalogHelpPath = helpPagePath('ci/components/index', {
-  anchor: 'components-catalog',
+  anchor: 'cicd-catalog',
 });
 
 const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_examples');

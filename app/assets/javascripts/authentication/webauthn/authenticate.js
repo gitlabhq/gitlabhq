@@ -8,6 +8,7 @@ import { supported, convertGetParams, convertGetResponse } from './util';
 // State Flow #1: setup -> in_progress -> authenticated -> POST to server
 // State Flow #2: setup -> in_progress -> error -> setup
 export default class WebAuthnAuthenticate {
+  // eslint-disable-next-line max-params
   constructor(container, form, webauthnParams, fallbackButton, fallbackUI) {
     this.container = container;
     this.webauthnParams = convertGetParams(JSON.parse(webauthnParams.options));

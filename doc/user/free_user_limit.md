@@ -96,7 +96,7 @@ top-level namespace.
 
 NOTE:
 If you previously purchased a subscription and the 5-user limit was applied to a group,
-ensure that [your subscription is linked](../subscriptions/gitlab_com/index.md#change-the-linked-namespace)
+ensure that [your subscription is linked](../subscriptions/gitlab_com/index.md#change-the-linked-group)
 to the correct top-level namespace, or that it has been
 linked to your Customers Portal account.
 

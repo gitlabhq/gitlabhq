@@ -32,7 +32,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
     it 'renders 404 when navigating to page' do
       visit_settings_page
 
-      expect(page).to have_content('Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 

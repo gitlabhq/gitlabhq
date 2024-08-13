@@ -2,7 +2,7 @@
 data_category: operational
 key_path: gitlab_pages.version
 description: The version number of GitLab Pages
-product_group: ide
+product_group: remote_development
 value_type: string
 status: active
 milestone: "<13.9"

@@ -80,6 +80,8 @@ class NotificationService
     resource = bot_user.resource_bot_resource
 
     recipients.each do |recipient|
+      log_info("Notifying resource access token owner about expiring tokens", recipient)
+
       mailer.bot_resource_access_token_about_to_expire_email(
         recipient,
         resource,
@@ -99,6 +101,8 @@ class NotificationService
   # And mark the token with about_to_expire_delivered
   def access_token_about_to_expire(user, token_names)
     return unless user.can?(:receive_notifications)
+
+    log_info("Notifying User about expiring tokens", user)
 
     mailer.access_token_about_to_expire_email(user, token_names).deliver_later
   end
@@ -889,6 +893,14 @@ class NotificationService
   end
 
   private
+
+  def log_info(message_text, user)
+    Gitlab::AppLogger.info(
+      message: message_text,
+      class: self.class,
+      user_id: user.id
+    )
+  end
 
   def approve_mr_email(merge_request, project, current_user)
     recipients = ::NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: 'approve')

@@ -83,4 +83,4 @@
               method: :delete,
               href: admin_spam_log_path(spam_log, remove_user: true),
               button_options: { class: 'menu-item focus:!gl-bg-gray-50', data: { confirm: _("User %{user_name} will be removed! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' } }) do
-              %span.text-danger= _('Remove user')
+              %span.gl-text-danger= _('Remove user')

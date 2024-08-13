@@ -27,10 +27,11 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
 } from '../constants';
-import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
   draftData?.workspace?.workItem?.widgets.find(isNotesWidget);
@@ -154,10 +155,10 @@ export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) =
   });
 };
 
-export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+export const addHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
-    variables: { fullPath, iid },
+    query: getWorkItemTreeQuery,
+    variables: { id },
   };
   const sourceData = cache.readQuery(queryArgs);
 
@@ -168,19 +169,40 @@ export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) =
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const existingChild = findHierarchyWidgetChildren(draftState.workspace?.workItem).find(
+      const existingChild = findHierarchyWidgetChildren(draftState?.workItem).find(
         (child) => child.id === workItem?.id,
       );
       if (!existingChild) {
-        findHierarchyWidgetChildren(draftState.workspace?.workItem).push(workItem);
+        findHierarchyWidgetChildren(draftState?.workItem).unshift(workItem);
       }
     }),
   });
 };
 
-export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+export const removeHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    query: getWorkItemTreeQuery,
+    variables: { id },
+  };
+  const sourceData = cache.readQuery(queryArgs);
+
+  if (!sourceData) {
+    return;
+  }
+
+  cache.writeQuery({
+    ...queryArgs,
+    data: produce(sourceData, (draftState) => {
+      const children = findHierarchyWidgetChildren(draftState?.workItem);
+      const index = children.findIndex((child) => child.id === workItem.id);
+      if (index >= 0) children.splice(index, 1);
+    }),
+  });
+};
+
+export const updateParent = ({ cache, fullPath, iid, workItem }) => {
+  const queryArgs = {
+    query: workItemByIidQuery,
     variables: { fullPath, iid },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -200,11 +222,11 @@ export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }
 };
 
 export const setNewWorkItemCache = async (
-  isGroup,
   fullPath,
   widgetDefinitions,
   workItemType,
   workItemTypeId,
+  // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_ASSIGNEES,
@@ -220,6 +242,7 @@ export const setNewWorkItemCache = async (
     WIDGET_TYPE_HIERARCHY,
     WIDGET_TYPE_TIME_TRACKING,
     WIDGET_TYPE_PARTICIPANTS,
+    WIDGET_TYPE_CRM_CONTACTS,
   ];
 
   if (!widgetDefinitions) {
@@ -280,6 +303,17 @@ export const setNewWorkItemCache = async (
         });
       }
 
+      if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
+        widgets.push({
+          type: 'CRM_CONTACTS',
+          contacts: {
+            nodes: [],
+            __typename: 'CustomerRelationsContactConnection',
+          },
+          __typename: 'WorkItemWidgetCrmContacts',
+        });
+      }
+
       if (widgetName === WIDGET_TYPE_LABELS) {
         const labelsWidgetData = widgetDefinitions.find(
           (definition) => definition.type === WIDGET_TYPE_LABELS,
@@ -296,9 +330,18 @@ export const setNewWorkItemCache = async (
       }
 
       if (widgetName === WIDGET_TYPE_WEIGHT) {
+        const weightWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_WEIGHT,
+        );
+
         widgets.push({
           type: 'WEIGHT',
           weight: null,
+          rolledUpWeight: 0,
+          widgetDefinition: {
+            editable: weightWidgetData?.editable,
+            rollUp: weightWidgetData?.rollUp,
+          },
           __typename: 'WorkItemWidgetWeight',
         });
       }
@@ -371,6 +414,7 @@ export const setNewWorkItemCache = async (
         widgets.push({
           type: 'HIERARCHY',
           hasChildren: false,
+          hasParent: false,
           parent: null,
           children: {
             nodes: [],
@@ -406,7 +450,7 @@ export const setNewWorkItemCache = async (
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 
   cacheProvider.clients.defaultClient.cache.writeQuery({
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    query: workItemByIidQuery,
     variables: {
       fullPath: newWorkItemPath,
       iid: NEW_WORK_ITEM_IID,

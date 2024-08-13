@@ -10,7 +10,9 @@ import UsersSelect from '~/users_select';
 const getUserSearchHTML = memoize((fixture) => {
   const parser = new DOMParser();
 
-  const el = parser.parseFromString(fixture, 'text/html').querySelector('.merge-request-assignee');
+  const el = parser
+    .parseFromString(fixture, 'text/html')
+    .querySelector('[data-testid=merge-request-assignee]');
 
   return el.outerHTML;
 });

@@ -55,9 +55,9 @@ describe('Pipelines stage component', () => {
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownToggle = () =>
-    wrapper.find('[data-testid="mini-pipeline-graph-dropdown-toggle"]');
+    wrapper.find('[data-testid="pipeline-mini-graph-dropdown-toggle"]');
   const findDropdownMenu = () =>
-    wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
+    wrapper.find('[data-testid="pipeline-mini-graph-dropdown-menu-list"]');
   const findDropdownMenuTitle = () =>
     wrapper.find('[data-testid="pipeline-stage-dropdown-menu-title"]');
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');

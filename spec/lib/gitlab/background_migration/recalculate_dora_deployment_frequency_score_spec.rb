@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateDoraDeploymentFrequencySc
     let!(:staging) { environments.create!(project_id: project.id, tier: 1, name: 'stg', slug: 'stg') }
 
     let!(:high_performance_score) do
-      performance_scores.create!(project_id: project.id, date: 30.days.ago.beginning_of_month,
+      performance_scores.create!(project_id: project.id, date: '2024-06-01',
         deployment_frequency: 30).tap do |s|
         daily_metrics.create!(project_id: project.id, environment_id: production.id, deployment_frequency: 100,
           date: s.date)
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateDoraDeploymentFrequencySc
     end
 
     let!(:mid_performance_score) do
-      performance_scores.create!(project_id: project.id, date: 90.days.ago.beginning_of_month,
+      performance_scores.create!(project_id: project.id, date: '2024-04-01',
         deployment_frequency: 30).tap do |s|
         daily_metrics.create!(project_id: project.id, environment_id: production.id, deployment_frequency: 15,
           date: s.date)
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateDoraDeploymentFrequencySc
     end
 
     let!(:low_performance_score) do
-      performance_scores.create!(project_id: project.id, date: 180.days.ago.beginning_of_month,
+      performance_scores.create!(project_id: project.id, date: '2024-01-01',
         deployment_frequency: 30).tap do |s|
         daily_metrics.create!(project_id: project.id, environment_id: production.id, deployment_frequency: 0,
           date: s.date)
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateDoraDeploymentFrequencySc
 
     let!(:low_performance_score_2) do
       # score with no daily metrics
-      performance_scores.create!(project_id: project.id, date: 240.days.ago.beginning_of_month,
+      performance_scores.create!(project_id: project.id, date: '2023-11-01',
         deployment_frequency: 30)
     end
 

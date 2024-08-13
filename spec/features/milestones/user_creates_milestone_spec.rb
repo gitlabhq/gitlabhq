@@ -29,7 +29,7 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
   shared_examples 'renders not found' do
     specify do
       expect(page).to have_title('Not Found')
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 

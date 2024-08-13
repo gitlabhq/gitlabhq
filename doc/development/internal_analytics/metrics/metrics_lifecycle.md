@@ -66,7 +66,7 @@ The `product_group_renamer` script can update all the definitions so you do not 
 For example, if the group 5-min-app was renamed to 2-min-app, you can update the relevant files like this:
 
 ```shell
-$ ruby scripts/internal_events/product_group_renamer.rb 5-min-app 2-min-app
+$ scripts/internal_events/product_group_renamer.rb 5-min-app 2-min-app
 Updated '5-min-app' to '2-min-app' in 3 files
 
 Updated files:

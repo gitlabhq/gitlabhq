@@ -6,6 +6,7 @@
 /*
 * Solarized light syntax colors
 */
+$solarized-light-code-mark: #d3e3f4;
 $solarized-light-matchline-bg: rgba(255, 255, 255, 0.4);
 $solarized-light-new-bg: rgba(133, 153, 0, 0.2);
 $solarized-light-new-idiff: rgba(133, 153, 0, 0.25);
@@ -261,6 +262,27 @@ $solarized-light-il: #2aa198;
   // highlight line via anchor
   pre .hll {
     background-color: $solarized-light-hll-bg !important;
+  }
+
+  // mark lines via mark_multiple_lines
+  pre.solarized-light code {
+    .selected-inline-section-marker {
+      background: $solarized-light-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $solarized-light-hll-bg;
+    }
+  }
+
+  .file-holder div.code.solarized-light {
+    .selected-inline-number-mark {
+      color: $gray-600;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gray-200;
+    }
   }
 
   // Search result highlight

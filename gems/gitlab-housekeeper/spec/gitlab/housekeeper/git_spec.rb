@@ -95,8 +95,8 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
           [gitlab-housekeeper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper)
           using the Object keep.
 
-          To provide feedback on your experience with `gitlab-housekeeper` please comment in
-          <https://gitlab.com/gitlab-org/gitlab/-/issues/442003>.
+          To provide feedback on your experience with `gitlab-housekeeper` please create an issue with the
+          label ~"GitLab Housekeeper" and consider pinging the author of this keep.
 
           Changelog: other
 

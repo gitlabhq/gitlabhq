@@ -342,16 +342,44 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
         let_it_be(:public_group_member) { create(:user, reporter_of: public_group) }
         let(:work_item_subject) { public_group_work_item }
 
+        context 'when user is anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_allowed(:read_work_item, :read_issue, :read_note) }
+        end
+
         context 'when user is not a member of the group' do
           let(:current_user) { non_member_user }
 
-          it { is_expected.not_to be_allowed(:read_note) }
+          it { is_expected.to be_allowed(:read_work_item, :read_issue, :read_note) }
         end
 
         context 'when user is a member of the group' do
           let(:current_user) { public_group_member }
 
-          it { is_expected.to be_allowed(:read_note) }
+          it { is_expected.to be_allowed(:read_work_item, :read_issue, :read_note) }
+        end
+
+        context 'when work item is confidential' do
+          let(:work_item_subject) { create(:work_item, :group_level, :confidential, namespace: public_group) }
+
+          context 'when user is anonymous' do
+            let(:current_user) { nil }
+
+            it { is_expected.not_to be_allowed(:read_work_item, :read_issue, :read_note) }
+          end
+
+          context 'when user is not a member of the group' do
+            let(:current_user) { non_member_user }
+
+            it { is_expected.not_to be_allowed(:read_work_item, :read_issue, :read_note) }
+          end
+
+          context 'when user is a member of the group' do
+            let(:current_user) { public_group_member }
+
+            it { is_expected.to be_allowed(:read_work_item, :read_issue, :read_note) }
+          end
         end
       end
 

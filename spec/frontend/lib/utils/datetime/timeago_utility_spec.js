@@ -1,7 +1,6 @@
 import { getTimeago, localTimeAgo, timeFor, duration } from '~/lib/utils/datetime/timeago_utility';
 import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
-import { s__ } from '~/locale';
 import '~/commons/bootstrap';
 
 describe('TimeAgo utils', () => {
@@ -65,7 +64,7 @@ describe('TimeAgo utils', () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 1);
 
-      expect(timeFor(date)).toBe(s__('Timeago|Past due'));
+      expect(timeFor(date)).toBe('Past due');
     });
 
     it('returns localized remaining time when in the future', () => {
@@ -76,7 +75,7 @@ describe('TimeAgo utils', () => {
       // short of a full year, timeFor will return '11 months remaining'
       date.setDate(date.getDate() + 1);
 
-      expect(timeFor(date)).toBe(s__('Timeago|1 year remaining'));
+      expect(timeFor(date)).toBe('1 year remaining');
     });
   });
 

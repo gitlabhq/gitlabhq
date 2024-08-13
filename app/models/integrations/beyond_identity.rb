@@ -43,13 +43,10 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        _('Learn more'),
-        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/beyond_identity'),
-        target: '_blank', rel: 'noopener noreferrer')
-
-      format(_('Verify that GPG keys are authorized by Beyond Identity Authenticator. %{docs_link}').html_safe, # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
-        docs_link: docs_link.html_safe) # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
+      build_help_page_url(
+        'user/project/integrations/beyond_identity',
+        s_('Verify that GPG keys are authorized by Beyond Identity Authenticator.')
+      )
     end
 
     def self.to_param

@@ -3,7 +3,7 @@ category: default
 action: content_editor_loaded
 extra_properties:
 identifiers:
-product_group: ide
+product_group: remote_development
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62919
 distributions:

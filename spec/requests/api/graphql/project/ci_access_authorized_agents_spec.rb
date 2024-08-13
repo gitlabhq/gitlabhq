@@ -50,7 +50,8 @@ RSpec.describe 'Project.ci_access_authorized_agents', feature_category: :deploym
 
       expect(authorized_agent['agent']['id']).to eq(agent.to_global_id.to_s)
       expect(authorized_agent['agent']['name']).to eq(agent.name)
-      expect(authorized_agent['config']).to eq({ "default_namespace" => "production" })
+      expect(authorized_agent['config']).to eq({ "default_namespace" => "production",
+                                                 "protected_branches_only" => false })
       expect(authorized_agent['agent']['project']).to be_nil # User is not authorized to read other resources.
     end
 
@@ -87,7 +88,8 @@ RSpec.describe 'Project.ci_access_authorized_agents', feature_category: :deploym
 
       expect(authorized_agent['agent']['id']).to eq(agent.to_global_id.to_s)
       expect(authorized_agent['agent']['name']).to eq(agent.name)
-      expect(authorized_agent['config']).to eq({ "default_namespace" => "production" })
+      expect(authorized_agent['config']).to eq({ "default_namespace" => "production",
+                                                "protected_branches_only" => false })
       expect(authorized_agent['agent']['project']).to be_nil # User is not authorized to read other resources.
     end
 

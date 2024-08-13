@@ -823,6 +823,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         expect(group.members.excluding_users(active_group_member.user_id)).not_to include active_group_member
       end
     end
+
+    describe '.no_activity_today' do
+      let_it_be(:active_group_member) { create(:group_member, group: group) }
+      let_it_be(:inactive_group_member) { create(:group_member, group: group, last_activity_on: 1.month.ago) }
+
+      it 'returns members with no activity today' do
+        expect(group.members.no_activity_today).to include inactive_group_member
+        expect(group.members.no_activity_today).not_to include active_group_member
+      end
+    end
   end
 
   describe 'Delegate methods' do
@@ -917,6 +927,14 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         expect(described_class.order_updated_desc).to eq([another_member, member])
       end
     end
+  end
+
+  describe '.with_static_role' do
+    let_it_be(:membership_without_custom_role) { create(:group_member) }
+
+    subject { described_class.with_static_role }
+
+    it { is_expected.to contain_exactly(membership_without_custom_role) }
   end
 
   describe '.with_group_group_sharing_access' do
@@ -1269,7 +1287,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'for updating organization_users' do
-    let_it_be(:group) { create(:group, :with_organization) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
     let(:member) { create(:group_member, source: group, user: user) }
 
@@ -1351,12 +1369,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       context 'when member is an invite' do
         let(:member) { create(:group_member, :invited, source: group, user: nil) }
-
-        it_behaves_like 'does not create an organization_user entry'
-      end
-
-      context 'when organization does not exist' do
-        let(:member) { create(:group_member, user: user) }
 
         it_behaves_like 'does not create an organization_user entry'
       end

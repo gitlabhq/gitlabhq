@@ -62,11 +62,11 @@ module Gitlab
         # rubocop:enable Metrics/AbcSize
 
         def self.find_or_create_type(name)
-          type = ::WorkItems::Type.find_by_name_and_namespace_id(name, nil)
+          type = ::WorkItems::Type.find_by_name(name)
           return type if type
 
           Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
-          ::WorkItems::Type.find_by_name_and_namespace_id(name, nil)
+          ::WorkItems::Type.find_by_name(name)
         end
       end
     end

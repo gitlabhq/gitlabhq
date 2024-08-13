@@ -19,6 +19,7 @@ function notifyPermissions() {
   }
 }
 
+// eslint-disable-next-line max-params
 function notifyMe(message, body, icon, onclick) {
   const opts = {
     body,

@@ -11,7 +11,7 @@ RSpec.describe Ci::GroupVariableEntity do
 
     it 'contains required fields' do
       expect(subject.keys).to contain_exactly(
-        :id, :key, :description, :value, :protected, :variable_type, :environment_scope, :raw, :masked
+        :id, :key, :description, :value, :protected, :variable_type, :environment_scope, :raw, :masked, :hidden
       )
     end
   end

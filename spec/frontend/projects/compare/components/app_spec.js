@@ -8,6 +8,7 @@ import {
   COMPARE_OPTIONS,
   COMPARE_OPTIONS_INPUT_NAME,
 } from '~/projects/compare/constants';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { appDefaultProps as defaultProps } from './mock_data';
@@ -18,6 +19,8 @@ describe('CompareApp component', () => {
   let wrapper;
   const findSourceRevisionCard = () => wrapper.findByTestId('sourceRevisionCard');
   const findTargetRevisionCard = () => wrapper.findByTestId('targetRevisionCard');
+  const findPageTitle = () => wrapper.findByTestId('page-heading');
+  const findPageDescription = () => wrapper.findByTestId('page-heading-description');
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(CompareApp, {
@@ -31,6 +34,7 @@ describe('CompareApp component', () => {
       stubs: {
         GlSprintf,
         GlFormRadioGroup,
+        PageHeading,
       },
     });
   };
@@ -52,13 +56,11 @@ describe('CompareApp component', () => {
   });
 
   it('renders title', () => {
-    const title = wrapper.find('h1');
-    expect(title.text()).toBe(I18N.title);
+    expect(findPageTitle().text()).toBe(I18N.title);
   });
 
-  it('renders subtitle', () => {
-    const subtitle = wrapper.find('p');
-    expect(subtitle.text()).toMatchInterpolatedText(I18N.subtitle);
+  it('renders description', () => {
+    expect(findPageDescription().text()).toMatchInterpolatedText(I18N.subtitle);
   });
 
   it('renders link to docs', () => {

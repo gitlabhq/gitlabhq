@@ -390,7 +390,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility.to_s.upcase, false))
         end
 
-        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status]
+        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:auth]
       end
     end
 

@@ -62,6 +62,7 @@ function getDiffFiles() {
     },
   ];
 }
+// eslint-disable-next-line max-params
 function makeBrokenSymlinkObject(replaced, wasSymbolic, isSymbolic, wasReal, isReal) {
   return {
     replaced,

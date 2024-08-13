@@ -69,7 +69,7 @@ Each link as an asset has the following attributes:
 
 #### Permanent links to release assets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a personal access token.
 
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
@@ -102,7 +102,7 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v16.9.0-rc2/downloads/bin
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
 
-If the release is private, you need to provide a Personal Access Token with either `api` or `read_api` scopes using
+If the release is private, you need to provide a personal access token with either `api` or `read_api` scopes using
 a `private_token` query parameter or a `HTTP_PRIVATE_TOKEN` header when making the request. For example:
 
 ```shell

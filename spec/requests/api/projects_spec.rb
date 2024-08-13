@@ -2638,6 +2638,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             security_and_compliance_enabled
             issues_template
             merge_requests_template
+            pre_receive_secret_detection_enabled
           ]
         end
 

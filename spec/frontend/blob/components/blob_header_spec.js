@@ -87,8 +87,6 @@ describe('Blob Header Default Actions', () => {
           gitpodUrl: gitpodBlobUrl,
           showGitpodButton: applicationInfoMock.gitpodEnabled,
           gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
-          userPreferencesGitpodPath: userInfoMock.currentUser.preferencesGitpodPath,
-          userProfileEnableGitpodPath: userInfoMock.currentUser.profileEnableGitpodPath,
         });
       });
 
@@ -181,6 +179,12 @@ describe('Blob Header Default Actions', () => {
       createComponent({ propsData: { isBinary: true } });
 
       expect(findDefaultActions().props('isBinary')).toBe(true);
+    });
+
+    it('passes the `showBlobSize` prop to `blobFilepath`', () => {
+      const showBlobSize = false;
+      createComponent({ propsData: { showBlobSize } });
+      expect(findBlobFilePath().props('showBlobSize')).toBe(showBlobSize);
     });
   });
 

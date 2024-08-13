@@ -100,7 +100,7 @@ export default {
           <div data-testid="conflicts-count">
             <gl-sprintf :message="$options.i18n.commitStatSummary">
               <template #conflict>
-                <strong class="cred">{{ getConflictsCountText }}</strong>
+                <strong class="gl-text-danger">{{ getConflictsCountText }}</strong>
               </template>
               <template #sourceBranch>
                 <strong class="ref-name">{{ conflictsData.sourceBranch }}</strong>

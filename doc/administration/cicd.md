@@ -175,7 +175,7 @@ in GitLab 18.0. Runner authentication tokens should be used instead. For more in
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin area.
+- Runner registration tokens must be [enabled](../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the **Admin** area.
 
 ```ruby
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token

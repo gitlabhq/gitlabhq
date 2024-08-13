@@ -26,6 +26,7 @@ export default {
   methods: {
     ...mapActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
     ...mapActions('batchComments', ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
+    // eslint-disable-next-line max-params
     addReplyToReview(noteText, isResolving, parentElement, errorCallback) {
       const postData = getDraftReplyFormData({
         in_reply_to_discussion_id: this.discussion.reply_id,
@@ -60,6 +61,7 @@ export default {
           errorCallback();
         });
     },
+    // eslint-disable-next-line max-params
     addToReview(note, positionType = null, parentElement, errorCallback) {
       const lineRange =
         (this.line && this.commentLineStart && formatLineRange(this.commentLineStart, this.line)) ||

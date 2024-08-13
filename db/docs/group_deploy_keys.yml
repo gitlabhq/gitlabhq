@@ -8,4 +8,4 @@ description: https://docs.gitlab.com/ee/user/project/deploy_keys/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30886
 milestone: '13.1'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462932
+exempt_from_sharding: true # Table is empty and will be removed - https://gitlab.com/gitlab-org/gitlab/-/issues/408933

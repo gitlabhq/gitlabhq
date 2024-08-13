@@ -3,11 +3,11 @@
     .gl-align-top.gl-text-left.gl-max-w-80.gl-wrap-anywhere
       .user-info
         - if @user.confirmed?
-          .gl-display-flex.gl-gap-4.gl-flex-direction-column
+          .gl-flex.gl-gap-4.gl-flex-direction-column
             - if @user.pronouns.present? || @user.pronunciation.present? || @user.bio.present?
               %div
                 %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|About')
-                .gl-display-flex.gl-gap-2.gl-flex-direction-column
+                .gl-flex.gl-gap-2.gl-flex-direction-column
                   - if @user.pronouns.present? || @user.pronunciation.present?
                     .gl-mb-2
                       - if @user.pronunciation.present?
@@ -29,52 +29,56 @@
             %div{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
               %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
               - if work_information(@user).present?
-                .gl-display-flex.gl-gap-2.gl-mb-2
-                  = sprite_icon('work', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                .gl-flex.gl-gap-2.gl-mb-2
+                  = sprite_icon('work', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                   %span
                     = work_information(@user, with_schema_markup: true)
               - if @user.location.present?
-                .gl-display-flex.gl-gap-2.gl-mb-2
-                  = sprite_icon('location', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                .gl-flex.gl-gap-2.gl-mb-2
+                  = sprite_icon('location', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                   %span{ itemprop: 'addressLocality' }
                     = @user.location
               - if user_local_time.present?
-                .gl-display-flex.gl-gap-2.gl-mb-2{ data: { testid: 'user-local-time' } }
-                  = sprite_icon('clock', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                .gl-flex.gl-gap-2.gl-mb-2{ data: { testid: 'user-local-time' } }
+                  = sprite_icon('clock', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                   %span
                     = user_local_time
-              .gl-display-flex.gl-gap-2.gl-mb-2
-                = sprite_icon('calendar', css_class: 'fgray gl-mt-1 flex-shrink-0')
+              .gl-flex.gl-gap-2.gl-mb-2
+                = sprite_icon('calendar', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                 %span= s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }
 
-            - if @user.website_url.present? || display_public_email?(@user) || @user.skype.present? || @user.linkedin.present? || @user.twitter.present? || @user.mastodon.present? || @user.discord.present?
+            - if has_contact_info?(@user)
               .gl-text-gray-900
                 %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Contact')
                 - if @user.website_url.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('earth', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('earth', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.short_website_url, @user.full_website_url, class: 'gl-text-gray-900', target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
                 - if display_public_email?(@user)
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('mail', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('mail', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'gl-text-gray-900', itemprop: 'email'
                 - if @user.skype.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('skype', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('skype', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.skype, "skype:#{@user.skype}", class: 'gl-text-gray-900', title: "Skype"
                 - if @user.linkedin.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('linkedin', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('linkedin', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to linkedin_name(@user), linkedin_url(@user), class: 'gl-text-gray-900', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow'
                 - if @user.twitter.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('x', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('x', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.twitter, twitter_url(@user), class: 'gl-text-gray-900', title: _("X (formerly Twitter)"), target: '_blank', rel: 'noopener noreferrer nofollow'
+                - if @user.bluesky.present?
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('at', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                    = link_to @user.bluesky, bluesky_url(@user), class: 'gl-text-gray-900', title: "Bluesky", target: '_blank', rel: 'noopener noreferrer nofollow'
                 - if @user.mastodon.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('mastodon', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('mastodon', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.mastodon, mastodon_url(@user), class: 'gl-text-gray-900', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow'
                 - if @user.discord.present?
-                  .gl-display-flex.gl-gap-2.gl-mb-2
-                    = sprite_icon('discord', css_class: 'fgray gl-mt-1 flex-shrink-0')
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('discord', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.discord, discord_url(@user), class: 'gl-text-gray-900', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow'

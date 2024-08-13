@@ -36,9 +36,6 @@ associated with a group rather than a project or user.
 
 In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 
-WARNING:
-The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. In GitLab 16.0 and later, existing group access tokens without an expiry date are automatically given an expiry date 365 days later than the current date. The automatic adding of an expiry date occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry date occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
-
 You cannot use group access tokens to create other group, project, or personal access tokens.
 
 Group access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
@@ -50,14 +47,12 @@ configured for personal access tokens.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
 WARNING:
-Project access tokens are treated as [internal users](../../../development/internal_users.md).
-If an internal user creates a project access token, that token is able to access
-all projects that have visibility level set to [Internal](../../public_access.md).
+The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
 
 To create a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Enter an expiry date for the token:
@@ -67,9 +62,14 @@ To create a group access token:
    - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
-1. Select  **Create group access token**.
+1. Select **Create group access token**.
 
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
+
+WARNING:
+Group access tokens are treated as [internal users](../../../development/internal_users.md).
+If an internal user creates a group access token, that token is able to access
+all projects that have visibility level set to [Internal](../../public_access.md).
 
 ## Create a group access token using Rails console
 
@@ -112,18 +112,43 @@ If you are an administrator, you can create group access tokens in the Rails con
    1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.
 
-## Revoke a group access token using the UI
+## Revoke a group access token
+
+> - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+
+You can use either the UI or the Rails console to revoke a group access token.
+
+In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
+feature flag, you can view both active and inactive revoked group access tokens
+on the access tokens page. If you do not enable the feature flag, you can only view
+the active tokens. The inactive group access tokens table:
+
+- Contains:
+  - Existing tokens that have been revoked but have not yet expired. After these
+    tokens expire, they are no longer in the table.
+  - Tokens created after the feature flag was enabled that have been revoked.
+    These tokens remain in the table even after they have expired.
+
+- Does not contain:
+  - Tokens that have already expired or been revoked.
+  - Existing tokens that expire in the future or have not been revoked.
+
+### Use the UI
 
 To revoke a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access Tokens**.
-1. Next to the group access token to revoke, select **Revoke**  (**{remove}**).
+1. Select **Settings > Access tokens**.
+1. Next to the group access token to revoke, select **Revoke** (**{remove}**).
 
-## Revoke a group access token using Rails console
+### Use the Rails console
 
-If you are a GitLab administrator, you can revoke a group access token.
-Run this command in a [Rails console](../../../administration/operations/rails_console.md):
+Prerequisites:
+
+- You must be an administrator.
+
+To revoke a group access token, run the following command in a
+[Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke
@@ -162,6 +187,40 @@ To enable or disable group access token creation for all subgroups in a top-leve
 1. Select **Save changes**.
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
+
+## Access token expiration
+
+Whether your existing group access tokens have expiry dates automatically applied
+depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
+
+- On GitLab.com, during the 16.0 milestone, existing group access tokens without
+  an expiry date were automatically given an expiry date of 365 days later than the current date.
+- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+  - On or before July 23, 2024, existing group access tokens without an expiry
+    date were automatically given an expiry date of 365 days later than the current date.
+    This change is a breaking change.
+  - On or after July 24, 2024, existing group access tokens without an expiry
+    date did not have an expiry date set.
+
+On GitLab self-managed, if you do a new install of one of the following GitLab
+versions, your existing group access tokens do not have expiry dates
+automatically applied:
+
+- 16.0.9
+- 16.1.7
+- 16.2.10
+- 16.3.8
+- 16.4.6
+- 16.5.9
+- 16.6.9
+- 16.7.9
+- 16.8.9
+- 16.9.10
+- 16.10.9
+- 16.11.7
+- 17.0.5
+- 17.1.3
+- 17.2.1
 
 ## Bot users for groups
 

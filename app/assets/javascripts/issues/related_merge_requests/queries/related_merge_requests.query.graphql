@@ -24,6 +24,10 @@ query fetchRelatedMergeRequests($projectPath: ID!, $iid: String!, $after: String
           milestone {
             ...MilestoneFragment
           }
+          project {
+            id
+            fullPath
+          }
           assignees {
             nodes {
               ...User

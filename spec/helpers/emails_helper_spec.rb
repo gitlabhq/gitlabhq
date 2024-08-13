@@ -2,10 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe EmailsHelper do
+RSpec.describe EmailsHelper, feature_category: :shared do
   include EmailsHelperTestHelper
+  include NotifyHelper
 
   describe 'closure_reason_text' do
+    let(:issue) { create(:issue) }
+
+    before do
+      self.instance_variable_set(:@issue, issue)
+    end
+
     context 'when given a MergeRequest' do
       let(:merge_request) { create(:merge_request) }
       let(:merge_request_presenter) { merge_request.present }

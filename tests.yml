@@ -39,7 +39,7 @@ mapping:
 
   # .gitlab/ci related specs
   - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
-    test: 'spec/dot_gitlab_ci/%{rest}_spec.rb'
+    test: 'spec/dot_gitlab_ci/rules_spec.rb'
 
   # Map config to respective specs
   - source: 'config/(?<rest>.+)\..*'
@@ -53,7 +53,7 @@ mapping:
   - source:
       - '(?<prefix>ee/)?config/events/.+\.yml'
       - 'config/events/schema\.json'
-    test: 'spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb'
+    test: 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
 
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'
@@ -165,6 +165,7 @@ mapping:
       - 'spec/db/docs_spec.rb'
       - 'spec/lib/gitlab/database/dictionary_spec.rb'
       - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
+      - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_pm_schema_spec.rb'
       - 'spec/lib/gitlab/database/sharding_key_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360

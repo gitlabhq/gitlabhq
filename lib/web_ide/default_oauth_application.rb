@@ -25,6 +25,12 @@ module WebIde
         URI.extract(oauth_application.redirect_uri, %w[http https]).uniq
       end
 
+      def reset_oauth_application_settings
+        return unless oauth_application
+
+        oauth_application.update!(default_settings)
+      end
+
       def ensure_oauth_application!
         return if oauth_application
 
@@ -35,17 +41,12 @@ module WebIde
           #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132496#note_1587293087
           application_settings.lock!
 
-          # note: `lock!`` breaks applicaiton_settings cache and will trigger another query.
+          # note: `lock!`` breaks application_settings cache and will trigger another query.
           # We need to double check here so that requests previously waiting on the lock can
           # now just skip.
           next if oauth_application
 
-          application = Doorkeeper::Application.new(
-            name: 'GitLab Web IDE',
-            redirect_uri: oauth_callback_url,
-            scopes: ['api'],
-            trusted: true,
-            confidential: false)
+          application = Doorkeeper::Application.new(default_settings)
           application.save!
           application_settings.update!(web_ide_oauth_application: application)
           should_expire_cache = true
@@ -59,6 +60,16 @@ module WebIde
 
       def application_settings
         ::Gitlab::CurrentSettings.current_application_settings
+      end
+
+      def default_settings
+        {
+          "name" => 'GitLab Web IDE',
+          "redirect_uri" => oauth_callback_url,
+          "scopes" => ['api'],
+          "trusted" => true,
+          "confidential" => false
+        }.freeze
       end
     end
   end

@@ -12,7 +12,9 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
+    push_frontend_feature_flag(:comment_tooltips)
   end
 
   feature_category :team_planning

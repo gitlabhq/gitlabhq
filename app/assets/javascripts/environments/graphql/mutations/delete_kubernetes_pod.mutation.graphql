@@ -1,0 +1,10 @@
+mutation deleteKubernetesPod(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $podName: String
+) {
+  deleteKubernetesPod(configuration: $configuration, namespace: $namespace, podName: $podName)
+    @client {
+    errors
+  }
+}

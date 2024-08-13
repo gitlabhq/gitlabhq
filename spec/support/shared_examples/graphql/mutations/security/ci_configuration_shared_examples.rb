@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.shared_examples_for 'graphql mutations security ci configuration' do
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
   let(:branch) do
     "set-secret-config"
@@ -37,7 +37,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
 
     context 'when user does not have enough permissions' do
       before do
-        project.add_guest(user)
+        project.add_guest(current_user)
       end
 
       it 'generates an error' do
@@ -49,7 +49,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
 
     context 'when user is a maintainer of a different project' do
       before do
-        create(:project_empty_repo).add_maintainer(user)
+        create(:project_empty_repo).add_maintainer(current_user)
       end
 
       it 'generates an error' do
@@ -63,7 +63,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
       let(:error_message) { 'You are not allowed to create protected branches on this project.' }
 
       before do
-        project.add_developer(user)
+        project.add_developer(current_user)
 
         allow_next_instance_of(::Files::MultiService) do |multi_service|
           allow(multi_service).to receive(:execute).and_raise(Gitlab::Git::PreReceiveError.new("GitLab: #{error_message}"))
@@ -81,7 +81,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
 
     context 'when the user can create a merge request' do
       before do
-        project.add_developer(user)
+        project.add_developer(current_user)
       end
 
       context 'when service successfully generates a path to create a new merge request' do

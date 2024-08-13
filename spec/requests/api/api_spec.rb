@@ -421,4 +421,22 @@ RSpec.describe API::API, feature_category: :system_access do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
+
+  describe 'Current Organization' do
+    let_it_be(:current_organization) { create(:organization) }
+
+    before do
+      allow_next_instance_of(Gitlab::Current::Organization) do |instance|
+        allow(instance).to receive(:organization).and_return(current_organization)
+      end
+    end
+
+    it 'sets Current Organization' do
+      # Test for new value of Current.organization won't work because
+      # it will be reset after the request is processed.
+      expect(Current).to receive(:organization=).with(current_organization)
+
+      get api('/groups')
+    end
+  end
 end

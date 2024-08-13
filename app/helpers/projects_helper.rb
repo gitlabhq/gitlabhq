@@ -56,7 +56,7 @@ module ProjectsHelper
     content_tag(:span, username, name_tag_options)
   end
 
-  def link_to_member(_project, author, opts = {}, &block)
+  def link_to_member(author, opts = {}, &block)
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
@@ -197,7 +197,6 @@ module ProjectsHelper
   end
 
   def can_set_diff_preview_in_email?(project, current_user)
-    return false unless Feature.enabled?(:diff_preview_in_email, project.group)
     return false if project.group&.show_diff_preview_in_email?.equal?(false)
 
     can?(current_user, :set_show_diff_preview_in_email, project)
@@ -275,9 +274,9 @@ module ProjectsHelper
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: user_settings_personal_access_tokens_path }
 
     message = if current_user.require_password_creation_for_git?
-                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
               else
-                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
               end
 
     ERB::Util.html_escape(message) % {
@@ -309,7 +308,13 @@ module ProjectsHelper
   end
 
   def show_projects?(projects, params)
-    !!(params[:personal] || params[:name] || params[:language] || any_projects?(projects))
+    !!(
+      params[:personal] ||
+      params[:name] ||
+      params[:language] ||
+      params[:archived] == 'only' ||
+      any_projects?(projects)
+    )
   end
 
   def push_to_create_project_command(user = current_user)
@@ -641,12 +646,11 @@ module ProjectsHelper
     'manual-ordering'
   end
 
-  def projects_explore_filtered_search_and_sort_app_data
+  def projects_filtered_search_and_sort_app_data
     {
       initial_sort: project_list_sort_by,
       programming_languages: programming_languages,
-      starred_explore_projects_path: starred_explore_projects_path,
-      explore_root_path: explore_root_path
+      paths_to_exclude_sort_on: [starred_explore_projects_path, explore_root_path]
     }.to_json
   end
 

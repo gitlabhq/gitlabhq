@@ -22,11 +22,14 @@ module Security
       # or contains predictable substrings derived from user attributes.
       # Case insensitive.
       def weak_for_user?(password, user)
-        forbidden_word_appears_in_password?(password) ||
-          name_appears_in_password?(password, user) ||
+        name_appears_in_password?(password, user) ||
           username_appears_in_password?(password, user) ||
           email_appears_in_password?(password, user) ||
-          password_on_weak_list?(password)
+          common_phrases_in_password?(password)
+      end
+
+      def common_phrases_in_password?(password)
+        forbidden_word_appears_in_password?(password) || password_on_weak_list?(password)
       end
 
       private

@@ -26,7 +26,7 @@ describe('Log scanner', () => {
       content: [
         {
           text: 'line 2',
-          style: ['xterm-bg-9', 'term-bold'],
+          style: ['xterm-bg-1', 'term-bold'],
         },
       ],
       sections: [],
@@ -38,11 +38,123 @@ describe('Log scanner', () => {
       content: [
         {
           text: 'line 1',
-          style: ['xterm-fg-10', 'term-bold'],
+          style: ['term-fg-green', 'term-bold'],
         },
       ],
       sections: [],
     });
+  });
+
+  it('scans line that shows progress with CR char', () => {
+    expect(scanner.scan('Progress 1...\rProgress 2...\rDone!')).toEqual({
+      content: [
+        {
+          text: 'Done!',
+          style: [],
+        },
+      ],
+      sections: [],
+    });
+  });
+
+  it('scans a section with timestamps', () => {
+    const lines = [
+      '2024-01-01T00:01:00.000000Z 00O section_start:1000:my_section[key1=value1,key2=value2]\r',
+      '2024-01-01T00:02:00.000000Z 00O+header 1',
+      '2024-01-01T00:03:00.000000Z 00O line 1',
+      '2024-01-01T00:04:00.000000Z 00O line 2',
+      '2024-01-01T00:05:00.000000Z 00O section_end:1010:my_section\r',
+    ];
+
+    expect(lines.map((l) => scanner.scan(l))).toEqual([
+      {
+        timestamp: '2024-01-01T00:01:00.000000Z',
+        header: 'my_section',
+        options: { key1: 'value1', key2: 'value2' },
+        content: [],
+        sections: [],
+      },
+      {
+        append: true,
+        timestamp: '2024-01-01T00:02:00.000000Z',
+        content: [{ style: [], text: 'header 1' }],
+      },
+      {
+        timestamp: '2024-01-01T00:03:00.000000Z',
+        content: [{ style: [], text: 'line 1' }],
+        sections: ['my_section'],
+      },
+      {
+        timestamp: '2024-01-01T00:04:00.000000Z',
+        content: [{ style: [], text: 'line 2' }],
+        sections: ['my_section'],
+      },
+      null,
+    ]);
+  });
+
+  it('scans two sections with timestamps', () => {
+    const lines = [
+      '2024-01-01T00:01:00.000000Z 00O section_start:1000:my_section[key1=value1,key2=value2]\r',
+      '2024-01-01T00:02:00.000000Z 00O+header 1...',
+      '2024-01-01T00:03:00.000000Z 00O+...continues',
+      '2024-01-01T00:04:00.000000Z 00O line 1...',
+      '2024-01-01T00:05:00.000000Z 00O+...also continues',
+      '2024-01-01T00:06:00.000000Z 00O section_end:1010:my_section\r',
+      '2024-01-01T00:07:00.000000Z 00O+section_start:1010:my_section_2\r',
+      '2024-01-01T00:08:00.000000Z 00O+header 2',
+      '2024-01-01T00:09:00.000000Z 00O line 2',
+      '2024-01-01T00:10:00.000000Z 00O section_end:1020:my_section_2\r',
+    ];
+
+    expect(lines.map((l) => scanner.scan(l))).toEqual([
+      {
+        content: [],
+        header: 'my_section',
+        options: { key1: 'value1', key2: 'value2' },
+        sections: [],
+        timestamp: '2024-01-01T00:01:00.000000Z',
+      },
+      {
+        append: true,
+        content: [{ style: [], text: 'header 1...' }],
+        timestamp: '2024-01-01T00:02:00.000000Z',
+      },
+      {
+        append: true,
+        content: [{ style: [], text: '...continues' }],
+        timestamp: '2024-01-01T00:03:00.000000Z',
+      },
+      {
+        content: [{ style: [], text: 'line 1...' }],
+        sections: ['my_section'],
+        timestamp: '2024-01-01T00:04:00.000000Z',
+      },
+      {
+        append: true,
+        content: [{ style: [], text: '...also continues' }],
+        timestamp: '2024-01-01T00:05:00.000000Z',
+      },
+      null,
+      {
+        content: [],
+        header: 'my_section_2',
+        options: undefined,
+        sections: [],
+        timestamp: '2024-01-01T00:07:00.000000Z',
+      },
+      {
+        append: true,
+        content: [{ style: [], text: 'header 2' }],
+        timestamp: '2024-01-01T00:08:00.000000Z',
+      },
+      {
+        content: [{ style: [], text: 'line 2' }],
+        sections: ['my_section_2'],
+        timestamp: '2024-01-01T00:09:00.000000Z',
+      },
+      null,
+    ]);
   });
 
   it('scans a section with its duration', () => {
@@ -61,7 +173,7 @@ describe('Log scanner', () => {
       },
       { content: [{ style: [], text: 'line 1' }], sections: ['my_section'] },
       { content: [{ style: [], text: 'line 2' }], sections: ['my_section'] },
-      { content: [{ duration: 10, section: 'my_section' }], sections: [] },
+      null,
     ]);
   });
 
@@ -80,7 +192,7 @@ describe('Log scanner', () => {
         sections: [],
       },
       { content: [{ style: [], text: 'line 1' }], sections: ['my_section'] },
-      { content: [{ duration: 10, section: 'my_section' }], sections: [] },
+      null,
     ]);
   });
 
@@ -108,9 +220,22 @@ describe('Log scanner', () => {
         sections: ['my_section'],
       },
       { content: [{ style: [], text: 'line 2' }], sections: ['my_section', 'my_sub_section'] },
-      { content: [{ duration: 10, section: 'my_sub_section' }], sections: ['my_section'] },
+      null,
       { content: [{ style: [], text: 'line 3' }], sections: ['my_section'] },
-      { content: [{ duration: 30, section: 'my_section' }], sections: [] },
+      null,
     ]);
+  });
+
+  describe('scans malformed sections as regular text', () => {
+    it.each([
+      'section_start:not_a_number:my_section',
+      'section_start:100:',
+      'section_wrong:100:my_section',
+    ])('scans "%s"', (text) => {
+      expect(scanner.scan(text)).toEqual({
+        content: [{ style: [], text }],
+        sections: [],
+      });
+    });
   });
 });

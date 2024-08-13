@@ -5,7 +5,7 @@ export default {
   i18n: {
     title: s__('PipelineEditorTutorial|💡 Tip: Visualize and validate your pipeline'),
     firstParagraph: s__(
-      'PipelineEditorTutorial|Use the Visualize and Lint tabs in the Pipeline Editor to visualize your pipeline and check for any errors or warnings before committing your changes.',
+      'PipelineEditorTutorial|Use the Visualize and Lint tabs in the pipeline editor to visualize your pipeline and check for any errors or warnings before committing your changes.',
     ),
   },
 };

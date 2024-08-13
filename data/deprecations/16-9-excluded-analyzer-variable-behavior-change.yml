@@ -1,4 +1,4 @@
-- title: "Scan execution policies enforcing scans with an `_EXCLUDED_ANALYZERS` variable will override project variables"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+- title: "Scan execution policies using `_EXCLUDED_ANALYZERS` variable override project variables"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   announcement_milestone: "16.9"  # (required) The milestone when this feature was first announced as deprecated.
   breaking_change: true  # (required) Change to false if this is not a breaking change.

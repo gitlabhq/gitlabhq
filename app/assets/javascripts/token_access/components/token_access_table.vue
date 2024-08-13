@@ -52,7 +52,7 @@ export default {
     :items="items"
     :fields="$options.fields"
     :tbody-tr-attr="{ 'data-testid': 'token-access-table-row' }"
-    thead-class="gl-display-none"
+    thead-class="gl-hidden"
     class="gl-mb-0"
     fixed
   >
@@ -69,6 +69,7 @@ export default {
           :project-id="item.id"
           :project-name="item.name"
           class="gl-mr-3"
+          :size="24"
           :data-testid="`token-access-${itemType(item)}-avatar`"
         />
         <gl-link

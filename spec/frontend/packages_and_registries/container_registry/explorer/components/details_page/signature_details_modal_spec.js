@@ -6,7 +6,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import SignatureDetailsModal from '~/packages_and_registries/container_registry/explorer/components/details_page/signature_details_modal.vue';
 import getManifestDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_manifest_details.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { __ } from '~/locale';
 import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted.vue';
 
 Vue.use(VueApollo);
@@ -44,7 +43,7 @@ describe('Signature details modal', () => {
       expect(findModal().attributes()).toHaveProperty('scrollable');
       expect(findModal().props()).toMatchObject({
         title: 'Signature details',
-        actionCancel: { text: __('Close') },
+        actionCancel: { text: 'Close' },
       });
     });
 

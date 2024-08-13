@@ -71,7 +71,7 @@ even if the vulnerability already exists on the default branch.
 
 For more information, see:
 
-- [Enable Secret Detection](secret_detection/pipeline/index.md#enabling-the-analyzer)
+- [Enable Secret Detection](secret_detection/pipeline/index.md#enable-the-analyzer)
 - [Secret Detection settings](secret_detection/pipeline/index.md#configuration)
 - [Enable Dependency Scanning](dependency_scanning/index.md#configuration)
 - [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables)
@@ -107,7 +107,7 @@ low development activity and where pipeline scans are infrequent.
 
 For more information, see:
 
-- [Scan execution policy](policies/scan-execution-policies.md)
+- [Scan execution policy](policies/scan_execution_policies.md)
 - [Container scans](container_scanning/index.md)
 - [Operational container scanning](../../user/clusters/agent/vulnerabilities.md)
 
@@ -126,7 +126,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
 
 For more information, see:
 
-- [Scan Execution Policies](policies/scan-execution-policies.md)
+- [Scan Execution Policies](policies/scan_execution_policies.md)
 - [Merge request approval policy](policies/index.md)
 
 ## Step 7: Continue scanning for new vulnerabilities

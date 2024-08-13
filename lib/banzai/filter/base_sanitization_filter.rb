@@ -11,13 +11,15 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with common rules.
     class BaseSanitizationFilter < HTML::Pipeline::SanitizationFilter
-      include Concerns::TimeoutFilterHandler
+      prepend Concerns::TimeoutFilterHandler
       include Gitlab::Utils::StrongMemoize
       extend Gitlab::Utils::SanitizeNodeLink
 
+      RENDER_TIMEOUT = 5.seconds
+
       UNSAFE_PROTOCOLS = %w[data javascript vbscript].freeze
 
-      def call_with_timeout
+      def call
         Sanitize.clean_node!(doc, allowlist)
       end
 
@@ -71,6 +73,10 @@ module Banzai
       end
 
       private
+
+      def render_timeout
+        SANITIZATION_RENDER_TIMEOUT
+      end
 
       # If sanitization times out, we can not return partial un-sanitized results.
       # It's ok to allow any following filters to run since this is safe HTML.

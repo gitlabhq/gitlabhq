@@ -92,18 +92,22 @@ module Gitlab
               path: 'gitlab'
             }
 
+            organization = ::Organizations::Organization.find_by_path(args[:path])
+
+            return organization if organization
+
             logger.info(message: 'Creating organization', **args)
 
             ensure_success(::Organizations::CreateService.new(current_user: @user, params: args).execute[:organization])
           end
 
           def create_groups_and_projects
-            root_group_1 = ensure_group(name: 'top-level group 1', organization: @organization)
-            root_group_2 = ensure_group(name: 'top-level group 2', organization: @organization)
-            group_1_1 = ensure_group(name: 'group 1.1', parent_id: root_group_1.id, organization: @organization)
-            group_1_1_1 = ensure_group(name: 'group 1.1.1', parent_id: group_1_1.id, organization: @organization)
-            group_1_1_2 = ensure_group(name: 'group 1.1.2', parent_id: group_1_1.id, organization: @organization)
-            group_2_1 = ensure_group(name: 'group 2.1', parent_id: root_group_2.id, organization: @organization)
+            root_group_1 = ensure_group(name: 'top-level group 1', organization_id: @organization.id)
+            root_group_2 = ensure_group(name: 'top-level group 2', organization_id: @organization.id)
+            group_1_1 = ensure_group(name: 'group 1.1', parent_id: root_group_1.id)
+            group_1_1_1 = ensure_group(name: 'group 1.1.1', parent_id: group_1_1.id)
+            group_1_1_2 = ensure_group(name: 'group 1.1.2', parent_id: group_1_1.id)
+            group_2_1 = ensure_group(name: 'group 2.1', parent_id: root_group_2.id)
 
             {
               root_group_1: root_group_1,
@@ -112,12 +116,12 @@ module Gitlab
               group_1_1_1: group_1_1_1,
               group_1_1_2: group_1_1_2,
               project_1_1_1_1: ensure_project(
-                name: 'project 1.1.1.1', namespace_id: group_1_1_1.id, organization: @organization),
+                name: 'project 1.1.1.1', namespace_id: group_1_1_1.id, organization_id: @organization.id),
               project_1_1_2_1: ensure_project(
-                name: 'project 1.1.2.1', namespace_id: group_1_1_2.id, organization: @organization),
+                name: 'project 1.1.2.1', namespace_id: group_1_1_2.id, organization_id: @organization.id),
               group_2_1: group_2_1,
               project_2_1_1: ensure_project(
-                name: 'project 2.1.1', namespace_id: group_2_1.id, organization: @organization)
+                name: 'project 2.1.1', namespace_id: group_2_1.id, organization_id: @organization.id)
             }
           end
 

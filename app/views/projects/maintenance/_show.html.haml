@@ -1,13 +1,11 @@
 - expanded = expanded_by_default?
 
-%section.settings.no-animate#cleanup{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Repository maintenance')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary.gl-pb-3
-      = s_('ProjectMaintenance|Manage repository storage and cleanup.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Repository maintenance'),
+  id: 'cleanup',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_('ProjectMaintenance|Manage repository storage and cleanup.')
+  - c.with_body do
     = render Pajamas::AlertComponent.new(variant: :danger, alert_options: { class: 'gl-mb-5' }, dismissible: false) do |c|
       - c.with_body do
         - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe

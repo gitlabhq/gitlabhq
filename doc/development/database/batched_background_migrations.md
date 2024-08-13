@@ -73,7 +73,7 @@ batch size may be increased or decreased, based on the performance of the last 2
 hide empty description
 skinparam ConditionEndStyle hline
 left to right direction
-rectangle "Batched Background Migration Queue" as migrations {
+rectangle "Batched background migration queue" as migrations {
   rectangle "Migration N (active)" as migrationn
   rectangle "Migration 1 (completed)" as migration1
   rectangle "Migration 2 (active)" as migration2
@@ -220,7 +220,12 @@ data fully migrated. ([See an example](https://gitlab.com/gitlab-org/gitlab/-/bl
 ### Generate a batched background migration
 
 The custom generator `batched_background_migration` scaffolds necessary files and
-accepts `table_name`, `column_name`, and `feature_category` as arguments. Usage:
+accepts `table_name`, `column_name`, and `feature_category` as arguments. When
+choosing the `column_name`, ensure that you are using a column type that can be iterated over distinctly,
+preferably the table's primary key. The table will be iterated over based on the column defined here.
+For more information, see [Batch over non-distinct columns](#batch-over-non-distinct-columns).
+
+Usage:
 
 ```shell
 bundle exec rails g batched_background_migration my_batched_migration --table_name=<table-name> --column_name=<column-name> --feature_category=<feature-category>
@@ -410,7 +415,7 @@ In the example above we need an index on `(type, id)` to support the filters. Se
 
 ### Access data for multiple databases
 
-Background Migration contrary to regular migrations does have access to multiple databases
+Background migration contrary to regular migrations does have access to multiple databases
 and can be used to efficiently access and update data across them. To properly indicate
 a database to be used it is desired to create ActiveRecord model inline the migration code.
 Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)

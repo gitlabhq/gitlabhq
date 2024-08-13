@@ -70,11 +70,11 @@ purposes.
 
 The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 The images used in our pipelines are configured in the
 [`gitlab-org/gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images)
@@ -202,7 +202,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 ### `if:` conditions
 
-<!-- vale gitlab.Substitutions = NO -->
+<!-- vale gitlab_base.Substitutions = NO -->
 
 | `if:` conditions | Description | Notes |
 |------------------|-------------|-------|
@@ -229,7 +229,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `if-dot-com-gitlab-org-merge-request`                        | Limits jobs creation to merge requests for the `gitlab-org` group on GitLab.com. | |
 | `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
 
-<!-- vale gitlab.Substitutions = YES -->
+<!-- vale gitlab_base.Substitutions = YES -->
 
 ### `changes:` patterns
 
@@ -543,3 +543,15 @@ bundle exec scripts/my-script.rb
 # Good
 scripts/my-script.rb
 ```
+
+## CI Configuration Testing
+
+We now have RSpec tests to verify changes to the CI configuration by simulating pipeline creation with the updated YAML files. You can find these tests and a documentation of the current test coverage in [`spec/dot_gitlab_ci/job_dependency_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/dot_gitlab_ci/job_dependency_spec.rb).
+
+### How Do the Tests Work
+
+With the help of `Ci::CreatePipelineService`, we are able to simulate pipeline creation with different attributes such as branch name, MR labels, pipeline source (scheduled v.s push), pipeline type (merge train v.s merged results), etc. This is the same service utilized by the GitLab CI Lint API for validating CI/CD configurations.
+
+These tests will automatically run for merge requests that update CI configurations. However, team members can opt to skip these tests by adding the label ~"pipeline:skip-ci-validation" to their merge requests.
+
+Running these tests locally is encouraged, as it provides the fastest feedback.

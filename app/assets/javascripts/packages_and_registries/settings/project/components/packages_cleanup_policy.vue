@@ -6,13 +6,13 @@ import {
   PACKAGES_CLEANUP_POLICY_DESCRIPTION,
 } from '~/packages_and_registries/settings/project/constants';
 import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 import PackagesCleanupPolicyForm from './packages_cleanup_policy_form.vue';
 
 export default {
   components: {
-    SettingsBlock,
+    SettingsSection,
     GlAlert,
     GlSprintf,
     PackagesCleanupPolicyForm,
@@ -47,22 +47,20 @@ export default {
 </script>
 
 <template>
-  <settings-block>
-    <template #title> {{ $options.i18n.PACKAGES_CLEANUP_POLICY_TITLE }}</template>
+  <settings-section :heading="$options.i18n.PACKAGES_CLEANUP_POLICY_TITLE">
     <template #description>
       <span data-testid="description">
         <gl-sprintf :message="$options.i18n.PACKAGES_CLEANUP_POLICY_DESCRIPTION" />
       </span>
     </template>
-    <template #default>
-      <gl-alert v-if="fetchSettingsError" variant="warning" :dismissible="false">
-        <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
-      </gl-alert>
-      <packages-cleanup-policy-form
-        v-else
-        v-model="packagesCleanupPolicy"
-        :is-loading="$apollo.queries.packagesCleanupPolicy.loading"
-      />
-    </template>
-  </settings-block>
+
+    <gl-alert v-if="fetchSettingsError" variant="warning" :dismissible="false">
+      <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
+    </gl-alert>
+    <packages-cleanup-policy-form
+      v-else
+      v-model="packagesCleanupPolicy"
+      :is-loading="$apollo.queries.packagesCleanupPolicy.loading"
+    />
+  </settings-section>
 </template>

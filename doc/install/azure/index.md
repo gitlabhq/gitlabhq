@@ -251,7 +251,7 @@ in this section whenever you need to update GitLab.
 
 To determine the version of GitLab you're currently running:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Dashboard**.
 1. Find the version under the **Components** table.
 
@@ -291,7 +291,7 @@ To update GitLab to the latest version:
    before anything else.
    ```
 
-Refresh your GitLab instance in the browser and go to the Admin area. You should now have an
+Refresh your GitLab instance in the browser and go to the **Admin** area. You should now have an
 up-to-date GitLab instance.
 
 ## Next steps and further configuration
@@ -315,14 +315,10 @@ a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gp
 
 If you try to update the repositories, the system returns the following error:
 
-<!-- vale gitlab.ReferenceLinks = NO -->
-
 ```plaintext
 [   21.023494] apt-setup[1198]: W: GPG error: https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 3F01618A51312F3F
 [   21.024033] apt-setup[1198]: E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.
 ```
-
-<!-- vale gitlab.ReferenceLinks = YES -->
 
 To fix this, fetch the new GPG key:
 

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Use GitLab CI/CD to deploy to Heroku
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 You can deploy an application to Heroku by using GitLab CI/CD.
 
 ## Prerequisites

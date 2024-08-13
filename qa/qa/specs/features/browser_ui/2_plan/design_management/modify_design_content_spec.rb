@@ -14,7 +14,7 @@ module QA
       end
 
       it(
-        'user adds a design and modifies it',
+        'user adds a design and modifies it', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347712'
       ) do
         design.issue.visit!

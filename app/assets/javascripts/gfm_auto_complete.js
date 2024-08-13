@@ -136,6 +136,7 @@ export const highlighter = (li, query) => {
   }
   const escapedQuery = escapeRegExp(query);
   const regexp = new RegExp(`>\\s*([^<]*?)(${escapedQuery})([^<]*)\\s*<`, 'ig');
+  // eslint-disable-next-line max-params
   return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
 };
 
@@ -987,6 +988,7 @@ class GfmAutoComplete {
     }
   }
 
+  // eslint-disable-next-line max-params
   loadData($input, at, data, { search } = {}) {
     this.isLoadingData[at] = false;
 

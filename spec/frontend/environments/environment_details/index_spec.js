@@ -122,6 +122,7 @@ describe('~/environments/environment_details/index.vue', () => {
     it('renders kubernetes_overview component with correct props', () => {
       expect(findKubernetesOverview().props()).toEqual({
         environmentName,
+        environmentId: '1',
         clusterAgent: agent,
         kubernetesNamespace,
         fluxResourcePath: fluxResourcePathMock,

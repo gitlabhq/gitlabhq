@@ -78,4 +78,8 @@ RSpec.describe Packages::MlModel::Package, feature_category: :mlops do
       end
     end
   end
+
+  describe '.installable' do
+    it_behaves_like 'installable packages', :ml_model_package
+  end
 end

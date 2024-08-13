@@ -17,6 +17,7 @@ module Gitlab
             @needs_attributes = dig(:needs_attributes)
             @resource_group_key = attributes.delete(:resource_group_key)
             @job_variables = @seed_attributes.delete(:job_variables)
+            @execution_config_attribute = @seed_attributes.delete(:execution_config)
             @root_variables_inheritance = @seed_attributes.delete(:root_variables_inheritance) { true }
 
             @using_rules  = attributes.key?(:rules)
@@ -96,15 +97,9 @@ module Gitlab
           delegate :logger, to: :@context
 
           def build_execution_config_attribute
-            run_value = @seed_attributes.dig(:options, :run)
-            return {} unless ::Feature.enabled?(:pipeline_run_keyword, @pipeline.project) && run_value.present?
+            return {} unless ::Feature.enabled?(:pipeline_run_keyword, @pipeline.project) && @execution_config_attribute
 
-            execution_config = ::Ci::BuildExecutionConfig.new(
-              project: @pipeline.project,
-              pipeline: @pipeline,
-              run_steps: run_value
-            )
-
+            execution_config = @context.find_or_build_execution_config(@execution_config_attribute)
             { execution_config: execution_config }
           end
 

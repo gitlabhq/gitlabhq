@@ -3,7 +3,7 @@
 module Projects::TerraformHelper
   def js_terraform_list_data(current_user, project)
     {
-      empty_state_image: image_path('illustrations/empty-state/empty-serverless-lg.svg'),
+      empty_state_image: image_path('illustrations/empty-state/empty-environment-md.svg'),
       project_path: project.full_path,
       terraform_admin: current_user&.can?(:admin_terraform_state, project),
       access_tokens_path: user_settings_personal_access_tokens_path,

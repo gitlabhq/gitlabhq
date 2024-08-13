@@ -14,9 +14,8 @@ DETAILS:
 In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/), GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:
 
-- **Annually**. This process is also known as **the annual true-up process**. This process requires you to pay the full annual subscription fee
-  for users added anytime during the year.
-- **Quarterly**. With this process, you pay only for the remaining period of your subscription term.
+- **Annually**. This process is also known as **the annual true-up process**. This process requires you to pay the full annual subscription fee for users added anytime during the year.
+- **Quarterly**. With this process, you pay on a prorated basis for the remaining portion of the subscription term.
 
 ## Quarterly reconciliation vs. annual true-ups
 
@@ -35,7 +34,7 @@ If you are being billed annually:
 Annual total: **$2000**
 
 If you are being billed quarterly, you pay for the maximum number of seats you used during the quarter,
-and for only the remaining quarters.
+and for only the remaining quarters. Your invoice is prorated for the remaining portion of the subscription term.
 
 Using the same example, if a seat is $100 per year, then it is $25 per quarter.
 
@@ -88,7 +87,7 @@ sent and subject to your payment terms.
 
 If your credit card is declined during the reconciliation process, an email will be sent with the subject `Your GitLab subscription failed to reconcile`. Follow these instructions to update your payment information, and the reconciliation will be automatically retried:
 
-1. Log in to your account at `https://customers.gitlab.com`.
+1. Sign in to your account at `https://customers.gitlab.com`.
 1. On the left sidebar, select **Billing account settings**.
 1. Under **Payment methods**, select **Add new payment method**.
 1. After the new payment method has been added, select **Edit**, then select **Default** to mark it as the default payment method.

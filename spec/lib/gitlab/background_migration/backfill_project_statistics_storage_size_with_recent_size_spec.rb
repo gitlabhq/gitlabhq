@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectStatisticsStorageSizeWithRecentSize,
   schema: 20230823090001,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/477992',
   feature_category: :consumables_cost_management do
   include MigrationHelpers::ProjectStatisticsHelper
 

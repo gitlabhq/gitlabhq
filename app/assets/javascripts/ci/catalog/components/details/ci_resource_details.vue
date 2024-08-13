@@ -33,15 +33,15 @@ export default {
 
 <template>
   <gl-tabs>
+    <gl-tab :title="$options.i18n.tabs.components" lazy>
+      <ci-resource-components :class="$options.componentStyles" :resource-path="resourcePath" />
+    </gl-tab>
     <gl-tab :title="$options.i18n.tabs.readme" lazy>
       <ci-resource-readme
         :class="$options.componentStyles"
         :resource-path="resourcePath"
         :version="version"
       />
-    </gl-tab>
-    <gl-tab :title="$options.i18n.tabs.components" lazy>
-      <ci-resource-components :class="$options.componentStyles" :resource-path="resourcePath" />
     </gl-tab>
   </gl-tabs>
 </template>

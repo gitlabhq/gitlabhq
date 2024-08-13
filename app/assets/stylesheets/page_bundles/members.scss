@@ -1,11 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.invite-users-form {
-  .btn-success {
-    margin-right: 10px;
-  }
-}
-
 .member {
   .controls {
     @include media-breakpoint-up(sm) {
@@ -84,6 +78,7 @@
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-datepicker-input {
     width: px-to-rem(165px);
     max-width: 100%;

@@ -158,16 +158,16 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integra
     where(:public_builds, :user_project_role, :debug_mode, :expected_status_code, :expected_msg) do
       true         | 'developer'      | true  | 200 | ''
       true         | 'guest'          | true  | 403 | 'You must have developer or higher permissions'
-      true         | nil              | true  | 404 | 'Page Not Found Make sure the address is correct'
+      true         | nil              | true  | 404 | 'Page not found Make sure the address is correct'
       true         | 'developer'      | false | 200 | ''
       true         | 'guest'          | false | 200 | ''
-      true         | nil              | false | 404 | 'Page Not Found Make sure the address is correct'
+      true         | nil              | false | 404 | 'Page not found Make sure the address is correct'
       false        | 'developer'      | true  | 200 | ''
       false        | 'guest'          | true  | 403 | 'You must have developer or higher permissions'
-      false        | nil              | true  | 404 | 'Page Not Found Make sure the address is correct'
+      false        | nil              | true  | 404 | 'Page not found Make sure the address is correct'
       false        | 'developer'      | false | 200 | ''
       false        | 'guest'          | false | 403 | 'The current user is not authorized to access the job log'
-      false        | nil              | false | 404 | 'Page Not Found Make sure the address is correct'
+      false        | nil              | false | 404 | 'Page not found Make sure the address is correct'
     end
 
     with_them do

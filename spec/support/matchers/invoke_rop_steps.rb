@@ -26,14 +26,14 @@ module InvokeRopSteps
       raise "'with_#{result_type}_result_for_step' argument entry 'step_class' be of type 'Class'"
     end
 
-    unless result_for_step[:returned_message].is_a?(RemoteDevelopment::Message)
+    unless result_for_step[:returned_message].is_a?(Gitlab::Fp::Message)
       raise "'with_#{result_type}_result_for_step' argument entry 'returned_message' be a subclass of " \
         "'RemoteDevelopment::Messages'"
     end
 
     result_for_step => {
       step_class: Class => step_class,
-      returned_message: RemoteDevelopment::Message => returned_message
+      returned_message: Gitlab::Fp::Message => returned_message
     }
 
     [step_class, returned_message]

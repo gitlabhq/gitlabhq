@@ -29,7 +29,7 @@ When a package is protected, the default behavior enforces these restrictions on
 |:-----------------------------------------|:----------------------------------------------------------------------------------|
 | Protect a package                        | At least the Maintainer role.                                                     |
 | Push a new package                       | At least the role set in [**Minimum access level for push**](#protect-a-package). |
-| Push a new package with a deploy token | Any user with a valid deploy token, even if a package is protected. |
+| Push a new package with a deploy token   | Any valid deploy token, only if the pushed package is not matched by a protection rule. Protected packages cannot be pushed with a deploy token. |
 
 ## Protect a package
 

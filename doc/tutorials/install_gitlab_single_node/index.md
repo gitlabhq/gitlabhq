@@ -273,7 +273,7 @@ Now it's time to configure GitLab!
 GitLab comes with some sane default configuration options. In this section,
 we will change them to add more functionality, and make GitLab more secure.
 
-For some of the options you'll use the Admin area UI, and for some of them you'll
+For some of the options you'll use the **Admin** area UI, and for some of them you'll
 edit `/etc/gitlab/gitlab.rb`, the GitLab configuration file.
 
 ### Configure NGINX

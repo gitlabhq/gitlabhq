@@ -21,16 +21,33 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       get diffs_stream_namespace_project_merge_request_path(params.merge(extra_params))
     end
 
-    let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+    let_it_be_with_reload(:merge_request) do
+      create(
+        :merge_request_with_diffs,
+        target_project: project,
+        source_project: project
+      )
+    end
 
     context 'when offset is not given' do
       it 'streams all diffs' do
         go
 
-        file_paths = merge_request.diffs.diff_files.to_a.map(&:file_path)
-
         expect(response).to have_gitlab_http_status(:success)
-        expect(response.body).to include(*file_paths)
+        expect(response.body).to include(*file_identifier_hashes(merge_request.merge_request_diff))
+      end
+
+      context 'when HEAD diff is present' do
+        before do
+          merge_request.reset.create_merge_head_diff!
+        end
+
+        it 'streams all diffs' do
+          go
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response.body).to include(*file_identifier_hashes(merge_request.merge_head_diff))
+        end
       end
     end
 
@@ -40,13 +57,13 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       it 'streams diffs except the offset' do
         go(offset: offset)
 
-        diff_files = merge_request.diffs.diff_files.to_a
-        offset_file_paths = diff_files.take(offset).map(&:file_path)
-        remaining_file_paths = diff_files.slice(offset..).map(&:file_path)
+        diff_files = merge_request.merge_request_diff.diffs.diff_files.to_a
+        offset_file_identifier_hashes = diff_files.take(offset).map(&:file_identifier_hash)
+        remaining_file_identifier_hashes = diff_files.slice(offset..).map(&:file_identifier_hash)
 
         expect(response).to have_gitlab_http_status(:success)
-        expect(response.body).not_to include(*offset_file_paths)
-        expect(response.body).to include(*remaining_file_paths)
+        expect(response.body).not_to include(*offset_file_identifier_hashes)
+        expect(response.body).to include(*remaining_file_identifier_hashes)
       end
     end
 
@@ -74,5 +91,9 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
+
+  def file_identifier_hashes(diff)
+    diff.diffs.diff_files.to_a.map(&:file_identifier_hash)
   end
 end

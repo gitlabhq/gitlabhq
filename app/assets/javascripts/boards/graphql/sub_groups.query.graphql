@@ -1,0 +1,22 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+fragment Group on Group {
+  id
+  name
+  fullName
+  fullPath
+}
+
+query getSubGroups($fullPath: ID!, $search: String, $after: String) {
+  group(fullPath: $fullPath) {
+    ...Group
+    descendantGroups(search: $search, after: $after, first: 100) {
+      nodes {
+        ...Group
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

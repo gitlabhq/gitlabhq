@@ -133,6 +133,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
       end
     end
 
+    context 'when run: and trigger: are used together' do
+      let(:config) do
+        {
+          run: [{ name: 'step1', step: 'some reference' }],
+          trigger: 'test-group/test-project'
+        }
+      end
+
+      it 'is invalid' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include(/these keys cannot be used together: run, trigger/)
+      end
+    end
+
     context 'when only: is used with rules:' do
       let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }] } }
 

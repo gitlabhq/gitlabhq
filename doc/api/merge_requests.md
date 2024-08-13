@@ -909,6 +909,8 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `not_open`: The merge request must be open before merge.
   - `requested_changes`: The merge request has reviewers who have requested changes.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
+  - `locked_paths`: Paths locked by other users must be unlocked before merging to default branch.
+  - `locked_lfs_files`: LFS files locked by other users must be unlocked before merge.
 
 ### Preparation steps
 

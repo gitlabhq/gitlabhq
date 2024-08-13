@@ -1265,11 +1265,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response['status']).to eq('canceling')
         end
 
-        context 'when ci_canceling_status is disabled' do
-          before do
-            stub_feature_flags(ci_canceling_status: false)
-          end
-
+        context 'when cancel_gracefully is not supported by the runner' do
           it 'cancels builds', :sidekiq_inline do
             post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
 

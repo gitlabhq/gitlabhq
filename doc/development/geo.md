@@ -110,7 +110,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The administrator can manually flag a repository to resync in the
-  [Geo Admin area](../administration/geo_sites.md).
+  [Geo **Admin** area](../administration/geo_sites.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _re-download_. It will do a clean clone
@@ -318,22 +318,30 @@ sequenceDiagram
 
 ## Authentication
 
-To authenticate file transfers, each `GeoNode` record has two fields:
+To authenticate Git and file transfers, each `GeoNode` record has two fields:
 
 - A public access key (`access_key` field).
 - A secret access key (`secret_access_key` field).
 
 The **secondary** site authenticates itself via a [JWT request](https://jwt.io/).
-When the **secondary** site wishes to download a file, it sends an
-HTTP request with the `Authorization` header:
+
+The **secondary** site authorizes HTTP requests with the `Authorization` header:
 
 ```plaintext
 Authorization: GL-Geo <access_key>:<JWT payload>
 ```
 
-The **primary** site uses the `access_key` field to look up the
-corresponding **secondary** site and decrypts the JWT payload,
-which contains additional information to identify the file
+The **primary** site uses the `access_key` field to look up the corresponding
+**secondary** site and decrypts the JWT payload.
+
+NOTE:
+JWT requires synchronized clocks between the machines involved, otherwise the
+**primary** site may reject the request.
+
+### File transfers
+
+When the **secondary** site wishes to download a file, the JWT payload
+contains additional information to identify the file
 request. This ensures that the **secondary** site downloads the right
 file for the right database ID. For example, for an LFS object, the
 request must also include the SHA256 sum of the file. An example JWT
@@ -348,9 +356,17 @@ If the requested file matches the requested SHA256 sum, then the Geo
 feature, which allows NGINX to handle the file transfer without tying
 up Rails or Workhorse.
 
-NOTE:
-JWT requires synchronized clocks between the machines
-involved, otherwise it may fail with an encryption error.
+### Git transfers
+
+When the **secondary** site wishes to clone or fetch a Git repository from the
+**primary** site, the JWT payload contains additional information to identify
+the Git repository request. This ensures that the **secondary** site downloads
+the right Git repository for the right database ID. An example JWT
+payload looks like:
+
+```yaml
+{"data": {scope: "mygroup/myproject"}, iat: "1234567890"}
+```
 
 ## Git Push to Geo secondary
 
@@ -465,7 +481,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** site does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo Admin area](../administration/geo_sites.md).
+and the administrator can see this in the [Geo **Admin** area](../administration/geo_sites.md).
 
 ## Geo proxying
 

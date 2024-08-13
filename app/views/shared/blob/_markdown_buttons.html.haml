@@ -29,11 +29,11 @@
 = markdown_toolbar_button({ icon: "list-numbered", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
 = markdown_toolbar_button({ icon: "list-task", css_class: 'haml-markdown-button gl-mr-3', data: { "md-tag" => "- [ ] ", "md-prepend" => true }, title: _("Add a checklist") })
 = markdown_toolbar_button({ icon: "list-indent",
-                            css_class: 'gl-display-none gl-mr-3',
+                            css_class: 'gl-hidden gl-mr-3',
                             data: { "md-command" => 'indentLines', "md-shortcuts": '["mod+]"]' },
                             title: sprintf(s_("MarkdownEditor|Indent line (%{modifier_key}])") % { modifier_key: modifier_key }) })
 = markdown_toolbar_button({ icon: "list-outdent",
-                            css_class: 'gl-display-none gl-mr-3',
+                            css_class: 'gl-hidden gl-mr-3',
                             data: { "md-command" => 'outdentLines', "md-shortcuts": '["mod+["]' },
                             title: sprintf(s_("MarkdownEditor|Outdent line (%{modifier_key}[)") % { modifier_key: modifier_key }) })
 = markdown_toolbar_button({ icon: "details-block",

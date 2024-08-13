@@ -47,7 +47,7 @@ Cannot install package gitlab-ee-11.8.3-ee.0.el6.x86_64. It is obsoleted by inst
 To avoid this issue, either:
 
 - Use the same instructions provided in the
-  [Upgrade using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package) section.
+  [Upgrade using a manually-downloaded package](index.md#download-a-package-manually) section.
 - Temporarily disable this checking in yum by adding `--setopt=obsoletes=0` to the options given to the command.
 
 ## 500 error when accessing Project > Settings > Repository

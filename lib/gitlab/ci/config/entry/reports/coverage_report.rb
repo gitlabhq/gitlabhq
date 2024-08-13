@@ -10,7 +10,7 @@ module Gitlab
             include ::Gitlab::Config::Entry::Attributable
 
             ALLOWED_KEYS = %i[coverage_format path].freeze
-            SUPPORTED_COVERAGE = %w[cobertura].freeze
+            SUPPORTED_COVERAGE = %w[cobertura jacoco].freeze
 
             attributes ALLOWED_KEYS
 

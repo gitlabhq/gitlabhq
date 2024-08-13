@@ -1,6 +1,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
+import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 
 describe('Work Item Loading spec', () => {
   let wrapper;
@@ -15,7 +16,7 @@ describe('Work Item Loading spec', () => {
     wrapper.findByTestId('work-item-attributes-mdup-loading');
   const findWorkItemActivityPlaceholder = () =>
     wrapper.findByTestId('work-item-activity-placeholder-loading');
-  const findWorkItemNotesLoading = () => wrapper.findByTestId('work-item-notes-loading');
+  const findWorkItemNotesLoading = () => wrapper.findComponent(WorkItemNotesLoading);
   const findLoaders = () => findWorkItemAttributesXsSmLoading().findAllComponents(GlSkeletonLoader);
 
   const createComponent = () => {

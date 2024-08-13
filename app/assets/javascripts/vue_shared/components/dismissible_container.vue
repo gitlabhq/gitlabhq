@@ -35,7 +35,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center">
+    <div class="gl-flex gl-items-center">
       <slot name="title"></slot>
       <div class="ml-auto">
         <button
@@ -45,7 +45,7 @@ export default {
           data-testid="close"
           @click="dismiss"
         >
-          <gl-icon name="close" class="gl-text-gray-500" />
+          <gl-icon name="close" variant="subtle" />
         </button>
       </div>
     </div>

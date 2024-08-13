@@ -209,9 +209,12 @@ User accounts are created in one of the following ways:
 - Sign in through SAML
 - SCIM provisioning
 
-### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
+### Error: user has already been taken
 
-Getting both of these errors at the same time suggests the `NameID` capitalization provided by the identity provider didn't exactly match the previous value for that user.
+Getting both of these errors at the same time suggests the `NameID` capitalization provided by the identity provider didn't exactly match the previous value for that user:
+
+- `SAML authentication failed: Extern UID has already been taken`
+- `User has already been taken`
 
 This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlink-accounts).
 
@@ -259,10 +262,15 @@ The workaround is that a GitLab group Owner uses the [SAML API](../../../api/sam
 The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
 this may be a generated unique ID, an email address, or other value.
 
-### Message: "Certificate element missing in response (ds:x509certificate) and not cert provided at settings"
+### Error: Certificate element missing in response (`ds:x509certificate`)
 
-This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response. The X.509 certificate must be included in the response.
+This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response:
 
+```plaintext
+Certificate element missing in response (ds:x509certificate) and not cert provided at settings
+```
+
+The X.509 certificate must be included in the response.
 To resolve this problem, configure your IdP to include the X.509 certificate in the SAML response.
 
 For more information, see the documentation on [additional configuration for SAML apps on your IdP](../../../integration/saml.md#additional-configuration-for-saml-apps-on-your-idp).
@@ -378,7 +386,7 @@ This message might indicate that you must add or remove a domain from your domai
 
 To implement this workaround:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.

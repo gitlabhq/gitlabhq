@@ -425,7 +425,7 @@ export default {
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
       v-safe-html:[$options.safeHtmlConfig]="referencedCommands"
-      class="referenced-commands gl-mx-2 gl-mb-2 gl-px-4 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+      class="referenced-commands gl-mx-2 gl-mb-2 gl-rounded-bl-base gl-rounded-br-base gl-px-4"
       data-testid="referenced-commands"
     ></div>
     <div v-if="shouldShowReferencedUsers" class="referenced-users">

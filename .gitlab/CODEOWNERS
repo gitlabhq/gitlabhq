@@ -1,6 +1,6 @@
 # When adding a group as a code owner, make sure to invite the group to the
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
-# As described in https://docs.gitlab.com/ee/user/project/code_owners.html
+# As described in https://docs.gitlab.com/ee/user/project/codeowners/index.html
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 
@@ -8,6 +8,9 @@
 
 ## Allows release tooling and Gitaly team members to update the Gitaly Version
 /GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
+
+## Allows release tooling, KAS version maintainers and the delivery team to update the KAS version
+/GITLAB_KAS_VERSION @project_278964_bot6 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates
@@ -122,7 +125,7 @@ Dangerfile
 /scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/plan-stage/backend-engineers
 /scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/scripts/remote_development/ @gitlab-org/maintainers/remote-development/backend
+/scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
 /scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
 /.codeclimate.yml
 /.dockerignore
@@ -215,13 +218,13 @@ Dangerfile
 /ee/app/assets/javascripts/pages/projects/licenses/**
 /ee/app/assets/javascripts/pages/projects/pipelines/licenses/**
 /ee/app/assets/javascripts/pages/projects/pipelines/show/license_report.js
-/ee/app/assets/javascripts/vue_merge_request_widget/extensions/license_compliance/**
+/ee/app/assets/javascripts/vue_merge_request_widget/widgets/license_compliance/**
 /ee/app/assets/javascripts/vue_shared/license_compliance/**
 /ee/app/views/projects/licenses/**
 /ee/spec/frontend/approvals/components/license_compliance/**
 /ee/spec/frontend/approvals/stores/modules/license_compliance/**
 /ee/spec/frontend/license_compliance/**
-/ee/spec/frontend/vue_merge_request_widget/extensions/license_compliance/**
+/ee/spec/frontend/vue_merge_request_widget/widgets/license_compliance/**
 /ee/spec/frontend/vue_shared/license_compliance/**
 
 /ee/app/assets/javascripts/approvals/components/security_orchestration/**
@@ -332,7 +335,7 @@ Dangerfile
 /ee/lib/gitlab/code_owners.rb
 /ee/lib/gitlab/code_owners/
 /ee/spec/lib/gitlab/code_owners/
-/doc/user/project/code_owners.md
+/doc/user/project/codeowners/
 
 [Merge Requests backend] @code-review-be/engineers
 /app/controllers/projects/merge_requests_controller.rb
@@ -435,10 +438,6 @@ Dangerfile
 /spec/models/onboarding/
 /app/services/onboarding/
 /spec/services/onboarding/
-/ee/app/components/namespaces/free_user_cap/
-/ee/spec/components/namespaces/free_user_cap/
-/ee/app/models/namespaces/free_user_cap/
-/ee/spec/models/namespaces/free_user_cap/
 /app/controllers/registrations_controller.rb
 /spec/controllers/registrations_controller_spec.rb
 /app/controllers/registrations/
@@ -587,11 +586,13 @@ lib/gitlab/checks/**
 /doc/administration/package_information/ @axil
 /doc/administration/packages/ @marcel.amirault
 /doc/administration/packages/index.md @phillipwells
+/doc/administration/pages/ @msedlakjakubowski
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @lciutacu
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @jglassman1
 /doc/administration/raketasks/praefect.md @eread
+/doc/administration/raketasks/tokens/ @jglassman1
 /doc/administration/read_only_gitlab.md @axil
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
@@ -646,6 +647,7 @@ lib/gitlab/checks/**
 /doc/administration/troubleshooting/ @axil
 /doc/administration/uploads.md @axil
 /doc/administration/user_settings.md @jglassman1
+/doc/administration/wikis/ @msedlakjakubowski
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
 /doc/api/api_resources.md @eread
@@ -656,6 +658,7 @@ lib/gitlab/checks/**
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @msedlakjakubowski
 /doc/api/bulk_imports.md @eread
+/doc/api/chat.md @sselhorn @jglassman1 @fneill
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @msedlakjakubowski
@@ -705,6 +708,7 @@ lib/gitlab/checks/**
 /doc/api/group_releases.md @phillipwells
 /doc/api/group_repository_storage_moves.md @ashrafkhamis
 /doc/api/group_ssh_certificates.md @msedlakjakubowski
+/doc/api/group_wikis.md @msedlakjakubowski
 /doc/api/groups.md @lciutacu
 /doc/api/import.md @eread
 /doc/api/index.md @eread
@@ -737,6 +741,8 @@ lib/gitlab/checks/**
 /doc/api/openapi/ @eread
 /doc/api/packages.md @phillipwells
 /doc/api/packages/ @phillipwells
+/doc/api/pages.md @msedlakjakubowski
+/doc/api/pages_domains.md @msedlakjakubowski
 /doc/api/personal_access_tokens.md @jglassman1
 /doc/api/pipeline_schedules.md @marcel.amirault @lyspin
 /doc/api/pipeline_triggers.md @marcel.amirault @lyspin
@@ -799,11 +805,7 @@ lib/gitlab/checks/**
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
-/doc/architecture/blueprints/autoflow/ @phillipwells
-/doc/architecture/blueprints/cells/ @lciutacu
-/doc/architecture/blueprints/ci_builds_runner_fleet_metrics/ @ashrafkhamis
-/doc/architecture/blueprints/google_artifact_registry_integration/ @marcel.amirault
-/doc/architecture/blueprints/organization/ @lciutacu
+/doc/api/wikis.md @msedlakjakubowski
 /doc/ci/ @marcel.amirault @lyspin
 /doc/ci/chatops/ @phillipwells
 /doc/ci/cloud_deployment/ @phillipwells
@@ -846,7 +848,6 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
-/doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
@@ -904,9 +905,11 @@ lib/gitlab/checks/**
 /doc/tutorials/dependency_scanning.md @rdickenson @phillipwells
 /doc/tutorials/export_sbom.md @rdickenson @phillipwells
 /doc/tutorials/fuzz_testing/ @rdickenson @phillipwells
+/doc/tutorials/hugo/ @msedlakjakubowski
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
+/doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
 /doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
@@ -931,7 +934,6 @@ lib/gitlab/checks/**
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
 /doc/user/compliance/license_approval_policies.md @rdickenson
-/doc/user/compliance/license_list.md @rdickenson
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1
@@ -1030,6 +1032,7 @@ lib/gitlab/checks/**
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/ssh.md @jglassman1
+/doc/user/ssh_troubleshooting.md @jglassman1
 /doc/user/storage_management_automation.md @fneill
 /doc/user/usage_quotas.md @fneill
 /doc/user/workspace/ @ashrafkhamis
@@ -1040,9 +1043,9 @@ lib/gitlab/checks/**
 /config/initializers/declarative_policy_cached_attributes.rb
 /app/policies/
 /ee/app/policies/
-/ee/app/policies/remote_development/ @gitlab-org/maintainers/remote-development/backend
-/ee/app/policies/clusters/ @gitlab-org/maintainers/remote-development/backend
-/ee/spec/policies/remote_development/ @gitlab-org/maintainers/remote-development/backend
+/ee/app/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
+/ee/app/policies/clusters/ @gitlab-org/maintainers/workspaces/backend
+/ee/spec/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/members/member_role.rb
 /ee/app/models/auth/member_role_ability_loader.rb
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
@@ -1138,6 +1141,7 @@ lib/gitlab/checks/**
 /app/validators/json_schemas/cluster_agent_authorization_configuration.json
 /app/views/admin/application_settings/_external_authorization_service_form.html.haml
 /app/views/admin/impersonation_tokens/
+/app/views/admin/sessions/
 /app/views/authentication/
 /app/views/dashboard/projects/_zero_authorized_projects.html.haml
 /app/views/devise/mailer/password_change.html.haml
@@ -1153,6 +1157,8 @@ lib/gitlab/checks/**
 /app/views/groups/settings/_resource_access_token_creation.html.haml
 /app/views/groups/settings/_two_factor_auth.html.haml
 /app/views/groups/settings/access_tokens/
+/app/views/layouts/devise*.haml
+/app/views/layouts/terms.html.haml
 /app/views/layouts/oauth_error.html.haml
 /app/views/notify/access_token_about_to_expire_email.html.haml
 /app/views/notify/access_token_about_to_expire_email.text.erb
@@ -1225,7 +1231,6 @@ lib/gitlab/checks/**
 /ee/app/models/ee/project_authorization.rb
 /ee/app/models/scim_oauth_access_token.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
-/ee/app/services/arkose/token_verification_service.rb
 /ee/app/services/ee/auth/
 /ee/app/services/ee/personal_access_tokens/
 /ee/app/services/ee/resource_access_tokens/
@@ -1237,7 +1242,6 @@ lib/gitlab/checks/**
 /ee/app/views/admin/application_settings/_personal_access_token_expiration_policy.html.haml
 /ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.html.haml
 /ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.text.haml
-/app/views/devise/**/
 /ee/app/views/groups/_personal_access_token_expiration_policy.html.haml
 /ee/app/views/groups/sso/_authorize_pane.html.haml
 /ee/app/views/notify/policy_revoked_personal_access_tokens_email.html.haml
@@ -1398,8 +1402,8 @@ lib/gitlab/checks/**
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/
-/**/javascripts/token_access/ 
-/**/javascripts/admin/application_settings/runner_token_expiration/ 
+/**/javascripts/token_access/
+/**/javascripts/admin/application_settings/runner_token_expiration/
 /**/javascripts/editor/schema/ci.json
 /app/**/ci/*.haml
 /app/views/projects/artifacts/
@@ -1483,11 +1487,22 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/models/concerns/audit_events/
 /config/audit_events/types/type_schema.json
 
-^[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
-/ee/app/assets/javascripts/usage_quotas/components/
-/ee/app/assets/javascripts/usage_quotas/seats/
-/ee/app/assets/javascripts/usage_quotas/storage/
-/**/javascripts/usage_quotas/pipelines/
+# Fulfillment::Utilization
+^[Usage Quotas] @gitlab-org/fulfillment/utilization/fe
+/**/javascripts/usage_quotas/
+
+^[Storage Statistics] @gitlab-org/fulfillment/utilization/be
+/app/models/namespace/root_storage_statistics.rb
+/ee/app/models/ee/namespace/root_storage_statistics.rb
+/app/models/project_statistics.rb
+/ee/app/models/ee/project_statistics.rb
+
+^[Free User Cap] @gitlab-org/fulfillment/utilization/engineers
+/ee/app/components/namespaces/free_user_cap/
+/ee/spec/components/namespaces/free_user_cap/
+/ee/app/models/namespaces/free_user_cap/
+/ee/spec/models/namespaces/free_user_cap/
+# END Fulfillment::Utilization
 
 ^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
 /lib/sidebars/
@@ -1502,7 +1517,7 @@ ee/lib/ee/api/entities/project.rb
 ^[Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/spec/elastic/migrate/
 
-^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
+^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1517,7 +1532,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/policies/remote_development/
 /ee/spec/requests/api/graphql/mutations/remote_development/
 /ee/spec/requests/api/graphql/remote_development/
-/ee/spec/features/remote_development/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
+/ee/spec/features/remote_development/ @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
 /ee/spec/finders/remote_development/
 /ee/spec/support/shared_contexts/remote_development/
 /ee/spec/graphql/types/remote_development/
@@ -1526,9 +1541,9 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-quality/qe-maintainers
 
-^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/
@@ -1536,14 +1551,22 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/frontend/**/remote_development/
 
 [Identity Verification] @gitlab-org/modelops/anti-abuse/identity-verification-approvers
-/ee/app/controllers/users/registrations_identity_verification_controller.rb
+/app/controllers/concerns/verifies_with_email.rb
+/app/models/concerns/require_email_verification.rb
+/app/services/users/email_verification/
+/ee/app/controllers/concerns/arkose/
+/ee/app/controllers/phone_verification/
 /ee/app/controllers/users/base_identity_verification_controller.rb
 /ee/app/controllers/users/identity_verification_controller.rb
+/ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/models/concerns/identity_verifiable.rb
+/ee/app/services/arkose/
+/ee/app/services/phone_verification/
+/ee/app/services/users/email_verification/
+/ee/app/workers/arkose/
 /ee/config/routes/identity_verification.rb
-
-[Deploy:Environments - KAS Version Maintainers] @gitlab-org/maintainers/kas-version-maintainers
-/GITLAB_KAS_VERSION
+/ee/lib/arkose/
+/ee/lib/telesign/
 
 ^[DiffMatchPatch gem]
 /vendor/gems/diff_match_patch @garyh
@@ -1551,12 +1574,6 @@ ee/lib/ee/api/entities/project.rb
 ^[Gitlab Housekeeper gem] @DylanGriffith @rymai @tigerwnz
 /gems/gitlab-housekeeper/
 /keeps/
-
-^[Storage Statistics] @jagood @suraj_tripathy @vij
-/app/models/namespace/root_storage_statistics.rb
-/ee/app/models/ee/namespace/root_storage_statistics.rb
-/app/models/project_statistics.rb
-/ee/app/models/ee/project_statistics.rb
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 

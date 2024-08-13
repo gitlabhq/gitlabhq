@@ -28,19 +28,19 @@ describe('AnsiEvaluator', () => {
   it('parses cyan', () => {
     ansi.evaluate('36m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-14']);
+    expect(ansi.getClasses()).toEqual(['term-fg-cyan']);
   });
 
-  it('parses  cyan + bold', () => {
+  it('parses cyan + bold', () => {
     ansi.evaluate('36;1m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-14', 'term-bold']);
+    expect(ansi.getClasses()).toEqual(['term-fg-cyan', 'term-bold']);
   });
 
   it('parses green + bold', () => {
     ansi.evaluate('32;1m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-10', 'term-bold']);
+    expect(ansi.getClasses()).toEqual(['term-fg-green', 'term-bold']);
   });
 
   it('parses "set foreground color"', () => {
@@ -61,16 +61,39 @@ describe('AnsiEvaluator', () => {
     expect(ansi.getClasses()).toEqual(['xterm-fg-100', 'xterm-bg-100']);
   });
 
-  it('parses non-color styles', () => {
-    ansi.evaluate('1;3;4;8;9m');
+  describe('non-color styles', () => {
+    beforeEach(() => {
+      ansi.evaluate('1;3;4;8;9m');
+    });
 
-    expect(ansi.getClasses()).toEqual([
-      'term-bold',
-      'term-italic',
-      'term-underline',
-      'term-conceal',
-      'term-cross',
-    ]);
+    it('parses non-color styles', () => {
+      expect(ansi.getClasses()).toEqual([
+        'term-bold',
+        'term-italic',
+        'term-underline',
+        'term-conceal',
+        'term-cross',
+      ]);
+    });
+
+    it('disables non-color styles', () => {
+      ansi.evaluate('23m'); // disables italic
+
+      expect(ansi.getClasses()).toEqual([
+        'term-bold',
+        'term-underline',
+        'term-conceal',
+        'term-cross',
+      ]);
+
+      ansi.evaluate('21m'); // disables bold
+
+      expect(ansi.getClasses()).toEqual(['term-underline', 'term-conceal', 'term-cross']);
+
+      ansi.evaluate('24m'); // disables underline
+
+      expect(ansi.getClasses()).toEqual(['term-conceal', 'term-cross']);
+    });
   });
 
   it('parses styles that get a reset', () => {

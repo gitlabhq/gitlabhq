@@ -16,7 +16,6 @@ import {
   AWS_TEMPLATES_BASE_URL,
   AWS_EASY_BUTTONS,
 } from '~/vue_shared/components/runner_instructions/constants';
-import { __ } from '~/locale';
 
 import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -41,7 +40,7 @@ describe('RunnerAwsInstructions', () => {
       .findAllComponents(GlButton)
       .filter((w) => w.props('variant') === 'confirm')
       .at(0);
-  const findCloseButton = () => wrapper.findByText(__('Close'));
+  const findCloseButton = () => wrapper.findByText('Close');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(RunnerAwsInstructions, {
@@ -81,8 +80,8 @@ describe('RunnerAwsInstructions', () => {
         const accordionItem = accordion.findComponent(GlAccordionItem);
 
         expect(accordion.props('headerLevel')).toBe(3);
-        expect(accordionItem.props('title')).toBe(__('More Details'));
-        expect(accordionItem.props('titleVisible')).toBe(__('Less Details'));
+        expect(accordionItem.props('title')).toBe('More Details');
+        expect(accordionItem.props('titleVisible')).toBe('Less Details');
       });
 
       describe('when clicked', () => {

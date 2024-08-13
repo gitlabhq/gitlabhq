@@ -21,8 +21,15 @@ import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS,
+  TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_GROUP,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemsListApp from '~/work_items/list/components/work_items_list_app.vue';
@@ -56,8 +63,13 @@ describe('WorkItemsListApp component', () => {
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
       ]),
       provide: {
+        autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         fullPath: 'full/path',
+        hasEpicsFeature: false,
+        hasOkrsFeature: false,
+        hasQualityManagementFeature: false,
         initialSort: CREATED_DESC,
+        isGroup: true,
         isSignedIn: true,
         workItemType: null,
         ...provide,
@@ -115,10 +127,11 @@ describe('WorkItemsListApp component', () => {
     it('calls query to fetch work items', () => {
       expect(defaultQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full/path',
+        includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: [null],
+        types: ['ISSUE', 'INCIDENT', 'TASK'],
       });
     });
   });
@@ -149,10 +162,11 @@ describe('WorkItemsListApp component', () => {
 
       expect(defaultQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full/path',
+        includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: [type],
+        types: type,
       });
     });
   });
@@ -186,7 +200,7 @@ describe('WorkItemsListApp component', () => {
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
-        await wrapper.setProps({ eeCreatedWorkItemsCount: 1 });
+        await wrapper.setProps({ eeWorkItemUpdateCount: 1 });
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
       });
@@ -200,27 +214,52 @@ describe('WorkItemsListApp component', () => {
       username: 'root',
       avatar_url: 'avatar/url',
     };
+    const preloadedUsers = [
+      { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
+    ];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       window.gon = {
         current_user_id: mockCurrentUser.id,
         current_user_fullname: mockCurrentUser.name,
         current_username: mockCurrentUser.username,
         current_user_avatar_url: mockCurrentUser.avatar_url,
       };
-      mountComponent();
-      await waitForPromises();
     });
 
-    it('renders all tokens', () => {
-      const preloadedUsers = [
-        { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
-      ];
+    it('renders all tokens', async () => {
+      mountComponent();
+      await waitForPromises();
 
       expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
         { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_CONFIDENTIAL },
+        { type: TOKEN_TYPE_GROUP },
+        { type: TOKEN_TYPE_LABEL },
+        { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_MY_REACTION },
         { type: TOKEN_TYPE_SEARCH_WITHIN },
+        { type: TOKEN_TYPE_TYPE },
       ]);
+    });
+
+    describe('when workItemType is defined', () => {
+      it('renders all tokens except "Type"', async () => {
+        mountComponent({ provide: { workItemType: 'EPIC' } });
+        await waitForPromises();
+
+        expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_GROUP },
+          { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
+        ]);
+      });
     });
   });
 
@@ -252,13 +291,14 @@ describe('WorkItemsListApp component', () => {
 
         expect(defaultQueryHandler).toHaveBeenCalledWith({
           fullPath: 'full/path',
+          includeDescendants: true,
           sort: CREATED_DESC,
           state: STATUS_OPEN,
           search: 'find issues',
           authorUsername: 'homer',
           in: 'TITLE',
           firstPageSize: 20,
-          types: [null],
+          types: ['ISSUE', 'INCIDENT', 'TASK'],
         });
       });
     });

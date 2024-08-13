@@ -1,0 +1,9 @@
+---
+name: ci_pipeline_command_logger_commit
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161117
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474790
+milestone: '17.3'
+group: group::pipeline authoring
+type: ops
+default_enabled: false

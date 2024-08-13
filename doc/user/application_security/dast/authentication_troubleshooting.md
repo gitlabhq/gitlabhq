@@ -76,7 +76,7 @@ Suggested actions:
 - Check the target application authentication is deployed and running.
 - Check the `DAST_AUTH_URL` is correct.
 - Check the GitLab Runner can access the `DAST_AUTH_URL`.
-- Check the `DAST_BROWSER_PATH_TO_LOGIN_FORM` is valid if used.
+- Check the `DAST_AUTH_BEFORE_LOGIN_ACTIONS` is valid if used.
 
 ### Scan doesn't crawl authenticated pages
 
@@ -92,7 +92,7 @@ Suggested actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) and look at the screenshot from the `Login submit` to verify that the login worked as expected.
 - Verify the logged authentication tokens are those used by your application.
-- If using cookies to store authentication tokens, set the names of the authentication token cookies using `DAST_AUTH_COOKIES`.
+- If using cookies to store authentication tokens, set the names of the authentication token cookies using `DAST_AUTH_COOKIE_NAMES`.
 
 ### Unable to find elements with selector
 
@@ -105,7 +105,7 @@ DAST failed to find the username, password, first submit button, or submit butto
 Suggested actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) to use the screenshot from the `Login page` to verify that the page loaded correctly.
-- Load the login page in a browser and verify the [selectors](authentication.md#finding-an-elements-selector) configured in `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, `DAST_FIRST_SUBMIT_FIELD`, and `DAST_SUBMIT_FIELD` are correct.
+- Load the login page in a browser and verify the [selectors](authentication.md#finding-an-elements-selector) configured in `DAST_AUTH_USERNAME_FIELD`, `DAST_AUTH_PASSWORD_FIELD`, `DAST_AUTH_FIRST_SUBMIT_FIELD`, and `DAST_AUTH_SUBMIT_FIELD` are correct.
 
 ### Failed to authenticate user
 
@@ -141,14 +141,14 @@ Suggested actions:
 - Generate the [authentication report](#configure-the-authentication-report) and verify the `Request` for the `Login submit` is correct.
 - It's possible that the authentication report `Login submit` request and response are empty. This occurs when there is no request that would result
   in a full page reload, such as a request made when submitting a HTML form. This occurs when using websockets or AJAX to submit the login form.
-- If the page displayed following user authentication genuinely has elements matching the login form selectors, configure `DAST_AUTH_VERIFICATION_URL`
-  or `DAST_AUTH_VERIFICATION_SELECTOR` to use an alternate method of verifying the login attempt.
-- Some applications display a "Loading..." element on a page before hiding the login form. This can confuse the analyzer. Use `DAST_BROWSER_PAGE_LOADING_SELECTOR` or
-  `DAST_BROWSER_PAGE_READY_SELECTOR` [variable](browser/configuration/variables.md) to instruct the analyzer that the page has finished loading.
+- If the page displayed following user authentication genuinely has elements matching the login form selectors, configure `DAST_AUTH_SUCCESS_IF_AT_URL`
+  or `DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND` to use an alternate method of verifying the login attempt.
+- Some applications display a "Loading..." element on a page before hiding the login form. This can confuse the analyzer. Use `DAST_PAGE_IS_LOADING_ELEMENT` or
+  `DAST_PAGE_IS_READY_ELEMENT` [variable](browser/configuration/variables.md) to instruct the analyzer that the page has finished loading.
 
 ### Requirement unsatisfied, selector returned no results
 
-DAST cannot find an element matching the selector provided in `DAST_AUTH_VERIFICATION_SELECTOR` on the page displayed following user login.
+DAST cannot find an element matching the selector provided in `DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND` on the page displayed following user login.
 
 ```plaintext
 2022-12-07T06:39:33.239 INF AUTH  requirement is unsatisfied, searching DOM using selector returned no results want="has element css:[name=welcome]"
@@ -157,11 +157,11 @@ DAST cannot find an element matching the selector provided in `DAST_AUTH_VERIFIC
 Suggested actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) and look at the screenshot from the `Login submit` to verify that the expected page is displayed.
-- Ensure the `DAST_AUTH_VERIFICATION_SELECTOR` [selector](authentication.md#finding-an-elements-selector) is correct.
+- Ensure the `DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND` [selector](authentication.md#finding-an-elements-selector) is correct.
 
 ### Requirement unsatisfied, browser not at URL
 
-DAST detected that the page displayed following user login has a URL different to what was expected according to `DAST_AUTH_VERIFICATION_URL`.
+DAST detected that the page displayed following user login has a URL different to what was expected according to `DAST_AUTH_SUCCESS_IF_AT_URL`.
 
 ```plaintext
 2022-12-07T11:28:00.241 INF AUTH  requirement is unsatisfied, browser is not at URL browser_url="https://example.com/home" want="is at url https://example.com/user/dashboard"
@@ -170,7 +170,7 @@ DAST detected that the page displayed following user login has a URL different t
 Suggested actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) and look at the screenshot from the `Login submit` to verify that the expected page is displayed.
-- Ensure the `DAST_AUTH_VERIFICATION_URL` is correct.
+- Ensure the `DAST_AUTH_SUCCESS_IF_AT_URL` is correct.
 
 ### Requirement unsatisfied, HTTP login request status code
 
@@ -199,4 +199,4 @@ Suggestion actions:
 
 - Generate the [authentication report](#configure-the-authentication-report) and look at the screenshot from the `Login submit` to verify that the login worked as expected.
 - Using the browser's developer tools, investigate the cookies and local/session storage objects created while logging in. Ensure there is an authentication token created with sufficiently random value.
-- If using cookies to store authentication tokens, set the names of the authentication token cookies using `DAST_AUTH_COOKIES`.
+- If using cookies to store authentication tokens, set the names of the authentication token cookies using `DAST_AUTH_COOKIE_NAMES`.

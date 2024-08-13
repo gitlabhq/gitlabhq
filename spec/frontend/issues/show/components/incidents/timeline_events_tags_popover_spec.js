@@ -39,7 +39,7 @@ describe('TimelineEventsTagsPopover component', () => {
       await nextTick();
 
       expect(findDocumentationLink().attributes('href')).toBe(
-        helpPagePath('/ee/operations/incident_management/incident_timeline_events', {
+        helpPagePath('operations/incident_management/incident_timeline_events', {
           anchor: 'incident-tags',
         }),
       );

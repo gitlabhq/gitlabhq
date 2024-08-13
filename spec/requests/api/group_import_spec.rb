@@ -245,11 +245,9 @@ RSpec.describe API::GroupImport, feature_category: :importers do
     end
 
     context 'when organization_id is missing' do
-      context 'and current organization is defined' do
-        let_it_be(:current_organization) { create(:organization, users: [user]) }
-
+      context 'and current organization is defined', :with_current_organization do
         before do
-          allow(Current).to receive(:organization_id).and_return(current_organization.id)
+          current_organization.users << user
         end
 
         it 'assigns current organization' do

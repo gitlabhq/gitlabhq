@@ -16,7 +16,7 @@ The Service Ping API is associated with [Service Ping](../development/internal_a
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
 
-Requires a Personal Access Token with `read_service_ping` scope.
+Requires a personal access token with `read_service_ping` scope.
 
 Returns the JSON payload collected in Service Ping. If no payload data is available in the application cache, it returns empty response.
 If payload data is empty, make sure the [Service Ping feature is enabled](../administration/settings/usage_statistics.md#enable-or-disable-service-ping) and

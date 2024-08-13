@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineMessage, feature_category: :ci_scaling do
   let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
   let(:ci_pipeline_messages_table) { table(:ci_pipeline_messages, database: :ci) }
-  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
-  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
+  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
+  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101, project_id: 1) }
+  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100, project_id: 1) }
   let!(:ci_pipeline_messages_100) do
     ci_pipeline_messages_table.create!(
       content: 'content',

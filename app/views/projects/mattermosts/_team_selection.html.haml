@@ -2,7 +2,7 @@
   This service will be installed on the Mattermost instance at
   %strong= link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host
 %hr
-= gitlab_ui_form_for(:mattermost, method: :post, url: project_mattermost_path(@project), html: { class: 'js-requires-input' }) do |f|
+= gitlab_ui_form_for(:mattermost, method: :post, url: project_mattermost_path(@project)) do |f|
   %h4 Team
   %p
     = @teams.one? ? 'The team' : 'Select the team'

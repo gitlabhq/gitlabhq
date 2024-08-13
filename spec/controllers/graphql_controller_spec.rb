@@ -682,6 +682,35 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         expect(GraphiQL::Rails::VERSION).to eq("1.10.0")
       end
     end
+
+    context 'when X_GITLAB_DISABLE_SQL_QUERY_LIMIT is set' do
+      let(:issue_url) { "http://some/issue/url" }
+      let(:limit) { 205 }
+
+      context 'and it specifies a new query limit' do
+        let(:header_value) { "#{limit},#{issue_url}" }
+
+        it 'respects the new query limit' do
+          expect(Gitlab::QueryLimiting).to receive(:disable!).with(issue_url, new_threshold: limit)
+
+          request.env['HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'] = header_value
+
+          post :execute
+        end
+      end
+
+      context 'and it does not specify a new limit' do
+        let(:header_value) { issue_url }
+
+        it 'disables limit' do
+          expect(Gitlab::QueryLimiting).to receive(:disable!).with(issue_url)
+
+          request.env['HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'] = header_value
+
+          post :execute
+        end
+      end
+    end
   end
 
   describe 'Admin Mode' do

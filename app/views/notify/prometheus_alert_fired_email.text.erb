@@ -11,10 +11,6 @@
 <%= _('Environment:') %> <%= env_name %>
 <% end %>
 
-<% if metric_query = @alert.prometheus_alert&.full_query %>
-<%= _('Metric:') %> <%= metric_query %>
-<% end %>
-
 <% if @alert.show_incident_issues_link? %>
 <%= _('View incident issues.') %> <%= @alert.incident_issues_link %>
 <% end %>

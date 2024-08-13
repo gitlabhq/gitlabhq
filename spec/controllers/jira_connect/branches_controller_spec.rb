@@ -89,17 +89,6 @@ RSpec.describe JiraConnect::BranchesController, feature_category: :integrations 
           expect(response).to redirect_to("#{create_branch_url}?#{query_string}")
         end
       end
-
-      context 'when jira_connect_proxy_create_branch feature is disabled' do
-        before do
-          stub_feature_flags(jira_connect_proxy_create_branch: false)
-        end
-
-        it 'redirects to :new' do
-          get :route, params: params
-          expect(response).to redirect_to("#{new_jira_connect_branch_url}?#{query_string}")
-        end
-      end
     end
   end
 end

@@ -70,7 +70,7 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
 
     it 'renders the new page and displays the error' do
       expect(page).to have_content(error)
-      expect(page).to have_content('New Snippet')
+      expect(page).to have_content('New snippet')
     end
   end
 end

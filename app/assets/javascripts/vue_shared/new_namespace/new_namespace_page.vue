@@ -138,22 +138,19 @@ export default {
   <div>
     <div class="top-bar-fixed container-fluid" data-testid="top-bar">
       <div
-        class="top-bar-container gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
+        class="top-bar-container gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
       >
         <super-sidebar-toggle
           v-if="showSuperSidebarToggle"
           class="gl-mr-2"
           :class="$options.JS_TOGGLE_EXPAND_CLASS"
         />
-        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-flex-grow-1" />
+        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
       </div>
     </div>
 
     <template v-if="activePanel">
-      <div
-        data-testid="active-panel-template"
-        class="gl-display-flex gl-align-items-center gl-py-5"
-      >
+      <div data-testid="active-panel-template" class="gl-flex gl-items-center gl-py-5">
         <div class="col-auto">
           <img aria-hidden :src="activePanel.imageSrc" />
         </div>

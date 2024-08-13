@@ -3,14 +3,12 @@
 - show_status_checks = @project.licensed_feature_available?(:external_status_checks)
 - show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
 
-%section.settings.no-animate#branch-rules{ class: ('expanded' if expanded), data: { testid: 'branch-rules-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Branch rules')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Define rules for who can push, merge, and the required approvals for each branch.')
-      = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Branch rules'),
+  id: 'branch-rules',
+  testid: 'branch-rules-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Define rules for who can push, merge, and the required approvals for each branch.')
+    = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
+  - c.with_body do
     #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s } }

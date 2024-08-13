@@ -1,6 +1,5 @@
 <script>
 import {
-  GlIcon,
   GlLink,
   GlModal,
   GlButton,
@@ -30,7 +29,6 @@ export default {
     estimatedOnlyText: s__('TimeTracking|Estimated:'),
   },
   components: {
-    GlIcon,
     GlLink,
     GlModal,
     GlButton,
@@ -245,24 +243,22 @@ export default {
           v-gl-modal="$options.setTimeEstimateModalId"
           v-gl-tooltip.top
           category="tertiary"
+          icon="timer"
           size="small"
           data-testid="set-time-estimate-button"
           :title="timeEstimateTooltip"
           :aria-label="timeEstimateTooltip"
-        >
-          <gl-icon name="timer" class="gl-text-gray-900!" />
-        </gl-button>
+        />
         <gl-button
           v-if="canAddTimeEntries"
           v-gl-tooltip.top
           category="tertiary"
+          icon="plus"
           size="small"
           data-testid="add-time-entry-button"
           :title="__('Add time entry')"
           @click="openRegisterTimeSpentModal()"
-        >
-          <gl-icon name="plus" class="gl-text-gray-900!" />
-        </gl-button>
+        />
       </div>
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">

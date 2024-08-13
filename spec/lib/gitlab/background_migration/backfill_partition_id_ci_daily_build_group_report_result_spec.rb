@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiDailyBuildGroupReportResult, feature_category: :ci_scaling do
   let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
   let(:ci_daily_build_group_report_results_table) { table(:ci_daily_build_group_report_results, database: :ci) }
-  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
-  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
+  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
+  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101, project_id: 1) }
+  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100, project_id: 1) }
   let!(:ci_daily_build_group_report_results_100) do
     ci_daily_build_group_report_results_table.create!(
-      date: Date.yesterday,
+      date: 1.day.ago,
       project_id: 1,
       ref_path: 'master',
       group_name: 'rspec',
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiDailyBuildGroup
 
   let!(:ci_daily_build_group_report_results_101) do
     ci_daily_build_group_report_results_table.create!(
-      date: Date.today,
+      date: Time.current,
       project_id: 1,
       ref_path: 'master',
       group_name: 'rspec',
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiDailyBuildGroup
 
   let!(:invalid_ci_daily_build_group_report_results) do
     ci_daily_build_group_report_results_table.create!(
-      date: Date.tomorrow,
+      date: 1.day.from_now,
       project_id: 1,
       ref_path: 'master',
       group_name: 'rspec',

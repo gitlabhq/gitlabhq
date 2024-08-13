@@ -102,6 +102,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
     it 'returns expected data' do
       expect(work_items_list_data).to include(
         {
+          autocomplete_award_emojis_path: autocomplete_award_emojis_path,
           full_path: group.full_path,
           initial_sort: current_user&.user_preference&.issues_sort,
           is_signed_in: current_user.present?.to_s,

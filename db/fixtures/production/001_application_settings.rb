@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-puts "Creating the default ApplicationSetting record.".color(:green)
+puts Rainbow("Creating the default ApplicationSetting record.").green
 Gitlab::CurrentSettings.current_application_settings

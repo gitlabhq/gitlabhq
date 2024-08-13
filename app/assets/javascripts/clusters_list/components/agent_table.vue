@@ -9,20 +9,30 @@ import {
   GlPopover,
   GlBadge,
   GlPagination,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlModalDirective,
 } from '@gitlab/ui';
 import semverLt from 'semver/functions/lt';
 import semverInc from 'semver/functions/inc';
 import semverPrerelease from 'semver/functions/prerelease';
+import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { MAX_LIST_COUNT, AGENT_STATUSES, I18N_AGENT_TABLE } from '../constants';
+import { MAX_LIST_COUNT, AGENT_STATUSES, I18N_AGENT_TABLE, CONNECT_MODAL_ID } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
 import DeleteAgentButton from './delete_agent_button.vue';
+import ConnectToAgentModal from './connect_to_agent_modal.vue';
 
 export default {
-  i18n: I18N_AGENT_TABLE,
+  i18n: {
+    ...I18N_AGENT_TABLE,
+    connectActionText: s__('ClusterAgents|Connect to %{agentName}'),
+    deleteActionText: s__('ClusterAgents|Delete agent'),
+    actions: __('Actions'),
+  },
   components: {
     GlLink,
     GlTable,
@@ -32,11 +42,15 @@ export default {
     GlPopover,
     GlBadge,
     GlPagination,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     TimeAgoTooltip,
     DeleteAgentButton,
+    ConnectToAgentModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModalDirective,
   },
   mixins: [timeagoMixin],
   AGENT_STATUSES,
@@ -68,6 +82,7 @@ export default {
     return {
       currentPage: 1,
       limit: this.maxAgents ?? MAX_LIST_COUNT,
+      selectedAgent: null,
     };
   },
   computed: {
@@ -130,6 +145,9 @@ export default {
     nextPage() {
       const nextPage = this.currentPage + 1;
       return nextPage > Math.ceil(this.agents.length / this.limit) ? null : nextPage;
+    },
+    isUserAccessConfigured() {
+      return Boolean(this.selectedAgent?.userAccessAuthorizations);
     },
   },
   methods: {
@@ -197,6 +215,31 @@ export default {
       }
 
       return null;
+    },
+
+    getActions(item) {
+      const connectAction = {
+        text: sprintf(this.$options.i18n.connectActionText, { agentName: item.name }),
+        name: 'connect-agent',
+        modalId: CONNECT_MODAL_ID,
+        action: () => {
+          this.selectedAgent = item;
+        },
+      };
+      const deleteAction = {
+        text: this.$options.i18n.deleteActionText,
+        name: 'delete-agent',
+        action: () => {
+          this.selectedAgent = item;
+        },
+      };
+
+      const actions = [connectAction];
+      if (!item.isShared) {
+        actions.push(deleteAction);
+      }
+
+      return actions;
     },
   },
 };
@@ -342,11 +385,32 @@ export default {
       </template>
 
       <template #cell(options)="{ item }">
-        <delete-agent-button
-          v-if="!item.isShared"
-          :agent="item"
-          :default-branch-name="defaultBranchName"
-        />
+        <gl-disclosure-dropdown
+          :title="$options.i18n.actions"
+          text-sr-only
+          category="tertiary"
+          no-caret
+          icon="ellipsis_v"
+        >
+          <template v-for="action in getActions(item)">
+            <delete-agent-button
+              v-if="action.name === 'delete-agent'"
+              :key="action.name"
+              :agent="item"
+              :default-branch-name="defaultBranchName"
+            />
+            <gl-disclosure-dropdown-item
+              v-else
+              :key="action.name"
+              v-gl-modal-directive="action.modalId"
+              @action="action.action"
+            >
+              <template #list-item>
+                {{ action.text }}
+              </template>
+            </gl-disclosure-dropdown-item>
+          </template>
+        </gl-disclosure-dropdown>
       </template>
     </gl-table>
 
@@ -357,6 +421,13 @@ export default {
       :next-page="nextPage"
       align="center"
       class="gl-mt-5"
+    />
+
+    <connect-to-agent-modal
+      v-if="selectedAgent"
+      :agent-id="selectedAgent.id"
+      :project-path="selectedAgent.project.fullPath"
+      :is-configured="isUserAccessConfigured"
     />
   </div>
 </template>

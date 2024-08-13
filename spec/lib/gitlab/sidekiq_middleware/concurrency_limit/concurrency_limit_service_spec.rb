@@ -45,6 +45,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
 
       add_to_queue!
     end
+
+    it 'reports prometheus metrics' do
+      deferred_job_count_double = instance_double(Prometheus::Client::Counter)
+      expect(Gitlab::Metrics).to receive(:counter).with(:sidekiq_concurrency_limit_deferred_jobs_total, anything)
+        .and_return(deferred_job_count_double)
+      expect(deferred_job_count_double).to receive(:increment).with({ worker: worker_class_name })
+
+      add_to_queue!
+    end
   end
 
   describe '.has_jobs_in_queue?' do

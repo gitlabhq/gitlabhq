@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::ContainerExpirationPolicies::Update do
+  include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project) }
-  let_it_be(:user) { create(:user) }
-
+  let_it_be(:current_user) { create(:user) }
   let(:container_expiration_policy) { project.container_expiration_policy }
   let(:params) { { project_path: project.full_path, cadence: '3month', keep_n: 100, older_than: '14d' } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_container_image) }
 
   describe '#resolve' do
-    subject { described_class.new(object: project, context: { current_user: user }, field: nil).resolve(**params) }
+    subject { described_class.new(object: project, context: query_context, field: nil).resolve(**params) }
 
     RSpec.shared_examples 'returning a success' do
       it 'returns the container expiration policy with no errors' do
@@ -84,7 +84,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
 
       with_them do
         before do
-          project.send("add_#{user_role}", user) unless user_role == :anonymous
+          project.send("add_#{user_role}", current_user) unless user_role == :anonymous
         end
 
         it_behaves_like params[:shared_examples_name]
@@ -104,7 +104,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
 
       with_them do
         before do
-          project.send("add_#{user_role}", user) unless user_role == :anonymous
+          project.send("add_#{user_role}", current_user) unless user_role == :anonymous
         end
 
         it_behaves_like params[:shared_examples_name]

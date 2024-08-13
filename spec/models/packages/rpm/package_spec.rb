@@ -6,4 +6,8 @@ RSpec.describe Packages::Rpm::Package, type: :model, feature_category: :package_
   describe 'associations' do
     it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package).class_name('Packages::Rpm::Metadatum') }
   end
+
+  describe '.installable' do
+    it_behaves_like 'installable packages', :rpm_package
+  end
 end

@@ -1,15 +1,8 @@
 <script>
-import {
-  GlCard,
-  GlTable,
-  GlButton,
-  GlIcon,
-  GlModal,
-  GlModalDirective,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlTable, GlButton, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, s__ } from '~/locale';
 
 export default {
@@ -58,10 +51,9 @@ export default {
     },
   },
   components: {
-    GlCard,
+    CrudComponent,
     GlTable,
     GlButton,
-    GlIcon,
     GlModal,
     GlSprintf,
   },
@@ -96,24 +88,16 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="gl-new-card deploy-freeze-table"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-0"
+  <crud-component
+    class="deploy-freeze-table"
+    :title="$options.i18n.title"
+    icon="deployments"
+    :count="freezePeriods.length"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">{{ $options.i18n.title }}</h3>
-        <span class="gl-new-card-count">
-          <gl-icon name="deployments" class="gl-mr-2" />
-          {{ freezePeriods.length }}
-        </span>
-      </div>
-      <div class="gl-new-card-actions">
-        <gl-button v-gl-modal.deploy-freeze-modal size="small" data-testid="add-deploy-freeze">{{
-          $options.i18n.addDeployFreeze
-        }}</gl-button>
-      </div>
+    <template #actions>
+      <gl-button v-gl-modal.deploy-freeze-modal size="small" data-testid="add-deploy-freeze">{{
+        $options.i18n.addDeployFreeze
+      }}</gl-button>
     </template>
 
     <gl-table
@@ -127,19 +111,18 @@ export default {
         {{ item.cronTimezone.formattedTimezone }}
       </template>
       <template #cell(actions)="{ item }">
-        <div class="gl-display-flex gl-justify-content-end -gl-mt-2 -gl-mb-2">
+        <div class="gl-flex gl-justify-end gl-gap-2 -gl-mt-2 -gl-mb-2">
           <gl-button
             v-gl-modal.deploy-freeze-modal
             icon="pencil"
+            category="tertiary"
             data-testid="edit-deploy-freeze"
             :aria-label="__('Edit deploy freeze')"
-            class="gl-mr-3"
             @click="setFreezePeriod(item)"
           />
           <gl-button
             v-gl-modal="$options.modal.id"
-            category="secondary"
-            variant="danger"
+            category="tertiary"
             icon="remove"
             :aria-label="$options.modal.actionPrimary.text"
             :loading="item.isDeleting"
@@ -149,7 +132,7 @@ export default {
         </div>
       </template>
       <template #empty>
-        <p data-testid="empty-freeze-periods" class="gl-text-secondary gl-text-center gl-mb-0">
+        <p data-testid="empty-freeze-periods" class="gl-text-subtle gl-text-center gl-mb-0">
           <gl-sprintf :message="$options.i18n.emptyStateText">
             <template #strong="{ content }">
               {{ content }}
@@ -178,5 +161,5 @@ export default {
         </gl-sprintf>
       </template>
     </gl-modal>
-  </gl-card>
+  </crud-component>
 </template>

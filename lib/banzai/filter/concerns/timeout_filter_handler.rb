@@ -17,6 +17,14 @@ module Banzai
         extend ActiveSupport::Concern
 
         RENDER_TIMEOUT = 2.seconds
+
+        # [TODO] Seeing several complaints about rendering being too complex.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/469683
+        # The default 2 seconds seems to be too aggressive at the moment.
+        # It can also depend in the hardware that we're running on.
+        # So let's make it 5. Currently the overall pipeline timeout
+        # (pipeline_timing_check.rb) is set to 5.
+        SANITIZATION_RENDER_TIMEOUT = 5.seconds
         COMPLEX_MARKDOWN_MESSAGE =
           <<~HTML
             <p>Rendering aborted due to complexity issues. If this is valid markdown, please feel free to open an issue
@@ -24,29 +32,30 @@ module Banzai
           HTML
 
         def call
-          return call_with_timeout if Gitlab::RenderTimeout.banzai_timeout_disabled?
+          return super if Gitlab::RenderTimeout.banzai_timeout_disabled?
 
-          Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { call_with_timeout }
+          Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { super }
         rescue Timeout::Error => e
           class_name = self.class.name.demodulize
-          Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
+          Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, group_id: context[:group]&.id,
+            class_name: class_name)
 
           # we've timed out, but some work may have already been completed,
           # so return what we can
           returned_timeout_value
         end
 
-        def call_with_timeout
-          raise NotImplementedError
-        end
-
         private
 
         def render_timeout
+          return super if defined?(super)
+
           RENDER_TIMEOUT
         end
 
         def returned_timeout_value
+          return super if defined?(super)
+
           if is_a?(HTML::Pipeline::TextFilter)
             text
           else

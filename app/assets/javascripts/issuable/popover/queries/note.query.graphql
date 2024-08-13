@@ -1,0 +1,13 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+query note($id: NoteID!) {
+  note(id: $id) {
+    id
+    author {
+      ...Author
+    }
+    bodyFirstLineHtml
+    createdAt
+    internal
+  }
+}

@@ -24,6 +24,10 @@ To ensure access to your cluster is safe:
 
 To use GitLab CI/CD to interact with your cluster, runners must be registered with GitLab. However, these runners do not have to be in the cluster where the agent is.
 
+Prerequisites:
+
+- Make sure [GitLab CI/CD is enabled](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines).
+
 ## Use GitLab CI/CD with your cluster
 
 To update a Kubernetes cluster with GitLab CI/CD:
@@ -327,6 +331,60 @@ In this example:
 - CI/CD jobs under `project-2` with `staging` or `review/*` environments can access the agent.
   - `*` is a wildcard, so `review/*` matches all environments under `review`.
 - CI/CD jobs for projects under `group-1` with `production` environments can access the agent.
+
+## Restrict access to the agent to protected branches
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `kubernetes_agent_protected_branches`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+To restrict access to the agent to only jobs run on [protected branches](../../project/protected_branches.md):
+
+- Add `protected_branches_only: true` to `ci_access.projects` or `ci_access.groups`.
+  For example:
+
+  ```yaml
+  ci_access:
+    projects:
+      - id: path/to/project-1
+        protected_branches_only: true
+    groups:
+      - id: path/to/group-1
+        protected_branches_only: true
+        environments:
+          - production
+  ```
+
+By default, `protected_branches_only` is set to `false`, and the agent can be accessed from unprotected and protected branches.
+
+For additional security, you can combine this feature with [environment restrictions](#restrict-project-and-group-access-to-specific-environments).
+
+If a project has multiple configurations, only the most specific configuration is used.
+For example, the following configuration grants access to unprotected branches in `example/my-project`, even though the `example` group is configured to grant access to only protected branches:
+
+```yaml
+# .gitlab/agents/my-agent/config.yaml
+ci_access:
+  project:
+    - id: example/my-project # Project of the group below
+      protected_branches_only: false # This configuration supercedes the group configuration
+      environments:
+        - dev
+  groups:
+    - id: example
+      protected_branches_only: true
+      environments:
+        - dev
+```
+
+For more details, see [Access to Kubernetes from CI](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/b601fa21cac24f0cdedc8b8eb59ebcba0b70f459/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api).
 
 ## Related topics
 

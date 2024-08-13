@@ -7,6 +7,8 @@ require 'fileutils'
 require 'factory_bot'
 require 'gitlab/rspec/next_instance_of'
 
+ENV["RAILS_ENV"] ||= "test"
+
 # Load spec support code
 Dir['spec/support/**/*.rb'].each { |f| load f }
 

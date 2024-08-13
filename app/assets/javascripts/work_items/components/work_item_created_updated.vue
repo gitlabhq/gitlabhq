@@ -5,7 +5,6 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { isNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -22,7 +21,6 @@ export default {
     ConfidentialityBadge,
     GlLoadingIcon,
   },
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -42,9 +40,6 @@ export default {
   computed: {
     createdAt() {
       return this.workItem?.createdAt || '';
-    },
-    updatedAt() {
-      return this.workItem?.updatedAt || '';
     },
     author() {
       return this.workItem?.author ?? {};
@@ -70,9 +65,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.fullPath,
@@ -128,18 +121,6 @@ export default {
       <gl-sprintf v-else-if="createdAt" :message="__('created %{timeAgo}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
-        </template>
-      </gl-sprintf>
-    </span>
-
-    <span
-      v-if="updatedAt"
-      class="gl-ml-5 gl-hidden sm:gl-inline-block gl-align-middle"
-      data-testid="work-item-updated"
-    >
-      <gl-sprintf :message="__('Updated %{timeAgo}')">
-        <template #timeAgo>
-          <time-ago-tooltip :time="updatedAt" />
         </template>
       </gl-sprintf>
     </span>

@@ -17,5 +17,12 @@ module Features
     def within_testid(testid, context: page, **kwargs, &block)
       context.within("[data-testid='#{testid}']", **kwargs, &block)
     end
+
+    def page_breadcrumbs
+      all('[data-testid=breadcrumb-links] a').map do |a|
+        # We use `.dom_attribute` because Selenium transforms `.attribute('href')` to include the full URL.
+        { text: a.text, href: a.native.dom_attribute('href') }
+      end
+    end
   end
 end

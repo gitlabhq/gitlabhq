@@ -1,5 +1,4 @@
 import { GlTableLite } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import RunnerManagersTable from '~/ci/runner/components/runner_managers_table.vue';
@@ -37,13 +36,13 @@ describe('RunnerJobs', () => {
   it('shows headers', () => {
     createComponent();
     expect(findHeaders().wrappers.map((w) => w.text())).toEqual([
-      expect.stringContaining(s__('Runners|System ID')),
-      s__('Runners|Status'),
-      s__('Runners|Version'),
-      s__('Runners|IP Address'),
-      s__('Runners|Executor'),
-      s__('Runners|Arch/Platform'),
-      s__('Runners|Last contact'),
+      expect.stringContaining('System ID'),
+      'Status',
+      'Version',
+      'IP Address',
+      'Executor',
+      'Arch/Platform',
+      'Last contact',
     ]);
   });
 
@@ -60,8 +59,8 @@ describe('RunnerJobs', () => {
 
   it('shows status', () => {
     createComponent();
-    expect(findCellText({ field: 'status', i: 0 })).toContain(s__('Runners|Online'));
-    expect(findCellText({ field: 'status', i: 0 })).toContain(s__('Runners|Idle'));
+    expect(findCellText({ field: 'status', i: 0 })).toContain('Online');
+    expect(findCellText({ field: 'status', i: 0 })).toContain('Idle');
   });
 
   it('shows version', () => {

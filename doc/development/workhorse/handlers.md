@@ -102,7 +102,7 @@ sequenceDiagram
 
 ## Git over HTTP(S)
 
-Workhorse accelerates Git over HTTP(S) by handling [Git HTTP protocol](https://www.git-scm.com/docs/http-protocol) requests. For example, Git push/pull may require serving large amounts of data and in order to avoid transferring it through GitLab Rails, Workhorse only performs authorization checks against GitLab Rails, then performs Gitaly gRPC request directly and streams the data from Gitaly to the Git client.
+Workhorse accelerates Git over HTTP(S) by handling [Git HTTP protocol](https://www.git-scm.com/docs/http-protocol) requests. For example, Git push/pull may require serving large amounts of data. To avoid transferring it through GitLab Rails, Workhorse only performs authorization checks against GitLab Rails, then performs a Gitaly gRPC request directly, and streams the data from Gitaly to the Git client.
 
 ### Git pull
 

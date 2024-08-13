@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe 'Project artifacts' do
       context 'when user tries bulk deletion' do
         let(:total_jobs_count) { 20 }

@@ -1,79 +1,16 @@
 # frozen_string_literal: true
 
-# These shared_examples require the following variables:
-# - text: The text to be run through the filter
-#
-# Usage:
-#
-#   it_behaves_like 'html filter timeout' do
-#     let(:text) { 'some text' }
-#   end
-RSpec.shared_examples 'html filter timeout' do
-  context 'when rendering takes too long' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:context) { { project: project } }
-
-    it 'times out' do
-      stub_const("Banzai::Filter::TimeoutHtmlPipelineFilter::RENDER_TIMEOUT", 0.1)
-      allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:call_with_timeout) do
-          sleep(0.2)
-          text
-        end
-      end
-
-      expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-        instance_of(Timeout::Error),
-        project_id: context[:project].id,
-        class_name: described_class.name.demodulize
-      )
-
-      result = filter(text)
-
-      expect(result.to_html).to eq text
-    end
-  end
-end
-
-# Usage:
-#
-#   it_behaves_like 'text html filter timeout' do
-#     let(:text) { 'some text' }
-#   end
-RSpec.shared_examples 'text filter timeout' do
-  context 'when rendering takes too long' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:context) { { project: project } }
-
-    it 'times out' do
-      stub_const("Banzai::Filter::TimeoutTextPipelineFilter::RENDER_TIMEOUT", 0.1)
-      allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:call_with_timeout) do
-          sleep(0.2)
-          text
-        end
-      end
-
-      expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-        instance_of(Timeout::Error),
-        project_id: context[:project].id,
-        class_name: described_class.name.demodulize
-      )
-
-      result = filter(text)
-
-      expect(result).to eq text
-    end
-  end
-end
+# This is an excessive timeout, however it's meant to ensure that we don't
+# have flaky timeouts in CI, which can be slow.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161969
+BANZAI_FILTER_TIMEOUT_MAX = 30.seconds
 
 # Usage:
 #
 #   it_behaves_like 'a filter timeout' do
 #     let(:text) { 'some text' }
 #     let(:expected_result) { 'optional result text' }
+#     let(:expected_timeout) { OVERRIDDEN_TIMEOUT_VALUE }
 #   end
 RSpec.shared_examples 'a filter timeout' do
   context 'when rendering takes too long' do
@@ -81,29 +18,25 @@ RSpec.shared_examples 'a filter timeout' do
     let_it_be(:context) { { project: project } }
 
     it 'times out' do
-      allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:render_timeout).and_return(0.1)
-        allow(instance).to receive(:call_with_timeout) do
-          sleep(0.2)
-          text
-        end
-      end
-
-      expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
+      expect(Gitlab::RenderTimeout).to receive(:timeout).and_raise(Timeout::Error)
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         instance_of(Timeout::Error),
         project_id: context[:project].id,
+        group_id: nil,
         class_name: described_class.name.demodulize
       )
 
       result = filter(text)
       result = result.to_html if result.respond_to?(:to_html)
 
-      if defined?(expected_result)
-        expect(result).to eq expected_result
-      else
-        expect(result).to eq text
-      end
+      expected = defined?(expected_result) ? expected_result : text
+      expect(result).to eq expected
+    end
+
+    it 'verifies render_timeout' do
+      timeout = defined?(expected_timeout) ? expected_timeout : described_class::RENDER_TIMEOUT
+
+      expect(described_class.new('Foo', project: nil).send(:render_timeout)).to eq timeout
     end
   end
 end
@@ -116,7 +49,7 @@ end
 RSpec.shared_examples 'not a filter timeout' do
   it 'does not use Gitlab::RenderTimeout' do
     allow_next_instance_of(described_class) do |instance|
-      allow(instance).to receive(:call_with_timeout) do
+      allow(instance).to receive(:call) do
         sleep(0.2)
         text
       end

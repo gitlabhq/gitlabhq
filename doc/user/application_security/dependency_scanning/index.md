@@ -81,7 +81,7 @@ Dependency Scanning does not support runtime installation of compilers and inter
 
 ## Supported languages and package managers
 
-The following languages and dependency managers are supported when using the Dependency Scanning [CI Template](#enabling-the-analyzer-by-using-the-cicd-template):
+The following languages and dependency managers are supported by Dependency Scanning:
 
 <!-- markdownlint-disable MD044 -->
 <table class="ds-table">
@@ -227,6 +227,20 @@ The following languages and dependency managers are supported when using the Dep
       <td>All versions</td>
       <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><code>build.sbt</code></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>All versions</td>
+      <td><a href="https://swift.org/package-manager/">Swift Package Manager</a></td>
+      <td><code>Package.resolved</code></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>Cocoapods</td>
+      <td>All versions</td>
+      <td><a href="https://cocoapods.org/">CocoaPods</a></td>
+      <td><code>Podfile.lock</code></td>
       <td>N</td>
     </tr>
   </tbody>
@@ -490,9 +504,9 @@ To support the following package managers, the GitLab analyzers proceed in two s
     </tr>
     <tr>
       <td>maven</td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L3">3.8.8</a></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.3.1/build/gemnasium-maven/debian/config/.tool-versions#L3">3.9.8</a></td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L92-94">3.8.8</a><sup><b><a href="#exported-dependency-information-notes-1">1</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.3.1/spec/gemnasium-maven_image_spec.rb#L92-94">3.9.8</a><sup><b><a href="#exported-dependency-information-notes-1">1</a></b></sup>
       </td>
     </tr>
     <tr>
@@ -513,10 +527,10 @@ To support the following package managers, the GitLab analyzers proceed in two s
     <tr>
       <td>setuptools</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-python/requirements.txt#L41">69.0.3</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.4.1/build/gemnasium-python/requirements.txt#L41">70.3.0</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L294-316">&gt;= 69.0.3</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.4.1/spec/gemnasium-python_image_spec.rb#L294-316">&gt;= 70.3.0</a>
       </td>
     </tr>
     <tr>
@@ -678,7 +692,7 @@ Support for additional languages, dependency managers, and dependency files are 
 Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
 vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 
-### Enabling the analyzer by using the CI/CD template
+### Enabling the analyzer
 
 Prerequisites:
 
@@ -691,17 +705,38 @@ Prerequisites:
 To enable the analyzer, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes dependency scanning.
-- Edit the `.gitlab-ci.yml` file manually. Use this method if your `.gitlab-ci.yml` file is complex.
 - Use a preconfigured merge request.
-- Create a [scan execution policy](../policies/scan-execution-policies.md) that enforces dependency
+- Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
   scanning.
+- Edit the `.gitlab-ci.yml` file manually.
+- [Use CI/CD components](#use-cicd-components) (Android projects only)
+
+#### Use a preconfigured merge request
+
+This method automatically prepares a merge request that includes the Dependency Scanning template
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
+
+NOTE:
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+To enable Dependency Scanning:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dependency Scanning** row, select **Configure with a merge request**.
+1. Select **Create merge request**.
+1. Review the merge request, then select **Merge**.
+
+Pipelines now include a Dependency Scanning job.
 
 #### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-To enable dependency scanning:
+To enable Dependency Scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
@@ -726,36 +761,17 @@ To enable dependency scanning:
    merge request**.
 1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
-Pipelines now include a dependency scanning job.
+Pipelines now include a Dependency Scanning job.
 
-#### Use a preconfigured merge request
-
-This method automatically prepares a merge request that includes the dependency scanning template
-in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
-
-NOTE:
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
-file. If you have a complex GitLab configuration file it might not be parsed successfully, and an
-error might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
-
-To enable dependency scanning:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
-1. In the **Dependency Scanning** row, select **Configure with a merge request**.
-1. Select **Create merge request**.
-1. Review the merge request, then select **Merge**.
-
-Pipelines now include a dependency scanning job.
-
-### Enabling dependency scanning by using CI/CD components
+#### Use CI/CD components
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/experiment-beta-support.md).
 > - The dependency scanning CI/CD component only supports Android projects.
 
-Use [CI/CD components](../../../ci/components/index.md) to perform dependency scanning of your application. For instructions, see the respective component's README file.
+Use [CI/CD components](../../../ci/components/index.md) to perform Dependency Scanning of your
+application. For instructions, see the respective component's README file.
 
-#### Available CI/CD components per language and package manager
+##### Available CI/CD components per language and package manager
 
 - [Android applications](https://gitlab.com/explore/catalog/components/android-dependency-scanning)
 
@@ -765,12 +781,12 @@ See [Use security scanning tools with merge request pipelines](../index.md#use-s
 
 ### Customizing analyzer behavior
 
-You can use CI/CD variables to customize dependency scanning behavior.
+To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
 
 WARNING:
-You should test all customization of GitLab security scanning tools in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
+Test all customization of GitLab analyzers in a merge request before merging these changes to the
+default branch. Failure to do so can give unexpected results, including a large number of false
+positives.
 
 ### Overriding dependency scanning jobs
 
@@ -1249,3 +1265,190 @@ In these cases, the analyzer skips the dependency and outputs a message to the l
 
 The GitLab analyzers do not make assumptions as they could result in a false positive or false
 negative. For a discussion, see [issue 442027](https://gitlab.com/gitlab-org/gitlab/-/issues/442027).
+
+## Build Swift projects
+
+Swift Package Manager (SPM) is the official tool for managing the distribution of Swift code.
+It's integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+
+Follow these best practices when you build a Swift project with SPM.
+
+1. Include a `Package.resolved` file.
+
+   The `Package.resolved` file locks your dependencies to specific versions.
+   Always commit this file to your repository to ensure consistency across
+   different environments.
+
+   ```shell
+   git add Package.resolved
+   git commit -m "Add Package.resolved to lock dependencies"
+   ```
+
+1. To build your Swift project, use the following commands:
+
+   ```shell
+   # Update dependencies
+   swift package update
+
+   # Build the project
+   swift build
+   ```
+
+1. To configure CI/CD, add these steps to your `.gitlab-ci.yml` file:
+
+   ```yaml
+   swift-build:
+     stage: build
+     script:
+       - swift package update
+       - swift build
+   ```
+
+1. Optional. If you use private Swift package repositories with self-signed certificates,
+   you might need to add the certificate to your project and configure Swift to trust it:
+
+   1. Fetch the certificate:
+
+      ```shell
+      echo | openssl s_client -servername your.repo.url -connect your.repo.url:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END
+      CERTIFICATE-/p' > repo-cert.crt
+      ```
+
+   1. Add these lines to your Swift package manifest (`Package.swift`):
+
+      ```swift
+      import Foundation
+
+      #if canImport(Security)
+      import Security
+      #endif
+
+      extension Package {
+          public static func addCustomCertificate() {
+              guard let certPath = Bundle.module.path(forResource: "repo-cert", ofType: "crt") else {
+                  fatalError("Certificate not found")
+              }
+              SecCertificateAddToSystemStore(SecCertificateCreateWithData(nil, try! Data(contentsOf: URL(fileURLWithPath: certPath)) as CFData)!)
+          }
+      }
+
+      // Call this before defining your package
+      Package.addCustomCertificate()
+      ```
+
+Always test your build process in a clean environment to ensure your
+dependencies are correctly specified and resolve automatically.
+
+## Build CocoaPods projects
+
+CocoaPods is a popular dependency manager for Swift and Objective-C Cocoa projects. It provides a standard format for managing external libraries in iOS, macOS, watchOS, and tvOS projects.
+
+Follow these best practices when you build projects that use CocoaPods for dependency management.
+
+1. Include a `Podfile.lock` file.
+
+   The `Podfile.lock` file is crucial for locking your dependencies to specific versions. Always commit this file to your repository to ensure consistency across different environments.
+
+   ```shell
+   git add Podfile.lock
+   git commit -m "Add Podfile.lock to lock CocoaPods dependencies"
+   ```
+
+1. You can build your project with one of the following:
+
+   - The `xcodebuild` command-line tool:
+
+     ```shell
+     # Install CocoaPods dependencies
+     pod install
+
+     # Build the project
+     xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme build
+     ```
+
+   - The Xcode IDE:
+
+     1. Open your `.xcworkspace` file in Xcode.
+     1. Select your target scheme.
+     1. Select **Product > Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
+
+   - [fastlane](https://fastlane.tools/), a tool for automating builds and releases for iOS and Android apps:
+
+     1. Install `fastlane`:
+
+        ```shell
+        sudo gem install fastlane
+        ```
+
+     1. In your project, configure `fastlane`:
+
+        ```shell
+        fastlane init
+        ```
+
+     1. Add a lane to your `fastfile`:
+
+        ```ruby
+        lane :build do
+          cocoapods
+          gym(scheme: "YourScheme")
+        end
+        ```
+
+     1. Run the build:
+
+        ```shell
+        fastlane build
+        ```
+
+   - If your project uses both CocoaPods and Carthage, you can use Carthage to build your dependencies:
+
+     1. Create a `Cartfile` that includes your CocoaPods dependencies.
+     1. Run the following:
+
+        ```shell
+        carthage update --platform iOS
+        ```
+
+1. Configure CI/CD to build the project according to your preferred method.
+
+   For example, using `xcodebuild`:
+
+   ```yaml
+   cocoapods-build:
+     stage: build
+     script:
+       - pod install
+       - xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme build
+   ```
+
+1. Optional. If you use private CocoaPods repositories,
+   you might need to configure your project to access them:
+
+   1. Add the private spec repo:
+
+      ```shell
+      pod repo add REPO_NAME SOURCE_URL
+      ```
+
+   1. In your Podfile, specify the source:
+
+      ```ruby
+      source 'https://github.com/CocoaPods/Specs.git'
+      source 'SOURCE_URL'
+      ```
+
+1. Optional. If your private CocoaPods repository uses SSL, ensure the SSL certificate is properly configured:
+
+   - If you use a self-signed certificate, add it to your system's trusted certificates.
+     You can also specify the SSL configuration in your `.netrc` file:
+
+     ```netrc
+     machine your.private.repo.url
+       login your_username
+       password your_password
+     ```
+
+1. After you update your Podfile, run `pod install` to install dependencies and update your workspace.
+
+Remember to always run `pod install` after updating your Podfile to ensure all dependencies are properly installed and the workspace is updated.

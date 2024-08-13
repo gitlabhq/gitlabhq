@@ -72,7 +72,7 @@ RSpec.describe Banzai::Filter::InlineDiffFilter, feature_category: :source_code_
     doc = '[-{-' * 250_000
 
     expect do
-      Timeout.timeout(3.seconds) { filter(doc) }
+      Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(doc) }
     end.not_to raise_error
   end
 

@@ -32,21 +32,58 @@ group-level settings for merge request approval rules is tracked in
 
 ## View approval status
 
-The list of merge requests for your project shows the approval status for each merge request:
+You can see the approval status of a merge request both on the merge request itself,
+and the list of merge requests for your project or group.
+
+### For a single merge request
+
+When an [eligible approver](rules.md#eligible-approvers) visits an open merge request,
+GitLab shows one of these statuses after the body of the merge request. To see it:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Select the title of the merge request to view it.
+1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
+   approval status for the merge request. In this example, you can approve the
+   merge request:
+
+   ![You can approve this merge request. It needs approval before it becomes mergeable.](img/approval_and_merge_status_v17_3.png)
+
+   The text shown in the widget explains its approval status:
+
+   - **Approve**: The merge request doesn't yet have the required number of approvals.
+   - **Approve additionally**: The merge request has the required number of approvals.
+   - **Revoke approval**: The user viewing the merge request has already approved
+     the merge request.
+
+1. To see if your approval satisfies the Code Owner requirements, select
+   **Expand eligible approvers** (**{chevron-lg-down}**).
+
+To see the individual review and approval status for each reviewer, check the right sidebar
+of a merge request. Each **Reviewer** shows the status to the right of the user's name, like this:
+
+![This reviewer has requested changes, and blocked this merge request.](img/reviewer_blocks_mr_v17_3.png)
+
+- **{dash-circle}** Awaiting review from this user.
+- **{status_running}** The user's review is in progress.
+- **{check-circle}** Approved by this user.
+- **{comment-lines}** User has requested changes, and
+  [blocked this merge request](../reviews/index.md#prevent-merge-when-you-request-changes).
+  (If needed, you can [bypass this block](../reviews/index.md#prevent-merge-when-you-request-changes).)
+
+To [re-request a review](../reviews/index.md#re-request-a-review), select the
+**Re-request a review** icon (**{redo}**) next to the user.
+
+### In the list of merge requests
+
+The list of merge requests for [your project or group](../index.md#view-merge-requests)
+shows the approval status for each merge request:
 
 | Example | Description |
 | :-----: | :---------- |
 | ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png) | Required approvals are missing. (**{approval}**) |
 | ![Approvals are satisfied](img/approvals_satisfied_v17_1.png) | Approvals are satisfied. (**{check}**) |
 | ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. (**{approval-solid}**) |
-
-When an [eligible approver](rules.md#eligible-approvers) visits an open merge request,
-GitLab shows one of these statuses after the body of the merge request:
-
-- **Approve**: The merge request doesn't yet have the required number of approvals.
-- **Approve additionally**: The merge request has the required number of approvals.
-- **Revoke approval**: The user viewing the merge request has already approved
-  the merge request.
 
 ## Configuration options for approvals
 

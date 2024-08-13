@@ -687,15 +687,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:packages_composer_cache_cleanup
-  :worker_name: Packages::Composer::CacheCleanupWorker
-  :feature_category: :package_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:packages_debian_cleanup_dangling_package_files
   :worker_name: Packages::Debian::CleanupDanglingPackageFilesWorker
   :feature_category: :package_registry
@@ -1571,6 +1562,15 @@
   :tags: []
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: jira_connect:jira_connect_jira_cloud_app_deactivation
+  :worker_name: JiraConnect::JiraCloudAppDeactivationWorker
   :feature_category: :integrations
   :has_external_dependencies: true
   :urgency: :low
@@ -3261,6 +3261,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: import_reassign_placeholder_user_records
+  :worker_name: Import::ReassignPlaceholderUserRecordsWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_refresh_import_jid
   :worker_name: Gitlab::Import::RefreshImportJidWorker
   :feature_category: :importers
@@ -3660,15 +3669,6 @@
 - :name: onboarding_user_added
   :worker_name: Onboarding::UserAddedWorker
   :feature_category: :onboarding
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: packages_composer_cache_update
-  :worker_name: Packages::Composer::CacheUpdateWorker
-  :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4187,6 +4187,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: work_items_copy_timelogs
+  :worker_name: WorkItems::CopyTimelogsWorker
+  :feature_category: :team_planning
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: work_items_import_work_items_csv
   :worker_name: WorkItems::ImportWorkItemsCsvWorker

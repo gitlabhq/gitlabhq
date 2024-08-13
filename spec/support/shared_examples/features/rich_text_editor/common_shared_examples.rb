@@ -49,4 +49,43 @@ RSpec.shared_examples 'rich text editor - common' do
       expect(page).not_to have_text('An error occurred')
     end
   end
+
+  describe 'block content is added to a table' do
+    it 'converts a markdown table to HTML and shows a warning for it' do
+      click_on 'Add a table'
+
+      switch_to_content_editor
+      type_in_content_editor '* list item'
+
+      expect(page).to have_text(
+        "Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not \
+supported in Markdown and will be converted to HTML."
+      )
+
+      switch_to_markdown_editor
+      expect(page.find('textarea').value).to include '<table>
+<tr>
+<th>header</th>
+<th>header</th>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+
+* list item
+</td>
+</tr>
+</table>'
+    end
+  end
 end

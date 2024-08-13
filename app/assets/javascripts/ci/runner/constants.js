@@ -219,3 +219,4 @@ export const CHANGELOG_URL = `https://gitlab.com/gitlab-org/gitlab-runner/blob/m
 export const DOCKER_HELP_URL = `${DOCS_URL}/runner/install/docker.html`;
 export const KUBERNETES_HELP_URL = `${DOCS_URL}/runner/install/kubernetes.html`;
 export const RUNNER_MANAGERS_HELP_URL = `${DOCS_URL}/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities`;
+export const SINGLE_RUNNER_ENTRY_HELP_URL = `${DOCS_URL}/runner/configuration/advanced-configuration#the-runners-section`;

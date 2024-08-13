@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Undo changes by using Git
+# Undo changes
 
 Git provides options for undoing changes. The method for undoing a change depends on whether the change is unstaged, staged, committed, or pushed.
 
@@ -174,7 +174,7 @@ The commit you want to undo is `B`.
 #### Undo multiple committed changes
 
 You can recover from multiple commits. For example, if you have done commits `A-B-C-D`
-on your feature branch and then realize that `C` and `D` are wrong.
+on your branch and then realize that `C` and `D` are wrong.
 
 To recover from multiple incorrect commits:
 
@@ -309,7 +309,7 @@ or a branch that might be used by other developers.
 When you contribute to large open source repositories, like [GitLab](https://gitlab.com/gitlab-org/gitlab),
 you can squash your commits into a single one.
 
-To squash commits on a feature branch to a single commit on a target branch
+To squash commits on your branch to a single commit on a target branch
 at merge, use `git merge --squash`.
 
 NOTE:
@@ -317,7 +317,7 @@ Never modify the commit history of your [default branch](../../user/project/repo
 
 ### How to change history
 
-A feature branch of a merge request is a public branch and might be used by
+A branch of a merge request is a public branch and might be used by
 other developers. However, the project rules might require
 you to use `git rebase` to reduce the number of
 displayed commits on target branch after reviews are done.
@@ -361,6 +361,7 @@ git rebase -i commit-id
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
+> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -573,16 +574,10 @@ git checkout -- <file>
   git rm <filename> --cache
   ```
 
-<!-- ## Troubleshooting
+## Related topics
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
-<!-- Identifiers, in alphabetical order -->
+- [`git blame`](../../user/project/repository/files/git_blame.md)
+- [Cherry-pick](../../user/project/merge_requests/cherry_pick_changes.md)
+- [Git history](../../user/project/repository/files/git_history.md)
+- [Revert an existing commit](../../user/project/merge_requests/revert_changes.md#revert-a-commit)
+- [Squash and merge](../../user/project/merge_requests/squash_and_merge.md)

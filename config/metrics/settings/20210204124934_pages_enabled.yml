@@ -2,7 +2,7 @@
 data_category: operational
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
-product_group: ide
+product_group: remote_development
 value_type: boolean
 status: active
 time_frame: none

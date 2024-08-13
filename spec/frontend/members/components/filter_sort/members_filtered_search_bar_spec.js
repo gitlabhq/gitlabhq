@@ -9,6 +9,7 @@ import {
   MEMBERS_TAB_TYPES,
   FILTERED_SEARCH_TOKEN_TWO_FACTOR,
   FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
+  FILTERED_SEARCH_MAX_ROLE,
 } from '~/members/constants';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -36,7 +37,7 @@ describe('MembersFilteredSearchBar', () => {
           state: {
             filteredSearchBar: {
               show: true,
-              tokens: [FILTERED_SEARCH_TOKEN_TWO_FACTOR.type],
+              tokens: [FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, FILTERED_SEARCH_MAX_ROLE.type],
               searchParam: 'search',
               placeholder: 'Filter members',
               recentSearchesStorageKey: 'group_members',
@@ -52,6 +53,7 @@ describe('MembersFilteredSearchBar', () => {
         sourceId: 1,
         canManageMembers: true,
         namespace: MEMBERS_TAB_TYPES.user,
+        availableRoles: [],
         ...provide,
       },
       store,
@@ -74,7 +76,22 @@ describe('MembersFilteredSearchBar', () => {
     it('includes tokens set in `filteredSearchBar.tokens`', () => {
       createComponent();
 
-      expect(findFilteredSearchBar().props('tokens')).toEqual([FILTERED_SEARCH_TOKEN_TWO_FACTOR]);
+      expect(findFilteredSearchBar().props('tokens')).toEqual([
+        FILTERED_SEARCH_TOKEN_TWO_FACTOR,
+        FILTERED_SEARCH_MAX_ROLE,
+      ]);
+    });
+
+    it('sets the provided `availableRoles` as options to the `max_role` token', () => {
+      const availableRoles = { title: 'Guest', value: 'static-10' };
+
+      createComponent({ provide: { availableRoles } });
+
+      const maxRoleToken = findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === FILTERED_SEARCH_MAX_ROLE.type);
+
+      expect(maxRoleToken.options).toEqual(availableRoles);
     });
 
     describe('when `canManageMembers` is false', () => {
@@ -97,9 +114,9 @@ describe('MembersFilteredSearchBar', () => {
           },
         });
 
-        expect(findFilteredSearchBar().props('tokens')).toEqual([
-          FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
-        ]);
+        expect(findFilteredSearchBar().props('tokens')).not.toContain(
+          FILTERED_SEARCH_TOKEN_TWO_FACTOR,
+        );
       });
     });
   });

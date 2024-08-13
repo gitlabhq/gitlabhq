@@ -5,10 +5,10 @@ module NamespacesHelper
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end
 
-  def cascading_namespace_settings_popover_data(attribute, group, settings_path_helper)
+  def cascading_namespace_settings_tooltip_data(attribute, group, settings_path_helper)
     locked_by_ancestor = group.namespace_settings.public_send("#{attribute}_locked_by_ancestor?") # rubocop:disable GitlabSecurity/PublicSend
 
-    popover_data = {
+    tooltip_data = {
       locked_by_application_setting: group.namespace_settings.public_send("#{attribute}_locked_by_application_setting?"), # rubocop:disable GitlabSecurity/PublicSend
       locked_by_ancestor: locked_by_ancestor
     }
@@ -16,14 +16,14 @@ module NamespacesHelper
     if locked_by_ancestor
       ancestor_namespace = group.namespace_settings.public_send("#{attribute}_locked_ancestor").namespace # rubocop:disable GitlabSecurity/PublicSend
 
-      popover_data[:ancestor_namespace] = {
+      tooltip_data[:ancestor_namespace] = {
         full_name: ancestor_namespace.full_name,
         path: settings_path_helper.call(ancestor_namespace)
       }
     end
 
     {
-      popover_data: popover_data.to_json,
+      tooltip_data: tooltip_data.to_json,
       testid: 'cascading-settings-lock-icon'
     }
   end

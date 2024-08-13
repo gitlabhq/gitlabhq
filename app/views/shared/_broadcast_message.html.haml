@@ -1,51 +1,11 @@
-- icon_name = 'bullhorn'
-- dismissable = message.dismissable?
-- preview = local_assigns.fetch(:preview, false)
-- dismissal_data = current_user ? { dismissal_path: broadcast_message_dismissals_path } : {}
+- content = render_broadcast_message(message)
+- expire_date = message.ends_at.iso8601
+- cookie_key = Users::BroadcastMessageDismissal.get_cookie_key(message.id)
+- dismissal_path = current_user ? broadcast_message_dismissals_path : nil
 
-- data = { id: message.id,
-  expire_date: message.ends_at.iso8601,
-  cookie_key: Users::BroadcastMessageDismissal.get_cookie_key(message.id),
-  testid: 'close-button' }.merge(dismissal_data)
+- if message.notification?
+  .broadcast-notification-message{ data: { testid: 'broadcast-notification-container' } }
+    = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: nil, dismissable: true, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path, button_testid: 'close-button')
 
-- unless message.notification?
-  .gl-broadcast-message.broadcast-banner-message.banner{ role: "alert",
-    class: "js-broadcast-notification-#{message.id} #{message.theme}", data: { testid: 'banner-broadcast-message' } }
-    .gl-broadcast-message-content
-      .gl-broadcast-message-icon
-        = sprite_icon(icon_name)
-      .gl-broadcast-message-text.js-broadcast-message-preview
-        - if message.message.present?
-          %h2.gl-sr-only
-            = s_("Admin message")
-          = render_broadcast_message(message)
-        - else
-          = yield
-    - if dismissable && !preview
-      = render Pajamas::ButtonComponent.new(category: :tertiary,
-        icon: 'close',
-        size: :small,
-        button_options: { class: 'gl-close-btn-color-inherit gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification',
-          'aria-label': _('Close'),
-          data: data },
-        icon_classes: 'gl-text-white')
 - else
-  - notification_class = "js-broadcast-notification-#{message.id}"
-  - notification_class << ' preview' if preview
-  .gl-broadcast-message.broadcast-notification-message.gl-mt-3{ role: "alert", class: notification_class, data: { testid: 'broadcast-notification-container' } }
-    .gl-broadcast-message-content
-      .gl-broadcast-message-icon
-        = sprite_icon(icon_name, css_class: 'vertical-align-text-top')
-      - if message.message.present?
-        %h2.gl-sr-only
-          = s_("Admin message")
-        = render_broadcast_message(message)
-      - else
-        = yield
-    - if !preview
-      = render Pajamas::ButtonComponent.new(category: :tertiary,
-        icon: 'close',
-        size: :small,
-        button_options: { class: 'js-dismiss-current-broadcast-notification',
-          'aria-label': _('Close'),
-          data: data })
+  = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: message.theme, dismissable: message.dismissable?, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path, banner: true)

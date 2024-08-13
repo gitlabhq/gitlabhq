@@ -18,6 +18,15 @@ const emptyStateTranslations = {
   },
 };
 
+const helpLinks = {
+  [MODEL_ENTITIES.model]: helpPagePath('user/project/ml/model_registry/index', {
+    anchor: 'create-machine-learning-models-by-using-the-ui',
+  }),
+  [MODEL_ENTITIES.modelVersion]: helpPagePath('user/project/ml/model_registry/index', {
+    anchor: 'create-a-model-version-by-using-the-ui',
+  }),
+};
+
 export default {
   components: {
     GlEmptyState,
@@ -35,9 +44,7 @@ export default {
     emptyStateValues() {
       return {
         ...emptyStateTranslations[this.entityType],
-        helpPath: helpPagePath('user/project/ml/model_registry/index', {
-          anchor: 'creating-machine-learning-models-and-model-versions',
-        }),
+        helpPath: helpLinks[this.entityType],
         emptySvgPath: emptySvgUrl,
       };
     },

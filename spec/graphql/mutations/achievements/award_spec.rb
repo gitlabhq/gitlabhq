@@ -13,7 +13,7 @@ RSpec.describe Mutations::Achievements::Award, feature_category: :user_profile d
 
   describe '#resolve' do
     subject(:resolve_mutation) do
-      described_class.new(object: nil, context: { current_user: current_user }, field: nil).resolve(
+      described_class.new(object: nil, context: query_context, field: nil).resolve(
         achievement_id: achievement&.to_global_id, user_id: recipient&.to_global_id
       )
     end

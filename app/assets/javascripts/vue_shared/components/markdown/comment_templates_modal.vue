@@ -145,14 +145,14 @@ export default {
       <ul
         v-else
         ref="resultsList"
-        class="gl-m-0 gl-p-0 gl-list-none comment-templates-options"
+        class="comment-templates-options gl-m-0 gl-list-none gl-p-0"
         data-testid="comment-templates-list"
         @keydown="onKeydown"
       >
         <gl-disclosure-dropdown-group
           v-for="(commentTemplateGroup, index) in filteredSavedReplies"
           :key="commentTemplateGroup.name"
-          :class="{ 'gl-mt-0! gl-border-t-0! gl-pt-0': index === 0 }"
+          :class="{ '!gl-mt-0 !gl-border-t-0 gl-pt-0': index === 0 }"
           :group="commentTemplateGroup"
           bordered
           @action="onSelect"
@@ -173,7 +173,7 @@ export default {
         >
           <template #header>
             <div
-              class="gl-font-sm gl-font-bold gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200"
+              class="gl-min-h-8 gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-border-b-solid"
             >
               {{ __('Manage') }}
             </div>

@@ -34,7 +34,7 @@ require 'rspec-parameterized'
 require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
-require 'test_prof/factory_prof/nate_heckler'
+require 'test_prof/factory_prof/nate_heckler' if ENV.fetch('ENABLE_FACTORY_PROF', 'true') == 'true'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 
@@ -51,8 +51,6 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-# require rainbow gem String monkeypatch, so we can test SystemChecks
-require 'rainbow/ext/string'
 Rainbow.enabled = false
 
 # Enable zero monkey patching mode before loading any other RSpec code.
@@ -81,7 +79,12 @@ quality_level = Quality::TestLevel.new
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
-  config.fixture_path = Rails.root
+
+  if ::Gitlab.next_rails?
+    config.fixture_paths = [Rails.root]
+  else
+    config.fixture_path = Rails.root
+  end
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
@@ -148,6 +151,10 @@ RSpec.configure do |config|
     metadata[:type] = :feature
   end
 
+  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/job_dependency_spec.rb}) do |metadata|
+    metadata[:ci_config_validation] = true
+  end
+
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -205,6 +212,7 @@ RSpec.configure do |config|
   config.include UserWithNamespaceShim
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
+  config.include DisableNamespaceOrganizationValidationHelper
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -339,9 +347,6 @@ RSpec.configure do |config|
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
 
-      # We want this this FF disabled by default
-      stub_feature_flags(synced_epic_work_item_editable: false)
-
       # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
       stub_feature_flags(your_work_projects_vue: false)
@@ -395,6 +400,11 @@ RSpec.configure do |config|
   config.around(:example, :quarantine) do |example|
     # Skip tests in quarantine unless we explicitly focus on them or not in CI
     example.run if config.inclusion_filter[:quarantine] || !ENV['CI']
+  end
+
+  config.around(:example, :ci_config_validation) do |example|
+    # Skip tests for ci config validation unless we explicitly focus on them or not in CI
+    example.run if config.inclusion_filter[:ci_config_validation] || !ENV['CI']
   end
 
   config.around(:example, :request_store) do |example|
@@ -464,6 +474,9 @@ RSpec.configure do |config|
 
     # Re-enable query limiting in case it was disabled
     Gitlab::QueryLimiting.enable!
+
+    # Reset ActiveSupport::CurrentAttributes models
+    ActiveSupport::CurrentAttributes.reset_all
   end
 
   config.before(:example, :mailer) do

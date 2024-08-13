@@ -3,9 +3,13 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'an assignable resource' do
-  let_it_be(:user) { create(:user) }
+  include GraphqlHelpers
 
-  subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let_it_be(:user) { create(:user) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
+
+  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   describe '#resolve' do
     let_it_be(:assignee) { create(:user) }

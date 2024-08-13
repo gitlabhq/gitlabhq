@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -103,7 +103,7 @@ You can manually add an item to your To-Do List.
    - [Objective or key result](../user/okrs.md)
    - [Task](tasks.md)
 
-1. In the upper-right corner, select  **Add a to do** (**{todo-add}**).
+1. In the upper-right corner, select **Add a to do** (**{todo-add}**).
 
 ### Create a to-do item by mentioning someone
 

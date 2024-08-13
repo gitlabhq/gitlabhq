@@ -5,6 +5,7 @@
 # want to use the Rainbow refinement in the gem code going forward, but
 # while we have this dependency, we need this external require
 require "rainbow/ext/string"
+require 'active_support/all'
 
 module Gitlab
   module Backup
@@ -13,6 +14,7 @@ module Gitlab
       autoload :BackupExecutor, 'gitlab/backup/cli/backup_executor'
       autoload :Commands, 'gitlab/backup/cli/commands'
       autoload :Dependencies, 'gitlab/backup/cli/dependencies'
+      autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'
       autoload :Metadata, 'gitlab/backup/cli/metadata'
       autoload :Output, 'gitlab/backup/cli/output'
       autoload :RestoreExecutor, 'gitlab/backup/cli/restore_executor'
@@ -27,7 +29,7 @@ module Gitlab
       Error = Class.new(StandardError)
 
       def self.rails_environment!
-        require APP_PATH
+        require File.join(GITLAB_PATH, 'config/application')
 
         Rails.application.require_environment!
         Rails.application.autoloaders

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial shows you how to create and apply a
-[scan execution policy](../../user/application_security/policies/scan-execution-policies.md).
+[scan execution policy](../../user/application_security/policies/scan_execution_policies.md).
 These policies enforce application security tools as part of the CI/CD pipeline. In this tutorial,
 you create a policy to enforce secret detection in the CI/CD pipeline of two projects.
 

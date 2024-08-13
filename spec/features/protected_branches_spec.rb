@@ -211,7 +211,7 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
     end
 
     include_examples 'Deploy keys with protected branches' do
-      let(:all_dropdown_sections) { ['Roles', 'Deploy Keys'] }
+      let(:all_dropdown_sections) { ['Roles', 'Deploy keys'] }
     end
   end
 end

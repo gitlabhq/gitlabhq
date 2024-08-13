@@ -53,7 +53,7 @@ export default {
     variant="danger"
     @dismiss="$emit('input', [])"
   >
-    <ul class="gl-pl-5 gl-mb-0">
+    <ul class="gl-mb-0 gl-pl-5">
       <li v-for="error in errors" :key="error">
         {{ error }}
       </li>

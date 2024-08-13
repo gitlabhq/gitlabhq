@@ -144,7 +144,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             create(:parent_link, work_item_parent: parent, work_item: adjacent, relative_position: 0)
           end
 
-          it 'creates work item and sets the relative position to be AFTER adjacent' do
+          it 'creates work item and sets the relative position to be BEFORE adjacent' do
             expect do
               post_graphql_mutation(mutation, current_user: current_user)
             end.to change(WorkItem, :count).by(1)
@@ -157,7 +157,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
                 'type' => 'HIERARCHY'
               }
             )
-            expect(work_item.parent_link.relative_position).to be > adjacent.parent_link.relative_position
+            expect(work_item.parent_link.relative_position).to be < adjacent.parent_link.relative_position
           end
         end
       end
@@ -519,6 +519,73 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           'description' => "some description",
           'type' => 'DESCRIPTION'
         )
+      end
+    end
+  end
+
+  context 'with CRM contacts widget input' do
+    let(:mutation) { graphql_mutation(:workItemCreate, input.merge('namespacePath' => project.full_path), fields) }
+    let(:fields) do
+      <<~FIELDS
+        workItem {
+          widgets {
+            ... on WorkItemWidgetCrmContacts {
+              type
+              contacts {
+                nodes {
+                  id
+                  firstName
+                }
+              }
+            }
+          }
+        }
+        errors
+      FIELDS
+    end
+
+    let_it_be(:contact) { create(:contact, group: project.group) }
+
+    shared_examples 'mutation setting work item contacts' do
+      it 'creates work item with contact data' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change(WorkItem, :count).by(1)
+
+        expect(mutation_response['workItem']['widgets']).to include(
+          'contacts' => {
+            'nodes' => [
+              {
+                'id' => expected_result[:id],
+                'firstName' => expected_result[:first_name]
+              }
+            ]
+          },
+          'type' => 'CRM_CONTACTS'
+        )
+      end
+    end
+
+    context 'when setting the contacts' do
+      context 'when mutating the work item' do
+        let(:input) do
+          {
+            'title' => 'item1',
+            'workItemTypeId' => WorkItems::Type.default_by_type(:issue).to_gid.to_s,
+            'crmContactsWidget' => {
+              'contactIds' => [global_id_of(contact)]
+            }
+          }
+        end
+
+        let(:expected_result) do
+          {
+            id: global_id_of(contact).to_s,
+            first_name: contact.first_name
+          }
+        end
+
+        it_behaves_like 'mutation setting work item contacts'
       end
     end
   end

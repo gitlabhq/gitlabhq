@@ -21,7 +21,26 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME =~ /^ruby\d+(_\d)*$/ || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '
+      (
+        $CI_PIPELINE_SOURCE != "merge_request_event"
+        &&
+        (
+          $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+          || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
+          || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/
+          || $CI_COMMIT_REF_NAME =~ /^security\//
+          || $CI_COMMIT_REF_NAME =~ /^ruby\d+(_\d)*$/
+        )
+      )
+      ||
+      (
+        $CI_PIPELINE_SOURCE == "merge_request_event"
+        && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train"
+      )
+      || $CI_COMMIT_TAG
+      || $FORCE_GITLAB_CI
+      '
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -36,103 +55,109 @@
   if: '$CI_COMMIT_TAG'
 
 .if-merge-request: &if-merge-request
-  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train"'
 
 .if-not-merge-request: &if-not-merge-request
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == null'
 
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
+# if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
 .if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
 
 .if-merge-request-and-devops-fulfillment: &if-merge-request-and-devops-fulfillment
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
 
 .if-automated-merge-request: &if-automated-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
 
 .if-merge-request-labels-force-as-if-jh: &if-merge-request-labels-force-as-if-jh
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:force-run-as-if-jh/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:force-run-as-if-jh/'
 
 .if-merge-request-labels-update-caches: &if-merge-request-labels-update-caches
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
 .if-merge-request-labels-run-all-rspec: &if-merge-request-labels-run-all-rspec
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
 .if-merge-request-labels-run-clusterwide-db: &if-merge-request-labels-run-clusterwide-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
 .if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
 
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /group::global search/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
+
+.if-merge-request-not-labels-pipeline-run-e2e-omnibus-once: &if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS !~ /pipeline:run-e2e-omnibus-once/)'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
 .if-merge-request-labels-run-praefect-with-db: &if-merge-request-labels-run-praefect-with-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
 
 .if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
+
+.if-merge-request-labels-skip-ci-validation: &if-merge-request-labels-skip-ci-validation
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-ci-validation/'
 
 .if-security-merge-request: &if-security-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE == "gitlab-org/security"'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE == "gitlab-org/security"'
 
 .if-fork-merge-request: &if-fork-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
 .if-merge-request-no-tier: &if-merge-request-no-tier
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
 
 .if-merge-request-tier-1: &if-merge-request-tier-1
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
 
 .if-merge-request-tier-2: &if-merge-request-tier-2
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-2/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-2/'
 
 .if-merge-request-tier-3: &if-merge-request-tier-3
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
 
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -165,16 +190,16 @@
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"'
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"'
 
 .if-dot-com-gitlab-org-and-subgroups-merge-train: &if-dot-com-gitlab-org-and-subgroups-merge-train
-  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
 
 .if-ruby-branch: &if-ruby-branch
-  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
+  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
 
 ####################
 # Changes patterns #
@@ -212,12 +237,14 @@
   - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
   - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
   - ".gitlab/ci/test-on-gdk/*.yml"
+  - ".gitlab/ci/version.yml"
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
 
 .workhorse-patterns: &workhorse-patterns
+  - ".gitlab/ci/version.yml"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
@@ -261,9 +288,6 @@
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
 
-.bundler-patterns: &bundler-patterns
-  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
-
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
@@ -273,6 +297,7 @@
 
 .dependency-patterns: &dependency-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
   - '{go.sum,*/go.sum,*/*/go.sum}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
@@ -294,6 +319,7 @@
 .assets-compilation-patterns: &assets-compilation-patterns
   - "{package.json,yarn.lock}"
   - "{Gemfile,Gemfile.lock}"
+  - "{Gemfile.next,Gemfile.next.lock}"
   - ".browserslistrc"
   - "babel.config.js"
   - "config/webpack.config.js"
@@ -324,6 +350,7 @@
   - "**/Rakefile"
   - "**/Dangerfile"
   - "**/Gemfile"
+  - "**/Gemfile.next"
   - "**/Guardfile"
   - "**/*.rake"
   - "**/*.rb"
@@ -332,6 +359,7 @@
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "Rakefile"
   - "config.ru"
   - "keeps/**/*"
@@ -350,6 +378,7 @@
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
+  - "{,jh/}Gemfile.next.lock"
   - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
@@ -429,12 +458,6 @@
 .frontend-predictive-patterns: &frontend-predictive-patterns
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
 
-# Frontend view patterns + .qa-patterns
-.frontend-qa-patterns: &frontend-qa-patterns
-  - "{,ee/,jh/}{app/assets,app/components,app/helpers,app/presenters,app/views}/**/*"
-  # QA changes
-  - "{,jh/}qa/**/*"
-
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
   - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -442,6 +465,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "lib/gitlab/redis/*"
@@ -469,6 +493,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -493,6 +518,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
+  - "scripts/**/*"
   - "{,spec/}tooling/**/*"
 
 # .code-patterns + .qa-patterns
@@ -502,6 +528,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -531,6 +558,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -552,6 +580,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
+  - "scripts/**/*"
   - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
@@ -575,6 +604,7 @@
   - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "keeps/**/*"
   - "Rakefile"
   - "tests.yml"
@@ -594,6 +624,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
+  - "scripts/**/*"
   - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
@@ -622,6 +653,7 @@
   - ".rubocop_todo/**/*.yml"
   - "{,ee/,jh/}rubocop/**/*"  # We might be changing custom cops
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
+  - "{,ee/,jh/}Gemfile.next.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
   - "lib/gitlab_edition.rb"  # This is required in RuboCop::CodeReuseHelpers
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "config/feature_categories.yml"  # Used by RSpec/FeatureCategory
@@ -633,14 +665,8 @@
 
 .core-backend-patterns: &core-backend-patterns
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{,ee/,jh/}config/**/*.rb"
-
-.core-frontend-patterns: &core-frontend-patterns
-  - "{package.json,yarn.lock}"
-  - "babel.config.js"
-  - "jest.config.{base,integration,unit}.js"
-  - "config/helpers/**/*.js"
-  - "vendor/assets/javascripts/**/*"
 
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
   - "{,ee/,jh/}config/feature_flags/**/*.yml"
@@ -654,6 +680,7 @@
 .gdk-component-patterns: &gdk-component-patterns
   - qa/gdk/**/*
   - Gemfile.lock
+  - Gemfile.next.lock
   - yarn.lock
   - scripts/build_gdk_image
   - scripts/frontend/postinstall.js
@@ -664,6 +691,10 @@
   - GITLAB_WORKHORSE_VERSION
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
+
+.ruby-version-patterns: &ruby-version-patterns
+  - ".ruby-version"
+  - ".tool-versions"
 
 .audit-events-patterns: &audit-events-patterns
   - "{,ee/}config/audit_events/types/*.yml"
@@ -681,7 +712,8 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - qa/gems/gitlab-cng/**/*.rb
+  - "qa/gems/gitlab-cng/**/*.rb"
+  - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
 
 ##################
 # Conditions set #
@@ -955,7 +987,7 @@
   rules:
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/ && $CI_PIPELINE_SOURCE == "push"'
     # In case gdk base tag is updated via backport mr, make sure we retag it with stable prefix as well
-    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
       changes:
         - qa/gdk/Dockerfile.gdk
 
@@ -974,6 +1006,9 @@
     - <<: *if-force-ci
       when: manual
     # The rest is included to be consistent with .qa:rules:e2e:test-on-gdk
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1277,6 +1312,12 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.frontend:rules:default-frontend-jobs-with-docs-changes:
+  rules:
+    - !reference [.frontend:rules:default-frontend-jobs, rules]
+    - <<: *if-default-refs
+      changes: *docs-patterns
+
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:frontend_fixture:
   rules:
@@ -1425,7 +1466,7 @@
     - <<: *if-default-branch-refs
       changes: *frontend-build-patterns
       allow_failure: true
-    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true
 
@@ -1452,6 +1493,12 @@
 .frontend:rules:jest-vue3:
   rules:
     - <<: *if-default-branch-schedule-nightly
+
+.frontend:rules:jest-linters:
+  rules:
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-default-refs
+      changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
 
 ################
 # Memory rules #
@@ -1511,6 +1558,10 @@
 
 .qa:rules:gitlab-cng:
   rules:
+    - <<: *if-merge-request
+      changes: *cng-orchestrator-patterns
+    - <<: *if-merge-request
+      changes: *rubocop-patterns
     - <<: *if-default-refs
       changes: *cng-orchestrator-patterns
 
@@ -1557,6 +1608,9 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
      # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
@@ -1602,6 +1656,8 @@
       changes: *qa-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
+    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+      when: never
     # Otherwise, only run tests in pipeline::tier-3 and above
     - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
@@ -1628,6 +1684,9 @@
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1653,7 +1712,6 @@
     PROCESS_TEST_RESULTS: "true"
     KNAPSACK_GENERATE_REPORT: "true"
     QA_SAVE_TEST_METRICS: "true"
-    QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
 .qa:rules:e2e-schedule-blocking:
   rules:
@@ -1711,7 +1769,6 @@
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
 
 .qa:rules:package-and-test-ce:follow-up:
   rules:
@@ -1730,7 +1787,6 @@
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
 
 .qa:rules:e2e:test-on-gdk:
   rules:
@@ -1750,7 +1806,6 @@
         PROCESS_TEST_RESULTS: "true"
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
         COVERBAND_ENABLED: "true"
 
 .qa:rules:e2e:test-on-cng:
@@ -1762,8 +1817,8 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
+        PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
       allow_failure: true
     # - <<: *if-merge-request-targeting-stable-branch
     #   when: never
@@ -1789,7 +1844,6 @@
         PROCESS_TEST_RESULTS: "true"
         CREATE_TEST_FAILURE_ISSUES: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
 
 # These provide a manual way to trigger follow-up:e2e:package-and-test-ee
 # It is fine if they're overlapping with the automatic ones.
@@ -1800,8 +1854,6 @@
 .qa:rules:manual-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-merge-request-and-specific-devops-stage
-      when: never
     - !reference [".qa:rules:code-merge-request-manual", rules]
 
 # These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic.
@@ -1810,8 +1862,6 @@
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-merge-request-and-specific-devops-stage
-      when: never
     - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
 
 # These are based on `qa:rules:package-and-test-ee` but with when:never in all except for code-patterns in merge requests
@@ -1819,6 +1869,8 @@
   rules:
     # From .qa:rules:package-and-test-common
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+      when: never
     - <<: *if-ruby-branch
       when: never
     - <<: *if-merge-request-labels-run-all-e2e
@@ -2262,8 +2314,6 @@
 .rails:rules:ee-gitlab-duo-chat-base:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - if: '$REAL_AI_REQUEST == null'
-      when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
     - <<: *if-fork-merge-request
@@ -2318,17 +2368,27 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference [".rails:rules:ee-and-foss-unit", rules]
 
-.rails:rules:artifact-collector-system:
+.rails:rules:artifact-collector-part-a:
   rules:
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference [".rails:rules:ee-and-foss-system", rules]
+    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
 
-.rails:rules:artifact-collector-remainder:
+.rails:rules:artifact-collector-part-b:
   rules:
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
-    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
+
+.rails:rules:rspec-ci-config-validation:
+  rules:
+    - <<: *if-merge-request-labels-skip-ci-validation
+      when: never
+    - <<: *if-merge-request
+      changes:
+        - "{,jh/}.gitlab-ci.yml"
+        - "{,jh/}.gitlab/ci/**/*"
+        - "spec/dot_gitlab_ci/**/*"
 
 .rails:rules:detect-tests:
   rules:
@@ -2671,7 +2731,7 @@
       when: never
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request
-      changes: ["Gemfile.lock"]
+      changes: ["Gemfile.lock", "Gemfile.next.lock"]
 
 .reports:rules:x-ray:
   rules:
@@ -2747,9 +2807,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
-      variables:
-        QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
 .review:rules:review-cleanup:
   rules:
@@ -2982,11 +3039,16 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      when: always
     - <<: *if-default-branch-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+    - <<: *if-merge-request
+      changes:
+        - ".gitlab/ci/test-metadata.gitlab-ci.yml"
+        - "scripts/rspec_helpers.sh"
+      when: manual
+      allow_failure: true
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-merge-request

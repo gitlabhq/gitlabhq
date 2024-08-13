@@ -167,14 +167,14 @@ RSpec.describe TabHelper do
   describe 'gl_tab_counter_badge' do
     it 'creates a tab counter badge' do
       expect(helper.gl_tab_counter_badge(1)).to eq(
-        '<span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge">1</span>'
+        '<span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge"><span class="gl-badge-content">1</span></span>'
       )
     end
 
     context 'with extra classes' do
       it 'creates a tab counter badge with the correct class attribute' do
         expect(helper.gl_tab_counter_badge(1, { class: 'js-test' })).to eq(
-          '<span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge js-test">1</span>'
+          '<span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge js-test"><span class="gl-badge-content">1</span></span>'
         )
       end
     end
@@ -182,7 +182,7 @@ RSpec.describe TabHelper do
     context 'with data attributes' do
       it 'creates a tab counter badge with the data attributes' do
         expect(helper.gl_tab_counter_badge(1, { data: { some_attribute: 'foo' } })).to eq(
-          '<span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge" data-some-attribute="foo">1</span>'
+          '<span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge" data-some-attribute="foo"><span class="gl-badge-content">1</span></span>'
         )
       end
     end

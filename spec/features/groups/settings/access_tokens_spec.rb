@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group > Settings > Access Tokens', :js, feature_category: :system_access do
+RSpec.describe 'Group > Settings > Access tokens', :js, feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }

@@ -19,6 +19,7 @@ import {
   REMOVE_TAGS_BUTTON_TITLE,
   TAGS_LIST_TITLE,
   GRAPHQL_PAGE_SIZE,
+  GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   NAME_SORT_FIELD,
   PUBLISHED_SORT_FIELD,
@@ -116,10 +117,15 @@ export default {
     tagsPageInfo() {
       return this.containerRepository?.tags?.pageInfo;
     },
+    pageSize() {
+      return this.config.isMetadataDatabaseEnabled
+        ? GRAPHQL_PAGE_SIZE_METADATA_ENABLED
+        : GRAPHQL_PAGE_SIZE;
+    },
     queryVariables() {
       return {
         id: joinPaths(this.config.gidPrefix, `${this.id}`),
-        first: GRAPHQL_PAGE_SIZE,
+        first: this.pageSize,
         name: this.filters?.name,
         sort: this.sort,
         referrers: this.glFeatures.showContainerRegistryTagSignatures,
@@ -196,13 +202,13 @@ export default {
       }
     },
     fetchNextPage() {
-      this.pageParams = getNextPageParams(this.tagsPageInfo?.endCursor);
+      this.pageParams = getNextPageParams(this.tagsPageInfo?.endCursor, this.pageSize);
     },
     fetchPreviousPage() {
-      this.pageParams = getPreviousPageParams(this.tagsPageInfo?.startCursor);
+      this.pageParams = getPreviousPageParams(this.tagsPageInfo?.startCursor, this.pageSize);
     },
     handleSearchUpdate({ sort, filters, pageInfo }) {
-      this.pageParams = getPageParams(pageInfo);
+      this.pageParams = getPageParams(pageInfo, this.pageSize);
       this.sort = sort;
 
       // This takes in account the fact that we will be adding more filters types

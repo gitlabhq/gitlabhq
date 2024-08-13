@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::MergeRequests::SetLabels do
+RSpec.describe Mutations::MergeRequests::SetLabels, feature_category: :api do
+  include GraphqlHelpers
+
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
-  subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_merge_request) }
 

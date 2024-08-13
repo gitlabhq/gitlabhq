@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GitlabGroupsController, feature_category: :importers do
+RSpec.describe Import::GitlabGroupsController, :with_current_organization, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'
@@ -19,6 +19,10 @@ RSpec.describe Import::GitlabGroupsController, feature_category: :importers do
     allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
 
     stub_uploads_object_storage(ImportExportUploader)
+  end
+
+  before_all do
+    current_organization.users << user
   end
 
   after do
@@ -75,7 +79,7 @@ RSpec.describe Import::GitlabGroupsController, feature_category: :importers do
 
     context 'when importing to a parent group' do
       let(:request_params) { { path: 'test-group-import', name: 'test-group-import', parent_id: parent_group.id } }
-      let(:parent_group) { create(:group) }
+      let(:parent_group) { create(:group, organization: current_organization) }
 
       before do
         parent_group.add_owner(user)

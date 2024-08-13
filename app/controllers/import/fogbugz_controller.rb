@@ -53,9 +53,12 @@ class Import::FogbugzController < Import::BaseController
   def create
     credentials = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }
 
-    umap = session[:fogbugz_user_map] || client.user_map
+    service_params = params.merge({
+      umap: session[:fogbugz_user_map] || client.user_map,
+      organization_id: Current.organization_id
+    })
 
-    result = Import::FogbugzService.new(client, current_user, params.merge(umap: umap)).execute(credentials)
+    result = Import::FogbugzService.new(client, current_user, service_params).execute(credentials)
 
     if result[:status] == :success
       render json: ProjectSerializer.new.represent(result[:project], serializer: :import)

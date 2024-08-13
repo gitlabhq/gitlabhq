@@ -24,6 +24,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   RECIPE_FILES = ::Gitlab::Regex::Packages::CONAN_RECIPE_FILES
   PACKAGE_FILES = ::Gitlab::Regex::Packages::CONAN_PACKAGE_FILES
   PACKAGE_BINARY = 'conan_package.tgz'
+  CONAN_MANIFEST = 'conanmanifest.txt'
 
   private
 

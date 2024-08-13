@@ -51,13 +51,13 @@ document are updated, removed, or new parts are added.
   - Defined in `app/services/projects/update_service.rb`.
 - `PoolRepository`: Ruby object representing Gitaly `ObjectPool`.
   - Defined in `app/models/pool_repository.rb`.
-- `ObjectPool::CreateWorker`: Worker to create an `ObjectPool` via `Gitaly`.
+- `ObjectPool::CreateWorker`: Worker to create an `ObjectPool` with `Gitaly`.
   - Defined in `app/workers/object_pool/create_worker.rb`.
-- `ObjectPool::JoinWorker`: Worker to join an `ObjectPool` via `Gitaly`.
+- `ObjectPool::JoinWorker`: Worker to join an `ObjectPool` with `Gitaly`.
   - Defined in `app/workers/object_pool/join_worker.rb`.
 - `ObjectPool::ScheduleJoinWorker`: Worker to schedule an `ObjectPool::JoinWorker`.
   - Defined in `app/workers/object_pool/schedule_join_worker.rb`.
-- `ObjectPool::DestroyWorker`: Worker to destroy an `ObjectPool` via `Gitaly`.
+- `ObjectPool::DestroyWorker`: Worker to destroy an `ObjectPool` with `Gitaly`.
   - Defined in `app/workers/object_pool/destroy_worker.rb`.
 - `ObjectPoolQueue`: Module to configure `ObjectPool` workers.
   - Defined in `app/workers/concerns/object_pool_queue.rb`.
@@ -69,7 +69,7 @@ document are updated, removed, or new parts are added.
 These flowcharts should help explain the flow from the endpoints down to the
 models for different features.
 
-### Schedule a repository storage move via the API
+### Schedule a repository storage move with the API
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -39,7 +39,7 @@ To import your Bitbucket repositories:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Server**.
-1. Log in to Bitbucket and grant GitLab access to your Bitbucket account.
+1. Sign in to Bitbucket and grant GitLab access to your Bitbucket account.
 1. Select the projects to import, or import all projects. You can filter projects by name and select
    the namespace for which to import each project.
 1. To import a project:

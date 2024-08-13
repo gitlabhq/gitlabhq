@@ -27,7 +27,7 @@ DETAILS:
 
 ## Available options
 
-Use the following text for the tier, offering, and status.
+Use the following text for the tier, offering, status, and version history.
 
 ### Offering
 
@@ -52,6 +52,32 @@ For tier, choose one:
 - `Premium, Ultimate`
 - `Ultimate`
 
+#### GitLab Duo Pro or Enterprise add-on
+
+Document add-ons by using the phrase `with` and the add-on.
+For example, `with GitLab Duo Pro`.
+
+The possibilities are:
+
+```markdown
+**Tier:** Premium with GitLab Duo Pro
+**Tier:** Premium with GitLab Duo Pro or Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Pro
+**Tier:** Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Enterprise
+```
+
+Do not use a period at the end of the phrase.
+
+You might have to differentiate which add-on applies for each offering (GitLab.com, Dedicated, self-managed). If you have to differentiate, use this format:
+
+```markdown
+**Tier: GitLab.com and Self-managed:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md) **GitLab Dedicated:** GitLab Duo Pro or Enterprise
+```
+
+NOTE:
+GitLab Dedicated always includes an Ultimate subscription.
+
 ### Status
 
 For status, choose one:
@@ -61,15 +87,106 @@ For status, choose one:
 
 Generally available features should not have a status.
 
-### GitLab Duo Pro or Enterprise add-on
+### History
 
-The add-ons belong with other subscription tiers. Document them by using the phrase `with` and the add-on.
-For example, `with GitLab Duo Pro`.
+For version history, include these words in this order. Capitalization doesn't matter (with the exception of `GitLab`).
+
+- `introduced`, `added`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
+- `in` or `to`
+- `GitLab` (or, for external projects, the name of the project)
+
+The docs site uses [Ruby code](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/lib/filters/introduced_in.rb) to render the version history based on these words.
+
+In addition:
+
+- Ensure that the output generates properly.
+- Ensure the version history begins with `> -`.
+- If possible, include a link to the related issue, merge request, or epic.
+- Do not link to the pricing page. Do not include the subscription tier.
+
+#### Updated features
+
+For features that have changed or been updated, add a new list item.
+Start the sentence with the feature name or a gerund.
+
 For example:
 
 ```markdown
-**Tier:** Premium or Ultimate with GitLab Duo Pro
+> - [Introduced](https://issue-link) in GitLab 13.1.
+> - Creating an issue from an issue board [introduced](https://issue-link) in GitLab 14.1.
 ```
+
+Or:
+
+```markdown
+> - [Introduced](https://issue-link) in GitLab 13.1.
+> - Notifications for expiring tokens [introduced](https://issue-link) in GitLab 14.3.
+```
+
+#### Moved subscription tiers
+
+For features that move to another subscription tier, use `moved`:
+
+```markdown
+> - [Moved](https://issue-link) from GitLab Ultimate to GitLab Premium in 11.8.
+> - [Moved](https://issue-link) from GitLab Premium to GitLab Free in 12.0.
+```
+
+#### Changed feature status
+
+For a feature status change from experiment to beta, use `changed`:
+
+```markdown
+> - [Introduced](https://issue-link) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Changed](https://issue-link) to beta in GitLab 16.0.
+```
+
+For a change to generally available, use:
+
+```markdown
+> - [Generally available](https://issue-link) in GitLab 16.10.
+```
+
+#### Features made available as part of a program
+
+For features made available to users as part of a program, add a new list item and link to the program.
+
+```markdown
+> - [Introduced](https://issue-link) in GitLab 15.1.
+> - Merged results pipelines [added](https://issue-link) to the [Registration Features Program](https://page-link) in GitLab 16.7.
+```
+
+#### Features behind feature flags
+
+For features introduced behind feature flags, add details about the feature flag. For more information, see [Document features deployed behind feature flags](../feature_flags.md).
+
+#### Removing versions
+
+Remove history items and inline text that refer to unsupported versions.
+
+GitLab supports the current major version and two previous major versions.
+For example, if 16.0 is the current major version, all major and minor releases of
+GitLab 16.0, 15.0, and 14.0 are supported.
+
+For the list of current supported versions, see [Version support](https://about.gitlab.com/support/statement-of-support/#version-support).
+
+Remove information about [features behind feature flags](../feature_flags.md)
+only if all events related to the feature flag happened in unsupported versions.
+If the flag hasn't been removed, readers should know when it was introduced.
+
+#### Timing version removals
+
+When a new major version is about to be released, create merge
+requests to remove mentions of the last unsupported version. Only merge
+them during the milestone of the new major release.
+
+For example, if GitLab 17.0 is the next major upcoming release:
+
+- The supported versions are 16, 15, and 14.
+- When GitLab 17.0 is released, GitLab 14 is no longer supported.
+
+Create merge requests to remove mentions of GitLab 14, but only
+merge them during the 17.0 milestone, after 16.11 is released.
 
 ## When to add availability details
 
@@ -147,6 +264,17 @@ IDs of the users to assign the issue to. Ultimate only.
 
 For more examples, see the [REST API style guide](../restful_api_styleguide.md).
 
+## Inline history text
+
+If you're adding content to an existing topic, add historical information
+inline with the existing text. If possible, include a link to the related issue,
+merge request, or epic. For example:
+
+```markdown
+The voting strategy [in GitLab 13.4 and later](https://issue-link) requires the primary and secondary
+voters to agree.
+```
+
 ## Administrator documentation for availability details
 
 Topics that are only for instance administrators should have the `Self-managed` tier.
@@ -154,7 +282,7 @@ Instance administrator documentation often includes sections that mention:
 
 - Changing the `gitlab.rb` or `gitlab.yml` files.
 - Accessing the rails console or running Rake tasks.
-- Doing things in the Admin area.
+- Doing things in the **Admin** area.
 
 These pages should also mention if the tasks can only be accomplished by an
 instance administrator.

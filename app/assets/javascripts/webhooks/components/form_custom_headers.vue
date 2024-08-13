@@ -1,8 +1,9 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlCard, GlIcon, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { CUSTOM_HEADER_KEY_PATTERN } from '../constants';
 import FormCustomHeaderItem from './form_custom_header_item.vue';
 
@@ -10,9 +11,8 @@ const MAXIMUM_CUSTOM_HEADERS = 20;
 
 export default {
   components: {
+    CrudComponent,
     FormCustomHeaderItem,
-    GlCard,
-    GlIcon,
     GlButton,
   },
   props: {
@@ -100,21 +100,15 @@ export default {
 </script>
 
 <template>
-  <gl-card
+  <crud-component
     ref="customHeaderCard"
+    :title="s__('Webhooks|Custom headers')"
+    icon="code"
+    :count="customHeaders.length"
+    class="gl-mt-3 gl-mb-5"
     data-testid="custom-headers-card"
-    class="gl-new-card gl-my-4"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-5 gl-py-4"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">{{ s__('Webhooks|Custom headers') }}</h3>
-        <div class="gl-new-card-count">
-          <gl-icon name="code" class="gl-mr-2" />
-          {{ customHeaders.length }}
-        </div>
-      </div>
+    <template #actions>
       <gl-button
         v-if="!maximumCustomHeadersReached"
         size="small"
@@ -147,5 +141,5 @@ export default {
     <span v-if="customHeaders.length === 0" class="gl-text-secondary">
       {{ s__('Webhooks|No custom headers configured.') }}
     </span>
-  </gl-card>
+  </crud-component>
 </template>

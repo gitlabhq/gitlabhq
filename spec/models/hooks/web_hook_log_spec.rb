@@ -273,4 +273,16 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       it { expect(web_hook_log.url_current?).to be_falsey }
     end
   end
+
+  describe 'Scopes' do
+    describe '.by_status_code' do
+      it 'returns web hook logs with status code 200' do
+        log_200 = create(:web_hook_log)
+        create(:web_hook_log, response_status: 400)
+        create(:web_hook_log, response_status: 500)
+
+        expect(described_class.by_status_code(200)).to match_array([log_200])
+      end
+    end
+  end
 end

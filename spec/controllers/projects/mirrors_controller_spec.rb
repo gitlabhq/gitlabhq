@@ -220,6 +220,26 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
         end
       end
     end
+
+    context 'when request is invalid' do
+      context 'with html format' do
+        it 'returns an error' do
+          do_put(project, { wrong: :params })
+
+          expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
+          expect(flash[:alert]).to match(/Invalid mirror update request/)
+        end
+      end
+
+      context 'with json format' do
+        it 'processes an unsuccessful update' do
+          do_put(project, { wrong: :params }, { format: :json })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq('error' => 'Invalid mirror update request')
+        end
+      end
+    end
   end
 
   describe '#ssh_host_keys', :use_clean_rails_memory_store_caching do

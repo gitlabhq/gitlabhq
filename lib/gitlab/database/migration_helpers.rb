@@ -1271,12 +1271,15 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       def column_is_nullable?(table, column)
+        table_name, schema_name = table.to_s.split('.').reverse
+        schema_name ||= current_schema
+
         # Check if table.column has not been defined with NOT NULL
         check_sql = <<~SQL
           SELECT c.is_nullable
           FROM information_schema.columns c
-          WHERE c.table_schema = #{connection.quote(current_schema)}
-            AND c.table_name = #{connection.quote(table)}
+          WHERE c.table_schema = #{connection.quote(schema_name)}
+            AND c.table_name = #{connection.quote(table_name)}
             AND c.column_name = #{connection.quote(column)}
         SQL
 

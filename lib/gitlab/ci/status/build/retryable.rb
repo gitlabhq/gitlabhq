@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def action_button_title
-            _('Retry this job')
+            _('Run this job again')
           end
 
           def action_path

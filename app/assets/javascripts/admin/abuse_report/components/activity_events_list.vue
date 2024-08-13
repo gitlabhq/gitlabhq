@@ -10,8 +10,8 @@ export default {
 <template>
   <!-- The styles `issuable-discussion`, `timeline`, `main-notes-list` and `notes` used below
        are declared in app/assets/stylesheets/pages/notes.scss -->
-  <section class="gl-pt-6 issuable-discussion">
-    <h2 class="gl-font-size-h1 gl-mt-0 gl-mb-4">{{ $options.i18n.activity }}</h2>
+  <section class="issuable-discussion gl-pt-6">
+    <h2 class="gl-mb-4 gl-mt-0 gl-text-size-h1">{{ $options.i18n.activity }}</h2>
     <ul class="timeline main-notes-list notes">
       <slot name="history-items"></slot>
     </ul>

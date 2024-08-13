@@ -73,7 +73,7 @@ DETAILS:
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
+This feature is currently in development and not ready for production use.
 
 Prerequisites:
 

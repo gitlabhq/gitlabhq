@@ -29,3 +29,5 @@ module Ci
     end
   end
 end
+
+Ci::JobTokenScope::AddGroupService.prepend_mod_with('Ci::JobTokenScope::AddGroupService')

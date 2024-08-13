@@ -16,7 +16,7 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
     let(:note) { create(:image_diff_note_on_merge_request, noteable: noteable, project: project) }
 
     let(:mutation) do
-      described_class.new(object: nil, context: { current_user: user }, field: nil)
+      described_class.new(object: nil, context: query_context, field: nil)
     end
 
     let(:new_position) do
@@ -24,7 +24,7 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
     end
 
     context 'when the user does not have permission' do
-      let(:user) { nil }
+      let(:current_user) { nil }
 
       it 'raises an error if the resource is not accessible to the user' do
         expect { subject }.to raise_error(
@@ -35,7 +35,7 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
     end
 
     context 'when the user has permission' do
-      let(:user) { project.creator }
+      let(:current_user) { project.creator }
       let(:mutated_note) { subject[:note] }
       let(:errors) { subject[:errors] }
 

@@ -7,7 +7,7 @@ RSpec.describe CsvBuilder::Stream do
   let(:event_2) { double(title: 'Added sugar', description: 'Just a pinch') }
   let(:fake_relation) { described_class::FakeRelation.new([event_1, event_2]) }
 
-  subject(:builder) { described_class.new(fake_relation, 'Title' => 'title', 'Description' => 'description') }
+  subject(:builder) { described_class.new(fake_relation, { 'Title' => 'title', 'Description' => 'description' }) }
 
   describe '#render' do
     before do

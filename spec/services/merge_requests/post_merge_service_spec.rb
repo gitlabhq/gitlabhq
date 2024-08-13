@@ -7,7 +7,7 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
-  let_it_be(:project) { merge_request.project }
+  let_it_be(:project, reload: true) { merge_request.project }
   let(:params) { {} }
 
   subject { described_class.new(project: project, current_user: user, params: params).execute(merge_request) }
@@ -85,21 +85,46 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         merge_request.update!(target_branch: 'foo')
 
         allow(project).to receive(:default_branch).and_return('foo')
-        allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
+        allow(merge_request).to receive(:closes_issues).and_return([issue])
       end
 
       it 'performs MergeRequests::CloseIssueWorker asynchronously' do
+        create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+
         expect(MergeRequests::CloseIssueWorker)
           .to receive(:perform_async)
-          .with(project.id, user.id, issue.id, merge_request.id)
+          .with(project.id, user.id, issue.id, merge_request.id, { skip_authorization: false })
 
         subject
 
         expect(merge_request.reload).to be_merged
       end
 
+      context 'when mr_merge_skips_close_issue_authorization feature flag is disabled' do
+        before do
+          stub_feature_flags(mr_merge_skips_close_issue_authorization: false)
+        end
+
+        it 'does not use the last optional argument of the worker' do
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+
+          expect(MergeRequests::CloseIssueWorker)
+            .to receive(:perform_async)
+            .with(project.id, user.id, issue.id, merge_request.id)
+
+          subject
+
+          expect(merge_request.reload).to be_merged
+        end
+      end
+
       context 'when issue is an external issue' do
         let_it_be(:issue) { ExternalIssue.new('JIRA-123', project) }
+
+        before do
+          project.update!(has_external_issue_tracker: true)
+          merge_request.reload
+        end
 
         it 'executes Issues::CloseService' do
           expect_next_instance_of(Issues::CloseService) do |close_service|

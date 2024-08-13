@@ -17,8 +17,8 @@ module Mutations
         def resolve(id:)
           cluster_agent = authorized_find!(id: id)
           result = ::Clusters::Agents::DeleteService
-            .new(container: cluster_agent.project, current_user: current_user)
-            .execute(cluster_agent)
+            .new(container: cluster_agent.project, current_user: current_user, params: { cluster_agent: cluster_agent })
+            .execute
 
           {
             errors: Array.wrap(result.message)

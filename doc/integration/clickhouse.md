@@ -111,7 +111,7 @@ To provide GitLab with ClickHouse credentials:
 
 To verify that your connection is set up successfully:
 
-1. Log in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
+1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
 1. Execute the following:
 
     ```ruby

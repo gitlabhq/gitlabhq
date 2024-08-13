@@ -16,7 +16,7 @@ Akismet for review, and instance administrators can
 [mark snippets as spam](../user/snippets.md#mark-snippet-as-spam).
 
 Detected spam is rejected, and an entry is added in the **Spam log** section of the
-Admin area.
+**Admin** area.
 
 Privacy note: GitLab submits the user's IP and user agent to Akismet.
 
@@ -38,7 +38,7 @@ To use Akismet:
 1. Sign in or create a new account.
 1. Select **Show** to reveal the API key, and copy the API key's value.
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. Select the **Enable Akismet** checkbox.

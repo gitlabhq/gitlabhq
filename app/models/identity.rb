@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Identity < MainClusterwide::ApplicationRecord
+class Identity < ApplicationRecord
   include Sortable
   include CaseSensitivity
 

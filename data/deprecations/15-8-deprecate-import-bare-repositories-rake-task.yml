@@ -22,7 +22,7 @@
        [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
      - Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
      - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
-  stage: manage
+  stage: Foundations
   tiers:
   issue_url: https://gitlab.com/gitlab-com/Product/-/issues/5255
   documentation_url: https://docs.gitlab.com/ee/user/project/import/

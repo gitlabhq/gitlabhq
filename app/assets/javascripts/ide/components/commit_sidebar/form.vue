@@ -165,7 +165,7 @@ export default {
             {{ __('Create commit...') }}
           </gl-button>
         </div>
-        <p class="text-center bold">{{ overviewText }}</p>
+        <p class="gl-text-center gl-font-bold">{{ overviewText }}</p>
       </div>
       <form v-else ref="formEl" @submit.prevent.stop="commit">
         <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>

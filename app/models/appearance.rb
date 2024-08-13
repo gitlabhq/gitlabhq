@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Appearance < MainClusterwide::ApplicationRecord
+class Appearance < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include WithUploads

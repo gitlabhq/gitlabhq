@@ -1,4 +1,7 @@
 ---
+ci_job_artifact_states:
+  index_on_job_artifact_id_partition_id_verification_state:
+  - index_job_artifact_states_on_verification_state
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
   - index_dast_site_tokens_on_project_id
@@ -117,9 +120,6 @@ vulnerability_finding_signatures:
 vulnerability_flags:
   index_vulnerability_flags_on_unique_columns:
   - index_vulnerability_flags_on_vulnerability_occurrence_id
-vulnerability_occurrences:
-  index_vulnerability_occurrences_prim_iden_id_and_vuln_id:
-  - index_vulnerability_occurrences_on_primary_identifier_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
   - index_work_item_hierarchy_restrictions_on_parent_type_id

@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
 import { getTimeago, localeDateFormat } from '~/lib/utils/datetime_utility';
-import { __, s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import Deployment from '~/environments/components/deployment.vue';
@@ -38,7 +38,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   const findActions = () => wrapper.findComponent(EnvironmentActions);
 
   const expandCollapsedSection = async () => {
-    const button = wrapper.findByRole('button', { name: __('Expand') });
+    const button = wrapper.findByRole('button', { name: 'Expand' });
     await button.trigger('click');
 
     return button;
@@ -79,7 +79,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('displays the tier of the environment when defined in yaml', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const tier = wrapper.findByTitle(s__('Environment|Deployment tier'));
+      const tier = wrapper.findByTitle('Deployment tier');
 
       expect(tier.text()).toBe(resolvedEnvironment.lastDeployment.tierInYaml);
     });
@@ -97,7 +97,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const tier = wrapper.findByTitle(s__('Environment|Deployment tier'));
+      const tier = wrapper.findByTitle('Deployment tier');
 
       expect(tier.exists()).toBe(false);
     });
@@ -107,7 +107,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('shows a link for the url if one is present', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const url = wrapper.findByRole('link', { name: s__('Environments|Open live environment') });
+      const url = wrapper.findByRole('link', { name: 'Open live environment' });
 
       expect(url.attributes('href')).toEqual(resolvedEnvironment.externalUrl);
     });
@@ -118,7 +118,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const url = wrapper.findByRole('link', { name: s__('Environments|Open live environment') });
+      const url = wrapper.findByRole('link', { name: 'Open live environment' });
 
       expect(url.exists()).toBe(false);
     });
@@ -158,7 +158,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('shows a button to stop the environment if the environment is available', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const stop = wrapper.findByRole('button', { name: s__('Environments|Stop environment') });
+      const stop = wrapper.findByRole('button', { name: 'Stop environment' });
 
       expect(stop.exists()).toBe(true);
     });
@@ -169,7 +169,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const stop = wrapper.findByRole('button', { name: s__('Environments|Stop environment') });
+      const stop = wrapper.findByRole('button', { name: 'Stop environment' });
 
       expect(stop.exists()).toBe(false);
     });
@@ -180,7 +180,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
       const rollback = wrapper.findByRole('button', {
-        name: s__('Environments|Re-deploy to environment'),
+        name: 'Re-deploy to environment',
       });
 
       expect(rollback.exists()).toBe(true);
@@ -193,7 +193,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       const rollback = wrapper.findByRole('button', {
-        name: s__('Environments|Re-deploy to environment'),
+        name: 'Re-deploy to environment',
       });
 
       expect(rollback.exists()).toBe(false);
@@ -218,7 +218,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       it('shows the option to pin the environment if there is an autostop date', () => {
-        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: 'Prevent auto-stopping' });
 
         expect(pin.exists()).toBe(true);
       });
@@ -240,14 +240,14 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: 'Prevent auto-stopping' });
 
         expect(pin.exists()).toBe(false);
       });
 
       it('does not show when the environment auto stops', () => {
         const autoStop = wrapper.findByText(
-          sprintf(s__('Environment|Auto stop %{time}'), {
+          sprintf('Auto stop %{time}', {
             time: getTimeago().format(resolvedEnvironment.autoStopAt),
           }),
         );
@@ -275,14 +275,14 @@ describe('~/environments/components/new_environment_item.vue', () => {
       it('does not show the option to pin the environment if there is no autostop date', () => {
         wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-        const pin = wrapper.findByRole('button', { name: __('Prevent auto-stopping') });
+        const pin = wrapper.findByRole('button', { name: 'Prevent auto-stopping' });
 
         expect(pin.exists()).toBe(false);
       });
 
       it('does not show when the environment auto stops', () => {
         const autoStop = wrapper.findByText(
-          sprintf(s__('Environment|Auto stop %{time}'), {
+          sprintf('Auto stop %{time}', {
             time: getTimeago().format(environment.autoStopAt),
           }),
         );
@@ -299,7 +299,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      const terminal = wrapper.findByRole('link', { name: __('Terminal') });
+      const terminal = wrapper.findByRole('link', { name: 'Terminal' });
 
       expect(terminal.exists()).toBe(true);
     });
@@ -307,7 +307,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('does not show the link to the terminal if not set up', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const terminal = wrapper.findByRole('link', { name: __('Terminal') });
+      const terminal = wrapper.findByRole('link', { name: 'Terminal' });
 
       expect(terminal.exists()).toBe(false);
     });
@@ -323,7 +323,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       const deleteTrigger = wrapper.findByRole('button', {
-        name: s__('Environments|Delete environment'),
+        name: 'Delete environment',
       });
 
       expect(deleteTrigger.exists()).toBe(true);
@@ -333,7 +333,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
       const deleteTrigger = wrapper.findByRole('button', {
-        name: s__('Environments|Delete environment'),
+        name: 'Delete environment',
       });
 
       expect(deleteTrigger.exists()).toBe(false);
@@ -363,7 +363,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       const button = await expandCollapsedSection();
 
-      expect(button.attributes('aria-label')).toBe(__('Collapse'));
+      expect(button.attributes('aria-label')).toBe('Collapse');
       expect(button.props('category')).toBe('secondary');
       expect(collapse.props('visible')).toBe(true);
       expect(icon.props('name')).toBe('chevron-lg-down');
@@ -438,10 +438,8 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       await expandCollapsedSection();
 
-      const text = s__(
-        'Environments|There are no deployments for this environment yet. Learn more about setting up deployments.',
-      );
-
+      const text =
+        'There are no deployments for this environment yet. Learn more about setting up deployments.';
       const emptyState = wrapper.findByText((_content, element) => element.textContent === text);
 
       const link = extendedWrapper(emptyState).findByRole('link');
@@ -456,10 +454,8 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       await expandCollapsedSection();
 
-      const text = s__(
-        'Environments|There are no deployments for this environment yet. Learn more about setting up deployments.',
-      );
-
+      const text =
+        'There are no deployments for this environment yet. Learn more about setting up deployments.';
       const emptyState = wrapper.findByText((_content, element) => element.textContent === text);
 
       expect(emptyState.exists()).toBe(false);

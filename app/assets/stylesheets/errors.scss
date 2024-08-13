@@ -13,96 +13,65 @@
 @import '@gitlab/ui/src/scss/utility-mixins/index';
 @import '@gitlab/ui/src/components/base/button/button';
 
-$body-color: #666;
-$header-color: #456;
-
 body {
-  color: $body-color;
+  color: $gl-text-primary;
   text-align: center;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: auto;
-  font-size: 0.875rem;
+  font-family: "Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 h1 {
-  font-size: 56px;
-  line-height: 100px;
-  font-weight: 400;
-  color: $header-color;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  margin: 1rem 0;
 }
 
-h2 {
-  font-size: 24px;
-  color: $body-color;
-  line-height: 1.5em;
-}
-
-h3 {
-  color: $header-color;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 28px;
+p {
+  margin-bottom: .5rem;
 }
 
 img {
-  max-width: 80vw;
   display: block;
-  margin: 40px auto;
+  margin: 0 auto;
 }
 
 a {
   text-decoration: none;
-  color: $blue-600;
+  color: $gl-text-color-link;
 }
 
 .page-container {
   margin: auto 20px;
 }
 
-.container {
+.error-container {
+  max-width: 65ch;
   margin: auto;
-  max-width: 600px;
-  border-bottom: 1px solid $border-color;
-  padding-bottom: 1em;
+  padding: $gl-spacing-scale-5 0;
 }
 
 .action-container {
-  padding: 0.5em 0;
+  margin-top: $gl-spacing-scale-6;
 }
 
 .form-inline-flex {
   display: flex;
-  flex-wrap: wrap;
-
-  button {
-    display: block;
-    width: 100%;
-  }
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: $gl-spacing-scale-3;
 
   .field {
-    display: block;
-    width: 100%;
-    margin-bottom: 1em;
+    flex-grow: 1;
   }
 
   @include media-breakpoint-up(sm) {
-    flex-wrap: nowrap;
-
-    button {
-      width: auto;
-    }
-
-    .field {
-      margin-bottom: 0;
-      margin-right: 0.5em;
-      flex: 1;
-    }
+    flex-direction: row;
   }
 }
 
 .error-nav {
-  padding: $gl-padding 0 0;
-  text-align: center;
+  margin: $gl-spacing-scale-6 0 0 0;
+  padding: $gl-spacing-scale-4 0 0 0;
+  border-top: 1px solid $border-color;
 
   li {
     display: block;
@@ -117,16 +86,8 @@ a {
       &:not(:first-child)::before {
         content: '\00B7';
         display: inline-block;
-        padding: 0 1em;
+        padding: 0 $gl-spacing-scale-3;
       }
     }
   }
-}
-
-.tanuki-logo {
-  width: 210px;
-  height: 210px;
-  max-width: 40vw;
-  display: block;
-  margin: map-get($spacing-scale, 4) auto;
 }

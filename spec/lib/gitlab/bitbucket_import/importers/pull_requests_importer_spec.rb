@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   subject(:importer) { described_class.new(project) }
 
-  shared_examples 'import bitbucket PullRequestsImporter' do |bitbucket_import_resumable_worker|
+  shared_examples 'import bitbucket PullRequestsImporter' do |params|
     let_it_be(:project) do
       create(:project, :import_started,
         import_data_attributes: {
           data: {
             'project_key' => 'key',
             'repo_slug' => 'slug',
-            'bitbucket_import_resumable_worker' => bitbucket_import_resumable_worker
+            'bitbucket_import_resumable_worker' => params[:resumable]
           },
           credentials: { 'base_uri' => 'http://bitbucket.org/', 'user' => 'bitbucket', 'password' => 'password' }
         }
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_
       end
     end
 
-    it_behaves_like 'import bitbucket PullRequestsImporter', true do
+    it_behaves_like 'import bitbucket PullRequestsImporter', { resumable: true } do
       context 'when the client raises an error' do
         before do
           allow_next_instance_of(Bitbucket::Client) do |client|
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_
       end
     end
 
-    it_behaves_like 'import bitbucket PullRequestsImporter', false do
+    it_behaves_like 'import bitbucket PullRequestsImporter', { resumable: false } do
       context 'when the client raises an error' do
         let(:exception) { StandardError.new('error fetching PRs') }
 

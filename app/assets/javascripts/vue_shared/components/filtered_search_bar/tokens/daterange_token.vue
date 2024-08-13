@@ -133,7 +133,7 @@ export default {
       <div
         v-if="datePickerShown"
         v-outside="handleClickOutside"
-        class="gl-absolute gl-z-1 gl-bg-white gl-border-1 gl-border-gray-200 gl-my-2 gl-p-4 gl-rounded-base gl-shadow-x0-y2-b4-s0 gl-top-full"
+        class="gl-absolute gl-top-full gl-z-1 gl-my-2 gl-rounded-base gl-border-1 gl-border-gray-200 gl-bg-white gl-p-4 gl-shadow-x0-y2-b4-s0"
       >
         <gl-daterange-picker
           :max-date-range="computedConfig.maxDateRange"

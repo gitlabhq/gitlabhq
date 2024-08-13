@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Email < MainClusterwide::ApplicationRecord
+class Email < ApplicationRecord
   include Sortable
   include Gitlab::SQL::Pattern
 

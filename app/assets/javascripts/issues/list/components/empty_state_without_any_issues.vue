@@ -15,7 +15,7 @@ export default {
   },
   emptyStateSvg,
   issuesHelpPagePath: helpPagePath('user/project/issues/index'),
-  jiraIntegrationPath: helpPagePath('integration/jira/issues', { anchor: 'view-jira-issues' }),
+  jiraIntegrationPath: helpPagePath('integration/jira/configure', { anchor: 'view-jira-issues' }),
   components: {
     CsvImportExportButtons,
     GlButton,

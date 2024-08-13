@@ -15,7 +15,7 @@ module MergeRequests
     # This worker only accepts ID of an Issue. We are intentionally using this
     # worker to close Issues asynchronously as we only experience SQL timeouts
     # when closing an Issue.
-    def perform(project_id, user_id, issue_id, merge_request_id)
+    def perform(project_id, user_id, issue_id, merge_request_id, params = {})
       project = Project.find_by_id(project_id)
 
       unless project
@@ -46,7 +46,11 @@ module MergeRequests
 
       Issues::CloseService
         .new(container: project, current_user: user)
-        .execute(issue, commit: merge_request)
+        .execute(
+          issue,
+          commit: merge_request,
+          skip_authorization: !!params.with_indifferent_access[:skip_authorization]
+        )
     end
   end
 end

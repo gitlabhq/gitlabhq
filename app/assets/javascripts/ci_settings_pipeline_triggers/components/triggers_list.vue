@@ -177,16 +177,17 @@ export default {
       responsive
     >
       <template #cell(token)="{ item }">
-        <span v-if="!areValuesHidden">{{ item.token }}</span>
+        <span v-if="!areValuesHidden" class="gl-font-monospace">{{ item.token }}</span>
         <span v-else>{{ maskedToken }}</span>
         <clipboard-button
           v-if="item.hasTokenExposed"
           :text="item.token"
+          category="tertiary"
           data-testid="clipboard-btn"
           :title="$options.i18n.copyTrigger"
           css-class="gl-border-none gl-py-0 gl-px-2"
         />
-        <div v-if="!item.canAccessProject" class="gl-display-inline-block gl-ml-3">
+        <div v-if="!item.canAccessProject" class="gl-inline-block gl-ml-3">
           <gl-badge variant="danger">
             <span
               v-gl-tooltip.viewport
@@ -204,7 +205,7 @@ export default {
           placement="top"
           class="gl-max-w-15 gl-inline-flex"
         >
-          <div class="gl-flex-grow-1 gl-text-truncate">{{ item.description }}</div>
+          <div class="gl-grow gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>
       </template>
       <template #cell(owner)="{ item }">
@@ -227,9 +228,9 @@ export default {
           v-gl-modal="$options.editModalId"
           :title="s__('Pipelines|Edit')"
           icon="pencil"
+          category="tertiary"
           data-testid="edit-btn"
           :aria-label="__('Edit trigger token')"
-          class="gl-mr-3"
           @click="handleEditClick(item)"
         />
         <gl-button
@@ -246,7 +247,7 @@ export default {
         />
       </template>
     </gl-table>
-    <div v-else class="gl-new-card-empty gl-px-5 gl-py-4" data-testid="no_triggers_content">
+    <div v-else class="gl-text-subtle" data-testid="no_triggers_content">
       {{ s__('Pipelines|No trigger tokens have been created yet. Add one using the form above.') }}
     </div>
     <edit-trigger-modal

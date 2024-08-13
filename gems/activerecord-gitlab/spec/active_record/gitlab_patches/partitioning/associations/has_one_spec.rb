@@ -34,7 +34,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::HasOne'
 
     result = QueryRecorder.log do
       job.build_metadata.save!
-    end
+    end.join
 
     expect(result).to include(create_statement)
   end
@@ -46,7 +46,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::HasOne'
 
     result = QueryRecorder.log do
       job.create_metadata
-    end
+    end.join
 
     expect(result).to include(create_statement)
   end
@@ -92,7 +92,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::HasOne'
 
     result = QueryRecorder.log do
       job.save!
-    end
+    end.join
 
     update_statements.each do |statement|
       expect(result).to include(statement)

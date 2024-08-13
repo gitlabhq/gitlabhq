@@ -11,13 +11,13 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md#beta).
-> - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `observability_tracing`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md#beta).
+> - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158786) in GitLab 17.3 to the `observability_features` [feature flag](../administration/feature_flags.md), disabled by default. The previous feature flag `observability_tracing` was removed.
 
 FLAG:
-On GitLab.com, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_tracing`.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 
@@ -39,7 +39,7 @@ Prerequisites:
 To enable tracing in a project, you must first create an access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`.
 1. Copy the value of the access token.
 

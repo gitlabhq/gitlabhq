@@ -17,9 +17,6 @@ Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) an
 
 In both cases, you authenticate with a personal access token in place of your password.
 
-WARNING:
-The ability to create personal access tokens without expiry was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. In GitLab 16.0 and later, existing personal access tokens without an expiry date are automatically given an expiry date of 365 days later than the current date. The automatic adding of an expiry date occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry date occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
-
 Personal access tokens are:
 
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) or
@@ -45,11 +42,14 @@ Use impersonation tokens to automate authentication as a specific user.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 > - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
+WARNING:
+The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information, see the documentation on [when personal access tokens expire](#when-personal-access-tokens-expire).
+
 You can create as many personal access tokens as you like.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC.
@@ -63,7 +63,7 @@ you no longer have access to the token.
 
 ### Prefill personal access token name and scopes
 
-You can link directly to the Personal Access Token page and have the form prefilled with a name and
+You can link directly to the personal access token page and have the form prefilled with a name and
 list of scopes. To do this, you can append a `name` parameter and a list of comma-separated scopes
 to the URL. For example:
 
@@ -81,7 +81,7 @@ At any time, you can revoke a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access tokens**.
 1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
 1. On the confirmation dialog, select **Revoke**.
 
@@ -95,11 +95,35 @@ Prerequisites:
 
 - You must be an administrator.
 
-In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+Depending on your GitLab version, you can use either the application settings API
+or the Admin UI to disable personal access tokens.
+
+### Use the application settings API
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384201) in GitLab 15.7.
+
+In GitLab 15.7 and later, you can use the [`disable_personal_access_tokens` attribute in the application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) to disable personal access tokens.
+
+NOTE:
+After you have used the API to disable personal access tokens, those tokens cannot be used in subsequent API calls to manage this setting. To re-enable personal access tokens, you must use the [GitLab Rails console](../../administration/operations/rails_console.md). You can also upgrade to GitLab 17.3 or later so you can use the Admin UI instead.
+
+### Use the Admin UI
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436991) in GitLab 17.3.
+
+In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Select the **Disable personal access tokens** checkbox.
+1. Select **Save changes**.
 
 ### Disable personal access tokens for enterprise users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 17.2
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 17.3 . Feature flag `enterprise_disable_personal_access_tokens` removed.
 
 Prerequisites:
 
@@ -136,7 +160,7 @@ To view the last time a token was used:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date for
    the relevant token.
 
@@ -183,6 +207,38 @@ Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
   [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
   If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
 
+Whether your existing personal access tokens have expiry dates automatically applied
+depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
+
+- On GitLab.com, during the 16.0 milestone, existing personal access tokens without
+  an expiry date were automatically given an expiry date of 365 days later than the current date.
+- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+  - On or before July 23, 2024, existing personal access tokens without an expiry
+    date were automatically given an expiry date of 365 days later than the current date.
+    This change is a breaking change.
+  - On or after July 24, 2024, existing personal access tokens without an expiry
+    date did not have an expiry date set.
+
+On GitLab self-managed, if you do a new install of one of the following GitLab
+versions, your existing personal access tokens do not have expiry dates
+automatically applied:
+
+- 16.0.9
+- 16.1.7
+- 16.2.10
+- 16.3.8
+- 16.4.6
+- 16.5.9
+- 16.6.9
+- 16.7.9
+- 16.8.9
+- 16.9.10
+- 16.10.9
+- 16.11.7
+- 17.0.5
+- 17.1.3
+- 17.2.1
+
 ### Personal access token expiry calendar
 
 You can subscribe to an iCalendar endpoint which contains events at the expiry date for each token. After signing in, this endpoint is available at `/-/user_settings/personal_access_tokens.ics`.
@@ -212,7 +268,7 @@ Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.

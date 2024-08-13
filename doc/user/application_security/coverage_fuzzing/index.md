@@ -135,7 +135,7 @@ a large number of false positives.
 | `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
 | `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. |
 | `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job. |
-| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [Personal Access Token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [Project Access Token](../../../user/project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
+| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [personal access token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [project access token](../../../user/project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
 
 #### Seed corpus
 
@@ -344,8 +344,6 @@ which shows an overview of all the security vulnerabilities in your groups, proj
 Selecting the vulnerability opens a modal that provides additional information about the
 vulnerability:
 
-<!-- vale gitlab.Acronyms = NO -->
-
 - Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
   vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
 - Project: The project in which the vulnerability exists.
@@ -359,8 +357,6 @@ vulnerability:
 - Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
 - Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
   engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
-
-<!-- vale gitlab.Acronyms = YES -->
 
 ## Troubleshooting
 

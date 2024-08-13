@@ -10,7 +10,7 @@ module Support
     class RSpecFormatter < RSpec::Core::Formatters::BaseFormatter
       include Tooling::Helpers::DurationFormatter
 
-      TIME_LIMIT_IN_MINUTES = 80
+      TIME_LIMIT_IN_MINUTES = Integer(ENV['RSPEC_TIME_LIMIT_IN_MINUTES'] || 80)
 
       RSpec::Core::Formatters.register self, :example_group_started, :example_group_finished
 

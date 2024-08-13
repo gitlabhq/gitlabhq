@@ -61,12 +61,7 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
         end
       end
 
-      context 'when all exports have finished or failed' do
-        let!(:issues_export) { create(:bulk_import_export, :finished, project: project, relation: 'issues') }
-        let!(:merge_requests_export) do
-          create(:bulk_import_export, :failed, project: project, relation: 'merge_requests')
-        end
-
+      shared_examples 'user contributions export is started' do
         it 'begins exporting user contributions' do
           perform_multiple(job_args)
 
@@ -81,11 +76,33 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
         end
       end
 
-      context 'when an export is still incomplete' do
+      context 'when all exports have finished or failed' do
+        let!(:issues_export) { create(:bulk_import_export, :finished, project: project, relation: 'issues') }
+        let!(:merge_requests_export) do
+          create(:bulk_import_export, :failed, project: project, relation: 'merge_requests')
+        end
+
+        it_behaves_like 'user contributions export is started'
+      end
+
+      context 'when an export relating to users is still incomplete' do
         let!(:issues_export) { create(:bulk_import_export, :finished, project: project, relation: 'issues') }
         let!(:merge_requests_export) do
           create(:bulk_import_export, :started, project: project, relation: 'merge_requests')
         end
+
+        it_behaves_like 'user contributions are still being cached during export'
+      end
+
+      context 'when an export not relating to users is still incomplete' do
+        let!(:labels_export) { create(:bulk_import_export, :started, project: project, relation: 'labels') }
+
+        it_behaves_like 'user contributions export is started'
+      end
+
+      context 'when some exports relating to users and some not relating to users are still incomplete' do
+        let!(:issues_export) { create(:bulk_import_export, :started, project: project, relation: 'issues') }
+        let!(:labels_export) { create(:bulk_import_export, :started, project: project, relation: 'labels') }
 
         it_behaves_like 'user contributions are still being cached during export'
       end

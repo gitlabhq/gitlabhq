@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class BroadcastMessageDismissal < MainClusterwide::ApplicationRecord
+  class BroadcastMessageDismissal < ApplicationRecord
     belongs_to :user
     belongs_to :broadcast_message, class_name: 'System::BroadcastMessage'
 
@@ -11,8 +11,8 @@ module Users
     self.table_name = 'user_broadcast_message_dismissals'
 
     scope :valid_dismissals, -> { where('expires_at > :now', now: Time.current) }
-    scope :for_user_and_broadcast_message, ->(user, message_ids) do
-      where(user: user, broadcast_message_id: message_ids)
+    scope :for_user, ->(user) do
+      where(user: user)
     end
 
     BROADCAST_MESSAGE_DISMISSAL_COOKIE_KEY = 'hide_broadcast_message_'

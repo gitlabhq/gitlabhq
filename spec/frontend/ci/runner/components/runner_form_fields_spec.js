@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import {
@@ -21,8 +20,8 @@ describe('RunnerFormFields', () => {
   const findInput = (name) => wrapper.find(`input[name="${name}"]`);
 
   const expectRendersFields = () => {
-    expect(wrapper.text()).toContain(s__('Runners|Tags'));
-    expect(wrapper.text()).toContain(s__('Runners|Configuration'));
+    expect(wrapper.text()).toContain('Tags');
+    expect(wrapper.text()).toContain('Configuration');
 
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(0);
     expect(wrapper.findAll('input')).toHaveLength(6);
@@ -42,8 +41,8 @@ describe('RunnerFormFields', () => {
     });
 
     it('renders a loading frame', () => {
-      expect(wrapper.text()).toContain(s__('Runners|Tags'));
-      expect(wrapper.text()).toContain(s__('Runners|Configuration'));
+      expect(wrapper.text()).toContain('Tags');
+      expect(wrapper.text()).toContain('Configuration');
 
       expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(2);
       expect(wrapper.findAll('input')).toHaveLength(0);
@@ -83,7 +82,7 @@ describe('RunnerFormFields', () => {
 
     expect(wrapper.emitted('input')).toBe(undefined);
 
-    findInputByLabel(s__('Runners|Runner description')).setValue(mockNewDescription);
+    findInputByLabel('Runner description').setValue(mockNewDescription);
     findInput('max-timeout').setValue(mockMaxTimeout);
     findInput('tags').setValue(mockTags);
 

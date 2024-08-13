@@ -112,6 +112,7 @@ export default {
     renderGFM() {
       renderGFM(this.$refs['note-body']);
     },
+    // eslint-disable-next-line max-params
     handleFormUpdate(noteText, parentElement, callback, resolveDiscussion) {
       this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
     },

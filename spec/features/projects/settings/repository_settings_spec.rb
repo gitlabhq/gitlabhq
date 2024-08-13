@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       end
     end
 
-    context 'Deploy Keys', :js do
+    context 'Deploy keys', :js do
       let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let_it_be(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }
 
@@ -265,7 +265,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
         end
 
         it 'hides remote mirror settings' do
-          expect(page.find('.project-mirror-settings')).not_to have_selector('form')
+          expect(find_by_testid('mirroring-repositories-settings-content')).not_to have_selector('form')
           expect(page).to have_content('Mirror settings are only available to GitLab administrators.')
         end
       end
@@ -337,7 +337,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
   context 'for admin' do
     shared_examples_for 'shows mirror settings' do
       it 'shows mirror settings' do
-        expect(page.find('.project-mirror-settings')).to have_selector('form')
+        expect(find_by_testid('mirroring-repositories-settings-content')).to have_selector('form')
         expect(page).not_to have_content('Changing mirroring setting is disabled for non-admin users.')
       end
     end

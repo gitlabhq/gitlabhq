@@ -1,13 +1,11 @@
-- add_to_breadcrumbs _('Deploy Keys'), admin_deploy_keys_path
-- page_title _('Edit Deploy Key')
+- add_to_breadcrumbs _('Deploy keys'), admin_deploy_keys_path
+- page_title _('Edit deploy key')
 
-%h1.page-title.gl-font-size-h-display= _('Edit public deploy key')
-%hr
+= render ::Layouts::PageHeadingComponent.new(_('Edit public deploy key'))
 
-%div
-  = gitlab_ui_form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
-    = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
-    .form-actions
-      = f.submit _('Save changes'), pajamas_button: true
-      = render Pajamas::ButtonComponent.new(href: admin_deploy_keys_path) do
-        = _('Cancel')
+= gitlab_ui_form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
+  = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
+  .gl-flex.gl-gap-3
+    = f.submit _('Save changes'), pajamas_button: true
+    = render Pajamas::ButtonComponent.new(href: admin_deploy_keys_path) do
+      = _('Cancel')

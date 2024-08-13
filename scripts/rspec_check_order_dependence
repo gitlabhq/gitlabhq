@@ -21,7 +21,7 @@ if [ $# -eq 0 ]; then
 fi
 
 TODO_YAML='./spec/support/rspec_order_todo.yml'
-RSPEC_ARGS=(--format progress --tag ~quarantine)
+RSPEC_ARGS=(--fail-fast --format progress --tag ~quarantine)
 RANDOM_ORDER_RUNS=${RANDOM_ORDER_RUNS:-5}
 
 abort() {

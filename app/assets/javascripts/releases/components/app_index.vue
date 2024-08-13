@@ -21,7 +21,7 @@ export default {
   i18n,
   links: {
     alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
-    alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'release-a-component' }),
+    alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'publish-a-new-release' }),
   },
   components: {
     GlAlert,
@@ -328,7 +328,7 @@ export default {
       :key="getReleaseKey(release, index)"
       :release="release"
       :sort="sort"
-      :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
+      :class="{ 'gl-relative linked-card': releases.length > 1 && index !== releases.length - 1 }"
     />
 
     <release-skeleton-loader v-if="shouldRenderLoadingIndicator" class="gl-mt-5" />

@@ -39,7 +39,8 @@ module BulkImports
 
     def exports_still_processing?
       started_exports = portable.bulk_import_exports.for_status(BulkImports::Export::STARTED)
-      started_exports.any? || no_exports?
+
+      started_exports.any?(&:relation_has_user_contributions?) || no_exports?
     end
 
     def re_enqueue

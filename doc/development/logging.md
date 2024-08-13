@@ -426,6 +426,96 @@ class MyService < ::BaseService
 end
 ```
 
+## Default logging locations
+
+For self-managed users and GitLab.com, GitLab is deployed in two ways:
+
+- [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
+- [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) via a [Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab)
+
+### Omnibus GitLab log handling
+
+Omnibus GitLab logs inside component-specific directories within `/var/log/gitlab`:
+
+```shell
+# ls -al /var/log/gitlab
+total 200
+drwxr-xr-x 27 root              root        4096 Apr 29 20:28 .
+drwxrwxr-x 19 root              syslog      4096 Aug  5 04:08 ..
+drwx------  2 gitlab-prometheus root        4096 Aug  6 04:08 alertmanager
+drwx------  2 root              root        4096 Aug  6 04:08 crond
+drwx------  2 git               root        4096 Aug  6 04:08 gitaly
+drwx------  2 git               root        4096 Aug  6 04:08 gitlab-exporter
+drwx------  2 git               root        4096 Aug  6 04:08 gitlab-kas
+drwx------  2 git               root       45056 Aug  6 13:18 gitlab-rails
+drwx------  2 git               root        4096 Aug  5 04:18 gitlab-shell
+drwx------  2 git               root        4096 May 24  2023 gitlab-sshd
+drwx------  2 git               root        4096 Aug  6 04:08 gitlab-workhorse
+drwxr-xr-x  2 root              root       12288 Aug  1 00:20 lets-encrypt
+drwx------  2 root              root        4096 Aug  6 04:08 logrotate
+drwx------  2 git               root        4096 Aug  6 04:08 mailroom
+drwxr-x---  2 root              gitlab-www 12288 Aug  6 00:18 nginx
+drwx------  2 gitlab-prometheus root        4096 Aug  6 04:08 node-exporter
+drwx------  2 gitlab-psql       root        4096 Aug  6 15:00 pgbouncer
+drwx------  2 gitlab-psql       root        4096 Aug  6 04:08 postgres-exporter
+drwx------  2 gitlab-psql       root        4096 Aug  6 04:08 postgresql
+drwx------  2 gitlab-prometheus root        4096 Aug  6 04:08 prometheus
+drwx------  2 git               root        4096 Aug  6 04:08 puma
+drwxr-xr-x  2 root              root       32768 Aug  1 21:32 reconfigure
+drwx------  2 gitlab-redis      root        4096 Aug  6 04:08 redis
+drwx------  2 gitlab-redis      root        4096 Aug  6 04:08 redis-exporter
+drwx------  2 registry          root        4096 Aug  6 04:08 registry
+drwx------  2 gitlab-redis      root        4096 May  6 06:30 sentinel
+drwx------  2 git               root        4096 Aug  6 13:05 sidekiq
+```
+
+You can see in the example above that the following components store
+logs in the following directories:
+
+|Component|Log directory|
+|---------|-------------|
+|GitLab Rails|`/var/log/gitlab/gitlab-rails`|
+|Gitaly|`/var/log/gitlab/gitaly`|
+|Sidekiq|`/var/log/gitlab/sidekiq`|
+|GitLab Workhorse|`/var/log/gitlab/gitlab-workhorse`|
+
+The GitLab Rails directory is probably where you want to look for the
+log files used with the Ruby code above.
+
+[`logrotate`](https://github.com/logrotate/logrotate) is used to [watch for all *.log files](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/7e955ff25cf4dcc318b22724cc156a0daba33049/files/gitlab-cookbooks/logrotate/templates/default/logrotate-service.erb#L4).
+
+### Cloud Native GitLab log handling
+
+A Cloud Native GitLab pod writes GitLab logs directly to
+`/var/log/gitlab` without creating additional subdirectories. For
+example, the `webservice` pod runs `gitlab-workhorse` in one container
+and `puma` in another. The log file directory in the latter looks like:
+
+```shell
+git@gitlab-webservice-default-bbd9647d9-fpwg5:/$ ls -al /var/log/gitlab
+total 181420
+drwxr-xr-x 2 git  git       4096 Aug  2 22:58 .
+drwxr-xr-x 4 root root      4096 Aug  2 22:57 ..
+-rw-r--r-- 1 git  git          0 Aug  2 18:22 .gitkeep
+-rw-r--r-- 1 git  git   46524128 Aug  6 20:18 api_json.log
+-rw-r--r-- 1 git  git      19009 Aug  2 22:58 application_json.log
+-rw-r--r-- 1 git  git        157 Aug  2 22:57 auth_json.log
+-rw-r--r-- 1 git  git       1116 Aug  2 22:58 database_load_balancing.log
+-rw-r--r-- 1 git  git         67 Aug  2 22:57 grpc.log
+-rw-r--r-- 1 git  git          0 Aug  2 22:57 production.log
+-rw-r--r-- 1 git  git  138436632 Aug  6 20:18 production_json.log
+-rw-r--r-- 1 git  git         48 Aug  2 22:58 puma.stderr.log
+-rw-r--r-- 1 git  git        266 Aug  2 22:58 puma.stdout.log
+-rw-r--r-- 1 git  git         67 Aug  2 22:57 service_measurement.log
+-rw-r--r-- 1 git  git         67 Aug  2 22:57 sidekiq_client.log
+-rw-r--r-- 1 git  git     733809 Aug  6 20:18 web_exporter.log
+```
+
+[`gitlab-logger`](https://gitlab.com/gitlab-org/cloud-native/gitlab-logger)
+is used to tail all files in `/var/log/gitlab`. Each log line is
+converted to JSON if necessary and sent to `stdout` so that it can be
+viewed via `kubectl logs`.
+
 ## Additional steps with new log files
 
 1. Consider log retention settings. By default, Omnibus rotates any

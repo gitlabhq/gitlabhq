@@ -133,6 +133,10 @@ class Packages::PackageFile < ApplicationRecord
     query.with(cte.to_arel)
   end
 
+  def self.installable_statuses
+    INSTALLABLE_STATUSES
+  end
+
   def download_path
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
   end

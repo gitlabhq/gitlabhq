@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module CommitsHelper
+  include Gitlab::Utils::StrongMemoize
+
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
   # Otherwise it will link to the author email as specified in the commit.
@@ -98,13 +100,18 @@ module CommitsHelper
     end.join(' ').html_safe
   end
 
+  def commit_blob
+    @repo.blob_at(@ref, @path)
+  end
+  strong_memoize_attr :commit_blob
+
   def link_to_browse_code(project, commit)
     return unless current_controller?(:commits)
 
     if @path.blank?
       url = project_tree_path(project, commit)
       tooltip = _("Browse Files")
-    elsif @repo.blob_at(commit.id, @path)
+    elsif commit_blob.present?
       url = project_blob_path(project, tree_join(commit.id, @path))
       tooltip = _("Browse File")
     elsif @path.present?

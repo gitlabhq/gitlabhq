@@ -41,7 +41,7 @@ module Gitlab
             {
               parent_type_id: epic.id,
               child_type_id: epic.id,
-              maximum_depth: 9,
+              maximum_depth: 7,
               cross_hierarchy_enabled: true
             },
             {
@@ -65,14 +65,14 @@ module Gitlab
         end
 
         def self.find_or_create_type(name)
-          type = ::WorkItems::Type.find_by_name_and_namespace_id(name, nil)
+          type = ::WorkItems::Type.find_by_name(name)
           if type
             type.clear_reactive_cache!
             return type
           end
 
           Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
-          ::WorkItems::Type.find_by_name_and_namespace_id(name, nil)
+          ::WorkItems::Type.find_by_name(name)
         end
 
         def self.filtered_restrictions(restrictions)

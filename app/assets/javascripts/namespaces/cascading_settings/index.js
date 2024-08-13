@@ -1,15 +1,15 @@
 import Vue from 'vue';
-import HamlLockPopovers from './components/haml_lock_popovers.vue';
+import HamlLockTooltips from './components/haml_lock_tooltips.vue';
 
-export const initCascadingSettingsLockPopovers = () => {
-  const el = document.querySelector('.js-cascading-settings-lock-popovers');
+export const initCascadingSettingsLockTooltips = () => {
+  const el = document.querySelector('.js-cascading-settings-lock-tooltips');
 
   if (!el) return false;
 
   return new Vue({
     el,
     render(createElement) {
-      return createElement(HamlLockPopovers);
+      return createElement(HamlLockTooltips);
     },
   });
 };

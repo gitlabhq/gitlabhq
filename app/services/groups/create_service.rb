@@ -17,7 +17,7 @@ module Groups
       @group.name ||= @group.path.dup
 
       create_chat_team
-      create_group
+      Namespace.with_disabled_organization_validation { create_group }
 
       return error_response unless @group.persisted?
 

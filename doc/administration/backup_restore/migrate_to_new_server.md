@@ -88,7 +88,7 @@ To prepare the new server:
       ```
 
 1. Disable periodic background jobs:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.
@@ -199,7 +199,7 @@ to the new environment.
 
 1. [Restore the GitLab backup](restore_gitlab.md).
 1. Verify that the Redis database restored correctly:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.

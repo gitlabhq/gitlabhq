@@ -156,14 +156,14 @@ version of the product:
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
 
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Overview > Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
@@ -187,7 +187,7 @@ Use the following questions to guide you:
 1. Is this a **GitLab Premium** or **GitLab Ultimate** feature?
    - Based on the plan you choose to use the feature in, add the feature identifier to `PREMIUM_FEATURES`
      or `ULTIMATE_FEATURES`.
-1. Will this feature be available globally (system-wide at the GitLab instance level)?
+1. Will this feature be available globally (system-wide for the GitLab instance)?
     - Features such as [Geo](../administration/geo/index.md) and
       [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
       and cannot be restricted to individual user namespaces. These features are defined in the instance license.

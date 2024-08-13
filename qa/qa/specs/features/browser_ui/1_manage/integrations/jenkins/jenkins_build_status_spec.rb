@@ -39,7 +39,7 @@ module QA
         toggle_local_requests(false)
       end
 
-      it 'integrates and displays build status for MR pipeline in GitLab',
+      it 'integrates and displays build status for MR pipeline in GitLab', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
         setup_project_integration
 

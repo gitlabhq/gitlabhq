@@ -23,6 +23,8 @@ information on general testing practices at GitLab.
 
 If you are looking for a guide on Vue component testing, you can jump right away to this [section](../fe_guide/vue.md#testing-vue-components).
 
+Information on testing Vue 3 is contained in [this page](../testing_guide/testing_vue3.md).
+
 ## Jest
 
 We use Jest to write frontend unit and integration tests.
@@ -226,7 +228,7 @@ it('exists', () => {
   // Bad
   wrapper.find({ ref: 'foo'});
   wrapper.find('.js-foo');
-  wrapper.find('.btn-primary');
+  wrapper.find('.gl-button');
 });
 ```
 
@@ -785,7 +787,7 @@ messages can be maintained where we call `setupConsoleWatcher`. Example:
 setupConsoleWatcher({
   ignores: [
     ...,
-    // Any call to `console.error('Foo bar')`  or `console.warn('Foo bar')` will be ignored by our console watcher.
+    // Any call to `console.error('Foo bar')` or `console.warn('Foo bar')` will be ignored by our console watcher.
     'Foo bar',
     // Use regex to allow for flexible message matching.
     /Lorem ipsum/,
@@ -1203,12 +1205,12 @@ testAction(
 
 ### Wait until Axios requests finish
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 The Axios Utils mock module located in `spec/frontend/__helpers__/mocks/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
 These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 - `waitFor(url, callback)`: Runs `callback` after a request to `url` finishes (either successfully or unsuccessfully).
 - `waitForAll(callback)`: Runs `callback` once all pending requests have finished. If no requests are pending, runs `callback` on the next tick.

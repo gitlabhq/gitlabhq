@@ -115,6 +115,7 @@ export default {
         v-if="newToken"
         variant="success"
         data-testid="success-message"
+        class="gl-mb-5"
         @dismiss="newToken = null"
       >
         <input-copy-toggle-visibility

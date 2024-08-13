@@ -10,7 +10,7 @@ RSpec.shared_examples 'resolving an issuable in GraphQL' do |type|
 
   context 'when user has access' do
     before do
-      parent.add_developer(user)
+      parent.add_developer(current_user)
     end
 
     it 'resolves issuable by iid' do

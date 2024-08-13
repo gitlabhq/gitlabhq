@@ -2,6 +2,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {
+  // eslint-disable-next-line max-params
   constructor(field, key, fallbackKey, lockVersion) {
     this.field = field;
     this.type = this.field.getAttribute('type');

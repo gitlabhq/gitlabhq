@@ -39,7 +39,7 @@ Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nE
 
 ### Repair OAuth authorization between Geo sites
 
-When upgrading a Geo site, you might not be able to log in into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../../operations/rails_console.md) session on your primary site and perform the following steps:
+When upgrading a Geo site, you might not be able to sign into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../../operations/rails_console.md) session on your primary site and perform the following steps:
 
 1. To find the affected node, first list all the Geo Nodes you have:
 
@@ -74,7 +74,7 @@ To resolve this issue:
 If you still get this error, you can further increase the buffer size by repeating the steps above
 and changing the `8k` size, for example by doubling it to `16k`.
 
-### Geo Admin area shows 'Unknown' for health status and 'Request failed with status code 401'
+### Geo Admin area shows `Unknown` for health status and 'Request failed with status code 401'
 
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
 `/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
@@ -142,7 +142,7 @@ You can have only one wildcard domain in the `no_proxy` list.
 ### Geo Admin area returns 404 error for a secondary site
 
 Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
-healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo Admin area on the web interface for
+healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo **Admin** area on the web interface for
 the **primary** site.
 
 To resolve this issue:

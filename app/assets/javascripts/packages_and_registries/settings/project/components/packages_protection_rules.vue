@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlCard,
   GlTable,
   GlLoadingIcon,
   GlKeysetPagination,
@@ -12,11 +11,12 @@ import {
   GlFormSelect,
   GlSprintf,
 } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import { s__, __ } from '~/locale';
 
@@ -26,9 +26,9 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access l
 
 export default {
   components: {
-    SettingsBlock,
+    CrudComponent,
+    SettingsSection,
     GlButton,
-    GlCard,
     GlAlert,
     GlTable,
     GlLoadingIcon,
@@ -134,9 +134,11 @@ export default {
   methods: {
     showProtectionRuleForm() {
       this.protectionRuleFormVisibility = true;
+      this.$refs.packagesCrud.showForm();
     },
     hideProtectionRuleForm() {
       this.protectionRuleFormVisibility = false;
+      this.$refs.packagesCrud.hideForm();
     },
     refetchProtectionRules() {
       this.$apollo.queries.packageProtectionRulesQueryPayload.refetch();
@@ -259,41 +261,30 @@ export default {
 </script>
 
 <template>
-  <settings-block>
-    <template #title>{{ $options.i18n.settingBlockTitle }}</template>
-
-    <template #description>
-      {{ $options.i18n.settingBlockDescription }}
-    </template>
-
+  <settings-section
+    :heading="$options.i18n.settingBlockTitle"
+    :description="$options.i18n.settingBlockDescription"
+  >
     <template #default>
-      <gl-card
-        class="gl-new-card"
-        header-class="gl-new-card-header"
-        body-class="gl-new-card-body gl-px-0"
-      >
-        <template #header>
-          <div class="gl-new-card-title-wrapper gl-justify-content-space-between">
-            <h3 class="gl-new-card-title">{{ $options.i18n.settingBlockTitle }}</h3>
-            <div class="gl-new-card-actions">
-              <gl-button
-                size="small"
-                :disabled="isAddProtectionRuleButtonDisabled"
-                @click="showProtectionRuleForm"
-              >
-                {{ s__('PackageRegistry|Add protection rule') }}
-              </gl-button>
-            </div>
-          </div>
+      <crud-component ref="packagesCrud" :title="$options.i18n.settingBlockTitle">
+        <template #actions>
+          <gl-button
+            size="small"
+            :disabled="isAddProtectionRuleButtonDisabled"
+            @click="showProtectionRuleForm"
+          >
+            {{ s__('PackageRegistry|Add protection rule') }}
+          </gl-button>
         </template>
 
-        <template #default>
+        <template v-if="protectionRuleFormVisibility" #form>
           <packages-protection-rule-form
-            v-if="protectionRuleFormVisibility"
             @cancel="hideProtectionRuleForm"
             @submit="refetchProtectionRules"
           />
+        </template>
 
+        <template #default>
           <gl-alert
             v-if="alertErrorMessage"
             class="gl-mb-5"
@@ -340,17 +331,16 @@ export default {
               />
             </template>
           </gl-table>
-
-          <div class="gl-display-flex gl-justify-content-center">
-            <gl-keyset-pagination
-              v-bind="packageProtectionRulesQueryPageInfo"
-              class="gl-mb-3"
-              @prev="onPrevPage"
-              @next="onNextPage"
-            />
-          </div>
         </template>
-      </gl-card>
+
+        <template #pagination>
+          <gl-keyset-pagination
+            v-bind="packageProtectionRulesQueryPageInfo"
+            @prev="onPrevPage"
+            @next="onNextPage"
+          />
+        </template>
+      </crud-component>
 
       <gl-modal
         v-if="protectionRuleMutationItem"
@@ -373,5 +363,5 @@ export default {
         <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
       </gl-modal>
     </template>
-  </settings-block>
+  </settings-section>
 </template>

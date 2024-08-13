@@ -70,6 +70,11 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager, feature_category: :source_
         context 'when first page is requested' do
           let(:branches) { [branch1, branch2, branch3] }
 
+          before do
+            allow(BranchesFinder).to receive(:===).with(finder).and_return(true)
+            allow(finder).to receive(:total).and_return(branches.size)
+          end
+
           it 'keyset pagination is used with offset headers' do
             allow(request_context).to receive(:request).and_return(fake_request)
             allow(project.repository).to receive(:branch_count).and_return(branches.size)
@@ -84,6 +89,26 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager, feature_category: :source_
             expect(request_context).to receive(:header).with('X-Total-Pages', '2')
 
             pager.paginate(finder)
+          end
+
+          context 'when second page does not exist' do
+            let(:base_query) { { per_page: 3 } }
+
+            it 'does not set an invalid X-Next-Page header' do
+              allow(request_context).to receive(:request).and_return(fake_request)
+              allow(project.repository).to receive(:branch_count).and_return(branches.size)
+
+              expect(finder).to receive(:execute).and_return(branches)
+              expect(request_context).to receive(:header).with('X-Per-Page', '3')
+              expect(request_context).to receive(:header).with('X-Page', '1')
+              expect(request_context).to receive(:header).with('X-Next-Page', '')
+              expect(request_context).to receive(:header).with('X-Prev-Page', '')
+              expect(request_context).to receive(:header).with('Link', kind_of(String))
+              expect(request_context).to receive(:header).with('X-Total', '3')
+              expect(request_context).to receive(:header).with('X-Total-Pages', '1')
+
+              pager.paginate(finder)
+            end
           end
         end
 

@@ -14,7 +14,7 @@ You can use special syntax in [`script`](index.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.
-- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+- [Create custom collapsible sections](#custom-collapsible-sections)
   to simplify job log output.
 
 ## Use special characters with `script`
@@ -99,10 +99,7 @@ job2:
 ## Skip `after_script` commands if a job is cancelled
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
 
 [`after_script`](index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
@@ -200,13 +197,13 @@ Second command line.
 When you omit the `>` or `|` block scalar indicators, GitLab concatenates non-empty
 lines to form the command. Make sure the lines can run when concatenated.
 
-<!-- vale gitlab.MeaningfulLinkWords = NO -->
+<!-- vale gitlab_base.MeaningfulLinkWords = NO -->
 
 [Shell here documents](https://en.wikipedia.org/wiki/Here_document) work with the
 `|` and `>` operators as well. The example below transliterates lower case letters
 to upper case:
 
-<!-- vale gitlab.MeaningfulLinkWords = YES -->
+<!-- vale gitlab_base.MeaningfulLinkWords = YES -->
 
 ```yaml
 job:
@@ -262,6 +259,129 @@ job:
   script:
     - Write-Host $TXT_RED"This text is red,"$TXT_CLEAR" but this text isn't"$TXT_RED" however this text is red again."
     - Write-Host "This text is not colored"
+```
+
+## Expand and collapse job log sections
+
+> - Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html), `FF_SCRIPT_SECTIONS`.
+
+Job logs are divided into sections that can be collapsed or expanded. Each section displays
+the duration.
+
+In the following example:
+
+- Three sections have been collapsed and can be expanded.
+- Three sections are expanded and can be collapsed.
+
+![Collapsible sections](img/collapsible_log_v13_10.png)
+
+### Custom collapsible sections
+
+You can create [collapsible sections in job logs](#expand-and-collapse-job-log-sections)
+by manually outputting special codes
+that GitLab uses to delimit collapsible sections:
+
+- Section start marker: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+
+You must add these codes to the script section of the CI configuration.
+For example, using `echo`:
+
+```yaml
+job1:
+  script:
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section\r\e[0KHeader of the 1st collapsible section"
+    - echo 'this line should be hidden when collapsed'
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
+```
+
+The escape syntax may differ depending on the shell that your runner uses.
+For example if it is using Zsh, you may need to escape the special characters
+with `\\e` or `\\r`.
+
+In the example above:
+
+- `date +%s`: Command that produces the Unix timestamp (for example `1560896352`).
+- `my_first_section`: The name given to the section. The name can only be composed
+  of letters, numbers, and the `_`, `.`, or `-` characters.
+- `\r\e[0K`: Escape sequence that prevents the section markers from displaying in the
+  rendered (colored) job log. They are displayed when viewing the raw job log, accessed
+  in the upper-right corner of the job log by selecting **Show complete raw** (**{doc-text}**).
+  - `\r`: carriage return (returns the cursor to the start of the line).
+  - `\e[0K`: ANSI escape code to clear the line from the cursor position to the end of the line.
+    (`\e[K` alone does not work; the `0` must be included).
+
+Sample raw job log:
+
+```plaintext
+\e[0Ksection_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
+this line should be hidden when collapsed
+\e[0Ksection_end:1560896353:my_first_section\r\e[0K
+```
+
+Sample job console log:
+
+![Custom collapsible sections](img/collapsible-job.png)
+
+#### Use a script to improve display of collapsible sections
+
+To remove the `echo` statements that create the section markers from the job output,
+you can move the job contents to a script file and invoke it from the job:
+
+1. Create a script that can handle the section headers. For example:
+
+   ```shell
+   # function for starting the section
+   function section_start () {
+     local section_title="${1}"
+     local section_description="${2:-$section_title}"
+
+     echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+   }
+
+   # Function for ending the section
+   function section_end () {
+     local section_title="${1}"
+
+     echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+   }
+
+   # Create sections
+   section_start "my_first_section" "Header of the 1st collapsible section"
+
+   echo "this line should be hidden when collapsed"
+
+   section_end "my_first_section"
+
+   # Repeat as required
+   ```
+
+1. Add the script to the `.gitlab-ci.yml` file:
+
+   ```yaml
+   job:
+     script:
+       - source script.sh
+   ```
+
+### Pre-collapse sections
+
+You can make the job log automatically collapse collapsible sections by adding the `collapsed` option to the section start.
+Add `[collapsed=true]` after the section name and before the `\r`. The section end marker
+remains unchanged:
+
+- Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
+- Section end marker (unchanged): `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+
+Add the updated section start text to the CI configuration. For example,
+using `echo`:
+
+```yaml
+job1:
+  script:
+    - echo -e "\e[0Ksection_start:`date +%s`:my_first_section[collapsed=true]\r\e[0KHeader of the 1st collapsible section"
+    - echo 'this line should be hidden automatically after loading the job log'
+    - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
 
 ## Troubleshooting
@@ -340,8 +460,6 @@ script:
 
 This fails as the indentation causes the line breaks to be preserved:
 
-<!-- vale gitlab.CurlStringsQuoted = NO -->
-
 ```plaintext
 $ RESULT=$(curl --silent # collapsed multi-line command
 curl: no URL specified!
@@ -349,8 +467,6 @@ curl: try 'curl --help' or 'curl --manual' for more information
 /bin/bash: line 149: --header: command not found
 /bin/bash: line 150: https://gitlab.example.com/api/v4/job: No such file or directory
 ```
-
-<!-- vale gitlab.CurlStringsQuoted = YES -->
 
 Resolve this by either:
 

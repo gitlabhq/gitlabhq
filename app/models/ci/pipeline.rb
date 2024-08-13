@@ -4,6 +4,7 @@ module Ci
   class Pipeline < Ci::ApplicationRecord
     include Ci::Partitionable
     include Ci::HasStatus
+    include Ci::HasCompletionReason
     include Importable
     include AfterCommitQueue
     include Presentable
@@ -473,8 +474,9 @@ module Ci
     # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
     #       pipelines to.
     # sha - The commit SHA (or multiple SHAs) to limit the list of pipelines to.
-    # limit - This limits a backlog search, default to 100.
-    def self.newest_first(ref: nil, sha: nil, limit: 100)
+    # limit - Number of pipelines to return. Chaining with sampling methods (#pick, #take)
+    #         will cause unnecessary subqueries.
+    def self.newest_first(ref: nil, sha: nil, limit: nil)
       relation = order(id: :desc)
       relation = relation.where(ref: ref) if ref
       relation = relation.where(sha: sha) if sha
@@ -605,11 +607,11 @@ module Ci
     end
 
     def tags_count
-      ActsAsTaggableOn::Tagging.where(taggable: builds).count
+      Ci::Tagging.where(taggable: builds).count
     end
 
     def distinct_tags_count
-      ActsAsTaggableOn::Tagging.where(taggable: builds).count('distinct(tag_id)')
+      Ci::Tagging.where(taggable: builds).count('distinct(tag_id)')
     end
 
     def stages_names

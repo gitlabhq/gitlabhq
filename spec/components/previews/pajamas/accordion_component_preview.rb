@@ -3,20 +3,17 @@
 module Pajamas
   class AccordionComponentPreview < ViewComponent::Preview
     # @param title text
-    # @param body text
     # @param state
-    def default(title: "Accordion title (open)", body: "Accordion body", state: :opened)
-      render(Pajamas::AccordionComponent.new(
+    def default(title: "Accordion title (open)", state: :opened)
+      render(Pajamas::AccordionItemComponent.new(
         title: title,
-        body: body,
         state: state
       ))
     end
 
-    def closed(title: "Accordion title (closed)", body: "Accordion body", state: :closed)
-      render(Pajamas::AccordionComponent.new(
+    def closed(title: "Accordion title (closed)", state: :closed)
+      render(Pajamas::AccordionItemComponent.new(
         title: title,
-        body: body,
         state: state
       ))
     end

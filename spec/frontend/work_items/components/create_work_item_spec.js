@@ -2,8 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlFormSelect } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
-import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/group_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
@@ -11,21 +10,20 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
-import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import { createWorkItemMutationResponse, createWorkItemQueryResponse } from '../mock_data';
 
-const projectSingleWorkItemTypeQueryResponse = {
+const namespaceSingleWorkItemTypeQueryResponse = {
   data: {
     workspace: {
-      ...projectWorkItemTypesQueryResponse.data.workspace,
+      ...namespaceWorkItemTypesQueryResponse.data.workspace,
       workItemTypes: {
-        nodes: [projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes[0]],
+        nodes: [namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes[0]],
       },
     },
   },
@@ -36,22 +34,25 @@ Vue.use(VueApollo);
 describe('Create work item component', () => {
   let wrapper;
   let mockApollo;
-  const workItemTypeEpicId = 'gid://gitlab/WorkItems::Type/8';
+  const workItemTypeEpicId =
+    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+      ({ name }) => name === 'Epic',
+    ).id;
 
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
-  const projectWorkItemQuerySuccessHandler = jest
+  const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
+  const namespaceWorkItemTypesHandler = jest
     .fn()
-    .mockResolvedValue(createWorkItemQueryResponse);
-  const groupWorkItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
-
+    .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
   const findDescriptionWidget = () => wrapper.findComponent(WorkItemDescription);
   const findAssigneesWidget = () => wrapper.findComponent(WorkItemAssignees);
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
+  const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
@@ -68,27 +69,21 @@ describe('Create work item component', () => {
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [groupWorkItemByIidQuery, groupWorkItemQuerySuccessHandler],
-        [workItemByIidQuery, projectWorkItemQuerySuccessHandler],
+        [workItemByIidQuery, workItemQuerySuccessHandler],
         [createWorkItemMutation, mutationHandler],
+        [namespaceWorkItemTypesQuery, namespaceWorkItemTypesHandler],
       ],
       resolvers,
       { typePolicies: { Project: { merge: true } } },
     );
 
-    const projectWorkItemTypeResponse = singleWorkItemType
-      ? projectSingleWorkItemTypeQueryResponse
-      : projectWorkItemTypesQueryResponse;
+    const namespaceWorkItemTypeResponse = singleWorkItemType
+      ? namespaceSingleWorkItemTypeQueryResponse
+      : namespaceWorkItemTypesQueryResponse;
     mockApollo.clients.defaultClient.cache.writeQuery({
-      query: isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery,
+      query: namespaceWorkItemTypesQuery,
       variables: { fullPath: 'full-path', name: workItemTypeName },
-      data: isGroup
-        ? {
-            ...groupWorkItemTypesQueryResponse.data,
-          }
-        : {
-            ...projectWorkItemTypeResponse.data,
-          },
+      data: namespaceWorkItemTypeResponse.data,
     });
 
     wrapper = shallowMount(CreateWorkItem, {
@@ -173,27 +168,13 @@ describe('Create work item component', () => {
   });
 
   describe('Work item types dropdown', () => {
-    it('displays a list of project work item types', async () => {
+    it('displays a list of namespace work item types', async () => {
       createComponent();
       await waitForPromises();
 
       // +1 for the "None" option
       const expectedOptions =
-        projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
-
-      expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
-    });
-
-    it('fetches group work item types when isGroup is true', async () => {
-      createComponent({
-        isGroup: true,
-      });
-
-      await waitForPromises();
-
-      const expectedOptions =
-        groupWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
-
+        namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
@@ -316,6 +297,10 @@ describe('Create work item component', () => {
 
     it('renders the work item labels widget', () => {
       expect(findLabelsWidget().exists()).toBe(true);
+    });
+
+    it('renders the work item CRM contacts widget', () => {
+      expect(findCrmContactsWidget().exists()).toBe(true);
     });
   });
 });

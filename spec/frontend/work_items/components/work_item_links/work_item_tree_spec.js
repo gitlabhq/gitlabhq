@@ -1,13 +1,17 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToggle } from '@gitlab/ui';
+import { GlLoadingIcon, GlToggle, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemTreeActions from '~/work_items/components/work_item_links/work_item_tree_actions.vue';
+import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -17,30 +21,46 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '~/work_items/constants';
-import { childrenWorkItems } from '../../mock_data';
+import {
+  workItemHierarchyTreeResponse,
+  workItemHierarchyPaginatedTreeResponse,
+  workItemHierarchyTreeEmptyResponse,
+  workItemHierarchyNoUpdatePermissionResponse,
+} from '../../mock_data';
+
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
 describe('WorkItemTree', () => {
   let wrapper;
 
+  const workItemHierarchyTreeResponseHandler = jest
+    .fn()
+    .mockResolvedValue(workItemHierarchyTreeResponse);
+
   const findEmptyState = () => wrapper.findByTestId('tree-empty');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findToggleFormSplitButton = () => wrapper.findComponent(WorkItemActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
   const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
   const findTreeActions = () => wrapper.findComponent(WorkItemTreeActions);
+  const findRolledUpWeight = () => wrapper.findByTestId('rollup-weight');
+  const findRolledUpWeightValue = () => wrapper.findByTestId('weight-value');
 
-  const createComponent = ({
+  const createComponent = async ({
     workItemType = 'Objective',
     workItemIid = '2',
     parentWorkItemType = 'Objective',
     confidential = false,
-    children = childrenWorkItems,
     canUpdate = true,
     canUpdateChildren = true,
     hasSubepicsFeature = true,
+    workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
+    showRolledUpWeight = false,
+    rolledUpWeight = 0,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -48,17 +68,20 @@ describe('WorkItemTree', () => {
         workItemType,
         workItemIid,
         parentWorkItemType,
-        workItemId: 'gid://gitlab/WorkItem/515',
+        workItemId: 'gid://gitlab/WorkItem/2',
         confidential,
-        children,
         canUpdate,
         canUpdateChildren,
+        showRolledUpWeight,
+        rolledUpWeight,
       },
+      apolloProvider: createMockApollo([[getWorkItemTreeQuery, workItemHierarchyTreeHandler]]),
       provide: {
         hasSubepicsFeature,
       },
       stubs: { WidgetWrapper },
     });
+    await waitForPromises();
   };
 
   it('displays Add button', () => {
@@ -67,17 +90,25 @@ describe('WorkItemTree', () => {
     expect(findToggleFormSplitButton().exists()).toBe(true);
   });
 
-  it('displays empty state if there are no children', () => {
-    createComponent({ children: [] });
+  it('displays empty state if there are no children', async () => {
+    await createComponent({
+      workItemHierarchyTreeHandler: jest.fn().mockResolvedValue(workItemHierarchyTreeEmptyResponse),
+    });
 
     expect(findEmptyState().exists()).toBe(true);
   });
 
-  it('renders hierarchy widget children container', () => {
+  it('displays loading-icon while children are being loaded', () => {
     createComponent();
 
+    expect(findLoadingIcon().exists()).toBe(true);
+  });
+
+  it('renders hierarchy widget children container', async () => {
+    await createComponent();
+
     expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
-    expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
+    expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(1);
   });
 
   it('does not display form by default', () => {
@@ -88,7 +119,7 @@ describe('WorkItemTree', () => {
 
   it('shows an error message on error', async () => {
     const errorMessage = 'Some error';
-    createComponent();
+    await createComponent();
 
     findWorkItemLinkChildrenWrapper().vm.$emit('error', errorMessage);
     await nextTick();
@@ -167,10 +198,13 @@ describe('WorkItemTree', () => {
   });
 
   describe('when no permission to update', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         canUpdate: false,
         canUpdateChildren: false,
+        workItemHierarchyTreeHandler: jest
+          .fn()
+          .mockResolvedValue(workItemHierarchyNoUpdatePermissionResponse),
       });
     });
 
@@ -180,6 +214,46 @@ describe('WorkItemTree', () => {
 
     it('does not display link menu on children', () => {
       expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
+    });
+  });
+
+  describe('pagination', () => {
+    const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+    let workItemTreeQueryHandler;
+
+    beforeEach(async () => {
+      workItemTreeQueryHandler = jest
+        .fn()
+        .mockResolvedValue(workItemHierarchyPaginatedTreeResponse);
+
+      await createComponent({
+        workItemHierarchyTreeHandler: workItemTreeQueryHandler,
+      });
+    });
+
+    it('shows work-item-children-load-more component when hasNextPage is true and node is expanded', () => {
+      const loadMore = findWorkItemChildrenLoadMore();
+      expect(loadMore.exists()).toBe(true);
+      expect(loadMore.props('fetchNextPageInProgress')).toBe(false);
+    });
+
+    it('queries next page children when work-item-children-load-more emits "fetch-next-page"', async () => {
+      findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+      await waitForPromises();
+
+      expect(workItemTreeQueryHandler).toHaveBeenCalled();
+    });
+
+    it('shows alert message when fetching next page fails', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.hierarchyWidget, 'fetchMore').mockRejectedValueOnce({});
+      findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Object),
+        message: 'Something went wrong while fetching children.',
+      });
     });
   });
 
@@ -200,7 +274,7 @@ describe('WorkItemTree', () => {
   `(
     'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
     async ({ toggleValue }) => {
-      createComponent();
+      await createComponent();
 
       findShowLabelsToggle().vm.$emit('change', toggleValue);
 
@@ -217,11 +291,39 @@ describe('WorkItemTree', () => {
       ${false} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
     `(
       'When displaying a $workItemType, it is $visible that the action menu is rendered',
-      ({ workItemType, visible }) => {
-        createComponent({ workItemType });
+      async ({ workItemType, visible }) => {
+        await createComponent({ workItemType });
 
         expect(findTreeActions().exists()).toBe(visible);
       },
     );
+  });
+
+  describe('rollup data', () => {
+    describe('rolledUp weight', () => {
+      it.each`
+        showRolledUpWeight | rolledUpWeight | rollUpWeightVisible | expected
+        ${false}           | ${0}           | ${false}            | ${'rollup weight is not displayed'}
+        ${false}           | ${10}          | ${false}            | ${'rollup weight is not displayed'}
+        ${true}            | ${0}           | ${true}             | ${'rollup weight is displayed'}
+        ${true}            | ${null}        | ${false}            | ${'rollup weight is not displayed'}
+        ${true}            | ${10}          | ${true}             | ${'rollup weight is displayed'}
+      `(
+        'When showRolledUpWeight is $showRolledUpWeight and rolledUpWeight is $rolledUpWeight, $expected',
+        ({ showRolledUpWeight, rollUpWeightVisible, rolledUpWeight }) => {
+          createComponent({ showRolledUpWeight, rolledUpWeight });
+
+          expect(findRolledUpWeight().exists()).toBe(rollUpWeightVisible);
+        },
+      );
+
+      it('should show the correct value when rolledUpWeight is visible', () => {
+        createComponent({ showRolledUpWeight: true, rolledUpWeight: 10 });
+
+        expect(findRolledUpWeight().exists()).toBe(true);
+        expect(findRolledUpWeight().findComponent(GlIcon).props('name')).toBe('weight');
+        expect(findRolledUpWeightValue().text()).toBe('10');
+      });
+    });
   });
 });

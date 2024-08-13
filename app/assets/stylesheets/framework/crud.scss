@@ -1,5 +1,6 @@
 .crud-body:has(.gl-table) {
-  margin: 0;
+  margin-block: -1px;
+  margin-inline: 0;
 
   // Table adjustments
   @mixin new-card-table-adjustments {
@@ -70,3 +71,18 @@
   }
 }
 
+.crud-pagination {
+  margin-top: -1px;
+
+  &:not(:has(> .gl-pagination)) {
+    display: none;
+  }
+
+  .gl-pagination {
+    margin-top: 0;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+  }
+}

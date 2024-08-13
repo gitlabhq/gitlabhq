@@ -1,7 +1,7 @@
 const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500'];
-const PADDING_TOP_SMALL = 'gl-pt-3!';
-const PADDING_BOTTOM_LARGE = 'gl-pb-6!';
-const PADDING_BOTTOM_SMALL = 'gl-pb-3!';
+const PADDING_TOP_SMALL = '!gl-pt-3';
+const PADDING_BOTTOM_LARGE = '!gl-pb-6';
+const PADDING_BOTTOM_SMALL = '!gl-pb-3';
 const VIEWER_SELECTOR = '.file-holder .blob-viewer';
 
 const findLineNumberElement = (lineNumber) => document.getElementById(`L${lineNumber}`);

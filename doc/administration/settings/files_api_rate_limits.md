@@ -31,7 +31,7 @@ Prerequisites:
 
 To override the general user and IP rate limits for requests to the Repository files API:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Files API Rate Limits**.
 1. Select the checkboxes for the types of rate limits you want to enable:

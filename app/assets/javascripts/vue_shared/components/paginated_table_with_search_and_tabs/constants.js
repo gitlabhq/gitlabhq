@@ -1,7 +1,6 @@
-export const tdClass =
-  'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-whitespace-nowrap';
+export const tdClass = 'table-col gl-flex d-md-table-cell gl-items-center gl-whitespace-nowrap';
 export const bodyTrClass =
-  'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-cursor-pointer gl-hover-bg-gray-50 gl-hover-border-b-solid';
+  'gl-border-1 gl-border-t-solid gl-border-gray-100 hover:gl-cursor-pointer hover:gl-bg-gray-50 hover:gl-border-b-solid';
 
 export const defaultPageSize = 20;
 

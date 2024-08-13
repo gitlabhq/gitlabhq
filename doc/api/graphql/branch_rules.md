@@ -20,7 +20,7 @@ GitLab instance either by its full path for example `gitlab-org/gitlab-docs`.
 In the query we request all configured branch rules for a project.
 
 NOTE:
-You can run the same query directly via a HTTP endpoint, using `cURL`. For more
+You can run the same query directly with an HTTP endpoint, using `cURL`. For more
 information, see our guidance on getting started from the
 [command line](getting_started.md#command-line).
 

@@ -1,4 +1,4 @@
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
@@ -14,7 +14,6 @@ describe('WorkItemStateBadge', () => {
     });
   };
   const findStatusBadge = () => wrapper.findComponent(GlBadge);
-  const findStatusBadgeIcon = () => wrapper.findComponent(GlIcon);
 
   it.each`
     state           | icon              | stateText   | variant
@@ -25,7 +24,7 @@ describe('WorkItemStateBadge', () => {
     ({ state, icon, stateText, variant }) => {
       createComponent({ workItemState: state });
 
-      expect(findStatusBadgeIcon().props('name')).toBe(icon);
+      expect(findStatusBadge().props('icon')).toBe(icon);
       expect(findStatusBadge().props('variant')).toBe(variant);
       expect(findStatusBadge().text()).toBe(stateText);
     },

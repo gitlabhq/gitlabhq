@@ -52,3 +52,6 @@ export const DATE_RANGE_END_QUERY_KEY = 'date_end';
 export const TIMESTAMP_QUERY_KEY = 'timestamp';
 
 export const FILTERED_SEARCH_TERM_QUERY_KEY = 'search';
+
+export const FULL_DATE_TIME_FORMAT = `mmm dd yyyy HH:MM:ss.l Z`;
+export const SHORT_DATE_TIME_FORMAT = `mmm dd yyyy HH:MM:ss Z`;

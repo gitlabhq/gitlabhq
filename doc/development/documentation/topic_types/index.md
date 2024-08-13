@@ -43,7 +43,8 @@ You should avoid:
 In general, for topic titles:
 
 - Be clear and direct. Make every word count.
-- Use fewer than 70 characters when possible.
+- Use fewer than 70 characters when possible. The [markdownlint](../testing/markdownlint.md) rule:
+  [`line-length` (MD013)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint-cli2.yaml)
 - Use articles and prepositions.
 - Follow [capitalization](../styleguide/index.md#topic-titles) guidelines.
 - Do not repeat text from earlier topic titles. For example, if the page is about merge requests,

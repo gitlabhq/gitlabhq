@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Onboarding::Progress, feature_category: :onboarding do
   let(:namespace) { create(:namespace) }
-  let(:action) { :subscription_created }
+  let(:action) { :merge_request_created }
 
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).required }
@@ -164,12 +164,12 @@ RSpec.describe Onboarding::Progress, feature_category: :onboarding do
         end
 
         it 'does not override timestamp', :aggregate_failures do
-          expect(described_class.find_by_namespace_id(namespace.id).subscription_created_at).to be_nil
+          expect(described_class.find_by_namespace_id(namespace.id).merge_request_created_at).to be_nil
           register_action
-          expect(described_class.find_by_namespace_id(namespace.id).subscription_created_at).not_to be_nil
+          expect(described_class.find_by_namespace_id(namespace.id).merge_request_created_at).not_to be_nil
           expect do
             described_class.register(namespace, action)
-          end.not_to change { described_class.find_by_namespace_id(namespace.id).subscription_created_at }
+          end.not_to change { described_class.find_by_namespace_id(namespace.id).merge_request_created_at }
         end
 
         context 'when the action does not exist' do
@@ -290,6 +290,6 @@ RSpec.describe Onboarding::Progress, feature_category: :onboarding do
   describe '.column_name' do
     subject { described_class.column_name(action) }
 
-    it { is_expected.to eq(:subscription_created_at) }
+    it { is_expected.to eq(:merge_request_created_at) }
   end
 end

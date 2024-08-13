@@ -1108,6 +1108,10 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   In GitLab 16.3 and earlier, the timeout is hard-coded to 5 minutes.
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
+- There is a known issue with using [CI/CD job tokens](../jobs/ci_job_token.md) with `after_script`.
+  You can use a job token for authentication in `after_script` commands, but the token
+  immediately becomes invalid if the job is cancelled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
+  for more details.
 
 If a job times out, the `after_script` commands do not execute.
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out jobs.
@@ -1120,7 +1124,7 @@ If a job times out, the `after_script` commands do not execute.
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+- [Create custom collapsible sections](script.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `allow_failure`
@@ -1635,7 +1639,7 @@ job:
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+- [Create custom collapsible sections](script.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `cache`
@@ -2053,7 +2057,7 @@ In this example:
 
 **Additional details**:
 
-- You can find parse examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
+- You can find regex examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched
@@ -2607,6 +2611,8 @@ job_with_id_tokens:
 
 **Related topics**:
 
+- [ID token authentication](../secrets/id_token_authentication.md).
+- [Connect to cloud services](../cloud_services/index.md).
 - [Keyless signing with Sigstore](signing_examples.md).
 
 ### `image`
@@ -4319,8 +4325,11 @@ In this example:
 
 **Additional details**:
 
-- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
-  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
+- CI/CD variables used with `rules:exists` have some limitations:
+  - You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
+    with `exists`. See [issue 411344](https://gitlab.com/gitlab-org/gitlab/-/issues/411344) for more details.
+  - In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
+    See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
@@ -4333,7 +4342,6 @@ In this example:
     of globs. For example, a rule with 4 patterned globs has file limit of 2500.
 - A maximum of 50 patterns or file paths can be defined per `rules:exists` section.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
-
 - With job-level `rules:exists`, GitLab searches for the files in the project and
   ref that runs the pipeline. When using [`include` with `rules:exists`](includes.md#include-with-rulesexists),
   GitLab searches for the files in the project and ref of the file that contains the `include`
@@ -4634,7 +4642,7 @@ job2:
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
-- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+- [Create custom collapsible sections](script.md#custom-collapsible-sections)
   to simplify job log output.
 
 ### `secrets`

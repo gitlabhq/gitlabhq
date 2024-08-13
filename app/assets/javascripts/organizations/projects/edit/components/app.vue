@@ -78,7 +78,7 @@ export default {
 
 <template>
   <div class="gl-py-6">
-    <h1 class="gl-mt-0 gl-font-size-h-display">
+    <h1 class="gl-mt-0 gl-text-size-h-display">
       <gl-sprintf :message="$options.i18n.pageTitle">
         <template #project_name>{{ project.fullName }}</template>
       </gl-sprintf>

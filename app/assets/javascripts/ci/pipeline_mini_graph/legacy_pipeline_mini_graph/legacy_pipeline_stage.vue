@@ -115,7 +115,7 @@ export default {
 <template>
   <gl-disclosure-dropdown
     ref="dropdown"
-    data-testid="mini-pipeline-graph-dropdown"
+    data-testid="pipeline-mini-graph-dropdown"
     class="mini-pipeline-graph-dropdown"
     variant="link"
     :aria-label="stageAriaLabel(stage.title)"
@@ -129,7 +129,7 @@ export default {
         :title="isDropdownOpen ? '' : stage.title"
         variant="link"
         class="gl-rounded-full!"
-        data-testid="mini-pipeline-graph-dropdown-toggle"
+        data-testid="pipeline-mini-graph-dropdown-toggle"
       >
         <ci-icon :status="stage.status" :show-tooltip="false" :use-link="false" class="gl-mb-0!" />
       </gl-button>
@@ -160,7 +160,7 @@ export default {
     <ul
       v-else
       class="mini-pipeline-graph-dropdown-menu gl-overflow-y-auto gl-m-0 gl-p-0"
-      data-testid="mini-pipeline-graph-dropdown-menu-list"
+      data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
       <legacy-job-item

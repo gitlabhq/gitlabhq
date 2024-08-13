@@ -2,7 +2,6 @@ import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 import { stubComponent } from 'helpers/stub_component';
@@ -63,13 +62,13 @@ describe('RunnerList', () => {
 
     expect(headers).toHaveLength(4);
 
-    expect(headers[0].text()).toBe(s__('Runners|Status'));
+    expect(headers[0].text()).toBe('Status');
 
     expect(headers[1].findComponent(RunnerConfigurationPopover).exists()).toBe(true);
-    expect(headers[1].text()).toBe(s__('Runners|Runner configuration'));
+    expect(headers[1].text()).toBe('Runner configuration');
 
     expect(headers[2].findComponent(HelpPopover).exists()).toBe(true);
-    expect(headers[2].text()).toBe(s__('Runners|Owner'));
+    expect(headers[2].text()).toBe('Owner');
 
     expect(headers[3].text()).toBe(''); // actions has no label
   });

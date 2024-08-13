@@ -3,7 +3,7 @@ import { GlButton, GlForm, GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui'
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
-import { isSafeURL } from '~/lib/utils/url_utility';
+import { isValidURL } from '~/lib/utils/url_utility';
 
 export default {
   components: {
@@ -63,7 +63,7 @@ export default {
         : this.$options.i18n.uploadTitle;
     },
     isUrlValid() {
-      return this.modalUrl === '' || isSafeURL(this.modalUrl);
+      return this.modalUrl === '' || isValidURL(this.modalUrl);
     },
   },
   methods: {

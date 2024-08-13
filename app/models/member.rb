@@ -297,8 +297,9 @@ class Member < ApplicationRecord
   end
 
   scope :order_updated_desc, -> { order(updated_at: :desc) }
-
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
+  scope :with_static_role, -> { where(member_role_id: nil) }
+  scope :no_activity_today, -> { where('last_activity_on < ?', Date.today) }
 
   before_validation :set_member_namespace_id, on: :create
   before_validation :generate_invite_token, on: :create, if: ->(member) { member.invite_email.present? && !member.invite_accepted_at? }
@@ -418,9 +419,12 @@ class Member < ApplicationRecord
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
-        if column_name == 'access_level'
+        case column_name
+        when 'access_level'
           args = [group_group_link_table[:group_access], arel_table[:access_level]]
           smallest_value_arel(args, 'access_level')
+        when 'member_role_id'
+          member_role_id(group_group_link_table, arel_table)
         else
           arel_table[column_name]
         end
@@ -429,6 +433,11 @@ class Member < ApplicationRecord
 
     def smallest_value_arel(args, column_alias)
       Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
+    end
+
+    # overriden in EE
+    def member_role_id(_group_group_link_table, group_member_table)
+      group_member_table[:member_role_id]
     end
   end
 

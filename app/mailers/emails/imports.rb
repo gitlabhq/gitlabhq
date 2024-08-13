@@ -49,12 +49,25 @@ module Emails
       @source_user = Import::SourceUser.find(source_user_id)
       @reassign_to_user = @source_user.reassign_to_user
       title = safe_format(
-        s_('UserMapping|Reassignments on %{group} waiting for review.'),
+        s_('UserMapping|Reassignments on %{group} waiting for review'),
         group: @source_user.namespace.full_path
       )
 
       email_with_layout(
         to: @reassign_to_user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
+
+    def import_source_user_rejected(source_user_id)
+      @source_user = Import::SourceUser.find(source_user_id)
+      title = safe_format(
+        s_('UserMapping|Reassignments on %{group} rejected'),
+        group: @source_user.namespace.full_path
+      )
+
+      email_with_layout(
+        to: @source_user.reassigned_by_user.notification_email_or_default,
         subject: subject(title)
       )
     end

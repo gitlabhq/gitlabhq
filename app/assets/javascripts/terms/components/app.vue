@@ -66,14 +66,14 @@ export default {
 
 <template>
   <div>
-    <div class="gl-relative gl-pb-0 gl-px-0" data-testid="terms-content">
+    <div class="gl-relative" data-testid="terms-content">
       <div
-        class="terms-fade gl-absolute gl-left-5 gl-right-5 gl-bottom-0 gl-h-11 gl-pointer-events-none"
+        class="terms-fade gl-z-1 gl-absolute gl-left-5 gl-right-5 gl-bottom-0 gl-h-11 gl-pointer-events-none"
       ></div>
       <div
         ref="scrollableViewport"
         data-testid="scrollable-viewport"
-        class="gl-h-screen gl-overflow-y-auto gl-pb-11 gl-px-5"
+        class="gl-h-screen gl-overflow-y-auto gl-pb-11 gl-p-7"
       >
         <div ref="gfmContainer" v-safe-html="terms"></div>
         <gl-intersection-observer @appear="handleBottomReached">
@@ -81,7 +81,7 @@ export default {
         </gl-intersection-observer>
       </div>
     </div>
-    <div v-if="isLoggedIn" class="gl-display-flex gl-justify-content-end gl-p-5">
+    <div v-if="isLoggedIn" class="gl-flex gl-justify-end gl-p-5">
       <form v-if="permissions.canDecline" method="post" :action="paths.decline">
         <gl-button type="submit">{{ $options.i18n.decline }}</gl-button>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

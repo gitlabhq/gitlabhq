@@ -16,7 +16,7 @@ You can build a FIPS-compliant instance of GitLab, but [not all features are inc
 A FIPS-compliant instance must be configured following the [FIPS install instructions](#install-gitlab-with-fips-compliance)
 exactly.
 
-There are two current FIPS standards: [140-2](https://en.wikipedia.org/wiki/FIPS_140-2)
+The two current FIPS standards: [140-2](https://en.wikipedia.org/wiki/FIPS_140-2)
 and [140-3](https://en.wikipedia.org/wiki/FIPS_140-3). At GitLab we usually
 mean FIPS 140-2.
 
@@ -78,9 +78,9 @@ Additionally, these package repositories are disabled in FIPS mode:
 ## FIPS compliance vs FIPS validation at GitLab
 
 GitLab does not fork or modify cryptographic binaries (for example OpenSSL) in its FIPS-compliant
-software releases but instead uses existing, FIPS-validated crytographic software (modules).
+software releases but instead uses existing, FIPS-validated cryptographic software (modules).
 GitLab therefore does not need to submit its software through the
-[NIST Cryptographic Module Valiation Program (CMVP)](https://csrc.nist.gov/projects/cryptographic-module-validation-program/)
+[NIST Cryptographic Module Validation Program (CMVP)](https://csrc.nist.gov/projects/cryptographic-module-validation-program/)
 independent laboratory testing.
 Instead, GitLab must use FIPS-validated software (listed in
 [Cryptographic Module Validation Program](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules))

@@ -54,7 +54,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
@@ -116,7 +116,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
-1. On the **GitLab Duo Pro** section of your subscription card click **Add seats** button.
+1. On the **GitLab Duo Pro** section of your subscription card select **Add seats**.
 1. Enter the number of seats. The amount cannot be higher than the number of seats in the subscription.
 1. Review the **Purchase summary** section.
 1. From the **Payment method** dropdown list, select your payment method.
@@ -149,6 +149,7 @@ Prerequisites:
 
 - You must have an active paid Premium or Ultimate subscription. GitLab Duo Pro trials are not available to free users of self-managed at this time.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
+- For the best GitLab Duo experience, upgrade to the [latest version](https://about.gitlab.com/releases/categories/releases/) of GitLab.
 
 1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial/).
 1. Complete the fields.

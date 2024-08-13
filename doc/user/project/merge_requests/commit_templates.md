@@ -19,6 +19,9 @@ a merge request.
 The commit template syntax is like the syntax for
 [review suggestions](reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 
+GitLab Duo can also help you generate [merge commit messages](duo_in_merge_requests.md#generate-a-merge-commit-message)
+even if you don't configure templates.
+
 ## Configure commit templates
 
 Change the commit templates for your project if the default templates don't

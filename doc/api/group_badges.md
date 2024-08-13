@@ -14,7 +14,7 @@ DETAILS:
 
 [Badges](../user/project/badges.md) support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - **%{project_path}**: replaced by the project path.
 - **%{project_title}**: replaced by the project title.
@@ -28,7 +28,7 @@ DETAILS:
 - **%{commit_sha}**: replaced by the project's last commit SHA.
 - **%{latest_tag}**: replaced by the project's last tag.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
 from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders is returned.

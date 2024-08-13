@@ -42,7 +42,6 @@ More schemas to be introduced with additional decomposed databases
 The usage of schema enforces the base class to be used:
 
 - `ApplicationRecord` for `gitlab_main`/`gitlab_main_cell.`
-- `MainClusterwide::ApplicationRecord` for `gitlab_main_clusterwide`.
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
@@ -749,7 +748,7 @@ to limit the modes where tests can run, and skip them on any other modes.
 By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
 
 NOTE:
-This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
+This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by **group::tenant scale** to test out changes while building [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
 ## Locking writes on the tables that don't belong to the database schemas
 

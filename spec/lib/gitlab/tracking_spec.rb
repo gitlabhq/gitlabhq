@@ -221,34 +221,22 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
   end
 
   describe 'snowplow_micro_enabled?' do
-    where(:development?, :micro_verification_enabled?, :snowplow_micro_enabled, :result) do
-      true  | true  | true  | true
-      true  | true  | false | false
-      false | true  | true  | true
-      false | true  | false | false
-      false | false | true  | false
-      false | false | false | false
-      true  | false | true  | true
-      true  | false | false | false
+    where(:development?, :micro_verification_enabled?, :result) do
+      true  | true  | true
+      false | true  | true
+      true  | false | true
+      false | false | false
     end
 
     with_them do
       before do
         allow(Rails.env).to receive(:development?).and_return(development?)
         allow(described_class).to receive(:micro_verification_enabled?).and_return(micro_verification_enabled?)
-        stub_config(snowplow_micro: { enabled: snowplow_micro_enabled })
       end
 
       subject { described_class.snowplow_micro_enabled? }
 
       it { is_expected.to be(result) }
-    end
-
-    it 'returns false when snowplow_micro is not configured' do
-      allow(Rails.env).to receive(:development?).and_return(true)
-      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
-
-      expect(described_class).not_to be_snowplow_micro_enabled
     end
   end
 

@@ -14,7 +14,7 @@ This document lists tokens used in GitLab, their purpose and, where applicable, 
 
 ## Personal access tokens
 
-You can create [Personal access tokens](../user/profile/personal_access_tokens.md) to authenticate with:
+You can create [personal access tokens](../user/profile/personal_access_tokens.md) to authenticate with:
 
 - The GitLab API.
 - GitLab repositories.
@@ -45,7 +45,7 @@ You can limit the scope and set an expiration date for an impersonation token.
 ## Project access tokens
 
 [Project access tokens](../user/project/settings/project_access_tokens.md#project-access-tokens)
-are scoped to a project. As with [Personal access tokens](#personal-access-tokens), you can use them to authenticate with:
+are scoped to a project. As with [personal access tokens](#personal-access-tokens), you can use them to authenticate with:
 
 - The GitLab API.
 - GitLab repositories.
@@ -64,7 +64,7 @@ Project Owners and Maintainers with a direct membership receive an email when pr
 ## Group access tokens
 
 [Group access tokens](../user/group/settings/group_access_tokens.md#group-access-tokens)
-are scoped to a group. As with [Personal access tokens](#personal-access-tokens), you can use them to authenticate with:
+are scoped to a group. As with [personal access tokens](#personal-access-tokens), you can use them to authenticate with:
 
 - The GitLab API.
 - GitLab repositories.
@@ -205,7 +205,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Under **Feed token**, select the **Disable feed token** checkbox, then select **Save changes**.
@@ -298,6 +298,47 @@ result in `403 Forbidden` responses from GitLab.com.
 
 For more information on authentication request limits, see [Git and container registry failed authentication ban](../user/gitlab_com/index.md#git-and-container-registry-failed-authentication-ban).
 
+### Identify expired access tokens from logs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464652) in GitLab 17.2.
+
+Prerequisites:
+
+You must:
+
+- Be an administrator.
+- Have access to the [`api_json.log`](../administration/logs/index.md#api_jsonlog) file.
+
+To identify which `401 Unauthorized` requests are failing due to
+expired access tokens, use the following fields in the `api_json.log` file:
+
+|Field name|Description|
+|----------|-----------|
+|`meta.auth_fail_reason`|The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`.|
+|`meta.auth_fail_token_id`|A string describing the type and ID of the attempted token.|
+
+When a user attempts to use an expired token, the `meta.auth_fail_reason`
+is `token_expired`. The following shows an excerpt from a log
+entry:
+
+```json
+{
+  "status": 401,
+  "method": "GET",
+  "path": "/api/v4/user",
+  ...
+  "meta.auth_fail_reason": "token_expired",
+  "meta.auth_fail_token_id": "PersonalAccessToken/12",
+}
+```
+
+`meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
+
+To find more information about this token, use the [personal access token API](../api/personal_access_tokens.md#get-single-personal-access-token).
+You can also use the API to [rotate the token](../api/personal_access_tokens.md#rotate-a-personal-access-token).
+
+### Replace expired access tokens
+
 To replace the token:
 
 1. Check where this token may have been used previously, and remove it from any
@@ -373,8 +414,8 @@ to [extend the lifetime of specific tokens](#extend-token-lifetime) if needed.
 These scripts return results in the following format:
 
 ```plaintext
-Expired Group Access Token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
-Expired Project Access Token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
+Expired group access token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
+Expired project access token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
 ```
 
 For more information on this, see [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
@@ -431,7 +472,7 @@ expires_at_date = "2024-05-22"
 
 # Check for expiring personal access tokens
 PersonalAccessToken.owner_is_human.where(expires_at: expires_at_date).find_each do |token|
-  puts "Expired Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
 end
 
 # Check for expiring project and group access tokens
@@ -487,7 +528,7 @@ date_range = 1.month
 
 # Check for personal access tokens
 PersonalAccessToken.owner_is_human.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
-  puts "Expired Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
 end
 
 # Check for expiring project and group access tokens
@@ -507,9 +548,9 @@ This script identifies dates when most of tokens expire. You can use it in combi
 The script returns results in this format:
 
 ```plaintext
-42 Personal Access Tokens will expire at 2024-06-27
-17 Personal Access Tokens will expire at 2024-09-23
-3 Personal Access Tokens will expire at 2024-08-13
+42 Personal access tokens will expire at 2024-06-27
+17 Personal access tokens will expire at 2024-09-23
+3 Personal access tokens will expire at 2024-08-13
 ```
 
 To use it:
@@ -550,7 +591,7 @@ PersonalAccessToken
   .order(Arel.sql('count(*) DESC'))
   .limit(10)
   .each do |token|
-    puts "#{token.count} Personal Access Tokens will expire at #{token.expires_at}"
+    puts "#{token.count} Personal access tokens will expire at #{token.expires_at}"
   end
 ```
 
@@ -597,7 +638,7 @@ This script finds tokens without a value set for `expires_at`.
 
    # Check for expiring personal access tokens
    PersonalAccessToken.owner_is_human.where(expires_at: nil).find_each do |token|
-     puts "Expires_at is nil for Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+     puts "Expires_at is nil for personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
    end
 
    # Check for expiring project and group access tokens

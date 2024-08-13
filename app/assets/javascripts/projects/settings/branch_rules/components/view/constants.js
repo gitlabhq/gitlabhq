@@ -30,7 +30,7 @@ export const I18N = {
     'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Learn more.%{linkEnd}',
   ),
   statusChecksLinkTitle: s__('BranchRules|Manage in status checks'),
-  statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
+  statusChecksHeader: s__('BranchRules|Status checks'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
   allowForcePushLabel: s__('BranchRules|Allow force push'),
@@ -81,16 +81,6 @@ export const EDIT_RULE_MODAL_ID = 'editRuleModal';
 export const BRANCH_PARAM_NAME = 'branch';
 
 export const ALL_BRANCHES_WILDCARD = '*';
-
-export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
-
-export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';
-
-export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';
-
-export const CODE_OWNERS_HELP_PATH = 'user/project/code_owners.md';
-
-export const PUSH_RULES_HELP_PATH = 'user/project/repository/push_rules.md';
 
 export const REQUIRED_ICON = 'check-circle-filled';
 export const NOT_REQUIRED_ICON = 'status-failed';

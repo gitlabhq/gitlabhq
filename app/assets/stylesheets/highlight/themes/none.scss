@@ -4,6 +4,8 @@
 
 @import '../common';
 
+$none-code-mark: #d3e3f4;
+
 @mixin match-line {
   color: $t-gray-a-24;
   background-color: $gray-50;
@@ -187,6 +189,27 @@
   .hll {
     --highlight-border-color: #{$orange-200};
     background-color: $orange-50;
+  }
+
+  // mark lines via mark_multiple_lines
+  pre.none code {
+    .selected-inline-section-marker {
+      background: $none-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $gray-100;
+    }
+  }
+
+  .file-holder div.code.none {
+    .selected-inline-number-mark {
+      color: $gray-600;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gray-200;
+    }
   }
 
   .gd {

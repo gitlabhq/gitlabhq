@@ -97,7 +97,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
 
       shared_examples 'releases sort order' do
         it "sorts the releases #{description}" do
-          card_titles = page.all('[data-testid="release-block"] .gl-new-card-title', minimum: expected_releases.count)
+          card_titles = page.all('[data-testid="release-block"] [data-testid="crud-title"]', minimum: expected_releases.count)
 
           card_titles.each_with_index do |title, index|
             expect(title).to have_content(expected_releases[index].name)

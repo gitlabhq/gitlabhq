@@ -1,0 +1,9 @@
+---
+name: ensure_lfs_object_project_uniqueness
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/199909
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159264
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472750
+milestone: '17.3'
+group: group::source code
+type: beta
+default_enabled: true

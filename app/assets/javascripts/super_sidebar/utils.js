@@ -60,6 +60,7 @@ const updateItemAccess = (
   { lastAccessedOn, frequency = 0 } = {},
   namespace,
   trackVisitsPath,
+  // eslint-disable-next-line max-params
 ) => {
   const now = Date.now();
   const neverAccessed = !lastAccessedOn;

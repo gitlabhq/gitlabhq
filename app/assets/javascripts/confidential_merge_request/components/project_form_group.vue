@@ -88,7 +88,7 @@ export default {
     },
     showWarning() {
       if (this.warningText) {
-        this.warningText.classList.remove('gl-display-none');
+        this.warningText.classList.remove('gl-hidden');
       }
     },
   },

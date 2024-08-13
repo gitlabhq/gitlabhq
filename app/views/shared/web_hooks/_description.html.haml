@@ -1,0 +1,7 @@
+- webhooks_link = tag_pair(link_to('', help_page_path(hook.help_path), target: '_blank', rel: 'noopener noreferrer'), :webhooks_link_start, :webhooks_link_end)
+
+- if @project
+  - integrations_link = tag_pair(link_to('', scoped_integrations_path(project: @project)), :integrations_link_start, :integrations_link_end)
+  = safe_format(_("%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{integrations_link_end} in preference to a webhook."), webhooks_link, integrations_link, webhook_type: hook.pluralized_name)
+- else
+  = safe_format(_("%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project."), webhooks_link, webhook_type: hook.pluralized_name)

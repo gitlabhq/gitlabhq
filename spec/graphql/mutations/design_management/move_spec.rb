@@ -2,16 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::DesignManagement::Move do
+RSpec.describe Mutations::DesignManagement::Move, feature_category: :api do
   include DesignManagementTestHelpers
+  include GraphqlHelpers
 
   let_it_be(:issue) { create(:issue) }
   let_it_be(:designs) { create_list(:design, 3, issue: issue) }
   let_it_be(:developer) { create(:user, developer_of: issue.project) }
 
-  let(:user) { developer }
+  let(:current_user) { developer }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:current_design) { designs.first }
   let(:previous_design) { designs.second }

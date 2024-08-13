@@ -5,18 +5,24 @@ import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
+import { mapWorkItemWidgetsToIssueFields } from '~/issues/list/utils';
 import {
   DraggableItemTypes,
   flashAnimationDuration,
   listsQuery,
   updateListQueries,
   ListType,
+  listIssuablesQueries,
+  DEFAULT_BOARD_LIST_ITEMS_SIZE,
 } from 'ee_else_ce/boards/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
+import BoardDrawerWrapper from './board_drawer_wrapper.vue';
 
 export default {
   draggableItemTypes: DraggableItemTypes,
@@ -24,13 +30,25 @@ export default {
     BoardAddNewColumn,
     BoardAddNewColumnTrigger,
     BoardColumn,
+    BoardDrawerWrapper,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicBoardContentSidebar: () =>
       import('ee_component/boards/components/epic_board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
+    WorkItemDrawer,
   },
-  inject: ['boardType', 'canAdminList', 'isIssueBoard', 'isEpicBoard', 'disabled', 'issuableType'],
+  mixins: [glFeatureFlagsMixin()],
+  inject: [
+    'boardType',
+    'canAdminList',
+    'isIssueBoard',
+    'isEpicBoard',
+    'disabled',
+    'issuableType',
+    'isGroupBoard',
+    'fullPath',
+  ],
   props: {
     boardId: {
       type: String,
@@ -107,6 +125,9 @@ export default {
     closedListId() {
       const closedList = this.boardListsToUse.find((list) => list.listType === ListType.closed);
       return closedList?.id || '';
+    },
+    issuesDrawerEnabled() {
+      return this.glFeatures.issuesListDrawer;
     },
   },
   methods: {
@@ -192,6 +213,24 @@ export default {
           message: s__('Boards|An error occurred while moving the list. Please try again.'),
         });
       }
+    },
+    updateBoardCard(workItem, activeCard) {
+      const { cache } = this.$apollo.provider.clients.defaultClient;
+
+      const variables = {
+        id: activeCard.listId,
+        filters: this.filterParams,
+        fullPath: this.fullPath,
+        boardId: this.boardId,
+        isGroup: this.isGroupBoard,
+        isProject: !this.isGroupBoard,
+        first: DEFAULT_BOARD_LIST_ITEMS_SIZE,
+      };
+
+      cache.updateQuery(
+        { query: listIssuablesQueries[this.issuableType].query, variables },
+        (boardList) => mapWorkItemWidgetsToIssueFields(boardList, workItem, true),
+      );
     },
   },
 };
@@ -283,9 +322,34 @@ export default {
         />
       </div>
     </epics-swimlanes>
+    <board-drawer-wrapper
+      v-if="issuesDrawerEnabled"
+      :backlog-list-id="backlogListId"
+      :closed-list-id="closedListId"
+    >
+      <template
+        #default="{
+          activeIssuable,
+          onDrawerClosed,
+          onAttributeUpdated,
+          onIssuableDeleted,
+          onStateUpdated,
+        }"
+      >
+        <work-item-drawer
+          :open="Boolean(activeIssuable && activeIssuable.iid)"
+          :active-item="activeIssuable"
+          @close="onDrawerClosed"
+          @work-item-updated="updateBoardCard($event, activeIssuable)"
+          @workItemDeleted="onIssuableDeleted(activeIssuable)"
+          @attributesUpdated="onAttributeUpdated"
+          @workItemStateUpdated="onStateUpdated"
+        />
+      </template>
+    </board-drawer-wrapper>
 
     <board-content-sidebar
-      v-if="isIssueBoard"
+      v-if="isIssueBoard && !issuesDrawerEnabled"
       :backlog-list-id="backlogListId"
       :closed-list-id="closedListId"
       data-testid="issue-boards-sidebar"

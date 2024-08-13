@@ -25,7 +25,7 @@ module Sidebars
         add_menu(Sidebars::Admin::Menus::AnalyticsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::MonitoringMenu.new(context))
         add_menu(Sidebars::Admin::Menus::MessagesMenu.new(context))
-        add_menu(Sidebars::Admin::Menus::SystemHooksMenu.new(context))
+        add_menu(Sidebars::Admin::Menus::SystemHooksMenu.new(context)) if system_hooks?
         add_menu(Sidebars::Admin::Menus::ApplicationsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::AbuseReportsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::KubernetesMenu.new(context))
@@ -33,6 +33,12 @@ module Sidebars
         add_menu(Sidebars::Admin::Menus::DeployKeysMenu.new(context))
         add_menu(Sidebars::Admin::Menus::LabelsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::AdminSettingsMenu.new(context))
+      end
+
+      private
+
+      def system_hooks?
+        !Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- Not related to SaaS offerings
       end
     end
   end

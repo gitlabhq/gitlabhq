@@ -429,7 +429,6 @@
 - spec/features/merge_request/user_views_open_merge_request_spec.rb
 - spec/features/merge_requests/user_sees_empty_state_spec.rb
 - spec/features/monitor_sidebar_link_spec.rb
-- spec/features/nav/new_nav_for_everyone_callout_spec.rb
 - spec/features/nav/new_nav_invite_members_spec.rb
 - spec/features/nav/pinned_nav_items_spec.rb
 - spec/features/oauth_provider_authorize_spec.rb
@@ -871,8 +870,6 @@
 - spec/requests/api/maven_packages_spec.rb
 - spec/requests/api/merge_request_approvals_spec.rb
 - spec/requests/api/merge_requests_spec.rb
-- spec/requests/api/metrics/dashboard/annotations_spec.rb
-- spec/requests/api/metrics/user_starred_dashboards_spec.rb
 - spec/requests/api/namespaces_spec.rb
 - spec/requests/api/notes_spec.rb
 - spec/requests/api/project_events_spec.rb

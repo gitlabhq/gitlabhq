@@ -19,7 +19,7 @@ export default class PayloadDownloader {
   }
 
   requestPayload() {
-    this.spinner.classList.add('gl-display-inline');
+    this.spinner.classList.add('gl-inline');
 
     return axios
       .get(this.trigger.dataset.endpoint, {
@@ -34,7 +34,7 @@ export default class PayloadDownloader {
         });
       })
       .finally(() => {
-        this.spinner.classList.remove('gl-display-inline');
+        this.spinner.classList.remove('gl-inline');
       });
   }
 

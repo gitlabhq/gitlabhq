@@ -19,7 +19,7 @@ RSpec.describe Layouts::SettingsSectionComponent, type: :component, feature_cate
     it 'renders description' do
       render_inline described_class.new(heading, description: description)
 
-      expect(page).to have_css('.gl-text-secondary', text: description)
+      expect(page).to have_css('.gl-text-subtle', text: description)
     end
 
     it 'renders description slot' do
@@ -27,7 +27,7 @@ RSpec.describe Layouts::SettingsSectionComponent, type: :component, feature_cate
         c.with_description { description }
       end
 
-      expect(page).to have_css('.gl-text-secondary', text: description)
+      expect(page).to have_css('.gl-text-subtle', text: description)
     end
 
     it 'renders body slot' do

@@ -10,10 +10,10 @@
           = link_to starrer.user.name, user_path(starrer.user), class: 'user js-user-link', data: { user_id: starrer.user.id }
 
         .block-truncated
-          %span.cgray= starrer.user.to_reference
+          %span.gl-text-primary= starrer.user.to_reference
 
           - if starrer.user == current_user
-            = gl_badge_tag _("It's you"), variant: :success, size: :sm, class: 'gl-ml-2'
+            = gl_badge_tag _("It's you"), variant: :success, class: 'gl-ml-2'
 
         .block-truncated.gl-text-secondary.gl-font-sm
           = time_ago_with_tooltip(starrer.starred_since)

@@ -150,7 +150,7 @@ default:
     entrypoint: ["/bin/bash"]
   services:
     - name: my-postgres:11.7
-      alias: db-postgres
+      alias: db,postgres,pg
       entrypoint: ["/usr/local/bin/db-postgres"]
       command: ["start"]
   before_script:
@@ -193,7 +193,7 @@ following these rules:
   created (requires GitLab Runner v1.1.0 or later).
 
 To override the default behavior, you can
-[specify a service alias](#available-settings-for-services).
+[specify one or more service aliases](#available-settings-for-services).
 
 ### Connecting services
 
@@ -210,7 +210,8 @@ end-to-end-tests:
       alias: firefox
     - name: registry.gitlab.com/organization/private-api:latest
       alias: backend-api
-    - postgres:14.3
+    - name: postgres:14.3
+      alias: db postgres db
   variables:
     FF_NETWORK_PER_BUILD: 1
     POSTGRES_PASSWORD: supersecretpassword
@@ -267,7 +268,7 @@ test:
 | `name`          | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
 | `entrypoint`    | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
 | `command`       | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
-| `alias` (1)     | no                                   | 9.4            | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+| `alias` (1)     | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). |
 | `variables` (2) | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). Service variables cannot reference themselves. |
 
 (1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.

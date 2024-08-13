@@ -16,6 +16,20 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import {
+  convertToApiParams,
+  convertToSearchQuery,
+  convertToUrlParams,
+  deriveSortKey,
+  getDefaultWorkItemTypes,
+  getFilterTokens,
+  getInitialPageParams,
+  getSortOptions,
+  getTypeTokenOptions,
+  groupMultiSelectFilterTokens,
+  mapWorkItemWidgetsToIssueFields,
+  updateUpvotesCount,
+} from 'ee_else_ce/issues/list/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -70,13 +84,10 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
-  defaultTypeTokenOptions,
-  defaultWorkItemTypes,
   i18n,
   ISSUE_REFERENCE,
   ISSUES_GRID_VIEW_KEY,
@@ -97,18 +108,6 @@ import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
-import {
-  convertToApiParams,
-  convertToSearchQuery,
-  convertToUrlParams,
-  deriveSortKey,
-  getFilterTokens,
-  getInitialPageParams,
-  getSortOptions,
-  groupMultiSelectFilterTokens,
-  mapWorkItemWidgetsToIssueFields,
-  updateUpvotesCount,
-} from '../utils';
 import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
@@ -170,6 +169,8 @@ export default {
     'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
+    'hasOkrsFeature',
+    'hasQualityManagementFeature',
     'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
@@ -185,16 +186,6 @@ export default {
   ],
   props: {
     eeSearchTokens: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    eeTypeTokenOptions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    eeWorkItemTypes: {
       type: Array,
       required: false,
       default: () => [],
@@ -298,10 +289,10 @@ export default {
       return this.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
     },
     defaultWorkItemTypes() {
-      return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];
-    },
-    typeTokenOptions() {
-      return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
+      return getDefaultWorkItemTypes({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
     },
     hasSearch() {
       return Boolean(
@@ -379,7 +370,7 @@ export default {
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedUsers,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,
@@ -392,7 +383,7 @@ export default {
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
@@ -413,7 +404,7 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_TYPE,
@@ -535,6 +526,12 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    typeTokenOptions() {
+      return getTypeTokenOptions({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
+    },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
     },
@@ -591,6 +588,7 @@ export default {
     eventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
+    // eslint-disable-next-line max-params
     fetchWithCache(path, cacheName, searchKey, search) {
       if (this.cache[cacheName]) {
         const data = search
@@ -795,19 +793,15 @@ export default {
       }
 
       const tokens = getFilterTokens(window.location.search);
-      if (this.glFeatures.groupMultiSelectTokens) {
-        this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
-      } else {
-        this.filterTokens = tokens;
-      }
+      this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
         isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
-        getParameterByName(PARAM_PAGE_AFTER),
-        getParameterByName(PARAM_PAGE_BEFORE),
+        getParameterByName(PARAM_PAGE_AFTER) ?? undefined,
+        getParameterByName(PARAM_PAGE_BEFORE) ?? undefined,
       );
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
@@ -864,23 +858,9 @@ export default {
       this.$apollo.queries.issues.refetch();
       this.$apollo.queries.issuesCounts.refetch();
     },
-    deleteIssuable({ workItemId }) {
-      this.$apollo
-        .mutate({
-          mutation: deleteWorkItemMutation,
-          variables: { input: { id: workItemId } },
-        })
-        .then(({ data }) => {
-          if (data.workItemDelete.errors?.length) {
-            throw new Error(data.workItemDelete.errors[0]);
-          }
-          this.activeIssuable = null;
-          this.refetchIssuables();
-        })
-        .catch((error) => {
-          this.issuesError = __('An error occurred while deleting an issuable.');
-          Sentry.captureException(error);
-        });
+    deleteIssuable() {
+      this.activeIssuable = null;
+      this.refetchIssuables();
     },
     updateIssuableEmojis(workItem) {
       const client = this.$apollo.provider.clients.defaultClient;
@@ -907,7 +887,8 @@ export default {
       @work-item-updated="updateIssuablesCache"
       @work-item-emoji-updated="updateIssuableEmojis"
       @addChild="refetchIssuables"
-      @deleteWorkItem="deleteIssuable"
+      @deleteWorkItemError="issuesError = __('An error occurred while deleting an issuable.')"
+      @workItemDeleted="deleteIssuable"
       @promotedToObjective="promoteToObjective"
     />
     <issuable-list

@@ -11,7 +11,7 @@ Workhorse and GitLab Shell.
 
 ## Deep Dive
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 In May 2019, Bob Van Landuyt
 hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
@@ -19,7 +19,7 @@ on the [Gitaly project](https://gitlab.com/gitlab-org/gitaly). It included how t
 Ruby developer, and shared domain-specific knowledge with anyone who may work in this part of the
 codebase in the future.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=BmlEWFS8ORo), and the slides
 on [Google Slides](https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W98EwFYpJ7GXMPpX-1TM6YE/edit)

@@ -11,7 +11,7 @@ module Ci
     include BatchNullifyDependentAssociations
     include Gitlab::Utils::StrongMemoize
 
-    VALID_REF_FORMAT_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX}).[^\/]+}
+    VALID_REF_FORMAT_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX})[\S]+}
 
     SORT_ORDERS = {
       id_asc: { order_by: 'id', sort: 'asc' },

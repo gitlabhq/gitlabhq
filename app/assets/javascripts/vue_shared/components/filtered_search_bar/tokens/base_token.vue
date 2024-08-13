@@ -165,11 +165,7 @@ export default {
         : undefined;
     },
     multiSelectEnabled() {
-      return (
-        this.config.multiSelect &&
-        this.glFeatures.groupMultiSelectTokens &&
-        OPERATORS_TO_GROUP.includes(this.value.operator)
-      );
+      return this.config.multiSelect && OPERATORS_TO_GROUP.includes(this.value.operator);
     },
     validatedConfig() {
       if (this.config.multiSelect && !this.multiSelectEnabled) {

@@ -192,4 +192,12 @@ describe('Release block', () => {
       });
     });
   });
+
+  describe('with no edit link provided', () => {
+    beforeEach(() => factory({ ...release, _links: { editUrl: null } }));
+
+    it('does not show an edit button', () => {
+      expect(editButton().exists()).toBe(false);
+    });
+  });
 });

@@ -1,15 +1,11 @@
-- breadcrumb_title s_('AccessTokens|Access Tokens')
-- page_title _('Group Access Tokens')
+- breadcrumb_title s_('AccessTokens|Access tokens')
+- page_title _('Group access tokens')
 - type = _('group access token')
 - type_plural = _('group access tokens')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title, options: { class: 'js-search-settings-section' }) do |c|
+  - c.with_description do
     - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/settings/group_access_tokens') }
     - if current_user.can?(:create_resource_access_tokens, @group)
       = _('Generate group access tokens scoped to this group for your applications that need access to the GitLab API.')
@@ -23,23 +19,22 @@
         = html_escape(_('You can enable group access token creation in %{link_start}group settings%{link_end}.')) % { link_start: link_start, link_end: '</a>'.html_safe }
       = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
 
-  #js-new-access-token-app{ data: { access_token_type: type } }
+  - c.with_body do
+    #js-new-access-token-app{ data: { access_token_type: type } }
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h3.gl-new-card-title
-          = _('Active group access tokens')
-        .gl-new-card-count
-          = sprite_icon('token', css_class: 'gl-mr-2')
-          %span.js-token-count= @active_access_tokens.size
-      - if current_user.can?(:create_resource_access_tokens, @group)
-        .gl-new-card-actions
+    = render ::Layouts::CrudComponent.new(_('Active group access tokens'),
+      icon: 'token',
+      count: @active_access_tokens.size,
+      count_options: { class: 'js-token-count' },
+      form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
+      options: { class: 'js-toggle-container js-token-card' }) do |c|
+      - c.with_actions do
+        - if current_user.can?(:create_resource_access_tokens, @group)
           = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
             = _('Add new token')
-    - c.with_body do
-      - if current_user.can?(:create_resource_access_tokens, @group)
-        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+
+      - c.with_form do
+        - if current_user.can?(:create_resource_access_tokens, @group)
           = render 'shared/access_tokens/form',
             ajax: true,
             type: type,
@@ -53,4 +48,13 @@
             description_prefix: :group_access_token,
             help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
-  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
+      - c.with_body do
+        #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
+
+    - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @group.root_ancestor)
+      = render ::Layouts::CrudComponent.new(_('Inactive group access tokens'),
+        icon: 'token',
+        count: @inactive_access_tokens.size,
+        count_options: { class: 'js-token-count' }) do |c|
+        - c.with_body do
+          #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This group has no inactive access tokens.')} }

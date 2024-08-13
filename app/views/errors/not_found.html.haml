@@ -1,16 +1,16 @@
 - content_for(:title, 'Not Found')
-= image_tag('illustrations/error-404.svg', alt: '404', lazy: false)
-.container
-  %h3
-    = s_('404|Page Not Found')
+.error-container
+  = image_tag('illustrations/error/error-404-lg.svg', alt: '404', lazy: false)
+  %h1
+    = s_('404|404: Page not found')
   %p
-    = s_("404|Make sure the address is correct and the page hasn't moved.")
+    = s_("404|Make sure the address is correct and the page has not moved.")
   %p
     = s_('404|Please contact your GitLab administrator if you think this is a mistake.')
   .action-container
     = form_tag search_path, method: :get, class: 'form-inline-flex' do |f|
       .field
         = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control'
-      = render Pajamas::ButtonComponent.new(variant: :confirm, size: :small, type: :submit) do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit) do
         = _('Search')
-= render 'errors/footer'
+  = render 'errors/footer'

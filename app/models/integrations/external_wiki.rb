@@ -21,9 +21,11 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/wiki/index', anchor: 'link-an-external-wiki'), target: '_blank', rel: 'noopener noreferrer'
-
-      s_('Link an external wiki from the project\'s sidebar. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      build_help_page_url(
+        'user/project/wiki/index',
+        s_('Link an external wiki from the project\'s sidebar.'),
+        { anchor: 'link-an-external-wiki' }
+      )
     end
 
     def self.to_param

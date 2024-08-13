@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-list-none">
+  <ul class="gl-list-none gl-p-0">
     <groups-list-item
       v-for="group in groups"
       :key="group.id"

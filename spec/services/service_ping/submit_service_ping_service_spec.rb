@@ -126,7 +126,17 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       error_response = stub_response(body: nil, url: service_ping_errors_url, status: 201)
       metadata_response = stub_response(body: nil, url: service_ping_metadata_url, status: 201)
 
-      expect(Gitlab::HTTP).to receive(:post).twice.and_call_original
+      expect(Gitlab::HTTP).to receive(:post)
+      .with(
+        anything,
+        hash_including(
+          headers: {
+            'Content-type' => 'application/json',
+            'Accept' => 'application/json'
+          }
+        )
+      ).twice
+      .and_call_original
 
       subject.execute
 

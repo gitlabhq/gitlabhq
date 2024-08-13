@@ -4,6 +4,11 @@ require 'spec_helper'
 require 'tty/prompt/test'
 require_relative '../../../scripts/internal_events/cli'
 
+# Debugging tips:
+# 1. Include a `binding.pry` at the start of #queue_cli_inputs to pause execution & run the script manually
+#       -> because these tests add/remove fixtures from the actual definition directories,
+#          the CLI can run with the exact same initial state in another window
+# 2. Add `puts prompt.output.string` before `thread.exit` to see the full output from the test run
 RSpec.describe Cli, feature_category: :service_ping do
   include WaitHelpers
 
@@ -1031,7 +1036,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
-          "6\n", # Select: None
+          "7\n", # Select: None
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "analytics_instrumentation\n", # Input group
@@ -1104,7 +1109,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
-          "6\n", # Select: None
+          "7\n", # Select: None
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "instrumentation\n", # Filter & select group
@@ -1153,7 +1158,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
       with_cli_thread do
         expect { plain_last_lines(30) }
-          .to eventually_include_cli_text("Okay! The next step is adding a new event! (~5 min)")
+          .to eventually_include_cli_text("Okay! The next step is adding a new event! (~5-10 min)")
       end
     end
 
@@ -1168,7 +1173,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
       with_cli_thread do
         expect { plain_last_lines(30) }
-          .to eventually_include_cli_text("Amazing! The next step is adding a new metric! (~8 min)")
+          .to eventually_include_cli_text("Amazing! The next step is adding a new metric! (~8-15 min)")
       end
     end
   end
@@ -1176,6 +1181,8 @@ RSpec.describe Cli, feature_category: :service_ping do
   private
 
   def queue_cli_inputs(keystrokes)
+    # # Debugging tip #1 -- Uncomment me to pause execution after test setup and separately run the CLI manually!
+    # binding.pry
     prompt.input << keystrokes.join('')
     prompt.input.rewind
   end
@@ -1235,6 +1242,8 @@ RSpec.describe Cli, feature_category: :service_ping do
 
     yield thread
   ensure
+    # # Debugging tip #2 -- Uncomment me to see full CLI output from the test run!
+    # puts prompt.output.string
     thread.exit
   end
 end

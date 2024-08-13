@@ -108,7 +108,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the Admin area under **Settings > Search** check that the
+- From the **Admin** area under **Settings > Search** check that the
   advanced search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -236,7 +236,7 @@ We continuously make updates to our indexing strategies and aim to support
 newer versions of Elasticsearch. When indexing changes are made, it may
 be necessary for you to [reindex](elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
 
-### You indexed all the repositories but you can't get any hits for your search term in the UI
+### No search results in the UI after indexing all repositories
 
 Make sure you [indexed all the database data](elasticsearch.md#enable-advanced-search).
 
@@ -266,7 +266,7 @@ The above instructions are not to be used for scenarios that only index a [subse
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
-### You indexed all the repositories but then switched Elasticsearch servers and now you can't find anything
+### All repositories indexed, but no results after switching Elasticsearch servers
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
@@ -448,7 +448,7 @@ These settings limit indexing to 2000 documents per minute.
 
 To adjust worker settings:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Select the **Requeue indexing workers** checkbox.

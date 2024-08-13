@@ -55,7 +55,7 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
       it_behaves_like 'access rights checks'
     end
 
-    describe 'Access Tokens' do
+    describe 'Access tokens' do
       let(:item_id) { :access_tokens }
 
       it_behaves_like 'access rights checks'

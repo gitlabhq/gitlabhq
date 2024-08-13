@@ -191,6 +191,19 @@ On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](ht
 
 If the user who set up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
+### View groups pending deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+To view a list of the subgroups that are pending deletion in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Subgroups and projects**.
+
+Groups that are marked for deletion are labeled **Pending deletion**.
+
 ## Delete a group immediately
 
 DETAILS:

@@ -10,6 +10,19 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 
+const DOCS_WORK_ITEM_LOCKED_TASKS_PATH = helpPagePath('user/tasks.html', {
+  anchor: 'lock-discussion',
+});
+const DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH = helpPagePath('user/tasks.html', {
+  anchor: 'confidential-tasks',
+});
+const DOCS_WORK_ITEM_LOCKED_OKRS_PATH = helpPagePath('user/okrs.html', {
+  anchor: 'lock-discussion',
+});
+const DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH = helpPagePath('user/okrs.html', {
+  anchor: 'confidential-okrs',
+});
+
 export default {
   i18n: {
     internal: s__('Notes|Make this an internal note'),
@@ -108,12 +121,28 @@ export default {
       required: false,
       default: null,
     },
+    isDiscussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscussionResolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasReplies: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       commentText: getDraft(this.autosaveKey) || this.initialValue || '',
       updateInProgress: false,
       isNoteInternal: false,
+      toggleResolveChecked: this.isDiscussionResolved,
     };
   },
   computed: {
@@ -128,31 +157,32 @@ export default {
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
-    workItemDocPath() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'user/tasks.html' : 'user/okrs.html';
-    },
-    workItemDocConfidentialAnchor() {
+    docsLinks() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
-        ? 'confidential-tasks'
-        : 'confidential-okrs';
-    },
-    workItemDocLockedAnchor() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'locked-tasks' : 'locked-okrs';
+        ? {
+            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH,
+            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_TASKS_PATH,
+          }
+        : {
+            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH,
+            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_OKRS_PATH,
+          };
     },
     getWorkItemData() {
       return {
         confidential: this.isWorkItemConfidential,
-        confidential_issues_docs_path: helpPagePath(this.workItemDocPath, {
-          anchor: this.workItemDocConfidentialAnchor,
-        }),
         discussion_locked: this.isDiscussionLocked,
-        locked_discussion_docs_path: helpPagePath(this.workItemDocPath, {
-          anchor: this.workItemDocLockedAnchor,
-        }),
+        ...this.docsLinks,
       };
     },
     workItemTypeKey() {
       return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
+    },
+    showResolveDiscussionToggle() {
+      return !this.isNewDiscussion && this.isDiscussionResolvable && this.hasReplies;
+    },
+    resolveCheckboxLabel() {
+      return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
   },
   methods: {
@@ -186,6 +216,15 @@ export default {
       this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
     },
+    submitForm() {
+      if (this.toggleResolveChecked) {
+        this.$emit('toggleResolveDiscussion');
+      }
+      this.$emit('submitForm', {
+        commentText: this.commentText,
+        isNoteInternal: this.isNoteInternal,
+      });
+    },
   },
 };
 </script>
@@ -210,12 +249,22 @@ export default {
             supports-quick-actions
             :autofocus="autofocus"
             @input="setCommentText"
-            @keydown.meta.enter="$emit('submitForm', { commentText, isNoteInternal })"
-            @keydown.ctrl.enter="$emit('submitForm', { commentText, isNoteInternal })"
+            @keydown.meta.enter="submitForm"
+            @keydown.ctrl.enter="submitForm"
             @keydown.esc.stop="cancelEditing"
           />
         </comment-field-layout>
-        <div class="note-form-actions">
+        <div class="note-form-actions" data-testid="work-item-comment-form-actions">
+          <div v-if="showResolveDiscussionToggle">
+            <label>
+              <gl-form-checkbox
+                v-model="toggleResolveChecked"
+                data-testid="toggle-resolve-checkbox"
+              >
+                {{ resolveCheckboxLabel }}
+              </gl-form-checkbox>
+            </label>
+          </div>
           <gl-form-checkbox
             v-if="isNewDiscussion"
             v-model="isNoteInternal"
@@ -237,7 +286,7 @@ export default {
             data-testid="confirm-button"
             :disabled="!commentText.length"
             :loading="isSubmitting"
-            @click="$emit('submitForm', { commentText, isNoteInternal })"
+            @click="submitForm"
             >{{ commentButtonTextComputed }}
           </gl-button>
           <work-item-state-toggle
@@ -250,7 +299,7 @@ export default {
             :full-path="fullPath"
             :has-comment="Boolean(commentText.length)"
             can-update
-            @submit-comment="$emit('submitForm', { commentText, isNoteInternal })"
+            @submit-comment="submitForm"
             @error="$emit('error', $event)"
           />
           <gl-button

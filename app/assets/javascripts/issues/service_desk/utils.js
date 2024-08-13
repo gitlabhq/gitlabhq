@@ -6,9 +6,9 @@ import { isAssigneeIdParam, isNotEmptySearchToken } from '~/issues/list/utils';
 import {
   ALTERNATIVE_FILTER,
   NORMAL_FILTER,
-  SPECIAL_FILTER,
   URL_PARAM,
-  specialFilterValues,
+  WILDCARD_FILTER,
+  wildcardFilterValues,
 } from '~/issues/list/constants';
 import { filtersMap } from './constants';
 
@@ -18,8 +18,8 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   if (isUnionedLabel || isAssigneeIdParam(type, data)) {
     return ALTERNATIVE_FILTER;
   }
-  if (specialFilterValues.includes(data)) {
-    return SPECIAL_FILTER;
+  if (wildcardFilterValues.includes(data)) {
+    return WILDCARD_FILTER;
   }
   return NORMAL_FILTER;
 };

@@ -1,0 +1,12 @@
+---
+table_name: observability_metrics_issues_connections
+classes:
+  - Observability::MetricsIssuesConnection
+feature_categories:
+  - metrics
+description: Represents the join between an Issue and an Observability metric stored in Gitlab Observability Backend.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160713
+milestone: '17.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

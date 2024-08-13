@@ -4,10 +4,33 @@ query groupWorkItems(
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
   $includeAncestors: Boolean = false
+  $includeDescendants: Boolean = false
+  $iid: String = null
+  $searchByIid: Boolean = false
+  $searchByText: Boolean = true
 ) {
   workspace: group(fullPath: $fullPath) {
     id
-    workItems(search: $searchTerm, types: $types, in: $in, includeAncestors: $includeAncestors) {
+    workItems(
+      search: $searchTerm
+      types: $types
+      in: $in
+      includeAncestors: $includeAncestors
+      includeDescendants: $includeDescendants
+    ) @include(if: $searchByText) {
+      nodes {
+        id
+        iid
+        title
+        confidential
+      }
+    }
+    workItemsByIid: workItems(
+      iid: $iid
+      types: $types
+      includeAncestors: $includeAncestors
+      includeDescendants: $includeDescendants
+    ) @include(if: $searchByIid) {
       nodes {
         id
         iid

@@ -11,6 +11,9 @@ module RichTextEditorHelpers
 
   def switch_to_content_editor
     click_button("Switch to rich text editing")
+
+    # wait for the editor to be focused
+    find("#{content_editor_testid}:focus")
   end
 
   def type_in_content_editor(keys)

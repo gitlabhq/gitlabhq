@@ -899,3 +899,771 @@ export const MOCK_FILTERED_LABELS = [
 ];
 
 export const CURRENT_SCOPE = 'blobs';
+
+export const defaultProvide = {
+  paths: {
+    adminUser: '///',
+  },
+};
+
+export const mockGetBlobSearchQuery = {
+  data: {
+    blobSearch: {
+      fileCount: 3,
+      files: [
+        {
+          blameUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blame/master/test/test-main.js',
+          chunks: [
+            {
+              lines: [
+                {
+                  lineNumber: 1,
+                  richText:
+                    'var tests = Object.keys(window.__karma__.files).filter(function (file) {',
+                  text: 'var tests = Object.keys(window.__karma__.files).filter(function (file) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 2,
+                  richText: '  return (/_spec\\.js$/.\u003cb\u003etest\u003c/b\u003e(file));',
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 3, richText: '});', text: '});', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                { lineNumber: 11, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 12,
+                  richText:
+                    '    // start \u003cb\u003etest\u003c/b\u003e run, once Require.js is done',
+                  text: '    // start test run, once Require.js is done',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 13,
+                  richText: '    callback: window.__karma__.start',
+                  text: '    callback: window.__karma__.start',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+          ],
+          fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/test-main.js',
+          matchCount: 3,
+          matchCountTotal: 3,
+          path: 'test/test-main.js',
+          projectPath: 'flightjs/Flight',
+          __typename: 'SearchBlobFileType',
+        },
+        {
+          blameUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blame/master/test/spec/fn_spec.js',
+          chunks: [
+            {
+              lines: [
+                {
+                  lineNumber: 5,
+                  richText: '  var Component = (function () {',
+                  text: '  var Component = (function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 6,
+                  richText:
+                    '    return defineComponent(function fn\u003cb\u003eTest\u003c/b\u003e() {',
+                  text: '    return defineComponent(function fnTest() {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 7,
+                  richText: '    });',
+                  text: '    });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 16,
+                  richText:
+                    '    it(\'should call the "before" function before the base function and return the base function\', function () {',
+                  text: '    it(\'should call the "before" function before the base function and return the base function\', function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 17,
+                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  text: '      var test1 = "";',
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 18, richText: '', text: '', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 19,
+                  richText: '      function base(arg) {',
+                  text: '      function base(arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 20,
+                  richText:
+                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  text: "        test1 += 'Base: ' + arg;",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 21,
+                  richText: "        return 'base';",
+                  text: "        return 'base';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 24,
+                  richText: '      var advised = advice.before(base, function (arg) {',
+                  text: '      var advised = advice.before(base, function (arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 25,
+                  richText:
+                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026quot;Before: \u0026quot; + arg + \u0026#39;, \u0026#39;;',
+                  text: '        test1 += "Before: " + arg + \', \';',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 26,
+                  richText: "        return 'before';",
+                  text: "        return 'before';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 29,
+                  richText: "      expect(advised('Dan')).toBe('base');",
+                  text: "      expect(advised('Dan')).toBe('base');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 30,
+                  richText:
+                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;Before: Dan, Base: Dan\u0026#39;);',
+                  text: "      expect(test1).toBe('Before: Dan, Base: Dan');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 31,
+                  richText: '    });',
+                  text: '    });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 33,
+                  richText:
+                    '    it(\'should call the "after" function after the base function, but return the base function\', function () {',
+                  text: '    it(\'should call the "after" function after the base function, but return the base function\', function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 34,
+                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  text: '      var test1 = "";',
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 35, richText: '', text: '', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 36,
+                  richText: '      function base(arg) {',
+                  text: '      function base(arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 37,
+                  richText:
+                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  text: "        test1 += 'Base: ' + arg;",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 38,
+                  richText: "        return 'base';",
+                  text: "        return 'base';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 41,
+                  richText: '      var advised = advice.after(base, function (arg) {',
+                  text: '      var advised = advice.after(base, function (arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 42,
+                  richText:
+                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026quot;, After: \u0026quot; + arg;',
+                  text: '        test1 += ", After: " + arg;',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 43,
+                  richText: "        return 'after';",
+                  text: "        return 'after';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 46,
+                  richText: "      expect(advised('Dan')).toBe('base');",
+                  text: "      expect(advised('Dan')).toBe('base');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 47,
+                  richText:
+                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;Base: Dan, After: Dan\u0026#39;);',
+                  text: "      expect(test1).toBe('Base: Dan, After: Dan');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 48,
+                  richText: '    });',
+                  text: '    });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 50,
+                  richText:
+                    '    it(\'should wrap the the first "around" argument with the second argument\', function () {',
+                  text: '    it(\'should wrap the the first "around" argument with the second argument\', function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 51,
+                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  text: '      var test1 = "";',
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 52, richText: '', text: '', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 53,
+                  richText: '      function base(arg) {',
+                  text: '      function base(arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 54,
+                  richText:
+                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  text: "        test1 += 'Base: ' + arg;",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 55,
+                  richText: "        return 'base';",
+                  text: "        return 'base';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 58,
+                  richText: '      var advised = advice.around(base, function (orig, arg) {',
+                  text: '      var advised = advice.around(base, function (orig, arg) {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 59,
+                  richText: '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;|\u0026#39;;',
+                  text: "        test1 += '|';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 60,
+                  richText: '        orig(arg);',
+                  text: '        orig(arg);',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 61,
+                  richText: '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;|\u0026#39;;',
+                  text: "        test1 += '|';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 62,
+                  richText: "        return 'around';",
+                  text: "        return 'around';",
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 2,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 65,
+                  richText: "      expect(advised('Dan')).toBe('around');",
+                  text: "      expect(advised('Dan')).toBe('around');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 66,
+                  richText:
+                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;|Base: Dan|\u0026#39;);',
+                  text: "      expect(test1).toBe('|Base: Dan|');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 67,
+                  richText: '    });',
+                  text: '    });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 71,
+                  richText: '        var subject = {',
+                  text: '        var subject = {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 72,
+                  richText: '          \u003cb\u003etest\u003c/b\u003ea: \u0026#39;\u0026#39;,',
+                  text: "          testa: '',",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 73,
+                  richText: '          \u003cb\u003etest\u003c/b\u003eb: \u0026#39;\u0026#39;,',
+                  text: "          testb: '',",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 74,
+                  richText: '          \u003cb\u003etest\u003c/b\u003ec: \u0026#39;\u0026#39;,',
+                  text: "          testc: '',",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 75,
+                  richText: '          a: function () {',
+                  text: '          a: function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 76,
+                  richText:
+                    '            this.\u003cb\u003etest\u003c/b\u003ea += \u0026#39;A!\u0026#39;;',
+                  text: "            this.testa += 'A!';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 77,
+                  richText: '          },',
+                  text: '          },',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 4,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 78,
+                  richText: '          b: function () {',
+                  text: '          b: function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 79,
+                  richText:
+                    '            this.\u003cb\u003etest\u003c/b\u003eb += \u0026#39;B!\u0026#39;;',
+                  text: "            this.testb += 'B!';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 80,
+                  richText: '          },',
+                  text: '          },',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 81,
+                  richText: '          c: function () {',
+                  text: '          c: function () {',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 82,
+                  richText:
+                    '            this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;C!\u0026#39;;',
+                  text: "            this.testc += 'C!';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 83,
+                  richText: '          }',
+                  text: '          }',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 88,
+                  richText: "        subject.before('a', function () {",
+                  text: "        subject.before('a', function () {",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 89,
+                  richText:
+                    '          this.\u003cb\u003etest\u003c/b\u003ea += \u0026#39;BEFORE!\u0026#39;;',
+                  text: "          this.testa += 'BEFORE!';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 90,
+                  richText: '        });',
+                  text: '        });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 92,
+                  richText: "        subject.after('b', function () {",
+                  text: "        subject.after('b', function () {",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 93,
+                  richText:
+                    '          this.\u003cb\u003etest\u003c/b\u003eb += \u0026#39;AFTER!\u0026#39;;',
+                  text: "          this.testb += 'AFTER!';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 94,
+                  richText: '        });',
+                  text: '        });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 96,
+                  richText: "        subject.around('c', function (orig) {",
+                  text: "        subject.around('c', function (orig) {",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 97,
+                  richText:
+                    '          this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;|\u0026#39;;',
+                  text: "          this.testc += '|';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 98,
+                  richText: '          orig.call(subject);',
+                  text: '          orig.call(subject);',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 99,
+                  richText:
+                    '          this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;|\u0026#39;;',
+                  text: "          this.testc += '|';",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 100,
+                  richText: '        });',
+                  text: '        });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 2,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 102,
+                  richText: '        subject.a();',
+                  text: '        subject.a();',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 103,
+                  richText:
+                    '        expect(subject.\u003cb\u003etest\u003c/b\u003ea).toBe(\u0026#39;BEFORE!A!\u0026#39;);',
+                  text: "        expect(subject.testa).toBe('BEFORE!A!');",
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 104, richText: '', text: '', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 105,
+                  richText: '        subject.b();',
+                  text: '        subject.b();',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 106,
+                  richText:
+                    '        expect(subject.\u003cb\u003etest\u003c/b\u003eb).toBe(\u0026#39;B!AFTER!\u0026#39;);',
+                  text: "        expect(subject.testb).toBe('B!AFTER!');",
+                  __typename: 'SearchBlobLine',
+                },
+                { lineNumber: 107, richText: '', text: '', __typename: 'SearchBlobLine' },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+            {
+              lines: [
+                {
+                  lineNumber: 108,
+                  richText: '        subject.c();',
+                  text: '        subject.c();',
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 109,
+                  richText:
+                    '        expect(subject.\u003cb\u003etest\u003c/b\u003ec).toBe(\u0026#39;|C!|\u0026#39;);',
+                  text: "        expect(subject.testc).toBe('|C!|');",
+                  __typename: 'SearchBlobLine',
+                },
+                {
+                  lineNumber: 110,
+                  richText: '      });',
+                  text: '      });',
+                  __typename: 'SearchBlobLine',
+                },
+              ],
+              matchCountInChunk: 1,
+              __typename: 'SearchBlobChunk',
+            },
+          ],
+          fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/fn_spec.js',
+          matchCount: 27,
+          matchCountTotal: 27,
+          path: 'test/spec/fn_spec.js',
+          projectPath: 'flightjs/Flight',
+          __typename: 'SearchBlobFileType',
+        },
+        {
+          blameUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blame/master/test/spec/utils_spec.js',
+          chunks: [],
+          fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/utils_spec.js',
+          matchCount: 1,
+          matchCountTotal: 1,
+          path: 'test/spec/test_utils_spec.js',
+          projectPath: 'flightjs/Flight',
+          __typename: 'SearchBlobFileType',
+        },
+      ],
+      matchCount: 369,
+      perPage: 20,
+      searchLevel: 'PROJECT',
+      searchType: 'ZOEKT',
+    },
+  },
+};
+
+export const mockDataForBlobBody = {
+  blameUrl: 'blame/test.js',
+  chunks: [
+    {
+      lines: [
+        {
+          lineNumber: 1,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 2,
+          richText: 'test1',
+          text: 'test1',
+          __typename: 'SearchBlobLine',
+        },
+        { lineNumber: 3, richText: '', text: '', __typename: 'SearchBlobLine' },
+      ],
+      matchCountInChunk: 1,
+      __typename: 'SearchBlobChunk',
+    },
+    {
+      lines: [
+        {
+          lineNumber: 11,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 12,
+          richText: 'test2',
+          text: 'test2',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 13,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+      ],
+      matchCountInChunk: 1,
+      __typename: 'SearchBlobChunk',
+    },
+    {
+      lines: [
+        {
+          lineNumber: 11,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 12,
+          richText: 'test3',
+          text: 'test3',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 13,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+      ],
+      matchCountInChunk: 1,
+      __typename: 'SearchBlobChunk',
+    },
+    {
+      lines: [
+        {
+          lineNumber: 11,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 12,
+          richText: 'test4',
+          text: 'test4',
+          __typename: 'SearchBlobLine',
+        },
+        {
+          lineNumber: 13,
+          richText: '',
+          text: '',
+          __typename: 'SearchBlobLine',
+        },
+      ],
+      matchCountInChunk: 1,
+      __typename: 'SearchBlobChunk',
+    },
+  ],
+  fileUrl: 'https://gitlab.com/file/test.js',
+  matchCount: 2,
+  matchCountTotal: 2,
+  path: 'file/test.js',
+  projectPath: 'Testjs/Test',
+  __typename: 'SearchBlobFileType',
+};

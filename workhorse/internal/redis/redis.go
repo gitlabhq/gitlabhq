@@ -3,9 +3,11 @@ package redis
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -34,6 +36,11 @@ var (
 		},
 		[]string{"type", "dst"},
 	)
+
+	errSentinelTLSNotDefined            = fmt.Errorf("configuration Sentinel or Sentinel.tls not defined")
+	errSentinelTLSCertificateNotDefined = fmt.Errorf("configuration Sentinel.tls.certificate not defined")
+	errSentinelTLSKeyNotDefined         = fmt.Errorf("configuration Sentinel.tls.key not defined")
+	errSentinelTLSCannotAppendPEM       = fmt.Errorf("cannot append PEM certificate from CACertificate path")
 )
 
 const (
@@ -55,9 +62,10 @@ const (
 
 // SentinelOptions contains grouped, related values
 type SentinelOptions struct {
-	SentinelUsername string
-	SentinelPassword string
-	Sentinels        []string
+	SentinelUsername  string
+	SentinelPassword  string
+	Sentinels         []string
+	SentinelTLSConfig *tls.Config
 }
 
 // createDialer references https://github.com/redis/go-redis/blob/b1103e3d436b6fe98813ecbbe1f99dc8d59b06c9/options.go#L214
@@ -136,18 +144,22 @@ func (s sentinelInstrumentationHook) ProcessPipelineHook(next redis.ProcessPipel
 }
 
 // Configure redis-connection
-func Configure(cfg *config.RedisConfig) (*redis.Client, error) {
+func Configure(cfg *config.Config) (*redis.Client, error) {
 	if cfg == nil {
+		return nil, nil
+	}
+
+	if cfg.Redis == nil {
 		return nil, nil
 	}
 
 	var rdb *redis.Client
 	var err error
 
-	if len(cfg.Sentinel) > 0 {
-		rdb = configureSentinel(cfg)
+	if len(cfg.Redis.Sentinel) > 0 {
+		rdb, err = configureSentinel(cfg)
 	} else {
-		rdb, err = configureRedis(cfg)
+		rdb, err = configureRedis(cfg.Redis)
 	}
 
 	return rdb, err
@@ -178,42 +190,50 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	return redis.NewClient(opt), nil
 }
 
-func configureSentinel(cfg *config.RedisConfig) *redis.Client {
-	options := sentinelOptions(cfg)
+func configureSentinel(cfg *config.Config) (*redis.Client, error) {
+	options, err := sentinelOptions(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	redisCfg := cfg.Redis
+
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:       cfg.SentinelMaster,
+		MasterName:       redisCfg.SentinelMaster,
 		SentinelAddrs:    options.Sentinels,
-		Password:         cfg.Password,
+		Password:         redisCfg.Password,
 		SentinelUsername: options.SentinelUsername,
 		SentinelPassword: options.SentinelPassword,
-		DB:               getOrDefault(cfg.DB, 0),
+		DB:               getOrDefault(redisCfg.DB, 0),
 
-		PoolSize:        getOrDefault(cfg.MaxActive, defaultMaxActive),
-		MaxIdleConns:    getOrDefault(cfg.MaxIdle, defaultMaxIdle),
+		PoolSize:        getOrDefault(redisCfg.MaxActive, defaultMaxActive),
+		MaxIdleConns:    getOrDefault(redisCfg.MaxIdle, defaultMaxIdle),
 		ConnMaxIdleTime: defaultIdleTimeout,
 
 		ReadTimeout:  defaultReadTimeout,
 		WriteTimeout: defaultWriteTimeout,
 
-		Dialer: createDialer(options.Sentinels, nil),
+		Dialer: createDialer(options.Sentinels, options.SentinelTLSConfig),
 	})
 
 	client.AddHook(sentinelInstrumentationHook{})
 
-	return client
+	return client, nil
 }
 
 // sentinelOptions extracts the sentinel username and password from the URLs
 // and addresses in <host>:<port> format.
 // the order of priority for the passwords is: SentinelPassword -> first password-in-url
 // SentinelUsername will be the username associated with SentinelPassword.
-func sentinelOptions(cfg *config.RedisConfig) SentinelOptions {
-	sentinels := make([]string, len(cfg.Sentinel))
-	sentinelUsername := cfg.SentinelUsername
-	sentinelPassword := cfg.SentinelPassword
+func sentinelOptions(cfg *config.Config) (SentinelOptions, error) {
+	redisCfg := cfg.Redis
 
-	for i := range cfg.Sentinel {
-		sentinelDetails := cfg.Sentinel[i]
+	sentinels := make([]string, len(redisCfg.Sentinel))
+	sentinelUsername := redisCfg.SentinelUsername
+	sentinelPassword := redisCfg.SentinelPassword
+
+	for i := range redisCfg.Sentinel {
+		sentinelDetails := redisCfg.Sentinel[i]
 		sentinels[i] = fmt.Sprintf("%s:%s", sentinelDetails.Hostname(), sentinelDetails.Port())
 
 		if pw, exist := sentinelDetails.User.Password(); exist && len(sentinelPassword) == 0 {
@@ -228,7 +248,62 @@ func sentinelOptions(cfg *config.RedisConfig) SentinelOptions {
 		}
 	}
 
-	return SentinelOptions{sentinelUsername, sentinelPassword, sentinels}
+	var err error
+	var sentinelTLSConfig *tls.Config
+	sentinelCfg := cfg.Sentinel
+
+	if sentinelCfg != nil && sentinelCfg.TLS != nil {
+		sentinelTLSConfig, err = sentinelTLSOptions(sentinelCfg)
+		if err != nil {
+			return SentinelOptions{}, err
+		}
+	}
+
+	return SentinelOptions{sentinelUsername, sentinelPassword, sentinels, sentinelTLSConfig}, nil
+}
+
+func sentinelTLSOptions(sentinelCfg *config.SentinelConfig) (*tls.Config, error) {
+	var tlsConfig *tls.Config
+
+	if sentinelCfg == nil || sentinelCfg.TLS == nil {
+		return tlsConfig, errSentinelTLSNotDefined
+	}
+
+	if sentinelCfg.TLS.Certificate == "" {
+		return tlsConfig, errSentinelTLSCertificateNotDefined
+	}
+
+	if sentinelCfg.TLS.Key == "" {
+		return tlsConfig, errSentinelTLSKeyNotDefined
+	}
+
+	cert, err := tls.LoadX509KeyPair(sentinelCfg.TLS.Certificate, sentinelCfg.TLS.Key)
+	if err != nil {
+		return tlsConfig, err
+	}
+
+	certPool := x509.NewCertPool()
+
+	if sentinelCfg.TLS.CACertificate != "" {
+		certs, err := os.ReadFile(sentinelCfg.TLS.CACertificate)
+		if err != nil {
+			return tlsConfig, err
+		}
+
+		ok := certPool.AppendCertsFromPEM(certs)
+		if !ok {
+			return tlsConfig, errSentinelTLSCannotAppendPEM
+		}
+	}
+
+	tlsConfig = &tls.Config{ //nolint:gosec
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      certPool,
+		MinVersion:   config.TLSVersions[sentinelCfg.TLS.MinVersion],
+		MaxVersion:   config.TLSVersions[sentinelCfg.TLS.MaxVersion],
+	}
+
+	return tlsConfig, nil
 }
 
 func getOrDefault(ptr *int, val int) int {

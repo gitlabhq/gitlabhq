@@ -279,4 +279,33 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       end
     end
   end
+
+  context 'when filtering by max role' do
+    subject(:by_max_role) { described_class.new(project, user1, params: { max_role: max_role }).execute }
+
+    let_it_be(:guest_member) { create(:project_member, :guest, project: project, user: user2) }
+    let_it_be(:owner_member) { create(:project_member, :owner, project: project, user: user3) }
+
+    describe 'provided access level is incorrect' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:max_role) { [nil, '', 'static', 'xstatic-50', 'static-50x', 'static-99'] }
+
+      with_them do
+        it { is_expected.to match_array(project.members) }
+      end
+    end
+
+    describe 'none of the members have the provided access level' do
+      let(:max_role) { 'static-20' }
+
+      it { is_expected.to be_empty }
+    end
+
+    describe 'one of the members has the provided access level' do
+      let(:max_role) { 'static-50' }
+
+      it { is_expected.to contain_exactly(owner_member) }
+    end
+  end
 end

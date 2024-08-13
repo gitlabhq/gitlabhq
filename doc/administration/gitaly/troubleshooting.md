@@ -23,8 +23,8 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Overview > Gitaly Servers**.
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Gitaly servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
 ## Find storage resource details

@@ -30,7 +30,7 @@ export default TaskList.extend({
       bullet: {
         default: '*',
         parseHTML(element) {
-          const bullet = getMarkdownSource(element)?.charAt(0);
+          const bullet = getMarkdownSource(element)?.trim().charAt(0);
           return '*+-'.includes(bullet) ? bullet : '*';
         },
       },

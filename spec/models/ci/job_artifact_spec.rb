@@ -111,8 +111,14 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     describe 'coverage_reports' do
       let(:report_type) { :coverage }
 
-      context 'when there is a coverage report' do
+      context 'when there is a cobertura report' do
         let!(:artifact) { create(:ci_job_artifact, :cobertura) }
+
+        it { is_expected.to eq([artifact]) }
+      end
+
+      context 'when there is a jacoco report' do
+        let!(:artifact) { create(:ci_job_artifact, :jacoco) }
 
         it { is_expected.to eq([artifact]) }
       end

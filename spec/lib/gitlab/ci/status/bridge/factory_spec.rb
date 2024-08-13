@@ -53,22 +53,20 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
       expect(status.icon).to eq 'status_failed'
       expect(status.favicon).to eq 'favicon_status_failed'
       expect(status.label).to eq 'failed'
-      expect(status.status_tooltip).to eq "#{s_('CiStatusLabel|failed')} - (unknown failure)"
+      expect(status.status_tooltip).to eq "#{s_('CiStatusLabel|Failed')} - (unknown failure)"
       expect(status).not_to have_details
       expect(status).to have_action
     end
 
     context 'failed with downstream_pipeline_creation_failed' do
       before do
-        bridge.options = { downstream_errors: ['Pipeline will not run for the selected trigger. ' \
-            'The rules configuration prevented any jobs from being added to the pipeline.', 'other error'] }
+        bridge.options = { downstream_errors: [Ci::Pipeline.rules_failure_message, 'other error'] }
         bridge.failure_reason = 'downstream_pipeline_creation_failed'
       end
 
       it 'fabricates correct status_tooltip' do
         expect(status.status_tooltip).to eq(
-          "#{s_('CiStatusLabel|failed')} - (downstream pipeline can not be created, Pipeline will not run for the selected trigger. " \
-          "The rules configuration prevented any jobs from being added to the pipeline., other error)"
+          "#{s_('CiStatusLabel|Failed')} - (downstream pipeline can not be created, #{Ci::Pipeline.rules_failure_message}, other error)"
         )
       end
     end

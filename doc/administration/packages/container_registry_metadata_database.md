@@ -9,15 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
-
-WARNING:
-The metadata database is a [beta feature](../../policy/experiment-beta-support.md#beta).
-Carefully review the documentation before enabling the registry database in production!
-If you encounter a problem with either the import or operation of the
-registry, please add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -53,7 +47,7 @@ for the status of features related to the container registry database.
 
 Prerequisites:
 
-- GitLab 16.7 or later.
+- GitLab 17.3 or later.
 - PostgreSQL database version 12 or later. It must be accessible from the registry node.
 
 Follow the instructions that match your situation:
@@ -129,6 +123,14 @@ A few factors affect the duration of the migration:
 - The specifications of your PostgresSQL instance.
 - The number of registry instances running.
 - Network latency between the registry, PostgresSQL and your configured Object Storage.
+
+NOTE:
+The migration only targets tagged images. Untagged and unreferenced manifests, and the layers
+exclusively referenced by them, are left behind and become inaccessible. Untagged images
+were never visible through the GitLab UI or API, but they can become "dangling" and
+left behind in the backend. After migration to the new registry, all images are subject
+to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
+and layers that remain for longer than 24 hours.
 
 Choose the one or three step method according to your registry installation.
 
@@ -486,6 +488,18 @@ because it only deletes untagged images.
 
 Implement cleanup policies to remove unneeded tags, which eventually causes images
 to be removed through garbage collection and storage space being recovered.
+
+## Backup with metadata database
+
+When the metadata database is enabled, backups must capture both the object storage
+used by the registry, as before, but also the database. Backups of object storage
+and the database should be coordinated to capture the state of the registry as close as possible
+to each other. To restore the registry, you must apply both backups together.
+
+## Downgrade a registry
+
+To downgrade the registry to a previous version after the migration is complete,
+you must restore to a backup of the desired version in order to downgrade.
 
 ## Troubleshooting
 

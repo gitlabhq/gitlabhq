@@ -5,6 +5,7 @@ import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { reportToSentry } from '~/ci/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -15,6 +16,7 @@ import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutatio
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
 import { POLL_INTERVAL } from '../graph/constants';
+import { MERGE_TRAIN_EVENT_TYPE } from './constants';
 import HeaderActions from './components/header_actions.vue';
 import HeaderBadges from './components/header_badges.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
@@ -39,6 +41,8 @@ export default {
     TimeAgoTooltip,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    HeaderMergeTrainsLink: () =>
+      import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -76,8 +80,9 @@ export default {
       update(data) {
         return data.project.pipeline;
       },
-      error() {
+      error(error) {
         this.reportFailure(LOAD_FAILURE);
+        reportToSentry(this.$options.name, error);
       },
       pollInterval: POLL_INTERVAL,
       watchLoading(isLoading) {
@@ -217,6 +222,9 @@ export default {
     refText() {
       return this.pipeline?.refText;
     },
+    isMergeTrainPipeline() {
+      return this.pipeline.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
+    },
   },
   methods: {
     reportFailure(errorType, errorMessages = []) {
@@ -244,10 +252,11 @@ export default {
             this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
           }
         }
-      } catch {
+      } catch (error) {
         this.isRetrying = false;
 
         this.reportFailure(POST_FAILURE);
+        reportToSentry(this.$options.name, error);
       }
     },
     cancelPipeline(id) {
@@ -280,10 +289,13 @@ export default {
         } else {
           visitUrl(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
         }
-      } catch {
+      } catch (error) {
         this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
-        this.reportFailure(DELETE_FAILURE);
+
         this.isDeleting = false;
+
+        this.reportFailure(DELETE_FAILURE);
+        reportToSentry(this.$options.name, error);
       }
     },
   },
@@ -399,6 +411,9 @@ export default {
               {{ durationText }}
             </span>
           </div>
+        </div>
+        <div v-if="isMergeTrainPipeline" class="gl-mt-2">
+          <header-merge-trains-link />
         </div>
       </div>
 

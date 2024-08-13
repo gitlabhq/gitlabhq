@@ -5,7 +5,6 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
-import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -93,7 +92,7 @@ describe('IssuableHeader component', () => {
     it('renders status text', () => {
       createComponent();
 
-      expect(findStatusBadge().text()).toBe(__('Open'));
+      expect(findStatusBadge().text()).toBe('Open');
     });
   });
 

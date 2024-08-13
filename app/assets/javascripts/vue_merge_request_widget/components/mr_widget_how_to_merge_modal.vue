@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       resolveConflictsFromCli: helpPagePath('user/project/merge_requests/conflicts', {
-        anchor: 'resolve-conflicts-from-the-command-line',
+        anchor: 'from-the-command-line',
       }),
     };
   },
@@ -120,8 +120,9 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="modal-merge-info"
-    :no-enforce-focus="true"
     :title="$options.i18n.title"
+    :no-enforce-focus="true"
+    no-focus-on-show
     no-fade
     hide-footer
   >
@@ -131,12 +132,13 @@ export default {
       </strong>
       {{ $options.i18n.steps.step1.help }}
     </p>
-    <div class="gl-display-flex">
+    <div class="gl-flex gl-gap-3">
       <pre class="gl-w-full" data-testid="how-to-merge-instructions">{{ mergeInfo1 }}</pre>
       <clipboard-button
         :text="mergeInfo1"
         :title="$options.i18n.copyCommands"
-        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
+        category="tertiary"
+        class="gl-self-start"
       />
     </div>
     <p v-if="reviewingDocsPath">
@@ -145,7 +147,7 @@ export default {
           <strong>{{ content }}</strong>
         </template>
         <template #link="{ content }">
-          <gl-link class="gl-display-inline-block" :href="reviewingDocsPath" target="_blank">{{
+          <gl-link class="gl-inline-block" :href="reviewingDocsPath" target="_blank">{{
             content
           }}</gl-link>
         </template>
@@ -164,7 +166,7 @@ export default {
       </strong>
       <gl-sprintf :message="$options.i18n.steps.step3.help">
         <template #link="{ content }">
-          <gl-link class="gl-display-inline-block" :href="resolveConflictsFromCli">
+          <gl-link class="gl-inline-block" :href="resolveConflictsFromCli">
             {{ content }}
           </gl-link>
         </template>
@@ -176,12 +178,13 @@ export default {
       </strong>
       {{ $options.i18n.steps.step4.help }}
     </p>
-    <div class="gl-display-flex">
+    <div class="gl-flex gl-gap-3">
       <pre class="gl-w-full" data-testid="how-to-merge-instructions">{{ mergeInfo2 }}</pre>
       <clipboard-button
         :text="mergeInfo2"
         :title="$options.i18n.copyCommands"
-        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
+        category="tertiary"
+        class="gl-self-start"
       />
     </div>
   </gl-modal>

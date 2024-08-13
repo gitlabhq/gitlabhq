@@ -16,16 +16,12 @@ export function initScrollingTabs() {
   const el = $scrollingTabs.get(0);
   const parentElement = el?.parentNode;
   if (el && parentElement) {
-    parentElement
-      .querySelector('button.fade-left')
-      ?.addEventListener('click', function scrollLeft() {
-        el.scrollBy({ left: -200, behavior: 'smooth' });
-      });
-    parentElement
-      .querySelector('button.fade-right')
-      ?.addEventListener('click', function scrollRight() {
-        el.scrollBy({ left: 200, behavior: 'smooth' });
-      });
+    parentElement.querySelector('button.fade-left')?.addEventListener('click', () => {
+      el.scrollBy({ left: -200, behavior: 'smooth' });
+    });
+    parentElement.querySelector('button.fade-right')?.addEventListener('click', () => {
+      el.scrollBy({ left: 200, behavior: 'smooth' });
+    });
   }
 
   $(window)

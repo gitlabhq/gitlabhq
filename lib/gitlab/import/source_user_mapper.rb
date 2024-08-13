@@ -11,42 +11,43 @@ module Gitlab
         @source_hostname = source_hostname
       end
 
-      def find_or_create_internal_user(source_name:, source_username:, source_user_identifier:)
-        @source_name = source_name
-        @source_username = source_username
-        @source_user_identifier = source_user_identifier
-
-        internal_user = find_internal_user
-        return internal_user if internal_user
-
-        in_lock(lock_key(source_user_identifier), sleep_sec: 2.seconds) do |retried|
-          if retried
-            internal_user = find_internal_user
-            next internal_user if internal_user
-          end
-
-          create_source_user_mapping
-        end
-      end
-
-      private
-
-      attr_reader :namespace, :import_type, :source_hostname, :source_name, :source_username, :source_user_identifier
-
-      def find_internal_user
-        source_user = ::Import::SourceUser.find_source_user(
+      def find_source_user(source_user_identifier)
+        ::Import::SourceUser.find_source_user(
           source_user_identifier: source_user_identifier,
           namespace: namespace,
           source_hostname: source_hostname,
           import_type: import_type
         )
-
-        return unless source_user
-
-        source_user.reassign_to_user || source_user.placeholder_user
       end
 
-      def create_source_user_mapping
+      def find_or_create_source_user(source_name:, source_username:, source_user_identifier:)
+        source_user = find_source_user(source_user_identifier)
+
+        return source_user if source_user
+
+        create_source_user(
+          source_name: source_name,
+          source_username: source_username,
+          source_user_identifier: source_user_identifier
+        )
+      end
+
+      private
+
+      attr_reader :namespace, :import_type, :source_hostname
+
+      def create_source_user(source_name:, source_username:, source_user_identifier:)
+        in_lock(lock_key(source_user_identifier), sleep_sec: 2.seconds) do |retried|
+          if retried
+            source_user = find_source_user(source_user_identifier)
+            next source_user if source_user
+          end
+
+          create_source_user_mapping(source_name, source_username, source_user_identifier)
+        end
+      end
+
+      def create_source_user_mapping(source_name, source_username, source_user_identifier)
         ::Import::SourceUser.transaction do
           import_source_user = ::Import::SourceUser.new(
             namespace: namespace,
@@ -57,21 +58,20 @@ module Gitlab
             source_hostname: source_hostname
           )
 
-          internal_user = create_placeholder_user
-          import_source_user.placeholder_user = internal_user
-
+          import_source_user.placeholder_user = create_placeholder_user(source_name, source_username)
           import_source_user.save!
           import_source_user
         end
       end
 
-      def create_placeholder_user
+      def create_placeholder_user(source_name, source_username)
         # If limit is reached, get import user instead, but that's not implemented yet
         Gitlab::Import::PlaceholderUserCreator.new(
           import_type: import_type,
           source_hostname: source_hostname,
           source_name: source_name,
-          source_username: source_username
+          source_username: source_username,
+          organization: namespace.organization
         ).execute
       end
 

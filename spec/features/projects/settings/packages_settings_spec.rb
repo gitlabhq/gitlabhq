@@ -19,15 +19,17 @@ RSpec.describe 'Projects > Settings > Packages', :js, feature_category: :package
     let(:packages_enabled) { true }
 
     it 'displays the packages access level setting' do
-      expect(page).to have_selector('[data-testid="package-registry-access-level"] > label', text: 'Package registry')
-      expect(page).to have_selector('input[name="package_registry_enabled"]', visible: false)
-      expect(page).to have_selector('input[name="package_registry_enabled"] + button', visible: true)
-      expect(page).to have_selector('input[name="package_registry_api_for_everyone_enabled"]', visible: false)
-      expect(page).to have_selector('input[name="package_registry_api_for_everyone_enabled"] + button', visible: true)
-      expect(page).to have_selector(
-        'input[name="project[project_feature_attributes][package_registry_access_level]"]',
-        visible: false
-      )
+      within_testid('package-registry-access-level') do
+        expect(page).to have_content('Package registry')
+        expect(page).to have_selector('input[name="package_registry_enabled"]', visible: false)
+        expect(page).to have_selector('input[name="package_registry_enabled"] + button', visible: true)
+        expect(page).to have_selector('input[name="package_registry_api_for_everyone_enabled"]', visible: false)
+        expect(page).to have_selector('input[name="package_registry_api_for_everyone_enabled"] + button', visible: true)
+        expect(page).to have_selector(
+          'input[name="project[project_feature_attributes][package_registry_access_level]"]',
+          visible: false
+        )
+      end
     end
   end
 

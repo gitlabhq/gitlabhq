@@ -6,6 +6,7 @@ import {
   MEMBER_MODEL_TYPE_GROUP_MEMBER,
   MEMBER_MODEL_TYPE_PROJECT_MEMBER,
 } from '~/members/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N } from './constants';
 import LeaveDropdownItem from './leave_dropdown_item.vue';
 import RemoveMemberDropdownItem from './remove_member_dropdown_item.vue';
@@ -29,6 +30,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     member: {
       type: Object,
@@ -94,7 +96,11 @@ export default {
         : this.$options.i18n.leaveGroup;
     },
     showLdapOverride() {
-      return this.permissions.canOverride && !this.member.isOverridden;
+      return (
+        !this.glFeatures.showRoleDetailsInDrawer &&
+        this.permissions.canOverride &&
+        !this.member.isOverridden
+      );
     },
     showBan() {
       return !this.isCurrentUser && this.permissions.canBan;

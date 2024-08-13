@@ -1,0 +1,17 @@
+gitlab_ci:
+  rspec:
+    run:
+      - name: step1
+        script: echo 'hello step1'
+      - name: step2
+        step: some_predefined_step
+        env:
+          VAR1: 'value1'
+        inputs:
+          input1: 'value1'
+
+request_response:
+  image: null
+  services: []
+  run: |-
+    [{"name":"step1","script":"echo 'hello step1'"},{"env":{"VAR1":"value1"},"name":"step2","step":"some_predefined_step","inputs":{"input1":"value1"}}]

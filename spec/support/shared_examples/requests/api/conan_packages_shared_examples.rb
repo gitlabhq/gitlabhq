@@ -136,9 +136,7 @@ RSpec.shared_examples 'conan authenticate endpoint' do
           response.body, jwt_secret).first
         expect(payload['access_token']).to eq(personal_access_token.token)
         expect(payload['user_id']).to eq(personal_access_token.user_id)
-
-        duration = payload['exp'] - payload['iat']
-        expect(duration).to eq(::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME)
+        expect(payload['exp']).to eq(personal_access_token.expires_at.at_beginning_of_day.to_i)
       end
     end
   end
@@ -593,7 +591,11 @@ RSpec.shared_examples 'delete package endpoint' do
       project.add_maintainer(user)
     end
 
-    it_behaves_like 'a package tracking event', 'API::ConanPackages', 'delete_package'
+    it 'triggers an internal event' do
+      expect { subject }
+        .to trigger_internal_events('delete_package_from_registry')
+          .with(user: user, project: project, property: 'user', label: 'conan', category: 'InternalEventTracking')
+    end
 
     it 'deletes a package' do
       expect { subject }.to change { Packages::Package.count }.from(2).to(1)

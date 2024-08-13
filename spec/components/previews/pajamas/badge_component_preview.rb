@@ -10,16 +10,14 @@ module Pajamas
     # @param icon select [~, star-o, issue-closed, tanuki]
     # @param icon_only toggle
     # @param href url
-    # @param size select {{ Pajamas::BadgeComponent::SIZE_OPTIONS }}
     # @param text text
     # @param variant select {{ Pajamas::BadgeComponent::VARIANT_OPTIONS }}
-    def default(icon: :tanuki, icon_only: false, href: nil, size: :md, text: "Tanuki", variant: :muted)
+    def default(icon: :tanuki, icon_only: false, href: nil, text: "Tanuki", variant: :muted)
       render Pajamas::BadgeComponent.new(
         text,
         icon: icon,
         icon_only: icon_only,
         href: href,
-        size: size,
         variant: variant
       )
     end
@@ -28,9 +26,9 @@ module Pajamas
     # ---
     #
     # Use the content slot instead of the `text` param when things get more complicated than a plain string.
-    # All other options (`icon`, `size`, etc.) work as usual.
+    # All other options (`icon`, etc.) work as usual.
     def slot
-      render Pajamas::BadgeComponent.new(size: :lg, variant: :info) do
+      render Pajamas::BadgeComponent.new(variant: :info) do
         "!ereht olleh".reverse.capitalize
       end
     end
@@ -56,6 +54,28 @@ module Pajamas
         id: "special-badge-22",
         variant: :success
       )
+    end
+
+    # Circular issuable status icons
+    # ---
+    #
+    # Circular icons 'issue-open-m' and 'issue-close'
+    def circular_icons
+      render Pajamas::BadgeComponent.new(variant: :success, icon: 'issue-open-m') do
+        'With status open'
+      end
+
+      render Pajamas::BadgeComponent.new(variant: :info, icon: 'issue-close') do
+        'With status closed'
+      end
+    end
+
+    # Icon only
+    # ---
+    #
+    # Uses an icon only.
+    def icon_only
+      render Pajamas::BadgeComponent.new(variant: :success, icon: 'calendar')
     end
   end
 end

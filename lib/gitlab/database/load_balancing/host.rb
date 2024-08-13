@@ -279,11 +279,11 @@ module Gitlab
         end
 
         def ignore_replication_lag_time?
-          Feature::BypassLoadBalancer.enabled? && Feature.enabled?(:load_balancer_ignore_replication_lag_time, type: :ops)
+          Feature.enabled?(:load_balancer_ignore_replication_lag_time, type: :ops)
         end
 
         def double_replication_lag_time?
-          Feature::BypassLoadBalancer.enabled? && Feature.enabled?(:load_balancer_double_replication_lag_time, type: :ops)
+          Feature.enabled?(:load_balancer_double_replication_lag_time, type: :ops)
         end
       end
     end

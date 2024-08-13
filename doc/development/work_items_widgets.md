@@ -19,13 +19,17 @@ on the work item it is attempting to display. To do so, it needs to fetch the
 list of widgets, using a query like this:
 
 ```plaintext
-query WorkItem($workItemId: ID!) {
-  workItem(workItemId: $id) @client {
+query workItem($workItemId: WorkItemID!) {
+  workItem(id: $workItemId) {
     id
-    type
     widgets {
-      nodes {
+      ... on WorkItemWidgetAssignees {
         type
+        assignees {
+          nodes {
+            name
+          }
+        }
       }
     }
   }
@@ -43,23 +47,21 @@ In this query example, the description widget uses the query and mutation to
 display and update the description of any work item:
 
 ```plaintext
-query {
-  workItem(input: {
-    workItemId: "gid://gitlab/AnyWorkItem/2207",
-    widgetIdentifier: "description",
-  }) {
+query workItem($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
     id
-    type
-    widgets {
-      nodes {
-        ... on DescriptionWidget {
-          contentText
+    workItem(iid: $iid) {
+      id
+      iid
+      widgets {
+        ... on WorkItemWidgetDescription {
+          description
+          descriptionHtml
         }
       }
     }
   }
 }
-
 ```
 
 Mutation example:
@@ -96,22 +98,182 @@ the use of props and injected attributes.
 
 ### Examples
 
-We have a [dropdown list component](https://gitlab.com/gitlab-org/gitlab/-/blob/eea9ad536fa2d28ee6c09ed7d9207f803142eed7/app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue)
-for use as reference.
+Currently, we have a lot editable widgets which you can find in the [folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components) namely
 
-Any work item widget can wrap the dropdown list. The widget has knowledge of
-the attribute it mutates, and owns the mutation for it. Multiple widgets can use
-the same field component. For example:
+- [Work item assignees widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_assignees.vue)
+- [Work item labels widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_labels.vue)
+- [Work item description widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_description.vue)
+...
 
-- Title and description widgets use the input field component.
-- Start and end date use the date selector component.
-- Labels, milestones, and assignees selectors use the dropdown list.
+We also have a [reuseable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
 
-Some frontend widgets already use the dropdown list. Use them as a reference
-for work items widgets development:
+## Steps to implement a new work item widget on frontend in the detail view
 
-- `ee/app/assets/javascripts/boards/components/assignee_select.vue`
-- `ee/app/assets/javascripts/boards/components/milestone_select.vue`
+### Before starting work on a new widget
+
+1. Make sure that you know the scope and have the designs ready for the new widget
+1. Check if the new widget is already implemented on the backend and is being returned by the work item query for valid work item types. Due to multiversion compatibility, we should have ~backend and ~frontend in separate milestones.
+1. Make sure that the widget update is supported in `workItemUpdate`.
+1. Every widget has a different requirement, so asking questions beforehand and creating MVC after discussing with the PM/UX would be a good idea to create iterations on it.
+
+### When we start work on a new widget
+
+1. Depending on the input field i.e a dropdown, input text or any other custom design we should make sure that we use an [existing wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) or completely new component
+1. Ideally any new widget should be behind an FF to make sure we have room for testing unless there is a priority for the widget.
+1. Create the new widget in the [folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components)
+1. If it is an editable widget in the sidebar , you should include it in [work_item_attributes_wrapper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue)
+
+### Steps
+
+Refer to [merge request #159720](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159720) for an example of the process of adding a new work item widget.
+
+1. Define `I18N_WORK_ITEM_ERROR_FETCHING_<widget_name>` in `app/assets/javascripts/work_items/constants.js`.
+1. Create the component `app/assets/javascripts/work_items/components/work_item_<widget_name>.vue` or `ee/app/assets/javascripts/work_items/components/work_item_<widget_name>.vue`.
+   - The component should not receive any props which are available from `workItemByIidQuery`- see [issue #461761](https://gitlab.com/gitlab-org/gitlab/-/issues/461761).
+1. Add the component to the view/edit work item screen `app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue`.
+1. If the widget is avaiable when creating new work items:
+   1. Add the component to the create work item screen `app/assets/javascripts/work_items/components/create_work_item.vue`.
+   1. Define a local input type `app/assets/javascripts/work_items/graphql/typedefs.graphql`.
+   1. Stub the new work item state GraphQL data for the widget in `app/assets/javascripts/work_items/graphql/cache_utils.js`.
+   1. Define how GraphQL updates the GraphQL data in `app/assets/javascripts/work_items/graphql/resolvers.js`.
+      - A special `CLEAR_VALUE` constant is required for single value widgets, because we cannot differentiate when a value is `null` because we cleared it, or `null` because we did not 
+        set it.
+        For example `ee/app/assets/javascripts/work_items/components/work_item_health_status.vue`.
+        This is not required for most widgets which support multiple values, where we can differentiate between `[]` and `null`.
+      - Read more about how [Apollo cache is being used to store values in create view](#apollo-cache-being-used-to-store-values-in-create-view).
+1. Add the GraphQL query for the widget:
+   - For CE widgets, to `app/assets/javascripts/work_items/graphql/work_item_widgets.fragment.graphql` and `ee/app/assets/javascripts/work_items/graphql/work_item_widgets.fragment.graphql`.
+   - For EE widgets, to `ee/app/assets/javascripts/work_items/graphql/work_item_widgets.fragment.graphql`.
+1. Update translations: `tooling/bin/gettext_extractor locale/gitlab.pot`.
+
+At this point you should be able to use the widget in the frontend.
+
+Now you can update tests for existing files and write tests for the new files:
+
+1. `spec/frontend/work_items/components/create_work_item_spec.js` or `ee/spec/frontend/work_items/components/create_work_item_spec.js`.
+1. `spec/frontend/work_items/components/work_item_attributes_wrapper_spec.js` or `ee/spec/frontend/work_items/components/work_item_attributes_wrapper_spec.js`.
+1. `spec/frontend/work_items/components/work_item_<widget_name>_spec.js` or `ee/spec/frontend/work_items/components/work_item_<widget_name>_spec.js`.
+1. `spec/frontend/work_items/graphql/resolvers_spec.js` or `ee/spec/frontend/work_items/graphql/resolvers_spec.js`.
+1. `spec/features/projects/work_items/work_item_spec.rb` or `ee/spec/features/projects/work_items/work_item_spec.rb`.
+
+NOTE:
+You may find some feature specs failing because of excissive SQL queries.
+To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
+
+## Steps to implement a new work item widget on frontend in the create view
+
+1. Make sure that you know the scope and have the designs ready for the new widget
+1. Check if the new widget is already implemented on the backend and is being returned by the work item query for valid work item types. Due to multiversion compatibility, we should have ~backend and ~frontend in separate milestones.
+1. Make sure that the widget is supported in `workItemCreate` mutation.
+1. After you create the new frontend widget based on the designs, make sure to include it in [create work item view](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components/create_work_item.vue)
+
+## Apollo cache being used to store values in create view
+
+Since create view is almost identical to detail view, and we wanted to store in the draft data of each widget, each new work item for a specific type has a new cache entry apollo.
+
+For example , when we initialise the create view , we have a function `setNewWorkItemCache` [in work items cache utils](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/cache_utils) which is called in both [create view work item modal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item_modal.vue) and also [create work item component](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
+
+You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/index.md#workitemwidgetdefinition)
+
+We have a [local mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/update_new_work_item.mutation.graphql) to update the work item draft data in create view
+
+## Support new widget in create form in apollo cache
+
+1. Since every widget can be used separately, each widget uses the `updateWorkItem` mutation.
+1. Now, to update the draft data we need to update the cache with the data.
+1. Just before you update the work item, we have a check that it is a new work item or a work item `id`/`iid` exists. Example.
+
+```javascript
+if (this.workItemId === newWorkItemId(this.workItemType)) {
+  this.$apollo.mutate({
+    mutation: updateNewWorkItemMutation,
+    variables: {
+      input: {
+        workItemType: this.workItemType,
+        fullPath: this.fullPath,
+        assignees: this.localAssignees,
+      },
+    },
+});
+```
+
+### Support new work item widget in local mutation
+
+1. Add the input type in [work item local mutation typedefs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/typedefs.graphql#L55). It can be anything , a custom object or a primitive value.
+
+Example if you want add `parent` which has the name and ID of the parent of the work item
+
+```javascript
+input LocalParentWidgetInput {
+  id: String
+  name: String
+}
+
+input LocalUpdateNewWorkItemInput {
+  fullPath: String!
+  workItemType: String!
+  healthStatus: String
+  color: String
+  title: String
+  description: String
+  confidential: Boolean
+  parent: [LocalParentWidgetInput]
+}
+```
+
+1. Pass the new parameter from the widget to support draft save in the create view.
+
+```javascript
+this.$apollo.mutate({
+    mutation: updateNewWorkItemMutation,
+    variables: {
+      input: {
+        workItemType: this.workItemType,
+        fullPath: this.fullPath,
+        parent: {
+          id: 'gid:://gitlab/WorkItem/1',
+          name: 'Parent of work item'
+        }
+      },
+    },
+})
+```
+
+1. Support the update in the [graphql resolver](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/resolvers.js) and add the logic to update the new work item cache
+
+```javascript
+  const { parent } = input;
+
+  if (parent) {
+      const parentWidget = findWidget(WIDGET_TYPE_PARENT, draftData?.workspace?.workItem);
+      parentWidget.parent = parent;
+
+      const parentWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
+        (widget) => widget.type === WIDGET_TYPE_PARENT,
+      );
+      draftData.workspace.workItem.widgets[parentWidgetIndex] = parentWidget;
+  }
+
+```
+
+1. Get the value of the draft in the [create work item view](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
+
+```javascript
+
+if (this.isWidgetSupported(WIDGET_TYPE_PARENT)) {
+    workItemCreateInput.parentWidget = {
+      id: this.workItemParentId
+    };
+}
+
+await this.$apollo.mutate({
+  mutation: createWorkItemMutation,
+  variables: {
+    input: {
+      ...workItemCreateInput,
+    },
+});
+```
 
 ## Mapping widgets to work item types
 
@@ -158,6 +320,9 @@ When a callback class is also used for other issuables like merge requests or ep
 and add the class to the list in `IssuableBaseService#available_callbacks`. These are executed for both work item updates and
 legacy issue, merge request, or epic updates.
 
+Use `excluded_in_new_type?` to check if the work item type is being changed and a widget is no longer available.
+This is typically a trigger to remove associated records which are no longer relevant.
+
 #### Available callbacks
 
 - `after_initialize` is called after the work item is initialized by the `BuildService` and before
@@ -168,5 +333,50 @@ legacy issue, merge request, or epic updates.
 - `before_update` is called before the work item is saved by the `UpdateService`. This callback runs
   within the update database transaction.
 - `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.
+- `after_save` is called before the creation or DB update transaction is committed by the
+  `CreateService` or `UpdateService`.
 - `after_save_commit` is called after the creation or DB update transaction is committed by the
   `CreateService` or `UpdateService`.
+
+## Creating a new backend widget
+
+Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158688) for an example of the process of adding a new work item widget.
+
+1. Add the widget argument to the work item mutation(s):
+   - For CE features where the widget is available and has identical arguments for creating and updating work items: `app/graphql/mutations/concerns/mutations/work_items/shared_arguments.rb`.
+   - For EE features, where the widget is only available for one, or the arguments differ between the two mutations:
+     - Create: `app/graphql/mutations/concerns/mutations/work_items/create_arguments.rb` or `ee/app/graphql/ee/mutations/work_items/create.rb`.
+     - Update: `app/graphql/mutations/concerns/mutations/work_items/update_arguments.rb` or `ee/app/graphql/ee/mutations/work_items/update.rb`.
+1. Define the widget arguments, by adding a widget input type in `app/graphql/types/work_items/widgets/<widget_name>_input_type.rb` or `ee/app/graphql/types/work_items/widgets/<widget_name>_input_type.rb`.
+   - If the input types differ for the create and update mutations, use `<widget_name>_create_input_type.rb` and/or `<widget_name>_update_input_type.rb`.
+1. Define the widget fields, by adding the widget type in `app/graphql/types/work_items/widgets/<widget_name>_type.rb` or `ee/app/graphql/types/work_items/widgets/<widget_name>_type.rb`.
+1. Add the widget to the `WorkItemWidget` array in `app/assets/javascripts/graphql_shared/possible_types.json`.
+1. Add the widget type mapping to `TYPE_MAPPINGS` in `app/graphql/types/work_items/widget_interface.rb` or `EE_TYPE_MAPPINGS` in `ee/app/graphql/ee/types/work_items/widget_interface.rb`.
+1. Add the widget type to `widget_type` enum in `app/models/work_items/widget_definition.rb`.
+1. Define the quick actions available as part of the widget in `app/models/work_items/widgets/<widget_name>.rb`.
+1. Define how the mutation(s) create/update work items, by adding [callbacks](#widget-callbacks) in `app/services/work_items/callbacks/<widget_name>.rb`.
+   - Consider if it is necessary to handle `if excluded_in_new_type?`.
+   - Use `raise_error` to handle errors.
+1. Define the widget in `WIDGET_NAMES` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
+1. Assign the widget to the appropriate work item types, by:
+   - Adding it to the `WIDGETS_FOR_TYPE` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
+   - Creating a migration in `db/migrate/<version>_add_<widget_name>_widget_to_work_item_types.rb`.
+     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680).
+1. Update the GraphQL docs: `bundle exec rake gitlab:graphql:compile_docs`.
+1. Update translations: `tooling/bin/gettext_extractor locale/gitlab.pot`.
+
+At this point you should be able to use the [GraphQL query and mutation](#graphql-queries-and-mutations).
+
+Now you can update tests for existing files and write tests for the new files:
+
+1. `spec/graphql/types/work_items/widget_interface_spec.rb` or `ee/spec/graphql/types/work_items/widget_interface_spec.rb`.
+1. `spec/models/work_items/widget_definition_spec.rb` or `ee/spec/models/ee/work_items/widget_definition_spec.rb`.
+1. Request:
+   - CE: `spec/requests/api/graphql/mutations/work_items/update_spec.rb` and/or `spec/requests/api/graphql/mutations/work_items/create_spec.rb`.
+   - EE: `ee/spec/requests/api/graphql/mutations/work_items/update_spec.rb` and/or `ee/spec/requests/api/graphql/mutations/work_items/create_spec.rb`.
+1. Callback: `spec/services/work_items/callbacks/<widget_name>_spec.rb` or `ee/spec/services/work_items/callbacks/<widget_name>_spec.rb`.
+1. GraphQL type: `spec/graphql/types/work_items/widgets/<widget_name>_type_spec.rb` or `ee/spec/graphql/types/work_items/widgets/<widget_name>_type_spec.rb`.
+1. GraphQL input type(s):
+   - CE: `spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
+   - EE: `ee/spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `ee/spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `ee/spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
+1. Migration: `spec/migrations/<version>_add_<widget_name>_widget_to_work_item_types_spec.rb`.

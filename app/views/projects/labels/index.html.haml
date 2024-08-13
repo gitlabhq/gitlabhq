@@ -10,37 +10,35 @@
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
   - if can_admin_label && search.blank?
-    %p.text-muted.gl-mt-5
+    %p.gl-text-subtle.gl-mt-5
       = _('Labels can be applied to issues and merge requests. Star a label to make it a priority label.')
 
-  .labels-container
+  .labels-container.gl-flex.gl-flex-col.gl-gap-5
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-    .prioritized-labels.gl-new-card{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-      .gl-new-card-header
-        .gl-new-card-title-wrapper.gl-flex-direction-column
-          %h3.gl-new-card-title
-            = _('Prioritized labels')
-          .gl-new-card-description
-            = _('Drag to reorder prioritized labels and change their relative priority.')
-      .js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
-        #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
-          = render 'shared/empty_states/priority_labels'
-        - if @prioritized_labels.any?
-          = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
-        - elsif search.present?
-          .nothing-here-block
-            = _('No prioritized labels with such name or description')
+    = render ::Layouts::CrudComponent.new(_('Prioritized labels'),
+      options: {class: ['prioritized-labels', ('gl-hidden' if hide), ('is-not-draggable' unless can_admin_label)].compact.join(' ')},
+      count: number_with_delimiter(@prioritized_labels.size),
+      icon: 'label',
+      body_options: { class: '!gl-m-0' },
+      description: _('Drag to reorder prioritized labels and change their relative priority.')) do |c|
+      - c.with_body do
+        .js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+          #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
+            = render 'shared/empty_states/priority_labels'
+          - if @prioritized_labels.any?
+            = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
+          - elsif search.present?
+            .nothing-here-block
+              = _('No prioritized labels with such name or description')
 
     - if @labels.any?
-      .other-labels.gl-new-card
-        .gl-new-card-header
-          .gl-new-card-title-wrapper
-            %h3.gl-new-card-title{ class: ('hide' if hide) }= _('Other labels')
-        .gl-new-card-body.gl-px-0
+      = render ::Layouts::CrudComponent.new(hide ? _('Labels') : _('Other labels'), options: { class: 'other-labels' }, count: number_with_delimiter(@labels.total_count), icon: 'label', body_options: { class: '!gl-m-0' }) do |c|
+        - c.with_body do
           .js-other-labels.manage-labels-list
             = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
-            = paginate @labels, theme: 'gitlab'
+        - c.with_pagination do
+          = paginate @labels, theme: 'gitlab'
 
     - elsif search.present?
       .other-labels
@@ -58,7 +56,3 @@
 
 - else
   = render 'shared/empty_states/labels'
-
-%template#js-badge-item-template
-  %li.js-priority-badge.inline.gl-mr-3
-    .label-badge.gl-bg-blue-50= _('Prioritized')

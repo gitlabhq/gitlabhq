@@ -62,7 +62,10 @@ export default {
       return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
     computedLinkClasses() {
-      return this.isActive ? NAV_ITEM_LINK_ACTIVE_CLASS : null;
+      return {
+        [NAV_ITEM_LINK_ACTIVE_CLASS]: this.isActive,
+        'with-mouse-over-flyout': this.isMouseOverFlyout,
+      };
     },
     isActive() {
       return !this.isExpanded && this.item.is_active;

@@ -72,7 +72,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
 
     it 'renders the new page and displays the error' do
       expect(page).to have_content(error)
-      expect(page).to have_content('New Snippet')
+      expect(page).to have_content('New snippet')
 
       action = find('form.snippet-form')['action']
       expect(action).to include("/snippets")

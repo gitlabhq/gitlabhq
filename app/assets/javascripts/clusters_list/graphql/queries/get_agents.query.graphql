@@ -1,6 +1,6 @@
 #import "../fragments/cluster_agent.fragment.graphql"
 
-query getAgents($defaultBranchName: String!, $projectPath: ID!) {
+query getAgents($projectPath: ID!) {
   project(fullPath: $projectPath) {
     id
     clusterAgents {
@@ -21,19 +21,6 @@ query getAgents($defaultBranchName: String!, $projectPath: ID!) {
       nodes {
         agent {
           ...ClusterAgentFragment
-        }
-      }
-    }
-
-    repository {
-      tree(path: ".gitlab/agents", ref: $defaultBranchName) {
-        trees {
-          nodes {
-            id
-            name
-            path
-            webPath
-          }
         }
       }
     }

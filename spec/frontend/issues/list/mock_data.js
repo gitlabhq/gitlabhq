@@ -220,7 +220,7 @@ export const locationSearch = [
   'not[health_status]=onTrack',
 ].join('&');
 
-export const locationSearchWithSpecialValues = [
+export const locationSearchWithWildcardValues = [
   'assignee_id=Any',
   'assignee_username=bart',
   'my_reaction_emoji=None',
@@ -311,7 +311,7 @@ const makeFilteredTokens = ({ grouped }) => [
 export const filteredTokens = makeFilteredTokens({ grouped: false });
 export const groupedFilteredTokens = makeFilteredTokens({ grouped: true });
 
-export const filteredTokensWithSpecialValues = [
+export const filteredTokensWithWildcardValues = [
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'Any', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'bart', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_MY_REACTION, value: { data: 'None', operator: OPERATOR_IS } },
@@ -360,7 +360,7 @@ export const apiParams = {
   },
 };
 
-export const apiParamsWithSpecialValues = {
+export const apiParamsWithWildcardValues = {
   assigneeWildcardId: 'ANY',
   assigneeUsernames: 'bart',
   labelName: 'None',
@@ -405,7 +405,7 @@ export const urlParams = {
   'not[health_status]': 'onTrack',
 };
 
-export const urlParamsWithSpecialValues = {
+export const urlParamsWithWildcardValues = {
   assignee_id: 'Any',
   'assignee_username[]': 'bart',
   'label_name[]': 'None',

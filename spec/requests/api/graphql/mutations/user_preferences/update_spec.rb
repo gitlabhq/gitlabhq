@@ -39,7 +39,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
-      expect(current_user.user_preference.use_web_ide_extension_marketplace).to eq(true)
+      expect(current_user.user_preference.use_web_ide_extension_marketplace).to eq(false)
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         organization_groups_projects_display: Types::Organizations::GroupsProjectsDisplayEnum.values['GROUPS'].value,
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
-        use_web_ide_extension_marketplace: true
+        use_web_ide_extension_marketplace: false
       }
     end
 

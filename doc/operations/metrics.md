@@ -12,10 +12,12 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [experiment](../policy/experiment-beta-support.md#experiment).
+> - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158786) in GitLab 17.3 to the `observability_features` [feature flag](../administration/feature_flags.md), disabled by default. The previous feature flag (`observability_metrics`) was removed.
 
 FLAG:
-This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Metrics provide insight about the operational health of monitored systems.
 Use metrics to learn more about your systems and applications in a given time range.
@@ -37,7 +39,7 @@ You must have at least the Maintainer role for the project.
 
 1. Create an access token and enable metrics:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Access Tokens**.
+   1. Select **Settings > Access tokens**.
    1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`. Be sure to save the access token value for later.
    1. Select **Monitor > Metrics**, and then select **Enable**.
 1. To configure your application to send GitLab metrics, set the following environment variables:

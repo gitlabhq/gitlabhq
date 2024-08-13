@@ -171,6 +171,11 @@ module.exports = function storybookWebpackConfig({ config }) {
       test: /marked\/.*\.js?$/,
       use: transpileDependencyConfig,
     },
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    },
   ];
 
   // Silence webpack warnings about moment/pikaday not being able to resolve.

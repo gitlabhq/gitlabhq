@@ -195,5 +195,9 @@ describe('content_editor/services/table_of_content_utils', () => {
         { href: '#heading-2', level: 1, subHeadings: [], text: 'Heading 2' },
       ]);
     });
+
+    it('returns an empty array if no container element is provided', () => {
+      expect(getHeadingsFromDOM(null)).toEqual([]);
+    });
   });
 });

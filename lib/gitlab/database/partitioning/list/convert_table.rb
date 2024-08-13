@@ -283,7 +283,9 @@ module Gitlab
                    INNER JOIN pg_class dep_pg_class ON pg_depend.refobjid = dep_pg_class.oid
                    INNER JOIN pg_attribute ON dep_pg_class.oid = pg_attribute.attrelid
                                            AND pg_depend.refobjsubid = pg_attribute.attnum
-              WHERE seq_pg_class.relkind = 'S'
+              WHERE pg_depend.classid = 'pg_class'::regclass
+                AND pg_depend.refclassid = 'pg_class'::regclass
+                AND seq_pg_class.relkind = 'S'
                 AND dep_pg_class.relname = $1
             SQL
 

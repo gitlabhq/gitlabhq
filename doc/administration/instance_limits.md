@@ -560,10 +560,10 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### CI/CD variable limits
 
-> - Group and project-level variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+> - Group and project variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
 The number of [CI/CD variables](../ci/variables/index.md) that can be defined in project,
-group, and instance settings are all limited at the instance level. These limits are checked
+group, and instance settings are all limited for the entire instance. These limits are checked
 each time a new variable is created. If a new variable would cause the total number of variables
 to exceed the respective limit, the new variable is not created.
 
@@ -665,7 +665,7 @@ The total number of custom domains per GitLab Pages website is limited to `150` 
 
 The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
 To set a limit on your self-managed instance, use the
-[Admin area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
+[**Admin** area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
 ### Number of extra Pages deployments when using multiple deployments
 
@@ -676,7 +676,7 @@ of extra Pages deployments permitted for a top-level namespace is 1000.
 
 > - Runner stale timeout [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155795) from 3 months to 7 days in GitLab 17.1.
 
-The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
+The total number of registered runners is limited for groups and projects. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 7 days.
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
 If the limit value is set to zero, the limit is disabled.
@@ -725,6 +725,18 @@ Update `dast_profile_schedules` with the new value:
 
 ```ruby
 Plan.default.actual_limits.update!(dast_profile_schedules: 50)
+```
+
+### Maximum size of the CI artifacts archive
+
+The default maximum size of the CI artifacts archive is 5 megabytes.
+
+You can change this limit via the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To update the maximum size of the CI artifacts archive,
+update `max_artifacts_content_include_size` with the new value. For example, to set it to 20 MB:
+
+```ruby
+ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 ```
 
 ### Maximum size and depth of CI/CD configuration YAML files
@@ -1037,7 +1049,7 @@ The default maximum file size for a package that's uploaded to the [GitLab packa
 The [maximum file sizes on GitLab.com](../user/gitlab_com/index.md#package-registry-limits)
 might be different.
 
-To set these limits for a self-managed installation, you can do it [through the Admin area](settings/continuous_integration.md#package-file-size-limits)
+To set these limits for a self-managed installation, you can do it [through the **Admin** area](settings/continuous_integration.md#package-file-size-limits)
 or run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
@@ -1113,6 +1125,7 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
 > - [Enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
 
 The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
 

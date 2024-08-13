@@ -56,34 +56,47 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
       end
     end
 
-    feature_flags = [:observability_tracing, :observability_metrics, :observability_logs]
-    flag_states = [true, false].repeated_permutation(feature_flags.length)
-    flag_tests = flag_states.map { |flags| Hash[feature_flags.zip(flags)] }
+    context "when feature flag is enabled" do
+      before do
+        stub_feature_flags(observability_features: true)
+      end
 
-    flag_tests.each do |flags|
-      context "with feature flag state #{flags}" do
-        before do
-          flags.transform_values! { |v| v ? parent : false }
-          stub_feature_flags(flags)
-        end
+      describe 'when resource is group' do
+        it { is_expected.to be true }
+      end
 
-        let(:expected_enabled) { flags.values.any? }
+      describe 'when resource is project' do
+        let(:resource) { build_stubbed(:project, namespace: parent) }
 
-        describe 'when resource is group' do
-          it { is_expected.to be expected_enabled }
-        end
+        it { is_expected.to be true }
+      end
 
-        describe 'when resource is project' do
-          let(:resource) { build_stubbed(:project, namespace: parent) }
+      describe 'when resource is not a group or project' do
+        let(:resource) { build_stubbed(:user) }
 
-          it { is_expected.to be expected_enabled }
-        end
+        it { is_expected.to be false }
+      end
+    end
 
-        describe 'when resource is not a group or project' do
-          let(:resource) { build_stubbed(:user) }
+    context "when feature flag is disabled" do
+      before do
+        stub_feature_flags(observability_features: false)
+      end
 
-          it { is_expected.to be false }
-        end
+      describe 'when resource is group' do
+        it { is_expected.to be false }
+      end
+
+      describe 'when resource is project' do
+        let(:resource) { build_stubbed(:project, namespace: parent) }
+
+        it { is_expected.to be false }
+      end
+
+      describe 'when resource is not a group or project' do
+        let(:resource) { build_stubbed(:user) }
+
+        it { is_expected.to be false }
       end
     end
   end

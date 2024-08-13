@@ -160,7 +160,7 @@ Enter the following command on the rails console to display
 your command history.
 
 ```ruby
-puts Readline::HISTORY.to_a
+puts Reline::HISTORY.to_a
 ```
 
 You can then copy it to your clipboard and save for future reference.

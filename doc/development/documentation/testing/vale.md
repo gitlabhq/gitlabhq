@@ -8,24 +8,15 @@ description: Learn how to contribute to GitLab Documentation.
 # Vale documentation tests
 
 [Vale](https://vale.sh/) is a grammar, style, and word usage linter for the
-English language. Vale's configuration is stored in the
-[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
-directory of projects.
+English language. Vale's configuration is stored in the [`.vale.ini`](https://vale.sh/docs/topics/config/) file located
+in the root directory of projects. For example, the [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini)
+of the `gitlab` project.
 
-Vale supports creating [custom tests](https://vale.sh/docs/topics/styles/) that extend any of
-several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
-documentation directory of projects.
+Vale supports creating [custom rules](https://vale.sh/docs/topics/styles/) that extend any of
+several types of checks, which we store in the documentation directory of projects. For example,
+the [`doc/.vale` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale) of the `gitlab` project.
 
-Some example Vale configurations:
-
-- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale/gitlab)
-- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs/.vale/gitlab)
-- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc/.vale/gitlab)
-- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc/.vale/gitlab)
-- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/.vale/gitlab)
-
-This configuration is also used in build pipelines, where
-[error-level rules](#result-types) are enforced.
+This configuration is also used in build pipelines, where [error-level rules](#result-types) are enforced.
 
 You can use Vale:
 
@@ -112,9 +103,9 @@ The result types have these attributes:
 
 | Result type  | Displays in CI/CD job output | Displays in MR diff | Causes CI/CD jobs to fail | Vale rule link |
 |--------------|------------------------------|---------------------|---------------------------|----------------|
-| `error`      | **{check-circle}** Yes       | **{check-circle}** Yes | **{check-circle}** Yes | [Error-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964) |
-| `warning`    | **{dotted-circle}** No       | **{check-circle}** Yes | **{dotted-circle}** No | [Warning-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964) |
-| `suggestion` | **{dotted-circle}** No       | **{dotted-circle}** No | **{dotted-circle}** No | [Suggestion-level Vale rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Suggestion%3A&group_id=9970&project_id=278964) |
+| `error`      | **{check-circle}** Yes       | **{check-circle}** Yes | **{check-circle}** Yes | [Error-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+error+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `warning`    | **{dotted-circle}** No       | **{check-circle}** Yes | **{dotted-circle}** No | [Warning-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+warning+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `suggestion` | **{dotted-circle}** No       | **{dotted-circle}** No | **{dotted-circle}** No | [Suggestion-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+suggestion+file%3A%5Edoc&snippets=false&utf8=✓) |
 
 ## When to add a new Vale rule
 
@@ -143,6 +134,19 @@ In general, follow these guidelines:
     If the rule is difficult to implement directly in the merge request (for example,
     it requires page refactoring), set it to suggestion-level so it displays in local editors only.
 
+## Where to add a new Vale rule
+
+New Vale rules belong in one of two categories (known in Vale as [styles](https://vale.sh/docs/topics/styles/)). These
+rules are stored separately in specific styles directories specified in a project's `.vale.ini` file. For example,
+[`.vale.ini` for the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini).
+
+Where to add your new rules depends on the type of rule you're proposing:
+
+- `gitlab_base`: base rules that are applicable to any GitLab documentation.
+- `gitlab_docs`: rules that are only applicable to documentation that is published to <https://docs.gitlab.com>.
+
+Most new rules belong in [`gitlab_base`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale/gitlab_base).
+
 ## Limit which tests are run
 
 You can set Visual Studio Code to display only a subset of Vale alerts when viewing files:
@@ -166,7 +170,7 @@ To test only a single rule when running Vale from the command line, modify this
 command, replacing `OutdatedVersions` with the name of the rule:
 
 ```shell
-vale --no-wrap --filter='.Name=="gitlab.OutdatedVersions"' doc/**/*.md
+vale --no-wrap --filter='.Name=="gitlab_base.OutdatedVersions"' doc/**/*.md
 ```
 
 ## Disable Vale tests
@@ -174,10 +178,9 @@ vale --no-wrap --filter='.Name=="gitlab.OutdatedVersions"' doc/**/*.md
 You can disable a specific Vale linting rule or all Vale linting rules for any portion of a
 document:
 
-- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
-  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename of a test in the
-  [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
-  directory.
+- To disable a specific rule, add a `<!-- vale gitlab_<type>.rulename = NO -->` tag before the text, and a
+  `<!-- vale gitlab_<type>.rulename = YES -->` tag after the text, replacing `rulename` with the filename of a test in the
+  directory of one of the [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale).
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
   `<!-- vale on -->` tag after the text.
 
@@ -227,15 +230,15 @@ guidelines:
 | Flagged word                                         | Guideline |
 |------------------------------------------------------|-----------|
 | jargon                                               | Rewrite the sentence to avoid it. |
-| *correctly-capitalized* name of a product or service | Add the word to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
+| *correctly-capitalized* name of a product or service | Add the word to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/spelling-exceptions.txt). |
 | name of a person                                     | Remove the name if it's not needed, or [add the Vale exception code inline](#disable-vale-tests). |
 | a command, variable, code, or similar                | Put it in backticks or a code block. For example: ``The git clone command can be used with the CI_COMMIT_BRANCH variable.`` -> ``The `git clone` command can be used with the `CI_COMMIT_BRANCH` variable.`` |
-| UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
+| UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/spelling-exceptions.txt). |
 | UI text from a third-party product                   | Rewrite the sentence to avoid it, or [add the Vale exception code in-line](#disable-vale-tests). |
 
 #### Uppercase (acronym) test
 
-The [`Uppercase.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Uppercase.yml)
+The [`Uppercase.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/Uppercase.yml)
 test checks for incorrect usage of words in all capitals. For example, avoid usage
 like `This is NOT important`.
 
@@ -251,7 +254,7 @@ If the word must be in all capitals, follow these guidelines:
 
 ### Readability score
 
-In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ReadingLevel.yml),
+In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/ReadingLevel.yml),
 we have implemented
 [the Flesch-Kincaid grade level test](https://readable.com/readability/flesch-reading-ease-flesch-kincaid-grade-level/)
 to determine the readability of our documentation.

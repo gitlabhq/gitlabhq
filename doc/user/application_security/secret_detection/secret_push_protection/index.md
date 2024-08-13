@@ -49,11 +49,19 @@ remote: To push your changes you must remove the identified secrets.
 
 If secret push protection does not detect any secrets in your commits, no message is displayed.
 
+## Detected secrets
+
+GitLab maintains a [set of rules](detected_secrets.md) that are used for blocking secrets from being pushed to GitLab.
+
+Scanning against low-confidence patterns can potentially lead to a timeout or the push check failing. Therefore, we chose to include only high-confidence patterns to ensure a performant experience when pushing your code, and to reduce the number of false alerts.
+
+It is currently not possible to use custom rulesets with secret push protection.
+
 ## Enable secret push protection
 
-On GitLab Dedicated and Self-managed instances, secret push protection must be enabled at the instance level and then you must enable it per project.
+On GitLab Dedicated and Self-managed instances, secret push protection must be enabled for the entire instance and then you must enable it per project.
 
-On GitLab.com, this setting has been enabled at the instance level. You must enable it per project.
+On GitLab.com, this setting has been enabled for the entire instance. You must enable it per project.
 
 ### Allow the use of secret push protection in your GitLab instance
 
@@ -67,9 +75,9 @@ Prerequisites:
 - You must be an administrator for your GitLab instance.
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Security and compliance**.
-1. Under **Secret Detection**, select or clear **Allow secret push protection**.
+1. Under **Secret detection**, select or clear **Allow secret push protection**.
 
 ### Enable secret push protection in a project
 
@@ -118,14 +126,20 @@ If the blocked secret was added with the most recent commit on your branch:
 
 If the blocked secret appears earlier in your Git history:
 
+1. Optional. Watch a short demo of [removing secrets from your commits](https://www.youtube.com/watch?v=2jBC3uBUlyU).
 1. Identify the commit SHA from the push error message. If there are multiple, find the earliest using `git log`.
+1. Create a copy branch to work from with `git switch --create copy-branch` so you can reset to the original branch if the rebase encounters issues.
 1. Use `git rebase -i <commit-sha>~1` to start an interactive rebase.
 1. Mark the offending commits for editing by changing the `pick` command to `edit` in the editor.
 1. Remove the secrets from the files.
 1. Stage the changes with `git add <file-name>`.
 1. Commit the changed files with `git commit --amend`.
 1. Continue the rebase with `git rebase --continue` until all secrets are removed.
-1. Push your changes with `git push`.
+1. Push your changes from the copy branch to your original remote branch
+   with `git push --force --set-upstream origin copy-branch:<original-branch>`.
+1. When you are satisfied with the changes, consider the following optional cleanup steps.
+   1. Optional. Delete the original branch with `git branch --delete --force <original-branch>`.
+   1. Optional. Replace the original branch by renaming the copy branch with `git branch --move copy-branch <original-branch>`.
 
 ### Skip secret push protection
 

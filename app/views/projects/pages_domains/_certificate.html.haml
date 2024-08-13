@@ -18,7 +18,7 @@
             label: _("Automatic certificate management using Let's Encrypt"),
             label_position: :hidden)
           = f.hidden_field :auto_ssl_enabled?, class: "js-project-feature-toggle-input"
-        %p.gl-text-secondary.gl-mt-1
+        %p.gl-text-subtle.gl-mt-1
           - docs_link_url = help_page_path("user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration")
           - docs_link_start = "<a href=\"%{docs_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { docs_link_url: docs_link_url }
           - docs_link_end = "</a>".html_safe
@@ -28,20 +28,17 @@
   - if has_user_defined_certificate
     .row.gl-mt-5
       .col-12
-        = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-flex gl-items-center gl-justify-between gl-px-5 gl-py-4' }) do |c|
-          - c.with_header do
-            .gl-new-card-title-wrapper
-              %h2.gl-new-card-title
-                = _('Certificate')
-                .gl-new-card-count
-                  = sprite_icon('partner-verified', css_class: 'gl-mr-2')
+        = render ::Layouts::CrudComponent.new(_('Certificate'),
+          icon: 'partner-verified',
+          count: '1') do |c|
           - c.with_body do
-            %span
-              = domain_presenter.pages_domain.subject || _('missing')
-            = render Pajamas::ButtonComponent.new(href: clean_certificate_project_pages_domain_path(@project, domain_presenter),
-              icon: 'remove',
-              category: :tertiary,
-              button_options: { title: s_('GitLabPages|Remove certificate'), "aria-label": s_('GitLabPages|Remove certificate'), data: { method: :delete, confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger', toggle: 'tooltip', container: 'body', testid: 'remove-certificate' } })
+            .gl-flex.gl-items-baseline.gl-justify-between
+              %span
+                = domain_presenter.pages_domain.subject || _('missing')
+              = render Pajamas::ButtonComponent.new(href: clean_certificate_project_pages_domain_path(@project, domain_presenter),
+                icon: 'remove',
+                category: :tertiary,
+                button_options: { title: s_('GitLabPages|Remove certificate'), "aria-label": s_('GitLabPages|Remove certificate'), data: { method: :delete, confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger', toggle: 'tooltip', container: 'body', testid: 'remove-certificate' } })
   - else
     .row.gl-mt-5
       .col-12
@@ -50,7 +47,7 @@
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
           disabled: auto_ssl_available_and_enabled
-        %span.help-inline.gl-text-secondary= _("Upload a certificate for your domain with all intermediates")
+        %span.help-inline.gl-text-subtle= _("Upload a certificate for your domain with all intermediates")
     .row
       .col-12
         = f.label :user_provided_key, _("Key (PEM)")
@@ -58,6 +55,6 @@
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
           disabled: auto_ssl_available_and_enabled
-        %span.help-inline.gl-text-secondary= _("Upload a private key for your certificate")
+        %span.help-inline.gl-text-subtle= _("Upload a private key for your certificate")
 
 = render 'lets_encrypt_callout', auto_ssl_available_and_enabled: auto_ssl_available_and_enabled

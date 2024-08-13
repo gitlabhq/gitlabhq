@@ -214,7 +214,10 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout, :suppress_gitlab_sc
 
       before do
         allow(exception).to receive(:cause).and_return(PG::ReadOnlySqlTransaction.new("cannot execute UPSERT in a read-only transaction"))
-        allow(ActiveRecord::InternalMetadata).to receive(:upsert).at_least(:once).and_raise(exception)
+
+        unless Gitlab.next_rails?
+          allow(ActiveRecord::InternalMetadata).to receive(:upsert).at_least(:once).and_raise(exception)
+        end
       end
 
       it_behaves_like 'validates successfully'

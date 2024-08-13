@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="board-labels-toggle-wrapper gl-display-flex gl-align-items-center gl-md-ml-3 gl-h-7">
+  <div class="board-labels-toggle-wrapper gl-flex gl-h-7 gl-items-center md:gl-ml-3">
     <local-storage-sync :value="isShowingLabels" :storage-key="storageKey" @input="setShowLabels" />
     <gl-toggle
       :value="isShowingLabels"
@@ -57,7 +57,7 @@ export default {
       label-position="left"
       aria-describedby="board-labels-toggle-text"
       data-testid="show-labels-toggle"
-      class="gl-flex-direction-row"
+      class="gl-flex-row"
       @change="setShowLabels"
     />
   </div>

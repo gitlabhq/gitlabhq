@@ -8,6 +8,9 @@
 spec:
   inputs:
     gem_name:
+    bundle_gemfiles:
+      type: array
+      default: ['Gemfile']
     gem_path_prefix:
       default: "gems/"
     skip_gem_validation:
@@ -54,6 +57,12 @@ default:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
 
+.ruby_on_rails_matrix:
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
+      - BUNDLE_GEMFILE: $[[inputs.bundle_gemfiles]]
+
 validate-gem:
   rules:
     - if: "'$[[inputs.skip_gem_validation]]' == 'true'"
@@ -71,7 +80,7 @@ rubocop:
     - bundle exec rubocop
 
 rspec:
-  extends: .ruby_matrix
+  extends: .ruby_on_rails_matrix
   script:
     - RAILS_ENV=test bundle exec rspec
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'

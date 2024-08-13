@@ -35,7 +35,7 @@ Prerequisites:
 
   - Update the package scope with the new root namespace path, and publish it again to the project.
   - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
-    If you republish the package without updating the root namespace path, it will not be available at the [instance level endpoint](../../../user/packages/npm_registry/index.md#install-from-the-instance-level).
+    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../../../user/packages/npm_registry/index.md#install-from-an-instance).
 
 To transfer a project:
 

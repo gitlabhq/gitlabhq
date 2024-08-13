@@ -3,7 +3,7 @@ category: default
 action: type_search_query
 extra_properties:
 identifiers:
-product_group: ide
+product_group: remote_development
 milestone: "13.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47589
 distributions:

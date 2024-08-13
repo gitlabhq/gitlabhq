@@ -53,6 +53,11 @@ module BulkImports
         extra: { source_equals_destination: source_equals_destination? }
       )
 
+      if Feature.enabled?(:importer_user_mapping, current_user) &&
+          Feature.enabled?(:bulk_import_importer_user_mapping, current_user)
+        ::Import::BulkImports::EphemeralData.new(bulk_import.id).enable_importer_user_mapping
+      end
+
       BulkImportWorker.perform_async(bulk_import.id)
 
       ServiceResponse.success(payload: bulk_import)

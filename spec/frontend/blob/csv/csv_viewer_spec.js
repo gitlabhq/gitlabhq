@@ -5,7 +5,6 @@ import { nextTick } from 'vue';
 import Papa from 'papaparse';
 import CsvViewer from '~/blob/csv/csv_viewer.vue';
 import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
-import { s__ } from '~/locale';
 import { MAX_ROWS_TO_RENDER } from '~/blob/csv/constants';
 
 const validCsv = 'one,two,three';
@@ -95,14 +94,12 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
     });
     it('renders large csv text', () => {
       expect(findLargeCsvText().text()).toBe(
-        s__(
-          'CsvViewer|The file is too large to render all the rows. To see the entire file, switch to the raw view.',
-        ),
+        'The file is too large to render all the rows. To see the entire file, switch to the raw view.',
       );
     });
     it('renders button with link to raw view', () => {
       const url = 'http://test.host/?plain=1';
-      expect(findSwitchToRawViewBtn().text()).toBe(s__('CsvViewer|View raw data'));
+      expect(findSwitchToRawViewBtn().text()).toBe('View raw data');
       expect(findSwitchToRawViewBtn().attributes('href')).toBe(url);
     });
   });

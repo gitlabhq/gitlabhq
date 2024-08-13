@@ -114,15 +114,18 @@ module Gitlab
         end
       end
 
-      def user_delete_branch(branch_name, user)
+      def user_delete_branch(branch_name, user, target_sha: nil)
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          expected_old_oid: target_sha
         )
 
         gitaly_client_call(@repository.storage, :operation_service,
           :user_delete_branch, request, timeout: GitalyClient.long_timeout)
+      rescue GRPC::InvalidArgument => ex
+        raise Gitlab::Git::CommandError, ex
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
@@ -551,12 +554,13 @@ module Gitlab
       end
 
       # rubocop:enable Metrics/ParameterLists
-      def user_commit_patches(user, branch_name, patches)
+      def user_commit_patches(user, branch_name:, patches:, target_sha: nil)
         header = Gitaly::UserApplyPatchRequest::Header.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           target_branch: encode_binary(branch_name),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: target_sha
         )
         reader = binary_io(patches)
 

@@ -269,7 +269,9 @@ module API
 
           agent_authorizations = ::Clusters::Agents::Authorizations::CiAccess::FilterService.new(
             ::Clusters::Agents::Authorizations::CiAccess::Finder.new(project).execute,
-            environment: persisted_environment&.name
+            { environment: persisted_environment&.name,
+              protected_ref: pipeline.protected_ref? },
+            pipeline.project
           ).execute
 
           # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api

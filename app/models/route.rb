@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Route < MainClusterwide::ApplicationRecord
+class Route < ApplicationRecord
   include CaseSensitivity
   include Gitlab::SQL::Pattern
   include EachBatch

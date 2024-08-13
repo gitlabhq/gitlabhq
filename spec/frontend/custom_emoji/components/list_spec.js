@@ -4,8 +4,12 @@ import List from '~/custom_emoji/components/list.vue';
 import DeleteItem from '~/custom_emoji/components/delete_item.vue';
 import { CUSTOM_EMOJI } from '../mock_data';
 
-jest.mock('~/lib/utils/datetime/date_format_utility', () => ({
-  formatDate: (date) => date,
+jest.mock('~/lib/utils/datetime/locale_dateformat', () => ({
+  localeDateFormat: {
+    asDate: {
+      format: (date) => date,
+    },
+  },
 }));
 
 Vue.config.ignoredElements = ['gl-emoji'];

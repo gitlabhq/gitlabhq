@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -37,7 +37,7 @@ and example server responses. Some parameters include a default or a list of all
 
 ## Starting an interactive session
 
-A [Personal access token](../../user/profile/personal_access_tokens.md) (PAT) is one way to
+A [personal access token](../../user/profile/personal_access_tokens.md) (PAT) is one way to
 start an interactive session. To do this, select **Authorize** from the main page, and a
 dialog box prompts you to enter your PAT, which is valid for the current web session.
 

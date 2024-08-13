@@ -69,8 +69,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'sign-in-path' => 'test-sign-in-path',
           'new-web-ide-help-page-path' =>
             help_page_path('user/project/web_ide/index', anchor: 'vscode-reimplementation'),
-          'csp-nonce' => 'test-csp-nonce',
-          'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
+          'csp-nonce' => 'test-csp-nonce'
         }
       end
 

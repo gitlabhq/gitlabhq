@@ -59,7 +59,7 @@ You can configure the following security controls:
 - [Container Scanning](../container_scanning/index.md)
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Container Scanning. For more details, see
-    [Enable Container Scanning through an automatic merge request](../container_scanning/index.md#enable-container-scanning-through-an-automatic-merge-request).
+    [Enable Container Scanning through an automatic merge request](../container_scanning/index.md#use-a-preconfigured-merge-request).
 - [Container Scanning For Registry](../container_scanning/index.md#container-scanning-for-registry)
   - Enable toggle to configure **Container Scanning For Registry** for the current project.
 - [Operational Container Scanning](../../clusters/agent/vulnerabilities.md)

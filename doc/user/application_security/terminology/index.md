@@ -79,6 +79,13 @@ you can use to identify and describe these weaknesses in terms of CWEs.
 When a category's process deems findings to be the same, or if they are similar enough that a noise reduction is
 required, only one finding is kept and the others are eliminated. Read more about the [deduplication process](../vulnerability_report/pipeline.md#deduplication-process).
 
+## Dependency graph export
+
+A dependency graph export lists the direct and indirect dependencies used by a project **and**
+includes the relationships between them. It's differentiated from a lock file because it may
+_not_ be required by a [package manager](#package-managers) during installation like in the case of a `pipdeptree graph`
+[export](https://github.com/tox-dev/pipdeptree/blob/28ed57c8e96ed1fce13a7abbf167e850625a835c/README.md#visualizing-the-dependency-graph).
+
 ## Duplicate finding
 
 A legitimate finding that is reported multiple times. This can occur when different scanners
@@ -124,6 +131,12 @@ ranges of `FAKECVE-2023-0001`.
 A finding's location fingerprint is a text value that's unique for each location on the attack
 surface. Each security product defines this according to its type of attack surface. For example, SAST
 incorporates file path and line number.
+
+## Lock file
+
+A lock file exhaustively lists both the direct and indirect dependencies of an application to ensure reproducible builds
+by a package manager. It _may_ also be a [dependency graph export](#dependency-graph-export) like in the case of a
+`Gemfile.lock` file, but listing dependency relationships is _not_ a requirement or guaranteed.
 
 ## Package managers and package types
 

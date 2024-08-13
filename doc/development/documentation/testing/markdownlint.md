@@ -83,6 +83,24 @@ To configure markdownlint in your editor, install one of the following as approp
   ((markdown-mode . ((flycheck-markdown-markdownlint-cli-config . ".markdownlint.yml"))))
   ```
 
+## Run `markdownlint-cli2` locally
+
+You can run `markdownlint-cli2` from anywhere in your repository. From the root of your repository,
+you don't need to specify the location of the configuration file. If you run it from elsewhere
+in your repository, you must specify the configuration file's location. In these commands,
+replace `doc/**/*.md` with the path to the Markdown files in your repository:
+
+```shell
+# From the root directory, you don't need to specify the configuration file
+$ markdownlint-cli2 'doc/**/*.md'
+
+# From elsewhere in the repository, specify the configuration file
+$ markdownlint-cli2 --config .markdownlint-cli2.yaml 'doc/**/*.md'
+```
+
+For a full list of command-line options, see [Command Line](https://github.com/DavidAnson/markdownlint-cli2?tab=readme-ov-file#command-line)
+in the `markdownlint-cli2` documentation.
+
 ## Disable markdownlint tests
 
 To disable all markdownlint rules, add a `<!-- markdownlint-disable -->` tag before the text, and a

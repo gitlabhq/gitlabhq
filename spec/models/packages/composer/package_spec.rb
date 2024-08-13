@@ -56,4 +56,8 @@ RSpec.describe Packages::Composer::Package, type: :model, feature_category: :pac
       expect(result).not_to include(package3)
     end
   end
+
+  describe '.installable' do
+    it_behaves_like 'installable packages', :composer_package
+  end
 end

@@ -24,18 +24,18 @@ In GitLab 15.4 and later, to configure push rules for a group:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
-1. Select **Save Push Rules**.
+1. Select **Save push rules**.
 
 In GitLab 15.3 and earlier, to configure push rules for a group:
 
 1. On the left sidebar, select **Push rules**.
 1. Select the settings you want.
-1. Select **Save Push Rules**.
+1. Select **Save push rules**.
 
 The group's new subgroups have push rules set for them based on either:
 
 - The closest parent group with push rules defined.
-- Push rules set at the instance level, if no parent groups have push rules defined.
+- Push rules set for the entire instance, if no parent groups have push rules defined.
 
 ## Restrict Git access protocols
 
@@ -247,7 +247,7 @@ DETAILS:
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [Audit Event](../../administration/audit_event_reports.md),
+For example, if you want to lock the group for an [audit event](../../administration/audit_event_reports.md),
 you can guarantee that project membership cannot be modified during the audit.
 
 If group membership lock is enabled, the group Owner can still:
@@ -305,7 +305,7 @@ DETAILS:
 
 To create group links via CN:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
@@ -313,7 +313,7 @@ To create group links via CN:
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Create group links via filter
 

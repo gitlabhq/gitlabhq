@@ -115,7 +115,7 @@ export default {
       @scrollToBottom="onScrollToBottom"
       ><slot name="header-details"></slot>
     </logs-top-bar>
-    <code class="gl-block gl-bg-black gl-text-base gl-pt-3">
+    <code class="gl-block gl-bg-black gl-pt-3 gl-text-base">
       <log-line
         v-for="logLine in logLines"
         :key="logLine.lineId"

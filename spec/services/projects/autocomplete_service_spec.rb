@@ -161,24 +161,20 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, group: group) }
     let_it_be(:wiki) { create(:project_wiki, project: project) }
-
-    before do
-      create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1')
-      create(:wiki_page, wiki: wiki, title: 'templates/page2', content: 'content2')
-    end
+    let_it_be(:page1) { create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1') }
+    let_it_be(:page2_template) { create(:wiki_page, wiki: wiki, title: 'templates/page2', content: 'content2') }
+    let_it_be(:page3) { create(:wiki_page, wiki: wiki, title: 'page3', content: "---\ntitle: Real title\n---\ncontent3") }
 
     context 'when user can read wiki' do
       it 'returns wiki pages (except templates)' do
         service = described_class.new(project, user)
         results = service.wikis
 
-        expect(results.size).to eq(1)
+        expect(results.size).to eq(2)
         expect(results.first).to include(path: "/#{project.full_path}/-/wikis/page1", slug: 'page1', title: 'page1')
       end
 
       it 'loads real title of the page from frontmatter if present' do
-        create(:wiki_page, wiki: wiki, title: 'page3', content: "---\ntitle: Real title\n---\ncontent3")
-
         service = described_class.new(project, user)
         results = service.wikis
 

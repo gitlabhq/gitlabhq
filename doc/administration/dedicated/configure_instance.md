@@ -13,7 +13,7 @@ DETAILS:
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin area](../../administration/admin_area.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [**Admin** area](../../administration/admin_area.md).
 
 Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 These environment settings cannot be changed by tenants.
@@ -209,12 +209,18 @@ Specify a comma separated list of IP addresses that can access your GitLab Dedic
 
 ### SAML
 
-NOTE:
-GitLab Dedicated supports a limited number of SAML parameters. Parameters not shown in the configuration below are unavailable for GitLab Dedicated instances.
+You can [configure SAML single sign-on (SSO)](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance.
+
+The following SAML SSO options are available:
+
+- [Request signing](../../integration/saml.md#sign-saml-authentication-requests-optional)
+- [SAML SSO for groups](../../integration/saml.md#configure-users-based-on-saml-group-membership)
+- [Group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync)
 
 Prerequisites:
 
-- You must configure the identity provider before sending the required data to GitLab.
+- You must [set up the identity provider (IdP)](../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
+- To configure GitLab to sign SAML authentication requests, you must create a private key and public certificate pair for your GitLab Dedicated instance.
 
 #### Activate SAML with Switchboard
 
@@ -224,9 +230,23 @@ To activate SAML for your GitLab Dedicated instance:
 1. At the top of the page, select **Configuration**.
 1. Expand **SAML Config**.
 1. Turn on the **Enable** toggle.
-1. Complete the fields.
+1. Complete the required fields:
+    - SAML label
+    - IdP cert fingerprint
+    - IdP SSO target URL
+1. Optional. To configure users based on SAML group membership, complete the following fields:
+    - SAML group attribute
+    - Admin groups
+    - Auditor groups
+    - External groups
+    - Required groups
+1. Optional. To configure SAML request signing, complete the following fields:
+    - Name identifier format
+    - Attribute statements
+    - Security
 1. Select **Save**.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+1. Optional. To use group sync, [configure the SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 1. To verify the SAML configuration is successful:
     - Check that the SSO button description is displayed on your instance's sign-in page.
     - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, and manually validate the settings.

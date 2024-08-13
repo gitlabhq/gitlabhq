@@ -32,11 +32,7 @@ export default {
 };
 </script>
 <template>
-  <gl-card
-    class="gl-new-card gl-mb-3 gl-mt-0"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-py-4 gl-px-5"
-  >
+  <gl-card header-class="gl-py-4 gl-bg-default" body-class="gl-py-4 gl-bg-subtle gl-rounded-b-base">
     <template v-if="showPipelineStatus" #header>
       <pipeline-status :commit-sha="commitSha" v-on="$listeners" />
     </template>

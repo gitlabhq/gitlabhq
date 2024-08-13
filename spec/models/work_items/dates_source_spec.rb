@@ -21,6 +21,48 @@ RSpec.describe WorkItems::DatesSource, feature_category: :portfolio_management d
     expect(date_source.namespace).to eq(work_item.namespace)
   end
 
+  describe 'before_save' do
+    let_it_be(:work_item) { create(:work_item) }
+
+    describe 'set_fixed_start_date' do
+      context 'when start date is fixed' do
+        it 'sets start_date to match fixed_start_date' do
+          date_source =
+            described_class.new(work_item: work_item, start_date_fixed: 1.day.ago, start_date_is_fixed: true)
+
+          expect { date_source.save! }.to change { date_source.start_date }.from(nil).to(date_source.start_date_fixed)
+        end
+      end
+
+      context 'when start date is not fixed' do
+        it 'does not update start_date' do
+          date_source =
+            described_class.new(work_item: work_item, start_date_fixed: 1.day.ago, start_date_is_fixed: false)
+
+          expect { date_source.save! }.to not_change { date_source.start_date }
+        end
+      end
+    end
+
+    describe 'set_fixed_due_date' do
+      context 'when due date is fixed' do
+        it 'sets due_date to match fixed_due_date' do
+          date_source = described_class.new(work_item: work_item, due_date_fixed: 1.day.ago, due_date_is_fixed: true)
+
+          expect { date_source.save! }.to change { date_source.due_date }.from(nil).to(date_source.due_date_fixed)
+        end
+      end
+
+      context 'when start date is not fixed' do
+        it 'does not update start_date' do
+          date_source = described_class.new(work_item: work_item, due_date_fixed: 1.day.ago, due_date_is_fixed: false)
+
+          expect { date_source.save! }.to not_change { date_source.due_date }
+        end
+      end
+    end
+  end
+
   context 'on database triggers' do
     let_it_be_with_reload(:work_item) { create(:work_item) }
 

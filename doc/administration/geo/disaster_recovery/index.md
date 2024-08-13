@@ -73,6 +73,9 @@ must disable the **primary** site.
   If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
   you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
+  NOTE:
+  The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
+
 ### Step 3. Promoting a **secondary** site
 
 Note the following when promoting a secondary:
@@ -85,12 +88,12 @@ Note the following when promoting a secondary:
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
-  [troubleshooting advice](../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+  [troubleshooting advice](failover_troubleshooting.md).md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 - If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 - If you are using a [location aware public URL](../secondary_proxy/location_aware_external_url.md), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
-    1. On the left sidebar, at the bottom, select **Admin area**.
+    1. On the left sidebar, at the bottom, select **Admin**.
     1. Select **CI/CD > Runners** and remove them.
   - Using the [Runners API](../../../api/runners.md).
 
@@ -518,4 +521,4 @@ Data that was created on the primary while the secondary was paused is lost.
 
 ## Troubleshooting
 
-This section was moved to [another location](../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+This section was moved to [another location](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).

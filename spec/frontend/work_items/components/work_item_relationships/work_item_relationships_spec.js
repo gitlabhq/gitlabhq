@@ -10,12 +10,10 @@ import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 
 import {
-  groupWorkItemByIidResponseFactory,
   workItemByIidResponseFactory,
   mockLinkedItems,
   mockBlockingLinkedItem,
@@ -29,9 +27,6 @@ describe('WorkItemRelationships', () => {
   const emptyLinkedWorkItemsQueryHandler = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory());
-  const groupWorkItemsQueryHandler = jest
-    .fn()
-    .mockResolvedValue(groupWorkItemByIidResponseFactory());
   const removeLinkedWorkItemSuccessMutationHandler = jest
     .fn()
     .mockResolvedValue(removeLinkedWorkItemResponse('Successfully unlinked IDs: 2.'));
@@ -51,7 +46,6 @@ describe('WorkItemRelationships', () => {
     const mockApollo = createMockApollo([
       [workItemByIidQuery, workItemQueryHandler],
       [removeLinkedItemsMutation, removeLinkedWorkItemMutationHandler],
-      [groupWorkItemByIidQuery, groupWorkItemsQueryHandler],
     ]);
 
     wrapper = shallowMountExtended(WorkItemRelationships, {
@@ -182,32 +176,10 @@ describe('WorkItemRelationships', () => {
     },
   );
 
-  describe('when project context', () => {
-    it('calls the project work item query', () => {
-      createComponent();
+  it('calls the work item query', () => {
+    createComponent();
 
-      expect(emptyLinkedWorkItemsQueryHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query', () => {
-      createComponent();
-
-      expect(groupWorkItemsQueryHandler).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when group context', () => {
-    it('skips calling the project work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(emptyLinkedWorkItemsQueryHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(groupWorkItemsQueryHandler).toHaveBeenCalled();
-    });
+    expect(emptyLinkedWorkItemsQueryHandler).toHaveBeenCalled();
   });
 
   it('removes linked item and shows toast message when removeLinkedItem event is emitted', async () => {

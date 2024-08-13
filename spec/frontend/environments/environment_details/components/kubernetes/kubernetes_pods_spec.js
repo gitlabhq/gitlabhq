@@ -99,6 +99,26 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       expect(findWorkloadTable().props('items')).toMatchObject(mockPodsTableItems);
     });
 
+    it('provides correct actions data to the workload table', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      const actions = [
+        {
+          name: 'delete-pod',
+          text: 'Delete pod',
+          icon: 'remove',
+          variant: 'danger',
+          class: '!gl-text-red-500',
+        },
+      ];
+      const items = findWorkloadTable().props('items');
+
+      items.forEach((item) => {
+        expect(item.actions).toEqual(actions);
+      });
+    });
+
     it('emits a update-failed-state event for each pod', async () => {
       createWrapper();
       await waitForPromises();
@@ -130,6 +150,15 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
 
       findWorkloadTable().vm.$emit('remove-selection');
       expect(wrapper.emitted('remove-selection')).toHaveLength(1);
+    });
+
+    it('emits delete-pod event when receives it from the WorkloadTable component', async () => {
+      createWrapper();
+      await waitForPromises();
+      expect(wrapper.emitted('delete-pod')).toBeUndefined();
+
+      findWorkloadTable().vm.$emit('delete-pod', mockPodsTableItems[0]);
+      expect(wrapper.emitted('delete-pod')).toHaveLength(1);
     });
 
     it('filters pods when receives a stat select event', async () => {

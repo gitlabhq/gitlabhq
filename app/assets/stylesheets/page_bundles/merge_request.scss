@@ -121,6 +121,7 @@ $comparison-empty-state-height: 62px;
     margin-bottom: 0;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dropdown-custom-toggle {
     width: 100%;
   }
@@ -139,6 +140,7 @@ $comparison-empty-state-height: 62px;
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .issuable-form-label-select-holder .gl-dropdown-toggle {
   @include media-breakpoint-up(md) {
     width: 250px;
@@ -157,7 +159,7 @@ $comparison-empty-state-height: 62px;
 .merge-request-tabs-holder {
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
-  border-bottom: 1px solid var(--border-color, $border-color);
+  border-bottom: 1px solid var(--gl-border-color-default);
   background-color: $white;
 
   .gl-dark & {
@@ -304,6 +306,7 @@ $comparison-empty-state-height: 62px;
 .mr-compare-dropdown {
   width: 100%;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button-text {
     width: 100%;
   }

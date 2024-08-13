@@ -40,6 +40,18 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
     commandParams: { level: 4 },
     label: __('Heading 4'),
   },
+  {
+    contentType: 'heading',
+    editorCommand: 'setHeading',
+    commandParams: { level: 5 },
+    label: __('Heading 5'),
+  },
+  {
+    contentType: 'heading',
+    editorCommand: 'setHeading',
+    commandParams: { level: 6 },
+    label: __('Heading 6'),
+  },
 ];
 
 export const ALERT_EVENT = 'alert';

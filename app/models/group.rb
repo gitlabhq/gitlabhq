@@ -301,6 +301,7 @@ class Group < Namespace
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }
+  scope :by_min_access_level, ->(user, access_level) { joins(:group_members).where(members: { user: user }).where('members.access_level >= ?', access_level) }
 
   class << self
     def sort_by_attribute(method)
@@ -947,12 +948,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_items_rolledup_dates_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
+  def glql_integration_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
   end
 
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
-  def namespace_work_items_enabled?
+  def namespace_work_items_enabled?(_user = nil)
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
   end
 
@@ -976,6 +977,9 @@ class Group < Namespace
   # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
   override :feature_available?
   def feature_available?(feature, user = nil)
+    # when we check the :issues feature at group level we need to check the `epics` license feature instead
+    feature = feature == :issues ? :epics : feature
+
     if ::Groups::FeatureSetting.available_features.include?(feature)
       group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage
     else

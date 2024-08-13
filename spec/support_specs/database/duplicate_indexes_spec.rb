@@ -4,7 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Database::DuplicateIndexes, feature_category: :database do
   index_class = ActiveRecord::ConnectionAdapters::IndexDefinition
-  let(:default_index_options) { { using: :btree, orders: {}, unique: false, opclasses: {}, where: nil } }
+  let(:default_index_options) do
+    options = { using: :btree, orders: {}, unique: false, opclasses: {}, where: nil }
+    options[:include] = [] if ::Gitlab.next_rails?
+    options
+  end
 
   let(:table_name) { 'foobar' }
   let(:index1) { instance_double(index_class, default_index_options.merge(name: 'index1', columns: %w[user_id])) }

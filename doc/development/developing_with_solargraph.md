@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Gemfile packages [Solargraph](https://github.com/castwide/solargraph) language server for additional IntelliSense and code formatting capabilities with editors that support it.
 
-Example configuration for Solargraph can be found in [`.solargraph.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.solargraph.yml.example) file. Copy the contents of this file to `.solargraph.yml` file for language server to pick this configuration up. Since `.solargraph.yml` configuration file is ignored by Git, it's possible to adjust configuration according to your needs.
+Example configuration for Solargraph can be found in [`.solargraph.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.solargraph.yml.example) file. Copy the contents of this file to `.solargraph.yml` file for language server to pick this configuration up. As the `.solargraph.yml` configuration file is ignored by Git, it's possible to adjust configuration according to your needs.
 
 Refer to particular IDE plugin documentation on how to integrate it with Solargraph language server:
 

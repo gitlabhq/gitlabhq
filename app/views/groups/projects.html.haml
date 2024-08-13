@@ -3,25 +3,21 @@
 - add_page_specific_style 'page_bundles/projects'
 - @force_desktop_expanded_sidebar = true
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-search-settings-section' }, header_options: { class: 'gl-new-card-header gl-display-flex' }, body_options: { class: 'gl-new-card-body' }) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper
-      %h3.gl-new-card-title
-        = _('Projects')
-      .gl-new-card-count
-        = sprite_icon('project', css_class: 'gl-mr-2')
-        = @projects.size
-    .gl-new-card-actions
-      - if can? current_user, :admin_group, @group
-        = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small) do
-          = _("New project")
+= render ::Layouts::CrudComponent.new(_('Projects'),
+  icon: 'project',
+  count: @projects.size,
+  options: { class: 'js-search-settings-section' }) do |c|
+  - c.with_actions do
+    - if can? current_user, :admin_group, @group
+      = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small) do
+        = _("New project")
   - c.with_body do
-    %ul.content-list{ class: 'gl-px-3!' }
+    %ul.content-list
       - @projects.each do |project|
         %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
           = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 48, class: 'gl-flex-shrink-0 gl-mr-5')
           .gl-min-w-0.gl-flex-grow-1
-            .title
+            .title.gl-mr-5
               = link_to project_path(project), class: 'js-prefetch-document' do
                 %span.project-full-name
                   %span.namespace-name
@@ -38,7 +34,7 @@
 
           = render 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
 
-          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex.gl-gap-3
+          .stats.gl-text-secondary.gl-flex-shrink-0.gl-hidden.sm:gl-flex.gl-gap-3
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
           .controls.gl-flex-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
@@ -46,10 +42,11 @@
               button_options: { class: 'gl-mr-2' }) do
               = _('View members')
             = render Pajamas::ButtonComponent.new(href: edit_project_path(project),
-              size: :small) do
-              = _('Edit')
+              category: :tertiary,
+              icon: 'pencil',
+              button_options: { class: 'has-tooltip', title: _('Edit') })
             = render 'delete_project_button', project: project
       - if @projects.blank?
         .nothing-here-block= _("This group has no projects yet")
-
-= paginate @projects, theme: "gitlab"
+  - c.with_pagination do
+    = paginate @projects, theme: "gitlab"

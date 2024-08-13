@@ -293,12 +293,11 @@ module Ci
     end
 
     def persist_runtime_features(build, params)
-      if params.dig(:info, :features, :cancel_gracefully) &&
-          Feature.enabled?(:ci_canceling_status, build.project)
-        build.set_cancel_gracefully
+      return unless params.dig(:info, :features, :cancel_gracefully)
 
-        build.save
-      end
+      build.set_cancel_gracefully
+
+      build.save
     end
 
     def pre_assign_runner_checks

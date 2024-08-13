@@ -4,7 +4,7 @@ import { GlForm, GlButton, GlFormGroup } from '@gitlab/ui';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import { isUserBusy, computedClearStatusAfterValue } from '~/set_status_modal/utils';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
@@ -18,7 +18,7 @@ export default {
     GlForm,
     GlFormGroup,
     GlButton,
-    SettingsBlock,
+    SettingsSection,
     SetStatusForm,
     TimezoneDropdown,
   },
@@ -150,9 +150,11 @@ export default {
 <template>
   <gl-form class="edit-user" @submit.prevent="onSubmit">
     <user-avatar @blob-change="onBlobChange" />
-    <settings-block class="js-search-settings-section">
-      <template #title>{{ $options.i18n.setStatusTitle }}</template>
-      <template #description>{{ $options.i18n.setStatusDescription }}</template>
+    <settings-section
+      :heading="$options.i18n.setStatusTitle"
+      :description="$options.i18n.setStatusDescription"
+      class="js-search-settings-section"
+    >
       <div class="gl-max-w-80">
         <set-status-form
           :default-emoji="defaultEmoji"
@@ -167,14 +169,16 @@ export default {
           @availability-input="onAvailabilityInput"
         />
       </div>
-    </settings-block>
-    <settings-block class="js-search-settings-section">
-      <template #title>{{ $options.i18n.setTimezoneTitle }}</template>
-      <template #description>{{ $options.i18n.setTimezoneDescription }}</template>
+    </settings-section>
+    <settings-section
+      :heading="$options.i18n.setTimezoneTitle"
+      :description="$options.i18n.setTimezoneDescription"
+      class="js-search-settings-section"
+    >
       <gl-form-group :label="__('Timezone')" class="gl-md-form-input-lg">
         <timezone-dropdown :value="timezone" :timezone-data="timezones" @input="onTimezoneInput" />
       </gl-form-group>
-    </settings-block>
+    </settings-section>
     <!-- TODO: to implement profile editing form fields -->
     <!-- It will be implemented in the upcoming MRs -->
     <!-- Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/389918 -->

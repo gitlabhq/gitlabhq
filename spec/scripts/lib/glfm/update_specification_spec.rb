@@ -27,7 +27,7 @@ require_relative '../../../../scripts/lib/glfm/update_specification'
 # should run in sub-second time when the Spring pre-loader is used. This allows
 # logic which is not directly related to the slow sub-processes to be TDD'd with a
 # very rapid feedback cycle.
-RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_planning do
+RSpec.describe Glfm::UpdateSpecification, '#process', :uses_fast_spec_helper_but_runs_slow, feature_category: :team_planning do
   include NextInstanceOf
 
   subject { described_class.new }

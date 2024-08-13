@@ -54,16 +54,16 @@ verification methods:
 | Blobs    | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blobs    | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
+| Blobs    | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
 | Blobs    | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Incident Metric Images  _(file system)_         | Geo with API/Managed                         | SHA256 checksum               |
-| Blobs    | Incident Metric Images  _(object storage)_      | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blobs    | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
+| Blobs    | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Dependency Proxy Images_(file system)_          | Geo with API                                 | SHA256 checksum               |
@@ -95,7 +95,7 @@ The Gitaly gRPC API does the communication, with three possible ways of synchron
 
 - Using regular Git clone/fetch from one Geo site to another (with special authentication).
 - Using repository snapshots (for when the first method fails or repository is corrupt).
-- Manual trigger from the Admin area (a combination of both of the above).
+- Manual trigger from the **Admin** area (a combination of both of the above).
 
 Each project can have at most 3 different repositories:
 

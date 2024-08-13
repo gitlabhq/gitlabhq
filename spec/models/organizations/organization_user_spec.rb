@@ -102,6 +102,23 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
 
       it { is_expected.to include(active_organization_user).and exclude(inactive_organization_user) }
     end
+
+    describe '.by_user' do
+      # This implicitly creates default organization
+      let_it_be(:user) { create(:user) }
+      let_it_be(:another_user) { create(:user) }
+      let_it_be(:organization_1) { create(:organization, users: [user]) }
+      let_it_be(:organization_2) { create(:organization, users: [user, another_user]) }
+      let_it_be(:organization_3) { create(:organization, users: [another_user]) }
+
+      subject(:scope_by_user) { described_class.by_user(user) }
+
+      it 'returns the records for the user' do
+        expect(scope_by_user.map(&:organization)).to contain_exactly(
+          Organizations::Organization.default_organization, organization_1, organization_2
+        )
+      end
+    end
   end
 
   it_behaves_like 'having unique enum values'

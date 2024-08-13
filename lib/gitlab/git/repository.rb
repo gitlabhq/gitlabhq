@@ -503,6 +503,15 @@ module Gitlab
         Set.new(branches)
       end
 
+      # Returns an array of DiffBlob objects that represent a diff between
+      # two blobs in a repository. For each diff generated, the pre-image and
+      # post-image blob IDs should be obtained using `find_changed_paths` method.
+      def diff_blobs(...)
+        wrapped_gitaly_errors do
+          gitaly_diff_client.diff_blobs(...)
+        end
+      end
+
       # Return an array of Diff objects that represent the diff
       # between +from+ and +to+.  See Diff::filter_diff_options for the allowed
       # diff options.  The +options+ hash can also include :break_rewrites to
@@ -647,9 +656,9 @@ module Gitlab
         end
       end
 
-      def rm_branch(branch_name, user:)
+      def rm_branch(branch_name, user:, target_sha: nil)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_delete_branch(branch_name, user)
+          gitaly_operation_client.user_delete_branch(branch_name, user, target_sha: target_sha)
         end
       end
 
@@ -1054,6 +1063,10 @@ module Gitlab
 
       def gitaly_blob_client
         @gitaly_blob_client ||= Gitlab::GitalyClient::BlobService.new(self)
+      end
+
+      def gitaly_diff_client
+        @gitaly_diff_client ||= Gitlab::GitalyClient::DiffService.new(self)
       end
 
       def gitaly_conflicts_client(our_commit_oid, their_commit_oid)

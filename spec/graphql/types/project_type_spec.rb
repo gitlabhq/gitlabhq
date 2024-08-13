@@ -356,6 +356,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :updated_after,
         :updated_before,
         :author_username,
+        :approved_by,
+        :my_reaction_emoji,
+        :merged_by,
+        :release_tag,
         :assignee_username,
         :assignee_wildcard_id,
         :reviewer_username,
@@ -1303,14 +1307,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         expect(organization_edit_path).to eq(
           "/-/organizations/#{organization.path}/projects/#{project.path_with_namespace}/edit"
         )
-      end
-    end
-
-    context 'when project does not have an organization associated with it' do
-      let_it_be(:project) { create(:project, :public, organization: nil) }
-
-      it 'returns nil' do
-        expect(organization_edit_path).to be_nil
       end
     end
   end

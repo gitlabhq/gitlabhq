@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -18,7 +18,7 @@ Before you can import projects from other systems, you must enable the
 [import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Select each of **Import sources** to allow.
@@ -30,7 +30,7 @@ To enable the export of
 [projects and their data](../../user/project/settings/import_export.md#export-a-project-and-its-data):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Project export**.
@@ -45,7 +45,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
 
 WARNING:
-In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan-execution-policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
+In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 WARNING:
 This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
@@ -55,7 +55,7 @@ Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Import and export settings** section.
 1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
@@ -78,7 +78,7 @@ Exports from non-administrators still generate audit events.
 
 To enable silent admin project and group file exports:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**, then expand **Import and export settings**.
 1. Scroll to **Silent exports by admins**.
 1. Select the **Enabled** checkbox.
@@ -89,7 +89,7 @@ To enable silent admin project and group file exports:
 
 To modify the maximum file size for exports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**, then expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum export size (MiB)**.
 
@@ -97,7 +97,7 @@ To modify the maximum file size for exports in GitLab:
 
 To modify the maximum file size for imports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum import size (MiB)**.
@@ -119,7 +119,7 @@ By default, the maximum remote file size for imports from external object storag
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Maximum import remote file size (MiB)**. Set to `0` to set no file size limit.
@@ -132,7 +132,7 @@ By default, the maximum download file size for imports by direct transfer is 5 G
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MiB)**. Set to `0` to set no download file size limit.
@@ -155,7 +155,7 @@ Decompressed archive size validation failed.
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum decompressed file size for archives from imports (MiB)**.
@@ -168,7 +168,7 @@ When you [import a project](../../user/project/settings/import_export.md), you c
 
 To modify the maximum decompressed file size for imports in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Timeout for decompressing archived files (seconds)**.
@@ -195,7 +195,7 @@ The default job limit is:
 
 To modify this setting:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum number of simultaneous import jobs** for the desired importer.

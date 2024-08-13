@@ -7,6 +7,7 @@ class WebHookLog < ApplicationRecord
   include PartitionedTable
 
   OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
+  MAX_RECENT_DAYS = 7
 
   attr_accessor :interpolated_url
 
@@ -26,8 +27,15 @@ class WebHookLog < ApplicationRecord
   before_save :redact_user_emails
   before_save :set_url_hash, if: -> { interpolated_url.present? }
 
-  def self.recent
-    where(created_at: 2.days.ago.beginning_of_day..Time.zone.now)
+  scope :by_status_code, ->(status_code) { where(response_status: status_code) }
+
+  def self.recent(number_of_days = 2)
+    if number_of_days > MAX_RECENT_DAYS
+      raise ArgumentError,
+        "`recent` scope can only provide up to #{MAX_RECENT_DAYS} days of log records"
+    end
+
+    where(created_at: number_of_days.days.ago.beginning_of_day..Time.zone.now)
       .order(created_at: :desc)
   end
 

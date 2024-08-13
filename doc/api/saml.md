@@ -14,7 +14,9 @@ DETAILS:
 
 API for accessing SAML features.
 
-## Get SAML identities for a group
+## GitLab.com endpoints
+
+### Get SAML identities for a group
 
 ```plaintext
 GET /groups/:id/saml/identities
@@ -53,7 +55,7 @@ Example response:
 ]
 ```
 
-## Get a single SAML identity
+### Get a single SAML identity
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
 
@@ -83,7 +85,7 @@ Example response:
 }
 ```
 
-## Update `extern_uid` field for a SAML identity
+### Update `extern_uid` field for a SAML identity
 
 Update `extern_uid` field for a SAML identity:
 
@@ -110,7 +112,7 @@ curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/sam
 --form "extern_uid=be20d8dcc028677c931e04f387"
 ```
 
-## Delete a single SAML identity
+### Delete a single SAML identity
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
 
@@ -139,3 +141,17 @@ Example response:
     "message" : "204 No Content"
 }
 ```
+
+## Self-managed GitLab endpoints
+
+### Get a single SAML identity
+
+Use the Users API to [get a single SAML identity](../api/users.md#for-administrators).
+
+### Update `extern_uid` field for a SAML identity
+
+Use the Users API to [update the `extern_uid` field of a user](../api/users.md#user-modification).
+
+### Delete a single SAML identity
+
+Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-user).

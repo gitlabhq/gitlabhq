@@ -25,7 +25,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     end
 
     it 'displays the graphql pipeline stage' do
-      expect(page).to have_selector('[data-testid="pipeline-stage"]')
+      expect(page).to have_selector('[data-testid="pipeline-mini-graph-dropdown"]')
 
       build.drop
     end
@@ -58,11 +58,11 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     it 'displays a mini pipeline graph' do
       expect(page).to have_selector('[data-testid="commit-box-pipeline-mini-graph"]')
 
-      find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+      find_by_testid('pipeline-mini-graph-dropdown-toggle').click
 
       wait_for_requests
 
-      within_testid('mini-pipeline-graph-dropdown') do
+      within_testid('pipeline-mini-graph-dropdown') do
         expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
         expect(page).to have_content(build.stage_name)
       end

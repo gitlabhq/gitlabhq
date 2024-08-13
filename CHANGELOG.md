@@ -823,6 +823,46 @@ entry.
 - [Remove "use_remote_mirror_destroy_service" feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/74e1e921d003960afd6f259384aee2dfec18f30e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155852))
 - [Protected containers: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/4606b5ef64f75acdd581258a0b93034195626e83) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146177))
 
+## 17.1.4 (2024-08-06)
+
+### Changed (2 changes)
+
+- [Reverify externally verified gpg keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e11bfa6bdfcf0b40f440bf50e104d5d4e4496d74)
+- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/024945347ea0b433de65c0ecb80c50cc031cbc52)
+
+### Security (13 changes)
+
+- [Show correct file content](https://gitlab.com/gitlab-org/security/gitlab/-/commit/59df2cc3758c03aff024151f5dfd59fa3263ac7b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4335))
+- [Fix Possible asciidoctor include:: directive DOS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6fcbfba6119fcadff61dc4550d244b56f5fe6c70) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4330))
+- [Filter parameters in Rack::Attack logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b807312a2029e6a341962591dcdcfd21ea8ef0c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4273))
+- [Update audit payload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7beb230f12ec6270523a269dad39dba42fdc108e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4326))
+- [Limit access to project accessed by Security Policy Bot](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b58cad5e32c2b9f399742719006a4e527f773e2d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4344))
+- [Show alert about not rendering files due to path encoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/274a7177f5eea11e258534e5155f878334bf48ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4338))
+- [Fix the catastrophic backtracking](https://gitlab.com/gitlab-org/security/gitlab/-/commit/88e2d71de74d04e29a8a62527bb147208c86fc29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4290))
+- [Security fixes for banzai pipeline part 2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8167c0e9225c5893043ea34bfc1353035f173924) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4282))
+- [Remove xhtml extensions from snippets blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ba1a3f5a36820995e512b4ec846d57df54ed9c4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4301))
+- [Add a project scope to LfsTokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9e684758e31af25bdb69a8d4f95e8e0821bfc40b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4320))
+- [Fix ReDoS when parsing git push options](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f49a979105bdfd365738d42406e94f7cabba4601) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4313))
+- [Fix ReDoS in RefMatcher](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec18bbdcb19f831d3732e2ffebe87740982baf24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4316))
+- [Enforce `require_password_to_approve` MR approval policy property](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d9769f6d7a11c2ae23f8816483358f7da3e729be) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4260))
+
+## 17.1.3 (2024-07-24)
+
+### Fixed (2 changes)
+
+- [Fix wildcard search for package.json in npm upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f319a2257eca7ef742367b9b4636645ad4781ea2)
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/01c080264ccb25ec17c04eeb470014389a916cfa)
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70145f096f59d1729df3f0e1244a039c6e14f0b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4264))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8889c5c795eb2bd19b1bbcf7e05050c009843f82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4293))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68eb8994474a9b0fdd15d03ae2f0a75a61eecd1f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4285))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/caf6a3a26a0bedfc309f8ba45bea605fc37e70f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4185))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed6d149e28b4c8aafe36d6c6ff2824e1d459c651) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4242))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f412b11cacce187d0d7c463fdba0a3c1d4d378ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4254))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fda79ce08be8700a75eadaf9641e1ee00b0d92ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4249))
+
 ## 17.1.2 (2024-07-09)
 
 ### Fixed (2 changes)
@@ -1965,6 +2005,48 @@ entry.
 
 - [Update Web IDE dependency to receive duo fixes](gitlab-org/gitlab@47323c05565dd32ea4de9f999adbd9f7aa8748e3) ([merge request](gitlab-org/gitlab!154064))
 
+## 17.0.6 (2024-08-06)
+
+### Changed (1 change)
+
+- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/106d8bbe3b70f99f52963ac363764f4eb6abd5c1)
+
+### Security (13 changes)
+
+- [Show correct file content](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1fa5a60d3f8b4d420e65baaf9eb631e2fa9bdf0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4336))
+- [Fix Possible asciidoctor include:: directive DOS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8d03c5769e39605f00c930d0fb7b9baab2b6ae5c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4331))
+- [Filter parameters in Rack::Attack logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9ee1310ad76bceb5f45cb04ea4534c71efa90255) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4274))
+- [Update audit payload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6e11e37c02cf10887a49e2ee494fec7efe37d944) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4327))
+- [Limit access to project accessed by Security Policy Bot](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c4c9a4adf772993f42b4788303180d36fb8642d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4345))
+- [Show alert about not rendering files due to path encoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d939235f3042ff0924e4a794cf0481bc28e08ae3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4339))
+- [Fix the catastrophic backtracking](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7397896f34a4d0319a7750ae7f0a32aa2dad72c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4291))
+- [Security fixes for banzai pipeline part 2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/40cf9d179ad038363b59eb0accfd1fa2e6bef34b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4281))
+- [Remove xhtml extensions from snippets blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4952960acf3b3b133c29454375fcbb1e3850ee44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4332))
+- [Add a project scope to LfsTokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbe4a50b5844d452f12e58dab80143c7e548d273) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4321))
+- [Fix ReDoS when parsing git push options](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14b95bf425bf27746f73ec813753355919346b82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4314))
+- [Fix ReDoS in RefMatcher](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fdab3bdb907212a736b961ed58f5ad4d52135108) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4317))
+- [Enforce `require_password_to_approve` MR approval policy property](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d7c6114a6915143751f40e44ef2630647cf615a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4261))
+
+## 17.0.5 (2024-07-24)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/security/gitlab/-/commit/10f23572a1c4aca31a9e3a9eb9f5546fe5353dfe)
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f34b4a189ab52c96b69716b3b02290c11e67ff42)
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/762b76f8c82061702e4854b978462f8f5f915a4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4265))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/502b678220abbc1427d2c9320d6e26deb4084234) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4292))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc6479e121222a51d8281b445626959732880f67) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4286))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/60d862aa715e1692942faaa8fa4ecf719e05407e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4131))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7be78d4cf575453967f23b09054551299841fd8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4243))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1afc21105ee1285c40a701edf729bb2a247c1438) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4255))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a3b8343e3ef3fd0025db94a8b8d14006d821b831) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4250))
+
 ## 17.0.4 (2024-07-09)
 
 ### Fixed (1 change)
@@ -2909,6 +2991,22 @@ entry.
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
 
+## 16.11.8 (2024-08-05)
+
+### Changed (1 change)
+
+- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/d0a48169310c947607259d20046bdaadabcebaee) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161239))
+
+## 16.11.7 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/74bda3d7064c5d346b89c3b81fc9ee9189919945) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159056))
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/gitlab/-/commit/b1ce2c82376ff000984686c22e739464458d868b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159021))
+
 ## 16.11.6 (2024-07-09)
 
 ### Fixed (1 change)
@@ -3615,6 +3713,12 @@ entry.
 - [Drop promote_ultimate_features_at column](gitlab-org/gitlab@b5dbcc83686be21fbf90d176bfd07707f21d1518) ([merge request](gitlab-org/gitlab!145706))
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
+
+## 16.10.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/401fa9da22fdeffa67c783e11b98ce0c9bb8c7ae) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159057))
 
 ## 16.10.8 (2024-06-25)
 
@@ -4405,6 +4509,16 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.10 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/7747e83d1860f2186df35c5a29370e0e5bb0c810) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159058))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/c7dc314ace84491b696fb65c3384fb0302d00d5a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153470))
 
 ## 16.9.9 (2024-06-25)
 
@@ -5246,6 +5360,20 @@ No changes.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/b8d88ab89f76ff7ed39d4d561ef79bd9c8c664cd) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159066))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/8a7138eaae89c433bcc234a59a9fb9c696c3081f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153469))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/3d02306a06855503e8aaafd68b9234343d5ae84b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160249))
+
 ## 16.8.8 (2024-06-25)
 
 ### Fixed (1 change)
@@ -5828,6 +5956,20 @@ No changes.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/22ab35073260e27d979f7cb54e9fba85e7327327) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159069))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/0fc9d3cfb69f6f2008557fcbd99c5c61eba5ff07) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153468))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/b1626d144508b52a015578a5b5089606b88a1671) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160248))
 
 ## 16.7.8 (2024-06-25)
 
@@ -6820,6 +6962,20 @@ No changes.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/3dc90cff5b65c02d77ad188d9e03cb6beebd7ea5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159089))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/0bfdb5a3473850bad2db375f2e46e317829e9535) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153466))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/c80c110f8e413fd6d076a8320acb0e838306da59) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160246))
+
 ## 16.6.8 (2024-06-25)
 
 ### Fixed (1 change)
@@ -7454,6 +7610,25 @@ No changes.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/38e92182768a2727bd93e71988af72841e66f606) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159093))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/e4940da36a2ce954bec919de96b0cbaa15f2e8f9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156399))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/d41286dccd5eccef58cf04a76e7b743fced6e2ea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158110))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/43329df2117133bb8841acdfd67b3c912ebf4e97) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153459))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/cb2000d3a93c8e3b98213d0e23291a2d4331c2c6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160245))
 
 ## 16.5.8 (2024-01-24)
 
@@ -8207,6 +8382,26 @@ No changes.
 - [Remove FF when canceling redundant pipelines](gitlab-org/gitlab@16bb8c5ff1ef7c6b1d854c71f4fec555439de210) ([merge request](gitlab-org/gitlab!131978))
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
+
+## 16.4.6 (2024-07-23)
+
+### Added (2 changes)
+
+- [Removed nil constraint from personal access token table](https://gitlab.com/gitlab-org/gitlab/-/commit/f20aab9203d7b085d5963a7e75a537efb02896b7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125)) **GitLab Enterprise Edition**
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/385110959faf9d65fa3a33f1d2dff49659eb835a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/fda6b0a5e5be798e3537e817e3ba03cb969e2594) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156400))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/a23e1d214732b53465904ea271864f99c8e52151) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158474))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/8dda03380e73f82e72c77f965c2be50ba74a22d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153458))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/22395fb7fd39e0074ad0c86efae39fe5698a5487) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160242))
 
 ## 16.4.5 (2024-01-11)
 
@@ -9017,6 +9212,25 @@ No changes.
 - [Remove completed partition_id migrations](gitlab-org/gitlab@119f7a7fd961c93be6b1bbd606fbbe2b798f10aa) ([merge request](gitlab-org/gitlab!129118))
 - [Convert design_user_mentions.note_id to bigint for self-managed](gitlab-org/gitlab@08219da99fc356fecc4e9965fe1891baca4d10ff) ([merge request](gitlab-org/gitlab!129111))
 - [Migrate etag cache store from SharedState to Cache](gitlab-org/gitlab@6476298fcdcf77206fa768bcca6bd1e3c7994936) ([merge request](gitlab-org/gitlab!129050))
+
+## 16.3.8 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/5cff20e0f81c46192f7da21a99fcb2ccb3f1a759) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159383))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/f43da768fb134d230c927f725cf6f303f33259f9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156401))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/c188632b066fefce719fbe3233d79d24474e8567) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158475))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/64da75077c8218d683c131476a6b1d24fab7a92d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153457))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/db817ea6889be2eb82815b22b7fa9d0e67c02d83) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160265))
 
 ## 16.3.7 (2024-01-11)
 
@@ -9894,6 +10108,25 @@ No changes.
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
 
+## 16.2.10 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/ba2d4b91c1220ee8e8fbab936e5590c824abd456) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159401))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/204ef660742a0cae320566a6c8980ad25fc57c56) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156402))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/3c523d867f4bc528ad3703c75e4e7e7910672ec5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158479))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/10386fc56607af6c2c9b9569a67ab63b4a824dd0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153453))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/9f5135c667e30cfc934de7fde88da8c527ea9265) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160239))
+
 ## 16.2.9 (2024-01-11)
 
 ### Security (2 changes)
@@ -10722,6 +10955,25 @@ No changes.
 - [Accept period_time as string on DORA executor](gitlab-org/gitlab@7d0792288be02cd3300410144067ea947da4846a) ([merge request](gitlab-org/gitlab!123975)) **GitLab Enterprise Edition**
 - [Add schema_version in the commits index mapping](gitlab-org/gitlab@e75b94903b69e1e1588e251217926882875555a8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123435)) **GitLab Enterprise Edition**
 - [Allow to set labels for Redis calls](gitlab-org/gitlab@8ccfff9e2d250eb22afaa7d0243e707b536a5436) ([merge request](gitlab-org/gitlab!122340))
+
+## 16.1.7 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/2cf8f8fd9a150d7fa7cee48a71218e9095504b20) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159414))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/a77d096190bb805624c2748a73bd8b5b65ca7252) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156403))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/c42702ce6f92ee069c34bf40e932fe549ec6f26f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158476))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/2d2d1f29000179c0bddde32a6b5d2ad20871ec7d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153448))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/7d007c04790b027d4f7656258d5c57012d0ccfe9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160238))
 
 ## 16.1.6 (2024-01-11)
 
@@ -11738,6 +11990,25 @@ No changes.
 - [Remove use_traversal_ids_for_ancestor_scopes feature flag](gitlab-org/gitlab@f65d0b8212759de7686d4b02f8c45fea615c52a3) ([merge request](gitlab-org/gitlab!120559))
 - [Migrate custom CSS to utility classes](gitlab-org/gitlab@a67999317bec111d523c763fc865665d4ded0aaf) ([merge request](gitlab-org/gitlab!120745)) **GitLab Enterprise Edition**
 - [Remove the vsa_group_and_project_parity FF](gitlab-org/gitlab@d090818bdedb0e220928d8e456cf36c8bce81f42) ([merge request](gitlab-org/gitlab!120727)) **GitLab Enterprise Edition**
+
+## 16.0.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/f04aa7edd7e6ecb314773e442562c6a5c5b61b24) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159446))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/0db081c4ab3d6815a7e7dc9055c6f65d97b0282e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156404))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/fe1ec68618cebb9fbb028603f427922453b4bd18) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158477))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/7682e84b661ba1398578f49d9a48a0e19cece0bc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153435))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/6f192dc0715fab237697d8f9cc5ac01b9cf43974) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160237))
 
 ## 16.0.8 (2023-08-01)
 

@@ -16,7 +16,7 @@ Use GitLab to triage, respond, and remediate incidents.
 
 ## Incidents list
 
-When you [view the incidents list](manage_incidents.md#view-incidents-list), it contains the following:
+When you [view the incidents list](manage_incidents.md#view-a-list-of-incidents), it contains the following:
 
 - **State**: To filter incidents by their state, select **Open**, **Closed**,
   or **All** above the incident list.
@@ -177,7 +177,7 @@ label to the incident.
 - [Create an incident](manage_incidents.md#create-an-incident)
 - [Create an incident automatically](alerts.md#trigger-actions-from-alerts)
   whenever an alert is triggered
-- [View incidents list](manage_incidents.md#view-incidents-list)
+- [View incidents list](manage_incidents.md#view-a-list-of-incidents)
 - [Assign to a user](manage_incidents.md#assign-to-a-user)
 - [Change incident severity](manage_incidents.md#change-severity)
 - [Change incident status](manage_incidents.md#change-status)

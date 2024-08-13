@@ -227,7 +227,7 @@ When writing code for real-time features we have to keep a couple of things in m
 Thus, we must strike a balance between sending requests and the feeling of real-time.
 Use the following rules when creating real-time solutions.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 1. The server tells you how much to poll by sending `Poll-Interval` in the header.
    Use that as your polling interval. This enables system administrators to change the
@@ -241,7 +241,7 @@ Use the following rules when creating real-time solutions.
 1. The backend code is likely to be using ETags. You do not and should not check for status
    `304 Not Modified`. The browser transforms it for you.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Lazy Loading Images
 
@@ -348,6 +348,14 @@ NOTE:
 When unsure what controller and action corresponds to a page,
 inspect `document.body.dataset.page` in your
 browser's developer console from any page in GitLab.
+
+TROUBLESHOOTING:
+If using Vite, keep in mind that support for it is new and you may encounter unexpected effects from time to
+time. If the entrypoint is correctly configured but the JavaScript is not loading,
+try clearing the Vite cache and restarting the service:
+`rm -rf tmp/cache/vite && gdk restart vite`
+
+Alternatively, you can opt to use Webpack instead. Follow these [instructions for disabling Vite and using Webpack](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#vite-settings).
 
 #### Important Considerations
 

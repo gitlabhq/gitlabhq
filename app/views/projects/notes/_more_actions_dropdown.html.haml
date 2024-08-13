@@ -16,5 +16,5 @@
       - if note_editable
         %li
           = link_to note_url(note), method: :delete, data: { confirm: _('Are you sure you want to delete this comment?'), confirm_btn_variant: 'danger', testid: 'delete-comment-button' }, aria: { label: _('Delete comment') }, remote: true, class: 'js-note-delete' do
-            %span.text-danger
+            %span.gl-text-danger
               = _('Delete comment')

@@ -5,6 +5,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import csrf from '~/lib/utils/csrf';
 import TopicSelect from './topic_select.vue';
 
+const formId = 'merge-topics-form';
+
 export default {
   components: {
     GlAlert,
@@ -43,6 +45,8 @@ export default {
         attributes: {
           variant: 'danger',
           disabled: !this.validSelectedTopics,
+          type: 'submit',
+          form: formId,
         },
       };
     },
@@ -53,9 +57,6 @@ export default {
     },
     selectTargetTopic(topic) {
       this.targetTopic = topic;
-    },
-    mergeTopics() {
-      this.$refs.mergeForm.submit();
     },
   },
   i18n: {
@@ -70,6 +71,7 @@ export default {
     warningRemoveTopic: s__('MergeTopics|%{sourceTopic} will be removed'),
     warningMoveProjects: s__('MergeTopics|All assigned projects will be moved to %{targetTopic}'),
   },
+  formId,
   modal: {
     id: 'merge-topics',
     actionSecondary: {
@@ -93,7 +95,6 @@ export default {
       :action-secondary="$options.modal.actionSecondary"
       :modal-id="$options.modal.id"
       size="sm"
-      @primary="mergeTopics"
     >
       <p>{{ $options.i18n.body }}</p>
       <topic-select
@@ -130,7 +131,7 @@ export default {
         </ul>
         {{ $options.i18n.warningBody }}
       </gl-alert>
-      <form ref="mergeForm" method="post" :action="path">
+      <form :id="$options.formId" method="post" :action="path">
         <input type="hidden" name="_method" value="post" />
         <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
         <input type="hidden" name="source_topic_id" :value="sourceTopicId" />

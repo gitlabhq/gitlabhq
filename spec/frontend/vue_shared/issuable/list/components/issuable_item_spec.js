@@ -51,6 +51,7 @@ describe('IssuableItem', () => {
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findIssuableTitleLink = () => wrapper.findComponentByTestId('issuable-title-link');
   const findIssuableItemWrapper = () => wrapper.findByTestId('issuable-item-wrapper');
+  const findIssuablePrefetchTrigger = () => wrapper.findByTestId('issuable-prefetch-trigger');
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
 
   describe('computed', () => {
@@ -397,6 +398,12 @@ describe('IssuableItem', () => {
       expect(referenceEl.text()).toBe(`#${mockIssuable.iid}`);
     });
 
+    it('does not enable item prefetching by default', () => {
+      wrapper = createComponent();
+
+      expect(findIssuablePrefetchTrigger().exists()).toBe(false);
+    });
+
     it('renders issuable reference via slot', () => {
       wrapper = createComponent({
         issuableSymbol: '#',
@@ -650,6 +657,14 @@ describe('IssuableItem', () => {
       });
 
       expect(findIssuableItemWrapper().classes('gl-bg-blue-50')).toBe(true);
+    });
+
+    it('enables item prefetching', () => {
+      wrapper = createComponent({
+        preventRedirect: true,
+      });
+
+      expect(findIssuablePrefetchTrigger().exists()).toBe(true);
     });
   });
 });

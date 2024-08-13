@@ -117,13 +117,11 @@ describe('DeleteAgentButton', () => {
 
   describe('delete agent action', () => {
     it('displays a delete button', () => {
-      expect(findDeleteBtn().attributes('aria-label')).toBe(DELETE_AGENT_BUTTON.deleteButton);
+      expect(findDeleteBtn().text()).toBe(DELETE_AGENT_BUTTON.deleteButton);
     });
 
-    it('shows a tooltip for the button', () => {
-      expect(getTooltipText(findDeleteAgentButtonTooltip().element)).toBe(
-        DELETE_AGENT_BUTTON.deleteButton,
-      );
+    it("doesn't show a tooltip for the enabled button", () => {
+      expect(getTooltipText(findDeleteAgentButtonTooltip().element)).toBe('');
     });
 
     describe('when clicking the delete button', () => {

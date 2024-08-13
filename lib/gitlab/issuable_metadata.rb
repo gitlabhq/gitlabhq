@@ -50,7 +50,7 @@ module Gitlab
 
     def validate_collection!
       # ActiveRecord uses Object#extend for null relations.
-      if !(issuable_collection.singleton_class < ActiveRecord::NullRelation) &&
+      if !(issuable_collection.is_a?(ActiveRecord::Relation) && issuable_collection.null_relation?) &&
           issuable_collection.respond_to?(:limit_value) &&
           issuable_collection.limit_value.nil?
 

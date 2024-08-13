@@ -8,7 +8,6 @@ import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import getEnvironment from '~/environments/graphql/queries/environment.query.graphql';
 import updateEnvironment from '~/environments/graphql/mutations/update_environment.mutation.graphql';
-import { __ } from '~/locale';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
 
 jest.mock('~/lib/utils/url_utility');
@@ -74,9 +73,9 @@ describe('~/environments/components/edit.vue', () => {
     await waitForPromises();
   };
 
-  const findNameInput = () => wrapper.findByLabelText(__('Name'));
-  const findExternalUrlInput = () => wrapper.findByLabelText(__('External URL'));
-  const findForm = () => wrapper.findByRole('form', { name: __('Edit environment') });
+  const findNameInput = () => wrapper.findByLabelText('Name');
+  const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
+  const findForm = () => wrapper.findByRole('form', { name: 'Edit environment' });
 
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
 
@@ -94,7 +93,7 @@ describe('~/environments/components/edit.vue', () => {
     it('sets the title to Edit environment', async () => {
       await createWrapperWithApollo();
 
-      const header = wrapper.findByRole('heading', { name: __('Edit environment') });
+      const header = wrapper.findByRole('heading', { name: 'Edit environment' });
       expect(header.exists()).toBe(true);
     });
 

@@ -33,13 +33,7 @@ describe('RunnerTypeBadge', () => {
 
       expect(findBadge().props()).toMatchObject({ variant: 'muted' });
       expect(findBadge().classes().sort()).toEqual(
-        [
-          ...classes,
-          'gl-shadow-inner-1-gray-400',
-          'gl-max-w-full',
-          'gl-text-truncate',
-          'gl-bg-transparent!',
-        ].sort(),
+        [...classes, 'gl-shadow-inner-1-gray-400', '!gl-bg-transparent'].sort(),
       );
       expect(findBadge().text()).toBe(text);
     },

@@ -57,7 +57,7 @@ Select a row to see details of the compliance violation.
 
 Each compliance violation has one of the following severities.
 
-<!-- vale gitlab.SubstitutionWarning = NO -->
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
 
 | Icon                    | Severity level |
 |:------------------------|:---------------|
@@ -67,7 +67,7 @@ Each compliance violation has one of the following severities.
 | **{severity-low}**      | Low            |
 | **{severity-info}**     | Info           |
 
-<!-- vale gitlab.SubstitutionWarning = YES -->
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 ### Violation types
 

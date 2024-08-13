@@ -16,8 +16,7 @@ RSpec.shared_examples 'visible participants for issuable with read ability' do |
       source = ability_source == :participable_source ? participable_source : instance
 
       allow(instance).to receive(:bar).and_return(participable_source)
-
-      expect(Ability).to receive(:allowed?).with(anything, ability_name, source)
+      allow(Ability).to receive(:allowed?).with(anything, ability_name, source)
 
       expect(instance.visible_participants(user1)).to be_empty
     end

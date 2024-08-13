@@ -32,7 +32,9 @@ The chat aims to be context aware and ultimately have access to all the resource
 
 To scale the context awareness and hence to scale creation, ideation, and learning use cases across the entire DevSecOps domain, the Duo Chat team welcomes contributions to the chat platform from other GitLab teams and the wider community. They are the experts for the use cases and workflows to accelerate.
 
-### Which use cases are better implemented as stand-alone AI features or at least also as stand-alone AI features?
+### Which use cases are better implemented as stand-alone AI features?
+
+Which use cases are better implemented as stand-alone AI features, or at least also as stand-alone AI features?
 
 - Narrowly scoped tasks that be can accelerated by deeply integrating AI into an existing workflow.
 - That can't benefit from conversations with AI.
@@ -116,44 +118,37 @@ Chat interface. The following example shows how to open the GitLab Duo Chat
 drawer by using an event listener and the GitLab Duo Chat global state:
 
 ```javascript
-import { helpCenterState } from '~/super_sidebar/constants';
+import { duoChatGlobalState } from '~/super_sidebar/constants';
 myFancyToggleToOpenChat.addEventListener('click', () => {
-  helpCenterState.showTanukiBotChatDrawer = true;
+  duoChatGlobalState.isShown = true;
 });
 ```
 
 #### Initiating GitLab Duo Chat with a pre-defined prompt
 
 In some scenarios, you may want to direct users towards a specific topic or
-query when they open GitLab Duo Chat. The following example method:
-
-1. Opens the GitLab Duo Chat drawer.
-1. Sends a pre-defined prompt to GitLab Duo Chat.
+query when they open GitLab Duo Chat. We have a utility function that will
+open DuoChat drawer and send a command in a queue for DuoChat to execute on.
+This should trigger the loading state and the streaming with the given prompt.
 
 ```javascript
-import chatMutation from 'ee/ai/graphql/chat.mutation.graphql';
-import { helpCenterState } from '~/super_sidebar/constants';
+import { sendDuoChatCommand } from 'ee/ai/utils';
 [...]
 
 methods: {
   openChatWithPrompt() {
-    const myPrompt = "What is the meaning of life?"
-    helpCenterState.showTanukiBotChatDrawer = true;
-
-    this.$apollo
-      .mutate({
-        mutation: chatMutation,
-        variables: {
-          question: myPrompt,
-          resourceId: this.resourceId,
-        },
-      })
-      .catch((error) => {
-        // handle potential errors here
-      });
+    sendDuoChatCommand(
+      {
+        question: '/feedback' // This is your prompt
+        resourceId: 'gid:://gitlab/WorkItem/1', // A unique ID to identify the action for streaming
+        variables: {} // Any additional graphql variables you want to pass to ee/app/assets/javascripts/ai/graphql/chat.mutation.graphql when executing the query
+      }
+    )
   }
 }
 ```
+
+Note that `sendDuoChatCommand` cannot be chained, meaning that you can send one command to DuoChat and have to wait until this action is done before sending a different command or the previous command might not work as expected.
 
 This enhancement allows for a more tailored user experience by guiding the
 conversation in GitLab Duo Chat towards predefined areas of interest or concern.
@@ -374,13 +369,23 @@ saves the evaluations artifacts as a snippet, and updates the tracking issue in
 [`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
 in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
+### GitLab Duo Chat Self-managed End-to-End Tests
+
+In MRs, the end-to-end tests exercise the Duo Chat functionality of self-managed instances by using an instance of the GitLab Linux package
+integrated with the `latest` version of AI Gateway. The instance of AI Gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
+To view the results of these tests, open the `e2e:package-and-test-ee` child pipeline and view the `ai-gateway` job.
+
+The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
+
+For further information, please refer to the [GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios)
+
 ## GraphQL Subscription
 
 The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.
 We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
 
 1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
-1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
+1. Chunks from streamed Chat messages are broadcasted with the `clientSubscriptionId` from the mutation as identifier.
 
 Examples of GraphQL Subscriptions in a Vue component:
 
@@ -422,8 +427,8 @@ Examples of GraphQL Subscriptions in a Vue component:
         query: aiResponseSubscription,
         variables() {
           return {
+            aiAction: 'CHAT',
             userId, // for example "gid://gitlab/User/1"
-            resourceId, // can be either a resourceId (on Issue, Epic, etc. items), or userId
             clientSubscriptionId // randomly generated identifier for every message
             htmlResponse: false, // important to bypass HTML processing on every chunk
           };
@@ -438,8 +443,7 @@ Examples of GraphQL Subscriptions in a Vue component:
     },
    ```
 
-Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
-However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+Please keep in mind that the clientSubscriptionId must be unique for every request. Reusing a clientSubscriptionId will cause several unwanted side effects in the subscription responses.
 
 ### Duo Chat GraphQL queries
 
@@ -494,6 +498,18 @@ Premium and Ultimate tiers, Staging Ref may be an easier place to test changes a
 team member because
 [you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
+
+### GitLab Duo Chat End-to-End Tests in live environments
+
+Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.
+
+These tests run in scheduled pipelines and ensure the end-to-end user experiences are functioning correctly.
+Results can be viewed in the `#qa-staging` and `#qa-production` Slack channels. The pipelines can be found below, access can be requested in `#test-platform`:
+
+- [Staging-canary pipelines](https://ops.gitlab.net/gitlab-org/quality/staging-canary/-/pipelines)
+- [Staging pipelines](https://ops.gitlab.net/gitlab-org/quality/staging/-/pipelines)
+- [Canary pipelines](https://ops.gitlab.net/gitlab-org/quality/canary/-/pipelines)
+- [Production pipelines](https://ops.gitlab.net/gitlab-org/quality/production/-/pipelines)
 
 ## Product Analysis
 
@@ -641,7 +657,6 @@ flow of how we construct a Chat prompt:
 ## Interpreting GitLab Duo Chat error codes
 
 GitLab Duo Chat has error codes with specified meanings to assist in debugging.
-Currently, they are only logged, but in the future, they will be displayed on the UI.
 
 See the [GitLab Duo Chat troubleshooting documentation](../../user/gitlab_duo_chat/troubleshooting.md) for a list of all GitLab Duo Chat error codes.
 

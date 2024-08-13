@@ -53,6 +53,22 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
         expect(count).to eq(9)
       end
 
+      it 'does not yield an empty relation' do
+        iteration_count = 0
+
+        iterator.each_batch(of: 1) { iteration_count += 1 }
+
+        expect(iteration_count).to eq(9)
+      end
+
+      it 'loads the batch relation' do
+        loaded = false
+
+        iterator.each_batch { |batch| loaded = batch.loaded? }
+
+        expect(loaded).to be(true)
+      end
+
       it 'continues after the cursor' do
         loaded_records = []
         cursor = nil
@@ -145,6 +161,24 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
 
             expect(positions).to eq(project.issues.reorder(id: :desc).pluck(:id))
           end
+        end
+      end
+
+      context 'when the `load_batch` kwarg is set as `false`' do
+        it 'does not load the batch relation' do
+          loaded = true
+
+          iterator.each_batch(load_batch: false) { |batch| loaded = batch.loaded? }
+
+          expect(loaded).to be_nil
+        end
+
+        it 'does not yield an empty relation' do
+          iteration_count = 0
+
+          iterator.each_batch(of: 1, load_batch: false) { iteration_count += 1 }
+
+          expect(iteration_count).to eq(9)
         end
       end
     end

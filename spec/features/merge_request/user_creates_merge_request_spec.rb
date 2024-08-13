@@ -30,7 +30,7 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
       visit project_new_merge_request_path(project)
 
       expect(page).to have_title('Not Found')
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 

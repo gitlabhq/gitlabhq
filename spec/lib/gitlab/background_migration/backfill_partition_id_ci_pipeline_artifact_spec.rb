@@ -6,9 +6,9 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineArtifac
   feature_category: :continuous_integration do
   let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
   let(:ci_pipeline_artifacts_table) { table(:ci_pipeline_artifacts, database: :ci) }
-  let!(:pipeline_100) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
-  let!(:pipeline_101) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_102) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
+  let!(:pipeline_100) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
+  let!(:pipeline_101) { ci_pipelines_table.create!(id: 2, partition_id: 101, project_id: 1) }
+  let!(:pipeline_102) { ci_pipelines_table.create!(id: 3, partition_id: 100, project_id: 1) }
   let!(:ci_pipeline_artifact_100) do
     ci_pipeline_artifacts_table.create!(
       id: 1,

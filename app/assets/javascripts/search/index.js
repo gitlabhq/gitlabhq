@@ -6,6 +6,8 @@ import { initSearchSort } from './sort';
 import createStore from './store';
 import { initTopbar } from './topbar';
 import { initBlobRefSwitcher } from './under_topbar';
+import { SEARCH_TYPE_ZOEKT, SCOPE_BLOB } from './sidebar/constants/index';
+import { initZoektBlobResult } from './results/index';
 
 const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
@@ -67,4 +69,12 @@ export const initSearchApp = () => {
 
   setHighlightClass(query.search); // Code Highlighting
   initBlobRefSwitcher(); // Code Search Branch Picker
+
+  if (
+    searchType === SEARCH_TYPE_ZOEKT &&
+    store.getters.currentScope === SCOPE_BLOB &&
+    gon.features.zoektMultimatchFrontend
+  ) {
+    initZoektBlobResult(store);
+  }
 };

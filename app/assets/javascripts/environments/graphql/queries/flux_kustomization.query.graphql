@@ -1,9 +1,9 @@
+#import "~/kubernetes_dashboard/graphql/queries/workload_item.fragment.graphql"
+
 query getFluxKustomizationQuery($configuration: LocalConfiguration, $fluxResourcePath: String) {
   fluxKustomization(configuration: $configuration, fluxResourcePath: $fluxResourcePath) @client {
+    ...WorkloadItem
     kind
-    metadata {
-      name
-    }
     conditions {
       message
       reason

@@ -14,8 +14,8 @@ The Harbor configuration requires four fields: `url`, `project_name`, `username`
 | --- | --- |
 | `url` | The URL of the Harbor instance. |
 | `project_name` | The project name of the Harbor instance. |
-| `username` | The username used to log in to the Harbor instance. |
-| `password` | The password used to log in to the Harbor instance. |
+| `username` | The username used to sign in to the Harbor instance. |
+| `password` | The password used to sign in to the Harbor instance. |
 
 You can use [GitLab CI/CD predefined variables](../../ci/variables/index.md) along with the following Harbor registry variables to request data from the Harbor instance.
 
@@ -25,8 +25,8 @@ You can use [GitLab CI/CD predefined variables](../../ci/variables/index.md) alo
 | `HARBOR_HOST` | The host of the Harbor instance URL. |
 | `HARBOR_OCI` | The OCI URL of the Harbor instance URL. |
 | `HARBOR_PROJECT` | The project name of the Harbor instance. |
-| `HARBOR_USERNAME` | The username used to log in to the Harbor instance. |
-| `HARBOR_PASSWORD` | The password used to log in to the Harbor instance. |
+| `HARBOR_USERNAME` | The username used to sign in to the Harbor instance. |
+| `HARBOR_PASSWORD` | The password used to sign in to the Harbor instance. |
 
 ### Test settings
 

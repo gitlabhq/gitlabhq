@@ -108,7 +108,7 @@ export default {
         if (this.note.noteable_type === 'Issue') {
           icon = 'issue-open-m';
         } else if (this.note.noteable_type === 'MergeRequest') {
-          icon = 'merge-request-open';
+          icon = 'merge-request';
         }
       }
       return icon;
@@ -149,10 +149,10 @@ export default {
         iconBgClass,
         {
           'system-note-icon': isAllowedIcon,
-          'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
+          'system-note-tiny-dot !gl-bg-gray-900': !isAllowedIcon,
         },
       ]"
-      class="gl-float-left gl-flex gl-justify-center gl-items-center gl-rounded-full gl-relative timeline-icon"
+      class="timeline-icon gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
     >
       <gl-icon
         v-if="isAllowedIcon"
@@ -180,7 +180,7 @@ export default {
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
-              class="gl-vertical-align-text-bottom gl-font-sm! gl-ml-3"
+              class="gl-ml-3 gl-align-text-bottom !gl-text-sm"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
@@ -189,7 +189,7 @@ export default {
               :icon="showLines ? 'chevron-up' : 'chevron-down'"
               variant="link"
               data-testid="outdated-lines-change-btn"
-              class="gl-vertical-align-text-bottom gl-font-sm!"
+              class="gl-align-text-bottom !gl-text-sm"
               @click="toggleDiff"
             >
               {{ __('Compare changes') }}
@@ -232,7 +232,7 @@ export default {
         </div>
         <div
           v-if="lines.length && showLines"
-          class="diff-content outdated-lines-wrapper gl-border-solid gl-border-1 gl-border-gray-200 gl-mt-4 gl-rounded-small gl-overflow-hidden"
+          class="diff-content outdated-lines-wrapper gl-mt-4 gl-overflow-hidden gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200"
         >
           <table
             :class="$options.userColorSchemeClass"
@@ -242,19 +242,16 @@ export default {
             <tr v-for="line in lines" v-once :key="line.line_code" class="line_holder">
               <td
                 :class="line.type"
-                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0! gl-border-0! gl-rounded-0!"
+                class="diff-line-num old_line !gl-rounded-none !gl-border-0 !gl-border-b-0 !gl-border-t-0"
               >
                 {{ line.old_line }}
               </td>
-              <td
-                :class="line.type"
-                class="diff-line-num new_line gl-border-bottom-0! gl-border-top-0!"
-              >
+              <td :class="line.type" class="diff-line-num new_line !gl-border-b-0 !gl-border-t-0">
                 {{ line.new_line }}
               </td>
               <td
                 :class="line.type"
-                class="line_content gl-display-table-cell! gl-border-0! gl-rounded-0!"
+                class="line_content !gl-table-cell !gl-rounded-none !gl-border-0"
                 v-html="line.rich_text /* eslint-disable-line vue/no-v-html */"
               ></td>
             </tr>

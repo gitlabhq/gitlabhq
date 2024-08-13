@@ -159,11 +159,7 @@ InitializerConnections.raise_if_new_database_connection do
           get '/', to: 'ide#index'
         end
 
-        # Remote host can contain "." characters so it needs a constraint
-        post 'remote/:remote_host(/*remote_path)',
-          as: :remote,
-          to: 'web_ide/remote_ide#index',
-          constraints: { remote_host: %r{[^/?]+} }
+        post '/reset_oauth_application_settings' => 'admin/applications#reset_web_ide_oauth_application_settings'
       end
 
       draw :operations
@@ -271,15 +267,7 @@ InitializerConnections.raise_if_new_database_connection do
       end
     end
 
-    resources(:groups, only: [:index, :new, :create]) do
-      # The constraints ensure that the `group_id` parameter in the URL allows for multiple levels
-      # of subgroups, permitting both regular and encoded slashes (%2F).
-      # Deprecated in favor of /groups/*group_id/-/preview_markdown
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/442218
-      post :preview_markdown,
-        as: :preview_markdown_deprecated,
-        constraints: { group_id: %r{#{Gitlab::PathRegex.full_namespace_route_regex.source}(%2F#{Gitlab::PathRegex.full_namespace_route_regex.source})*} }
-    end
+    resources :groups, only: [:index, :new, :create]
 
     draw :group
 

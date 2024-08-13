@@ -124,7 +124,7 @@ describe('ModelVersionCreate', () => {
         expect(findGlModal().props()).toMatchObject({
           modalId: 'create-model-version-modal',
           title: 'Create model version & import artifacts',
-          size: 'sm',
+          size: 'lg',
         });
       });
 

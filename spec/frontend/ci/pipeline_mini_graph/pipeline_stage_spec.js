@@ -52,7 +52,7 @@ describe('PipelineStage', () => {
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   const findDropdownHeader = () => wrapper.findByTestId('pipeline-stage-dropdown-menu-title');
-  const findJobList = () => wrapper.findByTestId('pipeline-stage-dropdown-menu-list');
+  const findJobList = () => wrapper.findByTestId('pipeline-mini-graph-dropdown-menu-list');
   const findMergeTrainMessage = () => wrapper.findByTestId('merge-train-message');
 
   const openStageDropdown = async () => {

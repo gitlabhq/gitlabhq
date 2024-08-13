@@ -8,7 +8,7 @@ class QueueMigrateOsSbomOccurrencesToComponentsWithoutPrefix < Gitlab::Database:
   # to the components that have the correct prefix.
   DEPENDENT_BACKGROUND_MIGRATIONS = %w[20240425205205]
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   MIGRATION = "MigrateOsSbomOccurrencesToComponentsWithoutPrefix"
   DELAY_INTERVAL = 2.minutes

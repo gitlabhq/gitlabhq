@@ -132,7 +132,7 @@ During this phase, the idea is to collect as much information as possible about 
 
 - **Authentication**: What authentication mechanisms are available (OAuth, Basic
   Authorization, other). Keep in mind that GitLab users often want to use their
-  [Personal Access Tokens](../../user/profile/personal_access_tokens.md).
+  [personal access tokens](../../user/profile/personal_access_tokens.md).
   Although not needed for the MVC first iteration, the [CI/CD job tokens](../../ci/jobs/ci_job_token.md)
   have to be supported at some point in the future.
 - **Requests**: Which requests are needed to have a working MVC. Ideally, produce
@@ -166,7 +166,7 @@ The implementation of the different Merge Requests varies between different pack
 
 #### Authentication
 
-The MVC must support [Personal Access Tokens](../../user/profile/personal_access_tokens.md) right from the start. We support two options for these tokens: OAuth and Basic Access.
+The MVC must support [personal access tokens](../../user/profile/personal_access_tokens.md) right from the start. We support two options for these tokens: OAuth and Basic Access.
 
 OAuth authentication is already supported. You can see an example in the [npm API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/npm_project_packages.rb).
 
@@ -181,7 +181,7 @@ supports this case.
 
 #### Authorization
 
-Project and group level permissions exist for `read_package`, `create_package`, and `destroy_package`. Each
+Project permissions and group permissions exist for `read_package`, `create_package`, and `destroy_package`. Each
 endpoint should
 [authorize the requesting user](https://gitlab.com/gitlab-org/gitlab/-/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/conan_packages.rb)
 against the project or group before continuing.
@@ -265,7 +265,7 @@ features must be implemented when the feature flag is removed.
 - Project-level API
 - Push event tracking
 - Pull event tracking
-- Authentication with Personal Access Tokens
+- Authentication with personal access tokens
 - Authentication with Job Tokens
 - Authentication with Deploy Tokens (group and project)
 - File size [limit](#file-size-limits)

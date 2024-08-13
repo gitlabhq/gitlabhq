@@ -14,7 +14,7 @@ module Projects
 
         offset = params[:offset].to_i
 
-        @merge_request.diffs(offset_index: offset).diff_files.each do |diff|
+        @merge_request.diffs_for_streaming(offset_index: offset).diff_files.each do |diff|
           response.stream.write(
             render_to_string(
               ::RapidDiffs::DiffFileComponent.new(diff_file: diff),
@@ -22,7 +22,6 @@ module Projects
             )
           )
         end
-
       rescue StandardError => e
         response.stream.write e.message
       ensure

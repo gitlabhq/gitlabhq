@@ -23,6 +23,19 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
       expect { service.security_event }.to change(AuditEvent, :count).by(1)
     end
 
+    it 'creates audit event in project audit events' do
+      expect { service.security_event }.to change(AuditEvents::ProjectAuditEvent, :count).by(1)
+
+      event = AuditEvents::ProjectAuditEvent.last
+      audit_event = AuditEvent.last
+
+      expect(event).to have_attributes(
+        id: audit_event.id,
+        project_id: project.id,
+        author_id: user.id,
+        author_name: user.name)
+    end
+
     it 'formats from and to fields' do
       service = described_class.new(
         user, project,

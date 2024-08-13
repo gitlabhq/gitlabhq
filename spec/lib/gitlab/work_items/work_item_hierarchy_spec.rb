@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::WorkItems::WorkItemHierarchy, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:type1) { create(:work_item_type, namespace: project.namespace) }
-  let_it_be(:type2) { create(:work_item_type, namespace: project.namespace) }
+  let_it_be(:type1) { create(:work_item_type, :non_default) }
+  let_it_be(:type2) { create(:work_item_type, :non_default) }
   let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
   let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type2) }
   let_it_be(:hierarchy_restriction3) { create(:hierarchy_restriction, parent_type: type2, child_type: type1) }

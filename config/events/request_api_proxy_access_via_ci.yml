@@ -1,0 +1,14 @@
+---
+description: Tracks Kubernetes API proxy request via CI
+internal_events: true
+action: request_api_proxy_access_via_ci
+product_group: environments
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150613
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

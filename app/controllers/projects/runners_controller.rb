@@ -4,7 +4,7 @@ class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_read_runner!
   before_action :authorize_admin_runner!, except: [:index, :show]
   before_action :authorize_create_runner!, only: [:new, :register]
-  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
+  before_action :runner, only: [:edit, :destroy, :pause, :resume, :show, :register]
 
   feature_category :runner
   urgency :low
@@ -14,14 +14,6 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def edit; end
-
-  def update
-    if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
-      redirect_to project_runner_path(@project, @runner), notice: _('Runner was successfully updated.')
-    else
-      render 'edit'
-    end
-  end
 
   def new; end
 

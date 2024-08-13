@@ -31,6 +31,7 @@ All tables with the following `gitlab_schema` are considered "cell-local":
 
 - `gitlab_main_cell`
 - `gitlab_ci`
+- `gitlab_sec`
 
 All newly created cell-local tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.
@@ -111,6 +112,25 @@ following the
 [Consolidating Groups and Projects blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/).
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
+
+### Using `organization_id` as sharding key
+
+Usually, `project_id` or `namespace_id` are the most common sharding keys.
+However, there are cases where a table does not belong to a project or a namespace.
+
+In such cases, `organization_id` is an option for the sharding key, provided the below guidelines are followed:
+
+- The `sharding_key` column still needs to be [immutable](#the-sharding-key-must-be-immutable).
+- Only add `organization_id` for root level models (for example, `namespaces`), and not leaf-level models (for example, `issues`).
+- Ensure such tables do not contain data related to groups, or projects (or records that belong to groups / projects).
+  Instead, use `project_id`, or `namespace_id`.
+- Tables with lots of rows are not good candidates.
+- When there are other tables referencing this table, the application should continue to work if the referencing table records are moved to a different organization.
+
+If you believe that the `organization_id` is the best option for the sharding key, seek approval from the Tenant Scale group.
+This is crucial because it has implications for data migration and may require reconsideration of the choice of sharding key.
+
+As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462758), which added `organization_id` as a sharding key to an existing table.
 
 ### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 

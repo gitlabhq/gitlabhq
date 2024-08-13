@@ -6,7 +6,7 @@
     The OAuth implicit grant authorization flow will be removed in our next major release, GitLab 15.0. Any applications that use OAuth implicit grant should switch to alternative [supported OAuth flows](https://docs.gitlab.com/ee/api/oauth2.html).
 # The following items are not published on the docs page, but may be used in the future.
   reporter: hsutor
-  stage: manage
+  stage: Foundations
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url:  # https://gitlab.com/gitlab-org/gitlab/-/issues/344609
   documentation_url:  # (optional) This is a link to the current documentation page

@@ -16,5 +16,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
   include_examples 'applications controller - GET #show'
 
+  include_examples 'applications controller - GET #new'
+
   include_examples 'applications controller - POST #create'
 end

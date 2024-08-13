@@ -60,7 +60,7 @@ export default {
     icons() {
       return this.visible
         ? { caret: 'chevron-lg-down', folder: 'folder-open' }
-        : { caret: 'chevron-lg-right', folder: 'folder-o' };
+        : { caret: 'chevron-lg-right', folder: 'folder' };
     },
     label() {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;

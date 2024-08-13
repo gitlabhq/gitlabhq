@@ -407,6 +407,8 @@
   - 2
 - - import_load_placeholder_references
   - 1
+- - import_reassign_placeholder_user_records
+  - 1
 - - import_refresh_import_jid
   - 1
 - - incident_management
@@ -467,8 +469,6 @@
   - 1
 - - llm_namespace_access_cache_reset
   - 1
-- - llm_vertex_ai_access_token_refresh
-  - 1
 - - mail_scheduler
   - 2
 - - mailers
@@ -476,6 +476,10 @@
 - - members_destroyer_clean_up_group_protected_branch_rules
   - 1
 - - members_expiring_email_notification
+  - 1
+- - members_groups_base_memberships_export
+  - 1
+- - members_groups_export_detailed_memberships
   - 1
 - - merge
   - 5
@@ -568,8 +572,6 @@
 - - package_metadata_global_advisory_scan
   - 1
 - - package_repositories
-  - 1
-- - packages_composer_cache_update
   - 1
 - - pages
   - 1
@@ -697,6 +699,8 @@
   - 1
 - - sbom_process_transfer_events
   - 1
+- - sbom_process_vulnerabilities
+  - 1
 - - sbom_reports
   - 1
 - - sbom_sync_archived_status
@@ -704,6 +708,8 @@
 - - sbom_sync_project_traversal_ids
   - 1
 - - search_elastic_default_branch_changed
+  - 1
+- - search_elastic_delete
   - 1
 - - search_elastic_group_association_deletion
   - 1
@@ -729,6 +735,8 @@
   - 1
 - - search_zoekt_project_transfer
   - 1
+- - security_create_security_policy_project
+  - 1
 - - security_delete_orchestration_configuration
   - 1
 - - security_generate_policy_violation_comment
@@ -752,6 +760,10 @@
 - - security_scan_execution_policies_rule_schedule
   - 1
 - - security_scan_result_policies_add_approvers_to_rules
+  - 1
+- - security_scan_result_policies_delete_scan_result_policy_reads
+  - 1
+- - security_scan_result_policies_fallback_behavior_tracking
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
@@ -844,6 +856,8 @@
 - - web_hooks_log_execution
   - 1
 - - wikis_git_garbage_collect
+  - 1
+- - work_items_copy_timelogs
   - 1
 - - work_items_import_work_items_csv
   - 1

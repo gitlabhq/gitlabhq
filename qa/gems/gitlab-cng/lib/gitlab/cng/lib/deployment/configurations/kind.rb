@@ -154,7 +154,7 @@ module Gitlab
             ).strip
           rescue Kubectl::Client::Error => e
             token_exists_error = "duplicate key value violates unique constraint " \
-                                 "\"index_personal_access_tokens_on_token_digest\""
+              "\"index_personal_access_tokens_on_token_digest\""
             return log("Token already exists, skipping!", :warn) if e.message.include?(token_exists_error)
 
             raise e

@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'migration that adds widget to work items definitions' do |widget_name:, work_item_types:|
+RSpec.shared_examples(
+  'migration that adds widget to work items definitions'
+) do |widget_name:, work_item_types:, namespaced: false|
   let(:migration) { described_class.new }
   let(:work_item_definitions) { table(:work_item_widget_definitions) }
   let(:work_item_type_count) { work_item_types.size }
+  let(:find_method_name) { namespaced ? :find_by_name_and_namespace_id : :find_by_name }
 
   describe '#up', :migration_with_transaction do
     it "creates widget definition in all types" do
@@ -16,8 +19,8 @@ RSpec.shared_examples 'migration that adds widget to work items definitions' do 
     it 'logs a warning if the type is missing' do
       type_name = work_item_types.first
 
-      allow(described_class::WorkItemType).to receive(:find_by_name_and_namespace_id).and_call_original
-      allow(described_class::WorkItemType).to receive(:find_by_name_and_namespace_id)
+      allow(described_class::WorkItemType).to receive(find_method_name).and_call_original
+      allow(described_class::WorkItemType).to receive(find_method_name)
         .with(type_name, nil).and_return(nil)
 
       expect(Gitlab::AppLogger).to receive(:warn).with("type #{type_name} is missing, not adding widget")
@@ -29,7 +32,7 @@ RSpec.shared_examples 'migration that adds widget to work items definitions' do 
 
       before do
         work_item_types.each do |type_name|
-          type = work_item_types_table.find_by_name_and_namespace_id(type_name, nil)
+          type = work_item_types_table.find_by_name(type_name)
           work_item_definitions.create!(
             name: widget_name,
             work_item_type_id: type.id,
@@ -88,7 +91,7 @@ RSpec.shared_examples 'migration that adds a widget to a work item type' do
         migrate!
       end.to change { work_item_widget_definitions.count }.by(1)
 
-      work_item_type = work_item_types.find_by(namespace_id: nil, base_type: target_type_enum_value)
+      work_item_type = work_item_types.find_by(base_type: target_type_enum_value)
       created_widget = work_item_widget_definitions.last
 
       expect(created_widget).to have_attributes(
@@ -100,7 +103,7 @@ RSpec.shared_examples 'migration that adds a widget to a work item type' do
 
     context 'when type does not exist' do
       it 'skips creating the new widget definition' do
-        work_item_types.where(namespace_id: nil, base_type: base_types[target_type]).delete_all
+        work_item_types.where(base_type: base_types[target_type]).delete_all
 
         expect do
           migrate!

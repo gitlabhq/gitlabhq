@@ -1,0 +1,9 @@
+---
+name: remote_mirror_retry_with_delay
+feature_issue_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146707
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472002
+milestone: '17.3'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

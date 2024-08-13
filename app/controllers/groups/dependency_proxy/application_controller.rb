@@ -63,13 +63,19 @@ module Groups
         case user_or_token
         when User
           @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :user, [])
-          sign_in(user_or_token)
+          sign_in(user_or_token) if can_sign_in?(user_or_token)
         when PersonalAccessToken
           @authentication_result = Gitlab::Auth::Result.new(user_or_token.user, nil, :personal_access_token, [])
           @personal_access_token = user_or_token
         when DeployToken
           @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :deploy_token, [])
         end
+      end
+
+      def can_sign_in?(user_or_token)
+        return false if user_or_token.project_bot? || user_or_token.service_account?
+
+        true
       end
     end
   end

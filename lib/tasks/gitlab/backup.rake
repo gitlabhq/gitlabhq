@@ -75,7 +75,10 @@ module Tasks
           yield
         ensure
           backup_progress.puts(
-            "#{Time.current} #{Rainbow('-- Deleting backup and restore PID file ...').blue} #{Rainbow('done').green}"
+            "#{Time.current} " +
+              Rainbow('-- Deleting backup and restore PID file at [').blue +
+              PID_FILE.to_s + Rainbow('] ... ').blue +
+              Rainbow('done').green
           )
           File.delete(PID_FILE)
         end

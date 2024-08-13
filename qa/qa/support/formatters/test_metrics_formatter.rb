@@ -24,8 +24,7 @@ module QA
 
           parse_execution_data(notification.examples)
 
-          push_test_metrics
-          push_fabrication_metrics
+          export_test_metrics
           save_test_metrics
         end
 
@@ -50,12 +49,34 @@ module QA
 
         alias_method :parse_execution_data, :execution_data
 
+        # Export metrics directly to InfluxDb or GCS bucket
+        #
+        # @return [void]
+        def export_test_metrics
+          return log(:info, "Exporting test metrics to not enabled, skipping ") unless export_metrics?
+
+          push_test_metrics
+          push_fabrication_metrics
+          push_code_runtime_metrics
+        end
+
+        # Save metrics in json file
+        #
+        # @return [void]
+        def save_test_metrics
+          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
+
+          file = File.join('tmp', metrics_file_name(prefix: 'test'))
+
+          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
+        rescue StandardError => e
+          log(:error, "Failed to save test execution metrics, error: #{e}")
+        end
+
         # Upload test execution metrics
         #
         # @return [void]
         def push_test_metrics
-          return log(:info, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
-
           push_test_metrics_to_influxdb
           push_test_metrics_to_gcs
         end
@@ -74,6 +95,7 @@ module QA
         #
         # @return [void]
         def push_test_metrics_to_gcs
+          init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
             gcs_client.put_object(gcs_bucket, metrics_file_name(prefix: 'test',
               postfix: "-#{env('CI_PIPELINE_ID') || 'local'}"), execution_data.to_json,
@@ -81,14 +103,14 @@ module QA
 
             log(:info, "Pushed #{execution_data.length} test execution entries to GCS")
           end
+        rescue StandardError => e
+          log(:error, "Failed to push test execution metrics to gcs, error: #{e}")
         end
 
         # Push resource fabrication metrics to influxdb
         #
         # @return [void]
         def push_fabrication_metrics
-          return log(:info, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
-
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
@@ -99,11 +121,24 @@ module QA
           push_fabrication_metrics_gcs(data)
         end
 
+        # Push code runtime metrics to influxdb
+        #
+        # @return [void]
+        def push_code_runtime_metrics
+          return if method_call_data.empty?
+
+          write_api.write(data: method_call_data)
+          log(:info, "Pushed #{method_call_data.length} code runtime entries to influxdb")
+        rescue StandardError => e
+          log(:error, "Failed to push code runtime metrics to influxdb, error: #{e}")
+        end
+
         # Push resource fabrication metrics to GCS
         #
         # @param [Hash] data fabrication data hash
         # @return [void]
         def push_fabrication_metrics_gcs(data)
+          init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push resource fabrication metrics to GCS') do
             gcs_client.put_object(gcs_bucket,
               metrics_file_name(prefix: 'fabrication',
@@ -112,6 +147,8 @@ module QA
 
             log(:info, "Pushed #{data.length} resource fabrication entries to GCS")
           end
+        rescue StandardError => e
+          log(:error, "Failed to push test fabrication metrics to gcs, error: #{e}")
         end
 
         # Push resource fabrication metrics to InfluxDB
@@ -125,25 +162,19 @@ module QA
           log(:error, "Failed to push fabrication metrics to influxdb, error: #{e}")
         end
 
+        # Init client raising error if configuration variables are missing
+        #
+        # @return [void]
+        def init_gcs_client!
+          gcs_client || gcs_bucket
+        end
+
         # Get GCS Bucket Name or raise error if missing
         #
         # @return [String]
         def gcs_bucket
           @gcs_bucket ||= ENV['QA_METRICS_GCS_BUCKET_NAME'] ||
             raise('Missing QA_METRICS_GCS_BUCKET_NAME env variable')
-        end
-
-        # Save metrics in json file
-        #
-        # @return [void]
-        def save_test_metrics
-          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
-
-          file = File.join('tmp', metrics_file_name(prefix: 'test'))
-
-          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
-        rescue StandardError => e
-          log(:error, "Failed to save test execution metrics, error: #{e}")
         end
 
         # Construct file name for metrics
@@ -197,6 +228,7 @@ module QA
             product_group: example.metadata[:product_group],
             testcase: example.metadata[:testcase],
             exception_class: example.execution_result.exception&.class&.to_s,
+            branch: branch,
             **custom_metrics_tags(example.metadata)
           }.compact
         end
@@ -216,12 +248,13 @@ module QA
             ui_fabrication: ui_fabrication,
             total_fabrication: api_fabrication + ui_fabrication,
             job_url: ci_job_url,
-            pipeline_url: env('CI_PIPELINE_URL'),
+            pipeline_url: ci_pipeline_url,
             pipeline_id: env('CI_PIPELINE_ID'),
             job_id: env('CI_JOB_ID'),
             merge_request_iid: merge_request_iid,
-            failure_issue: example.metadata[:quarantine] ? example.metadata[:quarantine][:issue] : nil,
             failure_exception: example.execution_result.exception.to_s.delete("\n"),
+            location: example_location(example),
+            failure_issue: example.metadata.dig(:quarantine, :issue),
             **custom_metrics_fields(example.metadata)
           }.compact
         end
@@ -244,15 +277,44 @@ module QA
               fabrication_method: fabrication_method,
               http_method: http_method,
               run_type: run_type,
-              merge_request: merge_request
-            },
+              merge_request: merge_request,
+              branch: branch
+            }.compact,
             fields: {
               fabrication_time: fabrication_time,
               info: info,
               job_url: ci_job_url,
+              pipeline_url: ci_pipeline_url,
               timestamp: timestamp
-            }
+            }.compact
           }
+        end
+
+        # Data on method call and it's runtimes
+        #
+        # @return [Array]
+        def method_call_data
+          @method_call_data ||= CodeRuntimeTracker.method_call_data.flat_map do |name, params|
+            params.map do |p|
+              {
+                name: 'method-call-stats',
+                time: time,
+                tags: {
+                  method: name,
+                  call_arg: p[:call_arg],
+                  run_type: run_type,
+                  merge_request: merge_request,
+                  branch: branch
+                }.compact,
+                fields: {
+                  runtime: (p[:runtime] * 1000).round,
+                  job_url: ci_job_url,
+                  pipeline_url: ci_pipeline_url,
+                  filename: p[:filename]
+                }.compact
+              }
+            end
+          end
         end
 
         # Base ci job name
@@ -274,6 +336,20 @@ module QA
         # @return [String]
         def merge_request
           (!!merge_request_iid).to_s
+        end
+
+        # Pipeline url
+        #
+        # @return [String]
+        def ci_pipeline_url
+          @ci_pipeline_url ||= env('CI_PIPELINE_URL')
+        end
+
+        # Branch name
+        #
+        # @return [String]
+        def branch
+          @branch ||= env('CI_COMMIT_REF_NAME')
         end
 
         # Is spec quarantined
@@ -350,6 +426,23 @@ module QA
         # @return [void]
         def log(level, message)
           QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
+        end
+
+        # Example location
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [String]
+        def example_location(example)
+          # ensures that location will be correct even in case of shared examples
+          file = example
+                 .metadata
+                 .fetch(:shared_group_inclusion_backtrace)
+                 .last
+                 &.formatted_inclusion_location
+
+          return example.location unless file
+
+          file
         end
       end
     end

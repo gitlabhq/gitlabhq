@@ -59,7 +59,6 @@ import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
   TOKEN_TYPE_ASSIGNEE,
@@ -76,7 +75,6 @@ import {
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import {
   workItemResponseFactory,
   workItemByIidResponseFactory,
@@ -118,6 +116,8 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    hasOkrsFeature: false,
+    hasQualityManagementFeature: false,
     hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
@@ -149,10 +149,6 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
-  const deleteWorkItemMutationHandler = jest
-    .fn()
-    .mockResolvedValue({ data: { workItemDelete: { errors: [] } } });
-
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
@@ -182,13 +178,11 @@ describe('CE IssuesListApp component', () => {
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
     stubs = {},
     mountFn = shallowMount,
-    deleteMutationHandler = deleteWorkItemMutationHandler,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
-      [deleteWorkItemMutation, deleteMutationHandler],
     ];
 
     router = new VueRouter({ mode: 'history' });
@@ -515,16 +509,9 @@ describe('CE IssuesListApp component', () => {
     describe('filter tokens', () => {
       it('groups url params of assignee and author', () => {
         setWindowLocation(locationSearch);
-        wrapper = mountComponent({ provide: { glFeatures: { groupMultiSelectTokens: true } } });
-
-        expect(findIssuableList().props('initialFilterValue')).toEqual(groupedFilteredTokens);
-      });
-
-      it('is set from the url params', () => {
-        setWindowLocation(locationSearch);
         wrapper = mountComponent();
 
-        expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+        expect(findIssuableList().props('initialFilterValue')).toEqual(groupedFilteredTokens);
       });
     });
   });
@@ -1024,6 +1011,21 @@ describe('CE IssuesListApp component', () => {
           query: expect.objectContaining({ first_page_size: 50 }),
         });
       });
+
+      it('calls the query with correct variables', async () => {
+        wrapper = mountComponent();
+
+        findIssuableList().vm.$emit('page-size-change', 50);
+        await nextTick();
+
+        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(
+          expect.objectContaining({
+            afterCursor: undefined,
+            beforeCursor: undefined,
+            firstPageSize: 50,
+          }),
+        );
+      });
     });
   });
 
@@ -1051,11 +1053,10 @@ describe('CE IssuesListApp component', () => {
       wrapper = mountComponent();
     });
 
-    it('fetches issue, incident, test case, and task types', () => {
+    it('fetches default work item types', () => {
       const types = [
         WORK_ITEM_TYPE_ENUM_ISSUE,
         WORK_ITEM_TYPE_ENUM_INCIDENT,
-        WORK_ITEM_TYPE_ENUM_TEST_CASE,
         WORK_ITEM_TYPE_ENUM_TASK,
       ];
 
@@ -1258,13 +1259,8 @@ describe('CE IssuesListApp component', () => {
       });
 
       describe('when deleting an issuable from the drawer', () => {
-        beforeEach(async () => {
-          const {
-            data: { workItem },
-          } = workItemResponseFactory({ iid: '789' });
-          findWorkItemDrawer().vm.$emit('deleteWorkItem', workItem);
-
-          await waitForPromises();
+        beforeEach(() => {
+          findWorkItemDrawer().vm.$emit('workItemDeleted');
         });
 
         it('should refetch issues and issues count', () => {
@@ -1280,18 +1276,12 @@ describe('CE IssuesListApp component', () => {
   });
 
   it('shows an error when deleting from the drawer fails', async () => {
-    const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
-    const {
-      data: { workItem },
-    } = workItemResponseFactory({ iid: '789' });
-
     wrapper = mountComponent({
       provide: {
         glFeatures: {
           issuesListDrawer: true,
         },
       },
-      deleteMutationHandler: errorHandler,
     });
 
     findIssuableList().vm.$emit(
@@ -1300,10 +1290,9 @@ describe('CE IssuesListApp component', () => {
     );
     await nextTick();
 
-    findWorkItemDrawer().vm.$emit('deleteWorkItem', workItem);
-    await waitForPromises();
+    findWorkItemDrawer().vm.$emit('deleteWorkItemError');
+    await nextTick();
 
-    expect(Sentry.captureException).toHaveBeenCalled();
     expect(findIssuableList().props('error')).toBe('An error occurred while deleting an issuable.');
   });
 });

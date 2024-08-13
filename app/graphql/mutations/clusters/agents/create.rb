@@ -25,7 +25,7 @@ module Mutations
 
         def resolve(project_path:, name:)
           project = authorized_find!(project_path)
-          result = ::Clusters::Agents::CreateService.new(project, current_user).execute(name: name)
+          result = ::Clusters::Agents::CreateService.new(project, current_user, { name: name }).execute
 
           {
             cluster_agent: result[:cluster_agent],

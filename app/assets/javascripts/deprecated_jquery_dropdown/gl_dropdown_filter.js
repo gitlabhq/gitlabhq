@@ -12,6 +12,7 @@ export class GitLabDropdownFilter {
     let ref;
     this.input = input;
     this.options = options;
+    this.clear = this.clear.bind(this);
     // eslint-disable-next-line no-cond-assign
     this.filterInputBlur = (ref = this.options.filterInputBlur) != null ? ref : true;
     const $inputContainer = this.input.parent();

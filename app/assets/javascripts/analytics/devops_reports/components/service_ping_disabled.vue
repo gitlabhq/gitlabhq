@@ -20,7 +20,7 @@ export default {
       default: '',
     },
   },
-  docsLink: helpPagePath('development/service_ping/index.md'),
+  docsLink: helpPagePath('development/internal_analytics/service_ping/index'),
 };
 </script>
 <template>

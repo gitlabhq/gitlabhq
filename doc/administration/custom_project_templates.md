@@ -29,7 +29,7 @@ might modify the template projects without understanding the side effects.
 
 To select the group to manage the project templates for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Templates**.
 1. Expand **Custom project templates**.
 1. Select a group to use.

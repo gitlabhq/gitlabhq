@@ -184,6 +184,7 @@ export const mergeTrees = (fromTree, toTree) => {
   return toTree;
 };
 
+// eslint-disable-next-line max-params
 export const swapInStateArray = (state, arr, key, entryPath) =>
   Object.assign(state, {
     [arr]: state[arr].map((f) => (f.key === key ? state.entries[entryPath] : f)),
@@ -192,6 +193,7 @@ export const swapInStateArray = (state, arr, key, entryPath) =>
 export const getEntryOrRoot = (state, path) =>
   path ? state.entries[path] : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
+// eslint-disable-next-line max-params
 export const swapInParentTreeWithSorting = (state, oldKey, newPath, parentPath) => {
   if (!newPath) {
     return;
@@ -249,6 +251,7 @@ export function extractMarkdownImagesFromEntries(mdFile, entries) {
   let content = mdFile.content || mdFile.raw;
   let i = 0;
 
+  // eslint-disable-next-line max-params
   content = content.replace(reMdImage, (_, alt, path, title) => {
     const imagePath = (isRootRelative(path) ? path : relativePathToAbsolute(path, mdFile.path))
       .substr(1)

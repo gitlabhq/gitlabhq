@@ -43,7 +43,7 @@ To restore a backup, **you must also restore the GitLab secrets**.
 These include the database encryption key, [CI/CD variables](../../ci/variables/index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
 Without the keys, [multiple issues occur](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
-and GitLab Runners cannot log in.
+and GitLab Runners cannot sign in.
 
 Restore:
 
@@ -106,8 +106,10 @@ after copying over the GitLab secrets file from the original installation.
 Next, restore the backup, specifying the ID of the backup you wish to
 restore:
 
+WARNING:
+The following command overwrites the contents of your GitLab database!
+
 ```shell
-# This command will overwrite the contents of your GitLab database!
 # NOTE: "_gitlab_backup.tar" is omitted from the name
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
@@ -152,6 +154,17 @@ sudo gitlab-rake gitlab:artifacts:check
 sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
+
+After the restore is completed, it's recommended to generate database statistics to improve the database performance and avoid inconsistencies in the UI:
+
+1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database).
+1. Run the following:
+
+   ```sql
+   SET STATEMENT_TIMEOUT=0 ; ANALYZE VERBOSE;
+   ```
+
+There are ongoing discussions about integrating the command into the restore command, see [issue 276184](https://gitlab.com/gitlab-org/gitlab/-/issues/276184) for more details.
 
 ## Restore for Docker image and GitLab Helm chart installations
 

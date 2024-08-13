@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { s__ } from '~/locale';
 import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';
 
@@ -24,6 +25,7 @@ export default {
     GlIcon,
     GlFormInput,
     GlFormSelect,
+    CrudComponent,
   },
   directives: { GlTooltip: GlTooltipDirective },
   computed: {
@@ -101,8 +103,8 @@ export default {
 
 <template>
   <div class="gl-flex flex-column release-assets-links-form">
-    <h2 class="text-4">{{ __('Release assets') }}</h2>
-    <p class="m-0">
+    <h2 class="gl-heading-2 gl-mb-3">{{ __('Release assets') }}</h2>
+    <p class="gl-text-subtle">
       <gl-sprintf
         :message="
           __(
@@ -121,124 +123,136 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <h3 class="text-3">{{ __('Links') }}</h3>
-    <p>
-      {{
+
+    <crud-component
+      :title="__('Links')"
+      :description="
         __(
           'Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Each URL and link title must be unique.',
         )
-      }}
-    </p>
-    <div
-      v-for="(link, index) in release.assets.links"
-      :key="link.id"
-      class="sm:gl-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
+      "
+      icon="link"
+      :count="release.assets.links.length"
     >
-      <gl-form-group
-        class="url-field form-group col"
-        :label="__('URL')"
-        :label-for="`asset-url-${index}`"
-      >
-        <gl-form-input
-          :id="`asset-url-${index}`"
-          ref="urlInput"
-          :value="link.url"
-          type="text"
-          class="form-control"
-          name="asset-url"
-          :state="isUrlValid(link)"
-          @change="updateUrl(link, $event)"
-          @keydown.ctrl.enter="updateUrl(link, $event.target.value)"
-          @keydown.meta.enter="updateUrl(link, $event.target.value)"
-        />
-        <template #invalid-feedback>
-          <span v-if="hasEmptyUrl(link)" class="invalid-feedback gl-inline">
-            {{ __('URL is required') }}
-          </span>
-          <span v-else-if="hasBadFormat(link)" class="invalid-feedback gl-inline">
-            <gl-sprintf
-              :message="
-                __(
-                  'URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}',
-                )
-              "
-            >
-              <template #code="{ content }">
-                <code>{{ content }}</code>
-              </template>
-            </gl-sprintf>
-          </span>
-          <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback gl-inline">
-            {{ __('This URL already exists.') }}
-          </span>
-        </template>
-      </gl-form-group>
-
-      <gl-form-group
-        class="link-title-field col"
-        :label="__('Link title')"
-        :label-for="`asset-link-name-${index}`"
-      >
-        <gl-form-input
-          :id="`asset-link-name-${index}`"
-          ref="nameInput"
-          :value="link.name"
-          type="text"
-          class="form-control"
-          name="asset-link-name"
-          :state="isNameValid(link)"
-          @change="updateName(link, $event)"
-          @keydown.ctrl.enter="updateName(link, $event.target.value)"
-          @keydown.meta.enter="updateName(link, $event.target.value)"
-        />
-        <template #invalid-feedback>
-          <span v-if="hasEmptyName(link)" class="invalid-feedback gl-inline">
-            {{ __('Link title is required') }}
-          </span>
-          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback gl-inline">
-            {{ __('This title already exists.') }}
-          </span>
-        </template>
-      </gl-form-group>
-
-      <gl-form-group
-        class="link-type-field col-auto"
-        :label="__('Type')"
-        :label-for="`asset-type-${index}`"
-      >
-        <gl-form-select
-          :id="`asset-type-${index}`"
-          ref="typeSelect"
-          :value="link.linkType || $options.defaultTypeOptionValue"
-          class="pr-4"
-          name="asset-type"
-          :options="$options.typeOptions"
-          @change="updateAssetLinkType({ linkIdToUpdate: link.id, newType: $event })"
-        />
-      </gl-form-group>
-
-      <div v-if="release.assets.links.length !== 1" class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
+      <template #actions>
         <gl-button
-          class="remove-button gl-w-full form-control"
-          :aria-label="__('Remove asset link')"
-          :title="__('Remove asset link')"
-          @click="onRemoveClicked(link.id)"
+          ref="addAnotherLinkButton"
+          size="small"
+          class="gl-self-start"
+          @click="onAddAnotherClicked"
         >
-          <div class="gl-flex">
-            <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
-            <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
-          </div>
+          {{ __('Add another link') }}
         </gl-button>
-      </div>
-    </div>
-    <gl-button
-      ref="addAnotherLinkButton"
-      category="secondary"
-      variant="confirm"
-      class="gl-align-self-start gl-mb-5"
-      @click="onAddAnotherClicked"
-    >
-      {{ __('Add another link') }}
-    </gl-button>
+      </template>
+
+      <template #default>
+        <div
+          v-for="(link, index) in release.assets.links"
+          :key="link.id"
+          class="sm:gl-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
+        >
+          <gl-form-group
+            class="url-field form-group col"
+            :label="__('URL')"
+            :label-for="`asset-url-${index}`"
+          >
+            <gl-form-input
+              :id="`asset-url-${index}`"
+              ref="urlInput"
+              :value="link.url"
+              type="text"
+              class="form-control"
+              name="asset-url"
+              :state="isUrlValid(link)"
+              @change="updateUrl(link, $event)"
+              @keydown.ctrl.enter="updateUrl(link, $event.target.value)"
+              @keydown.meta.enter="updateUrl(link, $event.target.value)"
+            />
+            <template #invalid-feedback>
+              <span v-if="hasEmptyUrl(link)" class="invalid-feedback gl-inline">
+                {{ __('URL is required') }}
+              </span>
+              <span v-else-if="hasBadFormat(link)" class="invalid-feedback gl-inline">
+                <gl-sprintf
+                  :message="
+                    __(
+                      'URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}',
+                    )
+                  "
+                >
+                  <template #code="{ content }">
+                    <code>{{ content }}</code>
+                  </template>
+                </gl-sprintf>
+              </span>
+              <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback gl-inline">
+                {{ __('This URL already exists.') }}
+              </span>
+            </template>
+          </gl-form-group>
+
+          <gl-form-group
+            class="link-title-field col"
+            :label="__('Link title')"
+            :label-for="`asset-link-name-${index}`"
+          >
+            <gl-form-input
+              :id="`asset-link-name-${index}`"
+              ref="nameInput"
+              :value="link.name"
+              type="text"
+              class="form-control"
+              name="asset-link-name"
+              :state="isNameValid(link)"
+              @change="updateName(link, $event)"
+              @keydown.ctrl.enter="updateName(link, $event.target.value)"
+              @keydown.meta.enter="updateName(link, $event.target.value)"
+            />
+            <template #invalid-feedback>
+              <span v-if="hasEmptyName(link)" class="invalid-feedback gl-inline">
+                {{ __('Link title is required') }}
+              </span>
+              <span v-else-if="hasDuplicateName(link)" class="invalid-feedback gl-inline">
+                {{ __('This title already exists.') }}
+              </span>
+            </template>
+          </gl-form-group>
+
+          <gl-form-group
+            class="link-type-field col-auto"
+            :label="__('Type')"
+            :label-for="`asset-type-${index}`"
+          >
+            <gl-form-select
+              :id="`asset-type-${index}`"
+              ref="typeSelect"
+              :value="link.linkType || $options.defaultTypeOptionValue"
+              class="pr-4"
+              name="asset-type"
+              :options="$options.typeOptions"
+              @change="updateAssetLinkType({ linkIdToUpdate: link.id, newType: $event })"
+            />
+          </gl-form-group>
+
+          <div
+            v-if="release.assets.links.length !== 1"
+            class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto"
+          >
+            <gl-button
+              class="remove-button gl-w-full form-control"
+              :aria-label="__('Remove asset link')"
+              :title="__('Remove asset link')"
+              category="tertiary"
+              @click="onRemoveClicked(link.id)"
+            >
+              <div class="gl-flex">
+                <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
+                <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+              </div>
+            </gl-button>
+          </div>
+        </div>
+      </template>
+    </crud-component>
   </div>
 </template>

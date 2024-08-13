@@ -21,6 +21,7 @@ class BulkImport < ApplicationRecord
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
   scope :order_by_updated_at_and_id, ->(direction) { order(updated_at: direction, id: :asc) }
   scope :order_by_created_at, ->(direction) { order(created_at: direction) }
+  scope :with_configuration, -> { includes(:configuration) }
 
   state_machine :status, initial: :created do
     state :created, value: 0
@@ -118,5 +119,9 @@ class BulkImport < ApplicationRecord
   # @return [BulkImports::Entity, nil]
   def parent_group_entity
     entities.group_entity.where(parent: nil).first
+  end
+
+  def source_url
+    configuration&.url
   end
 end

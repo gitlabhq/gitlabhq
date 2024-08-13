@@ -5,7 +5,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { isSafeURL } from '~/lib/utils/url_utility';
+import { isValidURL } from '~/lib/utils/url_utility';
 
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
 
@@ -114,7 +114,7 @@ export default {
       return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
     },
     isSearchingByReference() {
-      return isReference(this.searchTerm) || isSafeURL(this.searchTerm);
+      return isReference(this.searchTerm) || isValidURL(this.searchTerm);
     },
     workItemsToAdd: {
       get() {
@@ -137,7 +137,7 @@ export default {
       return !this.areWorkItemsToAddValid ? '!gl-shadow-inner-1-red-500' : '';
     },
     queryVariables() {
-      return {
+      const variables = {
         fullPath: this.fullPath,
         searchTerm: this.searchTerm,
         types: this.childrenType ? [this.childrenType] : [],
@@ -146,6 +146,13 @@ export default {
         searchByIid: isNumeric(this.searchTerm),
         searchByText: true,
       };
+
+      if (this.isGroup) {
+        variables.includeAncestors = true;
+        variables.includeDescendants = true;
+      }
+
+      return variables;
     },
   },
   created() {

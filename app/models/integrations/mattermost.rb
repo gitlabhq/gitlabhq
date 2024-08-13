@@ -19,8 +19,9 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/mattermost'), target: '_blank', rel: 'noopener noreferrer'
-      s_('Send notifications about project events to Mattermost channels. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      build_help_page_url(
+        'user/project/integrations/mattermost', s_("Send notifications about project events to Mattermost channels.")
+      )
     end
 
     def default_channel_placeholder

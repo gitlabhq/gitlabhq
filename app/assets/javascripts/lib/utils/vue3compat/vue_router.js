@@ -36,7 +36,7 @@ const toNewCatchAllPath = (path, { isRoot } = {}) => {
 
 const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: true }) => {
   if (!value) return null;
-  const newRoutes = value.map(function handleRoutes(route) {
+  const newRoutes = value.map((route) => {
     const newRoute = {
       ...route,
       path: toNewCatchAllPath(route.path, transformOptions),

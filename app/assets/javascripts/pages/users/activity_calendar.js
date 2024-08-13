@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import dateFormat from '~/lib/dateformat';
 import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { n__, s__, __ } from '~/locale';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
@@ -61,6 +61,7 @@ export default class ActivityCalendar {
   constructor({
     container,
     activitiesContainer,
+    recentActivitiesContainer,
     timestamps,
     calendarActivitiesPath,
     utcOffset = 0,
@@ -91,6 +92,7 @@ export default class ActivityCalendar {
     this.months = [];
     this.firstDayOfWeek = firstDayOfWeek;
     this.activitiesContainer = activitiesContainer;
+    this.recentActivitiesContainer = recentActivitiesContainer;
     this.container = container;
     this.onClickDay = onClickDay;
 
@@ -276,6 +278,8 @@ export default class ActivityCalendar {
         .empty()
         .append(loadingIconForLegacyJS({ size: 'lg' }));
 
+      $(this.recentActivitiesContainer).hide();
+
       axios
         .get(this.calendarActivitiesPath, {
           params: {
@@ -289,7 +293,7 @@ export default class ActivityCalendar {
             .querySelector(this.activitiesContainer)
             .querySelectorAll('.js-localtime')
             .forEach((el) => {
-              el.setAttribute('title', formatDate(el.dataset.datetime));
+              el.setAttribute('title', localeDateFormat.asDateTimeFull.format(el.dataset.datetime));
             });
         })
         .catch(() =>
@@ -300,6 +304,7 @@ export default class ActivityCalendar {
     } else {
       this.currentSelectedDate = '';
       $(this.activitiesContainer).html('');
+      $(this.recentActivitiesContainer).show();
     }
   }
 }

@@ -19,7 +19,7 @@ section details how to reduce this architecture's size while maintaining HA.
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-> - **Target Load:** 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
+> - **Target Load:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
 > - **Cost calculator template:** [See cost calculator templates section](index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
@@ -1259,26 +1259,20 @@ To configure the Praefect nodes, on each one:
       # ...
       listen_addr: '0.0.0.0:2305',
       auth: {
-        # ...
-        #
-        # Praefect External Token
-        # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
-        token: '<praefect_external_token>',
+         # ...
+         #
+         # Praefect External Token
+         # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
+         token: '<praefect_external_token>',
       },
       # Praefect Database Settings
       database: {
-        # ...
-        host: '10.6.0.141',
-        port: 5432,
-        # `no_proxy` settings must always be a direct connection for caching
-        session_pooled: {
-           # ...
-           host: '10.6.0.141',
-           port: 5432,
-           dbname: 'praefect_production',
-           user: 'praefect',
-           password: '<praefect_postgresql_password>',
-        },
+         # ...
+         host: '10.6.0.141',
+         port: 5432,
+         dbname: 'praefect_production',
+         user: 'praefect',
+         password: '<praefect_postgresql_password>',
       },
       # Praefect Virtual Storage config
       # Name of storage hash must match storage name in git_data_dirs on GitLab

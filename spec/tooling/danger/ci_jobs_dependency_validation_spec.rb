@@ -26,11 +26,9 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
   let(:rules_with_new_condition) { [*rules_base, new_condition] }
 
-  let(:source_branch_jobs_base) do
+  let(:validated_jobs_base) do
     described_class::VALIDATED_JOB_NAMES.index_with { job_config_base }
   end
-
-  let(:source_branch_merged_yaml) { YAML.dump(source_branch_jobs_base) }
 
   let(:master_merged_yaml) do
     YAML.dump({
@@ -40,7 +38,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
   let(:query) do
     {
-      content_ref: 'feature_branch',
+      content_ref: 'merged_result_commit_sha',
       dry_run_ref: 'feature_branch',
       include_jobs: true,
       dry_run: true
@@ -50,6 +48,8 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
   subject(:ci_jobs_dependency_validation) { fake_danger.new(helper: fake_helper) }
 
   before do
+    stub_env('CI_COMMIT_SHA', 'merged_result_commit_sha')
+
     allow(ci_jobs_dependency_validation).to receive_message_chain(:gitlab, :api, :get).with("/projects/1/ci/lint",
       query: {}) do
       { 'merged_yaml' => master_merged_yaml }
@@ -173,6 +173,8 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       end
 
       context 'when jobs do not have dependencies' do
+        let(:source_branch_merged_yaml) { YAML.dump(validated_jobs_base) }
+
         let(:expected_message) { described_class::VALIDATION_PASSED_OUTPUT }
 
         it_behaves_like 'output message'
@@ -184,7 +186,15 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         end
 
         let(:expected_message) do
-          <<~MARKDOWN
+          warning_details = described_class::VALIDATED_JOB_NAMES.map do |job_name|
+            <<~MARKDOWN
+              - :warning: Unable to find job `#{job_name}` in branch `feature_branch`.
+                If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
+                Validation skipped.
+            MARKDOWN
+          end.join("\n")
+
+          <<~MARKDOWN.chomp
            ### CI Jobs Dependency Validation
 
            | name | validation status |
@@ -195,30 +205,9 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
            | `build-gdk-image` | :warning: Skipped |
            | `build-assets-image` | :warning: Skipped |
            | `build-qa-image` | :warning: Skipped |
+           | `e2e-test-pipeline-generate` | :warning: Skipped |
 
-           - :warning: Unable to find job `setup-test-env` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
-
-           - :warning: Unable to find job `compile-test-assets` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
-
-           - :warning: Unable to find job `retrieve-tests-metadata` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
-
-           - :warning: Unable to find job `build-gdk-image` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
-
-           - :warning: Unable to find job `build-assets-image` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
-
-           - :warning: Unable to find job `build-qa-image` in branch `feature_branch`.
-             If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
-             Validation skipped.
+           #{warning_details}
           MARKDOWN
         end
 
@@ -230,7 +219,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         let(:needed_job_name)   { 'setup-test-env' }
 
         let(:source_branch_merged_yaml) do
-          YAML.dump(source_branch_jobs_base.merge(
+          YAML.dump(validated_jobs_base.merge(
             {
               job_name => {
                 'rules' => rules_with_new_condition,
@@ -271,7 +260,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         context 'when VALIDATED_JOB_NAMES contains the needed job and dependent job config changed' do
           context 'when the added rule is also present in its needed job' do
             let(:source_branch_merged_yaml) do
-              YAML.dump(source_branch_jobs_base.merge({
+              YAML.dump(validated_jobs_base.merge({
                 job_name => job_config_base.merge({
                   'rules' => rules_with_new_condition,
                   'needs' => [needed_job_name]
@@ -298,16 +287,23 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
               | `build-gdk-image` | :white_check_mark: Passed |
               | `build-assets-image` | :white_check_mark: Passed |
               | `build-qa-image` | :white_check_mark: Passed |
+              | `e2e-test-pipeline-generate` | :white_check_mark: Passed |
 
-              - 🚨 **New rules were detected in the following jobs but missing in `setup-test-env`:**
+              - 🚨 **These rule changes do not match with rules for `setup-test-env`:**
 
               <details><summary>Click to expand details</summary>
 
               `job1`:
 
+              - Added rules:
+
               ```yaml
               - if: $NEW_VAR == "true"
               ```
+
+              - Removed rules:
+
+              `N/A`
 
               Here are the rules for `setup-test-env`:
 
@@ -320,8 +316,8 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
               </details>
 
-              To avoid CI config errors, please verify if the new rules should be added to `setup-test-env`.
-              Please add a comment if rules should not be added.
+              To avoid CI config errors, please verify if the same rule addition/removal should be applied to `setup-test-env`.
+              If not, please add a comment to explain why.
               MARKDOWN
             end
 
@@ -332,7 +328,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
       context 'when job configs are malformatted' do
         let(:source_branch_merged_yaml) do
-          YAML.dump(source_branch_jobs_base.merge(
+          YAML.dump(validated_jobs_base.merge(
             {
               'job1' => 'not a hash',
               'job2' => ['array'],
@@ -349,7 +345,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       context 'when dependent job has a rule that is not a hash' do
         let(:source_branch_merged_yaml) do
           YAML.dump(
-            source_branch_jobs_base.merge({
+            validated_jobs_base.merge({
               'job1' => {
                 'rules' => ['this is a malformatted rule'],
                 'needs' => 'this is a malformatted needs'
@@ -367,7 +363,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         let(:new_condition) { { 'if' => "$NEW_VAR == true", 'when' => 'never' } }
         let(:source_branch_merged_yaml) do
           YAML.dump(
-            source_branch_jobs_base.merge({
+            validated_jobs_base.merge({
               'job1' => {
                 'rules' => [new_condition],
                 'needs' => ['setup-test-env']
@@ -381,10 +377,98 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         it_behaves_like 'output message'
       end
 
+      context 'when dependent job has removed a rule with "when: never"' do
+        let(:needed_job_rules) { rules_base }
+        let(:master_merged_yaml) do
+          YAML.dump(
+            validated_jobs_base.merge({
+              'job1' => {
+                'rules' => [*rules_base, { 'if' => 'true', 'when' => 'never' }],
+                'needs' => ['setup-test-env']
+              }
+            })
+          )
+        end
+
+        let(:source_branch_merged_yaml) do
+          YAML.dump(
+            validated_jobs_base.merge({
+              'job1' => {
+                'rules' => rules_base,
+                'needs' => ['setup-test-env']
+              },
+              'setup-test-env' => {
+                'rules' => needed_job_rules
+              }
+            })
+          )
+        end
+
+        context 'when needed_job does not have this negative rule' do
+          let(:expected_message) { ':white_check_mark: No warnings found in ci job dependencies.' }
+
+          it_behaves_like 'output message'
+        end
+
+        context 'when needed_job still has this negative rule' do
+          let(:needed_job_rules) { [*rules_base, { 'if' => 'true', 'when' => 'never' }] }
+          let(:expected_message) do
+            <<~MARKDOWN
+              ### CI Jobs Dependency Validation
+
+              | name | validation status |
+              | ------ | --------------- |
+              | `setup-test-env` | 🚨 Failed (1) |
+              | `compile-test-assets` | :white_check_mark: Passed |
+              | `retrieve-tests-metadata` | :white_check_mark: Passed |
+              | `build-gdk-image` | :white_check_mark: Passed |
+              | `build-assets-image` | :white_check_mark: Passed |
+              | `build-qa-image` | :white_check_mark: Passed |
+              | `e2e-test-pipeline-generate` | :white_check_mark: Passed |
+
+              - 🚨 **These rule changes do not match with rules for `setup-test-env`:**
+
+              <details><summary>Click to expand details</summary>
+
+              `job1`:
+
+              - Added rules:
+
+              `N/A`
+
+              - Removed rules:
+
+              ```yaml
+              - if: 'true'
+                when: never
+              ```
+
+              Here are the rules for `setup-test-env`:
+
+              ```yaml
+              - if: $CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE
+                  == "detached"
+                changes:
+                - doc/index.md
+              - if: 'true'
+                when: never
+              ```
+
+              </details>
+
+              To avoid CI config errors, please verify if the same rule addition/removal should be applied to `setup-test-env`.
+              If not, please add a comment to explain why.
+            MARKDOWN
+          end
+
+          it_behaves_like 'output message', true
+        end
+      end
+
       context 'when dependent job have modified rules, but its attributes have nested arrays' do
         let(:source_branch_merged_yaml) do
           YAML.dump(
-            source_branch_jobs_base.merge({
+            validated_jobs_base.merge({
               'job1' => {
                 'rules' => [{ 'if' => 'true', 'when' => 'always' }, [new_condition]],
                 'needs' => ['setup-test-env', %w[compile-test-assets retrieve-tests-metadata]]
@@ -405,6 +489,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
             | `build-gdk-image` | :white_check_mark: Passed |
             | `build-assets-image` | :white_check_mark: Passed |
             | `build-qa-image` | :white_check_mark: Passed |
+            | `e2e-test-pipeline-generate` | :white_check_mark: Passed |
 
           MARKDOWN
         end
@@ -412,17 +497,23 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         let(:expected_message) do
           %w[setup-test-env compile-test-assets retrieve-tests-metadata].map do |job_name|
             <<~MARKDOWN
-              - 🚨 **New rules were detected in the following jobs but missing in `#{job_name}`:**
+              - 🚨 **These rule changes do not match with rules for `#{job_name}`:**
 
               <details><summary>Click to expand details</summary>
 
               `job1`:
+
+              - Added rules:
 
               ```yaml
               - if: 'true'
                 when: always
               - if: $NEW_VAR == "true"
               ```
+
+              - Removed rules:
+
+              `N/A`
 
               Here are the rules for `#{job_name}`:
 
@@ -435,8 +526,8 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
               </details>
 
-              To avoid CI config errors, please verify if the new rules should be added to `#{job_name}`.
-              Please add a comment if rules should not be added.
+              To avoid CI config errors, please verify if the same rule addition/removal should be applied to `#{job_name}`.
+              If not, please add a comment to explain why.
 
             MARKDOWN
           end.join('').prepend(message_preview).chomp
@@ -452,10 +543,13 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       before do
         allow(
           ci_jobs_dependency_validation
-        ).to receive_message_chain(:gitlab, :api, :get).with("/projects/1/ci/lint", query: {}).and_raise('')
+        ).to receive_message_chain(:gitlab, :api, :get).with("/projects/1/ci/lint", query: {}).and_raise('error')
       end
 
-      it 'returns jobs yaml' do
+      it 'returns empty object' do
+        expect(ci_jobs_dependency_validation).to receive(:warn).with(
+          "#{described_class::SKIPPED_VALIDATION_WARNING}: error"
+        )
         expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
       end
     end
@@ -464,11 +558,32 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       before do
         allow(
           ci_jobs_dependency_validation
-        ).to receive_message_chain(:gitlab, :api, :get).with("/projects/1/ci/lint", query: {}).and_return({})
+        ).to receive_message_chain(:gitlab, :api, :get).with(
+          "/projects/1/ci/lint", query: {}
+        ).and_return({ 'errors' => ['error'] })
       end
 
-      it 'returns jobs yaml' do
+      it 'returns empty object' do
+        expect(ci_jobs_dependency_validation).to receive(:warn).with(
+          "#{described_class::SKIPPED_VALIDATION_WARNING}: error"
+        )
         expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
+      end
+    end
+
+    context 'with returned payload has merged_yaml and also has errors' do
+      before do
+        allow(
+          ci_jobs_dependency_validation
+        ).to receive_message_chain(:gitlab, :api, :get).with(
+          "/projects/1/ci/lint", query: {}
+        ).and_return({ 'errors' => ['error'], 'merged_yaml' => master_merged_yaml })
+      end
+
+      it 'returns the yaml and disregard the errors' do
+        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq(
+          YAML.load(master_merged_yaml)
+        )
       end
     end
 
@@ -481,7 +596,10 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         )
       end
 
-      it 'returns jobs yaml' do
+      it 'returns empty object' do
+        expect(ci_jobs_dependency_validation).to receive(:warn).with(
+          "#{described_class::SKIPPED_VALIDATION_WARNING}: Tried to load unspecified class: Date"
+        )
         expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
       end
     end

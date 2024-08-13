@@ -3,10 +3,6 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
-      include IgnorableColumns
-
-      ignore_column :push_protected_up_to_access_level, remove_with: '17.3', remove_after: '2024-07-22'
-
       enum package_type: Packages::Package.package_types.slice(:npm)
       enum minimum_access_level_for_push:
           Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
@@ -34,10 +30,12 @@ module Packages
         )
       end
 
+      scope :for_package_type, ->(package_type) { where(package_type: package_type) }
+
       def self.for_push_exists?(access_level:, package_name:, package_type:)
         return false if [access_level, package_name, package_type].any?(&:blank?)
 
-        where(package_type: package_type)
+        for_package_type(package_type)
           .where(':access_level < minimum_access_level_for_push', access_level: access_level)
           .for_package_name(package_name)
           .exists?

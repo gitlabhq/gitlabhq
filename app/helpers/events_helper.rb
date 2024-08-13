@@ -233,7 +233,11 @@ module EventsHelper
     elsif event.snippet_note?
       gitlab_snippet_url(event.note_target, anchor: dom_id(event.target))
     elsif event.issue_note?
-      project_issue_url(event.project, id: event.note_target, anchor: dom_id(event.target))
+      if event.project
+        project_issue_url(event.project, id: event.note_target, anchor: dom_id(event.target))
+      elsif event.group
+        group_work_item_url(event.group, event.note_target, anchor: dom_id(event.target))
+      end
     elsif event.merge_request_note?
       project_merge_request_url(event.project, id: event.note_target, anchor: dom_id(event.target))
     elsif event.design_note?

@@ -1,0 +1,12 @@
+#import "ee_else_ce/work_items/graphql/work_item_type.fragment.graphql"
+
+query namespaceWorkItemTypes($fullPath: ID!, $name: IssueType) {
+  workspace: namespace(fullPath: $fullPath) {
+    id
+    workItemTypes(name: $name) {
+      nodes {
+        ...WorkItemTypeFragment
+      }
+    }
+  }
+}

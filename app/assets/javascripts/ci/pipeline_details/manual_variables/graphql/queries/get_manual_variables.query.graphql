@@ -1,0 +1,17 @@
+query getManualVariables($projectPath: ID!, $iid: ID!) {
+  project(fullPath: $projectPath) {
+    __typename
+    id
+    pipeline(iid: $iid) {
+      id
+      manualVariables {
+        __typename
+        nodes {
+          id
+          key
+          value
+        }
+      }
+    }
+  }
+}

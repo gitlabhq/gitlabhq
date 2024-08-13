@@ -18,12 +18,6 @@ async function* getIterableFileStream(path) {
   }
 }
 
-function getLastContentAfterCarriageReturn(line) {
-  const parts = line.split('\r').filter(Boolean);
-
-  return parts[parts.length - 1];
-}
-
 /**
  * Obtains lines as an async iterable
  * from a binary stream.
@@ -41,19 +35,11 @@ async function* getLogStreamLines(stream) {
     chunkRemainder = lines.pop() || '';
 
     for (const line of lines) {
-      if (line.trim() !== '') {
-        yield {
-          text: getLastContentAfterCarriageReturn(line),
-        };
-      }
+      yield line;
     }
   }
 
-  if (chunkRemainder.trim() !== '') {
-    yield {
-      text: getLastContentAfterCarriageReturn(chunkRemainder),
-    };
-  }
+  yield chunkRemainder;
 }
 
 /**
@@ -68,8 +54,20 @@ export async function fetchLogLines(path) {
   const scanner = new Scanner();
 
   for await (const line of lines) {
-    const scanned = scanner.scan(line.text);
-    res.push(scanned);
+    const scanned = scanner.scan(line);
+
+    if (scanned) {
+      if (scanned.append) {
+        const last = res[res.length - 1];
+
+        last.content = [...last.content, ...scanned.content];
+        last.timestamp = scanned.timestamp; // time is updated by most recent line
+
+        res[res.length - 1] = last;
+      } else {
+        res.push(scanned);
+      }
+    }
   }
 
   return res;

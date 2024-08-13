@@ -15,5 +15,9 @@ module CloudConnector
       encode_iv: false
 
     validates :token, :expires_at, presence: true
+
+    def expired?
+      expires_at.past?
+    end
   end
 end

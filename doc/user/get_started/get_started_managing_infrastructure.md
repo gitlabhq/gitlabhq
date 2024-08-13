@@ -11,7 +11,7 @@ With the rise of DevOps and SRE approaches, infrastructure management has become
 codified and automatable. You can now employ software development best practices
 in your infrastructure management.
 
-The daily tasks of classical a classical operations team
+The daily tasks of a classical operations team
 have changed and are more similar to traditional software development. At the same time, software engineers
 are more likely to control their whole DevOps lifecycle, including deployments and delivery.
 

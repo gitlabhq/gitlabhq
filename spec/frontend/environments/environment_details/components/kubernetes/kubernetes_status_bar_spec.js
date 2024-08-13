@@ -146,6 +146,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
       [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
     ])(
       'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
+      // eslint-disable-next-line max-params
       (status, variant, icon, text) => {
         createWrapper({ clusterHealthStatus: status });
 
@@ -164,6 +165,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
 
       it('renders sync status as Unavailable', () => {
         expect(findSyncBadge().text()).toBe('Unavailable');
+      });
+
+      it('renders a non-clickable badge', () => {
+        expect(findSyncBadge().attributes('href')).toBeUndefined();
       });
     });
 
@@ -197,27 +202,44 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         },
       );
 
-      describe('when Flux API errored', () => {
-        const fluxApiError = 'Error from the cluster_client API';
-
-        beforeEach(() => {
-          createWrapper({ fluxApiError });
+      it('renders a clickable badge', () => {
+        createWrapper({
+          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
         });
 
-        it('renders sync badge as unavailable', () => {
-          const badge = SYNC_STATUS_BADGES.unavailable;
+        expect(findSyncBadge().attributes('href')).toBe('#');
+      });
 
-          expect(findSyncBadge().text()).toBe(badge.text);
-          expect(findSyncBadge().props()).toMatchObject({
-            icon: badge.icon,
-            variant: badge.variant,
-          });
+      it('emits `show-flux-resource-details` event when badge is clicked', () => {
+        createWrapper({
+          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
         });
 
-        it('renders popover with an API error message', () => {
-          expect(findPopover().text()).toBe(fluxApiError);
-          expect(findPopover().props('title')).toBe('Flux sync status is unavailable');
+        findSyncBadge().trigger('click');
+        expect(wrapper.emitted('show-flux-resource-details')).toBeDefined();
+      });
+    });
+
+    describe('when Flux API errored', () => {
+      const fluxApiError = 'Error from the cluster_client API';
+
+      beforeEach(() => {
+        createWrapper({ fluxApiError });
+      });
+
+      it('renders sync badge as unavailable', () => {
+        const badge = SYNC_STATUS_BADGES.unavailable;
+
+        expect(findSyncBadge().text()).toBe(badge.text);
+        expect(findSyncBadge().props()).toMatchObject({
+          icon: badge.icon,
+          variant: badge.variant,
         });
+      });
+
+      it('renders popover with an API error message', () => {
+        expect(findPopover().text()).toBe(fluxApiError);
+        expect(findPopover().props('title')).toBe('Flux sync status is unavailable');
       });
     });
   });

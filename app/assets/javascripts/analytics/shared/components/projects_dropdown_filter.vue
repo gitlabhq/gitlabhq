@@ -252,7 +252,7 @@ export default {
   >
     <template #toggle>
       <gl-button
-        button-text-classes="gl-w-full gl-justify-content-space-between gl-display-flex gl-shadow-none gl-mb-0"
+        button-text-classes="gl-w-full gl-justify-between gl-flex gl-shadow-none gl-mb-0"
         :class="['dropdown-projects', toggleClasses]"
       >
         <gl-avatar
@@ -263,14 +263,14 @@ export default {
           :size="16"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           :alt="selectedProjects[0].name"
-          class="gl-inline-flex gl-align-middle gl-mr-2 gl-flex-shrink-0"
+          class="gl-mr-2 gl-inline-flex gl-shrink-0 gl-align-middle"
         />
-        <gl-truncate :text="selectedProjectsLabel" class="gl-min-w-0 gl-flex-grow-1" />
-        <gl-icon class="gl-ml-2 gl-flex-shrink-0" name="chevron-down" />
+        <gl-truncate :text="selectedProjectsLabel" class="gl-min-w-0 gl-grow" />
+        <gl-icon class="gl-ml-2 gl-shrink-0" name="chevron-down" />
       </gl-button>
     </template>
     <template #list-item="{ item }">
-      <div class="gl-display-flex">
+      <div class="gl-flex">
         <gl-avatar
           class="gl-mr-2 gl-align-middle"
           :alt="item.name"

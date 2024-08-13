@@ -22,7 +22,6 @@ module GroupsHelper
   end
 
   def can_set_group_diff_preview_in_email?(group)
-    return false unless Feature.enabled?(:diff_preview_in_email, group)
     return false if group.parent&.show_diff_preview_in_email?.equal?(false)
 
     can?(current_user, :set_show_diff_preview_in_email, group)
@@ -98,8 +97,20 @@ module GroupsHelper
     end
   end
 
+  def group_confirm_modal_data(group:, remove_form_id: nil, permanently_remove: false, button_text: nil)
+    {
+      remove_form_id: remove_form_id,
+      button_text: button_text.nil? ? _('Delete group') : button_text,
+      button_testid: 'remove-group-button',
+      disabled: group.linked_to_subscription?.to_s,
+      confirm_danger_message: remove_group_message(group, permanently_remove),
+      phrase: group.full_path,
+      html_confirmation_message: 'true'
+    }
+  end
+
   # Overridden in EE
-  def remove_group_message(group)
+  def remove_group_message(group, permanently_remove)
     content_tag :div do
       content = ''.html_safe
       content << content_tag(:span, _("You are about to delete the group %{group_name}.") % { group_name: group.name })

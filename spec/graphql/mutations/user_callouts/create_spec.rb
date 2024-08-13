@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::UserCallouts::Create do
+  include GraphqlHelpers
+
   let(:current_user) { create(:user) }
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   describe '#resolve' do
     subject(:resolve) { mutation.resolve(feature_name: feature_name) }

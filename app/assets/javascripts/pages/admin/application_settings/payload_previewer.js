@@ -29,7 +29,7 @@ export default class PayloadPreviewer {
   requestPayload() {
     if (this.isInserted) return this.showPayload();
 
-    this.spinner.classList.add('gl-display-inline');
+    this.spinner.classList.add('gl-inline');
 
     const container = this.getContainer();
 
@@ -38,11 +38,11 @@ export default class PayloadPreviewer {
         responseType: 'text',
       })
       .then(({ data }) => {
-        this.spinner.classList.remove('gl-display-inline');
+        this.spinner.classList.remove('gl-inline');
         this.insertPayload(data);
       })
       .catch(() => {
-        this.spinner.classList.remove('gl-display-inline');
+        this.spinner.classList.remove('gl-inline');
         createAlert({
           message: __('Error fetching payload data.'),
         });
@@ -51,13 +51,13 @@ export default class PayloadPreviewer {
 
   hidePayload() {
     this.isVisible = false;
-    this.getContainer().classList.add('gl-display-none');
+    this.getContainer().classList.add('gl-hidden');
     this.text.textContent = __('Preview payload');
   }
 
   showPayload() {
     this.isVisible = true;
-    this.getContainer().classList.remove('gl-display-none');
+    this.getContainer().classList.remove('gl-hidden');
     this.text.textContent = __('Hide payload');
   }
 

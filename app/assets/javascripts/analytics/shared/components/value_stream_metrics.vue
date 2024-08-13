@@ -116,10 +116,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex" data-testid="vsa-metrics" :class="isLoading ? 'gl-my-6' : 'gl-mt-6'">
+  <div class="gl-flex" data-testid="vsa-metrics" :class="isLoading ? 'gl-my-6' : 'gl-mt-6'">
     <gl-skeleton-loader v-if="isLoading" />
     <template v-else>
-      <div v-if="hasGroupedMetrics" class="gl-flex-direction-column">
+      <div v-if="hasGroupedMetrics" class="gl-flex-col">
         <div
           v-for="(group, groupIndex) in groupedMetrics"
           :key="group.key"
@@ -127,7 +127,7 @@ export default {
           data-testid="vsa-metrics-group"
         >
           <h4 class="gl-my-0">{{ group.title }}</h4>
-          <div class="gl-display-flex gl-flex-wrap">
+          <div class="gl-flex gl-flex-wrap">
             <metric-tile
               v-for="metric in group.data"
               :key="metric.identifier"
@@ -142,7 +142,7 @@ export default {
           </div>
         </div>
       </div>
-      <div v-else class="gl-display-flex gl-flex-wrap gl-mb-7">
+      <div v-else class="gl-mb-7 gl-flex gl-flex-wrap">
         <metric-tile
           v-for="metric in metrics"
           :key="metric.identifier"

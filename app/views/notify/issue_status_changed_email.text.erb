@@ -1,3 +1,3 @@
-Issue was <%= @issue_status %> by <%= sanitize_name(@updated_by.name) %>
+<%= work_item_type_for(@issue).capitalize %> was <%= @issue_status %> by <%= sanitize_name(@updated_by.name) %>
 
-Issue <%= @issue.iid %>: <%= url_for(@target_url) %>
+<%= work_item_type_for(@issue).capitalize %> <%= @issue.iid %>: <%= url_for(@target_url) %>

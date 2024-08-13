@@ -1,8 +1,5 @@
 <script>
 import {
-  GlModal,
-  GlSprintf,
-  GlLink,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -16,19 +13,12 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
-  modal: {
-    title: __('Enable Gitpod?'),
-    content: s__(
-      'Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}.',
-    ),
-    actionCancelText: __('Cancel'),
-    actionPrimaryText: __('Enable Gitpod'),
-  },
   webIdeText: s__('WebIDE|Quickly and easily edit multiple files in your project.'),
   webIdeTooltip: s__(
     'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
   ),
   toggleText: __('Edit'),
+  gitpodText: __('Launch a ready-to-code development environment for your project.'),
 };
 
 const TRACKING_ACTION_NAME = 'click_consolidated_edit';
@@ -36,9 +26,6 @@ const TRACKING_ACTION_NAME = 'click_consolidated_edit';
 export default {
   name: 'CEWebIdeLink',
   components: {
-    GlModal,
-    GlSprintf,
-    GlLink,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -86,16 +73,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    userPreferencesGitpodPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userProfileEnableGitpodPath: {
-      type: String,
-      required: false,
-      default: '',
     },
     editUrl: {
       type: String,
@@ -150,12 +127,11 @@ export default {
     cssClasses: {
       type: String,
       required: false,
-      default: 'gl-sm-ml-3',
+      default: 'sm:gl-ml-3',
     },
   },
   data() {
     return {
-      showEnableGitpodModal: false,
       showForkModal: false,
     };
   },
@@ -257,9 +233,7 @@ export default {
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
-      return (
-        this.showGitpodButton && this.userPreferencesGitpodPath && this.userProfileEnableGitpodPath
-      );
+      return this.showGitpodButton && this.gitpodEnabled;
     },
     pipelineEditorAction() {
       if (!this.showPipelineEditorButton) {
@@ -280,47 +254,23 @@ export default {
       };
     },
     gitpodAction() {
-      if (!this.computedShowGitpodButton) {
-        return null;
-      }
-      const handleOptions = this.gitpodEnabled
-        ? { href: this.gitpodUrl }
-        : {
-            handle: () => {
-              this.showModal('showEnableGitpodModal');
-            },
-          };
+      if (!this.computedShowGitpodButton) return null;
 
-      const secondaryText = __('Launch a ready-to-code development environment for your project.');
+      const handleOptions = {
+        handle: () => {
+          visitUrl(this.gitpodUrl, true);
+        },
+      };
 
       return {
         key: KEY_GITPOD,
         text: this.gitpodActionText,
-        secondaryText,
+        secondaryText: this.$options.i18n.gitpodText,
         tracking: {
           action: TRACKING_ACTION_NAME,
           label: 'gitpod',
         },
         ...handleOptions,
-      };
-    },
-    enableGitpodModalProps() {
-      return {
-        'modal-id': 'enable-gitpod-modal',
-        size: 'sm',
-        title: this.$options.i18n.modal.title,
-        'action-cancel': {
-          text: this.$options.i18n.modal.actionCancelText,
-        },
-        'action-primary': {
-          text: this.$options.i18n.modal.actionPrimaryText,
-          attributes: {
-            variant: 'confirm',
-            category: 'primary',
-            href: this.userProfileEnableGitpodPath,
-            'data-method': 'put',
-          },
-        },
       };
     },
     mountForkModal() {
@@ -364,10 +314,8 @@ export default {
           @action="executeAction(action)"
         >
           <template #list-item>
-            <div class="gl-display-flex gl-flex-direction-column">
-              <span
-                class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
-              >
+            <div class="gl-flex gl-flex-col">
+              <span class="gl-mb-2 gl-flex gl-items-center gl-justify-between">
                 <span data-testid="action-primary-text" class="gl-font-bold">{{
                   action.text
                 }}</span>
@@ -375,7 +323,7 @@ export default {
                   action.shortcut
                 }}</kbd>
               </span>
-              <span data-testid="action-secondary-text" class="gl-font-sm gl-text-secondary">
+              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary">
                 {{ action.secondaryText }}
               </span>
             </div>
@@ -384,17 +332,6 @@ export default {
       </gl-disclosure-dropdown-group>
       <slot name="after-actions"></slot>
     </gl-disclosure-dropdown>
-    <gl-modal
-      v-if="computedShowGitpodButton && !gitpodEnabled"
-      v-model="showEnableGitpodModal"
-      v-bind="enableGitpodModalProps"
-    >
-      <gl-sprintf :message="$options.i18n.modal.content">
-        <template #link="{ content }">
-          <gl-link :href="userPreferencesGitpodPath">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-modal>
     <confirm-fork-modal
       v-if="mountForkModal"
       v-model="showForkModal"

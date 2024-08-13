@@ -65,7 +65,7 @@ RSpec.describe 'Destroying a model', feature_category: :mlops do
       where(:user_role, :mutation_behavior) do
         :maintainer | 'destroying the model'
         :developer  | 'destroying the model'
-        :reporter   | 'destroying the model'
+        :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
         :anonymous  | 'denying the mutation request'
       end

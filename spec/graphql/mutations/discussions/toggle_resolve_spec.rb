@@ -6,7 +6,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
   include GraphqlHelpers
 
   subject(:mutation) do
-    described_class.new(object: nil, context: { current_user: user }, field: nil)
+    described_class.new(object: nil, context: query_context, field: nil)
   end
 
   let_it_be(:author) { create(:user) }
@@ -24,7 +24,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
     shared_examples 'a working resolve method' do
       context 'when the user does not have permission' do
-        let_it_be(:user) { create(:user) }
+        let_it_be(:current_user) { create(:user) }
 
         it 'raises an error if the resource is not accessible to the user' do
           expect { subject }.to raise_error(
@@ -35,7 +35,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
       end
 
       context 'when the user has permission' do
-        let_it_be(:user) { create(:user, developer_of: project) }
+        let_it_be(:current_user) { create(:user, developer_of: project) }
 
         context 'when discussion cannot be found' do
           let(:id_arg) { global_id_of(id: non_existing_record_id, model_name: discussion.class.name) }
@@ -73,7 +73,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
           context 'when the discussion is already resolved' do
             before do
-              discussion.resolve!(user)
+              discussion.resolve!(current_user)
             end
 
             include_examples 'returns a resolved discussion without errors'
@@ -101,7 +101,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
           context 'when the discussion is resolved' do
             before do
-              discussion.resolve!(user)
+              discussion.resolve!(current_user)
             end
 
             include_examples 'returns an unresolved discussion without errors'
@@ -130,7 +130,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
       end
 
       context 'when user is the author and discussion is locked' do
-        let(:user) { author }
+        let(:current_user) { author }
 
         before do
           issuable.update!(discussion_locked: true)

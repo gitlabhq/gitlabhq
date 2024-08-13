@@ -37,12 +37,10 @@ module Integrations
       non_empty_password_title: -> { s_('ProjectService|Enter new API key') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current API key') },
       help: -> do
-        ERB::Util.html_escape(
-          s_('DatadogIntegration|%{linkOpen}API key%{linkClose} used for authentication with Datadog.')
-        ) % {
-          linkOpen: %(<a href="#{URL_API_KEYS_DOCS}" target="_blank" rel="noopener noreferrer">).html_safe,
-          linkClose: '</a>'.html_safe
-        }
+        docs_link = ActionController::Base.helpers.link_to('', URL_API_KEYS_DOCS, target: '_blank', rel: 'noopener noreferrer')
+        tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+
+        safe_format(s_('DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog.'), tag_pair_docs_link)
       end,
       required: true
 
@@ -126,12 +124,11 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        s_('DatadogIntegration|How do I set up this integration?'),
-        Rails.application.routes.url_helpers.help_page_url('integration/datadog'),
-        target: '_blank', rel: 'noopener noreferrer'
+      build_help_page_url(
+        'integration/datadog',
+        s_('DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues.'),
+        _('How do I set up this integration?')
       )
-      s_('DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     def self.to_param

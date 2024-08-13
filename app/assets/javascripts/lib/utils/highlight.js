@@ -15,6 +15,7 @@ import { sanitize } from '~/lib/dompurify';
  * @param {String} matchPrefix The string to insert at the beginning of a match
  * @param {String} matchSuffix The string to insert at the end of a match
  */
+// eslint-disable-next-line max-params
 export default function highlight(string, match = '', matchPrefix = '<b>', matchSuffix = '</b>') {
   if (!string) {
     return '';

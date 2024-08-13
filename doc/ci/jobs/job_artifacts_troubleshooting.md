@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting job artifacts
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 When working with [job artifacts](job_artifacts.md), you might encounter the following issues.
 
 ## Job does not retrieve certain artifacts

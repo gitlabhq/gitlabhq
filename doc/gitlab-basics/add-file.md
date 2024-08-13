@@ -5,9 +5,9 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Add, commit, and push a file to your Git repository using the command line."
 ---
 
-# Add files and make changes by using Git
+# Add files to your branch
 
-You can use the Git command line to add files, make changes to existing files, and stash changes you don't need yet.
+You can use Git to add files, make changes to existing files, and stash changes you don't need yet.
 
 ## Add files to a Git repository
 
@@ -106,39 +106,6 @@ When you make changes to files in a repository, Git tracks the changes
 against the most recent version of the checked out branch. You can use
 Git commands to review and commit your changes to the branch, and push
 your work to GitLab.
-
-### View repository status
-
-When you add, change, or delete files or folders, Git knows about the
-changes. To check which files have been changed:
-
-- From your repository, run `git status`.
-
-The branch name, most recent commit, and any new or changed files are displayed.
-New files are displayed in green. Changed files are displayed in red.
-
-### View differences
-
-You can display the difference (or diff) between your local
-changes and the most recent version of a branch. View a diff to
-understand your local changes before you commit them to the branch.
-
-To view the differences between your local unstaged changes and the
-latest version that you cloned or pulled:
-
-- From your repository, run `git diff`.
-
-  To compare your changes against a specific branch, run
-  `git diff <branch>`.
-
-The diff is displayed:
-
-- Lines with additions begin with a plus (`+`) and are displayed in green.
-- Lines with removals or changes begin with a minus (`-`) and are displayed in red.
-
-If the diff is large, by default only a portion of the diff is
-displayed. You can advance the diff with <kbd>Enter</kbd>, and quit
-back to your terminal with <kbd>Q</kbd>.
 
 ### Add and commit local changes
 
@@ -255,7 +222,7 @@ Git push options can perform actions for merge requests while pushing changes:
 | `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. Introduced in [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132475). |
 | `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](../user/project/merge_requests/merge_when_pipeline_succeeds.md). |
 | `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged. |
-| `merge_request.squash`                       | Set the merge request to squash all commits into a single commit on merge Introduced in [GitLab 17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/). |
+| `merge_request.squash`                       | Set the merge request to squash all commits into a single commit on merge. Introduced in [GitLab 17.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158778). |
 | `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`. |
 | `merge_request.description="<description>"`  | Set the description of the merge request. For example: `git push -o merge_request.description="The description I want"`. |
 | `merge_request.draft`                        | Mark the merge request as a draft. For example: `git push -o merge_request.draft`. Introduced in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/296673). |
@@ -300,7 +267,7 @@ new merge request, targets a branch (`my-target-branch`), and sets auto-merge:
 git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.merge_when_pipeline_succeeds
 ```
 
-### Create Git aliases for common commands
+### Create Git aliases for pushing
 
 Adding push options to Git commands can create very long commands. If
 you use the same push options frequently, create Git aliases for them.
@@ -322,117 +289,8 @@ To create and use a Git alias for the
    git mwps origin <local-branch-name>
    ```
 
-## Feature branch workflow
-
-To merge changes from a local branch to a feature branch, follow this workflow.
-
-1. Clone the project if you haven't already:
-
-   ```shell
-   git clone git@example.com:project-name.git
-   ```
-
-1. Change directories so you are in the project directory.
-1. Create a branch for your feature:
-
-   ```shell
-   git checkout -b feature_name
-   ```
-
-1. Write code for the feature.
-1. Add the code to the staging area and add a commit message for your changes:
-
-   ```shell
-   git commit -am "My feature is ready"
-   ```
-
-1. Push your branch to GitLab:
-
-   ```shell
-   git push origin feature_name
-   ```
-
-1. Review your code: On the left sidebar, go to **Code > Commits**.
-1. [Create a merge request](../user/project/merge_requests/creating_merge_requests.md).
-1. Your team lead reviews the code and merges it to the main branch.
-
-## Stash changes
-
-Use `git stash` when you want to change to a different branch, and you
-want to store changes that are not ready to be committed.
-
-- Stash:
-
-  ```shell
-  git stash save
-  # or
-  git stash
-  # or with a message
-  git stash save "this is a message to display on the list"
-  ```
-
-- Apply stash to keep working on it:
-
-  ```shell
-  git stash apply
-  # or apply a specific one from out stack
-  git stash apply stash@{3}
-  ```
-
-- Every time you save a stash, it gets stacked. Use `list` to see all of the
-  stashes.
-
-  ```shell
-  git stash list
-  # or for more information (log methods)
-  git stash list --stat
-  ```
-
-- To clean the stack, manually remove them:
-
-  ```shell
-  # drop top stash
-  git stash drop
-  # or
-  git stash drop <name>
-  # to clear all history we can use
-  git stash clear
-  ```
-
-- Use one command to apply and drop:
-
-  ```shell
-  git stash pop
-  ```
-
-- If you have conflicts, either reset or commit your changes.
-- Conflicts through `pop` don't drop a stash afterwards.
-
-### Git stash sample workflow
-
-1. Modify a file.
-1. Stage file.
-1. Stash it.
-1. View the stash list.
-1. Confirm no pending changes through `git status`.
-1. Apply with `git stash pop`.
-1. View list to confirm changes.
-
-```shell
-# Modify edit_this_file.rb file
-git add .
-
-git stash save "Saving changes from edit this file"
-
-git stash list
-git status
-
-git stash pop
-git stash list
-git status
-```
-
 ## Related topics
 
 - [Add file from the UI](../user/project/repository/index.md#add-a-file-from-the-ui)
 - [Add file from the Web IDE](../user/project/repository/web_editor.md#upload-a-file)
+- [Sign commits](../user/project/repository/signed_commits/gpg.md)

@@ -4,9 +4,8 @@ import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
-import groupWorkItemTypesQuery from '../../graphql/group_work_item_types.query.graphql';
-import projectWorkItemTypesQuery from '../../graphql/project_work_item_types.query.graphql';
-import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
+import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hierarchy.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
 import {
   FORM_TYPES,
@@ -18,6 +17,8 @@ import {
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
+  MAX_WORK_ITEMS,
   sprintfWorkItem,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
@@ -84,11 +85,16 @@ export default {
       required: false,
       default: WORK_ITEM_TYPE_ENUM_TASK,
     },
+    fullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   apollo: {
     workItemTypes: {
       query() {
-        return this.isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery;
+        return namespaceWorkItemTypesQuery;
       },
       variables() {
         return {
@@ -105,8 +111,9 @@ export default {
       workItemTypes: [],
       workItemsToAdd: [],
       error: null,
+      isInputValid: true,
       search: '',
-      selectedProject: null,
+      selectedProjectFullPath: this.isGroup ? null : this.fullPath,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
       submitInProgress: false,
@@ -126,10 +133,10 @@ export default {
         confidential: this.parentConfidential || this.confidential,
       };
 
-      if (this.selectedProject && !this.workItemChildIsEpic) {
+      if (this.selectedProjectFullPath && !this.workItemChildIsEpic) {
         workItemInput = {
           ...workItemInput,
-          namespacePath: this.selectedProject.fullPath,
+          namespacePath: this.selectedProjectFullPath,
         };
       } else {
         workItemInput = {
@@ -211,7 +218,7 @@ export default {
       return this.search.length > 0;
     },
     hasSelectedProject() {
-      return this.selectedProject !== null && this.selectedProject !== undefined;
+      return Boolean(this.selectedProjectFullPath);
     },
     canSubmitForm() {
       if (this.isCreateForm) {
@@ -235,10 +242,10 @@ export default {
         : [];
     },
     areWorkItemsToAddValid() {
-      return this.invalidWorkItemsToAdd.length === 0;
+      return this.invalidWorkItemsToAdd.length === 0 && this.areWorkItemsToAddWithinLimit;
     },
     showWorkItemsToAddInvalidMessage() {
-      return !this.isCreateForm && !this.areWorkItemsToAddValid;
+      return !this.isCreateForm && this.invalidWorkItemsToAdd.length > 0;
     },
     workItemsToAddInvalidMessage() {
       return sprintf(
@@ -251,6 +258,9 @@ export default {
           parentWorkItemType: this.parentWorkItemType,
         },
       );
+    },
+    areWorkItemsToAddWithinLimit() {
+      return this.workItemsToAdd.length <= MAX_WORK_ITEMS;
     },
   },
   watch: {
@@ -266,12 +276,13 @@ export default {
     },
     unsetError() {
       this.error = null;
+      this.isInputValid = true;
     },
     addChild() {
       this.submitInProgress = true;
       this.$apollo
         .mutate({
-          mutation: updateWorkItemMutation,
+          mutation: updateWorkItemHierarchyMutation,
           variables: {
             input: {
               id: this.issuableGid,
@@ -287,10 +298,12 @@ export default {
           } else {
             this.unsetError();
             this.workItemsToAdd = [];
+            this.closeForm();
           }
         })
         .catch(() => {
           this.error = this.$options.i18n.addChildErrorMessage;
+          this.isInputValid = false;
         })
         .finally(() => {
           this.search = '';
@@ -311,9 +324,7 @@ export default {
           update: (cache, { data }) =>
             addHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.workItemIid,
-              isGroup: this.isGroup,
+              id: this.issuableGid,
               workItem: data.workItemCreate.workItem,
             }),
         })
@@ -323,16 +334,21 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addChild');
+            this.closeForm();
           }
         })
         .catch(() => {
           this.error = this.$options.i18n.createChildErrorMessage;
+          this.isInputValid = false;
         })
         .finally(() => {
           this.search = '';
           this.childToCreateTitle = null;
           this.submitInProgress = false;
         });
+    },
+    closeForm() {
+      this.$emit('cancel');
     },
   },
   i18n: {
@@ -347,6 +363,7 @@ export default {
     titleInputPlaceholder: s__('WorkItem|Add a title'),
     projectInputPlaceholder: s__('WorkItem|Select a project'),
     titleInputValidationMessage: __('Maximum of 255 characters'),
+    maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
 };
 </script>
@@ -363,11 +380,15 @@ export default {
           class="gl-w-full"
           :label="$options.i18n.titleInputLabel"
           :description="$options.i18n.titleInputValidationMessage"
+          :invalid-feedback="error"
+          :state="isInputValid"
+          data-testid="work-items-create-form-group"
         >
           <gl-form-input
             ref="wiTitleInput"
             v-model="search"
             :placeholder="$options.i18n.titleInputPlaceholder"
+            :state="isInputValid"
             maxlength="255"
             class="gl-mb-3"
             autofocus
@@ -380,9 +401,10 @@ export default {
           :description="$options.i18n.projectValidationMessage"
         >
           <work-item-projects-listbox
-            v-model="selectedProject"
+            v-model="selectedProjectFullPath"
             class="gl-w-full"
             :full-path="fullPath"
+            :current-project-name="fullName"
             :is-group="isGroup"
           />
         </gl-form-group>
@@ -391,7 +413,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+        class="gl-mb-5 gl-md-mb-3!"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >
@@ -419,8 +441,15 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500" data-testid="work-items-error">
+      <div v-if="error" class="gl-text-red-500 gl-mt-3" data-testid="work-items-error">
         {{ error }}
+      </div>
+      <div
+        v-if="!areWorkItemsToAddWithinLimit"
+        class="gl-mb-2 gl-text-red-500"
+        data-testid="work-items-limit-error"
+      >
+        {{ $options.i18n.maxItemsErrorMessage }}
       </div>
     </div>
     <gl-button
@@ -435,7 +464,7 @@ export default {
     >
       {{ addOrCreateButtonLabel }}
     </gl-button>
-    <gl-button category="secondary" size="small" @click="$emit('cancel')">
+    <gl-button category="secondary" size="small" @click="closeForm">
       {{ s__('WorkItem|Cancel') }}
     </gl-button>
   </gl-form>

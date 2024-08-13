@@ -47,7 +47,7 @@
 - name: "Project Level Time to restore service API"
   description: |
     In this release, we added API support for Time to Restore Service. This is the 3rd of the 4 [DORA Metrics](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#devops-research-and-assessment-dora-key-metrics). This data helps teams continuously improve in their stability metrics.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]

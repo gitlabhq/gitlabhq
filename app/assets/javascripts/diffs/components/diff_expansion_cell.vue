@@ -4,7 +4,7 @@ import { GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/alert';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
 import * as utils from '../store/utils';
 
@@ -16,6 +16,7 @@ export default {
   i18n: {
     showMore: sprintf(s__('Diffs|Show %{unfoldCount} lines'), { unfoldCount: UNFOLD_COUNT }),
     showAll: s__('Diffs|Show all unchanged lines'),
+    expandAllLines: __('Expand all lines'),
   },
   components: {
     GlIcon,
@@ -84,6 +85,7 @@ export default {
 
       return this.file[INLINE_DIFF_LINES_KEY][index - 2]?.new_line || 0;
     },
+    // eslint-disable-next-line max-params
     callLoadMoreLines(
       endpoint,
       params,
@@ -237,8 +239,8 @@ export default {
       </button>
       <button
         v-if="lineCountBetween !== -1 && lineCountBetween < 20"
-        :title="s__('Diffs|Expand all lines')"
-        :aria-label="s__('Diffs|Expand all lines')"
+        :title="$options.i18n.expandAllLines"
+        :aria-label="$options.i18n.expandAllLines"
         :disabled="loading.all"
         type="button"
         class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"

@@ -5,6 +5,18 @@
 require 'gitlab/current_settings'
 
 Gitlab.ee do
+  require 'elasticsearch'
+
+  module Elasticsearch
+    class Client
+      # https://github.com/elastic/elasticsearch-ruby/commit/51edf86470dad9d0701fcbac69dae5b89227bc02 introduced
+      # a verification step on the Elasticsearch version. Disable this check to maintain compatibility with OpenSearch.
+      def verify_elasticsearch
+        @verified = true
+      end
+    end
+  end
+
   require 'elasticsearch/model'
 
   ### Monkey patches

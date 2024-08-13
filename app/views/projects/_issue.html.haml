@@ -20,9 +20,9 @@
         %span.issuable-authored.gl-hidden.sm:gl-inline-block
           &middot;
           - if issue.service_desk_reply_to
-            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(@project, issue.author, avatar: false) }}
+            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(issue.author, avatar: false) }}
           - else
-            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(@project, issue.author, avatar: false) }}
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(issue.author, avatar: false) }}
         - if issue.milestone
           %span.issuable-milestone.gl-hidden.sm:gl-inline-block
             &nbsp;
@@ -30,7 +30,7 @@
               = sprite_icon('milestone', css_class: 'gl-vertical-align-text-bottom')
               = issue.milestone.title
         - if issue.due_date
-          %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
+          %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'gl-text-danger' if issue.overdue? && !issue.closed?}", title: _('Due date') }
             &nbsp;
             = sprite_icon('calendar')
             = issue.due_date.to_fs(:medium)
@@ -49,10 +49,10 @@
       %ul.controls
         - if issue.closed? && issue.moved?
           %li
-            = render Pajamas::BadgeComponent.new(_('Closed (moved)'), size: 'sm', variant: 'info')
+            = render Pajamas::BadgeComponent.new(_('Closed (moved)'), variant: 'info')
         - elsif issue.closed?
           %li
-            = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'info')
+            = render Pajamas::BadgeComponent.new(_('Closed'), variant: 'info')
         - if issue.assignees.any?
           %li.gl-display-flex
             = render 'shared/issuable/assignees', project: @project, issuable: issue

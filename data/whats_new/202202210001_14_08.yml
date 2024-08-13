@@ -4,7 +4,7 @@
     ecdsa-sk and ed25519-sk key types.
 
     GitLab now supports these key types, allowing users to take advantage of hardware-backed SSH authentication.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
@@ -68,7 +68,7 @@
     This can help you understand if it was actually the user performing certain actions or an administrator impersonating them. The
     absence of impersonation events in the audit log is also a way to be confident that a given user actually performed given
     actions, rather than someone impersonating them.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]

@@ -56,7 +56,7 @@ export default {
       type="file"
       multiple
       name="content_editor_image"
-      class="gl-display-none"
+      class="gl-hidden"
       :aria-label="$options.i18n.inputLabel"
       data-testid="file-upload-field"
       @change="onFileSelect"

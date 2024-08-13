@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -11,7 +11,7 @@ are very appreciative of the work done by translators and proofreaders!
 
 ## Proofreaders
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - Albanian
   - Proofreaders needed.
@@ -103,6 +103,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Spanish
   - David Elizondo - [GitLab](https://gitlab.com/daelmo), [Crowdin](https://crowdin.com/profile/daelmo)
   - Pablo Reyes - [GitLab](https://gitlab.com/pabloryst9n), [Crowdin](https://crowdin.com/profile/pabloryst9n)
+  - Gustavo Román - [GitLab](https://gitlab.com/GustavoStark), [Crowdin](https://crowdin.com/profile/gustavonewton)
 - Swedish
   - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
 - Turkish
@@ -111,7 +112,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Proofreaders needed.
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## Become a proofreader
 

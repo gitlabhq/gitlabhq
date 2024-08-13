@@ -75,7 +75,7 @@ For every target namespace, all images in the following workload resources are s
 ### Enable via scan execution policies
 
 To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the
-[scan execution policy editor](../../application_security/policies/scan-execution-policies.md#scan-execution-policy-editor)
+[scan execution policy editor](../../application_security/policies/scan_execution_policies.md#scan-execution-policy-editor)
 To create a new schedule rule.
 
 NOTE:
@@ -113,7 +113,7 @@ Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc
 NOTE:
 The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
-You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan-execution-policies.md#scan-execution-policies-schema).
+You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).
 
 ## Configure scanner resource requirements
 

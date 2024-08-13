@@ -232,7 +232,7 @@ DETAILS:
 You can export a list of members in a group or subgroup as a CSV.
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select  **Manage > Members**.
+1. Select **Manage > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 

@@ -10,6 +10,8 @@ import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vu
 import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
 import { MODEL_VERSION_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
+
 import {
   emptyModelVersionsQuery,
   modelVersionsQuery,
@@ -18,7 +20,13 @@ import {
 
 Vue.use(VueApollo);
 
-describe('ModelVersionList', () => {
+const skipReason = new SkipReason({
+  name: 'ModelVersionList',
+  reason: 'OOM on the worker',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458413',
+});
+
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let apolloProvider;
 

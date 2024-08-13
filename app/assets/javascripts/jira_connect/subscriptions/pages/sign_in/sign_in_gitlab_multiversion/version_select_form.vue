@@ -117,7 +117,7 @@ export default {
       <self-managed-alert v-if="isSelfManagedSelected" />
       <dot-com-alert v-else />
 
-      <div class="gl-display-flex gl-justify-content-end gl-mt-5">
+      <div class="gl-flex gl-justify-end gl-mt-5">
         <gl-button variant="confirm" type="submit" :loading="loading" data-testid="submit-button">{{
           submitText
         }}</gl-button>
@@ -138,7 +138,7 @@ export default {
           required
         />
       </gl-form-group>
-      <div class="gl-display-flex gl-justify-content-space-between">
+      <div class="gl-flex gl-justify-between">
         <gl-button data-testid="back-button" @click.prevent="onSetupBack">{{
           __('Back')
         }}</gl-button>

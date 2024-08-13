@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Ci::JobTokenScope::RemoveGroup, feature_category: :continuous_integration do
+  include GraphqlHelpers
+
   let(:mutation) do
-    described_class.new(object: nil, context: { current_user: current_user }, field: nil)
+    described_class.new(object: nil, context: query_context, field: nil)
   end
 
   describe '#resolve' do

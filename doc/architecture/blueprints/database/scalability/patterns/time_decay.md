@@ -317,9 +317,9 @@ The process required follows:
    months of partitions while the current month is still active, as going 90 days back takes you to
    the fourth oldest partition.
 
-### Audit Events
+### Audit events
 
-Related epic: [Partitioning: Design and implement partitioning strategy for Audit Events](https://gitlab.com/groups/gitlab-org/-/epics/3206)
+Related epic: [Partitioning: Design and implement partitioning strategy for audit events](https://gitlab.com/groups/gitlab-org/-/epics/3206)
 
 The `audit_events` table shares a lot of characteristics with the `web_hook_logs` table discussed
 in the previous sub-section, so we focus on the points they differ.

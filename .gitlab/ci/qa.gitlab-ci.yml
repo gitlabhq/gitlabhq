@@ -34,6 +34,7 @@
   variables:
     # This is needed by `trigger-omnibus-env` (`.gitlab/ci/package-and-test/main.gitlab-ci.yml`).
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the CI job image from https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/8.4.4/ci/base.gitlab-ci.yml
     QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the gitlab-qa image pulled from the E2E tests. If this is not defined, it'll be inferred from RELEASE_IMAGE_TAG below which is wrong because it should not contain the RUBY_VERSION suffix
@@ -44,13 +45,6 @@
     QA_EXPORT_TEST_METRICS: "true" # Export test metrics directly to influxdb by default
   inherit:
     variables:
-      - CHROME_VERSION
-      - RUBY_VERSION_DEFAULT
-      - RUBY_VERSION_NEXT
-      - RUBY_VERSION
-      - DOCKER_VERSION
-      - BUILD_OS
-      - OS_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
       - OMNIBUS_GITLAB_CACHE_UPDATE
@@ -158,6 +152,7 @@ e2e:package-and-test-ee:
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
     QA_RUN_TYPE: e2e-package-and-test
+    # If renaming the child pipeline, please update any references to it in the triage-ops project.
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
 # Same as e2e:package-and-test-ee but runs automatically after manual:e2e-test-pipeline-generate
@@ -219,6 +214,21 @@ e2e:package-and-test-nightly:
     PIPELINE_NAME: E2E Omnibus GitLab Nightly
     DYNAMIC_PIPELINE_YML: package-and-test-nightly-pipeline.yml
 
+e2e:test-on-gdk:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:e2e:test-on-gdk
+  stage: qa
+  needs:
+    - build-gdk-image
+    - e2e-test-pipeline-generate
+  variables:
+    QA_RUN_TYPE: e2e-test-on-gdk
+    PIPELINE_NAME: E2E GDK
+    DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
+    SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
+    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
+
 e2e:test-on-cng:
   extends:
     - .e2e-trigger-base
@@ -232,6 +242,45 @@ e2e:test-on-cng:
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: test-on-cng-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
+
+e2e:code-suggestions-eval:
+  extends:
+    - .qa:rules:code-suggestions-eval
+  stage: qa
+  needs: ["build-gdk-image"]
+  variables:
+    CS_EVAL_DOWNSTREAM_BRANCH: main
+    GITLAB_SHA: $CI_COMMIT_SHA
+  trigger:
+    strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
+    project: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
+    branch: $CS_EVAL_DOWNSTREAM_BRANCH
+
+e2e:code-suggestions-eval-results:
+  extends:
+    - .default-retry
+    - .qa:rules:code-suggestions-eval-results
+  stage: post-qa
+  needs:
+    - e2e:code-suggestions-eval
+  variables:
+    TRIGGER_JOB_NAME: "e2e:code-suggestions-eval"
+    DOWNSTREAM_PROJECT: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
+    DOWNSTREAM_JOB_NAME: run_scenarios
+    DOWNSTREAM_JOB_ARTIFACT_PATH: scores-DOWNSTREAM_JOB_ID.csv
+    OUTPUT_ARTIFACT_PATH: scores.csv
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/download-downstream-artifact.rb
+  artifacts:
+    expose_as: 'Code Suggestions evaluation results'
+    paths:
+      - scores.csv
 
 e2e:fulfillment-quarantine-report:
   extends:

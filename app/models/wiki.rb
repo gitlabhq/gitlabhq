@@ -444,7 +444,7 @@ class Wiki
   private
 
   def update_redirection_actions(new_path, old_path = nil, **options)
-    return [] unless Feature.enabled?(:wiki_redirection, container) && old_path != new_path
+    return [] unless old_path != new_path
 
     old_contents = repository.blob_at(default_branch, REDIRECTS_YML)
     redirects = old_contents ? YAML.safe_load(old_contents.data).to_h : {}

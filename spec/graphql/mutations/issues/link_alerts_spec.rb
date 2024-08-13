@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Issues::LinkAlerts, feature_category: :incident_management do
+  include GraphqlHelpers
   let_it_be(:project) { create(:project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
@@ -10,7 +11,9 @@ RSpec.describe Mutations::Issues::LinkAlerts, feature_category: :incident_manage
   let_it_be(:alert1) { create(:alert_management_alert, project: project) }
   let_it_be(:alert2) { create(:alert_management_alert, project: project) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
+  let(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
 

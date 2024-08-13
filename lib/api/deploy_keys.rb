@@ -204,7 +204,7 @@ module API
         if key
           present key, with: Entities::DeployKey
         else
-          not_found!('Deploy Key')
+          not_found!('Deploy key')
         end
       end
 
@@ -222,7 +222,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/deploy_keys/:key_id" do
         deploy_key_project = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
-        not_found!('Deploy Key') unless deploy_key_project
+        not_found!('Deploy key') unless deploy_key_project
 
         destroy_conditionally!(deploy_key_project)
       end

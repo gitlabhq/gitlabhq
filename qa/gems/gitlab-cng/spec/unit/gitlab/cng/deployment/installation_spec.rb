@@ -10,7 +10,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
         ci: ci,
         gitlab_domain: gitlab_domain,
         timeout: "10m",
-        chart_sha: chart_sha
+        chart_sha: chart_sha,
+        env: ["RAILS_ENV_VAR=val"]
       )
     end
 
@@ -43,7 +44,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           common: "val",
           extraEnv: {
             GITLAB_LICENSE_MODE: "test",
-            CUSTOMER_PORTAL_URL: "https://customers.staging.gitlab.com"
+            CUSTOMER_PORTAL_URL: "https://customers.staging.gitlab.com",
+            RAILS_ENV_VAR: "val"
           }
         },
         gitlab: {

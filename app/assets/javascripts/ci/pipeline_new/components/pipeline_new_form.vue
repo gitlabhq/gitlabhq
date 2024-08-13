@@ -302,6 +302,7 @@ export default {
       // Adds empty var at the end of the form
       this.addEmptyVariable(this.refFullName);
     },
+    // eslint-disable-next-line max-params
     setVariable(refValue, type, key, value) {
       const { variables } = this.form[refValue];
 

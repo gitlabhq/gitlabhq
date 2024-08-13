@@ -1260,26 +1260,20 @@ To configure the Praefect nodes, on each one:
       # ...
       listen_addr: '0.0.0.0:2305',
       auth: {
-        # ...
-        #
-        # Praefect External Token
-        # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
-        token: '<praefect_external_token>',
+         # ...
+         #
+         # Praefect External Token
+         # This is needed by clients outside the cluster (like GitLab Shell) to communicate with the Praefect cluster
+         token: '<praefect_external_token>',
       },
       # Praefect Database Settings
       database: {
-        # ...
-        host: '10.6.0.141',
-        port: 5432,
-        # `no_proxy` settings must always be a direct connection for caching
-        session_pooled: {
-           # ...
-           host: '10.6.0.141',
-           port: 5432,
-           dbname: 'praefect_production',
-           user: 'praefect',
-           password: '<praefect_postgresql_password>',
-        },
+         # ...
+         host: '10.6.0.141',
+         port: 5432,
+         dbname: 'praefect_production',
+         user: 'praefect',
+         password: '<praefect_postgresql_password>',
       },
       # Praefect Virtual Storage config
       # Name of storage hash must match storage name in git_data_dirs on GitLab

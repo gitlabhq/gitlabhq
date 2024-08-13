@@ -64,7 +64,7 @@ For a single node search cluster, the functional cluster health status is always
 The search index updates after you:
 
 - Add data to the database or repository.
-- [Enable advanced search](#enable-advanced-search) in the Admin area.
+- [Enable advanced search](#enable-advanced-search) in the **Admin** area.
 
 NOTE:
 Before you use a new Elasticsearch cluster in production, see the
@@ -329,7 +329,7 @@ Prerequisites:
 
 To enable advanced search:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not select the **Search with Elasticsearch enabled** checkbox yet.
@@ -361,37 +361,45 @@ Elasticsearch cluster.
 
 For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
-### Index all projects
+### Index the instance
 
 DETAILS:
 **Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271532) in GitLab 17.3.
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can only use the **Index all projects** setting to perform
-initial indexing, not to re-create an index from scratch.
-To enable advanced search with **Index all projects**:
+You can use **Index the instance** to perform initial indexing
+or re-create an index from scratch.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+To enable advanced search with this setting:
+
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
-1. Select **Index all projects**.
-1. Optional. Select **Check progress** to see the status of background jobs.
+1. Select **Index the instance**.
 
-To index epics, group wikis, personal snippets, and users, you must use Rake tasks:
+To index specific data, you can use the following Rake tasks:
 
 ```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_epics
+sudo gitlab-rake gitlab:elastic:index_work_items
 sudo gitlab-rake gitlab:elastic:index_group_wikis
+sudo gitlab-rake gitlab:elastic:index_namespaces
+sudo gitlab-rake gitlab:elastic:index_projects
 sudo gitlab-rake gitlab:elastic:index_snippets
 sudo gitlab-rake gitlab:elastic:index_users
 
 # Installations from source
 bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_namespaces RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
 ```
@@ -471,7 +479,7 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language support:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
@@ -499,7 +507,7 @@ Prerequisites:
 
 To disable advanced search in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Clear the **Elasticsearch indexing** and **Search with Elasticsearch enabled** checkboxes.
 1. Select **Save changes**.
@@ -524,7 +532,7 @@ Prerequisites:
 
 To resume indexing:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -554,7 +562,7 @@ Prerequisites:
 To trigger the reindexing process:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
@@ -576,7 +584,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
    find the following options:
@@ -631,7 +639,7 @@ To abandon the unfinished reindexing job and resume indexing:
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -724,7 +732,7 @@ debug why the migration was halted and make any changes before retrying the migr
 
 When you believe you've fixed the cause of the failure:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
@@ -771,7 +779,7 @@ The following are some available Rake tasks:
 | Task                                                                                                                                                    | Description                                                                                                                                                                               |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Outputs debugging information for the advanced search integration. |
-| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | In GitLab 17.0 and earlier, enables Elasticsearch indexing and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job enables Elasticsearch indexing and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, Elasticsearch indexing is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `elastic_index_use_trigger_indexing`. Enabled by default. |
+| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | In GitLab 17.0 and earlier, enables Elasticsearch indexing and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job enables Elasticsearch indexing and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, Elasticsearch indexing is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created.                                                                                                      |
@@ -972,7 +980,7 @@ due to large volumes of data being indexed, follow these steps:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the Admin area under **Monitoring > Background jobs > Queues Tab**
+   You can view the jobs in the **Admin** area under **Monitoring > Background jobs > Queues Tab**
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
@@ -1144,7 +1152,6 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1158,6 +1165,13 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    sidekiq['min_concurrency'] = 20
    sidekiq['max_concurrency'] = 20
+   ```
+
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
@@ -1177,7 +1191,6 @@ To handle these queue groups on two nodes:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1192,6 +1205,13 @@ To handle these queue groups on two nodes:
    sidekiq['max_concurrency'] = 20
    ```
 
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
+   ```
+
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
 
@@ -1199,7 +1219,6 @@ To handle these queue groups on two nodes:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1212,6 +1231,13 @@ To handle these queue groups on two nodes:
 
    sidekiq['min_concurrency'] = 20
    sidekiq['max_concurrency'] = 20
+   ```
+
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
    ```
 
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
@@ -1236,9 +1262,35 @@ search" behaves as though you don't have advanced search enabled at all for
 your instance and search using other data sources (such as PostgreSQL data and Git
 data).
 
-## Data recovery: Elasticsearch is a secondary data store only
+## Disaster recovery
 
-The use of Elasticsearch in GitLab is only ever as a secondary data store.
-This means that all of the data stored in Elasticsearch can always be derived
-again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
-the Elasticsearch data store is ever corrupted for whatever reason, you can reindex everything from scratch.
+Elasticsearch is a secondary data store for GitLab.
+All of the data stored in Elasticsearch can be derived again
+from other data sources, specifically PostgreSQL and Gitaly.
+If the Elasticsearch data store gets corrupted,
+you can reindex everything from scratch.
+
+If your Elasticsearch index is too large, it might cause
+too much downtime to reindex everything from scratch.
+You cannot automatically find discrepancies and resync an Elasticsearch index,
+but you can inspect the logs for any missing updates.
+To recover data more quickly, you can replay:
+
+1. All synced non-repository updates by searching in
+   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   for [`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25).
+   You must send these items again through
+   `::Elastic::ProcessBookkeepingService.track!`.
+1. All repository updates by searching in
+   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   for [`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41).
+   You must set [`IndexStatus#last_commit/last_wiki_commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/index_status.rb)
+   to the oldest `from_sha` in the logs and then trigger another index of
+   the project with [`ElasticCommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_commit_indexer_worker.rb) and [`ElasticWikiIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_wiki_indexer_worker.rb).
+1. All project deletes by searching in
+   [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) for
+   [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb).
+   You must trigger another `ElasticDeleteProjectWorker`.
+
+You can also take regular
+[Elasticsearch snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html) to reduce the time it takes to recover from data loss without reindexing everything from scratch.

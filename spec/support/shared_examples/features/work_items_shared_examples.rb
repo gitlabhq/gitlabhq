@@ -27,9 +27,12 @@ end
 
 RSpec.shared_examples 'work items toggle status button' do
   it 'successfully shows and changes the status of the work item' do
-    click_button 'Close', match: :first
+    within_testid 'work-item-comment-form-actions' do
+      # Depending of the context, the button's text could be `Close issue`, `Close key result`, `Close objective`, etc.
+      click_button 'Close', match: :first
 
-    expect(page).to have_button 'Reopen'
+      expect(page).to have_button 'Reopen'
+    end
     expect(work_item.reload.state).to eq('closed')
   end
 end
@@ -495,33 +498,35 @@ RSpec.shared_examples 'work items award emoji' do
 end
 
 RSpec.shared_examples 'work items parent' do |type|
+  let(:work_item_parent_selector) { '[data-testid="work-item-parent"]' }
   let(:work_item_parent) { create(:work_item, type, project: project) }
 
   def set_parent(parent_text)
-    find('[data-testid="listbox-search-input"] .gl-listbox-search-input',
-      visible: true).send_keys "\"#{parent_text}\""
-    wait_for_requests
+    within(work_item_parent_selector) do
+      send_keys(parent_text)
+      wait_for_requests
 
-    find('.gl-new-dropdown-item', text: parent_text).click
-    wait_for_all_requests
+      select_listbox_item(parent_text)
+      wait_for_requests
+    end
   end
 
   it 'searches and sets or removes parent for the work item' do
-    find_by_testid('edit-parent').click
-    within_testid('work-item-parent-form') do
-      set_parent(work_item_parent.title)
-    end
+    find_and_click_edit(work_item_parent_selector)
 
-    expect(find_by_testid('work-item-parent-link')).to have_text(work_item_parent.title)
-    wait_for_requests
+    set_parent(work_item_parent.title)
+
+    expect(page).to have_text(work_item_parent.title)
+
+    find_and_click_edit(work_item_parent_selector)
 
     page.refresh
-    find_by_testid('edit-parent').click
 
-    click_button('Unassign')
-    wait_for_requests
+    find_and_click_edit(work_item_parent_selector)
 
-    expect(find_by_testid('work-item-parent-none')).to have_text('None')
+    find_and_click_clear(work_item_parent_selector, 'Clear')
+
+    expect(find(work_item_parent_selector)).to have_content('None')
   end
 end
 
@@ -531,9 +536,9 @@ def find_and_click_edit(selector)
   end
 end
 
-def find_and_click_clear(selector)
+def find_and_click_clear(selector, button_name = 'Clear')
   within(selector) do
-    click_button 'Clear'
+    click_button button_name
   end
 end
 
@@ -624,7 +629,9 @@ RSpec.shared_examples 'work items time tracking' do
 
     expect(page).to be_axe_clean.within('[role="dialog"]')
 
-    click_button 'Close'
+    within_testid 'set-time-estimate-modal' do
+      click_button 'Close'
+    end
     click_button 'time spent'
 
     expect(page).to be_axe_clean.within('[role="dialog"]')
@@ -632,15 +639,19 @@ RSpec.shared_examples 'work items time tracking' do
 
   it 'adds and removes an estimate', :aggregate_failures do
     click_button 'estimate'
-    fill_in 'Estimate', with: '5d'
-    click_button 'Save'
+    within_testid 'set-time-estimate-modal' do
+      fill_in 'Estimate', with: '5d'
+      click_button 'Save'
+    end
 
     expect(page).to have_text 'Estimate 5d'
     expect(page).to have_button '5d'
     expect(page).not_to have_button 'estimate'
 
     click_button '5d'
-    click_button 'Remove'
+    within_testid 'set-time-estimate-modal' do
+      click_button 'Remove'
+    end
 
     expect(page).not_to have_text 'Estimate 5d'
     expect(page).not_to have_button '5d'
@@ -648,33 +659,73 @@ RSpec.shared_examples 'work items time tracking' do
   end
 
   it 'adds and deletes time entries and view report', :aggregate_failures do
-    click_button 'time entry'
-    fill_in 'Time spent', with: '1d'
-    fill_in 'Summary', with: 'First summary'
-    click_button 'Save'
+    click_button 'Add time entry'
+
+    within_testid 'create-timelog-modal' do
+      fill_in 'Time spent', with: '1d'
+      fill_in 'Summary', with: 'First summary'
+      click_button 'Save'
+    end
 
     click_button 'Add time entry'
-    fill_in 'Time spent', with: '2d'
-    fill_in 'Summary', with: 'Second summary'
-    click_button 'Save'
+
+    within_testid 'create-timelog-modal' do
+      fill_in 'Time spent', with: '2d'
+      fill_in 'Summary', with: 'Second summary'
+      click_button 'Save'
+    end
 
     expect(page).to have_text 'Spent 3d'
     expect(page).to have_button '3d'
 
     click_button '3d'
 
-    expect(page).to have_css 'h2', text: 'Time tracking report'
-    expect(page).to have_text "1d #{user.name} First summary"
-    expect(page).to have_text "2d #{user.name} Second summary"
+    within_testid 'time-tracking-report-modal' do
+      expect(page).to have_css 'h2', text: 'Time tracking report'
+      expect(page).to have_text "1d #{user.name} First summary"
+      expect(page).to have_text "2d #{user.name} Second summary"
 
-    click_button 'Delete time spent', match: :first
+      click_button 'Delete time spent', match: :first
 
-    expect(page).to have_text "1d #{user.name} First summary"
-    expect(page).not_to have_text "2d #{user.name} Second summary"
+      expect(page).to have_text "1d #{user.name} First summary"
+      expect(page).not_to have_text "2d #{user.name} Second summary"
 
-    click_button 'Close'
+      click_button 'Close'
+    end
 
     expect(page).to have_text 'Spent 1d'
     expect(page).to have_button '1d'
+  end
+end
+
+RSpec.shared_examples 'work items crm contacts' do
+  it 'searches for, adds and removes a contact' do
+    within_testid 'work-item-crm-contacts' do
+      expect(page).not_to have_css '.gl-link', text: contact_name
+
+      click_button 'Edit'
+      send_keys(contact.first_name)
+      wait_for_requests
+
+      select_listbox_item(contact_name)
+      click_button 'Apply'
+
+      expect(page).to have_css '.gl-link', text: contact_name
+
+      click_button 'Edit'
+      click_button 'Clear'
+
+      expect(page).not_to have_css '.gl-link', text: contact_name
+    end
+  end
+
+  it 'passes axe automated accessibility testing' do
+    within_testid 'work-item-crm-contacts' do
+      click_button _('Edit')
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="work-item-crm-contacts"]')
+    end
   end
 end

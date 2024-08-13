@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# require 'fast_spec_helper' -- this no longer runs under fast_spec_helper
+require 'spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pipeline_composition do

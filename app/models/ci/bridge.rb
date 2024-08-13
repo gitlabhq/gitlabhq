@@ -189,7 +189,7 @@ module Ci
     def runner; end
 
     def tag_list
-      ActsAsTaggableOn::TagList.new
+      Gitlab::Ci::Tags::TagList.new
     end
 
     def artifacts?

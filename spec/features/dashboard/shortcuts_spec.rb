@@ -32,7 +32,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
       find('body').send_keys([:shift, 'G'])
 
-      check_page_title('Groups')
+      expect(page).to have_selector('[data-testid="groups-page"]')
 
       find('body').send_keys([:shift, 'P'])
 

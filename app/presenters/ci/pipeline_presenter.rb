@@ -12,14 +12,13 @@ module Ci
       { unknown_failure: 'The reason for the pipeline failure is unknown.',
         config_error: 'The pipeline failed due to an error on the CI/CD configuration file.',
         external_validation_failure: 'The external pipeline validation failed.',
-        user_not_verified: 'The pipeline failed due to the user not being verified',
+        user_not_verified: 'The pipeline failed due to the user not being verified.',
         size_limit_exceeded: 'The pipeline size limit was exceeded.',
         job_activity_limit_exceeded: 'The pipeline job activity limit was exceeded.',
         deployments_limit_exceeded: 'The pipeline deployments limit was exceeded.',
         project_deleted: 'The project associated with this pipeline was deleted.',
-        filtered_by_rules: 'Pipeline will not run for the selected trigger. ' \
-                           'The rules configuration prevented any jobs from being added to the pipeline.',
-        filtered_by_workflow_rules: 'Pipeline filtered out by workflow rules.' }
+        filtered_by_rules: Ci::Pipeline.rules_failure_message,
+        filtered_by_workflow_rules: Ci::Pipeline.workflow_rules_failure_message }
     end
 
     presents ::Ci::Pipeline, as: :pipeline

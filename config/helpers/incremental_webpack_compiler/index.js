@@ -1,6 +1,7 @@
 const { NoopCompiler, HistoryOnlyCompiler, IncrementalWebpackCompiler } = require('./compiler');
 const log = require('./log');
 
+// eslint-disable-next-line max-params
 module.exports = (recordHistory, enabled, historyFilePath, ttl) => {
   if (!recordHistory) {
     log(`Status – disabled`);

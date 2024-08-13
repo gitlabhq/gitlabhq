@@ -18,8 +18,10 @@ repository being scanned. There are two kinds of customization:
 - Modifying the behavior of **predefined rules**. This includes:
   - [Disabling predefined rules](#disable-predefined-rules). Available for all analyzers.
   - [Overriding predefined rules](#override-predefined-rules). Available for all analyzers.
-- Replacing predefined rules by [synthesizing a custom configuration](#synthesize-a-custom-configuration)
+- Replacing predefined rules by [building a custom configuration](#build-a-custom-configuration)
   using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+
+Advanced SAST supports only modifying the behavior of **predefined rules**, not replacing predefined rules.
 
 ## Disable predefined rules
 
@@ -49,7 +51,7 @@ or choose a different message to display in the Vulnerability Report.
 See the [Schema](#schema) and [Examples](#examples) sections for information on how
 to configure this behavior.
 
-## Synthesize a custom configuration
+## Build a custom configuration
 
 You can replace the [GitLab-maintained ruleset](rules.md) for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with your own rules.
 
@@ -130,7 +132,7 @@ Configuration example:
 ...
 ```
 
-Avoid creating configuration sections that modify existing rules _and_ synthesize a custom ruleset, as
+Avoid creating configuration sections that modify existing rules _and_ build a custom ruleset, as
 the latter replaces predefined rules completely.
 
 ### The `[$analyzer]` configuration section
@@ -280,7 +282,7 @@ Configuration example:
 NOTE:
 Passthrough configurations are available for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) only.
 
-The `[[$analyzer.passthrough]]` section allows you to synthesize a custom configuration for an analyzer. You
+The `[[$analyzer.passthrough]]` section allows you to build a custom configuration for an analyzer. You
 can define up to 20 of these sections per analyzer. Passthroughs are composed into a _passthrough chain_
 that evaluates into a complete configuration that replaces the predefined rules of the analyzer.
 
@@ -369,7 +371,7 @@ With the following custom ruleset configuration, vulnerabilities found with
       severity = "Critical"
 ```
 
-### Synthesize a custom configuration using a file passthrough for `semgrep`
+### Build a custom configuration using a file passthrough for `semgrep`
 
 With the following custom ruleset configuration, the predefined ruleset
 of the `semgrep` analyzer is replaced with a custom ruleset contained in
@@ -397,7 +399,7 @@ rules:
     value = "my-semgrep-rules.yml"
 ```
 
-### Synthesize a custom configuration using a passthrough chain for `semgrep`
+### Build a custom configuration using a passthrough chain for `semgrep`
 
 With the following custom ruleset configuration, the predefined ruleset
 of the `semgrep` analyzer is replaced with a custom ruleset produced by

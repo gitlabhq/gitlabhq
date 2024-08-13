@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'support/helpers/rails_helpers'
+# require 'fast_spec_helper' -- this no longer runs under fast_spec_helper
+require 'spec_helper'
 require 'rspec-parameterized'
 
 RSpec.describe Gitlab::Instrumentation::RedisClusterValidator, feature_category: :scalability do

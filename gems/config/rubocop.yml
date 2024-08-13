@@ -139,3 +139,7 @@ Rails/StrongParams:
   Enabled: true
   Include:
     - '**/controllers/**/*'
+
+# This cop doesn't make sense in the context of gems
+Gitlab/NoFindInWorkers:
+  Enabled: false

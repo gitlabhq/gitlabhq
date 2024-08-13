@@ -1,5 +1,4 @@
 import { GlAvatar, GlBadge } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
@@ -59,6 +58,6 @@ describe('RunnerAssignedItem', () => {
   it('Shows owner badge', () => {
     createComponent({ props: { isOwner: true } });
 
-    expect(findBadge().text()).toBe(s__('Runner|Owner'));
+    expect(findBadge().text()).toBe('Owner');
   });
 });

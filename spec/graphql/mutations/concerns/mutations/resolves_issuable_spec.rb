@@ -11,12 +11,10 @@ RSpec.describe Mutations::ResolvesIssuable do
     end
   end
 
-  let_it_be(:project)  { create(:project, :empty_repo) }
-  let_it_be(:user)     { create(:user) }
-  let_it_be(:context)  { { current_user: user } }
-  let(:mutation) { mutation_class.new(object: nil, context: context, field: nil) }
+  let_it_be(:project) { create(:project, :empty_repo) }
+  let_it_be(:current_user) { create(:user) }
+  let(:mutation) { mutation_class.new(object: nil, context: query_context, field: nil) }
   let(:parent) { issuable.project }
-
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 

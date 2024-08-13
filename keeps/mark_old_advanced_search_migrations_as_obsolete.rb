@@ -120,7 +120,7 @@ module Keeps
         you must check the diff and pipeline failures to confirm if there are any issues.
         It is the responsibility of the assignee (picked from ~"group::global search") to push those changes to this branch.
 
-        [Read more](https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#deleting-advanced-search-migrations-in-a-major-version-upgrade)
+        [Read more](https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#cleaning-up-advanced-search-migrations)
         about the process for marking Advanced search migrations as obsolete.
 
         All Advanced search migrations must have had at least one

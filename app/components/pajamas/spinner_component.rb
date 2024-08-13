@@ -20,7 +20,7 @@ module Pajamas
     private
 
     def spinner_class
-      ["gl-spinner", "gl-spinner-#{@size}", "gl-spinner-#{@color} gl-vertical-align-text-bottom!"]
+      ["gl-spinner", "gl-spinner-#{@size}", "gl-spinner-#{@color} !gl-align-text-bottom"]
     end
 
     def html_options

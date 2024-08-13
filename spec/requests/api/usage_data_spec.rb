@@ -208,7 +208,8 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       let_it_be(:additional_properties) do
         {
           label: 'label3',
-          property: 'admin'
+          property: 'admin',
+          lang: 'ruby'
         }
       end
 

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -143,6 +143,6 @@ The `default_branch_protection` field will be removed in v5 of the GitLab REST A
 ## `require_password_to_approve` API field
 
 The `require_password_to_approve` was deprecated in GitLab 16.9. Use the `require_reauthentication_to_approve` field
-instead. If you supply values to both fields, the  `require_reauthentication_to_approve` field takes precedence.
+instead. If you supply values to both fields, the `require_reauthentication_to_approve` field takes precedence.
 
 The `require_password_to_approve` field will be removed in v5 of the GitLab REST API.

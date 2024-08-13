@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <header
-      class="jira-connect-header gl-display-flex gl-align-items-center gl-justify-content-center gl-px-5 gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-bg-white"
+      class="jira-connect-header gl-flex gl-items-center gl-justify-center gl-px-5 gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-bg-white"
     >
       <gl-link :href="gitlabUrl" target="_blank">
         <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />
@@ -106,10 +106,8 @@ export default {
       <user-link v-if="userSignedIn" :user="currentUser" class="gl-fixed gl-right-4" />
     </header>
 
-    <main
-      class="jira-connect-app gl-px-5 gl-pt-7 gl-pb-7 gl-mx-auto gl-display-flex gl-flex-direction-column gl-gap-7"
-    >
-      <div class="gl-flex-grow-1">
+    <main class="jira-connect-app gl-px-5 gl-pt-7 gl-pb-7 gl-mx-auto gl-flex gl-flex-col gl-gap-7">
+      <div class="gl-grow">
         <browser-support-alert v-if="!isBrowserSupported" class="gl-mb-7" />
         <div v-else data-testid="jira-connect-app">
           <gl-alert

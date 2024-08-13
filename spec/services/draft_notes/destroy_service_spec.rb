@@ -26,6 +26,19 @@ RSpec.describe DraftNotes::DestroyService, feature_category: :code_review_workfl
     expect(DraftNote.count).to eq(0)
   end
 
+  it 'updates reviewer state when all draft notes are deleted' do
+    draft = create(:draft_note, merge_request: merge_request, author: user)
+
+    expect_next_instance_of(
+      MergeRequests::UpdateReviewerStateService,
+      project: project, current_user: user
+    ) do |service|
+      expect(service).to receive(:execute).with(merge_request, 'unreviewed')
+    end
+
+    destroy(draft)
+  end
+
   context 'diff highlight cache clearing' do
     context 'when destroying all draft notes of a user' do
       it 'clears highlighting cache if unfold required for any' do

@@ -3,7 +3,6 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 
 import projects from 'test_fixtures/api/users/projects/get.json';
 import events from 'test_fixtures/controller/users/activity.json';
-import { s__ } from '~/locale';
 import OverviewTab from '~/profile/components/overview_tab.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
@@ -45,7 +44,7 @@ describe('OverviewTab', () => {
   it('renders `GlTab` and sets `title` prop', () => {
     createComponent();
 
-    expect(wrapper.findComponent(GlTab).attributes('title')).toBe(s__('UserProfile|Overview'));
+    expect(wrapper.findComponent(GlTab).attributes('title')).toBe('Overview');
   });
 
   it('renders `ActivityCalendar` component', () => {

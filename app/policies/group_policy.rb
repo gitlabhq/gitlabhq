@@ -60,21 +60,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:create_subgroup_disabled, scope: :subject) do
-    next true if @user.nil?
-
-    visibility_levels = if @user.can_admin_all_resources?
-                          # admin can create groups even with restricted visibility levels
-                          Gitlab::VisibilityLevel.values
-                        else
-                          Gitlab::VisibilityLevel.allowed_levels
-                        end
-
-    # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy sub-group.
-    subgroup = Group.new(parent_id: @subject.id)
-
-    # if a subgroup with none of the remaining visibility levels can be allowed by the group,
-    # then it means that the `Create subgroup` button must be disabled.
-    visibility_levels.none? { |level| subgroup.visibility_level_allowed?(level) }
+    Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
   end
 
   condition(:developer_maintainer_access, scope: :subject) do
@@ -280,6 +266,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :set_emails_disabled
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :set_show_diff_preview_in_email
+    enable :change_seat_control
     enable :change_new_user_signups_cap
     enable :update_default_branch_protection
     enable :create_deploy_token
@@ -414,6 +401,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_resource_access_tokens
     enable :destroy_resource_access_tokens
   end
+
+  rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
 
   # Should be matched with ProjectPolicy#read_internal_note
   rule { admin | reporter }.enable :read_internal_note

@@ -1,56 +1,47 @@
 - expanded = expanded_by_default?
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
-- mirror_settings_class = "#{'expanded' if expanded} #{'js-mirror-settings' if mirror_settings_enabled}".strip
+- mirror_settings_class = "#{'js-mirror-settings' if mirror_settings_enabled}".strip
 
-%section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { testid: 'mirroring-repositories-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Mirroring repositories')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
-      = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index'), target: '_blank', rel: 'noopener noreferrer'
-
-
-  .settings-content
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h5.gl-new-card-title
-            = _('Mirrored repositories')
-          .gl-new-card-count
-            = sprite_icon('earth', css_class: 'gl-mr-2')
-            %span.js-mirrored-repo-count
-              = mirrored_repositories_count
-        .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'add-new-mirror' } }) do
-            = _('Add new')
+= render ::Layouts::SettingsBlockComponent.new(_('Mirroring repositories'),
+  id: 'js-push-remote-settings',
+  testid: 'mirroring-repositories-settings-content',
+  css_class: "project-mirror-settings #{mirror_settings_class}",
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
+    = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = render ::Layouts::CrudComponent.new(_('Mirrored repositories'),
+      icon: 'earth',
+      count: mirrored_repositories_count,
+      toggle_text: _('Add new'),
+      toggle_options: { data: { testid: 'add-new-mirror' } }) do |c|
       - c.with_body do
-        - if mirror_settings_enabled
-          .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
-            %h4.gl-mt-0
-              = s_('Profiles|Add new mirror repository')
-            = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
-              %div= form_errors(@project)
-              .form-group.has-feedback
-                = label_tag :url, _('Git repository URL'), class: 'label-light'
-                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { testid: 'mirror-repository-url-field' }
-
-              = render 'projects/mirrors/instructions'
-
-              = render 'projects/mirrors/mirror_repos_form', f: f
-
-              = render 'projects/mirrors/branch_filter'
-
-              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { testid: 'mirror-repository-button' }
-
-              = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
-                = _('Cancel')
-
-        - else
+        - unless mirror_settings_enabled
           = render Pajamas::AlertComponent.new(dismissible: false) do |c|
             - c.with_body do
               = _('Mirror settings are only available to GitLab administrators.')
 
         = render 'projects/mirrors/mirror_repos_list'
+
+      - c.with_form do
+        - if mirror_settings_enabled
+          %h4.gl-mt-0
+            = s_('Profiles|Add new mirror repository')
+          = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
+            %div= form_errors(@project)
+            .form-group.has-feedback
+              = label_tag :url, _('Git repository URL'), class: 'label-light'
+              = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { testid: 'mirror-repository-url-field' }
+
+            = render 'projects/mirrors/instructions'
+
+            = render 'projects/mirrors/mirror_repos_form', f: f
+
+            = render 'projects/mirrors/branch_filter'
+
+            = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { testid: 'mirror-repository-button' }
+
+            = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+              = _('Cancel')

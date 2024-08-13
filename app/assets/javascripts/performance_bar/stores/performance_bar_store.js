@@ -6,6 +6,7 @@ export default class PerformanceBarStore {
     this.requests = [];
   }
 
+  // eslint-disable-next-line max-params
   addRequest(requestId, requestUrl, operationName, requestParams, methodVerb) {
     if (this.findRequest(requestId)) {
       this.updateRequestBatchedQueriesCount(requestId);

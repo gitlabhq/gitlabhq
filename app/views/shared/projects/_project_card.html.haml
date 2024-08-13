@@ -27,7 +27,7 @@
     .gl-w-full.gl-pt-2.gl-break-anywhere
       .gl-display-flex.gl-align-items-center.gl-flex-wrap
         %h2.gl-font-base.gl-leading-20.gl-my-0
-          = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document', title: project.name do
+          = link_to project_path(project), class: 'gl-text-default hover:gl-text-default gl-mr-3 js-prefetch-document', title: project.name do
             %span.namespace-name.gl-font-normal
               - if project.namespace && !skip_namespace
                 = project.namespace.human_name
@@ -69,7 +69,7 @@
               = badge_count(project.forks_count)
           - if show_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
+              = sprite_icon('merge-request', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.open_merge_requests_count)
           - if show_count?(disabled: !issues, compact_mode: compact_mode)
             = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do

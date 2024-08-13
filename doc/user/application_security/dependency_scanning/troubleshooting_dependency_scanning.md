@@ -261,3 +261,14 @@ If you use the [`-e/--editable`](https://pip.pypa.io/en/stable/cli/pip_install/#
 This command is required to build the target project.
 
 To resolve this issue, don't use the `-e/--editable` flag when you run dependency scanning for Python.
+
+## Handling out of memory errors with SBT
+
+If you encounter out of memory errors with SBT while using dependency scanning on a Scala project, you can address this by setting the [`SBT_CLI_OPTS`](index.md#analyzer-specific-settings) environment variable. An example configuration is:
+
+```yaml
+variables:
+  SBT_CLI_OPTS: "-J-Xmx8192m -J-Xms4192m -J-Xss2M"
+```
+
+If you're using the Kubernetes executor, you may need to override the default Kubernetes resource settings. Refer to the [Kubernetes executor documentation](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources) for details on how to adjust container resources to prevent memory issues.

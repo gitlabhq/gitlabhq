@@ -204,6 +204,14 @@ dast_site_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+dast_site_tokens:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+dast_site_validations:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 deployment_clusters:
   - table: clusters
     column: cluster_id
@@ -382,12 +390,24 @@ sbom_occurrences:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+sbom_source_packages:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+sbom_sources:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 security_scans:
   - table: ci_builds
     column: build_id
     on_delete: async_delete
   - table: p_ci_builds
     column: build_id
+    on_delete: async_delete
+security_trainings:
+  - table: projects
+    column: project_id
     on_delete: async_delete
 snippets:
   - table: organizations
@@ -407,10 +427,22 @@ user_details:
   - table: namespaces
     column: enterprise_group_id
     on_delete: async_nullify
+vulnerability_export_parts:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 vulnerability_feedback:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+vulnerability_flags:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+vulnerability_historical_statistics:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_occurrence_pipelines:
   - table: ci_pipelines
     column: pipeline_id

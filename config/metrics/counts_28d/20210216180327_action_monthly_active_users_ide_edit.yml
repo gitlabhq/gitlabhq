@@ -2,7 +2,7 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit
 description: Number of unique users per month who edited a file from any web editor
-product_group: ide
+product_group: remote_development
 value_type: number
 status: active
 time_frame: 28d

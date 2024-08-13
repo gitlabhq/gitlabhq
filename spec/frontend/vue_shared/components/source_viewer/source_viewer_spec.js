@@ -4,7 +4,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
+import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import {
   EVENT_ACTION,
   EVENT_LABEL_VIEWER,

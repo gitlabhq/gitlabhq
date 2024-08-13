@@ -106,25 +106,6 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
   end
 
-  describe '#update' do
-    before_all do
-      project.add_maintainer(user)
-    end
-
-    it 'updates the runner and ticks the queue' do
-      new_desc = runner.description.swapcase
-
-      expect do
-        post :update, params: params.merge(runner: { description: new_desc })
-      end.to change { runner.ensure_runner_queue_value }
-
-      runner.reload
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(runner.description).to eq(new_desc)
-    end
-  end
-
   describe '#destroy' do
     before_all do
       project.add_maintainer(user)

@@ -17,7 +17,11 @@ class WorkItem < Issue
 
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
-  has_one :dates_source, class_name: 'WorkItems::DatesSource', foreign_key: 'issue_id', inverse_of: :work_item
+  has_one :dates_source,
+    class_name: 'WorkItems::DatesSource',
+    foreign_key: 'issue_id',
+    inverse_of: :work_item,
+    autosave: true
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -95,7 +99,7 @@ class WorkItem < Issue
           ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'issue_link_id',
             column_expression: IssueLink.arel_table[:id],
-            order_expression: IssueLink.arel_table[:id].asc,
+            order_expression: IssueLink.arel_table[:id].desc,
             nullable: :not_nullable
           )
         ])
@@ -137,6 +141,10 @@ class WorkItem < Issue
 
   def ancestors
     hierarchy.ancestors(hierarchy_order: :asc)
+  end
+
+  def descendants
+    hierarchy.descendants
   end
 
   def same_type_base_and_ancestors
@@ -197,6 +205,14 @@ class WorkItem < Issue
 
   def supports_time_tracking?
     work_item_type.supports_time_tracking?(resource_parent)
+  end
+
+  def due_date
+    dates_source&.due_date || read_attribute(:due_date)
+  end
+
+  def start_date
+    dates_source&.start_date || read_attribute(:start_date)
   end
 
   private

@@ -10,7 +10,7 @@ export const BASE_ACTIONS = {
   [ACTION_DELETE]: {
     text: __('Delete'),
     extraAttrs: {
-      class: 'gl-text-red-500!',
+      class: '!gl-text-red-500',
     },
   },
 };

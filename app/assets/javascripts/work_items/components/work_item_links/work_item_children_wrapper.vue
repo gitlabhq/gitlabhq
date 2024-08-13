@@ -8,20 +8,19 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
+import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, DEFAULT_PAGE_SIZE_CHILD_ITEMS } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
 
 export default {
   components: {
     WorkItemLinkChild,
   },
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -97,9 +96,7 @@ export default {
           update: (cache) =>
             removeHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.workItemIid,
-              isGroup: this.isGroup,
+              id: this.workItemId,
               workItem: child,
             }),
         });
@@ -130,9 +127,7 @@ export default {
           update: (cache) =>
             addHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.workItemIid,
-              isGroup: this.isGroup,
+              id: this.workItemId,
               workItem: child,
             }),
         });
@@ -149,7 +144,7 @@ export default {
     },
     addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+        query: workItemByIidQuery,
         variables: {
           fullPath: this.fullPath,
           iid,
@@ -228,12 +223,12 @@ export default {
           update: (store) => {
             store.updateQuery(
               {
-                query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
-                variables: { fullPath: this.fullPath, iid: this.workItemIid },
+                query: getWorkItemTreeQuery,
+                variables: { id: this.workItemId, pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS },
               },
               (sourceData) =>
                 produce(sourceData, (draftData) => {
-                  const { widgets } = draftData.workspace.workItem;
+                  const { widgets } = draftData.workItem;
                   const hierarchyWidget = findHierarchyWidgets(widgets);
                   hierarchyWidget.children.nodes = updatedChildren;
                 }),

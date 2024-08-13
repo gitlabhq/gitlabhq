@@ -18,6 +18,7 @@ const DEPENDENCY_REGEX = new RegExp(
   'gm',
 );
 
+// eslint-disable-next-line max-params
 const handleReplace = (original, packageName, version, dependenciesToLink) => {
   const isDrupalDependency = packageName.includes(DRUPAL_PROJECT_SEPARATOR);
   const href = isDrupalDependency

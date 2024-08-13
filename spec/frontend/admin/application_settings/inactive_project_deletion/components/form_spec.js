@@ -141,4 +141,46 @@ describe('Form component', () => {
       },
     );
   });
+
+  describe('HTML validity', () => {
+    beforeEach(() => {
+      createComponent(mountExtended, {
+        inactiveProjectsDeleteAfterMonths: 3,
+        inactiveProjectsSendWarningEmailAfterMonths: 2,
+        deleteInactiveProjects: true,
+      });
+
+      findDeleteAfterMonthsInput().vm.$el.setCustomValidity = jest.fn();
+      findSendWarningEmailAfterMonthsInput().vm.$el.setCustomValidity = jest.fn();
+    });
+
+    // Test case covering edge case customer bug: https://gitlab.com/gitlab-org/gitlab/-/issues/454772
+    it('when Delete project after is set to <= Send warning email, and then Send warning email is set to < Delete project after, it properly sets and clears the error', async () => {
+      await findDeleteAfterMonthsInput().find('input').setValue(2);
+
+      expect(findDeleteAfterMonthsInput().vm.$el.setCustomValidity).toHaveBeenCalledWith(
+        "You can't delete projects before the warning email is sent.",
+      );
+
+      await findSendWarningEmailAfterMonthsInput().find('input').setValue(1);
+
+      expect(findDeleteAfterMonthsInput().vm.$el.setCustomValidity).toHaveBeenCalledWith('');
+    });
+
+    it('when Delete project after is set to 0, it sets HTML error', async () => {
+      await findDeleteAfterMonthsInput().find('input').setValue(0);
+
+      expect(findDeleteAfterMonthsInput().vm.$el.setCustomValidity).toHaveBeenCalledWith(
+        "You can't delete projects before the warning email is sent.",
+      );
+    });
+
+    it('when Send warning email is set to 0, it sets HTML error', async () => {
+      await findSendWarningEmailAfterMonthsInput().find('input').setValue(0);
+
+      expect(findSendWarningEmailAfterMonthsInput().vm.$el.setCustomValidity).toHaveBeenCalledWith(
+        'Setting must be greater than 0.',
+      );
+    });
+  });
 });

@@ -35,7 +35,7 @@ describe('New Project', () => {
               </div>
               <input id="project_name" />
               <small id="js-project-name-description" />
-              <div class="gl-field-error gl-display-none" id="js-project-name-error" />
+              <div class="gl-field-error gl-hidden" id="js-project-name-error" />
               <input id="project_path" />
             </div>
             <div class="js-user-readme-repo"></div>
@@ -103,7 +103,7 @@ describe('New Project', () => {
     });
 
     it('no error message by default', () => {
-      expect($projectNameError.classList.contains('gl-display-none')).toBe(true);
+      expect($projectNameError.classList.contains('gl-hidden')).toBe(true);
     });
 
     it('show error message if name is validate', () => {
@@ -113,8 +113,8 @@ describe('New Project', () => {
       expect($projectNameError.innerText).toBe(
         'Name must start with a letter, digit, emoji, or underscore.',
       );
-      expect($projectNameError.classList.contains('gl-display-none')).toBe(false);
-      expect($projectNameDescription.classList.contains('gl-display-none')).toBe(true);
+      expect($projectNameError.classList.contains('gl-hidden')).toBe(false);
+      expect($projectNameDescription.classList.contains('gl-hidden')).toBe(true);
     });
   });
 

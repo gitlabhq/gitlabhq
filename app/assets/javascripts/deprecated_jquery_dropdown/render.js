@@ -20,6 +20,7 @@ const renderersByType = {
   },
 };
 
+// eslint-disable-next-line max-params
 function getPropertyWithDefault(data, options, property, defaultValue = '') {
   let result;
 
@@ -99,6 +100,7 @@ function checkSelected(data, options) {
   return options.parent.querySelector(`input[name='${options.fieldName}']`) == null;
 }
 
+// eslint-disable-next-line max-params
 function createLink(data, selected, options, index) {
   const link = document.createElement('a');
 

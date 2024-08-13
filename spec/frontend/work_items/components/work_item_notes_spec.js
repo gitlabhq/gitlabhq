@@ -1,4 +1,4 @@
-import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -10,7 +10,7 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
-import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
+import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -24,10 +24,10 @@ import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
   mockMoreWorkItemNotesResponse,
-  mockWorkItemNotesResponseWithComments,
   workItemNotesCreateSubscriptionResponse,
   workItemNotesUpdateSubscriptionResponse,
   workItemNotesDeleteSubscriptionResponse,
+  mockWorkItemNotesResponseWithComments,
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;
@@ -59,16 +59,14 @@ describe('WorkItemNotes component', () => {
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findNotesLoading = () => wrapper.findComponent(WorkItemNotesLoading);
   const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
+  const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
 
-  const groupWorkItemNotesQueryHandler = jest
-    .fn()
-    .mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
@@ -100,7 +98,6 @@ describe('WorkItemNotes component', () => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
-        [groupWorkItemNotesByIidQuery, groupWorkItemNotesQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
@@ -134,7 +131,7 @@ describe('WorkItemNotes component', () => {
 
   describe('when notes are loading', () => {
     it('renders skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findNotesLoading().exists()).toBe(true);
     });
 
     it('does not render system notes', () => {
@@ -144,7 +141,7 @@ describe('WorkItemNotes component', () => {
 
   describe('when notes have been loaded', () => {
     it('does not render skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findNotesLoading().exists()).toBe(true);
     });
 
     it('renders system notes to the length of the response', async () => {
@@ -382,11 +379,34 @@ describe('WorkItemNotes component', () => {
   });
 
   describe('when group context', () => {
-    it('calls the group work item query', async () => {
-      createComponent({ isGroup: true });
+    it('should pass the correct `autoCompleteDataSources` to group work item comment note', async () => {
+      const groupWorkItemNotes = {
+        data: {
+          workspace: {
+            id: 'gid://gitlab/Group/24',
+            workItem: {
+              ...mockWorkItemNotesResponseWithComments.data.workspace.workItem,
+              namespace: {
+                id: 'gid://gitlab/Group/24',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+      createComponent({
+        isGroup: true,
+        defaultWorkItemNotesQueryHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
+      });
       await waitForPromises();
 
-      expect(groupWorkItemNotesQueryHandler).toHaveBeenCalled();
+      expect(findWorkItemAddNote().props('autocompleteDataSources')).toEqual(
+        autocompleteDataSources({
+          fullPath: 'test-path',
+          iid: mockWorkItemIid,
+          isGroup: true,
+        }),
+      );
     });
   });
 });

@@ -130,7 +130,7 @@ In addition to managing your storage usage you can consider these options for in
 - Consider a [self-managed subscription](../subscriptions/self_managed/index.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
-## Related Topics
+## Related topics
 
 - [Automate storage management](storage_management_automation.md)
 - [Purchase storage](../subscriptions/gitlab_com/index.md#purchase-more-storage)

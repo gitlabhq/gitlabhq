@@ -17,22 +17,10 @@ RSpec.describe 'admin/identities/index.html.haml', :aggregate_failures do
       assign(:identities, [])
     end
 
-    it 'shows table headers' do
+    it 'shows empty state' do
       render
 
-      expect(rendered).to include('<th class="gl-border-t-0!">').exactly(6)
-      expect(rendered).to include(_('Provider'))
-      expect(rendered).to include(s_('Identity|Provider ID'))
-      expect(rendered).to include(_('Group'))
-      expect(rendered).to include(_('Identifier'))
-      expect(rendered).to include(_('Active'))
-      expect(rendered).to include(_('Actions'))
-    end
-
-    it 'shows information text' do
-      render
-
-      expect(rendered).to include('<td colspan="6">').exactly(1)
+      expect(rendered).to include('data-testid="identities-empty-state"')
       expect(rendered).to include(_('This user has no identities'))
     end
   end

@@ -37,6 +37,7 @@ Example request:
 ```shell
 curl --request POST \
   --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  --header "Content-Type: application/json" \
   --data '{
       "content": "how to define class in ruby"
     }' \

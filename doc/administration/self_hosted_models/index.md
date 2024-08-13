@@ -20,7 +20,6 @@ For more information, see the history.
 
 WARNING:
 This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
-For GitLab 17.1 the feature has a deadline until 31 Aug 2024.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -58,7 +57,7 @@ more information about this offering, see [subscriptions](../../subscriptions/se
 To deploy a self-hosted large language model:
 
 1. [Set up your self-hosted model deployment infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
-1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group level settings.
+1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group settings.
 
 ## Self-hosted models compared to the default GitLab AI vendor architecture
 

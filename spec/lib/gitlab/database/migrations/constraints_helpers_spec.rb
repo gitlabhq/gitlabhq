@@ -43,6 +43,14 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
         .to be_check_constraint_exists(:projects, 'check_1', connection: model.connection)
     end
 
+    it 'returns true if a constraint exists in the specified non-current schema' do
+      expect(model)
+        .to be_check_constraint_exists('new_test_schema.projects', 'check_2')
+
+      expect(described_class)
+        .to be_check_constraint_exists('new_test_schema.projects', 'check_2', connection: model.connection)
+    end
+
     it 'returns false if a constraint does not exist' do
       expect(model)
         .not_to be_check_constraint_exists(:projects, 'this_does_not_exist')
@@ -150,6 +158,21 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
             'check_name_not_null',
             validate: false
           )
+        end
+
+        context 'with a schema-prefixed table' do
+          it 'includes the schema in the ADD CONSTRAINT query' do
+            expect(model).to receive(:with_lock_retries).and_call_original
+            expect(model).to receive(:execute).with(/ALTER TABLE other_schema.test_table\s+ADD CONSTRAINT/)
+
+            # setting validate: false to only focus on the ADD CONSTRAINT command
+            model.add_check_constraint(
+              'other_schema.test_table',
+              'char_length(name) <= 255',
+              'check_name_not_null',
+              validate: false
+            )
+          end
         end
       end
 
@@ -517,7 +540,7 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
 
   describe '#add_not_null_constraint' do
     context 'when it is called with the default options' do
-      it 'calls add_check_constraint with an infered constraint name and validate: true' do
+      it 'calls add_check_constraint with an inferred constraint name and validate: true' do
         constraint_name = model.check_constraint_name(:test_table, :name, 'not_null')
         check = "name IS NOT NULL"
 

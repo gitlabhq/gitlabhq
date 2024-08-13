@@ -4,7 +4,7 @@ class Admin::Topics::AvatarsController < Admin::ApplicationController
   feature_category :groups_and_projects
 
   def destroy
-    @topic = Projects::Topic.find(params[:topic_id])
+    @topic = Projects::Topic.find(params.permit(:topic_id)[:topic_id])
 
     @topic.remove_avatar!
     @topic.save

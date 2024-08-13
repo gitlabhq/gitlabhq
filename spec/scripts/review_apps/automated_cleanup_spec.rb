@@ -23,6 +23,7 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
   let(:one_day_ago)       { (now - (1 * 24 * 3600)) }
   let(:two_days_ago)      { (now - (2 * 24 * 3600)) }
   let(:three_days_ago)    { (now - (3 * 24 * 3600)) }
+  let(:ten_days_ago)      { (now - (10 * 24 * 3600)) }
 
   before do
     allow(instance).to receive(:gitlab).and_return(gitlab_client)
@@ -141,6 +142,161 @@ RSpec.describe ReviewApps::AutomatedCleanup, feature_category: :tooling do
 
       it 'does not delete anything' do
         expect(kubernetes_client).not_to receive(:cleanup_namespaces_by_created_at)
+      end
+    end
+  end
+
+  describe '#perform_gitlab_environment_cleanup!' do
+    let(:env_prefix) { 'test-prefix/' }
+    let(:days_for_delete)       { 2 }
+    let(:deployment_created_at) { three_days_ago.to_s }
+    let(:env_name)  { "#{env_prefix}an-env-name" }
+    let(:env_state) { 'available' }
+    # rubocop:disable RSpec/VerifiedDoubles -- Internal API resource
+    let(:environments) do
+      [double('GitLab Environment',
+        id: env_name,
+        name: env_name,
+        slug: env_name,
+        state: env_state,
+        created_at: one_day_ago.to_s)]
+    end
+
+    let(:deployments) do
+      [double('GitLab Deployment', created_at: deployment_created_at)]
+    end
+
+    subject do
+      instance.perform_gitlab_environment_cleanup!(
+        env_prefix: env_prefix,
+        days_for_delete: days_for_delete
+      )
+    end
+
+    before do
+      allow(gitlab_client).to yield_environments(:environments, environments)
+      allow(gitlab_client).to receive(:deployments).and_return(deployments)
+
+      # Silence outputs to stdout
+      allow(instance).to receive(:puts)
+    end
+
+    def yield_environments(api_method, environments)
+      messages = receive_message_chain(api_method, :auto_paginate)
+
+      environments.inject(messages) do |stub, environment|
+        stub.and_yield(environment)
+      end
+    end
+
+    # rubocop:enable RSpec/VerifiedDoubles -- Internal API resource
+
+    context 'when the environment is not for a review-app' do
+      let(:env_name) { 'not-for-a-review-app' }
+
+      it 'does not stop the environment' do
+        expect(gitlab_client).not_to receive(:stop_environment)
+
+        subject
+      end
+
+      it 'does not delete the environment' do
+        expect(gitlab_client).not_to receive(:delete_environment)
+
+        subject
+      end
+    end
+
+    context 'when the environment is for a review-app' do
+      context 'when there are no deployments' do
+        let(:deployments) { [] }
+
+        context 'when the environment is already stopped' do
+          let(:env_state) { 'stopped' }
+
+          it 'does not stop the environment' do
+            expect(gitlab_client).not_to receive(:stop_environment)
+            allow(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+
+          it 'deletes the environment' do
+            expect(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+        end
+
+        context 'when the environment is not stopped' do
+          let(:env_state) { 'available' }
+
+          it 'stops the environment' do
+            expect(gitlab_client).to receive(:stop_environment)
+            allow(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+
+          it 'deletes the environment' do
+            allow(gitlab_client).to receive(:stop_environment)
+            expect(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+        end
+      end
+
+      context 'when the environment state is stopping' do
+        let(:env_state) { 'stopping' }
+
+        it 'does not stop the environment' do
+          expect(gitlab_client).not_to receive(:stop_environment)
+
+          subject
+        end
+
+        it 'does not delete the environment' do
+          expect(gitlab_client).not_to receive(:delete_environment)
+
+          subject
+        end
+      end
+
+      context 'when there are deployments' do
+        context 'when the latest deployment happened later than the days_for_delete argument' do
+          let(:deployment_created_at) { one_day_ago.to_s }
+
+          it 'does not stop the environment' do
+            expect(gitlab_client).not_to receive(:stop_environment)
+
+            subject
+          end
+
+          it 'does not delete the environment' do
+            expect(gitlab_client).not_to receive(:delete_environment)
+
+            subject
+          end
+        end
+
+        context 'when the latest deployment happened earlier than the days_for_delete argument' do
+          let(:deployment_created_at) { three_days_ago.to_s }
+
+          it 'stops the environment' do
+            expect(gitlab_client).to receive(:stop_environment)
+            allow(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+
+          it 'deletes the environment' do
+            allow(gitlab_client).to receive(:stop_environment)
+            expect(gitlab_client).to receive(:delete_environment)
+
+            subject
+          end
+        end
       end
     end
   end

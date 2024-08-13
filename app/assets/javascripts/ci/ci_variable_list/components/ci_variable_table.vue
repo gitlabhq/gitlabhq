@@ -27,7 +27,6 @@ export default {
     {
       key: 'key',
       label: s__('CiVariables|Key'),
-      tdClass: 'text-plain',
       sortable: true,
       thClass: 'gl-w-2/5',
     },
@@ -49,7 +48,6 @@ export default {
     {
       key: 'key',
       label: s__('CiVariables|Key'),
-      tdClass: 'text-plain',
     },
     {
       key: 'environmentScope',
@@ -219,7 +217,7 @@ export default {
       :data-testid="tableDataTestId"
     >
       <template #actions>
-        <div v-if="!isInheritedGroupVars" class="gl-new-card-actions gl-font-size-0">
+        <div v-if="!isInheritedGroupVars" class="gl-font-size-0">
           <gl-button
             v-if="!isTableEmpty"
             category="tertiary"

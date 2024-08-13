@@ -12,7 +12,7 @@
     supersedes the GitLab.com importer and provides a more cohesive importing functionality.
 
     See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/ee/user/group/import/#migrated-project-items) for an overview.
-  stage: manage
+  stage: Foundations
   tiers:
   issue_url: https://gitlab.com/gitlab-com/Product/-/issues/4895
   documentation_url: https://docs.gitlab.com/ee/user/project/import/gitlab_com.html

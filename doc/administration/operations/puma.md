@@ -378,9 +378,9 @@ undesirable effects on users trying to access GitLab during this time. If you
 are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
 
-1. Log in to your GitLab account.
+1. Sign in to your GitLab account.
 1. Copy the URL that is causing problems (for example, `https://gitlab.com/ABC`).
-1. Create a Personal Access Token for your user (User Settings -> Access Tokens).
+1. Create a personal access token for your user (User Settings -> Access tokens).
 1. Bring up the [GitLab Rails console.](../operations/rails_console.md#starting-a-rails-console-session)
 1. At the Rails console, run:
 

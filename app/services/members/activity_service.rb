@@ -13,12 +13,14 @@ module Members
       return ServiceResponse.error(message: 'Invalid params') unless namespace && user
 
       try_obtain_lease do
-        @member = Member.in_hierarchy(namespace).with_user(user).first
+        find_members
 
-        break unless member
-        break if member.last_activity_on.today?
+        break unless members.any?
 
-        member.touch(:last_activity_on)
+        # Rails throws away the `in_hierarchy` scope, so this generates a WHERE IN instead
+        # rubocop:disable CodeReuse/ActiveRecord -- Scope is lost
+        Member.where(id: members.select(:id)).touch_all(:last_activity_on)
+        # rubocop:enable CodeReuse/ActiveRecord
       end
 
       ServiceResponse.success(message: 'Member activity tracked')
@@ -26,7 +28,7 @@ module Members
 
     private
 
-    attr_reader :user, :namespace, :member
+    attr_reader :user, :namespace, :members
 
     def lease_timeout
       (Time.current.end_of_day - Time.current).to_i
@@ -38,10 +40,14 @@ module Members
 
     # Used by ExclusiveLeaseGuard
     # Overriding value as we only release the lease
-    # before the timeout if there was no member found, in order to prevent multiple
+    # before the timeout if there was no members found, in order to prevent multiple
     # updates in a short span of time but allow an update if the member is added later
     def lease_release?
-      !member.present?
+      members.empty?
+    end
+
+    def find_members
+      @members = Member.in_hierarchy(namespace).with_user(user).no_activity_today
     end
   end
 end

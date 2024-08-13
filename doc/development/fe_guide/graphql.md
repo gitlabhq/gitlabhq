@@ -17,7 +17,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 **GraphQL at GitLab**:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Unfiltered GraphQL playlist](https://www.youtube.com/watch?v=wHPKZBDMfxE&list=PL05JrBw4t0KpcjeHjaRMB7IGB2oDWyJzv)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GraphQL at GitLab: Deep Dive](../api_graphql_styleguide.md#deep-dive) (video) by Nick Thomas
@@ -30,7 +30,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - [🛠 Vuex -> Apollo Migration: a proof-of-concept project](https://gitlab.com/ntepluhina/vuex-to-apollo/blob/master/README.md)
   - A collection of examples that show the possible approaches for state management with Vue+GraphQL+(Vuex or Apollo) apps
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Libraries
 
@@ -47,15 +47,15 @@ see [Immutability and cache updates](#immutability-and-cache-updates) for more i
 
 ### Tooling
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - [Apollo Client Devtools](https://github.com/apollographql/apollo-client-devtools)
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
-#### [Apollo GraphQL VS Code extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo)
+#### Apollo GraphQL VS Code extension
 
-If you use VS Code, the Apollo GraphQL extension supports autocompletion in `.graphql` files. To set up
+If you use VS Code, the [Apollo GraphQL extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo) supports autocompletion in `.graphql` files. To set up
 the GraphQL extension, follow these steps:
 
 1. Generate the schema: `bundle exec rake gitlab:graphql:schema:dump`

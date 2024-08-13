@@ -12,7 +12,7 @@ RSpec.describe Mutations::Timelogs::Delete do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be_with_reload(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
   let(:timelog_id) { global_id_of(timelog) }
   let(:mutation_arguments) { { id: timelog_id } }
 

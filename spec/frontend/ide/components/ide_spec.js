@@ -4,7 +4,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubPerformanceWebAPI } from 'helpers/performance';
-import { __ } from '~/locale';
 import CannotPushCodeAlert from '~/ide/components/cannot_push_code_alert.vue';
 import ErrorMessage from '~/ide/components/error_message.vue';
 import Ide from '~/ide/components/ide.vue';
@@ -17,7 +16,7 @@ import { projectData } from '../mock_data';
 Vue.use(Vuex);
 
 const TEST_FORK_IDE_PATH = '/test/ide/path';
-const MSG_ARE_YOU_SURE = __('Are you sure you want to lose unsaved changes?');
+const MSG_ARE_YOU_SURE = 'Are you sure you want to lose unsaved changes?';
 
 describe('WebIDE', () => {
   const emptyProjData = { ...projectData, empty_repo: true, branches: {} };

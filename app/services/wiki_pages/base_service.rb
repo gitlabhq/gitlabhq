@@ -13,7 +13,7 @@ module WikiPages
       page_data = payload(page)
       container.execute_hooks(page_data, :wiki_page_hooks)
       container.execute_integrations(page_data, :wiki_page_hooks)
-      increment_usage
+      increment_usage(page)
       create_wiki_event(page)
     end
 
@@ -38,8 +38,19 @@ module WikiPages
     end
 
     # This method throws an error if internal_event_name returns an unknown event name
-    def increment_usage
-      Gitlab::InternalEvents.track_event(internal_event_name, user: current_user, project: project, namespace: group)
+    def increment_usage(page)
+      label = 'template' if page.template?
+
+      Gitlab::InternalEvents.track_event(
+        internal_event_name,
+        user: current_user,
+        project: project,
+        namespace: group,
+        additional_properties: {
+          label: label,
+          property: page[:format].to_s
+        }
+      )
     end
 
     def create_wiki_event(page)

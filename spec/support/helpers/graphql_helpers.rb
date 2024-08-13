@@ -167,6 +167,13 @@ module GraphqlHelpers
       end
     end
   end
+
+  # create a valid query context object
+  def query_context(user: current_user)
+    query = GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {})
+    GraphQL::Query::Context.new(query: query, values: { current_user: user })
+  end
+
   # rubocop:enable Metrics/ParameterLists
 
   # Pros:

@@ -2,9 +2,9 @@
 require 'spec_helper'
 
 RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflow do
-  let(:merge_request) { create(:merge_request) }
-  let(:project) { merge_request.target_project }
-  let(:user) { merge_request.author }
+  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:project) { merge_request.target_project }
+  let_it_be(:user) { merge_request.author }
 
   def create_draft(params)
     described_class.new(merge_request, user, params).execute
@@ -42,6 +42,27 @@ RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflo
 
     expect(draft.errors[:base]).to include('User is not allowed to resolve thread')
     expect(draft).not_to be_persisted
+  end
+
+  it 'updates reviewer state on first draft note' do
+    expect_next_instance_of(
+      MergeRequests::UpdateReviewerStateService,
+      project: project, current_user: user
+    ) do |service|
+      expect(service).to receive(:execute).with(merge_request, 'review_started')
+    end
+
+    create_draft(note: 'This is a test')
+  end
+
+  context 'when a draft note has already been created' do
+    let_it_be(:note) { create(:draft_note, merge_request: merge_request, author: user) }
+
+    it 'does not update reviewer state' do
+      expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
+
+      create_draft(note: 'This is a test')
+    end
   end
 
   context 'in a thread' do

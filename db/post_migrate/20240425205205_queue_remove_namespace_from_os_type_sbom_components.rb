@@ -3,7 +3,7 @@
 class QueueRemoveNamespaceFromOsTypeSbomComponents < Gitlab::Database::Migration[2.2]
   milestone '17.0'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   MIGRATION = "RemoveNamespaceFromOsTypeSbomComponents"
   DELAY_INTERVAL = 2.minutes

@@ -194,7 +194,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
       content = "coding:" + (" " * 50_000) + ";"
 
       expect do
-        Timeout.timeout(3.seconds) { filter(content) }
+        Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(content) }
       end.not_to raise_error
     end
 
@@ -202,7 +202,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
       content = "coding:\n" + ";;;" + ("\n" * 10_000) + "x"
 
       expect do
-        Timeout.timeout(3.seconds) { filter(content) }
+        Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(content) }
       end.not_to raise_error
     end
 
@@ -210,7 +210,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
       content = ("coding:" * 120_000) + ("\n" * 80_000) + ";"
 
       expect do
-        Timeout.timeout(3.seconds) { filter(content) }
+        Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(content) }
       end.not_to raise_error
     end
   end

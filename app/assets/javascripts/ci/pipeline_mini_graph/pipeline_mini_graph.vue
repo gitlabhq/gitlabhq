@@ -2,6 +2,7 @@
 import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
@@ -13,6 +14,7 @@ import PipelineStages from './pipeline_stages.vue';
  * Renders the GraphQL instance of the pipeline mini graph.
  */
 export default {
+  name: 'PipelineMiniGraph',
   i18n: {
     pipelineMiniGraphFetchError: __('There was a problem fetching the pipeline mini graph.'),
   },
@@ -74,8 +76,9 @@ export default {
       update({ project }) {
         return project?.pipeline || {};
       },
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.pipelineMiniGraphFetchError });
+        reportToSentry(this.$options.name, error);
       },
     },
   },
@@ -83,14 +86,14 @@ export default {
     downstreamPipelines() {
       return keepLatestDownstreamPipelines(this.pipeline?.downstream?.nodes);
     },
-    pipelineStages() {
-      return this.pipeline?.stages?.nodes || [];
-    },
     hasDownstreamPipelines() {
       return Boolean(this.downstreamPipelines.length);
     },
     pipelinePath() {
       return this.pipeline?.path || '';
+    },
+    pipelineStages() {
+      return this.pipeline?.stages?.nodes || [];
     },
     upstreamPipeline() {
       return this.pipeline?.upstream;
@@ -122,7 +125,7 @@ export default {
       <gl-icon
         v-if="upstreamPipeline"
         :class="$options.arrowStyles"
-        name="long-arrow"
+        name="arrow-right"
         data-testid="upstream-arrow-icon"
       />
       <pipeline-stages
@@ -134,7 +137,7 @@ export default {
       <gl-icon
         v-if="hasDownstreamPipelines"
         :class="$options.arrowStyles"
-        name="long-arrow"
+        name="arrow-right"
         data-testid="downstream-arrow-icon"
       />
       <downstream-pipelines

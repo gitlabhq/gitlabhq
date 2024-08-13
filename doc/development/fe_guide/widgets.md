@@ -144,4 +144,4 @@ methods: {
 
 ## Merge request widgets
 
-Refer to the documentation specific to the [merge request widget extension framework](merge_request_widget_extensions.md).
+Refer to the documentation specific to the [merge request widget framework](merge_request_widgets.md).

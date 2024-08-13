@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PostReceive, feature_category: :source_code_management do
+RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   include AfterNextHelpers
 
   let(:changes) do
@@ -23,9 +23,10 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
   end
 
   let(:job_args) { [gl_repository, key_id, base64_changes] }
+  let(:worker) { described_class.new }
 
   def perform(changes: base64_changes)
-    described_class.new.perform(gl_repository, key_id, changes)
+    worker.perform(gl_repository, key_id, changes)
   end
 
   context 'as a sidekiq worker' do
@@ -448,6 +449,42 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
 
             perform
           end
+
+          context 'with post_receive_sync_refresh_cache feature flag enabled' do
+            it 'refreshes branch names cache in a lock' do
+              expect(worker).to receive(:in_lock).with("post_receive:#{gl_repository}:branch", ttl: 20, retries: 50, sleep_sec: 0.4).and_wrap_original do |method, *args, **_kwargs, &block|
+                expect(snippet.repository).to receive(:expire_branches_cache).and_call_original
+                expect(snippet.repository).to receive(:branch_names).and_call_original
+
+                method.call(*args, &block)
+              end
+
+              perform
+            end
+
+            context 'when exclusive lease fails' do
+              it 'logs a message' do
+                expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(snippet.repository).to receive(:expire_branches_cache).and_call_original
+                expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring branch name cache")
+
+                perform
+              end
+            end
+          end
+
+          context 'with post_receive_sync_refresh_cache feature flag disabled' do
+            before do
+              stub_feature_flags(post_receive_sync_refresh_cache: false)
+            end
+
+            it 'does not expire in a lock' do
+              expect(worker).not_to receive(:in_lock)
+              expect(snippet.repository).not_to receive(:tag_names)
+
+              perform
+            end
+          end
         end
 
         context 'tags' do
@@ -468,6 +505,42 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
           it 'only invalidates tags once' do
             expect(snippet.repository).to receive(:expire_caches_for_tags).once.and_call_original
             expect(snippet.repository).to receive(:expire_tags_cache).once.and_call_original
+
+            perform
+          end
+
+          context 'with post_receive_sync_refresh_cache feature flag enabled' do
+            it 'refreshes the tag names cache' do
+              expect(worker).to receive(:in_lock).with("post_receive:#{gl_repository}:tag", ttl: 20, retries: 50, sleep_sec: 0.4).and_wrap_original do |method, *args, **_kwargs, &block|
+                expect(snippet.repository).to receive(:expire_tags_cache).and_call_original
+                expect(snippet.repository).to receive(:tag_names).and_call_original
+
+                method.call(*args, &block)
+              end
+
+              perform
+            end
+
+            context 'when exclusive lease fails' do
+              it 'logs a message' do
+                expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(snippet.repository).to receive(:expire_tags_cache).and_call_original
+                expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring tag name cache")
+
+                perform
+              end
+            end
+          end
+        end
+
+        context 'with post_receive_sync_refresh_cache feature flag disabled' do
+          before do
+            stub_feature_flags(post_receive_sync_refresh_cache: false)
+          end
+
+          it 'does not expire tags cache in a lock' do
+            expect(worker).not_to receive(:in_lock)
+            expect(snippet.repository).not_to receive(:tag_names)
 
             perform
           end

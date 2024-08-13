@@ -57,8 +57,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-h-full flex gl-justify-center gl-items-center gl-p-4">
-    <div class="text-center gl-max-w-75 gl-h-80">
+  <div class="gl-h-full flex gl-justify-center gl-items-center overflow-auto">
+    <div class="text-center gl-max-w-75 gl-p-4">
       <img :alt="$options.i18n.imgAlt" :src="$options.gitlabLogo" class="svg gl-w-12 gl-h-12" />
       <h1 class="gl-heading-display gl-my-6">{{ $options.i18n.heading }}</h1>
       <p>

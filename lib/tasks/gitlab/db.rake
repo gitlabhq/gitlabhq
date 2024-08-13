@@ -127,6 +127,8 @@ namespace :gitlab do
       database_name = ":#{database_name}" if database_name
       load_database = connection.tables.count <= 1
 
+      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+
       if load_database
         puts "Running db:schema:load#{database_name} rake task"
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
@@ -137,6 +139,15 @@ namespace :gitlab do
       end
 
       load_database
+    end
+
+    desc "Clear all connections"
+    task :clear_all_connections do
+      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+    end
+
+    ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      Rake::Task["db:test:purge:#{name}"].enhance(['gitlab:db:clear_all_connections'])
     end
 
     desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'

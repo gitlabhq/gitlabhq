@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -24,7 +24,7 @@ brew services start jenkins
 GitLab does not allow requests to localhost or the local network by default. When running Jenkins on your local machine, you need to enable local access.
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Outbound requests**, and select the following checkboxes:
 
@@ -37,7 +37,7 @@ Jenkins uses the GitLab API and needs an access token.
 
 1. Sign in to your GitLab instance.
 1. Select your profile picture, then select **Settings**.
-1. Select **Access Tokens**.
+1. Select **Access tokens**.
 1. Create a new Access Token with the **API** scope enabled. Note the value of the token.
 
 ## Configure Jenkins

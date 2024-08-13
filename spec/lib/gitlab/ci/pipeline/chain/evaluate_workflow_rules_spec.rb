@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
       end
 
       it 'attaches an error to the pipeline' do
-        expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+        expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
       end
 
       it 'saves workflow_rules_result' do

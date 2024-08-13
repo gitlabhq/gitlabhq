@@ -12,12 +12,6 @@ import {
   SEARCH_LEVEL_GLOBAL,
   SEARCH_LEVEL_GROUP,
 } from '~/search/store/constants';
-import {
-  ZOEKT_HELP_PAGE,
-  ADVANCED_SEARCH_HELP_PAGE,
-  ADVANCED_SEARCH_SYNTAX_HELP_ANCHOR,
-  ZOEKT_HELP_PAGE_SYNTAX_ANCHOR,
-} from '../constants';
 
 import { SCOPE_BLOB } from '../../sidebar/constants';
 
@@ -39,6 +33,14 @@ export default {
     ),
     more: __('Learn more.'),
   },
+  zoektHelpUrl: helpPagePath('user/search/exact_code_search'),
+  zoektSyntaxHelpUrl: helpPagePath('user/search/exact_code_search', {
+    anchor: 'syntax',
+  }),
+  advancedSearchHelpUrl: helpPagePath('user/search/advanced_search'),
+  advancedSearchSyntaxHelpUrl: helpPagePath('user/search/advanced_search', {
+    anchor: 'syntax',
+  }),
   components: {
     GlSprintf,
     GlLink,
@@ -46,22 +48,6 @@ export default {
   computed: {
     ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel', 'query']),
     ...mapGetters(['currentScope']),
-    zoektHelpUrl() {
-      return helpPagePath(ZOEKT_HELP_PAGE);
-    },
-    zoektSyntaxHelpUrl() {
-      return helpPagePath(ZOEKT_HELP_PAGE, {
-        anchor: ZOEKT_HELP_PAGE_SYNTAX_ANCHOR,
-      });
-    },
-    advancedSearchHelpUrl() {
-      return helpPagePath(ADVANCED_SEARCH_HELP_PAGE);
-    },
-    advancedSearchSyntaxHelpUrl() {
-      return helpPagePath(ADVANCED_SEARCH_HELP_PAGE, {
-        anchor: ADVANCED_SEARCH_SYNTAX_HELP_ANCHOR,
-      });
-    },
     isZoekt() {
       return this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope === SCOPE_BLOB;
     },
@@ -106,13 +92,15 @@ export default {
         : this.$options.i18n.advanced_disabled;
     },
     helpUrl() {
-      return this.isZoekt ? this.zoektHelpUrl : this.advancedSearchHelpUrl;
+      return this.isZoekt ? this.$options.zoektHelpUrl : this.$options.advancedSearchHelpUrl;
     },
     enabledMessage() {
       return this.isZoekt ? this.$options.i18n.zoekt_enabled : this.$options.i18n.advanced_enabled;
     },
     syntaxHelpUrl() {
-      return this.isZoekt ? this.zoektSyntaxHelpUrl : this.advancedSearchSyntaxHelpUrl;
+      return this.isZoekt
+        ? this.$options.zoektSyntaxHelpUrl
+        : this.$options.advancedSearchSyntaxHelpUrl;
     },
   },
 };

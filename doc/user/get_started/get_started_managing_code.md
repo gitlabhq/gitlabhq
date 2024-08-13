@@ -36,7 +36,7 @@ For details, see:
 
 ## Step 2: Write your code
 
-You have many options for how and where you'll write your code.
+You have many options for how and where you write your code.
 
 You can use the GitLab UI and develop right in your browser.
 You have two options:
@@ -68,14 +68,14 @@ For details, see:
 When your changes are ready, you should commit them to GitLab,
 where you can share them with others on your team.
 
-To commit your changes, you'll copy them:
+To commit your changes, first copy them:
 
 - From your local computer, in your own branch
 - To GitLab, on a remote computer, to the default branch, usually called `main` or `master`.
 
 To copy files between branches, you create a merge request.
-There are many different ways to create a merge request. It largely
-depends on where you authored the code and the tools you'll use to create it.
+There are different ways to create a merge request. It depends on
+where you authored the code and the tools you use to create it.
 But the idea is to create a merge request that takes the contents of your source branch
 and proposes combining it into the target branch.
 

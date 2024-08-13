@@ -1,0 +1,66 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
+
+fragment WorkItemHierarchy on WorkItem {
+  id
+  workItemType {
+    id
+    name
+    iconName
+  }
+  title
+  confidential
+  userPermissions {
+    deleteWorkItem
+    updateWorkItem
+    adminParentLink
+    setWorkItemMetadata
+    createNote
+    adminWorkItemLink
+  }
+  widgets {
+    type
+    ... on WorkItemWidgetHierarchy {
+      type
+      hasChildren
+      parent {
+        id
+      }
+      children(first: $pageSize, after: $endCursor) {
+        pageInfo {
+          ...PageInfo
+        }
+        count
+        nodes {
+          id
+          iid
+          confidential
+          workItemType {
+            id
+            name
+            iconName
+          }
+          namespace {
+            id
+            fullPath
+            name
+          }
+          title
+          state
+          createdAt
+          closedAt
+          webUrl
+          reference(full: true)
+          widgets {
+            ... on WorkItemWidgetHierarchy {
+              type
+              hasChildren
+            }
+            ...WorkItemMetadataWidgets
+          }
+        }
+      }
+    }
+    ...WorkItemMetadataWidgets
+  }
+}

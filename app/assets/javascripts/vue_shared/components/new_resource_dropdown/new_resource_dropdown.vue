@@ -186,8 +186,8 @@ export default {
       :toggle-text="$options.i18n.toggleButtonLabel"
       variant="confirm"
       data-testid="new-resource-dropdown"
-      class="gl-display-flex! !gl-w-auto"
-      toggle-class="gl-m-0! !gl-w-auto gl-flex-grow-0!"
+      class="!gl-flex !gl-w-auto"
+      toggle-class="!gl-m-0 !gl-w-auto !gl-grow-0"
       @click="handleDropdownClick"
       @shown="handleDropdownShown"
     >

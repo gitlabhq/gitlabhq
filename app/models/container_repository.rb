@@ -7,7 +7,6 @@ class ContainerRepository < ApplicationRecord
   include Sortable
   include AfterCommitQueue
   include Packages::Destructible
-  include IgnorableColumns
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
@@ -21,16 +20,6 @@ class ContainerRepository < ApplicationRecord
   AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS = 5
 
   belongs_to :project
-
-  ignore_columns %i[
-    migration_aborted_at
-    migration_import_done_at
-    migration_import_started_at
-    migration_plan
-    migration_pre_import_started_at
-    migration_pre_import_done_at
-    migration_skipped_at
-  ], remove_with: '17.3', remove_after: '2024-07-22'
 
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
@@ -195,7 +184,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil, referrer_type: nil)
-    raise ArgumentError, 'not a migrated repository' unless migrated?
+    raise ArgumentError,  _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
 
     page = gitlab_api_client.tags(
       self.path,

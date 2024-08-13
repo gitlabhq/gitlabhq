@@ -1,0 +1,9 @@
+---
+name: unstick_locked_merge_requests_redis
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/467377
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151712
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470696
+milestone: '17.3'
+group: group::code review
+type: beta
+default_enabled: false

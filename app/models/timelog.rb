@@ -7,6 +7,7 @@ class Timelog < ApplicationRecord
 
   include Importable
   include Sortable
+  include EachBatch
 
   before_save :set_project
 

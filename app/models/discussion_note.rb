@@ -11,7 +11,7 @@ class DiscussionNote < Note
 
   # Names of all implementers of `Noteable` that support discussions.
   def self.noteable_types
-    %w[MergeRequest Issue Commit Snippet AbuseReport]
+    %w[MergeRequest Issue Commit Snippet]
   end
 
   validates :noteable_type, inclusion: { in: noteable_types }

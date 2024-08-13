@@ -90,8 +90,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
 
     it 'appends an error about missing stages' do
       expect(pipeline.errors.to_a)
-        .to include 'Pipeline will not run for the selected trigger. ' \
-          'The rules configuration prevented any jobs from being added to the pipeline.'
+        .to include ::Ci::Pipeline.rules_failure_message
     end
 
     it 'wastes pipeline iid' do

@@ -30,10 +30,6 @@ export default {
     ),
     delete: __('Delete deploy key'),
     edit: __('Edit deploy key'),
-    pagination: {
-      next: __('Next'),
-      prev: __('Prev'),
-    },
     modal: {
       title: __('Are you sure?'),
       body: __('Are you sure you want to delete this deploy key?'),
@@ -203,11 +199,9 @@ export default {
     class="gl-mt-5"
   >
     <template #actions>
-      <div class="gl-new-card-actions">
-        <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
-          $options.i18n.newDeployKeyButtonText
-        }}</gl-button>
-      </div>
+      <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
+        $options.i18n.newDeployKeyButtonText
+      }}</gl-button>
     </template>
 
     <gl-table
@@ -289,8 +283,6 @@ export default {
       v-model="page"
       :per-page="$options.DEFAULT_PER_PAGE"
       :total-items="totalItems"
-      :next-text="$options.i18n.pagination.next"
-      :prev-text="$options.i18n.pagination.prev"
       align="center"
       class="gl-mt-5"
     />

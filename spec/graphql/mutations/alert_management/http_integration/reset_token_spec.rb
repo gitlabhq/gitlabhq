@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::AlertManagement::HttpIntegration::ResetToken do
+RSpec.describe Mutations::AlertManagement::HttpIntegration::ResetToken, feature_category: :api do
+  include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
@@ -53,7 +55,7 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::ResetToken do
 
   private
 
-  def mutation_for(project, user)
-    described_class.new(object: project, context: { current_user: user }, field: nil)
+  def mutation_for(project, _user)
+    described_class.new(object: project, context: query_context, field: nil)
   end
 end

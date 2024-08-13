@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotifyHelper do
+RSpec.describe NotifyHelper, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   describe 'merge_request_reference_link' do
@@ -60,6 +60,25 @@ RSpec.describe NotifyHelper do
       expect(result[:reviewer_highlight]).to eq '<span>'.html_safe
       expect(result[:reviewer_avatar]).to eq reviewer_avatar
       expect(result[:reviewer_link]).to eq reviewer_link
+    end
+  end
+
+  describe '#work_item_type_for' do
+    where(:work_item, :expected_type) do
+      build(:issue)              | 'issue'
+      build(:issue, :task)       | 'issue'
+      build(:issue, :test_case)  | 'issue'
+      build(:issue, :key_result) | 'issue'
+      build(:issue, :objective)  | 'issue'
+      build(:issue, :ticket)     | 'issue'
+      build(:incident)           | 'issue'
+      build(:issue, :epic)       | 'epic'
+    end
+
+    with_them do
+      it do
+        expect(helper.work_item_type_for(work_item)).to eq(expected_type)
+      end
     end
   end
 

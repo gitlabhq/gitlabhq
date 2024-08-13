@@ -130,6 +130,8 @@ export const CONTRIBUTOR_METRICS = {
 
 export const AI_METRICS = {
   CODE_SUGGESTIONS_USAGE_RATE: 'code_suggestions_usage_rate',
+  CODE_SUGGESTIONS_ACCEPTANCE_RATE: 'code_suggestions_acceptance_rate',
+  DUO_PRO_USAGE_RATE: 'duo_pro_usage_rate',
 };
 
 export const METRIC_TOOLTIPS = {
@@ -187,13 +189,13 @@ export const METRIC_TOOLTIPS = {
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/analytics/issue_analytics'),
+    docsLink: helpPagePath('user/group/issues_analytics/index'),
   },
   [FLOW_METRICS.ISSUES_COMPLETED]: {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/analytics/issue_analytics'),
+    docsLink: helpPagePath('user/group/issues_analytics/index'),
   },
   [FLOW_METRICS.DEPLOYS]: {
     description: s__('ValueStreamAnalytics|Total number of deploys to production.'),

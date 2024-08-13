@@ -11,7 +11,7 @@ export default {
     GlLink,
   },
   i18n: timelineEventTagsPopover,
-  learnMoreLink: helpPagePath('ee/operations/incident_management/incident_timeline_events', {
+  learnMoreLink: helpPagePath('operations/incident_management/incident_timeline_events', {
     anchor: 'incident-tags',
   }),
 };

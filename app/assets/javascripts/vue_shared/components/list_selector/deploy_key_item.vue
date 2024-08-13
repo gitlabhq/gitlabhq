@@ -30,12 +30,12 @@ export default {
 
 <template>
   <span
-    class="gl-display-flex gl-align-items-center gl-gap-3"
+    class="gl-flex gl-items-center gl-gap-3"
     data-testid="deploy-key-wrapper"
     @click="$emit('select', id)"
   >
     <gl-icon name="key" />
-    <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
+    <span class="gl-flex gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ title }}</span>
       <span class="gl-text-gray-600">@{{ owner }}</span>
     </span>

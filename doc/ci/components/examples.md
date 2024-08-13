@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD component examples
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 ## Test a component
 
 Depending on a component's functionality, [testing the component](index.md#test-the-component) might require additional files in the repository.

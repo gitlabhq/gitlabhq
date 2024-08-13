@@ -3,21 +3,19 @@
 - page_title _("Identities"), @user.name, _("Users")
 = render 'admin/users/head'
 
-%table.table.gl-table
-  %thead
-    %tr
-      %th{ class: 'gl-border-t-0!' }= _('Provider')
-      %th{ class: 'gl-border-t-0!' }= s_('Identity|Provider ID')
-      %th{ class: 'gl-border-t-0!' }= _('Group')
-      %th{ class: 'gl-border-t-0!' }= _('Identifier')
-      %th{ class: 'gl-border-t-0!' }= s_('Identity|Active')
-      %th{ class: 'gl-border-t-0!' }= _('Actions')
-  - if identity_cells_to_render?(@identities, @user)
-    = render_if_exists partial: 'admin/identities/scim_identity', collection: scim_identities_collection(@user)
-    = render @identities
-  - else
-    %tbody
+- if identity_cells_to_render?(@identities, @user)
+  %table.table.gl-table
+    %thead
       %tr
-        %td{ colspan: '6' }
-          .text-center.my-2
-            = _('This user has no identities')
+        %th{ class: '!gl-border-t-0' }= _('Provider')
+        %th{ class: '!gl-border-t-0' }= s_('Identity|Provider ID')
+        %th{ class: '!gl-border-t-0' }= _('Group')
+        %th{ class: '!gl-border-t-0' }= _('Identifier')
+        %th{ class: '!gl-border-t-0' }= s_('Identity|Active')
+        %th{ class: '!gl-border-t-0' }= _('Actions')
+      = render_if_exists partial: 'admin/identities/scim_identity', collection: scim_identities_collection(@user)
+      = render @identities
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-user-settings-md.svg',
+    title: _('This user has no identities'),
+    empty_state_options: { data: { testid: 'identities-empty-state' } })

@@ -1,0 +1,23 @@
+---
+description: Click on the delete Kubernetes pod confirmation button
+internal_events: true
+action: click_delete_pod
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: environment id
+  label:
+    description: agent id
+product_group: environments
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160635
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -38,7 +38,7 @@
 - name: DevOps Adoption trend graph
   description: |
      In GitLab 14.4, we added a new graph to group-level DevOps Adoption for trend over time. This graph shows you how groups adopt DevOps features over time and can give insights into how quickly groups are adopting additional DevOps processes. This is broken down by Dev, Sec, and Ops functionality.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -49,7 +49,7 @@
 - name: Integrated error tracking inside GitLab without a Sentry instance
   description: |
      Prior to GitLab 14.4, you could integrate with Sentry Error Tracking by supplying an endpoint for a Sentry backend (either self-deployed or in their cloud service). With GitLab 14.4, you now have access to a Sentry-compatible backend built into your GitLab instance. This allows you to quickly instrument your apps so your errors show up directly in GitLab without the need for a separate Sentry instance.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

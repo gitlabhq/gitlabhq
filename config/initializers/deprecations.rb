@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 if Rails.env.development? || ENV['GITLAB_LEGACY_PATH_LOG_MESSAGE']
-  deprecator = ActiveSupport::Deprecation.new('11.0', 'GitLab')
+  deprecator =
+    if ::Gitlab.next_rails?
+      ActiveSupport::Deprecation.new('11.0', 'GitLab')
+    else
+      ActiveSupport::Deprecation
+    end
 
   deprecator.behavior = ->(message, callstack) {
     Gitlab::AppLogger.warn("#{message}: #{callstack[1..20].join}")
   }
 
-  ActiveSupport::Deprecation.deprecate_methods(Gitlab::GitalyClient::StorageSettings, :legacy_disk_path, deprecator: deprecator)
+  deprecator.deprecate_methods(Gitlab::GitalyClient::StorageSettings, :legacy_disk_path, deprecator: deprecator)
 end

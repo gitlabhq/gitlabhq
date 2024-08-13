@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Update do
+RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Update, feature_category: :api do
+  include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:integration) { create(:prometheus_integration, project: project) }
@@ -53,7 +55,7 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Update do
 
   private
 
-  def mutation_for(project, user)
-    described_class.new(object: project, context: { current_user: user }, field: nil)
+  def mutation_for(project, _user)
+    described_class.new(object: project, context: query_context, field: nil)
   end
 end

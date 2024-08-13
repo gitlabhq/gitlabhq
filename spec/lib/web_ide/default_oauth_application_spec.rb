@@ -110,6 +110,26 @@ RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
     end
   end
 
+  describe '#reset_oauth_application_settings' do
+    it 'resets oauth application settings to original' do
+      mock_bad_oauth_application = oauth_application
+      mock_bad_oauth_application["confidential"] = true
+      mock_bad_oauth_application["trusted"] = false
+
+      stub_application_setting({ web_ide_oauth_application: mock_bad_oauth_application })
+
+      described_class.reset_oauth_application_settings
+
+      expect(oauth_application).to have_attributes(
+        name: 'GitLab Web IDE',
+        redirect_uri: described_class.oauth_callback_url,
+        scopes: ['api'],
+        trusted: true,
+        confidential: false
+      )
+    end
+  end
+
   def application_settings
     ::Gitlab::CurrentSettings.current_application_settings
   end

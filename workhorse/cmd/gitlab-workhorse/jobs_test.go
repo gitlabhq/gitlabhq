@@ -35,11 +35,13 @@ func testJobsLongPolling(t *testing.T, pollingDuration time.Duration, requestJob
 
 func testJobsLongPollingEndpointDisabled(t *testing.T, requestJob requestJobFunction) {
 	resp := testJobsLongPolling(t, 0, requestJob)
+	defer resp.Body.Close()
 	require.NotEqual(t, "yes", resp.Header.Get("Gitlab-Ci-Builds-Polling"))
 }
 
 func testJobsLongPollingEndpoint(t *testing.T, requestJob requestJobFunction) {
 	resp := testJobsLongPolling(t, time.Minute, requestJob)
+	defer resp.Body.Close()
 	require.Equal(t, "yes", resp.Header.Get("Gitlab-Ci-Builds-Polling"))
 }
 

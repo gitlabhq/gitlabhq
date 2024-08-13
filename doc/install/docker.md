@@ -654,15 +654,20 @@ The following steps assume that you are upgrading the same version.
 
 ### Downgrade GitLab
 
-To downgrade GitLab after an upgrade:
+WARNING:
+You must at least have a database backup created under the exact same version and edition you are downgrading to.
+Restoring the backup is required to revert the schema changes (migrations) made as part of the upgrade.
+The restore overwrites all newer GitLab database content with the older state.
+We can therefore only recommend a downgrade,
+if for example post-upgrade tests reveal problems that can not be resolved quickly.
 
-1. Follow the upgrade procedure, by [specifying the version](#find-the-gitlab-version-and-edition-to-use)
-   to downgrade to.
+To downgrade GitLab shortly after an upgrade:
 
-1. Restore the [database backup you made](#create-a-database-backup) as part of the upgrade.
+1. Follow the upgrade procedure, by [specifying an earlier version](#find-the-gitlab-version-and-edition-to-use)
+   than you have installed.
 
-   - Restoring is required to back out database data and schema changes (migrations) made as part of the upgrade.
-   - GitLab backups must be restored to the exact same version and edition.
+1. Restore the [database backup you made](#create-a-database-backup) before the upgrade.
+
    - [Follow the restore steps for Docker images](../administration/backup_restore/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including
      stopping Puma and Sidekiq. Only the database must be restored, so add
      `SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state`

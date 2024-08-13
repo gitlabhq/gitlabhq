@@ -77,18 +77,21 @@ export default {
       <gl-link
         :href="suggestion.webUrl"
         target="_blank"
-        class="suggestion bold str-truncated-100 gl-text-gray-900!"
+        class="suggestion gl-font-bold str-truncated-100 gl-text-gray-900!"
       >
         {{ suggestion.title }}
       </gl-link>
     </div>
     <div class="text-secondary suggestion-footer">
-      <gl-icon ref="state" :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
+      <span ref="state">
+        <gl-icon :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
+      </span>
       <gl-tooltip :target="() => $refs.state" placement="bottom">
         <span class="gl-block">
-          <span class="bold"> {{ stateTitle }} </span> {{ timeFormatted(closedOrCreatedDate) }}
+          <span class="gl-font-bold"> {{ stateTitle }} </span>
+          {{ timeFormatted(closedOrCreatedDate) }}
         </span>
-        <span class="text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
+        <span class="gl-text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
       </gl-tooltip>
       #{{ suggestion.iid }} &bull;
       <timeago-tooltip
@@ -105,8 +108,8 @@ export default {
           tooltip-placement="bottom"
           class="gl-inline-block"
         >
-          <span class="bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
-          <span class="text-tertiary">@{{ suggestion.author.username }}</span>
+          <span class="gl-font-bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
+          <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
         </user-avatar-image>
       </gl-link>
       <template v-if="hasUpdated">
@@ -123,7 +126,7 @@ export default {
           :key="id"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="gl-cursor-help gl-ml-3 text-tertiary"
+          class="gl-cursor-help gl-ml-3 gl-text-subtle"
         >
           <gl-icon :name="icon" /> {{ count }}
         </span>

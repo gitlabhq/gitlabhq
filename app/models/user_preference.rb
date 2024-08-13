@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-class UserPreference < MainClusterwide::ApplicationRecord
+class UserPreference < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_column :use_web_ide_extension_marketplace, remove_with: '17.4', remove_after: '2024-08-15'
+
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
@@ -41,7 +45,8 @@ class UserPreference < MainClusterwide::ApplicationRecord
   attribute :keyboard_shortcuts_enabled, default: true
   attribute :use_web_ide_extension_marketplace, default: false
 
-  enum visibility_pipeline_id_type: { id: 0, iid: 1 }
+  enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
+
   enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
   enum organization_groups_projects_display: { projects: 0, groups: 1 }
 

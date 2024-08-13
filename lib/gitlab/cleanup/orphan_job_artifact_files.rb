@@ -82,7 +82,7 @@ module Gitlab
             yield line.chomp
           end
 
-          log_error(stderr.read.color(:red)) unless status_thread.value.success?
+          log_error(Rainbow(stderr.read).red) unless status_thread.value.success?
         end
       end
 

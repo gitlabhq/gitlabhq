@@ -1,12 +1,16 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_replying.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
+import toggleWorkItemNoteResolveDiscussion from '~/work_items/graphql/notes/toggle_work_item_note_resolve_discussion.mutation.graphql';
 import {
   mockWorkItemCommentNote,
+  mockToggleResolveDiscussionResponse,
   mockWorkItemNotesResponseWithComments,
 } from 'jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
@@ -17,6 +21,8 @@ const mockWorkItemNotesWidgetResponseWithComments =
   );
 
 describe('Work Item Discussion', () => {
+  Vue.use(VueApollo);
+
   let wrapper;
   const mockWorkItemId = 'gid://gitlab/WorkItem/625';
 
@@ -26,12 +32,20 @@ describe('Work Item Discussion', () => {
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findWorkItemNoteReplying = () => wrapper.findComponent(WorkItemNoteReplying);
 
+  const toggleWorkItemResolveDiscussionHandler = jest
+    .fn()
+    .mockResolvedValue(mockToggleResolveDiscussionResponse);
+
   const createComponent = ({
     discussion = [mockWorkItemCommentNote],
     workItemId = mockWorkItemId,
     workItemType = 'Task',
+    isExpandedOnLoad = true,
   } = {}) => {
     wrapper = shallowMount(WorkItemDiscussion, {
+      apolloProvider: createMockApollo([
+        [toggleWorkItemNoteResolveDiscussion, toggleWorkItemResolveDiscussionHandler],
+      ]),
       propsData: {
         fullPath: 'gitlab-org',
         discussion,
@@ -40,6 +54,7 @@ describe('Work Item Discussion', () => {
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
+        isExpandedOnLoad,
       },
     });
   };
@@ -147,5 +162,59 @@ describe('Work Item Discussion', () => {
     findThreadAtIndex(0).vm.$emit('error', mockErrorText);
 
     expect(wrapper.emitted('error')).toEqual([[mockErrorText]]);
+  });
+
+  describe('Resolve discussion', () => {
+    beforeEach(() => {
+      window.gon.current_user_id = 'gid://gitlab/User/1';
+      window.gon.current_user_fullname = 'Administrator';
+    });
+    const resolvedDiscussionList =
+      mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.slice();
+    resolvedDiscussionList.forEach((note) => {
+      return {
+        ...note,
+        discussion: {
+          id: note.discussion.id,
+          resolved: true,
+          resolvable: true,
+          resolvedBy: {
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            __typename: 'UserCore',
+          },
+          __typename: 'Discussion',
+        },
+      };
+    });
+
+    it('Resolved discussion is not expanded on default', () => {
+      createComponent({
+        discussion: resolvedDiscussionList,
+        isExpandedOnLoad: false,
+      });
+
+      expect(findToggleRepliesWidget().props('collapsed')).toBe(true);
+    });
+
+    it('toggles resolved status when toggle icon is clicked from note header', async () => {
+      createComponent({
+        discussion:
+          mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.slice(),
+        isExpandedOnLoad: true,
+      });
+
+      const mainComment = findThreadAtIndex(0);
+
+      expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
+
+      mainComment.vm.$emit('resolve');
+
+      expect(toggleWorkItemResolveDiscussionHandler).toHaveBeenCalled();
+
+      await nextTick();
+
+      expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
+    });
   });
 });

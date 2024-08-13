@@ -29,6 +29,20 @@ please leave a comment and ping a GitLab reviewer, maintainer, or MR coach.
 | ------ | ------ |
 |        |        |
 
+<!--
+OPTIONAL:
+Use this table when providing screenshots at relevant viewport sizes.
+Delete table rows that are not relevant to your changes.
+
+| Viewport size   | Before     | After      |
+| ----------------| ---------- | ---------- |
+| `xs` (<576px)   |            |            |
+| `sm` (>=576px)  |            |            |
+| `md` (>=768px)  |            |            |
+| `lg` (>=992px)  |            |            |
+| `xl` (>=1200px) |            |            |
+-->
+
 ## How to set up and validate locally
 
 _Numbered steps to set up and validate the change are strongly suggested._

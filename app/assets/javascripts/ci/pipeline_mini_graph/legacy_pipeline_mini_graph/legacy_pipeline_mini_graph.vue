@@ -63,7 +63,7 @@ export default {
     <gl-icon
       v-if="upstreamPipeline"
       :class="$options.arrowStyles"
-      name="long-arrow"
+      name="arrow-right"
       data-testid="upstream-arrow-icon"
     />
     <legacy-pipeline-stages
@@ -75,7 +75,7 @@ export default {
     <gl-icon
       v-if="hasDownstreamPipelines"
       :class="$options.arrowStyles"
-      name="long-arrow"
+      name="arrow-right"
       data-testid="downstream-arrow-icon"
     />
     <legacy-linked-pipelines-mini-list

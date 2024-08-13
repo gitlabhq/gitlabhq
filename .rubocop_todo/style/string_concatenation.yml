@@ -108,7 +108,6 @@ Style/StringConcatenation:
     - 'lib/gitlab/throttle.rb'
     - 'lib/gitlab/time_tracking_formatter.rb'
     - 'lib/gitlab/untrusted_regexp.rb'
-    - 'lib/gitlab/usage/metrics/instrumentations/issues_created_from_alerts_metric.rb'
     - 'lib/gitlab/usage_data_queries.rb'
     - 'lib/google_api/cloud_platform/client.rb'
     - 'lib/kramdown/converter/commonmark.rb'

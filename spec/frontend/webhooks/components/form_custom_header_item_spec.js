@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
 import { GlButton, GlFormInput } from '@gitlab/ui';
 
-import { s__ } from '~/locale';
 import FormCustomHeaderItem from '~/webhooks/components/form_custom_header_item.vue';
 import { MASK_ITEM_VALUE_HIDDEN } from '~/webhooks/constants';
 
@@ -30,7 +29,7 @@ describe('FormCustomHeaderItem', () => {
     const valueInput = findCustomHeaderItemValue();
 
     expect(keyInput.attributes()).toMatchObject({
-      label: s__('Webhooks|Header name'),
+      label: 'Header name',
     });
     expect(keyInput.findComponent(GlFormInput).attributes()).toMatchObject({
       name: 'hook[custom_headers][][key]',
@@ -39,7 +38,7 @@ describe('FormCustomHeaderItem', () => {
     });
 
     expect(valueInput.attributes()).toMatchObject({
-      label: s__('Webhooks|Header value'),
+      label: 'Header value',
     });
     expect(valueInput.findComponent(GlFormInput).attributes()).toMatchObject({
       name: 'hook[custom_headers][][value]',

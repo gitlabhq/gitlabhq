@@ -48,7 +48,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-button class="gl-mr-3" variant="danger" @click="visible = true">
+    <gl-button variant="danger" @click="visible = true">
       {{ $options.i18n.buttonLabel }}
     </gl-button>
     <gl-modal

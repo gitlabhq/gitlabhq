@@ -7,9 +7,13 @@ import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.quer
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
-import { WIDGET_TYPE_NOTES, WIDGET_TYPE_AWARD_EMOJI } from '~/work_items/constants';
+import {
+  WIDGET_TYPE_NOTES,
+  WIDGET_TYPE_AWARD_EMOJI,
+  WIDGET_TYPE_HIERARCHY,
+} from '~/work_items/constants';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
-import { updateNewWorkItemCache } from '~/work_items/graphql/resolvers';
+import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 
 export const config = {
   typeDefs,
@@ -80,6 +84,15 @@ export const config = {
           },
         },
       },
+      WorkItemWidgetHierarchy: {
+        fields: {
+          // If we add any key args, the children field becomes children({"first":10}) and
+          // kills any possibility to handle it on the widget level without hardcoding a string.
+          children: {
+            keyArgs: false,
+          },
+        },
+      },
       WorkItem: {
         fields: {
           // widgets policy because otherwise the subscriptions invalidate the cache
@@ -123,6 +136,18 @@ export const config = {
                   };
                 }
 
+                // we want to concat next page of children work items within Hierarchy widget to the existing ones
+                if (incomingWidget?.type === WIDGET_TYPE_HIERARCHY && context.variables.endCursor) {
+                  // concatPagination won't work because we were placing new widget here so we have to do this manually
+                  return {
+                    ...incomingWidget,
+                    children: {
+                      ...incomingWidget.children,
+                      nodes: [...existingWidget.children.nodes, ...incomingWidget.children.nodes],
+                    },
+                  };
+                }
+
                 return { ...existingWidget, ...incomingWidget };
               });
             },
@@ -132,42 +157,6 @@ export const config = {
       MemberInterfaceConnection: {
         fields: {
           nodes: concatPagination(),
-        },
-      },
-      BoardList: {
-        fields: {
-          issues: {
-            keyArgs: ['filters'],
-          },
-        },
-      },
-      IssueConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args?.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
-        },
-      },
-      EpicList: {
-        fields: {
-          epics: {
-            keyArgs: ['filters'],
-          },
-        },
-      },
-      EpicConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args?.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
         },
       },
       Group: {
@@ -188,24 +177,6 @@ export const config = {
       GroupConnection: {
         fields: {
           nodes: concatPagination(),
-        },
-      },
-      Board: {
-        fields: {
-          epics: {
-            keyArgs: ['boardId'],
-          },
-        },
-      },
-      BoardEpicConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
         },
       },
       MergeRequestApprovalState: {
@@ -278,6 +249,9 @@ export const resolvers = {
     },
     updateNewWorkItem(_, { input }, { cache }) {
       updateNewWorkItemCache(input, cache);
+    },
+    workItemBulkUpdate(_, { input }) {
+      return workItemBulkEdit(input);
     },
   },
 };

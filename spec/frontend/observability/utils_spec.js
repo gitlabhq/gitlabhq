@@ -1,5 +1,6 @@
 import {
   periodToDate,
+  periodToDateRange,
   dateFilterObjToQuery,
   queryToDateFilterObj,
   addTimeToDate,
@@ -16,18 +17,16 @@ import {
   TIME_RANGE_OPTIONS_VALUES,
 } from '~/observability/constants';
 
+const MOCK_NOW_DATE = new Date('2023-10-09 15:30:00');
+const realDateNow = Date.now;
 describe('periodToDate', () => {
-  const realDateNow = Date.now;
-
-  const MOCK_NOW_DATE = new Date('2023-10-09 15:30:00');
-
   beforeEach(() => {
     global.Date.now = jest.fn().mockReturnValue(MOCK_NOW_DATE);
   });
-
   afterEach(() => {
     global.Date.now = realDateNow;
   });
+
   it.each`
     periodLabel      | period   | expectedMinDate
     ${'minutes (m)'} | ${'30m'} | ${new Date('2023-10-09 15:00:00')}
@@ -47,6 +46,23 @@ describe('periodToDate', () => {
 
   it('should return an empty object if unit is not "m", "h", or "d"', () => {
     expect(periodToDate('2w')).toEqual({});
+  });
+});
+
+describe('periodToDateRange', () => {
+  beforeEach(() => {
+    global.Date.now = jest.fn().mockReturnValue(MOCK_NOW_DATE);
+  });
+
+  afterEach(() => {
+    global.Date.now = realDateNow;
+  });
+  it('returns a date range object from period', () => {
+    expect(periodToDateRange('30m')).toEqual({
+      value: 'custom',
+      endDate: new Date('2023-10-09T15:30:00.000Z'),
+      startDate: new Date('2023-10-09T15:00:00.000Z'),
+    });
   });
 });
 

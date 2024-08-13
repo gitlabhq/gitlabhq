@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core';
+import { getMarkdownSource, docHasSourceMap } from '../services/markdown_sourcemap';
 import Audio from './audio';
 import Blockquote from './blockquote';
 import Bold from './bold';
@@ -15,8 +16,10 @@ import HorizontalRule from './horizontal_rule';
 import HTMLNodes from './html_nodes';
 import Image from './image';
 import Italic from './italic';
+import InlineDiff from './inline_diff';
 import Link from './link';
 import ListItem from './list_item';
+import MathInline from './math_inline';
 import OrderedList from './ordered_list';
 import Paragraph from './paragraph';
 import ReferenceDefinition from './reference_definition';
@@ -34,6 +37,8 @@ export default Extension.create({
   name: 'sourcemap',
 
   addGlobalAttributes() {
+    const preserveMarkdown = () => gon.features?.preserveMarkdown;
+
     return [
       {
         types: [
@@ -52,8 +57,10 @@ export default Extension.create({
           HorizontalRule.name,
           Image.name,
           Italic.name,
+          InlineDiff.name,
           Link.name,
           ListItem.name,
+          MathInline.name,
           OrderedList.name,
           Paragraph.name,
           ReferenceDefinition.name,
@@ -77,10 +84,18 @@ export default Extension.create({
            */
           sourceMarkdown: {
             default: null,
+            parseHTML: (element) => preserveMarkdown() && getMarkdownSource(element),
             renderHTML: () => '',
           },
           sourceMapKey: {
             default: null,
+            parseHTML: (element) => preserveMarkdown() && element.dataset.sourcepos,
+            renderHTML: () => '',
+          },
+          sourceTagName: {
+            default: null,
+            parseHTML: (element) =>
+              preserveMarkdown() && docHasSourceMap(element) && element.tagName.toLowerCase(),
             renderHTML: () => '',
           },
         },

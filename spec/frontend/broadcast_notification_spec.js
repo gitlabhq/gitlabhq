@@ -113,10 +113,10 @@ describe('broadcast message on dismiss', () => {
 describe('setBroadcastMessageHeightOffset', () => {
   beforeEach(() => {
     setHTMLFixture(`
-        <div class="gl-broadcast-message">
+        <div data-broadcast-banner class="gl-broadcast-message">
           Here is a broadcast message
         </div>
-        <div class="gl-broadcast-message">
+        <div data-broadcast-banner class="gl-broadcast-message">
           Here is another broadcast message
         </div>
       `);

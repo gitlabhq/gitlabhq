@@ -27,7 +27,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
       href="fooBaz"
       target="_blank"
     >
-      Personal Access Token
+      personal access token
     </gl-link-stub>
     instead of a password.
   </p>

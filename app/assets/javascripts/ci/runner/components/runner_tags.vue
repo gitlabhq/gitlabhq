@@ -16,6 +16,6 @@ export default {
 </script>
 <template>
   <span v-if="tagList && tagList.length">
-    <runner-tag v-for="tag in tagList" :key="tag" class="gl-display-inline gl-mr-1" :tag="tag" />
+    <runner-tag v-for="tag in tagList" :key="tag" class="gl-mr-1" :tag="tag" />
   </span>
 </template>

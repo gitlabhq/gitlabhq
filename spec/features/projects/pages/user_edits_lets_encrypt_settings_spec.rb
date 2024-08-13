@@ -48,13 +48,13 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       expect(domain.auto_ssl_enabled).to eq false
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'false'
-      expect(page).to have_selector '.gl-card-header', text: 'Certificate'
+      expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
       expect(page).to have_text domain.subject
 
       find('.js-auto-ssl-toggle-container .js-project-feature-toggle button').click
 
       expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
-      expect(page).not_to have_selector '.gl-card-header', text: 'Certificate'
+      expect(page).not_to have_selector '[data-testid="crud-title"]', text: 'Certificate'
       expect(page).not_to have_text domain.subject
 
       click_on 'Save changes'
@@ -108,7 +108,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       it 'user do not see private key' do
         visit project_pages_domain_path(project, domain)
 
-        expect(page).not_to have_selector '.gl-card-header', text: 'Certificate'
+        expect(page).not_to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).not_to have_text domain.subject
       end
     end
@@ -131,16 +131,16 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       it 'user sees certificate subject' do
         visit project_pages_domain_path(project, domain)
 
-        expect(page).to have_selector '.gl-card-header', text: 'Certificate'
+        expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).to have_text domain.subject
       end
 
       it 'user can delete the certificate', :js do
         visit project_pages_domain_path(project, domain)
 
-        expect(page).to have_selector '.gl-card-header', text: 'Certificate'
+        expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).to have_text domain.subject
-        within('.gl-card') { find_by_testid('remove-certificate').click }
+        within_testid('crud-body') { find_by_testid('remove-certificate').click }
         accept_gl_confirm(button_text: 'Remove certificate')
         expect(page).to have_field 'Certificate (PEM)', with: ''
         expect(page).to have_field 'Key (PEM)', with: ''

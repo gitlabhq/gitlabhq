@@ -75,7 +75,7 @@
     - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
     - "Internal Event CLI is opened\n" # Submit description
     - "internal_events_cli_opened\n" # Submit action name
-    - "6\n" # Select: None
+    - "7\n" # Select: None
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
@@ -130,7 +130,7 @@
     - "y\n" # Yes --> Ready to start?
     - "Internal Event CLI is opened\n" # Submit description
     - "internal_events_cli_opened\n" # Submit action name
-    - "6\n" # Select: None
+    - "7\n" # Select: None
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
@@ -248,7 +248,7 @@
     - "1\n" # Create another event
     - "Internal Event CLI is opened\n" # Submit description
     - "internal_events_cli_opened\n" # Submit action name
-    - "6\n" # Select: None
+    - "7\n" # Select: None
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
@@ -286,3 +286,27 @@
     files:
     - path: config/events/internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/events/event_with_all_additional_properties.yml
+
+- description: Event with feature_enabled_by_namespace_ids identifier
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "6\n" # Select: [feature_enabled_by_namespace_ids, user]
+    - "\e[B\n" # Arrow down to & Select: String 1 (aka label)
+    - "\n" # Skip label description
+    - "\e[B\n" # Arrow down to: String 2 (aka property)
+    - "\n" # Skip property description
+    - "\e[B\n" # Arrow down to: Number (aka value)
+    - "Time the CLI ran before closing (seconds)\n" # value description
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "y\n" # Create file
+    - "4\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_feature_enabled_by_namespace_ids_identifier.yml

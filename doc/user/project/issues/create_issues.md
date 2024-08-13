@@ -120,7 +120,7 @@ example, if the list is scoped to a label `Frontend`, the new issue also has thi
 ## By sending an email
 
 You can send an email to create an issue in a project on the project's
-**Issues List** page.
+**Issues** page.
 
 Prerequisites:
 
@@ -149,7 +149,7 @@ were you.
 
 To regenerate the email address:
 
-1. On the issues list, select **Email a new issue to this project**.
+1. On the **Issues** page, select **Email a new issue to this project**.
 1. Select **reset this token**.
 
 ## Using a URL with prefilled values

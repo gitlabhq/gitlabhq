@@ -37,7 +37,13 @@ namespace :gitlab do
 
     tmp_namespace_path = "tmp-project-import-#{Time.now.to_i}"
     puts "Creating temporary namespace #{tmp_namespace_path}"
-    tmp_namespace = Namespace.create!(owner: admin, name: tmp_namespace_path, path: tmp_namespace_path, type: Namespaces::UserNamespace.sti_name)
+    tmp_namespace = Namespace.create!(
+      owner: admin,
+      name: tmp_namespace_path,
+      path: tmp_namespace_path,
+      type: Namespaces::UserNamespace.sti_name,
+      organization: tmp_organization
+    )
 
     templates = if template_names.empty?
                   Gitlab::ProjectTemplate.all

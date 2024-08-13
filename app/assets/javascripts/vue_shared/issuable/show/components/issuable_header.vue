@@ -162,7 +162,7 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header gl-flex-direction-column gl-md-flex-direction-row">
+  <div class="detail-page-header gl-flex-col md:gl-flex-row">
     <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2">
       <gl-badge :variant="badgeVariant" :icon="statusIcon" data-testid="issue-state-badge">
         <slot name="status-badge">{{ badgeText }}</slot>
@@ -189,7 +189,7 @@ export default {
           {{ serviceDeskReplyTo }}
         </template>
         <template #author>
-          <gl-link class="gl-font-bold js-user-link" :href="author.webUrl" :data-user-id="authorId">
+          <gl-link class="js-user-link gl-font-bold" :href="author.webUrl" :data-user-id="authorId">
             <span :class="[{ 'gl-hidden': !isAuthorExternal }, 'sm:gl-inline']">
               {{ author.name }}
             </span>
@@ -218,12 +218,12 @@ export default {
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="gl-ml-auto gl-block sm:!gl-hidden js-sidebar-toggle"
+        class="js-sidebar-toggle gl-ml-auto gl-block sm:!gl-hidden"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />
     </div>
-    <div class="detail-page-header-actions gl-align-self-center gl-display-flex gl-gap-3">
+    <div class="detail-page-header-actions gl-flex gl-gap-3 gl-self-center">
       <slot name="header-actions"></slot>
     </div>
   </div>

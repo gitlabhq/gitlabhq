@@ -115,7 +115,7 @@ export default {
               :ref="`table-${r}-${c}`"
               :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
               :aria-label="getButtonLabel(r, c)"
-              class="table-creator-grid-item gl-display-inline gl-rounded-0! !gl-w-6 gl-h-6! gl-p-0!"
+              class="table-creator-grid-item gl-inline gl-rounded-0! !gl-w-6 gl-h-6! gl-p-0!"
               @mouseover="setRowsAndCols(r, c)"
               @focus="setRowsAndCols(r, c)"
               @click="insertTable()"

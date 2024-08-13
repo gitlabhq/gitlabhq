@@ -226,6 +226,16 @@ FactoryBot.define do
       end
     end
 
+    trait :jacoco do
+      file_type { :jacoco }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/jacoco/coverage.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :terraform do
       file_type { :terraform }
       file_format { :raw }

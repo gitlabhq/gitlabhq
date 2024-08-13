@@ -47,6 +47,8 @@ module DesignManagement
         end
 
         ServiceResponse.success
+      rescue Gitlab::Git::CommandError => ex
+        error(message: ex.message)
       rescue StandardError => error
         log_exception(error)
 
@@ -118,7 +120,9 @@ module DesignManagement
       def remove_temporary_branch!
         return unless target_repository.branch_exists?(temporary_branch)
 
-        target_repository.rm_branch(git_user, temporary_branch)
+        target_sha = target_repository.commit(temporary_branch).id
+
+        target_repository.rm_branch(git_user, temporary_branch, target_sha: target_sha)
       end
 
       # Merge the temporary branch containing the commits to default branch

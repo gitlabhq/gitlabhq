@@ -53,6 +53,7 @@ function normalizeNewlines(str) {
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
+  // eslint-disable-next-line max-params
   static initialize(notes_url, last_fetched_at, view, enableGFM) {
     if (!this.instance) {
       this.instance = new Notes(notes_url, last_fetched_at, view, enableGFM);
@@ -63,6 +64,7 @@ export default class Notes {
     return this.instance;
   }
 
+  // eslint-disable-next-line max-params
   constructor(notes_url, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -1360,8 +1362,8 @@ export default class Notes {
     const $svgChevronUpElement = $element.find('svg.js-chevron-up');
     const $svgChevronDownElement = $element.find('svg.js-chevron-down');
 
-    $svgChevronUpElement.toggleClass('gl-display-none');
-    $svgChevronDownElement.toggleClass('gl-display-none');
+    $svgChevronUpElement.toggleClass('gl-hidden');
+    $svgChevronDownElement.toggleClass('gl-hidden');
 
     $closestSystemCommitList.toggleClass('hide-shade');
   }
@@ -1541,7 +1543,7 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${escape(currentUsername)}">
-                       <span class="gl-hidden sm:gl-inline-block bold">${escape(
+                       <span class="gl-hidden sm:gl-inline-block gl-font-bold">${escape(
                          currentUsername,
                        )}</span>
                        <span class="note-headline-light">${escape(currentUsername)}</span>

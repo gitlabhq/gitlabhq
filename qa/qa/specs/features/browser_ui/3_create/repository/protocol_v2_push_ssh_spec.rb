@@ -22,7 +22,7 @@ module QA
 
         example.run
 
-        ssh_key.remove_via_api!
+        ssh_key&.remove_via_api!
       end
 
       it 'user pushes to the repository', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do

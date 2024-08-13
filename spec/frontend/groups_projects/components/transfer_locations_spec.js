@@ -14,7 +14,6 @@ import transferLocationsResponsePage2 from 'test_fixtures/api/projects/transfer_
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { __ } from '~/locale';
 import TransferLocations, { i18n } from '~/groups_projects/components/transfer_locations.vue';
 import { getTransferLocations } from '~/api/projects_api';
 import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
@@ -34,7 +33,7 @@ describe('TransferLocations', () => {
   };
   const additionalDropdownItem = {
     id: -1,
-    humanName: __('No parent group'),
+    humanName: 'No parent group',
   };
 
   // Mock requests

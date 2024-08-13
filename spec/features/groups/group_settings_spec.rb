@@ -380,20 +380,20 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
   def update_path(new_group_path)
     visit edit_group_path(group)
 
-    page.within('.gs-advanced') do
+    within_testid('advanced-settings-content') do
       fill_in 'group_path', with: new_group_path
       click_button 'Change group URL'
     end
   end
 
   def save_general_group
-    page.within('.gs-general') do
+    within_testid('general-settings') do
       click_button 'Save changes'
     end
   end
 
   def save_permissions_group
-    page.within('.gs-permissions') do
+    within_testid('permissions-settings') do
       click_button 'Save changes'
     end
   end

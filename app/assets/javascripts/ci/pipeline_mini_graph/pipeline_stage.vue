@@ -2,6 +2,7 @@
 import { GlButton, GlDisclosureDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
@@ -74,8 +75,9 @@ export default {
       update(data) {
         return data?.ciPipelineStage?.jobs?.nodes || [];
       },
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.stageJobsFetchError });
+        reportToSentry(this.$options.name, error);
       },
     },
   },
@@ -111,7 +113,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    data-testid="pipeline-stage"
+    data-testid="pipeline-mini-graph-dropdown"
     :aria-label="stageAriaLabel(stage.name)"
     @hidden="onHideDropdown"
     @shown="onShowDropdown"
@@ -119,6 +121,7 @@ export default {
     <template #toggle>
       <gl-button
         v-gl-tooltip.hover="dropdownTooltipTitle"
+        data-testid="pipeline-mini-graph-dropdown-toggle"
         :title="dropdownTooltipTitle"
         class="gl-rounded-full!"
         variant="link"
@@ -142,8 +145,8 @@ export default {
     </div>
     <ul
       v-else
-      class="gl-overflow-y-auto gl-p-0"
-      data-testid="pipeline-stage-dropdown-menu-list"
+      class="gl-overflow-y-auto gl-m-0 gl-p-0"
+      data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
       <job-item

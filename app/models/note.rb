@@ -9,6 +9,7 @@ class Note < ApplicationRecord
 
   include Notes::ActiveRecord
   include Notes::Discussion
+
   include Gitlab::Utils::StrongMemoize
   include Participable
   include Mentionable
@@ -27,9 +28,6 @@ class Note < ApplicationRecord
   include Sortable
   include EachBatch
   include Spammable
-  include IgnorableColumns
-
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
@@ -105,6 +103,7 @@ class Note < ApplicationRecord
   validate :ensure_noteable_can_have_confidential_note
   validate :ensure_note_type_can_be_confidential
   validate :ensure_confidentiality_not_changed, on: :update
+  validate :ensure_confidentiality_discussion_compliance
 
   validate unless: [:for_commit?, :importing?, :skip_project_check?] do |note|
     unless note.noteable.try(:project) == note.project

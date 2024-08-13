@@ -175,11 +175,11 @@ export default {
       <gl-alert
         v-if="noDataAvailable"
         variant="info"
-        :title="s__('Code Coverage| Empty code coverage data')"
+        :title="s__('Code Coverage|No code coverage data')"
         :dismissible="false"
       >
         <span>
-          {{ __('It seems that there is currently no available data for code coverage') }}
+          {{ __('Code coverage results are not yet available. Try again later.') }}
         </span>
       </gl-alert>
       <gl-collapsible-listbox

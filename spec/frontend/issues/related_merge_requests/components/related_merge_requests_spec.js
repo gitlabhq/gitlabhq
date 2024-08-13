@@ -40,6 +40,10 @@ const mockData = {
                 title: 'v4.0',
                 __typename: 'Milestone',
               },
+              project: {
+                id: 1,
+                fullPath: 'gitlab-ce',
+              },
               assignees: {
                 nodes: [],
                 __typename: 'MergeRequestAssigneeConnection',
@@ -61,6 +65,10 @@ const mockData = {
                 state: 'active',
                 title: 'v4.0',
                 __typename: 'Milestone',
+              },
+              project: {
+                id: 1,
+                fullPath: 'gitlab-org',
               },
               assignees: {
                 nodes: [
@@ -134,6 +142,7 @@ describe('RelatedMergeRequests', () => {
       expect(props.title).toEqual(data.title);
       expect(props.state).toEqual(data.state);
       expect(props.createdAt).toEqual(data.createdAt);
+      expect(props.displayReference).toEqual('gitlab-org!10');
     });
   });
 });

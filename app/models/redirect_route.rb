@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RedirectRoute < MainClusterwide::ApplicationRecord
+class RedirectRoute < ApplicationRecord
   include CaseSensitivity
 
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
@@ -12,6 +12,8 @@ class RedirectRoute < MainClusterwide::ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false }
 
+  scope :for_source_type, ->(source_type) { where(source_type: source_type) }
+  scope :by_paths, ->(paths) { where(path: [paths]) }
   scope :matching_path_and_descendants, ->(path) do
     wheres = 'LOWER(redirect_routes.path) = LOWER(?) OR LOWER(redirect_routes.path) LIKE LOWER(?)'
 

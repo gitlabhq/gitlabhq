@@ -21,7 +21,12 @@ module Gitlab
             def content
               return unless context.parent_pipeline.present?
 
-              Gitlab::Ci::ArtifactFileReader.new(artifact_job).read(location)
+              # We define max archive size to be equal to content size
+              # as a good enough approximation to provide a sane limit with a single setting
+              max_content_size = Gitlab::CurrentSettings.current_application_settings.max_artifacts_content_include_size
+              file_reader = Gitlab::Ci::ArtifactFileReader.new(artifact_job, max_archive_size: max_content_size)
+              file_reader.read(location, max_size: max_content_size)
+
             rescue Gitlab::Ci::ArtifactFileReader::Error => error
               errors.push(error.message)
 

@@ -123,8 +123,8 @@ RSpec.describe IconsHelper do
   end
 
   describe 'file_type_icon_class' do
-    it 'returns folder-o class' do
-      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder-o'
+    it 'returns folder class' do
+      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'
     end
 
     it 'returns share class' do
@@ -258,7 +258,7 @@ RSpec.describe IconsHelper do
   describe 'gl_loading_icon' do
     it 'returns the default spinner markup' do
       expect(gl_loading_icon.to_s)
-        .to eq '<div class="gl-spinner-container" role="status"><span aria-label="Loading" class="gl-spinner gl-spinner-sm gl-spinner-dark gl-vertical-align-text-bottom!"></span></div>'
+        .to eq '<div class="gl-spinner-container" role="status"><span aria-label="Loading" class="gl-spinner gl-spinner-sm gl-spinner-dark !gl-align-text-bottom"></span></div>'
     end
 
     context 'when css_class is provided' do

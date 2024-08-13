@@ -1013,6 +1013,7 @@ Epic:
 EpicIssue:
   - id
   - relative_position
+  - namespace_id
 SystemNoteMetadata:
   - id
   - commit_count

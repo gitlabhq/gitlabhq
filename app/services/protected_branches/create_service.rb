@@ -19,7 +19,10 @@ module ProtectedBranches
     private
 
     def save_protected_branch
-      protected_branch.save
+      protected_branch.save.tap do
+        # Refresh all_protected_branches association as it is not automatically updated
+        project_or_group.all_protected_branches.reset if project_or_group.is_a?(Project)
+      end
     end
 
     def protected_branch

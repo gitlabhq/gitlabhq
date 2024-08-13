@@ -3,12 +3,12 @@
 module Features
   module AccessTokenHelpers
     def active_access_tokens
-      find("[data-testid='active-tokens']")
+      find_by_testid('active-tokens')
     end
 
     def created_access_token
-      within('[data-testid=access-token-section]') do
-        find('[data-testid=toggle-visibility-button]').click
+      within_testid('access-token-section') do
+        find_by_testid('toggle-visibility-button').click
         find_field('new-access-token').value
       end
     end

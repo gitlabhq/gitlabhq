@@ -296,8 +296,6 @@ Style/ClassAndModuleChildren:
     - 'app/policies/namespace/package_setting_policy.rb'
     - 'app/policies/namespace/root_storage_statistics_policy.rb'
     - 'app/policies/wiki_page/meta_policy.rb'
-    - 'app/serializers/acts_as_taggable_on/tag_entity.rb'
-    - 'app/serializers/acts_as_taggable_on/tag_serializer.rb'
     - 'app/serializers/ci/lint/job_entity.rb'
     - 'app/serializers/ci/lint/result_entity.rb'
     - 'app/serializers/ci/lint/result_serializer.rb'

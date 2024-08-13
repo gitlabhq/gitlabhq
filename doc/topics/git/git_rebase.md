@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
 ---
 
-# Git rebase and force push
+# Rebase to address merge conflicts
 
 In Git, a rebase updates your branch with the contents of another branch.
 A rebase confirms that changes in your branch don't conflict with

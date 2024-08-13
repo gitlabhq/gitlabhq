@@ -60,6 +60,7 @@ FactoryBot.define do
     trait :degenerated do
       options { nil }
       yaml_variables { nil }
+      execution_config { nil }
     end
 
     trait :unique_name do

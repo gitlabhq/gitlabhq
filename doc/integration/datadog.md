@@ -18,18 +18,18 @@ and only requires configuration on GitLab.
 
 ## Configure the integration
 
-Users with the **Administrator** role can configure the integration at the
-project, group, or instance level:
+Users with the **Administrator** role can configure the integration for the entire instance
+or for a specific project or group:
 
 1. If you do not have a Datadog API key:
    1. Sign in to Datadog.
    1. Go to the **Integrations** section.
    1. Generate an API key in the [APIs tab](https://app.datadoghq.com/account/settings#api).
       Copy this value, as you need it in a later step.
-1. *For project-level or group-level integrations:* In GitLab, go to your project or group.
-1. *For instance-level integrations:*
+1. *For integrations for a specific project or group:* In GitLab, go to your project or group.
+1. *For integrations for the entire instance:*
    1. Sign in to GitLab as a user with administrator access.
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.
@@ -40,11 +40,11 @@ project, group, or instance level:
    Used only in advanced scenarios.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 1. Optional. If you use groups of GitLab instances (such as staging and production
    environments), provide an **Env** name. This value is attached to each span
    the integration generates.
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 1. Optional. To define any custom tags for all spans at which the integration is being configured,
    enter one tag per line in **Tags**. Each line must be in the format `key:value`.
 1. Optional. Select **Test settings**.

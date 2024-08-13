@@ -179,7 +179,7 @@ export default {
       v-for="awardList in groupedAwards"
       :key="awardList.name"
       v-gl-tooltip.viewport
-      class="gl-mr-3 gl-my-2"
+      class="gl-my-2 gl-mr-3"
       :class="awardList.classes"
       :title="awardList.title"
       :data-emoji-name="awardList.name"

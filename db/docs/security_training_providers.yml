@@ -7,4 +7,5 @@ feature_categories:
 description: Stores information about the available security training providers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
 milestone: '14.7'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_sec
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/476672

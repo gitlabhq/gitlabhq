@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddWorkItemsRelatedLinkRestrictions, :migration, feature_category: :portfolio_management do
+RSpec.describe AddWorkItemsRelatedLinkRestrictions, :migration_with_transaction, feature_category: :portfolio_management do
   let!(:restrictions) { table(:work_item_related_link_restrictions) }
   let!(:work_item_types) { table(:work_item_types) }
 

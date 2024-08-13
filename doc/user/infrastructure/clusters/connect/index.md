@@ -48,7 +48,7 @@ your cluster's level.
 
 **Instance-level clusters:**
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates

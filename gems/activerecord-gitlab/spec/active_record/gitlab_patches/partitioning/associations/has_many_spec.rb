@@ -52,7 +52,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::HasMany
     result = QueryRecorder.log do
       build = pipeline.jobs.new(name: 'test job')
       build.save!
-    end
+    end.join
 
     expect(result).to include(create_statement)
   end
@@ -65,7 +65,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::HasMany
 
     result = QueryRecorder.log do
       pipeline.jobs.create!(name: 'test job')
-    end
+    end.join
 
     expect(result).to include(create_statement)
   end

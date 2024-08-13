@@ -61,6 +61,7 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
       [METADATA_SECTION, 1, CANDIDATE.metadata[1].name, CANDIDATE.metadata[1].value],
     ];
 
+    // eslint-disable-next-line max-params
     it.each(expectedTable)('row %s is created correctly', (section, rowIndex, label, text) => {
       const row = findRowInSection(section, rowIndex);
 

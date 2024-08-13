@@ -382,13 +382,13 @@ To change the default schedule on which expired artifacts are deleted:
 ## Set the maximum file size of the artifacts
 
 If artifacts are enabled, you can change the maximum file size of the
-artifacts through the [Admin area settings](../administration/settings/continuous_integration.md#maximum-artifacts-size).
+artifacts through the [**Admin** area settings](../administration/settings/continuous_integration.md#maximum-artifacts-size).
 
 ## Storage statistics
 
 You can see the total storage used for job artifacts for groups and projects in:
 
-- The Admin area
+- The **Admin** area
 - The [groups](../api/groups.md) and [projects](../api/projects.md) APIs
 
 ## Implementation details

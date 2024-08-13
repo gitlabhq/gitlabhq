@@ -1,4 +1,4 @@
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import StatusBadge from '~/issuable/components/status_badge.vue';
 
@@ -13,7 +13,7 @@ describe('StatusBadge component', () => {
 
   describe.each`
     issuableType       | badgeText   | state       | badgeVariant | badgeIcon
-    ${'merge_request'} | ${'Open'}   | ${'opened'} | ${'success'} | ${'merge-request-open'}
+    ${'merge_request'} | ${'Open'}   | ${'opened'} | ${'success'} | ${'merge-request'}
     ${'merge_request'} | ${'Closed'} | ${'closed'} | ${'danger'}  | ${'merge-request-close'}
     ${'merge_request'} | ${'Merged'} | ${'merged'} | ${'info'}    | ${'merge'}
     ${'issue'}         | ${'Open'}   | ${'opened'} | ${'success'} | ${'issue-open-m'}
@@ -36,7 +36,7 @@ describe('StatusBadge component', () => {
       });
 
       it(`sets badge icon as '${badgeIcon}'`, () => {
-        expect(findBadge().findComponent(GlIcon).props('name')).toBe(badgeIcon);
+        expect(findBadge().props('icon')).toBe(badgeIcon);
       });
     },
   );

@@ -15,6 +15,7 @@ const TEXT = Array(TEXT_LINE_COUNT)
   .map((_, idx) => `${idx + 1}`)
   .join('\n');
 
+// eslint-disable-next-line max-params
 const spliceLines = (content, lineNumber, deleteCount = 0, newLines = []) => {
   const lines = content.split('\n');
   lines.splice(lineNumber, deleteCount, ...newLines);

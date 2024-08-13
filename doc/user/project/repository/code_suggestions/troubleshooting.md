@@ -8,7 +8,7 @@ description: "Troubleshooting tips for common problems in Code Suggestions."
 # Troubleshooting Code Suggestions
 
 DETAILS:
-**Tier:** Premium or Ultimate with GitLab Duo Pro
+**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../../subscriptions/subscription-add-ons.md)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
@@ -21,7 +21,7 @@ Prerequisites:
 
 You can verify that Code Suggestions is set up correctly on the server. Because you are checking this on the server side and not for a specific user, it does not guarantee that Code Suggestions will work for a specific user on client side.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo Pro**.
 
 A flash message with Code Suggestions check status is displayed at the top of the page.
@@ -92,7 +92,7 @@ with status `401` when the token has expired:
 
 ```plaintext
 Token validation failed in Language Server:
-(Failed to check token: Error: Fetching Information about Personal Access Token
+(Failed to check token: Error: Fetching Information about personal access token
 ```
 
 If GitLab has access to the [cloud server](../../../ai_features.md), try

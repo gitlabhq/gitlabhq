@@ -7,10 +7,7 @@
 
 - return unless branches.any?
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }, footer_options: { class: 'gl-new-card-footer' }) do |c|
-  - c.with_header do
-    %h3.gl-new-card-title.h5
-      = panel_title
+= render ::Layouts::CrudComponent.new(panel_title, options: { class: 'gl-mt-5' }) do |c|
   - c.with_body do
     %ul.content-list.branches-list.all-branches{ data: { testid: 'all-branches-container' } }
       - branches.first(overview_max_branches).each do |branch|

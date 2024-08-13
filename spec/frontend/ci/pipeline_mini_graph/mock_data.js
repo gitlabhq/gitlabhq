@@ -15,6 +15,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         label: 'passed',
         __typename: 'DetailedStatus',
       },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5785',
+        retried: false,
+        __typename: 'CiJob',
+      },
       __typename: 'Pipeline',
     },
     {
@@ -32,6 +37,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         label: 'passed',
         __typename: 'DetailedStatus',
       },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5786',
+        retried: false,
+        __typename: 'CiJob',
+      },
       __typename: 'Pipeline',
     },
     {
@@ -48,6 +58,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         icon: 'status_success',
         label: 'passed',
         __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5787',
+        retried: true,
+        __typename: 'CiJob',
       },
       __typename: 'Pipeline',
     },
@@ -105,6 +120,35 @@ export const mockJobActions = [
     title: 'Unschedule',
   },
 ];
+
+export const mockJobMutationResponse = (dataName) => ({
+  data: {
+    [dataName]: {
+      job: {
+        __typename: 'CiJob',
+        id: 'gid://gitlab/Ci::Build/1001',
+        detailedStatus: {
+          __typename: 'DetailedStatus',
+          id: 'running-1001-1001',
+          action: {
+            __typename: 'StatusAction',
+            id: 'Ci::Build-manual-1001',
+            confirmationMessage: 'here is a message',
+            icon: 'play',
+            path: '/flightjs/Flight/-/jobs/1001/play',
+            title: 'Run',
+          },
+        },
+      },
+      errors: [],
+    },
+  },
+});
+
+export const mockJobCancelResponse = mockJobMutationResponse('jobCancel');
+export const mockJobPlayResponse = mockJobMutationResponse('jobPlay');
+export const mockJobRetryResponse = mockJobMutationResponse('jobRetry');
+export const mockJobUnscheduleResponse = mockJobMutationResponse('jobUnschedule');
 
 // for `job_item_spec.js`
 export const mockPipelineJob = {
@@ -230,12 +274,12 @@ export const mockPipelineMiniGraphQueryResponse = {
 };
 
 export const mockPMGQueryNoDownstreamResponse = {
-  ...mockPipelineMiniGraphQueryResponse,
+  ...mockPipelineMiniGraphQueryResponse.data.project.pipeline,
   downstream: { nodes: [] },
 };
 
 export const mockPMGQueryNoUpstreamResponse = {
-  ...mockPipelineMiniGraphQueryResponse,
+  ...mockPipelineMiniGraphQueryResponse.data.project.pipeline,
   upstream: null,
 };
 
@@ -276,6 +320,10 @@ export const downstreamPipelines = [
       icon: 'status_success',
       label: 'passed',
     },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
+    },
   },
   {
     id: 'gid://gitlab/Ci::Pipeline/611',
@@ -289,6 +337,10 @@ export const downstreamPipelines = [
       detailsPath: '/hello',
       icon: 'status_success',
       label: 'passed',
+    },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
     },
   },
   {
@@ -304,6 +356,10 @@ export const downstreamPipelines = [
       icon: 'status_success',
       label: 'passed',
     },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
+    },
   },
   {
     id: 'gid://gitlab/Ci::Pipeline/610',
@@ -317,6 +373,10 @@ export const downstreamPipelines = [
       detailsPath: '/hello',
       icon: 'status_success',
       label: 'passed',
+    },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
     },
   },
 ];

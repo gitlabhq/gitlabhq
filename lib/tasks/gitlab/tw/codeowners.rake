@@ -18,6 +18,7 @@ namespace :tw do
       end
     end
 
+    # For groups without an assigned TW, comment out the line.
     CODE_OWNER_RULES = [
       # CodeOwnerRule.new('Activation', ''),
       # CodeOwnerRule.new('Acquisition', ''),
@@ -53,10 +54,10 @@ namespace :tw do
       CodeOwnerRule.new('Gitaly', '@eread'),
       CodeOwnerRule.new('GitLab Dedicated', '@lyspin'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
-      CodeOwnerRule.new('IDE', '@ashrafkhamis'),
+      CodeOwnerRule.new('Remote Development', '@ashrafkhamis'),
       CodeOwnerRule.new('Import and Integrate', '@eread'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
-      # CodeOwnerRule.new('Knowledge', ''),
+      CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
       CodeOwnerRule.new('MLOps', '@sselhorn @jglassman1 @fneill'),
       # CodeOwnerRule.new('Observability', ''),
       CodeOwnerRule.new('Optimize', '@lciutacu'),
@@ -107,7 +108,7 @@ namespace :tw do
       CodeOwnerRule.new('Foundations', '@gitlab-org/manage/foundations/engineering'),
       CodeOwnerRule.new('Gitaly', '@proglottis @toon'),
       CodeOwnerRule.new('Global Search', '@gitlab-org/search-team/migration-maintainers'),
-      CodeOwnerRule.new('IDE',
+      CodeOwnerRule.new('Remote Development',
         '@gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend'),
       CodeOwnerRule.new('Pipeline Authoring', '@gitlab-org/maintainers/cicd-verify'),
       CodeOwnerRule.new('Pipeline Execution', '@gitlab-org/maintainers/cicd-verify'),

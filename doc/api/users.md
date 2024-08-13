@@ -26,18 +26,21 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 GET /users
 ```
 
-| Attribute          | Type    | Required | Description                                                                                                            |
-| ------------------ | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `username`         | string  | no       | Get a single user with a specific username.                                                                            |
-| `search`           | string  | no       | Search for a username.                                                                                                |
-| `active`           | boolean | no       | Filters only active users. Default is `false`.                                                                         |
-| `external`         | boolean | no       | Filters only external users. Default is `false`.                                                                       |
-| `exclude_external` | boolean | no       | Filters only non external users. Default is `false`.                                                                   |
-| `blocked`          | boolean | no       | Filters only blocked users. Default is `false`.                                                                        |
-| `created_after`    | DateTime| no       | Returns users created after specified time.                                                                            |
-| `created_before`   | DateTime| no       | Returns users created before specified time.                                                                           |
-| `exclude_internal` | boolean | no       | Filters only non internal users. Default is `false`.                                                                   |
-| `without_project_bots`| boolean | no       | Filters user without project bots. Default is `false`.                                                             |
+| Attribute          | Type    | Required | Description                                                 |
+| ------------------ | ------- | -------- | ------------------------------------------------------------|
+| `username`         | string  | no       | Get a single user with a specific username.                 |
+| `search`           | string  | no       | Search for a username.                                      |
+| `active`           | boolean | no       | Filters only active users. Default is `false`.              |
+| `external`         | boolean | no       | Filters only external users. Default is `false`.            |
+| `blocked`          | boolean | no       | Filters only blocked users. Default is `false`.             |
+| `humans`           | boolean | no       | Filters only regular users that are not bot or internal users. Default is `false`. |
+| `created_after`    | DateTime| no       | Returns users created after specified time.                 |
+| `created_before`   | DateTime| no       | Returns users created before specified time.                |
+| `exclude_active`   | boolean | no       | Filters only non active users. Default is `false`.          |
+| `exclude_external` | boolean | no       | Filters only non external users. Default is `false`.        |
+| `exclude_humans`   | boolean | no       | Filters only bot or internal users. Default is `false`.     |
+| `exclude_internal` | boolean | no       | Filters only non internal users. Default is `false`.        |
+| `without_project_bots`| boolean | no    | Filters user without project bots. Default is `false`.      |
 
 ```json
 [

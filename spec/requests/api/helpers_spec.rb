@@ -577,7 +577,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       end
 
       it 'raises an error' do
-        expect { current_user }.to raise_error(/Must be authenticated using an OAuth or Personal Access Token to use sudo/)
+        expect { current_user }.to raise_error(/Must be authenticated using an OAuth or personal access token to use sudo/)
       end
     end
   end

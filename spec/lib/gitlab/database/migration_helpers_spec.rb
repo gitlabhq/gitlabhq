@@ -3016,4 +3016,33 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
     end
   end
+
+  describe '#column_is_nullable?' do
+    # This is defined as a private method of this module, and normally would not warrant
+    # dedicated test coverage. But that being said, it has no test coverage at all (it's
+    # only stubbed in the ConstraintsHelpers spec) so I'm adding testing here until we
+    # figure out how to test it properly through the public methods that use it.
+
+    context 'when a plain table name is passed' do
+      subject { model.send(:column_is_nullable?, 'table_name', 'column_name') }
+
+      it 'defaults to querying for the table defined in the current_schema' do
+        expect(model.connection).to receive(:select_value)
+          .with(/c\.table_schema = 'public'\s+AND c.table_name = 'table_name'\s+AND c.column_name = 'column_name'/)
+
+        subject
+      end
+    end
+
+    context 'when a table name is passed with a schema prefix' do
+      subject { model.send(:column_is_nullable?, 'schema_prefix.table_name', 'column_name') }
+
+      it 'correctly parses out the schema prefix and uses it instead of current_schema' do
+        expect(model.connection).to receive(:select_value)
+          .with(/c\.table_schema = 'schema_prefix'\s+AND c.table_name = 'table_name'\s+AND c.column_name = 'column_name'/)
+
+        subject
+      end
+    end
+  end
 end

@@ -99,6 +99,11 @@ export default {
     idKey(mergeRequest) {
       return getIdFromGraphQLId(mergeRequest.id);
     },
+    displayReference(mergeRequest) {
+      const { fullPath } = mergeRequest.project;
+
+      return `${this.projectPath !== fullPath ? fullPath : ''}${mergeRequest.reference}`;
+    },
   },
 };
 </script>
@@ -146,7 +151,7 @@ export default {
             >
               <related-issuable-item
                 :id-key="idKey(mr)"
-                :display-reference="mr.reference"
+                :display-reference="displayReference(mr)"
                 :title="mr.title"
                 :milestone="mr.milestone"
                 :assignees="mr.assignees.nodes"

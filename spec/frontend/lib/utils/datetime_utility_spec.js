@@ -1,6 +1,5 @@
 import timezoneMock from 'timezone-mock';
 import * as datetimeUtility from '~/lib/utils/datetime_utility';
-import { __, s__ } from '~/locale';
 import '~/commons/bootstrap';
 
 describe('Date time utils', () => {
@@ -8,43 +7,43 @@ describe('Date time utils', () => {
     it('should return Sunday', () => {
       const day = datetimeUtility.getDayName(new Date('07/17/2016'));
 
-      expect(day).toBe(__('Sunday'));
+      expect(day).toBe('Sunday');
     });
 
     it('should return Monday', () => {
       const day = datetimeUtility.getDayName(new Date('07/18/2016'));
 
-      expect(day).toBe(__('Monday'));
+      expect(day).toBe('Monday');
     });
 
     it('should return Tuesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/19/2016'));
 
-      expect(day).toBe(__('Tuesday'));
+      expect(day).toBe('Tuesday');
     });
 
     it('should return Wednesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/20/2016'));
 
-      expect(day).toBe(__('Wednesday'));
+      expect(day).toBe('Wednesday');
     });
 
     it('should return Thursday', () => {
       const day = datetimeUtility.getDayName(new Date('07/21/2016'));
 
-      expect(day).toBe(__('Thursday'));
+      expect(day).toBe('Thursday');
     });
 
     it('should return Friday', () => {
       const day = datetimeUtility.getDayName(new Date('07/22/2016'));
 
-      expect(day).toBe(__('Friday'));
+      expect(day).toBe('Friday');
     });
 
     it('should return Saturday', () => {
       const day = datetimeUtility.getDayName(new Date('07/23/2016'));
 
-      expect(day).toBe(__('Saturday'));
+      expect(day).toBe('Saturday');
     });
   });
 
@@ -150,10 +149,10 @@ describe('Date time utils', () => {
 
 describe('timeIntervalInWords', () => {
   it('should return string with number of minutes and seconds', () => {
-    expect(datetimeUtility.timeIntervalInWords(9.54)).toEqual(s__('Timeago|9 seconds'));
-    expect(datetimeUtility.timeIntervalInWords(1)).toEqual(s__('Timeago|1 second'));
-    expect(datetimeUtility.timeIntervalInWords(200)).toEqual(s__('Timeago|3 minutes 20 seconds'));
-    expect(datetimeUtility.timeIntervalInWords(6008)).toEqual(s__('Timeago|100 minutes 8 seconds'));
+    expect(datetimeUtility.timeIntervalInWords(9.54)).toEqual('9 seconds');
+    expect(datetimeUtility.timeIntervalInWords(1)).toEqual('1 second');
+    expect(datetimeUtility.timeIntervalInWords(200)).toEqual('3 minutes 20 seconds');
+    expect(datetimeUtility.timeIntervalInWords(6008)).toEqual('100 minutes 8 seconds');
   });
 });
 
@@ -193,15 +192,15 @@ describe('dateInWords', () => {
   const date = new Date('07/01/2016');
 
   it('should return date in words', () => {
-    expect(datetimeUtility.dateInWords(date)).toEqual(__('July 1, 2016'));
+    expect(datetimeUtility.dateInWords(date)).toEqual('July 1, 2016');
   });
 
   it('should return abbreviated month name', () => {
-    expect(datetimeUtility.dateInWords(date, true)).toEqual(__('Jul 1, 2016'));
+    expect(datetimeUtility.dateInWords(date, true)).toEqual('Jul 1, 2016');
   });
 
   it('should return date in words without year', () => {
-    expect(datetimeUtility.dateInWords(date, true, true)).toEqual(__('Jul 1'));
+    expect(datetimeUtility.dateInWords(date, true, true)).toEqual('Jul 1');
   });
 });
 
@@ -209,11 +208,11 @@ describe('monthInWords', () => {
   const date = new Date('2017-01-20');
 
   it('returns month name from provided date', () => {
-    expect(datetimeUtility.monthInWords(date)).toBe(__('January'));
+    expect(datetimeUtility.monthInWords(date)).toBe('January');
   });
 
   it('returns abbreviated month name from provided date', () => {
-    expect(datetimeUtility.monthInWords(date, true)).toBe(__('Jan'));
+    expect(datetimeUtility.monthInWords(date, true)).toBe('Jan');
   });
 });
 
@@ -345,6 +344,7 @@ describe('datefix', () => {
 });
 
 describe('prettyTime methods', () => {
+  // eslint-disable-next-line max-params
   const assertTimeUnits = (obj, minutes, hours, days, weeks) => {
     expect(obj.minutes).toBe(minutes);
     expect(obj.hours).toBe(hours);

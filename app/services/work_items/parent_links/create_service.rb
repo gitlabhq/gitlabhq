@@ -14,7 +14,7 @@ module WorkItems
         if params[:relative_position]
           link.relative_position = params[:relative_position]
         else
-          link.move_to_end
+          link.move_to_start
         end
 
         create_notes_and_resource_event(work_item, link) if link.changed? && link.save

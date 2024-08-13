@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlBadge, GlTruncate } from '@gitlab/ui';
+import { GlBadge, GlTruncate, GlButton } from '@gitlab/ui';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import WorkloadDetailsItem from '~/kubernetes_dashboard/components/workload_details_item.vue';
 import { WORKLOAD_STATUS_BADGE_VARIANTS } from '~/kubernetes_dashboard/constants';
@@ -25,6 +25,8 @@ const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 const findBadge = (at) => findAllBadges().at(at);
 const findAllPodLogsButtons = () => wrapper.findAllComponents(PodLogsButton);
 const findPodLogsButton = (at) => findAllPodLogsButtons().at(at);
+const findAllButtons = () => wrapper.findAllComponents(GlButton);
+const findButton = (at) => findAllButtons().at(at);
 
 describe('Workload details component', () => {
   describe('when minimal fields are provided', () => {
@@ -72,6 +74,48 @@ describe('Workload details component', () => {
       expect(findWorkloadDetailsItem(index).props('label')).toBe(label);
       expect(findWorkloadDetailsItem(index).text()).toBe(yaml);
       expect(findWorkloadDetailsItem(index).props('collapsible')).toBe(true);
+    });
+
+    describe('when actions are provided', () => {
+      const actions = [
+        {
+          name: 'delete-pod',
+          text: 'Delete pod',
+          icon: 'remove',
+          variant: 'danger',
+        },
+      ];
+      const mockTableItemsWithActions = {
+        ...mockPodsTableItems[0],
+        actions,
+      };
+
+      beforeEach(() => {
+        createWrapper(mockTableItemsWithActions);
+      });
+
+      it('renders a non-collapsible list item for containers', () => {
+        expect(findWorkloadDetailsItem(1).props('label')).toBe('Actions');
+        expect(findWorkloadDetailsItem(1).props('collapsible')).toBe(false);
+      });
+
+      it('renders a button for each action', () => {
+        expect(findAllButtons()).toHaveLength(1);
+      });
+
+      it.each(actions)('renders a button with the correct props', (action) => {
+        const currentIndex = actions.indexOf(action);
+
+        expect(findButton(currentIndex).props()).toMatchObject({
+          variant: action.variant,
+          icon: action.icon,
+        });
+
+        expect(findButton(currentIndex).attributes()).toMatchObject({
+          title: action.text,
+          'aria-label': action.text,
+        });
+      });
     });
 
     describe('when containers are provided', () => {

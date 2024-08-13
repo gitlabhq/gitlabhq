@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlCard, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlSprintf } from '@gitlab/ui';
 import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
@@ -19,6 +19,7 @@ import {
   CADENCE_LABEL,
   EXPIRATION_POLICY_FOOTER_NOTE,
 } from '~/packages_and_registries/settings/project/constants';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import updateContainerExpirationPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_expiration_policy.mutation.graphql';
 import { updateContainerExpirationPolicy } from '~/packages_and_registries/settings/project/graphql/utils/cache_update';
 import { formOptionsGenerator } from '~/packages_and_registries/settings/project/utils';
@@ -31,13 +32,13 @@ import ExpirationToggle from './expiration_toggle.vue';
 export default {
   components: {
     GlAlert,
-    GlCard,
     GlButton,
     GlSprintf,
     ExpirationDropdown,
     ExpirationInput,
     ExpirationToggle,
     ExpirationRunText,
+    CrudComponent,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectPath', 'projectSettingsPath'],
@@ -202,7 +203,7 @@ export default {
       @input="onModelChange($event, 'enabled')"
     />
 
-    <div class="gl-display-flex gl-mt-7">
+    <div class="gl-flex gl-mt-5">
       <expiration-dropdown
         :value="prefilledForm.cadence"
         :disabled="isFieldDisabled"
@@ -219,86 +220,74 @@ export default {
         class="gl-mb-0!"
       />
     </div>
-    <gl-alert class="gl-mt-7" :dismissible="false">
+    <gl-alert class="gl-mt-5" :dismissible="false">
       <gl-sprintf :message="$options.i18n.EXPIRATION_POLICY_REGEX_NOTE">
         <template #code="{ content }">
           <code>{{ content }}</code>
         </template>
       </gl-sprintf>
     </gl-alert>
-    <gl-card class="gl-mt-4">
-      <template #header>
-        {{ $options.i18n.KEEP_HEADER_TEXT }}
-      </template>
-      <template #default>
-        <div>
-          <p>
-            <gl-sprintf :message="$options.i18n.KEEP_INFO_TEXT">
-              <template #strong="{ content }">
-                <strong>{{ content }}</strong>
-              </template>
-            </gl-sprintf>
-          </p>
-          <expiration-dropdown
-            :value="prefilledForm.keepN"
-            :disabled="isFieldDisabled"
-            :form-options="$options.formOptions.keepN"
-            :label="$options.i18n.KEEP_N_LABEL"
-            name="keep-n"
-            data-testid="keep-n-dropdown"
-            @input="onModelChange($event, 'keepN')"
-          />
-          <expiration-input
-            v-model="prefilledForm.nameRegexKeep"
-            :error="apiErrors.nameRegexKeep"
-            :disabled="isFieldDisabled"
-            :label="$options.i18n.NAME_REGEX_KEEP_LABEL"
-            :description="$options.i18n.NAME_REGEX_KEEP_DESCRIPTION"
-            name="keep-regex"
-            data-testid="keep-regex-input"
-            @input="onModelChange($event, 'nameRegexKeep')"
-            @validation="setLocalErrors($event, 'nameRegexKeep')"
-          />
-        </div>
-      </template>
-    </gl-card>
-    <gl-card class="gl-mt-7">
-      <template #header>
-        {{ $options.i18n.REMOVE_HEADER_TEXT }}
-      </template>
-      <template #default>
-        <div>
-          <p>
-            <gl-sprintf :message="$options.i18n.REMOVE_INFO_TEXT">
-              <template #strong="{ content }">
-                <strong>{{ content }}</strong>
-              </template>
-            </gl-sprintf>
-          </p>
-          <expiration-dropdown
-            :value="prefilledForm.olderThan"
-            :disabled="isFieldDisabled"
-            :form-options="$options.formOptions.olderThan"
-            :label="$options.i18n.EXPIRATION_SCHEDULE_LABEL"
-            name="older-than"
-            data-testid="older-than-dropdown"
-            @input="onModelChange($event, 'olderThan')"
-          />
-          <expiration-input
-            v-model="prefilledForm.nameRegex"
-            :error="apiErrors.nameRegex"
-            :disabled="isFieldDisabled"
-            :label="$options.i18n.NAME_REGEX_LABEL"
-            :description="$options.i18n.NAME_REGEX_DESCRIPTION"
-            name="remove-regex"
-            data-testid="remove-regex-input"
-            @input="onModelChange($event, 'nameRegex')"
-            @validation="setLocalErrors($event, 'nameRegex')"
-          />
-        </div>
-      </template>
-    </gl-card>
-    <div class="gl-mt-7 gl-display-flex gl-align-items-center">
+    <crud-component :title="$options.i18n.KEEP_HEADER_TEXT" class="gl-mt-5">
+      <p>
+        <gl-sprintf :message="$options.i18n.KEEP_INFO_TEXT">
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </p>
+      <expiration-dropdown
+        :value="prefilledForm.keepN"
+        :disabled="isFieldDisabled"
+        :form-options="$options.formOptions.keepN"
+        :label="$options.i18n.KEEP_N_LABEL"
+        name="keep-n"
+        data-testid="keep-n-dropdown"
+        @input="onModelChange($event, 'keepN')"
+      />
+      <expiration-input
+        v-model="prefilledForm.nameRegexKeep"
+        :error="apiErrors.nameRegexKeep"
+        :disabled="isFieldDisabled"
+        :label="$options.i18n.NAME_REGEX_KEEP_LABEL"
+        :description="$options.i18n.NAME_REGEX_KEEP_DESCRIPTION"
+        name="keep-regex"
+        data-testid="keep-regex-input"
+        @input="onModelChange($event, 'nameRegexKeep')"
+        @validation="setLocalErrors($event, 'nameRegexKeep')"
+      />
+    </crud-component>
+    <crud-component :title="$options.i18n.REMOVE_HEADER_TEXT" class="gl-mt-5">
+      <div>
+        <p>
+          <gl-sprintf :message="$options.i18n.REMOVE_INFO_TEXT">
+            <template #strong="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+          </gl-sprintf>
+        </p>
+        <expiration-dropdown
+          :value="prefilledForm.olderThan"
+          :disabled="isFieldDisabled"
+          :form-options="$options.formOptions.olderThan"
+          :label="$options.i18n.EXPIRATION_SCHEDULE_LABEL"
+          name="older-than"
+          data-testid="older-than-dropdown"
+          @input="onModelChange($event, 'olderThan')"
+        />
+        <expiration-input
+          v-model="prefilledForm.nameRegex"
+          :error="apiErrors.nameRegex"
+          :disabled="isFieldDisabled"
+          :label="$options.i18n.NAME_REGEX_LABEL"
+          :description="$options.i18n.NAME_REGEX_DESCRIPTION"
+          name="remove-regex"
+          data-testid="remove-regex-input"
+          @input="onModelChange($event, 'nameRegex')"
+          @validation="setLocalErrors($event, 'nameRegex')"
+        />
+      </div>
+    </crud-component>
+    <div class="settings-sticky-footer gl-mt-5 gl-flex gl-items-center">
       <gl-button
         data-testid="save-button"
         type="submit"

@@ -53,8 +53,8 @@ RSpec.describe Gitlab::Cng::Commands::Destroy do
     it "defines deployment command" do
       expect_command_to_include_attributes(command_name, {
         description: "Destroy specific deployment and all it's resources, " \
-                     "where NAME is helm relase name. " \
-                     "Default: gitlab",
+          "where NAME is helm relase name. " \
+          "Default: gitlab",
         name: command_name,
         usage: "#{command_name} [NAME]"
       })

@@ -43,10 +43,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'allows user to mark a note as resolved' do
         page.within '.diff-content .note' do
-          find('.line-resolve-btn').click
+          find_by_testid('resolve-line-button').click
 
-          expect(page).to have_selector('.line-resolve-btn.is-active')
-          expect(find('.line-resolve-btn')['aria-label']).to eq("Resolved by #{user.name}")
+          wait_for_requests
+
+          expect(find_by_testid('resolve-line-button')['aria-label']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.diff-content' do
@@ -64,10 +65,6 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
 
         expect(page).to have_selector('.discussion-body', visible: false)
-
-        page.within '.diff-content .note' do
-          expect(page).to have_selector('.line-resolve-btn.is-active')
-        end
 
         page.within(first('.discussions-counter')) do
           expect(page).to have_content('All threads resolved')
@@ -231,7 +228,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'updates updated text after resolving note' do
         page.within '.diff-content .note' do
-          resolve_button = find('.line-resolve-btn')
+          resolve_button = find_by_testid('resolve-line-button')
 
           resolve_button.click
           wait_for_requests
@@ -255,11 +252,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'marks thread as resolved when resolving single note' do
         page.within("#note_#{note.id}") do
-          first('.line-resolve-btn').click
+          first('[data-testid="resolve-line-button"]').click
 
           wait_for_requests
 
-          expect(first('.line-resolve-btn')['aria-label']).to eq("Resolved by #{user.name}")
+          expect(first('[data-testid="resolve-line-button"]')['aria-label']).to eq("Resolved by #{user.name}")
         end
 
         page.within(first('.discussions-counter')) do
@@ -268,7 +265,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       end
 
       it 'resolves thread' do
-        resolve_buttons = page.all('.note .line-resolve-btn', count: 1)
+        resolve_buttons = page.all('.note [data-testid="resolve-line-button"]', count: 1)
         resolve_buttons.each do |button|
           button.click
         end
@@ -306,7 +303,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       end
 
       it 'allows user to mark all notes as resolved' do
-        page.all('.note .line-resolve-btn', count: 2).each do |btn|
+        page.all('.note [data-testid="resolve-line-button"]', count: 2).each do |btn|
           btn.click
         end
 
@@ -341,7 +338,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'updates updated text after resolving note' do
         page.within('.diff-content .note', match: :first) do
-          resolve_button = find('.line-resolve-btn')
+          resolve_button = find_by_testid('resolve-line-button')
 
           resolve_button.click
           wait_for_requests
@@ -384,9 +381,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'allows user to mark a note as resolved' do
         page.within '.diff-content .note' do
-          find('.line-resolve-btn').click
-
-          expect(page).to have_selector('.line-resolve-btn.is-active')
+          find_by_testid('resolve-line-button').click
         end
 
         page.within '.diff-content' do
@@ -401,10 +396,6 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to mark thread as resolved' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
-        end
-
-        page.within '.diff-content .note' do
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
 
         page.within(first('.discussions-counter')) do
@@ -473,7 +464,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'does not allow user to mark note as resolved' do
         page.within '.diff-content .note' do
-          expect(page).not_to have_selector('.line-resolve-btn')
+          expect(page).not_to have_selector('[data-testid="resolve-line-button"]')
         end
 
         page.within(first('.discussions-counter')) do
@@ -497,9 +488,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'allows user to mark a note as resolved' do
         page.within '.diff-content .note' do
-          find('.line-resolve-btn').click
-
-          expect(page).to have_selector('.line-resolve-btn.is-active')
+          find_by_testid('resolve-line-button').click
         end
 
         page.within '.diff-content' do
@@ -521,7 +510,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
       it 'does not allow user to mark note as resolved' do
         page.within '.diff-content .note' do
-          expect(page).not_to have_selector('.line-resolve-btn')
+          expect(page).not_to have_selector('[data-testid="resolve-line-button"]')
         end
 
         page.within(first('.discussions-counter')) do

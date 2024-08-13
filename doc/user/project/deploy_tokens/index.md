@@ -70,7 +70,7 @@ use in a CI/CD pipeline:
 - `CI_DEPLOY_USER`: Username
 - `CI_DEPLOY_PASSWORD`: Token
 
-For example, to use a GitLab token to log in to your GitLab container registry:
+For example, to use a GitLab token to sign in to your GitLab container registry:
 
 ```shell
 echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
@@ -99,7 +99,7 @@ jobs.
 ### GitLab public API
 
 Deploy tokens can't be used with the GitLab public API. However, you can use deploy tokens with some
-endpoints, such as those from the package registry. For more information, see
+endpoints, such as those from the package registry. You can tell an endpoint belongs to the package registry because the URL has the string `packages/<format>`. For example: `https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt`. For more information, see
 [Authenticate with the registry](../../packages/package_registry/index.md#authenticate-with-the-registry).
 
 ## Create a deploy token

@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Getting started
 
-This page will guide you through the Frontend development process and show you what a normal Merge Request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://handbook.gitlab.com/handbook/engineering/frontend/).
+This page will guide you through the Frontend development process and show you what a normal merge request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://handbook.gitlab.com/handbook/engineering/frontend/).
 
 There are a lot of things to consider for a first merge request and it can feel overwhelming. The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
@@ -37,7 +37,7 @@ If all of these questions have an answer, then you can safely move on to writing
 
 Make sure to communicate with your team as you progress or if you are unable to work on a planned issue for a long period of time.
 
-If you require assistance, make sure to push your branch and share your Merge Request either directly to a teammate or in the Slack channel `#frontend` to get advice on how to move forward. You can [mark your Merge Request as a draft](../../user/project/merge_requests/drafts.md), which will clearly communicate that it is not ready for a full on review. Always remember to have a [low level of shame](https://handbook.gitlab.com/handbook/values/#low-level-of-shame) and **ask for help when you need it**.
+If you require assistance, make sure to push your branch and share your merge request either directly to a teammate or in the Slack channel `#frontend` to get advice on how to move forward. You can [mark your merge request as a draft](../../user/project/merge_requests/drafts.md), which will clearly communicate that it is not ready for a full on review. Always remember to have a [low level of shame](https://handbook.gitlab.com/handbook/values/#low-level-of-shame) and **ask for help when you need it**.
 
 As you write code, make sure to test your change thoroughly. It is the author's responsibility to test their code, ensure that it works as expected, and ensure that it did not break existing behaviours. Reviewers may help in that regard, but **do not expect it**. Make sure to check different browsers, mobile viewports and unexpected user flows.
 

@@ -7,10 +7,3 @@
     }
   }
 }
-
-.trial-discover-page-card.gl-flex-basis-third,
-.trial-discover-page-card.gl-flex-basis-half {
-  @include media-breakpoint-down(md) {
-    flex-basis: 100%;
-  }
-}

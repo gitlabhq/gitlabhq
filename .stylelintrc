@@ -1,18 +1,47 @@
 {
-   "extends": ["@gitlab/stylelint-config"],
-   "ignoreFiles": [
-     "app/assets/stylesheets/pages/emojis.scss",
-     "app/assets/stylesheets/startup/startup-*.scss",
-     "ee/app/assets/stylesheets/startup/startup-*.scss",
-     "app/assets/stylesheets/highlight/themes/*.scss",
-     "app/assets/stylesheets/lazy_bundles/cropper.css"
-   ],
-   "overrides": [
+  "extends": ["@gitlab/stylelint-config"],
+  "plugins": ["./tooling/stylelint/gitlab_no_gl_class.plugin.js"],
+  "rules": {
+    "gitlab/no-gl-class": true
+  },
+  "ignoreFiles": [
+    "app/assets/stylesheets/pages/emojis.scss",
+    "app/assets/stylesheets/startup/startup-*.scss",
+    "ee/app/assets/stylesheets/startup/startup-*.scss",
+    "app/assets/stylesheets/highlight/themes/*.scss",
+    "app/assets/stylesheets/lazy_bundles/cropper.css"
+  ],
+  "overrides": [
     {
       "files": ["app/assets/stylesheets/mailers/mailer.scss"],
       "rules": {
         "color-hex-length": "long"
       }
+    },
+    {
+      "files": [
+        "app/assets/stylesheets/framework/**/*.scss",
+        "app/assets/stylesheets/themes/dark_mode_overrides.scss",
+        "app/assets/stylesheets/page_bundles/_ide_theme_overrides.scss"
+      ],
+      "rules": {
+        "gitlab/no-gl-class": null
+      }
+    },
+    {
+      "files": [
+        "app/assets/builds/tailwind.css"
+      ],
+      "rules": {
+        "selector-class-pattern": null,
+        "gitlab/no-gl-class": null,
+        "length-zero-no-unit": null,
+        "property-no-vendor-prefix": null,
+        "value-no-vendor-prefix": null,
+        "scss/at-rule-no-unknown": null,
+        "tailwind/disallow-max-width-media-query": true
+      },
+      "reportNeedlessDisables": false
     }
-   ]
+  ]
 }

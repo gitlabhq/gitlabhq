@@ -77,8 +77,11 @@ path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a CI job token
 
-To work with PyPI commands within [GitLab CI/CD](../../../ci/index.md), you
-can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.
+To authenticate with [GitLab CI/CD](../../../ci/index.md),
+you must authenticate with a personal access token,
+deploy token, or a `CI_JOB_TOKEN`.
+You only need one authentication method to use PyPI commands in
+a CI/CD job.
 
 For example:
 

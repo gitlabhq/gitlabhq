@@ -46,7 +46,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-center gl-gap-3">
     <hidden-groups-item v-if="isHiddenGroups" class="gl-grow" />
-    <div v-else class="gl-flex gl-items-center gl-gap-3 gl-grow">
+    <div v-else class="gl-flex gl-grow gl-items-center gl-gap-3">
       <gl-avatar
         :alt="fullName"
         :entity-name="fullName"

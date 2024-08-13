@@ -7,7 +7,7 @@ FactoryBot.define do
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
-    association :work_item_type, :default
+    association :work_item_type
 
     trait :confidential do
       confidential { true }
@@ -39,23 +39,23 @@ FactoryBot.define do
     end
 
     trait :issue do
-      association :work_item_type, :default, :issue
+      association :work_item_type, :issue
     end
 
     trait :task do
-      association :work_item_type, :default, :task
+      association :work_item_type, :task
     end
 
     trait :incident do
-      association :work_item_type, :default, :incident
+      association :work_item_type, :incident
     end
 
     trait :requirement do
-      association :work_item_type, :default, :requirement
+      association :work_item_type, :requirement
     end
 
     trait :test_case do
-      association :work_item_type, :default, :test_case
+      association :work_item_type, :test_case
     end
 
     trait :last_edited_by_user do
@@ -63,19 +63,19 @@ FactoryBot.define do
     end
 
     trait :objective do
-      association :work_item_type, :default, :objective
+      association :work_item_type, :objective
     end
 
     trait :key_result do
-      association :work_item_type, :default, :key_result
+      association :work_item_type, :key_result
     end
 
     trait :epic do
-      association :work_item_type, :default, :epic
+      association :work_item_type, :epic
     end
 
     trait :ticket do
-      association :work_item_type, :default, :ticket
+      association :work_item_type, :ticket
     end
 
     before(:create, :build) do |work_item, evaluator|
@@ -87,7 +87,7 @@ FactoryBot.define do
 
     # Service Desk Ticket
     factory :ticket do
-      association :work_item_type, :default, :ticket
+      association :work_item_type, :ticket
     end
   end
 end

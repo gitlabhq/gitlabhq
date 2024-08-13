@@ -1,10 +1,21 @@
-import { GlLink, GlIcon, GlBadge, GlTable, GlPagination } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import {
+  GlLink,
+  GlIcon,
+  GlBadge,
+  GlTable,
+  GlPagination,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
-import { I18N_AGENT_TABLE } from '~/clusters_list/constants';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
+import { I18N_AGENT_TABLE, CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { clusterAgents, connectedTimeNow, connectedTimeInactive } from './mock_data';
 
@@ -44,6 +55,10 @@ describe('AgentTable', () => {
   const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
   const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
   const findPagination = () => wrapper.findComponent(GlPagination);
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDisclosureDropdownItem = () =>
+    wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
+  const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
 
   const createWrapper = ({ provide = provideData, propsData = defaultProps } = {}) => {
     wrapper = mountExtended(AgentTable, {
@@ -51,6 +66,9 @@ describe('AgentTable', () => {
       provide,
       stubs: {
         DeleteAgentButton: DeleteAgentButtonStub,
+      },
+      directives: {
+        GlModalDirective: createMockDirective('gl-modal-directive'),
       },
     });
   };
@@ -125,9 +143,39 @@ describe('AgentTable', () => {
         },
       );
 
-      it('displays actions menu for each agent except the shared agents', () => {
-        expect(findDeleteAgentButtons()).toHaveLength(clusterAgents.length - 1);
-        expect(findDeleteAgentButtonByRow(9).exists()).toBe(false);
+      describe('actions menu', () => {
+        it('renders dropdown for the actions', () => {
+          expect(findDisclosureDropdown().attributes('title')).toBe('Actions');
+        });
+
+        it('renders dropdown item for connecting to cluster action', () => {
+          expect(findDisclosureDropdownItem().text()).toBe('Connect to agent-1');
+        });
+
+        it('binds dropdown item to the proper modal', () => {
+          const binding = getBinding(findDisclosureDropdownItem().element, 'gl-modal-directive');
+
+          expect(binding.value).toBe(CONNECT_MODAL_ID);
+        });
+
+        it('renders connect to agent modal when the agent is selected', async () => {
+          expect(findConnectModal().exists()).toBe(false);
+          findDisclosureDropdownItem().vm.$emit('action');
+          findDisclosureDropdownItem().vm.$emit('click');
+
+          await nextTick();
+
+          expect(findConnectModal().props()).toEqual({
+            agentId: 'gid://gitlab/Clusters::Agent/1',
+            projectPath: 'path/to/project',
+            isConfigured: true,
+          });
+        });
+
+        it('displays delete agent button for each agent except the shared agents', () => {
+          expect(findDeleteAgentButtons()).toHaveLength(clusterAgents.length - 1);
+          expect(findDeleteAgentButtonByRow(9).exists()).toBe(false);
+        });
       });
     });
 
@@ -165,7 +213,7 @@ describe('AgentTable', () => {
 
         beforeEach(() => {
           createWrapper({
-            provide: { kasCheckVersion },
+            provide: { kasCheckVersion, projectPath: 'path/to/project' },
             propsData: { agents: [currentAgent] },
           });
         });

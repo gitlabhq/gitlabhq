@@ -156,9 +156,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
           end
         end
 
-        context 'and it is running' do
-          let(:latest_mr_pipeline_status) { "running" }
-
+        shared_examples 'non-success pipeline response' do
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
             expect(instance.execute).not_to be_success
@@ -166,20 +164,25 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
               "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be successful!"
             )
             expect(instance.execute.message).to include("Pipeline status was \"#{latest_mr_pipeline_status}\".")
-            expect(instance.execute.message).to include("Please ensure the latest pipeline is finished and successful.")
+            expect(instance.execute.message).to include("Please start a new pipeline.")
           end
         end
 
-        context 'and it is not passing' do
-          let(:latest_mr_pipeline_status) { "failed" }
+        context 'and it is running' do
+          it_behaves_like 'non-success pipeline response' do
+            let(:latest_mr_pipeline_status) { "running" }
+          end
+        end
 
-          it 'returns a failed PreMergeChecksStatus' do
-            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
-            expect(instance.execute).not_to be_success
-            expect(instance.execute.message).to include(
-              "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be successful!"
-            )
-            expect(instance.execute.message).to include("Pipeline status was \"#{latest_mr_pipeline_status}\".")
+        context 'and it is failed' do
+          it_behaves_like 'non-success pipeline response' do
+            let(:latest_mr_pipeline_status) { "failed" }
+          end
+        end
+
+        context 'and it is canceled' do
+          it_behaves_like 'non-success pipeline response' do
+            let(:latest_mr_pipeline_status) { "canceled" }
           end
         end
 

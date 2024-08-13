@@ -2,7 +2,7 @@
 data_category: optional
 key_path: gitpod_enabled
 description: Whether Gitpod is enabled in the instance
-product_group: ide
+product_group: remote_development
 value_type: boolean
 status: active
 time_frame: none

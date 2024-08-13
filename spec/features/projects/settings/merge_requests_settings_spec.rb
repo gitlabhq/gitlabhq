@@ -65,7 +65,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
 
         visit project_settings_merge_requests_path(project)
 
-        expect(page).to have_content('Not Found')
+        expect(page).to have_content('Page not found')
       end
     end
 
@@ -112,7 +112,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
     end
 
     it 'does not show the Merge Requests settings' do
-      expect(page).to have_content('Not Found')
+      expect(page).to have_content('Page not found')
 
       visit edit_project_path(project)
 

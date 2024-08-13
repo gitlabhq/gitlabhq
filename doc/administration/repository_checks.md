@@ -28,25 +28,26 @@ repository consistency checks, some disabled checks, and how to configure consis
 
 To check a project's repository using GitLab UI:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Projects**.
 1. Select the project to check.
 1. In the **Repository check** section, select **Trigger repository check**.
 
 The checks run asynchronously so it may take a few minutes before the check result is visible on the
-project page in the Admin area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
+project page in the **Admin** area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
 
 ## Enable repository checks for all projects
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. Enable **Enable repository checks**.
 
 When enabled, GitLab periodically runs a repository check on all project repositories and wiki
-repositories to detect possible data corruption. A project is checked no more than once per month.
+repositories to detect possible data corruption. A project is checked no more than once per month, and new projects aren't checked for at least 24 hours.
+
 Administrators can configure the frequency of repository checks. To edit the frequency:
 
 - For Linux package installations, edit `gitlab_rails['repository_check_worker_cron']` in
@@ -93,7 +94,7 @@ If a repository check fails, locate the error in the [`repocheck.log` file](logs
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Clear all repository checks**.

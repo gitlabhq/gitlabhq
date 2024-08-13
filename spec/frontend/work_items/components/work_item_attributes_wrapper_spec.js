@@ -8,6 +8,7 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
+import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import { workItemResponseFactory } from '../mock_data';
@@ -25,9 +26,11 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
   const findWorkItemDevelopment = () => wrapper.findComponent(WorkItemDevelopment);
+  const findWorkItemCrmContacts = () => wrapper.findComponent(WorkItemCrmContacts);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
+    workItemsBeta = false,
     workItemsAlpha = false,
     groupPath = '',
   } = {}) => {
@@ -45,6 +48,7 @@ describe('WorkItemAttributesWrapper component', () => {
         projectNamespace: 'namespace',
         hasSubepicsFeature: true,
         glFeatures: {
+          workItemsBeta,
           workItemsAlpha,
         },
       },
@@ -139,13 +143,22 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('parent widget', () => {
-    it(`renders parent component with proper data`, async () => {
+    it(`renders parent component`, async () => {
       const response = workItemResponseFactory();
       createComponent({ workItem: response.data.workItem });
 
       await waitForPromises();
 
       expect(findWorkItemParent().exists()).toBe(true);
+    });
+
+    it.each([true, false])(`renders parent component with hasParent %s`, async (hasParent) => {
+      const response = workItemResponseFactory({ hasParent });
+      createComponent({ workItem: response.data.workItem });
+
+      await waitForPromises();
+
+      expect(findWorkItemParent().props('hasParent')).toBe(hasParent);
     });
 
     it('emits an error event to the wrapper', async () => {
@@ -175,6 +188,34 @@ describe('WorkItemAttributesWrapper component', () => {
     });
   });
 
+  describe('CRM contacts widget', () => {
+    describe('when workItemsAlpha FF is disabled', () => {
+      it.each`
+        description                                               | crmContactsWidgetPresent | exists
+        ${'renders when widget is returned from API'}             | ${true}                  | ${false}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ crmContactsWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ crmContactsWidgetPresent });
+        createComponent({ workItem: response.data.workItem });
+
+        expect(findWorkItemCrmContacts().exists()).toBe(exists);
+      });
+    });
+
+    describe('when workItemsAlpha FF is enabled', () => {
+      it.each`
+        description                                               | crmContactsWidgetPresent | exists
+        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ crmContactsWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ crmContactsWidgetPresent });
+        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
+
+        expect(findWorkItemCrmContacts().exists()).toBe(exists);
+      });
+    });
+  });
+
   describe('participants widget', () => {
     it.each`
       description                                               | participantsWidgetPresent | exists
@@ -189,30 +230,11 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('development widget', () => {
-    describe('when `workItesMvc2` FF is off', () => {
-      it.each`
-        description                                               | developmentWidgetPresent | exists
-        ${'does not render when widget is returned from API'}     | ${true}                  | ${false}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ developmentWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: false });
+    it('renders work item development widget', () => {
+      const response = workItemResponseFactory({ developmentWidgetPresent: true });
+      createComponent({ workItem: response.data.workItem });
 
-        expect(findWorkItemDevelopment().exists()).toBe(exists);
-      });
-    });
-
-    describe('when `workItesMvc2` FF is on', () => {
-      it.each`
-        description                                               | developmentWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ developmentWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
-
-        expect(findWorkItemDevelopment().exists()).toBe(exists);
-      });
+      expect(findWorkItemDevelopment().exists()).toBe(true);
     });
   });
 });

@@ -195,11 +195,11 @@ You can then view the database details for this request:
 
    ![Select request ID from request selector drop down menu](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 
-   <!-- vale gitlab.Substitutions = NO -->
+   <!-- vale gitlab_base.Substitutions = NO -->
 1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:
 
    ![View pg database details](img/view-pg-details_v14_3.png)
-   <!-- vale gitlab.Substitutions = YES -->
+   <!-- vale gitlab_base.Substitutions = YES -->
 
    The database query dialog is displayed:
 

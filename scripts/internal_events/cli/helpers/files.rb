@@ -4,6 +4,8 @@
 module InternalEventsCli
   module Helpers
     module Files
+      MAX_FILENAME_LENGTH = 100
+
       def prompt_to_save_file(filepath, content)
         cli.say <<~TEXT.chomp
           #{format_info('Preparing to generate definition with these attributes:')}

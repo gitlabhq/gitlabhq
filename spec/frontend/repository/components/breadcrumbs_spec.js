@@ -11,7 +11,6 @@ import permissionsQuery from 'shared_queries/repository/permissions.query.graphq
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 
 import createApolloProvider from 'helpers/mock_apollo_helper';
-import { __ } from '~/locale';
 
 const defaultMockRoute = {
   name: 'blobPath',
@@ -212,7 +211,7 @@ describe('Repository breadcrumbs component', () => {
       factory('/', { canCollaborate: true });
       await waitForPromises();
 
-      expect(findDropdownGroup().props('group').name).toBe(__('This repository'));
+      expect(findDropdownGroup().props('group').name).toBe('This repository');
     });
 
     it('does not render when user does not have pushCode permissions', async () => {

@@ -112,68 +112,131 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'tracks events and unique events', :aggregate_failures do
-        request_count = 2
-        counters = {
-          k8s_api_proxy_request: 5,
-          flux_git_push_notifications_total: 42,
-          k8s_api_proxy_requests_via_ci_access: 43,
-          k8s_api_proxy_requests_via_user_access: 44,
-          k8s_api_proxy_requests_via_pat_access: 45
-        }
-        users = create_list(:user, 3)
-        user_ids = users.map(&:id) << users[0].id
-        unique_counters = {
-          k8s_api_proxy_requests_unique_agents_via_ci_access: user_ids,
-          k8s_api_proxy_requests_unique_agents_via_user_access: user_ids,
-          k8s_api_proxy_requests_unique_agents_via_pat_access: user_ids,
-          flux_git_push_notified_unique_projects: user_ids,
-          k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
-          k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
-          k8s_api_proxy_requests_unique_users_via_pat_access: user_ids
-        }
+      describe 'events tracking' do
+        it 'correctly merges legacy Redis keys for migrated metrics', :aggregate_failures do
+          legacy_redis_keys = %w[
+            USAGE_KUBERNETES_AGENT_FLUX_GIT_PUSH_NOTIFICATIONS_TOTAL
+            USAGE_KUBERNETES_AGENT_K8S_API_PROXY_REQUEST
+            USAGE_KUBERNETES_AGENT_K8S_API_PROXY_REQUESTS_VIA_CI_ACCESS
+            USAGE_KUBERNETES_AGENT_K8S_API_PROXY_REQUESTS_VIA_USER_ACCESS
+            USAGE_KUBERNETES_AGENT_K8S_API_PROXY_REQUESTS_VIA_PAT_ACCESS
+          ]
 
-        internal_events = %w[
-          k8s_api_proxy_requests_unique_users_via_ci_access
-          k8s_api_proxy_requests_unique_users_via_user_access
-          k8s_api_proxy_requests_unique_users_via_pat_access
-        ]
-
-        unique_user_metrics = %w[
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_ci_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_ci_access_monthly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_user_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_user_access_monthly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_pat_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_pat_access_monthly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_user_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_user_access_monthly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_monthly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_pat_access_weekly
-          redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_pat_access_monthly
-          redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_weekly
-          redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_monthly
-        ]
-
-        expect do
-          request_count.times do
-            send_request(params: { counters: counters, unique_counters: unique_counters })
+          legacy_redis_keys.each do |key|
+            Gitlab::Redis::SharedState.with { |redis| redis.set(key, 1) }
           end
-        end.to trigger_internal_events(internal_events).with(user: users[0], category: 'InternalEventTracking').exactly(4).times
-          .and trigger_internal_events(internal_events).with(user: users[1], category: 'InternalEventTracking').twice
-          .and trigger_internal_events(internal_events).with(user: users[2], category: 'InternalEventTracking').twice
-          .and increment_usage_metrics(unique_user_metrics).by(user_ids.uniq.count)
-          .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_request')
-            .by(request_count * counters[:k8s_api_proxy_request])
-          .and increment_usage_metrics('counts.kubernetes_agent_flux_git_push_notifications_total')
-            .by(request_count * counters[:flux_git_push_notifications_total])
-          .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_ci_access')
-            .by(request_count * counters[:k8s_api_proxy_requests_via_ci_access])
-          .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_user_access')
-            .by(request_count * counters[:k8s_api_proxy_requests_via_user_access])
-          .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_pat_access')
-            .by(request_count * counters[:k8s_api_proxy_requests_via_pat_access])
+
+          counters = {
+            flux_git_push_notifications_total: 1,
+            k8s_api_proxy_request: 1,
+            k8s_api_proxy_requests_via_ci_access: 1,
+            k8s_api_proxy_requests_via_user_access: 1,
+            k8s_api_proxy_requests_via_pat_access: 1
+          }
+
+          send_request(params: { counters: counters })
+
+          migrated_metrics = %w[
+            kubernetes_agent_flux_git_push_notifications_total
+            kubernetes_agent_k8s_api_proxy_request
+            kubernetes_agent_k8s_api_proxy_requests_via_ci_access
+            kubernetes_agent_k8s_api_proxy_requests_via_user_access
+            kubernetes_agent_k8s_api_proxy_requests_via_pat_access
+          ]
+
+          migrated_metrics.each do |metric|
+            metric_definition = Gitlab::Usage::MetricDefinition.definitions["counts.#{metric}"]
+            current_value = Gitlab::Usage::Metric.new(metric_definition).send(:instrumentation_object).value
+            expect(current_value).to eq(2), "Expected metric #{metric} to be 2, but was #{current_value}"
+          end
+        end
+
+        it 'tracks counter events', :aggregate_failures do
+          events = API::Helpers::Kubernetes::AgentHelpers::COUNTERS_EVENTS_MAPPING
+          counters = {
+            flux_git_push_notifications_total: 3,
+            k8s_api_proxy_request: 5,
+            k8s_api_proxy_requests_via_ci_access: 43,
+            k8s_api_proxy_requests_via_user_access: 44,
+            k8s_api_proxy_requests_via_pat_access: 45
+          }
+
+          expect do
+            send_request(params: { counters: counters })
+          end.to trigger_internal_events(events['flux_git_push_notifications_total'])
+                   .with(category: 'InternalEventTracking')
+                     .exactly(counters[:flux_git_push_notifications_total]).times
+                   .and increment_usage_metrics('counts.kubernetes_agent_flux_git_push_notifications_total')
+                    .by(counters[:flux_git_push_notifications_total])
+                 .and trigger_internal_events(events['k8s_api_proxy_request'])
+                   .with(category: 'InternalEventTracking')
+                     .exactly(counters[:k8s_api_proxy_request]).times
+                   .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_request')
+                    .by(counters[:k8s_api_proxy_request])
+                 .and trigger_internal_events(events['k8s_api_proxy_requests_via_ci_access'])
+                   .with(category: 'InternalEventTracking')
+                     .exactly(counters[:k8s_api_proxy_requests_via_ci_access]).times
+                   .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_ci_access')
+                     .by(counters[:k8s_api_proxy_requests_via_ci_access])
+                 .and trigger_internal_events(events['k8s_api_proxy_requests_via_user_access'])
+                   .with(category: 'InternalEventTracking')
+                     .exactly(counters[:k8s_api_proxy_requests_via_user_access]).times
+                   .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_user_access')
+                     .by(counters[:k8s_api_proxy_requests_via_user_access])
+                 .and trigger_internal_events(events['k8s_api_proxy_requests_via_pat_access'])
+                   .with(category: 'InternalEventTracking')
+                      .exactly(counters[:k8s_api_proxy_requests_via_pat_access]).times
+                    .and increment_usage_metrics('counts.kubernetes_agent_k8s_api_proxy_requests_via_pat_access')
+                      .by(counters[:k8s_api_proxy_requests_via_pat_access])
+        end
+
+        it 'tracks unique events', :aggregate_failures do
+          request_count = 2
+          users = create_list(:user, 3)
+          user_ids = users.map(&:id) << users[0].id
+
+          unique_counters = {
+            k8s_api_proxy_requests_unique_agents_via_ci_access: user_ids,
+            k8s_api_proxy_requests_unique_agents_via_user_access: user_ids,
+            k8s_api_proxy_requests_unique_agents_via_pat_access: user_ids,
+            flux_git_push_notified_unique_projects: user_ids,
+            k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
+            k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
+            k8s_api_proxy_requests_unique_users_via_pat_access: user_ids
+          }
+
+          internal_events = %w[
+            k8s_api_proxy_requests_unique_users_via_ci_access
+            k8s_api_proxy_requests_unique_users_via_user_access
+            k8s_api_proxy_requests_unique_users_via_pat_access
+          ]
+
+          unique_user_metrics = %w[
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_ci_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_ci_access_monthly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_user_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_user_access_monthly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_pat_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_users_via_pat_access_monthly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_user_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_user_access_monthly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_monthly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_pat_access_weekly
+            redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_pat_access_monthly
+            redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_weekly
+            redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_monthly
+          ]
+
+          expect do
+            request_count.times do
+              send_request(params: { unique_counters: unique_counters })
+            end
+          end.to trigger_internal_events(internal_events).with(user: users[0], category: 'InternalEventTracking').exactly(4).times
+            .and trigger_internal_events(internal_events).with(user: users[1], category: 'InternalEventTracking').twice
+            .and trigger_internal_events(internal_events).with(user: users[2], category: 'InternalEventTracking').twice
+            .and increment_usage_metrics(unique_user_metrics).by(user_ids.uniq.count)
+        end
       end
     end
   end

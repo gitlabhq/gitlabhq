@@ -21,6 +21,7 @@ class UsersController < ApplicationController
   skip_before_action :authenticate_user!
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
+  before_action :set_legacy_data
   before_action :authorize_read_user_profile!, only: [
     :calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following
   ]
@@ -306,6 +307,12 @@ class UsersController < ApplicationController
       # don't display projects marked for deletion
       not_aimed_for_deletion: true
     }
+  end
+
+  def set_legacy_data
+    controller_action = params[:action]
+    @action = controller_action.gsub('show', 'overview')
+    @endpoint = request.path
   end
 end
 

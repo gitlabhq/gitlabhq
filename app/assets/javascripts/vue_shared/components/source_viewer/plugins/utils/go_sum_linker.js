@@ -28,6 +28,7 @@ const handleReplace = (packagePath, version, tag) => {
 };
 
 export default (result) => {
+  // eslint-disable-next-line max-params
   return result.value.replace(DEPENDENCY_REGEX, (_, packagePath, version, tag) =>
     handleReplace(packagePath, version, tag),
   );

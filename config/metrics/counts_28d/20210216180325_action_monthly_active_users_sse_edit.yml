@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_sse_edit
 description: Number of users using the static site editor
-product_group: ide
+product_group: remote_development
 value_type: number
 status: removed
 time_frame: 28d

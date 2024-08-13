@@ -15,3 +15,5 @@ module API
     end
   end
 end
+
+API::Entities::SharedGroupWithGroup.prepend_mod_with('API::Entities::SharedGroupWithGroup')

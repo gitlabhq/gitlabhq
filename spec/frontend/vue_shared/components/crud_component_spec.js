@@ -36,6 +36,12 @@ describe('CRUD Component', () => {
     expect(findTitle().text()).toBe('CRUD Component title');
   });
 
+  it('renders `title` slot', () => {
+    createComponent({}, { title: '<p>Title slot</p>' });
+
+    expect(findTitle().text()).toBe('Title slot');
+  });
+
   it('renders description', () => {
     createComponent({ description: 'Description' });
 
@@ -48,11 +54,24 @@ describe('CRUD Component', () => {
     expect(findDescription().text()).toBe('Description slot');
   });
 
-  it('renders count and icon', () => {
+  it('renders count and icon appropriately when count does not exist', () => {
+    createComponent({ icon: 'rocket' });
+
+    expect(findCount().text()).toBe('0');
+    expect(findIcon().props('name')).toBe('rocket');
+  });
+
+  it('renders count and icon appropriately when count exists', () => {
     createComponent({ count: 99, icon: 'rocket' });
 
     expect(findCount().text()).toBe('99');
     expect(findIcon().props('name')).toBe('rocket');
+  });
+
+  it('renders `count` slot', () => {
+    createComponent({}, { count: '<p>Count slot</p>' });
+
+    expect(findCount().text()).toBe('Count slot');
   });
 
   it('renders `actions` slot', () => {
@@ -70,6 +89,7 @@ describe('CRUD Component', () => {
     findFormToggle().vm.$emit('click');
     await nextTick();
 
+    expect(findFormToggle().exists()).toBe(false);
     expect(findForm().text()).toBe('Form slot');
   });
 

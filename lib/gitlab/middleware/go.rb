@@ -48,47 +48,56 @@ module Gitlab
         [404, { 'Content-Type' => 'text/plain' }, [not_found_message]]
       end
 
-      # handle_go_get_request returns a go get HTML document response if the project exists and the user has read access
-      # otherwise it returns a 404 response with a message for the go toolchain to display.
+      # handle_go_get_request responds to `go get` requests by either returning a successful 200
+      # response with meta tags as described in https://go.dev/ref/mod, or a 404 response with a
+      # message that the go toolchain will display.
+      #
+      # The go toolchain authenticates using basic auth. When credentials are not present, a
+      # successful response is always returned as if a project exists (using a two-segment path
+      # like `namespace/project`) in order to prevent leaking information about the existence of
+      # private projects, and to maintain backwards compatibility for users who have not set up
+      # authentication for their go toolchain.
       def handle_go_get_request(request)
         path_info = request.env["PATH_INFO"].delete_prefix('/')
         project = project_for_path(path_info)
 
-        # return the same way when a repo is not found or the user has no access
-        # so that we don't reveal the existence of a project the user doesn't have access to.
-        return not_found_response unless project&.repository_exists?
-        return not_found_response unless can_read_project?(request, project)
+        if project && can_read_project?(request, project)
+          return not_found_response unless project.repository_exists?
 
-        html = create_go_get_html(project)
-        response = Rack::Response.new(html, 200, { 'Content-Type' => 'text/html' })
-        response.finish
+          create_go_get_html_response(project.full_path)
+        elsif request.authorization.present?
+          not_found_response
+        else
+          path_segments = path_info.split('/')
+          return not_found_response unless path_segments.length >= 2
+
+          two_segment_path = path_segments.first(2).join('/')
+
+          create_go_get_html_response(two_segment_path)
+        end
       end
 
       def go_get_request?(request)
         request["go-get"].to_i == 1 && request.env["PATH_INFO"].present?
       end
 
-      # create_go_get_html creates a HTML document for go get with the expected meta tags.
-      def create_go_get_html(project)
-        # See https://go.dev/ref/mod for documentation on the `go-import` meta tag.
-        root_path = Gitlab::Utils.append_path(Gitlab.config.gitlab.host, project.full_path)
-        repo_url = Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh' ? ssh_url(project.full_path) : project.http_url_to_repo
+      def get_repo_url(project_full_path)
+        return ssh_url(project_full_path) if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'
+
+        Gitlab::RepositoryUrlBuilder.build(project_full_path, protocol: :http)
+      end
+
+      # create_go_get_html_response creates a HTML document for go get with the expected meta tags.
+      def create_go_get_html_response(project_full_path)
+        root_path = Gitlab::Utils.append_path(Gitlab.config.gitlab.host, project_full_path)
+        repo_url = get_repo_url(project_full_path)
         go_import_meta_tag = tag.meta(name: 'go-import', content: "#{root_path} git #{repo_url}")
-
-        # See https://github.com/golang/gddo/wiki/Source-Code-Links for documentation on the `go-source` meta tag.
-        if project.default_branch
-          source_home = Gitlab::Utils.append_path(Gitlab.config.gitlab.url, project.full_path)
-          source_directory = "#{source_home}/-/tree/#{project.default_branch}{/dir}"
-          source_file = "#{source_home}/-/blob/#{project.default_branch}{/dir}/{file}#L{line}"
-          go_source_meta_tag = tag.meta(name: 'go-source', content: "#{root_path} #{source_home} #{source_directory} #{source_file}")
-          head_tag = content_tag :head, go_import_meta_tag + go_source_meta_tag
-        else
-          head_tag = content_tag :head, go_import_meta_tag
-        end
-
+        head_tag = content_tag :head, go_import_meta_tag
         body_tag = content_tag :body, "go get #{root_path}"
+        html = content_tag :html, head_tag + body_tag
 
-        content_tag :html, head_tag + body_tag
+        response = Rack::Response.new(html, 200, { 'Content-Type' => 'text/html' })
+        response.finish
       end
 
       # project_for_path searches for a project based on the path_info
@@ -112,7 +121,14 @@ module Gitlab
           path_segments.pop
         end while path_segments.length >= 2
 
-        Project.where_full_path_in(project_paths).first
+        project = Project.where_full_path_in(project_paths).first
+        return project if project
+
+        # It's possible that the project was transferred and has a redirect
+        redirect = RedirectRoute.for_source_type(Project).by_paths(project_paths).first
+        return redirect.source if redirect
+
+        nil
       end
 
       # can_read_project? checks if the request's credentials have read access to the project

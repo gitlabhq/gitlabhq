@@ -67,7 +67,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
 
     context 'build with runner' do
       let_it_be(:tag_names) { %w[tag-1 tag-2] }
-      let_it_be(:ci_runner) { create(:ci_runner, tag_list: tag_names.map { |n| ActsAsTaggableOn::Tag.create!(name: n) }) }
+      let_it_be(:ci_runner) { create(:ci_runner, tag_list: tag_names.map { |n| create(:ci_tag, name: n) }) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline, runner: ci_runner) }
 
       it 'has runner attributes', :aggregate_failures do

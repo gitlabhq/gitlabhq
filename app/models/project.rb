@@ -63,6 +63,7 @@ class Project < ApplicationRecord
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
 
+  EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -237,6 +238,7 @@ class Project < ApplicationRecord
   has_one :jira_cloud_app_integration, class_name: 'Integrations::JiraCloudApp'
   has_one :mattermost_integration, class_name: 'Integrations::Mattermost'
   has_one :mattermost_slash_commands_integration, class_name: 'Integrations::MattermostSlashCommands'
+  has_one :matrix_integration, class_name: 'Integrations::Matrix'
   has_one :microsoft_teams_integration, class_name: 'Integrations::MicrosoftTeams'
   has_one :mock_ci_integration, class_name: 'Integrations::MockCi'
   has_one :mock_monitoring_integration, class_name: 'Integrations::MockMonitoring'
@@ -562,6 +564,7 @@ class Project < ApplicationRecord
       delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
+      delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
     end
   end
 
@@ -614,8 +617,8 @@ class Project < ApplicationRecord
     if: :path_changed?
 
   validates :project_feature, presence: true
-
   validates :namespace, presence: true
+  validates :organization, presence: true, if: :require_organization?
   validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
@@ -644,6 +647,7 @@ class Project < ApplicationRecord
   scope :without_deleted, -> { where(pending_delete: false) }
   scope :not_hidden, -> { where(hidden: false) }
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
+  scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
 
   scope :with_storage_feature, ->(feature) do
@@ -1420,16 +1424,16 @@ class Project < ApplicationRecord
     latest_successful_build_for_ref(job_name, ref) || raise(ActiveRecord::RecordNotFound, "Couldn't find job #{job_name}")
   end
 
-  def latest_pipelines(ref = default_branch, sha = nil)
+  def latest_pipelines(ref: default_branch, sha: nil, limit: nil)
     ref = ref.presence || default_branch
     sha ||= commit(ref)&.sha
     return ci_pipelines.none unless sha
 
-    ci_pipelines.newest_first(ref: ref, sha: sha)
+    ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit)
   end
 
   def latest_pipeline(ref = default_branch, sha = nil)
-    latest_pipelines(ref, sha).take
+    latest_pipelines(ref: ref, sha: sha).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -3269,6 +3273,10 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
+  def glql_integration_feature_flag_enabled?
+    group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 
@@ -3371,7 +3379,35 @@ class Project < ApplicationRecord
     false
   end
 
+  def lfs_file_locks_changed_epoch
+    get_epoch_from(lfs_file_locks_changed_epoch_cache_key)
+  end
+
+  def refresh_lfs_file_locks_changed_epoch
+    refresh_epoch_cache(lfs_file_locks_changed_epoch_cache_key)
+  end
+
   private
+
+  def with_redis(&block)
+    Gitlab::Redis::Cache.with(&block)
+  end
+
+  def lfs_file_locks_changed_epoch_cache_key
+    "project:#{id}:lfs_file_locks_changed_epoch"
+  end
+
+  def get_epoch_from(cache_key)
+    with_redis { |redis| redis.get(cache_key) }&.to_i || refresh_epoch_cache(cache_key)
+  end
+
+  def refresh_epoch_cache(cache_key)
+    # %s = seconds since the Unix Epoch
+    # %L = milliseconds of the second
+    Time.current.strftime('%s%L').to_i.tap do |epoch|
+      with_redis { |redis| redis.set(cache_key, epoch, ex: EPOCH_CACHE_EXPIRATION) }
+    end
+  end
 
   # overridden in EE
   def project_group_links_with_preload

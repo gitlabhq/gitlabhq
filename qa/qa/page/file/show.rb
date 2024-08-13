@@ -27,6 +27,14 @@ module QA
           click_on 'Delete'
         end
 
+        def highlight_text
+          find_element('content').double_click
+        end
+
+        def explain_code
+          click_element('question-icon')
+        end
+
         def click_delete_file
           click_on 'Delete file'
         end

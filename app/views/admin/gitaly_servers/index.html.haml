@@ -1,15 +1,11 @@
 - breadcrumb_title _("Gitaly servers")
 - page_title _("Gitaly servers")
 
-= render ::Layouts::PageHeadingComponent.new(_('Gitaly servers'))
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_gitaly_servers_pageload' } }
-      %h3.gl-new-card-title
-        = _('Gitaly servers')
-      .gl-new-card-count
-        = sprite_icon('earth', css_class: "gl-mr-2 gl-fill-icon-subtle gl-icon")
-        = @gitaly_servers.size
+= render ::Layouts::PageHeadingComponent.new(_('Gitaly servers'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_gitaly_servers_pageload' } })
+
+= render ::Layouts::CrudComponent.new(_('Gitaly servers'),
+  icon: 'earth',
+  count: @gitaly_servers.size) do |c|
   - c.with_body do
     - if @gitaly_servers.any?
       %table.table.b-table.gl-table.b-table-stacked-md
@@ -36,4 +32,4 @@
     - else
       .empty-state
         .text-center
-          %h4= _("No connection could be made to a Gitaly Server, please check your logs!")
+          %h4= _("No connection could be made to a Gitaly server, please check your logs!")

@@ -1,6 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TerminalComponent from '~/environments/components/environment_terminal_button.vue';
-import { __ } from '~/locale';
 
 describe('Terminal Component', () => {
   let wrapper;
@@ -17,7 +16,7 @@ describe('Terminal Component', () => {
   });
 
   it('should render a link to open a web terminal with the provided path', () => {
-    const link = wrapper.findByRole('link', { name: __('Terminal') });
+    const link = wrapper.findByRole('link', { name: 'Terminal' });
     expect(link.attributes('href')).toBe(terminalPath);
   });
 

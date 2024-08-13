@@ -7,6 +7,7 @@ class JwtController < ApplicationController
 
   # Add this before other actions, since we want to have the user or project
   prepend_before_action :auth_user, :authenticate_project_or_user
+  around_action :bypass_admin_mode!, if: :auth_user
 
   feature_category :container_registry
   # https://gitlab.com/gitlab-org/gitlab/-/issues/357037
@@ -108,5 +109,11 @@ class JwtController < ApplicationController
     strong_memoize(:auth_user) do
       @authentication_result.auth_user
     end
+  end
+
+  def bypass_admin_mode!(&)
+    return yield unless Gitlab::CurrentSettings.admin_mode
+
+    Gitlab::Auth::CurrentUserMode.bypass_session!(auth_user.id, &)
   end
 end

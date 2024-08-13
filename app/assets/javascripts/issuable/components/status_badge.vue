@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   STATUS_CLOSED,
@@ -43,7 +43,7 @@ const badgePropertiesMap = {
   },
   [TYPE_MERGE_REQUEST]: {
     [STATUS_OPEN]: {
-      icon: 'merge-request-open',
+      icon: 'merge-request',
       text: __('Open'),
       variant: 'success',
     },
@@ -58,7 +58,7 @@ const badgePropertiesMap = {
       variant: 'info',
     },
     [STATUS_LOCKED]: {
-      icon: 'merge-request-open',
+      icon: 'merge-request',
       text: __('Open'),
       variant: 'success',
     },
@@ -68,7 +68,6 @@ const badgePropertiesMap = {
 export default {
   components: {
     GlBadge,
-    GlIcon,
   },
   props: {
     issuableType: {
@@ -93,10 +92,10 @@ export default {
 <template>
   <gl-badge
     :variant="badgeProperties.variant"
+    :icon="badgeProperties.icon"
     :aria-label="badgeProperties.text"
     class="gl-shrink-0"
   >
-    <gl-icon :name="badgeProperties.icon" />
     {{ badgeProperties.text }}
   </gl-badge>
 </template>

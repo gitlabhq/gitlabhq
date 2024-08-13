@@ -11,6 +11,7 @@
 - skip_pagination = false unless local_assigns[:skip_pagination] == true
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - card_mode = local_assigns[:card_mode] == true
+- event_tracking = local_assigns[:event_tracking]
 - css_classes = "#{'compact' if compact_mode} #{'explore' if explore_projects_tab?}"
 - contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to')
 - contributed_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t contributed to any projects')
@@ -53,7 +54,7 @@
             forks: able_to_see_forks_count?(project, user), show_last_commit_as_description: show_last_commit_as_description,
             user: user, merge_requests: able_to_see_merge_requests?(project, user), issues: able_to_see_issues?(project, user),
             pipeline_status: pipeline_status, compact_mode: compact_mode
-    = paginate_collection(projects, remote: remote) unless skip_pagination
+    = paginate_collection(projects, remote: remote, event_tracking: event_tracking) unless skip_pagination
   - else
     - if @contributed_projects
       = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: own_projects_illustration_path,

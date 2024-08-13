@@ -21,7 +21,7 @@ RSpec.describe 'Project integrations', :js, feature_category: :integrations do
     it 'returns a 404 for the prometheus edit page' do
       visit edit_project_settings_integration_path(project, :prometheus)
 
-      expect(page).to have_content "Page Not Found"
+      expect(page).to have_content "Page not found"
     end
   end
 end

@@ -107,7 +107,7 @@ The SSH host key path depends on the used software:
 
 In the following steps, replace `<ssh_host_key_path>` with the one you're using:
 
-1. SSH into **each Rails node on your secondary** site and log in as the `root` user:
+1. SSH into **each Rails node on your secondary** site and sign in as the `root` user:
 
    ```shell
    sudo -i
@@ -222,7 +222,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
       ![Add secondary site](img/adding_a_secondary_v15_8.png)
@@ -331,7 +331,7 @@ method to be enabled. This is enabled by default, but if converting an existing 
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
@@ -346,7 +346,7 @@ On the **primary** site:
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.

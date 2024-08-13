@@ -16,6 +16,7 @@ export default {
      * {
      *   title:    String, required
      *   icon:     String, optional
+     *   ancestorNotAvailable: Boolean, optional
      * }
      * ```
      */
@@ -45,6 +46,7 @@ export default {
       :id="itemId"
       :href="item.webUrl"
       class="disclosure-hierarchy-button gl-text-gray-900 gl-hover-text-decoration-none gl-active-text-decoration-none!"
+      :class="{ 'gl-cursor-help': item.ancestorNotAvailable }"
     >
       <gl-icon
         v-if="shouldDisplayIcon(item.icon)"

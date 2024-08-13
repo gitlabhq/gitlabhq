@@ -57,7 +57,7 @@ bound on mounting and destroyed when the button is, mitigating the above
 issue. It also has bindings to a particular container or modal ID
 available, to work with the focus trap created by our GlModal.
 
-### 3. A `gitlab-ui` component not conforming to [Pajamas Design System](https://design.gitlab.com/)
+### 3. A `gitlab-ui` component not conforming to Pajamas Design System
 
 Some [Pajamas Design System](https://design.gitlab.com/) components implemented in
 `gitlab-ui` do not conform with the design system specs. This is because they lack some

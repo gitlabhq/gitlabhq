@@ -147,9 +147,11 @@ module BulkInsertSafe
           returns
         end
 
+      composite_primary_key = ::Gitlab.next_rails? && composite_primary_key?
+
       # Handle insertions for tables with a composite primary key
       primary_keys = connection.schema_cache.primary_keys(table_name)
-      if unique_by.blank? && primary_key != primary_keys
+      if unique_by.blank? && (composite_primary_key || primary_key != primary_keys)
         unique_by = primary_keys
       end
 

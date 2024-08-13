@@ -15,7 +15,7 @@ RSpec.describe 'projects/hooks/edit' do
   it 'renders webhook page with "Recent events"' do
     render
 
-    expect(rendered).to have_css('h4', text: _('Webhook'))
+    expect(rendered).to have_css('.gl-heading-2', text: _('Webhook'))
     expect(rendered).to have_text(_('Recent events'))
   end
 

@@ -7,16 +7,14 @@
 # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
 require 'optparse'
+require 'time'
+
 require_relative File.expand_path('../../tooling/lib/tooling/helm3_client.rb', __dir__)
 require_relative File.expand_path('../../tooling/lib/tooling/kubernetes_client.rb', __dir__)
 
 module ReviewApps
   class AutomatedCleanup
-    DEPLOYMENTS_PER_PAGE = 100
-    ENVIRONMENT_PREFIX = {
-      review_app: 'review/',
-      docs_review_app: 'review-docs/'
-    }.freeze
+    ENVIRONMENTS_PER_PAGE = 100
     IGNORED_HELM_ERRORS = [
       'transport is closing',
       'error upgrading connection',
@@ -57,7 +55,6 @@ module ReviewApps
       @gitlab_token                     = gitlab_token
       @api_endpoint                     = api_endpoint
       @dry_run                          = options[:dry_run]
-      @environments_not_found_count     = 0
     end
 
     def gitlab
@@ -80,81 +77,23 @@ module ReviewApps
       @kubernetes ||= Tooling::KubernetesClient.new
     end
 
-    def perform_gitlab_environment_cleanup!(days_for_delete:)
+    def perform_gitlab_environment_cleanup!(env_prefix:, days_for_delete:)
       puts "Dry-run mode." if dry_run
-      puts "Checking for Review Apps not updated in the last #{days_for_delete} days..."
+      puts "Checking for GitLab #{env_prefix} environments without any deployments in them, or deployed more than #{days_for_delete} days ago..."
 
-      checked_environments = []
       delete_threshold = threshold_time(days: days_for_delete)
-      deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
 
-      releases_to_delete = []
+      gitlab.environments(project_path, per_page: ENVIRONMENTS_PER_PAGE, sort: 'desc', search: env_prefix).auto_paginate do |environment|
+        next unless environment.name.start_with?(env_prefix)
+        # TODO: Find a way to reset those, so that we can properly delete them.
+        next if environment.state == 'stopping' # We cannot delete environments in stopping state
 
-      # Delete environments via deployments
-      gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
-        last_deploy = deployment.created_at
-        deployed_at = Time.parse(last_deploy)
+        deployments = gitlab.deployments(project_path, environment: environment.name, order_by: :created_at, sort: :desc)
+        next if deployments.count > 0 && Time.parse(deployments.first.created_at) > delete_threshold
 
-        break if deployed_at < deployments_look_back_threshold
-
-        environment = deployment.environment
-
-        next unless environment
-        next unless environment.name.start_with?(ENVIRONMENT_PREFIX[:review_app])
-        next if checked_environments.include?(environment.slug)
-
-        if deployed_at < delete_threshold
-          deleted_environment = delete_environment(environment, deployment)
-
-          if deleted_environment
-            release = Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1)
-            releases_to_delete << release
-          end
-        end
-
-        checked_environments << environment.slug
+        stop_environment(environment)
+        delete_environment(environment)
       end
-
-      delete_stopped_environments(environment_type: :review_app, checked_environments: checked_environments, last_updated_threshold: delete_threshold) do |environment|
-        releases_to_delete << Tooling::Helm3Client::Release.new(name: environment.slug, namespace: environment.slug, revision: 1, updated: environment.updated_at)
-      end
-
-      delete_helm_releases(releases_to_delete)
-    end
-
-    def perform_gitlab_docs_environment_cleanup!(days_for_stop:, days_for_delete:)
-      puts "Dry-run mode." if dry_run
-      puts "Checking for Docs Review Apps not updated in the last #{days_for_stop} days..."
-
-      checked_environments = []
-      stop_threshold = threshold_time(days: days_for_stop)
-      delete_threshold = threshold_time(days: days_for_delete)
-      deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
-
-      # Delete environments via deployments
-      gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
-        last_deploy = deployment.created_at
-        deployed_at = Time.parse(last_deploy)
-
-        break if deployed_at < deployments_look_back_threshold
-
-        environment = deployment.environment
-
-        next unless environment
-        next unless environment.name.start_with?(ENVIRONMENT_PREFIX[:docs_review_app])
-        next if checked_environments.include?(environment.slug)
-
-        if deployed_at < stop_threshold
-          environment_state = fetch_environment(environment)&.state
-          stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
-        end
-
-        delete_environment(environment, deployment) if deployed_at < delete_threshold
-
-        checked_environments << environment.slug
-      end
-
-      delete_stopped_environments(environment_type: :docs_review_app, checked_environments: checked_environments, last_updated_threshold: delete_threshold)
     end
 
     def perform_helm_releases_cleanup!(days:)
@@ -190,55 +129,26 @@ module ReviewApps
 
     attr_reader :api_endpoint, :dry_run, :gitlab_token, :project_path
 
-    def fetch_environment(environment)
-      gitlab.environment(project_path, environment.id)
-    rescue Errno::ETIMEDOUT => ex
-      puts "Failed to fetch '#{environment.name}' / '#{environment.slug}' (##{environment.id}):\n#{ex.message}"
-      nil
-    end
+    def stop_environment(environment)
+      return if environment.state == 'stopped' || environment.state == 'stopping'
 
-    def delete_environment(environment, deployment = nil)
-      release_date = deployment ? deployment.created_at : environment.updated_at
-      print_release_state(subject: 'Review app', release_name: environment.slug, release_date: release_date, action: 'deleting')
-      gitlab.delete_environment(project_path, environment.id) unless dry_run
-
-    rescue Gitlab::Error::NotFound
-      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) was not found: ignoring it"
-      @environments_not_found_count += 1
-
-      if @environments_not_found_count >= ENVIRONMENTS_NOT_FOUND_THRESHOLD
-        raise "At least #{ENVIRONMENTS_NOT_FOUND_THRESHOLD} environments were missing when we tried to delete them. Please investigate"
-      end
-    rescue Gitlab::Error::Forbidden
-      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
-    rescue Gitlab::Error::InternalServerError
-      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) 500 error: ignoring it"
-    end
-
-    def stop_environment(environment, deployment)
-      print_release_state(subject: 'Review app', release_name: environment.slug, release_date: deployment.created_at, action: 'stopping')
+      print_release_state(subject: 'GitLab Environment', release_name: environment.slug, release_date: environment.created_at, action: 'stopping')
       gitlab.stop_environment(project_path, environment.id) unless dry_run
-
     rescue Gitlab::Error::Forbidden
-      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
+      puts "GitLab environment '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
     end
 
-    def delete_stopped_environments(environment_type:, checked_environments:, last_updated_threshold:)
-      gitlab.environments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc', states: 'stopped', search: ENVIRONMENT_PREFIX[environment_type]).auto_paginate do |environment|
-        next if skip_environment?(environment: environment, checked_environments: checked_environments, last_updated_threshold: last_updated_threshold, environment_type: environment_type)
+    def delete_environment(environment)
+      return if environment.state == 'stopping'
 
-        yield environment if delete_environment(environment) && block_given?
-
-        checked_environments << environment.slug
-      end
-    end
-
-    def skip_environment?(environment:, checked_environments:, last_updated_threshold:, environment_type:)
-      return true unless environment.name.start_with?(ENVIRONMENT_PREFIX[environment_type])
-      return true if checked_environments.include?(environment.slug)
-      return true if Time.parse(environment.updated_at) > last_updated_threshold
-
-      false
+      print_release_state(subject: 'GitLab environment', release_name: environment.slug, release_date: environment.created_at, action: 'deleting')
+      gitlab.delete_environment(project_path, environment.id) unless dry_run
+    rescue Gitlab::Error::NotFound
+      puts "GitLab environment '#{environment.name}' / '#{environment.slug}' (##{environment.id}) was not found: ignoring it"
+    rescue Gitlab::Error::Forbidden
+      puts "GitLab environment '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
+    rescue Gitlab::Error::InternalServerError
+      puts "GitLab environment '#{environment.name}' / '#{environment.slug}' (##{environment.id}) 500 error: ignoring it"
     end
 
     def helm_releases
@@ -298,10 +208,6 @@ if $PROGRAM_NAME == __FILE__
   options           = ReviewApps::AutomatedCleanup.parse_args(ARGV)
   automated_cleanup = ReviewApps::AutomatedCleanup.new(options: options)
 
-  timed('Docs Review Apps cleanup') do
-    automated_cleanup.perform_gitlab_docs_environment_cleanup!(days_for_stop: 20, days_for_delete: 30)
-  end
-
   puts
 
   timed('Helm releases cleanup') do
@@ -310,8 +216,16 @@ if $PROGRAM_NAME == __FILE__
 
   puts
 
-  timed('Review Apps cleanup') do
-    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_delete: 7)
+  timed('Review Apps Environments cleanup') do
+    automated_cleanup.perform_gitlab_environment_cleanup!(env_prefix: 'review/', days_for_delete: 7)
+  end
+
+  timed('Docs Review Apps environments cleanup') do
+    automated_cleanup.perform_gitlab_environment_cleanup!(env_prefix: 'review-docs/', days_for_delete: 30)
+  end
+
+  timed('as-if-foss Environments cleanup') do
+    automated_cleanup.perform_gitlab_environment_cleanup!(env_prefix: 'as-if-foss/', days_for_delete: 30)
   end
 
   puts

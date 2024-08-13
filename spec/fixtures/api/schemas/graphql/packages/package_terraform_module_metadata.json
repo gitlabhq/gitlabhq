@@ -1,0 +1,202 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "fields",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root"
+      ],
+      "definitions": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "default": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "dependency": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ]
+        },
+        "dependencies": {
+          "type": "object",
+          "properties": {
+            "providers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/fields/definitions/dependency"
+              }
+            },
+            "modules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/fields/definitions/dependency"
+              }
+            }
+          }
+        },
+        "resources": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "properties": {
+        "root": {
+          "type": "object",
+          "properties": {
+            "readme": {
+              "type": "string"
+            },
+            "readmeHtml": {
+              "type": "string"
+            },
+            "inputs": {
+              "$ref": "#/properties/fields/definitions/inputs"
+            },
+            "outputs": {
+              "$ref": "#/properties/fields/definitions/outputs"
+            },
+            "dependencies": {
+              "$ref": "#/properties/fields/definitions/dependencies"
+            },
+            "resources": {
+              "$ref": "#/properties/fields/definitions/resources"
+            }
+          },
+          "additionalProperties": false
+        },
+        "submodules": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "readme": {
+                "type": "string"
+              },
+              "readmeHtml": {
+                "type": "string"
+              },
+              "inputs": {
+                "$ref": "#/properties/fields/definitions/inputs"
+              },
+              "outputs": {
+                "$ref": "#/properties/fields/definitions/outputs"
+              },
+              "dependencies": {
+                "$ref": "#/properties/fields/definitions/dependencies"
+              },
+              "resources": {
+                "$ref": "#/properties/fields/definitions/resources"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "examples": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "readme": {
+                "type": "string"
+              },
+              "readmeHtml": {
+                "type": "string"
+              },
+              "inputs": {
+                "$ref": "#/properties/fields/definitions/inputs"
+              },
+              "outputs": {
+                "$ref": "#/properties/fields/definitions/outputs"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

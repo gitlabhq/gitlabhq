@@ -1,12 +1,13 @@
 - add_to_breadcrumbs _("Pages"), project_pages_path(@project)
 - page_title _('New pages domain')
-%h1.gl-heading-1
-  = _("New pages domain")
-.gl-text-secondary
-  = render 'projects/pages_domains/helper_text'
+
+= render ::Layouts::PageHeadingComponent.new(_("New pages domain")) do |c|
+  - c.with_description do
+    = render 'projects/pages_domains/helper_text'
+
 %div
   = gitlab_ui_form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
-    .gl-flex.gl-gap-3.gl-mt-6
+    .gl-flex.gl-gap-3
       = f.submit _('Create new domain'), pajamas_button: true
       = link_button_to _('Cancel'), project_pages_path(@project)

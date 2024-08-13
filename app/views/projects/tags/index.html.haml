@@ -1,42 +1,49 @@
 - page_title s_('TagsPage|Tags')
+- show_empty_state = !@tags.any? && !@search.present?
+- show_empty_search = !@tags.any? && @search.present?
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
 
-.flex-list
-  .top-area.adjust
-    .nav-text.row-main-content
-      = s_('TagsPage|Tags give the ability to mark specific points in history as being important')
+- if show_empty_state
+  - button_text = s_('TagsPage|New tag') if can?(current_user, :admin_tag, @project)
+  - button_link = new_project_tag_path(@project) if can?(current_user, :admin_tag, @project)
 
-    .nav-controls
-      #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort), sort_options: tags_sort_options_hash.to_json } }
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
+    title: s_('TagsPage|Repository has no tags yet'),
+    primary_button_text: button_text,
+    primary_button_link: button_link,
+    primary_button_options: { data: { testid: "new-tag-button" } },
+    empty_state_options: { data: { testid: "tags-empty-state" } }) do |c|
+
+    - c.with_description do
+      = s_('TagsPage|Use git tag command to add a new one:')
+      %br
+      %span.monospace git tag -a v1.4 -m 'version 1.4'
+
+- else
+  = render ::Layouts::PageHeadingComponent.new(s_('TagsPage|Tags'),
+    description: s_('TagsPage|Tags give the ability to mark specific points in history as being important')) do |c|
+    - c.with_actions do
       = link_button_to nil, project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'has-tooltip gl-ml-auto', icon: 'rss'
       - if can?(current_user, :admin_tag, @project)
         = link_button_to new_project_tag_path(@project), data: { testid: "new-tag-button" }, variant: :confirm do
           = s_('TagsPage|New tag')
+
+  .row-content-block
+    #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort), sort_options: tags_sort_options_hash.to_json } }
 
   = render_if_exists 'projects/commits/mirror_status'
 
   - if @tags_loading_error
     = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tags')
 
-  .tags
-    - if @tags.any?
-      %ul.flex-list.content-list
-        = render partial: 'tag', collection: @tags
+  - if show_empty_search
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+      title: s_('TagsPage|Sorry, your filter produced no results'))
+  - else
+    %ul.flex-list.content-list
+      = render partial: 'tag', collection: @tags
+    = paginate @tags, theme: 'gitlab'
 
-      = paginate @tags, theme: 'gitlab'
-
-    - else
-      .nothing-here-block
-        - if @search.present?
-          = s_('TagsPage|Sorry, your filter produced no results.')
-        - else
-          = s_('TagsPage|Repository has no tags yet.')
-          %br
-          %small
-            = s_('TagsPage|Use git tag command to add a new one:')
-            %br
-            %span.monospace git tag -a v1.4 -m 'version 1.4'
-
-- if can?(current_user, :admin_tag, @project)
-  .js-delete-tag-modal
+  - if can?(current_user, :admin_tag, @project)
+    .js-delete-tag-modal

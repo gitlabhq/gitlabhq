@@ -272,7 +272,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'does not allow a subgroup to have the same name as an existing subgroup' do
           sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
-          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2')
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: sub_group1.organization)
 
           expect(sub_group1).to be_valid
           expect(sub_group2).not_to be_valid
@@ -1368,6 +1368,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to match_array(groups) }
     end
 
+    describe '.by_min_access_level' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group1) { create(:group) }
+      let_it_be(:group2) { create(:group) }
+
+      let(:owner_access_level) { Gitlab::Access::OWNER }
+      let(:developer_access_level) { Gitlab::Access::DEVELOPER }
+
+      before do
+        create(:group_member, user: user, group: group1, access_level: owner_access_level)
+        create(:group_member, user: user, group: group2, access_level: developer_access_level)
+      end
+
+      it 'returns groups where the user has the specified access level' do
+        result = described_class.by_min_access_level(user, owner_access_level)
+
+        expect(result).to contain_exactly(group1)
+      end
+
+      it 'returns groups if the user has greater or equal specified access level' do
+        result = described_class.by_min_access_level(user, developer_access_level)
+
+        expect(result).to contain_exactly(group1, group2)
+      end
+    end
+
     describe 'descendants_with_shared_with_groups' do
       subject { described_class.descendants_with_shared_with_groups(parent_group) }
 
@@ -1983,23 +2009,37 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when organization owner' do
-      let_it_be(:admin) { create(:admin) }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it 'returns OWNER by default' do
-          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
-        end
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:org_owner) do
+        create(:organization_owner, organization: organization).user
       end
 
-      context 'when admin mode is disabled' do
-        it 'returns NO_ACCESS by default' do
-          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::NO_ACCESS)
+      it 'returns OWNER by default' do
+        expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when organization owner is also an admin' do
+        before do
+          org_owner.update!(admin: true)
+        end
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns OWNER by default' do
+            expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'returns NO_ACCESS by default' do
+            expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::NO_ACCESS)
+          end
         end
       end
 
       context 'when only concrete members' do
         it 'returns NO_ACCESS' do
-          expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
+          expect(group.max_member_access_for_user(org_owner, only_concrete_membership: true))
             .to eq(Gitlab::Access::NO_ACCESS)
         end
       end
@@ -3794,6 +3834,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items_alpha }
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
+    end
+  end
+
+  describe '#glql_integration_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :glql_integration }
+      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
     end
   end
 

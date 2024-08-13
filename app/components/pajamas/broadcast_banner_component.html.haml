@@ -1,5 +1,5 @@
 .gl-broadcast-message.broadcast-banner-message.banner{ role: 'alert',
-  class: "js-broadcast-notification-#{@id} #{@theme}", data: { testid: 'banner-broadcast-message' } }
+  class: "js-broadcast-notification-#{@id} #{@theme}", data: { testid: 'banner-broadcast-message', 'broadcast-banner': @banner } }
   .gl-broadcast-message-content
     .gl-broadcast-message-icon
       = sprite_icon('bullhorn')
@@ -15,5 +15,6 @@
         data: { id: @id,
                 expire_date: @expire_date,
                 dismissal_path: @dismissal_path,
-                cookie_key: @cookie_key } },
+                cookie_key: @cookie_key,
+                testid: @button_testid } },
       icon_classes: 'gl-text-white')

@@ -6,8 +6,7 @@ import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/super_sidebar/constants';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { getTopFrequentItems } from '~/super_sidebar/utils';
-import groupProjectsForLinksWidgetQuery from '../../graphql/group_projects_for_links_widget.query.graphql';
-import relatedProjectsForLinksWidgetQuery from '../../graphql/related_projects_for_links_widget.query.graphql';
+import namespaceProjectsForLinksWidgetQuery from '../../graphql/namespace_projects_for_links_widget.query.graphql';
 import { SEARCH_DEBOUNCE, MAX_FREQUENT_PROJECTS } from '../../constants';
 
 export default {
@@ -16,7 +15,7 @@ export default {
     ProjectAvatar,
   },
   model: {
-    prop: 'selectedProject',
+    prop: 'selectedProjectFullPath',
     event: 'selectProject',
   },
   props: {
@@ -24,14 +23,19 @@ export default {
       required: true,
       type: String,
     },
+    currentProjectName: {
+      required: false,
+      type: String,
+      default: '',
+    },
     isGroup: {
       required: false,
       type: Boolean,
       default: false,
     },
-    selectedProject: {
+    selectedProjectFullPath: {
       required: false,
-      type: Object,
+      type: String,
       default: null,
     },
   },
@@ -39,14 +43,14 @@ export default {
     return {
       projects: [],
       frequentProjects: [],
-      selectedProjectFullPath: null,
       searchKey: '',
+      selectedProject: null,
     };
   },
   apollo: {
     projects: {
       query() {
-        return this.isGroup ? groupProjectsForLinksWidgetQuery : relatedProjectsForLinksWidgetQuery;
+        return namespaceProjectsForLinksWidgetQuery;
       },
       variables() {
         return {
@@ -55,17 +59,18 @@ export default {
         };
       },
       update(data) {
-        return this.isGroup ? data.group?.projects?.nodes : data.project?.group?.projects?.nodes;
+        return data.namespace?.projects?.nodes;
       },
       result() {
-        if (this.selectedProject === null) {
-          this.selectedProjectFullPath = this.fullPath;
-        }
+        this.selectedProject = this.findSelectedProject(this.selectedProjectFullPath);
       },
       debounce: SEARCH_DEBOUNCE,
     },
   },
   computed: {
+    projectsLoading() {
+      return this.$apollo.queries.projects.loading;
+    },
     dropdownToggleText() {
       if (this.selectedProject) {
         /** When selectedProject is fetched from localStorage
@@ -74,15 +79,20 @@ export default {
          * */
         return this.selectedProject.nameWithNamespace || this.selectedProject.namespace;
       }
-      return s__('WorkItem|Select a project');
+      return this.selectedProjectFullPath && this.currentProjectName
+        ? this.currentProjectName
+        : s__('WorkItem|Select a project');
     },
     listItems() {
       const items = [];
+      let frequent = [];
       if (this.frequentProjects.length > 0) {
-        const frequent = this.frequentProjects.map((project) => {
+        frequent = this.frequentProjects.map((project) => {
           return {
             text: project.name,
-            value: project.webUrl,
+            value: project.webUrl.startsWith('/')
+              ? project.webUrl.substring(1, project.webUrl.length)
+              : project.webUrl,
             namespace: project.namespace,
             avatarUrl: project.avatar_url,
           };
@@ -94,15 +104,21 @@ export default {
         });
       }
 
+      const frequentFullPaths = frequent.map((freq) => freq.value);
+
       if (this.projects.length > 0) {
-        const allProjects = this.projects.map((project) => {
-          return {
-            text: project.name,
-            value: project.fullPath,
-            namespace: project.namespace?.name,
-            avatarUrl: project.avatarUrl,
-          };
-        });
+        const allProjects = this.projects
+          .filter((project) => {
+            return !frequentFullPaths.includes(project.fullPath);
+          })
+          .map((project) => {
+            return {
+              text: project.name,
+              value: project.fullPath,
+              namespace: project.namespace?.name,
+              avatarUrl: project.avatarUrl,
+            };
+          });
 
         items.push({
           text: __('Projects'),
@@ -114,16 +130,14 @@ export default {
       return items;
     },
   },
-  watch: {
-    selectedProjectFullPath(projectFullPath) {
-      const project = this.findSelectedProject(projectFullPath);
-      this.$emit('selectProject', project);
-    },
-  },
   methods: {
     handleSearch(keyword) {
       this.searchKey = keyword;
       this.setFrequentProjects(keyword);
+    },
+    handleSelect(projectFullPath) {
+      this.selectedProject = this.findSelectedProject(projectFullPath);
+      this.$emit('selectProject', projectFullPath);
     },
     findSelectedProject(projectFullPath) {
       const project = this.projects.find((proj) => proj.fullPath === projectFullPath);
@@ -192,15 +206,17 @@ export default {
 
 <template>
   <gl-collapsible-listbox
-    v-model="selectedProjectFullPath"
     block
     searchable
     is-check-centered
     :items="listItems"
+    :selected="selectedProjectFullPath"
     :toggle-text="dropdownToggleText"
+    :searching="projectsLoading"
     fluid-width
     class="gl-relative"
     @search="handleSearch"
+    @select="handleSelect"
     @shown="handleDropdownShow"
   >
     <template #list-item="{ item }">

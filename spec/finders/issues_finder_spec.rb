@@ -69,4 +69,33 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
       end
     end
   end
+
+  context 'when filtering by a date' do
+    let_it_be(:item_due_2_weeks_ago) { create(:issue, project: project1, due_date: 2.weeks.ago) }
+    let_it_be(:item_due_yesterday) { create(:issue, project: project1, due_date: 1.day.ago) }
+    let_it_be(:item_due_today) { create(:issue, project: project1, due_date: Date.today) }
+    let_it_be(:item_due_tomorrow) { create(:issue, project: project1, due_date: 1.day.from_now) }
+    let_it_be(:item_due_in_1_week) { create(:issue, project: project1, due_date: 1.week.from_now) }
+    let(:scope) { 'all' }
+
+    context 'when filtering by due_before' do
+      include_context '{Issues|WorkItems}Finder#execute context', :issue
+
+      let(:params) { { due_before: Date.today } }
+
+      it 'returns relevant issues' do
+        expect(items).to contain_exactly(item_due_2_weeks_ago, item_due_yesterday)
+      end
+    end
+
+    context 'when filtering by due_after' do
+      include_context '{Issues|WorkItems}Finder#execute context', :issue
+
+      let(:params) { { due_after: Date.today } }
+
+      it 'returns relevant issues' do
+        expect(items).to contain_exactly(item_due_today, item_due_tomorrow, item_due_in_1_week)
+      end
+    end
+  end
 end

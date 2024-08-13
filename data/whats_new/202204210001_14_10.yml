@@ -1,7 +1,7 @@
 - name: "Compliance report individual violation reporting"
   description: |
     The compliance report now reports every individual merge request violation for the projects within a group. This is a huge improvement over the previous version, which only showed the latest MR that had one or more violations. The new version allows you to see history and patterns of violations over time.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]

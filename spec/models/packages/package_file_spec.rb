@@ -422,6 +422,10 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
+  describe '.installable_statuses' do
+    it_behaves_like 'installable statuses'
+  end
+
   describe '#file_name_for_download' do
     subject { package_file.file_name_for_download }
 

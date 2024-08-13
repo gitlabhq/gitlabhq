@@ -1,7 +1,6 @@
 import { GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -14,12 +13,10 @@ import DropdownContentsCreateView from '~/sidebar/components/labels/labels_selec
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
-  groupWorkItemByIidResponseFactory,
   projectLabelsResponse,
   groupLabelsResponse,
   getProjectLabelsResponse,
@@ -50,9 +47,6 @@ describe('WorkItemLabels component', () => {
   const workItemQueryWithFewLabelsHandler = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ labels: [mockLabels[0], mockLabels[1]] }));
-  const groupWorkItemQuerySuccess = jest
-    .fn()
-    .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
   const projectLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const groupLabelsQueryHandler = jest.fn().mockResolvedValue(groupLabelsResponse);
   const errorHandler = jest.fn().mockRejectedValue('Error');
@@ -82,7 +76,6 @@ describe('WorkItemLabels component', () => {
     wrapper = shallowMountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
-        [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
         [projectLabelsQuery, searchQueryHandler],
         [groupLabelsQuery, groupLabelsQueryHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
@@ -167,7 +160,6 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expect(workItemQueryWithLabelsHandler).toHaveBeenCalled();
-    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
 
     expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toStrictEqual([
       label1Id,
@@ -342,29 +334,44 @@ describe('WorkItemLabels component', () => {
   });
 
   it('shows selected labels at top of list', async () => {
+    const [label1, label2, label3] = mockLabels;
+    const label999 = {
+      __typename: 'Label',
+      id: 'gid://gitlab/Label/999',
+      title: 'Label 999',
+      description: 'Label not in the label query result',
+      color: '#fff',
+      textColor: '#000',
+    };
+
     createComponent({
       workItemQueryHandler: workItemQuerySuccess,
-      updateWorkItemMutationHandler: successAddRemoveLabelWorkItemMutationHandler,
+      updateWorkItemMutationHandler: jest.fn().mockResolvedValue(
+        updateWorkItemMutationResponseFactory({
+          labels: [label1, label999],
+        }),
+      ),
     });
 
-    updateLabels([label1Id, label3Id]);
+    updateLabels([label1Id, label999.id]);
 
     showDropdown();
 
     await waitForPromises();
 
-    const [label1, label2, label3] = mockLabels;
-
     const selected = [
       { color: label1.color, text: label1.title, value: label1.id },
+      { color: label999.color, text: label999.title, value: label999.id },
+    ];
+
+    const unselected = [
+      { color: label2.color, text: label2.title, value: label2.id },
       { color: label3.color, text: label3.title, value: label3.id },
     ];
 
-    const unselected = [{ color: label2.color, text: label2.title, value: label2.id }];
-
     expect(findWorkItemSidebarDropdownWidget().props('listItems')).toEqual([
-      { options: selected, text: __('Selected') },
-      { options: unselected, text: __('All'), textSrOnly: true },
+      { options: selected, text: 'Selected' },
+      { options: unselected, text: 'All', textSrOnly: true },
     ]);
   });
 
@@ -421,27 +428,11 @@ describe('WorkItemLabels component', () => {
     expect(workItemQuerySuccess).not.toHaveBeenCalled();
   });
 
-  it('skips calling the group work item query when missing workItemIid', async () => {
-    createComponent({ isGroup: true, workItemIid: '' });
-
-    await waitForPromises();
-
-    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
-  });
-
   describe('when group context', () => {
     beforeEach(async () => {
       createComponent({ isGroup: true });
 
       await waitForPromises();
-    });
-
-    it('skips calling the project work item query', () => {
-      expect(workItemQuerySuccess).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', () => {
-      expect(groupWorkItemQuerySuccess).toHaveBeenCalled();
     });
 
     it('calls the group labels query on search', async () => {

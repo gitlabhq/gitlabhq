@@ -44,38 +44,6 @@ RSpec.describe Gitlab::Ci::Ansi2json::Style, feature_category: :continuous_integ
     end
   end
 
-  describe 'update formats to mimic terminals' do
-    subject { described_class.new(**params) }
-
-    context 'when fg color present' do
-      let(:params) { { fg: 'term-fg-black', mask: mask } }
-
-      context 'when mask is set to bold' do
-        let(:mask) { 0x01 }
-
-        it 'changes the fg color to a lighter version' do
-          expect(subject.fg).to eq('term-fg-l-black')
-        end
-      end
-
-      context 'when mask set to another format' do
-        let(:mask) { 0x02 }
-
-        it 'does not change the fg color' do
-          expect(subject.fg).to eq('term-fg-black')
-        end
-      end
-
-      context 'when mask is not set' do
-        let(:mask) { 0 }
-
-        it 'does not change the fg color' do
-          expect(subject.fg).to eq('term-fg-black')
-        end
-      end
-    end
-  end
-
   describe '#update' do
     where(:initial_state, :ansi_commands, :result, :description) do
       [
@@ -153,8 +121,8 @@ RSpec.describe Gitlab::Ci::Ansi2json::Style, feature_category: :continuous_integ
         # default background
         [%w[31 42], %w[49], 'term-fg-red', 'set background from green to default leaving foreground unchanged'],
         # misc
-        [[], %w[1 30 42 3], 'term-fg-l-black term-bg-green term-bold term-italic', 'adds fg color, bg color and formats from no style'],
-        [%w[3 31], %w[23 1 43], 'term-fg-l-red term-bg-yellow term-bold', 'replaces format italic with bold and adds a yellow background']
+        [[], %w[1 30 42 3], 'term-fg-black term-bg-green term-bold term-italic', 'adds fg color, bg color and formats from no style'],
+        [%w[3 31], %w[23 1 43], 'term-fg-red term-bg-yellow term-bold', 'replaces format italic with bold and adds a yellow background']
       ]
     end
 

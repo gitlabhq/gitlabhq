@@ -3,7 +3,7 @@
 RSpec.shared_examples 'create todo mutation' do
   let_it_be(:current_user) { create(:user) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   context 'when user does not have permission to create todo' do
     it 'raises error' do

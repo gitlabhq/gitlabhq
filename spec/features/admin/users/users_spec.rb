@@ -565,6 +565,15 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       visit edit_admin_user_path(user)
     end
 
+    it 'shows all breadcrumbs', :js do
+      expect(page_breadcrumbs).to eq([
+        { text: 'Admin area', href: admin_root_path },
+        { text: 'Users', href: admin_users_path },
+        { text: user.name, href: admin_user_path(user) },
+        { text: 'Edit', href: edit_admin_user_path(user) }
+      ])
+    end
+
     describe 'Update user' do
       before do
         fill_in 'user_name', with: 'Big Bang'

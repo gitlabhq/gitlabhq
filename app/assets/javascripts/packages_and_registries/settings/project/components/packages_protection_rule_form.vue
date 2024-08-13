@@ -123,79 +123,77 @@ export default {
 </script>
 
 <template>
-  <div class="gl-new-card-add-form gl-m-3">
-    <gl-form @submit.prevent="submit" @reset="cancelForm">
-      <gl-alert
-        v-if="alertErrorMessage"
-        class="gl-mb-5"
-        variant="danger"
-        @dismiss="clearAlertErrorMessage"
-      >
-        {{ alertErrorMessage }}
-      </gl-alert>
+  <gl-form @submit.prevent="submit" @reset="cancelForm">
+    <gl-alert
+      v-if="alertErrorMessage"
+      class="gl-mb-5"
+      variant="danger"
+      @dismiss="clearAlertErrorMessage"
+    >
+      {{ alertErrorMessage }}
+    </gl-alert>
 
-      <gl-form-group
-        :label="s__('PackageRegistry|Name pattern')"
-        label-for="input-package-name-pattern"
-      >
-        <gl-form-input
-          id="input-package-name-pattern"
-          v-model.trim="packageProtectionRuleFormData.packageNamePattern"
-          type="text"
-          required
-          :disabled="isFieldDisabled"
-        />
-        <template #description>
-          <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
-            <template #link="{ content }">
-              <help-page-link
-                href="user/packages/package_registry/package_protection_rules.md"
-                target="_blank"
-                >{{ content }}</help-page-link
-              >
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-form-group>
-
-      <gl-form-group
-        :label="s__('PackageRegistry|Type')"
-        label-for="input-package-type"
+    <gl-form-group
+      :label="s__('PackageRegistry|Name pattern')"
+      label-for="input-package-name-pattern"
+    >
+      <gl-form-input
+        id="input-package-name-pattern"
+        v-model.trim="packageProtectionRuleFormData.packageNamePattern"
+        type="text"
+        required
         :disabled="isFieldDisabled"
-      >
-        <gl-form-select
-          id="input-package-type"
-          v-model="packageProtectionRuleFormData.packageType"
-          :disabled="isFieldDisabled"
-          :options="packageTypeOptions"
-          required
-        />
-      </gl-form-group>
+      />
+      <template #description>
+        <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
+          <template #link="{ content }">
+            <help-page-link
+              href="user/packages/package_registry/package_protection_rules.md"
+              target="_blank"
+              >{{ content }}</help-page-link
+            >
+          </template>
+        </gl-sprintf>
+      </template>
+    </gl-form-group>
 
-      <gl-form-group
-        :label="s__('PackageRegistry|Minimum access level for push')"
-        label-for="input-minimum-access-level-for-push"
+    <gl-form-group
+      :label="s__('PackageRegistry|Type')"
+      label-for="input-package-type"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-package-type"
+        v-model="packageProtectionRuleFormData.packageType"
         :disabled="isFieldDisabled"
-      >
-        <gl-form-select
-          id="input-minimum-access-level-for-push"
-          v-model="packageProtectionRuleFormData.minimumAccessLevelForPush"
-          :options="minimumAccessLevelForPushOptions"
-          :disabled="isFieldDisabled"
-          required
-        />
-      </gl-form-group>
+        :options="packageTypeOptions"
+        required
+      />
+    </gl-form-group>
 
-      <div class="gl-display-flex gl-justify-content-start">
-        <gl-button
-          variant="confirm"
-          type="submit"
-          :disabled="isSubmitButtonDisabled"
-          :loading="showLoadingIcon"
-          >{{ s__('PackageRegistry|Add rule') }}</gl-button
-        >
-        <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
-      </div>
-    </gl-form>
-  </div>
+    <gl-form-group
+      :label="s__('PackageRegistry|Minimum access level for push')"
+      label-for="input-minimum-access-level-for-push"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-minimum-access-level-for-push"
+        v-model="packageProtectionRuleFormData.minimumAccessLevelForPush"
+        :options="minimumAccessLevelForPushOptions"
+        :disabled="isFieldDisabled"
+        required
+      />
+    </gl-form-group>
+
+    <div class="gl-flex gl-justify-start">
+      <gl-button
+        variant="confirm"
+        type="submit"
+        :disabled="isSubmitButtonDisabled"
+        :loading="showLoadingIcon"
+        >{{ s__('PackageRegistry|Add rule') }}</gl-button
+      >
+      <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
+    </div>
+  </gl-form>
 </template>

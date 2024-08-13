@@ -49,7 +49,22 @@ Items marked with an asterisk (\*) also append an [issue closing pattern](../iss
 
 You can view merge requests for your project, group, or yourself.
 
-### For a project
+::Tabs
+
+:::TabTitle Assigned to you
+
+To view all merge requests assigned to you, use the <kbd>Shift</kbd> + <kbd>m</kbd>
+[keyboard shortcut](../../shortcuts.md), or:
+
+1. On the left sidebar, select **Search or go to**.
+1. From the dropdown list, select **Merge requests assigned to me**.
+
+or:
+
+1. On the left sidebar, select **Code > Merge requests** (**{merge-request}**).
+1. From the dropdown list, select **Assigned**.
+
+:::TabTitle For a project
 
 To view all merge requests for a project:
 
@@ -58,7 +73,7 @@ To view all merge requests for a project:
 
 Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
 
-### For all projects in a group
+:::TabTitle For all projects in a group
 
 To view merge requests for all projects in a group:
 
@@ -67,21 +82,7 @@ To view merge requests for all projects in a group:
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
-### Assigned to you
-
-To view all merge requests assigned to you:
-
-1. On the left sidebar, select **Search or go to**.
-1. From the dropdown list, select **Merge requests assigned to me**.
-
-or:
-
-- To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>m</kbd>.
-
-or:
-
-1. On the left sidebar, select **Code > Merge requests** (**{merge-request}**).
-1. From the dropdown list, select **Assigned**.
+::EndTabs
 
 ## Filter the list of merge requests
 
@@ -151,7 +152,7 @@ change, and whether you need access to a development environment:
 - [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you
   need a fully-featured environment to both edit files, and run tests afterward. Gitpod
   supports running the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
-  To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-settings).
+  To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-preferences).
 - [Push changes from the command line](../../../gitlab-basics/start-using-git.md), if you are
   familiar with Git and the command line.
 
@@ -165,30 +166,12 @@ a merge request, or:
 1. Select **Code > Merge requests** and find your merge request.
 1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
-1. Search for the user you want to assign, and select the user.
+1. Search for the user you want to assign, and select the user. GitLab Free allows one
+   assignee per merge request, but GitLab Premium and GitLab Ultimate allow multiple assignees:
 
-GitLab adds the merge request to the user's assigned merge request list.
+   ![Two assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
 
-### Assign multiple users
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-If more than one person is accountable for a merge request, use multiple assignees:
-
-![Two assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
-
-To add more assignees to a merge request, use the `/assign @user`
-[quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area, or:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
-1. On the right sidebar, expand the right sidebar and locate the **Assignees** section.
-1. Select **Edit** and, from the dropdown list, select all users you want
-   to assign the merge request to.
-
-To remove an assignee, clear the user from the same dropdown list.
+GitLab adds the merge request to the user's **Assigned merge requests** page.
 
 ## Close a merge request
 

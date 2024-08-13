@@ -231,6 +231,7 @@ module MergeRequestsHelper
 
   def project_merge_requests_list_data(project, current_user)
     {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       initial_sort: current_user&.user_preference&.issues_sort,
@@ -303,8 +304,8 @@ module MergeRequestsHelper
     link_to branch, branch_path, title: branch_title, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-ml-2'
   end
 
-  def merge_request_header(project, merge_request)
-    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
+  def merge_request_header(merge_request)
+    link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"
@@ -370,7 +371,7 @@ module MergeRequestsHelper
           title: _('Reviews requested'),
           query: 'reviewRequestedMergeRequests',
           variables: {
-            reviewState: 'UNREVIEWED'
+            reviewStates: %w[UNREVIEWED REVIEW_STARTED]
           }
         },
         {
@@ -384,7 +385,7 @@ module MergeRequestsHelper
           title: _('Waiting for reviewers'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewStates: %w[UNREVIEWED UNAPPROVED]
+            reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
           }
         },
         {

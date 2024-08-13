@@ -1,15 +1,16 @@
 - emails_disabled = group.emails_disabled?
 
-.notification-list-item.md:gl-flex.gl-justify-content-space-between.gl-align-items-center.gl-px-3.gl-py-4
-  .gl-mb-2.gl-md-mb-0
-    %span.gl-mr-2
-      = notification_icon(notification_icon_level(setting, emails_disabled))
+%li
+  .md:gl-flex.gl-justify-between.gl-items-center
+    .gl-mb-2.md:gl-mb-0
+      %span.gl-mr-2
+        = notification_icon(notification_icon_level(setting, emails_disabled))
 
-    %span
-      = link_to group.name, group_path(group)
+      %span
+        = link_to group.name, group_path(group)
 
-  .gl-display-flex.gl-gap-3.gl-flex-wrap
-    - if setting
-      .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: group.id, show_label: "true" } }
-    = form_for setting, url: profile_group_notifications_path(group), method: :put, html: { class: 'update-notifications gl-display-flex' } do |f|
-      .js-notification-email-listbox-input{ data: {  name: 'notification_setting[notification_email]', emails: @user.public_verified_emails.to_json, empty_value_text: _('Global notification email') , value: setting.notification_email, placement: 'bottom-end' } }
+    .gl-flex.gl-gap-3.gl-flex-wrap
+      - if setting
+        .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(setting).to_json, notification_level: setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: group.id, show_label: "true" } }
+      = form_for setting, url: profile_group_notifications_path(group), method: :put, html: { class: 'update-notifications gl-flex' } do |f|
+        .js-notification-email-listbox-input{ data: {  name: 'notification_setting[notification_email]', emails: @user.public_verified_emails.to_json, empty_value_text: _('Global notification email') , value: setting.notification_email, placement: 'bottom-end' } }

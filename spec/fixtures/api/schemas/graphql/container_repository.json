@@ -11,7 +11,8 @@
     "expirationPolicyCleanupStatus",
     "project",
     "lastCleanupDeletedTagsCount",
-    "userPermissions"
+    "userPermissions",
+    "protectionRuleExists"
   ],
   "properties": {
     "id": {

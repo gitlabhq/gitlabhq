@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Organizations
-  class Organization < MainClusterwide::ApplicationRecord
+  class Organization < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
     include Gitlab::SQL::Pattern
     include Gitlab::VisibilityLevel
@@ -9,11 +9,18 @@ module Organizations
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }
+    scope :with_namespace_path, ->(path) {
+      joins(namespaces: :route).where(route: { path: path.to_s })
+    }
+    scope :with_user, ->(user) {
+      joins(:organization_users).merge(Organizations::OrganizationUser.by_user(user).order(:id))
+    }
 
     before_destroy :check_if_default_organization
 
     has_many :namespaces
     has_many :groups
+    has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
     has_many :projects
     has_many :snippets
 
@@ -34,6 +41,8 @@ module Organizations
       uniqueness: { case_sensitive: false },
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
+
+    validate :check_visibility_level, if: -> { new_record? || visibility_level_changed? }
 
     delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
@@ -93,6 +102,16 @@ module Organizations
     end
 
     private
+
+    # The visibility must be broader than the visibility of any contained root groups.
+    def check_visibility_level
+      max_group_level = root_groups.maximum(:visibility_level)
+      return unless max_group_level
+
+      return if visibility_level >= max_group_level
+
+      errors.add(:visibility_level, _("can not be more restrictive than group visibility levels"))
+    end
 
     def check_if_default_organization
       return unless default?

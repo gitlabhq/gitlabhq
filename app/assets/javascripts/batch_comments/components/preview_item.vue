@@ -103,7 +103,7 @@ export default {
   <span>
     <span class="review-preview-item-header">
       <gl-icon class="flex-shrink-0" :name="iconName" />
-      <span class="bold text-nowrap gl-align-items-center">
+      <span class="gl-font-bold text-nowrap gl-items-center">
         <span class="review-preview-item-header-text block-truncated gl-ml-2">
           {{ titleText }}
         </span>

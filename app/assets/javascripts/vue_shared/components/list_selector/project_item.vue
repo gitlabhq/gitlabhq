@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <span class="gl-display-flex gl-align-items-center gl-gap-3" @click="$emit('select', name)">
+  <span class="gl-flex gl-items-center gl-gap-3" @click="$emit('select', name)">
     <gl-avatar
       :alt="name"
       :entity-name="name"
@@ -43,7 +43,7 @@ export default {
       :src="data.avatarUrl"
       fallback-on-error
     />
-    <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-max-w-30">
+    <span class="gl-flex gl-max-w-30 gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ name }}</span>
       <span class="gl-text-gray-600">{{ data.nameWithNamespace }}</span>
     </span>

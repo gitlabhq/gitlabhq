@@ -63,7 +63,7 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
         return;
       }
 
-      triggerEl.classList.remove('gl-display-none');
+      triggerEl.classList.remove('gl-hidden');
     }
 
     triggerEl.addEventListener(

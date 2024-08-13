@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "chat integration" do |integration_name, supports_deployments: false|
+RSpec.shared_examples "chat integration" do |integration_name, supports_deployments: false, http_method: :post|
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -52,7 +52,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
         webhook: webhook_url
       )
 
-      WebMock.stub_request(:post, webhook_url_regex)
+      WebMock.stub_request(http_method, webhook_url_regex)
     end
 
     shared_examples "triggered #{integration_name} integration" do |branches_to_be_notified: nil|
@@ -64,7 +64,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
         result = subject.execute(sample_data)
 
         expect(result).to be(true)
-        expect(WebMock).to have_requested(:post, webhook_url_regex).once.with { |req|
+        expect(WebMock).to have_requested(http_method, webhook_url_regex).once.with { |req|
           json_body = Gitlab::Json.parse(req.body).with_indifferent_access
           expect(json_body).to include(payload)
         }
@@ -80,7 +80,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
         result = subject.execute(sample_data)
 
         expect(result).to be_falsy
-        expect(WebMock).not_to have_requested(:post, webhook_url_regex)
+        expect(WebMock).not_to have_requested(http_method, webhook_url_regex)
       end
     end
 

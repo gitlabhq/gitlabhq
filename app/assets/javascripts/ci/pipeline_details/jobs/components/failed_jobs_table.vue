@@ -3,6 +3,7 @@ import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -11,6 +12,7 @@ import RetryFailedJobMutation from '../graphql/mutations/retry_failed_job.mutati
 import { DEFAULT_FIELDS } from '../../constants';
 
 export default {
+  name: 'PipelineFailedJobsTable',
   fields: DEFAULT_FIELDS,
   retry: __('Retry'),
   components: {
@@ -47,8 +49,9 @@ export default {
         } else {
           visitUrl(job.detailedStatus.detailsPath);
         }
-      } catch {
+      } catch (error) {
         this.showErrorMessage();
+        reportToSentry(this.$options.name, error);
       }
     },
     canRetryJob(job) {

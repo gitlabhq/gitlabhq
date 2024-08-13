@@ -5,7 +5,6 @@ import VueApollo from 'vue-apollo';
 import { createAlert } from '~/alert';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { s__ } from '~/locale';
 import RunnerBulkDelete from '~/ci/runner/components/runner_bulk_delete.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -25,8 +24,8 @@ describe('RunnerBulkDelete', () => {
   let mockCheckedRunnerIds;
 
   const findBanner = () => wrapper.findByTestId('runner-bulk-delete-banner');
-  const findClearBtn = () => wrapper.findByText(s__('Runners|Clear selection'));
-  const findDeleteBtn = () => wrapper.findByText(s__('Runners|Delete selected'));
+  const findClearBtn = () => wrapper.findByText('Clear selection');
+  const findDeleteBtn = () => wrapper.findByText('Delete selected');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const mockRunners = allRunnersData.data.runners.nodes;

@@ -1,0 +1,19 @@
+---
+description: User uses filter bar
+internal_events: true
+action: use_filter_bar_projects_explore
+identifiers:
+- user
+additional_properties:
+  label:
+    description: JSON object of filter parameters
+product_group: tenant_scale
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158282
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

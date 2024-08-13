@@ -1,5 +1,5 @@
-- breadcrumb_title s_('AccessTokens|Access Tokens')
-- page_title _('Project Access Tokens')
+- breadcrumb_title s_('AccessTokens|Access tokens')
+- page_title _('Project access tokens')
 - type = _('project access token')
 - type_plural = _('project access tokens')
 - @force_desktop_expanded_sidebar = true
@@ -24,21 +24,28 @@
 
   #js-new-access-token-app{ data: { access_token_type: type } }
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h3.gl-new-card-title
-          = _('Active project access tokens')
-        .gl-new-card-count
-          = sprite_icon('token', css_class: 'gl-mr-2')
-          %span.js-token-count= @active_access_tokens.size
+  = render ::Layouts::CrudComponent.new(_('Active project access tokens'),
+    icon: 'token',
+    count: @active_access_tokens.size,
+    count_options: { class: 'js-token-count' },
+    form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
+    options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
+    - c.with_actions do
       - if current_user.can?(:create_resource_access_tokens, @project)
-        .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
-            = _('Add new token')
-    - c.with_body do
-      - if current_user.can?(:create_resource_access_tokens, @project)
-        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
-          = render_if_exists 'projects/settings/access_tokens/form', type: type
+        = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
+          = _('Add new token')
 
-  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
+    - c.with_form do
+      - if current_user.can?(:create_resource_access_tokens, @project)
+        = render_if_exists 'projects/settings/access_tokens/form', type: type
+
+    - c.with_body do
+      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
+
+  - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @project.root_ancestor)
+    = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
+      icon: 'token',
+      count: @inactive_access_tokens.size,
+      count_options: { class: 'js-token-count' }) do |c|
+      - c.with_body do
+        #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This project has no inactive access tokens.')} }

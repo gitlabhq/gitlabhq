@@ -13,7 +13,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-2 gl-gap-x-5 gl-my-5"
+      class="gl-my-5 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-x-5 gl-gap-y-2"
     >
       <h1 class="gl-heading-1 !gl-m-0" data-testid="page-heading">
         <slot name="heading"></slot>
@@ -28,7 +28,7 @@ export default {
       </div>
       <div
         v-if="$scopedSlots.description"
-        class="gl-w-full gl-mt-2 gl-text-secondary"
+        class="gl-mt-2 gl-w-full gl-text-secondary"
         data-testid="page-heading-description"
       >
         <slot name="description"></slot>

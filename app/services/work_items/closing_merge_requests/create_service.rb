@@ -29,6 +29,8 @@ module WorkItems
         )
 
         if mr_closing_issue.save
+          GraphqlTriggers.work_item_updated(@work_item)
+
           ServiceResponse.success(payload: { merge_request_closing_issue: mr_closing_issue })
         else
           ServiceResponse.error(message: mr_closing_issue.errors.full_messages)

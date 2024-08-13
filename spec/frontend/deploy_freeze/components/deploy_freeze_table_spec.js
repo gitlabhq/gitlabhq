@@ -1,8 +1,8 @@
 import { GlModal } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
 import { RECEIVE_FREEZE_PERIODS_SUCCESS } from '~/deploy_freeze/store/mutation_types';
@@ -21,18 +21,19 @@ describe('Deploy freeze table', () => {
       timezoneData: timezoneDataFixture,
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
-    wrapper = mount(DeployFreezeTable, {
+    wrapper = mountExtended(DeployFreezeTable, {
       attachTo: document.body,
       store,
     });
   };
 
-  const findEmptyFreezePeriods = () => wrapper.find('[data-testid="empty-freeze-periods"]');
-  const findAddDeployFreezeButton = () => wrapper.find('[data-testid="add-deploy-freeze"]');
-  const findEditDeployFreezeButton = () => wrapper.find('[data-testid="edit-deploy-freeze"]');
-  const findDeployFreezeTable = () => wrapper.find('[data-testid="deploy-freeze-table"]');
-  const findDeleteDeployFreezeButton = () => wrapper.find('[data-testid="delete-deploy-freeze"]');
+  const findEmptyFreezePeriods = () => wrapper.findByTestId('empty-freeze-periods');
+  const findAddDeployFreezeButton = () => wrapper.findByTestId('add-deploy-freeze');
+  const findEditDeployFreezeButton = () => wrapper.findByTestId('edit-deploy-freeze');
+  const findDeployFreezeTable = () => wrapper.findByTestId('deploy-freeze-table');
+  const findDeleteDeployFreezeButton = () => wrapper.findByTestId('delete-deploy-freeze');
   const findDeleteDeployFreezeModal = () => wrapper.findComponent(GlModal);
+  const findCount = () => wrapper.findByTestId('crud-count');
 
   beforeEach(() => {
     createComponent();
@@ -63,6 +64,12 @@ describe('Deploy freeze table', () => {
         expect(tableRows.length).toBe(freezePeriodsFixture.length);
         expect(findEmptyFreezePeriods().exists()).toBe(false);
         expect(findEditDeployFreezeButton().exists()).toBe(true);
+      });
+
+      it('displays correct count', () => {
+        const tableRows = findDeployFreezeTable().findAll('tbody tr');
+        expect(tableRows.length).toBe(freezePeriodsFixture.length);
+        expect(findCount().text()).toBe('3');
       });
 
       it('allows user to edit deploy freeze', async () => {

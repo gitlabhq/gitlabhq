@@ -1,0 +1,12 @@
+# Error: gitlab.InternalLinksCode
+#
+# Checks that internal links don't link to files outside the docs directory
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Use full URLs for files outside the docs directory."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
+level: error
+scope: raw
+raw:
+  - '\[[^\]]*\]\([\.\/]*(ee|app|bin|config|db|data|fixtures|gems|lib|locale|qa|scripts|spec)\/'

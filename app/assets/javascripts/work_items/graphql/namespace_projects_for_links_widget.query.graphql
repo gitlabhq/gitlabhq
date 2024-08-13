@@ -1,0 +1,23 @@
+query namespaceProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
+  namespace(fullPath: $fullPath) {
+    id
+    projects(
+      search: $projectSearch
+      includeSubgroups: true
+      includeSiblingProjects: true
+      sort: ACTIVITY_DESC
+    ) {
+      nodes {
+        id
+        name
+        avatarUrl
+        nameWithNamespace
+        fullPath
+        namespace {
+          id
+          name
+        }
+      }
+    }
+  }
+}

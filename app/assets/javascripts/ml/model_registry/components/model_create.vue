@@ -60,6 +60,7 @@ export default {
       modelData: null,
       versionData: null,
       markdownDocPath: helpPagePath('user/markdown'),
+      markdownEditorRestrictedToolBarItems: ['full-screen'],
     };
   },
   computed: {
@@ -229,7 +230,7 @@ export default {
       ),
       variant: 'warning',
     },
-    optionalText: s__('MlModelRegistry|Optional'),
+    optionalText: s__('MlModelRegistry|(Optional)'),
   },
 };
 </script>
@@ -242,7 +243,7 @@ export default {
       :title="$options.modal.title"
       :action-primary="actionPrimary"
       :action-secondary="$options.modal.actionSecondary"
-      size="sm"
+      size="lg"
       @primary="create"
       @secondary="resetModal"
     >
@@ -266,6 +267,7 @@ export default {
         </gl-form-group>
         <gl-form-group
           :label="$options.modal.modelDescription"
+          data-testid="descriptionGroupId"
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
@@ -283,6 +285,7 @@ export default {
             :markdown-docs-path="markdownDocPath"
             :disable-attachments="disableAttachments"
             :placeholder="$options.modal.nameDescriptionPlaceholder"
+            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
             @input="setDescription"
           />
         </gl-form-group>
@@ -309,6 +312,7 @@ export default {
         </gl-form-group>
         <gl-form-group
           :label="$options.modal.versionDescriptionTitle"
+          data-testid="versionDescriptionGroupId"
           label-for="versionDescriptionId"
           optional
           :optional-text="$options.modal.optionalText"

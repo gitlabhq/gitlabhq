@@ -1,12 +1,10 @@
 - message = local_assigns.fetch(:message, nil)
 - content_for(:title, 'Request Conflict')
 
-%img{ :alt => "", :src => image_path('logo.svg') }
-%h1
-  409
-.container
-  %h2
-    = s_("409|There was a conflict with your request.")
+.error-container
+  = image_tag('illustrations/error/error-409-lg.svg', alt: '409', lazy: false)
+  %h1
+    = s_("409|409: There was a conflict with your request")
   - if message
     %p
       = message
@@ -15,4 +13,4 @@
   .action-container.js-go-back{ hidden: true }
     = render Pajamas::ButtonComponent.new(variant: :confirm) do
       = _('Go Back')
-= render "errors/footer"
+  = render 'errors/footer'

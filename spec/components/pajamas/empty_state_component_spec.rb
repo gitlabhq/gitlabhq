@@ -60,7 +60,7 @@ RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category:
 
     it 'renders section with flex direction column' do
       expect(find_section[:id]).to eq(empty_state_options[:id])
-      expect(find_section[:class]).to eq("gl-display-flex gl-empty-state gl-text-center gl-flex-direction-column")
+      expect(find_section[:class]).to eq("gl-flex gl-empty-state gl-text-center gl-flex-col")
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category:
     let(:compact) { true }
 
     it 'renders section with flex direction row' do
-      expect(find_section[:class]).to eq("gl-display-flex gl-empty-state gl-flex-direction-row")
+      expect(find_section[:class]).to eq("gl-flex gl-empty-state gl-flex-row")
     end
   end
 

@@ -28,8 +28,8 @@ describe('RunnerConfigurationPopover', () => {
     createComponent();
 
     expect(findHelpLink().text()).toBe('single runner entry');
-    expect(findHelpLink().attributes('href')).toBe(
-      '/help/runner/configuration/advanced-configuration.md#the-runners-section',
+    expect(findHelpLink().attributes('href')).toContain(
+      '/runner/configuration/advanced-configuration#the-runners-section',
     );
   });
 

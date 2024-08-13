@@ -79,6 +79,7 @@ itself: # project
     - web_url
     - description_html
     - repository_object_format
+    - pre_receive_secret_detection_enabled
 
 build_auto_devops: # auto_devops
   unexposed_attributes:
@@ -101,9 +102,11 @@ ci_cd_settings:
     - inbound_job_token_scope_enabled
     - restrict_pipeline_cancellation_role
     - push_repository_for_job_token_allowed
+    - id_token_sub_claim_components
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
+    id_token_sub_claim_components: ci_id_token_sub_claim_components
     default_git_depth: ci_default_git_depth
     forward_deployment_enabled: ci_forward_deployment_enabled
     forward_deployment_rollback_allowed: ci_forward_deployment_rollback_allowed

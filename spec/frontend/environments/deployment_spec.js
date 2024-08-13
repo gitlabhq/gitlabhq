@@ -5,7 +5,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { stubTransition } from 'helpers/stub_transition';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
-import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import Commit from '~/environments/components/commit.vue';
@@ -63,7 +62,7 @@ describe('~/environments/components/deployment.vue', () => {
     it('should show a badge if the deployment is latest', () => {
       wrapper = createWrapper({ propsData: { latest: true } });
 
-      const badge = wrapper.findByText(s__('Deployment|Latest Deployed'));
+      const badge = wrapper.findByText('Latest Deployed');
 
       expect(badge.exists()).toBe(true);
     });
@@ -71,14 +70,14 @@ describe('~/environments/components/deployment.vue', () => {
     it('should not show a badge if the deployment is not latest', () => {
       wrapper = createWrapper();
 
-      const badge = wrapper.findByText(s__('Deployment|Latest Deployed'));
+      const badge = wrapper.findByText('Latest Deployed');
 
       expect(badge.exists()).toBe(false);
     });
   });
 
   describe('iid', () => {
-    const findIid = () => wrapper.findByTitle(s__('Deployment|Deployment ID'));
+    const findIid = () => wrapper.findByTitle('Deployment ID');
     const findDeploymentIcon = () => wrapper.findComponent({ ref: 'deployment-iid-icon' });
 
     describe('is present', () => {
@@ -121,7 +120,7 @@ describe('~/environments/components/deployment.vue', () => {
       });
 
       it('shows the short SHA for the commit of the deployment', () => {
-        const sha = wrapper.findByRole('link', { name: __('Commit SHA') });
+        const sha = wrapper.findByRole('link', { name: 'Commit SHA' });
 
         expect(sha.exists()).toBe(true);
         expect(sha.text()).toBe(deployment.commit.shortId);
@@ -137,7 +136,7 @@ describe('~/environments/components/deployment.vue', () => {
         const button = wrapper.findComponent(ClipboardButton);
         expect(button.props()).toMatchObject({
           text: deployment.commit.shortId,
-          title: __('Copy commit SHA'),
+          title: 'Copy commit SHA',
         });
       });
     });
@@ -224,19 +223,19 @@ describe('~/environments/components/deployment.vue', () => {
       expect(username.attributes('href')).toBe(deployment.user.path);
       const job = wrapper.findByRole('link', { name: deployment.deployable.name });
       expect(job.attributes('href')).toBe(deployment.deployable.buildPath);
-      const apiBadge = wrapper.findByText(__('API'));
+      const apiBadge = wrapper.findByText('API');
       expect(apiBadge.exists()).toBe(false);
 
-      const branchLabel = wrapper.findByText(__('Branch'));
+      const branchLabel = wrapper.findByText('Branch');
       expect(branchLabel.exists()).toBe(true);
-      const tagLabel = wrapper.findByText(__('Tag'));
+      const tagLabel = wrapper.findByText('Tag');
       expect(tagLabel.exists()).toBe(false);
       const ref = wrapper.findByRole('link', { name: deployment.ref.name });
       expect(ref.attributes('href')).toBe(deployment.ref.refPath);
     });
 
     it('shows information about tags related to the deployment', async () => {
-      expect(wrapper.findByText(__('Tags')).exists()).toBe(true);
+      expect(wrapper.findByText('Tags').exists()).toBe(true);
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
 
       await waitForPromises();
@@ -247,8 +246,8 @@ describe('~/environments/components/deployment.vue', () => {
         expect(testTag.exists()).toBe(true);
         expect(testTag.attributes('href')).toBe(`tags/${tagName}`);
       }
-      expect(wrapper.findByText(__('testTag6')).exists()).toBe(false);
-      expect(wrapper.findByText(__('Tag')).exists()).toBe(false);
+      expect(wrapper.findByText('testTag6').exists()).toBe(false);
+      expect(wrapper.findByText('Tag').exists()).toBe(false);
       // with more than 5 tags, show overflow marker
       expect(wrapper.findByText('...').exists()).toBe(true);
     });
@@ -260,10 +259,10 @@ describe('~/environments/components/deployment.vue', () => {
     });
 
     it('shows tags instead of branch', () => {
-      const refLabel = wrapper.findByText(__('Tags'));
+      const refLabel = wrapper.findByText('Tags');
       expect(refLabel.exists()).toBe(true);
 
-      const branchLabel = wrapper.findByText(__('Branch'));
+      const branchLabel = wrapper.findByText('Branch');
       expect(branchLabel.exists()).toBe(false);
     });
   });
@@ -274,7 +273,7 @@ describe('~/environments/components/deployment.vue', () => {
     });
 
     it('shows API instead of a job name', () => {
-      const apiBadge = wrapper.findByText(__('API'));
+      const apiBadge = wrapper.findByText('API');
       expect(apiBadge.exists()).toBe(true);
     });
   });

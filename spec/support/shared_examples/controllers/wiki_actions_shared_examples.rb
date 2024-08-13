@@ -281,129 +281,94 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
-    context 'when wiki_redirection feature flag is enabled' do
+    context 'when the page redirects to another page' do
       before do
-        stub_feature_flags(wiki_redirection: true)
+        redirect_limit_yml = ''
+        51.times do |i|
+          redirect_limit_yml += "Page#{i}: Page#{i + 1}\n"
+        end
+
+        wiki.repository.update_file(
+          user,
+          '.gitlab/redirects.yml',
+          "PageA: PageB\nLoopA: LoopB\nLoopB: LoopA\n#{redirect_limit_yml}",
+          message: 'Create redirects file',
+          branch_name: 'master'
+        )
       end
 
-      context 'when the page redirects to another page' do
-        before do
-          redirect_limit_yml = ''
-          51.times do |i|
-            redirect_limit_yml += "Page#{i}: Page#{i + 1}\n"
-          end
-
-          wiki.repository.update_file(
-            user,
-            '.gitlab/redirects.yml',
-            "PageA: PageB\nLoopA: LoopB\nLoopB: LoopA\n#{redirect_limit_yml}",
-            message: 'Create redirects file',
-            branch_name: 'master'
-          )
-        end
-
-        context 'that exists' do
-          let(:id) { 'PageA' }
-
-          before do
-            create(:wiki_page, wiki: wiki, title: 'PageB', content: 'Page B content')
-          end
-
-          it 'redirects to the target page' do
-            request
-
-            expect(response).to redirect_to_wiki(wiki, 'PageB', redirected_from: 'PageA')
-            expect(flash[:notice]).to eq('The page at <code>PageA</code> has been moved to <code>PageB</code>.')
-          end
-        end
-
-        context 'that results in a redirect loop' do
-          let(:id) { 'LoopA' }
-
-          it 'renders the edit page with a notice' do
-            request
-
-            expect(response).to redirect_to_wiki(wiki, 'LoopA', redirect_limit_reached: true)
-            expect(flash[:notice]).to eq('The page at <code>LoopA</code> redirected too many times. You are now editing the page at <code>LoopA</code>.')
-          end
-        end
-
-        context 'that results in a redirect limit' do
-          let(:id) { 'Page0' }
-
-          it 'renders the edit page with a notice' do
-            request
-
-            expect(response).to redirect_to_wiki(wiki, 'Page0', redirect_limit_reached: true)
-            expect(flash[:notice]).to eq('The page at <code>Page0</code> redirected too many times. You are now editing the page at <code>Page0</code>.')
-          end
-        end
-
-        context 'but the original page also exists' do
-          let(:id) { 'PageA' }
-
-          before do
-            create(:wiki_page, wiki: wiki, title: 'PageA', content: 'Page A content')
-          end
-
-          it 'renders the page instead of redirecting' do
-            request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template('shared/wikis/show')
-            expect(assigns(:page).title).to eq('PageA')
-          end
-        end
-
-        context 'when the destination page does not exist' do
-          let(:redirected_from) { 'PageA' }
-          let(:id) { 'PageB' }
-
-          render_views
-
-          before do
-            routing_params[:redirected_from] = redirected_from
-          end
-
-          it 'renders the edit page for redirect with a notice and a link to edit the original page' do
-            request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template('shared/wikis/edit')
-
-            expect(response.body).to include("The page at <code>PageA</code> tried to redirect to <code>PageB</code>, but it does not exist. You are now editing the page at <code>PageB</code>. <a href=\"#{controller.wiki_page_path(wiki, 'PageA')}?no_redirect=true\">Edit page at <code>PageA</code> instead.</a>")
-
-            expect(flash[:notice]).to be_nil
-          end
-        end
-      end
-    end
-
-    context 'when wiki_redirection feature flag is disabled' do
-      before do
-        stub_feature_flags(wiki_redirection: false)
-      end
-
-      context 'when a redirection is listed in the .gitlab/redirects.yml file' do
+      context 'that exists' do
         let(:id) { 'PageA' }
 
         before do
-          wiki.repository.update_file(
-            user,
-            '.gitlab/redirects.yml',
-            "PageA: PageB",
-            message: 'Create redirects file',
-            branch_name: 'master'
-          )
-
           create(:wiki_page, wiki: wiki, title: 'PageB', content: 'Page B content')
         end
 
-        it 'does not redirect' do
+        it 'redirects to the target page' do
+          request
+
+          expect(response).to redirect_to_wiki(wiki, 'PageB', redirected_from: 'PageA')
+          expect(flash[:notice]).to eq('The page at <code>PageA</code> has been moved to <code>PageB</code>.')
+        end
+      end
+
+      context 'that results in a redirect loop' do
+        let(:id) { 'LoopA' }
+
+        it 'renders the edit page with a notice' do
+          request
+
+          expect(response).to redirect_to_wiki(wiki, 'LoopA', redirect_limit_reached: true)
+          expect(flash[:notice]).to eq('The page at <code>LoopA</code> redirected too many times. You are now editing the page at <code>LoopA</code>.')
+        end
+      end
+
+      context 'that results in a redirect limit' do
+        let(:id) { 'Page0' }
+
+        it 'renders the edit page with a notice' do
+          request
+
+          expect(response).to redirect_to_wiki(wiki, 'Page0', redirect_limit_reached: true)
+          expect(flash[:notice]).to eq('The page at <code>Page0</code> redirected too many times. You are now editing the page at <code>Page0</code>.')
+        end
+      end
+
+      context 'but the original page also exists' do
+        let(:id) { 'PageA' }
+
+        before do
+          create(:wiki_page, wiki: wiki, title: 'PageA', content: 'Page A content')
+        end
+
+        it 'renders the page instead of redirecting' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('shared/wikis/show')
+          expect(assigns(:page).title).to eq('PageA')
+        end
+      end
+
+      context 'when the destination page does not exist' do
+        let(:redirected_from) { 'PageA' }
+        let(:id) { 'PageB' }
+
+        render_views
+
+        before do
+          routing_params[:redirected_from] = redirected_from
+        end
+
+        it 'renders the edit page for redirect with a notice and a link to edit the original page' do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('shared/wikis/edit')
+
+          expect(response.body).to include("The page at <code>PageA</code> tried to redirect to <code>PageB</code>, but it does not exist. You are now editing the page at <code>PageB</code>. <a href=\"#{controller.wiki_page_path(wiki, 'PageA')}?no_redirect=true\">Edit page at <code>PageA</code> instead.</a>")
+
+          expect(flash[:notice]).to be_nil
         end
       end
     end

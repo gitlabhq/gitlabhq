@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:runner) { build_stubbed(:ci_runner) }
   let(:aud) { nil }
+  let(:sub_components) { [:project_path, :ref_type, :ref] }
   let(:target_audience) { nil }
 
   let(:build) do
@@ -27,7 +28,10 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
     )
   end
 
-  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud, target_audience: target_audience) }
+  subject(:ci_job_jwt_v2) do
+    described_class.new(build, ttl: 30, aud: aud, sub_components: sub_components,
+      target_audience: target_audience)
+  end
 
   it { is_expected.to be_a Gitlab::Ci::Jwt }
 
@@ -50,6 +54,46 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       aggregate_failures do
         expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
         expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+      end
+    end
+
+    describe 'when only project_path provided' do
+      let(:sub_components) { [:project_path] }
+
+      it 'has only project_path in sub section' do
+        aggregate_failures do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}")
+        end
+      end
+    end
+
+    describe 'when project_path and ref_type provided' do
+      let(:sub_components) { [:project_path, :ref_type] }
+
+      it 'has project_path and ref_type in sub section' do
+        aggregate_failures do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch")
+        end
+      end
+    end
+
+    describe 'when project_path and ref provided' do
+      let(:sub_components) { [:project_path, :ref] }
+
+      it 'has project_path and ref_type in sub section' do
+        aggregate_failures do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref:#{pipeline.source_ref}")
+        end
+      end
+    end
+
+    describe 'when project_path and invalid claim provided' do
+      let(:sub_components) { [:project_path, :not_existing_claim] }
+
+      it 'has project_path' do
+        aggregate_failures do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}")
+        end
       end
     end
 

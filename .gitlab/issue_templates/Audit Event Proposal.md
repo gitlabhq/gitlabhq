@@ -1,5 +1,5 @@
-<!-- Audit Event documentation: See https://docs.gitlab.com/ee/administration/audit_events.html -->
-<!-- Streaming Audit Event documentation: See https://docs.gitlab.com/ee/administration/audit_event_streaming.html -->
+<!-- Audit event documentation: See https://docs.gitlab.com/ee/administration/audit_events.html -->
+<!-- Streaming audit event documentation: See https://docs.gitlab.com/ee/administration/audit_event_streaming.html -->
 
 ## Audit need
 

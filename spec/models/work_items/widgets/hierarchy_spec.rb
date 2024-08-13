@@ -88,4 +88,21 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
       end
     end
   end
+
+  describe '#rolled_up_counts_by_type' do
+    subject { described_class.new(work_item_parent).rolled_up_counts_by_type }
+
+    it 'returns placeholder data' do
+      is_expected.to eq([
+        {
+          work_item_type: WorkItems::Type.default_by_type(:issue),
+          counts_by_state: { all: 0, opened: 0, closed: 0 }
+        },
+        {
+          work_item_type: WorkItems::Type.default_by_type(:task),
+          counts_by_state: { all: 0, opened: 0, closed: 0 }
+        }
+      ])
+    end
+  end
 end

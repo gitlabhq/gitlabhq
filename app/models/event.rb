@@ -11,9 +11,6 @@ class Event < ApplicationRecord
   include ShaAttribute
   include EachBatch
   include Import::HasImportSource
-  include IgnorableColumns
-
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,
@@ -118,6 +115,7 @@ class Event < ApplicationRecord
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
   scope :for_wiki_meta, ->(meta) { where(target_type: 'WikiPage::Meta', target_id: meta.id) }
   scope :created_at, ->(time) { where(created_at: time) }
+  scope :with_target, -> { preload(:target) }
 
   # Authors are required as they're used to display who pushed data.
   #

@@ -5,17 +5,10 @@ require 'spec_helper'
 RSpec.describe Mutations::Clusters::AgentTokens::Create do
   include GraphqlHelpers
 
-  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
-
   let_it_be(:cluster_agent) { create(:cluster_agent) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
-  let(:context) do
-    GraphQL::Query::Context.new(
-      query: query_double(schema: nil), # rubocop:disable RSpec/VerifiedDoubles
-      values: { current_user: user }
-    )
-  end
+  subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:create_cluster) }
 
@@ -33,7 +26,7 @@ RSpec.describe Mutations::Clusters::AgentTokens::Create do
 
     context 'with user permissions' do
       before do
-        cluster_agent.project.add_maintainer(user)
+        cluster_agent.project.add_maintainer(current_user)
       end
 
       it 'creates a new token', :aggregate_failures do
@@ -45,7 +38,7 @@ RSpec.describe Mutations::Clusters::AgentTokens::Create do
         token = subject[:token]
 
         expect(subject[:secret]).not_to be_nil
-        expect(token.created_by_user).to eq(user)
+        expect(token.created_by_user).to eq(current_user)
         expect(token.description).to eq(description)
         expect(token.name).to eq(name)
       end

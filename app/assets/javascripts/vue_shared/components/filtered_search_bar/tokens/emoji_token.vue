@@ -87,7 +87,7 @@ export default {
         :key="getEmojiName(emoji)"
         :value="getEmojiName(emoji)"
       >
-        <div class="gl-display-flex">
+        <div class="gl-flex">
           <gl-emoji class="gl-mr-3" :data-name="getEmojiName(emoji)" />
           {{ getEmojiName(emoji) }}
         </div>

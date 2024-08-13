@@ -29,6 +29,7 @@ const commitMessageWithDescription =
   readyToMergeResponse.data.project.mergeRequest.defaultMergeCommitMessageWithDescription;
 const createTestMr = (customConfig) => {
   const mr = {
+    iid: 1,
     isPipelineActive: false,
     pipeline: null,
     isPipelineFailed: false,
@@ -64,6 +65,7 @@ const createTestMr = (customConfig) => {
       removeSourceBranch: true,
       canMerge: true,
     },
+    targetProjectId: 1,
   };
 
   Object.assign(mr, customConfig.mr);
@@ -820,11 +822,15 @@ describe('ReadyToMerge', () => {
     });
 
     it('should display confirmation modal when merge button is clicked', async () => {
-      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: false });
+      expect(findPipelineFailedConfirmModal().props()).toEqual(
+        expect.objectContaining({ visible: false }),
+      );
 
       await findMergeButton().vm.$emit('click');
 
-      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: true });
+      expect(findPipelineFailedConfirmModal().props()).toEqual(
+        expect.objectContaining({ visible: true }),
+      );
     });
   });
 
@@ -836,11 +842,15 @@ describe('ReadyToMerge', () => {
     });
 
     it('should display confirmation modal when merge button is clicked', async () => {
-      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: false });
+      expect(findPipelineFailedConfirmModal().props()).toEqual(
+        expect.objectContaining({ visible: false }),
+      );
 
       await findMergeButton().vm.$emit('click');
 
-      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: true });
+      expect(findPipelineFailedConfirmModal().props()).toEqual(
+        expect.objectContaining({ visible: true }),
+      );
     });
   });
 

@@ -46,8 +46,9 @@ desc "Generate data and run load tests"
 task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_load_tests]
 
 desc "Deletes test ssh keys a user"
-task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |_, args|
-  QA::Tools::DeleteTestSshKeys.new(args).run
+task :delete_test_ssh_keys, [:title_portion, :dry_run] do |_, args|
+  args.with_defaults(title_portion: 'E2E test key:', dry_run: false)
+  QA::Tools::DeleteTestSshKeys.new(title_portion: args[:title_portion], dry_run: args[:dry_run]).run
 end
 
 desc "Deletes projects directly under the provided group"
@@ -57,8 +58,9 @@ task :delete_projects, [:dry_run] do |_, args|
 end
 
 desc "Deletes test users"
-task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |_, args|
-  QA::Tools::DeleteTestUsers.new(args).run
+task :delete_test_users, [:dry_run, :exclude_users] do |_, args|
+  args.with_defaults(dry_run: false, exclude_users: nil)
+  QA::Tools::DeleteTestUsers.new(dry_run: args[:dry_run], exclude_users: args[:exclude_users]).run
 end
 
 desc "Deletes snippets"

@@ -1,13 +1,11 @@
 - is_admin = defined?(admin) ? true : false
 
-%h1.gl-font-size-h-display
-  = s_('Profiles|SSH Key: %{title}').html_safe % { title: @key.title }
+= render ::Layouts::PageHeadingComponent.new(s_('Profiles|SSH Key: %{title}').html_safe % { title: @key.title }) do |c|
+  - c.with_actions do
+    - if @key.can_delete?
+      = render 'shared/ssh_keys/key_delete', button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper
-      .gl-new-card-title
-        = _('Key details')
+= render ::Layouts::CrudComponent.new(_('Key details')) do |c|
   - c.with_body do
     .table-holder
       %table.table.b-table.gl-table.b-table-stacked-md.ssh-keys-list
@@ -37,22 +35,15 @@
 .gl-mt-5
   = form_errors(@key, type: 'key') unless @key.valid?
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        .gl-new-card-title
-          = _('SSH Key')
+  = render ::Layouts::CrudComponent.new(_('SSH Key')) do |c|
     - c.with_body do
-      .gl-display-flex
-        %pre.well-pre.gl-pl-5.gl-mb-0.gl-border-0
+      .gl-flex.gl-gap-3.gl-items-center
+        %pre.gl-p-0.gl-mb-0.gl-border-0
           = @key.key
         = clipboard_button(title: s_('Profiles|Copy SSH key'), text: @key.key, category: :tertiary, size: :medium)
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        .gl-new-card-title
-          = _('Fingerprints')
+  = render ::Layouts::CrudComponent.new(_('Fingerprints'),
+    options: { class: 'gl-mt-5' }) do |c|
     - c.with_body do
       .table-holder
         %table.table.b-table.gl-table.b-table-stacked-md
@@ -64,7 +55,3 @@
               %tr
                 %th= _('SHA256')
                 %td.gl-font-monospace.key-fingerprint= @key.fingerprint_sha256
-
-.gl-mt-5.gl-float-right
-  - if @key.can_delete?
-    = render 'shared/ssh_keys/key_delete', button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))

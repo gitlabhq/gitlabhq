@@ -10,6 +10,7 @@ module Tooling
         build-gdk-image
         build-assets-image
         build-qa-image
+        e2e-test-pipeline-generate
       ].freeze
       GLOBAL_KEYWORDS = %w[workflow variables stages default].freeze
       DEFAULT_BRANCH_NAME = 'master'
@@ -20,8 +21,6 @@ module Tooling
       Job = Struct.new(:name, :rules, :needs, keyword_init: true) do
         def self.parse_rules_from_yaml(name, jobs_yaml)
           attribute_values(jobs_yaml, name, 'rules').filter_map do |rule|
-            next if rule['when'] == 'manual' || rule['when'] == 'never'
-
             rule.is_a?(Hash) ? rule.slice('if', 'changes', 'when') : rule
           end
         end
@@ -95,6 +94,8 @@ module Tooling
       def fetch_jobs_yaml(project_id, ref)
         api_response = gitlab.api.get(lint_path(project_id), query: query_params(ref))
 
+        raise api_response['errors'].first if api_response['merged_yaml'].nil? && api_response['errors']&.any?
+
         YAML.load(api_response['merged_yaml'], aliases: true)
       rescue StandardError => e
         warn "#{SKIPPED_VALIDATION_WARNING}: #{e.message}"
@@ -117,7 +118,7 @@ module Tooling
 
       def query_params(ref)
         ref_query_params = {
-          content_ref: ref,
+          content_ref: merged_result_commit_sha,
           dry_run_ref: ref,
           include_jobs: true,
           dry_run: true
@@ -152,12 +153,11 @@ module Tooling
         validation_statuses[needed_job_name][:failed] = failed_count
 
         <<~MSG
-          - 🚨 **New rules were detected in the following jobs but missing in `#{needed_job_name}`:**
+          - 🚨 **These rule changes do not match with rules for `#{needed_job_name}`:**
 
           <details><summary>Click to expand details</summary>
 
           #{failures.join("\n")}
-
           Here are the rules for `#{needed_job_name}`:
 
           ```yaml
@@ -166,8 +166,8 @@ module Tooling
 
           </details>
 
-          To avoid CI config errors, please verify if the new rules should be added to `#{needed_job_name}`.
-          Please add a comment if rules should not be added.
+          To avoid CI config errors, please verify if the same rule addition/removal should be applied to `#{needed_job_name}`.
+          If not, please add a comment to explain why.
         MSG
       end
 
@@ -198,34 +198,50 @@ module Tooling
             target_branch_job.name == dependent_job_with_rule_change.name
           end
 
-          report_candidates = if dependent_job_old.nil?
-                                dependent_job_with_rule_change.rules
-                              else
-                                dependent_job_with_rule_change.rules - dependent_job_old.rules
-                              end
+          new_rules = dependent_job_with_rule_change.rules
+          old_rules = dependent_job_old&.rules
 
-          rules_to_report = exact_rules_missing_in_needed_job(
+          added_rules_to_report = rules_missing_in_needed_job(
             needed_job: needed_job_in_source_branch,
-            rules: report_candidates
+            rules: dependent_job_old.nil? ? new_rules : new_rules - old_rules # added rules
           )
 
-          next if rules_to_report.empty?
+          removed_rules_to_report = removed_negative_rules_present_in_needed_job(
+            needed_job: needed_job_in_source_branch,
+            rules: dependent_job_old.nil? ? [] : old_rules - new_rules # removed rules
+          )
 
-          <<~MARKDOWN.chomp
+          next if added_rules_to_report.empty? && removed_rules_to_report.empty?
+
+          <<~MARKDOWN
           `#{dependent_job_with_rule_change.name}`:
 
-          ```yaml
-          #{dump_yaml(rules_to_report)}
-          ```
+          - Added rules:
+
+          #{report_yaml_markdown(added_rules_to_report)}
+
+          - Removed rules:
+
+          #{report_yaml_markdown(removed_rules_to_report)}
           MARKDOWN
         end
+      end
+
+      def report_yaml_markdown(rules_to_report)
+        return '`N/A`' unless rules_to_report.any?
+
+        <<~MARKDOWN.chomp
+        ```yaml
+        #{dump_yaml(rules_to_report)}
+        ```
+        MARKDOWN
       end
 
       def dump_yaml(yaml)
         YAML.dump(yaml).delete_prefix("---\n").chomp
       end
 
-      # Limitation: "exact" rules missing does not always mean the needed_job is missing the rules
+      # Limitation: missing rules in needed jobs does not always mean the config is invalid.
       # needed_jobs can have very generic rules, for example
       #   - rule-for-job1:
       #   - <<: *if-merge-request-targeting-stable-branch
@@ -233,10 +249,24 @@ module Tooling
       #   - <<: *if-merge-request-targeting-all-branches
       # The above config is still valid, but danger will still print a warning because the exact rule is missing.
       # We will have to manually identify that this config is fine and the warning should be ignored.
-      def exact_rules_missing_in_needed_job(rules:, needed_job:)
+      def rules_missing_in_needed_job(rules:, needed_job:)
         return [] if rules.empty?
 
-        rules.select { |rule| !needed_job.rules.include?(rule) }
+        rules.select do |rule|
+          !needed_job.rules.include?(rule) && !negative_rule?(rule)
+        end
+      end
+
+      def removed_negative_rules_present_in_needed_job(rules:, needed_job:)
+        return [] if rules.empty?
+
+        rules.select do |rule|
+          needed_job.rules.include?(rule) && negative_rule?(rule)
+        end
+      end
+
+      def negative_rule?(rule)
+        rule.is_a?(Hash) && rule['when'] == 'never'
       end
 
       def lint_path(project_id)
@@ -253,6 +283,10 @@ module Tooling
 
       def source_branch
         helper.mr_source_branch
+      end
+
+      def merged_result_commit_sha
+        ENV['CI_COMMIT_SHA'] # so we validate the merged results commit
       end
 
       def target_branch

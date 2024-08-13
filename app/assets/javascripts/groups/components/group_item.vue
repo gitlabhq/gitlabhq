@@ -134,6 +134,7 @@ export default {
     popoverBody: __('Project visibility level is less restrictive than the group settings.'),
     learnMore: __('Learn more'),
   },
+  // eslint-disable-next-line local-rules/require-valid-help-page-path
   shareProjectsWithGroupsHelpPagePath: helpPagePath(
     'user/project/members/share_project_with_groups',
     {

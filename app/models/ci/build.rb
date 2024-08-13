@@ -12,6 +12,7 @@ module Ci
     include Ci::HasRef
     include Ci::TrackEnvironmentUsage
     include EachBatch
+    include Ci::Taggable
 
     extend ::Gitlab::Utils::Override
 
@@ -62,6 +63,13 @@ module Ci
       partition_foreign_key: :partition_id
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
+
+    has_one :build_source,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::BuildSource',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id
 
     # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
     # before we delete builds. By doing this, the relation should be empty and not fire any
@@ -211,8 +219,6 @@ module Ci
       .or(with_job_artifacts.where(job_artifacts: { file_type: 'dotenv', accessibility: 'public' }))
       .or(with_job_artifacts.where(project_id: project_id, job_artifacts: { file_type: 'dotenv' })).distinct
     end
-
-    acts_as_taggable
 
     add_authentication_token_field :token,
       encrypted: :required,
@@ -403,7 +409,7 @@ module Ci
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
     # but only a Ci::Build will transition to `canceling`` via `.cancel`
     def supports_canceling?
-      Feature.enabled?(:ci_canceling_status, project) && cancel_gracefully?
+      cancel_gracefully?
     end
 
     def build_matcher
@@ -449,6 +455,16 @@ module Ci
 
     def runnable?
       true
+    end
+
+    def degenerated?
+      super && execution_config_id.nil?
+    end
+
+    def degenerate!
+      super do
+        execution_config&.destroy
+      end
     end
 
     def archived?
@@ -711,14 +727,6 @@ module Ci
 
     def remove_token!
       update!(token_encrypted: nil)
-    end
-
-    # acts_as_taggable uses this method create/remove tags with contexts
-    # defined by taggings and to get those contexts it executes a query.
-    # We don't use any other contexts except `tags`, so we don't need it.
-    override :custom_contexts
-    def custom_contexts
-      []
     end
 
     def tag_list
@@ -1142,6 +1150,16 @@ module Ci
     end
     strong_memoize_attr :time_in_queue_seconds
 
+    def source
+      build_source&.source || pipeline.source
+    end
+    strong_memoize_attr :source
+
+    # Can be removed in Rails 7.1. Related to: Gitlab.next_rails?
+    def to_partial_path
+      'jobs/job'
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1194,8 +1212,11 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless id_tokens?
 
+        sub_components = project.ci_id_token_sub_claim_components.map(&:to_sym)
+
         id_tokens.each do |var_name, token_data|
-          token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']))
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']),
+            sub_components: sub_components)
 
           variables.append(key: var_name, value: token, public: false, masked: true)
         end

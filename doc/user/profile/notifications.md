@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -172,8 +172,8 @@ Users are notified of the following events:
 | Personal access tokens have been created | User            | Security email, always sent.                                                                                                            |
 | Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
 | Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
-| Group access tokens expiring soon        | Group owners, maintainers, and administrators | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
-| Project access tokens expiring soon      | Group owners, maintainers, and administrators | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
+| Group access tokens expiring soon        | Direct Group Owners | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
+| Project access tokens expiring soon      | Direct Project Owners and Maintainers | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367706) in GitLab 16.4.                 |
 | Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
 | SSH key has expired                      | User            | Security email, always sent.                                                                                                            |
 | Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |

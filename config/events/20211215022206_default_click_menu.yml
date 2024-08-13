@@ -7,7 +7,7 @@ extra_properties:
   menu_display:
     type: string
 identifiers:
-product_group: ide
+product_group: remote_development
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62030
 distributions:

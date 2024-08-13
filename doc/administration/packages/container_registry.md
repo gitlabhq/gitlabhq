@@ -12,7 +12,7 @@ DETAILS:
 
 NOTE:
 The [next-generation container registry](container_registry_metadata_database.md)
-is now available for upgrade and testing on self-managed instances as a beta feature.
+is now available for upgrade on self-managed instances.
 This upgraded registry supports online garbage collection, and has significant performance
 and reliability improvements.
 
@@ -355,7 +355,7 @@ the container registry by themselves, follow the steps below.
 In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
@@ -1093,7 +1093,8 @@ end
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Beta
+
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -1287,18 +1288,10 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
-### Continuous Zero-Downtime Garbage Collection
-
-DETAILS:
-**Status:** Beta
+### Continuous zero-downtime garbage collection
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database](container_registry_metadata_database.md).
-
-NOTE:
-If you would like to try this [beta feature](../../policy/experiment-beta-support.md#beta),
-you should review the [known limitations](container_registry_metadata_database.md#known-limitations). If you have any feedback,
-you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 
 ## Configure GitLab and Registry to run on separate nodes (Linux package installations)
 
@@ -1606,7 +1599,7 @@ project or branch name. Special characters can include:
 To get around this, you can [change the group path](../../user/group/manage.md#change-a-groups-path),
 [change the project path](../../user/project/working_with_projects.md#rename-a-repository) or change the
 branch name. Another option is to create a [push rule](../../user/project/repository/push_rules.md) to prevent
-this at the instance level.
+this error for the entire instance.
 
 ### Image push errors
 

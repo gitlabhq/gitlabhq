@@ -3,6 +3,20 @@
 function retrieve_tests_metadata() {
   mkdir -p $(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}") $(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}") "${RSPEC_PROFILING_FOLDER_PATH}"
 
+  curl --fail --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
+    echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
+
+  curl --fail --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
+    echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+
+  curl --fail --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
+    echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
+}
+
+function update_tests_metadata() {
+  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
+  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
+
   if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
     curl --fail --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
       echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
@@ -17,14 +31,6 @@ function retrieve_tests_metadata() {
     curl --fail --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
       echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
   fi
-}
-
-function update_tests_metadata() {
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
-  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
-
-  curl --fail --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
-    echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
   if [[ "$AVERAGE_KNAPSACK_REPORT" == "true" ]]; then
     # a comma separated list of file names matching the glob
@@ -72,19 +78,25 @@ function retrieve_frontend_fixtures_mapping() {
 }
 
 function update_tests_mapping() {
-  if ! crystalball_rspec_data_exists; then
-    echo "No crystalball rspec data found."
+  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}" crystalball/described/rspec*.yml
+
+  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_ALT_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_ALT_PATH}" crystalball/coverage/rspec*.yml
+}
+
+function pack_and_gzip_mapping() {
+  local mapping_path="${1}"
+  local packed_path="${2}"
+  local crystal_yaml_files=("${@:3}")
+
+  if test -z "${crystal_yaml_files[1]}"; then
+    echo "No crystalball rspec data for ${mapping_path}"
     return 0
   fi
 
-  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" crystalball/rspec*.yml
-  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-}
-
-function crystalball_rspec_data_exists() {
-  compgen -G "crystalball/rspec*.yml" >/dev/null
+  scripts/generate-test-mapping "${mapping_path}" "${crystal_yaml_files[@]}"
+  scripts/pack-test-mapping "${mapping_path}" "${packed_path}"
+  gzip "${packed_path}"
+  rm -f "${packed_path}" "${mapping_path}" "${crystal_yaml_files[@]}"
 }
 
 function retrieve_failed_tests() {

@@ -30,12 +30,12 @@ module Gitlab
 
         return application_settings.send(name, *args, **kwargs, &block) if application_settings.respond_to?(name)
 
-        Organizations::OrganizationSetting.for(Current.organization_id).send(name, *args, **kwargs, &block)
+        Organizations::OrganizationSetting.for(::Current.organization_id).send(name, *args, **kwargs, &block)
       end
       # rubocop:enable GitlabSecurity/PublicSend
 
       def respond_to_missing?(name, include_private = false)
-        current_application_settings.respond_to?(name, include_private) || Organizations::OrganizationSetting.for(Current.organization_id).respond_to?(name, include_private) || super
+        current_application_settings.respond_to?(name, include_private) || Organizations::OrganizationSetting.for(::Current.organization_id).respond_to?(name, include_private) || super
       end
     end
   end

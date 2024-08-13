@@ -187,6 +187,8 @@ type Response struct {
 	UploadHashFunctions []string
 	// NeedAudit indicates whether git events should be audited to rails.
 	NeedAudit bool `json:"NeedAudit"`
+	// Gob contains settings for the GitLab Observability Backend (GOB).
+	Gob GOBSettings `json:"gob"`
 }
 
 // GitalyServer represents configuration parameters for a Gitaly server,

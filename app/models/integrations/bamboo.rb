@@ -53,16 +53,11 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        _('Learn more.'),
-        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bamboo'),
-        target: '_blank',
-        rel: 'noopener noreferrer'
+      build_help_page_url(
+        'user/project/integrations/bamboo',
+        s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision ' \
+        'labeling and a repository trigger in Bamboo.')
       )
-      format(
-        s_('BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and ' \
-           'a repository trigger in Bamboo. %{docs_link}').html_safe,
-        docs_link: docs_link.html_safe)
     end
 
     def self.to_param

@@ -62,6 +62,7 @@ module Ci
     # rubocop: disable Metrics/ParameterLists, Metrics/AbcSize
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
       @logger = build_logger
+      @command_logger = Gitlab::Ci::Pipeline::CommandLogger.new
       @pipeline = Ci::Pipeline.new
 
       validate_options!(options)
@@ -117,6 +118,7 @@ module Ci
 
     ensure
       @logger.commit(pipeline: pipeline, caller: self.class.name)
+      @command_logger.commit(pipeline: pipeline, command: command) if command
     end
     # rubocop: enable Metrics/ParameterLists, Metrics/AbcSize
 

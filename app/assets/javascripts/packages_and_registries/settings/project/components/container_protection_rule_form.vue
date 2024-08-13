@@ -123,77 +123,75 @@ export default {
 </script>
 
 <template>
-  <div class="gl-new-card-add-form gl-m-3">
-    <gl-form @submit.prevent="submit" @reset="cancelForm">
-      <gl-alert
-        v-if="alertErrorMessages.length"
-        class="gl-mb-5"
-        variant="danger"
-        @dismiss="clearAlertErrorMessages"
-      >
-        <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
-      </gl-alert>
+  <gl-form @submit.prevent="submit" @reset="cancelForm">
+    <gl-alert
+      v-if="alertErrorMessages.length"
+      class="gl-mb-5"
+      variant="danger"
+      @dismiss="clearAlertErrorMessages"
+    >
+      <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
+    </gl-alert>
 
-      <gl-form-group
-        :label="s__('ContainerRegistry|Repository path pattern')"
-        label-for="input-repository-path-pattern"
-      >
-        <gl-form-input
-          id="input-repository-path-pattern"
-          v-model.trim="protectionRuleFormData.repositoryPathPattern"
-          type="text"
-          required
-          :disabled="isFieldDisabled"
-        />
-        <template #description>
-          <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
-            <template #link="{ content }">
-              <help-page-link
-                href="user/packages/container_registry/container_protection_rules.md"
-                target="_blank"
-                >{{ content }}</help-page-link
-              >
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-form-group>
-
-      <gl-form-group
-        :label="s__('ContainerRegistry|Minimum access level for push')"
-        label-for="input-minimum-access-level-for-push"
+    <gl-form-group
+      :label="s__('ContainerRegistry|Repository path pattern')"
+      label-for="input-repository-path-pattern"
+    >
+      <gl-form-input
+        id="input-repository-path-pattern"
+        v-model.trim="protectionRuleFormData.repositoryPathPattern"
+        type="text"
+        required
         :disabled="isFieldDisabled"
-      >
-        <gl-form-select
-          id="input-minimum-access-level-for-push"
-          v-model="protectionRuleFormData.minimumAccessLevelForPush"
-          :options="minimumAccessLevelOptions"
-          :disabled="isFieldDisabled"
-        />
-      </gl-form-group>
+      />
+      <template #description>
+        <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
+          <template #link="{ content }">
+            <help-page-link
+              href="user/packages/container_registry/container_protection_rules.md"
+              target="_blank"
+              >{{ content }}</help-page-link
+            >
+          </template>
+        </gl-sprintf>
+      </template>
+    </gl-form-group>
 
-      <gl-form-group
-        :label="s__('ContainerRegistry|Minimum access level for delete')"
-        label-for="input-minimum-access-level-for-delete"
+    <gl-form-group
+      :label="s__('ContainerRegistry|Minimum access level for push')"
+      label-for="input-minimum-access-level-for-push"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-minimum-access-level-for-push"
+        v-model="protectionRuleFormData.minimumAccessLevelForPush"
+        :options="minimumAccessLevelOptions"
         :disabled="isFieldDisabled"
-      >
-        <gl-form-select
-          id="input-minimum-access-level-for-delete"
-          v-model="protectionRuleFormData.minimumAccessLevelForDelete"
-          :options="minimumAccessLevelOptions"
-          :disabled="isFieldDisabled"
-        />
-      </gl-form-group>
+      />
+    </gl-form-group>
 
-      <div class="gl-display-flex gl-justify-content-start">
-        <gl-button
-          variant="confirm"
-          type="submit"
-          :disabled="isSubmitButtonDisabled"
-          :loading="showLoadingIcon"
-          >{{ s__('ContainerRegistry|Add rule') }}</gl-button
-        >
-        <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
-      </div>
-    </gl-form>
-  </div>
+    <gl-form-group
+      :label="s__('ContainerRegistry|Minimum access level for delete')"
+      label-for="input-minimum-access-level-for-delete"
+      :disabled="isFieldDisabled"
+    >
+      <gl-form-select
+        id="input-minimum-access-level-for-delete"
+        v-model="protectionRuleFormData.minimumAccessLevelForDelete"
+        :options="minimumAccessLevelOptions"
+        :disabled="isFieldDisabled"
+      />
+    </gl-form-group>
+
+    <div class="gl-flex gl-justify-start">
+      <gl-button
+        variant="confirm"
+        type="submit"
+        :disabled="isSubmitButtonDisabled"
+        :loading="showLoadingIcon"
+        >{{ s__('ContainerRegistry|Add rule') }}</gl-button
+      >
+      <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
+    </div>
+  </gl-form>
 </template>

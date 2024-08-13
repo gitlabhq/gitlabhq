@@ -230,7 +230,7 @@ export default {
       @ok="onSubmit"
     >
       {{ deleteModalMessage }}
-      <form ref="form" :action="deleteFeatureFlagUrl" method="post" class="js-requires-input">
+      <form ref="form" :action="deleteFeatureFlagUrl" method="post">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
       </form>

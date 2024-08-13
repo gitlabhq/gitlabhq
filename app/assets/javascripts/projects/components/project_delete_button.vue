@@ -1,5 +1,4 @@
 <script>
-import { __ } from '~/locale';
 import SharedDeleteButton from './shared/delete_button.vue';
 
 export default {
@@ -10,11 +9,6 @@ export default {
     confirmPhrase: {
       type: String,
       required: true,
-    },
-    buttonText: {
-      type: String,
-      required: false,
-      default: __('Delete project'),
     },
     formPath: {
       type: String,
@@ -47,7 +41,6 @@ export default {
 <template>
   <shared-delete-button
     :confirm-phrase="confirmPhrase"
-    :button-text="buttonText"
     :form-path="formPath"
     :is-fork="isFork"
     :issues-count="issuesCount"

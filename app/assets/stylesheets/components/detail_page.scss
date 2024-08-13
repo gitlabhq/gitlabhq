@@ -19,7 +19,7 @@
 
 .detail-page-header a.link,
 .detail-page-header .title a {
-  color: $blue-600;
+  color: var(--gl-text-color-link);
 }
 
 .detail-page-header-body {

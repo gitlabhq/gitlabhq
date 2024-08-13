@@ -195,11 +195,7 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 * [ ] not checked
 ```
 
-<!-- vale gitlab.Spelling = NO -->
-
 #### Callout
-
-<!-- vale gitlab.Spelling = YES -->
 
 ```plaintext
 // enable callout bubbles by adding `:icons: font` to the document header
@@ -449,7 +445,7 @@ It's possible to generate diagrams and flowcharts from text in GitLab using
 Visit the [official page](https://mermaidjs.github.io/) for more details.
 If you're new to using Mermaid or need help identifying issues in your Mermaid code,
 the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool
-for creating and resolving issues within Mermaid diagrams.
+for creating and resolving issues in Mermaid diagrams.
 
 To generate a diagram or flowchart, enter your text in a `mermaid` block:
 

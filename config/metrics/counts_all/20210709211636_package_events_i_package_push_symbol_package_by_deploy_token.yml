@@ -7,11 +7,11 @@ status: active
 milestone: "14.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64554
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: package_events
-  event: i_package_push_symbol_package_by_deploy_token
+data_source: internal_events
+events:
+  - name: push_symbol_package_to_registry
+    filter:
+      property: deploy_token
 data_category: optional
 distribution:
 - ce

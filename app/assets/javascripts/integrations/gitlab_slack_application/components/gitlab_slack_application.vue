@@ -45,7 +45,7 @@ export default {
   },
   i18n,
   learnMoreLink: helpPagePath('user/project/integrations/gitlab_slack_application', {
-    anchor: 'configuration',
+    anchor: 'install-the-gitlab-for-slack-app',
   }),
   data() {
     return {

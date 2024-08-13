@@ -51,9 +51,9 @@ export default {
 
 <template>
   <li class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
-    <div class="gl-display-flex gl-align-items-center gl-py-3">
-      <div class="gl-min-w-0 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1 gl-align-items-center">
-        <div class="gl-min-w-0 gl-flex-grow-1 flex-shrink-1">
+    <div class="gl-flex gl-items-center gl-py-3">
+      <div class="gl-min-w-0 gl-flex gl-grow gl-flex-shrink-1 gl-items-center">
+        <div class="gl-min-w-0 gl-grow gl-flex-shrink-1">
           <group-item-name :group="group" />
         </div>
 

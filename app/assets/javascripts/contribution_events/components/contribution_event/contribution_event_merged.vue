@@ -20,5 +20,9 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" :message="$options.i18n.message" icon-name="git-merge" />
+  <contribution-event-base
+    :event="event"
+    :message="$options.i18n.message"
+    icon-name="merge-request"
+  />
 </template>

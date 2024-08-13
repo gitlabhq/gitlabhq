@@ -691,7 +691,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context 'for admin user', :enable_admin_mode do
-          it 'returns not found' do
+          it 'returns not found', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448693' do
             admin = create(:admin)
             post api(invalid_path, admin)
 

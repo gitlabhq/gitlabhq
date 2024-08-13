@@ -41,13 +41,9 @@ module Environments
 
     def by_search(environments)
       if params[:search].present?
-        if Feature.enabled?(:enable_environments_search_within_folder, project)
-          Environment.from_union(
-            environments.for_name_like(params[:search], limit: nil),
-            environments.for_name_like_within_folder(params[:search], limit: nil))
-        else
-          environments.for_name_like(params[:search], limit: nil)
-        end
+        Environment.from_union(
+          environments.for_name_like(params[:search], limit: nil),
+          environments.for_name_like_within_folder(params[:search], limit: nil))
       else
         environments
       end

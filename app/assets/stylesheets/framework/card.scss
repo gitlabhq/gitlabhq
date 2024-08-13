@@ -6,3 +6,14 @@
     }
   }
 }
+
+.expandable-card {
+  &.is-collapsed header {
+    border-bottom: 0;
+    border-radius: $gl-border-radius-base;
+  }
+
+  .crud-body {
+    margin: 0 !important;
+  }
+}

@@ -44,9 +44,17 @@ RSpec.describe Packages::Nuget::CreateDependencyService, feature_category: :pack
     it_behaves_like 'creating dependencies, links and nuget metadata for', %w[Castle.Core Moqi Newtonsoft.Json Test.Dependency], 4, 4
 
     context 'with existing dependencies' do
-      let_it_be(:exisiting_dependency) { create(:packages_dependency, name: 'Moqi', version_pattern: '2.5.6') }
+      context 'in the same project' do
+        let_it_be(:exisiting_dependency) { create(:packages_dependency, name: 'Moqi', version_pattern: '2.5.6', project: package.project) }
 
-      it_behaves_like 'creating dependencies, links and nuget metadata for', %w[Castle.Core Moqi Newtonsoft.Json Test.Dependency], 3, 4
+        it_behaves_like 'creating dependencies, links and nuget metadata for', %w[Castle.Core Moqi Newtonsoft.Json Test.Dependency], 3, 4
+      end
+
+      context 'in the different project' do
+        let_it_be(:exisiting_dependency) { create(:packages_dependency, name: 'Moqi', version_pattern: '2.5.6') }
+
+        it_behaves_like 'creating dependencies, links and nuget metadata for', %w[Castle.Core Moqi Newtonsoft.Json Test.Dependency], 4, 4
+      end
     end
 
     context 'with dependencies with no target framework' do

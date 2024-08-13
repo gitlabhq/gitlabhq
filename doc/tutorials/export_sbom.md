@@ -85,17 +85,18 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
 
    ```yaml
    export-merged-sbom:
+     image: alpine
      before_script:
        - apk add --update jq curl
      stage: .post
      script:
-       - |
-         curl --header "Authorization: Bearer $PRIVATE_TOKEN"
-         --output export.sh --url "https://gitlab.com/api/v4/snippets/<SNIPPET_ID>/raw"
+       - | 
+         curl --header "Authorization: Bearer $PRIVATE_TOKEN" --output export.sh --url "https://gitlab.com/api/v4/snippets/<SNIPPET_ID>/raw"
        - /bin/sh export.sh
      artifacts:
        paths:
          - "gl-sbom-merged-*.cdx.json"
+
    ```
 
 1. Go to **Build > Pipelines** and confirm that the latest pipeline completed successfully.

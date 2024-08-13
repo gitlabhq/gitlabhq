@@ -49,7 +49,6 @@ Hosted runners for GitLab.com are configured as such:
 - Inbound communication from the public internet to the ephemeral VM is not allowed.
 - Firewall rules do not permit communication between VMs.
 - The only internal communication allowed to the ephemeral VMs is from the runner manager.
-- VM isolation between job executions.
 - Ephemeral runner VMs will only serve a single job and will be deleted right after the job execution.
 
 #### Architecture diagram of hosted runners for GitLab.com
@@ -116,10 +115,9 @@ As we want to encourage people to contribute, these runners are free of charge.
 
 DETAILS:
 **Offering:** GitLab Dedicated
-**Status:** Beta
 
-These runners are created on demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
-For more information, see [hosted runners for GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md#gitlab-runners).
+Hosted runners for GitLab Dedicated are created on demand and are fully integrated with your GitLab Dedicated instance.
+For more information, see [hosted runners for GitLab Dedicated](../../administration/dedicated/hosted_runners.md).
 
 ## Supported image lifecycle
 
@@ -128,7 +126,7 @@ Supported images have the following lifecycle:
 
 ### Beta
 
-New images are released as beta. This allows us to gather feedback and address potential issues before general availablility (GA).
+New images are released as beta. This allows us to gather feedback and address potential issues before general availability (GA).
 Any jobs running on beta images are not covered by the service-level agreement.
 If you use beta images, you can provide feedback by creating an issue.
 

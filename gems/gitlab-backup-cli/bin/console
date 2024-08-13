@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# GITLAB_PATH points to the Rails.root, which the tool can use to load
+# the Rails environment when necessary or to help find configuration files
+# when used with GDK
+GITLAB_PATH = File.expand_path(File.join(__dir__, '../../../'))
+
 require "bundler/setup"
 require "gitlab/backup/cli"
-
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
 
 require "irb"
 IRB.start(__FILE__)

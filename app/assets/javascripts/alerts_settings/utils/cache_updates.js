@@ -3,6 +3,7 @@ import { createAlert } from '~/alert';
 
 import { DELETE_INTEGRATION_ERROR, ADD_INTEGRATION_ERROR } from './error_messages';
 
+// eslint-disable-next-line max-params
 const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, variables) => {
   const integration = httpIntegrationDestroy?.integration;
   if (!integration) {
@@ -31,6 +32,7 @@ const addIntegrationToStore = (
   query,
   { httpIntegrationCreate, prometheusIntegrationCreate },
   variables,
+  // eslint-disable-next-line max-params
 ) => {
   const integration =
     httpIntegrationCreate?.integration || prometheusIntegrationCreate?.integration;
@@ -64,6 +66,7 @@ const onError = (data, message) => {
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
+// eslint-disable-next-line max-params
 export const updateStoreAfterIntegrationDelete = (store, query, data, variables) => {
   if (hasErrors(data)) {
     onError(data, DELETE_INTEGRATION_ERROR);
@@ -72,6 +75,7 @@ export const updateStoreAfterIntegrationDelete = (store, query, data, variables)
   }
 };
 
+// eslint-disable-next-line max-params
 export const updateStoreAfterIntegrationAdd = (store, query, data, variables) => {
   if (hasErrors(data)) {
     onError(data, ADD_INTEGRATION_ERROR);

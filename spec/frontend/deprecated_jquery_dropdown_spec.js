@@ -29,6 +29,7 @@ describe('deprecatedJQueryDropdown', () => {
 
   const test = {};
 
+  // eslint-disable-next-line max-params
   const navigateWithKeys = (direction, steps, cb, i) => {
     i = i || 0;
     if (!i) direction = direction.toUpperCase();

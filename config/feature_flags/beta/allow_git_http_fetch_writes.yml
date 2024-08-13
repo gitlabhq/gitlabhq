@@ -1,0 +1,9 @@
+---
+name: allow_git_http_fetch_writes
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426270
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159835
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473133
+milestone: '17.3'
+group: group::source code
+type: beta
+default_enabled: false

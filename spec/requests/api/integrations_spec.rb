@@ -243,21 +243,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['inherited']).to eq(true)
       end
-
-      context 'when `integration_api_inheritance` feature is disabled' do
-        before do
-          stub_feature_flags(integration_api_inheritance: false)
-        end
-
-        it 'accepts `branches_to_be_notified` and `notify_only_broken_pipelines` for update' do
-          put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user),
-            params: params.merge(notify_only_broken_pipelines: true, branches_to_be_notified: 'all')
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['properties']['branches_to_be_notified']).to eq('all')
-          expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
-        end
-      end
     end
 
     describe 'Hangouts Chat integration' do

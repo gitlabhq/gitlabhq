@@ -15,5 +15,7 @@ module Types
       description: 'Merge request reviewer has approved the changes.'
     value 'UNAPPROVED', value: 'unapproved',
       description: 'Merge request reviewer removed their approval of the changes.'
+    value 'REVIEW_STARTED', value: 'review_started',
+      description: 'Merge request reviewer has started a review.'
   end
 end

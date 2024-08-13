@@ -1,39 +1,10 @@
-import hljs from 'highlight.js/lib/core';
-import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import { registerPlugins } from '../plugins/index';
+import { highlightPlugins } from '~/highlight_js/plugins';
+import { highlightContent } from '~/highlight_js';
 import { LINES_PER_CHUNK, NEWLINE, ROUGE_TO_HLJS_LANGUAGE_MAP } from '../constants';
 
-const loadLanguage = async (language) => {
-  const languageDefinition = await languageLoader[language]();
-  hljs.registerLanguage(language, languageDefinition.default);
-};
+export const splitByLineBreaks = (content = '') => content.split(/\r?\n/);
 
-const loadSubLanguages = async (languageDefinition) => {
-  // Some files can contain sub-languages (i.e., Svelte); this ensures that sub-languages are also loaded
-  if (!languageDefinition?.contains) return;
-
-  // generate list of languages to load
-  const languages = new Set(
-    languageDefinition.contains
-      .filter((component) => Boolean(component.subLanguage))
-      .map((component) => component.subLanguage),
-  );
-
-  if (languageDefinition.subLanguage) {
-    languages.add(languageDefinition.subLanguage);
-  }
-
-  await Promise.all([...languages].map(loadLanguage));
-};
-
-const initHighlightJs = async (fileType, content, language) => {
-  registerPlugins(hljs, fileType, content, true);
-  await loadLanguage(language);
-  await loadSubLanguages(hljs.getLanguage(language));
-};
-
-const splitByLineBreaks = (content = '') => content.split(/\r?\n/);
-
+// eslint-disable-next-line max-params
 const createChunk = (language, rawChunkLines, highlightedChunkLines = [], startingFrom = 0) => ({
   highlightedContent: highlightedChunkLines.join(NEWLINE),
   rawContent: rawChunkLines.join(NEWLINE),
@@ -59,15 +30,15 @@ const splitIntoChunks = (language, rawContent, highlightedContent) => {
 
 const highlight = async (fileType, rawContent, lang) => {
   const language = ROUGE_TO_HLJS_LANGUAGE_MAP[lang.toLowerCase()];
-  let result;
+  let highlightedChunks;
 
   if (language) {
-    await initHighlightJs(fileType, rawContent, language);
-    const highlightedContent = hljs.highlight(rawContent, { language }).value;
-    result = splitIntoChunks(language, rawContent, highlightedContent);
+    const plugins = highlightPlugins(fileType, rawContent, true);
+    const highlightedContent = await highlightContent(lang, rawContent, plugins);
+    highlightedChunks = splitIntoChunks(language, rawContent, highlightedContent);
   }
 
-  return result;
+  return highlightedChunks;
 };
 
 export { highlight, splitIntoChunks };

@@ -42,7 +42,7 @@
     In this release, we added a new trend chart for the DORA [Change failure rate](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html) metric. This chart shows the percentage of deployments that cause an incident in a production environment. GitLab measures the change failure rate as the number of [incidents](https://docs.gitlab.com/ee/operations/incident_management/incidents.html) divided by the number of deployments to a production environment during a given time period.
 
     This is the fourth DORA chart available in GitLab that provides insights into [value stream velocity and reliability trends](https://about.gitlab.com/blog/2022/06/20/gitlab-value-stream-management-and-dora/).
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -70,7 +70,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html'
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html'
   image_url: https://about.gitlab.com/images/15_2/protect_group_policies.png
   published_at: 2022-07-22
   release: 15.2

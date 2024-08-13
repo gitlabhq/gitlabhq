@@ -9,12 +9,11 @@ import {
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
+import { createAlert } from '~/alert';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 import {
   FORM_TYPES,
@@ -22,13 +21,15 @@ import {
   WORK_ITEM_STATUS_TEXT,
   I18N_WORK_ITEM_SHOW_LABELS,
   TASKS_ANCHOR,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
-import { findHierarchyWidgetChildren } from '../../utils';
+import { findHierarchyWidgets } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
-import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
+import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
+import WorkItemAbuseModal from '../work_item_abuse_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
@@ -41,14 +42,15 @@ export default {
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemDetailModal,
-    AbuseCategorySelector,
+    WorkItemAbuseModal,
     WorkItemChildrenWrapper,
+    WorkItemChildrenLoadMore,
     GlToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath', 'isGroup', 'reportAbusePath'],
+  inject: ['fullPath', 'reportAbusePath'],
   props: {
     issuableId: {
       type: Number,
@@ -61,20 +63,19 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: getWorkItemTreeQuery,
       variables() {
         return {
-          fullPath: this.fullPath,
-          iid: this.iid,
+          id: this.issuableGid,
+          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          endCursor: '',
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workItem ?? {};
       },
       skip() {
-        return !this.iid;
+        return !this.issuableId;
       },
       error(e) {
         this.error = e.message || this.$options.i18n.fetchError;
@@ -108,11 +109,12 @@ export default {
       parentIssue: null,
       formType: null,
       workItem: null,
-      isReportDrawerOpen: false,
+      isReportModalOpen: false,
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: TASKS_ANCHOR,
       showLabels: true,
+      fetchNextPageInProgress: false,
     };
   },
   computed: {
@@ -128,8 +130,11 @@ export default {
     issuableMilestone() {
       return this.parentIssue?.milestone;
     },
+    hierarchyWidget() {
+      return this.workItem ? findHierarchyWidgets(this.workItem.widgets) : {};
+    },
     children() {
-      return findHierarchyWidgetChildren(this.workItem);
+      return this.hierarchyWidget?.children?.nodes || [];
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
@@ -156,6 +161,15 @@ export default {
     activeChildNamespaceFullPath() {
       return this.activeChild.namespace?.fullPath;
     },
+    pageInfo() {
+      return this.hierarchyWidget?.children?.pageInfo;
+    },
+    endCursor() {
+      return this.pageInfo?.endCursor || '';
+    },
+    hasNextPage() {
+      return this.pageInfo?.hasNextPage;
+    },
   },
   methods: {
     showAddForm(formType) {
@@ -170,9 +184,6 @@ export default {
       this.isShownAddForm = false;
     },
     openChild({ event, child }) {
-      if (isMetaKey(event)) {
-        return;
-      }
       event.preventDefault();
       this.activeChild = child;
       this.$refs.modal.show();
@@ -187,7 +198,6 @@ export default {
         cache,
         fullPath: this.fullPath,
         iid: this.iid,
-        isGroup: this.isGroup,
         workItem: child,
       });
       this.$toast.show(s__('WorkItem|Task deleted'));
@@ -195,13 +205,33 @@ export default {
     updateWorkItemIdUrlQuery({ iid } = {}) {
       updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
     },
-    toggleReportAbuseDrawer(isOpen, reply = {}) {
-      this.isReportDrawerOpen = isOpen;
+    toggleReportAbuseModal(isOpen, reply = {}) {
+      this.isReportModalOpen = isOpen;
       this.reportedUrl = reply.url;
       this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
     },
-    openReportAbuseDrawer(reply) {
-      this.toggleReportAbuseDrawer(true, reply);
+    openReportAbuseModal(reply) {
+      this.toggleReportAbuseModal(true, reply);
+    },
+    async fetchNextPage() {
+      if (this.hasNextPage && !this.fetchNextPageInProgress) {
+        this.fetchNextPageInProgress = true;
+        try {
+          await this.$apollo.queries.workItem.fetchMore({
+            variables: {
+              endCursor: this.endCursor,
+            },
+          });
+        } catch (error) {
+          createAlert({
+            message: s__('Hierarchy|Something went wrong while fetching children.'),
+            captureError: true,
+            error,
+          });
+        } finally {
+          this.fetchNextPageInProgress = false;
+        }
+      }
     },
   },
   i18n: {
@@ -274,7 +304,11 @@ export default {
     </template>
     <template #body>
       <div class="gl-new-card-content gl-px-0">
-        <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
+        <gl-loading-icon
+          v-if="isLoading && !fetchNextPageInProgress"
+          color="dark"
+          class="gl-my-2"
+        />
         <template v-else>
           <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
             <p class="gl-new-card-empty">
@@ -286,6 +320,7 @@ export default {
             ref="wiLinksForm"
             data-testid="add-links-form"
             :full-path="fullPath"
+            :full-name="workItem.namespace.fullName"
             :issuable-gid="issuableGid"
             :work-item-iid="iid"
             :children-ids="childrenIds"
@@ -306,6 +341,12 @@ export default {
             @error="error = $event"
             @show-modal="openChild"
           />
+          <work-item-children-load-more
+            v-if="hasNextPage"
+            data-testid="work-item-load-more"
+            :fetch-next-page-in-progress="fetchNextPageInProgress"
+            @fetch-next-page="fetchNextPage"
+          />
           <work-item-detail-modal
             ref="modal"
             :work-item-id="activeChild.id"
@@ -313,14 +354,14 @@ export default {
             :work-item-full-path="activeChildNamespaceFullPath"
             @close="closeModal"
             @workItemDeleted="handleWorkItemDeleted(activeChild)"
-            @openReportAbuse="openReportAbuseDrawer"
+            @openReportAbuse="openReportAbuseModal"
           />
-          <abuse-category-selector
-            v-if="isReportDrawerOpen && reportAbusePath"
+          <work-item-abuse-modal
+            v-if="isReportModalOpen && reportAbusePath"
+            :show-modal="isReportModalOpen"
             :reported-user-id="reportedUserId"
             :reported-from-url="reportedUrl"
-            :show-drawer="isReportDrawerOpen"
-            @close-drawer="toggleReportAbuseDrawer(false)"
+            @close-modal="toggleReportAbuseModal(false)"
           />
         </template>
       </div>

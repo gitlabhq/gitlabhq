@@ -27,7 +27,7 @@ RSpec.describe 'View error details page', :js, :use_clean_rails_memory_store_cac
     end
 
     it 'renders not found' do
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 end

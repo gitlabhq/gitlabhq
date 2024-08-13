@@ -18,6 +18,6 @@
 
     - On GitLab.com during the 16.0 milestone.
     - On GitLab self-managed instances when they are upgraded to 16.0.
-  stage: Manage
+  stage: Foundations
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369122

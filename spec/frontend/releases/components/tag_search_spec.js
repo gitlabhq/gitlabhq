@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { __, s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import TagSearch from '~/releases/components/tag_search.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
@@ -66,7 +66,7 @@ describe('releases/components/tag_search', () => {
 
     it('has a disabled button', () => {
       const button = findCreate();
-      expect(button.text()).toBe(s__('Release|Or type a new tag name'));
+      expect(button.text()).toBe('Or type a new tag name');
       expect(button.props('disabled')).toBe(true);
     });
 
@@ -92,7 +92,7 @@ describe('releases/components/tag_search', () => {
       });
 
       it('shows "No results found" when there are no results', () => {
-        expect(wrapper.text()).toContain(__('No results found'));
+        expect(wrapper.text()).toContain('No results found');
       });
 
       it('searches with the given input', () => {
@@ -126,9 +126,7 @@ describe('releases/components/tag_search', () => {
 
     it('has an enabled button', () => {
       const button = findCreate();
-      expect(button.text()).toMatchInterpolatedText(
-        sprintf(s__('Release|Create tag %{tag}'), { tag: query }),
-      );
+      expect(button.text()).toMatchInterpolatedText(sprintf('Create tag %{tag}', { tag: query }));
       expect(button.props('disabled')).toBe(false);
     });
 

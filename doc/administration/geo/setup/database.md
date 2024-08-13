@@ -67,7 +67,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 #### Step 1. Configure the **primary** site
 
-1. SSH into your GitLab **primary** site and log in as root:
+1. SSH into your GitLab **primary** site and sign in as root:
 
    ```shell
    sudo -i
@@ -323,7 +323,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 #### Step 2. Configure the **secondary** server
 
-1. SSH into your GitLab **secondary** site and log in as root:
+1. SSH into your GitLab **secondary** site and sign in as root:
 
    ```shell
    sudo -i
@@ -465,7 +465,7 @@ WARNING:
 Make sure to run this on the **secondary** site as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
-1. SSH into your GitLab **secondary** site and log in as root:
+1. SSH into your GitLab **secondary** site and sign in as root:
 
    ```shell
    sudo -i
@@ -674,7 +674,7 @@ and ensure password authentication is used.
 On each node running a Patroni instance on the primary site **starting on the Patroni
 Leader instance**:
 
-1. SSH into your Patroni instance and log in as root:
+1. SSH into your Patroni instance and sign in as root:
 
    ```shell
    sudo -i
@@ -732,7 +732,7 @@ Leader instance**:
 
 :::TabTitle Primary with single PostgreSQL instance
 
-1. SSH into your single node instance and log in as root:
+1. SSH into your single node instance and sign in as root:
 
    ```shell
    sudo -i
@@ -831,7 +831,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 On each node running a PgBouncer instance on the **secondary** site:
 
-1. SSH into your PgBouncer node and log in as root:
+1. SSH into your PgBouncer node and sign in as root:
 
    ```shell
    sudo -i
@@ -890,7 +890,7 @@ and then you can switch over to another replica if you need to.
 
 For each node running a Patroni instance on the secondary site:
 
-1. SSH into your Patroni node and log in as root:
+1. SSH into your Patroni node and sign in as root:
 
    ```shell
    sudo -i

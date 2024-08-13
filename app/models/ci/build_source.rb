@@ -14,10 +14,9 @@ module Ci
     query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true
 
-    # rubocop:disable Rails/InverseOf -- Will be added once association on build is added
     belongs_to :build, ->(build_name) { in_partition(build_name) },
-      class_name: 'Ci::Build', partition_foreign_key: :partition_id
-    # rubocop:enable Rails/InverseOf
+      class_name: 'Ci::Build', partition_foreign_key: :partition_id,
+      inverse_of: :build_source
 
     validates :build, presence: true
     validates :source, presence: true

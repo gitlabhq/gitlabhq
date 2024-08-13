@@ -1,7 +1,6 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# !/usr/bin/env ruby
-#
 # Update group name in all relevant metric and event definition after a group name change.
 
 require 'json'
@@ -54,10 +53,10 @@ if $PROGRAM_NAME == __FILE__
       When a group is renamed, this script replaces the value for "product_group" in all matching event & metric definitions.
 
     Format:
-      ruby #{$PROGRAM_NAME} OLD_NAME NEW_NAME
+      #{$PROGRAM_NAME} OLD_NAME NEW_NAME
 
     Example:
-      ruby #{$PROGRAM_NAME} pipeline_authoring renamed_pipeline_authoring
+      #{$PROGRAM_NAME} pipeline_authoring renamed_pipeline_authoring
     TEXT
     exit
   end

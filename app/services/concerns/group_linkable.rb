@@ -4,6 +4,8 @@ module GroupLinkable
   extend ActiveSupport::Concern
 
   def execute
+    remove_unallowed_params
+
     return error('Not Found', 404) unless valid_to_create?
 
     build_link

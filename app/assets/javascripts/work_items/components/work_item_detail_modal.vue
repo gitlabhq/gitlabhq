@@ -97,8 +97,7 @@ export default {
     updateHasNotes() {
       this.hasNotes = true;
     },
-    openReportAbuseDrawer(reply) {
-      this.hide();
+    openReportAbuseModal(reply) {
       this.$emit('openReportAbuse', reply);
     },
   },
@@ -132,7 +131,7 @@ export default {
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"
       @has-notes="updateHasNotes"
-      @openReportAbuse="openReportAbuseDrawer"
+      @openReportAbuse="openReportAbuseModal"
     />
   </gl-modal>
 </template>

@@ -144,11 +144,11 @@ export default {
 };
 </script>
 <template>
-  <div class="branch-commit cgray">
+  <div class="branch-commit gl-text-primary">
     <template v-if="shouldShowRefInfo">
-      <div class="icon-container gl-display-inline-block">
+      <div class="icon-container gl-inline-block">
         <gl-icon v-if="tag" name="tag" />
-        <gl-icon v-else-if="mergeRequestRef" name="git-merge" />
+        <gl-icon v-else-if="mergeRequestRef" name="merge-request" />
         <gl-icon v-else name="branch" />
       </div>
 
@@ -178,7 +178,9 @@ export default {
           img-css-classes="gl-mr-3"
         />
         <tooltip-on-truncate :title="title" class="flex-truncate-child">
-          <gl-link :href="commitUrl" class="commit-row-message cgray">{{ title }}</gl-link>
+          <gl-link :href="commitUrl" class="commit-row-message gl-text-primary">{{
+            title
+          }}</gl-link>
         </tooltip-on-truncate>
       </span>
       <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>

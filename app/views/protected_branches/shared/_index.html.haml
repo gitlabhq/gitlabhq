@@ -1,16 +1,14 @@
 - can_admin_entity = protected_branch_can_admin_entity?(protected_branch_entity)
 - expanded = expanded_by_default?
 
-%section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { testid: 'protected-branches-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_("ProtectedBranch|Protected branches")
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
-      = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_("ProtectedBranch|Protected branches"),
+  id: 'js-protected-branches-settings',
+  testid: 'protected-branches-settings-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
+    = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")
+  - c.with_body do
     .js-alert-protected-branch-created-container.gl-mt-5
 
     = render Pajamas::AlertComponent.new(variant: :warning,
@@ -20,25 +18,20 @@
         =  s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
         = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/index', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper.gl-justify-content-space-between
-          %h3.gl-new-card-title
-            = s_("ProtectedBranch|Protected branches")
-            .gl-new-card-count
-              = sprite_icon('branch', css_class: 'gl-mr-2')
-              %span= @protected_branches.size
-          .gl-new-card-actions
-            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-protected-branch-button' } }) do
-              = _('Add protected branch')
-        .gl-new-card-description.gl-mt-2.gl-sm-mt-0
-          = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
-          = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
+    = render ::Layouts::CrudComponent.new(s_("ProtectedBranch|Protected branches"),
+      icon: 'branch',
+      count: @protected_branches.size,
+      toggle_text: _('Add protected branch'),
+      toggle_options: { data: { testid: 'add-protected-branch-button' } }) do |c|
+      - c.with_description do
+        = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
+        = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
       - c.with_body do
-        - if can_admin_entity
-          .gl-new-card-add-form.gl-m-3.gl-display-none.js-toggle-content
-            = content_for :create_protected_branch
-
         = content_for :branches_list
 
-    = paginate @protected_branches, theme: 'gitlab'
+      - c.with_form do
+        - if can_admin_entity
+          = content_for :create_protected_branch
+
+      - c.with_pagination do
+        = paginate @protected_branches, theme: 'gitlab'

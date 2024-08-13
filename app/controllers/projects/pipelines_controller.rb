@@ -284,7 +284,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     pipelines =
       if find_latest_pipeline?
-        project.latest_pipelines(params['ref'])
+        project.latest_pipelines(ref: params['ref'], limit: 100)
       else
         project.all_pipelines.id_in(params[:id])
       end

@@ -28,8 +28,7 @@ module Ci
 
       return {} unless config.exists?
 
-      ref_name = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha) if Feature.enabled?(
-        :project_ref_name_in_variables, project)
+      ref_name = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha)
 
       result = Gitlab::Ci::YamlProcessor.new(
         config.content,

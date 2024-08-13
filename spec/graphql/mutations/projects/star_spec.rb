@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects do
+  include GraphqlHelpers
+
   describe '#resolve' do
-    let_it_be(:user, freeze: true) { create(:user) }
+    let_it_be(:current_user, freeze: true) { create(:user) }
 
     subject(:mutation) do
       described_class
-        .new(object: nil, context: { current_user: user }, field: nil)
+        .new(object: nil, context: query_context, field: nil)
         .resolve(project_id: project.to_global_id, starred: starred)
     end
 
@@ -21,7 +23,7 @@ RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects
 
           it 'stars the project for the current user' do
             expect(mutation).to include(count: 1)
-            expect(project.reset.starrers).to include(user)
+            expect(project.reset.starrers).to include(current_user)
           end
         end
 
@@ -30,14 +32,14 @@ RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects
 
           it 'does not raise an error or change the number of stars' do
             expect(mutation).to include(count: 0)
-            expect(project.reset.starrers).not_to include(user)
+            expect(project.reset.starrers).not_to include(current_user)
           end
         end
       end
 
       context 'and the project is starred' do
         before do
-          user.toggle_star(project)
+          current_user.toggle_star(project)
         end
 
         context 'and the user stars the project' do
@@ -45,7 +47,7 @@ RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects
 
           it 'does not raise an error or change the number of stars' do
             expect(mutation).to include(count: 1)
-            expect(project.reset.starrers).to include(user)
+            expect(project.reset.starrers).to include(current_user)
           end
         end
 
@@ -54,7 +56,7 @@ RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects
 
           it 'unstars the project for the current user' do
             expect(mutation).to include(count: 0)
-            expect(project.reset.starrers).not_to include(user)
+            expect(project.reset.starrers).not_to include(current_user)
           end
         end
       end
@@ -66,7 +68,7 @@ RSpec.describe Mutations::Projects::Star, feature_category: :groups_and_projects
 
       it 'raises an error' do
         expect { mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-        expect(project.starrers).not_to include(user)
+        expect(project.starrers).not_to include(current_user)
       end
     end
   end

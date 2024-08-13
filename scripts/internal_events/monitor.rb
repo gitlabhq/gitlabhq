@@ -20,6 +20,8 @@
 
 require 'terminal-table'
 require 'net/http'
+
+require_relative './server'
 require_relative '../../spec/support/helpers/service_ping_helpers'
 
 Gitlab::Usage::TimeFrame.prepend(ServicePingHelpers::CurrentTimeFrame)
@@ -54,7 +56,8 @@ def extract_standard_context(event)
       user_id: context["data"]["user_id"],
       namespace_id: context["data"]["namespace_id"],
       project_id: context["data"]["project_id"],
-      plan: context["data"]["plan"]
+      plan: context["data"]["plan"],
+      extra: context["data"]["extra"]
     }
   end
   {}
@@ -75,7 +78,8 @@ def generate_snowplow_table
     'plan',
     'Label',
     'Property',
-    'Value'
+    'Value',
+    'Extra'
   ]
 
   rows << :separator
@@ -93,7 +97,8 @@ def generate_snowplow_table
       standard_context[:plan],
       event['event']['se_label'],
       event['event']['se_property'],
-      event['event']['se_value']
+      event['event']['se_value'],
+      standard_context[:extra]
     ]
 
     row.map! { |value| red(value) } if event['rawEvent']['parameters']['dtm'].to_i > @initial_max_timestamp
@@ -104,17 +109,6 @@ def generate_snowplow_table
   Terminal::Table.new(
     title: 'SNOWPLOW EVENTS',
     rows: rows
-  )
-end
-
-def generate_snowplow_placeholder
-  Terminal::Table.new(
-    title: 'SNOWPLOW EVENTS',
-    rows: [
-      ["Could not connect to Snowplow Micro."],
-      ["Please follow these instruction to set up Snowplow Micro:"],
-      ["https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md"]
-    ]
   )
 end
 
@@ -154,9 +148,9 @@ def generate_metrics_table
   )
 end
 
-def render_screen(paused, snowplow_available)
+def render_screen(paused)
   metrics_table = generate_metrics_table
-  events_table = snowplow_available ? generate_snowplow_table : generate_snowplow_placeholder
+  events_table = generate_snowplow_table
 
   print TTY::Cursor.clear_screen
   print TTY::Cursor.move_to(0, 0)
@@ -173,12 +167,13 @@ def render_screen(paused, snowplow_available)
   puts "Press \"q\" to quit"
 end
 
-snowplow_available = true
+server = nil
 
 begin
   snowplow_data
 rescue Errno::ECONNREFUSED
-  snowplow_available = false
+  # Start the mock server if Snowplow Micro is not running
+  server = Thread.start { Server.new.start }
 end
 
 reader = TTY::Reader.new
@@ -189,15 +184,18 @@ begin
     case reader.read_keypress(nonblock: true)
     when 'p'
       paused = !paused
-      render_screen(paused, snowplow_available)
+      render_screen(paused)
     when 'q'
+      server&.exit
       break
     end
 
-    render_screen(paused, snowplow_available) unless paused
+    render_screen(paused) unless paused
 
     sleep 1
   end
 rescue Interrupt
-  # Quietly shut down
+  server&.exit
+rescue Errno::ECONNREFUSED
+  # Ignore this error, caused by the server being killed before the loop due to working on a child thread
 end

@@ -5,7 +5,7 @@ require 'tempfile'
 
 # We need to capture pid from Process.spawn and then clean up by killing the process, which requires instance variables.
 # rubocop: disable RSpec/InstanceVariable
-RSpec.describe 'bin/diagnostic-reports-uploader' do
+RSpec.describe 'bin/diagnostic-reports-uploader', :uses_fast_spec_helper_but_runs_slow do
   # This is a smoke test for 'bin/diagnostic-reports-uploader'.
   # We intend to run this binary with `ruby bin/diagnostic-reports-uploader`, without preloading the entire Rails app.
   # Also, we use inline gemfile, to avoid pulling full Gemfile from the main app into memory.

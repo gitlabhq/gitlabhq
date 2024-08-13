@@ -20,7 +20,7 @@ In order to instrument your code with Internal Events Tracking you need to do th
 To create event and/or metric definitions, use the `internal_events` generator from the `gitlab` directory:
 
 ```shell
-ruby scripts/internal_events/cli.rb
+scripts/internal_events/cli.rb
 ```
 
 This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
@@ -76,7 +76,10 @@ track_internal_event(
 
 #### Additional properties
 
-Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event.
+
+Tracking classes have built-in properties with keys `label` (string), `property` (string) and `value`(numeric). It's recommended
+to use these properties first.
 
 Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
 
@@ -90,6 +93,26 @@ track_internal_event(
   }
 )
 ```
+
+If you need to pass more than three additional properties, you can use the `additional_properties` hash with your custom keys:
+
+```ruby
+track_internal_event(
+  "code_suggestion_accepted",
+  user: user,
+  additional_properties: {
+    label: 'vsc',
+    property: 'automatic',
+    value: 200,
+    lang: 'ruby',
+    custom_key: 'custom_value'
+  }
+)
+```
+
+Please add custom properties only in addition to the built-in properties.
+
+Custom rules can not be used as [metric filters](metric_definition_guide.md#filters).
 
 #### Controller and API helpers
 
@@ -136,6 +159,104 @@ track_event(
   namespace_id: namespace_id,
   project_id: project_id
 )
+```
+
+### Backend testing
+
+When testing code that simply triggers an internal event and make sure it increments all the related metrics,
+you can use the `internal_event_tracking` shared example.
+
+```ruby
+it_behaves_like 'internal event tracking' do
+  let(:event) { 'create_new_issue' }
+  let(:project) { issue.project }
+  let(:user) { issue.author }
+  let(:namespace) { group }
+  subject(:service_action) { described_class.new(issue).save }
+end
+```
+
+It requires a context containing:
+
+- `subject` - the action that triggers the event
+- `event` - the name of the event
+
+Optionally, the context can contain:
+
+- `user`
+- `project`
+- `namespace`. If not provided, `project.namespace` will be used (if `project` is available).
+- `category`
+- `label`
+- `property`
+- `value`
+- `event_attribute_overrides` - is used when its necessary to override the attributes available in parent context. For example:
+
+```ruby
+let(:event) { 'create_new_issue' }
+
+it_behaves_like 'internal event tracking' do
+  let(:event_attribute_overrides) { { event: 'create_new_milestone'} }
+
+  subject(:service_action) { described_class.new(issue).save }
+end
+```
+
+#### Composable matchers
+
+When a singe action triggers an event multiple times, triggers multiple different events, or increments some metrics but not others for the event,
+you can use the `trigger_internal_events` and `increment_usage_metrics` matchers.
+
+```ruby
+ expect { subject }
+  .to trigger_internal_events('web_ide_viewed')
+  .with(user: user, project: project, namespace: namespace)
+  .and increment_usage_metrics('counts.web_views')
+```
+
+The `trigger_internal_events` matcher accepts the same chain methods as the [`receive`](https://rubydoc.info/github/rspec/rspec-mocks/RSpec/Mocks/ExampleMethods#receive-instance_method) matcher (`#once`, `#at_most`, etc). By default, it expects the provided events to be triggered only once.
+
+The chain method `#with` accepts following parameters:
+
+- `user` - User object
+- `project` - Project object
+- `namespace` - Namespace object. If not provided, it will be set to `project.namespace`
+- `additional_properties` - Hash. Additional properties to be sent with the event. For example: `{ label: 'scheduled', value: 20 }`
+- `category` - String. If not provided, it will be set to the class name of the object that triggers the event
+
+The `increment_usage_metrics` matcher accepts the same chain methods as the [`change`](https://rubydoc.info/gems/rspec-expectations/RSpec%2FMatchers:change) matcher (`#by`, `#from`, `#to`, etc). By default, it expects the provided metrics to be incremented by one.
+
+```ruby
+expect { subject }
+  .to trigger_internal_events('web_ide_viewed')
+  .with(user: user, project: project, namespace: namespace)
+  .exactly(3).times
+```
+
+Both matchers are composable with other matchers that act on a block (like `change` matcher).
+
+```ruby
+expect { subject }
+  .to trigger_internal_events('mr_created')
+    .with(user: user, project: project, category: category, additional_properties: { label: label } )
+  .and increment_usage_metrics('counts.deployments')
+    .at_least(:once)
+  .and change { mr.notes.count }.by(1)
+```
+
+To test that an event was not triggered, you can use the `not_trigger_internal_events` matcher. It does not accept message chains.
+
+```ruby
+expect { subject }.to trigger_internal_events('mr_created')
+    .with(user: user, project: project, namespace: namespace)
+  .and increment_usage_metrics('counts.deployments')
+  .and not_trigger_internal_events('pipeline_started')
+```
+
+Or you can use the `not_to` syntax:
+
+```ruby
+expect { subject }.not_to trigger_internal_events('mr_created', 'member_role_created')
 ```
 
 ### Frontend tracking

@@ -13,13 +13,13 @@ DETAILS:
 View and resolve abuse reports from GitLab users.
 
 GitLab administrators can view and [resolve](#resolving-abuse-reports) abuse
-reports in the Admin area.
+reports in the **Admin** area.
 
 ## Receive notification of abuse reports by email
 
 To receive notifications of new abuse reports by email:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
@@ -38,7 +38,7 @@ To find out more about reporting abuse, see
 
 To access abuse reports:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Abuse reports**.
 
 There are four ways to resolve an abuse report, with a button for each method:

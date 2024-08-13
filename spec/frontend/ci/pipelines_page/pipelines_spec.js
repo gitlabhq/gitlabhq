@@ -43,6 +43,7 @@ import {
   setIdTypePreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
 import { legacyStageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);
@@ -59,7 +60,13 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
   (p) => p.details.stages && p.details.stages.length,
 );
 
-describe('Pipelines', () => {
+const skipReason = new SkipReason({
+  name: 'Pipelines',
+  reason: 'OOM on the worker',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458411',
+});
+
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let mockApollo;
   let mock;
@@ -94,7 +101,7 @@ describe('Pipelines', () => {
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
   const findStagesDropdownToggle = () =>
-    wrapper.find('.mini-pipeline-graph-dropdown [data-testid="base-dropdown-toggle"]');
+    wrapper.find('[data-testid="pipeline-mini-graph-dropdown-toggle"]');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = ({ props = {}, withPermissions = true } = {}) => {

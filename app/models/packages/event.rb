@@ -45,16 +45,5 @@ module Packages
 
       ["#{EVENT_PREFIX}_#{event_scope}_#{originator_type}"]
     end
-
-    # total counter names for tracking number of events
-    def self.counters_for(event_scope, event_type, originator_type)
-      return [] unless event_allowed?(event_type)
-
-      [
-        "#{EVENT_PREFIX}_#{event_type}",
-        "#{EVENT_PREFIX}_#{event_type}_by_#{originator_type}",
-        "#{EVENT_PREFIX}_#{event_scope}_#{event_type}"
-      ]
-    end
   end
 end

@@ -119,6 +119,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    restrictedToolBarItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     const editingMode =
@@ -139,7 +144,9 @@ export default {
       return this.autofocus && !this.autofocused ? 'end' : false;
     },
     markdownFieldRestrictedToolBarItems() {
-      return this.disableAttachments ? ['attach-file'] : [];
+      const restrictAttachments = this.disableAttachments ? ['attach-file'] : [];
+
+      return [...this.restrictedToolBarItems, ...restrictAttachments];
     },
   },
   watch: {
@@ -298,7 +305,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-px-0!">
+  <div class="!gl-px-0">
     <local-storage-sync
       :value="editingMode"
       as-string

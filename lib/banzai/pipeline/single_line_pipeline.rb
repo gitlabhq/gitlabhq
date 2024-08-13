@@ -10,7 +10,7 @@ module Banzai
           Filter::AssetProxyFilter,
           Filter::EmojiFilter,
           Filter::CustomEmojiFilter,
-          Filter::AutolinkLegacyFilter,
+          Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           *reference_filters
         ]

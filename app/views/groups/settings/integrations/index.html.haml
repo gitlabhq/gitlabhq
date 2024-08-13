@@ -3,8 +3,10 @@
 - @force_desktop_expanded_sidebar = true
 
 %section.js-search-settings-section
-  %h3= s_('Integrations|Group-level integration management')
+  = render ::Layouts::PageHeadingComponent.new(s_('Integrations|Group-level integration management')) do |c|
+    - c.with_description do
+      - integrations_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: integrations_help_page_path }
+      = s_("Integrations|GitLab administrators can set up integrations that all projects in a group inherit and use by default. These integrations apply to all projects that don't already use custom settings. You can override custom settings for a project if the settings are necessary at that level. Learn more about %{integrations_link_start}group-level integration management%{link_end}.").html_safe % { integrations_link_start: integrations_link_start, link_end: "</a>".html_safe }
+    end
 
-  - integrations_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: integrations_help_page_path }
-  %p.gl-text-secondary= s_("Integrations|GitLab administrators can set up integrations that all projects in a group inherit and use by default. These integrations apply to all projects that don't already use custom settings. You can override custom settings for a project if the settings are necessary at that level. Learn more about %{integrations_link_start}group-level integration management%{link_end}.").html_safe % { integrations_link_start: integrations_link_start, link_end: "</a>".html_safe }
   = render 'shared/integrations/index', integrations: @integrations

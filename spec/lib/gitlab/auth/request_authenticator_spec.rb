@@ -363,6 +363,32 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     end
   end
 
+  describe '#find_user_from_job_token_basic_auth' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:job) { create(:ci_build, user: user, status: :running) }
+
+    before do
+      allow(subject).to receive(:has_basic_credentials?).and_return(true)
+      allow(subject).to receive(:user_name_and_password).and_return([::Gitlab::Auth::CI_JOB_USER, job.token])
+    end
+
+    context 'when feature flag request_authenticator_exclude_job_token_basic_auth is enabled' do
+      it 'does not find a user' do
+        expect(subject.user([:api])).to eq nil
+      end
+    end
+
+    context 'when feature flag request_authenticator_exclude_job_token_basic_auth is disabled' do
+      before do
+        stub_feature_flags(request_authenticator_exclude_job_token_basic_auth: false)
+      end
+
+      it 'finds a job token user' do
+        expect(subject.user([:api])).to eq user
+      end
+    end
+  end
+
   describe '#find_user_from_job_token' do
     let_it_be(:user) { build(:user) }
     let_it_be(:job) { build(:ci_build, user: user, status: :running) }

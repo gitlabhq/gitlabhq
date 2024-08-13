@@ -2,11 +2,11 @@
   %ul.pagination.justify-content-center
     - if previous_path
       %li.page-item.prev
-        = link_to previous_path, rel: 'prev', class: 'page-link' do
+        = link_to previous_path, rel: 'prev', class: 'page-link', data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'prev') do
           = sprite_icon('chevron-lg-left', size: 8)
           = s_('Pagination|Prev')
     - if next_path
       %li.page-item.next
-        = link_to next_path, rel: 'next', class: 'page-link' do
+        = link_to next_path, rel: 'next', class: 'page-link', data: paginate_event_tracking_data_attributes(event_tracking: event_tracking, event_label: 'next') do
           = s_('Pagination|Next')
           = sprite_icon('chevron-lg-right', size: 8)

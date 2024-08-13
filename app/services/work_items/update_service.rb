@@ -39,6 +39,14 @@ module WorkItems
       super
     end
 
+    override :handle_date_changes
+    def handle_date_changes(work_item)
+      return if work_item.dates_source&.previous_changes.blank? &&
+        work_item.previous_changes.slice('due_date', 'start_date').none?
+
+      GraphqlTriggers.issuable_dates_updated(work_item)
+    end
+
     def prepare_update_params(work_item)
       execute_widgets(
         work_item: work_item,

@@ -37,6 +37,7 @@ This strategy:
 - Only supports the Authorization Grant flow, which is most common for client-server
   applications like GitLab.
 - Cannot fetch user information from more than one URL.
+- Cannot fetch user information from the access token in JWT format.
 - Has not been tested with user information formats, except JSON.
 
 ## Configure the OAuth 2.0 provider

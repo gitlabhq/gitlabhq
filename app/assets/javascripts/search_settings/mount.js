@@ -10,7 +10,7 @@ const mountSearch = ({ el }) =>
         ref: 'searchSettings',
         props: {
           searchRoot: document.querySelector('#content-body'),
-          sectionSelector: '.js-search-settings-section, section.settings',
+          sectionSelector: '.js-search-settings-section, section.settings, .vue-settings-block',
           hideWhenEmptySelector: '.js-hide-when-nothing-matches-search',
           isExpandedFn: isExpanded,
         },

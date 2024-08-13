@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 description: Projects, issues, authentication, security providers.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
@@ -32,7 +32,7 @@ Solutions like Akismet and reCAPTCHA are available for spam protection.
 
 You can also integrate GitLab with the following security partners:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - [Anchore](https://docs.anchore.com/current/docs/integration/ci_cd/gitlab/)
 - [Prisma Cloud](https://docs.prismacloud.io/en/enterprise-edition/content-collections/application-security/get-started/connect-code-and-build-providers/code-repositories/add-gitlab)
@@ -49,7 +49,7 @@ You can also integrate GitLab with the following security partners:
 - [Venafi](https://marketplace.venafi.com/xchange/620d2d6ed419fb06a5c5bd36/solution/6292c2ef7550f2ee553cf223)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 GitLab can check your application for security vulnerabilities.
 For more information, see [Secure your application](../user/application_security/secure_your_application.md).

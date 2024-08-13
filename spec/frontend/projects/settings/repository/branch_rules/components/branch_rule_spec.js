@@ -1,8 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import BranchRule, {
-  i18n,
-} from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
-import { sprintf, n__ } from '~/locale';
+import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import {
   branchRuleProvideMock,
   branchRulePropsMock,
@@ -19,12 +16,12 @@ describe('Branch rule', () => {
     });
   };
 
-  const findDefaultBadge = () => wrapper.findByText(i18n.defaultLabel);
-  const findProtectedBadge = () => wrapper.findByText(i18n.protectedLabel);
+  const findDefaultBadge = () => wrapper.findByText('default');
+  const findProtectedBadge = () => wrapper.findByText('protected');
   const findBranchName = () => wrapper.findByText(branchRulePropsMock.name);
   const findProtectionDetailsList = () => wrapper.findByRole('list');
   const findProtectionDetailsListItems = () => wrapper.findAllByRole('listitem');
-  const findDetailsButton = () => wrapper.findByText(i18n.detailsButtonLabel);
+  const findDetailsButton = () => wrapper.findByText('View details');
 
   beforeEach(() => createComponent());
 
@@ -56,18 +53,13 @@ describe('Branch rule', () => {
 
   it('renders the protection details list items', () => {
     expect(findProtectionDetailsListItems()).toHaveLength(wrapper.vm.approvalDetails.length);
-    expect(findProtectionDetailsListItems().at(0).text()).toBe(i18n.allowForcePush);
+    expect(findProtectionDetailsListItems().at(0).text()).toBe('Allowed to force push');
     expect(findProtectionDetailsListItems().at(1).text()).toBe(wrapper.vm.pushAccessLevelsText);
   });
 
   it('renders branches count for wildcards', () => {
     createComponent({ name: 'test-*' });
-    expect(findProtectionDetailsListItems().at(0).text()).toMatchInterpolatedText(
-      sprintf(i18n.matchingBranches, {
-        total: branchRulePropsMock.matchingBranchesCount,
-        subject: n__('branch', 'branches', branchRulePropsMock.matchingBranchesCount),
-      }),
-    );
+    expect(findProtectionDetailsListItems().at(0).text()).toBe('1 matching branch');
   });
 
   it('renders a detail button with the correct href', () => {

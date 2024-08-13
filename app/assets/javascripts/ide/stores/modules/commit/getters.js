@@ -49,12 +49,14 @@ export const preBuiltCommitMessage = (state, _, rootState) => {
 
 export const isCreatingNewBranch = (state) => state.commitAction === COMMIT_TO_NEW_BRANCH;
 
+// eslint-disable-next-line max-params
 export const shouldHideNewMrOption = (_state, getters, _rootState, rootGetters) =>
   !getters.isCreatingNewBranch &&
   (rootGetters.hasMergeRequest ||
     (!rootGetters.hasMergeRequest && rootGetters.isOnDefaultBranch)) &&
   rootGetters.canPushToBranch;
 
+// eslint-disable-next-line max-params
 export const shouldDisableNewMrOption = (state, getters, rootState, rootGetters) =>
   !rootGetters.canCreateMergeRequests || rootGetters.emptyRepo;
 

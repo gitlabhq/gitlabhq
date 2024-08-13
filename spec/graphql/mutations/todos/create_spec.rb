@@ -6,17 +6,16 @@ RSpec.describe Mutations::Todos::Create do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
+  let(:current_user) { create(:user) }
+
   describe '#resolve' do
     context 'when target does not support todos' do
       it 'raises error' do
-        current_user = create(:user)
         target = create(:milestone)
-
-        ctx = { current_user: current_user }
         input = { target_id: global_id_of(target).to_s }
         mutation = graphql_mutation(described_class, input)
 
-        response = GitlabSchema.execute(mutation.query, context: ctx, variables: mutation.variables).to_h
+        response = GitlabSchema.execute(mutation.query, context: query_context, variables: mutation.variables).to_h
 
         expect(response).to include(
           'errors' => contain_exactly(

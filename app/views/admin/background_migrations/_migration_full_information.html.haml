@@ -18,4 +18,4 @@
   %td{ role: 'cell', data: { label: _('Last updated') } }
     = @migration.updated_at
   %td{ role: 'cell', data: { label: _('Status') } }
-    = gl_badge_tag @migration.status_name.to_s.humanize, { size: :sm, variant: batched_migration_status_badge_variant(@migration) }
+    = gl_badge_tag @migration.status_name.to_s.humanize, { variant: batched_migration_status_badge_variant(@migration) }

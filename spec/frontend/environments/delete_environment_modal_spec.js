@@ -2,7 +2,7 @@ import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -40,9 +40,8 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
 
     expect(wrapper.text()).toBe(
       sprintf(
-        s__(
-          `Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?`,
-        ),
+        `Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?`,
+
         {
           environmentName: resolvedEnvironment.name,
         },
@@ -78,9 +77,9 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
 
     expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: s__(
-          'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
-        ),
+        message:
+          'An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
+
         captureError: true,
       }),
     );

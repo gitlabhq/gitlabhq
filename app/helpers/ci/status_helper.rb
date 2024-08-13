@@ -78,7 +78,7 @@ module Ci
 
       icon_wrapper_class = "js-ci-status-badge-legacy ci-icon-gl-icon-wrapper"
 
-      gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do
+      gl_badge_tag(variant: variant, href: path, class: badge_classes, title: title, data: data) do
         if show_status_text
           content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-whitespace-nowrap', data: { testid: 'ci-icon-text' } })
         else

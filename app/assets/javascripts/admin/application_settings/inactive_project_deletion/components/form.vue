@@ -66,6 +66,22 @@ export default {
       return parseInt(this.sendWarningEmailAfterMonths, 10) > 0;
     },
   },
+  watch: {
+    isSendWarningEmailAfterMonthsValid() {
+      this.checkValidity(
+        this.$refs.sendWarningEmailAfterMonthsInput,
+        this.$options.i18n.sendWarningEmailAfterMonthsInvalidFeedback,
+        this.isSendWarningEmailAfterMonthsValid,
+      );
+    },
+    isDeleteAfterMonthsValid() {
+      this.checkValidity(
+        this.$refs.deleteAfterMonthsInput,
+        this.$options.i18n.deleteAfterMonthsInvalidFeedback,
+        this.isDeleteAfterMonthsValid,
+      );
+    },
+  },
   methods: {
     checkValidity(ref, feedback, valid) {
       // These form fields are used within a HAML created form and we don't have direct access to the submit button
@@ -181,13 +197,6 @@ export default {
               type="number"
               :min="0"
               data-testid="delete-after-months-input"
-              @change="
-                checkValidity(
-                  $refs.deleteAfterMonthsInput,
-                  $options.i18n.deleteAfterMonthsInvalidFeedback,
-                  isDeleteAfterMonthsValid,
-                )
-              "
             />
 
             <template #append>
@@ -219,13 +228,6 @@ export default {
               type="number"
               :min="0"
               data-testid="send-warning-email-after-months-input"
-              @change="
-                checkValidity(
-                  $refs.sendWarningEmailAfterMonthsInput,
-                  $options.i18n.sendWarningEmailAfterMonthsInvalidFeedback,
-                  isSendWarningEmailAfterMonthsValid,
-                )
-              "
             />
 
             <template #append>

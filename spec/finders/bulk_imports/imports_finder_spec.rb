@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ImportsFinder do
+RSpec.describe BulkImports::ImportsFinder, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:started_import) { create(:bulk_import, :started, user: user) }
   let_it_be(:finished_import) { create(:bulk_import, :finished, user: user) }
@@ -31,7 +31,7 @@ RSpec.describe BulkImports::ImportsFinder do
       end
     end
 
-    context 'when order is specifed' do
+    context 'when order is specified' do
       subject { described_class.new(user: user, params: { sort: order }) }
 
       context 'when order is specified as asc' do
@@ -48,6 +48,16 @@ RSpec.describe BulkImports::ImportsFinder do
         it 'returns entities sorted descending' do
           expect(subject.execute).to eq([finished_import, started_import])
         end
+      end
+    end
+
+    context 'when configuration is included' do
+      it 'preloads configuration association' do
+        imports = described_class
+          .new(user: user, params: { include_configuration: true })
+          .execute
+
+        expect(imports.first.association_cached?(:configuration)).to be(true)
       end
     end
   end

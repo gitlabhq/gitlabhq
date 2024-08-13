@@ -8,7 +8,7 @@ description: "Code Suggestions helps you write code in GitLab more efficiently b
 # Code Suggestions
 
 DETAILS:
-**Tier:** Premium or Ultimate with [GitLab Duo Pro](../../../../subscriptions/subscription-add-ons.md)
+**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../../subscriptions/subscription-add-ons.md)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
@@ -22,26 +22,32 @@ GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/rele
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-With GitLab Duo Code Suggestions, you get:
+With GitLab Duo Code Suggestions, you get code completion and code generation.
 
-- Code completion, which suggests completions to the current line you are
-  typing. Code completion is used in most situations to quickly complete one
-  or a few lines of code.
-- Code generation, which generates code based on a natural language code
-  comment block. Write a comment like `# check if code suggestions are
-  enabled for current user`, then press <kbd>Enter</kbd> to generate code based
-  on the context of your comment and the rest of your code.
+## Code completion
 
-  Code generation requests are slower than code completion requests, but provide
-  more accurate responses because:
-  - A larger LLM is used.
-  - Additional context is sent in the request, for example,
-    the libraries used by the project.
+Code completion suggests completions to the line you are typing.
+Code completion is used in most situations to quickly complete one
+or a few lines of code.
 
-  Code generation is used when the:
-  - User writes a comment and hits <kbd>Enter</kbd>.
-  - File being edited is less than five lines of code.
-  - User enters an empty function or method.
+## Code generation
+
+Code generation generates code based on a natural language code
+comment block. Write a comment like `# check if code suggestions are
+enabled for current user`, then press <kbd>Enter</kbd> to generate code based
+on the context of your comment and the rest of your code.
+
+Code generation is used when:
+
+- You write a comment and press <kbd>Enter</kbd>.
+- You enter an empty function or method.
+- The file you're editing has fewer than five lines of code.
+
+Code generation requests take longer than code completion requests, but provide more accurate responses because:
+
+- A larger LLM is used.
+- Additional context is sent in the request, for example, the libraries used by the project.
+- Your instructions are passed to the LLM.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -82,22 +88,95 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
+- In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
+  feature flags are enabled, open related files in other tabs to expand the
+  [inference window context](#inference-window-context).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
 
 ```plaintext
-# Create a web service using Tornado that allows a user to log in, run a security scan, and review the scan results.
-# Each action (log in, run a scan, and review results) should be its own resource in the web service
+# Create a web service using Tornado that allows a user to sign in, run a security scan, and review the scan results.
+# Each action (sign in, run a scan, and review results) should be its own resource in the web service
 ...
 ```
 
 AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 To generate quality code, write clear, descriptive, specific tasks.
 
-### Best practice examples
-
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
+
+## Open tabs as context
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab VS Code Extension 4.20.0.
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
+> - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+To get more accurate and relevant results from Code Suggestions and Code Generation, you can use
+the contents of the files open in tabs in your IDE. Similar to prompt engineering, these files
+give GitLab Duo more information about the standards and practices in your code project.
+
+### Enable open tabs as context
+
+Prerequisites:
+
+- GitLab Duo Code Suggestions must be enabled for your project.
+- For GitLab self-managed instances, the `code_suggestions_context`and the
+  `advanced_context_resolver` [feature flags](../../../feature_flags.md) must be enabled.
+- Use a supported code language:
+  - Code Completion: All configured languages.
+  - Code Generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files),
+    Vue, and YAML.
+
+::Tabs
+
+:::TabTitle Visual Studio Code
+
+1. Install the [GitLab Workflow extension version 4.14.2 or later](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+   from the Visual Studio Marketplace.
+1. Configure the [extension settings](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
+1. Enable the feature by turning on the `gitlab.aiAssistedCodeSuggestions.enabledSupportedLanguages` setting.
+
+:::TabTitle JetBrains IDEs
+
+For installation instructions for JetBrains IDEs, see the
+[GitLab JetBrains Plugin documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#toggle-sending-open-tabs-as-context).
+
+::EndTabs
+
+### Use open tabs as context
+
+Open the files you want to provide for context:
+
+- Open tabs uses the most recently opened or changed files.
+- If you do not want a file used as additional context, close that file.
+
+When you start working in a file, GitLab Duo uses your open files
+as extra context, within [truncation limits](#truncation-of-file-content).
+
+You can adjust your Code Generation results by adding code comments to your file
+that explain what you want to build. Code Generation treats your code comments
+like chat. Your code comments update the `user_instruction`, and then improve
+the next results you receive.
+
+### Related topics
+
+To learn about the code that builds the prompt, see these files:
+
+- **Code Generation**:
+  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
+  in the `gitlab` repository.
+- **Code Completion**:
+  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273) in the `modelops` repository.
+
+You can provide feedback about this feature in
+[issue 258](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/258).
 
 ## Response time
 
@@ -127,14 +206,26 @@ having higher latency.
 
 To disable direct connections to the gateway:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **AI-powered features**.
 1. Select the **Disable direct connections for code suggestions** checkbox.
 
 ## Inference window context
 
-Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/206) open tabs context in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `advanced_context_resolver` and `code_suggestions_context`. Disabled by default.
+
+Code Suggestions inferences against:
+
+- The currently opened file
+- The content before and after the cursor
+- The filename and extension.
+- In GitLab 17.2 and later when the `advanced_context_resolver` and `code_suggestions_context` feature flags are enabled.
+  - Files opened in other tabs.
+  - User instructions
+
+For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ## Truncation of file content
 

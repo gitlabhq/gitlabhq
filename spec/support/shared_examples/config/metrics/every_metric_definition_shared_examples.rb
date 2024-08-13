@@ -127,8 +127,7 @@ RSpec.shared_examples 'every metric definition' do
     end
 
     let(:ignored_classes) do
-      Gitlab::Usage::Metrics::Instrumentations::IssuesCreatedFromAlertsMetric::ISSUES_FROM_ALERTS_METRICS +
-        Gitlab::Usage::Metrics::Instrumentations::UniqueUsersAllImportsMetric::IMPORTS_METRICS
+      Gitlab::Usage::Metrics::Instrumentations::UniqueUsersAllImportsMetric::IMPORTS_METRICS
     end
 
     def assert_uses_all_nested_classes(parent_module)

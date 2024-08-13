@@ -1,4 +1,8 @@
+- add_to_breadcrumbs _("Groups"), admin_groups_path
+- add_to_breadcrumbs @group.name, admin_group_path(@group)
+- breadcrumb_title _("Edit")
 - page_title _("Edit"), @group.name, _("Groups")
+
 %h1.page-title.gl-font-size-h-display= _('Edit group: %{group_name}') % { group_name: @group.name }
 %hr
 = render 'form', visibility_level: @group.visibility_level

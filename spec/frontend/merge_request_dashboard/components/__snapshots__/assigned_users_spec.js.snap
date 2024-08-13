@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Merge request dashboard assigned users component as reviewer list renders review state icon 1`] = `
+<span
+  class="-gl-bottom-2 -gl-right-2 gl-absolute gl-bg-red-100 gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-text-red-500 gl-w-5"
+  data-testid="review-state-icon"
+>
+  <svg
+    aria-hidden="true"
+    class="gl-block gl-fill-current gl-icon s12"
+    data-testid="error-icon"
+    role="img"
+  >
+    <use
+      href="file-mock#error"
+    />
+  </svg>
+</span>
+`;
+
+exports[`Merge request dashboard assigned users component renders user avatars 1`] = `
+<div
+  class="gl-flex gl-justify-center mr-users-list"
+>
+  <div
+    class="gl-avatars-inline gl-avatars-inline-lg"
+  >
+    <div
+      class="gl-avatars-inline-child"
+    >
+      <a
+        class="gl-avatar-link gl-link gl-relative"
+        data-testid="assigned-user"
+        href="/root"
+        target="blank"
+      >
+        <img
+          alt="avatar"
+          class="gl-avatar gl-avatar-circle gl-avatar-s32"
+          src="/root"
+        />
+        <span
+          class="-gl-bottom-2 -gl-right-2 gl-absolute gl-bg-red-100 gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-text-red-500 gl-w-5"
+          data-testid="review-state-icon"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-block gl-fill-current gl-icon s12"
+            data-testid="error-icon"
+            role="img"
+          >
+            <use
+              href="file-mock#error"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+    <div
+      class="gl-avatars-inline-child"
+    >
+      <a
+        class="gl-avatar-link gl-link gl-relative"
+        data-testid="assigned-user"
+        href="/root"
+        target="blank"
+      >
+        <img
+          alt="avatar"
+          class="gl-avatar gl-avatar-circle gl-avatar-s32"
+          src="/root"
+        />
+        <span
+          class="-gl-left-2 -gl-top-2 gl-absolute gl-bg-blue-500 gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-text-white gl-w-5"
+          data-testid="current-user"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-block gl-fill-current gl-icon s12"
+            data-testid="user-icon"
+            role="img"
+          >
+            <use
+              href="file-mock#user"
+            />
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+`;

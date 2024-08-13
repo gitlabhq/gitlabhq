@@ -2,7 +2,7 @@
 - addition_color = local_assigns.fetch(:addition, nil)
 
 - if deletion_color.present? || request.path == profile_preferences_path
-  = stylesheet_link_tag_defer "highlight/diff_custom_colors_deletion"
+  = universal_stylesheet_link_tag "highlight/diff_custom_colors_deletion"
 - if deletion_color.present?
   - deletion_color_rgb = hex_color_to_rgb_array(deletion_color).join(',')
   :css
@@ -11,7 +11,7 @@
     }
 
 - if addition_color.present? || request.path == profile_preferences_path
-  = stylesheet_link_tag_defer "highlight/diff_custom_colors_addition"
+  = universal_stylesheet_link_tag "highlight/diff_custom_colors_addition"
 - if addition_color.present?
   - addition_color_rgb = hex_color_to_rgb_array(addition_color).join(',')
   :css

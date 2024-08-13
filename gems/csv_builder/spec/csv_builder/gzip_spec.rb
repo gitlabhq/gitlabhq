@@ -7,7 +7,7 @@ RSpec.describe CsvBuilder::Gzip do
   let(:event_2) { double(title: 'Added sugar', description: 'Just a pinch') }
   let(:items) { [event_1, event_2] }
 
-  subject(:builder) { described_class.new(items, 'Title' => 'title', 'Description' => 'description') }
+  subject(:builder) { described_class.new(items, { 'Title' => 'title', 'Description' => 'description' }) }
 
   describe '#render' do
     it 'returns yields a tempfile' do

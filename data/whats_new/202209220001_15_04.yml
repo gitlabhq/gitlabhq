@@ -34,7 +34,7 @@
     New GitLab users created using SAML or SCIM that belong to a [verified domain](https://docs.gitlab.com/ee/user/project/pages/custom_domains_ssl_tls_certification/#1-add-a-custom-domain) no longer receive the GitLab account verification e-mail.
 
     This reduces account activation friction. Accounts generated through a provisioning process are already verified, so users should not have to individually verify them manually.
-  stage: manage  # String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: false  # Boolean value (true or false)
   gitlab-com: true  # Boolean value (true or false)
   available_in: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]

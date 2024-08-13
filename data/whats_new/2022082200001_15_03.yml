@@ -49,7 +49,7 @@
     - Symbols.
 
     Complex passwords are less likely to be compromised, and the ability to configure password complexity requirements helps administrators enforce their password policies.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
@@ -60,7 +60,7 @@
 - name: "Maintain SAML Group Links with API"
   description: |
     Until now, SAML group links had to be configured in the UI. Now, you can manage SAML group links programmatically using the API so you can automate SAML groups management.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]

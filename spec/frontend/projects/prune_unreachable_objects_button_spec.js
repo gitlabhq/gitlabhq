@@ -1,7 +1,6 @@
 import { GlButton, GlModal, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { s__ } from '~/locale';
 import PruneObjectsButton from '~/projects/prune_unreachable_objects_button.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
@@ -50,7 +49,7 @@ describe('Project remove modal', () => {
       const buttonModalDirective = getBinding(findBtn().element, 'gl-modal');
 
       expect(findModal().props('modalId')).toBe(buttonModalDirective.value);
-      expect(findModal().text()).toContain(s__('UpdateProject|Are you sure you want to prune?'));
+      expect(findModal().text()).toContain('Are you sure you want to prune?');
     });
   });
 

@@ -1,5 +1,6 @@
 import { DATE_TIME_FORMATS, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { setLanguage } from 'jest/__helpers__/locale_helper';
+// eslint-disable-next-line no-restricted-imports
 import * as localeFns from '~/locale';
 
 describe('localeDateFormat (en-US)', () => {

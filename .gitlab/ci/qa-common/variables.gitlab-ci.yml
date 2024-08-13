@@ -1,6 +1,7 @@
 # Default variables for package-and-test
 
 variables:
+  FF_TIMESTAMPS: "true"
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
   ALLURE_JOB_NAME: $CI_PROJECT_NAME
@@ -17,4 +18,4 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "356f2cb821b938f816eb84717e84e0e287fa65b8"
+  GITLAB_HELM_CHART_REF: "bb4bad8015746332cd64ea928b5430737a081b2d"

@@ -1,0 +1,18 @@
+query getTreeList($defaultBranchName: String!, $projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+
+    repository {
+      tree(path: ".gitlab/agents", ref: $defaultBranchName) {
+        trees {
+          nodes {
+            id
+            name
+            path
+            webPath
+          }
+        }
+      }
+    }
+  }
+}

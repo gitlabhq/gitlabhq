@@ -420,7 +420,7 @@ describe('ErrorTrackingList', () => {
       expect(emptyStateComponent.isVisible()).toBe(true);
       expect(emptyStatePrimaryDescription.exists()).toBe(true);
       expect(emptyStateLinks.at(0).attributes('href')).toBe(
-        '/help/operations/error_tracking.html#integrated-error-tracking',
+        '/help/operations/integrated_error_tracking',
       );
     });
   });

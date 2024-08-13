@@ -19,12 +19,12 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['searchType']),
-    ...mapGetters(['showArchived']),
+    ...mapGetters(['hasProjectContext']),
     showLanguageFilter() {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
     shouldShowZoektForksFilter() {
-      return this.searchType === SEARCH_TYPE_ZOEKT && this.glFeatures.searchAddForkFilterToZoekt;
+      return this.searchType === SEARCH_TYPE_ZOEKT && this.hasProjectContext;
     },
   },
 };
@@ -33,7 +33,7 @@ export default {
 <template>
   <filters-template>
     <language-filter v-if="showLanguageFilter" class="gl-mb-5" />
-    <archived-filter v-if="showArchived" class="gl-mb-5" />
+    <archived-filter v-if="hasProjectContext" class="gl-mb-5" />
     <forks-filter v-if="shouldShowZoektForksFilter" class="gl-mb-5" />
   </filters-template>
 </template>

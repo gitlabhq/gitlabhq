@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -46,9 +46,9 @@ To create a Jira group for the user:
    `gitlab-developers`), then select **Add group**.
 1. To add the `gitlab` user to the new `gitlab-developers` group, select **Edit members**.
    The `gitlab-developers` group appears as a selected group.
-<!-- vale gitlab.BadPlurals = NO -->
+<!-- vale gitlab_base.BadPlurals = NO -->
 1. In the **Add members to selected group(s)** section, enter `gitlab`.
-<!-- vale gitlab.BadPlurals = YES -->
+<!-- vale gitlab_base.BadPlurals = YES -->
 1. Select **Add selected users**.
    The `gitlab` user appears as a group member.
 

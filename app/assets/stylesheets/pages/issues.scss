@@ -277,10 +277,12 @@ ul.related-merge-requests > li gl-emoji {
   top: $calc-application-header-height;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-drawer .md-header {
   top: 0;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-modal .md-header {
   top: -$gl-padding-8;
 }

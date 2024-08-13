@@ -26,7 +26,7 @@ export const BULK_IMPORT_STATIC_ITEMS = {
   design: __('Design'),
   project_feature: __('Project feature'),
   protected_branches: __('Protected Branch'),
-  push_rule: __('Push Rule'),
+  push_rule: __('Push rule'),
   repository: __('Repository'),
   service_desk_setting: __('Service Desk'),
 };

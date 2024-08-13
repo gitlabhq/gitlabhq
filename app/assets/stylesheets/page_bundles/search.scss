@@ -8,7 +8,7 @@ $language-filter-max-height: 20rem;
 
 .search-results {
   .search-result-row {
-    border-bottom: 1px solid var(--border-color, $border-color);
+    border-bottom: 1px solid var(--gl-border-color-default);
     padding-bottom: $gl-padding;
     margin-bottom: $gl-padding;
 
@@ -22,10 +22,11 @@ $language-filter-max-height: 20rem;
   }
 
   mark {
-    position: relative;
-    background-color: $orange-100;
+    background-color: var(--orange-100);
+    box-shadow: 0 0 0 $gl-spacing-scale-1 var(--orange-100);
+    color: var(--gl-text-color-default);
     padding: 0;
-    box-shadow: 0 0 0 $gl-spacing-scale-1 $orange-100;
+    position: relative;
     z-index: -1;
   }
 }
@@ -164,7 +165,7 @@ $language-filter-max-height: 20rem;
     .dropdown-header {
       // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
       font-weight: $gl-font-weight-bold;
-      color: var(--gl-text-color, $gl-text-color);
+      color: var(--gl-text-color-strong);
       font-size: $gl-font-size;
       line-height: 16px;
     }
@@ -199,7 +200,7 @@ $language-filter-max-height: 20rem;
       }
 
       .search-input {
-        color: var(--gl-text-color, $gl-text-color);
+        color: var(--gl-text-color-default);
         transition: color ease-in-out $default-transition-duration;
       }
 
@@ -273,8 +274,8 @@ $language-filter-max-height: 20rem;
     display: flex;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .btn-search,
-  .btn-success,
   .dropdown-menu-toggle,
   .gl-dropdown {
     width: 100%;
@@ -301,6 +302,7 @@ $language-filter-max-height: 20rem;
     width: 100%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .dropdown-menu-toggle,
   .gl-dropdown {
     @include media-breakpoint-up(lg) {

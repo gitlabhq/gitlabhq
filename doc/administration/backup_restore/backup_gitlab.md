@@ -104,7 +104,7 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-The backup command backs up registry data when they are stored in the default location on the file system.
+The backup command does not back up registry data when they are stored in Object Storage.
 
 ### Storing configuration files
 
@@ -455,8 +455,8 @@ Depending on your installation type, slightly different components can be skippe
 - `terraform_state` (Terraform states)
 - `registry` (Container registry images)
 - `packages` (Packages)
-- `ci_secure_files` (Project-level Secure Files)
-- `external_diffs` (External Merge Request diffs)
+- `ci_secure_files` (Project-level secure files)
+- `external_diffs` (External merge request diffs)
 
 :::TabTitle Helm chart (Kubernetes)
 

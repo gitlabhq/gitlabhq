@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-grid gl-lg-grid-template-columns-4 gl-mt-5 gl-gap-5">
+  <div class="gl-mt-5 gl-grid gl-gap-5 lg:gl-grid-cols-4">
     <association-count-card
       v-for="props in associationCountCards"
       :key="props.title"

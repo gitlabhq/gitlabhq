@@ -21,7 +21,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
   shared_examples 'renders not found page' do
     specify do
       expect(page).to have_title('Not Found')
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 
@@ -37,12 +37,12 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
 
     it 'renders the breadcrumbs' do
       within_testid('breadcrumb-links') do
-        expect(page).to have_content("#{project.creator.name} #{project.name} Branches New Branch")
+        expect(page).to have_content("#{project.creator.name} #{project.name} Branches New branch")
 
         expect(page).to have_link(project.creator.name, href: user_path(project.creator))
         expect(page).to have_link(project.name, href: project_path(project))
         expect(page).to have_link('Branches', href: project_branches_path(project))
-        expect(page).to have_link('New Branch', href: new_project_branch_path(project))
+        expect(page).to have_link('New branch', href: new_project_branch_path(project))
       end
     end
   end

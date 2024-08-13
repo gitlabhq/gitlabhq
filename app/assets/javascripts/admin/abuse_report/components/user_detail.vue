@@ -16,11 +16,11 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-mb-4">
-    <p class="gl-font-bold gl-flex-grow-1 gl-flex-basis-0 gl-mb-0">
+  <div class="gl-mb-4 gl-flex gl-flex-col sm:gl-flex-row">
+    <p class="gl-mb-0 gl-grow gl-basis-0 gl-font-bold">
       {{ label }}
     </p>
-    <div class="gl-flex-grow-1 gl-flex-basis-two-thirds">
+    <div class="gl-grow gl-basis-2/3">
       <slot>{{ value }}</slot>
     </div>
   </div>

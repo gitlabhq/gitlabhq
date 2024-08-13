@@ -126,13 +126,9 @@ To move an issue:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 17.3. Feature flag `move_issue_children` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, when you move an issue to another project, all its child tasks are also
+When you move an issue to another project, all its child tasks are also
 moved to the target project and remain associated as child tasks on the moved issue.
 Each task is moved the same way as the parent, that is, it's closed in the original project and
 copied to the target project.
@@ -143,7 +139,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-#### From the issues list
+#### From the Issues page
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
 
@@ -269,6 +265,8 @@ push from an existing repository.
 
 #### Default closing pattern
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.
+
 To automatically close an issue, use the following keywords followed by the issue reference.
 
 Available keywords:
@@ -282,7 +280,10 @@ Available issue reference formats:
 
 - A local issue (`#123`).
 - A cross-project issue (`group/project#123`).
-- The full URL of an issue (`https://gitlab.example.com/group/project/issues/123`).
+- The full URL of an issue (`https://gitlab.example.com/<project_full_path>/-/issues/123`).
+- The full URL of a work item (for example, task, objective, or key result):
+  - In a project (`https://gitlab.example.com/<project_full_path>/-/work_items/123`).
+  - In a group (`https://gitlab.example.com/groups/<group_full_path>/-/work_items/123`).
 
 For example:
 
@@ -291,7 +292,7 @@ Awesome commit message
 
 Fix #20, Fixes #21 and Closes group/otherproject#22.
 This commit is also related to #17 and fixes #18, #19
-and https://gitlab.example.com/group/otherproject/issues/23.
+and https://gitlab.example.com/group/otherproject/-/issues/23.
 ```
 
 The previous commit message closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,
@@ -564,7 +565,7 @@ An issue can be assigned to one or [more users](multiple_assignees_for_issues.md
 
 The assignees can be changed as often as needed. The idea is that the assignees are
 people responsible for an issue.
-When an issue is assigned to someone, it appears in their assigned issues list.
+When an issue is assigned to someone, it appears in their **Assigned issues** page.
 
 If a user is not a member of a project, an issue can only be assigned to them if they create it
 themselves or another project member assigns them.
@@ -623,7 +624,7 @@ To edit health status of an issue:
 
 You can see the issue's health status in:
 
-- Issues list
+- The **Issues** page
 - Epic tree
 - Issue cards in issue boards
 

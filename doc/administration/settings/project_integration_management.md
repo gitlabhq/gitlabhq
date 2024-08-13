@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -33,7 +33,7 @@ Prerequisites:
 
 To manage instance-level default settings for a project integration:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -59,7 +59,7 @@ When you make further changes to the instance defaults:
 - Groups and projects with custom settings selected for the integration are not immediately affected and may
   choose to use the latest defaults at any time.
 
-If [group-level settings](../../user/project/integrations/index.md#manage-group-level-default-settings-for-a-project-integration) have also
+If [group-level settings](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) have also
 been configured for the same integration, projects in that group inherit the group-level settings
 instead of the instance-level settings.
 
@@ -74,7 +74,7 @@ Prerequisites:
 
 To remove an instance-level default setting:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -89,7 +89,7 @@ Prerequisites:
 
 To view projects in your instance that [use custom settings](../../user/project/integrations/index.md#use-custom-settings-for-a-project-or-group-integration):
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.

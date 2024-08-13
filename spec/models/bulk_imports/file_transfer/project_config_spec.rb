@@ -62,6 +62,12 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
     end
   end
 
+  describe '#relation_included_keys' do
+    it 'returns included keys for relation' do
+      expect(subject.relation_included_keys('project')).to include('approvals_before_merge')
+    end
+  end
+
   describe '#tree_relation?' do
     context 'when it is a tree relation' do
       it 'returns true' do
@@ -87,6 +93,22 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
       it 'returns false' do
         expect(subject.file_relation?('example')).to eq(false)
       end
+    end
+  end
+
+  describe '#relation_has_user_contributions?' do
+    subject { described_class.new(exportable).relation_has_user_contributions?(relation) }
+
+    context 'when the relation has user contribitions' do
+      let(:relation) { 'issues' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the relation does not have user contribitions' do
+      let(:relation) { 'labels' }
+
+      it { is_expected.to eq(false) }
     end
   end
 

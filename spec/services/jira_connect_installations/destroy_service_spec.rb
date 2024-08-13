@@ -14,15 +14,35 @@ RSpec.describe JiraConnectInstallations::DestroyService, feature_category: :inte
   end
 
   describe '#execute' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+
     let!(:installation) { create(:jira_connect_installation) }
+
     let(:jira_base_path) { '/-/jira_connect' }
     let(:jira_event_path) { '/-/jira_connect/events/uninstalled' }
+
+    before do
+      create(:jira_connect_subscription, installation: installation, namespace: group1)
+      create(:jira_connect_subscription, installation: installation, namespace: group2)
+    end
 
     subject { described_class.new(installation, jira_base_path, jira_event_path).execute }
 
     it { is_expected.to be_truthy }
 
-    it 'deletes the installation' do
+    it 'schedules a JiraCloudAppDeactivationWorker background job and deletes the installation' do
+      expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group1.id)
+      expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group2.id)
+
+      expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
+    end
+
+    it 'does not schedule a JiraCloudAppDeactivationWorker background job but deletes the installation when FF disabled' do
+      stub_feature_flags(enable_jira_connect_configuration: false)
+
+      expect(JiraConnect::JiraCloudAppDeactivationWorker).not_to receive(:perform_async)
+
       expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
     end
 

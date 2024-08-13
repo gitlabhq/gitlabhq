@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Pipeline with project file variables' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-with-file-variables') }
@@ -77,7 +77,7 @@ module QA
         'can read file variable content with cat', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
       ) do
-        job = job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
+        job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
 
         aggregate_failures do
           trace = job.trace

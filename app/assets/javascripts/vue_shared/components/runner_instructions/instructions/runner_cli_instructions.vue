@@ -109,7 +109,7 @@ export default {
     </h5>
 
     <gl-collapsible-listbox v-model="selectedArchName" class="gl-mb-3" :items="listboxItems" />
-    <div class="sm:gl-flex gl-align-items-center gl-mb-3">
+    <div class="gl-mb-3 gl-items-center sm:gl-flex">
       <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
       <gl-button
         v-if="binaryUrl"
@@ -124,38 +124,34 @@ export default {
     </div>
 
     <template v-if="instructions">
-      <div class="gl-display-flex">
-        <pre
-          class="gl-bg-gray gl-flex-grow-1 gl-whitespace-pre-line"
-          data-testid="binary-instructions"
-          >{{ instructions.installInstructions }}</pre
-        >
+      <div class="gl-flex">
+        <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line" data-testid="binary-instructions">{{
+          instructions.installInstructions
+        }}</pre>
         <modal-copy-button
           :title="$options.i18n.copyInstructions"
           :text="instructions.installInstructions"
           :modal-id="$options.modalId"
-          css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
+          css-classes="gl-self-start gl-ml-2 gl-mt-2"
           category="tertiary"
         />
       </div>
       <h5 class="gl-mb-3">{{ $options.i18n.registerRunnerCommand }}</h5>
-      <div class="gl-display-flex">
-        <pre
-          class="gl-bg-gray gl-flex-grow-1 gl-whitespace-pre-line"
-          data-testid="register-command"
-          >{{ registerInstructionsWithToken }}</pre
-        >
+      <div class="gl-flex">
+        <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line" data-testid="register-command">{{
+          registerInstructionsWithToken
+        }}</pre>
         <modal-copy-button
           :title="$options.i18n.copyInstructions"
           :text="registerInstructionsWithToken"
           :modal-id="$options.modalId"
-          css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
+          css-classes="gl-self-start gl-ml-2 gl-mt-2"
           category="tertiary"
         />
       </div>
     </template>
 
-    <footer class="gl-display-flex gl-justify-content-end gl-pt-3">
+    <footer class="gl-flex gl-justify-end gl-pt-3">
       <gl-button @click="onClose()">{{ __('Close') }}</gl-button>
     </footer>
   </div>

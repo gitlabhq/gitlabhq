@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :package_registry do
@@ -41,7 +42,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
       let(:package_files_2) { package2.package_files.installable }
       let(:package_files_3) { package3.package_files.installable }
 
-      context 'set to less than the total number of duplicated files' do
+      context 'when set to less than the total number of duplicated files' do
         before do
           # for each package file duplicate, we keep only the most recent one
           policy.update!(keep_n_duplicated_package_files: '1')
@@ -137,7 +138,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
         end
       end
 
-      context 'set to more than the total number of duplicated files' do
+      context 'when set to more than the total number of duplicated files' do
         before do
           # using the biggest value for keep_n_duplicated_package_files
           policy.update!(keep_n_duplicated_package_files: '50')
@@ -148,7 +149,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
         end
       end
 
-      context 'set to all' do
+      context 'when set to all' do
         before do
           policy.update!(keep_n_duplicated_package_files: 'all')
         end
@@ -156,6 +157,40 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
         it 'skips the policy' do
           expect(::Packages::MarkPackageFilesForDestructionService).not_to receive(:new)
           expect { execute }.not_to change { ::Packages::PackageFile.installable.count }
+        end
+      end
+
+      context 'for conan packages' do
+        let_it_be(:conan_package) { create(:conan_package, project: project) }
+        let(:manifest_filename) { ::Packages::Conan::FileMetadatum::CONAN_MANIFEST }
+
+        before do
+          policy.update!(keep_n_duplicated_package_files: '1')
+        end
+
+        context 'with recipe & package manifest files' do
+          it 'keeps the two manifest files' do
+            expect { execute }.not_to change {
+              conan_package.package_files.installable.with_file_name(manifest_filename).count
+            }
+          end
+        end
+
+        context 'with multiple recipe files' do
+          let_it_be(:conan_recipe_manifest) do
+            create(:conan_package_file, :conan_recipe_manifest, package: conan_package)
+          end
+
+          let_it_be(:conan_package_manifest) do
+            create(:conan_package_file, :conan_package_manifest, package: conan_package)
+          end
+
+          it 'keeps the most recent recipe files' do
+            expect { execute }.to change { conan_package.package_files.installable.count }.by(-2)
+            expect(conan_package.package_files.installable.with_file_name(manifest_filename)).to contain_exactly(
+              conan_recipe_manifest, conan_package_manifest
+            )
+          end
         end
       end
     end

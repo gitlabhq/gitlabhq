@@ -115,7 +115,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
 
         context 'when almost all the records are too old' do
           before do
-            travel(1.year - 2.minutes)
+            travel(30.days - 2.minutes)
           end
 
           it { is_expected.to eq(false) }
@@ -123,7 +123,7 @@ RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: 
 
         context 'when all the records are too old' do
           before do
-            travel(1.year)
+            travel(30.days)
           end
 
           it { is_expected.to eq(true) }

@@ -61,6 +61,11 @@ module Types
         description: 'Recent activity for the cluster agent.',
         resolver: Resolvers::Clusters::AgentActivityEventsResolver
 
+      field :user_access_authorizations,
+        Clusters::Agents::Authorizations::UserAccessType,
+        null: true,
+        description: 'User access config for the cluster agent.'
+
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
       end

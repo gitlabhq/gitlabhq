@@ -9,9 +9,12 @@ import { protectionRowPropsMock } from './mock_data';
 describe('Branch rule protection row', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(ProtectionRow, {
-      propsData: protectionRowPropsMock,
+      propsData: {
+        ...protectionRowPropsMock,
+        ...propsData,
+      },
       stubs: { GlAvatarsInline },
     });
   };
@@ -23,6 +26,7 @@ describe('Branch rule protection row', () => {
   const findAvatarLinks = () => wrapper.findAllComponents(GlAvatarLink);
   const findAvatars = () => wrapper.findAllComponents(GlAvatar);
   const findAccessLevels = () => wrapper.findAllByTestId('access-level');
+  const findSharedSecretBadge = () => wrapper.findByTestId('shared-secret');
   const findStatusChecksUrl = () => wrapper.findByText(protectionRowPropsMock.statusCheckUrl);
 
   it('renders a title', () => {
@@ -35,6 +39,7 @@ describe('Branch rule protection row', () => {
       ...protectionRowPropsMock.groups,
     ]);
     expect(findAvatarsInline().props('badgeSrOnlyText')).toBe('1 additional user');
+    expect(findSharedSecretBadge().exists()).toBe(false);
   });
 
   it('renders avatar-link components', () => {
@@ -62,5 +67,15 @@ describe('Branch rule protection row', () => {
 
   it('renders status checks URL', () => {
     expect(findStatusChecksUrl().exists()).toBe(true);
+  });
+
+  it('renders status checks hmac enabled badge', () => {
+    createComponent({
+      propsData: {
+        hmac: true,
+      },
+    });
+
+    expect(findSharedSecretBadge().exists()).toBe(true);
   });
 });

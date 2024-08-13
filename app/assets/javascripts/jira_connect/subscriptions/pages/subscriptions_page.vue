@@ -32,7 +32,7 @@ export default {
 
     <gl-loading-icon v-if="subscriptionsLoading" size="lg" />
     <div v-else-if="hasSubscriptions && !subscriptionsError">
-      <div class="gl-display-flex gl-justify-content-end gl-mb-3">
+      <div class="gl-flex gl-justify-end gl-mb-3">
         <add-namespace-button />
       </div>
 

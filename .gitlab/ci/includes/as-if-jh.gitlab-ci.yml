@@ -94,6 +94,7 @@ sync-as-if-jh-branch:
       - RUST_VERSION
       - PG_VERSION
       - RUBYGEMS_VERSION
+      - GIT_VERSION
       - CHROME_VERSION
       - NODE_ENV
   variables:
