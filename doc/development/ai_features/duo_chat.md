@@ -227,7 +227,7 @@ It's not available in Production environment.
     export LANGCHAIN_TRACING_V2=true
     export LANGCHAIN_API_KEY='<your-api-key>'
     export LANGCHAIN_PROJECT='<your-project-name>'
-    export LANGCHAIN_ENDPOINT='api.smith.langchain.com'
+    export LANGCHAIN_ENDPOINT='https://api.smith.langchain.com'
     export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
     ```
 

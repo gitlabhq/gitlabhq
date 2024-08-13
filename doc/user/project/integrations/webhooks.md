@@ -223,7 +223,7 @@ To inspect the request and response details of a webhook event:
 1. Go to the **Recent events** section.
 1. Select **View details** for the event.
 
-To send the request again with the same data, select **Resend Request**.
+To send the request again with the same data and the same [`Idempotency-Key` header](#delivery-headers)), select **Resend Request**.
 If the webhook URL has changed, you cannot resend the request.
 
 ## Webhook receiver requirements
@@ -337,6 +337,7 @@ You can also test a webhook from its edit page.
 > - `X-Gitlab-Event-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
 > - `X-Gitlab-Instance` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31333) in GitLab 15.5.
 > - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
+> - `Idempotency-Key` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388692) in GitLab 17.4.
 
 Webhook requests to your endpoint include the following headers:
 
@@ -347,6 +348,7 @@ Webhook requests to your endpoint include the following headers:
 | `X-Gitlab-Webhook-UUID` | Unique ID per webhook. | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
 | `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
 | `X-Gitlab-Event-UUID` | Unique ID per webhook that is not recursive. A hook is recursive if triggered by an earlier webhook that hit the GitLab instance. Recursive webhooks have the same value for this header. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
+| `Idempotency-Key` | Unique ID that remains consistent across webhook retries. Use this header to ensure idempotency of webhook effects on integrations. | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 
 ## Debug webhooks
 

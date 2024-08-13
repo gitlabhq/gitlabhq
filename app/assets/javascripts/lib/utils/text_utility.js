@@ -559,3 +559,17 @@ export const convertEachWordToTitleCase = (str) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
+/**
+ * Creates a unique string in the context of an array of other strings.
+ *
+ * @param {String} originalStr String to make unique
+ * @param {Array} otherStrings to compare to
+ * @param {String} modifier to recursively apply to make the string unique
+ *
+ * @returns {String} Unique string in the context of the array.
+ */
+export const uniquifyString = (originalStr, otherStrings, modifier) =>
+  otherStrings.reduce((acc, uniqueString) => {
+    return uniqueString === acc ? acc + modifier : acc;
+  }, originalStr);

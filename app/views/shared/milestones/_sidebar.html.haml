@@ -7,7 +7,7 @@
       %a.gutter-toggle.gl-float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => s_('MilestoneSidebar|Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       .title.hide-collapsed
-        %strong.bold== #{milestone.percent_complete}%
+        %strong.gl-font-bold== #{milestone.percent_complete}%
         %span.hide-collapsed
           = s_('MilestoneSidebar|complete')
       .value.hide-collapsed
@@ -26,7 +26,7 @@
       .value
         %span.value-content{ data: { testid: 'start-date-content' } }
           - if milestone.start_date
-            %span.bold= milestone.start_date.to_fs(:medium)
+            %span.gl-font-bold= milestone.start_date.to_fs(:medium)
           - else
             %span.no-value= s_('MilestoneSidebar|No start date')
 
@@ -63,7 +63,7 @@
       .value.hide-collapsed
         %span.value-content{ data: { testid: 'due-date-content' } }
           - if milestone.due_date
-            %span.bold= milestone.due_date.to_fs(:medium)
+            %span.gl-font-bold= milestone.due_date.to_fs(:medium)
           - else
             %span.no-value= s_('MilestoneSidebar|No due date')
         - remaining_days = remaining_days_in_words(milestone.due_date, milestone.start_date)
@@ -83,7 +83,7 @@
           - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "gl-float-right", title: s_('MilestoneSidebar|New Issue') do
               = s_('MilestoneSidebar|New issue')
-        .value.hide-collapsed.bold
+        .value.hide-collapsed.gl-font-bold
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               = s_('MilestoneSidebar|Open:')
@@ -112,7 +112,7 @@
         .title.hide-collapsed
           = s_('MilestoneSidebar|Merge requests')
           = gl_badge_tag milestone.merge_requests.count, variant: :muted
-        .value.hide-collapsed.bold
+        .value.hide-collapsed.gl-font-bold
           - if !project || can?(current_user, :read_merge_request, project)
             %span.milestone-stat
               = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do

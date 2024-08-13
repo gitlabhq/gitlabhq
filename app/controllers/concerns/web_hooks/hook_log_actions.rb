@@ -38,7 +38,7 @@ module WebHooks
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def execute_hook
-      result = hook.execute(hook_log.request_data, hook_log.trigger)
+      result = hook.execute(hook_log.request_data, hook_log.trigger, idempotency_key: hook_log.idempotency_key)
       set_hook_execution_notice(result)
     end
 

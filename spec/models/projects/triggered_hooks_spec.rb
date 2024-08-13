@@ -74,6 +74,9 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
   end
 
   def expect_hook_execution(hook, data, scope)
-    expect(WebHookService).to receive(:new).with(hook, data, scope).and_return(wh_service)
+    expect(WebHookService)
+      .to receive(:new)
+      .with(hook, data, scope, idempotency_key: anything)
+      .and_return(wh_service)
   end
 end

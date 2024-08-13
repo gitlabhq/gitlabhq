@@ -85,8 +85,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
       end
 
       context 'when alert is raised on the environment' do
-        let!(:prometheus_alert) { create(:prometheus_alert, project: project, environment: environment) }
-        let!(:alert) { create(:alert_management_alert, :triggered, :prometheus, project: project, environment: environment, prometheus_alert: prometheus_alert) }
+        let_it_be(:alert) { create(:alert_management_alert, :triggered, :prometheus, project: project, environment: environment) }
 
         it 'returns alert information' do
           expect(subject['data']['project']['environment']['latestOpenedMostSevereAlert']['severity']).to eq(alert.severity.upcase)

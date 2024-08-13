@@ -377,22 +377,67 @@ RSpec.describe WebHook, feature_category: :webhooks do
 
     it 'passes force: false to the web hook service by default' do
       expect(WebHookService)
-        .to receive(:new).with(hook, data, hook_name, force: false).and_return(double(execute: :done))
+        .to receive(:new).with(hook, data, hook_name, idempotency_key: anything,
+          force: false).and_return(double(execute: :done))
 
       expect(hook.execute(data, hook_name)).to eq :done
     end
 
     it 'passes force: true to the web hook service if required' do
       expect(WebHookService)
-        .to receive(:new).with(hook, data, hook_name, force: true).and_return(double(execute: :forced))
+        .to receive(:new).with(hook, data, hook_name, idempotency_key: anything,
+          force: true).and_return(double(execute: :forced))
 
       expect(hook.execute(data, hook_name, force: true)).to eq :forced
     end
+
+    it 'forwards the idempotency key to the WebHook service when present' do
+      idempotency_key = SecureRandom.uuid
+
+      expect(WebHookService)
+        .to receive(:new)
+        .with(anything, anything, anything, idempotency_key: idempotency_key, force: anything)
+        .and_return(double(execute: :done))
+
+      expect(hook.execute(data, hook_name, idempotency_key: idempotency_key)).to eq :done
+    end
+
+    it 'forwards a nil idempotency key to the WebHook service when not supplied' do
+      expect(WebHookService)
+        .to receive(:new).with(anything, anything, anything, idempotency_key: nil,
+          force: anything).and_return(double(execute: :done))
+
+      expect(hook.execute(data, hook_name)).to eq :done
+    end
+  end
+
+  describe 'async_execute' do
+    let(:data) { { key: 'value' } }
+    let(:hook_name) { 'project hook' }
 
     it '#async_execute' do
       expect_next(WebHookService).to receive(:async_execute)
 
       hook.async_execute(data, hook_name)
+    end
+
+    it 'forwards the idempotency key to the WebHook service when present' do
+      idempotency_key = SecureRandom.uuid
+
+      expect(WebHookService)
+        .to receive(:new)
+        .with(anything, anything, anything, idempotency_key: idempotency_key)
+        .and_return(double(async_execute: :done))
+
+      expect(hook.async_execute(data, hook_name, idempotency_key: idempotency_key)).to eq :done
+    end
+
+    it 'forwards a nil idempotency key to the WebHook service when not supplied' do
+      expect(WebHookService)
+        .to receive(:new).with(anything, anything, anything,
+          idempotency_key: nil).and_return(double(async_execute: :done))
+
+      expect(hook.async_execute(data, hook_name)).to eq :done
     end
 
     it 'does not async execute non-executable hooks' do

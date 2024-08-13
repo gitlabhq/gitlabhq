@@ -495,7 +495,7 @@ Group permissions for [repository](project/repository/index.md) features includi
 | Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |          |           |            |   ✓   |       |
 | Manage [deploy tokens](project/deploy_tokens/index.md)                                 |       |          |           |            |   ✓   |       |
 
-### User Managment
+### User Management
 
 Group permissions for user management:
 

@@ -24,12 +24,16 @@ module TestEnv
   # 1. Push a new branch to gitlab-org/gitlab-test.
   # 2. Execute rm -rf tmp/tests in your gitlab repo.
   # 3. Add your branch and its HEAD commit sha to the BRANCH_SHA hash
+  # 4. Increment expected number of commits for context
+  #    "returns the number of commits in the whole repository" in spec/lib/gitlab/git/repository_spec.rb
   #
   # To add new commits to an existing branch
   #
   # 1. Push a new commit to a branch in gitlab-org/gitlab-test.
   # 2. Execute rm -rf tmp/tests in your gitlab repo.
   # 3. Update the HEAD sha value in the BRANCH_SHA hash
+  # 4. Increment expected number of commits for context
+  #    "returns the number of commits in the whole repository" in spec/lib/gitlab/git/repository_spec.rb
   #
   BRANCH_SHA = {
     'signed-commits' => 'c7794c1',
@@ -119,7 +123,8 @@ module TestEnv
     'changes-with-only-whitespace' => '80cffbb2ad86202171dd3c05b38b5b4523b447d3',
     'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432',
     'expanded-whitespace-target' => '279aa723d4688e711652d230c93f1fc33801dcb8',
-    'expanded-whitespace-source' => 'e6f8b802fe2288b1b5e367c5dde736594971ebd1'
+    'expanded-whitespace-source' => 'e6f8b802fe2288b1b5e367c5dde736594971ebd1',
+    'submodule-with-dot' => 'b4a4435df7e7605dd9930d0c5402087b37da99bf'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

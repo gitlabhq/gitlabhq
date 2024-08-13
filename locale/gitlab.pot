@@ -1595,6 +1595,9 @@ msgstr ""
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
+msgid "(Copy)"
+msgstr ""
+
 msgid "(Limited to %{quota} compute minutes per month)"
 msgstr ""
 
@@ -6189,6 +6192,9 @@ msgstr ""
 msgid "Analytics|Continue editing"
 msgstr ""
 
+msgid "Analytics|Could not clone the dashboard. Refresh the page to try again."
+msgstr ""
+
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
@@ -6217,6 +6223,9 @@ msgid "Analytics|Dashboard not found"
 msgstr ""
 
 msgid "Analytics|Dashboard title"
+msgstr ""
+
+msgid "Analytics|Dashboard was cloned successfully"
 msgstr ""
 
 msgid "Analytics|Dashboard was saved successfully"
@@ -11877,6 +11886,9 @@ msgid "Clientside DSN"
 msgstr ""
 
 msgid "Clientside traces sample rate"
+msgstr ""
+
+msgid "Clone"
 msgstr ""
 
 msgid "Clone repository"
@@ -20678,7 +20690,7 @@ msgstr ""
 msgid "Environments in %{name}"
 msgstr ""
 
-msgid "EnvironmentsAlert|%{severity} • %{title} %{text}. %{linkStart}View Details%{linkEnd} · %{startedAt} "
+msgid "EnvironmentsAlert|%{severity} • %{title}. %{linkStart}View Details%{linkEnd} · %{startedAt} "
 msgstr ""
 
 msgid "EnvironmentsDashboard|Add a project to the dashboard"

@@ -65,15 +65,15 @@ class WebHook < ApplicationRecord
   }, _prefix: true
 
   # rubocop: disable CodeReuse/ServiceClass
-  def execute(data, hook_name, force: false)
+  def execute(data, hook_name, idempotency_key: nil, force: false)
     # hook.executable? is checked in WebHookService#execute
-    WebHookService.new(self, data, hook_name, force: force).execute
+    WebHookService.new(self, data, hook_name, idempotency_key: idempotency_key, force: force).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 
   # rubocop: disable CodeReuse/ServiceClass
-  def async_execute(data, hook_name)
-    WebHookService.new(self, data, hook_name).async_execute if executable?
+  def async_execute(data, hook_name, idempotency_key: nil)
+    WebHookService.new(self, data, hook_name, idempotency_key: idempotency_key).async_execute if executable?
   end
   # rubocop: enable CodeReuse/ServiceClass
 

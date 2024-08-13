@@ -9,5 +9,5 @@
     %ul.gl-mb-0.gl-pl-5
       - token.scopes.each do |scope|
         %li
-          %span.bold= scope
+          %span.gl-font-bold= scope
           = "(#{t(scope, scope: [:doorkeeper, :scopes])})"

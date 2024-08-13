@@ -193,8 +193,8 @@ RSpec.describe AlertManagement::Alert, feature_category: :incident_management do
       end
     end
 
-    describe '.order_severity_with_open_prometheus_alert' do
-      subject { described_class.where(project: alert_project).order_severity_with_open_prometheus_alert }
+    describe '.open_order_by_severity' do
+      subject { described_class.where(project: alert_project).open_order_by_severity }
 
       let_it_be(:alert_project) { create(:project) }
       let_it_be(:resolved_critical_alert) { create(:alert_management_alert, :resolved, :critical, project: alert_project) }
@@ -246,20 +246,6 @@ RSpec.describe AlertManagement::Alert, feature_category: :incident_management do
     subject { described_class.find_unresolved_alert(project, fingerprint) }
 
     it { is_expected.to eq(alert_with_fingerprint) }
-  end
-
-  describe '.last_prometheus_alert_by_project_id' do
-    subject { described_class.last_prometheus_alert_by_project_id }
-
-    let!(:p1_alert_1) { triggered_alert }
-    let!(:p1_alert_2) { acknowledged_alert }
-
-    let!(:p2_alert_1) { resolved_alert }
-    let!(:p2_alert_2) { ignored_alert }
-
-    it 'returns the latest alert for each project' do
-      expect(subject).to contain_exactly(p1_alert_2, p2_alert_2)
-    end
   end
 
   describe '.search' do

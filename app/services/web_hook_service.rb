@@ -38,7 +38,7 @@ class WebHookService
   CUSTOM_TEMPLATE_INTERPOLATION_REGEX = /{{(.+?)}}/
 
   attr_accessor :hook, :data, :hook_name, :request_options
-  attr_reader :uniqueness_token
+  attr_reader :uniqueness_token, :idempotency_key
 
   def self.hook_to_event(hook_name, hook = nil)
     return hook.class.name.titleize if hook.is_a?(SystemHook)
@@ -46,11 +46,12 @@ class WebHookService
     hook_name.to_s.singularize.titleize
   end
 
-  def initialize(hook, data, hook_name, uniqueness_token = nil, force: false)
+  def initialize(hook, data, hook_name, uniqueness_token = nil, idempotency_key: nil, force: false)
     @hook = hook
     @data = data.to_h
     @hook_name = hook_name.to_s
     @uniqueness_token = uniqueness_token
+    @idempotency_key = idempotency_key || generate_idempotency_key
     @force = force
     @request_options = {
       timeout: Gitlab.config.gitlab.webhook_timeout,
@@ -118,7 +119,8 @@ class WebHookService
       break log_recursion_blocked if recursion_blocked?
 
       params = {
-        "recursion_detection_request_uuid" => Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid
+        "recursion_detection_request_uuid" => Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid,
+        "idempotency_key" => idempotency_key
       }.compact
 
       WebHookWorker.perform_async(hook.id, data.deep_stringify_keys, hook_name.to_s, params)
@@ -133,6 +135,10 @@ class WebHookService
     # Behavior-preserving fallback.
     Gitlab::ErrorTracking.track_exception(e)
     @parsed_url = URI.parse(hook.url)
+  end
+
+  def generate_idempotency_key
+    SecureRandom.uuid
   end
 
   def make_request(url, basic_auth = false)
@@ -206,6 +212,7 @@ class WebHookService
       headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
+        'Idempotency-Key' => idempotency_key,
         Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name, hook),
         Gitlab::WebHooks::GITLAB_UUID_HEADER => SecureRandom.uuid,
         Gitlab::WebHooks::GITLAB_INSTANCE_HEADER => Gitlab.config.gitlab.base_url

@@ -25,7 +25,7 @@
           = author_avatar(todo, size: 24)
         .todo-note
           - if todo_author_display?(todo)
-            .author-name.bold.gl-inline{ data: { testid: "todo-author-name-content" } }<
+            .author-name.gl-font-bold.gl-inline{ data: { testid: "todo-author-name-content" } }<
               - if todo.author
                 = link_to_author(todo, self_added: todo.self_added?)
               - else

@@ -762,7 +762,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-If you [set up alerts for Prometheus metrics](../../operations/incident_management/integrations.md#configuration),
+If you [set up an alert integration](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
 severity is shown, so you can identify which environments need immediate attention.
 

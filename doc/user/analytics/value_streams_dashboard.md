@@ -185,6 +185,8 @@ AI Impact analytics displays the following metrics for a group:
   Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
   For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
+  For a click-through demo, see the [AI Impact analytics product tour](https://gitlab.navattic.com/ai-impact).
+
 ## Enable or disable overview background aggregation
 
 DETAILS:

@@ -100,7 +100,7 @@ function run_rspec_rails_non_fast {
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
 
-  bin/rspec "${files_for_rails[@]}"
+  bin/rspec --format documentation "${files_for_rails[@]}"
 }
 
 function run_rspec_feature {

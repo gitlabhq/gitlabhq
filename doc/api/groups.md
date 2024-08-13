@@ -1987,6 +1987,7 @@ GET /groups/:id/hooks/:hook_id/events
     "request_headers": {
       "Content-Type": "application/json",
       "User-Agent": "GitLab/17.1.0-pre",
+      "Idempotency-Key": "a5461c4d-9c7f-4af9-add6-cddebe3c426f",
       "X-Gitlab-Event": "Push Hook",
       "X-Gitlab-Webhook-UUID": "3c5c0404-c866-44bc-a5f6-452bb1bfc76e",
       "X-Gitlab-Instance": "https://gitlab.example.com",
@@ -2108,6 +2109,7 @@ GET /groups/:id/hooks/:hook_id/events
     "request_headers": {
       "Content-Type": "application/json",
       "User-Agent": "GitLab/17.1.0-pre",
+      "Idempotency-Key": "1f0a54f0-0529-408d-a5b8-a2a98ff5f94a",
       "X-Gitlab-Event": "Push Hook",
       "X-Gitlab-Webhook-UUID": "a753eedb-1d72-4549-9ca7-eac8ea8e50dd",
       "X-Gitlab-Instance": "https://gitlab.example.com:3000",

@@ -2,6 +2,8 @@
 
 module API
   class Submodules < ::API::Base
+    SUBMODULE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(submodule: API::NO_SLASH_URL_PART_REGEX) # rubocop:disable Layout/LineLength -- no way to shorten this and adhere to naming convention
+
     before { authenticate! }
 
     feature_category :source_code_management
@@ -47,7 +49,7 @@ module API
           desc: 'Commit message. If no message is provided a default one will be set.',
           documentation: { example: 'Commit message' }
       end
-      put ":id/repository/submodules/:submodule", requirements: Files::FILE_ENDPOINT_REQUIREMENTS do
+      put ":id/repository/submodules/:submodule", requirements: SUBMODULE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         submodule_params = declared_params(include_missing: false)

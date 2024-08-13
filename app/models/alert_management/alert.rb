@@ -92,7 +92,7 @@ module AlertManagement
     # Descending sort order sorts severity from more critical to less critical.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
     scope :order_severity,      ->(sort_order) { order(severity: sort_order == :asc ? :desc : :asc) }
-    scope :order_severity_with_open_prometheus_alert, -> { open.with_prometheus_alert.order(severity: :asc, started_at: :desc) }
+    scope :open_order_by_severity, -> { open.order(severity: :asc, started_at: :desc) }
 
     scope :counts_by_project_id, -> { group(:project_id).count }
 
@@ -121,11 +121,6 @@ module AlertManagement
 
     def self.find_unresolved_alert(project, fingerprint)
       for_fingerprint(project, fingerprint).not_resolved.take
-    end
-
-    def self.last_prometheus_alert_by_project_id
-      ids = select(arel_table[:id].maximum).group(:project_id)
-      with_prometheus_alert.where(id: ids)
     end
 
     def self.reference_prefix

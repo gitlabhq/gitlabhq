@@ -23,7 +23,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import { sanitizeUrl, joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,
@@ -250,7 +250,7 @@ export default {
       if (!isValidErrorId(errorId)) {
         return 'about:blank';
       }
-      return sanitizeUrl(`/${this.projectPath}/-/error_tracking/${errorId}.json`);
+      return `/${this.projectPath}/-/error_tracking/${errorId}.json`;
     },
     filterErrors(status, label) {
       this.filterValue = label;

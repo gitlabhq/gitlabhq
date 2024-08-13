@@ -795,16 +795,6 @@ describe('URL utility', () => {
     });
   });
 
-  describe('sanitizeUrl', () => {
-    it.each(validURLs)('returns the url for %s', (url) => {
-      expect(urlUtils.sanitizeUrl(url)).toBe(url);
-    });
-
-    it.each(invalidURLs)('returns `about:blank` for %s', (url) => {
-      expect(urlUtils.sanitizeUrl(url)).toBe('about:blank');
-    });
-  });
-
   describe('getNormalizedURL', () => {
     it.each`
       url                       | base                                 | result

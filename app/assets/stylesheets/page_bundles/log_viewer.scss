@@ -61,6 +61,12 @@
     word-break: break-all;
     word-wrap: break-word;
     flex-grow: 0;
+
+    span {
+      // Our default 1.5 line-height leave gaps between lines with `xterm-bg` backgrounds classes.
+      // Add extra padding to fill the line. Helps with ANSI art.
+      padding: 1.25px 0;
+    }
   }
 
   .loader-animation {

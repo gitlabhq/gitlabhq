@@ -453,19 +453,6 @@ export function isValidURL(url) {
 }
 
 /**
- * Returns the sanitized url when not safe
- *
- * @param {String} url
- * @returns {String}
- */
-export function sanitizeUrl(url) {
-  if (!isValidURL(url)) {
-    return 'about:blank';
-  }
-  return url;
-}
-
-/**
  * Returns a normalized url
  *
  * https://gitlab.com/foo/../baz => https://gitlab.com/baz

@@ -45,7 +45,7 @@ class Environment < ApplicationRecord
       class_name: 'Deployment', inverse_of: :environment
   end
 
-  has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
+  has_one :latest_opened_most_severe_alert, -> { open_order_by_severity }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
   before_validation :ensure_environment_tier

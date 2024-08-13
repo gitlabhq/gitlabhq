@@ -27,7 +27,8 @@ RSpec.describe ServiceHook, feature_category: :webhooks do
     let(:data) { { key: 'value' } }
 
     it '#execute' do
-      expect(WebHookService).to receive(:new).with(hook, data, 'service_hook', force: false).and_call_original
+      expect(WebHookService).to receive(:new).with(hook, data, 'service_hook', idempotency_key: anything,
+        force: false).and_call_original
       expect_any_instance_of(WebHookService).to receive(:execute)
 
       hook.execute(data)
