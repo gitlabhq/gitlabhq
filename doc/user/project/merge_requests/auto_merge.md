@@ -65,6 +65,10 @@ To do this from the GitLab user interface:
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
+1. Review the contents of the merge request widget. If it contains an
+   [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically), confirm
+   that the issue should close when this work merges:
+   ![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
 1. Select **Auto-merge**.
 
 Commenting on a merge request after you select **Auto-merge**,

@@ -273,8 +273,8 @@ this limit. Repository limits apply to both public and private projects.
 The [import sources](../project/import/index.md#supported-import-sources) that are available to you by default depend on
 which GitLab you use:
 
-- GitLab.com: all available import sources are enabled by default.
-- GitLab self-managed: no import sources are enabled by default and must be
+- GitLab.com: All available import sources are enabled by default.
+- GitLab self-managed: No import sources are enabled by default and must be
   [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## IP range
@@ -286,7 +286,7 @@ from those IPs and allow them.
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP addresses.
-All GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`.
+Most GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
 Any IP-based firewall can be configured by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 

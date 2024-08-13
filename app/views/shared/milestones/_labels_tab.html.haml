@@ -1,5 +1,9 @@
 - if labels.any?
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+  = render ::Layouts::CrudComponent.new(s_('Labels'),
+    icon: 'label',
+    count: labels.size,
+    options: { class: 'gl-mt-5' },
+    body_options: { class: '!gl-m-0' }) do |c|
     - c.with_body do
       %ul.manage-labels-list.gl-px-0.gl-mb-0
         - labels.each do |label|

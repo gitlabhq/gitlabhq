@@ -22,11 +22,6 @@ module API
           }.freeze
 
           included do
-            include ::API::Helpers::Authentication
-
-            feature_category :virtual_registry
-            urgency :low
-
             helpers do
               def require_non_web_browser!
                 browser = ::Browser.new(request.user_agent)
@@ -79,12 +74,7 @@ module API
             end
 
             after_validation do
-              not_found! unless Feature.enabled?(:virtual_registry_maven, current_user)
-
               require_non_web_browser!
-              require_dependency_proxy_enabled!
-
-              authenticate!
             end
           end
         end

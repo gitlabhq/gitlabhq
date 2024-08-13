@@ -263,6 +263,20 @@ it inherits the issue's milestone and labels.
 For performance reasons, automatic issue closing is disabled for the very first
 push from an existing repository.
 
+#### User responsibility when merging
+
+When you merge a merge request, it's your responsibility to check that it's appropriate for any targeted issues
+to close. Users can include issue closing patterns in the merge request description, and also in the body
+of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
+shows information about the issue to close on merge:
+
+![This merge request closes issue #2754.](../merge_requests/img/closing_pattern_v17_4.png)
+
+When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
+In public repositories, this check is important, because external users can create both merge requests
+and commits that contain closing patterns. When you are the user who merges, it's important
+that you are aware of the effects the merge has on both the code and issues in your project.
+
 #### Default closing pattern
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.

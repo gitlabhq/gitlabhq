@@ -7048,6 +7048,32 @@ Input type: `MlModelDestroyInput`
 | <a id="mutationmlmodeldestroymessage"></a>`message` | [`String`](#string) | Model deletion result message. |
 | <a id="mutationmlmodeldestroymodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
 
+### `Mutation.mlModelEdit`
+
+DETAILS:
+**Introduced** in GitLab 17.3.
+**Status**: Experiment.
+
+Input type: `MlModelEditInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodeleditclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodeleditdescription"></a>`description` | [`String`](#string) | Description of the model. |
+| <a id="mutationmlmodeleditmodelid"></a>`modelId` | [`Int`](#int) | Id of the model. |
+| <a id="mutationmlmodeleditname"></a>`name` | [`String!`](#string) | Name of the model. |
+| <a id="mutationmlmodeleditprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the model to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodeleditclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelediterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmlmodeleditmodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
+
 ### `Mutation.mlModelVersionCreate`
 
 DETAILS:

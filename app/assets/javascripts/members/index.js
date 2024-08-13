@@ -37,6 +37,7 @@ export const initMembersApp = (el, context, options) => {
     canApproveAccessRequests,
     namespaceUserLimit,
     availableRoles,
+    reassignmentCsvPath,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -76,6 +77,7 @@ export const initMembersApp = (el, context, options) => {
       namespaceUserLimit,
       availableRoles,
       context,
+      reassignmentCsvPath,
       group: {
         name: groupName,
         path: groupPath,

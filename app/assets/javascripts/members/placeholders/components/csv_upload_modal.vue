@@ -12,7 +12,7 @@ export default {
     GlAlert,
   },
   inject: {
-    reassignmentCsvDownloadPath: {
+    reassignmentCsvPath: {
       default: '',
     },
   },
@@ -56,7 +56,7 @@ export default {
     <ol class="gl-ml-0 gl-mt-5">
       <li>
         <gl-button
-          :href="reassignmentCsvDownloadPath"
+          :href="reassignmentCsvPath"
           variant="link"
           icon="download"
           data-testid="csv-download-button"

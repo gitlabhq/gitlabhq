@@ -137,7 +137,11 @@ export const config = {
                 }
 
                 // we want to concat next page of children work items within Hierarchy widget to the existing ones
-                if (incomingWidget?.type === WIDGET_TYPE_HIERARCHY && context.variables.endCursor) {
+                if (
+                  incomingWidget?.type === WIDGET_TYPE_HIERARCHY &&
+                  context.variables.endCursor &&
+                  incomingWidget.children?.nodes
+                ) {
                   // concatPagination won't work because we were placing new widget here so we have to do this manually
                   return {
                     ...incomingWidget,

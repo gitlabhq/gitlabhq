@@ -56,7 +56,6 @@ describe('WorkItemDescriptionRendered', () => {
             return true;
           },
         },
-        hasWorkItemsBeta: true,
       });
 
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(true);
@@ -75,7 +74,6 @@ describe('WorkItemDescriptionRendered', () => {
             return false;
           },
         },
-        hasWorkItemsBeta: true,
       });
 
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);

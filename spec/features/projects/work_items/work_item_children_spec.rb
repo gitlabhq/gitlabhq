@@ -58,7 +58,8 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       end
     end
 
-    it 'adds a new child task', :aggregate_failures do
+    it 'adds a new child task', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461666' do
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
 
       within_testid('work-item-links') do

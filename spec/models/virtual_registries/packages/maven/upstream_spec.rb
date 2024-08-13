@@ -174,4 +174,10 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
       it { is_expected.to eq(expected_headers) }
     end
   end
+
+  describe '#as_json' do
+    subject { upstream.as_json }
+
+    it { is_expected.not_to include('username', 'password') }
+  end
 end

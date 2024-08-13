@@ -85,10 +85,10 @@ difficult, but several tools exist including:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced to migration by using direct transfer](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced to migration by using direct transfer](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for internal testing only, it is not ready for production use.
 

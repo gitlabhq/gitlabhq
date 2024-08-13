@@ -5,7 +5,7 @@ describe('CsvUploadModal', () => {
   let wrapper;
 
   const defaultInjectedAttributes = {
-    reassignmentCsvDownloadPath: 'foo/bar',
+    reassignmentCsvPath: 'foo/bar',
   };
 
   const findDownloadLink = () => wrapper.findByTestId('csv-download-button');
@@ -29,8 +29,6 @@ describe('CsvUploadModal', () => {
     const downloadLink = findDownloadLink();
 
     expect(downloadLink.exists()).toBe(true);
-    expect(downloadLink.attributes('href')).toBe(
-      defaultInjectedAttributes.reassignmentCsvDownloadPath,
-    );
+    expect(downloadLink.attributes('href')).toBe(defaultInjectedAttributes.reassignmentCsvPath);
   });
 });

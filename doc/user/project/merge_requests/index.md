@@ -173,6 +173,13 @@ a merge request, or:
 
 GitLab adds the merge request to the user's **Assigned merge requests** page.
 
+## Merge a merge request
+
+During the merge request [review process](reviews/index.md), reviewers provide feedback on your merge request.
+When a reviewer decides that the contents of your merge request are acceptable, the reviewer can set
+[auto-merge](auto_merge.md) on it, even if some merge checks are failing. When a merge request is set to auto-merge,
+it merges after all merge checks pass, without more action from you.
+
 ## Close a merge request
 
 If you decide to permanently stop work on a merge request, close it rather than

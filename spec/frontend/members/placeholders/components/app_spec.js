@@ -59,7 +59,7 @@ describe('PlaceholdersTabApp', () => {
       apolloProvider: mockApollo,
       store,
       provide: {
-        reassignmentCsvDownloadPath: 'foo/bar',
+        reassignmentCsvPath: 'foo/bar',
         group: mockGroup,
         ...provide,
       },

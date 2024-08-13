@@ -12,7 +12,6 @@ import {
 } from '~/issues/show/utils';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const FULL_OPACITY = 'gl-opacity-10';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
@@ -25,7 +24,6 @@ export default {
   components: {
     GlButton,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     disableTruncation: {
       type: Boolean,
@@ -74,7 +72,7 @@ export default {
       return this.descriptionHtml?.trim() === '';
     },
     isTruncated() {
-      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsBeta;
+      return this.truncated && !this.disableTruncation;
     },
   },
   watch: {

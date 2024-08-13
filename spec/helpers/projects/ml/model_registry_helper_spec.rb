@@ -57,7 +57,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
         'modelId' => model.id,
         'modelName' => 'cool_model',
-        'latestVersion' => model.latest_version.version
+        'latestVersion' => model.latest_version.version,
+        "markdownPreviewPath" => "http://localhost/#{project.full_path}/-/ml/preview_markdown"
       })
     end
 

@@ -253,6 +253,28 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#mapped_user_id' do
+    let_it_be(:source_user) { build(:import_source_user, :with_reassign_to_user) }
+
+    subject(:mapped_user_id) { source_user.mapped_user_id }
+
+    before do
+      allow(source_user).to receive(:accepted_status?).and_return(accepted)
+    end
+
+    context 'when accepted' do
+      let(:accepted) { true }
+
+      it { is_expected.to eq(source_user.reassign_to_user_id) }
+    end
+
+    context 'when not accepted' do
+      let(:accepted) { false }
+
+      it { is_expected.to eq(source_user.placeholder_user_id) }
+    end
+  end
+
   describe '#reassignable_status?' do
     reassignable_statuses = [:pending_reassignment, :rejected]
     all_states = described_class.state_machines[:status].states

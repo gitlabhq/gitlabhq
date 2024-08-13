@@ -109,6 +109,10 @@ module Import
       accepted_status? ? reassign_to_user : placeholder_user
     end
 
+    def mapped_user_id
+      accepted_status? ? reassign_to_user_id : placeholder_user_id
+    end
+
     def accepted_status?
       STATUSES.slice(*ACCEPTED_STATUSES).value?(status)
     end

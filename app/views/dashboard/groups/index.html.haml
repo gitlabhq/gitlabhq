@@ -1,7 +1,7 @@
 - page_title _("Groups")
 
+= render_dashboard_ultimate_trial(current_user)
 %div{ data: { testid: 'groups-page' } }
-  = render_dashboard_ultimate_trial(current_user)
   - if current_user.groups.exists?
     = render 'dashboard/groups_head'
     = render 'groups'

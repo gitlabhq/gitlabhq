@@ -32630,7 +32630,7 @@ ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_262d4c2d19 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT fk_262d4c2d19_p FOREIGN KEY (auto_canceled_by_partition_id, auto_canceled_by_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL NOT VALID;
+    ADD CONSTRAINT fk_262d4c2d19_p FOREIGN KEY (auto_canceled_by_partition_id, auto_canceled_by_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -33154,8 +33154,8 @@ ALTER TABLE ONLY packages_package_files
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_87f4cefcda FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_87f4cefcda_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+ALTER TABLE p_ci_builds
+    ADD CONSTRAINT fk_87f4cefcda_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -35726,7 +35726,7 @@ ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
-    ADD CONSTRAINT fk_rails_ee072d13b3_p FOREIGN KEY (partition_id, last_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_ee072d13b3_p FOREIGN KEY (partition_id, last_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_rails_ee30e569be FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

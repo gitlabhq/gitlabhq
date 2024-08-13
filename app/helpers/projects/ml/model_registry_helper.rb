@@ -29,7 +29,8 @@ module Projects
           model_id: model.id,
           model_name: model.name,
           max_allowed_file_size: max_allowed_file_size(project),
-          latest_version: model.latest_version&.version
+          latest_version: model.latest_version&.version,
+          markdown_preview_path: ::Gitlab::Routing.url_helpers.project_ml_preview_markdown_url(project)
         }
 
         to_json(data)

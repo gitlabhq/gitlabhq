@@ -1033,3 +1033,19 @@ gitlab-ctl restart mailroom
 ```
 
 ::EndTabs
+
+### Incoming emails are rejected by providers with email address limit
+
+Your GitLab instance might not receive incoming emails, because some email providers impose a
+64-character limit on the local part of the email address (before the `@`).
+All emails from addresses that exceed this limit are rejected emails.
+
+As a workaround, maintain a shorter path:
+
+- Ensure that the local part configured before `%{key}` in `incoming_email_address` is as short as
+  possible, and not longer than 31 characters.
+- Place the designated projects at a higher group hierarchy.
+- Rename [groups](../user/group/manage.md#change-a-groups-path) and
+  [project](../user/project/working_with_projects.md#rename-a-repository) to shorter names.
+
+Track this feature in [issue 460206](https://gitlab.com/gitlab-org/gitlab/-/issues/460206).

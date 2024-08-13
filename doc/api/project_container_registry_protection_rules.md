@@ -161,7 +161,7 @@ curl --request PATCH \
 
 ## Delete a container registry protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.4.
 
 Deletes a container registry protection rule from a project.
 
