@@ -767,9 +767,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to define_enum_for(:project_view).with_values(%i[readme activity files wiki]) }
-    it { is_expected.to validate_inclusion_of(:hide_no_ssh_key).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:hide_no_password).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:notified_of_own_activity).in_array([true, false]) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }

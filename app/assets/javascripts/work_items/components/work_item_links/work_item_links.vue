@@ -5,7 +5,6 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlTooltipDirective,
-  GlToggle,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
@@ -19,7 +18,6 @@ import {
   FORM_TYPES,
   WIDGET_ICONS,
   WORK_ITEM_STATUS_TEXT,
-  I18N_WORK_ITEM_SHOW_LABELS,
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
@@ -28,6 +26,7 @@ import { removeHierarchyChild } from '../../graphql/cache_utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
+import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemAbuseModal from '../work_item_abuse_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -45,7 +44,7 @@ export default {
     WorkItemAbuseModal,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
-    GlToggle,
+    WorkItemMoreActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -171,6 +170,9 @@ export default {
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
     },
+    workItemType() {
+      return this.workItem?.workItemType?.name || '';
+    },
   },
   methods: {
     showAddForm(formType) {
@@ -246,7 +248,6 @@ export default {
     addChildButtonLabel: s__('WorkItem|Add'),
     addChildOptionLabel: s__('WorkItem|Existing task'),
     createChildOptionLabel: s__('WorkItem|New task'),
-    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,
@@ -270,20 +271,13 @@ export default {
       </span>
     </template>
     <template #header-right>
-      <gl-toggle
-        class="gl-mr-4"
-        :value="showLabels"
-        :label="$options.i18n.showLabelsLabel"
-        label-position="left"
-        label-id="relationship-toggle-labels"
-        @change="showLabels = $event"
-      />
       <gl-disclosure-dropdown
         v-if="canUpdate && canAddTask"
         placement="bottom-end"
         size="small"
         :toggle-text="$options.i18n.addChildButtonLabel"
         data-testid="toggle-form"
+        class="gl-mr-3"
       >
         <gl-disclosure-dropdown-item
           data-testid="toggle-create-form"
@@ -302,6 +296,14 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown>
+      <work-item-more-actions
+        :work-item-iid="iid"
+        :full-path="fullPath"
+        :work-item-type="workItemType"
+        :show-labels="showLabels"
+        :show-view-roadmap-action="false"
+        @toggle-show-labels="showLabels = !showLabels"
+      />
     </template>
     <template #body>
       <div class="gl-new-card-content gl-px-0">
@@ -329,7 +331,7 @@ export default {
             :parent-iteration="issuableIteration"
             :parent-milestone="issuableMilestone"
             :form-type="formType"
-            :parent-work-item-type="workItem.workItemType.name"
+            :parent-work-item-type="workItemType"
             @update-in-progress="disableContent = $event"
             @cancel="hideAddForm"
           />

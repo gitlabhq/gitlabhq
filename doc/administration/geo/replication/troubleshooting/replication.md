@@ -283,6 +283,29 @@ to enact the following, basic troubleshooting steps:
     Geo::PackageFileRegistry.failed
     ```
 
+    The term registry records, in this case, refers to registry tables in the
+    Geo tracking database. Each record, or row, tracks a single replicable in the
+    main GitLab database, such as an LFS file, or a project Git repository. Here
+    are some other Rails models that correspond to Geo registry tables that can
+    be queried like the above:
+
+    ```plaintext
+    CiSecureFileRegistry
+    ContainerRepositoryRegistry
+    DependencyProxyBlobRegistry
+    DependencyProxyManifestRegistry
+    JobArtifactRegistry
+    LfsObjectRegistry
+    MergeRequestDiffRegistry
+    PackageFileRegistry
+    PagesDeploymentRegistry
+    PipelineArtifactRegistry
+    ProjectWikiRepositoryRegistry
+    SnippetRepositoryRegistry
+    TerraformStateVersionRegistry
+    UploadRegistry
+    ```
+
   - Find registry records that are missing on the primary site:
 
     ```ruby

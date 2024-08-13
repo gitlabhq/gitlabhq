@@ -197,10 +197,9 @@ module API
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
             desc: 'The access level of the runner'
           optional :maximum_timeout, type: Integer,
-            desc: 'Maximum timeout that limits the amount of time (in seconds) ' \
-                  'that runners can run jobs'
+            desc: 'Maximum timeout that limits the amount of time (in seconds) that runners can run jobs'
           optional :maintenance_note, type: String,
-            desc: %q(Free-form maintenance notes for the runner (1024 characters))
+            desc: 'Free-form maintenance notes for the runner (1024 characters)'
           at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout, :maintenance_note
           mutually_exclusive :active, :paused
         end

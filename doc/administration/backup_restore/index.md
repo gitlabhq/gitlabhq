@@ -62,7 +62,7 @@ It includes information such as:
 ### Database backups
 
 Database backups are created and restored by a GitLab backup sub-task called `db`.
-The database sub-task uses `pg_dump` to create a[SQL dump](https://www.postgresql.org/docs/14/backup-dump.html).
+The database sub-task uses `pg_dump` to create an [SQL dump](https://www.postgresql.org/docs/14/backup-dump.html).
 The output of `pg_dump` is piped through `gzip` to create a compressed SQL file.
 This file is saved to the [backup staging directory](#backup-staging-directory).
 
@@ -243,14 +243,9 @@ For example:
 
 ## Restore GitLab
 
-GitLab provides a command-line interface (CLI) to restore your entire installation. This may be required in the following scenarios:
-
-- **Data loss**: If critical data is accidentally deleted or corrupted.
-- **System failure**: When hardware issues or software crashes cause data corruption.
-- **Security incidents**: After a breach or malware attack.
-- **Failed upgrades**: If an upgrade goes wrong or does not complete successfully.
-- **Disaster recovery**: Following an adverse incident like a natural disaster or infrastructure failure.
-- **Migration**: When moving GitLab to new servers or cloud environments.
+The procedures to back up your GitLab instance vary based on your
+deployment's specific configuration and usage patterns.
+Factors such as data types, storage locations, and volume influence the restoration process.
 
 For more information, see [Restore GitLab](restore_gitlab.md).
 

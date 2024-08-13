@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { GlLoadingIcon, GlIcon, GlButton, GlLink, GlToggle } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlButton, GlLink } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -10,11 +10,11 @@ import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutatio
 import {
   WIDGET_TYPE_LINKED_ITEMS,
   LINKED_CATEGORIES_MAP,
-  I18N_WORK_ITEM_SHOW_LABELS,
   LINKED_ITEMS_ANCHOR,
 } from '../../constants';
 
 import WidgetWrapper from '../widget_wrapper.vue';
+import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
@@ -28,7 +28,7 @@ export default {
     WidgetWrapper,
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
-    GlToggle,
+    WorkItemMoreActions,
   },
   props: {
     workItemId: {
@@ -200,7 +200,6 @@ export default {
     blockingTitle: s__('WorkItem|Blocking'),
     blockedByTitle: s__('WorkItem|Blocked by'),
     addLinkedWorkItemButtonLabel: s__('WorkItem|Add'),
-    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
   },
 };
 </script>
@@ -223,22 +222,23 @@ export default {
       </div>
     </template>
     <template #header-right>
-      <gl-toggle
-        :value="showLabels"
-        :label="$options.i18n.showLabelsLabel"
-        label-position="left"
-        label-id="relationship-toggle-labels"
-        @change="showLabels = $event"
-      />
       <gl-button
         v-if="canAdminWorkItemLink"
         data-testid="link-item-add-button"
         size="small"
-        class="gl-ml-4"
+        class="gl-mr-3"
         @click="showLinkItemForm"
       >
         <slot name="add-button-text">{{ $options.i18n.addLinkedWorkItemButtonLabel }}</slot>
       </gl-button>
+      <work-item-more-actions
+        :work-item-iid="workItemIid"
+        :full-path="workItemFullPath"
+        :work-item-type="workItemType"
+        :show-labels="showLabels"
+        :show-view-roadmap-action="false"
+        @toggle-show-labels="showLabels = !showLabels"
+      />
     </template>
     <template #body>
       <div class="gl-new-card-content gl-px-0">

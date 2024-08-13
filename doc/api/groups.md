@@ -35,7 +35,7 @@ Parameters:
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* For top-level groups, the response returns the full `root_storage_statistics` data displayed in the UI. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469254) in GitLab 17.3. |
+| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* For top-level groups, the response returns the full `root_storage_statistics` data displayed in the UI. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469254) in GitLab 17.4. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |

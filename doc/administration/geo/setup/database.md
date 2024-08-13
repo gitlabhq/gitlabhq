@@ -292,7 +292,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 1. A certificate was automatically generated when GitLab was reconfigured. This
    is used automatically to protect your PostgreSQL traffic from
    eavesdroppers. To protect against active ("man-in-the-middle") attackers,
-   the **secondary** site needs a copy of the certificate. Make a copy of the PostgreSQL
+   the **secondary** site needs a copy of the CA that signed the certificate. In
+   the case of this self-signed certificate, make a copy of the PostgreSQL
    `server.crt` file on the **primary** site by running this command:
 
    ```shell
@@ -320,6 +321,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    You can use this certificate (that you have also set in `postgresql['ssl_cert_file']`) instead
    of the certificate from the point above going forward. This allows you to use `verify-full`
    without replication errors if the CN matches.
+
+   On your primary database, open `/etc/gitlab/gitlab.rb` and search for `postgresql['ssl_ca_file']` (the CA certificate). Copy its value to your clipboard that you'll later paste into `server.crt`.
 
 #### Step 2. Configure the **secondary** server
 

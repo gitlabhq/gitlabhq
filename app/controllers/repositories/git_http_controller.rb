@@ -129,6 +129,15 @@ module Repositories
 
     def log_user_activity
       Users::ActivityService.new(author: user, project: project, namespace: project&.namespace).execute
+
+      return unless project && user
+
+      Gitlab::EventStore.publish(
+        Users::ActivityEvent.new(data: {
+          user_id: user.id,
+          namespace_id: project.namespace_id
+        })
+      )
     end
 
     def append_info_to_payload(payload)

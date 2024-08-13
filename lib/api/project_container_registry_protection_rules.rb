@@ -110,6 +110,28 @@ module API
             present response[:container_registry_protection_rule],
               with: Entities::Projects::ContainerRegistry::Protection::Rule
           end
+
+          desc 'Delete container protection rule' do
+            success code: 204, message: '204 No Content'
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[projects]
+            hidden true
+          end
+          delete do
+            protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])
+
+            destroy_conditionally!(protection_rule) do |protection_rule|
+              response = ::ContainerRegistry::Protection::DeleteRuleService.new(protection_rule,
+                current_user: current_user).execute
+
+              render_api_error!({ error: response.message }, :bad_request) if response.error?
+            end
+          end
         end
       end
     end

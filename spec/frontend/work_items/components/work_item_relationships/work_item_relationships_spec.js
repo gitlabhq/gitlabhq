@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -10,6 +10,7 @@ import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
+import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 
@@ -76,7 +77,7 @@ describe('WorkItemRelationships', () => {
     wrapper.findAllComponents(WorkItemRelationshipList);
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');
   const findWorkItemRelationshipForm = () => wrapper.findComponent(WorkItemAddRelationshipForm);
-  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
+  const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
 
   it('shows loading icon when query is not processed', () => {
     createComponent();
@@ -94,11 +95,6 @@ describe('WorkItemRelationships', () => {
     expect(findLinkedItemsHelpLink().attributes('href')).toBe(
       '/help/user/okrs.md#linked-items-in-okrs',
     );
-    expect(findShowLabelsToggle().props()).toMatchObject({
-      value: true,
-      labelPosition: 'left',
-      label: 'Show labels',
-    });
   });
 
   it('renders blocking linked item lists', async () => {
@@ -152,29 +148,6 @@ describe('WorkItemRelationships', () => {
     await findWorkItemRelationshipForm().vm.$emit('cancel');
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
-
-  it.each`
-    toggleValue
-    ${true}
-    ${false}
-  `(
-    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
-    async ({ toggleValue }) => {
-      await createComponent({
-        workItemQueryHandler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
-      });
-
-      findShowLabelsToggle().vm.$emit('change', toggleValue);
-
-      await nextTick();
-
-      expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(
-        toggleValue,
-      );
-    },
-  );
 
   it('calls the work item query', () => {
     createComponent();
@@ -232,4 +205,40 @@ describe('WorkItemRelationships', () => {
       expect(findWidgetWrapper().props('error')).toBe(errorMessage);
     },
   );
+
+  describe('more actions', () => {
+    it('renders the `WorkItemMoreActions` component', async () => {
+      await createComponent();
+
+      expect(findMoreActions().exists()).toBe(true);
+    });
+
+    it('does not render `View on a roadmap` action', async () => {
+      await createComponent();
+
+      expect(findMoreActions().props('showViewRoadmapAction')).toBe(false);
+    });
+
+    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
+      await createComponent({
+        workItemQueryHandler: jest
+          .fn()
+          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
+      });
+
+      expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(true);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
+
+      await nextTick();
+
+      expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(false);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
+
+      await nextTick();
+
+      expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(true);
+    });
+  });
 });

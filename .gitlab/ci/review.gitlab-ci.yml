@@ -86,6 +86,10 @@ start-review-app-pipeline:
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
   inherit:
     variables:
+      - REVIEW_APPS_DOMAIN
+      - REVIEW_APPS_GCP_PROJECT
+      - REVIEW_APPS_GCP_REGION
+      - REVIEW_APPS_IMAGE
       - BUILD_OS
       - CHROME_VERSION
       - DOCKER_VERSION
@@ -100,6 +104,7 @@ start-review-app-pipeline:
       - LFS_VERSION
       - NODE_VERSION
       - OS_VERSION
+      - RUBY_VERSION
       - RUBY_VERSION_DEFAULT
       - RUBY_VERSION_NEXT
       - RUBYGEMS_VERSION

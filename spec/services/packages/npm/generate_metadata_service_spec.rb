@@ -26,6 +26,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
         directories: ['lib'],
         engines: { npm: '^7.5.6' },
         _hasShrinkwrap: false,
+        hasInstallScript: true,
         dist: {
           tarball: 'http://localhost/tarball.tgz',
           shasum: '1234567890'

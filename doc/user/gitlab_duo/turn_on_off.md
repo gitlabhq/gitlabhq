@@ -14,7 +14,7 @@ In addition:
 
 - If you have self-managed GitLab:
   - You must [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
-  - You must [activate your instance with a cloud license](../../administration/license.md#activate-gitlab-ee).
+  - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
   - For the best experience, you should upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
 - If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
 - For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),

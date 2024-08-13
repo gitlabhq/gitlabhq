@@ -1,6 +1,5 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToggle } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 
@@ -17,6 +16,7 @@ import WorkItemLinks from '~/work_items/components/work_item_links/work_item_lin
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
+import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 
@@ -94,7 +94,7 @@ describe('WorkItemLinks', () => {
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategoryModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
-  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
+  const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
 
   afterEach(() => {
     mockApollo = null;
@@ -299,20 +299,35 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  it.each`
-    toggleValue
-    ${true}
-    ${false}
-  `(
-    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
-    async ({ toggleValue }) => {
+  describe('more actions', () => {
+    it('renders the `WorkItemMoreActions` component', async () => {
       await createComponent();
 
-      findShowLabelsToggle().vm.$emit('change', toggleValue);
+      expect(findMoreActions().exists()).toBe(true);
+    });
+
+    it('does not render `View on a roadmap` action', async () => {
+      await createComponent();
+
+      expect(findMoreActions().props('showViewRoadmapAction')).toBe(false);
+    });
+
+    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
 
       await nextTick();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
-    },
-  );
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(false);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
+
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+    });
+  });
 });

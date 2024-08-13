@@ -17,9 +17,4 @@ Please consider the effect of the changes in this merge request on the following
 Please consider communicating these changes to the broader team following the [communication guideline for pipeline changes](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/#pipeline-changes)
 MSG
 
-if helper.has_ci_changes?
-  markdown(PIPELINE_CHANGES_MESSAGE)
-
-  dependency_validation_message = ci_jobs_dependency_validation.output_message
-  markdown(dependency_validation_message) unless dependency_validation_message.empty?
-end
+markdown(PIPELINE_CHANGES_MESSAGE) if helper.has_ci_changes?

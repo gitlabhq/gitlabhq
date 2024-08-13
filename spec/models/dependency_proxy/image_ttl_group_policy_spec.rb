@@ -10,10 +10,6 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicy, type: :model do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:group) }
 
-    describe '#enabled' do
-      it { is_expected.to validate_inclusion_of(:enabled).in_array([true, false]) }
-    end
-
     describe '#ttl' do
       it { is_expected.to validate_numericality_of(:ttl).allow_nil.is_greater_than(0) }
     end

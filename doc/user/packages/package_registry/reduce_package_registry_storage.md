@@ -14,7 +14,7 @@ Without cleanup, package registries become large over time. When a large number 
 their assets are added:
 
 - Fetching the list of packages becomes slower.
-- They take up a large amount of storage space on the server, impacting your [storage usage quota](../../usage_quotas.md).
+- They take up a large amount of storage space on the server.
 
 We recommend deleting unnecessary packages and assets. This page offers examples of how to do so.
 

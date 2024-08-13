@@ -434,11 +434,6 @@
   - "lib/backup/**/*"
   - "lib/tasks/gitlab/backup.rake"
 
-.db-library-patterns: &db-library-patterns
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
-  - "{,ee/,jh/}spec/support/helpers/database/**/*"
-
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
   - "danger/**/*"
@@ -2340,14 +2335,6 @@
       changes: *setup-test-env-patterns
       when: manual
       allow_failure: true
-
-.rails:rules:ee-and-foss-db-library-code:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-default-refs
-      changes: *db-library-patterns
-    - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:ee-mr-and-default-branch-only:
   rules:

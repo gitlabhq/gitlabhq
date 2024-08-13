@@ -68,10 +68,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
-  describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:confidential).in_array([true, false]) }
-  end
-
   describe 'custom validations' do
     subject(:valid?) { issue.valid? }
 

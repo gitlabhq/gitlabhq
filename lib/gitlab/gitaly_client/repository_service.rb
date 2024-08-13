@@ -206,30 +206,12 @@ module Gitlab
         )
       end
 
-      def backup_custom_hooks(save_path)
-        gitaly_fetch_stream_to_file(
-          save_path,
-          :backup_custom_hooks,
-          Gitaly::BackupCustomHooksRequest,
-          GitalyClient.default_timeout
-        )
-      end
-
       def create_from_bundle(bundle_path)
         gitaly_repo_stream_request(
           bundle_path,
           :create_repository_from_bundle,
           Gitaly::CreateRepositoryFromBundleRequest,
           GitalyClient.long_timeout
-        )
-      end
-
-      def restore_custom_hooks(custom_hooks_path)
-        gitaly_repo_stream_request(
-          custom_hooks_path,
-          :restore_custom_hooks,
-          Gitaly::RestoreCustomHooksRequest,
-          GitalyClient.default_timeout
         )
       end
 

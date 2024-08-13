@@ -158,3 +158,37 @@ curl --request PATCH \
        "repository_path_pattern": "flight/flight-*"
     }'
 ```
+
+## Delete a container registry protection rule
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.3.
+
+Deletes a container registry protection rule from a project.
+
+```plaintext
+DELETE /api/v4/projects/:id/registry/protection/rules/:protection_rule_id
+```
+
+Supported attributes:
+
+| Attribute            | Type           | Required | Description |
+|----------------------|----------------|----------|-------------|
+| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `protection_rule_id` | integer        | Yes      | ID of the container registry protection rule to be deleted. |
+
+If successful, returns [`204 No Content`](rest/index.md#status-codes).
+
+Can return the following status codes:
+
+- `204 No Content`: The protection rule was deleted successfully.
+- `400 Bad Request`: The `id` or the `protection_rule_id` are missing or are invalid.
+- `401 Unauthorized`: The access token is invalid.
+- `403 Forbidden`: The user does not have permission to delete the protection rule.
+- `404 Not Found`: The project or the protection rule was not found.
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules/1"
+```

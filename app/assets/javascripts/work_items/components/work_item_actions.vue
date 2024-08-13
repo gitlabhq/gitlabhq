@@ -400,7 +400,7 @@ export default {
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
-              class="work-item-notification-toggle"
+              class="work-item-dropdown-toggle"
               label-position="left"
               @change="toggleNotifications($event)"
             />

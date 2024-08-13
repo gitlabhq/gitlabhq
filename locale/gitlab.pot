@@ -24698,7 +24698,7 @@ msgstr ""
 msgid "GlobalSearch|Type %{linkStart}@%{linkEnd} to search for users"
 msgstr ""
 
-msgid "GlobalSearch|Type %{linkStart}~%{linkEnd} to search for files"
+msgid "GlobalSearch|Type %{linkStart}t%{linkEnd} to search for files"
 msgstr ""
 
 msgid "GlobalSearch|Type for new suggestions to appear below."

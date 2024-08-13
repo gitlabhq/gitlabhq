@@ -143,7 +143,6 @@ export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
   s__('WorkItem|Add a maximum of %{MAX_WORK_ITEMS} items at a time.'),
   { MAX_WORK_ITEMS },
 );
-export const I18N_WORK_ITEM_SHOW_LABELS = s__('WorkItem|Show labels');
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|item');

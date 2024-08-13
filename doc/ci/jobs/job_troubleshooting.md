@@ -55,7 +55,7 @@ depending on factors like the keyword used, or the shell and OS of the runner.
 You might see pipelines fail when a GitLab administrator runs a protected manual job
 in a private project.
 
-CI/CD jobs usually clone the project when the job starts, and this uses [the permissions](../../user/permissions.md#job-permissions)
+CI/CD jobs usually clone the project when the job starts, and this uses [the permissions](../../user/permissions.md#cicd)
 of the user that runs the job. All users, including administrators, must be direct members
 of a private project to clone the source of that project. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/23130)
 to change this behavior.

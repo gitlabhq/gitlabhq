@@ -50,7 +50,7 @@ dont-interrupt-me:
 <% if test_suite_prefix.nil? %>
 .base-rspec-predictive:
   extends:
-    - .rspec-base-pg13
+    - .rspec-base-pg14
     - .base-predictive
   variables:
     # We're using the FOSS one here because we want to exclude EE-only ones
@@ -109,7 +109,7 @@ rspec system predictive:
 <% if test_suite_prefix == 'ee/' %>
 .base-rspec-ee-predictive:
   extends:
-    - .rspec-ee-base-pg13
+    - .rspec-ee-base-pg14
     - .base-predictive
   variables:
     RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_EE_PATH}"

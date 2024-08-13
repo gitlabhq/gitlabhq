@@ -204,7 +204,11 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-notification-toggle {
+// There is no props to set label class in GlToggle
+// and the font weight is bold in the component
+// Here, we are overriding the margin and the font weight
+
+.work-item-dropdown-toggle {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle {
     margin-left: auto;

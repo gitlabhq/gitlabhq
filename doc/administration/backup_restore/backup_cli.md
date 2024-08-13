@@ -101,3 +101,23 @@ A workaround of this issue, is either to:
 - Restrict traffic to the servers during backup to preserve instance resources.
 
 We're investigating an alternative to the copy strategy, see [issue 428520](https://gitlab.com/gitlab-org/gitlab/-/issues/428520).
+
+## What data is backed up?
+
+1. Git Repository Data
+1. Databases
+1. Blobs
+
+## What data is NOT backed up?
+
+1. Secrets and Configurations
+
+   - Follow the documentation on how to [backup secrets and configuration](backup_gitlab.md#storing-configuration-files).
+
+1. Transient and Cache Data
+
+   - Redis: Cache
+   - Redis: Sidekiq Data
+   - Logs
+   - Elasticsearch
+   - Observability Data / Prometheus Metrics

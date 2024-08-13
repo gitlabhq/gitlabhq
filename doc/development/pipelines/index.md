@@ -707,19 +707,17 @@ Ruby version only:
 Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We run our test suite against PostgreSQL 13, 14, 15 and 16 on nightly scheduled pipelines.
-
-We also run our test suite against PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg13` job).
+We run our test suite against PostgreSQL 14, 15 and 16 on nightly scheduled pipelines.
 
 #### Current versions testing
 
-| Where?                                                                                           | PostgreSQL version                              | Ruby version          |
-|--------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)    | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10)    | 14 (default version), 13 for DB library changes | 3.2                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15, 16                | 3.1 (default version) |
+| Where?                                                                                        | PostgreSQL version           | Ruby version          |
+|-----------------------------------------------------------------------------------------------|------------------------------|-----------------------|
+| Merge requests                                                                                | 14 (default version)         | 3.1 (default version) |
+| `master` branch commits                                                                       | 14 (default version)         | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05) | 14 (default version)         | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10) | 14 (default version)         | 3.2                   |
+| `nightly` scheduled pipelines for the `master` branch                                         | 14 (default version), 15, 16 | 3.1 (default version) |
 
 For each current Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on their respective `ruby\d_\d`

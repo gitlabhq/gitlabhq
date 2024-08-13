@@ -20,7 +20,7 @@ The jobs that start during the first stage of a pipeline almost always have thei
 
 ## Use secondary runners with a Location Aware public URL (Unified URL)
 
-Using a [Location Aware public URL](location_aware_external_url.md), with the feature flag enabled works with no extra configuration. After you install and register a runner in the same location as a secondary site, it automatically talks to the closest site, and only proxies to the primary if the secondary is out of date.
+Using [Location-Aware DNS](index.md#configure-location-aware-dns), with the feature flag enabled works with no extra configuration. After you install and register a runner in the same location as a secondary site, it automatically talks to the closest site, and only proxies to the primary if the secondary is out of date.
 
 ## Use secondary runners with separate URLs
 
@@ -35,7 +35,7 @@ When executing [a planned failover](../disaster_recovery/planned_failover.md), s
 
 ### With Location Aware public URL
 
-When using the [Location Aware public URL](location_aware_external_url.md), all runners automatically connect to the closest Geo site.
+When using [Location-Aware DNS](index.md#configure-location-aware-dns), all runners automatically connect to the closest Geo site.
 
 When failing over to a new primary:
 

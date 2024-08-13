@@ -41,6 +41,7 @@
     "directories": { "type": "array" },
     "engines": { "type": "object" },
     "_hasShrinkwrap": { "type": "boolean" },
+    "hasInstallScript": { "type": "boolean" },
     "additionalProperties": true
   }
 }

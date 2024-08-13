@@ -43,7 +43,6 @@ internal/api/api.go:149:2: var-naming: don't use ALL_CAPS in Go names; use Camel
 internal/api/api.go:153:2: var-naming: don't use ALL_CAPS in Go names; use CamelCase (revive)
 internal/api/block_test.go:61:34: response body must be closed (bodyclose)
 internal/api/channel_settings.go:57:28: G402: TLS MinVersion too low. (gosec)
-internal/api/channel_settings_test.go:125:22: SA1019: dialer.TLSClientConfig.RootCAs.Subjects has been deprecated since Go 1.18: if s was returned by SystemCertPool, Subjects will not include the system roots. (staticcheck)
 internal/builds/register.go:120: Function 'RegisterHandler' is too long (66 > 60) (funlen)
 internal/channel/channel.go:128:31: response body must be closed (bodyclose)
 internal/config/config.go:1:1: package-comments: should have a package comment (revive)

@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlToggle, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,7 +10,7 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
-import WorkItemTreeActions from '~/work_items/components/work_item_links/work_item_tree_actions.vue';
+import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import {
   FORM_TYPES,
@@ -45,8 +45,7 @@ describe('WorkItemTree', () => {
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
   const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
-  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
-  const findTreeActions = () => wrapper.findComponent(WorkItemTreeActions);
+  const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findRolledUpWeight = () => wrapper.findByTestId('rollup-weight');
   const findRolledUpWeightValue = () => wrapper.findByTestId('weight-value');
 
@@ -267,36 +266,40 @@ describe('WorkItemTree', () => {
     expect(wrapper.emitted('addChild')).toEqual([[]]);
   });
 
-  it.each`
-    toggleValue
-    ${true}
-    ${false}
-  `(
-    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
-    async ({ toggleValue }) => {
+  describe('more actions', () => {
+    it.each`
+      visible | workItemType
+      ${true} | ${WORK_ITEM_TYPE_VALUE_EPIC}
+      ${true} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
+    `('renders when the work item type is $workItemType', async ({ workItemType, visible }) => {
+      await createComponent({ workItemType });
+
+      expect(findMoreActions().exists()).toBe(visible);
+    });
+
+    it('renders `View on a roadmap` action', async () => {
       await createComponent();
 
-      findShowLabelsToggle().vm.$emit('change', toggleValue);
+      expect(findMoreActions().props('showViewRoadmapAction')).toBe(true);
+    });
+
+    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
 
       await nextTick();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
-    },
-  );
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(false);
 
-  describe('action menu', () => {
-    it.each`
-      visible  | workItemType
-      ${true}  | ${WORK_ITEM_TYPE_VALUE_EPIC}
-      ${false} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
-    `(
-      'When displaying a $workItemType, it is $visible that the action menu is rendered',
-      async ({ workItemType, visible }) => {
-        await createComponent({ workItemType });
+      findMoreActions().vm.$emit('toggle-show-labels');
 
-        expect(findTreeActions().exists()).toBe(visible);
-      },
-    );
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+    });
   });
 
   describe('rollup data', () => {

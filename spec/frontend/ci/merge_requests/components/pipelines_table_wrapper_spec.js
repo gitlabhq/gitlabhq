@@ -171,7 +171,7 @@ describe('PipelinesTableWrapper component', () => {
           '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
         );
         expect(findUserPermissionsDocsLink().attributes('href')).toBe(
-          '/help/user/permissions.md#gitlab-cicd-permissions',
+          '/help/user/permissions.md#cicd',
         );
 
         expect(findEmptyState().text()).toContain('To run a merge request pipeline');

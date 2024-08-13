@@ -223,6 +223,13 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       expect { subject }.to change { user.last_activity_on }.to(Date.today)
     end
 
+    it 'publishes an activity event' do
+      expect { subject }.to publish_event(Users::ActivityEvent).with({
+        user_id: user.id,
+        namespace_id: project.namespace_id
+      })
+    end
+
     it 'caches the last push event for the user' do
       expect_next_instance_of(Users::LastPushEventService) do |instance|
         expect(instance).to receive(:cache_last_push_event).with(an_instance_of(PushEvent))

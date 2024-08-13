@@ -63,13 +63,14 @@ you can decrease them.
 
 You can set up a different URL for synchronization between the primary and secondary site.
 
-The **primary** site's Internal URL is used by **secondary** sites to contact it
-(to sync repositories, for example). The name Internal URL distinguishes it from
+The **primary** site's Internal URL is used by **secondary** sites to contact
+it. For example, to sync repositories. The name Internal URL distinguishes it from
 [External URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab),
 which is used by users. Internal URL does not need to be a private address.
 
-When [Geo secondary proxying](../administration/geo/secondary_proxy/index.md) is enabled,
-the primary uses the secondary's internal URL to contact it directly.
+The Internal URL of a **secondary** site is used by the **primary** site to
+contact it. For example, to retrieve sync or verification tracking metadata for
+display in the Admin Area at **Geo > Sites > Project Repositories**.
 
 The internal URL defaults to external URL. To change it:
 
@@ -87,18 +88,6 @@ We recommend using an HTTPS connection while configuring the Geo sites. To avoid
 breaking communication between **primary** and **secondary** sites when using
 HTTPS, customize your Internal URL to point to a load balancer with TLS
 terminated at the load balancer.
-
-## Multiple secondary sites behind a load balancer
-
-**Secondary** sites can use identical external URLs if
-a unique `name` is set for each Geo site. The `gitlab.rb` setting
-`gitlab_rails['geo_node_name']` must:
-
-- Be set for each GitLab instance that runs `puma`, `sidekiq`, or `geo_logcursor`.
-- Match a Geo site name.
-
-The load balancer must use sticky sessions to avoid authentication
-failures and cross-site request errors.
 
 <!-- ## Troubleshooting
 

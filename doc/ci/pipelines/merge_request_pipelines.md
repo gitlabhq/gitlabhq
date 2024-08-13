@@ -118,7 +118,7 @@ Prerequisites:
 
 - The parent project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](#prerequisites).
-- You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#gitlab-cicd-permissions).
+- You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#cicd).
   You might need additional permissions if the branch is protected.
 - The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display

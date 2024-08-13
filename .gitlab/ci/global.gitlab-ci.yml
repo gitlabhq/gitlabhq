@@ -367,14 +367,6 @@
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
-.use-pg13-es7-ee:
-  extends:
-    - .use-pg13
-    - .zoekt-variables
-  services:
-    - !reference [.db-services, services]
-    - !reference [.es7-services, services]
-
 .use-pg14-es7-ee:
   extends:
     - .use-pg14
@@ -412,14 +404,6 @@
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
 
-.use-pg13-es8-ee:
-  extends:
-    - .use-pg13
-    - .zoekt-variables
-    - .es8-variables
-  services:
-    - !reference [.db-services, services]
-    - !reference [.es8-services, services]
 
 .use-pg14-es8-ee:
   extends:
@@ -455,14 +439,6 @@
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
-.use-pg13-opensearch1-ee:
-  extends:
-    - .use-pg13
-    - .zoekt-variables
-  services:
-    - !reference [.db-services, services]
-    - !reference [.os1-services, services]
-
 .use-pg14-opensearch1-ee:
   extends:
     - .use-pg14
@@ -493,14 +469,6 @@
     - name: opensearchproject/opensearch:2.15.0
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
-
-.use-pg13-opensearch2-ee:
-  extends:
-    - .use-pg13
-    - .zoekt-variables
-  services:
-    - !reference [.db-services, services]
-    - !reference [.os2-services, services]
 
 .use-pg14-opensearch2-ee:
   extends:

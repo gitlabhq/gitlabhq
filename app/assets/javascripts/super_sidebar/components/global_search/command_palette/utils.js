@@ -1,5 +1,5 @@
 import { isNil, omitBy } from 'lodash';
-import { objectToQuery, joinPaths } from '~/lib/utils/url_utility';
+import { objectToQuery, joinPaths, encodeSaferUrl } from '~/lib/utils/url_utility';
 import { TRACKING_UNKNOWN_ID } from '~/super_sidebar/constants';
 import {
   SEARCH_SCOPE,
@@ -57,7 +57,7 @@ export const fileMapper = (projectBlobPath, file) => {
   return {
     icon: 'doc-code',
     text: file,
-    href: joinPaths(projectBlobPath, file),
+    href: encodeSaferUrl(joinPaths(projectBlobPath, file)),
     extraAttrs: {
       'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
       'data-track-label': 'file',

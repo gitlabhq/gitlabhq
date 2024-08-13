@@ -32,4 +32,18 @@ describe('fileMapper', () => {
       },
     });
   });
+
+  it('should encode file names with special characters', () => {
+    const file = 'lua-amx_%.bbappend';
+    const projectBlobPath = 'project/blob/path';
+    expect(fileMapper(projectBlobPath, file)).toEqual({
+      icon: 'doc-code',
+      text: file,
+      href: 'project/blob/path/lua-amx_%25.bbappend',
+      extraAttrs: {
+        'data-track-action': 'click_command_palette_item',
+        'data-track-label': 'file',
+      },
+    });
+  });
 });

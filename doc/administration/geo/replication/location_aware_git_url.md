@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 NOTE:
-[GitLab Geo supports a location-aware URL including web UI and API traffic.](../secondary_proxy/location_aware_external_url.md)
+[GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/index.md#configure-location-aware-dns)
 This configuration is recommended over the location-aware Git remote URL
 described in this document.
 

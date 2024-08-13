@@ -100,8 +100,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
     it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
-    it { is_expected.to validate_inclusion_of(:container_expiration_policies_enable_historic_entries).in_array([true, false]) }
-
     it { is_expected.to allow_value("myemail@gitlab.com").for(:lets_encrypt_notification_email) }
     it { is_expected.to allow_value(nil).for(:lets_encrypt_notification_email) }
     it { is_expected.not_to allow_value("notanemail").for(:lets_encrypt_notification_email) }
@@ -131,21 +129,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(nil).for(:protected_paths_for_get_request) }
     it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
-    it { is_expected.to validate_inclusion_of(:container_registry_expiration_policies_caching).in_array([true, false]) }
-
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
-    it { is_expected.to validate_inclusion_of(:wiki_asciidoc_allow_uri_includes).in_array([true, false]) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
-
-    it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:can_create_organization).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:allow_project_creation_for_guest_and_below).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:enable_member_promotion_management).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:deny_all_requests_except_allowed).in_array([true, false]) }
 
     it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
       is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
@@ -196,8 +181,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value('http://example.com/').for(:public_runner_releases_url) }
     it { is_expected.not_to allow_value(nil).for(:public_runner_releases_url) }
 
-    it { is_expected.to validate_inclusion_of(:update_runner_versions_enabled).in_array([true, false]) }
-
     it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
     it { is_expected.not_to allow_value(%w[project project]).for(:valid_runner_registrars) }
@@ -209,19 +192,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
 
-    it { is_expected.to validate_inclusion_of(:bulk_import_enabled).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:silent_admin_exports_enabled).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:allow_runner_registration_token).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:gitlab_dedicated_instance).in_array([true, false]) }
-
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
 
-    it { is_expected.to validate_inclusion_of(:silent_mode_enabled).in_array([true, false]) }
+    it { is_expected.to validate_inclusion_of(:silent_admin_exports_enabled).in_array([true, false]) }
 
     context 'for non-null integer attributes starting from 0' do
       where(:attribute) do
@@ -359,11 +334,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    it { is_expected.to validate_inclusion_of(:remember_me_enabled).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:package_registry_allow_anyone_to_pull_option).in_array([true, false]) }
-
-    it { is_expected.to allow_value([true, false]).for(:math_rendering_limits_enabled) }
     it { is_expected.not_to allow_value(nil).for(:math_rendering_limits_enabled) }
 
     context 'when deactivate_dormant_users is enabled' do

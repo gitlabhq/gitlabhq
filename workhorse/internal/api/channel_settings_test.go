@@ -122,6 +122,7 @@ func TestDialer(t *testing.T) {
 
 	subjectOfTestCertificate := []byte{48, 35, 49, 33, 48, 31, 6, 3, 85, 4, 3, 12, 24, 119, 111, 114, 107, 104, 111, 114, 115, 101, 45, 119, 101, 98, 115, 111, 99, 107, 101, 116, 45, 116, 101, 115, 116}
 	//lint:ignore SA1019 Ignore the deprecation warnings
+	// nolint:staticcheck // Ignore the deprecation warnings
 	require.Contains(t, dialer.TLSClientConfig.RootCAs.Subjects(), subjectOfTestCertificate)
 }
 

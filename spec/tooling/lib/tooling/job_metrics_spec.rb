@@ -31,7 +31,7 @@ RSpec.describe Tooling::JobMetrics, feature_category: :tooling do
   before do
     stub_env(
       'CI_JOB_ID' => '1234',
-      'CI_JOB_NAME' => 'rspec unit pg13 1/24',
+      'CI_JOB_NAME' => 'rspec unit pg14 1/24',
       'CI_JOB_STAGE' => 'test',
       'CI_JOB_STARTED_AT' => (Time.now - 3600).iso8601, # 1h ago
       'CI_JOB_STATUS' => 'success',
@@ -340,7 +340,7 @@ RSpec.describe Tooling::JobMetrics, feature_category: :tooling do
 
           expect { subject }.to output(
             "[job-metrics] Failed to push CI job metrics to InfluxDB, " \
-            "error: Missing EP_CI_JOB_METRICS_TOKEN env variable\n"
+              "error: Missing EP_CI_JOB_METRICS_TOKEN env variable\n"
           ).to_stderr
         end
       end

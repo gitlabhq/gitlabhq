@@ -8,9 +8,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
   let(:user_preference) { create(:user_preference, user: user) }
 
   describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:time_display_relative).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:render_whitespace_in_code).in_array([true, false]) }
-
     it do
       is_expected.to validate_numericality_of(:tab_width)
                        .only_integer
@@ -59,7 +56,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
 
     describe 'pass_user_identities_to_ci_jwt' do
-      it { is_expected.to validate_inclusion_of(:pass_user_identities_to_ci_jwt).in_array([true, false]) }
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 

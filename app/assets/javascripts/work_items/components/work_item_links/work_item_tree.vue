@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlIcon, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import {
@@ -11,7 +11,6 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  I18N_WORK_ITEM_SHOW_LABELS,
   CHILD_ITEMS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
@@ -19,10 +18,10 @@ import { findHierarchyWidgets } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
+import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
-import WorkItemTreeActions from './work_item_tree_actions.vue';
 
 export default {
   FORM_TYPES,
@@ -35,8 +34,7 @@ export default {
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
-    WorkItemTreeActions,
-    GlToggle,
+    WorkItemMoreActions,
     GlLoadingIcon,
     GlIcon,
     GlTooltip,
@@ -168,14 +166,6 @@ export default {
         };
       });
     },
-    /**
-     * Based on the type of work item, should the actions menu be rendered?
-     *
-     * Currently only renders for `epic` work items
-     */
-    canShowActionsMenu() {
-      return this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC && this.workItemIid;
-    },
     children() {
       return this.hierarchyWidget?.nodes || [];
     },
@@ -252,9 +242,6 @@ export default {
       }
     },
   },
-  i18n: {
-    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
-  },
 };
 </script>
 
@@ -284,23 +271,18 @@ export default {
       </span>
     </template>
     <template #header-right>
-      <gl-toggle
-        class="gl-mr-4"
-        :value="showLabels"
-        :label="$options.i18n.showLabelsLabel"
-        label-position="left"
-        label-id="relationship-toggle-labels"
-        @change="showLabels = $event"
-      />
       <work-item-actions-split-button
         v-if="canUpdateChildren"
         :actions="addItemsActions"
         class="gl-mr-3"
       />
-      <work-item-tree-actions
-        v-if="canShowActionsMenu"
+      <work-item-more-actions
         :work-item-iid="workItemIid"
         :full-path="fullPath"
+        :work-item-type="workItemType"
+        :show-labels="showLabels"
+        show-view-roadmap-action
+        @toggle-show-labels="showLabels = !showLabels"
       />
     </template>
     <template #body>

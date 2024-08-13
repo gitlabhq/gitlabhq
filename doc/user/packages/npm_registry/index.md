@@ -307,7 +307,7 @@ and use your organization's URL. The name is case-sensitive and must match the n
 ### npm metadata
 
 The GitLab package registry exposes the following attributes to the npm client.
-These are similar to the [abbreviated metadata format](https://github.com/npm/registry/blob/9e368cf6aaca608da5b2c378c0d53f475298b916/docs/responses/package-metadata.md#abbreviated-metadata-format):
+These are similar to the [abbreviated metadata format](https://github.com/npm/registry/blob/main/docs/responses/package-metadata.md#abbreviated-version-object):
 
 - `name`
 - `versions`
@@ -323,6 +323,7 @@ These are similar to the [abbreviated metadata format](https://github.com/npm/re
   - `dist`
   - `engines`
   - `_hasShrinkwrap`
+  - `hasInstallScript`: `true` if this version has the install scripts.
 
 ### Add npm distribution tags
 

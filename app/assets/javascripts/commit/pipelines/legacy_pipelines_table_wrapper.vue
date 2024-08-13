@@ -207,7 +207,7 @@ export default {
     anchor: 'prerequisites',
   }),
   userPermissionsDocsPath: helpPagePath('user/permissions.md', {
-    anchor: 'gitlab-cicd-permissions',
+    anchor: 'cicd',
   }),
   runPipelinesInTheParentProjectHelpPath: helpPagePath(
     '/ci/pipelines/merge_request_pipelines.html',

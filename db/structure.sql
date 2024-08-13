@@ -19709,7 +19709,7 @@ CREATE TABLE vulnerability_reads (
     dismissal_reason smallint,
     has_merge_request boolean DEFAULT false,
     has_remediations boolean DEFAULT false NOT NULL,
-    owasp_top_10 smallint,
+    owasp_top_10 smallint DEFAULT '-1'::integer,
     traversal_ids bigint[] DEFAULT '{}'::bigint[],
     archived boolean DEFAULT false NOT NULL,
     identifier_external_ids text[] DEFAULT '{}'::text[] NOT NULL,

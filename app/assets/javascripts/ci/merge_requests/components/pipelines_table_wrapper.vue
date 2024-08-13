@@ -265,7 +265,7 @@ export default {
     },
   ),
   userPermissionsDocsPath: helpPagePath('user/permissions.md', {
-    anchor: 'gitlab-cicd-permissions',
+    anchor: 'cicd',
   }),
 };
 </script>

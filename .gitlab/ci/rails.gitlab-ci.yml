@@ -358,16 +358,6 @@ rspec-ee system pg14 no_gitaly_transactions:
     - rspec-ee system pg14
     - .ee-only-gitaly-without-transactions
 
-# Dedicated job to test DB library code against PG13.
-# Note that these are already tested against PG13 in the `rspec unit pg13` / `rspec-ee unit pg13` jobs.
-rspec db-library-code pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:ee-and-foss-db-library-code
-  script:
-    - !reference [.base-script, script]
-    - rspec_db_library_code
-
 rspec fast_spec_helper:
   extends:
     - .rspec-base-pg14
@@ -1000,39 +990,6 @@ rspec-ee system pg14 clusterwide-db:
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
 
-# PG13
-rspec migration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-migration-parallel
-
-rspec background_migration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-background-migration-parallel
-
-rspec unit pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-unit-parallel
-
-rspec integration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-integration-parallel
-
-rspec system pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-system-parallel
-
 # PG15
 rspec migration pg15:
   extends:
@@ -1103,37 +1060,6 @@ rspec system pg16:
 
 #####################################
 # EE: default branch nightly scheduled jobs #
-
-# PG13
-rspec-ee unit pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-unit-parallel
-
-rspec-ee unit pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-integration-parallel
-
-rspec-ee integration pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-system-parallel
-
-rspec-ee system pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-system-parallel
 
 # PG14
 rspec-ee unit pg14 opensearch1:
@@ -1368,7 +1294,7 @@ rspec fail-fast:
 rspec-ee fail-fast:
   extends:
     - .rspec-ee-base-pg14
-    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg13
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg14
   variables:
     MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
 
