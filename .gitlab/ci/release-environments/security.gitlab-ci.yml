@@ -1,6 +1,5 @@
-# Similar to .gitlab/ci/release-environments/main.gitlab-ci.yml, for release-environment pipelines in the security mirror.
-# Referenced in .gitlab/ci/release-environments.gitlab-ci.yml to differentiate from the canonical (main) version.
-# This file includes .gitlab/ci/cng/security.gitlab-ci.yml, instead of .gitlab/ci/cng/main.gitlab-ci.yml.
+# Referenced in .gitlab/ci/release-environments.gitlab-ci.yml
+# This downstream pipeline should only be run in the security mirror repository.
 ---
 include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
