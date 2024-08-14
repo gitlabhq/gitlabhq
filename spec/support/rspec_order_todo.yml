@@ -7143,7 +7143,6 @@
 - './spec/requests/api/keys_spec.rb'
 - './spec/requests/api/labels_spec.rb'
 - './spec/requests/api/lint_spec.rb'
-- './spec/requests/api/markdown_snapshot_spec.rb'
 - './spec/requests/api/markdown_spec.rb'
 - './spec/requests/api/maven_packages_spec.rb'
 - './spec/requests/api/members_spec.rb'

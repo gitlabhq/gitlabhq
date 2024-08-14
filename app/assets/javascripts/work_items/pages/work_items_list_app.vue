@@ -13,6 +13,7 @@ import {
 } from 'ee_else_ce/issues/list/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
   STATUS_CLOSED,
@@ -51,9 +52,9 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { STATE_CLOSED } from '../../constants';
-import { sortOptions, urlSortParams } from '../constants';
-import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
+import { STATE_CLOSED, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
+import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
+import { sortOptions, urlSortParams } from './list/constants';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -144,6 +145,13 @@ export default {
         if (!this.isInitialAllCountSet) {
           this.hasAnyIssues = Boolean(all);
           this.isInitialAllCountSet = true;
+        }
+        if (data?.group) {
+          const rootBreadcrumbName =
+            this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
+              ? __('Epics')
+              : s__('WorkItem|Work items');
+          document.title = `${rootBreadcrumbName} · ${data.group.name} · GitLab`;
         }
       },
       error(error) {
@@ -420,6 +428,21 @@ export default {
           Sentry.captureException(error);
         });
     },
+    redirectToWorkItem(workItem) {
+      const regex = /groups\/.+?\/-\/work_items\/\d+/;
+      const isWorkItemPath = regex.test(workItem.webUrl);
+
+      if (isWorkItemPath) {
+        this.$router.push({
+          name: 'workItem',
+          params: {
+            iid: workItem.iid,
+          },
+        });
+      } else {
+        visitUrl(workItem.webUrl);
+      }
+    },
   },
 };
 </script>
@@ -449,6 +472,7 @@ export default {
     :tab-counts="tabCounts"
     :tabs="$options.issuableListTabs"
     use-keyset-pagination
+    prevent-redirect
     @click-tab="handleClickTab"
     @dismiss-alert="error = undefined"
     @filter="handleFilter"
@@ -456,6 +480,7 @@ export default {
     @page-size-change="handlePageSizeChange"
     @previous-page="handlePreviousPage"
     @sort="handleSort"
+    @select-issuable="redirectToWorkItem"
   >
     <template #nav-actions>
       <slot name="nav-actions"></slot>

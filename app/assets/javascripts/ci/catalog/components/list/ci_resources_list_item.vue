@@ -204,7 +204,7 @@ export default {
         </div>
       </div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm"
+        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm gl-gap-2"
       >
         <div>
           <markdown
@@ -229,8 +229,8 @@ export default {
             </gl-sprintf>
           </div>
         </div>
-        <div class="gl-display-flex gl-justify-content-end">
-          <span v-if="hasReleasedVersion">
+        <div class="gl-display-flex gl-justify-content-end gl-flex-shrink-0">
+          <div v-if="hasReleasedVersion" class="gl-flex-shrink-0">
             <gl-sprintf :message="$options.i18n.releasedMessage">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">
@@ -250,7 +250,7 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
-          </span>
+          </div>
         </div>
       </div>
     </div>

@@ -954,6 +954,8 @@ class Repository
     start_branch_name: nil, start_project: project,
     author_name: nil, author_email: nil, dry_run: false)
 
+    target_sha = find_branch(branch_name)&.dereferenced_target&.id if branch_name.present?
+
     with_cache_hooks do
       raw_repository.cherry_pick(
         user: user,
@@ -964,7 +966,8 @@ class Repository
         start_repository: start_project.repository.raw_repository,
         author_name: author_name,
         author_email: author_email,
-        dry_run: dry_run
+        dry_run: dry_run,
+        target_sha: target_sha
       )
     end
   end

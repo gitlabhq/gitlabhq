@@ -1,11 +1,14 @@
-#import "~/graphql_shared/fragments/user.fragment.graphql"
-
 fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetAssignees {
     type
     assignees {
       nodes {
-        ...User
+        id
+        avatarUrl
+        name
+        username
+        webUrl
+        webPath
       }
     }
   }

@@ -8,4 +8,4 @@
     issuable_type: @issue.issue_type,
     show_categorized_issues: @project.licensed_feature_available?(:blocked_issues).to_s,
     has_iterations_feature: @project.licensed_feature_available?(:iterations).to_s,
-    wi: work_items_show_data(@project) } }
+    wi: work_items_show_data(@project, current_user) } }

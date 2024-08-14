@@ -112,6 +112,16 @@ describe('RelatedIssuesBlock', () => {
     });
   });
 
+  describe('with emptyStateMessage slot', () => {
+    it('displays empty state message slot data', () => {
+      const emptyStateMessage = '<div>empty state message</div>';
+
+      createComponent({ slots: { 'empty-state-message': emptyStateMessage } });
+
+      expect(wrapper.findByTestId('card-empty').html()).toContain(emptyStateMessage);
+    });
+  });
+
   describe('with isFetching=true', () => {
     beforeEach(() => {
       createComponent({
@@ -181,6 +191,15 @@ describe('RelatedIssuesBlock', () => {
     });
 
     describe('when showCategorizedIssues=false', () => {
+      it('renders no issues if relatedIssues is empty', () => {
+        createComponent({
+          showCategorizedIssues: false,
+          relatedIssues: [],
+        });
+
+        expect(findAllRelatedIssuesList()).toHaveLength(0);
+      });
+
       it('should render issues as a flat list with no header', () => {
         createComponent({
           showCategorizedIssues: false,

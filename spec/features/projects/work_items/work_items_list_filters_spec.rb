@@ -49,6 +49,10 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
     before do
       sign_in(user1)
       visit group_work_items_path(group)
+
+      within_testid('work-item-feedback-popover') do
+        find_by_testid('close-button').click
+      end
     end
 
     describe 'assignee' do

@@ -153,25 +153,9 @@ export default {
     v-on="$listeners"
   >
     <template #title>
-      <h2 class="gl-mt-0 gl-text-size-h2">{{ title }}</h2>
+      <h2 class="gl-my-0 gl-text-size-h2">{{ title }}</h2>
     </template>
 
-    <template #header>
-      <div class="gl-flex gl-gap-3">
-        <gl-button
-          variant="confirm"
-          :disabled="!isRuleUpdated"
-          :loading="isLoading"
-          data-testid="save-allowed-to-merge"
-          @click="editRule()"
-        >
-          {{ $options.i18n.saveChanges }}
-        </gl-button>
-        <gl-button variant="confirm" category="secondary" @click="$emit('close')">
-          {{ $options.i18n.cancel }}
-        </gl-button>
-      </div>
-    </template>
     <template #default>
       <gl-form-group class="gl-border-none">
         <gl-form-checkbox v-model="isAdminSelected" @change="handleAccessLevelSelected">
@@ -209,6 +193,20 @@ export default {
           data-testid="groups-selector"
           @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
+        <div class="gl-flex gl-gap-3 gl-mt-5">
+          <gl-button
+            variant="confirm"
+            :disabled="!isRuleUpdated"
+            :loading="isLoading"
+            data-testid="save-allowed-to-merge"
+            @click="editRule()"
+          >
+            {{ $options.i18n.saveChanges }}
+          </gl-button>
+          <gl-button variant="confirm" category="secondary" @click="$emit('close')">
+            {{ $options.i18n.cancel }}
+          </gl-button>
+        </div>
       </gl-form-group>
     </template>
   </gl-drawer>

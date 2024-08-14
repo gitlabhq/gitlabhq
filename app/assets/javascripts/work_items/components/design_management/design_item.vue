@@ -2,7 +2,7 @@
 import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
-import { DESIGN_ROUTE_NAME } from '../../constants';
+import { ROUTES } from '../../constants';
 
 export default {
   components: {
@@ -122,14 +122,14 @@ export default {
       this.imageLoading = true;
     },
   },
-  DESIGN_ROUTE_NAME,
+  ROUTES,
 };
 </script>
 
 <template>
   <router-link
     :to="{
-      name: $options.DESIGN_ROUTE_NAME,
+      name: $options.ROUTES.design,
       params: { iid: workItemIid, id: filename },
       query: $route.query,
     }"

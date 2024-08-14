@@ -513,6 +513,24 @@ export const mockParent = {
   },
 };
 
+export const mockParticipantWidget = {
+  __typename: 'WorkItemWidgetParticipants',
+  type: 'PARTICIPANTS',
+  participants: {
+    nodes: [
+      {
+        __typename: 'UserCore',
+        id: 'gid://gitlab/User/5',
+        avatarUrl: '/avatar2',
+        name: 'rookie',
+        username: 'rookie',
+        webUrl: 'rookie',
+        webPath: '/rookie',
+      },
+    ],
+  },
+};
+
 export const descriptionTextWithCheckboxes = `- [ ] todo 1\n- [ ] todo 2`;
 
 export const descriptionHtmlWithCheckboxes = `
@@ -4439,6 +4457,7 @@ export const groupWorkItemsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
+      name: 'Test',
       workItemStateCounts: {
         all: 3,
         closed: 1,

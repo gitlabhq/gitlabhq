@@ -21,9 +21,15 @@ export default {
       type: String,
       required: true,
     },
-    count: {
+    icon: {
       type: String,
-      required: true,
+      required: false,
+      default: 'shield',
+    },
+    count: {
+      type: Number,
+      required: false,
+      default: null,
     },
     headerLinkTitle: {
       type: String,
@@ -95,7 +101,7 @@ export default {
 </script>
 
 <template>
-  <crud-component :title="header" icon="check-circle" :count="count" data-testid="status-checks">
+  <crud-component :title="header" :icon="icon" :count="count" data-testid="status-checks">
     <template v-if="showHelpText" #description>
       {{ helpText }}
     </template>

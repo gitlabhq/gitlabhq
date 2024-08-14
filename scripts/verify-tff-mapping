@@ -251,15 +251,6 @@ tests = [
   },
 
   {
-    explanation: 'GLFM spec and config files for CE and EE should map to respective markdown snapshot specs',
-    changed_file: 'glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md',
-    expected: %w[
-      spec/requests/api/markdown_snapshot_spec.rb
-      ee/spec/requests/api/markdown_snapshot_spec.rb
-    ]
-  },
-
-  {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
     # Note: The metrics seem to be changed every year or so, so this test will fail once a year or so.
     #       You will need to change the metric below for another metric present in the project.

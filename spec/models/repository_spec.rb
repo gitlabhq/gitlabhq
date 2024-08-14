@@ -2359,40 +2359,68 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#cherry_pick' do
     let(:project) { create(:project, :repository) }
-    let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
-    let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
-    let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+    let(:target_sha) { repository.commit(branch_name).id }
     let(:message) { 'cherry-pick message' }
+    let(:branch_name) { 'master' }
+
+    subject(:cherry_pick) { repository.cherry_pick(user, commit, branch_name, message) }
 
     context 'when there is a conflict' do
+      let(:commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
+
       it 'raises an error' do
-        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        expect { cherry_pick }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      end
+
+      it 'sets target_sha' do
+        expect(repository.raw_repository).to receive(:cherry_pick).with(a_hash_including(target_sha: target_sha))
+        cherry_pick
       end
     end
 
-    context 'when commit was already cherry-picked' do
-      it 'raises an error' do
-        repository.cherry_pick(user, pickable_commit, 'master', message)
+    context 'when the commit is pickable' do
+      let(:commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
 
-        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      context 'when commit was already cherry-picked' do
+        before do
+          repository.cherry_pick(user, commit, 'master', message)
+        end
+
+        it 'raises an error' do
+          expect { cherry_pick }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit can be cherry-picked' do
+        it 'cherry-picks the changes' do
+          expect(cherry_pick).to be_truthy
+        end
+      end
+
+      it 'sets target_sha' do
+        expect(repository.raw_repository).to receive(:cherry_pick).with(a_hash_including(target_sha: target_sha))
+        cherry_pick
       end
     end
 
-    context 'when commit can be cherry-picked' do
+    context 'when cherry-picking a merge commit' do
+      let(:branch_name) { 'improve/awesome' }
+      let(:commit) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+
       it 'cherry-picks the changes' do
-        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
-      end
-    end
+        expect do
+          cherry_pick
+        end.to change {
+          repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')
+        }.from(nil)
 
-    context 'cherry-picking a merge commit' do
-      it 'cherry-picks the changes' do
-        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
-
-        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
-        cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
-
-        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
+        cherry_pick_commit_message = project.commit(cherry_pick).message
         expect(cherry_pick_commit_message).to eq(message)
+      end
+
+      it 'sets target_sha' do
+        expect(repository.raw_repository).to receive(:cherry_pick).with(a_hash_including(target_sha: target_sha))
+        cherry_pick
       end
     end
   end

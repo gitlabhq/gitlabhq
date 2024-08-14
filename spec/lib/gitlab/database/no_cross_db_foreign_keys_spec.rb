@@ -37,8 +37,9 @@ RSpec.describe 'cross-database foreign keys' do
       'sbom_component_versions.component_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/469535
       'sbom_occurrences_vulnerabilities.sbom_occurrence_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
       'vulnerability_export_parts.vulnerability_export_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'vulnerability_flags.vulnerability_occurrence_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
+      'vulnerability_finding_signatures.finding_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
       'vulnerability_finding_links.vulnerability_occurrence_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
+      'vulnerability_flags.vulnerability_occurrence_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
       'dast_site_validations.dast_site_token_id',                # https://gitlab.com/gitlab-org/gitlab/-/issues/474985
       'dast_sites.dast_site_validation_id'                       # https://gitlab.com/gitlab-org/gitlab/-/issues/476657
     ]

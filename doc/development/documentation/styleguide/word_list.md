@@ -1682,6 +1682,10 @@ For example, you might write something like:
 
 Use lowercase for **push rules**.
 
+## quite
+
+Do not use **quite** because it's wordy.
+
 ## `README` file
 
 Use backticks and lowercase for **the `README` file**, or **the `README.md` file**.

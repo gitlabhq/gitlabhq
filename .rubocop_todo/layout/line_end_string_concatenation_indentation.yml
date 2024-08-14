@@ -591,7 +591,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'scripts/internal_events/cli/event_definer.rb'
     - 'scripts/lib/glfm/update_example_snapshots.rb'
     - 'scripts/lib/glfm/update_specification.rb'
-    - 'scripts/lib/glfm/verify_all_generated_files_are_up_to_date.rb'
     - 'scripts/lint-docs-redirects.rb'
     - 'scripts/qa/testcases-check'
     - 'scripts/trigger-build.rb'

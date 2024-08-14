@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import waitForPromises from 'helpers/wait_for_promises';
 import CloseButton from '~/work_items/components/design_management/design_preview/close_button.vue';
-import { WORK_ITEM_ROUTE_NAME } from '~/work_items/constants';
+import { ROUTES } from '~/work_items/constants';
 
 Vue.use(VueRouter);
 const router = new VueRouter();
@@ -38,7 +38,7 @@ describe('Design management toolbar close button', () => {
     const link = wrapper.find('button');
 
     expect(link.props('to')).toEqual({
-      name: WORK_ITEM_ROUTE_NAME,
+      name: ROUTES.workItem,
       query: {
         version: undefined,
       },

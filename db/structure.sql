@@ -33579,9 +33579,6 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT fk_c900194ff2 FOREIGN KEY (source_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_finding_signatures
-    ADD CONSTRAINT fk_c909c7e07b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_c9250a4d3f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 

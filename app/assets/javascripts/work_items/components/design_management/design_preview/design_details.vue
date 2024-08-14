@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
-import { WORK_ITEM_ROUTE_NAME } from '../../../constants';
+import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import { extractDesign, getPageLayoutElement } from '../utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../constants';
@@ -18,7 +18,6 @@ const DEFAULT_SCALE = 1;
 const DEFAULT_MAX_SCALE = 2;
 
 export default {
-  WORK_ITEM_ROUTE_NAME,
   components: {
     DesignPresentation,
     DesignSidebar,
@@ -138,7 +137,7 @@ export default {
       // because we redirect user to work item page,
       // we want to create these alerts on the work item page
       createAlert({ message });
-      this.$router.push({ name: this.$options.WORK_ITEM_ROUTE_NAME });
+      this.$router.push({ name: ROUTES.workItem });
     },
     onError(message, e) {
       this.errorMessage = message;
@@ -146,7 +145,7 @@ export default {
     },
     closeDesign() {
       this.$router.push({
-        name: this.$options.WORK_ITEM_ROUTE_NAME,
+        name: ROUTES.workItem,
         query: this.$route.query,
       });
     },

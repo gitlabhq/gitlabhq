@@ -1,0 +1,38 @@
+---
+stage: Govern
+group: Compliance
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# Internal users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+
+GitLab uses internal users (sometimes referred to as "bots") to perform actions or functions that cannot be attributed
+to a regular user.
+
+Internal users:
+
+- Are created programmatically and do not count towards a license limit.
+- Are used when a traditional user account isn't applicable. For example, when generating alerts or automatic review
+  feedback.
+- Have reduced access and a very specific purpose. They cannot be used for regular user actions, such as authentication
+  or API requests.
+- Have email addresses and names that can be attributed to any actions they perform.
+
+Internal users are sometimes created as part of feature development. For example, the GitLab Migration Bot for
+[migrating](https://gitlab.com/gitlab-org/gitlab/-/issues/216120) from GitLab Snippets to
+[Versioned Snippets](../user/snippets.md#versioned-snippets). GitLab Migration Bot was used as the author of snippets
+when a snippet's original author wasn't available. For example, when the user was disabled.
+
+Other examples of internal users:
+
+- [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/278bc9018dd1515a10cbf15b6c6cd55cb5431407/app/models/user.rb#L950-960)
+- [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
+- [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
+- [Ghost User](../user/profile/account/delete_account.md#associated-records)
+- [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
+- Visual Review Bot
+- Resource access tokens, including [project access tokens](../user/project/settings/project_access_tokens.md)
+  and [group access tokens](../user/group/settings/group_access_tokens.md), which are
+  `project_{project_id}_bot_{random_string}` and `group_{group_id}_bot_{random_string}` users with a `PersonalAccessToken`.

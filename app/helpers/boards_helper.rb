@@ -25,7 +25,7 @@ module BoardsHelper
       has_missing_boards: has_missing_boards?.to_s,
       multiple_boards_available: multiple_boards_available?.to_s,
       board_base_url: board_base_url,
-      wi: work_items_show_data(board_namespace)
+      wi: work_items_show_data(board_namespace, current_user)
     }
   end
 

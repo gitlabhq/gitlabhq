@@ -244,7 +244,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_cherry_pick(
         user:, commit:, branch_name:, message:,
-        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false)
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil)
 
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
@@ -257,7 +257,8 @@ module Gitlab
           commit_author_name: encode_binary(author_name),
           commit_author_email: encode_binary(author_email),
           dry_run: dry_run,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: target_sha
         )
 
         response = gitaly_client_call(
@@ -270,6 +271,8 @@ module Gitlab
         )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      rescue GRPC::InvalidArgument => ex
+        raise Gitlab::Git::CommandError, ex
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 

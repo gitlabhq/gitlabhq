@@ -15,7 +15,7 @@ RSpec.describe 'shared/projects/_project_card.html.haml', feature_category: :sha
   it 'renders as a card component' do
     render 'shared/projects/project_card', use_creator_avatar: true, project: project
 
-    expect(rendered).to have_selector('.gl-new-card')
+    expect(rendered).to have_selector('.gl-card')
   end
 
   it 'renders creator avatar if project has a creator' do

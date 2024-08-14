@@ -68,7 +68,9 @@ export default {
   },
   methods: {
     onKeyUp(event) {
-      if (/input|textearea/i.test(event.currentTarget.activeElement.tagName)) return false;
+      const { tagName, isContentEditable } = event.currentTarget.activeElement;
+
+      if (/input|textarea/i.test(tagName) || isContentEditable) return false;
 
       if (event.key === 'e') {
         this.$emit('is-editing', true);

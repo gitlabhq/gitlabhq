@@ -2845,7 +2845,6 @@ RSpec/NamedSubject:
     - 'spec/scripts/lib/glfm/parse_examples_spec.rb'
     - 'spec/scripts/lib/glfm/update_example_snapshots_spec.rb'
     - 'spec/scripts/lib/glfm/update_specification_spec.rb'
-    - 'spec/scripts/lib/glfm/verify_all_generated_files_are_up_to_date_spec.rb'
     - 'spec/scripts/pipeline/average_reports_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'
     - 'spec/scripts/review_apps/automated_cleanup_spec.rb'

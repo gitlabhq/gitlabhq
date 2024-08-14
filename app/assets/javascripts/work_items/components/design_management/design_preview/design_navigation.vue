@@ -7,7 +7,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__, sprintf } from '~/locale';
-import { DESIGN_ROUTE_NAME } from '../../../constants';
+import { ROUTES } from '../../../constants';
 
 export default {
   i18n: {
@@ -69,7 +69,7 @@ export default {
     navigateToDesign(design) {
       if (design) {
         this.$router.push({
-          name: DESIGN_ROUTE_NAME,
+          name: ROUTES.design,
           params: { id: design.filename },
           query: this.$route.query,
         });

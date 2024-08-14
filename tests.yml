@@ -119,12 +119,6 @@ mapping:
   - source: '(?<prefix>ee/)?app/mailers/(?<inner_prefix>ee/)?previews/.+\.rb'
     test: 'spec/mailers/previews_spec.rb'
 
-  ## GLFM spec and config files for CE and EE should map to respective markdown snapshot specs
-  - source: 'glfm_specification/.+'
-    test:
-      - 'spec/requests/api/markdown_snapshot_spec.rb'
-      - 'ee/spec/requests/api/markdown_snapshot_spec.rb'
-
   ## Remote development GraphQL resolvers
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_agent_resolver\.rb'
     test:

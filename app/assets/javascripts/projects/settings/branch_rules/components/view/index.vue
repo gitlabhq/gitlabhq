@@ -168,16 +168,6 @@ export default {
       const { pushAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(pushAccessLevels);
     },
-    allowedToMergeHeader() {
-      return sprintf(this.$options.i18n.allowedToMergeHeader, {
-        total: this.mergeAccessLevels?.total || 0,
-      });
-    },
-    allowedToPushHeader() {
-      return sprintf(this.$options.i18n.allowedToPushHeader, {
-        total: this.pushAccessLevels?.total || 0,
-      });
-    },
     allBranches() {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
@@ -406,7 +396,8 @@ export default {
 
         <!-- Allowed to merge -->
         <protection
-          :header="allowedToMergeHeader"
+          :header="$options.i18n.allowedToMergeHeader"
+          :count="mergeAccessLevels.total"
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
           :roles="mergeAccessLevels.roles"
@@ -432,7 +423,9 @@ export default {
 
         <!-- Allowed to push -->
         <protection
-          :header="allowedToPushHeader"
+          class="gl-mt-5"
+          :header="$options.i18n.allowedToPushHeader"
+          :count="pushAccessLevels.total"
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
           :roles="pushAccessLevels.roles"
@@ -535,6 +528,7 @@ export default {
           data-testid="status-checks-content"
           class="gl-mt-0"
           :header="statusChecksHeader"
+          icon="check-circle"
           :count="statusChecksCount"
           :header-link-title="$options.i18n.statusChecksLinkTitle"
           :header-link-href="statusChecksPath"

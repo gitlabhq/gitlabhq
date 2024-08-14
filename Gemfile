@@ -532,7 +532,7 @@ group :development, :test do
   # For now we only use vite in development / test, and not for production builds
   # See: https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/106
   gem 'vite_rails', '~> 3.0.17', feature_category: :shared
-  gem 'vite_ruby', '~> 3.7.0', feature_category: :shared
+  gem 'vite_ruby', '~> 3.8.0', feature_category: :shared
 
   gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper', feature_category: :tooling
 end

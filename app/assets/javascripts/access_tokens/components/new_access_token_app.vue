@@ -58,7 +58,9 @@ export default {
     this.form = document.querySelector(FORM_SELECTOR);
 
     /** @type {HTMLButtonElement} */
-    this.submitButton = this.form.querySelector('[type=submit]');
+    this.submitButton = this.form.querySelector(
+      'button[type=submit][data-testid=create-token-button]',
+    );
   },
   methods: {
     beforeDisplayResults() {
@@ -68,14 +70,17 @@ export default {
       this.errors = null;
       this.newToken = null;
     },
+    enableSubmitButton() {
+      this.submitButton.classList.remove('disabled');
+      this.submitButton.removeAttribute('disabled');
+    },
     onError(event) {
       this.beforeDisplayResults();
 
       const [{ errors }] = convertEventDetail(event);
       this.errors = errors;
 
-      this.submitButton.classList.remove('disabled');
-      this.submitButton.removeAttribute('disabled');
+      this.enableSubmitButton();
     },
     onSuccess(event) {
       this.beforeDisplayResults();
@@ -93,6 +98,7 @@ export default {
       this.form.querySelectorAll('input[type=checkbox]').forEach((el) => {
         el.checked = false;
       });
+      this.enableSubmitButton();
       document.querySelectorAll('.js-token-card').forEach((el) => {
         el.querySelector('.js-add-new-token-form').style.display = '';
         el.querySelector('.js-toggle-button').style.display = 'block';

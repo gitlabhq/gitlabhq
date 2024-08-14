@@ -9328,16 +9328,10 @@ msgstr ""
 msgid "BranchRules|Allowed to merge"
 msgstr ""
 
-msgid "BranchRules|Allowed to merge (%{total})"
-msgstr ""
-
 msgid "BranchRules|Allowed to merge updated"
 msgstr ""
 
 msgid "BranchRules|Allowed to push and merge"
-msgstr ""
-
-msgid "BranchRules|Allowed to push and merge (%{total})"
 msgstr ""
 
 msgid "BranchRules|Allowed to push and merge updated"
@@ -11302,7 +11296,7 @@ msgstr ""
 msgid "CiCatalogComponent|Component details not available"
 msgstr ""
 
-msgid "CiCatalogComponent|Default value"
+msgid "CiCatalogComponent|Default"
 msgstr ""
 
 msgid "CiCatalogComponent|Description"
@@ -11314,7 +11308,7 @@ msgstr ""
 msgid "CiCatalogComponent|Mandatory"
 msgstr ""
 
-msgid "CiCatalogComponent|Parameters"
+msgid "CiCatalogComponent|Name"
 msgstr ""
 
 msgid "CiCatalogComponent|There was an error fetching this resource's components"
@@ -60818,6 +60812,9 @@ msgid "WorkItem|More actions"
 msgstr ""
 
 msgid "WorkItem|Must be a valid hex code"
+msgstr ""
+
+msgid "WorkItem|New"
 msgstr ""
 
 msgid "WorkItem|New %{workItemName}"

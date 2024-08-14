@@ -32,9 +32,9 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import WorkItemsListApp from '~/work_items/list/components/work_items_list_app.vue';
-import { sortOptions, urlSortParams } from '~/work_items/list/constants';
-import getWorkItemsQuery from '~/work_items/list/queries/get_work_items.query.graphql';
+import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
+import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
 import { groupWorkItemsQueryResponse } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));

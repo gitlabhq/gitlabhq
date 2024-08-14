@@ -2,6 +2,8 @@
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ListType } from '~/boards/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -19,6 +21,8 @@ import {
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
+import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
+
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemLabels from './work_item_labels.vue';
@@ -66,6 +70,36 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      workItemParticipants: [],
+    };
+  },
+  apollo: {
+    workItemParticipants: {
+      query: workItemParticipantsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItem.iid,
+        };
+      },
+      skip() {
+        return !this.workItem.iid;
+      },
+      update({ workspace }) {
+        if (!workspace?.workItem) return [];
+
+        return (
+          this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS, workspace.workItem)?.participants?.nodes ||
+          []
+        );
+      },
+      error(e) {
+        Sentry.captureException(e);
+      },
+    },
+  },
   computed: {
     workItemType() {
       return this.workItem.workItemType?.name;
@@ -93,9 +127,6 @@ export default {
     },
     isWorkItemWeightEditable() {
       return this.workItemWeight?.widgetDefinition?.editable;
-    },
-    workItemParticipants() {
-      return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
     },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
@@ -129,9 +160,6 @@ export default {
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
     },
-    workItemParticipantNodes() {
-      return this.workItemParticipants?.participants?.nodes ?? [];
-    },
     workItemAuthor() {
       return this.workItem?.author;
     },
@@ -143,8 +171,8 @@ export default {
     },
   },
   methods: {
-    isWidgetPresent(type) {
-      return this.workItem?.widgets?.find((widget) => widget.type === type);
+    isWidgetPresent(type, workItem = this.workItem) {
+      return workItem?.widgets?.find((widget) => widget.type === type);
     },
   },
 };
@@ -159,7 +187,7 @@ export default {
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :assignees="workItemAssignees.assignees.nodes"
-        :participants="workItemParticipantNodes"
+        :participants="workItemParticipants"
         :work-item-author="workItemAuthor"
         :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
         :work-item-type="workItemType"
@@ -316,10 +344,10 @@ export default {
       :work-item-type="workItemType"
     />
     <participants
-      v-if="workItemParticipants"
+      v-if="workItemParticipants.length"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :number-of-less-participants="10"
-      :participants="workItemParticipants.participants.nodes"
+      :participants="workItemParticipants"
     />
   </div>
 </template>

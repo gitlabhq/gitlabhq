@@ -3020,4 +3020,51 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(repository.gitaly_diff_client).to be_a(Gitlab::GitalyClient::DiffService)
     end
   end
+
+  describe '#cherry_pick' do
+    let(:commit) { mutable_repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:target_sha) { mutable_repository.commit.id }
+    let(:args) do
+      {
+        user: user,
+        message: 'message',
+        commit: commit,
+        branch_name: 'master',
+        target_sha: target_sha,
+        start_branch_name: 'master',
+        start_repository: mutable_repository
+      }
+    end
+
+    subject(:cherry_pick) do
+      mutable_repository.cherry_pick(**args)
+    end
+
+    it 'delegates to user_cherry_pick' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+        expect(service).to receive(:user_cherry_pick).with(a_hash_including(args)).and_call_original
+      end
+
+      cherry_pick
+    end
+
+    context 'when target_sha does not exist' do
+      let(:target_sha) { '0000000000000000000000000000000000000000' }
+
+      it 'raises an error' do
+        expect { cherry_pick }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+
+    context 'when branch changes after target sha' do
+      before do
+        target_sha
+        mutable_project.repository.create_file(user, 'somefile', '', message: 'add a file', branch_name: 'master')
+      end
+
+      it 'raises an error' do
+        expect { cherry_pick }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+  end
 end

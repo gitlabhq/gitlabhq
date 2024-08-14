@@ -133,6 +133,7 @@ module Support
         [:vulnerability, :with_cluster_image_scanning_finding],
         [:vulnerability, :with_findings],
         [:vulnerability_export, :finished],
+        [:vulnerabilities_finding_signature, :finding], # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
         [:member_role, :instance] # this trait is not available for saas
       ].freeze
     end

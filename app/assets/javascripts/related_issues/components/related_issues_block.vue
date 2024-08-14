@@ -127,7 +127,11 @@ export default {
           .filter((obj) => obj.issues.length > 0);
       }
 
-      return [{ issues: this.relatedIssues }];
+      if (this.relatedIssues.length > 0) {
+        return [{ issues: this.relatedIssues }];
+      }
+
+      return [];
     },
     shouldShowTokenBody() {
       return this.hasRelatedIssues || this.isFetching;
@@ -282,8 +286,12 @@ export default {
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
-        <p v-if="!shouldShowTokenBody && !isFormVisible" class="gl-new-card-empty">
-          {{ emptyStateMessage }}
+        <p
+          v-if="!shouldShowTokenBody && !isFormVisible"
+          class="gl-new-card-empty"
+          data-testid="card-empty"
+        >
+          <slot name="empty-state-message">{{ emptyStateMessage }}</slot>
           <gl-link
             v-if="hasHelpPath"
             :href="helpPath"

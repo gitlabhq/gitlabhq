@@ -1,7 +1,7 @@
 import { GlButtonGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DesignNavigation from '~/work_items/components/design_management/design_preview/design_navigation.vue';
-import { DESIGN_ROUTE_NAME } from '~/work_items/constants';
+import { ROUTES } from '~/work_items/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockDesign, mockDesign2 } from '../mock_data';
@@ -54,7 +54,7 @@ describe('Design management pagination component', () => {
 
       Mousetrap.trigger('left');
       expect(push).toHaveBeenCalledWith({
-        name: DESIGN_ROUTE_NAME,
+        name: ROUTES.design,
         params: { id: mockDesign.filename },
         query: {},
       });
@@ -66,7 +66,7 @@ describe('Design management pagination component', () => {
 
       Mousetrap.trigger('right');
       expect(push).toHaveBeenCalledWith({
-        name: DESIGN_ROUTE_NAME,
+        name: ROUTES.design,
         params: { id: mockDesign2.filename },
         query: {},
       });

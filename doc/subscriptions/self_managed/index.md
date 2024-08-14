@@ -61,7 +61,7 @@ A user is not counted as a billable user if:
     - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
-    - Other [internal users](../../development/internal_users.md#internal-users).
+    - Other [internal users](../../administration/internal_users.md#internal-users).
 
 The amount of **Billable users** is reported once a day in the **Admin** area.
 
@@ -331,28 +331,37 @@ Do not open the license usage file. If you open the file, failures might occur w
 
 You can renew your subscription starting from 15 days before your subscription expires. To renew your subscription:
 
-1. [Prepare for renewal by reviewing your account.](#prepare-for-renewal-by-reviewing-your-account)
+1. [Prepare for renewal by reviewing your account.](#review-your-account)
 1. [Renew your GitLab self-managed subscription.](#renew-subscription-manually)
 
-### Prepare for renewal by reviewing your account
+### Review your account
 
-The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your
-tool for renewing and modifying your subscription. Before going ahead with renewal,
-sign in and go to **Billing account settings**. Verify or update:
+You should regularly review your billing account settings and purchasing information.
 
-- The credit card on file under the **Payment methods** section.
-- Subscription and billing contact details in the **Company information** section.
+To review your billing account settings:
 
-NOTE:
-Contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Billing account settings**.
+1. Verify or update:
+   - Under **Payment methods**, the credit card on file.
+   - Under **Company information**, the subscription and billing contact details.
+1. Save any changes.
+
+You should also regularly review your user accounts to make sure that you are only
+renewing for the correct number of active billable users. Inactive user accounts:
+
+- Might count as billable users. You pay more than
+  you should if you renew inactive user accounts.
+- Can be a security risk. A regular review helps reduce this risk.
+
+For more information, see the:
+
+- [User statistics documentation](../../administration/admin_area.md#users-statistics).
+- [Tips for managing users and subscription seats](#tips-for-managing-users-and-subscription-seats).
+
+Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
 if you need assistance accessing the Customers Portal or if you need to change
 the contact person who manages your subscription.
-
-It's important to regularly review your user accounts, because:
-
-- Stale user accounts may count as billable users. You may pay more than you should
-  if you renew for too many users.
-- Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
 #### Users over subscription
 
@@ -422,7 +431,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 When a subscription is set to auto-renew, it renews automatically on the expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through the Customers Portal are set to auto-renew by default.
 
-The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity. Before auto-renewal you should [prepare for the renewal](#prepare-for-renewal-by-reviewing-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
+The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity. Before auto-renewal you should [prepare for the renewal](#review-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
 You can view and download your renewal invoice on the Customers Portal [Invoices](https://customers.gitlab.com/invoices) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.

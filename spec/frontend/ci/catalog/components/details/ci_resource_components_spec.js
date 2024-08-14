@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
@@ -38,6 +38,8 @@ describe('CiResourceComponents', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findInputHelpLink = () => wrapper.findComponent(GlLink);
+  const findInputHelpIcon = () => wrapper.findComponent(GlIcon);
   const findCodeSnippetContainer = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
 
@@ -130,6 +132,19 @@ describe('CiResourceComponents', () => {
       });
 
       describe('inputs', () => {
+        it('renders the help link', () => {
+          expect(findInputHelpLink().exists()).toBe(true);
+          expect(findInputHelpLink().attributes('href')).toBe(
+            '/help/ci/yaml/inputs#define-input-parameters-with-specinputs',
+          );
+          expect(findInputHelpLink().attributes('title')).toBe('Learn more');
+        });
+
+        it('renders the help icon', () => {
+          expect(findInputHelpIcon().exists()).toBe(true);
+          expect(findInputHelpIcon().props('name')).toBe('question-o');
+        });
+
         it('renders the component parameter attributes', () => {
           const [firstComponent] = components;
 
@@ -137,8 +152,8 @@ describe('CiResourceComponents', () => {
             expect(findComponents().at(0).text()).toContain(input.name);
             expect(findComponents().at(0).text()).toContain(input.default);
             expect(findComponents().at(0).text()).toContain(input.description);
-            expect(findComponents().at(0).text()).toContain('Yes');
-            expect(findComponents().at(0).text()).toContain(input.type);
+            expect(findComponents().at(0).text()).toContain('true');
+            expect(findComponents().at(0).text()).toContain(input.type.toLowerCase());
           });
         });
       });

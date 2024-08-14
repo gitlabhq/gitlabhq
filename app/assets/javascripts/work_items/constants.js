@@ -52,9 +52,6 @@ export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
-export const WORK_ITEM_ROUTE_NAME = 'workItem';
-export const DESIGN_ROUTE_NAME = 'design';
-
 export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {
@@ -356,3 +353,10 @@ export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-11-01';
 export const FEATURE_NAME = 'work_item_epic_feedback';
 
 export const CLEAR_VALUE = 'CLEAR_VALUE';
+
+export const ROUTES = {
+  index: 'workItemList',
+  workItem: 'workItem',
+  new: 'new',
+  design: 'design',
+};

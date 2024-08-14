@@ -637,8 +637,6 @@
   # CI Templates changes
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
-  # GLFM specification changes
-  - "glfm_specification/**/*"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{codeclimate,eslintrc,haml-lint,haml-lint_todo}.yml"
@@ -665,12 +663,6 @@
 
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
   - "{,ee/,jh/}config/feature_flags/**/*.yml"
-
-.glfm-patterns: &glfm-patterns
-  - ".gitlab/ci/rules.gitlab-ci.yml"
-  - "glfm_specification/**/*"
-  - "scripts/glfm/**/*"
-  - "scripts/lib/glfm/**/*"
 
 .gdk-component-patterns: &gdk-component-patterns
   - qa/gdk/**/*
@@ -1166,40 +1158,6 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-deprecations-and-removals-patterns
-
-##################
-# GLFM rules     #
-##################
-.glfm:rules:glfm-verify:
-  # NOTES ON RULES:
-  # 1. We only run this job in EE because some of the markdown examples in the generated files depend
-  #    on EE-only features. This means that it may fail when it is first run in a full EE pipeline.
-  # 2. We run this job for the `.setup-test-env-patterns` subset of file changes because:
-  #    A. There are potentially many different source files within the codebase which could
-  #       change the contents of the generated GLFM files, and it is therefore safer to always
-  #       run this job to ensure that no changes are missed.
-  #    B. The `.setup-test-env-patterns` restriction is needed because the job `needs` the
-  #       `setup-test-env` job.
-  # See more context on each rule in the inline comments below:
-  rules:
-    # The `glfm-verify` job has dependencies on EE, so only run it for EE
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    # If any of the files that are DIRECTLY related to generating or managing the GLFM specification change,
-    # run `glfm-verify` to get quick feedback on any needed updates, even if the MR is not yet approved
-    - <<: *if-default-refs
-      changes: *glfm-patterns
-    # Otherwise do not run `glfm-verify` if the MR is not approved
-    - <<: *if-merge-request-not-approved
-      when: never
-    # If we passed all the previous rules, run `glfm-verify` if there are any changes that could impact `glfm-verify`.
-    # This could potentially be a wide range of files, so we reuse `setup-test-env-patterns`, which includes
-    # almost all app files except docs files.
-    - <<: *if-default-refs
-      changes: *setup-test-env-patterns
-    # If we are forcing all rspec to run, run this job too.
-    - <<: *if-merge-request-labels-run-all-rspec
 
 ##################
 # GraphQL rules  #

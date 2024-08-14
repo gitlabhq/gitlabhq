@@ -633,10 +633,12 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         commit_author_name: author_name,
         commit_author_email: author_email,
         timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
-        dry_run: dry_run
+        dry_run: dry_run,
+        expected_old_oid: target_sha
       )
     end
 
+    let(:target_sha) { repository.find_branch(branch_name).dereferenced_target.id }
     let(:response) { Gitaly::UserCherryPickResponse.new(branch_update: branch_update) }
 
     subject do
@@ -649,7 +651,8 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_repository: repository,
         author_name: author_name,
         author_email: author_email,
-        dry_run: dry_run
+        dry_run: dry_run,
+        target_sha: target_sha
       )
     end
 
@@ -711,6 +714,14 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
       let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
       let(:expected_error_message) {}
+
+      it_behaves_like '#user_cherry_pick with a gRPC error'
+    end
+
+    context 'when InvalidArgument is raised' do
+      let(:raised_error) { GRPC::InvalidArgument.new('Invalid argument') }
+      let(:expected_error) { Gitlab::Git::CommandError }
+      let(:expected_error_message) { '3:Invalid argument' }
 
       it_behaves_like '#user_cherry_pick with a gRPC error'
     end

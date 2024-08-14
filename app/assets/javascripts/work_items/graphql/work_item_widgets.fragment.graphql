@@ -36,13 +36,6 @@ fragment WorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetParticipants {
-    participants {
-      nodes {
-        ...User
-      }
-    }
-  }
   ... on WorkItemWidgetStartAndDueDate {
     dueDate
     startDate

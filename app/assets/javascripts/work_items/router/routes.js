@@ -1,16 +1,17 @@
+import WorkItemList from 'ee_else_ce/work_items/pages/work_items_list_app.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
-import { DESIGN_ROUTE_NAME } from '../constants';
+import { ROUTES } from '../constants';
 
-function getRoutes() {
+function getRoutes(isGroup) {
   const routes = [
     {
       path: '/:iid',
-      name: 'workItem',
+      name: ROUTES.workItem,
       component: () => import('../pages/work_item_root.vue'),
       props: true,
       children: [
         {
-          name: DESIGN_ROUTE_NAME,
+          name: ROUTES.design,
           path: 'designs/:id',
           component: DesignDetail,
           beforeEnter({ params: { id } }, _, next) {
@@ -24,10 +25,18 @@ function getRoutes() {
     },
   ];
 
+  if (isGroup) {
+    routes.unshift({
+      path: '/',
+      name: ROUTES.index,
+      component: WorkItemList,
+    });
+  }
+
   if (gon.features?.workItemsAlpha) {
     routes.unshift({
       path: '/new',
-      name: 'createWorkItem',
+      name: ROUTES.new,
       component: () => import('../pages/create_work_item.vue'),
     });
   }

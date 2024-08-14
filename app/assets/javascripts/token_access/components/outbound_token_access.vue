@@ -266,7 +266,7 @@ export default {
       <div>
         <crud-component :title="$options.i18n.cardHeaderTitle" class="gl-mt-5">
           <template #count>
-            <span v-gl-tooltip :title="projectCountTooltip" class="gl-new-card-count">
+            <span v-gl-tooltip :title="projectCountTooltip">
               <gl-icon name="project" class="gl-mr-2" />
               {{ projects.length }}
             </span>
