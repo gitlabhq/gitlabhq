@@ -82,9 +82,36 @@ To view the configuration change log:
 1. Select your tenant.
 1. At the top of the page, select **Configuration change log**.
 
-### Bring your own domain
+### Bring your own domain (BYOD)
 
 You can add a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) for your GitLab Dedicated instance. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services.
+
+Prerequisites:
+
+- Access to your domain's server control panel to set up DNS records.
+
+#### Set up DNS records
+
+Custom domains require a:
+
+- `CNAME` record: Add a `CNAME` record that points your custom hostname to `tenant_name.gitlab-dedicated.com`.
+
+  ```plaintext
+  gitlab.my-company.com.  CNAME  tenant_name.gitlab-dedicated.com
+  ```
+
+- `CAA` record: If your domain has an existing `CAA` (Certification Authority Authorization) record, [add a `CAA` record for Let's Encrypt](https://letsencrypt.org/docs/caa/). This allows Let's Encrypt to also issue certificates for your domain.
+
+  ```plaintext
+  example.com.  IN  CAA 0 issue "pki.goog"
+  example.com.  IN  CAA 0 issue "letsencrypt.org"
+  ```
+
+  In this example, the `CAA` record defines Google Trust Services (`"pki.goog"`) and Let's Encrypt (`"letsencrypt.org"`) as certificate authorities that are allowed to issue certificates for your domain.
+
+#### Add a custom hostname
+
+You can add a custom hostname when you [create your tenant](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance).
 
 To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 

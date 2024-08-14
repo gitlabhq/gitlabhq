@@ -181,6 +181,9 @@ To start tracking a file type in Git LFS:
 
 ## Stop tracking a file with Git LFS
 
+When you stop tracking a file with Git LFS, the file remains on disk because it remains part of your repository's
+history. To understand why, see [Delete a Git LFS file from repository history](#delete-a-git-lfs-file-from-repository-history).
+
 Prerequisites:
 
 - You have downloaded and installed the appropriate version of the
@@ -188,7 +191,7 @@ Prerequisites:
 - You have installed the Git LFS pre-push hook by running `git lfs install`
   in the root directory of your repository.
 
-To stop tracking a single file in Git LFS:
+To stop tracking a file with Git LFS:
 
 1. Run the [`git lfs untrack`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-untrack.adoc)
    command and provide the path to the file:
@@ -197,7 +200,21 @@ To stop tracking a single file in Git LFS:
    git lfs untrack doc/example.iso
    ```
 
-1. Push your changes, create a merge request, and merge the merge request.
+1. Use the `touch` command to convert it back to a standard file:
+
+   ```shell
+   touch doc/example.iso
+   ```
+
+1. Tell Git to track the changes to the file:
+
+   ```shell
+   git add .
+   ```
+
+1. Commit and push your changes.
+1. Create a merge request and request a review.
+1. After you get the required approvals, merge the request into the target branch.
 
 If you delete an object (`example.iso`) tracked by Git LFS, but don't use
 the `git lfs untrack` command, `example.iso` shows as `modified` in `git status`.
@@ -220,7 +237,21 @@ To stop tracking all files of a particular type in Git LFS:
    git lfs untrack "*.iso"
    ```
 
-1. Push your changes, create a merge request, and merge the merge request.
+1. Use the `touch` command to convert the files back to standard files:
+
+   ```shell
+   touch *.iso
+   ```
+
+1. Tell Git to track the changes to the files:
+
+   ```shell
+   git add .
+   ```
+
+1. Commit and push your changes.
+1. Create a merge request and request a review.
+1. After you get the required approvals, merge the request into the target branch.
 
 ## Enable or disable Git LFS for a project
 
@@ -258,6 +289,22 @@ git lfs fetch origin main
 
 Read the [`git-lfs-migrate` documentation](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.adoc)
 on how to migrate an existing Git repository with Git LFS.
+
+## Delete a Git LFS file from repository history
+
+It's important to understand the differences between untracking a file in Git LFS and deleting a file:
+
+- **Untrack**: The file remains on disk and in your repository history.
+If users check out historical branches or tags, they still need the LFS version of the file.
+- **Delete**: The file is removed but remains in your repository history.
+
+To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file).
+
+To completely expunge all history of a file, past and present,
+see [Delete sensitive information from commits](../undo.md#delete-sensitive-information-from-commits).
+
+WARNING:
+Expunging file history requires rewriting Git history. This action is destructive and irreversible.
 
 ## Related topics
 

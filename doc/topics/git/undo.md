@@ -574,6 +574,10 @@ git checkout -- <file>
   git rm <filename> --cache
   ```
 
+These commands remove the file from current branches, but do not expunge it from your repository's history.
+To completely remove all traces of the file, past and present, from your repository, see
+[Remove blobs](../../user/project/repository/reducing_the_repo_size_using_git.md#remove-blobs).
+
 ## Related topics
 
 - [`git blame`](../../user/project/repository/files/git_blame.md)
