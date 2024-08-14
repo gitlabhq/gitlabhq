@@ -225,5 +225,5 @@ Federal regulations, such as NIST and CISA [guidelines](https://csrc.nist.gov/pr
 ## Related topics
 
 - [Reserved project and group names](../../user/reserved_names.md)
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names)
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
 - [Manage projects](working_with_projects.md)

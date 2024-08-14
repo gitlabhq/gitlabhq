@@ -105,10 +105,6 @@
   @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-contrast);
 }
 
-@mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-500, $orange-600, $orange-600, $orange-800, $white-contrast);
-}
-
 @mixin btn-red {
   @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white-contrast);
 }

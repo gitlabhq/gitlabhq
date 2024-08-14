@@ -2592,7 +2592,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/database/postgresql_adapter/type_map_cache_spec.rb'
     - 'spec/lib/gitlab/database/postgresql_database_tasks/load_schema_versions_mixin_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzer_spec.rb'
-    - 'spec/lib/gitlab/database/query_analyzers/ci/partitioning_id_analyzer_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/ci/partitioning_routing_analyzer_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/gitlab_schemas_metrics_spec.rb'
     - 'spec/lib/gitlab/database/reindexing/grafana_notifier_spec.rb'

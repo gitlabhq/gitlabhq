@@ -37,8 +37,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze
 
-  TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
-
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
@@ -71,6 +69,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    ci_builds_metadata: %w[partition_id project_id build_id],
     ci_daily_build_group_report_results: %w[partition_id],
     ci_job_artifacts: %w[partition_id project_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
@@ -135,6 +134,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_device_grants: %w[resource_owner_id application_id],
     packages_package_files: %w[project_id],
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    p_ci_builds_metadata: %w[project_id build_id partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
@@ -197,7 +197,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   context 'for table' do
     Gitlab::Database::EachDatabase.each_connection do |connection, _|
       schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
-      (connection.tables - TABLE_PARTITIONS).sort.each do |table|
+      connection.tables.sort.each do |table|
         table_schema = Gitlab::Database::GitlabSchema.table_schema(table)
         next unless schemas_for_connection.include?(table_schema)
 

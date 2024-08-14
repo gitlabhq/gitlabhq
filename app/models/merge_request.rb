@@ -19,15 +19,12 @@ class MergeRequest < ApplicationRecord
   include FromUnion
   include DeprecatedAssignee
   include ShaAttribute
-  include IgnorableColumns
   include MilestoneEventable
   include StateEventable
   include Approvable
   include IdInOrdered
   include Todoable
   include Spammable
-
-  ignore_columns :head_pipeline_id_convert_to_bigint, remove_with: '17.4', remove_after: '2024-08-14'
 
   extend ::Gitlab::Utils::Override
 

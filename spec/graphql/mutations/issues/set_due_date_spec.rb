@@ -6,12 +6,10 @@ RSpec.describe Mutations::Issues::SetDueDate, feature_category: :api do
   include GraphqlHelpers
 
   let(:issue) { create(:issue, due_date: '2021-05-01') }
-  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
 
-  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
 
@@ -25,7 +23,7 @@ RSpec.describe Mutations::Issues::SetDueDate, feature_category: :api do
 
     context 'when the user can update the issue' do
       before do
-        issue.project.add_developer(user)
+        issue.project.add_developer(current_user)
       end
 
       it 'returns the issue with updated due date', :aggregate_failures do

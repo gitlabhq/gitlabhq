@@ -38,7 +38,7 @@ To determine whether you're viewing a group or personal namespace, you can view 
 
 ## Naming limitations for namespaces
 
-When choosing a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-usernames-project-and-group-names) and [reserved group names](../reserved_names.md#reserved-group-names).
+When choosing a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and [reserved group names](../reserved_names.md#reserved-group-names).
 
 NOTE:
 If your namespace contains a `.`, you will encounter issues with the validation of your SSL certificates and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).

@@ -199,7 +199,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/database/migrations/runner_backoff/communicator.rb'
     - 'lib/gitlab/database/partitioning.rb'
     - 'lib/gitlab/database/partitioning/partition_manager.rb'
-    - 'lib/gitlab/database/query_analyzers/ci/partitioning_id_analyzer.rb'
     - 'lib/gitlab/database/query_analyzers/ci/partitioning_routing_analyzer.rb'
     - 'lib/gitlab/database/query_analyzers/gitlab_schemas_metrics.rb'
     - 'lib/gitlab/database/query_analyzers/log_large_in_lists.rb'

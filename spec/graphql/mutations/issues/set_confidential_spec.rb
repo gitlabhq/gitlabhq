@@ -5,12 +5,10 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::SetConfidential, feature_category: :api do
   include GraphqlHelpers
   let(:project) { create(:project, :private) }
-  let(:issue) { create(:issue, project: project, assignees: [user]) }
-  let(:user) { create(:user) }
-  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
+  let(:issue) { create(:issue, project: project, assignees: [current_user]) }
+  let(:current_user) { create(:user) }
 
-  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
 
@@ -24,7 +22,7 @@ RSpec.describe Mutations::Issues::SetConfidential, feature_category: :api do
 
     context 'when the user can update the issue' do
       before do
-        project.add_developer(user)
+        project.add_developer(current_user)
       end
 
       it 'returns the issue as confidential' do
@@ -46,7 +44,7 @@ RSpec.describe Mutations::Issues::SetConfidential, feature_category: :api do
       let(:project) { create(:project, :public) }
 
       before do
-        project.add_guest(user)
+        project.add_guest(current_user)
       end
 
       it 'does not change issue confidentiality' do

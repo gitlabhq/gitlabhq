@@ -170,10 +170,10 @@ export default {
   <div id="js-peek" :class="env">
     <div
       v-if="currentRequest"
-      class="gl-display-flex container-fluid gl-overflow-x-auto"
+      class="container-fluid gl-flex gl-overflow-x-auto"
       data-testid="performance-bar"
     >
-      <div class="gl-display-flex gl-flex-shrink-0 view-performance-container">
+      <div class="view-performance-container gl-flex gl-shrink-0">
         <info-app :current-request="currentRequest" />
         <detailed-metric
           v-for="metric in $options.detailedMetrics"
@@ -196,7 +196,7 @@ export default {
         <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-font-sm"
+            class="gl-text-sm"
             :href="flamegraphPath('wall', currentRequestId)"
             :title="s__('PerformanceBar|Wall flamegraph')"
             >{{ s__('PerformanceBar|Wall') }}</gl-link
@@ -204,7 +204,7 @@ export default {
           /
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-font-sm"
+            class="gl-text-sm"
             :href="flamegraphPath('cpu', currentRequestId)"
             :title="s__('PerformanceBar|CPU flamegraph')"
             >{{ s__('PerformanceBar|CPU') }}</gl-link
@@ -212,7 +212,7 @@ export default {
           /
           <gl-link
             v-gl-tooltip.viewport
-            class="gl-font-sm"
+            class="gl-text-sm"
             :href="flamegraphPath('object', currentRequestId)"
             :title="s__('PerformanceBar|Object flamegraph')"
             >{{ s__('PerformanceBar|Object') }}</gl-link
@@ -220,13 +220,13 @@ export default {
           <span class="gl-opacity-7">{{ s__('PerformanceBar|flamegraph') }}</span>
         </div>
       </div>
-      <div class="gl-display-flex gl-flex-shrink-0 gl-ml-auto">
-        <div class="gl-display-flex view-reports-container">
+      <div class="gl-ml-auto gl-flex gl-shrink-0">
+        <div class="view-reports-container gl-flex">
           <gl-link
             v-if="currentRequest.details"
             id="peek-download"
             v-gl-tooltip.viewport
-            class="view gl-font-sm"
+            class="view gl-text-sm"
             is-unsafe-link
             :download="downloadName"
             :href="downloadPath"
@@ -237,7 +237,7 @@ export default {
             v-if="showMemoryReportButton"
             id="peek-memory-report"
             v-gl-tooltip.viewport
-            class="view gl-font-sm"
+            class="view gl-text-sm"
             :href="memoryReportPath"
             :title="s__('PerformanceBar|Download memory report')"
             >{{ s__('PerformanceBar|Memory report') }}</gl-link
@@ -245,7 +245,7 @@ export default {
           <gl-link
             v-if="statsUrl"
             v-gl-tooltip.viewport
-            class="view gl-font-sm"
+            class="view gl-text-sm"
             :href="statsUrl"
             :title="s__('PerformanceBar|Show stats')"
             >{{ s__('PerformanceBar|Stats') }}</gl-link

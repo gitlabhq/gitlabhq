@@ -50,7 +50,7 @@ input LocalRolledUpDatesInput {
   startDateFixed: String
 }
 
-scalar WorkItemsParentID
+scalar LocalWorkItemsParentID
 
 type LocalWorkItemPayload {
   workItem: WorkItem!
@@ -75,7 +75,7 @@ input LocalWorkItemBulkUpdateInput {
   clientMutationId: String
   ids: [WorkItemID!]!
   labelsWidget: WorkItemWidgetLabelsUpdateInput
-  parentId: WorkItemsParentID!
+  parentId: LocalWorkItemsParentID!
 }
 
 type LocalWorkItemBulkUpdatePayload {
@@ -85,7 +85,7 @@ type LocalWorkItemBulkUpdatePayload {
 }
 
 extend type Mutation {
-  workItemBulkUpdate(input: LocalWorkItemBulkUpdateInput!): LocalWorkItemBulkUpdatePayload
+  localWorkItemBulkUpdate(input: LocalWorkItemBulkUpdateInput!): LocalWorkItemBulkUpdatePayload
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }

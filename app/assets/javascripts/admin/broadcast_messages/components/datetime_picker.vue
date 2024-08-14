@@ -40,7 +40,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-gap-3 gl-align-items-center">
+  <div class="gl-flex gl-gap-3 gl-items-center">
     <gl-datepicker v-model="date" />
     <gl-form-input v-model="time" width="sm" type="time" data-testid="time-picker" />
   </div>

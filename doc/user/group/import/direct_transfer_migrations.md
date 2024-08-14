@@ -109,7 +109,7 @@ importer page. Here you can see a list of the top-level groups on the connected 
 role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you
-   proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names)
+   proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
    and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).

@@ -254,7 +254,7 @@ export const resolvers = {
     updateNewWorkItem(_, { input }, { cache }) {
       updateNewWorkItemCache(input, cache);
     },
-    workItemBulkUpdate(_, { input }) {
+    localWorkItemBulkUpdate(_, { input }) {
       return workItemBulkEdit(input);
     },
   },
