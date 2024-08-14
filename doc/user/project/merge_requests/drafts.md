@@ -78,6 +78,8 @@ Draft merge requests run the same pipelines as merge requests marked as ready.
 In GitLab 15.0 and earlier, you must [mark the merge request as ready](#mark-merge-requests-as-ready)
 if you want to run [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md).
 
+To skip a pipeline for a draft merge request, see [Skip pipelines for draft merge requests](../../../ci/yaml/workflow.md#skip-pipelines-for-draft-merge-requests).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

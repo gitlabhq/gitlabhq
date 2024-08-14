@@ -2884,6 +2884,7 @@ DELETE /groups/:id/push_rule
 ## Revoke Token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+> - Revocation of user feed tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468599) in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -2902,6 +2903,7 @@ The following criteria must be met:
   - Group access token
   - Project access token
   - Group Deploy Token
+  - User Feed Tokens
 
 Additional token types may be supported at a later date.
 

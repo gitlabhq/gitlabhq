@@ -136,6 +136,27 @@ workflow:
 
 This example assumes that your long-lived branches are [protected](../../user/project/protected_branches.md).
 
+### Skip pipelines for draft merge requests
+
+You can use `workflow: rules` to skip pipelines for draft merge requests. With these rules, you can avoid using compute minutes until development is complete.
+
+For example, the following rules will disable CI builds for merge requests with `[Draft]`, `(Draft)`, or `Draft:` in the title:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TITLE =~ /^(\[Draft\]|\(Draft\)|Draft:)/
+      when: never
+
+stages:
+  - build
+
+build-job:
+  stage: build
+  script:
+    - echo "Testing"
+```
+
 <!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
 
 ## `workflow:rules` templates (Deprecated)

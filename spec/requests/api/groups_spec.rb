@@ -3481,8 +3481,9 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             ServiceResponse.success(
               message: 'PersonalAccessToken is revoked',
               payload: {
-                token: token,
-                type: 'PersonalAccessToken'
+                revocable: token,
+                type: 'PersonalAccessToken',
+                api_entity: 'PersonalAccessToken'
               }
             )
           end

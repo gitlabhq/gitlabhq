@@ -48,7 +48,7 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
     end
   end
 
-  describe "#create" do
+  describe "#create", :with_current_organization do
     it_behaves_like "#create access token" do
       let(:url) { admin_user_impersonation_tokens_path(user_id: user.username) }
     end

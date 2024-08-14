@@ -94,7 +94,8 @@ module PersonalAccessTokens
         previous_personal_access_token_id: token.id,
         impersonation: token.impersonation,
         scopes: token.scopes,
-        expires_at: expires_at }
+        expires_at: expires_at,
+        organization: token.organization }
     end
 
     def default_expiration_date

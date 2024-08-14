@@ -20,6 +20,7 @@ class PersonalAccessToken < ApplicationRecord
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user
+  belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 
   after_initialize :set_default_scopes, if: :persisted?
@@ -36,6 +37,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :not_revoked, -> { where(revoked: [false, nil]) }
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }
+  scope :for_organization, ->(organization) { where(organization_id: organization) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }

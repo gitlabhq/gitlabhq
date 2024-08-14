@@ -1027,6 +1027,7 @@ module API
           end
           post feature_category: :system_access do
             impersonation_token = finder.build(declared_params(include_missing: false))
+            impersonation_token.organization = Current.organization
 
             if impersonation_token.save
               present impersonation_token, with: Entities::ImpersonationTokenWithToken
@@ -1082,7 +1083,7 @@ module API
           end
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
-              current_user: current_user, target_user: target_user, params: declared_params(include_missing: false)
+              current_user: current_user, target_user: target_user, organization_id: Current.organization_id, params: declared_params(include_missing: false)
             ).execute
 
             if response.success?
@@ -1497,7 +1498,7 @@ module API
         end
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false)
+            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization_id
           ).execute
 
           if response.success?

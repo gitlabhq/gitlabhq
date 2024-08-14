@@ -19,6 +19,7 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
   describe "token creation" do
     it "allows creation of a personal access token" do
       name = 'My PAT'
+      create(:organization, :default)
 
       visit user_settings_personal_access_tokens_path
 

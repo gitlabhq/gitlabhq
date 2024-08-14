@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :personal_access_token do
     user
+    organization
     sequence(:name) { |n| "PAT #{n}" }
     revoked { false }
     expires_at { 30.days.from_now }

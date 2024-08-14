@@ -129,7 +129,7 @@ class Gitlab::Seeder::TriageOps
       scopes: ['api'],
       name: "API Token #{Time.zone.now}"
     }
-    response = PersonalAccessTokens::CreateService.new(current_user: bot, target_user: bot, params: params).execute
+    response = PersonalAccessTokens::CreateService.new(current_user: bot, target_user: bot, organization_id: bot.namespace.organization_id, params: params).execute
 
     unless response.success?
       raise "Can't create Triage Bot access token: #{response.message}"

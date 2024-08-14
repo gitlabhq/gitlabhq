@@ -9,13 +9,15 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
   let_it_be(:normal_project) { create(:project, :repository) }
 
   let(:project) { normal_project }
-  let(:vscode_ff) { false }
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
-    stub_feature_flags(vscode_web_ide: vscode_ff)
+    # TODO - We need to be able to handle requests to https://*.cdn.web-ide.gitlab-static.net
+    #        in order to support `web_ide_extensions_marketplace` in our feature specs.
+    #        https://gitlab.com/gitlab-org/gitlab/-/issues/478626
+    stub_feature_flags(web_ide_extensions_marketplace: false)
 
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -29,24 +31,19 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
   end
 
   shared_examples "new Web IDE" do
-    it 'loads new Web IDE', :aggregate_failures do
+    it 'loads new Web IDE', :aggregate_failures, :js_fail_console_error do
       iframe = find(ide_iframe_selector)
 
       page.within_frame(iframe) do
-        expect(page).to have_selector('.title', text: project.name.upcase)
+        expect(page).to have_selector('.title', text: project.path.upcase)
+
+        # Verify that the built-in GitLab Workflow Extension loads
+        expect(page).to have_css('#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions')
       end
     end
   end
 
-  context 'with vscode feature flag off' do
-    before do
-      ide_visit(project)
-    end
-
-    it_behaves_like 'legacy Web IDE'
-  end
-
-  describe 'sub-groups' do
+  describe 'with sub-groups' do
     let_it_be(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
@@ -54,6 +51,18 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
     let(:project) { subgroup_project }
 
     before do
+      stub_feature_flags(vscode_web_ide: true)
+
+      ide_visit(project)
+    end
+
+    it_behaves_like 'new Web IDE'
+  end
+
+  describe 'with vscode feature flag off' do
+    before do
+      stub_feature_flags(vscode_web_ide: false)
+
       ide_visit(project)
     end
 

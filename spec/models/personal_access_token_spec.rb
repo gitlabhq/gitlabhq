@@ -25,6 +25,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     subject(:project_access_token) { create(:personal_access_token) }
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
   end
 
   describe 'scopes' do
@@ -169,6 +170,16 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       subject { described_class.last_used_before_or_unused(last_used_at) }
 
       it { is_expected.to contain_exactly(old_unused_token, old_formerly_used_token) }
+    end
+
+    describe ".for_organization" do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, organization: organization) }
+      let_it_be(:personal_access_token_2) { create(:personal_access_token) }
+
+      it "returns personal access tokens for the specified organization only" do
+        expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
+      end
     end
   end
 

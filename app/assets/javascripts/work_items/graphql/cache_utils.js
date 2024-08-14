@@ -179,6 +179,37 @@ export const addHierarchyChild = ({ cache, id, workItem }) => {
   });
 };
 
+export const addHierarchyChildren = ({ cache, id, workItem, newItemsToAddCount }) => {
+  const queryArgs = {
+    query: getWorkItemTreeQuery,
+    variables: {
+      id,
+    },
+  };
+  const sourceData = cache.readQuery(queryArgs);
+
+  if (!sourceData) {
+    return;
+  }
+
+  cache.writeQuery({
+    ...queryArgs,
+    data: produce(sourceData, (draftState) => {
+      const newChildren = findHierarchyWidgetChildren(workItem);
+
+      const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
+
+      const childrenToAdd = newChildren.slice(0, newItemsToAddCount);
+
+      for (const item of childrenToAdd) {
+        if (item) {
+          existingChildren.unshift(item);
+        }
+      }
+    }),
+  });
+};
+
 export const removeHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
     query: getWorkItemTreeQuery,

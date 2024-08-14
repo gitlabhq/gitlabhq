@@ -222,6 +222,10 @@ gdk start
 tail -f log/llm.log
 ```
 
+### Debugging in production environment
+
+All information related to debugging and troubleshooting in production environment is collected in [the Duo Chat On-Call Runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/duo-chat).
+
 ## Tracing with LangSmith
 
 Tracing is a powerful tool for understanding the behavior of your LLM application.

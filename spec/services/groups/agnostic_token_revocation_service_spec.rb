@@ -31,12 +31,13 @@ RSpec.describe Groups::AgnosticTokenRevocationService, feature_category: :system
 
     it 'returns the token in the payload' do
       result
-      expect(result.payload[:token]).to eq(token)
+      expect(result.payload[:revocable]).to eq(token)
     end
 
-    it 'returns the token class in the payload' do
+    it 'returns the token class and api_entity in the payload', :aggregate_failures do
       result
       expect(result.payload[:type]).to be(type)
+      expect(result.payload[:api_entity]).to be(type)
     end
   end
 
@@ -141,6 +142,78 @@ RSpec.describe Groups::AgnosticTokenRevocationService, feature_category: :system
         let_it_be(:token) { create(:project_deploy_token).deploy_token }
 
         it_behaves_like 'an unsuccessfully revoked token'
+      end
+    end
+
+    context 'with a user feed token' do
+      let(:service) { described_class.new(group, owner, user.reset.feed_token) }
+
+      shared_examples_for 'a successfully rotated feed token' do
+        it { expect(result.success?).to be(true), result.message }
+
+        before do
+          allow(Users::ResetFeedTokenService).to receive(:new).and_call_original
+        end
+
+        it 'calls ResetFeedTokenService with source' do
+          result
+          expect(Users::ResetFeedTokenService).to have_received(:new).with(owner, user: user,
+            source: :group_token_revocation_service)
+        end
+
+        it 'rotates the token' do
+          original_token = user.feed_token
+          result
+          expect(user.reset.feed_token).not_to eq(original_token)
+        end
+
+        it 'returns the user in the payload' do
+          expect(result.payload[:revocable]).to eq(user)
+        end
+
+        it 'returns the type of token in the payload' do
+          expect(result.payload[:type]).to be('FeedToken')
+        end
+
+        it 'uses the UserSafe api_entity' do
+          expect(result.payload[:api_entity]).to be('UserSafe')
+        end
+      end
+
+      shared_examples_for 'an unsuccessfully rotated feed token' do
+        it { expect(result.success?).to be(false) }
+
+        it 'does not revoke the token' do
+          original_token = user.reset.feed_token
+          result
+          expect(user.reset.feed_token).to eq(original_token)
+        end
+      end
+
+      context 'when the user can access the group' do
+        let_it_be(:user) { create(:user, guest_of: group) }
+
+        it_behaves_like 'a successfully rotated feed token'
+      end
+
+      context 'when the user can access a sub group' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:user) { create(:user, guest_of: subgroup) }
+
+        it_behaves_like 'a successfully rotated feed token'
+      end
+
+      context 'when the user can access a group\'s project' do
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:user) { create(:user, :project_bot, guest_of: project) }
+
+        it_behaves_like 'a successfully rotated feed token'
+      end
+
+      context 'when the user has with no relation to the group' do
+        let_it_be(:user) { create(:user) }
+
+        it_behaves_like 'an unsuccessfully rotated feed token'
       end
     end
 

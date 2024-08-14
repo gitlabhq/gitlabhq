@@ -10,6 +10,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       expect(token.impersonation).to eq(params[:impersonation])
       expect(token.scopes).to eq(params[:scopes])
       expect(token.expires_at).to eq(params[:expires_at])
+      expect(token.organization).to eq(organization)
       expect(token.user).to eq(user)
     end
 
@@ -38,9 +39,10 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     subject { service.execute }
 
     let(:current_user) { create(:user) }
+    let(:organization) { create(:organization) }
     let(:user) { create(:user) }
     let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month } }
-    let(:service) { described_class.new(current_user: current_user, target_user: user, params: params, concatenate_errors: false) }
+    let(:service) { described_class.new(current_user: current_user, target_user: user, organization_id: organization.id, params: params, concatenate_errors: false) }
     let(:token) { subject.payload[:personal_access_token] }
 
     context 'when current_user is an administrator' do
@@ -69,7 +71,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
 
     context 'with no expires_at set', :freeze_time do
       let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid] } }
-      let(:service) { described_class.new(current_user: user, target_user: user, params: params) }
+      let(:service) { described_class.new(current_user: user, organization_id: organization.id, target_user: user, params: params) }
 
       it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
 
@@ -88,13 +90,13 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid], expires_at: Date.today + 1.month } }
 
       context 'when concatenate_errors: true' do
-        let(:service) { described_class.new(current_user: user, target_user: user, params: params) }
+        let(:service) { described_class.new(current_user: user, target_user: user, organization_id: organization.id, params: params) }
 
         it { expect(subject.message).to be_an_instance_of(String) }
       end
 
       context 'when concatenate_errors: false' do
-        let(:service) { described_class.new(current_user: user, target_user: user, params: params, concatenate_errors: false) }
+        let(:service) { described_class.new(current_user: user, target_user: user, organization_id: organization.id, params: params, concatenate_errors: false) }
 
         it { expect(subject.message).to be_an_instance_of(Array) }
       end

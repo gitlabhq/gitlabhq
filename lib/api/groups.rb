@@ -623,6 +623,7 @@ The following criteria must be met:
   - Group access token
   - Project access token
   - Group Deploy Token
+  - User feed token
 
 This feature is gated by the :group_agnostic_token_revocation feature flag.
         DETAIL
@@ -641,7 +642,7 @@ This feature is gated by the :group_agnostic_token_revocation feature flag.
 
         if result.success?
           status :ok
-          present result.payload[:token], with: "API::Entities::#{result.payload[:type]}".constantize
+          present result.payload[:revocable], with: "API::Entities::#{result.payload[:api_entity]}".constantize
         else
           # No matter the error, we always return a 422.
           # This prevents disclosing cases like: token is invalid,

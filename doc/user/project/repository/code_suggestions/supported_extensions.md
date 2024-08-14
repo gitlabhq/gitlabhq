@@ -96,18 +96,22 @@ for this language. On hover, it shows **Code Suggestions are disabled for this l
 If your desired language doesn't have code suggestions available by default,
 you can add support for your language locally.
 
+::Tabs
+
+:::TabTitle Visual Studio Code
+
 Prerequisites:
 
 - You have installed and enabled the
   [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md).
-- You have completed the [extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
-  instructions, and authorized the extension to access your GitLab account.
+- You have completed the [VS Code extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
+    instructions, and authorized the extension to access your GitLab account.
 
 To do this:
 
 1. Find your desired language in the list of
-   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem)
-   for VS Code. You need the **Identifier** for a later step.
+   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
+   You need the **Identifier** for your languages in a later step.
 1. In VS Code, open the extension settings for **GitLab Workflow**:
    1. On the top bar, go to **Code > Settings > Extensions**.
    1. Search for **GitLab Workflow** in the list, and select **Manage** (**{settings}**).
@@ -115,6 +119,27 @@ To do this:
    1. In your **User** settings, find
       **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
 1. In **Item**, add the language identifier, and select **OK**.
+
+:::TabTitle JetBrains IDEs
+
+Prerequisites:
+
+- You have installed and enabled the
+  [GitLab plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/index.md).
+- You have completed the [Jetbrains extension setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup)
+    instructions, and authorized the extension to access your GitLab account.
+
+To do this:
+
+1. Find your desired language in the list of
+   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
+   You need the **Identifier** for your languages in a later step.
+1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
+1. On the left sidebar, select **Tools > GitLab Duo**.
+1. Under **Code Suggestions Enabled Languages > Additional languages** add the language identifiers, separated by comma (`,`).
+1. Select **OK**.
+
+::EndTabs
 
 ## View multiple code suggestions
 

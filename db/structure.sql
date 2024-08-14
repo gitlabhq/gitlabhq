@@ -15120,6 +15120,7 @@ CREATE TABLE personal_access_tokens (
     after_expiry_notification_delivered boolean DEFAULT false NOT NULL,
     previous_personal_access_token_id bigint,
     advanced_scopes text,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_aa95773861 CHECK ((char_length(advanced_scopes) <= 4096))
 );
 
@@ -29014,6 +29015,8 @@ CREATE INDEX index_pe_approval_rules_on_required_approvals_and_created_at ON pro
 
 CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_access_tokens USING btree (id, created_at);
 
+CREATE INDEX index_personal_access_tokens_on_organization_id ON personal_access_tokens USING btree (organization_id);
+
 CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_access_tokens USING btree (token_digest);
 
 CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);
@@ -33692,6 +33695,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY label_links
     ADD CONSTRAINT fk_d97dd08678 FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY personal_access_tokens
+    ADD CONSTRAINT fk_da676c7ca5 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_daa8cee94c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

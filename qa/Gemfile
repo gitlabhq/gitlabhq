@@ -19,7 +19,7 @@ gem 'faker', '~> 3.4', '>= 3.4.2'
 gem 'knapsack', '~> 4.0'
 gem 'parallel_tests', '~> 4.7', '>= 4.7.1'
 gem 'rotp', '~> 6.3.0'
-gem 'parallel', '~> 1.25', '>= 1.25.1'
+gem 'parallel', '~> 1.26', '>= 1.26.1'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.2'
 gem 'octokit', '~> 9.1.0', require: false

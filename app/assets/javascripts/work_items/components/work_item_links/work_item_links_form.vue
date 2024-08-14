@@ -2,8 +2,9 @@
 import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { fetchPolicies } from '~/lib/graphql';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
-import { addHierarchyChild } from '../../graphql/cache_utils';
+import { addHierarchyChild, addHierarchyChildren } from '../../graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
 import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hierarchy.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -287,6 +288,7 @@ export default {
       this.$apollo
         .mutate({
           mutation: updateWorkItemHierarchyMutation,
+          fetchPolicy: fetchPolicies.NO_CACHE,
           variables: {
             input: {
               id: this.issuableGid,
@@ -295,6 +297,20 @@ export default {
               },
             },
           },
+          update: (
+            cache,
+            {
+              data: {
+                workItemUpdate: { workItem },
+              },
+            },
+          ) =>
+            addHierarchyChildren({
+              cache,
+              id: this.issuableGid,
+              workItem,
+              newItemsToAddCount: this.workItemsToAdd?.length,
+            }),
         })
         .then(({ data }) => {
           // Marking submitInProgress cannot be in finally block
