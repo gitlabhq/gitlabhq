@@ -136,7 +136,7 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
       end
 
       before do
-        allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_model).and_return(Note)
+        allow(Import::PlaceholderReferences::AliasResolver).to receive(:aliased_model).and_return(Note)
       end
 
       it "uses the new model" do
@@ -158,7 +158,7 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
 
     context "when the column name has changed" do
       before do
-        allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column).and_return("user_id")
+        allow(Import::PlaceholderReferences::AliasResolver).to receive(:aliased_column).and_return("user_id")
       end
 
       it "uses the new column" do
@@ -177,8 +177,8 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     end
 
     before do
-      allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column).and_call_original
-      allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column)
+      allow(Import::PlaceholderReferences::AliasResolver).to receive(:aliased_column).and_call_original
+      allow(Import::PlaceholderReferences::AliasResolver).to receive(:aliased_column)
         .with("Note", "old_id").and_return("new_id")
     end
 

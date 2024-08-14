@@ -151,13 +151,9 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
   end
 
   def set
-    Gitlab::Cache::Import::Caching.values_from_set(cache_key)
-  end
-
-  def cache_key
-    Import::PlaceholderReferences::BaseService.new(
+    Import::PlaceholderReferences::Store.new(
       import_source: import_source,
       import_uid: import_uid
-    ).send(:cache_key)
+    ).get
   end
 end

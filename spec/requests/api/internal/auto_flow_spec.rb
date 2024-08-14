@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Autoflow, feature_category: :deployment_management do
+RSpec.describe API::Internal::AutoFlow, feature_category: :deployment_management do
   let(:jwt_auth_headers) do
     jwt_token = JWT.encode(
       { 'iss' => Gitlab::Kas::JWT_ISSUER, 'aud' => Gitlab::Kas::JWT_AUDIENCE },

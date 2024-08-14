@@ -3,7 +3,7 @@
 module API
   # AutoFlow Internal API
   module Internal
-    class Autoflow < ::API::Base
+    class AutoFlow < ::API::Base
       before do
         authenticate_gitlab_kas_request!
       end

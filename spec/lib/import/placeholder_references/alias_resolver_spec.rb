@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Import::PlaceholderReferenceAliasResolver, feature_category: :importers do
+RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :importers do
   describe "ALIASES" do
     it "points to real columns" do
       def failure_message(model, column)

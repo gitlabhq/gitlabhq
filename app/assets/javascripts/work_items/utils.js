@@ -10,6 +10,7 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_AWARD_EMOJI,
   ISSUABLE_EPIC,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_EPIC,
@@ -39,6 +40,9 @@ export const isWeightWidget = (widget) => widget.type === WIDGET_TYPE_WEIGHT;
 
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+
+export const findAwardEmojiWidget = (workItem) =>
+  workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
 
 export const findHierarchyWidgetChildren = (workItem) =>
   findHierarchyWidgets(workItem?.widgets)?.children?.nodes || [];

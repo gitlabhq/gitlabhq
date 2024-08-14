@@ -72,14 +72,12 @@ class Packages::Package < ApplicationRecord
   validate :npm_package_already_taken, if: :npm?
 
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
-  validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
-  validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { npm? || terraform_module? }
 
@@ -192,7 +190,8 @@ class Packages::Package < ApplicationRecord
     conan: 'Packages::Conan::Package',
     rpm: 'Packages::Rpm::Package',
     debian: 'Packages::Debian::Package',
-    composer: 'Packages::Composer::Package'
+    composer: 'Packages::Composer::Package',
+    helm: 'Packages::Helm::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)

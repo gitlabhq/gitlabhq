@@ -9,6 +9,8 @@ module Ci
     include Ci::Metadatable
     extend ::Gitlab::Utils::Override
 
+    ACTIONABLE_WHEN = %w[manual delayed].freeze
+
     self.allow_legacy_sti_class = true
 
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable

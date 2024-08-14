@@ -487,7 +487,7 @@ module Ci
     end
 
     def action?
-      %w[manual delayed].include?(self.when)
+      ACTIONABLE_WHEN.include?(self.when)
     end
 
     def can_auto_cancel_pipeline_on_job_failure?

@@ -17,7 +17,11 @@ module Gitlab
 
           def variables
             if Feature.enabled?(:ci_variables_optimization_for_yaml_and_node, project)
-              stub_build.scoped_variables(job_attributes: build_attributes)
+              pipeline
+                .variables_builder
+                .scoped_variables_for_pipeline_seed(
+                  attributes, environment: seed_environment, kubernetes_namespace: seed_kubernetes_namespace
+                )
             else
               stub_build.scoped_variables
             end
@@ -25,6 +29,37 @@ module Gitlab
           strong_memoize_attr :variables
 
           private
+
+          # Copied from `app/models/concerns/ci/deployable.rb#expanded_environment_name`
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/479126
+          def seed_environment
+            return unless attributes[:environment].present?
+
+            # The initial `environment` parameter is `expanded_environment_name` for a build.
+            # The `expanded_environment_name` method uses `metadata&.expanded_environment_name` first to check
+            # but we don't need it here because `metadata.expanded_environment_name` is only set in
+            # `app/services/environments/create_for_job_service.rb` which is after the pipeline creation.
+            ExpandVariables.expand(attributes[:environment], -> { simple_variables })
+          end
+
+          # Copied from `app/models/concerns/ci/deployable.rb#expanded_kubernetes_namespace`
+          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/479126
+          def seed_kubernetes_namespace
+            return unless attributes[:environment].present?
+
+            namespace = attributes[:options]&.dig(:environment, :kubernetes, :namespace)
+
+            return unless namespace.present?
+
+            ExpandVariables.expand(namespace, -> { simple_variables })
+          end
+
+          def simple_variables
+            pipeline.variables_builder.scoped_variables_for_pipeline_seed(
+              attributes, environment: nil, kubernetes_namespace: nil
+            )
+          end
+          strong_memoize_attr :simple_variables
 
           def stub_build
             # This is a temporary piece of technical debt to allow us access

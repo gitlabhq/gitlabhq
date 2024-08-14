@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_composition do
-  let(:pipeline)        { create(:ci_pipeline) }
+  let_it_be(:project) { create(:project) }
+
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:seed_attributes) do
     {
       name: 'some-job',
@@ -11,8 +13,16 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       needs_attributes: [{ name: 'setup-test-env', artifacts: true, optional: false }],
       environment: 'test',
       yaml_variables: [{ key: 'YAML_KEY', value: 'yaml_value' }],
-      options: { instance: 1, parallel: { total: 2 } }
+      options: {
+        instance: 1,
+        parallel: { total: 2 },
+        environment: { name: 'test', url: 'http://example.com', kubernetes: { namespace: 'k8s_namespace' } }
+      }
     }
+  end
+
+  before_all do
+    create(:cluster_agent, project: project)
   end
 
   subject(:context) { described_class.new(pipeline, seed_attributes) }
@@ -21,12 +31,14 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it 'returns a collection of variables' do
       is_expected.to include('CI_COMMIT_REF_NAME'  => 'master')
       is_expected.to include('CI_PIPELINE_IID'     => pipeline.iid.to_s)
-      is_expected.to include('CI_PROJECT_PATH'     => pipeline.project.full_path)
+      is_expected.to include('CI_PROJECT_PATH'     => project.full_path)
       is_expected.to include('CI_JOB_NAME'         => 'some-job')
-      is_expected.to include('CI_ENVIRONMENT_NAME' => 'test')
       is_expected.to include('YAML_KEY'            => 'yaml_value')
       is_expected.to include('CI_NODE_INDEX'       => '1')
       is_expected.to include('CI_NODE_TOTAL'       => '2')
+      is_expected.to include('CI_ENVIRONMENT_NAME' => 'test')
+      is_expected.to include('CI_ENVIRONMENT_URL'  => 'http://example.com')
+      is_expected.to include('KUBECONFIG'          => anything)
     end
 
     context 'without passed build-specific attributes' do

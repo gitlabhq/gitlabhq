@@ -600,6 +600,25 @@ EOS
     end
   end
 
+  describe '#parents' do
+    subject(:parents) { commit.parents }
+
+    it 'loads commits for parents' do
+      expect(parents).to all be_kind_of(described_class)
+      expect(parents.map(&:id)).to match_array(commit.parent_ids)
+    end
+
+    context 'when parent id cannot be loaded' do
+      before do
+        allow(commit).to receive(:parent_ids).and_return(["invalid"])
+      end
+
+      it 'returns an empty array' do
+        expect(parents).to eq([])
+      end
+    end
+  end
+
   describe '#reverts_commit?' do
     let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
     let(:user) { commit.author }

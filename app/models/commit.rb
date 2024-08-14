@@ -323,7 +323,8 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |oid| Commit.lazy(container, oid) }
+    # Usage of `reject` is intentional. `compact` doesn't work here, because of BatchLoader specifics
+    @parents ||= parent_ids.map { |oid| Commit.lazy(container, oid) }.reject(&:nil?)
   end
 
   def parent

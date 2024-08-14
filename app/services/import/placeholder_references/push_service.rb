@@ -48,7 +48,7 @@ module Import
 
         serialized_reference = reference.to_serialized
 
-        cache.set_add(cache_key, serialized_reference, timeout: cache_ttl)
+        store.add(serialized_reference)
 
         success(serialized_reference: serialized_reference)
       end
@@ -56,10 +56,6 @@ module Import
       private
 
       attr_reader :reference
-
-      def cache_ttl
-        Gitlab::Cache::Import::Caching::TIMEOUT
-      end
 
       def track_error(reference)
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(

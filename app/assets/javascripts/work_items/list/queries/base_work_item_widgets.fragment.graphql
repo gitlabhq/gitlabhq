@@ -36,4 +36,9 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
     dueDate
     startDate
   }
+  ... on WorkItemWidgetAwardEmoji {
+    type
+    upvotes
+    downvotes
+  }
 }

@@ -80,7 +80,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
   - Perform **actor-based** rollout: `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
 - [ ] Enable the feature globally on production environment: `/chatops run feature set <feature-flag-name> true`
 - [ ] Observe appropriate graphs on https://dashboards.gitlab.net and verify that services are not affected.
-- [ ] Leave a comment on [the feature issue][main-issue] announcing that the feature has been globally enabled.
+- [ ] Leave a comment on [the feature issue](<feature-issue-link>) announcing that the feature has been globally enabled.
 - [ ] Wait for [at least one day for the verification term](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release).
 
 ### (Optional) Release the feature with the feature flag
@@ -106,7 +106,7 @@ To do so, follow these steps:
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Consider cleaning up the feature flag from all environments by running these chatops command in `#production` channel. Otherwise these settings may override the default enabled: `/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
-- [ ] Close [the feature issue][main-issue] to indicate the feature will be released in the current milestone.
+- [ ] Close [the feature issue](<feature-issue-link>) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
 - [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
     - [ ] Set the title to "[Feature flag] Cleanup `<feature-flag-name>`".
@@ -133,7 +133,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 - [ ] Ensure that the cleanup MR has been included in the release package.
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post: `/chatops run release check <merge-request-url> <milestone>`
-- [ ] Close [the feature issue][main-issue] to indicate the feature will be released in the current milestone.
+- [ ] Close [the feature issue](<feature-issue-link>) to indicate the feature will be released in the current milestone.
 - [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel: `/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production`
 - [ ] Close this rollout issue.
 
