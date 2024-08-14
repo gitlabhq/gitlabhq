@@ -264,7 +264,7 @@ module SystemNotes
       else
         track_cross_reference_action
 
-        created_at = mentioner.created_at if USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE && mentioner.is_a?(Commit)
+        created_at = mentioned_in.created_at if USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE && mentioned_in.is_a?(Commit)
         create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at))
       end
     end

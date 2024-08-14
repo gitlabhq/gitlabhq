@@ -79,7 +79,6 @@ domains:
     feature_categories:
       - continuous_integration
       - pipeline_composition
-      - secrets_management
       - fleet_visibility
       - job_artifacts
       - pipeline_reports
@@ -269,6 +268,11 @@ domains:
     description: Code and content global search feature, including RAG, Elasticsearch and Zoekt integrations.
     feature_categories:
       - global_search
+
+  SecretsManagement:
+    description: Management of native and external secrets
+    feature_categories:
+      - secrets_management
 
   Security:
     description: Manage and execute security scanners and policies

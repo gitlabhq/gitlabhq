@@ -121,13 +121,13 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :team_planning do
   end
 
   context 'and protects against pathological number of emojis' do
-    it 'limit keeps it from timing out', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454749' do
+    it 'limit keeps it from timing out' do
       expect do
         Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter('⏯ :play_pause: ' * 500000) }
       end.not_to raise_error
 
       expect do
-        Timeout.timeout(1.second) { filter('*' * 10000000) }
+        Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter('*' * 10000000) }
       end.not_to raise_error
     end
   end

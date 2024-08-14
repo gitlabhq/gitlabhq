@@ -890,6 +890,7 @@ project:
 - security_policies
 - approval_policy_rule_project_links
 - approval_policy_rules
+- secrets_manager
 award_emoji:
 - awardable
 - user

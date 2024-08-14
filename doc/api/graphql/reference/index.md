@@ -7876,6 +7876,25 @@ Input type: `ProjectSavedReplyUpdateInput`
 | <a id="mutationprojectsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsavedreplyupdatesavedreply"></a>`savedReply` | [`ProjectSavedReply`](#projectsavedreply) | Saved reply after mutation. |
 
+### `Mutation.projectSecretsManagerInitialize`
+
+Input type: `ProjectSecretsManagerInitializeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretsmanagerinitializeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretsmanagerinitializeprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secrets manager. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretsmanagerinitializeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretsmanagerinitializeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecretsmanagerinitializeprojectsecretsmanager"></a>`projectSecretsManager` | [`ProjectSecretsManager`](#projectsecretsmanager) | Project secrets manager. |
+
 ### `Mutation.projectSetComplianceFramework`
 
 Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
@@ -30698,6 +30717,18 @@ Represents the Geo replication and verification state of a project repository.
 | <a id="projectsavedreplyid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of the project-level saved reply. |
 | <a id="projectsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
+### `ProjectSecretsManager`
+
+Representation of a project secrets manager.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretsmanagercisecretsmountpath"></a>`ciSecretsMountPath` | [`String!`](#string) | Mount path of the secrets engine for the project. |
+| <a id="projectsecretsmanagerproject"></a>`project` | [`Project!`](#project) | Project the secrets manager belong to. |
+| <a id="projectsecretsmanagerstatus"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
+
 ### `ProjectSecurityPolicySource`
 
 Represents the source of a security policy belonging to a project.
@@ -36896,6 +36927,14 @@ Project member relation.
 | <a id="projectmemberrelationinherited"></a>`INHERITED` | Inherited members. |
 | <a id="projectmemberrelationinvited_groups"></a>`INVITED_GROUPS` | Invited Groups members. |
 | <a id="projectmemberrelationshared_into_ancestors"></a>`SHARED_INTO_ANCESTORS` | Shared Into Ancestors members. |
+
+### `ProjectSecretsManagerStatus`
+
+Values for the project secrets manager status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectsecretsmanagerstatusprovisioning"></a>`PROVISIONING` | Secrets manager is being provisioned. |
 
 ### `ProjectSort`
 

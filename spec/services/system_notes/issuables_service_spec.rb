@@ -445,6 +445,18 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         end
       end
 
+      describe 'note_date' do
+        let(:mentioned_in) { project.repository.commit }
+
+        it 'uses commit date with USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE' do
+          stub_const("#{described_class}::USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE", true)
+
+          note = service.cross_reference(mentioned_in)
+
+          expect(note.created_at).to be_like_time(mentioned_in.created_at)
+        end
+      end
+
       context 'with external issue' do
         let(:noteable) { ExternalIssue.new('JIRA-123', project) }
         let(:mentioned_in) { project.commit }
