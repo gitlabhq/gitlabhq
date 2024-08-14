@@ -8,7 +8,7 @@ class QueuePopulateDenormalizedColumnsForSbomOccurrences < Gitlab::Database::Mig
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   def up
     queue_batched_background_migration(

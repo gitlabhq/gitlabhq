@@ -735,7 +735,7 @@ class Namespace < ApplicationRecord
     when Namespaces::ProjectNamespace
       from.parent_id != comparable_namespace_id
     when Namespace
-      parent != from
+      is_a?(Group) ? from.id != id : parent != from
     when User
       true
     end

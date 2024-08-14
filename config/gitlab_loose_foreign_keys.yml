@@ -390,6 +390,9 @@ sbom_occurrences:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 sbom_source_packages:
   - table: organizations
     column: organization_id

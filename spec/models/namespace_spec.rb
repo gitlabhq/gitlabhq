@@ -313,7 +313,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       ref(:group)             | true  | nil                                       | lazy { group.full_path }
       ref(:group)             | false | ref(:group)                               | nil
       ref(:group)             | true  | ref(:group)                               | lazy { group.full_path }
-      ref(:group)             | false | ref(:parent)                              | lazy { group.path }
+      ref(:group)             | false | ref(:parent)                              | lazy { group.full_path }
       ref(:group)             | true  | ref(:parent)                              | lazy { group.full_path }
       ref(:group)             | false | ref(:project)                             | lazy { group.path }
       ref(:group)             | true  | ref(:project)                             | lazy { group.full_path }

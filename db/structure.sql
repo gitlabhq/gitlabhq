@@ -32531,9 +32531,6 @@ ALTER TABLE ONLY catalog_resource_versions
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_1551efdd17 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY sbom_occurrences
-    ADD CONSTRAINT fk_157506c0e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
 

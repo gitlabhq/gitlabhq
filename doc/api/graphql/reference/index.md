@@ -34641,6 +34641,15 @@ Action to subscribe to.
 | ----- | ----------- |
 | <a id="aiactionchat"></a>`CHAT` | Chat action. |
 
+### `AiAdditionalContextType`
+
+The type of additional context.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiadditionalcontexttypefile"></a>`FILE` | File content type. |
+| <a id="aiadditionalcontexttypesnippet"></a>`SNIPPET` | Snippet content type. |
+
 ### `AiMessageRole`
 
 Possible message roles for AI features.
@@ -39880,12 +39889,23 @@ be used as arguments).
 Only general use input types are listed here. For mutation input types,
 see the associated mutation type above.
 
+### `AiAdditionalContextInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiadditionalcontextinputcontent"></a>`content` | [`String!`](#string) | Content of the additional context. |
+| <a id="aiadditionalcontextinputname"></a>`name` | [`String!`](#string) | Name of the additional context. |
+| <a id="aiadditionalcontextinputtype"></a>`type` | [`AiAdditionalContextType!`](#aiadditionalcontexttype) | Type of the additional context. |
+
 ### `AiChatInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aichatinputadditionalcontext"></a>`additionalContext` | [`[AiAdditionalContextInput!]`](#aiadditionalcontextinput) | Additional context to be passed for the chat. |
 | <a id="aichatinputagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent version to answer the chat. |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aichatinputcurrentfile"></a>`currentFile` | [`AiCurrentFileInput`](#aicurrentfileinput) | Information about currently selected text which can be passed for additional context. |

@@ -813,7 +813,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       ref(:group_issue) | true  | ref(:user_namespace)                        | ref(:group_issue_full_reference)
       ref(:group_issue) | false | ref(:group)                                 | lazy { "##{issue.iid}" }
       ref(:group_issue) | true  | ref(:group)                                 | ref(:group_issue_full_reference)
-      ref(:group_issue) | false | ref(:parent)                                | lazy { "#{group.path}##{issue.iid}" }
+      ref(:group_issue) | false | ref(:parent)                                | ref(:group_issue_full_reference)
       ref(:group_issue) | true  | ref(:parent)                                | ref(:group_issue_full_reference)
       ref(:group_issue) | false | ref(:project)                               | lazy { "#{group.path}##{issue.iid}" }
       ref(:group_issue) | true  | ref(:project)                               | ref(:group_issue_full_reference)

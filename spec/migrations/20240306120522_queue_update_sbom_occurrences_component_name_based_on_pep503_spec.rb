@@ -14,6 +14,7 @@ RSpec.describe QueueUpdateSbomOccurrencesComponentNameBasedOnPep503, feature_cat
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
+          gitlab_schema: :gitlab_sec,
           table_name: :sbom_occurrences,
           column_name: :id,
           interval: described_class::DELAY_INTERVAL,

@@ -3,7 +3,7 @@
 class QueueUpdateSbomOccurrencesComponentNameBasedOnPep503 < Gitlab::Database::Migration[2.2]
   milestone '16.11'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   MIGRATION = "UpdateSbomOccurrencesComponentNameBasedOnPep503"
   DELAY_INTERVAL = 2.minutes
