@@ -75,6 +75,29 @@ describe('InternalEvents', () => {
       );
     });
 
+    it('trackEvent calls Tracking.event with event name, category, base and custom properties', () => {
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      const additionalProps = {
+        ...allowedAdditionalProps,
+        key: 'value',
+      };
+
+      InternalEvents.trackEvent(event, additionalProps, category);
+
+      expect(Tracking.event).toHaveBeenCalledWith(
+        category,
+        event,
+        expect.objectContaining({
+          context: expect.any(Object),
+          value: 2,
+          property: 'value',
+          label: 'value',
+          extra: { key: 'value' },
+        }),
+      );
+    });
+
     it('trackEvent calls trackBrowserSDK with event name', () => {
       jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
 
@@ -97,22 +120,41 @@ describe('InternalEvents', () => {
       });
     });
 
-    it('throws an error if unallowed additionalProperties are passed', () => {
+    it('throws an error if base property has incorrect type', () => {
       jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
       const additionalProps = {
         ...allowedAdditionalProps,
-        unallowedKey: 'value',
+        value: 'invalidType',
       };
 
       expect(() => {
         InternalEvents.trackEvent(event, additionalProps, category);
-      }).toThrow(/Disallowed additional properties were provided:/);
+      }).toThrow('value should be of type: number. Provided type is: string.');
 
       expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
       expect(Tracking.event).not.toHaveBeenCalled();
       expect(API.trackInternalEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not throw an error for custom properties', () => {
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      const additionalProps = {
+        ...allowedAdditionalProps,
+        key1: 'value1',
+        key2: 2,
+      };
+
+      expect(() => {
+        InternalEvents.trackEvent(event, additionalProps, category);
+      }).not.toThrow();
+
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalled();
+      expect(Tracking.event).toHaveBeenCalled();
+      expect(API.trackInternalEvent).toHaveBeenCalled();
     });
   });
 

@@ -153,7 +153,7 @@ export const workItemRoadmapPath = (fullPath, iid) => {
   // We're hard-coding the values of `layout` & `timeframe_range_type` as those exist in `ee/app/assets/javascripts/roadmap/constants.js`
   // and importing those here also requires a corresponding file in non-EE scope and that's overengineering a query param.
   // This won't be needed once https://gitlab.com/gitlab-org/gitlab/-/issues/353191 is resolved.
-  return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}&layout=QUARTERS&timeframe_range_type=THREE_YEARS`;
+  return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}&layout=MONTHS&timeframe_range_type=CURRENT_YEAR`;
 };
 
 /**

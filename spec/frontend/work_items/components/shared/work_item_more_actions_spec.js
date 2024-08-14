@@ -66,7 +66,7 @@ describe('WorkItemMoreActions', () => {
     expect(link.text()).toBe('View on a roadmap');
 
     expect(link.attributes('href')).toBe(
-      '/groups/project/group/-/roadmap?epic_iid=2&layout=QUARTERS&timeframe_range_type=THREE_YEARS',
+      '/groups/project/group/-/roadmap?epic_iid=2&layout=MONTHS&timeframe_range_type=CURRENT_YEAR',
     );
   });
 

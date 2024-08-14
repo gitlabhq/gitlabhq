@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Analytics::DateFiller do
   end
 
   context 'when unknown period is given' do
-    it 'raises error' do
+    it 'raises unknown period error' do
       input = { 3.days.ago.to_date => 10, Date.today => 5 }
 
       expect do
@@ -77,12 +77,14 @@ RSpec.describe Gitlab::Analytics::DateFiller do
     end
 
     context 'when the data contains dates outside of the requested period' do
+      let(:date_outside_of_the_period) { Date.new(2022, 6, 1) }
+
       before do
-        data[Date.new(2022, 6, 1)] = 5
+        data[date_outside_of_the_period] = 5
       end
 
-      it 'raises error' do
-        expect { filler_result }.to raise_error(/Input contains values which doesn't/)
+      it 'ignores the data outside of the requested period' do
+        is_expected.to eq(expected_result.to_a)
       end
     end
   end

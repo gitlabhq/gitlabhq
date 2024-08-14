@@ -1610,15 +1610,6 @@ describe('Api', () => {
           });
         });
       });
-
-      describe('when internal event is called with unallowed additionalProperties', () => {
-        it('throws an error', () => {
-          expect(() => {
-            const unallowedProperties = { new_key: 'unallowed' };
-            Api.trackInternalEvent(event, unallowedProperties);
-          }).toThrow(/Disallowed additional properties were provided:/);
-        });
-      });
     });
   });
 

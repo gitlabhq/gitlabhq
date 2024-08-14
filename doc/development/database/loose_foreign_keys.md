@@ -759,7 +759,7 @@ We have Prometheus metrics in place to monitor the deleted record cleanup:
 - `loose_foreign_key_rescheduled_deleted_records`: Number of deleted records that had to be
   rescheduled at a later time after 3 cleanup attempts.
 
-Example Thanos query:
+Example PromQL query:
 
 ```plaintext
 loose_foreign_key_rescheduled_deleted_records{env="gprd", table="ci_runners"}
@@ -799,7 +799,7 @@ Steps to diagnose the problem:
 
 - Check which records are accumulating.
 - Try to get an estimate of the number of remaining records.
-- Looking into the worker performance stats (Kibana or Thanos).
+- Looking into the worker performance stats (Kibana or Grafana).
 
 Possible solutions:
 

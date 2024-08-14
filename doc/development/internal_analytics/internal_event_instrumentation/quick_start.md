@@ -384,6 +384,7 @@ For data-event attributes:
     data-event-tracking="click_view_runners_button"
     data-event-label="group_runner_form"
     :data-event-property=dynamicPropertyVar
+    data-event-additional='{"key1": "value1", "key2": "value2"}'
   >
    Click Me
   </gl-button>
@@ -392,7 +393,7 @@ For data-event attributes:
 For Haml:
 
 ```haml
-= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2 }}) do
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2, event_additional: '{"key1": "value1", "key2": "value2"}' }}) do
 ```
 
 #### Frontend testing

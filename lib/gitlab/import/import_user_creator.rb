@@ -62,7 +62,11 @@ module Gitlab
       strong_memoize_attr :username_and_email_generator
 
       def import_user
-        root_ancestor.import_user
+        return import_user_in_cache if import_user_in_cache
+
+        root_ancestor.reset.import_user.tap do |import_user|
+          Gitlab::SafeRequestStore.write(request_store_cache_key, import_user) if import_user
+        end
       end
 
       def root_ancestor
@@ -71,6 +75,14 @@ module Gitlab
 
       def username_prefix
         "import_user_namespace_#{root_ancestor.id}"
+      end
+
+      def import_user_in_cache
+        Gitlab::SafeRequestStore.read(request_store_cache_key)
+      end
+
+      def request_store_cache_key
+        "import_user_creator_#{root_ancestor.id}"
       end
     end
   end

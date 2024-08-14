@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::ImportUserCreator, feature_category: :importers do
-  let(:group) { create(:group, organization: create(:organization)) }
+RSpec.describe Gitlab::Import::ImportUserCreator, :request_store, feature_category: :importers do
+  let_it_be(:group) { create(:group, organization: create(:organization)) }
 
   subject(:service) { described_class.new(portable: group) }
 
@@ -84,5 +84,16 @@ RSpec.describe Gitlab::Import::ImportUserCreator, feature_category: :importers d
 
       expect(user.id).to eq(import_user.id)
     end
+  end
+
+  it 'caches the import user' do
+    import_user = create(:namespace_import_user, namespace: group).import_user
+
+    expect { expect(service.execute).to eq(import_user) }.to match_query_count(2).ignoring_cached_queries
+    expect { expect(service.execute).to eq(import_user) }.to match_query_count(0).ignoring_cached_queries
+
+    other_group = create(:group)
+
+    expect(described_class.new(portable: other_group).execute).not_to eq(import_user)
   end
 end

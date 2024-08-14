@@ -34,7 +34,7 @@ Provide a method for validating that the original issue still exists.
 
 Having a way of checking validity can save on a great deal of back-and-forth discussion between Infradev Triage participants including Engineering Managers, Directors and Product Managers and make space for other non-resolved issues to get scheduled sooner.
 
-Ideally, provide a link to a Thanos query or an ELK query and clear instructions on how to interpret the results to determine whether the problem is still occurring.
+Ideally, provide a link to a PromQL query or an ELK query and clear instructions on how to interpret the results to determine whether the problem is still occurring.
 -->
 
 

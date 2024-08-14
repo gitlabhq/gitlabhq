@@ -86,8 +86,6 @@ module Gitlab
           current_date = (current_date + PERIOD_STEPS.fetch(period)).to_date
         end
 
-        raise "Input contains values which doesn't fall under the given period!" if input.any?
-
         data
       end
 

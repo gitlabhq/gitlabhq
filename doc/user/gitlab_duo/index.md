@@ -144,7 +144,7 @@ DETAILS:
 ### Vulnerability resolution
 
 DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
