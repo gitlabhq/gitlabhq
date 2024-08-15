@@ -5,6 +5,7 @@ import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
@@ -47,6 +48,7 @@ describe('Container protection rules project settings', () => {
     wrapper = mountFn(ContainerProtectionRules, {
       stubs: {
         SettingsSection,
+        CrudComponent,
         GlModal: true,
       },
       mocks: {
@@ -633,8 +635,8 @@ describe('Container protection rules project settings', () => {
         expect(findAddProtectionRuleForm().isVisible()).toBe(true);
       });
 
-      it('disables the button "add protection rule"', () => {
-        expect(findAddProtectionRuleFormSubmitButton().attributes('disabled')).toBeDefined();
+      it('hides the button "add protection rule"', () => {
+        expect(findAddProtectionRuleFormSubmitButton().exists()).toBe(false);
       });
     });
   });

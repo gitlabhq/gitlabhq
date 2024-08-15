@@ -136,7 +136,7 @@ export default {
           <code>{{ searchQuery }}</code>
         </template>
       </gl-collapsible-listbox>
-      <div data-testid="help-text" class="gl-text-subtle gl-mt-2">
+      <div data-testid="help-text" class="gl-mt-2 gl-text-subtle">
         <gl-sprintf :message="formDescriptionText">
           <template #link="{ content }">
             <gl-link :href="$options.wildcardsHelpDocLink">

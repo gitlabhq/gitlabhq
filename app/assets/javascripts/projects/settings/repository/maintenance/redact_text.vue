@@ -166,7 +166,7 @@ export default {
         <gl-form-textarea
           id="text"
           v-model.trim="text"
-          class="!gl-font-monospace gl-mb-3"
+          class="gl-mb-3 !gl-font-monospace"
           :disabled="isLoading"
           autofocus
         />

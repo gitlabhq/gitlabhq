@@ -193,11 +193,7 @@ export default {
     <p>
       <gl-sprintf :message="$options.I18N_FORM_INTRODUCTION_PARAGRAPH">
         <template #link="{ content }">
-          <gl-link
-            :href="$options.customEmailHelpUrl"
-            class="gl-display-inline-block"
-            target="_blank"
-          >
+          <gl-link :href="$options.customEmailHelpUrl" class="gl-inline-block" target="_blank">
             {{ content }}
           </gl-link>
         </template>

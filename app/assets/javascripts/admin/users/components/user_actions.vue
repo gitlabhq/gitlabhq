@@ -90,10 +90,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-justify-content-end -gl-my-2 -gl-mx-2"
-    :data-testid="`user-actions-${user.id}`"
-  >
+  <div class="-gl-mx-2 -gl-my-2 gl-flex gl-justify-end" :data-testid="`user-actions-${user.id}`">
     <div v-if="hasEditAction" class="gl-p-2" :class="{ 'gl-mr-3': hasEditActionOnly }">
       <gl-button
         v-if="showButtonLabels"

@@ -174,7 +174,7 @@ export default {
         </gl-form-input-group>
       </gl-form-group>
 
-      <div class="gl-pl-6 gl-border-l">
+      <div class="gl-border-l gl-pl-6">
         <gl-form-group
           :label="$options.i18n.deleteAfterMonthsLabel"
           :state="isDeleteAfterMonthsValid"

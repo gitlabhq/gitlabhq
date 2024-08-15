@@ -193,7 +193,7 @@ export default {
           data-testid="groups-selector"
           @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
-        <div class="gl-flex gl-gap-3 gl-mt-5">
+        <div class="gl-mt-5 gl-flex gl-gap-3">
           <gl-button
             variant="confirm"
             :disabled="!isRuleUpdated"

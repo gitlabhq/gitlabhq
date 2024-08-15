@@ -136,7 +136,7 @@ export default {
       :form-id="$options.formId"
       :fields="fields"
       :server-validations="serverValidations"
-      class="gl-display-flex gl-gap-x-5 gl-flex-wrap"
+      class="gl-flex gl-flex-wrap gl-gap-x-5"
       @submit="$emit('submit', formValues)"
       @input-field="$emit('input-field', $event)"
     >
@@ -168,7 +168,7 @@ export default {
         </div>
       </template>
     </gl-form-fields>
-    <div class="gl-display-flex gl-gap-3">
+    <div class="gl-flex gl-gap-3">
       <gl-button
         type="submit"
         variant="confirm"

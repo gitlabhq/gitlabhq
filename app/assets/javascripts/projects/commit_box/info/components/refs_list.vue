@@ -85,12 +85,12 @@ export default {
       v-for="ref in tippingRefs"
       :key="ref"
       :href="getRefUrl(ref)"
-      class="gl-mt-2 gl-mr-2"
+      class="gl-mr-2 gl-mt-2"
       >{{ ref }}</gl-badge
     >
     <gl-button
       v-if="hasContainingRefs"
-      class="gl-mr-2 gl-font-sm!"
+      class="gl-mr-2 !gl-text-sm"
       variant="link"
       size="small"
       @click="showRefs"
@@ -105,7 +105,7 @@ export default {
           v-for="ref in containingRefs"
           :key="ref"
           :href="getRefUrl(ref)"
-          class="gl-mt-3 gl-mr-2"
+          class="gl-mr-2 gl-mt-3"
           >{{ ref }}</gl-badge
         >
       </template>

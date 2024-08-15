@@ -6285,6 +6285,9 @@ msgstr ""
 msgid "Analytics|Failed to load dashboard"
 msgstr ""
 
+msgid "Analytics|Failed to update project-level settings. Please try again."
+msgstr ""
+
 msgid "Analytics|Generate with Duo"
 msgstr ""
 
@@ -20598,6 +20601,9 @@ msgid "Enter a number"
 msgstr ""
 
 msgid "Enter a number from 0 to 100."
+msgstr ""
+
+msgid "Enter a valid URL"
 msgstr ""
 
 msgid "Enter admin mode"
@@ -40608,6 +40614,9 @@ msgstr ""
 msgid "ProductAnalytics|Collector host"
 msgstr ""
 
+msgid "ProductAnalytics|Configurator connection string"
+msgstr ""
+
 msgid "ProductAnalytics|Connect your own provider"
 msgstr ""
 
@@ -40641,6 +40650,9 @@ msgstr ""
 msgid "ProductAnalytics|Dimension"
 msgstr ""
 
+msgid "ProductAnalytics|Edit project provider settings"
+msgstr ""
+
 msgid "ProductAnalytics|Events"
 msgstr ""
 
@@ -40663,9 +40675,6 @@ msgid "ProductAnalytics|Get started with product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|GitLab-managed provider"
-msgstr ""
-
-msgid "ProductAnalytics|Go to analytics settings"
 msgstr ""
 
 msgid "ProductAnalytics|Group by"
@@ -40705,6 +40714,9 @@ msgid "ProductAnalytics|Month"
 msgstr ""
 
 msgid "ProductAnalytics|No projects found"
+msgstr ""
+
+msgid "ProductAnalytics|Override the instance analytics configuration for this project."
 msgstr ""
 
 msgid "ProductAnalytics|Previous month"
@@ -40758,6 +40770,9 @@ msgstr ""
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
 msgstr ""
 
+msgid "ProductAnalytics|The connection string for your configurator instance."
+msgstr ""
+
 msgid "ProductAnalytics|The receiver of tracking events"
 msgstr ""
 
@@ -40765,9 +40780,6 @@ msgid "ProductAnalytics|The sender of tracking events"
 msgstr ""
 
 msgid "ProductAnalytics|The system is creating your analytics provider. In the meantime, you can instrument your application."
-msgstr ""
-
-msgid "ProductAnalytics|Then, return to this page and continue with the setup."
 msgstr ""
 
 msgid "ProductAnalytics|This group has no projects with product analytics onboarded in the current period."
@@ -40783,12 +40795,6 @@ msgid "ProductAnalytics|This project has analytics provider settings configured.
 msgstr ""
 
 msgid "ProductAnalytics|This table excludes projects that do not have product analytics onboarded."
-msgstr ""
-
-msgid "ProductAnalytics|To connect to your instance-level provider, you must first remove project-level provider configuration. You'll be redirected to the %{analyticsSettingsLink} page, which shows your provider's configuration settings and setup instructions."
-msgstr ""
-
-msgid "ProductAnalytics|To connect your own provider, you'll be redirected to the %{analyticsSettingsLink} page, which shows your provider's configuration settings and setup instructions."
 msgstr ""
 
 msgid "ProductAnalytics|To continue, you must agree to event storage and processing in this region."

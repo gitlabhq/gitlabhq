@@ -74,7 +74,7 @@ export default {
 <template>
   <gl-disclosure-dropdown-item :disabled="loading" :aria-busy="loading" @action="onClick">
     <template #list-item>
-      <div v-if="loading" class="gl-display-flex gl-align-items-center">
+      <div v-if="loading" class="gl-flex gl-items-center">
         <gl-loading-icon class="gl-mr-3" />
         {{ $options.i18n.loading }}
       </div>

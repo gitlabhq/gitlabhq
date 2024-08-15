@@ -165,7 +165,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown with the class', () => {
-      expect(findToggleButton().classes()).toContain('gl-text-gray-500!');
+      expect(findToggleButton().classes()).toContain('!gl-text-gray-500');
     });
 
     it("renders a hidden input with the user's namespace id", () => {

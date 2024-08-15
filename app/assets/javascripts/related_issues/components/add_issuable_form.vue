@@ -209,7 +209,7 @@ export default {
     <p v-if="hasError" class="gl-field-error">
       {{ addRelatedErrorMessage }}
     </p>
-    <div class="gl-mt-5">
+    <div class="gl-flex gl-gap-3 gl-mt-5">
       <gl-button
         ref="addButton"
         category="primary"
@@ -218,7 +218,6 @@ export default {
         :loading="isSubmitting"
         type="submit"
         size="small"
-        class="gl-mr-2"
         data-testid="add-issue-button"
       >
         {{ __('Add') }}

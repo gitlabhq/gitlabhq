@@ -96,20 +96,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
-      context 'when rely_on_work_item_type_seeder feature flag is disabled' do
-        before do
-          stub_feature_flags(rely_on_work_item_type_seeder: false)
-        end
-
-        it 'works if base work item types were not created yet' do
-          WorkItems::Type.delete_all
-
-          expect do
-            issue
-          end.to change(Issue, :count).by(1)
-        end
-      end
-
       it 'raises an error if work item types have not been created yet' do
         WorkItems::Type.delete_all
 

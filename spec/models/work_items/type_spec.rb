@@ -192,23 +192,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
           end.not_to raise_error
         end
       end
-
-      context 'when rely_on_work_item_type_seeder feature flag is disabled' do
-        before do
-          stub_feature_flags(rely_on_work_item_type_seeder: false)
-        end
-
-        it 'creates types and restrictions and returns default work item type by base type' do
-          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types).and_call_original
-          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_widgets)
-          expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
-          expect(
-            Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter
-          ).to receive(:upsert_restrictions)
-
-          expect(subject).to eq(default_issue_type)
-        end
-      end
     end
   end
 

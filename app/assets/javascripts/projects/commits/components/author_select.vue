@@ -131,7 +131,7 @@ export default {
       block
       is-check-centered
       searchable
-      class="gl-mt-3 gl-sm-mt-0"
+      class="gl-mt-3 sm:gl-mt-0"
       :items="dropdownItems"
       :header-text="__('Search by author')"
       :toggle-text="dropdownText"
@@ -145,7 +145,7 @@ export default {
         {{ searchSummarySrText }}
       </template>
       <template #list-item="{ item }">
-        <span class="gl-display-flex gl-align-items-center">
+        <span class="gl-flex gl-items-center">
           <gl-avatar
             v-if="item.avatarUrl"
             class="gl-mr-3"
@@ -154,9 +154,7 @@ export default {
             :src="item.avatarUrl"
             :alt="item.text"
           />
-          <span
-            class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-break-words gl-hyphens-auto"
-          >
+          <span class="gl-flex gl-flex-col gl-overflow-hidden gl-hyphens-auto gl-break-words">
             {{ item.text }}
             <span v-if="item.secondaryText" class="gl-text-secondary">
               {{ item.secondaryText }}

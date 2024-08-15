@@ -24,7 +24,7 @@ module QA
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
-            element 'related-issues-plus-button'
+            element 'related-issues-block'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
@@ -33,7 +33,7 @@ module QA
           end
 
           def relate_issue(issue)
-            click_element('related-issues-plus-button')
+            click_element('crud-form-toggle')
             fill_element('add-issue-field', issue.web_url)
             send_keys_to_element('add-issue-field', :enter)
           end

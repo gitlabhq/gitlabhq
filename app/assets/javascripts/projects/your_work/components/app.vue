@@ -51,7 +51,7 @@ export default {
 
 <template>
   <div>
-    <h1 class="page-title gl-font-size-h-display gl-mt-5">{{ $options.i18n.heading }}</h1>
+    <h1 class="page-title gl-mt-5 gl-text-size-h-display">{{ $options.i18n.heading }}</h1>
 
     <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
       <gl-tab v-for="tab in formattedTabs" :key="tab.text">

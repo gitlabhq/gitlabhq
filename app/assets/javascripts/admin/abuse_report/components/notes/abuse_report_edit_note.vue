@@ -90,7 +90,7 @@ export default {
       :is-submitting="isSubmitting"
       :autosave-key="autosaveKey"
       :comment-button-text="commentButtonText"
-      class="gl-pl-3 gl-mt-3"
+      class="gl-mt-3 gl-pl-3"
       @submitForm="updateNote"
       @cancelEditing="$emit('cancelEditing')"
     />

@@ -278,7 +278,7 @@ export default {
             >{{ item.humanName }}</gl-dropdown-item
           >
         </div>
-        <gl-dropdown-item v-if="hasNoResults" button-class="gl-text-gray-900!" disabled>{{
+        <gl-dropdown-item v-if="hasNoResults" button-class="!gl-text-gray-900" disabled>{{
           $options.i18n.NO_RESULTS_TEXT
         }}</gl-dropdown-item>
         <gl-loading-icon v-if="isLoading" class="gl-mb-3" size="sm" />

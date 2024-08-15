@@ -175,7 +175,7 @@ export default {
     },
     dropdownToggleClass() {
       return {
-        'gl-text-gray-500!': this.toggleLabel === this.label,
+        '!gl-text-gray-500': this.toggleLabel === this.label,
         [this.toggleClass]: true,
       };
     },
@@ -434,7 +434,7 @@ export default {
     :disabled="disabled || initialLoading"
     :text="toggleLabel"
     :block="block"
-    class="gl-min-w-20 gl-p-0!"
+    class="gl-min-w-20 !gl-p-0"
     :toggle-class="dropdownToggleClass"
     aria-labelledby="allowed-users-label"
     :data-testid="testId"
@@ -508,11 +508,11 @@ export default {
         data-testid="deploy_key-dropdown-item"
         is-check-item
         :is-checked="isSelected(key)"
-        class="gl-text-truncate"
+        class="gl-truncate"
         @click.native.capture.stop="onItemClick(key)"
       >
-        <div class="gl-text-truncate gl-font-bold">{{ key.title }}</div>
-        <div class="gl-text-gray-700 gl-text-truncate">
+        <div class="gl-truncate gl-font-bold">{{ key.title }}</div>
+        <div class="gl-truncate gl-text-gray-700">
           <gl-sprintf :message="$options.i18n.ownedBy">
             <template #image_tag>
               <gl-avatar :src="key.avatar_url" :size="24" />

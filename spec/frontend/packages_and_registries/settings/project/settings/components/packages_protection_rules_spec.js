@@ -597,11 +597,11 @@ describe('Packages protection rules project settings', () => {
       });
 
       it('renders form "add package protection"', () => {
-        expect(findProtectionRuleForm().isVisible()).toBe(true);
+        expect(findProtectionRuleForm().exists()).toBe(true);
       });
 
-      it('disables the button "add protection rule"', () => {
-        expect(findAddProtectionRuleButton().attributes('disabled')).toBeDefined();
+      it('hides the button "add protection rule"', () => {
+        expect(findAddProtectionRuleButton().exists()).toBe(false);
       });
     });
   });
