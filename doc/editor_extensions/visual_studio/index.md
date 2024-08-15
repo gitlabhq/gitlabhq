@@ -32,8 +32,8 @@ Report any issues, bugs, or feature requests in the
 
 ## Related topics
 
-- [Download the plugin](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
-- [Plugin documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/README.md)
+- [Download the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
+- [Extension documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/README.md)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension)
 
 ## Troubleshooting

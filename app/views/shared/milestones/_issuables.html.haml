@@ -5,10 +5,10 @@
   - c.with_header do
     .gl-flex-grow-2
       = title
-    .gl-ml-3.gl-flex-shrink-0.gl-font-bold.gl-whitespace-nowrap{ class: milestone_counter_class(primary) }
+    .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap{ class: milestone_counter_class(primary) }
       - if show_counter
         %span
-          = sprite_icon('issues', css_class: 'gl-vertical-align-text-bottom')
+          = sprite_icon('issues', css_class: 'gl-align-text-bottom')
           = number_with_delimiter(issuables.length)
       = render_if_exists "shared/milestones/issuables_weight", issuables: issuables
   - c.with_body do

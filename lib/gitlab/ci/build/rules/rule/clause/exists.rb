@@ -16,8 +16,6 @@ module Gitlab
           @globs = Array(clause[:paths])
           @project_path = clause[:project]
           @ref = clause[:ref]
-
-          @top_level_only = @globs.all?(&method(:top_level_glob?))
         end
 
         def satisfied_by?(_pipeline, context)
@@ -26,16 +24,11 @@ module Gitlab
 
           context = change_context(context) if @project_path
 
-          if Feature.enabled?(:rules_exist_expand_globs_early, context.project)
-            expanded_globs = expand_globs(context)
-            top_level_only = expanded_globs.all?(&method(:top_level_glob?))
+          expanded_globs = expand_globs(context)
+          top_level_only = expanded_globs.all?(&method(:top_level_glob?))
 
-            paths = worktree_paths(context, top_level_only)
-            exact_globs, extension_globs, pattern_globs = separate_globs(expanded_globs)
-          else
-            paths = worktree_paths_old(context)
-            exact_globs, extension_globs, pattern_globs = separate_globs_old(context)
-          end
+          paths = worktree_paths(context, top_level_only)
+          exact_globs, extension_globs, pattern_globs = separate_globs(expanded_globs)
 
           exact_matches?(paths, exact_globs) ||
             matches_extension?(paths, extension_globs) ||
@@ -45,13 +38,6 @@ module Gitlab
         private
 
         def separate_globs(expanded_globs)
-          grouped = expanded_globs.group_by { |glob| glob_type(glob) }
-          grouped.values_at(:exact, :extension, :pattern).map { |globs| Array(globs) }
-        end
-
-        def separate_globs_old(context)
-          expanded_globs = expand_globs(context)
-
           grouped = expanded_globs.group_by { |glob| glob_type(glob) }
           grouped.values_at(:exact, :extension, :pattern).map { |globs| Array(globs) }
         end
@@ -66,16 +52,6 @@ module Gitlab
           return [] unless context.project
 
           if top_level_only
-            context.top_level_worktree_paths
-          else
-            context.all_worktree_paths
-          end
-        end
-
-        def worktree_paths_old(context)
-          return [] unless context.project
-
-          if @top_level_only
             context.top_level_worktree_paths
           else
             context.all_worktree_paths

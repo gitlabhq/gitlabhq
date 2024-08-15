@@ -105,6 +105,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         before do
+          stub_const("::Projects::PipelinesController::POLLING_INTERVAL", 1)
           job.run
           visit_project_pipelines
         end
@@ -116,15 +117,43 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when canceling' do
-            before do
+            it 'indicates that pipelines was canceled', :sidekiq_inline do
               find('.js-pipelines-cancel-button').click
               click_button 'Stop pipeline'
-              wait_for_requests
-            end
 
-            it 'indicates that pipelines was canceled', :sidekiq_inline do
+              wait_for_requests
+
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
+            end
+
+            it 'targets the pipeline the cancel action was invoked on' do
+              allow_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+                allow(instance).to receive(:get).and_return(nil)
+              end
+
+              expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 1)
+
+              find('.js-pipelines-cancel-button').click
+
+              within_testid 'pipeline-stop-modal' do
+                expect(page).to have_content("Stop pipeline ##{pipeline.id}?")
+              end
+
+              create(
+                :ci_pipeline,
+                :running,
+                project: project,
+                source: Enums::Ci::Pipeline.sources[:push],
+                ref: 'master',
+                sha: 'sha'
+              )
+
+              expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
+
+              within_testid 'pipeline-stop-modal' do
+                expect(page).to have_content("Stop pipeline ##{pipeline.id}?")
+              end
             end
           end
         end

@@ -34,14 +34,51 @@ RSpec.describe 'cross-database foreign keys' do
       'user_group_callouts.user_id',                             # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
       'subscription_user_add_on_assignments.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
       'subscription_add_on_purchases.subscription_add_on_id',    # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
-      'sbom_component_versions.component_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/469535
-      'sbom_occurrences_vulnerabilities.sbom_occurrence_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'vulnerability_export_parts.vulnerability_export_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'vulnerability_finding_signatures.finding_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'vulnerability_finding_links.vulnerability_occurrence_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'vulnerability_flags.vulnerability_occurrence_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
-      'dast_site_validations.dast_site_token_id',                # https://gitlab.com/gitlab-org/gitlab/-/issues/474985
-      'dast_sites.dast_site_validation_id'                       # https://gitlab.com/gitlab-org/gitlab/-/issues/476657
+
+      'sbom_component_versions.component_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/479140
+      'sbom_occurrences.component_id',
+      'sbom_occurrences.component_version_id',
+      'sbom_occurrences.source_id',
+      'sbom_occurrences.source_package_id',
+      'sbom_occurrences_vulnerabilities.sbom_occurrence_id',
+      'sbom_occurrences_vulnerabilities.vulnerability_id',
+
+      'security_findings.scanner_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/479141
+      'security_findings.scan_id',
+
+      'vulnerabilities.finding_id',                              # https://gitlab.com/gitlab-org/gitlab/-/issues/479142
+      'vulnerability_export_parts.vulnerability_export_id',
+      'vulnerability_external_issue_links.vulnerability_id',
+      'vulnerability_finding_evidences.vulnerability_occurrence_id',
+      'vulnerability_finding_links.vulnerability_occurrence_id',
+      'vulnerability_finding_signatures.finding_id',
+      'vulnerability_findings_remediations.vulnerability_occurrence_id',
+      'vulnerability_findings_remediations.vulnerability_remediation_id',
+      'vulnerability_flags.vulnerability_occurrence_id',
+      'vulnerability_issue_links.vulnerability_id',
+      'vulnerability_merge_request_links.vulnerability_id',
+      'vulnerability_occurrence_identifiers.occurrence_id',
+      'vulnerability_occurrence_identifiers.identifier_id',
+      'vulnerability_occurrence_pipelines.occurrence_id',
+      'vulnerability_occurrences.scanner_id',
+      'vulnerability_occurrences.primary_identifier_id',
+      'vulnerability_occurrences.vulnerability_id',
+      'vulnerability_occurrences.vulnerability_id',
+      'vulnerability_reads.vulnerability_id',
+      'vulnerability_reads.scanner_id',
+      'vulnerability_state_transitions.vulnerability_id',
+      'vulnerability_user_mentions.vulnerability_id',
+
+      'dast_profile_schedules.dast_profile_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/479141
+      'dast_profiles.dast_scanner_profile_id',
+      'dast_profiles.dast_site_profile_id',
+      'dast_profiles_pipelines.dast_profile_id',
+      'dast_scanner_profiles_builds.dast_scanner_profile_id',
+      'dast_site_profile_secret_variables.dast_site_profile_id',
+      'dast_site_profiles.dast_site_id',
+      'dast_site_profiles_builds.dast_site_profile_id',
+      'dast_site_validations.dast_site_token_id',
+      'dast_sites.dast_site_validation_id'
     ]
   end
 

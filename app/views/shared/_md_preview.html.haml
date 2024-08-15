@@ -9,9 +9,9 @@
       = _('Only project members can comment.')
 
 .md-area.position-relative
-  .md-header.gl-px-3.gl-rounded-top-base.gl-border-b.gl-border-gray-100
-    .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-justify-content-space-between
-      .md-header-toolbar.gl-display-flex.gl-py-3.gl-flex-wrap.gl-gap-y-3
+  .md-header.gl-px-3.gl-rounded-t-base.gl-border-b.gl-border-gray-100
+    .gl-flex.gl-items-center.gl-flex-wrap.gl-justify-between
+      .md-header-toolbar.gl-flex.gl-py-3.gl-flex-wrap.gl-gap-y-3
         = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'js-md-preview-button', value: 'preview' }) do
           = _('Preview')
         = render 'shared/blob/markdown_buttons', supports_quick_actions: supports_quick_actions

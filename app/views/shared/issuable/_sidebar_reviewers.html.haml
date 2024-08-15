@@ -1,7 +1,7 @@
 - issuable_type = issuable_sidebar[:type]
 
 .js-sidebar-reviewers-root{ data: { field: issuable_type, signed_in: signed_in } }
-  .title.hide-collapsed.gl-display-flex.gl-justify-content-space-between.gl-align-items-center{ class: 'gl-mb-0!' }
+  .title.hide-collapsed.gl-flex.gl-justify-between.gl-items-center{ class: '!gl-mb-0' }
     %span.gl-font-bold= _('Reviewers')
     = gl_loading_icon(inline: true)
 

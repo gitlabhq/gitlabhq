@@ -4,6 +4,6 @@
 .js-sidebar-assignees-root{ data: { field: issuable_type,
   max_assignees: dropdown_options[:data][:"max-select"],
   directly_invite_members: can_admin_project_member?(@project) } }
-  .title.hide-collapsed.gl-display-flex.gl-justify-content-space-between.gl-align-items-center{ class: 'gl-mb-0!' }
+  .title.hide-collapsed.gl-flex.gl-justify-between.gl-items-center{ class: '!gl-mb-0' }
     %span.gl-font-bold= s_('Label|Assignee')
     = gl_loading_icon(inline: true)

@@ -12,7 +12,6 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }
   let_it_be(:remote_mirror) { create(:remote_mirror, project: project) }
-  let_it_be(:member) { create(:project_member, :maintainer, project: project, created_by: user) }
   let_it_be(:review) { create(:review, project: project, merge_request: merge_request, author: user) }
   let_it_be(:key) { create(:key, user: user) }
   let_it_be(:bulk_import) { create(:bulk_import, :finished, :with_configuration) }
@@ -31,6 +30,11 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
       'NotifyPreview#note_merge_request_email_for_diff_discussion' =>
         'https://gitlab.com/gitlab-org/gitlab/-/issues/372885'
     }
+  end
+
+  before_all do
+    create(:project_member, :maintainer, source: project, created_by: user)
+    create(:project_member, :invited, source: project, created_by: user)
   end
 
   subject { preview.call(email) }

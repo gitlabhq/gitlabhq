@@ -11,7 +11,7 @@
     = render "shared/label_row", label: label, force_priority: force_priority
     %ul.label-actions-list
       - if can?(current_user, :admin_label, @project)
-        %li.gl-display-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
+        %li.gl-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
           dom_id: dom_id(label), type: label.type } }
           = render Pajamas::ButtonComponent.new(category: :tertiary,
             size: :small,
@@ -22,7 +22,7 @@
             icon: 'star-o',
             button_options: { class: 'add-priority has-tooltip', title: _('Prioritize'), aria_label: _('Prioritize label'), data: { placement: 'bottom' } })
       - if current_user
-        %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3.gl-mt-1
+        %li.gl-inline-block.label-subscription.js-label-subscription.gl-ml-3.gl-mt-1
           - if label.can_subscribe_to_label_in_different_levels?
             = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-unsubscribe-button gl-w-full #{'hidden' if status.unsubscribed?}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
               = _('Unsubscribe')
@@ -42,7 +42,7 @@
             = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-subscribe-button gl-w-full', data: { status: status, url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
               = label_subscription_toggle_button_text(label, @project)
       - if can?(current_user, :admin_label, label)
-        %li.gl-display-inline-block
+        %li.gl-inline-block
           - can_promote = label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
           .js-vue-label-actions{ data: {
             label_id: label.id,

@@ -21,7 +21,6 @@ Style/IfUnlessModifier:
     - 'app/helpers/preferences_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/releases_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
     - 'app/helpers/routing/artifacts_helper.rb'
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/snippets_helper.rb'

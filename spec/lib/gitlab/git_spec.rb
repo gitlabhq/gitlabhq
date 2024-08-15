@@ -9,38 +9,15 @@ RSpec.describe Gitlab::Git do
   describe '.ref_name' do
     let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + "an_invalid_ref_\xE5" }
 
-    subject(:ref_name) { described_class.ref_name(ref) }
-
     it 'ensure ref is a valid UTF-8 string' do
-      expect(ref_name).to eq("an_invalid_ref_%E5")
+      expect(described_class.ref_name(ref)).to eq("an_invalid_ref_%E5")
     end
 
     context 'when ref contains characters \x80 - \xFF' do
       let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + "\x90" }
 
       it 'correctly converts it' do
-        expect(ref_name).to eq("%90")
-      end
-    end
-
-    context 'with different types' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:ref, :types, :result) do
-        'refs/heads/master'          | 'tags|heads|remotes' | 'master'
-        'refs/tags/v1.0'             | 'tags|heads|remotes' | 'v1.0'
-        'refs/heads/master'          | 'heads'              | 'master'
-        'refs/tags/v1.0'             | 'tags'               | 'v1.0'
-        'refs/heads/master'          | 'tags'               | 'refs/heads/master'
-        'refs/tags/v1.0'             | 'heads'              | 'refs/tags/v1.0'
-        'refs/remotes/origin/master' | 'tags|heads|remotes' | 'origin/master'
-        'refs/remotes/origin/master' | 'tags|heads'         | 'refs/remotes/origin/master'
-      end
-
-      with_them do
-        subject(:ref_name) { described_class.ref_name(ref, types: types) }
-
-        it { is_expected.to eq(result) }
+        expect(described_class.ref_name(ref)).to eq("%90")
       end
     end
   end

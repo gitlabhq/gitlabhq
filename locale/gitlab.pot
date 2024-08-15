@@ -25489,6 +25489,12 @@ msgstr ""
 msgid "Group name (your organization)"
 msgstr ""
 
+msgid "Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis."
+msgstr ""
+
+msgid "Group name must start with a letter, digit, emoji, or underscore."
+msgstr ""
+
 msgid "Group navigation"
 msgstr ""
 
@@ -32293,6 +32299,18 @@ msgstr ""
 msgid "Max session time"
 msgstr ""
 
+msgid "Max size for repositories within this group, including LFS files. %{repository_size_limit_link}."
+msgstr ""
+
+msgid "Max size for repositories within this group. %{repository_size_limit_link}."
+msgstr ""
+
+msgid "Max size of this project's repository, including LFS files. %{repository_size_limit_link}."
+msgstr ""
+
+msgid "Max size of this project's repository. %{repository_size_limit_link}."
+msgstr ""
+
 msgid "Maximum 20 characters"
 msgstr ""
 
@@ -34457,6 +34475,9 @@ msgstr ""
 msgid "Must be 90 days or more."
 msgstr ""
 
+msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgstr ""
+
 msgid "My awesome group"
 msgstr ""
 
@@ -34762,7 +34783,10 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
-msgid "Naming, topics, avatar"
+msgid "Naming, description, topics"
+msgstr ""
+
+msgid "Naming, description, visibility"
 msgstr ""
 
 msgid "Naming, visibility"
@@ -42282,6 +42306,9 @@ msgstr ""
 msgid "ProjectSettings|Product analytics"
 msgstr ""
 
+msgid "ProjectSettings|Project topics"
+msgstr ""
+
 msgid "ProjectSettings|Project visibility"
 msgstr ""
 
@@ -42418,9 +42445,6 @@ msgid "ProjectSettings|This setting is applied on the server level but has been 
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
-msgstr ""
-
-msgid "ProjectSettings|Topics"
 msgstr ""
 
 msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."
@@ -57190,7 +57214,7 @@ msgstr ""
 msgid "Update your project name and description."
 msgstr ""
 
-msgid "Update your project name, topics, description, and avatar."
+msgid "Update your project name, description, avatar, and topics. %{link_start}Learn more about projects%{link_end}."
 msgstr ""
 
 msgid "UpdateProject|Are you sure you want to prune unreachable objects?"

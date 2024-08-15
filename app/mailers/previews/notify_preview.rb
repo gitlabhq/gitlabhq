@@ -461,7 +461,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def member
-    @member ||= Member.last
+    @member ||= Member.non_invite.last
   end
 
   def key

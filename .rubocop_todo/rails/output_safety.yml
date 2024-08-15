@@ -31,7 +31,6 @@ Rails/OutputSafety:
     - 'app/helpers/page_layout_helper.rb'
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/projects_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
     - 'app/helpers/safe_format_helper.rb'
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/sidebars_helper.rb'

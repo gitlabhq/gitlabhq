@@ -8,7 +8,7 @@
 %h1.gl-sr-only= @breadcrumb_title
 
 - if can?(current_user, :admin_group, @group)
-  = render ::Layouts::SettingsBlockComponent.new(_('Naming, visibility'),
+  = render ::Layouts::SettingsBlockComponent.new(_('Naming, description, visibility'),
     id: 'js-general-settings',
     testid: 'general-settings',
     expanded: true) do |c|

@@ -40,7 +40,7 @@
 
     = render "shared/tokens/scopes_list", token: @application
 
-.gl-display-flex.gl-justify-content-space-between
+.gl-flex.gl-justify-between
   %div
     - if @created
       = link_button_to _('Continue'), index_path, class: 'gl-mr-3', variant: :confirm

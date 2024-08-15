@@ -7,33 +7,34 @@
       .form-group.col-md-5
         = f.label :name, s_('Groups|Group name'), class: 'label-bold'
         = f.text_field :name, class: 'form-control', data: { testid: 'group-name-field' }
-        .text-muted
+        %span.form-text.text-muted
           = s_('Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
-      .form-group.col-md-7
+      .form-group.col-md-4
         = f.label :id, s_('Groups|Group ID'), class: 'label-bold'
-        = f.text_field :id, class: 'form-control w-auto', readonly: true
+        = f.text_field :id, class: 'form-control gl-form-input', readonly: true
 
-    .row.gl-mt-3
+    .form-group.gl-mt-4.gl-mb-9
+      = render Pajamas::AvatarComponent.new(@group, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
+      = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold gl-block'
+      = render 'shared/choose_avatar_button', f: f
+      - if @group.avatar?
+        %hr
+        = link_button_to s_('Groups|Remove avatar'), group_avatar_path(@group.to_param), aria: { label: s_('Groups|Remove avatar') }, data: { confirm: s_('Groups|Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
+
+    .row
       .form-group.col-md-9
         = f.label :description, s_('Groups|Group description (optional)'), class: 'label-bold'
-        = f.text_area :description, class: 'form-control', rows: 3, maxlength: 500
+        = f.text_area :description, class: 'form-control', rows: 4, maxlength: 500
 
-    .row.gl-mt-3
+    = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
+    = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
+
+    .row
       .form-group.col-md-5
         = f.label :description, s_('Groups|Group README'), class: 'label-bold'
         #js-group-settings-readme{ data: group_settings_readme_app_data(@group) }
 
-  = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
-  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
-
-  .form-group.gl-mt-3.gl-mb-6
-    = render Pajamas::AvatarComponent.new(@group, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
-    = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold gl-block'
-    = render 'shared/choose_avatar_button', f: f
-    - if @group.avatar?
-      %hr
-      = link_button_to s_('Groups|Remove avatar'), group_avatar_path(@group.to_param), aria: { label: s_('Groups|Remove avatar') }, data: { confirm: s_('Groups|Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
   .form-group.gl-form-group
     = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
   = f.submit s_('Groups|Save changes'), pajamas_button: true, class: 'js-dirty-submit', data: { testid: 'save-name-visibility-settings-button' }

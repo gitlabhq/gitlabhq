@@ -23,7 +23,7 @@ module Search
 
     def general_settings
       [
-        { text: _("Naming, topics, avatar"), href: edit_project_path(project, anchor: 'js-general-settings') },
+        { text: _("Naming, description, topics"), href: edit_project_path(project, anchor: 'js-general-settings') },
         { text: _("Visibility, project features, permissions"),
           href: edit_project_path(project, anchor: 'js-shared-permissions') },
         { text: _("Badges"), href: edit_project_path(project, anchor: 'js-badges-settings') },

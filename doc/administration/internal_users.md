@@ -27,7 +27,6 @@ when a snippet's original author wasn't available. For example, when the user wa
 
 Other examples of internal users:
 
-- [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/278bc9018dd1515a10cbf15b6c6cd55cb5431407/app/models/user.rb#L950-960)
 - [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
@@ -36,3 +35,15 @@ Other examples of internal users:
 - Resource access tokens, including [project access tokens](../user/project/settings/project_access_tokens.md)
   and [group access tokens](../user/group/settings/group_access_tokens.md), which are
   `project_{project_id}_bot_{random_string}` and `group_{group_id}_bot_{random_string}` users with a `PersonalAccessToken`.
+
+## GitLab Admin Bot
+
+[GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/1d38cfdbed081f8b3fa14b69dd743440fe85081b/lib/users/internal.rb#L104)
+is an internal user that cannot be accessed or modified by regular users and is responsible for many tasks including:
+
+- Applying [default compliance frameworks](../user/group/compliance_frameworks.md#default-compliance-frameworks) to
+  projects.
+- [Automatically deactivating dormant users](moderate_users.md#automatically-deactivate-dormant-users).
+- [Automatically deleting unconfirmed users](moderate_users.md#automatically-delete-unconfirmed-users).
+- [Deleting inactive projects](inactive_project_deletion.md).
+- [Locking users](../security/unlock_user.md).

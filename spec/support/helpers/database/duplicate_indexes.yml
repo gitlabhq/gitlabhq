@@ -85,9 +85,6 @@ requirements_management_test_reports:
 sbom_component_versions:
   index_sbom_component_versions_on_component_id_and_version:
   - index_sbom_component_versions_on_component_id
-sbom_occurrences:
-  index_unarchived_occurrences_on_version_id_and_traversal_ids:
-  - index_sbom_occurrences_on_component_version_id
 search_namespace_index_assignments:
   index_search_namespace_index_assignments_uniqueness_index_type:
   - index_search_namespace_index_assignments_on_namespace_id

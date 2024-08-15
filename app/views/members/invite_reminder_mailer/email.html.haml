@@ -1,0 +1,12 @@
+%tr
+  %td.text-content
+    %h2.invite-header
+      = @email_instance.salutation_html
+    %p.invite-body
+      - options = { inviter: link_to(@member.created_by.name, user_url(@member.created_by)) }.merge(reminder_common_body_options(@member))
+      = safe_format(@email_instance.body_text,
+        options.merge(tag_pair(tag.strong,
+        :strong_start, :strong_end)).merge(@email_instance.extra_body_options(@member.created_at.to_date)))
+    %p.invite-actions
+      = link_to s_('InviteReminderEmail|Accept invitation'), invite_url(@token), class: 'invite-btn-join'
+      = link_to s_('InviteReminderEmail|Decline invitation'), decline_invite_url(@token), class: 'invite-btn-decline'

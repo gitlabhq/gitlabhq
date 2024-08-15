@@ -12,15 +12,15 @@
         %th= _('Created')
         %th
     %tr
-      %td{ class: 'gl-py-3!' }
+      %td{ class: '!gl-py-3' }
         = slack_integration.team_name
       - if integration.project_level?
-        %td{ class: 'gl-py-3!' }
+        %td{ class: '!gl-py-3' }
           = slack_integration.alias
-      %td{ class: 'gl-py-3!' }
+      %td{ class: '!gl-py-3' }
         = time_ago_with_tooltip(slack_integration.created_at)
-      %td{ class: 'gl-py-3!' }
-        .controls.gl-display-flex.gl-justify-content-end.gl-gap-3
+      %td{ class: '!gl-py-3' }
+        .controls.gl-flex.gl-justify-end.gl-gap-3
           - if integration.project_level?
             = render Pajamas::ButtonComponent.new(href: edit_project_settings_slack_path(integration.parent)) do
               = _('Edit')

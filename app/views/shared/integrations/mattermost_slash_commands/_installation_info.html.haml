@@ -1,5 +1,5 @@
 .services-installation-info
   - unless integration.activated?
-    = render Pajamas::ButtonComponent.new(href: new_project_mattermost_path(@project), button_text_classes: 'gl-display-flex gl-gap-2') do
+    = render Pajamas::ButtonComponent.new(href: new_project_mattermost_path(@project), button_text_classes: 'gl-flex gl-gap-2') do
       = custom_icon('mattermost_logo')
       = s_("MattermostService|Add to Mattermost")

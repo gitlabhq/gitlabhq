@@ -26,7 +26,7 @@
             - elsif note_counter == 0
               - counter = badge_counter if local_assigns[:badge_counter]
               - badge_class = "hidden" if @fresh_discussion || counter.nil?
-              %span.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-font-sm.design-note-pin.small.user-avatar{ class: badge_class }
+              %span.gl-flex.gl-items-center.gl-justify-center.gl-text-sm.design-note-pin.small.user-avatar{ class: badge_class }
                 = counter
     .timeline-content
       .note-header
@@ -67,8 +67,8 @@
           - if note.system
             .system-note-commit-list-toggler.hide
               = _("Toggle commit list")
-              = sprite_icon('chevron-down', css_class: 'js-chevron-down gl-ml-1 gl-vertical-align-text-bottom')
-              = sprite_icon('chevron-up', css_class: 'js-chevron-up gl-ml-1 gl-vertical-align-text-bottom gl-hidden')
+              = sprite_icon('chevron-down', css_class: 'js-chevron-down gl-ml-1 gl-align-text-bottom')
+              = sprite_icon('chevron-up', css_class: 'js-chevron-up gl-ml-1 gl-align-text-bottom gl-hidden')
         - if note.attachment.url
           .note-attachment
             - if note.attachment.image?

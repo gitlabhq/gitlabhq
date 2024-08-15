@@ -165,8 +165,8 @@
     - if milestone_ref.present?
       .block.reference
         = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport', class: 'sidebar-collapsed-icon js-dont-change-state')
-        .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
-          %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-whitespace-nowrap
+        .gl-flex.gl-items-center.gl-justify-between.gl-mb-2.hide-collapsed
+          %span.gl-overflow-hidden.gl-text-ellipsis.gl-whitespace-nowrap
             = s_('MilestoneSidebar|Reference:')
             %span{ title: milestone_ref }
               = milestone_ref

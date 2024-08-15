@@ -73,7 +73,7 @@ Analysis of the web application occurs on every code commit. As part of the CI/C
 application is built, deployed to a test environment, and subjected to the following tests:
 
 - Test application for known attack vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [API Security](dast_api/index.md).
+- Analysis of APIs for known attack vectors - [API Security](api_security_testing/index.md).
 - Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
 
 ### Dependency analysis

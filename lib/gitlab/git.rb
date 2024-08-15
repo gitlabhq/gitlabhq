@@ -59,8 +59,8 @@ module Gitlab
     class << self
       include Gitlab::EncodingHelper
 
-      def ref_name(ref, types: 'tags|heads|remotes')
-        encode_utf8_with_escaping!(ref).sub(%r{\Arefs/(#{types})/}, '')
+      def ref_name(ref)
+        encode_utf8_with_escaping!(ref).sub(%r{\Arefs/(tags|heads|remotes)/}, '')
       end
 
       def branch_name(ref)

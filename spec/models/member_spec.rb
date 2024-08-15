@@ -861,6 +861,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.with_created_by' do
+    it 'only returns members that are created_by a user' do
+      invited_member_by_user = create(:group_member, :created_by)
+      another_member_by_user = create(:group_member, :created_by, source: invited_member_by_user.group)
+      create(:group_member)
+
+      expect(described_class.with_created_by).to contain_exactly(invited_member_by_user, another_member_by_user)
+    end
+  end
+
   describe '.valid_email?' do
     it 'is a valid email format' do
       expect(described_class.valid_email?('foo')).to eq(false)
@@ -1218,15 +1228,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   describe '#send_invitation_reminder' do
-    subject { member.send_invitation_reminder(0) }
+    subject(:send_invitation_reminder) { member.send_invitation_reminder(0) }
 
     context 'an invited group member' do
       let!(:member) { create(:group_member, :invited) }
 
-      it 'sends a reminder' do
-        expect_any_instance_of(NotificationService).to receive(:invite_member_reminder).with(member, member.raw_invite_token, 0)
+      it 'enqueues a reminder email' do
+        expect(Members::InviteReminderMailer)
+          .to receive(:email).with(member, member.raw_invite_token, 0).and_call_original
 
-        subject
+        expect { send_invitation_reminder }.to have_enqueued_mail(Members::InviteReminderMailer, :email)
       end
     end
 
@@ -1235,13 +1246,13 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       before do
         member.instance_variable_set(:@raw_invite_token, nil)
-        allow_any_instance_of(NotificationService).to receive(:invite_member_reminder)
+        allow(Members::InviteReminderMailer).to receive(:email).and_call_original
       end
 
       it 'generates a new token' do
         expect(member).to receive(:generate_invite_token!)
 
-        subject
+        send_invitation_reminder
       end
     end
 
@@ -1249,9 +1260,9 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       let!(:member) { create(:group_member) }
 
       it 'does not send a reminder' do
-        expect_any_instance_of(NotificationService).not_to receive(:invite_member_reminder)
+        expect(Members::InviteReminderMailer).not_to receive(:email)
 
-        subject
+        send_invitation_reminder
       end
     end
   end

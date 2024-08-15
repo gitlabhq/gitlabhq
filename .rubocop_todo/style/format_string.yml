@@ -44,7 +44,6 @@ Style/FormatString:
     - 'app/helpers/projects/project_members_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/registrations_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/ssh_keys_helper.rb'
     - 'app/helpers/tags_helper.rb'

@@ -193,7 +193,7 @@ Pipelines now include a DAST job.
 
 ### API scan
 
-- The [DAST API analyzer](../dast_api/index.md) is used for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
+- The [API security testing analyzer](../api_security_testing/index.md) is used for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
 
 ### URL scan
 
@@ -358,8 +358,8 @@ including a large number of false positives.
 | `DAST_ADVERTISE_SCAN`                           | boolean       | Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. |
 | `DAST_AGGREGATE_VULNERABILITIES`                | boolean       | Vulnerability aggregation is set to `true` by default. To disable this feature and see each vulnerability individually set to `false`. |
 | `DAST_ALLOWED_HOSTS`                            | Comma-separated list of strings | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. Headers set using `DAST_REQUEST_HEADERS` are added to every request made to these hostnames. Example, `site.com,another.com`. |
-| `DAST_API_HOST_OVERRIDE` <sup>1</sup>           | string        | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/configuration/variables.md). |
-| `DAST_API_SPECIFICATION` <sup>1</sup>           | URL or string | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/configuration/variables.md). |
+| `DAST_API_HOST_OVERRIDE` <sup>1</sup>           | string        | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [API security testing scan](../api_security_testing/configuration/variables.md). |
+| `DAST_API_SPECIFICATION` <sup>1</sup>           | URL or string | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [API security testing scan](../api_security_testing/configuration/variables.md). |
 | `DAST_AUTO_UPDATE_ADDONS`                       | boolean       | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false`. |
 | `DAST_DEBUG` <sup>1</sup>                       | boolean       | Enable debug message output. Default: `false`. |
 | `DAST_EXCLUDE_RULES`                            | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. |

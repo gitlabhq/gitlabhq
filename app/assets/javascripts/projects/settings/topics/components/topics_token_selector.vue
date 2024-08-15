@@ -14,7 +14,7 @@ export default {
     GlSprintf,
   },
   i18n: {
-    topicsTitle: s__('ProjectSettings|Topics'),
+    topicsTitle: s__('ProjectSettings|Project topics'),
     topicsHelpText: s__(
       'ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}.',
     ),

@@ -37,7 +37,7 @@
     - load_max_project_member_accesses(projects) # Prime cache used in shared/projects/project view rendered below
     - load_catalog_resources(projects)
     - if card_mode
-      .projects-list.gl-text-secondary.gl-w-full.gl-display-flex.gl-flex-direction-column.gl-lg-flex-direction-row.gl-gap-4.gl-overflow-x-auto{ class: css_classes }
+      .projects-list.gl-text-secondary.gl-w-full.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-4.gl-overflow-x-auto{ class: css_classes }
         - projects.take(projects_limit).each_with_index do |project, i| # rubocop: disable CodeReuse/ActiveRecord -- it's Enumerable#take
 
           = render "shared/projects/project_card", project: project, skip_namespace: skip_namespace,

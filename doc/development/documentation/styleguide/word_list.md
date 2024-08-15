@@ -435,7 +435,7 @@ Use sentence case for **Code explanation**.
 On first mention on a page, use **GitLab Duo Code explanation**.
 Thereafter, use **Code explanation** by itself.
 
-## Code Generation
+## code generation
 
 Code Suggestions has evolved to include two primary features:
 

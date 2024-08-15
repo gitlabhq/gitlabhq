@@ -218,7 +218,6 @@ Layout/LineLength:
     - 'app/helpers/projects/security/configuration_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/registrations_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
     - 'app/helpers/repository_languages_helper.rb'
     - 'app/helpers/routing/pseudonymization_helper.rb'
     - 'app/helpers/search_helper.rb'

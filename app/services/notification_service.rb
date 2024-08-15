@@ -568,10 +568,6 @@ class NotificationService
     mailer.member_about_to_expire_email(member.real_source_type, member.id).deliver_later
   end
 
-  def invite_member_reminder(group_member, token, reminder_index)
-    mailer.member_invited_reminder_email(group_member.real_source_type, group_member.id, token, reminder_index).deliver_later
-  end
-
   def project_was_moved(project, old_path_with_namespace)
     recipients = project_moved_recipients(project)
     recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)

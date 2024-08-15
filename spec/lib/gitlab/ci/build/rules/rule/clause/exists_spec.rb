@@ -60,14 +60,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
           it { is_expected.to be_truthy }
         end
 
-        context 'when the variable matches and rules_exist_expand_globs_early is disabled' do
-          before do
-            stub_feature_flags(rules_exist_expand_globs_early: false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
-
         context 'when the variable does not match' do
           let(:globs) { ['$FULL_PATH_INVALID'] }
 

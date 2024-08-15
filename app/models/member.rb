@@ -154,6 +154,7 @@ class Member < ApplicationRecord
   scope :not_accepted_invitations_by_user, ->(user) { not_accepted_invitations.where(created_by: user) }
   scope :not_expired, ->(today = Date.current) { where(arel_table[:expires_at].gt(today).or(arel_table[:expires_at].eq(nil))) }
   scope :expiring_and_not_notified, ->(date) { where("expiry_notified_at is null AND expires_at >= ? AND expires_at <= ?", Date.current, date) }
+  scope :with_created_by, -> { where.associated(:created_by) }
 
   scope :created_today, -> do
     now = Date.current
@@ -526,7 +527,9 @@ class Member < ApplicationRecord
 
     generate_invite_token! unless @raw_invite_token
 
-    run_after_commit_or_now { notification_service.invite_member_reminder(self, @raw_invite_token, reminder_index) }
+    run_after_commit_or_now do
+      Members::InviteReminderMailer.email(self, @raw_invite_token, reminder_index).deliver_later
+    end
   end
 
   def create_notification_setting

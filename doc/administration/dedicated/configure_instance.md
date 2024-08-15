@@ -182,14 +182,31 @@ To enable an Outbound Private Link:
      required validation, and let GitLab know in the support ticket that you are using this option. If `Acceptance Required` is set to Yes on your
      Endpoint Service, also note this on the support ticket because Dedicated will need to initiate the connection without Private DNS, wait for you
      to confirm it has been accepted, and then update the connection to enable the use of Private DNS.
-   - Dedicated can manage a Private Hosted Zone (PHZ) within the Dedicated AWS Account and alias any arbitrary DNS names to the Endpoint, directing
-     requests for those names to your Endpoint Service. This may be useful if you have multiple DNS names/aliases that will be accessed using a
-     single Endpoint (for example, if you are running a reverse proxy to connect to more than one service in your environment), or if the domain you
-     want to use is not public and cannot be validated for use by Private DNS. Let GitLab know on the support ticket if you are using this option and
-     provide a list of DNS names that should resolve to the Private Link Endpoint. This list can be updated as needed in future.
+   - Dedicated can manage a private hosted zone (PHZ) within the Dedicated AWS account and alias DNS names to the endpoint, directing requests for those names to your endpoint service. These aliases are often referred to as PHZ entries. For more information, see [Private hosted zones](#private-hosted-zones).
 
 GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
 connections made from the tenant instance are directed through the PrivateLink into your VPC.
+
+#### Private hosted zones
+
+You can use a private hosted zone (PHZ) if:
+
+- You have multiple DNS names or aliases that will be accessed using a single endpoint. For example, if you are running a reverse proxy to connect to more than one service in your environment.
+- The domain you want to use is not public and cannot be validated for use by private DNS.
+
+To use private hosted zones, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). In the support ticket, provide a list of DNS names that should resolve to the endpoint service for the outbound private link. The list can be updated as needed.
+
+When using your Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain. This is because:
+
+1. The first subdomain becomes the name of the PHZ.
+1. The second subdomain becomes the record entry for the alias.
+
+For example:
+
+- This is a valid PHZ entry: `subdomain2.subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+- This is an invalid PHZ entry: `subdomain1.<your-tenant-id>.gitlab-dedicated.com`.
+
+If you don't use the Dedicated instance domain, the PHZ name and a PHZ entry in the format `phz-entry.phz-name.com` is still required.
 
 ### Custom certificates
 

@@ -213,7 +213,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
           script: echo Hello, World!
           rules:
             - exists:
-              - $VAR_COMBINED # matches with FF rules_exist_expand_globs_early enabled
+              - $VAR_COMBINED # matches
 
         job3:
           script: echo Hello, World!
@@ -246,17 +246,6 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         it 'creates all relevant jobs' do
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('job1', 'job2')
-        end
-
-        context 'when rules_exist_expand_globs_early is disabled' do
-          before do
-            stub_feature_flags(rules_exist_expand_globs_early: false)
-          end
-
-          it 'creates all relevant jobs' do
-            expect(pipeline).to be_persisted
-            expect(build_names).to contain_exactly('job1')
-          end
         end
       end
     end

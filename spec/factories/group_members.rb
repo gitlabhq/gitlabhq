@@ -22,6 +22,10 @@ FactoryBot.define do
       end
     end
 
+    trait(:created_by) do
+      created_by { association(:user) }
+    end
+
     trait(:ldap) do
       ldap { true }
     end
