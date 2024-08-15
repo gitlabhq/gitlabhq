@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.InclusiveLanguage
+# Warning: gitlab_base.InclusiveLanguage
 # Suggests alternatives for non-inclusive language.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/

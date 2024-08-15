@@ -12,18 +12,18 @@
   = render_if_exists 'admin/dashboard/stats_active_users_row', users_statistics: @users_statistics
 
   %tr.gl-bg-gray-10.gl-text-gray-900
-    %td.gl-p-5!
+    %td{ class: '!gl-p-5' }
       %strong
         = s_('AdminArea|Blocked users')
-    %td.gl-text-right{ class: 'gl-p-5!' }
+    %td.gl-text-right{ class: '!gl-p-5' }
       %strong
         = @users_statistics&.blocked
   %tr.gl-bg-gray-10.gl-text-gray-900
-    %td.gl-p-5!
+    %td{ class: '!gl-p-5' }
       %strong
         = s_('AdminArea|Total users')
       %span
         (#{s_('AdminArea|active users + blocked users')})
-    %td.gl-text-right{ class: 'gl-p-5!' }
+    %td.gl-text-right{ class: '!gl-p-5' }
       %strong
         = @users_statistics&.total

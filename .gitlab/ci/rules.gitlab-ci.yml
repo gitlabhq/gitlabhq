@@ -1444,7 +1444,7 @@
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
       allow_failure: true
 
-.frontend:rules:jest-vue3:
+.frontend:rules:jest-vue3-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly
 

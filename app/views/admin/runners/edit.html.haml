@@ -8,7 +8,7 @@
 
 - if @runner.project_type?
   .gl-overflow-auto
-    %h4.gl-font-lg.gl-my-5= _('Restrict projects for this runner')
+    %h4.gl-text-lg.gl-my-5= _('Restrict projects for this runner')
 
   - if @runner.runner_projects.any?
     %table.table{ data: { testid: 'assigned-projects' } }

@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.LatinTerms
+# Warning: gitlab_base.LatinTerms
 #
 # Checks for use of Latin terms.
 # Uses https://github.com/errata-ai/Google/blob/master/Google/Latin.yml for ideas.

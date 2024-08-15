@@ -217,7 +217,7 @@ export default {
         : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
     },
     canLockWorkItem() {
-      return this.canUpdate && this.glFeatures.workItemsBeta;
+      return this.canUpdate;
     },
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;

@@ -277,7 +277,7 @@ jest-build-cache:
 jest-build-cache-vue3:
   extends:
     - jest-build-cache
-    - .frontend:rules:jest-vue3
+    - .frontend:rules:jest
     - .vue3
 
 jest:
@@ -318,7 +318,7 @@ jest-with-fixtures:
 jest vue3:
   extends:
     - jest
-    - .frontend:rules:jest-vue3
+    - .frontend:rules:jest-vue3-nightly
     - .vue3
   needs:
     - !reference [.with-jest-build-cache-vue3-needs, needs]
@@ -326,13 +326,49 @@ jest vue3:
 jest-with-fixtures vue3:
   extends:
     - jest-with-fixtures
-    - .frontend:rules:jest-vue3
+    - .frontend:rules:jest-vue3-nightly
     - .vue3
   needs:
     - !reference ["jest vue3", needs]
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
+
+jest vue3 mr:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:jest
+    - .vue3
+  needs:
+    - !reference [.with-jest-build-cache-vue3-needs, needs]
+  artifacts:
+    name: vue3-mr-junit
+    expire_in: 31d
+    when: always
+    paths:
+      - junit_jest.xml
+  parallel: 6
+  script:
+    - run_timed_command "yarn jest:ci:vue3-mr:without-fixtures"
+  allow_failure: true
+
+jest-with-fixtures vue3 mr:
+  extends:
+    - jest vue3 mr
+    - .repo-from-artifacts
+  needs:
+    - !reference [.with-jest-build-cache-vue3-needs, needs]
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+  artifacts:
+    name: vue3-mr-junit
+    expire_in: 31d
+    when: always
+    paths:
+      - junit_jest.xml
+  script:
+    - run_timed_command "yarn jest:ci:vue3-mr:with-fixtures"
 
 jest predictive:
   extends:
@@ -353,6 +389,24 @@ jest-with-fixtures predictive:
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-with-fixtures"; fi
+
+jest vue3 predictive:
+  extends:
+    - jest vue3 mr
+    - .frontend:rules:jest:predictive
+  needs:
+    - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-without-fixtures"; fi
+
+jest-with-fixtures vue3 predictive:
+  extends:
+    - jest-with-fixtures vue3 mr
+    - .frontend:rules:jest:predictive
+  needs:
+    - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-with-fixtures"; fi
 
 jest-integration:
   extends:

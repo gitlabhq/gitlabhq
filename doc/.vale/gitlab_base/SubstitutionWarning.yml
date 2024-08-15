@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.SubstitutionWarning
+# Warning: gitlab_base.SubstitutionWarning
 #
 # Checks for misused terms or common shorthand that should not be used at GitLab, but can't be flagged as errors.
 # Substitutions.yml also exists.

@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.Zip
+# Warning: gitlab_base.Zip
 #
 # Recommends all instances of something.zip be wrapped in backticks
 # due to the .zip top-level domain

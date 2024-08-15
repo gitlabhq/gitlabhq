@@ -32053,6 +32053,9 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
+msgid "Manual Variables"
+msgstr ""
+
 msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
@@ -64302,6 +64305,9 @@ msgid "never"
 msgstr ""
 
 msgid "never expires"
+msgstr ""
+
+msgid "new"
 msgstr ""
 
 msgid "new merge request"

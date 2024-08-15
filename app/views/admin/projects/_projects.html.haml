@@ -2,9 +2,9 @@
   - if @projects.any?
     %ul.content-list
       - @projects.each do |project|
-        %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
+        %li.project-row.gl-items-center{ class: '!gl-flex' }
           = render Pajamas::AvatarComponent.new(project, size: 32, alt: '')
-          .gl-min-w-0.gl-flex-grow-1.gl-ml-3
+          .gl-min-w-0.gl-grow.gl-ml-3
             .title
               = link_to(admin_project_path(project)) do
                 %span.project-full-name
@@ -19,10 +19,10 @@
               .description
                 = markdown_field(project, :description)
           = render_if_exists 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
-          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex
+          .stats.gl-text-gray-500.gl-shrink-0.gl-hidden.sm:gl-flex
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
 
-          .controls.gl-flex-shrink-0.gl-ml-5
+          .controls.gl-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param }), button_options: { id: dom_id(project) }) do
               = _('Edit')
             = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { class: 'delete-project-button', data: { delete_project_url: admin_project_path(project), project_name: project.name } }) do

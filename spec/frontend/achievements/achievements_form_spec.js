@@ -8,6 +8,7 @@ import getGroupAchievementsResponse from 'test_fixtures/graphql/get_group_achiev
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
 import AchievementsForm from '~/achievements/components/achievements_form.vue';
 import createAchievementMutation from '~/achievements/components/graphql/create_achievement.mutation.graphql';
@@ -16,7 +17,13 @@ import routes from '~/achievements/routes';
 
 jest.mock('~/lib/logger');
 
-describe('Achievements form', () => {
+const skipReason = new SkipReason({
+  name: 'Achievements form',
+  reason: 'Caught error after test environment was torn down',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478766',
+});
+
+describeSkipVue3(skipReason, () => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 

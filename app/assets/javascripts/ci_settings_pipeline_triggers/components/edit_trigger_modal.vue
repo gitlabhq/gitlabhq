@@ -1,11 +1,10 @@
 <script>
-import { GlFormGroup, GlFormInput, GlFormText, GlModal } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui';
 
 export default {
   components: {
     GlModal,
     GlFormGroup,
-    GlFormText,
     GlFormInput,
   },
   props: {
@@ -49,7 +48,7 @@ export default {
     @primary="onSubmit"
   >
     <gl-form-group :label="s__('Pipelines|Token')" label-for="edit_trigger_token">
-      <gl-form-text id="edit_trigger_token">{{ triggerModel.token }}</gl-form-text>
+      <p id="edit_trigger_token" class="gl-text-subtle">{{ triggerModel.token }}</p>
     </gl-form-group>
     <gl-form-group :label="s__('Pipelines|Description')" label-for="edit_trigger_description">
       <gl-form-input id="edit_trigger_description" v-model="triggerModel.description" />

@@ -4,7 +4,7 @@
 .gl-text-center.gl-max-w-100.gl-mx-auto
   .svg-content.svg-150
     = image_tag 'illustrations/empty-state/empty-access-md.svg'
-  .container.gl-display-flex.gl-text-left.gl-flex-wrap.gl-md-flex-nowrap
+  .container.gl-flex.gl-text-left.gl-flex-wrap.md:gl-flex-nowrap
     .container
       %h1.gl-mb-4
         It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong
@@ -22,14 +22,14 @@
         %p
           如果您属于GitLab.com现有的付费客户或用户组，请联系您的管理员以向您发送注册邀请
 
-  .gl-display-flex.gl-justify-content-center.gl-sm-flex-direction-row.gl-flex-direction-column.gl-gap-3
+  .gl-flex.gl-justify-center.sm:gl-flex-row.gl-flex-col.gl-gap-3
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://gitlab.cn/saasmigration/') do
       Take me to JiHu (去极狐)
 
     = render Pajamas::ButtonComponent.new(href: 'https://about.gitlab.com/pricing/faq-jihu/') do
       Learn more about JiHu (了解更多有关极狐)
 
-  .gl-display-flex.gl-justify-content-center.gl-align-items-center.gl-my-6
+  .gl-flex.gl-justify-center.gl-items-center.gl-my-6
     = render Pajamas::SpinnerComponent.new(size: :sm)
     .gl-text-gray-500.gl-ml-4
       You will be automatically redirected to JiHu after 30 seconds (此页面将在30秒后自动跳转)

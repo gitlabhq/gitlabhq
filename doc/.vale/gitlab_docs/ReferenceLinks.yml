@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.ReferenceLinks
+# Error: gitlab_docs.ReferenceLinks
 #
 # Checks for reference-style links that should be converted to inline links.
 #

@@ -5,7 +5,7 @@
 
 = gitlab_ui_form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
   = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
-  .gl-display-flex.gl-gap-3
+  .gl-flex.gl-gap-3
     = f.submit 'Create', pajamas_button: true
     = render Pajamas::ButtonComponent.new(href: admin_deploy_keys_path) do
       = _('Cancel')

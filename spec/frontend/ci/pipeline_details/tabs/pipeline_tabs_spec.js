@@ -1,7 +1,9 @@
 import { GlTab } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PipelineTabs from '~/ci/pipeline_details/tabs/pipeline_tabs.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
 
 describe('The Pipeline Tabs', () => {
@@ -19,15 +21,18 @@ describe('The Pipeline Tabs', () => {
   const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
   const findJobsBadge = () => wrapper.findByTestId('builds-counter');
   const findTestsBadge = () => wrapper.findByTestId('tests-counter');
+  const findManualVariablesTab = () => wrapper.findByTestId('manual-variables-tab');
+  const findManualVariablesBadge = () => wrapper.findByTestId('manual-variables-counter');
 
   const defaultProvide = {
     defaultTabValue: '',
     failedJobsCount: 1,
     totalJobCount: 10,
     testsCount: 123,
+    manualVariablesCount: 0,
   };
 
-  const createComponent = (provide = {}) => {
+  const createComponent = (provide = {}, stubs = {}) => {
     wrapper = shallowMountExtended(PipelineTabs, {
       provide: {
         ...defaultProvide,
@@ -36,6 +41,7 @@ describe('The Pipeline Tabs', () => {
       stubs: {
         GlTab,
         RouterView: true,
+        ...stubs,
       },
       mocks: {
         $router,
@@ -55,6 +61,30 @@ describe('The Pipeline Tabs', () => {
       createComponent();
 
       expect(tabComponent().exists()).toBe(true);
+    });
+
+    describe('Manual Variables tab', () => {
+      it('does not render the tab while feature flag is turned off', () => {
+        createComponent();
+
+        expect(findManualVariablesTab().exists()).toBe(false);
+      });
+
+      it('does not render the tab while the manual variable count given by backend is invalid', () => {
+        createComponent({ manualVariablesCount: NaN });
+
+        expect(findManualVariablesTab().exists()).toBe(false);
+      });
+
+      it('renders manual variables tab when feature flag is enabled', () => {
+        createComponent({
+          glFeatures: {
+            ciShowManualVariablesInPipeline: true,
+          },
+        });
+
+        expect(findManualVariablesTab().exists()).toBe(true);
+      });
     });
 
     describe('with no failed jobs', () => {
@@ -79,6 +109,42 @@ describe('The Pipeline Tabs', () => {
 
       expect(badgeComponent().exists()).toBe(true);
       expect(badgeComponent().text()).toBe(badgeText);
+    });
+
+    describe('Manual variables tab badge', () => {
+      const findLocalStorageComponent = () => wrapper.findComponent(LocalStorageSync);
+      const findManualVariableNewBadge = () => wrapper.findByTestId('manual-variables-new-badge');
+
+      beforeEach(() => {
+        createComponent(
+          {
+            glFeatures: {
+              ciShowManualVariablesInPipeline: true,
+            },
+          },
+          {
+            LocalStorageSync,
+          },
+        );
+      });
+
+      it('renders manual variables tab counter badge', () => {
+        const badgeComponent = findManualVariablesBadge();
+        expect(badgeComponent.exists()).toBe(true);
+        expect(badgeComponent.text()).toBe('0');
+      });
+
+      it('renders manual variables tab new badge', async () => {
+        const localStorageComponent = findLocalStorageComponent();
+        const badgeComponent = findManualVariableNewBadge();
+
+        expect(badgeComponent.exists()).toBe(true);
+
+        localStorageComponent.vm.$emit('input', true);
+        await nextTick();
+
+        expect(badgeComponent.exists()).toBe(false);
+      });
     });
   });
 
@@ -108,6 +174,21 @@ describe('The Pipeline Tabs', () => {
       expect(trackingSpy).toHaveBeenCalledTimes(1);
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', {
         label: TRACKING_CATEGORIES.tests,
+      });
+    });
+
+    it('tracks manual variables tab click', () => {
+      createComponent({
+        glFeatures: {
+          ciShowManualVariablesInPipeline: true,
+        },
+      });
+
+      findManualVariablesTab().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', {
+        label: TRACKING_CATEGORIES.manual_variables,
       });
     });
   });

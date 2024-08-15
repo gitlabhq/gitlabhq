@@ -18,6 +18,7 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     get :failures
     get :status
     get :test_report
+    get :manual_variables
     get :downloadable_artifacts
   end
 

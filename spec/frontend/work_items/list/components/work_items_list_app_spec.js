@@ -7,6 +7,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   setSortPreferenceMutationResponse,
@@ -40,7 +41,13 @@ import { groupWorkItemsQueryResponse } from '../../mock_data';
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 
-describe('WorkItemsListApp component', () => {
+const skipReason = new SkipReason({
+  name: 'WorkItemsListApp component',
+  reason: 'Caught error after test environment was torn down',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478775',
+});
+
+describeSkipVue3(skipReason, () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 

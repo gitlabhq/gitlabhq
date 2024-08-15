@@ -1191,6 +1191,28 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
   end
 
+  describe 'GET manual_variables' do
+    context 'when FF ci_show_manual_variables_in_pipeline is enabled' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it_behaves_like 'the show page', 'manual_variables'
+    end
+
+    context 'when FF ci_show_manual_variables_in_pipeline is disabled' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      before do
+        stub_feature_flags(ci_show_manual_variables_in_pipeline: false)
+      end
+
+      it 'renders 404' do
+        get 'manual_variables', params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET latest' do
     let(:branch_main) { project.repository.branches[0] }
     let(:branch_secondary) { project.repository.branches[1] }

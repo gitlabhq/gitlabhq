@@ -1,6 +1,6 @@
-.footer-container.gl-w-full.gl-align-self-end
+.footer-container.gl-w-full.gl-self-end
   %hr.gl-m-0
-  .container.gl-py-5.gl-display-flex.gl-justify-content-space-between.gl-align-items-flex-start
+  .container.gl-py-5.gl-flex.gl-justify-between.gl-items-start
     .gl-hidden.md:gl-flex.gl-gap-5.gl-flex-wrap
       - unless public_visibility_restricted?
         = link_to _("Explore"), explore_root_path

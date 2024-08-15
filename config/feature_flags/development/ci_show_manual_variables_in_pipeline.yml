@@ -1,0 +1,8 @@
+---
+name: ci_show_manual_variables_in_pipeline
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160018
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471951
+milestone: '17.4'
+type: development
+group: group::pipeline authoring
+default_enabled: false

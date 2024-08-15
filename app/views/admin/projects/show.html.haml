@@ -24,12 +24,12 @@
     = render ::Layouts::CrudComponent.new(_('Project information')) do |c|
       - c.with_body do
         %ul.content-list
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('Name:')
             %strong
               = link_to @project.name, project_path(@project)
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('Namespace:')
             %strong
@@ -37,7 +37,7 @@
                 = link_to @project.namespace.human_name, [:admin, @project.personal? ? @project.namespace.owner : @project.group]
               - else
                 = s_('ProjectSettings|Global')
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('Owned by:')
             %strong
@@ -46,36 +46,36 @@
               - else
                 = _('(deleted)')
 
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('Created by:')
             %strong
               = @project.creator.try(:name) || _('(deleted)')
 
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('Created on:')
             %strong
               = @project.created_at.to_fs(:medium)
 
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('ID:')
             %strong
               = @project.id
 
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('http:')
             %strong
               = link_to @project.http_url_to_repo, project_path(@project)
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('ssh:')
             %strong
               = link_to @project.ssh_url_to_repo, project_path(@project)
           - if @project.repository.exists?
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = s_('ProjectSettings|Storage name:')
               %strong
@@ -83,7 +83,7 @@
               %br
               %small.gl-text-secondary
                 = s_('ProjectSettings|For Gitaly, name of the storage that stores the repository. For Gitaly Cluster, name of the virtual storage that stores the repository.')
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = s_('ProjectSettings|Relative path:')
               %strong
@@ -92,30 +92,30 @@
               %small.gl-text-secondary
                 = s_('ProjectSettings|For Gitaly, location of data on the storage. For Gitaly Cluster, location of data on the virtual storage.')
 
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics, namespace: @project.namespace
 
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = _('last commit:')
               %strong
                 = last_commit(@project)
 
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = _('Git LFS status:')
               %strong
                 = project_lfs_status(@project)
                 = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
           - else
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = _('repository:')
               %strong.gl-text-danger
                 = _('does not exist')
 
           - if @project.archived?
-            %li{ class: 'gl-px-5!' }
+            %li{ class: '!gl-px-5' }
               %span.light
                 = _('archived:')
               %strong
@@ -123,7 +123,7 @@
 
           = render_if_exists "admin/projects/shared_runner_status", project: @project
 
-          %li{ class: 'gl-px-5!' }
+          %li{ class: '!gl-px-5' }
             %span.light
               = _('access:')
             %strong

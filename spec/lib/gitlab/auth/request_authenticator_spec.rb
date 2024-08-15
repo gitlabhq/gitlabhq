@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::RequestAuthenticator do
+RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_access do
   include DependencyProxyHelpers
 
   let(:env) do
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
 
   let(:request) { ActionDispatch::Request.new(env) }
 
-  subject { described_class.new(request) }
+  subject(:request_authenticator) { described_class.new(request) }
 
   describe '#user' do
     let_it_be(:sessionless_user) { build(:user) }
@@ -133,6 +133,11 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     let_it_be(:lfs_token_user) { build(:user) }
     let_it_be(:basic_auth_access_token_user) { build(:user) }
     let_it_be(:basic_auth_password_user) { build(:user) }
+
+    it 'raises if the request format is unknown' do
+      expect { request_authenticator.find_sessionless_user(:invalid_request_format) }
+        .to raise_error(ArgumentError, "Unknown request format")
+    end
 
     it 'returns dependency_proxy user first' do
       allow_any_instance_of(described_class).to receive(:find_user_from_dependency_proxy_token)
@@ -404,13 +409,13 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       end
 
       it 'tries to find the user' do
-        expect(subject.find_sessionless_user([:api])).to eq user
+        expect(subject.find_sessionless_user(:api)).to eq user
       end
 
       it 'returns nil if the job is not running' do
         job.status = :success
 
-        expect(subject.find_sessionless_user([:api])).to be_blank
+        expect(subject.find_sessionless_user(:api)).to be_blank
       end
     end
 
@@ -422,7 +427,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       it 'does not search for job users' do
         expect(::Ci::Build).not_to receive(:find_by_token)
 
-        expect(subject.find_sessionless_user([:api])).to be_nil
+        expect(subject.find_sessionless_user(:api)).to be_nil
       end
     end
   end

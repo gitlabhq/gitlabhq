@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.HeadingDepth
+# Suggestion: gitlab_base.HeadingDepth
 #
 # Checks that there are no headings greater than 3 levels
 #

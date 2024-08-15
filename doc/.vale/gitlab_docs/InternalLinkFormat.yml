@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.InternalLinkFormat
+# Error: gitlab_docs.InternalLinkFormat
 #
 # Checks that internal link paths don't start with '/' or './'.
 #

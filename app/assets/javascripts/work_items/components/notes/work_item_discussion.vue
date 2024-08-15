@@ -126,7 +126,7 @@ export default {
       return this.firstComment?.resolved;
     },
     isDiscussionResolvable() {
-      return this.firstComment?.resolvable;
+      return this.firstComment?.resolvable && this.note?.userPermissions?.resolveNote;
     },
   },
   watch: {

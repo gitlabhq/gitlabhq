@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.Spelling
+# Warning: gitlab_base.Spelling
 #
 # Checks for possible spelling mistakes in content, not code. Results from links using angle brackets (<https://example.com>) should be corrected.
 #

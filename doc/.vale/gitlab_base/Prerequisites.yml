@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.Prerequisites
+# Error: gitlab_base.Prerequisites
 #
 # The "Prerequisites:" line should always be plural.
 #

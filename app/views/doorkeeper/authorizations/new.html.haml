@@ -1,6 +1,6 @@
 .gl-ml-auto.gl-mr-auto{ class: 'sm:gl-w-1/2' }
   .gl-items-center
-    .gl-font-size-h1
+    .gl-text-size-h1
       = html_escape(_('%{client_name} is requesting access to your account on %{title}.')) % { title: brand_title.html_safe, client_name: "<strong>#{html_escape(@pre_auth.client.name)}</strong>".html_safe }
     .gl-flex.gl-items-center.gl-gap-2.gl-py-5
       = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })

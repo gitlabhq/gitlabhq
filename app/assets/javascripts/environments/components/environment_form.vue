@@ -4,7 +4,6 @@ import {
   GlForm,
   GlFormGroup,
   GlFormInput,
-  GlFormText,
   GlCollapsibleListbox,
   GlLink,
   GlSprintf,
@@ -29,7 +28,6 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
-    GlFormText,
     GlCollapsibleListbox,
     GlLink,
     GlSprintf,
@@ -290,12 +288,12 @@ export default {
             @select="onAgentChange"
             @reset="onChange({ ...environment, clusterAgentId: null })"
           />
-          <gl-form-text>
+          <template #description>
             {{ $options.i18n.agentSelectorHelp }}
             <gl-link :href="$options.agentSelectorHelpPagePath" target="_blank"
               >{{ $options.i18n.agentSelectorLinkText }}
             </gl-link>
-          </gl-form-text>
+          </template>
         </gl-form-group>
 
         <environment-namespace-selector

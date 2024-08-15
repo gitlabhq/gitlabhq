@@ -29,6 +29,7 @@ export const needsTabName = 'dag';
 export const jobsTabName = 'builds';
 export const failedJobsTabName = 'failures';
 export const testReportTabName = 'test_report';
+export const manualVariablesTabName = 'manual_variables';
 export const securityTabName = 'security';
 export const licensesTabName = 'licenses';
 export const codeQualityTabName = 'codequality_report';
@@ -41,6 +42,7 @@ export const validPipelineTabNames = [
   securityTabName,
   licensesTabName,
   codeQualityTabName,
+  manualVariablesTabName,
 ];
 
 export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
