@@ -51,7 +51,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)         | `3.1.x`         | From GitLab 16.7, Ruby 3.1 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [RubyGems](#3-rubygems) | `3.5.x`         | A specific RubyGems version is not required, but you should update to benefit from some known performance improvements. |
-| [Go](#4-go)             | `1.20.x`        | From GitLab 16.4, Go 1.20 or later is required.                                                                                                                                                                                                                                        |
+| [Go](#4-go)             | `1.21.x`        | From GitLab 17.0, Go 1.21 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.42.x`        | From GitLab 16.5, Git 2.42.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `18.17.x`       | From GitLab 16.3, Node.js 18.17 or later is required.                                                                                                                                                                                                                                  |
 
@@ -253,11 +253,11 @@ Linux. You can find downloads for other platforms at the
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.20.8.linux-amd64.tar.gz"
-echo 'cc97c28d9c252fbf28f91950d830201aa403836cbed702a05932e63f7f0c7bc4  go1.20.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.20.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.21.13.linux-amd64.tar.gz"
+echo '502fc16d5910562461e6a6631fb6377de2322aad7304bf2bcd23500ba9dab4a7' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.20.8.linux-amd64.tar.gz
+rm go1.21.13.linux-amd64.tar.gz
 ```
 
 ## 5. Node
