@@ -207,6 +207,7 @@ module.exports = (path, options = {}) => {
     '@gitlab/favicon-overlay',
     '@gitlab/cluster-client',
     '@gitlab/web-ide',
+    '@gitlab/query-language',
     'bootstrap-vue',
     'gridstack',
     'three',

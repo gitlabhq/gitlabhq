@@ -82,6 +82,9 @@ export default {
   },
 
   computed: {
+    isUsingAsyncPipelineCreation() {
+      return this.glFeatures?.asyncMergeRequestPipelineCreation;
+    },
     shouldRenderTable() {
       return !this.isLoading && this.state.pipelines.length > 0 && !this.hasError;
     },
@@ -142,7 +145,7 @@ export default {
       const pipelines = resp.data.pipelines || resp.data;
 
       this.store.storePagination(resp.headers);
-      this.setCommonData(pipelines);
+      this.setCommonData(pipelines, this.isUsingAsyncPipelineCreation);
 
       if (resp.headers?.['x-total']) {
         const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
@@ -169,6 +172,7 @@ export default {
       eventHub.$emit('runMergeRequestPipeline', {
         projectId: this.projectId,
         mergeRequestId: this.mergeRequestId,
+        isAsync: this.isUsingAsyncPipelineCreation,
       });
     },
     tryRunPipeline() {

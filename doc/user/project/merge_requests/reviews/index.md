@@ -177,6 +177,8 @@ When this happens, the merge request reports area shows the message
 **The change requests must be completed or resolved.** To unblock the merge request,
 the reviewer who requested changes should [re-review and approve](#re-request-a-review) the merge request.
 
+### Bypass a request for changes
+
 If the user who requested changes is unable to re-review or provide an approval,
 another user with permission to merge the merge request can override this check in the
 merge request reports area by selecting **Bypass**:
@@ -187,7 +189,14 @@ merge request reports area by selecting **Bypass**:
 1. On the merge request **Overview**, scroll to the merge request reports area.
 1. Next to **The change requests must be completed or resolved**, select **Bypass**:
 
-   ![A merge request that has been blocked by a user requesting changes](img/bypass_17_2.png)
+   ![A merge request that is blocked because a user requested changes](img/bypass_17_2.png)
+
+1. The merge reports area shows `Merge with caution: Override added`. To see which check
+   was bypassed, select **Expand merge checks** (**{chevron-lg-down}**) and find the
+   check that contains a warning (**{status_warning}**) icon. In this example, the
+   author bypassed **The change requests must be completed or resolved**:
+
+   ![This merge request contains a bypassed check, and should be merged with caution.](img/status_warning_v17_4.png)
 
 ### See how reviewers map to approval rules
 

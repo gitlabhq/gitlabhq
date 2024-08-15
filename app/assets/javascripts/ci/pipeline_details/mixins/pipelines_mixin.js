@@ -146,8 +146,8 @@ export default {
         .then((response) => this.successCallback(response))
         .catch((error) => this.errorCallback(error));
     },
-    setCommonData(pipelines) {
-      this.store.storePipelines(pipelines);
+    setCommonData(pipelines, isUsingAsyncPipelineCreation = false) {
+      this.store.storePipelines(pipelines, isUsingAsyncPipelineCreation);
       this.isLoading = false;
       this.updateGraphDropdown = true;
       this.hasMadeRequest = true;
@@ -201,7 +201,10 @@ export default {
       this.service
         .runMRPipeline(options)
         .then(() => {
-          this.$toast.show(TOAST_MESSAGE);
+          if (!options.isAsync) {
+            this.$toast.show(TOAST_MESSAGE);
+          }
+
           this.updateTable();
         })
         .catch((e) => {
@@ -223,7 +226,11 @@ export default {
           });
           reportToSentry('run_mr_pipeline', e);
         })
-        .finally(() => this.store.toggleIsRunningPipeline(false));
+        .finally(() => {
+          if (!options.isAsync) {
+            this.store.toggleIsRunningPipeline(false);
+          }
+        });
     },
     onChangePage(page) {
       /* URLS parameters are strings, we need to parse to match types */

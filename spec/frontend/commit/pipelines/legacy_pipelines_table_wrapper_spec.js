@@ -42,13 +42,22 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findUserPermissionsDocsLink = () => wrapper.findByTestId('user-permissions-docs-link');
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
 
-  const createComponent = ({ props = {}, mountFn = mountExtended } = {}) => {
+  const createComponent = ({
+    props = {},
+    mountFn = mountExtended,
+    asyncMergeRequestPipelineCreation = true,
+  } = {}) => {
     wrapper = mountFn(LegacyPipelinesTableWrapper, {
       propsData: {
         endpoint: 'endpoint.json',
         emptyStateSvgPath: 'foo',
         errorStateSvgPath: 'foo',
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          asyncMergeRequestPipelineCreation,
+        },
       },
       mocks: {
         $toast,
@@ -221,35 +230,70 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         await waitForPromises();
       });
+
       describe('success', () => {
         beforeEach(() => {
           jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
         });
-        it('displays a toast message during pipeline creation', async () => {
-          await findRunPipelineBtn().trigger('click');
 
-          expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+        describe('when asyncMergeRequestPipelineCreation is enabled', () => {
+          it('on desktop, shows a loading button', async () => {
+            await findRunPipelineBtn().trigger('click');
+
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+          });
+
+          it('on mobile, shows a loading button', async () => {
+            await findRunPipelineBtnMobile().trigger('click');
+
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('disabled')).toBe(false);
+          });
         });
 
-        it('on desktop, shows a loading button', async () => {
-          await findRunPipelineBtn().trigger('click');
+        describe('when asyncMergeRequestPipelineCreation is disabled', () => {
+          beforeEach(async () => {
+            createComponent({
+              props: {
+                canRunPipeline: true,
+                projectId: '5',
+                mergeRequestId: 3,
+              },
+              asyncMergeRequestPipelineCreation: false,
+            });
 
-          expect(findRunPipelineBtn().props('loading')).toBe(true);
+            await waitForPromises();
+          });
 
-          await waitForPromises();
+          it('displays a toast message during pipeline creation', async () => {
+            await findRunPipelineBtn().trigger('click');
 
-          expect(findRunPipelineBtn().props('loading')).toBe(false);
-        });
+            expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+          });
 
-        it('on mobile, shows a loading button', async () => {
-          await findRunPipelineBtnMobile().trigger('click');
+          it('on desktop, shows a loading button', async () => {
+            await findRunPipelineBtn().trigger('click');
 
-          expect(findRunPipelineBtn().props('loading')).toBe(true);
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
 
-          await waitForPromises();
+            await waitForPromises();
 
-          expect(findRunPipelineBtn().props('disabled')).toBe(false);
-          expect(findRunPipelineBtn().props('loading')).toBe(false);
+            expect(findRunPipelineBtn().props('loading')).toBe(false);
+          });
+
+          it('on mobile, shows a loading button', async () => {
+            await findRunPipelineBtnMobile().trigger('click');
+
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('disabled')).toBe(false);
+            expect(findRunPipelineBtn().props('loading')).toBe(false);
+          });
         });
       });
 

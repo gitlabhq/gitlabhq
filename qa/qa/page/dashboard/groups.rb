@@ -10,7 +10,13 @@ module QA
           element 'new-group-button'
         end
 
+        view 'app/views/dashboard/groups/index.html.haml' do
+          element 'groups-empty-state'
+        end
+
         def has_group?(name)
+          return false if has_element?('groups-empty-state', wait: 5)
+
           has_filtered_group?(name)
         end
 
