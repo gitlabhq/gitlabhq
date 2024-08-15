@@ -1,3 +1,5 @@
+import { DocAttrStep } from '@tiptap/pm/transform';
+
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
   constructor({
@@ -100,12 +102,15 @@ export class ContentEditor {
     const { _tiptapEditor: editor } = this;
 
     const { document } = await this.deserialize(serializedContent);
-    const { doc, tr } = editor.state;
+    const { doc } = editor.state;
 
     if (document) {
       this._pristineDoc = document;
-      tr.replaceWith(0, doc.content.size, document).setMeta('preventUpdate', true);
-      editor.view.dispatch(tr);
+      let tr = editor.state.tr.replaceWith(0, doc.content.size, document);
+      for (const [key, value] of Object.entries(document.attrs)) {
+        tr = tr.step(new DocAttrStep(key, value));
+      }
+      editor.view.dispatch(tr.setMeta('preventUpdate', true));
     }
   }
 

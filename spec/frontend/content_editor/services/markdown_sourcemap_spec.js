@@ -1,16 +1,5 @@
-import { builders } from 'prosemirror-test-builder';
-import Bold from '~/content_editor/extensions/bold';
-import BulletList from '~/content_editor/extensions/bullet_list';
-import Code from '~/content_editor/extensions/code';
-import Italic from '~/content_editor/extensions/italic';
-import ListItem from '~/content_editor/extensions/list_item';
-import TaskList from '~/content_editor/extensions/task_list';
-import TaskItem from '~/content_editor/extensions/task_item';
-import Sourcemap from '~/content_editor/extensions/sourcemap';
-import Strike from '~/content_editor/extensions/strike';
 import markdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import { getFullSource } from '~/content_editor/services/markdown_sourcemap';
-import { createTestEditor } from '../test_utils';
 import {
   BULLET_LIST_MARKDOWN,
   BULLET_LIST_HTML,
@@ -20,15 +9,10 @@ import {
   PARAGRAPHS_MARKDOWN,
   PARAGRAPHS_HTML,
 } from '../test_constants';
+import { tiptapEditor, builders, text, doc } from '../serialization_utils';
 
-const tiptapEditor = createTestEditor({
-  extensions: [BulletList, ListItem, TaskList, TaskItem, Sourcemap, Bold, Italic, Strike, Code],
-});
-
-const { doc, bulletList, listItem, taskList, taskItem, paragraph, bold, italic, strike, code } =
-  builders(tiptapEditor.schema);
-
-const text = (val) => tiptapEditor.state.schema.text(val);
+const { bulletList, listItem, taskList, taskItem, paragraph, bold, italic, strike, code } =
+  builders;
 
 const sourceAttrs = jest.fn().mockImplementation((sourceTagName, sourceMapKey, sourceMarkdown) => ({
   sourceTagName,

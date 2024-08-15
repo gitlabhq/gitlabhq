@@ -4,8 +4,8 @@ classes:
 - ProtectedEnvironments::ApprovalRule
 feature_categories:
 - continuous_delivery
-description: >-
-  A rule associated to a protected environment that allows a user, group, or role to approve a deployment. See https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#multiple-approval-rules
+description: A rule associated to a protected environment that allows a user, group,
+  or role to approve a deployment. See https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#multiple-approval-rules
   for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82800
 milestone: '14.10'
@@ -29,3 +29,6 @@ desired_sharding_key:
         table: protected_environments
         sharding_key: group_id
         belongs_to: protected_environment
+desired_sharding_key_migration_job_name:
+- BackfillProtectedEnvironmentApprovalRulesProtectedEnvironmentProjectId
+- BackfillProtectedEnvironmentApprovalRulesProtectedEnvironmentGroupId

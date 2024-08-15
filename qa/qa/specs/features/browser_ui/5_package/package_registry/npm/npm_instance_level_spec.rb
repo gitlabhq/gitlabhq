@@ -10,9 +10,7 @@ module QA
 
       let!(:registry_scope) { Runtime::Namespace.sandbox_name }
       let!(:personal_access_token) do
-        Flow::Login.sign_in unless Page::Main::Menu.perform(&:signed_in?)
-
-        Resource::PersonalAccessToken.fabricate!.token
+        Resource::PersonalAccessToken.fabricate_via_api!.token
       end
 
       let(:project_deploy_token) do
@@ -42,6 +40,10 @@ module QA
         build(:package, name: "@#{registry_scope}/#{project.name}-#{SecureRandom.hex(8)}", project: project)
       end
 
+      before do
+        Flow::Login.sign_in
+      end
+
       after do
         runner.remove_via_api!
       end
@@ -66,34 +68,25 @@ module QA
           end
         end
 
-        it 'push and pull a npm package via CI', :blocking, testcase: params[:testcase],
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/470879',
-            type: :investigating
-          } do
+        it 'push and pull a npm package via CI', testcase: params[:testcase] do
           npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
             'npm_upload_package_instance.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: project, actions: [
-              {
-                action: 'create',
-                file_path: '.gitlab-ci.yml',
-                content: npm_upload_yaml
-              },
-              {
-                action: 'create',
-                file_path: 'package.json',
-                content: package_json
-              }
-            ])
-          end
+          create(:commit, project: project, actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: npm_upload_yaml
+            },
+            {
+              action: 'create',
+              file_path: 'package.json',
+              content: package_json
+            }
+          ])
 
-          Support::Waiter.wait_until(max_duration: 180, message: 'Wait for first pipeline creation') do
-            project.pipelines.present?
-          end
-
+          Flow::Pipeline.wait_for_pipeline_creation(project: project)
           project.visit!
           Flow::Pipeline.visit_latest_pipeline
 
@@ -108,12 +101,11 @@ module QA
           npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
             'npm_install_package_instance.yaml.erb')).result(binding)
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: another_project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              { action: 'create', file_path: '.gitlab-ci.yml', content: npm_install_yaml }
-            ])
-          end
+          create(:commit, project: another_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: npm_install_yaml }
+          ])
 
+          Flow::Pipeline.wait_for_pipeline_creation(project: another_project)
           another_project.visit!
           Flow::Pipeline.visit_latest_pipeline
 

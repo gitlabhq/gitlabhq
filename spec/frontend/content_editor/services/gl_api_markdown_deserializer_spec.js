@@ -1,47 +1,103 @@
-import { builders } from 'prosemirror-test-builder';
 import createMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
-import Bold from '~/content_editor/extensions/bold';
-import HTMLComment from '~/content_editor/extensions/html_comment';
-import { createTestEditor } from '../test_utils';
+import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
+import { builders, tiptapEditor, doc, text } from '../serialization_utils';
+
+const { paragraph: p, bold, link, htmlComment } = builders;
+
+jest.mock('~/emoji');
+
+const source = (sourceMarkdown, sourceMapKey, sourceTagName) => ({
+  sourceMarkdown,
+  sourceMapKey,
+  sourceTagName,
+});
+
+const MOCK_HTML = `<p data-sourcepos="1:1-1:22"><strong data-sourcepos="1:1-1:8">Bold</strong> and <a data-sourcepos="1:14-1:22" href="https://example.com">link</a></p>\n<!-- some comment -->`;
+const MOCK_MARKDOWN = '**Bold** and [link][1]\n<!-- some comment -->\n\n[1]: https://example.com';
 
 describe('content_editor/services/gl_api_markdown_deserializer', () => {
   let renderMarkdown;
-  let doc;
-  let p;
-  let bold;
-  let htmlComment;
-  let tiptapEditor;
 
   beforeEach(() => {
-    tiptapEditor = createTestEditor({
-      extensions: [Bold, HTMLComment],
-    });
-
-    ({ doc, paragraph: p, bold, htmlComment } = builders(tiptapEditor.schema));
     renderMarkdown = jest.fn();
   });
 
   describe('when deserializing', () => {
+    let deserializer;
     let result;
-    const text = 'Bold text';
 
-    beforeEach(async () => {
-      const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
+    beforeEach(() => {
+      deserializer = createMarkdownDeserializer({ render: renderMarkdown });
+    });
 
-      renderMarkdown.mockResolvedValueOnce({
-        body: `<p><strong>${text}</strong></p><!-- some comment -->`,
+    describe('when preserveMarkdown feature is disabled', () => {
+      beforeEach(async () => {
+        gon.features = { preserveMarkdown: false };
+
+        renderMarkdown.mockResolvedValueOnce({
+          body: MOCK_HTML,
+        });
+
+        result = await deserializer.deserialize({
+          markdown: MOCK_MARKDOWN,
+          schema: tiptapEditor.schema,
+        });
       });
 
-      result = await deserializer.deserialize({
-        markdown: '**Bold text**\n<!-- some comment -->',
-        schema: tiptapEditor.schema,
+      afterEach(() => {
+        gon.features = {};
+      });
+
+      it('transforms HTML returned by render function to a ProseMirror document', () => {
+        const document = doc(
+          p(bold('Bold'), text(' and '), link({ href: 'https://example.com' }, 'link')),
+          htmlComment({ description: 'some comment' }),
+        );
+
+        expect(result.document.content.toJSON()).toEqual(document.content.toJSON());
       });
     });
 
-    it('transforms HTML returned by render function to a ProseMirror document', () => {
-      const document = doc(p(bold(text)), htmlComment({ description: 'some comment' }));
+    describe('when preserveMarkdown feature is enabled', () => {
+      beforeEach(async () => {
+        gon.features = { preserveMarkdown: true };
 
-      expect(result.document.toJSON()).toEqual(document.toJSON());
+        renderMarkdown.mockResolvedValueOnce({
+          body: MOCK_HTML,
+        });
+
+        result = await deserializer.deserialize({
+          markdown: MOCK_MARKDOWN,
+          schema: tiptapEditor.schema,
+        });
+      });
+
+      afterEach(() => {
+        gon.features = {};
+      });
+
+      it('transforms HTML returned by render function to a ProseMirror document with sourcemaps', () => {
+        const document = doc(
+          p(
+            source('**Bold** and [link][1]', '1:1-1:22', 'p'),
+            bold(source('**Bold**', '1:1-1:8', 'strong'), 'Bold'),
+            text(' and '),
+            link({ ...source('[link][1]', '1:14-1:22', 'a'), href: 'https://example.com' }, 'link'),
+          ),
+          htmlComment({ description: 'some comment' }),
+        );
+
+        expect(result.document.content.toJSON()).toEqual(document.content.toJSON());
+      });
+
+      it('preserves reference style link definitions when serialized', () => {
+        expect(
+          new MarkdownSerializer().serialize({
+            doc: result.document,
+            pristineDoc: result.document,
+          }),
+        ).toBe('**Bold** and [link][1]\n\n<!--some comment-->\n\n[1]: https://example.com');
+      });
     });
   });
 
@@ -61,7 +117,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
 
       const document = doc(p());
 
-      expect(result.document.toJSON()).toEqual(document.toJSON());
+      expect(result.document.content.toJSON()).toEqual(document.content.toJSON());
     });
   });
 });

@@ -1234,6 +1234,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_4b43790d717f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_environment_group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."protected_environment_group_id"
+  FROM "protected_environments"
+  WHERE "protected_environments"."id" = NEW."protected_environment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_56d49f4ed623() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1899,6 +1915,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "terraform_states"
   WHERE "terraform_states"."id" = NEW."terraform_state_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_d5c895007948() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_environment_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_environment_project_id"
+  FROM "protected_environments"
+  WHERE "protected_environments"."id" = NEW."protected_environment_id";
 END IF;
 
 RETURN NEW;
@@ -16685,6 +16717,8 @@ CREATE TABLE protected_environment_approval_rules (
     access_level smallint,
     required_approvals smallint NOT NULL,
     group_inheritance_type smallint DEFAULT 0 NOT NULL,
+    protected_environment_project_id bigint,
+    protected_environment_group_id bigint,
     CONSTRAINT chk_rails_bed75249bc CHECK ((((access_level IS NOT NULL) AND (group_id IS NULL) AND (user_id IS NULL)) OR ((user_id IS NOT NULL) AND (access_level IS NULL) AND (group_id IS NULL)) OR ((group_id IS NOT NULL) AND (user_id IS NULL) AND (access_level IS NULL)))),
     CONSTRAINT chk_rails_cfa90ae3b5 CHECK ((required_approvals > 0))
 );
@@ -29335,6 +29369,10 @@ CREATE INDEX index_protected_environment_deploy_access_levels_on_group_id ON pro
 
 CREATE INDEX index_protected_environment_deploy_access_levels_on_user_id ON protected_environment_deploy_access_levels USING btree (user_id);
 
+CREATE INDEX index_protected_environment_group_id_of_protected_environment_a ON protected_environment_approval_rules USING btree (protected_environment_group_id);
+
+CREATE INDEX index_protected_environment_project_id_of_protected_environment ON protected_environment_approval_rules USING btree (protected_environment_project_id);
+
 CREATE INDEX index_protected_environments_on_approval_count_and_created_at ON protected_environments USING btree (required_approval_count, created_at);
 
 CREATE UNIQUE INDEX index_protected_environments_on_group_id_and_name ON protected_environments USING btree (group_id, name) WHERE (group_id IS NOT NULL);
@@ -32275,6 +32313,8 @@ CREATE TRIGGER trigger_49e070da6320 BEFORE INSERT OR UPDATE ON packages_dependen
 
 CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_vulnerabilities FOR EACH ROW EXECUTE FUNCTION trigger_4ad9a52a6614();
 
+CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_4b43790d717f();
+
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
 
 CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
@@ -32358,6 +32398,8 @@ CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EAC
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
+
+CREATE TRIGGER trigger_d5c895007948 BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_d5c895007948();
 
 CREATE TRIGGER trigger_dadd660afe2c BEFORE INSERT OR UPDATE ON packages_debian_group_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_dadd660afe2c();
 
@@ -32783,6 +32825,9 @@ ALTER TABLE ONLY draft_notes
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY protected_environment_approval_rules
+    ADD CONSTRAINT fk_3b3f2f0470 FOREIGN KEY (protected_environment_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_3b8c72ea56 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
@@ -33332,6 +33377,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_a2141b1522_p FOREIGN KEY (auto_canceled_by_partition_id, auto_canceled_by_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+ALTER TABLE ONLY protected_environment_approval_rules
+    ADD CONSTRAINT fk_a3cc825836 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_a437da318b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

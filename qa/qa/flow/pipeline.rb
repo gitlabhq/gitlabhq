@@ -32,6 +32,19 @@ module QA
           pipeline.click_job(job_name)
         end
       end
+
+      # With pipeline creation is slow a known issue - https://gitlab.com/groups/gitlab-org/-/epics/7290,
+      # it might help reduce flakiness if we wait for pipeline to be created via API first before
+      # visiting it via the UI.
+      #
+      # Trying to let it wait for up to 4 minutes, any longer than that is unacceptable in most scenarios.
+      #
+      # Provide a different size when more than 1 pipelines are expected.
+      def wait_for_pipeline_creation(project:, size: 1, wait: 240)
+        Support::Waiter.wait_until(message: 'Wait for pipeline to be created', max_duration: wait) do
+          project.pipelines.present? && project.pipelines.size >= size
+        end
+      end
     end
   end
 end

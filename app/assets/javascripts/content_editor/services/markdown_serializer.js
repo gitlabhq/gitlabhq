@@ -197,12 +197,20 @@ export default class MarkdownSerializer {
       },
     );
 
-    return serializer.serialize(doc, {
+    const serialized = serializer.serialize(doc, {
       tightLists: true,
       useCanonicalSrc,
       skipEmptyNodes,
       changeTracker,
       escapeExtraCharacters: /<|>/g,
     });
+
+    // If the pristine document contains link reference definitions,
+    // append them to the serialized document
+    if (pristineDoc?.attrs.referenceDefinitions) {
+      return `${serialized}\n\n${pristineDoc.attrs.referenceDefinitions}`;
+    }
+
+    return serialized;
   }
 }

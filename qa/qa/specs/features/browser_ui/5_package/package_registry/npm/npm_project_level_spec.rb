@@ -10,9 +10,7 @@ module QA
 
       let!(:registry_scope) { Runtime::Namespace.sandbox_name }
       let!(:personal_access_token) do
-        Flow::Login.sign_in unless Page::Main::Menu.perform(&:signed_in?)
-
-        Resource::PersonalAccessToken.fabricate!.token
+        Resource::PersonalAccessToken.fabricate_via_api!.token
       end
 
       let(:project_deploy_token) do
@@ -39,10 +37,12 @@ module QA
 
       let(:package) { build(:package, name: "@#{registry_scope}/mypackage-#{SecureRandom.hex(8)}", project: project) }
 
+      before do
+        Flow::Login.sign_in
+      end
+
       after do
-        package.remove_via_api!
         runner.remove_via_api!
-        project.remove_via_api!
       end
 
       where(:case_name, :authentication_token_type, :token_name, :testcase) do
@@ -64,7 +64,8 @@ module QA
         end
 
         it 'push and pull a npm package via CI', :smoke, testcase: params[:testcase] do
-          npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_install_package_project.yaml.erb')).result(binding)
+          npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm',
+            'npm_upload_install_package_project.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
           create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
@@ -72,6 +73,7 @@ module QA
             { action: 'create', file_path: 'package.json', content: package_json }
           ])
 
+          Flow::Pipeline.wait_for_pipeline_creation(project: project)
           project.visit!
           Flow::Pipeline.visit_latest_pipeline
 
@@ -83,7 +85,7 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
-          Flow::Pipeline.visit_latest_pipeline
+          page.go_back
 
           Page::Project::Pipeline::Show.perform do |pipeline|
             pipeline.click_job('install')
