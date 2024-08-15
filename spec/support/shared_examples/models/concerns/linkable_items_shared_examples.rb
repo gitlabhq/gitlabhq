@@ -8,34 +8,65 @@ RSpec.shared_examples 'includes LinkableItem concern' do
     subject(:link) { build(link_factory, source_id: source.id, target_id: target.id) }
 
     describe '#check_existing_parent_link' do
-      shared_examples 'invalid due to existing link' do
-        it do
-          is_expected.to be_invalid
-          expect(link.errors.messages[:source]).to include("is a parent or child of this #{item_type}")
+      context 'for new issuable link' do
+        shared_examples 'invalid due to existing link' do
+          it do
+            is_expected.to be_invalid
+            expect(link.errors.messages[:source]).to include("is a parent or child of this #{item_type}")
+          end
         end
-      end
 
-      context 'without existing link parent' do
-        let(:source) { issue }
-        let(:target) { task }
-
-        it 'is valid' do
-          is_expected.to be_valid
-          expect(link.errors).to be_empty
-        end
-      end
-
-      context 'with existing link parent' do
-        let_it_be(:relationship) { create(:parent_link, work_item_parent: issue, work_item: task) }
-
-        it_behaves_like 'invalid due to existing link' do
+        context 'without existing link parent' do
           let(:source) { issue }
           let(:target) { task }
+
+          it 'is valid' do
+            is_expected.to be_valid
+            expect(link.errors).to be_empty
+          end
         end
 
-        it_behaves_like 'invalid due to existing link' do
+        context 'with existing link parent' do
+          let_it_be(:relationship) { create(:parent_link, work_item_parent: issue, work_item: task) }
+
+          it_behaves_like 'invalid due to existing link' do
+            let(:source) { issue }
+            let(:target) { task }
+          end
+
+          it_behaves_like 'invalid due to existing link' do
+            let(:source) { task }
+            let(:target) { issue }
+          end
+        end
+      end
+
+      context 'for existing issuable link with existing parent link' do
+        let(:link) { build(link_factory, source_id: source.id, target_id: target.id) }
+
+        before do
+          create(:parent_link, work_item_parent: issue, work_item: task)
+          link.save!(validate: false)
+        end
+
+        context 'when source is issue' do
+          let(:source) { issue }
+          let(:target) { task }
+
+          it 'is valid' do
+            expect(link).to be_valid
+            expect(link.errors).to be_empty
+          end
+        end
+
+        context 'when source is task' do
           let(:source) { task }
           let(:target) { issue }
+
+          it 'is valid' do
+            expect(link).to be_valid
+            expect(link.errors).to be_empty
+          end
         end
       end
     end

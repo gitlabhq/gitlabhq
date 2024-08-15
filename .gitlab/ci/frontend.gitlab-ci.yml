@@ -367,6 +367,7 @@ jest-with-fixtures vue3 mr:
     when: always
     paths:
       - junit_jest.xml
+  parallel: 1
   script:
     - run_timed_command "yarn jest:ci:vue3-mr:with-fixtures"
 

@@ -652,6 +652,46 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
       end
     end
 
+    context 'with ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper' do
+      let(:worker) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper }
+
+      context 'when calling perform_async with setter' do
+        subject(:operation) { worker.set(testing: true).perform_async({ 'job_class' => ActionMailer::MailDeliveryJob }) }
+
+        it_behaves_like 'uses shard router'
+      end
+
+      context 'when calling perform_async with setter without job_class' do
+        subject(:operation) { worker.set(testing: true).perform_async }
+
+        it_behaves_like 'uses shard router'
+      end
+
+      context 'when calling perform_in with setter' do
+        subject(:operation) { worker.set(testing: true).perform_in(1, { 'job_class' => ActionMailer::MailDeliveryJob }) }
+
+        it_behaves_like 'uses shard router'
+      end
+
+      context 'when calling perform_in with setter without job_class' do
+        subject(:operation) { worker.set(testing: true).perform_in(1) }
+
+        it_behaves_like 'uses shard router'
+      end
+
+      context 'when calling perform_at with setter' do
+        subject(:operation) { worker.set(testing: true).perform_at(1, { 'job_class' => ActionMailer::MailDeliveryJob }) }
+
+        it_behaves_like 'uses shard router'
+      end
+
+      context 'when calling perform_at with setter without job_class' do
+        subject(:operation) { worker.set(testing: true).perform_at(1) }
+
+        it_behaves_like 'uses shard router'
+      end
+    end
+
     context 'when calling perform_async with setter' do
       subject(:operation) { worker.set(testing: true).perform_async }
 
