@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -74,7 +75,25 @@ func TestUploadPackTimesOut(t *testing.T) {
 func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) string {
 	t.Helper()
 
-	tmp := t.TempDir()
+	// Ideally, we'd just use t.TempDir(), which would then use either the value of
+	// `$TMPDIR` or alternatively "/tmp". But given that macOS sets `$TMPDIR` to a user specific
+	// temporary directory, resulting paths would be too long and thus cause issues galore. We
+	// thus support our own specific variable instead which allows users to override it, with
+	// our default being "/tmp".
+	// This fixes errors like this on macOS:
+	//
+	// listen unix /var/folders/xx/xx/T/xx/001/gitaly.sock: bind: invalid argument
+	tempDirLocation := os.Getenv("TEST_TMP_DIR")
+	if tempDirLocation == "" {
+		tempDirLocation = "/tmp"
+	}
+
+	tmp, err := os.MkdirTemp(tempDirLocation, "workhorse-")
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		assert.NoError(t, os.RemoveAll(tmp))
+	})
 
 	socket := filepath.Join(tmp, "gitaly.sock")
 	ln, err := net.Listen("unix", socket)

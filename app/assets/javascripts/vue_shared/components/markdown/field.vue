@@ -2,7 +2,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
-import { debounce, unescape } from 'lodash';
+import { debounce, isEqual, unescape } from 'lodash';
 import { createAlert } from '~/alert';
 import GLForm from '~/gl_form';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -149,6 +149,7 @@ export default {
   },
   data() {
     return {
+      glForm: null,
       markdownPreview: '',
       referencedCommands: '',
       referencedUsers: [],
@@ -258,11 +259,17 @@ export default {
         }
       },
     },
+    autocompleteDataSources: {
+      immediate: true,
+      handler(newDataSources, oldDataSources) {
+        if (!isEqual(newDataSources, oldDataSources) && this.glForm) {
+          this.glForm.updateAutocompleteDataSources(newDataSources);
+        }
+      },
+    },
   },
   mounted() {
-    // GLForm class handles all the toolbar buttons
-    // eslint-disable-next-line no-new
-    new GLForm(
+    this.glForm = new GLForm(
       $(this.$refs['gl-form']),
       {
         emojis: this.enableAutocomplete,
@@ -283,9 +290,8 @@ export default {
     markdownEditorEventHub.$emit(MARKDOWN_EDITOR_READY_EVENT);
   },
   beforeDestroy() {
-    const glForm = $(this.$refs['gl-form']).data('glForm');
-    if (glForm) {
-      glForm.destroy();
+    if (this.glForm) {
+      this.glForm.destroy();
     }
   },
   methods: {
@@ -309,6 +315,7 @@ export default {
         this.renderMarkdown();
       }
     },
+
     hidePreview() {
       this.markdownPreview = '';
       this.previewMarkdown = false;

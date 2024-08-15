@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
+import { isEqual } from 'lodash';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
@@ -114,6 +115,7 @@ export default {
   },
   data() {
     return {
+      contentEditor: null,
       focused: false,
       isLoading: false,
       latestMarkdown: null,
@@ -125,6 +127,11 @@ export default {
     },
   },
   watch: {
+    autocompleteDataSources(newDataSources, oldDataSources) {
+      if (!isEqual(newDataSources, oldDataSources)) {
+        this.contentEditor.updateAutocompleteDataSources(newDataSources);
+      }
+    },
     markdown(markdown) {
       if (markdown !== this.latestMarkdown) {
         this.setSerializedContent(markdown);

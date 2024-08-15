@@ -41,7 +41,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | [`APISEC_OVERRIDES_FILE`](customizing_analyzer_settings.md#overrides)                       | Path to a JSON file containing overrides. |
 | [`APISEC_OVERRIDES_ENV`](customizing_analyzer_settings.md#overrides)                        | JSON string containing headers to override. |
 | [`APISEC_OVERRIDES_CMD`](customizing_analyzer_settings.md#overrides)                        | Overrides command. |
-| [`APISEC_OVERRIDES_CMD_VERBOSE`](customizing_analyzer_settings.md#overrides)                | When set to any value. It shows overrides command output as part of the job output. |
+| [`APISEC_OVERRIDES_CMD_VERBOSE`](customizing_analyzer_settings.md#overrides)                | When set to any value. It logs overrides command output to the `gl-api-security-scanner.log` job artifact file. |
 | `APISEC_PER_REQUEST_SCRIPT`                                                                 | Full path and filename for a per-request script. [See demo project for examples.](https://gitlab.com/gitlab-org/security-products/demos/api-dast/auth-with-request-example) [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13691) in GitLab 17.2. |
 | `APISEC_PRE_SCRIPT`                                                                         | Run user command or script before scan session starts. `sudo` must be used for privileged operations like installing packages. |
 | `APISEC_POST_SCRIPT`                                                                        | Run user command or script after scan session has finished. `sudo` must be used for privileged operations like installing packages. |

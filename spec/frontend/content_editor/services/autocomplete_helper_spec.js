@@ -18,6 +18,7 @@ import {
   MOCK_ASSIGNEES,
   MOCK_REVIEWERS,
   MOCK_WIKIS,
+  MOCK_NEW_MEMBERS,
 } from './autocomplete_mock_data';
 
 jest.mock('~/emoji', () => ({
@@ -137,6 +138,8 @@ describe('AutocompleteHelper', () => {
     mock.onGet('/commands').reply(200, MOCK_COMMANDS);
     mock.onGet('/wikis').reply(200, MOCK_WIKIS);
 
+    mock.onGet('/new/members').reply(200, MOCK_NEW_MEMBERS);
+
     const sidebarMediator = {
       store: {
         assignees: MOCK_ASSIGNEES,
@@ -229,5 +232,43 @@ describe('AutocompleteHelper', () => {
     const results = await dataSource.search('');
 
     expect(results).toEqual([{ emoji: { name: 'thumbsup' }, fieldValue: 'thumbsup' }]);
+  });
+
+  it('updates dataSourcesUrl correctly', () => {
+    const newDataSources = {
+      members: '/new/members',
+      issues: '/new/issues',
+      snippets: '/new/snippets',
+      labels: '/new/labels',
+      epics: '/new/epics',
+      milestones: '/new/milestones',
+      mergeRequests: '/new/mergeRequests',
+      vulnerabilities: '/new/vulnerabilities',
+      commands: '/new/commands',
+      wikis: '/new/wikis',
+    };
+
+    autocompleteHelper.updateDataSources(newDataSources);
+    expect(autocompleteHelper.dataSourceUrls).toEqual(newDataSources);
+  });
+
+  it('returns expected results before and after updating data sources', async () => {
+    // Retrieve the initial data source and search for 'user'
+    let dataSource = autocompleteHelper.getDataSource('user');
+    let results = await dataSource.search('');
+
+    expect(results.map(({ username }) => username)).toMatchSnapshot();
+
+    // Update the data sources
+    const newDataSources = {
+      members: '/new/members',
+    };
+    autocompleteHelper.updateDataSources(newDataSources);
+
+    // Retrieve the updated data source and search for 'user'
+    dataSource = autocompleteHelper.getDataSource('user');
+    results = await dataSource.search('');
+
+    expect(results.map(({ username }) => username)).toMatchSnapshot();
   });
 });

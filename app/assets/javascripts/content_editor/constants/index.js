@@ -79,3 +79,20 @@ export const SAFE_AUDIO_EXT = ['mp3', 'oga', 'ogg', 'spx', 'wav'];
 export const DIAGRAM_LANGUAGES = ['plantuml', 'mermaid'];
 
 export const TIPTAP_AUTOFOCUS_OPTIONS = [true, false, 'start', 'end', 'all'];
+
+/**
+ * Command related constants
+ */
+export const COMMANDS = {
+  ASSIGN: '/assign',
+  ASSIGN_REVIEWER: '/assign_reviewer',
+  CC: '/cc',
+  LABEL: '/label',
+  MILESTONE: '/milestone',
+  REASSIGN: '/reassign',
+  REASSIGN_REVIEWER: '/reassign_reviewer',
+  RELABEL: '/relabel',
+  UNASSIGN: '/unassign',
+  UNASSIGN_REVIEWER: '/unassign_reviewer',
+  UNLABEL: '/unlabel',
+};

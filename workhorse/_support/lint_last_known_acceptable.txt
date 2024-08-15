@@ -108,7 +108,7 @@ internal/git/responsewriter.go:45:1: exported: exported function NewHTTPResponse
 internal/git/responsewriter.go:52:1: exported: exported method HTTPResponseWriter.Log should have comment or be unexported (revive)
 internal/git/snapshot.go:27:2: exported: exported var SendSnapshot should have comment or be unexported (revive)
 internal/git/upload-pack.go:37:16: Error return value of `cw.Flush` is not checked (errcheck)
-internal/git/upload-pack_test.go:71:2: error-is-as: use require.ErrorIs (testifylint)
+internal/git/upload-pack_test.go:72:2: error-is-as: use require.ErrorIs (testifylint)
 internal/gitaly/blob.go:1:1: package-comments: should have a package comment (revive)
 internal/gitaly/blob.go:14:6: exported: exported type BlobClient should have comment or be unexported (revive)
 internal/gitaly/blob.go:18:1: exported: exported method BlobClient.SendBlob should have comment or be unexported (revive)

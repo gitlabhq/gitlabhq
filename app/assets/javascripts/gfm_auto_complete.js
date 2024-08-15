@@ -1016,6 +1016,11 @@ class GfmAutoComplete {
     GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
   }
 
+  updateDataSources(newDataSources) {
+    this.dataSources = { ...this.dataSources, ...newDataSources };
+    this.clearCache();
+  }
+
   clearCache() {
     this.cachedData = {};
   }

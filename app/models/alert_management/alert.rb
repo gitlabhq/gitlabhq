@@ -15,10 +15,12 @@ module AlertManagement
     include Gitlab::Utils::StrongMemoize
     include Referable
     include ::IncidentManagement::Escalatable
+    include IgnorableColumns
+
+    ignore_column :prometheus_alert_id, remove_with: '17.6', remove_after: '2024-10-12'
 
     belongs_to :project
     belongs_to :issue, optional: true
-    belongs_to :prometheus_alert, optional: true
     belongs_to :environment, optional: true
 
     has_many :alert_assignees, inverse_of: :alert
@@ -81,7 +83,6 @@ module AlertManagement
     scope :for_assignee_username, ->(assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
     scope :search, ->(query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
     scope :not_resolved, -> { without_status(:resolved) }
-    scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
     scope :with_operations_alerts, -> { where(domain: :operations) }
 
     scope :order_start_time,    ->(sort_order) { order(started_at: sort_order) }

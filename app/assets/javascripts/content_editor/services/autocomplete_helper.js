@@ -2,6 +2,7 @@ import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
+import { COMMANDS } from '../constants';
 
 export function defaultSorter(searchFields) {
   return (items, query) => {
@@ -117,96 +118,99 @@ export function createDataSource({
 
 export default class AutocompleteHelper {
   constructor({ dataSourceUrls, sidebarMediator }) {
-    this.dataSourceUrls = !isEmpty(dataSourceUrls)
-      ? dataSourceUrls
-      : gl.GfmAutoComplete?.dataSources || {};
+    this.updateDataSources(dataSourceUrls);
 
     this.sidebarMediator = sidebarMediator;
 
     initEmojiMap();
   }
 
-  getDataSource = memoize(
-    (referenceType, config = {}) => {
-      const sources = {
-        user: this.dataSourceUrls.members,
-        issue: this.dataSourceUrls.issues,
-        snippet: this.dataSourceUrls.snippets,
-        label: this.dataSourceUrls.labels,
-        epic: this.dataSourceUrls.epics,
-        milestone: this.dataSourceUrls.milestones,
-        merge_request: this.dataSourceUrls.mergeRequests,
-        vulnerability: this.dataSourceUrls.vulnerabilities,
-        command: this.dataSourceUrls.commands,
-        wiki: this.dataSourceUrls.wikis,
-      };
+  updateDataSources(dataSourceUrls) {
+    this.dataSourceUrls = !isEmpty(dataSourceUrls)
+      ? dataSourceUrls
+      : gl.GfmAutoComplete?.dataSources || {};
 
-      const searchFields = {
-        user: ['username', 'name'],
-        issue: ['iid', 'title'],
-        snippet: ['id', 'title'],
-        label: ['title'],
-        epic: ['iid', 'title'],
-        vulnerability: ['id', 'title'],
-        merge_request: ['iid', 'title'],
-        milestone: ['title', 'iid'],
-        command: ['name'],
-        wiki: ['title'],
-        emoji: [],
-      };
+    this.getDataSource = memoize(this.#getDataSource, (referenceType) => referenceType);
+  }
 
-      const filters = {
-        label: (items) =>
-          items.filter((item) => {
-            if (config.command === '/unlabel') return item.set;
-            if (config.command === '/label') return !item.set;
+  #getDataSource = (referenceType, config = {}) => {
+    const sources = {
+      user: this.dataSourceUrls.members,
+      issue: this.dataSourceUrls.issues,
+      snippet: this.dataSourceUrls.snippets,
+      label: this.dataSourceUrls.labels,
+      epic: this.dataSourceUrls.epics,
+      milestone: this.dataSourceUrls.milestones,
+      merge_request: this.dataSourceUrls.mergeRequests,
+      vulnerability: this.dataSourceUrls.vulnerabilities,
+      command: this.dataSourceUrls.commands,
+      wiki: this.dataSourceUrls.wikis,
+    };
 
-            return true;
-          }),
-        user: (items) =>
-          items.filter((item) => {
-            const assigned = this.sidebarMediator?.store?.assignees.some(
-              (assignee) => assignee.username === item.username,
-            );
-            const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
-              (reviewer) => reviewer.username === item.username,
-            );
+    const searchFields = {
+      user: ['username', 'name'],
+      issue: ['iid', 'title'],
+      snippet: ['id', 'title'],
+      label: ['title'],
+      epic: ['iid', 'title'],
+      vulnerability: ['id', 'title'],
+      merge_request: ['iid', 'title'],
+      milestone: ['title', 'iid'],
+      command: ['name'],
+      wiki: ['title'],
+      emoji: [],
+    };
 
-            if (config.command === '/assign') return !assigned;
-            if (config.command === '/assign_reviewer') return !assignedReviewer;
-            if (config.command === '/unassign') return assigned;
-            if (config.command === '/unassign_reviewer') return assignedReviewer;
+    const filters = {
+      label: (items) =>
+        items.filter((item) => {
+          if (config.command === COMMANDS.UNLABEL) return item.set;
+          if (config.command === COMMANDS.LABEL) return !item.set;
 
-            return true;
-          }),
-        emoji: (_, query) =>
-          query
-            ? searchEmoji(query)
-            : getAllEmoji().map((emoji) => ({ emoji, fieldValue: emoji.name })),
-      };
+          return true;
+        }),
+      user: (items) =>
+        items.filter((item) => {
+          const assigned = this.sidebarMediator?.store?.assignees.some(
+            (assignee) => assignee.username === item.username,
+          );
+          const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
+            (reviewer) => reviewer.username === item.username,
+          );
 
-      const sorters = {
-        milestone: customSorter(sortMilestones),
-        default: defaultSorter(searchFields[referenceType]),
-        // do not sort emoji
-        emoji: customSorter(() => 0),
-      };
+          if (config.command === COMMANDS.ASSIGN) return !assigned;
+          if (config.command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
+          if (config.command === COMMANDS.UNASSIGN) return assigned;
+          if (config.command === COMMANDS.UNASSIGN_REVIEWER) return assignedReviewer;
 
-      const mappers = {
-        milestone: mapMilestone,
-        default: identity,
-      };
+          return true;
+        }),
+      emoji: (_, query) =>
+        query
+          ? searchEmoji(query)
+          : getAllEmoji().map((emoji) => ({ emoji, fieldValue: emoji.name })),
+    };
 
-      return createDataSource({
-        source: sources[referenceType],
-        searchFields: searchFields[referenceType],
-        mapper: mappers[referenceType] || mappers.default,
-        sorter: sorters[referenceType] || sorters.default,
-        filter: filters[referenceType],
-        cache: config.cache,
-        limit: config.limit,
-      });
-    },
-    (referenceType) => referenceType,
-  );
+    const sorters = {
+      milestone: customSorter(sortMilestones),
+      default: defaultSorter(searchFields[referenceType]),
+      // do not sort emoji
+      emoji: customSorter(() => 0),
+    };
+
+    const mappers = {
+      milestone: mapMilestone,
+      default: identity,
+    };
+
+    return createDataSource({
+      source: sources[referenceType],
+      searchFields: searchFields[referenceType],
+      mapper: mappers[referenceType] || mappers.default,
+      sorter: sorters[referenceType] || sorters.default,
+      filter: filters[referenceType],
+      cache: config.cache,
+      limit: config.limit,
+    });
+  };
 }

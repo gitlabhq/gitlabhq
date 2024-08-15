@@ -110,8 +110,7 @@ RSpec.shared_examples 'properly assigns the alert properties' do
       service: payload_raw.fetch(:service, nil),
       fingerprint: Digest::SHA1.hexdigest(fingerprint),
       environment_id: environment.id,
-      ended_at: nil,
-      prometheus_alert_id: nil
+      ended_at: nil
     }.with_indifferent_access)
   end
 end

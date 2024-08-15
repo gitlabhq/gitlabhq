@@ -8,6 +8,7 @@ export class ContentEditor {
     eventHub,
     drawioEnabled,
     codeSuggestionsConfig,
+    autocompleteHelper,
   }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
@@ -15,6 +16,7 @@ export class ContentEditor {
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
     this._pristineDoc = null;
+    this._autocompleteHelper = autocompleteHelper;
 
     this.codeSuggestionsConfig = codeSuggestionsConfig;
     this.drawioEnabled = drawioEnabled;
@@ -88,6 +90,10 @@ export class ContentEditor {
     this._tiptapEditor.setOptions({
       editable,
     });
+  }
+
+  updateAutocompleteDataSources(dataSources) {
+    this._autocompleteHelper.updateDataSources(dataSources);
   }
 
   async setSerializedContent(serializedContent) {

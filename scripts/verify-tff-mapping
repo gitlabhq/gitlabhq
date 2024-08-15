@@ -338,9 +338,9 @@ tests = [
   },
   {
     explanation: 'Map Remote Development GraphQL mutations to request specs',
-    changed_file: 'ee/app/graphql/mutations/remote_development/workspaces/create.rb',
+    changed_file: 'ee/app/graphql/mutations/remote_development/workspace_operations/create.rb',
     expected: %w[
-      ee/spec/requests/api/graphql/mutations/remote_development/workspaces/create_spec.rb
+      ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb
     ]
   },
   {
