@@ -26,6 +26,7 @@ class ApplicationController < BaseActionController
   include CheckRateLimit
   include RequestPayloadLogger
   include StrongPaginationParams
+  include Gitlab::HttpRouterRuleContext
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization
@@ -444,7 +445,8 @@ class ApplicationController < BaseActionController
       namespace: -> { @group if @group&.persisted? },
       caller_id: self.class.endpoint_id_for_action(action_name),
       remote_ip: request.ip,
-      feature_category: feature_category
+      feature_category: feature_category,
+      **http_router_rule_context
     )
     yield
   ensure

@@ -1281,6 +1281,64 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       end
     end
 
+    describe 'when request is authorized with job token' do
+      let(:source_project) { create(:project) }
+      let(:auth_result_type) { :build }
+      let(:job) { build_stubbed(:ci_build, project: source_project, user: user) }
+      let(:scope) { user.set_ci_job_token_scope!(job) }
+
+      before do
+        accept_terms(user)
+
+        source_project.add_maintainer(user)
+        source_project.save!
+
+        allow(user).to receive(:ci_job_token_scope).and_return(scope)
+      end
+
+      context 'and target project in the allow list' do
+        let(:access) { access_class.new(user, project, 'web', authentication_abilities: [:download_code], repository_path: repository_path) }
+
+        before do
+          project.add_maintainer(user)
+          project.save!
+
+          allow(scope).to receive(:accessible?).with(project).and_return(true)
+        end
+
+        it 'does not block http pull' do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+
+      context 'and target_project in the allow list, but user does not have permissions' do
+        let(:access) { access_class.new(user, project, 'web', authentication_abilities: [:download_code], repository_path: repository_path) }
+
+        before do
+          allow(scope).to receive(:accessible?).with(project).and_return(true)
+        end
+
+        it 'blocks http pull' do
+          expect { pull_access_check }.to raise_forbidden_by_job_token(project)
+        end
+      end
+
+      context 'and target project is not in the allow list' do
+        let(:access) { access_class.new(user, project, 'web', authentication_abilities: [:download_code], repository_path: repository_path) }
+
+        before do
+          project.add_maintainer(user)
+          project.save!
+
+          allow(scope).to receive(:accessible?).with(project).and_return(false)
+        end
+
+        it 'blocks http pull' do
+          expect { pull_access_check }.to raise_forbidden_by_job_token_allowlist(source_project, project)
+        end
+      end
+    end
+
     describe 'when request is made from CI' do
       let(:auth_result_type) { :build }
       let(:job) { build_stubbed(:ci_build, project: project, user: user) }
@@ -1357,6 +1415,16 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
   def raise_not_found
     raise_error(described_class::NotFoundError, described_class::ERROR_MESSAGES[:project_not_found])
+  end
+
+  def raise_forbidden_by_job_token(target_project)
+    raise_error(described_class::ForbiddenError, format(described_class::ERROR_MESSAGES[:auth_by_job_token_forbidden],
+      target_project_path: target_project.path))
+  end
+
+  def raise_forbidden_by_job_token_allowlist(source_project, target_project)
+    raise_error(described_class::ForbiddenError, format(described_class::ERROR_MESSAGES[:auth_by_job_token_project_not_in_allowlist],
+      source_project_path: source_project.path, target_project_path: target_project.path))
   end
 
   def build_authentication_abilities

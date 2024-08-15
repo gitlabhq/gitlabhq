@@ -142,8 +142,13 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "If user is authenticated via CI job token then the target project should be in scope"
-  condition(:project_allowed_for_job_token) do
+  condition(:project_allowed_for_job_token_by_scope) do
     !@user&.from_ci_job_token? || @user.ci_job_token_scope.accessible?(project)
+  end
+
+  desc "Public, internal or project in the scope allowed via CI job token"
+  condition(:project_allowed_for_job_token) do
+    public_project? || internal_access? || project_allowed_for_job_token_by_scope?
   end
 
   desc "If the user is via CI job token and project container registry visibility allows access"
@@ -745,10 +750,10 @@ class ProjectPolicy < BasePolicy
   end
 
   # If the project is private
-  rule { ~public_project & ~internal_access & ~project_allowed_for_job_token }.prevent_all
+  rule { ~project_allowed_for_job_token }.prevent_all
 
   # If this project is public or internal we want to prevent all aside from a few public policies
-  rule { public_or_internal & ~project_allowed_for_job_token }.policy do
+  rule { public_or_internal & ~project_allowed_for_job_token_by_scope }.policy do
     prevent :guest_access
     prevent :public_access
     prevent :reporter_access
@@ -757,7 +762,7 @@ class ProjectPolicy < BasePolicy
     prevent :owner_access
   end
 
-  rule { public_project & ~project_allowed_for_job_token }.policy do
+  rule { public_project & ~project_allowed_for_job_token_by_scope }.policy do
     prevent :public_user_access
   end
 

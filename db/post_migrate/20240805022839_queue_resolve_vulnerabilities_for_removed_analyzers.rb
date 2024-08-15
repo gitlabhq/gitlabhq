@@ -11,17 +11,12 @@ class QueueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migrati
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerability_reads,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162527
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162527
   end
 end

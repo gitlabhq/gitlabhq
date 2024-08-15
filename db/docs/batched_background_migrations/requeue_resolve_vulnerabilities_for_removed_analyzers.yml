@@ -1,0 +1,10 @@
+---
+migration_job_name: RequeueResolveVulnerabilitiesForRemovedAnalyzers
+description: Resolves all detected vulnerabilities for removed analyzers.
+feature_category: static_application_security_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
+milestone: '17.4'
+queued_migration_version: 20240814085540
+# Replace with the approximate date you think it's best to ensure the completion of this BBM.
+finalize_after: '2024-09-22'
+finalized_by: # version of the migration that finalized this BBM

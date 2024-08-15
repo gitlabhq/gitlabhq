@@ -93,7 +93,6 @@ class Gitlab::Seeder::TriageOps
 
         puts "Ensuring required projects"
         ensure_project('gitlab-org/gitlab')
-        ensure_project('gitlab-org/security/gitlab')
 
         puts "Ensuring required bot user"
         ensure_bot_user
@@ -146,7 +145,8 @@ class Gitlab::Seeder::TriageOps
       name: 'Triage Bot',
       email: 'triagebot@example.com',
       confirmed_at: DateTime.now,
-      password: SecureRandom.hex.slice(0, 16)
+      password: SecureRandom.hex.slice(0, 16),
+      user_type: :project_bot
     ) do |user|
       user.assign_personal_namespace(Organizations::Organization.default_organization)
     end

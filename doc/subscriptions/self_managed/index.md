@@ -515,17 +515,6 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 
 If you have a license file or key, you can activate it [in the **Admin** area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
-## Contact Support
-
-- See the tiers of [GitLab Support](https://about.gitlab.com/support/).
-- [Submit a request](https://support.gitlab.com/hc/en-us/requests/new) through the Support Portal.
-
-We also encourage all users to search our project trackers for known issues and
-existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/) project.
-
-These issues are the best avenue for getting updates on specific product plans
-and for communicating directly with the relevant GitLab team members.
-
 ## Storage
 
 The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).

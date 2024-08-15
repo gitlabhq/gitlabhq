@@ -86,7 +86,8 @@ module API
         runner: -> { @current_runner || @runner },
         remote_ip: request.ip,
         caller_id: api_endpoint.endpoint_id,
-        feature_category: feature_category
+        feature_category: feature_category,
+        **http_router_rule_context
       )
     end
 
@@ -200,6 +201,7 @@ module API
     helpers ::API::Helpers::CommonHelpers
     helpers ::API::Helpers::PerformanceBarHelpers
     helpers ::API::Helpers::RateLimiter
+    helpers Gitlab::HttpRouterRuleContext
 
     namespace do
       after do

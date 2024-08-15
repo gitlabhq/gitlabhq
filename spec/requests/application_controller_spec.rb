@@ -85,4 +85,28 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       it { expect(response).to have_gitlab_http_status(:forbidden) }
     end
   end
+
+  describe 'HTTP Router headers' do
+    before do
+      sign_in(user)
+    end
+
+    it 'includes the HTTP ROUTER headers in ApplicationContext' do
+      expect_next_instance_of(RootController) do |controller|
+        expect(controller).to receive(:index).and_wrap_original do |m, *args|
+          m.call(*args)
+
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.http_router_rule_action' => 'classify',
+            'meta.http_router_rule_type' => 'FirstCell'
+          )
+        end
+      end
+
+      get root_path, headers: {
+        'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+        'X-Gitlab-Http-Router-Rule-Type' => 'FirstCell'
+      }
+    end
+  end
 end

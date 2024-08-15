@@ -965,10 +965,10 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 404' do
+              it 'downloads from other project get status 403' do
                 clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
-                expect(response).to have_gitlab_http_status(:not_found)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
 
               context 'when users password is expired' do
@@ -1566,10 +1566,10 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 404' do
+              it 'downloads from other project get status 403' do
                 clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
-                expect(response).to have_gitlab_http_status(:not_found)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
 
               context 'when users password is expired' do

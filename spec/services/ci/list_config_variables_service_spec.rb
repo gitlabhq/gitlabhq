@@ -284,7 +284,7 @@ RSpec.describe Ci::ListConfigVariablesService,
   end
 
   context 'when reading from cache' do
-    let(:reactive_cache_params) { [sha] }
+    let(:reactive_cache_params) { [ref, sha] }
     let(:return_value) { { 'KEY1' => { value: 'val 1', description: 'description 1' } } }
 
     before do
@@ -297,7 +297,7 @@ RSpec.describe Ci::ListConfigVariablesService,
   end
 
   context 'when the cache is empty' do
-    let(:reactive_cache_params) { [sha] }
+    let(:reactive_cache_params) { [ref, sha] }
 
     it 'returns nil and enquques the worker to fill cache' do
       expect(ExternalServiceReactiveCachingWorker)

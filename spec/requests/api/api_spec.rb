@@ -131,11 +131,16 @@ RSpec.describe API::API, feature_category: :system_access do
               'meta.user' => user.username,
               'meta.client_id' => a_string_matching(%r{\Auser/.+}),
               'meta.feature_category' => 'team_planning',
+              'meta.http_router_rule_action' => 'classify',
+              'meta.http_router_rule_type' => 'FirstCell',
               'route' => '/api/:version/projects/:id/issues'
             )
           end
 
-          get(api("/projects/#{project.id}/issues", user))
+          get(api("/projects/#{project.id}/issues", user), headers: {
+            'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+            'X-Gitlab-Http-Router-Rule-Type' => 'FirstCell'
+          })
 
           expect(response).to have_gitlab_http_status(:ok)
         end

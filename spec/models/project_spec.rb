@@ -1584,8 +1584,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#to_reference_base' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:user) { create(:user) }
     let_it_be(:user_namespace) { user.namespace }
 
@@ -1651,6 +1649,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { project.merge_method }
 
       it { is_expected.to eq(method) }
+    end
+  end
+
+  describe '#merge_method=' do
+    where(:merge_method, :ff_only_enabled, :rebase_enabled) do
+      :ff           | true | true
+      :rebase_merge | false | true
+      :merge        | false | false
+    end
+
+    with_them do
+      let(:project) { build :project }
+
+      subject { project.merge_method = merge_method }
+
+      it 'sets merge_requests_ff_only_enabled and merge_requests_rebase_enabled' do
+        subject
+        expect(project.merge_requests_ff_only_enabled).to eq(ff_only_enabled)
+        expect(project.merge_requests_rebase_enabled).to eq(rebase_enabled)
+      end
     end
   end
 
@@ -8380,8 +8398,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'topic_list=' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:topic_list, :expected_result) do
         ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray
         ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray
@@ -8474,8 +8490,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         project.update!(project_updates)
       end
-
-      using RSpec::Parameterized::TableSyntax
 
       where(:initial_visibility, :new_visibility, :new_topic_list, :expected_count_changes) do
         ref(:private)  | nil            | 't2, t3' | [0, 0, 0]
