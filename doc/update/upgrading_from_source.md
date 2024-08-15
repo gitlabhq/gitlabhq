@@ -99,11 +99,11 @@ Download and install Go (for Linux, 64-bit):
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.20.8.linux-amd64.tar.gz"
-echo 'cc97c28d9c252fbf28f91950d830201aa403836cbed702a05932e63f7f0c7bc4  go1.20.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.20.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.21.13.linux-amd64.tar.gz"
+echo '502fc16d5910562461e6a6631fb6377de2322aad7304bf2bcd23500ba9dab4a7' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.21.13.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.20.8.linux-amd64.tar.gz
+rm go1.21.13.linux-amd64.tar.gz
 ```
 
 ### 6. Update Git
