@@ -26,7 +26,12 @@ module Gitlab
           # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
         end
 
-        def sync_partitions(models_to_sync = registered_for_sync, only_on: nil, analyze: true)
+        def sync_partitions(
+          models_to_sync = registered_for_sync,
+          only_on: nil,
+          analyze: true,
+          owner_db_only: Rails.env.production?
+        )
           return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
           return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
@@ -37,7 +42,7 @@ module Gitlab
             PartitionManager.new(model).sync_partitions(analyze: analyze)
           end
 
-          unless only_on
+          unless owner_db_only || only_on
             models_to_sync.each do |model|
               next if model < ::Gitlab::Database::SharedModel && !(model < TableWithoutModel)
 

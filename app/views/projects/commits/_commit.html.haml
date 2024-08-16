@@ -27,7 +27,7 @@
   .avatar-cell.gl-hidden.sm:gl-block
     = author_avatar(commit, size: 40, has_tooltip: false)
 
-  .commit-detail.flex-list.gl-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1.gl-min-w-0
+  .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-center.gl-grow.gl-min-w-0
     .commit-content{ data: { testid: 'commit-content' } }
       - if view_details && merge_request
         = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: ["commit-row-message item-title js-onboarding-commit-item", ("font-italic" if commit.message.empty?)], data: link_data_attrs
@@ -63,7 +63,7 @@
           - if tags.size > 1
             = link_to _('%{count} tags') % { count: tags.size } , project_commit_path(project, commit.id)
           - else
-            = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-text-truncate gl-max-w-15'
+            = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-truncate gl-max-w-15'
 
       - if request.xhr?
         - if commit.has_signature?

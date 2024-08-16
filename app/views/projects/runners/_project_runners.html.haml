@@ -7,7 +7,7 @@
     - if can?(current_user, :create_runner, @project)
       = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
         = s_('Runners|New project runner')
-      .gl-display-inline
+      .gl-inline
         #js-project-runner-registration-dropdown{ data: {
           allow_registration_token: @project.namespace.allow_runner_registration_token?.to_s,
           registration_token: @project.runners_token,

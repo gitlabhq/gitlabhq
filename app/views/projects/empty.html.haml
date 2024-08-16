@@ -18,19 +18,19 @@
       .project-clone-holder.gl-block.sm:gl-hidden
         = render "shared/mobile_clone_panel"
 
-      .project-clone-holder.gl-hidden.sm:gl-flex.gl-justify-content-end.gl-w-full
+      .project-clone-holder.gl-hidden.sm:gl-flex.gl-justify-end.gl-w-full
         = render "projects/buttons/code", ref: @ref
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-bg-gray-10 gl-p-5 gl-rounded-base' }) do |c|
       - c.with_body do
-        %h4.gl-font-lg.gl-my-0= _('The repository for this project is empty')
+        %h4.gl-text-lg.gl-my-0= _('The repository for this project is empty')
         - if @project.can_current_user_push_code?
           %p.gl-m-0.gl-mt-2.gl-text-secondary= _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
     - if can?(current_user, :push_code, @project)
       = render Pajamas::CardComponent.new(header_options: { class: 'gl-py-4' }) do |c|
         - c.with_header do
-          %h5.gl-font-lg.gl-m-0= _('Command line instructions')
+          %h5.gl-text-lg.gl-m-0= _('Command line instructions')
         - c.with_body do
           %p
             = _('You can also upload existing files from your computer using the instructions below.')

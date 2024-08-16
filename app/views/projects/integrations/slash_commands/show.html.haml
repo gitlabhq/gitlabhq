@@ -17,7 +17,7 @@
         %h4.gl-mb-0
           = @error
       - c.with_footer do
-        .gl-display-flex
+        .gl-flex
           - if @error.nil?
             = form_tag confirm_project_integrations_slash_commands_path(@project), method: :post do
               = hidden_field_tag :command_id, params[:command_id]

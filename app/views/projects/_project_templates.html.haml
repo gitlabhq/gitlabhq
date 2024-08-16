@@ -1,7 +1,7 @@
 - f ||= local_assigns[:f]
 
 .project-templates-buttons
-  = gl_tabs_nav({ class: 'nav-links scrolling-tabs gl-display-flex gl-flex-grow-1 gl-flex-nowrap gl-border-0' }) do
+  = gl_tabs_nav({ class: 'nav-links scrolling-tabs gl-flex gl-grow gl-flex-nowrap gl-border-0' }) do
     = gl_tab_link_to '#built-in', tab_class: 'built-in-tab', class: 'active', data: { toggle: 'tab' } do
       = _('Built-in')
       = gl_tab_counter_badge Gitlab::ProjectTemplate.all.count + Gitlab::SampleDataTemplate.all.count

@@ -13,7 +13,7 @@ DETAILS:
 > - Target roles [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
 > - Theme [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83251) and background color removed in GitLab 14.10.
 
-GitLab can display broadcast messages to users of a GitLab instance. There are two types of broadcast messages:
+GitLab can display two types of broadcast messages to users of a GitLab instance:
 
 - Banners
 - Notifications

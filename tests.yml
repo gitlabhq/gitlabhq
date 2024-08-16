@@ -177,3 +177,8 @@ mapping:
     test:
       - 'spec/lib/gitlab/ci/templates/templates_spec.rb'
       - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/8021
+  - source: 'public/robots\.txt'
+    test:
+      - 'spec/requests/robots_txt_spec.rb'

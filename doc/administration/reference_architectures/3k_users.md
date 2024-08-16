@@ -2110,16 +2110,19 @@ supported modifications you can make to this architecture to reduce complexity a
 It should be noted that to achieve HA with GitLab, the 60 RPS or 3,000 users architecture's makeup is ultimately what is
 required. Each component has various considerations and rules to follow, and the architecture
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
-but with smaller performance requirements, several modifications can be considered as follows:
+but with smaller performance requirements, the following modifications are supported as follows:
+
+NOTE:
+If not stated below, no other modifications are supported for lower use counts.
 
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
-- Combining select nodes: Some nodes can be combined to reduce complexity at the cost of some performance:
+- Combining select nodes: The following specific components are supported to be combined onto the same nodes to reduce complexity at the cost of some performance:
   - GitLab Rails and Sidekiq: Sidekiq nodes can be removed, and the component instead enabled on the GitLab Rails nodes.
   - PostgreSQL and PgBouncer: PgBouncer nodes could be removed and instead be enabled on PostgreSQL nodes with the Internal Load Balancer pointing to them. However, to enable [Database Load Balancing](../postgresql/database_load_balancing.md), a separate PgBouncer array is still required.
 - Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
   - PostgreSQL and PgBouncer: A quorum is not strictly necessary. Two PostgreSQL nodes and two PgBouncer nodes are enough for redundancy.
-- Running select components in reputable Cloud PaaS solutions: Select components of the GitLab setup can instead be run on Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
+- Running select components in reputable Cloud PaaS solutions: The following specific components are supported to be run on reputable Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or Amazon RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
     - Consul may still be desired if [Prometheus](../monitoring/prometheus/index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/index.md#adding-custom-scrape-configurations) for all nodes.
       - As Redis Sentinel runs on the same box as Consul in this architecture, it may need to be run on a separate box if Redis is still being run using the Linux package.
@@ -2332,3 +2335,12 @@ An example for the GitLab Helm Charts for the above 60 RPS or 3,000 reference ar
     Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
+
+## Next steps
+
+After following this guide you should now have a fresh GitLab environment with core functionality configured accordingly.
+
+You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
+
+NOTE:
+Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.

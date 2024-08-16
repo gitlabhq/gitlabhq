@@ -364,7 +364,7 @@ scan_execution_policy:
         - id: 27
 ```
 
-## Example security policies project
+## Example security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):

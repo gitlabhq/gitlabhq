@@ -1,7 +1,7 @@
 .form-group
   = render Pajamas::CheckboxTagComponent.new(name: :only_protected_branches,
     checkbox_options: { class: 'js-mirror-protected' },
-    label_options: { class: 'gl-mb-0!' }) do |c|
+    label_options: { class: '!gl-mb-0' }) do |c|
     - c.with_label do
       = _('Mirror only protected branches')
     - c.with_help_text do

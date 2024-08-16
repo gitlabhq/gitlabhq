@@ -1394,6 +1394,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_6d6c79ce74e1() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_environment_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_environment_project_id"
+  FROM "protected_environments"
+  WHERE "protected_environments"."id" = NEW."protected_environment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_70d3f0bba1de() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2059,6 +2075,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "ml_models"
   WHERE "ml_models"."id" = NEW."model_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_f6f59d8216b3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_environment_group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."protected_environment_group_id"
+  FROM "protected_environments"
+  WHERE "protected_environments"."id" = NEW."protected_environment_id";
 END IF;
 
 RETURN NEW;
@@ -8281,6 +8313,7 @@ CREATE TABLE ci_pipelines (
     id bigint NOT NULL,
     auto_canceled_by_id bigint,
     auto_canceled_by_partition_id bigint,
+    CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
@@ -16741,6 +16774,8 @@ CREATE TABLE protected_environment_deploy_access_levels (
     user_id integer,
     group_id integer,
     group_inheritance_type smallint DEFAULT 0 NOT NULL,
+    protected_environment_project_id bigint,
+    protected_environment_group_id bigint,
     CONSTRAINT check_deploy_access_levels_user_group_access_level_any_not_null CHECK ((num_nonnulls(user_id, group_id, access_level) = 1))
 );
 
@@ -22962,9 +22997,6 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE ci_pipelines
-    ADD CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
@@ -27819,6 +27851,10 @@ CREATE UNIQUE INDEX index_features_on_key ON features USING btree (key);
 
 CREATE INDEX index_for_owasp_top_10_group_level_reports ON vulnerability_reads USING btree (owasp_top_10, state, report_type, severity, traversal_ids, vulnerability_id, resolved_on_default_branch) WHERE (archived = false);
 
+CREATE INDEX index_for_protected_environment_group_id_of_protected_environme ON protected_environment_deploy_access_levels USING btree (protected_environment_group_id);
+
+CREATE INDEX index_for_protected_environment_project_id_of_protected_environ ON protected_environment_deploy_access_levels USING btree (protected_environment_project_id);
+
 CREATE INDEX index_for_security_scans_scan_type ON security_scans USING btree (scan_type, project_id, pipeline_id) WHERE (status = 1);
 
 CREATE INDEX index_for_status_per_branch_per_project ON merge_trains USING btree (target_project_id, target_branch, status);
@@ -32333,6 +32369,8 @@ CREATE TRIGGER trigger_6c38ba395cc1 BEFORE INSERT OR UPDATE ON error_tracking_er
 
 CREATE TRIGGER trigger_6cdea9559242 BEFORE INSERT OR UPDATE ON issue_links FOR EACH ROW EXECUTE FUNCTION trigger_6cdea9559242();
 
+CREATE TRIGGER trigger_6d6c79ce74e1 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_6d6c79ce74e1();
+
 CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framework_security_policies FOR EACH ROW EXECUTE FUNCTION trigger_70d3f0bba1de();
 
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
@@ -32418,6 +32456,8 @@ CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_fin
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
+
+CREATE TRIGGER trigger_f6f59d8216b3 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_f6f59d8216b3();
 
 CREATE TRIGGER trigger_fbd42ed69453 BEFORE INSERT OR UPDATE ON external_status_checks_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_fbd42ed69453();
 
@@ -32582,6 +32622,9 @@ ALTER TABLE ONLY audit_events_streaming_event_type_filters
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_environment_deploy_access_levels
+    ADD CONSTRAINT fk_11ede44198 FOREIGN KEY (protected_environment_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -32993,6 +33036,9 @@ ALTER TABLE ONLY boards_epic_lists
 
 ALTER TABLE ONLY dast_scanner_profiles_builds
     ADD CONSTRAINT fk_5d46286ad3 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_environment_deploy_access_levels
+    ADD CONSTRAINT fk_5d9b05a7e9 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_5e0c8d9154 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

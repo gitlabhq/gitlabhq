@@ -1,6 +1,6 @@
 %div
   - if @merge_request.description.present?
-    .description{ class: ['gl-mt-4!', can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''], data: { testid: 'description-content' } }
+    .description{ class: ['!gl-mt-4', can?(current_user, :update_merge_request, @merge_request) ? 'js-task-list-container' : ''], data: { testid: 'description-content' } }
       .md
         = markdown_field(@merge_request, :description)
       %textarea.hidden.js-task-list-field{ data: { value: @merge_request.description } }

@@ -14,7 +14,7 @@
     %small#js-project-name-description.form-text.gl-text-secondary
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden
-  .form-group.gl-form-group.gl-w-full.gl-display-flex.gl-flex-wrap
+  .form-group.gl-form-group.gl-w-full.gl-flex.gl-flex-wrap
     .form-group.project-path.col-sm-6.gl-pr-0
       = f.label :namespace_id, class: 'label-bold' do
         %span= _('Project URL')
@@ -33,7 +33,7 @@
             .input-group-text.border-0
               #{user_url(current_user.username)}/
           = f.hidden_field :namespace_id, value: current_user.namespace_id
-        .gl-align-self-center.gl-pl-5 /
+        .gl-self-center.gl-pl-5 /
     .form-group.project-path.col-sm-6
       = f.label :path, class: 'label-bold' do
         %span= _("Project slug")

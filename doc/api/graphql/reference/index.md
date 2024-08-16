@@ -909,6 +909,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryprojectsaimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Return only projects marked for deletion. |
+| <a id="queryprojectsarchived"></a>`archived` | [`ProjectArchived`](#projectarchived) | Filter projects by archived status. |
 | <a id="queryprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="queryprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="queryprojectsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Include hidden projects. |
@@ -27643,6 +27644,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organizationprojectsaimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Return only projects marked for deletion. |
+| <a id="organizationprojectsarchived"></a>`archived` | [`ProjectArchived`](#projectarchived) | Filter projects by archived status. |
 | <a id="organizationprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="organizationprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="organizationprojectsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Include hidden projects. |
@@ -36905,6 +36907,16 @@ Current state of the product analytics stack.
 | <a id="productanalyticsstatecreate_instance"></a>`CREATE_INSTANCE` | Stack has not been created yet. |
 | <a id="productanalyticsstateloading_instance"></a>`LOADING_INSTANCE` | Stack is currently initializing. |
 | <a id="productanalyticsstatewaiting_for_events"></a>`WAITING_FOR_EVENTS` | Stack is waiting for events from users. |
+
+### `ProjectArchived`
+
+Values for the archived argument.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectarchivedexclude"></a>`EXCLUDE` | Exclude archived projects. |
+| <a id="projectarchivedinclude"></a>`INCLUDE` | Include archvied projects. |
+| <a id="projectarchivedonly"></a>`ONLY` | Only archived projects. |
 
 ### `ProjectFeatureAccessLevel`
 

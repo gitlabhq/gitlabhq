@@ -55,7 +55,7 @@
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active
         = render "projects/merge_requests/commits"
-      #diffs.diffs.tab-pane{ class: "gl-m-0!" }
+      #diffs.diffs.tab-pane{ class: "!gl-m-0" }
         -# This tab is always loaded via AJAX
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane

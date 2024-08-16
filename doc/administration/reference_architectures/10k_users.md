@@ -2440,3 +2440,12 @@ An example for the GitLab Helm Charts targetting the above 200 RPS or 10,000 ref
     Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
+
+## Next steps
+
+After following this guide you should now have a fresh GitLab environment with core functionality configured accordingly.
+
+You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
+
+NOTE:
+Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.

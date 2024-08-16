@@ -10,4 +10,4 @@
   - badge_variant = :success
   - badge_label = _("Approved")
 
-  %li.gl-display-flex{ class: 'gl-mr-0!' }= render Pajamas::BadgeComponent.new(badge_label, variant: badge_variant, icon: approval_icon, title: approval_tooltip, class: 'has-tooltip', data: { 'testid': 'mr-appovals' })
+  %li.gl-flex{ class: '!gl-mr-0' }= render Pajamas::BadgeComponent.new(badge_label, variant: badge_variant, icon: approval_icon, title: approval_tooltip, class: 'has-tooltip', data: { 'testid': 'mr-appovals' })

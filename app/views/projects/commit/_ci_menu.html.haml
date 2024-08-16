@@ -1,6 +1,6 @@
 - any_pipelines = @commit.present(current_user: current_user).any_pipelines?
 
-= gl_tabs_nav({ class: 'commit-ci-menu gl-display-flex gl-flex-grow-1'}) do
+= gl_tabs_nav({ class: 'commit-ci-menu gl-flex gl-grow'}) do
   = gl_tab_link_to project_commit_path(@project, @commit.id) do
     = _('Changes')
     = gl_tab_counter_badge(@diffs.size)

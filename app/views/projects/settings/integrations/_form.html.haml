@@ -14,7 +14,7 @@
 - if integration.to_param === 'slack'
   = render 'shared/integrations/slack_notifications_deprecation_alert'
 
-.gl-display-flex.gl-align-items-center.gl-gap-3
+.gl-flex.gl-items-center.gl-gap-3
   = render Pajamas::AvatarComponent.new(integration, size: 64, alt: '')
   %h2.gl-m-0
     = integration.title

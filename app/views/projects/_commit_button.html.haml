@@ -1,4 +1,4 @@
-.gl-display-flex.gl-mt-7
+.gl-flex.gl-mt-7
   - submit_button_options = { type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button', data: { testid: 'commit-button' } } }
   = render Pajamas::ButtonComponent.new(**submit_button_options) do
     = _('Commit changes')

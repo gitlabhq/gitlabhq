@@ -2,7 +2,7 @@
 - is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(local_assigns[:path])
 
 .file-holder.file.gl-mb-3
-  .js-file-title.file-title.gl-display-flex.gl-align-items-center.gl-rounded-top-base{ data: { current_action: action } }
+  .js-file-title.file-title.gl-flex.gl-items-center.gl-rounded-t-base{ data: { current_action: action } }
     .editor-ref.block-truncated.has-tooltip{ title: current_action?(:edit, :update) ? ref : params[:id] }
       = sprite_icon('branch', size: 12)
       - if current_action?(:edit, :update)
@@ -23,11 +23,11 @@
       #editor-toolbar
 
     - else
-      .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
+      .file-buttons.gl-flex.gl-items-center.gl-justify-end
         - if is_markdown
-          .md-header.gl-display-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
-            .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-justify-content-space-between
-              .md-header-toolbar.gl-display-flex.gl-py-2.gl-flex-wrap{ class: "gl-m-0!" }
+          .md-header.gl-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
+            .gl-flex.gl-items-center.gl-flex-wrap.gl-justify-between
+              .md-header-toolbar.gl-flex.gl-py-2.gl-flex-wrap{ class: "!gl-m-0" }
                 = render 'shared/blob/markdown_buttons', supports_file_upload: false
         %span.soft-wrap-toggle
           = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do

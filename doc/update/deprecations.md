@@ -212,8 +212,8 @@ Currently, there are two ways to ensure compliance- or security-related jobs are
 - [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html).
 - [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/).
 
-To provide a single place for ensuing required jobs are run in all pipelines for a project, we have deprecated
-compliance pipelines GitLab 17.3 and will remove the feature in GitLab 18.0.
+To provide a single place for ensuring required jobs are run in all pipelines for a project, we have deprecated
+compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 18.0.
 
 Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
