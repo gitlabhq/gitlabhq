@@ -282,7 +282,14 @@ module Gitlab
       return unless connection.respond_to?(:pool) &&
         connection.pool.respond_to?(:db_config)
 
-      connection.pool.db_config
+      db_config = connection.pool.db_config
+      db_config unless empty_config?(db_config)
+    end
+
+    def self.empty_config?(db_config)
+      return true unless db_config
+
+      ::Gitlab.next_rails? && db_config.is_a?(ActiveRecord::ConnectionAdapters::NullPool::NullConfig)
     end
 
     # At the moment, the connection can only be retrieved by
@@ -353,10 +360,14 @@ module Gitlab
 
           ::Gitlab::Database::Metrics.subtransactions_increment(self.name) if transaction_type == :sub_transaction
 
-          payload = { connection: connection, transaction_type: transaction_type }
-
-          ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
+          if ::Gitlab.next_rails?
             super(**options, &block)
+          else
+            payload = { connection: connection, transaction_type: transaction_type }
+
+            ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
+              super(**options, &block)
+            end
           end
         end
 

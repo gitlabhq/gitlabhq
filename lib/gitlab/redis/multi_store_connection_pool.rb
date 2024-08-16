@@ -14,6 +14,8 @@ module Gitlab
           end
         end
       end
+
+      alias_method :then, :with
     end
   end
 end

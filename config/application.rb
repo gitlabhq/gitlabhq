@@ -87,6 +87,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
+    require_dependency Rails.root.join('lib/gitlab/patch/old_redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
@@ -535,7 +536,12 @@ module Gitlab
     end
 
     # Use caching across all environments
-    ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::RedisCacheStore)
+    if ::Gitlab.next_rails?
+      ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::RedisCacheStore)
+    else
+      ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::OldRedisCacheStore)
+    end
+
     config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 
     config.active_job.queue_adapter = :sidekiq

@@ -22,7 +22,7 @@ module VirtualRegistries
           :content_type,
           length: { maximum: 255 }
         validates :downloads_count, numericality: { greater_than: 0, only_integer: true }
-        validates :relative_path, uniqueness: { scope: :upstream_id }
+        validates :relative_path, uniqueness: { scope: :upstream_id }, if: :upstream
         validates :file, presence: true
 
         mount_file_store_uploader ::VirtualRegistries::CachedResponseUploader

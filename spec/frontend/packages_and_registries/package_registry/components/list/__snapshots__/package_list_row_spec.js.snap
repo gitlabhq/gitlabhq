@@ -38,7 +38,7 @@ exports[`packages_list_row renders 1`] = `
           </div>
         </div>
         <div
-          class="gl-flex gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-secondary gl-text-sm"
+          class="gl-flex gl-gap-3 gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-sm gl-text-subtle"
         >
           <div
             class="gl-align-items-center gl-display-flex"

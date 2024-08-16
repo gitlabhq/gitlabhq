@@ -1,8 +1,7 @@
 import jsYaml from 'js-yaml';
-import { uniq } from 'lodash';
+import { uniq, upperFirst, lowerCase } from 'lodash';
 
-export const extractGroupOrProject = () => {
-  const url = window.location.href;
+export const extractGroupOrProject = (url = window.location.href) => {
   let fullPath = url
     .replace(window.location.origin, '')
     .split('/-/')[0]
@@ -30,4 +29,9 @@ export const parseFrontmatter = (frontmatter, defaults = {}) => {
   config.fields = uniq(config.fields?.split(',').map((f) => f.trim()) || defaults?.fields);
   config.display = config.display || 'list';
   return config;
+};
+
+export const toSentenceCase = (str) => {
+  if (str === 'id' || str === 'iid') return str.toUpperCase();
+  return upperFirst(lowerCase(str));
 };

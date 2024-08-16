@@ -434,6 +434,7 @@ class User < ApplicationRecord
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
     :home_organization, :home_organization_id, :home_organization_id=,
+    :dpop_enabled, :dpop_enabled=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

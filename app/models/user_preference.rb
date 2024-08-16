@@ -44,6 +44,7 @@ class UserPreference < ApplicationRecord
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
   attribute :use_web_ide_extension_marketplace, default: false
+  attribute :dpop_enabled, default: false
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
 
@@ -147,6 +148,15 @@ class UserPreference < ApplicationRecord
     status = ActiveRecord::Type::Boolean.new.cast(value) ? 'enabled' : 'disabled'
 
     self.extensions_marketplace_opt_in_status = status
+  end
+
+  def dpop_enabled=(value)
+    if value.nil?
+      default = self.class.column_defaults['dpop_enabled']
+      super(default)
+    else
+      super(value)
+    end
   end
 
   private

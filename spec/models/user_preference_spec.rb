@@ -385,4 +385,32 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       end
     end
   end
+
+  describe '#dpop_enabled' do
+    let(:pref) { described_class.new(args) }
+
+    context 'when no arguments are provided' do
+      let(:args) { {} }
+
+      it 'is set to false by default' do
+        expect(pref.dpop_enabled).to eq(false)
+      end
+    end
+
+    context 'when dpop_enabled is set to nil' do
+      let(:args) { { dpop_enabled: nil } }
+
+      it 'returns default value' do
+        expect(pref.dpop_enabled).to eq(false)
+      end
+    end
+
+    context 'when dpop_enabled is set to true' do
+      let(:args) { { dpop_enabled: true } }
+
+      it 'returns assigned value' do
+        expect(pref.dpop_enabled).to eq(true)
+      end
+    end
+  end
 end

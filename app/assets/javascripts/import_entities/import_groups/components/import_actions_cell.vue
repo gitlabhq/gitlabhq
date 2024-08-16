@@ -27,9 +27,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
-  projectCreationHelp: helpPagePath('user/group/import/index', {
-    anchor: 'ensure-projects-can-be-imported',
+  projectCreationHelp: helpPagePath('user/group/import/direct_transfer_migrations', {
+    anchor: 'configuration',
   }),
   props: {
     id: {

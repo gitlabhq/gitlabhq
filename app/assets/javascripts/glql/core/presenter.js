@@ -3,10 +3,13 @@ import LinkPresenter from '../components/presenters/link.vue';
 import TextPresenter from '../components/presenters/text.vue';
 import ListPresenter from '../components/presenters/list.vue';
 import NullPresenter from '../components/presenters/null.vue';
+import TablePresenter from '../components/presenters/table.vue';
 
 const presentersByDisplayType = {
   list: ListPresenter,
   orderedList: ListPresenter,
+
+  table: TablePresenter,
 };
 
 const olProps = { listType: 'ol' };

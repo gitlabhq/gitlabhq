@@ -571,7 +571,7 @@
 {"name":"redis-clustering","version":"5.2.0","platform":"ruby","checksum":"685f388e0bdd81091a96cce9a46e22e727213d5fa14ebfc5111e110440e0038e"},
 {"name":"redis-namespace","version":"1.11.0","platform":"ruby","checksum":"e91a1aa2b2d888b6dea1d4ab8d39e1ae6fac3426161feb9d91dd5cca598a2239"},
 {"name":"redis-rack","version":"3.0.0","platform":"ruby","checksum":"abb50b82ae10ad4d11ca2e4901bfc2b98256cdafbbd95f80c86fc9e001478380"},
-{"name":"redis-store","version":"1.10.0","platform":"ruby","checksum":"f258894f9f7e82834308a3d86242294f0cff2c9db9ae66e5cb4c553a5ec8b09e"},
+{"name":"redis-store","version":"1.11.0","platform":"ruby","checksum":"edc4f3e239dcd1fdd9905584e6b1e623a84618e14436e6e8a07c70891008eda4"},
 {"name":"regexp_parser","version":"2.6.0","platform":"ruby","checksum":"f163ba463a45ca2f2730e0902f2475bb0eefcd536dfc2f900a86d1e5a7d7a556"},
 {"name":"regexp_property_values","version":"1.0.0","platform":"java","checksum":"5e26782b01241616855c4ee7bb8a62fce9387e484f2d3eaf04f2a0633708222e"},
 {"name":"regexp_property_values","version":"1.0.0","platform":"ruby","checksum":"162499dc0bba1e66d334273a059f207a61981cc8cc69d2ca743594e7886d080f"},

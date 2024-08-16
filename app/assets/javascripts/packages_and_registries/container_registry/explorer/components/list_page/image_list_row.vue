@@ -182,7 +182,6 @@ export default {
 
           <cleanup-status
             v-if="item.expirationPolicyCleanupStatus"
-            class="gl-ml-2"
             :status="item.expirationPolicyCleanupStatus"
             :expiration-policy="expirationPolicy"
           />
@@ -191,7 +190,6 @@ export default {
             v-if="showBadgeProtected"
             v-gl-tooltip
             :title="$options.i18n.badgeProtectedTooltipText"
-            class="gl-ml-3"
             size="sm"
             variant="neutral"
           >

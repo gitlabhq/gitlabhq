@@ -140,10 +140,9 @@ export default {
           {{ packageEntity.name }}
         </span>
 
-        <div v-if="showTags || showBadgeProtected" class="gl-display-flex gl-gap-2">
+        <div v-if="showTags || showBadgeProtected" class="gl-flex gl-gap-3">
           <package-tags
             v-if="showTags"
-            class="gl-ml-2"
             :tags="packageEntity.tags.nodes"
             hide-label
             :tag-display-limit="1"
@@ -152,7 +151,6 @@ export default {
           <gl-badge
             v-if="showBadgeProtected"
             v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
-            class="gl-ml-2"
             icon-size="sm"
             variant="neutral"
           >

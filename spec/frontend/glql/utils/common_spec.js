@@ -1,4 +1,9 @@
-import { extractGroupOrProject, parseQueryText, parseFrontmatter } from '~/glql/utils/common';
+import {
+  extractGroupOrProject,
+  parseQueryText,
+  parseFrontmatter,
+  toSentenceCase,
+} from '~/glql/utils/common';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 describe('extractGroupOrProject', () => {
@@ -70,5 +75,18 @@ describe('parseFrontmatter', () => {
       fields: ['title', 'assignees', 'dueDate'],
       display: 'list',
     });
+  });
+});
+
+describe('toSentenceCase', () => {
+  it.each`
+    str                     | expected
+    ${'title'}              | ${'Title'}
+    ${'camelCasedExample'}  | ${'Camel cased example'}
+    ${'snake_case_example'} | ${'Snake case example'}
+    ${'id'}                 | ${'ID'}
+    ${'iid'}                | ${'IID'}
+  `('returns $expected for $str', ({ str, expected }) => {
+    expect(toSentenceCase(str)).toBe(expected);
   });
 });
