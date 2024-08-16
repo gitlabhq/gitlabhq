@@ -192,9 +192,9 @@ export default {
   </gl-alert>
   <div v-else>
     <div class="gl-pt-5">
-      <div class="gl-display-flex gl-justify-content-space-between">
+      <div class="gl-flex gl-justify-between">
         <div>
-          <h4 class="gl-font-lg gl-mb-3 gl-mt-0">{{ $options.TOTAL_USAGE_TITLE }}</h4>
+          <h4 class="gl-text-lg gl-mb-3 gl-mt-0">{{ $options.TOTAL_USAGE_TITLE }}</h4>
           <p>
             {{ $options.TOTAL_USAGE_SUBTITLE }}
             <gl-link
@@ -206,7 +206,7 @@ export default {
           </p>
         </div>
         <p
-          class="gl-m-0 gl-font-size-h-display gl-font-bold gl-whitespace-nowrap"
+          class="gl-m-0 gl-text-size-h-display gl-font-bold gl-whitespace-nowrap"
           data-testid="total-usage"
         >
           {{ totalUsage }}
@@ -230,7 +230,7 @@ export default {
       data-testid="usage-quotas-project-usage-details"
     />
     <div>
-      <h2 class="gl-mb-2 gl-mt-5 gl-font-lg gl-font-bold">
+      <h2 class="gl-mb-2 gl-mt-5 gl-text-lg gl-font-bold">
         {{ s__('UsageQuota|Namespace entities') }}
       </h2>
 

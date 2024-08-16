@@ -1,19 +1,35 @@
-import Presenter, { componentForField } from '~/glql/core/presenter';
-import LinkPresenter from '~/glql/components/presenters/link.vue';
-import TextPresenter from '~/glql/components/presenters/text.vue';
-import ListPresenter from '~/glql/components/presenters/list.vue';
-import TablePresenter from '~/glql/components/presenters/table.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import BoolPresenter from '~/glql/components/presenters/bool.vue';
+import HealthPresenter from '~/glql/components/presenters/health.vue';
+import LinkPresenter from '~/glql/components/presenters/link.vue';
+import ListPresenter from '~/glql/components/presenters/list.vue';
+import StatePresenter from '~/glql/components/presenters/state.vue';
+import TablePresenter from '~/glql/components/presenters/table.vue';
+import TextPresenter from '~/glql/components/presenters/text.vue';
+import TimePresenter from '~/glql/components/presenters/time.vue';
+import Presenter, { componentForField } from '~/glql/core/presenter';
 import { MOCK_FIELDS, MOCK_ISSUES } from '../mock_data';
 
 describe('componentForField', () => {
   it.each`
-    dataType    | data                                 | presenter        | presenterName
-    ${'string'} | ${'text'}                            | ${TextPresenter} | ${'TextPresenter'}
-    ${'number'} | ${100}                               | ${TextPresenter} | ${'TextPresenter'}
-    ${'object'} | ${{ title: 'title', webUrl: 'url' }} | ${LinkPresenter} | ${'LinkPresenter'}
-  `('returns $presenterName for data type: $dataType', ({ data, presenter }) => {
-    expect(componentForField(data)).toBe(presenter);
+    dataType     | field                                | presenter        | presenterName
+    ${'string'}  | ${'text'}                            | ${TextPresenter} | ${'TextPresenter'}
+    ${'number'}  | ${100}                               | ${TextPresenter} | ${'TextPresenter'}
+    ${'boolean'} | ${true}                              | ${BoolPresenter} | ${'BoolPresenter'}
+    ${'object'}  | ${{ title: 'title', webUrl: 'url' }} | ${LinkPresenter} | ${'LinkPresenter'}
+    ${'date'}    | ${'2021-01-01'}                      | ${TimePresenter} | ${'TimePresenter'}
+  `('returns $presenterName for data type: $dataType', ({ field, presenter }) => {
+    expect(componentForField(field)).toBe(presenter);
+  });
+
+  describe('if field name is passed', () => {
+    it.each`
+      fieldName         | field        | presenter          | presenterName
+      ${'healthStatus'} | ${'onTrack'} | ${HealthPresenter} | ${'HealthPresenter'}
+      ${'state'}        | ${'opened'}  | ${StatePresenter}  | ${'StatePresenter'}
+    `('returns $presenterName for field name: $fieldName', ({ fieldName, field, presenter }) => {
+      expect(componentForField(field, fieldName)).toBe(presenter);
+    });
   });
 });
 

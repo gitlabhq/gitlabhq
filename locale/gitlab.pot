@@ -5029,9 +5029,6 @@ msgstr ""
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
 msgstr ""
 
-msgid "AiPowered|GitLab Duo features"
-msgstr ""
-
 msgid "AiPowered|Never on"
 msgstr ""
 
@@ -19776,10 +19773,28 @@ msgstr ""
 msgid "DuoProDiscover|Automates repetitive tasks and helps catch bugs early."
 msgstr ""
 
+msgid "DuoProDiscover|Automatically generate lines of code, including full functions, from single and multi-line comments as well as comment blocks."
+msgstr ""
+
+msgid "DuoProDiscover|Automatically generate new lines of code from a few typed characters."
+msgstr ""
+
+msgid "DuoProDiscover|Available in 15 languages, including C++, C#, Go, Java, JavaScript, Python, PHP, Ruby, Rust, Scala, Kotlin, and TypeScript. And you can use your favorite IDE — VS Code, Visual Studio, JetBrains' suite of IDEs, and Neovim are all supported."
+msgstr ""
+
 msgid "DuoProDiscover|Chat from any location"
 msgstr ""
 
+msgid "DuoProDiscover|Code Suggestions"
+msgstr ""
+
+msgid "DuoProDiscover|Code completion"
+msgstr ""
+
 msgid "DuoProDiscover|Code explanation"
+msgstr ""
+
+msgid "DuoProDiscover|Code generation"
 msgstr ""
 
 msgid "DuoProDiscover|Code refactoring"
@@ -19801,6 +19816,12 @@ msgid "DuoProDiscover|Helps you understand code by explaining it in natural lang
 msgstr ""
 
 msgid "DuoProDiscover|Improve developer experience"
+msgstr ""
+
+msgid "DuoProDiscover|Language and IDE support"
+msgstr ""
+
+msgid "DuoProDiscover|Launch Demo"
 msgstr ""
 
 msgid "DuoProDiscover|Read documentation"
@@ -24062,6 +24083,9 @@ msgstr ""
 msgid "GitLab Duo didn't find any reviewable files. Code Review request skipped."
 msgstr ""
 
+msgid "GitLab Duo features"
+msgstr ""
+
 msgid "GitLab Enterprise Edition"
 msgstr ""
 
@@ -25937,9 +25961,6 @@ msgid "GroupSettings|Git abuse rate limit"
 msgstr ""
 
 msgid "GroupSettings|GitLab Duo experiment and beta features"
-msgstr ""
-
-msgid "GroupSettings|GitLab Duo features"
 msgstr ""
 
 msgid "GroupSettings|Group CI/CD settings were successfully updated."

@@ -31,7 +31,7 @@ module Pajamas
       if @item.is_a?(User) || @item.is_a?(AvatarEmail)
         classes.push("gl-avatar-circle")
       else
-        classes.push("gl-rounded-base!")
+        classes.push("!gl-rounded-base")
       end
 
       unless src

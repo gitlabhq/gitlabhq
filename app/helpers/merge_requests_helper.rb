@@ -301,7 +301,7 @@ module MergeRequestsHelper
                     ''
                   end
 
-    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-ml-2'
+    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-ml-2'
   end
 
   def merge_request_header(merge_request)
@@ -311,9 +311,9 @@ module MergeRequestsHelper
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"
     copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy')
 
-    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
+    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-mx-2'
 
-    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
+    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe }
   end
 
   def sticky_header_data(project, merge_request)

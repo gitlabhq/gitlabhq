@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :importers do
   describe '#execute' do
-    let_it_be(:organization) { create(:organization) }
+    let_it_be(:namespace) { create(:namespace) }
 
     let(:import_type) { 'github' }
     let(:source_hostname) { 'github.com' }
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         source_hostname: source_hostname,
         source_name: source_name,
         source_username: source_username,
-        organization: organization
+        namespace: namespace
       )
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
       expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
       expect(new_placeholder_user.email).to match(/^aprycontributor_placeholder_user_\d+@#{Settings.gitlab.host}$/)
-      expect(new_placeholder_user.namespace.organization).to eq(organization)
+      expect(new_placeholder_user.namespace.organization).to eq(namespace.organization)
     end
 
     context 'when there are non-unique usernames on the same import source' do
@@ -79,9 +79,11 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         let(:source_username) { nil }
 
         it 'assigns a default username' do
+          expected_match = /^#{namespace.path}_#{import_type}_placeholder_user_\d+$/
+
           placeholder_user = service.execute
 
-          expect(placeholder_user.username).to match(/^#{import_type}_source_username_placeholder_user_\d+$/)
+          expect(placeholder_user.username).to match(expected_match)
         end
       end
 
@@ -89,9 +91,9 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         using RSpec::Parameterized::TableSyntax
 
         where(:input_username, :expected_output) do
-          '.asdf'     | 'asdf_placeholder_user_1'
-          'asdf^ghjk' | 'asdfghjk_placeholder_user_1'
-          '.'         | 'github_source_username_placeholder_user_1'
+          '.asdf'     | /^asdf_placeholder_user_1$/
+          'asdf^ghjk' | /^asdfghjk_placeholder_user_1$/
+          '.'         | /^\w+_github_placeholder_user_1$/
         end
 
         with_them do
@@ -100,7 +102,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
           it do
             placeholder_user = service.execute
 
-            expect(placeholder_user.username).to eq(expected_output)
+            expect(placeholder_user.username).to match(expected_output)
           end
         end
       end

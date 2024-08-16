@@ -82,7 +82,7 @@ secret detection for all commits in a push are identical to the options for
 [Native Secret Detection](../../application_security/secret_detection/secret_push_protection/index.md#skip-secret-push-protection). Either:
 
 - Add `[skip secret push protection]` to one of the commit messages.
-- Use the `secret_push_protection.skip_all` [push option](../../../gitlab-basics/add-file.md#push-options-for-gitguardian-integration).
+- Use the `secret_push_protection.skip_all` [push option](../../../topics/git/commit.md#push-options-for-gitguardian-integration).
 
 ## Known issues
 

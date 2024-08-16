@@ -32,7 +32,7 @@ module ProfilesHelper
       if stacking
         classes.concat(%w[middle-dot-divider-sm gl-block sm:gl-inline-block])
       else
-        classes << 'gl-display-inline-block'
+        classes << 'gl-inline-block'
         classes << if breakpoint.nil?
                      'middle-dot-divider'
                    else

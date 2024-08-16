@@ -58,15 +58,13 @@ export default {
       {
         key: 'containerRegistry',
         label: __('Containers'),
-        thClass: 'gl-border-l!',
-        tdClass: 'gl-border-l!',
+        thClass: '!gl-border-l',
+        tdClass: '!gl-border-l',
       },
     ].map((f) => ({
       ...f,
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      thClass: `${f.thClass ?? ''} gl-px-3!`,
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      tdClass: `${f.tdClass ?? ''} gl-px-3!`,
+      thClass: `${f.thClass ?? ''} !gl-px-3`,
+      tdClass: `${f.tdClass ?? ''} !gl-px-3`,
     }));
   },
   methods: {
@@ -138,12 +136,12 @@ export default {
         :project-avatar-url="project.avatarUrl"
         :size="16"
         :alt="project.name"
-        class="gl-display-inline-block gl-mr-2 gl-text-center!"
+        class="gl-inline-block gl-mr-2 !gl-text-center"
       />
 
       <gl-link
         :href="getUsageQuotasUrl(project.webUrl)"
-        class="gl-text-gray-900! js-project-link gl-break-anywhere"
+        class="!gl-text-gray-900 js-project-link gl-break-anywhere"
         data-testid="project-link"
       >
         {{ getProjectRelativePath(project.nameWithNamespace) }}
@@ -154,7 +152,7 @@ export default {
       <template v-if="isCostFactored(project)">
         <number-to-human-size :value="project.statistics.costFactoredStorageSize" />
 
-        <div class="gl-text-gray-600 gl-mt-2 gl-font-sm">
+        <div class="gl-text-gray-600 gl-mt-2 gl-text-sm">
           <gl-sprintf :message="s__('UsageQuotas|(of %{totalStorageSize})')">
             <template #totalStorageSize>
               <number-to-human-size :value="project.statistics.storageSize" />

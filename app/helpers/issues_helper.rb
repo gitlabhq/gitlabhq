@@ -21,7 +21,7 @@ module IssuesHelper
   end
 
   def confidential_icon(issue)
-    sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
+    sprite_icon('eye-slash', css_class: 'gl-align-text-bottom') if issue.confidential?
   end
 
   def issue_hidden?(issue)

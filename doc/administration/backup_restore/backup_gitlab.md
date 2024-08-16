@@ -318,7 +318,7 @@ WARNING:
 If you use a custom backup filename, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
-Backup files are created with filenames according to [specific defaults](index.md#backup-id). However, you can
+Backup files are created with filenames according to [specific defaults](backup_archive_process.md#backup-id). However, you can
 override the `<backup-id>` portion of the filename by setting the `BACKUP`
 environment variable. For example:
 
@@ -624,7 +624,7 @@ The incremental backup archives are not linked to each other: each archive is a 
 to create an incremental backup from.
 
 Use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
-as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
+as documented in the [Backup ID](backup_archive_process.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
 [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:

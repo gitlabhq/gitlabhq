@@ -20,14 +20,16 @@ export const MOCK_ISSUES = {
       author: { username: 'foobar', webUrl: 'https://gitlab.com/foobar' },
       webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/1',
       state: 'opened',
+      description: 'This is a description',
     },
     {
       title: 'Issue 2',
       author: { username: 'janedoe', webUrl: 'https://gitlab.com/janedoe' },
       webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/2',
       state: 'closed',
+      description: 'This is another description',
     },
   ],
 };
 
-export const MOCK_FIELDS = ['title', 'author', 'state'];
+export const MOCK_FIELDS = ['title', 'author', 'state', 'description'];

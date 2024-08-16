@@ -48,7 +48,7 @@ export default {
 <template>
   <gl-disclosure-dropdown-item :item="menuItem">
     <template #list-item>
-      <span class="gl-display-flex gl-flex-direction-column">
+      <span class="gl-flex gl-flex-col">
         <span>
           <span class="gl-font-bold">
             {{ user.name }}
@@ -58,16 +58,16 @@ export default {
           </gl-badge>
         </span>
 
-        <span class="gl-text-gray-500 gl-break-all">@{{ user.username }}</span>
+        <span class="gl-break-all gl-text-gray-500">@{{ user.username }}</span>
 
         <span
           v-if="user.status.customized"
           ref="statusTooltipTarget"
           data-testid="user-menu-status"
-          class="gl-display-flex gl-align-items-baseline gl-mt-2 gl-font-sm"
+          class="gl-mt-2 gl-flex gl-items-baseline gl-text-sm"
         >
           <gl-emoji :data-name="user.status.emoji" class="gl-mr-1" />
-          <span v-safe-html="user.status.message_html" class="gl-text-truncate"></span>
+          <span v-safe-html="user.status.message_html" class="gl-truncate"></span>
           <gl-tooltip
             v-if="user.status.message_html"
             :target="() => $refs.statusTooltipTarget"

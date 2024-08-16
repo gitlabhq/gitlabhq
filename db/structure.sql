@@ -19135,7 +19135,6 @@ CREATE TABLE user_preferences (
     keyboard_shortcuts_enabled boolean DEFAULT true NOT NULL,
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
-    use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
     early_access_program_participant boolean DEFAULT false NOT NULL,
     early_access_program_tracking boolean DEFAULT false NOT NULL,
     extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
@@ -26148,8 +26147,6 @@ CREATE UNIQUE INDEX finding_link_name_url_idx ON vulnerability_finding_links USI
 
 CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING btree (vulnerability_occurrence_id, url) WHERE (name IS NULL);
 
-CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
-
 CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
@@ -30208,8 +30205,6 @@ CREATE INDEX index_vulnerabilities_on_finding_id ON vulnerabilities USING btree 
 
 CREATE INDEX index_vulnerabilities_on_project_id_and_id ON vulnerabilities USING btree (project_id, id);
 
-CREATE INDEX index_vulnerabilities_on_project_id_and_state_and_severity ON vulnerabilities USING btree (project_id, state, severity);
-
 CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING btree (resolved_by_id);
 
 CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulnerabilities USING btree (project_id, id) WHERE (present_on_default_branch IS TRUE);
@@ -30234,8 +30229,6 @@ CREATE INDEX index_vulnerability_external_issue_links_on_author_id ON vulnerabil
 
 CREATE INDEX index_vulnerability_external_issue_links_on_project_id ON vulnerability_external_issue_links USING btree (project_id);
 
-CREATE INDEX index_vulnerability_external_issue_links_on_vulnerability_id ON vulnerability_external_issue_links USING btree (vulnerability_id);
-
 CREATE INDEX index_vulnerability_feedback_finding_uuid ON vulnerability_feedback USING hash (finding_uuid);
 
 CREATE INDEX index_vulnerability_feedback_on_author_id ON vulnerability_feedback USING btree (author_id);
@@ -30256,8 +30249,6 @@ CREATE INDEX index_vulnerability_feedback_on_pipeline_id ON vulnerability_feedba
 
 CREATE INDEX index_vulnerability_finding_evidences_on_project_id ON vulnerability_finding_evidences USING btree (project_id);
 
-CREATE INDEX index_vulnerability_finding_signatures_on_finding_id ON vulnerability_finding_signatures USING btree (finding_id);
-
 CREATE INDEX index_vulnerability_finding_signatures_on_project_id ON vulnerability_finding_signatures USING btree (project_id);
 
 CREATE INDEX index_vulnerability_finding_signatures_on_signature_sha ON vulnerability_finding_signatures USING btree (signature_sha);
@@ -30271,8 +30262,6 @@ CREATE UNIQUE INDEX index_vulnerability_findings_remediations_on_unique_keys ON 
 CREATE INDEX index_vulnerability_flags_on_project_id ON vulnerability_flags USING btree (project_id);
 
 CREATE UNIQUE INDEX index_vulnerability_flags_on_unique_columns ON vulnerability_flags USING btree (vulnerability_occurrence_id, flag_type, origin);
-
-CREATE INDEX index_vulnerability_flags_on_vulnerability_occurrence_id ON vulnerability_flags USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX index_vulnerability_historical_statistics_on_date_and_id ON vulnerability_historical_statistics USING btree (date, id);
 

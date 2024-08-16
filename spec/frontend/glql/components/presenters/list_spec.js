@@ -40,11 +40,11 @@ describe('ListPresenter', () => {
     expect(linkPresenters2.at(0).props('data')).toBe(MOCK_ISSUES.nodes[1]);
     expect(linkPresenters2.at(1).props('data')).toBe(MOCK_ISSUES.nodes[1].author);
 
-    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].state);
-    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].state);
+    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual('Issue 1 - foobar - opened');
-    expect(listItem2.text()).toEqual('Issue 2 - janedoe - closed');
+    expect(listItem1.text()).toEqual('Issue 1 - foobar -  Open - This is a description');
+    expect(listItem2.text()).toEqual('Issue 2 - janedoe -  Closed - This is another description');
   });
 
   it('renders a ul by default', () => {

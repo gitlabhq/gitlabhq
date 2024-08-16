@@ -182,7 +182,7 @@ export default {
     />
 
     <section class="gl-mt-5">
-      <div class="gl-bg-gray-10 gl-p-5 gl-display-flex">
+      <div class="gl-bg-gray-10 gl-p-5 gl-flex">
         <search-and-sort-bar
           :namespace="namespaceId"
           :search-input-placeholder="__('Search')"
@@ -197,7 +197,7 @@ export default {
         :sortable-fields="sortableFields"
         @sortChanged="onSortChanged"
       />
-      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+      <div class="gl-flex gl-justify-center gl-mt-5">
         <gl-keyset-pagination
           v-if="showPagination"
           v-bind="pageInfo"

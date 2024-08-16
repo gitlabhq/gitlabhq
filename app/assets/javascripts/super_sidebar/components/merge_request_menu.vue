@@ -32,7 +32,7 @@ export default {
       <slot></slot>
     </template>
     <template #list-item="{ item }">
-      <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+      <span class="gl-flex gl-items-center gl-justify-between">
         {{ item.text }}
         <gl-badge pill variant="neutral">{{ getCount(item) }}</gl-badge>
       </span>

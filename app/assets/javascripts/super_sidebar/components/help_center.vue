@@ -214,8 +214,8 @@ export default {
       :group="itemGroups.versionCheck"
     >
       <template #list-item="{ item }">
-        <span class="gl-display-flex gl-flex-direction-column gl-leading-24">
-          <span class="gl-font-sm gl-font-bold">
+        <span class="gl-flex gl-flex-col gl-leading-24">
+          <span class="gl-text-sm gl-font-bold">
             {{ item.text }}
             <gl-emoji data-name="rocket" />
           </span>
@@ -234,9 +234,7 @@ export default {
 
     <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
       <template #list-item="{ item }">
-        <span
-          class="gl-display-flex gl-justify-content-space-between gl-align-items-center -gl-my-1"
-        >
+        <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
           {{ item.text }}
           <gl-badge v-if="item.count" pill variant="info">{{ item.count }}</gl-badge>
           <kbd v-else-if="item.shortcut" class="flat">?</kbd>

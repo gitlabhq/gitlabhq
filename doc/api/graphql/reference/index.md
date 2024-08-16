@@ -34659,13 +34659,16 @@ LLMs supported by the self-hosted model features.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="aiacceptedselfhostedmodelscodegemma"></a>`CODEGEMMA` | CodeGemma 2b or 7b model. |
-| <a id="aiacceptedselfhostedmodelscodellama"></a>`CODELLAMA` | Codellama 13B. |
-| <a id="aiacceptedselfhostedmodelscodellamacode"></a>`CODELLAMACODE` | Codellama 13B-code. |
-| <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral 22B. |
+| <a id="aiacceptedselfhostedmodelscodegemma"></a>`CODEGEMMA` | CodeGemma 7b-it: Suitable for code generation. |
+| <a id="aiacceptedselfhostedmodelscodegemma_2b"></a>`CODEGEMMA_2B` | CodeGemma 2b: Suitable for code completion. |
+| <a id="aiacceptedselfhostedmodelscodegemma_7b"></a>`CODEGEMMA_7B` | CodeGemma 7b: Suitable for code completion. |
+| <a id="aiacceptedselfhostedmodelscodellama"></a>`CODELLAMA` | Code-Llama 13b: Suitable for code generation. |
+| <a id="aiacceptedselfhostedmodelscodellama_13b_code"></a>`CODELLAMA_13B_CODE` | Code-Llama 13b-code: Suitable for code completion. |
+| <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral 22B: Suitable for code completion and code generation. |
 | <a id="aiacceptedselfhostedmodelsdeepseekcoder"></a>`DEEPSEEKCODER` | Deepseek Coder 1.3b, 6.7b and 33b base or instruct. |
-| <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral7B model from Mistral AI. |
-| <a id="aiacceptedselfhostedmodelsmixtral"></a>`MIXTRAL` | Mixtral8x22B model from Mistral AI. |
+| <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral 7B: Suitable for code generation and duo chat. |
+| <a id="aiacceptedselfhostedmodelsmixtral"></a>`MIXTRAL` | Mixtral 8x7B: Suitable for code generation and duo chat. |
+| <a id="aiacceptedselfhostedmodelsmixtral_8x22b"></a>`MIXTRAL_8X22B` | Mixtral 8x22B: Suitable for code generation and duo chat. |
 
 ### `AiAction`
 

@@ -9,6 +9,6 @@ module WikiPageVersionHelper
   end
 
   def wiki_page_version_author_avatar(wiki_page_version)
-    image_tag(avatar_icon_for_email(wiki_page_version.author_email, 24), class: "avatar s24 float-none gl-mr-0!")
+    image_tag(avatar_icon_for_email(wiki_page_version.author_email, 24), class: "avatar s24 float-none !gl-mr-0")
   end
 end

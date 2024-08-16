@@ -108,12 +108,12 @@ export default {
 
 <template>
   <div
-    class="user-bar gl-display-flex gl-p-3 gl-gap-1"
-    :class="{ 'gl-flex-direction-column gl-gap-3': sidebarData.is_logged_in }"
+    class="user-bar gl-flex gl-gap-1 gl-p-3"
+    :class="{ 'gl-flex-col gl-gap-3': sidebarData.is_logged_in }"
   >
     <div
       v-if="hasCollapseButton || sidebarData.is_logged_in"
-      class="gl-display-flex gl-align-items-center gl-gap-1"
+      class="gl-flex gl-items-center gl-gap-1"
     >
       <template v-if="sidebarData.is_logged_in">
         <brand-logo :logo-url="sidebarData.logo_url" />
@@ -125,7 +125,7 @@ export default {
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>
-        <div class="gl-flex-grow-1"></div>
+        <div class="gl-grow"></div>
       </template>
 
       <super-sidebar-toggle
@@ -154,13 +154,10 @@ export default {
       />
     </div>
     <organization-switcher v-if="glFeatures.uiForOrganizations && isLoggedIn" />
-    <div
-      v-if="sidebarData.is_logged_in"
-      class="gl-display-flex gl-justify-content-space-between gl-gap-2"
-    >
+    <div v-if="sidebarData.is_logged_in" class="gl-flex gl-justify-between gl-gap-2">
       <counter
         v-gl-tooltip:super-sidebar.bottom="$options.i18n.issues"
-        class="gl-flex-basis-third dashboard-shortcuts-issues"
+        class="dashboard-shortcuts-issues gl-basis-1/3"
         icon="issues"
         :count="userCounts.assigned_issues"
         :href="sidebarData.issues_dashboard_path"
@@ -172,7 +169,7 @@ export default {
       />
       <component
         :is="mergeRequestMenuComponent"
-        class="gl-flex-basis-third !gl-block"
+        class="!gl-block gl-basis-1/3"
         :items="sidebarData.merge_request_menu"
         @shown="mrMenuShown = true"
         @hidden="mrMenuShown = false"
@@ -192,7 +189,7 @@ export default {
       </component>
       <counter
         v-gl-tooltip:super-sidebar.bottom="$options.i18n.todoList"
-        class="gl-flex-basis-third shortcuts-todos js-todos-count"
+        class="shortcuts-todos js-todos-count gl-basis-1/3"
         icon="todo-done"
         :count="userCounts.todos"
         :href="sidebarData.todos_dashboard_path"
@@ -207,7 +204,7 @@ export default {
       id="super-sidebar-search"
       v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="user-bar-button gl-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-leading-1 gl-w-full"
+      class="user-bar-button gl-block gl-w-full gl-rounded-base gl-border-none gl-bg-gray-10 gl-py-3 gl-leading-1 gl-text-gray-900"
       data-testid="super-sidebar-search-button"
       @click="trackEvent('click_search_button_to_activate_command_palette')"
     >

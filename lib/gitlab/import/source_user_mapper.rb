@@ -71,7 +71,7 @@ module Gitlab
           source_hostname: source_hostname,
           source_name: source_name,
           source_username: source_username,
-          organization: namespace.organization
+          namespace: namespace
         ).execute
       end
 

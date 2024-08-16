@@ -121,7 +121,7 @@ Set up cronjobs to perform Gitaly server-side backups:
 
    This causes Gitaly nodes to upload the Git data and some metadata to remote storage. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the `gitlab-backup` command does not back up object storage by default.
 
-1. Note the [backup ID](index.md#backup-id) of the backup, which is needed for the next step. For example, if the backup command outputs
+1. Note the [backup ID](backup_archive_process.md#backup-id) of the backup, which is needed for the next step. For example, if the backup command outputs
    `2024-02-22 02:17:47 UTC -- Backup 1708568263_2024_02_22_16.9.0-ce is done.`, then the backup ID is `1708568263_2024_02_22_16.9.0-ce`.
 1. Check that the full backup created data in both the Gitaly backup bucket as well as the regular backup bucket.
 1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and a backup ID. Using the example ID from the previous step, the command is:

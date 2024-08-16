@@ -44,7 +44,7 @@ export default {
       :shape="$options.AVATAR_SHAPE_OPTION_RECT"
       aria-hidden="true"
     />
-    <gl-icon v-if="item.icon" class="gl-mr-3 gl-flex-shrink-0" :name="item.icon" />
+    <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" />
     <span class="gl-flex gl-flex-col">
       <span v-safe-html="highlightedName" class="gl-text-gray-900"></span>
       <span

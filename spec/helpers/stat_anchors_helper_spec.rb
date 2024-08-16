@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StatAnchorsHelper do
+RSpec.describe StatAnchorsHelper, feature_category: :groups_and_projects do
   let(:anchor_klass) { ProjectPresenter::AnchorData }
 
   describe '#stat_anchor_attrs' do
@@ -12,7 +12,7 @@ RSpec.describe StatAnchorsHelper do
       let(:anchor) { anchor_klass.new(true) }
 
       it 'returns the proper attributes' do
-        expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2!')
+        expect(subject[:class]).to include('stat-link !gl-px-0 !gl-pb-2')
       end
     end
 
@@ -21,7 +21,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false, nil, nil, 'btn-default') }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2! btn-default')
+          expect(subject[:class]).to include('stat-link !gl-px-0 !gl-pb-2 btn-default')
         end
       end
 
@@ -29,7 +29,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false) }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2! btn-link gl-text-blue-500!')
+          expect(subject[:class]).to include('stat-link !gl-px-0 !gl-pb-2 btn-link !gl-text-blue-500')
         end
       end
     end

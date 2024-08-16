@@ -45,7 +45,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-rounded-pill gl-overflow-hidden gl-w-full">
+    <div class="gl-flex gl-rounded-pill gl-overflow-hidden gl-w-full">
       <div
         v-for="{ id, label, backgroundColor, cssPercentage, srLabelPercentage } in computedSections"
         :key="id"
@@ -60,19 +60,19 @@ export default {
       </div>
     </div>
     <div class="gl-mt-5">
-      <div class="gl-display-flex gl-align-items-center gl-flex-wrap -gl-my-3 -gl-mx-3">
+      <div class="gl-flex gl-items-center gl-flex-wrap -gl-my-3 -gl-mx-3">
         <div
           v-for="{ id, label, backgroundColor, formattedValue } in computedSections"
           :key="id"
-          class="gl-display-flex gl-align-items-center gl-p-3"
+          class="gl-flex gl-items-center gl-p-3"
           :data-testid="`percentage-bar-legend-section-${id}`"
         >
           <div
-            class="gl-h-2 gl-w-5 gl-mr-2 gl-display-inline-block"
+            class="gl-h-2 gl-w-5 gl-mr-2 gl-inline-block"
             :style="{ backgroundColor }"
             data-testid="legend-section-color"
           ></div>
-          <p class="gl-m-0 gl-font-sm">
+          <p class="gl-m-0 gl-text-sm">
             <span class="gl-mr-2 gl-font-bold">
               {{ label }}
             </span>

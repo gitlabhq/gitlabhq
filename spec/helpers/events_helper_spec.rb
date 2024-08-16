@@ -548,7 +548,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     context 'when on the user activity page' do
       it 'returns the expected class names' do
-        expect(helper.user_profile_activity_classes).to eq(' gl-font-semibold gl-text-black-normal')
+        expect(helper.user_profile_activity_classes).to eq(' gl-font-semibold gl-text-default')
       end
     end
 

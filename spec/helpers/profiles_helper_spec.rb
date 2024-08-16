@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProfilesHelper do
+RSpec.describe ProfilesHelper, feature_category: :user_profile do
   describe '#commit_email_select_options' do
     it 'returns an array with private commit email along with all the verified emails' do
       user = create(:user)
@@ -106,9 +106,9 @@ RSpec.describe ProfilesHelper do
     using RSpec::Parameterized::TableSyntax
 
     where(:stacking, :breakpoint, :expected) do
-      nil  | nil | %w[gl-mb-3 gl-display-inline-block middle-dot-divider]
+      nil  | nil | %w[gl-mb-3 gl-inline-block middle-dot-divider]
       true | nil | %w[gl-mb-3 middle-dot-divider-sm gl-block sm:gl-inline-block]
-      nil  | :sm | %w[gl-mb-3 gl-display-inline-block middle-dot-divider-sm]
+      nil  | :sm | %w[gl-mb-3 gl-inline-block middle-dot-divider-sm]
     end
 
     with_them do

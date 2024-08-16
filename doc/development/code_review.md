@@ -118,7 +118,6 @@ page, with these behaviors:
 
 - It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
   - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
-  - GitLab user **Busy** indicator is set to `True`.
   - Emoji is from one of these categories:
     - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
     - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
@@ -130,6 +129,9 @@ page, with these behaviors:
   - 3️⃣ - `:three:`
   - 4️⃣ - `:four:`
   - 5️⃣ - `:five:`
+
+  The minimum review limit is 2️⃣. The reason for not being able to completely turn oneself off
+  for reviews has been discussed [in this issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/377).
 
   Review requests for merge requests that do not target the default branch of any
   project under the [security group](https://gitlab.com/gitlab-org/security/) are

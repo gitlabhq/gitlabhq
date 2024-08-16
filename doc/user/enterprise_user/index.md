@@ -98,7 +98,7 @@ can modify or remove the domain verification.
 
 If needed, you can create a new project to set up domain verification directly
 under your top-level group. This limits the ability to modify the domain verification
-to members with at least the Maintainer role.
+to members with at least the Maintainer role, because these users are able to set up a domain and therefore allow the group's enterprise users to update their email to match that domain.
 
 For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
 

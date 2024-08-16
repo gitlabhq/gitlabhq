@@ -23,7 +23,7 @@ describe('TablePresenter', () => {
     const headerRow = wrapper.find('thead tr');
     const headerCells = headerRow.findAll('th').wrappers.map((th) => th.text());
 
-    expect(headerCells).toEqual(['Title', 'Author', 'State']);
+    expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
   });
 
   it('renders a row of items presented by appropriate presenters', () => {
@@ -45,13 +45,18 @@ describe('TablePresenter', () => {
     expect(linkPresenters2.at(0).props('data')).toBe(MOCK_ISSUES.nodes[1]);
     expect(linkPresenters2.at(1).props('data')).toBe(MOCK_ISSUES.nodes[1].author);
 
-    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].state);
-    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].state);
+    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
     const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
 
-    expect(getCells(tableRow1)).toEqual(['Issue 1', 'foobar', 'opened']);
-    expect(getCells(tableRow2)).toEqual(['Issue 2', 'janedoe', 'closed']);
+    expect(getCells(tableRow1)).toEqual(['Issue 1', 'foobar', 'Open', 'This is a description']);
+    expect(getCells(tableRow2)).toEqual([
+      'Issue 2',
+      'janedoe',
+      'Closed',
+      'This is another description',
+    ]);
   });
 
   it('shows a "No data" message if the list of items provided is empty', () => {

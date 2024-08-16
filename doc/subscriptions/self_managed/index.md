@@ -387,7 +387,11 @@ Users over subscription = 13 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 
-The users in license count can be increased by adding seats to a subscription any time during the subscription period. The cost of seats added during the subscription period is prorated from the date of purchase through the end of the subscription period. Even if you reach the number of users in license count, you can continue to add users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
+To increase the number of users covered by your license, add seats to your subscription
+during the subscription period. The cost of seats added during the subscription
+period is prorated from the date of purchase through to the end of the subscription
+period. You can continue to add users even if you reach the number of users in license count. GitLab
+[bills you for the overage](../quarterly_reconciliation.md)
 
 To add seats to a subscription:
 
@@ -395,7 +399,9 @@ To add seats to a subscription:
 1. Go to the **Subscriptions & purchases** page.
 1. Select **Add seats** on the relevant subscription card.
 1. Enter the number of additional users.
-1. Review the **Purchase summary** section. The system lists the total price for all users on the system and a credit for what you've already paid. You are only charged for the net change.
+1. Review the **Purchase summary** section, which lists the total price for
+   all users on the system and a credit for what you've already paid. You are only
+   charged for the net change.
 1. Enter your payment information.
 1. Select **Purchase seats**.
 
@@ -446,11 +452,23 @@ You can view and download your renewal invoice on the Customers Portal [Invoices
 
 #### Enable or disable automatic subscription renewal
 
-To view or change automatic subscription renewal (at the same tier as the
-previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
+Use the Customers Portal to enable or disable automatic subscription renewal.
+The subscription is renewed at the same tier as the previous period.
 
-- If the subscription card displays `Expires on DATE`, your subscription is not set to automatically renew. To enable automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
-- If the subscription card displays `Autorenews on DATE`, your subscription is set to automatically renew at the end of the subscription period. To cancel automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
+To enable or disable automatic subscription renewal:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+   You are taken to the **Subscriptions & purchases** page.
+1. Check the subscription card:
+   - If the card displays **Expires on <date>**, your subscription is not
+     set to automatically renew. To enable automatic renewal, in
+     **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
+   - If the card displays **Auto-renews on <date>**, your subscription is set to
+     automatically renew. To disable automatic renewal:
+     1. In **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
+     1. Select a reason for cancelling.
+     1. Optional: In **Would you like to add anything?**, enter any relevant information.
+     1. Select **Cancel subscription**.
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.

@@ -102,21 +102,6 @@ term_agreements:
 todos:
   index_todos_on_author_id_and_created_at:
   - index_todos_on_author_id
-vulnerabilities:
-  index_vulnerabilities_project_id_state_severity_default_branch:
-  - index_vulnerabilities_on_project_id_and_state_and_severity
-vulnerability_external_issue_links:
-  idx_vulnerability_ext_issue_links_on_vulne_id_and_ext_issue:
-  - index_vulnerability_external_issue_links_on_vulnerability_id
-vulnerability_finding_links:
-  finding_link_name_url_idx:
-  - finding_links_on_vulnerability_occurrence_id
-vulnerability_finding_signatures:
-  idx_vuln_signatures_uniqueness_signature_sha:
-  - index_vulnerability_finding_signatures_on_finding_id
-vulnerability_flags:
-  index_vulnerability_flags_on_unique_columns:
-  - index_vulnerability_flags_on_vulnerability_occurrence_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
   - index_work_item_hierarchy_restrictions_on_parent_type_id

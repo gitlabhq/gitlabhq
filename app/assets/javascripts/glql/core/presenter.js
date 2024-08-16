@@ -1,9 +1,18 @@
 import Vue from 'vue';
+import BoolPresenter from '../components/presenters/bool.vue';
+import HealthPresenter from '../components/presenters/health.vue';
 import LinkPresenter from '../components/presenters/link.vue';
-import TextPresenter from '../components/presenters/text.vue';
 import ListPresenter from '../components/presenters/list.vue';
 import NullPresenter from '../components/presenters/null.vue';
+import StatePresenter from '../components/presenters/state.vue';
 import TablePresenter from '../components/presenters/table.vue';
+import TextPresenter from '../components/presenters/text.vue';
+import TimePresenter from '../components/presenters/time.vue';
+
+const presentersByFieldName = {
+  healthStatus: HealthPresenter,
+  state: StatePresenter,
+};
 
 const presentersByDisplayType = {
   list: ListPresenter,
@@ -20,9 +29,16 @@ const additionalPropsByDisplayType = {
   orderedList: olProps,
 };
 
-export function componentForField(field) {
+export function componentForField(field, fieldName) {
   if (typeof field === 'undefined' || field === null) return NullPresenter;
+
+  const presenter = presentersByFieldName[fieldName];
+  if (presenter) return presenter;
+
+  if (typeof field === 'boolean') return BoolPresenter;
   if (typeof field === 'object') return LinkPresenter;
+  if (typeof field === 'string' && field.match(/^\d{4}-\d{2}-\d{2}/) /* date YYYY-MM-DD */)
+    return TimePresenter;
 
   return TextPresenter;
 }
@@ -34,7 +50,7 @@ export default class Presenter {
   // eslint-disable-next-line class-methods-use-this
   forField(item, fieldName) {
     const field = fieldName === 'title' ? item : item[fieldName];
-    const component = componentForField(field);
+    const component = componentForField(field, fieldName);
 
     return {
       render(h) {

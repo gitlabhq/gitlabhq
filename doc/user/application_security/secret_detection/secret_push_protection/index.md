@@ -167,7 +167,7 @@ To skip secret push protection for all commits in a push, either:
 
 To skip secret push protection when using the Git CLI client:
 
-- Use the [push option](../../../../gitlab-basics/add-file.md#push-options-for-secret-push-protection).
+- Use the [push option](../../../../topics/git/commit.md#push-options-for-secret-push-protection).
 
   For example, you have several commits that are blocked from being pushed because one of them
   contains a secret. To skip secret push protection, you append the push option to the Git command.

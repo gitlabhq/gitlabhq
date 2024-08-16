@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe MilestonesHelper do
+RSpec.describe MilestonesHelper, feature_category: :team_planning do
   let_it_be(:issuable) { build(:merge_request) }
 
   describe '#milestone_header_class' do
     using RSpec::Parameterized::TableSyntax
 
     color_primary = 'gl-bg-blue-500 gl-text-white'
-    border_empty = 'gl-border-bottom-0 gl-rounded-base'
+    border_empty = 'gl-border-b-0 gl-rounded-base'
 
     where(:primary, :issuables, :header_color, :header_border) do
       true  | [issuable] | color_primary | ''
@@ -21,7 +21,7 @@ RSpec.describe MilestonesHelper do
     with_them do
       subject { helper.milestone_header_class(primary, issuables) }
 
-      it { is_expected.to eq("#{header_color} #{header_border} gl-display-flex") }
+      it { is_expected.to eq("#{header_color} #{header_border} gl-flex") }
     end
   end
 

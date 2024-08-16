@@ -5,7 +5,7 @@ module MilestonesHelper
     header_color = milestone_header_color(primary: primary)
     header_border = milestone_header_border(issuables)
 
-    "#{header_color} #{header_border} gl-display-flex"
+    "#{header_color} #{header_border} gl-flex"
   end
 
   def milestone_counter_class(primary)
@@ -21,6 +21,6 @@ module MilestonesHelper
   end
 
   def milestone_header_border(issuables)
-    issuables.empty? ? 'gl-border-bottom-0 gl-rounded-base' : ''
+    issuables.empty? ? 'gl-border-b-0 gl-rounded-base' : ''
   end
 end
