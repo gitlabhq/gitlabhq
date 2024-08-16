@@ -22,6 +22,7 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
+- Enforce consistent secret detection rules across projects using [security policies](../../policies/index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
 
@@ -155,6 +156,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Manage vulnerabilities](../../vulnerability_report/index.md)                                        | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Access the Security Dashboard](../../security_dashboard/index.md)                                   | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Customize analyzer rulesets](#customize-analyzer-rulesets)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Enable security policies](../../policies/index.md)                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ### Enable the analyzer
 

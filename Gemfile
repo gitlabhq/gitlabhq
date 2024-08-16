@@ -578,7 +578,7 @@ group :test do
   gem 'webmock', '~> 3.23.0', feature_category: :shared
   gem 'rails-controller-testing' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'concurrent-ruby', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'test-prof', '~> 1.3.3', feature_category: :tooling
+  gem 'test-prof', '~> 1.4.0', feature_category: :tooling
   gem 'rspec_junit_formatter' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'guard-rspec' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'axe-core-rspec', '~> 4.9.0', feature_category: :tooling

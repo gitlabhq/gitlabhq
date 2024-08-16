@@ -47,7 +47,10 @@ module Gitlab
 
       def to_html
         @changes.map do |op, text|
-          %(<span class="#{html_class_names(op)}">#{ERB::Util.html_escape(text)}</span>)
+          text = ERB::Util.html_escape(text)
+          text.gsub!("\n", "↵\n") if op == :insert || op == :delete
+
+          %(<span class="#{html_class_names(op)}">#{text}</span>)
         end.join.html_safe
       end
 
