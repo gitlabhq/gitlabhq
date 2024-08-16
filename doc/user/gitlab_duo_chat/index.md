@@ -59,12 +59,11 @@ In the GitLab UI, GitLab Duo Chat knows about these areas:
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area                          | How to ask Chat       |
-|-------------------------------|-----------------------|
-| Selected lines in the editor  | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.  |
-| Epics                         | Ask about the URL.    |
-| Issues                        | Ask about the URL.    |
-| Open files                    | Start working in a file, making sure that you have opened the files you want as used as context. For details, see [open tabs as context](../project/repository/code_suggestions/index.md#open-tabs-as-context). |
+| Area    | How to ask Chat  |
+|---------|------------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Epics   | Ask about the URL. |
+| Issues  | Ask about the URL. |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the

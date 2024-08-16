@@ -945,12 +945,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
       expect(json_response['meta.project']).to eq(project.full_path)
     end
 
-    it 'sets the caller_id as controller#action' do
-      get :index, format: :json
-
-      expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
-    end
-
     it 'sets the feature_category as defined in the controller' do
       get :index, format: :json
 

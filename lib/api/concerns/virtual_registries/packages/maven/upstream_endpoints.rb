@@ -10,7 +10,7 @@ module API
 
             included do
               desc 'List all maven virtual registry upstreams' do
-                detail 'This feature was introduced in GitLab 17.3. \
+                detail 'This feature was introduced in GitLab 17.4. \
                       This feature is currently in experiment state. \
                       This feature behind the `virtual_registry_maven` feature flag.'
                 success code: 200
@@ -30,7 +30,7 @@ module API
               end
 
               desc 'Add a maven virtual registry upstream' do
-                detail 'This feature was introduced in GitLab 17.3. \
+                detail 'This feature was introduced in GitLab 17.4. \
                       This feature is currently in experiment state. \
                       This feature behind the `virtual_registry_maven` feature flag.'
                 success code: 201
@@ -68,7 +68,7 @@ module API
 
               route_param :upstream_id, type: Integer, desc: 'The ID of the maven virtual registry upstream' do
                 desc 'Get a specific maven virtual registry upstream' do
-                  detail 'This feature was introduced in GitLab 17.3. \
+                  detail 'This feature was introduced in GitLab 17.4. \
                         This feature is currently in experiment state. \
                         This feature behind the `virtual_registry_maven` feature flag.'
                   success code: 200
@@ -90,7 +90,7 @@ module API
                 end
 
                 desc 'Update a maven virtual registry upstream' do
-                  detail 'This feature was introduced in GitLab 17.3. \
+                  detail 'This feature was introduced in GitLab 17.4. \
                         This feature is currently in experiment state. \
                         This feature behind the `virtual_registry_maven` feature flag.'
                   success code: 200
@@ -121,7 +121,7 @@ module API
                 end
 
                 desc 'Delete a maven virtual registry upstream' do
-                  detail 'This feature was introduced in GitLab 17.3. \
+                  detail 'This feature was introduced in GitLab 17.4. \
                         This feature is currently in experiment state. \
                         This feature behind the `virtual_registry_maven` feature flag.'
                   success code: 204

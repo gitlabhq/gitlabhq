@@ -47,6 +47,8 @@ module API
 
         namespace 'virtual_registries/packages/maven' do
           namespace :registries do
+            include ::API::Concerns::VirtualRegistries::Packages::Maven::RegistryEndpoints
+
             route_param :id, type: Integer, desc: 'The ID of the maven virtual registry' do
               namespace :upstreams do
                 include ::API::Concerns::VirtualRegistries::Packages::Maven::UpstreamEndpoints

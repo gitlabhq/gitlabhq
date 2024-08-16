@@ -81,6 +81,7 @@ issues:
 - issuable_resource_links
 - synced_epic
 - observability_metrics
+- observability_logs
 work_item_type:
 - issues
 - namespace

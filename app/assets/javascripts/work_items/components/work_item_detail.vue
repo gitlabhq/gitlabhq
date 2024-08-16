@@ -150,7 +150,7 @@ export default {
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
-        if (!this.isModal && this.workItem.namespace) {
+        if (!(this.isModal || this.isDrawer) && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';

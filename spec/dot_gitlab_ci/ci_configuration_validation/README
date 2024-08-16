@@ -1,0 +1,58 @@
+# ***********************************************************************************************************
+# Tests in this folder are recommended to run locally to test ci configuration changes
+# The tests are slow due to the yaml size and the amount of nodes to process.
+# The specific bottleneck is at Gitlab::Ci::Pipeline::Chain::seed #perform!
+# ***********************************************************************************************************
+# TEST COVERAGE (Please keep this file updated)
+#
+# 1. Branch pipelines
+#   GitLab.com gitlab-org/gitlab-foss Project
+#     Master Pipeline Triggered by Push
+#     Scheduled Master Pipeline
+#     Scheduled ruby3_2 branch scheduled pipeline
+#     Stable branch pipeline
+#
+#   GitLab.com gitlab-org/gitlab Master Pipeline
+#     Default Master Pipeline Triggered by Push
+#     Scheduled pipeline - Nightly
+#     Scheduled pipeline - Maintenance
+#
+#   GitLab.com gitlab-org/security/gitlab
+#     Default Master Pipeline
+#     Scheduled pipeline - Nightly
+#     Auto-deploy branch pipeline
+#
+# 2. Merge Request Pipeline (and merge train pipeline under the same contexts)
+#   Unlabeled MR Changing GITALY_SERVER_VERSION
+#   Unlabeled MR Changing Dangerfile, .gitlab/ci/frontend.gitlab-ci.yml
+#   Unlabeled MR targeting stable branch Changing app/model/user.rb
+#
+#   MR Labeled with pipeline:run-all-rspec Changing app/models/user.rb
+#   MR Labeled with pipeline:expedite pipeline::expedited Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-1 Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-2 and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-3 and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline:run-as-if-foss Changing app/models/user.rb
+#   MR Labeled with pipeline:force-run-as-if-jh Changing app/models/user.rb
+#   MR Labeled with pipeline:run-as-if-jh and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline:run-in-ruby3_2 Changing app/models/user.rb
+#
+# Automated MR
+#   MR Created from release-tools/update-gitaly Source Branch Changing GITALY_SERVER_VERSION
+#
+# Stable Branch
+#   MR Targeting a Stable Branch Changing app/models/user.rb
+#
+# Fork Project MRs
+#   MR Created from a Fork Project Master Branch Changing package.json
+#   MR Created from a Fork Project Feature Branch Changing package.json
+# ***********************************************************************************************************
+# CONTRIBUTE
+#
+# If you think we are missing coverage for an important pipeline type, please add them.
+#
+# For example, ci rule changes could break gitlab-foss pipelines, as seen in
+# https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/7356
+# we then added test cases by simulating pipeline for gitlab-org/gitlab-foss
+# See `with gitlab.com gitlab-org gitlab-foss project` context below for details.
+# ***********************************************************************************************************

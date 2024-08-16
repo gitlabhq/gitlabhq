@@ -483,3 +483,11 @@ function define_trigger_branch_in_build_env() {
     echo "TRIGGER_BRANCH=${TRIGGER_BRANCH}" >> $BUILD_ENV
   fi
 }
+
+function log_disk_usage() {
+  echo -e "df -h"
+  df -h
+
+  echo -e "\n\nls -lhS tmp"
+  ls -lhS tmp
+}

@@ -1,7 +1,9 @@
 <script>
 import { GlLink, GlDrawer } from '@gitlab/ui';
+import { escapeRegExp } from 'lodash';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 export default {
   name: 'WorkItemDrawer',
@@ -10,6 +12,7 @@ export default {
     GlDrawer,
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
+  inject: ['fullPath'],
   inheritAttrs: false,
   props: {
     open: {
@@ -20,6 +23,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+  },
+  computed: {
+    activeItemFullPath() {
+      return this.activeItem?.fullPath;
     },
   },
   methods: {
@@ -38,6 +46,24 @@ export default {
         Sentry.captureException(error);
       }
     },
+    redirectToWorkItem() {
+      const workItem = this.activeItem;
+      const escapedFullPath = escapeRegExp(this.fullPath);
+      // eslint-disable-next-line no-useless-escape
+      const regex = new RegExp(`groups\/${escapedFullPath}\/-\/(work_items|epics)\/\\d+`);
+      const isWorkItemPath = regex.test(workItem.webUrl);
+
+      if (isWorkItemPath) {
+        this.$router.push({
+          name: 'workItem',
+          params: {
+            iid: workItem.iid,
+          },
+        });
+      } else {
+        visitUrl(workItem.webUrl);
+      }
+    },
   },
 };
 </script>
@@ -51,14 +77,18 @@ export default {
     @close="$emit('close')"
   >
     <template #title>
-      <gl-link :href="activeItem.webUrl" class="gl-text-black-normal">{{
-        __('Open full view')
-      }}</gl-link>
+      <gl-link
+        class="gl-text-black-normal"
+        :href="activeItem.webUrl"
+        @click.prevent="redirectToWorkItem"
+        >{{ __('Open full view') }}</gl-link
+      >
     </template>
     <template #default>
       <work-item-detail
         :key="activeItem.iid"
         :work-item-iid="activeItem.iid"
+        :modal-work-item-full-path="activeItemFullPath"
         is-drawer
         class="gl-pt-0! work-item-drawer"
         @deleteWorkItem="deleteWorkItem"

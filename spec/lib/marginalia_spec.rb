@@ -53,6 +53,8 @@ RSpec.describe 'Marginalia spec' do
     end
 
     it 'generates a query that includes the component and value' do
+      stub_feature_flags(controller_static_context: false)
+
       component_map.each do |component, value|
         expect(recorded.log.last).to include("#{component}:#{value}")
       end
@@ -74,6 +76,8 @@ RSpec.describe 'Marginalia spec' do
       end
 
       it 'generates a query that includes the component and value' do
+        stub_feature_flags(controller_static_context: false)
+
         component_map.each do |component, value|
           expect(recorded.log.last).to include("#{component}:#{value}")
         end

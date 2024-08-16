@@ -27133,6 +27133,7 @@ Version of a machine learning model.
 | <a id="mlmodelversioncandidate"></a>`candidate` | [`MlCandidate!`](#mlcandidate) | Metrics, params and metadata for the model version. |
 | <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodelversiondescription"></a>`description` | [`String`](#string) | Description of the version. |
+| <a id="mlmodelversiondescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
 | <a id="mlmodelversionpackageid"></a>`packageId` | [`PackagesPackageID!`](#packagespackageid) | Package for model version artifacts. |
 | <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |

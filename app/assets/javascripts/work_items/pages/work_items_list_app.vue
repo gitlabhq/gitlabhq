@@ -1,5 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -13,7 +14,6 @@ import {
 } from 'ee_else_ce/issues/list/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { visitUrl } from '~/lib/utils/url_utility';
 import {
   STATUS_ALL,
   STATUS_CLOSED,
@@ -50,9 +50,10 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { STATE_CLOSED, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
+import { STATE_CLOSED, STATE_OPEN, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import { sortOptions, urlSortParams } from './list/constants';
 
@@ -66,6 +67,11 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
+const statusMap = {
+  [STATUS_OPEN]: STATE_OPEN,
+  [STATUS_CLOSED]: STATE_CLOSED,
+};
+
 export default {
   issuableListTabs,
   sortOptions,
@@ -74,6 +80,7 @@ export default {
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
+    WorkItemDrawer,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -112,6 +119,8 @@ export default {
       state: STATUS_OPEN,
       tabCounts: {},
       workItems: [],
+      activeItem: null,
+      isRefetching: false,
     };
   },
   apollo: {
@@ -163,6 +172,9 @@ export default {
     },
   },
   computed: {
+    isItemSelected() {
+      return !isEmpty(this.activeItem);
+    },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
@@ -173,11 +185,14 @@ export default {
         hasQualityManagementFeature: this.hasQualityManagementFeature,
       });
     },
+    workItemDrawerEnabled() {
+      return this.glFeatures?.issuesListDrawer;
+    },
     hasSearch() {
       return Boolean(this.searchQuery);
     },
     isLoading() {
-      return this.$apollo.queries.workItems.loading;
+      return this.$apollo.queries.workItems.loading && !this.isRefetching;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;
@@ -339,6 +354,9 @@ export default {
     this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
+    handleSelect(item) {
+      this.activeItem = item;
+    },
     fetchEmojis(search) {
       return this.autocompleteCache.fetch({
         url: this.autocompleteAwardEmojisPath,
@@ -428,20 +446,22 @@ export default {
           Sentry.captureException(error);
         });
     },
-    redirectToWorkItem(workItem) {
-      const regex = /groups\/.+?\/-\/work_items\/\d+/;
-      const isWorkItemPath = regex.test(workItem.webUrl);
-
-      if (isWorkItemPath) {
-        this.$router.push({
-          name: 'workItem',
-          params: {
-            iid: workItem.iid,
-          },
-        });
-      } else {
-        visitUrl(workItem.webUrl);
+    deleteItem() {
+      this.activeItem = null;
+      this.refetchItems();
+    },
+    handleStatusChange(workItem) {
+      if (this.state === STATUS_ALL) {
+        return;
       }
+      if (statusMap[this.state] !== workItem.state) {
+        this.refetchItems();
+      }
+    },
+    async refetchItems() {
+      this.isRefetching = true;
+      await this.$apollo.queries.workItems.refetch();
+      this.isRefetching = false;
     },
   },
 };
@@ -450,70 +470,80 @@ export default {
 <template>
   <gl-loading-icon v-if="!isInitialAllCountSet && !error" class="gl-mt-5" size="lg" />
 
-  <issuable-list
-    v-else-if="hasAnyIssues || error"
-    :current-tab="state"
-    :default-page-size="pageSize"
-    :error="error"
-    :has-next-page="pageInfo.hasNextPage"
-    :has-previous-page="pageInfo.hasPreviousPage"
-    :initial-sort-by="sortKey"
-    :issuables="workItems"
-    :issuables-loading="isLoading"
-    :show-bulk-edit-sidebar="showBulkEditSidebar"
-    namespace="work-items"
-    recent-searches-storage-key="issues"
-    :search-tokens="searchTokens"
-    show-filtered-search-friendly-text
-    :show-page-size-selector="showPageSizeSelector"
-    :show-pagination-controls="showPaginationControls"
-    show-work-item-type-icon
-    :sort-options="$options.sortOptions"
-    :tab-counts="tabCounts"
-    :tabs="$options.issuableListTabs"
-    use-keyset-pagination
-    prevent-redirect
-    @click-tab="handleClickTab"
-    @dismiss-alert="error = undefined"
-    @filter="handleFilter"
-    @next-page="handleNextPage"
-    @page-size-change="handlePageSizeChange"
-    @previous-page="handlePreviousPage"
-    @sort="handleSort"
-    @select-issuable="redirectToWorkItem"
-  >
-    <template #nav-actions>
-      <slot name="nav-actions"></slot>
-    </template>
+  <div v-else-if="hasAnyIssues || error">
+    <work-item-drawer
+      v-if="workItemDrawerEnabled"
+      :active-item="activeItem"
+      :open="isItemSelected"
+      @close="activeItem = null"
+      @addChild="refetchItems"
+      @workItemDeleted="deleteItem"
+      @work-item-updated="handleStatusChange"
+    />
+    <issuable-list
+      :current-tab="state"
+      :default-page-size="pageSize"
+      :error="error"
+      :has-next-page="pageInfo.hasNextPage"
+      :has-previous-page="pageInfo.hasPreviousPage"
+      :initial-sort-by="sortKey"
+      :issuables="workItems"
+      :issuables-loading="isLoading"
+      :show-bulk-edit-sidebar="showBulkEditSidebar"
+      namespace="work-items"
+      recent-searches-storage-key="issues"
+      :search-tokens="searchTokens"
+      show-filtered-search-friendly-text
+      :show-page-size-selector="showPageSizeSelector"
+      :show-pagination-controls="showPaginationControls"
+      show-work-item-type-icon
+      :sort-options="$options.sortOptions"
+      :tab-counts="tabCounts"
+      :tabs="$options.issuableListTabs"
+      use-keyset-pagination
+      :prevent-redirect="workItemDrawerEnabled"
+      @click-tab="handleClickTab"
+      @dismiss-alert="error = undefined"
+      @filter="handleFilter"
+      @next-page="handleNextPage"
+      @page-size-change="handlePageSizeChange"
+      @previous-page="handlePreviousPage"
+      @sort="handleSort"
+      @select-issuable="handleSelect"
+    >
+      <template #nav-actions>
+        <slot name="nav-actions"></slot>
+      </template>
 
-    <template #timeframe="{ issuable = {} }">
-      <issue-card-time-info :issue="issuable" />
-    </template>
+      <template #timeframe="{ issuable = {} }">
+        <issue-card-time-info :issue="issuable" />
+      </template>
 
-    <template #status="{ issuable }">
-      {{ getStatus(issuable) }}
-    </template>
+      <template #status="{ issuable }">
+        {{ getStatus(issuable) }}
+      </template>
 
-    <template #statistics="{ issuable = {} }">
-      <issue-card-statistics :issue="issuable" />
-    </template>
+      <template #statistics="{ issuable = {} }">
+        <issue-card-statistics :issue="issuable" />
+      </template>
 
-    <template #empty-state>
-      <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
-    </template>
+      <template #empty-state>
+        <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
+      </template>
 
-    <template #list-body>
-      <slot name="list-body"></slot>
-    </template>
+      <template #list-body>
+        <slot name="list-body"></slot>
+      </template>
 
-    <template #bulk-edit-actions="{ checkedIssuables }">
-      <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
-    </template>
+      <template #bulk-edit-actions="{ checkedIssuables }">
+        <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
+      </template>
 
-    <template #sidebar-items="{ checkedIssuables }">
-      <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
-    </template>
-  </issuable-list>
+      <template #sidebar-items="{ checkedIssuables }">
+        <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
+      </template>
+    </issuable-list>
+  </div>
 
   <div v-else>
     <slot name="page-empty-state"></slot>

@@ -43,7 +43,15 @@ class Projects::JobsController < Projects::ApplicationController
 
         render json: Ci::JobSerializer
           .new(project: @project, current_user: @current_user)
-          .represent(@build.present(current_user: current_user), {}, BuildDetailsEntity)
+          .represent(
+            @build.present(current_user: current_user),
+            {
+              # Pipeline will show all failed builds by default if not using disable_failed_builds
+              disable_coverage: true,
+              disable_failed_builds: true
+            },
+            BuildDetailsEntity
+          )
       end
     end
   end

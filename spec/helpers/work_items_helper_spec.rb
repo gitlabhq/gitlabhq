@@ -115,6 +115,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           is_signed_in: current_user.present?.to_s,
           show_new_issue_link: 'true',
           issues_list_path: issues_group_path(group),
+          report_abuse_path: add_category_abuse_reports_path,
           labels_manage_path: group_labels_path(group),
           can_admin_label: 'true'
         }

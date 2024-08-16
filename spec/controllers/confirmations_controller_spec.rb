@@ -41,17 +41,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
 
         expect(response.body).not_to include(user.email)
       end
-
-      it 'sets the username and caller_id in the context' do
-        expect(controller).to receive(:show).and_wrap_original do |m, *args|
-          m.call(*args)
-
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username, 'meta.caller_id' => 'ConfirmationsController#show')
-        end
-
-        perform_request
-      end
     end
 
     context 'user accesses the link after the expiry of confirmation token has passed' do
@@ -76,17 +65,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
 
         expect(response.body).not_to include(user.email)
       end
-
-      it 'sets the username and caller_id in the context' do
-        expect(controller).to receive(:show).and_wrap_original do |m, *args|
-          m.call(*args)
-
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username, 'meta.caller_id' => 'ConfirmationsController#show')
-        end
-
-        travel_to(3.days.from_now) { perform_request }
-      end
     end
 
     context 'with an invalid confirmation token' do
@@ -102,17 +80,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
         perform_request
 
         expect(response.body).to include('Confirmation token is invalid')
-      end
-
-      it 'sets the the caller_id in the context' do
-        expect(controller).to receive(:show).and_wrap_original do |m, *args|
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.caller_id' => 'ConfirmationsController#show')
-
-          m.call(*args)
-        end
-
-        perform_request
       end
     end
   end

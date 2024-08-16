@@ -13964,6 +13964,31 @@ CREATE SEQUENCE oauth_openid_requests_id_seq
 
 ALTER SEQUENCE oauth_openid_requests_id_seq OWNED BY oauth_openid_requests.id;
 
+CREATE TABLE observability_logs_issues_connections (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    log_timestamp timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    severity_number smallint NOT NULL,
+    service_name text NOT NULL,
+    trace_identifier text NOT NULL,
+    log_fingerprint text NOT NULL,
+    CONSTRAINT check_80945187b6 CHECK ((char_length(trace_identifier) <= 128)),
+    CONSTRAINT check_ab38275544 CHECK ((char_length(log_fingerprint) <= 128)),
+    CONSTRAINT check_d86a20d56b CHECK ((char_length(service_name) <= 500))
+);
+
+CREATE SEQUENCE observability_logs_issues_connections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE observability_logs_issues_connections_id_seq OWNED BY observability_logs_issues_connections.id;
+
 CREATE TABLE observability_metrics_issues_connections (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -21616,6 +21641,8 @@ ALTER TABLE ONLY oauth_device_grants ALTER COLUMN id SET DEFAULT nextval('oauth_
 
 ALTER TABLE ONLY oauth_openid_requests ALTER COLUMN id SET DEFAULT nextval('oauth_openid_requests_id_seq'::regclass);
 
+ALTER TABLE ONLY observability_logs_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_logs_issues_connections_id_seq'::regclass);
+
 ALTER TABLE ONLY observability_metrics_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_metrics_issues_connections_id_seq'::regclass);
 
 ALTER TABLE ONLY onboarding_progresses ALTER COLUMN id SET DEFAULT nextval('onboarding_progresses_id_seq'::regclass);
@@ -23991,6 +24018,9 @@ ALTER TABLE ONLY oauth_device_grants
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT oauth_openid_requests_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY observability_logs_issues_connections
+    ADD CONSTRAINT observability_logs_issues_connections_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT observability_metrics_issues_connections_pkey PRIMARY KEY (id);
 
@@ -26303,6 +26333,8 @@ CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
 
 CREATE INDEX idx_namespace_settings_on_last_dormant_member_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members IS TRUE);
+
+CREATE UNIQUE INDEX idx_o11y_log_issue_conn_on_issue_id_logs_search_metadata ON observability_logs_issues_connections USING btree (issue_id, service_name, severity_number, log_timestamp, log_fingerprint, trace_identifier);
 
 CREATE UNIQUE INDEX idx_o11y_metric_issue_conn_on_issue_id_metric_type_name ON observability_metrics_issues_connections USING btree (issue_id, metric_type, metric_name);
 
@@ -28757,6 +28789,8 @@ CREATE UNIQUE INDEX index_oauth_device_grants_on_device_code ON oauth_device_gra
 CREATE UNIQUE INDEX index_oauth_device_grants_on_user_code ON oauth_device_grants USING btree (user_code);
 
 CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requests USING btree (access_grant_id);
+
+CREATE INDEX index_observability_logs_issues_connections_on_project_id ON observability_logs_issues_connections USING btree (project_id);
 
 CREATE INDEX index_observability_metrics_issues_connections_on_namespace_id ON observability_metrics_issues_connections USING btree (namespace_id);
 
@@ -33269,6 +33303,9 @@ ALTER TABLE ONLY catalog_resource_components
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY observability_logs_issues_connections
+    ADD CONSTRAINT fk_86c5fb94cc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_package_files
     ADD CONSTRAINT fk_86f0f182f8 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -34748,9 +34785,6 @@ ALTER TABLE ONLY cluster_providers_gcp
 ALTER TABLE ONLY insights
     ADD CONSTRAINT fk_rails_5c4391f60a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_scanners
-    ADD CONSTRAINT fk_rails_5c9d42a221 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT fk_rails_5ca11d8c31 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -34765,6 +34799,9 @@ ALTER TABLE ONLY packages_nuget_symbols
 
 ALTER TABLE ONLY resource_weight_events
     ADD CONSTRAINT fk_rails_5eb5cb92a1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY observability_logs_issues_connections
+    ADD CONSTRAINT fk_rails_5f0f58ca3a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_rails_5fb4dd100b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -22,12 +22,7 @@
     = html_escape(s_('%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at).html_safe}
 
   %td{ data: { label: s_('Profiles|Last used'), testid: 'last-used' } }
-    -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
-    - if Feature.enabled?(:disable_ssh_key_used_tracking)
-      = _('Unavailable')
-      = link_to sprite_icon('question-o'), help_page_path('user/ssh', anchor: 'view-your-accounts-ssh-keys')
-    - else
-      = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
+    = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
 
   %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
     - if key.expired?

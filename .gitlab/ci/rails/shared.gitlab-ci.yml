@@ -297,6 +297,13 @@ include:
     - .use-pg16-opensearch2-ee
     - .rails:rules:run-search-tests
 
+.ci-config-validation-base:
+  extends:
+    - .rspec-base-pg14
+    - .rails:rules:rspec-ci-config-validation
+  stage: test
+  after_script: [] # override after_script from .rspec-base
+
 .db-job-base:
   extends:
     - .rails-job-base

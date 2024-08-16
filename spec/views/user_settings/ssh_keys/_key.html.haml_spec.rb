@@ -31,39 +31,21 @@ RSpec.describe 'user_settings/ssh_keys/_key.html.haml', feature_category: :syste
       expect(rendered).to have_button('Remove')
     end
 
-    context 'when disable_ssh_key_used_tracking is enabled' do
-      before do
-        stub_feature_flags(disable_ssh_key_used_tracking: true)
-      end
+    it 'displays the correct last used date' do
+      render
 
-      it 'renders "Unavailable" for last used' do
-        render
-
-        expect(rendered).to have_text('Unavailable')
-      end
+      expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
     end
 
-    context 'when disable_ssh_key_used_tracking is disabled' do
-      before do
-        stub_feature_flags(disable_ssh_key_used_tracking: false)
+    context 'when the key has not been used' do
+      let_it_be(:key) do
+        build_stubbed(:personal_key, user: user, last_used_at: nil)
       end
 
-      it 'displays the correct last used date' do
+      it 'renders "Never" for last used' do
         render
 
-        expect(rendered).to have_text(l(key.last_used_at, format: "%b %d, %Y"))
-      end
-
-      context 'when the key has not been used' do
-        let_it_be(:key) do
-          build_stubbed(:personal_key, user: user, last_used_at: nil)
-        end
-
-        it 'renders "Never" for last used' do
-          render
-
-          expect(rendered).to have_text('Never')
-        end
+        expect(rendered).to have_text('Never')
       end
     end
 

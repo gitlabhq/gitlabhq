@@ -36,6 +36,9 @@ describe('WorkItemDrawer', () => {
       listeners: {
         customEvent: mockListener,
       },
+      provide: {
+        fullPath: '/gitlab-org',
+      },
       stubs: { workItemDetail: true },
       apolloProvider: createMockApollo([[deleteWorkItemMutation, deleteWorkItemMutationHandler]]),
     });

@@ -243,7 +243,11 @@ export default {
         return;
       }
       e.preventDefault();
-      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.issuableLinkHref });
+      this.$emit('select-issuable', {
+        iid: this.issuableIid,
+        webUrl: this.issuableLinkHref,
+        fullPath: this.workItemFullPath,
+      });
     },
   },
 };

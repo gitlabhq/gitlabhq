@@ -467,19 +467,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             expect(request.env['warden']).to be_authenticated
           end
 
-          it 'sets the username and caller_id in the context' do
-            expect(controller).to receive(:atlassian_oauth2).and_wrap_original do |m, *args|
-              m.call(*args)
-
-              expect(Gitlab::ApplicationContext.current).to include(
-                'meta.user' => user.username,
-                'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2'
-              )
-            end
-
-            post :atlassian_oauth2
-          end
-
           context 'when a user has 2FA enabled' do
             let(:user) { create(:atlassian_user, :two_factor, extern_uid: extern_uid) }
 
@@ -740,19 +727,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it 'doesn\'t link a new identity to the user' do
         expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
-      end
-
-      it 'sets the username and caller_id in the context' do
-        expect(controller).to receive(:saml).and_wrap_original do |m, *args|
-          m.call(*args)
-
-          expect(Gitlab::ApplicationContext.current).to include(
-            'meta.user' => user.username,
-            'meta.caller_id' => 'OmniauthCallbacksController#saml'
-          )
-        end
-
-        post :saml, params: { SAMLResponse: mock_saml_response }
       end
 
       context 'with IDP bypass two factor request' do

@@ -461,6 +461,10 @@ vulnerability_occurrences:
   - table: ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
+vulnerability_scanners:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_state_transitions:
   - table: ci_pipelines
     column: state_changed_at_pipeline_id

@@ -12,6 +12,8 @@ module VirtualRegistries
 
         validates :group, top_level_group: true, presence: true, uniqueness: true
         validates :cache_validity_hours, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+
+        scope :for_group, ->(group) { where(group: group) }
       end
     end
   end

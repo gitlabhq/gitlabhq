@@ -84,7 +84,7 @@ export default {
     },
     isUpdating: {
       handler(isUpdating) {
-        this.sortable.option('disabled', isUpdating);
+        this.sortable?.option('disabled', isUpdating);
       },
     },
   },

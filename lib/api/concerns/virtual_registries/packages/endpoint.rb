@@ -28,10 +28,6 @@ module API
                 bad_request!(WEB_BROWSER_ERROR_MESSAGE) if MAJOR_BROWSERS.any? { |b| browser.method(:"#{b}?").call }
               end
 
-              def require_dependency_proxy_enabled!
-                not_found! unless ::Gitlab.config.dependency_proxy.enabled
-              end
-
               def send_successful_response_from(service_response:)
                 action, action_params = service_response.to_h.values_at(:action, :action_params)
                 case action

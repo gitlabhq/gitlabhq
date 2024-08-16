@@ -36,6 +36,8 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import { STATE_CLOSED } from '~/work_items/constants';
 import { groupWorkItemsQueryResponse } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -58,6 +60,7 @@ describeSkipVue3(skipReason, () => {
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
+  const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 
   const mountComponent = ({
     provide = {},
@@ -403,6 +406,96 @@ describeSkipVue3(skipReason, () => {
           findIssuableList().vm.$emit('sort', CREATED_DESC);
 
           expect(mutationMock).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe('work item drawer', () => {
+    describe('when issues_list_drawer feature is disabled', () => {
+      it('is not rendered when feature is disabled', async () => {
+        mountComponent({
+          provide: {
+            glFeatures: {
+              issuesListDrawer: false,
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findDrawer().exists()).toBe(false);
+      });
+    });
+
+    describe('when issues_list_drawer feature is enabled', () => {
+      beforeEach(async () => {
+        mountComponent({
+          provide: {
+            glFeatures: {
+              issuesListDrawer: true,
+            },
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('is rendered when feature is enabled', () => {
+        expect(findDrawer().exists()).toBe(true);
+      });
+
+      describe('selecting issues', () => {
+        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        const payload = {
+          iid: issue.iid,
+          webUrl: issue.webUrl,
+          fullPath: issue.namespace.fullPath,
+        };
+
+        beforeEach(async () => {
+          findIssuableList().vm.$emit('select-issuable', payload);
+
+          await nextTick();
+        });
+
+        it('opens drawer when work item is selected', () => {
+          expect(findDrawer().props('open')).toBe(true);
+          expect(findDrawer().props('activeItem')).toEqual(payload);
+        });
+
+        const checkThatDrawerPropsAreEmpty = () => {
+          expect(findDrawer().props('activeItem')).toBeNull();
+          expect(findDrawer().props('open')).toBe(false);
+        };
+
+        it('resets the selected item when the drawer is closed', async () => {
+          findDrawer().vm.$emit('close');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+        });
+
+        it('refetches and resets when work item is deleted', async () => {
+          findDrawer().vm.$emit('workItemDeleted');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+
+          // first call when mounted, second call after deletion
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+        });
+
+        it('refetches when the selected work item is closed', async () => {
+          // component displays open work items by default
+          findDrawer().vm.$emit('work-item-updated', {
+            state: STATE_CLOSED,
+          });
+
+          await nextTick();
+
+          // first call when mounted, second call after update
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
         });
       });
     });

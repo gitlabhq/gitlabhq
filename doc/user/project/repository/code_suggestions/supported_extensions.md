@@ -141,6 +141,57 @@ To do this:
 
 ::EndTabs
 
+## Use open tabs as context
+
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/206) in GitLab 17.2.
+
+To enhance the accuracy and relevance of GitLab Duo Code Suggestions, enable the use of
+open tabs as context in your IDE settings. This feature uses the contents of files most recently
+opened or changed in your IDE to provide more tailored code suggestions, within certain truncation limits.
+This extra context gives you:
+
+- More accurate and relevant code suggestions
+- Better alignment with your project's standards and practices
+- Improved context for new file creation
+
+Open tabs as context supports these languages:
+
+- Code Completion: All configured languages.
+- Code Generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files),
+  Vue, and YAML.
+
+## Enable open tabs as context
+
+Prerequisites:
+
+- Requires GitLab 17.1 or later.
+- For GitLab self-managed instances, enable the `code_suggestions_context`and the
+  `advanced_context_resolver` [feature flags](../../../feature_flags.md).
+- GitLab Duo Code Suggestions enabled for your project
+- For Visual Studio Code, requires the GitLab Workflow extension, version 4.14.2 or later.
+
+::Tabs
+
+:::TabTitle Visual Studio Code
+
+1. Install the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+   from the Visual Studio Marketplace.
+1. Configure the extension following the
+   [setup instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
+1. Enable the feature by toggling the `gitlab.aiAssistedCodeSuggestions.enabledSupportedLanguages` setting.
+
+:::TabTitle JetBrains IDEs
+
+For installation instructions for JetBrains IDEs, see the
+[GitLab JetBrains Plugin documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#toggle-sending-open-tabs-as-context).
+
+::EndTabs
+
+When you're ready to start coding:
+
+1. Open relevant files, including configuration files, to provide better context.
+1. Close any files you don't want to be used as context.
+
 ## View multiple code suggestions
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
