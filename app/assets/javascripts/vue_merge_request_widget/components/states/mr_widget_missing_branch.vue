@@ -77,7 +77,7 @@ export default {
           :title="message"
           :aria-label="message"
           name="question-o"
-          class="gl-text-blue-600 gl-cursor-pointer"
+          class="gl-cursor-pointer gl-text-blue-600"
         />
       </span>
     </div>

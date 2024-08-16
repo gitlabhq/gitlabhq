@@ -436,15 +436,6 @@ $ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
 
 > - Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
 
-<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
-
-WARNING:
-Endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1095)
-in GitLab 16.4 and is planned for removal in 17.0. Use [`v2/<name>/manifests/<tag>`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-manifest) instead.
-This change is a breaking change.
-
-<!--- end_remove -->
-
 ```plaintext
 DELETE http(s)://${CI_REGISTRY}/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}
 ```

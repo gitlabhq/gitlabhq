@@ -62,12 +62,6 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       failure_message
     ]
 
-    if Gitlab.ee?
-      expected_fields += %i[
-        aiFailureAnalysis
-      ]
-    end
-
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 

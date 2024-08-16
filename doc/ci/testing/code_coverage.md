@@ -21,7 +21,7 @@ Code Coverage results are shown in:
 - Group repository analytics
 - Repository badge
 
-For more information on test coverage visualization in the file diff of the merge request, see [Test Coverage Visualization](test_coverage_visualization.md).
+For more information on test coverage visualization in the file diff of the merge request, see [Test Coverage Visualization](test_coverage_visualization/index.md).
 
 ### View code coverage results in the merge request
 

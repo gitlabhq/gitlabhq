@@ -354,6 +354,7 @@ export const FEATURE_NAME = 'work_item_epic_feedback';
 
 export const CLEAR_VALUE = 'CLEAR_VALUE';
 
+export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const ROUTES = {
   index: 'workItemList',
   workItem: 'workItem',

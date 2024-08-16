@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="pinnedLinks && pinnedLinks.length" class="gl-display-flex gl-justify-content-start">
+  <div v-if="pinnedLinks && pinnedLinks.length" class="gl-flex gl-justify-start">
     <template v-for="(link, i) in pinnedLinks">
       <div v-if="link.url" :key="link.id" :class="{ 'gl-pr-3': needsPaddingClass(i) }">
         <gl-button
@@ -58,7 +58,7 @@ export default {
           target="_blank"
           :icon="link.icon"
           size="small"
-          class="gl-font-bold gl-mb-5"
+          class="gl-mb-5 gl-font-bold"
           :data-testid="link.id"
           >{{ link.text }}</gl-button
         >

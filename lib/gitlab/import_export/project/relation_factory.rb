@@ -199,6 +199,7 @@ module Gitlab
         def setup_pipeline_schedule
           @relation_hash['active'] = false
           @relation_hash['owner_id'] = @user.id
+          @original_user.delete('owner_id') # unset original user to not push placeholder references
         end
 
         def setup_merge_request

@@ -24,7 +24,7 @@ The Value Streams Dashboard includes [panels](#value-streams-dashboard-panels) t
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 - [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics
-- [GitLab Duo AI Code Suggestions](../../user/project/repository/code_suggestions/index.md)
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md)
 
 With the Value Streams Dashboard, you can:
 
@@ -170,13 +170,13 @@ AI Impact analytics displays the following metrics for a group:
 
 - **GitLab Duo seats: Assigned and used**: Percentage of assigned licensed seats that have used at least one AI feature in the last 30 days.
 - **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
-- **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+- **Code Suggestions: Acceptance rate**: Percentage of suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 - [**Cycle time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Lead time**](../group/value_stream_analytics/index.md#lifecycle-metrics)
 - [**Deployment frequency**](dora_metrics.md#deployment-frequency)
 - [**Change failure rate**](dora_metrics.md#change-failure-rate)
 - [**Critical vulnerabilities over time**](../application_security/vulnerability_report/index.md)
-- **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
+- **Code Suggestions usage**: Monthly user engagement with GitLab Duo Code Suggestions.
   - The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
   - The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
   - To analyze the performance of teams that use AI versus teams that don't, you can create a custom [Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator) based on the AI Impact view of projects and groups with and without GitLab Duo.

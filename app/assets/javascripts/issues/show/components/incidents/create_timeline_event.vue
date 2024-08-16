@@ -107,16 +107,16 @@ export default {
 </script>
 
 <template>
-  <div class="create-timeline-event gl-relative gl-display-flex gl-align-items-start">
+  <div class="create-timeline-event gl-relative gl-flex gl-items-start">
     <div
       v-if="hasTimelineEvents"
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-align-self-start gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-flex-shrink-0 gl-p-3 gl-z-1"
+      class="gl-z-1 gl-mt-2 gl-flex gl-h-8 gl-w-8 gl-shrink-0 gl-items-center gl-justify-center gl-self-start gl-rounded-full gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-white gl-p-3 gl-text-gray-200"
     >
       <gl-icon name="comment" class="note-icon" />
     </div>
     <timeline-events-form
       ref="eventForm"
-      :class="{ 'gl-border-gray-50 gl-border-t gl-pt-3': hasTimelineEvents }"
+      :class="{ 'gl-border-t gl-border-gray-50 gl-pt-3': hasTimelineEvents }"
       :is-event-processed="createTimelineEventActive"
       show-save-and-add
       @save-event="createIncidentTimelineEvent"

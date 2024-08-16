@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category: :continuous_integration do
   include Ci::SourcePipelineHelpers
+  include Ci::PipelineMessageHelpers
 
   # Using let_it_be on user and projects for these specs can cause
   # spec-ordering failures due to the project-based permissions
@@ -777,11 +778,12 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       it 'does not create a pipeline and drops the bridge' do
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
         expect(subject).to be_error
-        expect(subject.message).to match_array([Ci::Pipeline.rules_failure_message])
+        expect(subject.message).to match_array([sanitize_message(Ci::Pipeline.rules_failure_message)])
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-        expect(bridge.options[:downstream_errors]).to match_array([Ci::Pipeline.rules_failure_message])
+        expect(bridge.options[:downstream_errors]).to match_array(
+          [sanitize_message(Ci::Pipeline.rules_failure_message)])
       end
     end
 

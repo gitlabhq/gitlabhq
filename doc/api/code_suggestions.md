@@ -40,7 +40,7 @@ Parameters:
 
 | Attribute          | Type    | Required | Description |
 |--------------------|---------|----------|-------------|
-| `current_file`     | hash    | yes      | Attributes of file for which Code Suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
+| `current_file`     | hash    | yes      | Attributes of file that suggestions are being generated for. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
 | `intent`           | string  | no       | The intent of the completion request. This can be either `completion` or `generation`. |
 | `stream`           | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
 | `project_path`     | string  | no       | The path of the project. |

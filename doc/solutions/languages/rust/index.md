@@ -23,7 +23,7 @@ This page attempts to index the ways in which GitLab supports Rust. It does so w
 
 ## Rust SCM
 
-- [GitLab DUO Code Suggestions](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages) `[GitLab Built]`
+- [GitLab Duo Code Suggestions](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages) `[GitLab Built]`
 
 ## Rust CI
 

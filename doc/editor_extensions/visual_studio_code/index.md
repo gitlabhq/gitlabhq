@@ -19,8 +19,8 @@ The GitLab Workflow extension streamlines your VS Code workflow with AI-assisted
 
 ## Code Suggestions features
 
-GitLab Duo provides AI-powered code suggestions as you type in VS Code, helping you write code more efficiently.
-To interact with a [code suggestion](../../user/project/repository/code_suggestions/index.md) on the current line:
+GitLab Duo Code Suggestions provides AI-powered suggestions as you type in VS Code, helping you write code more efficiently.
+To interact with a [suggestion](../../user/project/repository/code_suggestions/index.md) on the current line:
 
 - To accept the entire suggestion, press <kbd>Tab</kbd>.
 - To accept the suggestion word-by-word, press <kbd>Command</kbd> + <kbd>→</kbd> (right arrow).

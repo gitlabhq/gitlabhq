@@ -56,7 +56,7 @@ export default {
 <template>
   <div>
     <div
-      class="js-mr-widget-commits-count mr-widget-extension clickable gl-flex gl-items-center px-3 py-2"
+      class="js-mr-widget-commits-count mr-widget-extension clickable px-3 py-2 gl-flex gl-items-center"
       @click="toggle()"
     >
       <gl-button

@@ -2,13 +2,13 @@
 
 exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue renders given data 1`] = `
 <div
-  class="gl-align-items-baseline gl-border-t gl-display-flex gl-pl-7 gl-py-3"
+  class="gl-border-t gl-flex gl-items-baseline gl-pl-7 gl-py-3"
 >
   <div
     class="gl-min-w-0 gl-w-full"
   >
     <div
-      class="gl-display-flex"
+      class="gl-flex"
     >
       <div
         class="gl-mb-2"
@@ -25,7 +25,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         </span>
       </div>
       <div
-        class="gl-align-items-baseline gl-display-flex gl-ml-auto"
+        class="gl-flex gl-items-baseline gl-ml-auto"
       >
         <help-popover-stub
           arialabel="Help"
@@ -42,7 +42,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
       </div>
     </div>
     <div
-      class="gl-align-items-baseline gl-display-flex"
+      class="gl-flex gl-items-baseline"
     >
       <status-icon-stub
         iconname="success"
@@ -50,13 +50,13 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         name="MyWidget"
       />
       <div
-        class="gl-display-flex gl-flex-direction-column gl-w-full"
+        class="gl-flex gl-flex-col gl-w-full"
       >
         <div
-          class="gl-display-flex gl-flex-grow-1"
+          class="gl-flex gl-grow"
         >
           <div
-            class="gl-align-items-baseline gl-display-flex gl-flex-grow-1"
+            class="gl-flex gl-grow gl-items-baseline"
           >
             <div>
               <p
@@ -78,7 +78,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
             </gl-badge-stub>
           </div>
           <p
-            class="gl-font-sm gl-m-0"
+            class="gl-m-0 gl-text-sm"
           >
             Optional: Smaller sub-text to be displayed below the main text
           </p>
@@ -88,13 +88,13 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         >
           <li>
             <div
-              class="gl-align-items-baseline gl-display-flex"
+              class="gl-flex gl-items-baseline"
             >
               <div
                 class="gl-min-w-0 gl-w-full"
               >
                 <div
-                  class="gl-display-flex"
+                  class="gl-flex"
                 >
                   <div
                     class="gl-mb-2"
@@ -107,16 +107,16 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
                   </div>
                 </div>
                 <div
-                  class="gl-align-items-baseline gl-display-flex"
+                  class="gl-flex gl-items-baseline"
                 >
                   <div
-                    class="gl-display-flex gl-flex-direction-column gl-w-full"
+                    class="gl-flex gl-flex-col gl-w-full"
                   >
                     <div
-                      class="gl-display-flex gl-flex-grow-1"
+                      class="gl-flex gl-grow"
                     >
                       <div
-                        class="gl-align-items-baseline gl-display-flex gl-flex-grow-1"
+                        class="gl-flex gl-grow gl-items-baseline"
                       >
                         <div>
                           <p

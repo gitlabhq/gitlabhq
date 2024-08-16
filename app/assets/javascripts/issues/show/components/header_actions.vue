@@ -333,9 +333,9 @@ export default {
 
 <template>
   <div
-    class="detail-page-header-actions gl-flex gl-self-start sm:gl-gap-3 gl-w-full md:gl-w-auto gl-mt-1"
+    class="detail-page-header-actions gl-mt-1 gl-flex gl-w-full gl-self-start sm:gl-gap-3 md:gl-w-auto"
   >
-    <div class="md:!gl-hidden gl-w-full">
+    <div class="gl-w-full md:!gl-hidden">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
         ref="issuableActionsDropdownMobile"

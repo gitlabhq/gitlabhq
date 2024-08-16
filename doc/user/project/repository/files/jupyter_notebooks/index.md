@@ -39,7 +39,7 @@ When commits include changes to Jupyter Notebook files, GitLab:
 - Enables switching between raw and rendered diffs on the Commit and Compare pages. (Not available on merge request pages.)
 - Renders images on the diffs.
 
-Code Suggestions are not available on diffs and merge requests for `.ipynb` files.
+Code Suggestions is not available on diffs and merge requests for `.ipynb` files.
 
 Cleaner notebook diffs are not generated when the notebook is too large.
 

@@ -14037,7 +14037,8 @@ CREATE TABLE onboarding_progresses (
     secure_cluster_image_scanning_run_at timestamp with time zone,
     secure_api_fuzzing_run_at timestamp with time zone,
     license_scanning_run_at timestamp with time zone,
-    code_added_at timestamp with time zone
+    code_added_at timestamp with time zone,
+    ended_at timestamp with time zone
 );
 
 CREATE SEQUENCE onboarding_progresses_id_seq

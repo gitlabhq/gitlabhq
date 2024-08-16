@@ -15,7 +15,7 @@ DETAILS:
 
 Repository X-Ray enhances [GitLab Duo Code Suggestions](index.md) by providing additional context to improve the accuracy and relevance of code recommendations.
 
-Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies to generate better code suggestions. It does this by analyzing key project configuration files such as `Gemfile.lock`, `package.json`, and `go.mod` to build additional context.
+Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies to generate better suggestions. It does this by analyzing key project configuration files such as `Gemfile.lock`, `package.json`, and `go.mod` to build additional context.
 
 By understanding the frameworks, libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code recommendations that integrate more seamlessly and follow best practices for that stack.
 
@@ -66,7 +66,7 @@ xray:
 - The `$OUTPUT_DIR` environment variable defines the:
   - Output directory for reports.
   - Path that artifacts are uploaded from.
-- The added rules restrict the job to the default branch only. Restricting the job this way ensures development changes do not impact the baseline X-Ray data used for production code suggestions.
+- The added rules restrict the job to the default branch only. Restricting the job this way ensures development changes do not impact the baseline X-Ray data used for production Code Suggestions.
 
 After the initial x-ray job completes and uploads the repository analysis reports, no further action is required. Repository X-Ray automatically enriches all code generation requests from that point forward.
 

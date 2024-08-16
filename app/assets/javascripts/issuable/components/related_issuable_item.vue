@@ -10,6 +10,7 @@ import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import relatedIssuableMixin from '../mixins/related_issuable_mixin';
 import IssueAssignees from './issue_assignees.vue';
@@ -97,15 +98,15 @@ export default {
         }
         event.preventDefault();
         this.$refs.modal.show();
-        this.updateWorkItemIidUrlQuery(this.iid);
+        this.updateQueryParam(this.idKey);
       }
     },
     handleWorkItemDeleted(workItemId) {
       this.$emit('relatedIssueRemoveRequest', workItemId);
     },
-    updateWorkItemIidUrlQuery(iid) {
+    updateQueryParam(id) {
       updateHistory({
-        url: setUrlParams({ work_item_iid: iid }),
+        url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: id }),
         replace: true,
       });
     },
@@ -251,7 +252,7 @@ export default {
       ref="modal"
       :work-item-id="workItemId"
       :work-item-iid="workItemIid"
-      @close="updateWorkItemIidUrlQuery"
+      @close="updateQueryParam"
       @workItemDeleted="handleWorkItemDeleted"
       @openReportAbuse="openReportAbuseDrawer"
     />

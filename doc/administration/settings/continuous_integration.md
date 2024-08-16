@@ -291,19 +291,6 @@ so you can view job artifact pages directly:
 1. Expand **Continuous Integration and Deployment**.
 1. Deselect **Enable the external redirect page for job artifacts**.
 
-<!--- start_remove The following content will be removed on remove_date: '2024-08-01' -->
-
-## Required pipeline configuration (removed)
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** Self-managed
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in 17.0.
-Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead.
-
-<!--- end_remove -->
-
 ## Package registry configuration
 
 ### Maven Forwarding

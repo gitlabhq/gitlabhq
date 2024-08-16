@@ -289,7 +289,7 @@ This documentation gives an overview of the report JSON format, recommendations,
 help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#output),
-[DAST](../../user/application_security/dast/proxy-based.md#reports),
+[DAST](../../user/application_security/dast/browser/index.md),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#output),
 and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
 

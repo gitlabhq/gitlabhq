@@ -18,7 +18,7 @@ module SystemNotes
 
     # Called when the auto merge is aborted
     def abort_auto_merge(reason)
-      body = "aborted the automatic merge because #{reason}"
+      body = "aborted the automatic merge because #{format_reason(reason)}"
 
       ##
       # TODO: Abort message should be sent by the system, not a particular user.
@@ -42,7 +42,7 @@ module SystemNotes
 
     # Called when 'merge when pipeline succeeds' is aborted
     def abort_merge_when_pipeline_succeeds(reason)
-      body = "aborted the automatic merge because #{reason}"
+      body = "aborted the automatic merge because #{format_reason(reason)}"
 
       ##
       # TODO: Abort message should be sent by the system, not a particular user.
@@ -208,6 +208,17 @@ module SystemNotes
       body = "requested changes"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'requested_changes'))
+    end
+
+    private
+
+    def format_reason(reason)
+      return if reason.blank?
+
+      formatted_reason = +reason
+      formatted_reason[0] = formatted_reason[0].downcase
+
+      formatted_reason
     end
   end
 end

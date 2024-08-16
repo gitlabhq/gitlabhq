@@ -17,6 +17,10 @@ DETAILS:
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
 
+WARNING:
+Importing from GitHub to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
+estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+
 Imported issues, merge requests, comments, and events have an **Imported** badge in GitLab.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or

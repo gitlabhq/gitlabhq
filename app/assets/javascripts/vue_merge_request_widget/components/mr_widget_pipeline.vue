@@ -215,7 +215,7 @@ export default {
   <div class="ci-widget media">
     <template v-if="hasCIError">
       <gl-icon name="status_failed" class="gl-text-red-500" :size="24" />
-      <p class="gl-flex-grow-1 gl-ml-5 gl-mb-0" data-testid="ci-error-message">
+      <p class="gl-mb-0 gl-ml-5 gl-grow" data-testid="ci-error-message">
         <gl-sprintf :message="$options.errorText">
           <template #link="{ content }">
             <gl-link :href="mrTroubleshootingDocsPath">{{ content }}</gl-link>
@@ -224,8 +224,8 @@ export default {
       </p>
     </template>
     <template v-else-if="retargeted">
-      <gl-icon name="status_canceled" class="gl-align-self-center gl-mr-3" />
-      <p class="gl-flex-grow-1 gl-flex gl-ml-3 gl-mb-0 text-muted" data-testid="retargeted-message">
+      <gl-icon name="status_canceled" class="gl-mr-3 gl-self-center" />
+      <p class="text-muted gl-mb-0 gl-ml-3 gl-flex gl-grow" data-testid="retargeted-message">
         {{
           __(
             'You should run a new pipeline, because the target branch has changed for this merge request.',
@@ -246,14 +246,14 @@ export default {
     </template>
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="sm" />
-      <p class="gl-flex-grow-1 gl-flex gl-ml-3 gl-mb-0" data-testid="monitoring-pipeline-message">
+      <p class="gl-mb-0 gl-ml-3 gl-flex gl-grow" data-testid="monitoring-pipeline-message">
         {{ $options.monitoringPipelineText }}
         <gl-link
           v-gl-tooltip
           :href="ciTroubleshootingDocsPath"
           target="_blank"
           :title="__('Get more information about troubleshooting pipelines')"
-          class="gl-flex gl-items-center gl-ml-2"
+          class="gl-ml-2 gl-flex gl-items-center"
         >
           <gl-icon
             name="question-o"
@@ -263,16 +263,16 @@ export default {
       </p>
     </template>
     <template v-else-if="hasPipeline">
-      <ci-icon :status="status" class="gl-align-self-start gl-mt-2 gl-mr-3" />
+      <ci-icon :status="status" class="gl-mr-3 gl-mt-2 gl-self-start" />
       <div class="ci-widget-container gl-flex">
         <div class="ci-widget-content">
           <div class="media-body">
             <div
               data-testid="pipeline-info-container"
-              class="gl-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
+              class="gl-flex gl-flex-wrap gl-items-center gl-justify-between"
             >
               <p
-                class="mr-pipeline-title gl-align-self-start gl-m-0! gl-mr-3! gl-font-bold gl-text-gray-900"
+                class="mr-pipeline-title !gl-m-0 !gl-mr-3 gl-self-start gl-font-bold gl-text-gray-900"
               >
                 {{ pipeline.details.event_type_name }}
                 <gl-link :href="pipeline.path" class="pipeline-id" data-testid="pipeline-id"
@@ -280,9 +280,7 @@ export default {
                 >
                 {{ pipeline.details.status.label }}
               </p>
-              <div
-                class="gl-align-items-center gl-inline-flex gl-flex-grow-1 gl-justify-content-space-between"
-              >
+              <div class="gl-inline-flex gl-grow gl-items-center gl-justify-between">
                 <div>
                   <pipeline-mini-graph
                     v-if="isGraphQLPipelineMiniGraph && pipelineMiniGraphQueryId"
@@ -307,7 +305,7 @@ export default {
                 />
               </div>
             </div>
-            <p data-testid="pipeline-details-container" class="gl-font-sm gl-text-gray-500 gl-m-0">
+            <p data-testid="pipeline-details-container" class="gl-m-0 gl-text-sm gl-text-gray-500">
               {{ pipeline.details.event_type_name }} {{ pipeline.details.status.label }}
               <template v-if="hasCommitInfo">
                 {{ s__('Pipeline|for') }}
@@ -357,7 +355,7 @@ export default {
                 <div
                   v-for="(build, index) in buildsWithCoverage"
                   :key="`${build.name}-${index}`"
-                  class="gl-mt-3 gl-text-left gl-px-4"
+                  class="gl-mt-3 gl-px-4 gl-text-left"
                 >
                   {{ build.name }} ({{ build.coverage }}%)
                 </div>

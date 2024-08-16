@@ -139,7 +139,7 @@ RSpec.describe API::ConanProjectPackages, feature_category: :package_registry do
     end
   end
 
-  context 'file download endpoints', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/326194' do
+  context 'file download endpoints' do
     include_context 'conan file download endpoints'
 
     subject { get api(url), headers: headers }

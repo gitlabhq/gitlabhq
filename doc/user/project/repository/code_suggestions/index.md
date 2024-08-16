@@ -66,8 +66,8 @@ Prerequisites:
 To use Code Suggestions:
 
 1. Author your code.
-   As you type, suggestions are displayed. Code Suggestions provide code snippets
-   or complete the current line, depending on the cursor position.
+   As you type, suggestions are displayed. Code Suggestions provides code snippets
+   or completes the current line, depending on the cursor position.
 
 1. Describe the requirements in natural language.
    Code Suggestions generates functions and code snippets based on the context provided.

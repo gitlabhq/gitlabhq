@@ -170,9 +170,6 @@ rules:
         - '^router-view$'
         - '^gl-emoji$'
   local-rules/require-valid-help-page-path: 'error'
-  max-params:
-    - error
-    - 3
 overrides:
   - files:
       - '{,ee/,jh/}spec/frontend*/**/*'

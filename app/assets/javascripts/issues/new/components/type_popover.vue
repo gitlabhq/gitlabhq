@@ -27,7 +27,7 @@ export default {
       :title="$options.i18n.issueTypes"
       triggers="focus hover"
     >
-      <ul class="gl-list-none gl-p-0 gl-m-0">
+      <ul class="gl-m-0 gl-list-none gl-p-0">
         <li class="gl-mb-3">
           <div class="gl-font-bold">{{ $options.i18n.issue }}</div>
           <span>{{ $options.i18n.issueHelpText }}</span>

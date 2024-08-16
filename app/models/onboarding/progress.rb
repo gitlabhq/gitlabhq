@@ -67,7 +67,7 @@ module Onboarding
       end
 
       def onboarding?(namespace)
-        where(namespace: namespace).any?
+        where(namespace: namespace, ended_at: nil).any?
       end
 
       def register(namespace, actions)

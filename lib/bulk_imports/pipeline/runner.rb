@@ -83,6 +83,8 @@ module BulkImports
         raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay) if e.retriable?(context.tracker)
 
         log_and_fail(e, step, entry)
+      rescue Gitlab::Import::SourceUserMapper::FailedToObtainLockError => e
+        raise BulkImports::RetryPipelineError.new(e.message, nil)
       rescue BulkImports::RetryPipelineError
         raise
       rescue StandardError => e

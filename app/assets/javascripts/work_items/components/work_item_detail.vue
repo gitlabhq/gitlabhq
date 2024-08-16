@@ -6,11 +6,13 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
@@ -30,6 +32,7 @@ import {
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -89,6 +92,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemIid: {
       type: String,
       required: false,
@@ -106,12 +114,18 @@ export default {
     },
   },
   data() {
+    let modalWorkItemId = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+    if (modalWorkItemId) {
+      modalWorkItemId = convertToGraphQLId(TYPENAME_WORK_ITEM, modalWorkItemId);
+    }
+
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemId: undefined,
+      modalWorkItemId,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       modalWorkItemNamespaceFullPath: '',
       isReportModalOpen: false,
@@ -125,17 +139,30 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        if (this.workItemId) {
+          return workItemByIdQuery;
+        }
+        return workItemByIidQuery;
+      },
       variables() {
+        if (this.workItemId) {
+          return {
+            id: this.workItemId,
+          };
+        }
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
       skip() {
-        return !this.workItemIid;
+        return !this.workItemIid && !this.workItemId;
       },
       update(data) {
+        if (this.workItemId) {
+          return data.workItem ?? {};
+        }
         return data.workspace.workItem ?? {};
       },
       error() {
@@ -339,10 +366,10 @@ export default {
     },
   },
   mounted() {
-    if (this.modalWorkItemIid) {
+    if (this.modalWorkItemId) {
       this.openInModal({
         event: undefined,
-        modalWorkItem: { iid: this.modalWorkItemIid },
+        modalWorkItem: { id: this.modalWorkItemId },
       });
     }
   },
@@ -397,7 +424,9 @@ export default {
     },
     updateUrl(modalWorkItem) {
       updateHistory({
-        url: setUrlParams({ work_item_iid: modalWorkItem?.iid }),
+        url: setUrlParams({
+          [DETAIL_VIEW_QUERY_PARAM_NAME]: getIdFromGraphQLId(modalWorkItem?.id),
+        }),
         replace: true,
       });
     },

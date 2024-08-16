@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-start gl-flex-col md:gl-flex-row gl-gap-3 gl-pt-3">
+  <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 md:gl-flex-row">
     <h1
       v-safe-html="titleHtml"
       :class="{

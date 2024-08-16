@@ -1341,7 +1341,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/models/ai/ai_resource/concerns/noteable.rb'
     - 'ee/app/models/ai/ai_resource/epic.rb'
     - 'ee/app/models/ai/ai_resource/issue.rb'
-    - 'ee/app/models/ai/job_failure_analysis.rb'
     - 'ee/app/models/approval_project_rules_user.rb'
     - 'ee/app/models/approver.rb'
     - 'ee/app/models/approver_group.rb'

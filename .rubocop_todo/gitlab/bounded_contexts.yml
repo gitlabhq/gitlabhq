@@ -3417,7 +3417,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/ldap_group_reset_service.rb'
     - 'ee/app/services/licenses/base_service.rb'
     - 'ee/app/services/licenses/destroy_service.rb'
-    - 'ee/app/services/llm/analyze_ci_job_failure_service.rb'
     - 'ee/app/services/llm/base_service.rb'
     - 'ee/app/services/llm/chat_service.rb'
     - 'ee/app/services/llm/execute_method_service.rb'

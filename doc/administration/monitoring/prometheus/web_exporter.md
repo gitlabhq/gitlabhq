@@ -82,4 +82,4 @@ The metrics server cannot serve both HTTP and HTTPS at the same time.
 
 When running [GitLab in Docker](../../../install/docker/index.md), your container might run out of space. This can happen if you enable certain features which increase your space consumption, for example Web Exporter.
 
-To work around this issue, [update your `shm-size`](../../../install/docker_troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container).
+To work around this issue, [update your `shm-size`](../../../install/docker/troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container).

@@ -21,6 +21,10 @@ You can migrate GitLab groups:
 - From one self-managed GitLab instance to another.
 - Between groups in the same GitLab instance.
 
+WARNING:
+Migrating GitLab groups and projects by using direct transfer is [currently unavailable](https://status.gitlab.com). We don't have an
+estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+
 Migration by direct transfer creates a new copy of the group. If you want to move groups instead of copying groups, you
 can [transfer groups](../manage.md#transfer-a-group) if the groups are in the same GitLab instance. Transferring groups
 instead of migrating them is a faster and more complete option.

@@ -74,3 +74,9 @@ This error indicates a problem transferring from the _source_ instance. To solve
 
 If a source group or project path doesn't conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs), the path is normalized to
 ensure it is valid. For example, `Destination-Project-Path` is normalized to `destination-project-path`.
+
+## Error: `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]`
+
+You might receive the error `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]` in logs
+when migrating projects by using direct transfer. If you receive this error, you can safely ignore it. GitLab retries
+the exited command.

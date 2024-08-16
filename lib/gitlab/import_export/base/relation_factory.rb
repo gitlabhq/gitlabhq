@@ -50,7 +50,7 @@ module Gitlab
         end
 
         # rubocop:disable Metrics/ParameterLists -- Keyword arguments are not adding complexity to initializer
-        def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, import_source:, excluded_keys: [])
+        def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, import_source:, excluded_keys: [], original_users_map: nil)
           @relation_sym = relation_sym
           @relation_name = self.class.overrides[relation_sym]&.to_sym || relation_sym
           @relation_index = relation_index
@@ -63,6 +63,7 @@ module Gitlab
           @imported_object_retries = 0
           @relation_hash[importable_column_name] = @importable.id
           @original_user = {}
+          @original_users_map = original_users_map
 
           # Remove excluded keys from relation_hash
           # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
@@ -190,6 +191,10 @@ module Gitlab
 
           if existing_or_new_object.respond_to?(:imported_from)
             existing_or_new_object.imported_from = @import_source
+          end
+
+          if @original_users_map.is_a?(Hash) && @original_user.present?
+            @original_users_map[existing_or_new_object] = @original_user
           end
 
           existing_or_new_object

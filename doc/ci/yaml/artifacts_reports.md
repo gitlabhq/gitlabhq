@@ -122,9 +122,10 @@ GitLab cannot display the combined results of multiple `browser_performance` rep
 
 ## `artifacts:reports:coverage_report`
 
-Use `coverage_report` to collect coverage report in Cobertura format.
+Use `coverage_report:` to collect [coverage report](../testing/index.md) in Cobertura or JaCoCo formats.
 
-The `cobertura` report collects [Cobertura coverage XML files](../testing/test_coverage_visualization.md).
+The `coverage_format:` Can be either [`cobertura`](../testing/test_coverage_visualization/cobertura.md) or
+[`jacoco`](../testing/test_coverage_visualization/jacoco.md).
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.
@@ -141,7 +142,7 @@ The collected coverage report is uploaded to GitLab as an artifact. You can use
 only one report per job.
 
 GitLab can display the results of coverage report in the merge request
-[diff annotations](../testing/test_coverage_visualization.md).
+[diff annotations](../testing/test_coverage_visualization/index.md).
 
 ## `artifacts:reports:codequality`
 
@@ -352,7 +353,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 
-The `repository_xray` report collects information about your repository for use by AI in code suggestions.
+The `repository_xray` report collects information about your repository for use by GitLab Duo Code Suggestions.
 
 ## `artifacts:reports:sast`
 

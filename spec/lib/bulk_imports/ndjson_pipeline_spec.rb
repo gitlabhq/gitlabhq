@@ -6,8 +6,37 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let(:tracker) { instance_double(BulkImports::Tracker, bulk_import_entity_id: 1) }
-  let(:context) { instance_double(BulkImports::Pipeline::Context, tracker: tracker, extra: { batch_number: 1 }) }
+  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
+  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import, group: group) }
+  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker, batch_number: 1) }
+
+  let_it_be(:source_user_1) do
+    create(:import_source_user,
+      import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+      namespace: group,
+      source_user_identifier: 101,
+      source_hostname: bulk_import.configuration.source_hostname
+    )
+  end
+
+  let_it_be(:source_user_2) do
+    create(:import_source_user,
+      import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+      namespace: group,
+      source_user_identifier: 102,
+      source_hostname: bulk_import.configuration.source_hostname
+    )
+  end
+
+  let_it_be(:source_user_reassigned) do
+    create(:import_source_user, :completed,
+      import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+      namespace: group,
+      source_user_identifier: 103,
+      source_hostname: bulk_import.configuration.source_hostname
+    )
+  end
 
   let(:klass) do
     Class.new do
@@ -39,8 +68,19 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     it 'saves completed entry in cache' do
       subject.save_processed_entry("entry", 10)
 
-      expected_cache_key = "ndjson_pipeline_class/1/1"
+      expected_cache_key = "ndjson_pipeline_class/#{entity.id}/1"
       expect(Gitlab::Cache::Import::Caching.read(expected_cache_key)).to eq("10")
+    end
+
+    context "when is not a batched pipeline" do
+      let(:context) { BulkImports::Pipeline::Context.new(tracker) }
+
+      it 'saves completed entry using batch number 0' do
+        subject.save_processed_entry("entry", 10)
+
+        expected_cache_key = "ndjson_pipeline_class/#{entity.id}/0"
+        expect(Gitlab::Cache::Import::Caching.read(expected_cache_key)).to eq("10")
+      end
     end
 
     it 'identifies completed entries' do
@@ -59,6 +99,63 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       end
 
       expect(transformed[:relation_key]).to eq('test')
+    end
+
+    context 'when importer_user_mapping is enabled' do
+      before do
+        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
+      end
+
+      it 'creates for each user reference in relation hash an Import::SourceUser object if they do not exist' do
+        relation_hash = {
+          "author_id" => source_user_1.source_user_identifier,
+          "updated_by_id" => nil,
+          "project_id" => 1,
+          "title" => "Imported MR",
+          "notes" =>
+          [
+            {
+              "note" => "Issue note",
+              "author_id" => source_user_reassigned.source_user_identifier,
+              "award_emoji" => [
+                {
+                  "name" => "clapper", "user_id" => 105
+                },
+                {
+                  "name" => "clapper", "user_id" => source_user_2.source_user_identifier
+                }
+              ]
+            },
+            {
+              "note" => "Issue note 2",
+              "author_id" => 106
+            }
+          ],
+          "merge_request_assignees" => [
+            {
+              "user_id" => source_user_reassigned.source_user_identifier
+            },
+            {
+              "user_id" => 104
+            }
+          ],
+          "metrics" => {
+            "merged_by_id" => 105
+          }
+        }
+
+        relation_definition = {
+          "approvals" => {},
+          "metrics" => {},
+          "award_emoji" => {},
+          "merge_request_assignees" => {},
+          "notes" => { "author" => {}, "award_emoji" => {} }
+        }
+
+        expect { subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a } }
+          .to change { Import::SourceUser.count }.by(3).and change { User.count }.by(3)
+        expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106])
+      end
     end
 
     context 'when subrelations is an array' do
@@ -121,16 +218,16 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
   end
 
   describe '#transform' do
-    it 'calls relation factory' do
-      hash = { key: :value }
-      data = [hash, 1]
-      user = double
-      config = double(relation_excluded_keys: nil, top_relation_tree: [])
-      import_double = instance_double(BulkImport, id: 1)
-      entity_double = instance_double(BulkImports::Entity, id: 2)
-      context = double(portable: group, current_user: user, import_export_config: config, bulk_import: import_double, entity: entity_double)
+    let(:hash) { { key: :value } }
+    let(:data) { [hash, 1] }
+    let(:config) { double(relation_excluded_keys: nil, top_relation_tree: []) }
+
+    before do
       allow(subject).to receive(:import_export_config).and_return(config)
       allow(subject).to receive(:context).and_return(context)
+    end
+
+    it 'calls relation factory' do
       relation_object = double
 
       expect(Gitlab::ImportExport::Group::RelationFactory)
@@ -144,12 +241,38 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
           user: user,
           excluded_keys: nil,
-          import_source: Import::SOURCE_DIRECT_TRANSFER
+          import_source: Import::SOURCE_DIRECT_TRANSFER,
+          original_users_map: {}
         )
         .and_return(relation_object)
       expect(relation_object).to receive(:assign_attributes).with(group: group)
 
       subject.transform(context, data)
+    end
+
+    context 'when importer_user_mapping is enabled' do
+      before do
+        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
+      end
+
+      it 'calls relation factory with SourceUsersMapper' do
+        expect(Gitlab::ImportExport::Group::RelationFactory)
+        .to receive(:create)
+        .with(
+          relation_index: 1,
+          relation_sym: :test,
+          relation_hash: hash,
+          importable: group,
+          members_mapper: instance_of(Import::BulkImports::SourceUsersMapper),
+          object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
+          user: user,
+          excluded_keys: nil,
+          import_source: Import::SOURCE_DIRECT_TRANSFER,
+          original_users_map: {}
+        ).and_return(double(assign_attributes: nil))
+
+        subject.transform(context, data)
+      end
     end
 
     context 'when data is nil' do
@@ -180,17 +303,11 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           expect(saver).to receive(:execute)
         end
 
-        subject.load(nil, object)
+        subject.load(nil, [object])
       end
 
       context 'when object is invalid' do
         it 'captures invalid subrelations' do
-          entity = create(:bulk_import_entity, group: group)
-          tracker = create(:bulk_import_tracker, entity: entity)
-          context = BulkImports::Pipeline::Context.new(tracker)
-
-          allow(subject).to receive(:context).and_return(context)
-
           object = group.labels.new(priorities: [LabelPriority.new])
           object.validate
 
@@ -199,7 +316,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
             allow(saver).to receive(:invalid_subrelations).and_return(object.priorities)
           end
 
-          subject.load(context, object)
+          subject.load(context, [object])
 
           failure = entity.failures.first
 
@@ -217,7 +334,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
 
         expect(object).to receive(:save!)
 
-        subject.load(nil, object)
+        subject.load(nil, [object])
       end
 
       context 'when object is invalid' do
@@ -226,14 +343,118 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
 
           expect(Gitlab::Import::Errors).to receive(:merge_nested_errors).with(object)
 
-          expect { subject.load(nil, object) }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { subject.load(nil, [object]) }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end
 
     context 'when object is missing' do
-      it 'returns' do
-        expect(subject.load(nil, nil)).to be_nil
+      it 'returns nil' do
+        expect(subject.load(nil, [nil])).to be_nil
+      end
+    end
+
+    context 'when importer_user_mapping is enabled' do
+      before do
+        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
+        allow(subject).to receive(:relation_definition).and_return(
+          { "notes" => { "events" => {}, "system_note_metadata" => {} } }
+        )
+      end
+
+      it 'pushes a placeholder reference for the persisted objects' do
+        merge_request = build(:merge_request,
+          source_project: project,
+          target_project: project,
+          author: source_user_1.mapped_user,
+          updated_by: source_user_1.mapped_user
+        )
+        note = build(:note,
+          project: project,
+          author: source_user_1.mapped_user,
+          updated_by: source_user_2.mapped_user
+        )
+        merge_request.notes << note
+        event = build(:event,
+          author: source_user_1.mapped_user
+        )
+        note.events << event
+
+        original_users_map = {}.compare_by_identity
+        original_users_map[merge_request] = {
+          'author_id' => source_user_1.source_user_identifier,
+          'updated_by_id' => source_user_1.source_user_identifier
+        }
+        original_users_map[note] = {
+          'author_id' => source_user_1.source_user_identifier,
+          'updated_by_id' => source_user_2.source_user_identifier
+        }
+        original_users_map[event] = {
+          'author_id' => source_user_1.source_user_identifier
+        }
+
+        expect(Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+          import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+          import_uid: context.bulk_import_id,
+          record: merge_request,
+          user_reference_column: :author_id,
+          source_user: source_user_1
+        ).and_call_original
+
+        expect(::Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+          import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+          import_uid: context.bulk_import_id,
+          record: merge_request,
+          user_reference_column: :updated_by_id,
+          source_user: source_user_1
+        ).and_call_original
+
+        expect(::Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+          import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+          import_uid: context.bulk_import_id,
+          record: note,
+          user_reference_column: :author_id,
+          source_user: source_user_1
+        ).and_call_original
+
+        expect(::Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+          import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+          import_uid: context.bulk_import_id,
+          record: note,
+          user_reference_column: :updated_by_id,
+          source_user: source_user_2
+        ).and_call_original
+
+        expect(::Import::PlaceholderReferences::PushService).to receive(:from_record).with(
+          import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+          import_uid: context.bulk_import_id,
+          record: event,
+          user_reference_column: :author_id,
+          source_user: source_user_1
+        ).and_call_original
+
+        subject.load(nil, [merge_request, original_users_map])
+      end
+
+      context 'when source user is mapped to a real user' do
+        it 'does not push a placeholder reference' do
+          merge_request = build(:merge_request,
+            source_project: project,
+            target_project: project,
+            author: source_user_reassigned.mapped_user,
+            updated_by: source_user_reassigned.mapped_user
+          )
+
+          original_users_map = {}.compare_by_identity
+          original_users_map[merge_request] = {
+            'author_id' => source_user_reassigned.source_user_identifier,
+            'updated_by_id' => source_user_reassigned.source_user_identifier
+          }
+
+          expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
+
+          subject.load(nil, [merge_request, original_users_map])
+        end
       end
     end
   end

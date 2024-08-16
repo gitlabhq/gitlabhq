@@ -84,7 +84,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex"
+    class="gl-flex"
     :class="{
       'gl-border-t gl-py-3 gl-pl-7': level === 2,
     }"
@@ -96,7 +96,7 @@ export default {
       :icon-name="statusIconName"
     />
     <div class="gl-w-full gl-min-w-0">
-      <div v-if="hasHeader()" class="gl-display-flex">
+      <div v-if="hasHeader()" class="gl-flex">
         <slot name="header">
           <div class="gl-mb-2">
             <strong v-safe-html="generatedHeader" class="gl-block"></strong
@@ -107,10 +107,7 @@ export default {
             ></span>
           </div>
         </slot>
-        <div
-          v-if="shouldShowHeaderActions"
-          class="gl-ml-auto gl-display-flex gl-align-items-baseline"
-        >
+        <div v-if="shouldShowHeaderActions" class="gl-ml-auto gl-flex gl-items-baseline">
           <help-popover
             v-if="helpPopover"
             :options="helpPopover.options"
@@ -127,7 +124,7 @@ export default {
                 v-if="helpPopover.content.learnMorePath"
                 :href="helpPopover.content.learnMorePath"
                 target="_blank"
-                class="gl-font-sm"
+                class="gl-text-sm"
                 >{{ $options.i18n.learnMore }}</gl-link
               >
             </template>
@@ -135,7 +132,7 @@ export default {
           <action-buttons v-if="hasActionButtons" :tertiary-buttons="actionButtons" />
         </div>
       </div>
-      <div class="gl-display-flex gl-align-items-baseline">
+      <div class="gl-flex gl-items-baseline">
         <status-icon
           v-if="statusIconName && header"
           :level="2"

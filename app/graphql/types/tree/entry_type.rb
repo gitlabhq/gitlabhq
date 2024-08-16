@@ -7,7 +7,7 @@ module Types
       field :id, GraphQL::Types::ID, null: false,
         description: 'ID of the entry.'
       field :sha, GraphQL::Types::String, null: false,
-        description: 'Last commit SHA for the entry.', method: :id
+        description: 'SHA of the entry.', method: :id
       field :name, GraphQL::Types::String, null: false,
         description: 'Name of the entry.'
       field :type, Tree::TypeEnum, null: false,

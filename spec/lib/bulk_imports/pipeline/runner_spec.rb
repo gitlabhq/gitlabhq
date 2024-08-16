@@ -306,6 +306,25 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
       end
 
+      context 'when the exception Gitlab::Import::SourceUserMapper::FailedToObtainLockError is raised' do
+        it 'raises the exception BulkImports::RetryPipelineError' do
+          allow_next_instance_of(BulkImports::Extractor) do |extractor|
+            allow(extractor)
+              .to receive(:extract)
+              .with(context)
+              .and_return(extracted_data)
+          end
+
+          allow_next_instance_of(BulkImports::Transformer) do |transformer|
+            allow(transformer)
+              .to receive(:transform)
+              .and_raise(Gitlab::Import::SourceUserMapper::FailedToObtainLockError)
+          end
+
+          expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
+        end
+      end
+
       context 'when the exception BulkImports::NetworkError is raised' do
         before do
           allow_next_instance_of(BulkImports::Extractor) do |extractor|

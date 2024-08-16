@@ -554,10 +554,10 @@ export default {
   <div
     :class="{ 'gl-bg-gray-10': isNeitherClosedNorMerged }"
     data-testid="ready_to_merge_state"
-    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-pl-7"
+    class="gl-border-t-1 gl-border-gray-100 gl-pl-7 gl-border-t-solid"
   >
     <div v-if="loading" class="mr-widget-body">
-      <div class="gl-w-full mr-ready-to-merge-loader">
+      <div class="mr-ready-to-merge-loader gl-w-full">
         <gl-skeleton-loader :width="418" :height="86">
           <rect x="0" y="0" width="144" height="20" rx="4" />
           <rect x="0" y="26" width="100" height="16" rx="4" />
@@ -569,21 +569,19 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div
-        class="mr-widget-body mr-widget-body-ready-merge media gl-display-flex gl-align-items-center"
-      >
+      <div class="mr-widget-body mr-widget-body-ready-merge media gl-flex gl-items-center">
         <div class="media-body">
-          <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
+          <div class="mr-widget-body-controls gl-flex gl-flex-wrap gl-items-center">
             <template v-if="shouldShowMergeControls">
               <div
-                class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center gl-flex-wrap gl-w-full"
+                class="gl-flex gl-w-full gl-flex-col gl-flex-wrap md:gl-flex-row md:gl-items-center"
               >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
-                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5"
+                  class="js-remove-source-branch-checkbox gl-mr-5 gl-flex gl-items-center"
                   data-testid="delete-source-branch-checkbox"
                 >
                   {{ __('Delete source branch') }}
@@ -613,7 +611,7 @@ export default {
                     v-model="squashCommitMessage"
                     :label="__('Squash commit message')"
                     input-id="squash-message-edit"
-                    class="gl-m-0! gl-p-0!"
+                    class="!gl-m-0 !gl-p-0"
                     @input="setSquashCommitMessage"
                   >
                     <template #header>
@@ -625,7 +623,7 @@ export default {
                     v-model="commitMessage"
                     :label="__('Merge commit message')"
                     input-id="merge-message-edit"
-                    class="gl-m-0! gl-p-0!"
+                    class="!gl-m-0 !gl-p-0"
                     data-testid="merge-commit-message"
                     @input="setCommitMessage"
                   >
@@ -637,7 +635,7 @@ export default {
                       />
                     </template>
                   </commit-edit>
-                  <li class="gl-m-0! gl-p-0!">
+                  <li class="!gl-m-0 !gl-p-0">
                     <p class="form-text text-muted">
                       <gl-sprintf :message="commitTemplateHintText">
                         <template #link="{ content }">
@@ -653,7 +651,7 @@ export default {
                   </li>
                 </ul>
               </div>
-              <div class="gl-w-full gl-text-gray-500 gl-mb-3 mr-widget-merge-details">
+              <div class="mr-widget-merge-details gl-mb-3 gl-w-full gl-text-gray-500">
                 <template v-if="sourceHasDivergedFromTarget">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>
@@ -682,7 +680,7 @@ export default {
                   />
                 </template>
               </div>
-              <gl-button-group class="gl-align-self-start">
+              <gl-button-group class="gl-self-start">
                 <gl-button
                   size="medium"
                   category="primary"
@@ -723,7 +721,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and restart train`) }}</strong>
-                      <p class="gl-text-gray-400 gl-font-sm gl-mb-0">
+                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
                         {{ __('Restart merge train pipelines with the merged changes.') }}
                       </p>
                     </template>
@@ -735,7 +733,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and don't restart train`) }}</strong>
-                      <p class="gl-text-gray-400 gl-font-sm gl-mb-0">
+                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
                         {{ __('Merge train pipelines continue without the merged changes.') }}
                       </p>
                     </template>
@@ -744,7 +742,7 @@ export default {
               </gl-button-group>
               <template v-if="showAutoMergeHelperText">
                 <div
-                  class="gl-ml-4 gl-text-gray-500 gl-font-sm"
+                  class="gl-ml-4 gl-text-sm gl-text-gray-500"
                   data-testid="auto-merge-helper-text"
                 >
                   {{ autoMergeHelperText }}
@@ -759,7 +757,7 @@ export default {
                       <gl-link
                         :href="autoMergePopoverSettings.helpLink"
                         target="_blank"
-                        class="gl-font-sm"
+                        class="gl-text-sm"
                       >
                         {{ content }}
                       </gl-link>
@@ -770,13 +768,13 @@ export default {
             </template>
             <div
               v-else
-              class="gl-w-full -gl-order-1 mr-widget-merge-details"
+              class="mr-widget-merge-details -gl-order-1 gl-w-full"
               data-testid="merged-status-content"
             >
               <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
                 {{ __('Merge details') }}
               </p>
-              <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">
+              <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-gray-600">
                 <li v-if="sourceHasDivergedFromTarget" class="gl-leading-normal">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>

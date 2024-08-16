@@ -6,7 +6,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Troubleshooting file export project migrations
 
-If you have problems with [migrating projects using file exports](import_export.md), see the possible solutions below.
+If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
 ## Troubleshooting commands
 
@@ -228,6 +228,14 @@ out, but makes migrations slower.
 
 To have the batch sized reduced, you must have a feature flag enabled. For more information, see
 [issue 456948](https://gitlab.com/gitlab-org/gitlab/-/issues/456948).
+
+## Error: `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]`
+
+You might receive the error `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]` in logs
+when migrating projects by using file exports. If you receive this error:
+
+- When exporting a file export, you can safely ignore the error. GitLab retries the exited command.
+- When importing a file import, you must retry the import. GitLab doesn't automatically retry the import.
 
 ## Troubleshooting performance issues
 

@@ -77,13 +77,3 @@ job_large:
   script:
     - echo "This job runs on the large Linux Arm64 instance"
 ```
-
-<!--- start_remove The following content will be removed on remove_date: '2024-08-17' -->
-
-## Pre-clone script (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405) in 17.0.
-Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead.
-
-<!--- end_remove -->

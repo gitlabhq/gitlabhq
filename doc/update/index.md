@@ -273,7 +273,7 @@ Edition, follow the guides below based on the installation method:
   script, start the application and check its status.
 - [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to upgrade your Omnibus
   GitLab Community Edition to the Enterprise Edition.
-- [Docker CE to EE](../install/docker/index.md#convert-community-edition-to-enterprise-edition) -
+- [Docker CE to EE](../install/docker/upgrade.md#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition container to an Enterprise Edition container.
 - [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition Helm deployment to Enterprise Edition.

@@ -621,7 +621,7 @@ in GitLab with keywords and features that offer similar functionality. For examp
 |-----------------------------------------------------------------------------------|----------------|
 | [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/index.md#timeout) |
 | [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
-| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization.md) |
+| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization/index.md) |
 | [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
 | [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
 | [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |

@@ -66,18 +66,18 @@ export default {
 
 <template>
   <div class="suggestion-item">
-    <div class="gl-flex gl-align-items-center">
+    <div class="gl-flex gl-items-center">
       <gl-icon
         v-if="suggestion.confidential"
         v-gl-tooltip.bottom
         :title="__('Confidential')"
         name="eye-slash"
-        class="gl-cursor-help gl-mr-2 gl-text-orange-500"
+        class="gl-mr-2 gl-cursor-help gl-text-orange-500"
       />
       <gl-link
         :href="suggestion.webUrl"
         target="_blank"
-        class="suggestion gl-font-bold str-truncated-100 gl-text-gray-900!"
+        class="suggestion str-truncated-100 gl-font-bold !gl-text-gray-900"
       >
         {{ suggestion.title }}
       </gl-link>
@@ -108,7 +108,7 @@ export default {
           tooltip-placement="bottom"
           class="gl-inline-block"
         >
-          <span class="gl-font-bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
+          <span class="gl-block gl-font-bold">{{ __('Author') }}</span> {{ suggestion.author.name }}
           <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
         </user-avatar-image>
       </gl-link>
@@ -126,7 +126,7 @@ export default {
           :key="id"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="gl-cursor-help gl-ml-3 gl-text-subtle"
+          class="gl-ml-3 gl-cursor-help gl-text-subtle"
         >
           <gl-icon :name="icon" /> {{ count }}
         </span>

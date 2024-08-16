@@ -20,6 +20,7 @@ import {
   WORK_ITEM_STATUS_TEXT,
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
@@ -81,13 +82,17 @@ export default {
       },
       async result() {
         const iid = getParameterByName('work_item_iid');
-        this.activeChild = this.children.find((child) => child.iid === iid) ?? {};
+        const id = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+        this.activeChild =
+          this.children.find(
+            (child) => getIdFromGraphQLId(child.id) === getIdFromGraphQLId(id) || child.iid === iid,
+          ) ?? {};
         await this.$nextTick();
         if (!isEmpty(this.activeChild)) {
           this.$refs.modal.show();
           return;
         }
-        this.updateWorkItemIdUrlQuery();
+        this.updateQueryParam();
       },
     },
     parentIssue: {
@@ -190,10 +195,10 @@ export default {
       event.preventDefault();
       this.activeChild = child;
       this.$refs.modal.show();
-      this.updateWorkItemIdUrlQuery(child);
+      this.updateQueryParam(child.id);
     },
     async closeModal() {
-      this.updateWorkItemIdUrlQuery();
+      this.updateQueryParam();
     },
     handleWorkItemDeleted(child) {
       const { defaultClient: cache } = this.$apollo.provider.clients;
@@ -205,8 +210,11 @@ export default {
       });
       this.$toast.show(s__('WorkItem|Task deleted'));
     },
-    updateWorkItemIdUrlQuery({ iid } = {}) {
-      updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
+    updateQueryParam(id) {
+      updateHistory({
+        url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: getIdFromGraphQLId(id) }),
+        replace: true,
+      });
     },
     toggleReportAbuseModal(isOpen, reply = {}) {
       this.isReportModalOpen = isOpen;

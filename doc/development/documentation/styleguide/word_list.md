@@ -461,19 +461,24 @@ Thereafter, use **Code review summary** by itself.
 
 ## Code Suggestions
 
-**Code Suggestions** has evolved to include two primary features:
-
-- [**code completion**](#code-completion)
-- [**code generation**](#code-generation)
-
 Use title case for **Code Suggestions**. On first mention on a page, use **GitLab Duo Code Suggestions**.
 
-**Code Suggestions** should always be plural, and is capitalized even if it's generic.
+**Code Suggestions**, the feature, should always end in an `s`. However, write like it
+is singular. For example:
+
+- Code Suggestions is turned on for the instance.
+
+When generically referring to the suggestions that the feature outputs, use lowercase.
 
 Examples:
 
 - Use Code Suggestions to display suggestions as you type. (This phrase describes the feature.)
-- As you type, Code Suggestions are displayed. (This phrase is generic but still uses capital letters.)
+- As you type, suggestions are displayed. (This phrase is generic.)
+
+**Code Suggestions** has evolved to include two primary features:
+
+- [**code completion**](#code-completion)
+- [**code generation**](#code-generation)
 
 ## collapse
 

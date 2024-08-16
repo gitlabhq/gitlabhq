@@ -228,6 +228,15 @@ describe('WorkItemLinks', () => {
     expect(findWorkItemDetailModal().props('workItemIid')).toBe('37');
   });
 
+  it('opens the modal if work item id URL parameter is found in child items', async () => {
+    setWindowLocation('?show=31');
+    await createComponent();
+
+    expect(showModal).toHaveBeenCalled();
+    expect(findWorkItemDetailModal().props('workItemId')).toBe('gid://gitlab/WorkItem/31');
+    expect(findWorkItemDetailModal().props('workItemIid')).toBe('37');
+  });
+
   describe('abuse category selector', () => {
     beforeEach(async () => {
       setWindowLocation('?work_item_id=2');

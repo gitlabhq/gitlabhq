@@ -29,7 +29,7 @@ export default {
 <template>
   <li>
     <div class="commit-message-editor">
-      <div class="gl-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3">
+      <div class="justify-content-between gl-mb-3 gl-flex gl-flex-wrap gl-items-center">
         <label class="col-form-label" :for="inputId">
           <strong>{{ label }}</strong>
         </label>
@@ -38,7 +38,7 @@ export default {
       <gl-form-textarea
         :id="inputId"
         :value="value"
-        class="form-control js-gfm-input gl-mb-3 commit-message-edit !gl-font-monospace"
+        class="form-control js-gfm-input commit-message-edit gl-mb-3 !gl-font-monospace"
         dir="auto"
         required="required"
         rows="7"

@@ -605,7 +605,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/iterations/cadences/create_iterations_in_advance_service_spec.rb'
     - 'ee/spec/services/iterations/roll_over_issues_service_spec.rb'
     - 'ee/spec/services/iterations/update_service_spec.rb'
-    - 'ee/spec/services/llm/analyze_ci_job_failure_service_spec.rb'
     - 'ee/spec/services/llm/base_service_spec.rb'
     - 'ee/spec/services/llm/chat_service_spec.rb'
     - 'ee/spec/services/llm/explain_code_service_spec.rb'

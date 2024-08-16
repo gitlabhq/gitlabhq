@@ -78,10 +78,10 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="show"
-        class="issue-sticky-header gl-fixed gl-z-3 gl-bg-default gl-border-b gl-py-3"
+        class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-3"
         data-testid="issue-sticky-header"
       >
-        <div class="issue-sticky-header-text gl-flex gl-items-center gl-gap-2 gl-mx-auto">
+        <div class="issue-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-2">
           <gl-badge :variant="statusVariant" :icon="statusIcon" class="gl-shrink-0">
             {{ statusText }}
           </gl-badge>
@@ -94,11 +94,7 @@ export default {
           <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
           <imported-badge v-if="isImported" :importable-type="issuableType" />
 
-          <gl-link
-            class="gl-font-bold gl-text-black-normal gl-text-truncate"
-            href="#top"
-            :title="title"
-          >
+          <gl-link class="gl-truncate gl-font-bold gl-text-default" href="#top" :title="title">
             {{ title }}
           </gl-link>
         </div>

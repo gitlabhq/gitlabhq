@@ -187,7 +187,7 @@ The GitLab Helm chart uses the process documented in
 
 ### Restore for Docker image installations
 
-If you're using [Docker Swarm](../../install/docker/index.md#install-gitlab-using-docker-swarm-mode),
+If you're using [Docker Swarm](../../install/docker/installation.md#install-gitlab-using-docker-swarm-mode),
 the container might restart during the restore process because Puma is shut down,
 and so the container health check fails. To work around this problem,
 temporarily disable the health check mechanism.

@@ -111,10 +111,10 @@ export default {
 <template>
   <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
     <div class="gl-new-card">
-      <div class="gl-new-card-header gl-flex-direction-column">
+      <div class="gl-new-card-header gl-flex-col">
         <div class="gl-new-card-title-wrapper">
           <gl-link
-            class="anchor gl-absolute gl-text-decoration-none"
+            class="anchor gl-absolute gl-no-underline"
             href="#related-merge-requests"
             aria-labelledby="related-merge-requests"
           />
@@ -147,7 +147,7 @@ export default {
             <li
               v-for="mr in mergeRequests"
               :key="mr.id"
-              class="list-item gl-m-0! gl-p-0! gl-border-b-0!"
+              class="list-item !gl-m-0 !gl-border-b-0 !gl-p-0"
             >
               <related-issuable-item
                 :id-key="idKey(mr)"

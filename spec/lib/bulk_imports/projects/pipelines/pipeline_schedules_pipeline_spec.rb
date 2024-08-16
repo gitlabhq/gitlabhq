@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:entity) do
     create(
       :bulk_import_entity,
@@ -22,6 +22,7 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
+  let(:importer_user_mapping_enabled) { false }
   let(:schedule_attributes) { {} }
   let(:schedule) do
     {
@@ -43,6 +44,9 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
       allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [schedule]))
     end
 
+    allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
+    allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
+
     allow(pipeline).to receive(:set_source_objects_counter)
 
     pipeline.run
@@ -61,6 +65,18 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
 
     it 'imports the schedule but active is false' do
       expect(project.pipeline_schedules.first.active).to be_falsey
+    end
+  end
+
+  context 'when importer_user_mapping is enabled' do
+    let(:importer_user_mapping_enabled) { true }
+
+    let(:schedule_attributes) { { 'owner_id' => 101 } }
+
+    it 'imports schedules and does not push placeholder references', :aggregate_failures do
+      expect(project.pipeline_schedules.first.owner).to eq(user)
+
+      expect(Import::PlaceholderReferences::PushService).not_to have_received(:from_record)
     end
   end
 end

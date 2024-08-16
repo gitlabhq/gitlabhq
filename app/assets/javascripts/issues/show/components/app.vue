@@ -570,7 +570,7 @@ export default {
 
       <slot name="header">
         <issue-header
-          class="gl-p-0 gl-mt-2"
+          class="gl-mt-2 gl-p-0"
           :class="headerClasses"
           :author="author"
           :confidential="isConfidential"

@@ -22,7 +22,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
-  before_action :push_ai_build_failure_cause, only: [:show]
   before_action :push_filter_by_name, only: [:index]
   layout 'project'
 
@@ -285,10 +284,6 @@ class Projects::JobsController < Projects::ApplicationController
     service[:url] = ::Gitlab::UrlHelpers.as_wss(service[:url])
 
     ::Gitlab::Workhorse.channel_websocket(service)
-  end
-
-  def push_ai_build_failure_cause
-    push_frontend_feature_flag(:ai_build_failure_cause, @project)
   end
 
   def push_filter_by_name

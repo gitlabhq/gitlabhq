@@ -1961,7 +1961,7 @@ export const workItemHierarchyTreeEmptyResponse = {
 
 export const mockHierarchyChildren = [
   {
-    id: 'gid://gitlab/WorkItem/37',
+    id: 'gid://gitlab/WorkItem/31',
     iid: '37',
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/2411',

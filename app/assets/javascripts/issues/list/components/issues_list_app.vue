@@ -934,7 +934,7 @@ export default {
       @select-issuable="handleSelectIssuable"
     >
       <template #nav-actions>
-        <div class="gl-display-flex gl-gap-3">
+        <div class="gl-flex gl-gap-3">
           <local-storage-sync
             v-if="gridViewFeatureEnabled"
             :value="viewType"
@@ -962,7 +962,7 @@ export default {
           <gl-button
             v-if="canBulkUpdate"
             :disabled="isBulkEditButtonDisabled"
-            class="gl-flex-grow-1"
+            class="gl-grow"
             @click="handleBulkUpdateClick"
           >
             {{ __('Bulk edit') }}
@@ -972,7 +972,7 @@ export default {
               v-if="showNewIssueLink"
               :href="newIssuePath"
               variant="confirm"
-              class="gl-flex-grow-1"
+              class="gl-grow"
             >
               {{ __('New issue') }}
             </gl-button>
@@ -1043,7 +1043,7 @@ export default {
 
     <issuable-by-email
       v-if="showIssuableByEmail"
-      class="gl-text-center gl-pt-5 gl-pb-7"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
       data-track-action="click_email_issue_project_issues_empty_list_page"
       data-track-label="email_issue_project_issues_empty_list"
     />

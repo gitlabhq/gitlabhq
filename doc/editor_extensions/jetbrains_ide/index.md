@@ -118,7 +118,7 @@ If necessary you can [allow a custom certificate](#allow-a-custom-certificate-fo
 ### Error: `Failed to check token`
 
 This error occurs when the provided connection instance URL and authentication token passed through to the
-GitLab Language Server process are invalid. To re-enable code suggestions:
+GitLab Language Server process are invalid. To re-enable Code Suggestions:
 
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
 1. On the left sidebar, select **Tools > GitLab Duo**.

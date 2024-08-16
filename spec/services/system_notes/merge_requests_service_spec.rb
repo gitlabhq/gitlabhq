@@ -49,6 +49,20 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
     it "posts the 'abort auto merge' system note" do
       expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
     end
+
+    context "when reason is upcased" do
+      subject { service.abort_auto_merge(::Ci::Pipeline.workflow_rules_failure_message) }
+
+      let(:expected_note) do
+        reason = ::Ci::Pipeline.workflow_rules_failure_message
+        reason[0] = reason[0].downcase
+        "aborted the automatic merge because #{reason}"
+      end
+
+      it "formats the system note correctly" do
+        expect(subject.note).to eq expected_note
+      end
+    end
   end
 
   describe '.merge_when_pipeline_succeeds' do
@@ -86,6 +100,20 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
 
     it "posts the 'merge when pipeline succeeds' system note" do
       expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
+    end
+
+    context "when reason is upcased" do
+      subject { service.abort_merge_when_pipeline_succeeds(::Ci::Pipeline.workflow_rules_failure_message) }
+
+      let(:expected_note) do
+        reason = ::Ci::Pipeline.workflow_rules_failure_message
+        reason[0] = reason[0].downcase
+        "aborted the automatic merge because #{reason}"
+      end
+
+      it "formats the system note correctly" do
+        expect(subject.note).to eq expected_note
+      end
     end
   end
 

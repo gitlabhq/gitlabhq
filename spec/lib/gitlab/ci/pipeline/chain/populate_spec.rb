@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continuous_integration do
+  include Ci::PipelineMessageHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -90,7 +92,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
 
     it 'appends an error about missing stages' do
       expect(pipeline.errors.to_a)
-        .to include ::Ci::Pipeline.rules_failure_message
+        .to include sanitize_message(::Ci::Pipeline.rules_failure_message)
     end
 
     it 'wastes pipeline iid' do

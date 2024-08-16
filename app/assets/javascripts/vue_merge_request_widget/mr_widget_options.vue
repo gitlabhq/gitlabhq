@@ -570,7 +570,7 @@ export default {
             v-if="autoMergeEnabled"
             :mr="mr"
             :service="service"
-            class="gl-border-b-1 gl-border-b-solid gl-border-gray-100"
+            class="gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
           />
           <merge-checks :mr="mr" :service="service" />
         </template>
