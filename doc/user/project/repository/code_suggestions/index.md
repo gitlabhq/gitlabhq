@@ -62,9 +62,12 @@ Prerequisites:
   [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
 - For self-managed GitLab, you must have GitLab 16.8 or later, and have
   [configured proxy settings](../../../../subscriptions/subscription-add-ons.md#configure-network-and-proxy-settings).
-
 To use Code Suggestions:
 
+1. Open your Git project in a supported IDE.
+1. Add the project as a remote of your local repository using
+   [`git remote add`](../../../../gitlab-basics/start-using-git.md#git-remote-add).
+1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets
    or completes the current line, depending on the cursor position.

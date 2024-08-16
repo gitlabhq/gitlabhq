@@ -105,7 +105,7 @@ export default {
 
 <template>
   <div class="gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid">
-    <h3 class="gl-font-lg gl-mt-5">
+    <h3 class="gl-text-lg gl-mt-5">
       {{ heading }}
     </h3>
     <gl-search-box-by-type

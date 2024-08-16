@@ -26,7 +26,7 @@ export default {
   <div class="gl-mt-3 gl-mb-6">
     <label>{{ s__('Runners|Cloud') }}</label>
 
-    <div class="gl-display-flex gl-flex-wrap gl-gap-3">
+    <div class="gl-flex gl-flex-wrap gl-gap-3">
       <runner-platforms-radio
         :checked="checked"
         :value="$options.GOOGLE_CLOUD_PLATFORM"

@@ -96,7 +96,7 @@ export default {
 
     <div
       v-if="runner.version || runner.description"
-      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
+      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-text-sm gl-items-center"
     >
       <template v-if="firstVersion">
         <div class="gl-flex-shrink-0">
@@ -117,7 +117,7 @@ export default {
       </tooltip-on-truncate>
     </div>
 
-    <div class="gl-font-sm">
+    <div class="gl-text-sm">
       <runner-summary-field icon="clock" icon-size="sm">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">
           <template #timeAgo>

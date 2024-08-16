@@ -10,6 +10,6 @@ const getGitLabUrl = (gitlabPath = '') => {
 export const getBaseConfig = () => ({
   // baseUrl - The URL which hosts the Web IDE static web assets
   baseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
-  // baseUrl - The URL for the GitLab instance
+  // gitlabUrl - The URL for the GitLab instance
   gitlabUrl: getGitLabUrl(''),
 });

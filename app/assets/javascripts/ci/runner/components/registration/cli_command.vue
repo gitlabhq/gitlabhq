@@ -42,7 +42,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-gap-3 gl-align-items-flex-start">
+  <div class="gl-flex gl-gap-3 gl-items-start">
     <!-- eslint-disable vue/require-v-for-key-->
     <pre
       class="gl-w-full"

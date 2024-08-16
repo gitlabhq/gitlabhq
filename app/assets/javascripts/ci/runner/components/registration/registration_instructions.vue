@@ -241,7 +241,6 @@ export default {
                   :title="__('Copy')"
                   size="small"
                   category="tertiary"
-                  class="gl-border-none!"
                 />
               </template>
               <template #bold="{ content }"

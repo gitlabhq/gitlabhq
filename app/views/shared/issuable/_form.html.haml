@@ -47,8 +47,6 @@
       will stay unresolved. Ask someone with permission to resolve
       = @discussion_to_resolve ? 'it.' : 'them.'
 
-= render_if_exists 'observability/observability_links', observability_values: @observability_values, issuable: issuable, project: project
-
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .gl-mt-5{ class: (is_footer ? "footer-block" : "middle-block") }
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)

@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-py-5">
+  <div class="gl-flex gl-items-center gl-py-5">
     <gl-link :href="href" data-testid="item-avatar" class="gl-text-decoration-none! gl-mr-3">
       <gl-avatar
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"
