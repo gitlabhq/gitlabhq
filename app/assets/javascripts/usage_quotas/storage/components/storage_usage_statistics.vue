@@ -26,7 +26,7 @@ export default {
       <storage-usage-overview-card
         :used-storage="usedStorage"
         :loading="loading"
-        data-testid="namespace-usage-total"
+        data-testid="namespace-usage-total-content"
       />
     </div>
   </div>

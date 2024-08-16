@@ -173,7 +173,7 @@ export default {
     <template #cell(repository)="{ item: project }">
       <number-to-human-size
         :value="project.statistics.repositorySize"
-        data-testid="project-repository-size"
+        data-testid="project-repository-size-content"
       />
     </template>
 
@@ -190,20 +190,23 @@ export default {
     </template>
 
     <template #cell(wiki)="{ item: project }">
-      <number-to-human-size :value="project.statistics.wikiSize" data-testid="project-wiki-size" />
+      <number-to-human-size
+        :value="project.statistics.wikiSize"
+        data-testid="project-wiki-size-content"
+      />
     </template>
 
     <template #cell(snippets)="{ item: project }">
       <number-to-human-size
         :value="project.statistics.snippetsSize"
-        data-testid="project-snippets-size"
+        data-testid="project-snippets-size-content"
       />
     </template>
 
     <template #cell(containerRegistry)="{ item: project }">
       <number-to-human-size
         :value="project.statistics.containerRegistrySize"
-        data-testid="project-containers-registry-size"
+        data-testid="project-containers-registry-size-content"
       />
     </template>
   </gl-table>

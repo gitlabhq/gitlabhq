@@ -197,7 +197,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { has_access }.enable :read_namespace_via_membership
 
   rule { developer }.policy do
-    enable :admin_metrics_dashboard_annotation
     enable :create_custom_emoji
     enable :create_package
     enable :developer_access
@@ -219,7 +218,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_issue_board_list
     enable :admin_issue
     enable :update_issue
-    enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package
     enable :read_crm_organization
