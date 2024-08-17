@@ -35,7 +35,12 @@ It's recommended to create two separate migration script files.
    use this setting only in special and documented circumstances.
 
 1. (Optionally) Create the database migration that fine-tunes each level with a
-   desired limit using `create_or_update_plan_limit` migration helper, such as:
+   desired limit using the `create_or_update_plan_limit` migration helper.
+   The plans in this migration should match the [plans on GitLab.com](#subscription-plans).
+   If a plan is missed, customers on that plan would receive the default limit, which might be
+   `0` (unlimited).
+
+   For example:
 
    ```ruby
    class InsertProjectHooksPlanLimits < Gitlab::Database::Migration[2.1]
@@ -49,6 +54,8 @@ It's recommended to create two separate migration script files.
        create_or_update_plan_limit('project_hooks', 'gold', 100)
        create_or_update_plan_limit('project_hooks', 'ultimate', 100)
        create_or_update_plan_limit('project_hooks', 'ultimate_trial', 100)
+       create_or_update_plan_limit('project_hooks', 'ultimate_trial_paid_customer', 100)
+       create_or_update_plan_limit('project_hooks', 'opensource', 100)
      end
 
      def down
@@ -61,12 +68,18 @@ It's recommended to create two separate migration script files.
        create_or_update_plan_limit('project_hooks', 'gold', 0)
        create_or_update_plan_limit('project_hooks', 'ultimate', 0)
        create_or_update_plan_limit('project_hooks', 'ultimate_trial', 0)
+       create_or_update_plan_limit('project_hooks', 'ultimate_trial_paid_customer', 0)
+       create_or_update_plan_limit('project_hooks', 'opensource', 0)
      end
    end
    ```
 
    Some plans exist only on GitLab.com. This is a no-op for plans
    that do not exist.
+
+   To set limits in your migration only for GitLab.com and allow other instances
+   to use the default limits, add `return unless Gitlab.com?` to the start of
+   the `#up` and `#down` methods to make the migration a no-op for other instances.
 
 ### Plan limits validation
 
@@ -154,7 +167,10 @@ GitLab.com:
 - `gold`: Namespaces and projects with an Ultimate subscription.
 - `ultimate`: Namespaces and projects with an Ultimate subscription.
 - `ultimate_trial`: Namespaces and projects with an Ultimate Trial subscription.
+- `ultimate_trial_paid_customer`: Namespaces and projects on a Premium subscription that are trialling Ultimate for 30 days.
 - `opensource`: Namespaces and projects that are member of GitLab Open Source program.
+
+There is an `early_adopter` plan on GitLab.com that has no subscriptions.
 
 The `test` environment doesn't have any plans.
 
