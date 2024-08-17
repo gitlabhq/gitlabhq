@@ -34034,9 +34034,6 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_f9867b3540 FOREIGN KEY (web_ide_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY vulnerability_finding_evidences
-    ADD CONSTRAINT fk_fa3efd4e94 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_fb57e6cc56_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
