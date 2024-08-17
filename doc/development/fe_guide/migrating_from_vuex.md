@@ -6,6 +6,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Migrating from Vuex
 
+[Vuex is deprecated in GitLab](vuex.md#deprecated), if you have an existing Vuex store you should strongly consider migrating.
+
 ## Why?
 
 We have defined the [GraphQL API](../../api/graphql/index.md) as [the primary API](../api_graphql_styleguide.md#vision) for all user-facing features,
@@ -18,7 +20,12 @@ pure Vue and Apollo, or how to rely less on VueX.
 
 ## How?
 
-### Overview
+[Pick your preferred state manager solution](state_management.md) before proceeding with the migration.
+
+- If you plan to use Pinia (in pilot phase), [follow this guide](pinia.md#migrating-from-vuex).
+- If you plan to use Apollo Client for all state management, then [follow the guide below](#migrate-to-vue-managed-state-and-apollo-client).
+
+### Migrate to Vue-managed state and Apollo Client
 
 As a whole, we want to understand how complex our change will be. Sometimes, we only have a few properties that are truly worth being stored in a global state and sometimes they can safely all be extracted to pure `Vue`. `VueX` properties generally fall into one of these categories:
 
@@ -302,17 +309,3 @@ Now that we have gone through each type of data, let's review how to plan for th
 1. Replace network data with Apollo Client, either with actual GraphQL calls when available or by using client-side resolvers to make REST calls.
 
 If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add them as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.
-
-## FAQ
-
-### What if I need a global store without any network call?
-
-This is a rare occurrence and should suggest the following question: "Do I **really** need a global store then?" (the answer is probably no!) If the answer is yes, then you can use the [shared read/write technique with Apollo](#how-to-migrate-reactive-mutable-values) described above. It is perfectly acceptable to use Apollo Client for client-side exclusive stores.
-
-### Are we going to use Pinia?
-
-The short answer is: we don't know, but it is unlikely. It would still mean having two global store libraries, which has the same downsides as VueX and Apollo Client coexisting. Reducing the size of our global stores is positive regardless of whether we end up using Pinia though!
-
-### Apollo client is really verbose for client directives. Can I mix and match with VueX?
-
-Mixing and matching is not recommended. There are a lot of reasons why, but think of how codebases grow organically with what is available. Even if you were really good at separating your network state and your client-side state, other developers might not share the same dedication or simply not understand how to choose what lives in which store. Over time, you will also nearly inevitably need to communicate between your VueX store and Apollo Client, which can only result in problems.

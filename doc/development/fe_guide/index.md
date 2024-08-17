@@ -24,12 +24,19 @@ When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS 
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 
-When making API calls, we use [GraphQL](graphql.md) as [the first choice](../api_graphql_styleguide.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
+When making API calls, we use [GraphQL](graphql.md) as [the first choice](../api_graphql_styleguide.md#vision).
+There are still instances where the GitLab REST API is used, such as when creating new simple HAML pages, or in legacy parts of the codebase, but we should always default to GraphQL when possible.
 
-We use [Apollo](https://www.apollographql.com/) as our global state manager and [GraphQL client](graphql.md).
-[VueX](vuex.md) is still in use across the codebase, but it is no longer the recommended global state manager.
-You should **not** [use VueX and Apollo together](graphql.md#using-with-vuex),
-and should [avoid adding new VueX stores](migrating_from_vuex.md) whenever possible.
+For [client-side state management](state_management.md) in Vue, depending on the specific needs of the feature,
+we use:
+
+- [Apollo](https://www.apollographql.com/) (our primary [GraphQL client](graphql.md))
+- [Pinia](pinia.md) (in [pilot phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279))
+- Stateful components.
+
+[Vuex is deprecated](vuex.md) and you should [migrate away from it](migrating_from_vuex.md) whenever possible.
+
+Learn: [How do I know which state manager to use?](state_management.md)
 
 For copy strings and translations, we have frontend utilities available. See the JavaScript section of [Preparing a page for translation](../i18n/externalization.md#javascript-files) for more information.
 

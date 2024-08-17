@@ -11,9 +11,8 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
-  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
-import { findHierarchyWidgets } from '../../utils';
+import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
@@ -88,7 +87,7 @@ export default {
       variables() {
         return {
           id: this.childItemId,
-          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          pageSize: getDefaultHierarchyChildrenCount(),
           endCursor: '',
         };
       },

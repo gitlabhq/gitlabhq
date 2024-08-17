@@ -12,9 +12,8 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_EPIC,
   CHILD_ITEMS_ANCHOR,
-  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
-import { findHierarchyWidgets } from '../../utils';
+import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
@@ -113,7 +112,7 @@ export default {
       variables() {
         return {
           id: this.workItemId,
-          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          pageSize: getDefaultHierarchyChildrenCount(),
           endCursor: '',
         };
       },

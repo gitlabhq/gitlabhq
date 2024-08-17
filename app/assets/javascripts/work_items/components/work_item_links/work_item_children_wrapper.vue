@@ -8,8 +8,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, DEFAULT_PAGE_SIZE_CHILD_ITEMS } from '../../constants';
-import { findHierarchyWidgets } from '../../utils';
+import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
+import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
@@ -237,7 +237,7 @@ export default {
             store.updateQuery(
               {
                 query: getWorkItemTreeQuery,
-                variables: { id: this.workItemId, pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS },
+                variables: { id: this.workItemId, pageSize: getDefaultHierarchyChildrenCount() },
               },
               (sourceData) =>
                 produce(sourceData, (draftData) => {

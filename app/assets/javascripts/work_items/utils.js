@@ -1,4 +1,5 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { queryToObject } from '~/lib/utils/url_utility';
 import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
@@ -22,6 +23,7 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
   NEW_WORK_ITEM_GID,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -56,6 +58,18 @@ export const findDesignWidget = (widgets) =>
 export const getWorkItemIcon = (icon) => {
   if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;
   return icon;
+};
+
+/**
+ * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637
+ * We're currently setting children count per page based on `DEFAULT_PAGE_SIZE_CHILD_ITEMS`
+ * but we need to find an ideal page size that's usable and fast enough. In order to test
+ * correct page size in production with actual data, this method allows us to set page
+ * size using query param (while falling back to `DEFAULT_PAGE_SIZE_CHILD_ITEMS`).
+ */
+export const getDefaultHierarchyChildrenCount = () => {
+  const { children_count } = queryToObject(window.location.search);
+  return Number(children_count) || DEFAULT_PAGE_SIZE_CHILD_ITEMS;
 };
 
 export const formatAncestors = (workItem) =>

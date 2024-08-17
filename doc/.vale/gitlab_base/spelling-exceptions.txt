@@ -388,8 +388,8 @@ Gbps
 Gemfile
 Gemnasium
 Gemojione
-Getter
-Getters
+getter
+getters
 gettext
 GIDs
 gists
@@ -698,6 +698,7 @@ phpenv
 Phorge
 PHPUnit
 PIDs
+Pinia
 pipenv
 Pipfile
 Pipfiles

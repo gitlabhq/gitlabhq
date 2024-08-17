@@ -699,6 +699,28 @@ To delete an environment:
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog, select **Delete environment**.
 
+### Clean up stale environments
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `stop_stale_environments`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
+
+Clean up stale environments when you want to stop old environments in a project.
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+
+To clean up stale environments:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Operate > Environments**.
+1. Select **Clean up environments**.
+1. Select the date to use for determining which environments to consider stale.
+1. Select **Clean up**.
+
+Active environments that haven't been updated after the specified date are stopped.
+Protected environments are ignored and not stopped.
+
 ### Access an environment for preparation or verification purposes
 
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
