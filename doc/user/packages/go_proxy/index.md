@@ -108,6 +108,8 @@ the scope set to `api` or `read_api`.
 Open your [`~/.netrc`](https://everything.curl.dev/usingcurl/netrc.html) file
 and add the following text. Replace the variables in `< >` with your values.
 
+If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
+
 WARNING:
 If you use an environment variable called `NETRC`, Go uses its value
 as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in

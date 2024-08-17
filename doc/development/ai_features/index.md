@@ -55,9 +55,9 @@ This Rake task ensures that the local environment is ready to run GitLab Duo.
 The task can be run in either SaaS or Self-Managed modes, depending on which installation you currently imitate in GDK.
 
 If you currently run you local GDK as SaaS (imitating GitLab.com), you need to provide the argument to the task:
-`GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[<test-group-name>]'`
+`GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[test-group-name]'`
 
-Replace `<test-group-name>` with the name of any top-level group. Duo will be configured for that group. If the
+Replace `test-group-name` with the name of any top-level group. Duo will be configured for that group. If the
 group doesn't exist, it creates a new one. Make sure the script succeeded. It prints error messages with links
 on how to resolve the error. You can re-run the script until it succeeds.
 
@@ -67,7 +67,7 @@ If you currently run you local GDK as Self-Managed (default for GDK), no argumen
 It's recommended to run `gdk restart` after the task succeeded.
 
 If you need to use evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
-you can run special Rake task: `GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup_evaluation[<test-group-name>]'`.
+you can run special Rake task: `GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup_evaluation[test-group-name]'`.
 It repeats steps from original setup Rake task, and also imports specially prepared groups and projects.
 Since we use `Setup` class (under `ee/lib/gitlab/duo/developments/setup.rb`) that requires "saas" mode to create a group
 (necessary for importing subgroups), you need to set `GITLAB_SIMULATE_SAAS=1` if it's currently `GITLAB_SIMULATE_SAAS=0`.
@@ -111,12 +111,12 @@ export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1 && gdk restart
 Make sure you run `gitlab:duo:setup` Rake task `/gitlab` directory:
 
 ```shell
-GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
+GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[test-group-name]'
 ```
 
 Membership to a group with Duo features enabled is what enables many AI
 features. To enable AI feature access locally, make sure that your test user is
-a member of the group with Duo features enabled (`<test-group-name>`)
+a member of the group with Duo features enabled (`test-group-name`)
 and (for some features) have a [seat assigned](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/subscriptions/subscription-add-ons.md#for-gitlabcom).
 
 Finally, you must clear the GitLab-Rails Redis cache. User access to GitLab Duo

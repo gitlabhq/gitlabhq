@@ -398,7 +398,7 @@ from a user that has access to all the groups or individual projects:
 ```
 
 WARNING:
-Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/token_overview.md#security-considerations)
+Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/tokens/index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ### `npm publish` targets default npm registry (`registry.npmjs.org`)

@@ -398,4 +398,4 @@ for information on creating a personal access token for the currently authentica
 
 ## Troubleshooting access tokens
 
-To troubleshoot access token issues, see the [token troubleshooting guide](../security/token_overview.md#troubleshooting).
+To troubleshoot access token issues, see the [token troubleshooting guide](../security/tokens/token_troubleshooting.md).

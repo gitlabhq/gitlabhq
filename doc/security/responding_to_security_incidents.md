@@ -32,7 +32,7 @@ This scenario refers to security events where sensitive authentication or author
 
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
-- [Overview of GitLab tokens](../security/token_overview.md)
+- [Overview of GitLab tokens](../security/tokens/index.md)
 - [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
 
 #### Response
@@ -67,7 +67,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/token_overview.md#runner-registration-tokens-deprecated).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/index.md#runner-registration-tokens-deprecated).
 - [Reset the user's password](../security/reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
