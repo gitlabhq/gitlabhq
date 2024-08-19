@@ -4111,6 +4111,8 @@ job:
 
 **Additional details**:
 
+- You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
+  with `if`. See [issue 327780](https://gitlab.com/gitlab-org/gitlab/-/issues/327780) for more details.
 - If a rule matches and has no `when` defined, the rule uses the `when`
   defined for the job, which defaults to `on_success` if not defined.
 - You can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
@@ -4201,6 +4203,8 @@ In this example:
 - You can use the `$` character for both variables and paths. For example, if the
   `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
   as being part of a path.
+- You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
+  with `changes`. See [issue 425803](hhttps://gitlab.com/gitlab-org/gitlab/-/issues/425803) for more details.
 
 **Related topics**:
 

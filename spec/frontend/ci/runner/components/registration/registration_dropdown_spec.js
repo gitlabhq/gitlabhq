@@ -357,7 +357,7 @@ describe('RegistrationDropdown', () => {
     });
 
     it('the component is not shown', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 });

@@ -32,6 +32,8 @@ import {
   TOKEN_TYPE_MILESTONE,
   TOKEN_TITLE_LABEL,
   TOKEN_TYPE_LABEL,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TYPE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -67,8 +69,10 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
 
 export default {
+  name: 'MergeRequestsListApp',
   i18n,
   mergeRequestListTabs,
   components: {
@@ -86,6 +90,7 @@ export default {
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'newMergeRequestPath',
+    'releasesEndpoint',
   ],
   data() {
     return {
@@ -284,6 +289,14 @@ export default {
           operators: OPERATORS_IS_NOT,
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-label`,
+        },
+        {
+          type: TOKEN_TYPE_RELEASE,
+          title: TOKEN_TITLE_RELEASE,
+          icon: 'rocket',
+          token: ReleaseToken,
+          operators: OPERATORS_IS_NOT,
+          releasesEndpoint: this.releasesEndpoint,
         },
       ];
     },

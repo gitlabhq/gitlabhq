@@ -67,6 +67,7 @@ gitlab-advanced-sast:
         - '**/*.py'
         - '**/*.go'
         - '**/*.java'
+        - '**/*.jsp'
         - '**/*.js'
         - '**/*.jsx'
         - '**/*.ts'

@@ -35,8 +35,6 @@ metadata:
     description: Operations related to container registry
   - name: container_registry_event
     description: Operations related to container registry events
-  - name: dashboard_annotations
-    description: Operations related to dashboard annotations
   - name: debian_distribution
     description: Operations related to Debian Linux distributions
   - name: debian_packages
@@ -93,8 +91,6 @@ metadata:
     description: Operations related to merge requests
   - name: metadata
     description: Operations related to metadata of the GitLab instance
-  - name: metrics_user_starred_dashboards
-    description: Operations related to User-starred metrics dashboards
   - name: ml_model_registry
     description: Operations related to Model registry
   - name: npm_packages

@@ -28,7 +28,7 @@ describe('~/vue_shared/incubation/components/pagination.vue', () => {
     });
 
     it('should not render pagination component', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 

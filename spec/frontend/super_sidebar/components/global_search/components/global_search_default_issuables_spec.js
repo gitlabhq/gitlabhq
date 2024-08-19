@@ -58,7 +58,7 @@ describe('GlobalSearchDefaultPlaces', () => {
     });
 
     it('renders nothing', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
 
     it('emits a nothing-to-render event', () => {

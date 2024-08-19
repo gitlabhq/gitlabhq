@@ -42,7 +42,7 @@ describe('RunnerTypeBadge', () => {
   it('does not render an unknown status', () => {
     createComponent({ props: { jobStatus: 'UNKNOWN_STATUS' } });
 
-    expect(wrapper.html()).toBe('');
+    expect(wrapper.find('*').exists()).toBe(false);
   });
 
   it('adds arbitrary attributes', () => {

@@ -11,8 +11,11 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 17.1 as an [experiment](../../../policy/experiment-beta-support.md) for Python.
+> - Support for Go and Java added in 17.2.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) to beta in GitLab 17.2.
+> - Support for JavaScript, TypeScript and C# added in 17.3.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) to GA in GitLab 17.3.
+> - Support for Java Server Pages (JSP) added in GitLab 17.4.
 
 GitLab Advanced SAST is a Static Application Security Testing (SAST) analyzer
 designed to discover vulnerabilities by performing cross-function and cross-file taint analysis.
@@ -53,8 +56,9 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 
 - Python
 - Go
-- Java
+- Java (JSP files are also supported)
 - JavaScript
+- TypeScript
 - C#
 
 ## Configuration

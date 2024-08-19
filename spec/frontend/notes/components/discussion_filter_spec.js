@@ -227,7 +227,7 @@ describe('DiscussionFilter component', () => {
       eventHub.$emit('MergeRequestTabChange', 'commit');
 
       await nextTick();
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 

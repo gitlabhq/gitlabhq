@@ -98,7 +98,7 @@ describe('AssociationsList', () => {
         },
       });
 
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 });

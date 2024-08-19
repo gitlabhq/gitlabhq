@@ -45,7 +45,7 @@ describe('RunnerEditButton', () => {
     });
 
     it('does not render', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 });

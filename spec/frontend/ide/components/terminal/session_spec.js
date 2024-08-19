@@ -55,7 +55,7 @@ describe('IDE TerminalSession', () => {
     state.session = null;
     factory();
 
-    expect(wrapper.html()).toBe('');
+    expect(wrapper.find('*').exists()).toBe(false);
   });
 
   it('shows terminal', () => {

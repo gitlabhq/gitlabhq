@@ -17,6 +17,7 @@ import {
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_RELEASE,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -57,6 +58,7 @@ function createComponent({ provide = {} } = {}) {
       isPublicVisibilityRestricted: false,
       isSignedIn: true,
       newMergeRequestPath: '',
+      releasesEndpoint: '',
       ...provide,
     },
     apolloProvider,
@@ -133,6 +135,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_RELEASE },
         ]);
       });
     });
@@ -181,6 +184,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_RELEASE },
         ]);
       });
 

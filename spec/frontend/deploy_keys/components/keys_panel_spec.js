@@ -1,6 +1,7 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import enabledKeys from 'test_fixtures/deploy_keys/enabled_keys.json';
 import deployKeysPanel from '~/deploy_keys/components/keys_panel.vue';
+import DeployKey from '~/deploy_keys/components/key.vue';
 import { mapDeployKey } from '~/deploy_keys/graphql/resolvers';
 
 const keys = enabledKeys.keys.map(mapDeployKey);
@@ -11,7 +12,7 @@ describe('Deploy keys panel', () => {
   const findTableRowHeader = () => wrapper.find('.table-row-header');
 
   const mountComponent = (props) => {
-    wrapper = mount(deployKeysPanel, {
+    wrapper = shallowMount(deployKeysPanel, {
       propsData: {
         title: 'test',
         keys,
@@ -24,7 +25,7 @@ describe('Deploy keys panel', () => {
 
   it('renders list of keys', () => {
     mountComponent();
-    expect(wrapper.findAll('.deploy-key').length).toBe(keys.length);
+    expect(wrapper.findAllComponents(DeployKey)).toHaveLength(keys.length);
   });
 
   it('renders table header', () => {

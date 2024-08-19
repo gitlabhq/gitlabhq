@@ -6,7 +6,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
-GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as well as in learning tasks across the entire Software Development Lifecycle (SDLC) to make them faster and more efficient.
+GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as
+well as in learning tasks across the entire Software Development Lifecycle
+(SDLC) to make them faster and more efficient.
 
 [Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md)
 offering.
@@ -585,6 +587,21 @@ to evaluate GitLab Duo Chat changes locally. The prompt library documentation is
 the single source of truth and should be the most up-to-date.
 
 Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
+
+### Issue and epic experiments
+
+If you would like to use the evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
+you can import the required groups and projects using this Rake task:
+
+```shell
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup_evaluation[<test-group-name>]'
+```
+
+Since we use the `Setup` class (under `ee/lib/gitlab/duo/developments/setup.rb`)
+that requires "saas" mode to create a group (necessary for importing subgroups),
+you need to set `GITLAB_SIMULATE_SAAS=1`. This is just to complete the import
+successfully, and then you can switch back to `GITLAB_SIMULATE_SAAS=0` if
+desired.
 
 ## How a Chat prompt is constructed
 

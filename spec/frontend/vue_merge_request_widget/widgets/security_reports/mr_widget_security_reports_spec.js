@@ -111,7 +111,7 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
     });
 
     it('does not render the widget', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
       expect(findDropdown().exists()).toBe(false);
     });
   });

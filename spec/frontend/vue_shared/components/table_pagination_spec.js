@@ -30,7 +30,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
 
     it('renders if there is a next page', () => {

@@ -59548,12 +59548,6 @@ msgstr ""
 msgid "Vulnerability|Explain this vulnerability"
 msgstr ""
 
-msgid "Vulnerability|Explain this vulnerability and how to mitigate it with AI"
-msgstr ""
-
-msgid "Vulnerability|Explain vulnerability"
-msgstr ""
-
 msgid "Vulnerability|External Security Report"
 msgstr ""
 
@@ -59669,9 +59663,6 @@ msgid "Vulnerability|The scanner determined this vulnerability to be a false pos
 msgstr ""
 
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
-msgstr ""
-
-msgid "Vulnerability|This is a beta feature that uses AI to explain the vulnerability and provide recommendations. Use this feature with caution as we continue to iterate. Please provide your feedback and ideas in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
 msgid "Vulnerability|Tool:"

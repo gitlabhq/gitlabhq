@@ -14,6 +14,7 @@ query getMergeRequests(
   $authorUsername: String
   $draft: Boolean
   $labelName: [String!]
+  $releaseTag: String
   $milestoneTitle: String
   $milestoneWildcardId: MilestoneWildcardId
   $sourceBranches: [String!]
@@ -36,6 +37,7 @@ query getMergeRequests(
       authorUsername: $authorUsername
       draft: $draft
       labelName: $labelName
+      releaseTag: $releaseTag
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       sourceBranches: $sourceBranches
