@@ -16,3 +16,4 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "15.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

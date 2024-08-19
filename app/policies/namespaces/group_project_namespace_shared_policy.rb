@@ -20,15 +20,12 @@ module Namespaces
     end
 
     rule { can?(:guest_access) }.policy do
-      enable :create_work_item
       enable :read_work_item
       enable :read_issue
       enable :read_note
       enable :read_namespace
       enable :read_namespace_via_membership
     end
-
-    rule { can?(:create_work_item) }.enable :create_task
   end
 end
 

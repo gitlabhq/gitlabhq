@@ -35,10 +35,10 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
     },
     {
       items: [
-        { text: __('Insert column before'), value: 'addColumnBefore' },
-        { text: __('Insert column after'), value: 'addColumnAfter' },
-        isTableBodyCell && { text: __('Insert row before'), value: 'addRowBefore' },
-        { text: __('Insert row after'), value: 'addRowAfter' },
+        { text: __('Insert column left'), value: 'addColumnBefore' },
+        { text: __('Insert column right'), value: 'addColumnAfter' },
+        isTableBodyCell && { text: __('Insert row above'), value: 'addRowBefore' },
+        { text: __('Insert row below'), value: 'addRowAfter' },
       ].filter(Boolean),
     },
     {

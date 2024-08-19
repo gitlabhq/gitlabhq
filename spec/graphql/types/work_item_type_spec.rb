@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning do
+  before do
+    stub_feature_flags(enforce_check_group_level_work_items_license: true)
+  end
+
   specify { expect(described_class.graphql_name).to eq('WorkItem') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_work_item) }
@@ -51,12 +55,6 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       let_it_be(:issuables) { create_list(:work_item, 10, project: project, created_at: now) }
       let(:container_name) { 'project' }
       let(:container) { project }
-    end
-
-    it_behaves_like 'issuables pagination and count' do
-      let_it_be(:issuables) { create_list(:work_item, 10, :epic, namespace: group, created_at: now) }
-      let(:container_name) { 'group' }
-      let(:container) { group }
     end
   end
 end

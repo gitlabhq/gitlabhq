@@ -4,6 +4,7 @@
 RSpec.shared_examples 'issuables pagination and count' do
   let_it_be(:now) { Time.now.change(usec: 0) }
   let(:count_path) { ['data', container_name, field_name, 'count'] }
+  let(:per_page) { nil }
   let(:page_size) { 3 }
   let(:query) do
     <<~GRAPHQL
@@ -78,7 +79,7 @@ RSpec.shared_examples 'issuables pagination and count' do
     end
 
     context 'with pagination' do
-      let(:page_size) { 9 }
+      let(:page_size) { per_page || 9 }
 
       it 'returns new ids during pagination' do
         old_edges = subject.dig(*issuables_edges)
@@ -94,7 +95,7 @@ RSpec.shared_examples 'issuables pagination and count' do
           }
         ).to_h.dig(*issuables_edges)
 
-        expect(old_edges.count).to eq(9)
+        expect(old_edges.count).to eq(page_size)
         expect(new_edges.count).to eq(1)
       end
     end

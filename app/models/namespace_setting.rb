@@ -8,7 +8,7 @@ class NamespaceSetting < ApplicationRecord
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.0', remove_after: '2024-05-16'
-  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.5', remove_after: '2024-08-15'
+  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
 
   cascading_attr :math_rendering_limits_enabled
 

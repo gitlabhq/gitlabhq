@@ -28340,10 +28340,10 @@ msgstr ""
 msgid "Insert code"
 msgstr ""
 
-msgid "Insert column after"
+msgid "Insert column left"
 msgstr ""
 
-msgid "Insert column before"
+msgid "Insert column right"
 msgstr ""
 
 msgid "Insert comment template"
@@ -28355,10 +28355,10 @@ msgstr ""
 msgid "Insert or edit diagram"
 msgstr ""
 
-msgid "Insert row after"
+msgid "Insert row above"
 msgstr ""
 
-msgid "Insert row before"
+msgid "Insert row below"
 msgstr ""
 
 msgid "Insert suggestion"

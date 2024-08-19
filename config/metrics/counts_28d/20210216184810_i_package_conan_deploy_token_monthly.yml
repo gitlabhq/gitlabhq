@@ -20,3 +20,4 @@ tier:
 - premium
 - ultimate
 milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

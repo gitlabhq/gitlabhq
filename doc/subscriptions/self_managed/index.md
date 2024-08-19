@@ -414,21 +414,45 @@ to your instance.
 
 ### Renew subscription manually
 
-Starting 30 days before a subscription expires, a banner with the expiry date displays for administrators in the GitLab user interface.
+30 days before a subscription expires, a banner with the subscription expiry date displays for
+administrators in the GitLab user interface.
 
-You should follow these steps during renewal:
+You cannot manually renew your subscription more than 15 days before the subscription
+expires. To check when you can renew:
 
-1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../administration/moderate_users.md#block-a-user).
-1. Determine if you have a need for user growth in the upcoming subscription.
-1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**. The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription**
+   to view the date you can renew.
+
+To manually renew your subscription:
+
+1. Before the renewal date, [block any inactive or unwanted users](../../administration/moderate_users.md#block-a-user).
+1. Determine the number of users you need in the next subscription period.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Under your existing subscription, select **Renew**. This button does not display
+   until 15 days before the subscription expires.
+1. Under **Upgrade your plan**, select the [subscription tier](https://about.gitlab.com/pricing/) you want.
+
+   You can upgrade your subscription tier, but you cannot change to a lower tier.
+
+   To change to a lower tier, [contact the GitLab sales team](https://about.gitlab.com/sales/).
+1. Under **Subscription details**, in the **Billable users** text box, enter the
+   total number of user licenses you'll need for the upcoming year.
 
    NOTE:
-   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
+   Make sure this number is equal to, or greater than
+   the number of [billable users](#billable-users) in the system at the time of renewal.
+1. Optional. If the maximum number of users in your instance exceeded the number
+   you were licensed for in the previous subscription term, the
+   [overage](../quarterly_reconciliation.md) is due when you renew.
 
-1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
-1. If applicable, enter the number of [users over subscription](#users-over-subscription) in the second box for the user overage incurred in your previous subscription term.
-1. Review your renewal details and complete the payment process.
-1. An activation code for the renewal term is available on the [Subscriptions & purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
+   In the [**Users over license** text box], enter the number of
+   [users over subscription](#users-over-subscription) for the user overage incurred.
+1. Review your renewal details and select **Renew subscription** to complete the
+   payment process.
+1. On the [Subscriptions & purchases](https://customers.gitlab.com/subscriptions)
+   page on the relevant subscription card, select **Copy activation code** to get
+   a copy of the renewal term activation code.
 1. [Add the activation code](../../administration/license.md) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [Invoices](https://customers.gitlab.com/invoices) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.

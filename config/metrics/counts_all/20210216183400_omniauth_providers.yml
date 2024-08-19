@@ -15,3 +15,4 @@ tier:
 - ultimate
 value_json_schema: 'config/metrics/objects_schemas/omniauth_providers_schema.json'
 milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

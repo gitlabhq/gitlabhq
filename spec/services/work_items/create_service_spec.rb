@@ -216,5 +216,4 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
   it_behaves_like 'creates work item in container', :project
   it_behaves_like 'creates work item in container', :project_namespace
-  it_behaves_like 'creates work item in container', :group
 end

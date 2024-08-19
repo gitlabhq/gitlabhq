@@ -97,12 +97,12 @@ describe('content/components/wrappers/table_cell_base', () => {
     });
 
     it.each`
-      dropdownItemLabel         | commandName
-      ${'Insert column before'} | ${'addColumnBefore'}
-      ${'Insert column after'}  | ${'addColumnAfter'}
-      ${'Insert row before'}    | ${'addRowBefore'}
-      ${'Insert row after'}     | ${'addRowAfter'}
-      ${'Delete table'}         | ${'deleteTable'}
+      dropdownItemLabel        | commandName
+      ${'Insert column left'}  | ${'addColumnBefore'}
+      ${'Insert column right'} | ${'addColumnAfter'}
+      ${'Insert row above'}    | ${'addRowBefore'}
+      ${'Insert row below'}    | ${'addRowAfter'}
+      ${'Delete table'}        | ${'deleteTable'}
     `(
       'executes $commandName when $dropdownItemLabel button is clicked',
       async ({ dropdownItemLabel, commandName }) => {

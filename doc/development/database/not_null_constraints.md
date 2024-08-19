@@ -318,6 +318,28 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
+   - **Optional.** For partitioned table, use:
+
+     ```ruby
+     # db/post_migrate/
+
+     PARTITIONED_TABLE_NAME = :p_ci_builds
+     CONSTRAINT_NAME = 'check_9aa9432137'
+
+     # Partitioned check constraint to be validated in https://gitlab.com/gitlab-org/gitlab/-/issues/XXXXX
+     def up
+       prepare_partitioned_async_check_constraint_validation PARTITIONED_TABLE_NAME, name: CONSTRAINT_NAME
+     end
+
+     def down
+       unprepare_partitioned_async_check_constraint_validation PARTITIONED_TABLE_NAME, name: CONSTRAINT_NAME
+     end
+     ```
+
+     NOTE:
+     `prepare_partitioned_async_check_constraint_validation` only validates the existing `NOT VALID` check constraint asynchronously for all the partitions.
+     It doesn't create or validate the check constraint for the partitioned table.
+
 1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
 
    ```ruby

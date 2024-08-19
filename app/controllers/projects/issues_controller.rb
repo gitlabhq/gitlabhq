@@ -121,7 +121,7 @@ class Projects::IssuesController < Projects::ApplicationController
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve],
-      observability_links: params[:observability_metric_details],
+      observability_links: { metrics: params[:observability_metric_details], logs: params[:observability_log_details] },
       confidential: !!Gitlab::Utils.to_boolean(issue_params[:confidential])
     )
     service = ::Issues::BuildService.new(container: project, current_user: current_user, params: build_params)

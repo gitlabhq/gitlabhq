@@ -22,6 +22,12 @@ class WorkItemPolicy < IssuePolicy
     enable :admin_work_item_link
     enable :admin_parent_link
   end
+
+  # IMPORTANT: keep the prevent rules as last rules defined in the policy, as these are based on
+  # all abilities defined up to this point.
+  rule { group_issue & ~group_level_issues_license_available }.policy do
+    prevent(*::WorkItemPolicy.ability_map.map.keys)
+  end
 end
 
 WorkItemPolicy.prepend_mod

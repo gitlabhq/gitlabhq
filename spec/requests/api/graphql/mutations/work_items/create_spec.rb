@@ -328,7 +328,12 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['workItem']['widgets']).to include(
-            'labels' => { 'nodes' => label_ids.map { |l| { 'id' => l } } },
+            'labels' => {
+              'nodes' => containing_exactly(
+                hash_including('id' => label_ids.first.to_s),
+                hash_including('id' => label_ids.second.to_s)
+              )
+            },
             'type' => 'LABELS'
           )
         end
@@ -372,17 +377,16 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let_it_be(:container_params) { { namespace: group } }
       let(:mutation) { graphql_mutation(:workItemCreate, input.merge(namespacePath: group.full_path), fields) }
 
-      it_behaves_like 'creates work item'
-
-      context 'when the create_group_level_work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(create_group_level_work_items: false)
-        end
-
-        it_behaves_like 'a mutation that returns top-level errors', errors: [
-          Mutations::WorkItems::Create::DISABLED_FF_ERROR
-        ]
+      it 'does not create the work item' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.not_to change(WorkItem, :count)
       end
+
+      it_behaves_like 'a mutation that returns top-level errors', errors: [
+        "The resource that you are attempting to access does not exist or you don't have " \
+          "permission to perform this action"
+      ]
     end
 
     context 'when both projectPath and namespacePath are passed' do

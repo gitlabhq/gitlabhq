@@ -27,3 +27,4 @@ performance_indicator_type:
 - paid_gmau
 - customer_health_score
 milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
