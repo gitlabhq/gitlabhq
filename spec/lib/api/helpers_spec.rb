@@ -174,6 +174,31 @@ RSpec.describe API::Helpers, feature_category: :shared do
       context 'private project' do
         it_behaves_like 'private project without access'
       end
+
+      context 'user authenticated with job token' do
+        let_it_be(:job) { create(:ci_build, project: project) }
+        let_it_be(:outside_project) { create(:project) }
+
+        before do
+          allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: :project)
+          allow(helper).to receive(:initial_current_user).and_return(user)
+          helper.instance_variable_set(:@current_authenticated_job, job)
+        end
+
+        context "and requested project is not equal pipeline's project" do
+          it 'returns forbidden' do
+            expect(helper).to receive(:forbidden!).with("This project's CI/CD job token cannot be used to authenticate with the container registry of a different project.")
+
+            helper.find_project!(outside_project.id)
+          end
+        end
+
+        context "and requested project is equal pipeline's project" do
+          it 'finds a project' do
+            expect(helper.find_project!(project.id)).to eq(project)
+          end
+        end
+      end
     end
 
     context 'when user is not authenticated' do

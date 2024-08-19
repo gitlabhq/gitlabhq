@@ -148,7 +148,7 @@ module API
     def find_project!(id)
       project = find_project(id)
 
-      return forbidden! unless authorized_project_scope?(project)
+      return forbidden!("This project's CI/CD job token cannot be used to authenticate with the container registry of a different project.") unless authorized_project_scope?(project)
 
       unless can?(current_user, read_project_ability, project)
         return unauthorized! if authenticate_non_public?

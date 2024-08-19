@@ -81,7 +81,16 @@ with the deployed staging AI Gateway. To do this:
       export GITLAB_SIMULATE_SAAS=0
       ```
 
-   On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file.
+   On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file:
+
+      ```shell
+      gitlab_rails['env'] = {
+      'GITLAB_LICENSE_MODE' => 'test',
+      'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
+      'AI_GATEWAY_URL' => 'https://cloud.staging.gitlab.com/ai'
+      }
+      ```
+
    1. Restart your GDK.
    1. Go to `/admin/subscription`.
    1. Optional. Remove any active license.

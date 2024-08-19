@@ -77,6 +77,17 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
   describe 'GET /projects/:id/registry/repositories' do
     let(:url) { "/projects/#{project.id}/registry/repositories" }
 
+    context 'using job token' do
+      include_context 'using job token' do
+        context "when requested project is not equal job's project" do
+          let(:url) { "/projects/#{project2.id}/registry/repositories" }
+
+          it_behaves_like 'rejected container repository access',
+            :maintainer, :forbidden, "403 Forbidden - This project's CI/CD job token cannot be used to authenticate with the container registry of a different project."
+        end
+      end
+    end
+
     ['using API user', 'using job token'].each do |context|
       context context do
         include_context context

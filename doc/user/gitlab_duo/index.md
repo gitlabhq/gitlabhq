@@ -104,6 +104,7 @@ DETAILS:
 
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ### Vulnerability explanation
@@ -114,6 +115,7 @@ DETAILS:
 
 - Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
 ### AI Impact dashboard
@@ -139,6 +141,7 @@ DETAILS:
 
 - Helps populate a merge request more quickly by generating a description based on the code changes.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes).
 
 ### Vulnerability resolution
@@ -150,6 +153,7 @@ DETAILS:
 
 - Help resolve a vulnerability by generating a merge request that addresses it.
 - LLM: Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
 ### Discussion summary

@@ -541,8 +541,13 @@ The amount of storage and transfer for self-managed instances has no application
 
 ### Subscription data fails to synchronize
 
-If the synchronization job is not working, ensure you allow network traffic from your GitLab
-instance to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
+Your subscription data might fail to synchronize.
+
+This issue can occur when network traffic between your GitLab instance and certain
+IP addresses is not allowed.
+
+To resolve this issue, allow network traffic from your GitLab instance to IP
+addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
 
 ### Credit card declined
 
@@ -554,13 +559,20 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 - The transaction exceeds the credit limit.
 - The transaction exceeds the credit card's maximum transaction amount.
 
-Check with your financial institution to confirm if any of these reasons apply. If they don't
+Check with your financial institution to confirm if any of these reasons apply. If they do not
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
-### Error: `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again`
+### Error: `Attempt_Exceed_Limitation`
 
-You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing a GitLab subscription.
+You might get the following error when purchasing a GitLab subscription:
 
-This issue occurs when the credit card form is re-submitted too quickly within a specific time frame (three submissions within one minute or six submissions within one hour).
+```plaintext
+Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.
+```
+
+This issue occurs when the credit card form is re-submitted either:
+
+- Three times or more in one minute.
+- Six times or more in one hour.
 
 To resolve this issue, wait a few minutes and try the purchase process again.
