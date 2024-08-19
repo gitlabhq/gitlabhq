@@ -283,9 +283,7 @@ module Gitlab
         user_id = Users::Internal.security_bot.id
 
         each_sub_batch do |sub_batch|
-          cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch.limit(
-            QueueResolveVulnerabilitiesForRemovedAnalyzers::SUB_BATCH_SIZE)
-          )
+          cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch.limit(100))
 
           filtered_batch = cte
             .apply_to(Migratable::Vulnerabilities::Read.all)
