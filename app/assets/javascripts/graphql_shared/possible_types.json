@@ -165,8 +165,11 @@
     "Design",
     "Epic",
     "EpicIssue",
+    "Group",
     "Issue",
     "MergeRequest",
+    "Namespace",
+    "Project",
     "WorkItem"
   ],
   "User": [

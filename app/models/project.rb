@@ -48,6 +48,7 @@ class Project < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
   include SafelyChangeColumnDefault
+  include Todoable
 
   columns_changing_default :organization_id
 

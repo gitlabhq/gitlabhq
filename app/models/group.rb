@@ -19,7 +19,6 @@ class Group < Namespace
   include BulkUsersByEmailLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
-  include Todoable
   include Importable
 
   extend ::Gitlab::Utils::Override
@@ -457,10 +456,6 @@ class Group < Namespace
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
     notification_settings.find { |n| n.notification_email.present? }&.notification_email
-  end
-
-  def web_url(only_path: nil)
-    Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
   def dependency_proxy_image_prefix

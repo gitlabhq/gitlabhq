@@ -1,5 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput, GlModal } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -37,6 +38,18 @@ export default {
       this.$emit('submit', this.triggerModel);
     },
   },
+  modal: {
+    actionPrimary: {
+      text: __('Update'),
+      attributes: { category: 'primary', variant: 'confirm' },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
 };
 </script>
 
@@ -44,6 +57,8 @@ export default {
   <gl-modal
     :modal-id="modalId"
     :title="s__('Pipelines|Update Trigger')"
+    :action-primary="$options.modal.actionPrimary"
+    :action-secondary="$options.modal.actionSecondary"
     @change="$emit('change', $event)"
     @primary="onSubmit"
   >

@@ -334,6 +334,29 @@ class Todo < ApplicationRecord
     end
   end
 
+  def target_url
+    return if target.nil?
+
+    case target
+    when WorkItem
+      build_work_item_target_url
+    when Issue
+      build_issue_target_url
+    when MergeRequest
+      build_merge_request_target_url
+    when ::DesignManagement::Design
+      build_design_target_url
+    when ::AlertManagement::Alert
+      build_alert_target_url
+    when Commit
+      build_commit_target_url
+    when Project
+      build_project_target_url
+    when Group
+      build_group_target_url
+    end
+  end
+
   def self_added?
     author == user
   end
@@ -346,6 +369,78 @@ class Todo < ApplicationRecord
 
   def keep_around_commit
     project.repository.keep_around(self.commit_id, source: self.class.name)
+  end
+
+  def build_work_item_target_url
+    ::Gitlab::UrlBuilder.build(
+      target,
+      anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
+    )
+  end
+
+  def build_issue_target_url
+    ::Gitlab::UrlBuilder.build(
+      target,
+      anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
+    )
+  end
+
+  def build_merge_request_target_url
+    path = [target.project, target]
+    path.unshift(:pipelines) if build_failed?
+
+    ::Gitlab::Routing.url_helpers.polymorphic_url(
+      path,
+      {
+        anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
+      }
+    )
+  end
+
+  def build_design_target_url
+    ::Gitlab::Routing.url_helpers.designs_project_issue_url(
+      target.project,
+      target.issue,
+      {
+        anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil,
+        vueroute: target.filename
+      }
+    )
+  end
+
+  def build_alert_target_url
+    ::Gitlab::Routing.url_helpers.details_project_alert_management_url(
+      target.project,
+      target
+    )
+  end
+
+  def build_commit_target_url
+    ::Gitlab::Routing.url_helpers.project_commit_url(
+      target.project,
+      target,
+      {
+        anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
+      }
+    )
+  end
+
+  def build_project_target_url
+    return unless member_access_requested?
+
+    ::Gitlab::Routing.url_helpers.project_project_members_url(
+      target,
+      tab: 'access_requests'
+    )
+  end
+
+  def build_group_target_url
+    return unless member_access_requested?
+
+    ::Gitlab::Routing.url_helpers.group_group_members_url(
+      target,
+      tab: 'access_requests'
+    )
   end
 end
 

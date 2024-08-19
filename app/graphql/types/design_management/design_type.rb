@@ -67,6 +67,10 @@ module Types
       def web_url
         Gitlab::UrlBuilder.build(object)
       end
+
+      def name
+        object.filename
+      end
     end
   end
 end

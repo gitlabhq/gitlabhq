@@ -9,6 +9,8 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::WorkItem) }
 
+  specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
+
   it 'has specific fields' do
     fields = %i[
       author
@@ -32,6 +34,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       create_note_email
       reference
       archived
+      name
     ]
 
     expect(described_class).to have_graphql_fields(*fields)

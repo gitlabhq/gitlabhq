@@ -105,23 +105,31 @@ Assuming no policies are enforced, consider the following examples:
 
 ### Separation of duties
 
-Separation of duties is vital to successfully implementing policies. Security and compliance teams
-should be responsible for defining policies and working with development teams. Development teams
-should not be able to disable, modify, or circumvent the policies, in any way, or for any
-exceptions. Implement policies that achieve the necessary compliance and security requirements, while
-allowing development teams to achieve their goals.
+Separation of duties is vital to successfully implementing policies. Implement
+policies that achieve the necessary compliance and security requirements, while allowing development teams to
+achieve their goals.
 
-By default, to enforce a security policy project on a group, subgroup, or project, you must have the Owner role at the
-same hierarchy level.
+Security and compliance teams:
 
-| Organization unit | Group owner            | Subgroup owner         | Project owner          |
-|-------------------|------------------------|------------------------|------------------------|
-| Group             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
-| Subgroup          | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| Project           | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+- Should be responsible for defining policies and working with development teams to ensure the policies meet
+their needs.
 
-Optionally, you can create a custom role with the `manage_security_policy_link` permission. For more
-information, see [Custom roles](../../../user/custom_roles.md).
+Development teams:
+
+- Should not be able to disable, modify, or circumvent the policies in any way.
+
+To enforce a security policy project on a group, subgroup, or project, you must have either:
+
+- The Owner role in that group, subgroup, or project.
+- A [custom role](../../../user/custom_roles.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+
+The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
+
+| Organization unit | Group owner or group `manage_security_policy_link` permission | Subgroup owner or subgroup `manage_security_policy_link` permission | Project owner or project `manage_security_policy_link` permission |
+|-------------------|---------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
+| Group             | **{check-circle}** Yes                                        | **{dotted-circle}** No                                              | **{dotted-circle}** No                                            |
+| Subgroup          | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{dotted-circle}** No                                            |
+| Project           | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{check-circle}** Yes                                            |
 
 ## Policy implementation
 

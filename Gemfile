@@ -200,7 +200,7 @@ gem 'fog-local', '~> 0.8' # rubocop:todo Gemfile/MissingFeatureCategory
 # We may want to update this dependency if this is ever addressed upstream, e.g. via
 # https://github.com/aliyun/aliyun-oss-ruby-sdk/pull/93
 gem 'fog-aliyun', '~> 0.4' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-fog-azure-rm', '~> 2.0.1', require: 'fog/azurerm', feature_category: :shared
+gem 'gitlab-fog-azure-rm', '~> 2.1.0', require: 'fog/azurerm', feature_category: :shared
 
 # for Google storage
 

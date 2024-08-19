@@ -20,6 +20,7 @@ class Namespace < ApplicationRecord
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
+  include Todoable
 
   ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 
@@ -720,6 +721,10 @@ class Namespace < ApplicationRecord
       :project_setting,
       :project_feature,
       :active_pages_deployments)
+  end
+
+  def web_url(only_path: nil)
+    Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
   private

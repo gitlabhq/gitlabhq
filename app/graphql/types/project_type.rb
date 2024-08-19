@@ -10,6 +10,8 @@ module Types
 
     expose_permissions Types::PermissionTypes::Project
 
+    implements Types::TodoableInterface
+
     field :id, GraphQL::Types::ID,
       null: false,
       description: 'ID of the project.'

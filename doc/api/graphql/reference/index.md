@@ -17165,6 +17165,7 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.10. Use issue field. |
 | <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.0. Returns no data. Underlying feature was removed in 16.0. |
 | <a id="alertmanagementalertmonitoringtool"></a>`monitoringTool` | [`String`](#string) | Monitoring tool the alert came from. |
+| <a id="alertmanagementalertname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="alertmanagementalertprometheusalert"></a>`prometheusAlert` **{warning-solid}** | [`PrometheusAlert`](#prometheusalert) | **Deprecated** in GitLab 17.3. Returns no data. Underlying feature was removed in 16.0. |
 | <a id="alertmanagementalertrunbook"></a>`runbook` | [`String`](#string) | Runbook for the alert as defined in alert details. |
 | <a id="alertmanagementalertservice"></a>`service` | [`String`](#string) | Service the alert came from. |
@@ -18075,6 +18076,7 @@ Represents an epic on an issue board.
 | <a id="boardepiciid"></a>`iid` | [`String!`](#string) | Internal ID of the epic. |
 | <a id="boardepicissues"></a>`issues` | [`EpicIssueConnection`](#epicissueconnection) | A list of issues associated with the epic. (see [Connections](#connections)) |
 | <a id="boardepiclabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the epic. (see [Connections](#connections)) |
+| <a id="boardepicname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="boardepicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
 | <a id="boardepicparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants for the epic. (see [Connections](#connections)) |
 | <a id="boardepicrelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relationship. |
@@ -19268,6 +19270,7 @@ Represents a summary of the compared codequality report.
 | <a id="commitfulltitlehtml"></a>`fullTitleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `full_title`. |
 | <a id="commitid"></a>`id` | [`ID!`](#id) | ID (global ID) of the commit. |
 | <a id="commitmessage"></a>`message` | [`String`](#string) | Raw commit message. |
+| <a id="commitname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="commitsha"></a>`sha` | [`String!`](#string) | SHA1 ID of the commit. |
 | <a id="commitshortid"></a>`shortId` | [`String!`](#string) | Short SHA1 ID of the commit. |
 | <a id="commitsignature"></a>`signature` | [`CommitSignature`](#commitsignature) | Signature of the commit. |
@@ -20726,6 +20729,7 @@ A single design.
 | <a id="designimported"></a>`imported` | [`Boolean!`](#boolean) | Indicates whether the design was imported. |
 | <a id="designimportedfrom"></a>`importedFrom` | [`ImportSource!`](#importsource) | Import source of the design. |
 | <a id="designissue"></a>`issue` | [`Issue!`](#issue) | Issue the design belongs to. |
+| <a id="designname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="designnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
 | <a id="designproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
 | <a id="designweburl"></a>`webUrl` | [`String!`](#string) | URL of the design. |
@@ -21376,6 +21380,7 @@ Represents an epic.
 | <a id="epiciid"></a>`iid` | [`String!`](#string) | Internal ID of the epic. |
 | <a id="epicissues"></a>`issues` | [`EpicIssueConnection`](#epicissueconnection) | A list of issues associated with the epic. (see [Connections](#connections)) |
 | <a id="epiclabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the epic. (see [Connections](#connections)) |
+| <a id="epicname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="epicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
 | <a id="epicparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants for the epic. (see [Connections](#connections)) |
 | <a id="epicrelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relationship. |
@@ -21643,6 +21648,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="epicissuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
 | <a id="epicissuemovedto"></a>`movedTo` | [`Issue`](#issue) | Updated Issue after it got moved to another project. |
+| <a id="epicissuename"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="epicissueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
 | <a id="epicissueprojectid"></a>`projectId` | [`Int`](#int) | ID of the issue project. |
 | <a id="epicissuerelatedmergerequests"></a>`relatedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests related to the issue. This field can only be resolved for one issue in any single request. (see [Connections](#connections)) |
@@ -24556,6 +24562,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="issuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
 | <a id="issuemovedto"></a>`movedTo` | [`Issue`](#issue) | Updated Issue after it got moved to another project. |
+| <a id="issuename"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="issueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
 | <a id="issueprojectid"></a>`projectId` | [`Int`](#int) | ID of the issue project. |
 | <a id="issuerelatedmergerequests"></a>`relatedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests related to the issue. This field can only be resolved for one issue in any single request. (see [Connections](#connections)) |
@@ -25135,6 +25142,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergeablediscussionsstate"></a>`mergeableDiscussionsState` | [`Boolean`](#boolean) | Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged. |
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
+| <a id="mergerequestname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
 | <a id="mergerequestpolicyviolations"></a>`policyViolations` **{warning-solid}** | [`PolicyViolationDetails`](#policyviolationdetails) | **Introduced** in GitLab 17.0. **Status**: Experiment. Policy violations reported on the merge request. Returns `null` if `save_policy_violation_data` feature flag is disabled. |
 | <a id="mergerequestpreparedat"></a>`preparedAt` | [`Time`](#time) | Timestamp of when the merge request was prepared. |
@@ -27181,6 +27189,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
+| <a id="namespaceweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
 #### Fields with arguments
 
@@ -32609,11 +32618,13 @@ Representing a to-do entry.
 | <a id="todocreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this to-do item was created. |
 | <a id="todogroup"></a>`group` | [`Group`](#group) | Group this to-do item is associated with. |
 | <a id="todoid"></a>`id` | [`ID!`](#id) | ID of the to-do item. |
+| <a id="todomemberaccesstype"></a>`memberAccessType` | [`String`](#string) | Access type of access request to-do items. |
 | <a id="todonote"></a>`note` | [`Note`](#note) | Note which created this to-do item. |
 | <a id="todoproject"></a>`project` | [`Project`](#project) | Project this to-do item is associated with. |
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
 | <a id="todotarget"></a>`target` | [`Todoable!`](#todoable) | Target of the to-do item. |
 | <a id="todotargettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
+| <a id="todotargeturl"></a>`targetUrl` | [`String`](#string) | URL of the to-do item target. |
 
 ### `Topic`
 
@@ -33988,6 +33999,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
+| <a id="workitemname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
 | <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
@@ -39502,14 +39514,18 @@ Implementations:
 - [`Design`](#design)
 - [`Epic`](#epic)
 - [`EpicIssue`](#epicissue)
+- [`Group`](#group)
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
+- [`Namespace`](#namespace)
+- [`Project`](#project)
 - [`WorkItem`](#workitem)
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="todoablename"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="todoableweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
 #### `User`

@@ -10,6 +10,7 @@ module AlertManagement
     include Sortable
     include Noteable
     include Mentionable
+    include Todoable
     include Gitlab::SQL::Pattern
     include Presentable
     include Gitlab::Utils::StrongMemoize

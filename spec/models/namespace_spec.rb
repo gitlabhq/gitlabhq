@@ -2556,4 +2556,18 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:model) { create(:namespace, organization: parent) }
     end
   end
+
+  describe '#web_url' do
+    let_it_be(:group) { create(:group) }
+
+    it 'returns the canonical URL' do
+      expect(group.web_url).to include("groups/#{group.name}")
+    end
+
+    context 'nested group' do
+      let(:nested_group) { create(:group, :nested) }
+
+      it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
+    end
+  end
 end

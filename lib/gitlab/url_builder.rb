@@ -48,6 +48,10 @@ module Gitlab
           snippet_url(object, **options)
         when User
           instance.user_url(object, **options)
+        when Namespaces::UserNamespace
+          instance.user_url(object.owner, **options)
+        when Namespaces::ProjectNamespace
+          instance.project_url(object.project, **options)
         when Wiki
           wiki_url(object, **options)
         when WikiPage
