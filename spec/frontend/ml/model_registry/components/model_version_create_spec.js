@@ -91,6 +91,9 @@ describe('ModelVersionCreate', () => {
       expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
         MODEL_VERSION_CREATION_MODAL_ID,
       );
+      expect(findModalButton().attributes('disabled')).toBeUndefined();
+      expect(findModalButton().attributes('category')).toBe('primary');
+      expect(findModalButton().attributes('variant')).toBe('confirm');
     });
 
     describe('Modal open', () => {

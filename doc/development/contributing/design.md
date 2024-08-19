@@ -74,7 +74,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
 
 ### Dark Mode
 
-You're not required to design for dark mode while the feature is an [experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+You're not required to design for dark mode while the feature is an [experiment](../../policy/experiment-beta-support.md#experiment). The [Design System team](https://about.gitlab.com/direction/foundations/design_system/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 

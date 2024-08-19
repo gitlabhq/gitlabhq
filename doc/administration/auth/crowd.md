@@ -22,7 +22,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
 1. Go through the 'Add application' steps, entering the appropriate details.
    The screenshot below shows an example configuration.
 
-   ![Example Crowd application configuration](img/crowd_application.png)
+   ![Final confirmation page in Crowd for application configuration](img/crowd_application.png)
 
 ## Configure GitLab
 
@@ -96,4 +96,4 @@ Ensure the Crowd users who must sign in to GitLab are authorized to the
 [application](#configure-a-new-crowd-application) in the **Authorization** step.
 This could be verified by trying "Authentication test" for Crowd (as of 2.11).
 
-![Example Crowd application authorization configuration](img/crowd_application_authorisation.png)
+![Authorization stage settings in Crowd](img/crowd_application_authorisation.png)

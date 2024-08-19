@@ -28,7 +28,7 @@ export default Node.create({
     return [
       'ol',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        class: 'footnotes gl-font-sm',
+        class: 'footnotes gl-text-sm',
       }),
       0,
     ];

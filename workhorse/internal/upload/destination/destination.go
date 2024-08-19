@@ -131,12 +131,12 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	switch {
 	// This case means Workhorse is acting as an upload proxy for Rails and buffers files
 	// to disk in a temporary location, see:
-	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-disk-buffering-to-workhorse
+	// https://docs.gitlab.com/ee/development/uploads/#rails-controller-upload
 	case opts.IsLocalTempFile():
 		clientMode = "local_tempfile"
 		uploadDestination, err = fh.newLocalFile(ctx, opts)
 	// All cases below mean we are doing a direct upload to remote i.e. object storage, see:
-	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-to-object-storage-and-direct-uploads
+	// https://docs.gitlab.com/ee/development/uploads/#direct-upload
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
 		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
 		p := &objectstore.GoCloudObjectParams{

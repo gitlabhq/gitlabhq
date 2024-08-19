@@ -4,10 +4,13 @@ module API
   module Ci
     class Jobs < ::API::Base
       include PaginationParams
+      include APIGuard
 
       helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
 
       before { authenticate! }
+
+      allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do

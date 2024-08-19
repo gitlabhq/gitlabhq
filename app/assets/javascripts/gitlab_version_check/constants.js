@@ -1,5 +1,5 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 export const STATUS_TYPES = {
   SUCCESS: 'success',

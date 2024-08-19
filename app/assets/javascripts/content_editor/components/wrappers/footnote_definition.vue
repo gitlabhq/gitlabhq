@@ -16,11 +16,11 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper class="gl-display-flex gl-font-sm" as="div">
+  <node-view-wrapper class="gl-flex gl-text-sm" as="div">
     <span
       :contenteditable="false"
       data-testid="footnote-label"
-      class="gl-inline-flex gl-mr-2"
+      class="gl-mr-2 gl-inline-flex"
       dir="auto"
       >{{ node.attrs.label }}:</span
     >

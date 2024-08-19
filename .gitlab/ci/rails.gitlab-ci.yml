@@ -167,20 +167,6 @@ rspec background_migration pg14 praefect:
     - .rspec-background-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec migration pg14 clusterwide-db:
-  extends:
-    - rspec migration pg14
-    - .clusterwide-db
-    - .rspec-migration-parallel
-    - .rails:rules:clusterwide-db
-
-rspec background_migration pg14 clusterwide-db:
-  extends:
-    - rspec background_migration pg14
-    - .clusterwide-db
-    - .rspec-background-migration-parallel
-    - .rails:rules:clusterwide-db
-
 rspec unit pg14:
   extends:
     - .rspec-base-pg14
@@ -207,13 +193,6 @@ rspec unit pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-unit-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec unit pg14 clusterwide-db:
-  extends:
-    - rspec unit pg14
-    - .clusterwide-db
-    - .rspec-unit-parallel
-    - .rails:rules:clusterwide-db
 
 rspec unit pg14 praefect:
   extends:
@@ -248,13 +227,6 @@ rspec integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec integration pg14 clusterwide-db:
-  extends:
-    - rspec integration pg14
-    - .clusterwide-db
-    - .rspec-integration-parallel
-    - .rails:rules:clusterwide-db
 
 rspec integration pg14 praefect:
   extends:
@@ -291,13 +263,6 @@ rspec system pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-system-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec system pg14 clusterwide-db:
-  extends:
-    - rspec system pg14
-    - .clusterwide-db
-    - .rspec-system-parallel
-    - .rails:rules:clusterwide-db
 
 rspec system pg14 praefect:
   extends:
@@ -852,18 +817,6 @@ rspec-ee background_migration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee migration pg14 clusterwide-db:
-  extends:
-    - rspec-ee migration pg14
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
-rspec-ee background_migration pg14 clusterwide-db:
-  extends:
-    - rspec-ee background_migration pg14
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
 rspec-ee migration pg14 praefect:
   extends:
     - rspec migration pg14
@@ -910,13 +863,6 @@ rspec-ee unit pg14 single-db-ci-connection:
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee unit pg14 clusterwide-db:
-  extends:
-    - rspec-ee unit pg14
-    - .clusterwide-db
-    - .rspec-ee-unit-parallel
-    - .rails:rules:clusterwide-db
-
 rspec-ee integration pg14:
   extends:
     - .rspec-ee-base-pg14
@@ -948,13 +894,6 @@ rspec-ee integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ci-connection-ee
-
-rspec-ee integration pg14 clusterwide-db:
-  extends:
-    - rspec-ee integration pg14
-    - .clusterwide-db
-    - .rspec-ee-integration-parallel
-    - .rails:rules:clusterwide-db
 
 rspec-ee system pg14:
   extends:
@@ -988,12 +927,6 @@ rspec-ee system pg14 single-db-ci-connection:
     - .rspec-ee-system-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee system pg14 clusterwide-db:
-  extends:
-    - rspec-ee system pg14
-    - .clusterwide-db
-    - .rspec-ee-system-parallel
-    - .rails:rules:clusterwide-db
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 

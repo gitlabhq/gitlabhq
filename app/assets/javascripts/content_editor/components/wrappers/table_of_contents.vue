@@ -42,7 +42,7 @@ export default {
 <template>
   <node-view-wrapper
     as="ul"
-    class="table-of-contents gl-border-1 gl-border-solid gl-border-gray-100 gl-mb-5 gl-p-4!"
+    class="table-of-contents gl-mb-5 gl-border-1 gl-border-solid gl-border-gray-100 !gl-p-4"
     data-testid="table-of-contents"
   >
     {{ __('Table of contents') }}

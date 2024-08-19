@@ -105,9 +105,6 @@
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
-.if-merge-request-labels-run-clusterwide-db: &if-merge-request-labels-run-clusterwide-db
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
-
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
@@ -1880,10 +1877,6 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
-.rails:rules:clusterwide-db:
-  rules:
-    - <<: *if-merge-request-labels-run-clusterwide-db
-
 .rails:rules:single-redis:
   rules:
     - <<: *if-merge-request-labels-run-single-db
@@ -3052,7 +3045,6 @@
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-run-all-jest
-    - <<: *if-merge-request-labels-run-clusterwide-db
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
@@ -3106,9 +3098,6 @@
       allow_failure: true
       when: manual
     - <<: *if-merge-request-labels-run-all-jest
-      allow_failure: true
-      when: manual
-    - <<: *if-merge-request-labels-run-clusterwide-db
       allow_failure: true
       when: manual
     - <<: *if-merge-request-labels-run-single-db
@@ -3200,8 +3189,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
       allow_failure: true
     - <<: *if-merge-request-labels-run-all-jest
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-clusterwide-db
       allow_failure: true
     - <<: *if-merge-request-labels-run-single-db
       allow_failure: true

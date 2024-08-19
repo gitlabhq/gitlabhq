@@ -142,13 +142,8 @@ function assets_compile_script() {
 
 function setup_database_yml() {
   if [ "$DECOMPOSED_DB" == "true" ]; then
-    if [ "$CLUSTERWIDE_DB" == "true" ]; then
-      echo "Using decomposed database config, containing clusterwide connection (config/database.yml.decomposed-clusterwide-postgresql)"
-      cp config/database.yml.decomposed-clusterwide-postgresql config/database.yml
-    else
-      echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
-      cp config/database.yml.decomposed-postgresql config/database.yml
-    fi
+    echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
+    cp config/database.yml.decomposed-postgresql config/database.yml
   else
     echo "Using two connections, single database config (config/database.yml.postgresql)"
     cp config/database.yml.postgresql config/database.yml

@@ -40,7 +40,7 @@ This extension requires you to create a GitLab personal access token, and assign
 1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) from the Visual Studio Marketplace and enable it. If you use an unofficial version of VS Code, install the extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
 1. To sign in to your GitLab instance, run the command **GitLab: Authenticate** in VS Code.
    1. Open the command palette by pressing <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
-   1. In the command palette, search for **GitLab: Authenticate** and press <kbd>Enter<kbd>.
+   1. In the command palette, search for **GitLab: Authenticate** and press <kbd>Enter</kbd>.
    1. Select your GitLab instance URL from the offered options, or enter one manually.
       - When manually adding an instance to **URL to GitLab instance**, paste the full URL to your
         GitLab instance, including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.

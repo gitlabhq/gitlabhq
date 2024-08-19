@@ -111,7 +111,7 @@ describe.each`
     it('renders bubble menu component', async () => {
       await buildWrapperAndDisplayMenu();
 
-      expect(findBubbleMenu().classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
+      expect(findBubbleMenu().classes()).toEqual(['gl-rounded-base', 'gl-bg-white', 'gl-shadow']);
     });
 
     it('shows a clickable link to the image', async () => {

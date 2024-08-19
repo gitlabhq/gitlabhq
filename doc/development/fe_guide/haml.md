@@ -18,7 +18,7 @@ However, some of the simpler components (such as buttons, checkboxes, or form in
 used in HAML:
 
 - Some of the Pajamas components are available as a [ViewComponent](view_component.md#pajamas-components). Use these when possible.
-- If no ViewComponent exists, why not go ahead and create it? Talk to the Foundations team if you need help.
+- If no ViewComponent exists, why not go ahead and create it? Talk to the [Design System](https://handbook.gitlab.com/handbook/engineering/development/dev/foundations/design-system/) team if you need help.
 - As a fallback, this can be done by applying the correct CSS classes to the elements.
 - A custom [Ruby on Rails form builder](https://gitlab.com/gitlab-org/gitlab/-/blob/7c108df101e86d8a27d69df2b5b1ff1fc24133c5/lib/gitlab/form_builders/gitlab_ui_form_builder.rb)
   exists to help use GitLab UI components in HAML forms.

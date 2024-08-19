@@ -185,16 +185,27 @@ does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker imag
 the instructions for
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
+### Template editions
+
+Most of the GitLab application security tools have two template editions:
+
+- **Stable:** The stable template is the default. It offers a reliable and consistent application
+  security experience. You should use the stable template for most users and projects that require
+  stability and predictable behavior in their CI/CD pipelines.
+- **Latest:** The latest template is for those who want to access and test cutting-edge features. It
+  is identified by the word `latest` in the template's name. It is not considered stable and may
+  include breaking changes that are planned for the next major release. This template allows you to
+  try new features and updates before they become part of the stable release.
+
+NOTE:
+Mixing different security template editions can cause both merge request and branch pipelines to
+run. You should use **either** the stable or latest edition templates in a project.
+
 ### Use security scanning tools with merge request pipelines
 
 By default, the application security jobs are configured to run for branch pipelines only.
 To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
-you must reference the [`latest` templates](../../development/cicd/templates.md).
-
-The latest version of the template may include breaking changes. Use the stable template unless you
-need a feature provided only in the latest template.
-
-All `latest` security templates support merge request pipelines.
+you must reference their [`latest` edition template](#template-editions).
 
 For example, to run both SAST and Dependency Scanning, the following template is used:
 
@@ -203,15 +214,6 @@ include:
   - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
   - template: Jobs/SAST.latest.gitlab-ci.yml
 ```
-
-NOTE:
-Mixing `latest` and `stable` security templates can cause both MR and branch pipelines to run. We recommend choosing `latest` or `stable` for all security scanners.
-
-NOTE:
-Latest templates can receive breaking changes in any release.
-
-For more information about template versioning, see the
-[CI/CD documentation](../../development/cicd/templates.md#latest-version).
 
 ## Security scanning
 

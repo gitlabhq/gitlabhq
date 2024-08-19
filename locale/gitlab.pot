@@ -34107,6 +34107,9 @@ msgstr ""
 msgid "MlModelRegistry|Drop to start upload"
 msgstr ""
 
+msgid "MlModelRegistry|Edit model"
+msgstr ""
+
 msgid "MlModelRegistry|Enter a model description"
 msgstr ""
 
@@ -34249,6 +34252,9 @@ msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Ente
 msgstr ""
 
 msgid "MlModelRegistry|Provide the max allowed file size"
+msgstr ""
+
+msgid "MlModelRegistry|Save changes"
 msgstr ""
 
 msgid "MlModelRegistry|Setting up the client"

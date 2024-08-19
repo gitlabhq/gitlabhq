@@ -477,3 +477,6 @@ vulnerability_statistics:
   - table: ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete

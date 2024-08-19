@@ -1,0 +1,13 @@
+mutation editModel($projectPath: ID!, $modelId: Int, $name: String!, $description: String) {
+  mlModelEdit(
+    input: { projectPath: $projectPath, modelId: $modelId, name: $name, description: $description }
+  ) {
+    model {
+      id
+      _links {
+        showPath
+      }
+    }
+    errors
+  }
+}

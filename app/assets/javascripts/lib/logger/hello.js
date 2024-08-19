@@ -1,5 +1,5 @@
 import { s__, sprintf } from '~/locale';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 const HANDSHAKE = String.fromCodePoint(0x1f91d);
 const MAG = String.fromCodePoint(0x1f50e);

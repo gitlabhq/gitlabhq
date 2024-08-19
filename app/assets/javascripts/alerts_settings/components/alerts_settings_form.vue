@@ -16,7 +16,7 @@ import {
 import { isEqual, isEmpty, omit } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { PROMO_URL, DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL, DOCS_URL_IN_EE_DIR } from '~/constants';
 import {
   integrationTypes,
   integrationSteps,

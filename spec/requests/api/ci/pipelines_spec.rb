@@ -384,6 +384,17 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_response).to be_an Array
       end
 
+      context 'with oauth token that has ai_workflows scope' do
+        let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it "allows access", :skip_before_request do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", oauth_access_token: token), params: query
+          project.update!(public_builds: false)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       it 'returns correct values', :aggregate_failures do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id

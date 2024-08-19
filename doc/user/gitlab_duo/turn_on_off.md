@@ -10,7 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
 
 GitLab Duo features that are generally available are automatically turned on for all users that have access.
-In addition:
+
+## Prerequisites
 
 - If you have self-managed GitLab:
   - You must [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
@@ -42,8 +43,8 @@ For example, network firewalls can cause lag or delay. Check both your outbound 
 
 ### Allow inbound connections from clients to the GitLab instance
 
-- GitLab instances must allow inbound connections from Duo clients (IDEs, Code Editors, and GitLab Web Frontend)
-  on port 443 with `https://` and `wss://`.
+- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/index.md),
+  Code Editors, and GitLab Web Frontend) on port 443 with `https://` and `wss://`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.
 - Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
@@ -200,3 +201,42 @@ that belong to the group.
 To enable GitLab Duo beta and experimental features for GitLab versions
 where GitLab Duo Chat is not yet generally available, see the
 [GitLab Duo Chat documentation](../gitlab_duo_chat/turn_on_off.md#for-self-managed).
+
+## Troubleshooting
+
+### GitLab Duo features do not work on self-managed
+
+In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
+you can also do the following:
+
+1. As administrator, [run a health check for GitLab Duo](#run-a-health-check-for-gitlab-duo).
+1. Verify that the GitLab instance can reach the [required GitLab.com endpoints](#configure-gitlab-duo-on-a-self-managed-instance).
+You can use command-line tools such as `curl` to verify the connectivity.
+
+    ```shell
+    curl --verbose "https://cloud.gitlab.com"
+
+    curl --verbose "https://customers.gitlab.com"
+    ```
+
+    If an HTTP/S proxy is configured for the GitLab instance, include the `proxy` parameter in the `curl` command.
+
+    ```shell
+    # https proxy for curl
+    curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://cloud.gitlab.com"
+    curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
+    ```
+
+1. [Manually synchronize subscription data](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data).
+    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+
+### GitLab Duo features not available for users
+
+In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
+you can also do the following:
+
+1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-pro-seats).
+1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
+    - Verify that the extension is up-to-date.
+    - Run extension setting health checks, and test the authentication.

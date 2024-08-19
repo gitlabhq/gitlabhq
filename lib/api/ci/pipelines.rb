@@ -4,10 +4,13 @@ module API
   module Ci
     class Pipelines < ::API::Base
       include PaginationParams
+      include APIGuard
 
       helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
 
       before { authenticate_non_get! }
+
+      allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       params do
         requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: 11 }

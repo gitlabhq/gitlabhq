@@ -15,8 +15,9 @@ import { mapState, mapActions } from 'vuex';
 import { n__, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
-import { getParameterByName, PROMO_URL } from '~/lib/utils/url_utility';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import PromoPageLink from '~/vue_shared/components/promo_page_link/promo_page_link.vue';
 import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
 import EmptyState from './empty_state.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
@@ -26,6 +27,7 @@ export default {
     ConfigureFeatureFlagsModal,
     EmptyState,
     FeatureFlagsTable,
+    PromoPageLink,
     GlAlert,
     GlBadge,
     GlButton,
@@ -114,9 +116,6 @@ export default {
         anchor: 'maximum-number-of-feature-flags',
       });
     },
-    pricingLink() {
-      return `${PROMO_URL}/pricing`;
-    },
   },
   created() {
     this.setFeatureFlagsOptions({ page: this.page });
@@ -162,7 +161,7 @@ export default {
           <span>{{ featureFlagsLimit }}</span>
         </template>
         <template #pricingLink="{ content }">
-          <gl-link :href="pricingLink" target="_blank">{{ content }}</gl-link>
+          <promo-page-link href="/pricing" target="_blank">{{ content }}</promo-page-link>
         </template>
       </gl-sprintf>
     </gl-alert>

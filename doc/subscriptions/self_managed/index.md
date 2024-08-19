@@ -446,7 +446,7 @@ To manually renew your subscription:
    you were licensed for in the previous subscription term, the
    [overage](../quarterly_reconciliation.md) is due when you renew.
 
-   In the [**Users over license** text box], enter the number of
+   In the **Users over license** text box, enter the number of
    [users over subscription](#users-over-subscription) for the user overage incurred.
 1. Review your renewal details and select **Renew subscription** to complete the
    payment process.

@@ -658,11 +658,23 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+      end
     end
 
     context 'authorized user' do
+      context 'with oauth token that has ai_workflows scope', :skip_before_request do
+        let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it "allows access" do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", oauth_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context 'when log is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
         let(:url) { 'http://object-storage/trace' }

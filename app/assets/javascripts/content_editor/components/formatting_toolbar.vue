@@ -75,17 +75,17 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-py-3 gl-gap-y-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
+    class="gl-border-b gl-flex gl-w-full gl-flex-wrap gl-items-center gl-gap-y-2 gl-rounded-t-base gl-border-gray-100 gl-px-3 gl-py-3"
     data-testid="formatting-toolbar"
   >
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <toolbar-text-style-dropdown
         data-testid="text-styles"
         @execute="trackToolbarControlExecution"
       />
       <header-divider />
     </div>
-    <div v-if="codeSuggestionsEnabled" class="gl-display-flex">
+    <div v-if="codeSuggestionsEnabled" class="gl-flex">
       <toolbar-button
         v-if="codeSuggestionsEnabled"
         data-testid="code-suggestion"
@@ -114,7 +114,7 @@ export default {
       :label="i18n.italic"
       @execute="trackToolbarControlExecution"
     />
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <toolbar-button
         data-testid="strike"
         content-type="strike"
@@ -167,7 +167,7 @@ export default {
       :label="i18n.numberedList"
       @execute="trackToolbarControlExecution"
     />
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <toolbar-button
         data-testid="task-list"
         content-type="taskList"
@@ -182,7 +182,7 @@ export default {
       </div>
     </div>
     <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <toolbar-attachment-button
         v-if="!hideAttachmentButton"
         data-testid="attachment"

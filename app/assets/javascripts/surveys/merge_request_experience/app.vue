@@ -6,7 +6,7 @@ import { s__, __ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SatisfactionRate from '~/surveys/components/satisfaction_rate.vue';
 import Tracking from '~/tracking';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 const steps = [
   {

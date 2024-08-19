@@ -11,6 +11,7 @@ import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
+import ModelEdit from '~/ml/model_registry/components/model_edit.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -91,6 +92,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         canWriteModelRegistry,
         maxAllowedFileSize: 99999,
         latestVersion: '',
+        markdownPreviewPath: 'path/to/preview',
       },
       stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
@@ -114,6 +116,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
   const findModelVersionCreate = () => wrapper.findComponent(ModelVersionCreate);
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
+  const findModelEdit = () => wrapper.findComponent(ModelEdit);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -161,6 +164,22 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         createWrapper({ canWriteModelRegistry: false });
 
         expect(findModelVersionCreate().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('ModelEdit', () => {
+    beforeEach(() => createWrapper());
+
+    it('displays model edit button', () => {
+      expect(findModelEdit().props('model')).toEqual(model);
+      expect(findModelEdit().props('disableAttachments')).toBe(true);
+    });
+
+    describe('when user has no permission to write model registry', () => {
+      it('does not display model edit button', () => {
+        createWrapper({ canWriteModelRegistry: false });
+        expect(findModelEdit().exists()).toBe(false);
       });
     });
   });

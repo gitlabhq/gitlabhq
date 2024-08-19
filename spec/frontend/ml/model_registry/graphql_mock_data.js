@@ -211,6 +211,30 @@ export const createModelResponses = {
   },
 };
 
+export const editModelResponses = {
+  success: {
+    data: {
+      mlModelEdit: {
+        model: {
+          id: 'gid://gitlab/Ml::Model/1',
+          _links: {
+            showPath: '/some/project/-/ml/models/1',
+          },
+        },
+        errors: [],
+      },
+    },
+  },
+  validationFailure: {
+    data: {
+      mlModelEdit: {
+        model: null,
+        errors: ['Unable to update model'],
+      },
+    },
+  },
+};
+
 export const destroyModelResponses = {
   success: {
     data: {

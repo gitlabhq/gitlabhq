@@ -774,14 +774,6 @@ you can quote that without having to manually prepend `>` to every line!
 >>>
 ```
 
->>>
-If you paste a message from somewhere else
-
-that spans multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
-
 ## Code spans and blocks
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#code-spans-and-blocks).

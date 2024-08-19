@@ -61,7 +61,7 @@ export default {
       <node-view-content ref="nodeViewContent" as="p" />
       <span
         v-if="hasQuickActionExplanation"
-        class="gl-text-sm gl-text-secondary gl-italic"
+        class="gl-text-sm gl-italic gl-text-secondary"
         contenteditable="false"
       >
         &nbsp;&middot; {{ quickActionExplanation }}</span

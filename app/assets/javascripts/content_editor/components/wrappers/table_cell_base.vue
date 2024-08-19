@@ -158,7 +158,7 @@ export default {
     :colspan="node.attrs.colspan || 1"
     :align="node.attrs.align || 'left'"
     dir="auto"
-    class="gl-m-0! gl-p-0! gl-relative"
+    class="gl-relative !gl-m-0 !gl-p-0"
     @click="hideDropdown"
   >
     <span
@@ -184,7 +184,7 @@ export default {
     </span>
     <node-view-content
       as="div"
-      class="gl-p-5 gl-min-w-10"
+      class="gl-min-w-10 gl-p-5"
       :style="{ 'text-align': node.attrs.align || 'left' }"
     />
   </node-view-wrapper>

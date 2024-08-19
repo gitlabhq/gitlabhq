@@ -35404,9 +35404,6 @@ ALTER TABLE ONLY bulk_import_trackers
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES shards(id) ON DELETE RESTRICT;
 
-ALTER TABLE ONLY vulnerability_statistics
-    ADD CONSTRAINT fk_rails_af61a7df4c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY work_item_related_link_restrictions
     ADD CONSTRAINT fk_rails_b013a0fa65 FOREIGN KEY (source_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 

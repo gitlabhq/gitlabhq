@@ -344,7 +344,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t gl-mt-5 work-item-notes">
+  <div class="work-item-notes">
     <work-item-notes-activity-header
       :sort-order="sortOrder"
       :disable-activity-filter-sort="disableActivityFilterSort"

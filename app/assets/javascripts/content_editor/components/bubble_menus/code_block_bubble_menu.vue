@@ -139,7 +139,7 @@ export default {
 <template>
   <bubble-menu
     data-testid="code-block-bubble-menu"
-    class="gl-shadow gl-rounded-base gl-bg-white"
+    class="gl-rounded-base gl-bg-white gl-shadow"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
     :tippy-options="tippyOptions()"
@@ -166,7 +166,7 @@ export default {
                 icon="arrow-left"
                 @click.prevent.stop="showCustomLanguageInput = false"
               />
-              <p class="gl-text-center gl-dropdown-header-top gl-mb-0! gl-border-none! gl-pb-1!">
+              <p class="gl-dropdown-header-top !gl-mb-0 !gl-border-none !gl-pb-1 gl-text-center">
                 {{ __('Create custom type') }}
               </p>
             </div>
@@ -197,11 +197,11 @@ export default {
           </template>
           <template v-else #default>
             <gl-dropdown-form @submit.prevent="applyCustomLanguage">
-              <div class="gl-mx-4 gl-mt-2 gl-mb-3">
+              <div class="gl-mx-4 gl-mb-3 gl-mt-2">
                 <gl-form-input v-model="customLanguageType" :placeholder="__('Language type')" />
               </div>
               <gl-dropdown-divider />
-              <div class="gl-mx-4 gl-mt-3 gl-display-flex gl-justify-content-end">
+              <div class="gl-mx-4 gl-mt-3 gl-flex gl-justify-end">
                 <gl-button
                   variant="default"
                   size="medium"
@@ -250,7 +250,7 @@ export default {
           variant="default"
           category="tertiary"
           size="medium"
-          :class="{ 'gl-bg-gray-100!': showPreview }"
+          :class="{ '!gl-bg-gray-100': showPreview }"
           data-testid="preview-diagram"
           :aria-label="__('Preview diagram')"
           :title="__('Preview diagram')"

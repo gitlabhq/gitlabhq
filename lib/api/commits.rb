@@ -5,6 +5,7 @@ module API
   class Commits < ::API::Base
     include PaginationParams
     include Helpers::Unidiff
+    include APIGuard
 
     feature_category :source_code_management
 

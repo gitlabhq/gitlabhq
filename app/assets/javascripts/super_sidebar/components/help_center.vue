@@ -2,7 +2,7 @@
 import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { FORUM_URL, PROMO_URL } from '~/constants';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
