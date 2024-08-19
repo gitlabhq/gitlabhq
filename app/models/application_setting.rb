@@ -643,6 +643,11 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :importers,
     silent_admin_exports_enabled: [:boolean, { default: false }]
 
+  jsonb_accessor :cluster_agents,
+    receptive_cluster_agents_enabled: [:boolean, { default: false }]
+
+  validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
+
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :importers, json_schema: { filename: "application_setting_importers" }

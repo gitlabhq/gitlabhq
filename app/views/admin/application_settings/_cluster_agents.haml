@@ -1,0 +1,17 @@
+- expanded = integration_expanded?('cluster_agents_')
+
+= render ::Layouts::SettingsBlockComponent.new(s_('ClusterAgents|GitLab Agent for Kubernetes'), id: 'js-cluster-agent-settings', expanded: expanded) do |c|
+  - c.with_description do
+    = s_('ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes.')
+    = link_to _('Learn more.'), help_page_path('user/clusters/agent/index'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-cluster-agent-settings'), html: { class: 'fieldset-form', id: 'cluster-agent-settings' } do |f|
+      = form_errors(@application_setting)
+
+      .form-group
+        - help_text = s_('ClusterAgents|Allow configuring agents in receptive mode.')
+        - help_link = link_to _('Learn more.'), help_page_path('user/clusters/agent/index'), target: '_blank', rel: 'noopener noreferrer'
+        = f.gitlab_ui_checkbox_component :receptive_cluster_agents_enabled, s_('ClusterAgents|Enable receptive mode'),
+            help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
+
+      = f.submit _('Save changes'), pajamas_button: true

@@ -43,6 +43,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.groups_api_limit).to eq(200) }
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.projects_api_limit).to eq(2000) }
+    it { expect(setting.receptive_cluster_agents_enabled).to eq(false) }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
@@ -84,7 +85,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
-
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_cluster_agents']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }

@@ -68,8 +68,9 @@ Prerequisites:
 To backport a change, merge your changes into the stable branch of the version
 where you want the changes to occur.
 
-1. Open an MR with the backport. The MR should target the stable release
-   branch, for example: `16-11-stable-ee` or `17-0-stable-ee`. Mention the issue you opened before to the MR.
+1. Open an MR with the backport by following the
+   [release docs guidelines](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md#backporting-a-bug-fix-in-the-gitlab-project),
+   and mention the issue you opened before so that they are linked.
 
 1. Assign the MR to a technical writer for review.
 

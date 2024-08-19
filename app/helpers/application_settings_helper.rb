@@ -356,6 +356,7 @@ module ApplicationSettingsHelper
       :recaptcha_site_key,
       :login_recaptcha_protection_enabled,
       :receive_max_input_size,
+      :receptive_cluster_agents_enabled,
       :repository_checks_enabled,
       :repository_storages_weighted,
       :require_admin_approval_after_user_signup,

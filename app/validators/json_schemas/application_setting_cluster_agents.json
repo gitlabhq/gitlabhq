@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for GitLab Agents for Kubernetes",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "receptive_cluster_agents_enabled": {
+      "type": "boolean"
+    }
+  }
+}

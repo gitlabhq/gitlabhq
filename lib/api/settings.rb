@@ -236,6 +236,7 @@ module API
       optional :downstream_pipeline_trigger_limit_per_project_user_sha, type: Integer, desc: 'Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).'
       optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per 8 hours to aiAction endpoint'
       optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
+      optional :receptive_cluster_agents_enabled, type: Boolean, desc: 'Enable receptive mode for GitLab Agents for Kubernetes'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

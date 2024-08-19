@@ -12253,6 +12253,9 @@ msgstr ""
 msgid "ClusterAgents|All"
 msgstr ""
 
+msgid "ClusterAgents|Allow configuring agents in receptive mode."
+msgstr ""
+
 msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr ""
 
@@ -12352,6 +12355,9 @@ msgstr ""
 msgid "ClusterAgents|Description"
 msgstr ""
 
+msgid "ClusterAgents|Enable receptive mode"
+msgstr ""
+
 msgid "ClusterAgents|Event occurred"
 msgstr ""
 
@@ -12365,6 +12371,9 @@ msgid "ClusterAgents|Failed to register an agent"
 msgstr ""
 
 msgid "ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included in the command."
+msgstr ""
+
+msgid "ClusterAgents|GitLab Agent for Kubernetes"
 msgstr ""
 
 msgid "ClusterAgents|GitLab agent"
@@ -12383,6 +12392,9 @@ msgid "ClusterAgents|How do I update an agent?"
 msgstr ""
 
 msgid "ClusterAgents|Install using Helm (recommended)"
+msgstr ""
+
+msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr ""
 
 msgid "ClusterAgents|Integration Status"
