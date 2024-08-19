@@ -1,10 +1,8 @@
 ---
 stage: Fulfillment
 group: Utilization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
 ---
-
-<!-- This page is maintained by Developer Relations, author @dnsmichi. -->
 
 # Automate storage management
 

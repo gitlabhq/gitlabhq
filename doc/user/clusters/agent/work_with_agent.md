@@ -36,11 +36,11 @@ On this page, you can view:
 
 ### Configure your agent
 
-To configure your agent: 
+To configure your agent:
 
 - Add content to the `config.yaml` file optionally created [during installation](install/index.md#create-an-agent-configuration-file).
 
-You can quickly locate an agent configuration file from the list of agents. 
+You can quickly locate an agent configuration file from the list of agents.
 The **Configuration** column indicates the location of the `config.yaml` file,
 or shows how to create one.
 

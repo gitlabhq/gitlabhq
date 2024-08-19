@@ -1,9 +1,10 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
+import { WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_TASK } from '~/work_items/constants';
 
 jest.mock('~/issues/show/event_hub');
 
@@ -11,7 +12,7 @@ describe('TaskListItemActions component', () => {
   let wrapper;
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findConvertToTaskItem = () => wrapper.findByTestId('convert');
+  const findConvertToChildItemItem = () => wrapper.findByTestId('convert');
   const findDeleteItem = () => wrapper.findByTestId('delete');
 
   const mountComponent = ({ issuableType = TYPE_ISSUE } = {}) => {
@@ -42,18 +43,25 @@ describe('TaskListItemActions component', () => {
     });
   });
 
-  describe('"Convert to task" dropdown item', () => {
+  describe('"Convert to child item" dropdown item', () => {
     describe.each`
-      issuableType     | exists
-      ${TYPE_EPIC}     | ${false}
-      ${TYPE_INCIDENT} | ${true}
-      ${TYPE_ISSUE}    | ${true}
+      issuableType                 | exists
+      ${TYPE_INCIDENT}             | ${true}
+      ${TYPE_ISSUE}                | ${true}
+      ${WORK_ITEM_TYPE_VALUE_EPIC} | ${true}
+      ${WORK_ITEM_TYPE_VALUE_TASK} | ${false}
     `(`when $issuableType`, ({ issuableType, exists }) => {
       it(`${exists ? 'renders' : 'does not render'}`, () => {
         mountComponent({ issuableType });
 
-        expect(findConvertToTaskItem().exists()).toBe(exists);
+        expect(findConvertToChildItemItem().exists()).toBe(exists);
       });
+    });
+
+    it('has text', () => {
+      mountComponent();
+
+      expect(findConvertToChildItemItem().text()).toBe('Convert to child item');
     });
   });
 
@@ -62,8 +70,8 @@ describe('TaskListItemActions component', () => {
       mountComponent();
     });
 
-    it('emits event when `Convert to task` dropdown item is clicked', () => {
-      findConvertToTaskItem().vm.$emit('action');
+    it('emits event when `Convert to child item` dropdown item is clicked', () => {
+      findConvertToChildItemItem().vm.$emit('action');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', {
         id: 'gid://gitlab/WorkItem/818',

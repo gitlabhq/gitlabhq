@@ -158,13 +158,13 @@ export default {
           :design="design"
           :design-variables="designVariables"
           :markdown-preview-path="markdownPreviewPath"
-          class="gl-my-5 gl-border-b"
+          class="gl-border-b gl-my-5"
         />
         <div v-if="isLoading" class="gl-my-5">
           <gl-skeleton-loader />
         </div>
         <template v-else>
-          <h3 data-testid="unresolved-discussion-count" class="!gl-leading-20 gl-font-lg gl-my-5">
+          <h3 data-testid="unresolved-discussion-count" class="gl-my-5 gl-text-lg !gl-leading-20">
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state
@@ -208,7 +208,7 @@ export default {
             <gl-accordion-item
               v-model="isResolvedDiscussionsExpanded"
               :title="resolvedDiscussionsTitle"
-              header-class="gl-mb-5!"
+              header-class="!gl-mb-5"
             >
               <design-discussion
                 v-for="discussion in resolvedDiscussions"

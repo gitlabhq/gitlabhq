@@ -14,10 +14,10 @@ exports[`Design management list item component with notes renders item with mult
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
-    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex-grow-1"
+      class="gl-grow"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -30,10 +30,10 @@ exports[`Design management list item component with notes renders item with mult
     </gl-intersection-observer-stub>
   </div>
   <div
-    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column str-truncated-100"
+      class="gl-flex gl-flex-col str-truncated-100"
       data-testid="design-file-name"
     >
       <span
@@ -56,7 +56,7 @@ exports[`Design management list item component with notes renders item with mult
       </span>
     </div>
     <div
-      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"
@@ -80,10 +80,10 @@ exports[`Design management list item component with notes renders item with sing
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
-    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex-grow-1"
+      class="gl-grow"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -96,10 +96,10 @@ exports[`Design management list item component with notes renders item with sing
     </gl-intersection-observer-stub>
   </div>
   <div
-    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column str-truncated-100"
+      class="gl-flex gl-flex-col str-truncated-100"
       data-testid="design-file-name"
     >
       <span
@@ -122,7 +122,7 @@ exports[`Design management list item component with notes renders item with sing
       </span>
     </div>
     <div
-      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"

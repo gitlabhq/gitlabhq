@@ -436,12 +436,12 @@ unauthorized results from being returned to users who don't have permission to v
 done in Ruby to handle inconsistencies in Elasticsearch permissions data due to bugs or indexing delays.
 
 New scopes must add visibility specs to ensure proper access control.
-To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](https://gitlab.com/gitlab-org/gitlab/-/blob/a489ad0fe4b4d1e392272736b020cf9bd43646da/ee/spec/support/shared_examples/services/search_service_shared_examples.rb) 
-in the EE specs: 
+To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](https://gitlab.com/gitlab-org/gitlab/-/blob/a489ad0fe4b4d1e392272736b020cf9bd43646da/ee/spec/support/shared_examples/services/search_service_shared_examples.rb)
+in the EE specs:
 
 - `ee/spec/services/search/global_service_spec.rb`
 - `ee/spec/services/search/group_service_spec.rb`
-- `ee/spec/services/search/project_service_spec.rb` 
+- `ee/spec/services/search/project_service_spec.rb`
 
 ### Testing the new scope
 
@@ -550,7 +550,7 @@ ELASTIC_CLIENT_DEBUG=1 bundle exec rspec ee/spec/workers/search/elastic/trigger_
 
 export ELASTIC_CLIENT_DEBUG=1
 rails console
-``` 
+```
 
 ### Getting `flood stage disk watermark [95%] exceeded`
 

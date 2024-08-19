@@ -343,7 +343,7 @@ gitlab_rails['omniauth_providers'] = [
 
 ::EndTabs
 
-As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or above, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value. 
+As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or above, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
 
 - For users with an email address in Entra ID, configure [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users) to allow falling back to email address and updating the user's identity.
 

@@ -232,7 +232,7 @@ describe('Design management index page', () => {
     it('has correct classes applied to dropzone wrapper', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
       expect(findDropzoneWrapper().classes()).toEqual([
-        'gl-flex-direction-column',
+        'gl-flex-col',
         'col-md-6',
         'col-lg-3',
         'gl-mt-5',

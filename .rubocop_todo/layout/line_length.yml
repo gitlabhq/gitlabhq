@@ -3154,7 +3154,6 @@ Layout/LineLength:
     - 'spec/graphql/resolvers/group_labels_resolver_spec.rb'
     - 'spec/graphql/resolvers/issue_status_counts_resolver_spec.rb'
     - 'spec/graphql/resolvers/merge_requests_resolver_spec.rb'
-    - 'spec/graphql/resolvers/metrics/dashboards/annotation_resolver_spec.rb'
     - 'spec/graphql/resolvers/namespace_projects_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_issues_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_jobs_resolver_spec.rb'

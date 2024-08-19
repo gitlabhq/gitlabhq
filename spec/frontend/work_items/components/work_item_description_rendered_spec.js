@@ -1,16 +1,20 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '~/issues/show/event_hub';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('WorkItemDescriptionRendered', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
+  const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
 
   const defaultWorkItemDescription = {
     description: descriptionTextWithCheckboxes,
@@ -31,6 +35,7 @@ describe('WorkItemDescriptionRendered', () => {
       },
       computed: mockComputed,
       provide: {
+        fullPath: 'full/path',
         workItemsBeta: hasWorkItemsBeta,
       },
     });
@@ -126,6 +131,61 @@ describe('WorkItemDescriptionRendered', () => {
   });
 
   describe('task list item actions', () => {
+    describe('converting the task list item', () => {
+      it('opens modal to create work item and emits event to update description', async () => {
+        const description = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really long title
+
+      and more text
+
+      and even more
+      1. [ ] item 3
+   1. [ ] item 4;`;
+        const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 3
+   1. [ ] item 4;`;
+        createComponent({ workItemDescription: { description } });
+        await waitForPromises();
+
+        eventHub.$emit('convert-task-list-item', {
+          id: 'gid://gitlab/WorkItem/818',
+          sourcepos: '4:4-9:19',
+        });
+        await nextTick();
+
+        expect(findCreateWorkItemModal().props()).toEqual({
+          asDropdownItem: false,
+          description: `lly really long title
+
+
+and more text
+
+and even more`,
+          hideButton: true,
+          isGroup: false,
+          parentId: 'gid://gitlab/WorkItem/818',
+          showProjectSelector: true,
+          title:
+            'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
+          visible: true,
+          workItemTypeName: 'ISSUE',
+        });
+
+        findCreateWorkItemModal().vm.$emit('workItemCreated');
+
+        expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
+
+        findCreateWorkItemModal().vm.$emit('hideModal');
+        await nextTick();
+
+        expect(findCreateWorkItemModal().props('visible')).toBe(false);
+      });
+    });
+
     describe('deleting the task list item', () => {
       it('emits an event to update the description with the deleted task list item', () => {
         const description = `Tasks

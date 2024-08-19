@@ -36,6 +36,11 @@ export default {
   mixins: [Tracking.mixin()],
   inject: ['isGroup'],
   props: {
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
     fullPath: {
       type: String,
       required: true,
@@ -84,7 +89,7 @@ export default {
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
-      descriptionText: '',
+      descriptionText: this.description,
       conflictedDescription: '',
       formFieldProps: {
         'aria-label': __('Description'),
@@ -365,6 +370,7 @@ export default {
       :work-item-type="workItemType"
       :can-edit="canEdit"
       :disable-truncation="disableTruncation"
+      :is-group="isGroup"
       :is-updating="isSubmitting"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"

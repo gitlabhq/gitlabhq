@@ -277,27 +277,4 @@ fieldset[disabled] .btn,
       color: $gl-text-color-disabled;
     }
   }
-
-  &.btn-link {
-    background-color: transparent;
-  }
-}
-
-.btn-link {
-  padding: 0;
-  background-color: transparent;
-  color: $blue-600;
-  font-weight: normal;
-  border-radius: 0;
-  border-color: transparent;
-  border-width: 0;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $blue-800;
-    text-decoration: underline;
-    background-color: transparent;
-    border-color: transparent;
-  }
 }

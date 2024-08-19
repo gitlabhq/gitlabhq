@@ -12,7 +12,7 @@ Use CI/CD to generate your application.
 | | | |
 |--|--|--|
 | [**Getting started**](../ci/index.md) **{chevron-right}** | [**CI/CD YAML syntax reference**](../ci/yaml/index.md) **{chevron-right}** | [**Runners**](https://docs.gitlab.com/runner/) **{chevron-right}** |
-| [**Pipelines**](../ci/pipelines/index.md) **{chevron-right}** | [**Jobs**](../ci/jobs/index.md) **{chevron-right}** | [**CI/CD components**](../ci/components/index.md) **{chevron-right}**  | 
+| [**Pipelines**](../ci/pipelines/index.md) **{chevron-right}** | [**Jobs**](../ci/jobs/index.md) **{chevron-right}** | [**CI/CD components**](../ci/components/index.md) **{chevron-right}**  |
 | [**Variables**](../ci/variables/index.md) **{chevron-right}** | [**Pipeline security**](../ci/pipelines/pipeline_security.md) **{chevron-right}** | [**Services**](../ci/services/index.md) **{chevron-right}** |
 | [**Auto DevOps**](autodevops/index.md) **{chevron-right}** | [**Testing**](../ci/testing/index.md) **{chevron-right}** | [**SSH keys**](../ci/ssh_keys/index.md) **{chevron-right}** |
 | [**ChatOps**](../ci/chatops/index.md) **{chevron-right}** | [**Mobile DevOps**](../ci/mobile_devops.md) **{chevron-right}** | [**Google cloud integration**](../ci/gitlab_google_cloud_integration/index.md) **{chevron-right}** |

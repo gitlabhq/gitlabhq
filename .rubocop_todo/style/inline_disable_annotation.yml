@@ -657,7 +657,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/milestones/transfer_service.rb'
     - 'app/services/notification_recipients/builder/base.rb'
     - 'app/services/notification_service.rb'
-    - 'app/services/packages/conan/single_package_search_service.rb'
     - 'app/services/packages/create_dependency_service.rb'
     - 'app/services/packages/create_package_service.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'

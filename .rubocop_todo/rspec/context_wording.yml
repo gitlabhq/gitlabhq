@@ -1312,7 +1312,6 @@ RSpec/ContextWording:
     - 'spec/graphql/resolvers/kas/agent_configurations_resolver_spec.rb'
     - 'spec/graphql/resolvers/kas/agent_connections_resolver_spec.rb'
     - 'spec/graphql/resolvers/last_commit_resolver_spec.rb'
-    - 'spec/graphql/resolvers/metrics/dashboards/annotation_resolver_spec.rb'
     - 'spec/graphql/resolvers/namespace_projects_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_merge_requests_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_milestones_resolver_spec.rb'

@@ -749,22 +749,6 @@ Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. U
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Trigger jobs can mirror downstream pipeline status exactly
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285493).
-
-</div>
-
-In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 18.0 trigger jobs will show the exact same status as the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### ZenTao integration
 
 <div class="deprecation-notes">

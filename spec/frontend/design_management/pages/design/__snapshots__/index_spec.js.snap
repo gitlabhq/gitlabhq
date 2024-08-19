@@ -2,10 +2,10 @@
 
 exports[`Design management design index page when loaded renders design index 1`] = `
 <div
-  class="design-detail fixed-top gl-bg-gray-10 gl-display-flex gl-flex-direction-column gl-justify-content-center gl-lg-flex-direction-row gl-w-full js-design-detail"
+  class="design-detail fixed-top gl-bg-gray-10 gl-flex gl-flex-col gl-justify-center gl-w-full js-design-detail lg:gl-flex-row"
 >
   <div
-    class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-relative"
+    class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative"
   >
     <toolbar-stub
       __typename="Design"
@@ -30,10 +30,10 @@ exports[`Design management design index page when loaded renders design index 1`
       updatedby="[object Object]"
     />
     <div
-      class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-lg-flex-direction-row gl-overflow-hidden gl-relative"
+      class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative lg:gl-flex-row"
     >
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-2 gl-overflow-hidden gl-relative"
+        class="gl-flex gl-flex-col gl-flex-grow-2 gl-overflow-hidden gl-relative"
       >
         <design-presentation-stub
           discussions="[object Object],[object Object]"
@@ -42,7 +42,7 @@ exports[`Design management design index page when loaded renders design index 1`
           scale="1"
         />
         <div
-          class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
+          class="design-scaler-wrapper gl-absolute gl-flex gl-items-center gl-justify-center gl-mb-6"
         >
           <design-scaler-stub
             maxscale="2"

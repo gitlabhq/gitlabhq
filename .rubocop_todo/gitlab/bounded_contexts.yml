@@ -320,7 +320,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/resolvers/merge_requests_count_resolver.rb'
     - 'app/graphql/resolvers/merge_requests_resolver.rb'
     - 'app/graphql/resolvers/metadata_resolver.rb'
-    - 'app/graphql/resolvers/metrics/dashboards/annotation_resolver.rb'
     - 'app/graphql/resolvers/milestones_resolver.rb'
     - 'app/graphql/resolvers/namespace_projects_resolver.rb'
     - 'app/graphql/resolvers/namespace_resolver.rb'

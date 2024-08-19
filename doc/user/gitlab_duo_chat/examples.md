@@ -31,7 +31,7 @@ You can ask questions about how GitLab works. Things like:
 GitLab Duo Chat uses the GitLab documentation as source. To keep Chat up to date with the documentation,
 its knowledge base is updated daily.
 
-- On GitLab.com the, the most recent version of the documentation is used. 
+- On GitLab.com the, the most recent version of the documentation is used.
 - On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.
 
 ## Ask about code
@@ -194,7 +194,7 @@ You can include additional instructions to be considered. For example:
 - Focus on a concrete algorithm or problem description, for example, `/fix duplicate database inserts` or `/fix race conditions`.
 - Focus on potential bugs that are not directly visible, for example, `/fix potential bugs`.
 - Focus on code performance problems, for example, `/fix performance problems`.
-- Focus on fixing the build when the code does not compile, for example, `/fix the build`. 
+- Focus on fixing the build when the code does not compile, for example, `/fix the build`.
 
 ## Write tests in the IDE
 

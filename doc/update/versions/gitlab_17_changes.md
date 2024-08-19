@@ -123,7 +123,7 @@ For more information, see the:
 
 ## 17.2.1
 
-- Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue will be 
+- Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue will be
   fixed in a future patch release, likely in GitLab 17.2.2. If you must upgrade to GitLab 17.2.1 and if you encounter an error during the migration, please
   follow the [workaround to remove unknown sequences](https://gitlab.com/gitlab-org/gitlab/-/issues/474293#current-workaround).
 

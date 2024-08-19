@@ -144,7 +144,7 @@ Available configuration options include:
 
 - [Change the maximum job timeout](../../ci/runners/configure_runners.md#for-an-instance-runner).
 - [Set the runner to run tagged or untagged jobs](../../ci/runners/configure_runners.md#for-an-instance-runner-2).
- 
+
 NOTE:
 Any changes to the runner description and the runner tags are not controlled by GitLab.
 

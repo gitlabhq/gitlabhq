@@ -2,6 +2,7 @@
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
+import { removeHierarchyChild } from '../graphql/cache_utils';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
@@ -16,6 +17,11 @@ export default {
     WorkItemDetail: () => import('./work_item_detail.vue'),
   },
   props: {
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -59,6 +65,12 @@ export default {
         .mutate({
           mutation: deleteWorkItemMutation,
           variables: { input: { id: this.workItemId } },
+          update: (cache) =>
+            removeHierarchyChild({
+              cache,
+              id: this.parentId,
+              workItem: { id: this.workItemId },
+            }),
         })
         .then(({ data }) => {
           if (data.workItemDelete.errors?.length) {

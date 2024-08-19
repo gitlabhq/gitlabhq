@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <a :href="mergeRequestHref" class="btn-link gl-flex gl-items-center">
+  <a :href="mergeRequestHref" class="btn-link gl-button gl-flex gl-items-center">
     <span class="gl-flex gl-mr-3 ide-search-list-current-icon">
       <gl-icon v-if="isActive" :size="16" name="mobile-issue-close" />
     </span>

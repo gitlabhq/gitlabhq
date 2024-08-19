@@ -140,7 +140,7 @@ export default {
     },
     designDropzoneWrapperClass() {
       if (!this.isDesignListEmpty) {
-        return 'gl-flex-direction-column col-md-6 col-lg-3 gl-mt-5';
+        return 'gl-flex-col col-md-6 col-lg-3 gl-mt-5';
       }
       if (this.showToolbar) {
         return 'col-12 gl-mt-5';
@@ -368,17 +368,15 @@ export default {
       {{ uploadError }}
     </gl-alert>
     <header v-if="showToolbar" class="gl-new-card-header" data-testid="design-toolbar-wrapper">
-      <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap gl-gap-3"
-      >
-        <div class="gl-display-flex gl-align-items-center">
-          <span class="gl-font-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+      <div class="gl-flex gl-w-full gl-flex-wrap gl-items-center gl-justify-between gl-gap-3">
+        <div class="gl-flex gl-items-center">
+          <span class="gl-mr-3 gl-font-bold">{{ s__('DesignManagement|Designs') }}</span>
           <design-version-dropdown />
         </div>
         <div
           v-if="canCreateDesign"
           v-show="hasDesigns"
-          class="gl-display-flex gl-align-items-center"
+          class="gl-flex gl-items-center"
           data-testid="design-selector-toolbar"
         >
           <gl-button
@@ -422,7 +420,7 @@ export default {
     <div
       :class="{
         'gl-mx-5': showToolbar,
-        'gl-new-card-body gl-mx-3!': hasDesigns,
+        'gl-new-card-body !gl-mx-3': hasDesigns,
       }"
     >
       <gl-loading-icon v-if="isLoading" size="sm" class="gl-py-4" />
@@ -435,7 +433,7 @@ export default {
         data-testid="design-collection-is-copying"
       >
         <div class="card-header design-card-header gl-border-b-0">
-          <div class="card-title gl-display-flex gl-align-items-center gl-my-0 gl-h-7">
+          <div class="card-title gl-my-0 gl-flex gl-h-7 gl-items-center">
             {{
               s__(
                 'DesignManagement|Your designs are being copied and are on their way… Please refresh to update.',
@@ -460,7 +458,7 @@ export default {
         <li
           v-for="design in designs"
           :key="design.id"
-          class="col-md-6 col-lg-3 gl-mt-5 gl-bg-transparent gl-shadow-none js-design-tile"
+          class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
         >
           <design-dropzone
             :display-as-card="hasDesigns"
@@ -489,7 +487,7 @@ export default {
             v-if="canSelectDesign(design.filename)"
             :checked="isDesignSelected(design.filename)"
             type="checkbox"
-            class="design-checkbox gl-absolute gl-top-4 gl-left-6 gl-ml-2"
+            class="design-checkbox gl-absolute gl-left-6 gl-top-4 gl-ml-2"
             data-testid="design-checkbox"
             :data-qa-design="design.filename"
             @change="changeSelectedDesigns(design.filename)"

@@ -222,7 +222,7 @@ export default {
       @keydown.esc.stop="cancelComment"
     />
     <slot name="resolve-checkbox"></slot>
-    <div class="note-form-actions gl-display-flex gl-mt-4!">
+    <div class="note-form-actions !gl-mt-4 gl-flex">
       <gl-button
         ref="submitButton"
         :disabled="!hasValue"

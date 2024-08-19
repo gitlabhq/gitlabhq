@@ -103,7 +103,7 @@ export default {
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button
                 type="button"
-                class="btn-link gl-flex gl-items-center"
+                class="btn-link gl-button gl-flex gl-items-center"
                 @click.stop="setSearchType(searchType)"
               >
                 <span class="gl-flex gl-mr-3 ide-search-list-current-icon">

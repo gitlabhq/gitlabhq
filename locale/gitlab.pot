@@ -40131,6 +40131,9 @@ msgstr ""
 msgid "Please select a group"
 msgstr ""
 
+msgid "Please select a project."
+msgstr ""
+
 msgid "Please select a valid target branch"
 msgstr ""
 
@@ -60778,7 +60781,7 @@ msgstr ""
 msgid "WorkItem|Comments only"
 msgstr ""
 
-msgid "WorkItem|Convert to task"
+msgid "WorkItem|Convert to child item"
 msgstr ""
 
 msgid "WorkItem|Converted to task"

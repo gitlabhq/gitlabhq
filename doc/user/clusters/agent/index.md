@@ -25,7 +25,7 @@ For more details about the agent's purpose and architecture, see the [architectu
 You must deploy a separate agent to every cluster you want to connect to GitLab.
 The agent was designed with strong multi-tenancy support. To simplify maintenance and operations you should run only one agent per cluster.
 
-An agent is always registered in a GitLab project. 
+An agent is always registered in a GitLab project.
 After an agent is registered and installed, the agent connection to the cluster can be shared with other projects, groups, and users.
 This approach means you can manage and configure your agent instances from GitLab itself,
 and you can scale a single installation to multiple tenants.

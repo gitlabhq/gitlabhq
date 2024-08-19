@@ -83,11 +83,11 @@ export default {
     @select="routeToVersion"
   >
     <template #list-item="{ item }">
-      <span class="gl-display-flex gl-align-items-center">
+      <span class="gl-flex gl-items-center">
         <gl-avatar :alt="getAuthorName(item.author)" :size="32" :src="getAvatarUrl(item)" />
-        <span class="gl-display-flex gl-flex-direction-column">
+        <span class="gl-flex gl-flex-col">
           <span class="gl-font-bold">{{ versionText(item) }}</span>
-          <span v-if="item.author" class="gl-text-gray-600 gl-mt-1">
+          <span v-if="item.author" class="gl-mt-1 gl-text-gray-600">
             <span class="gl-block">{{ getAuthorName(item.author) }}</span>
             <time-ago
               v-if="item.createdAt"

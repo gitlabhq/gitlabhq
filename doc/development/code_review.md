@@ -381,8 +381,8 @@ Reviewers are responsible for reviewing the specifics of the chosen solution.
 If you are unavailable to review an assigned merge request:
 
 1. Inform the author that you're not available.
-1. Use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) to select a new reviewer. 
-1. Assign the new reviewer to the merge request.  
+1. Use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) to select a new reviewer.
+1. Assign the new reviewer to the merge request.
 
 This demonstrates a [bias for action](https://handbook.gitlab.com/handbook/values/#operate-with-a-bias-for-action) and ensures an efficient MR review progress.
 

@@ -136,7 +136,7 @@ Refer to [merge request #159720](https://gitlab.com/gitlab-org/gitlab/-/merge_re
    1. Define a local input type `app/assets/javascripts/work_items/graphql/typedefs.graphql`.
    1. Stub the new work item state GraphQL data for the widget in `app/assets/javascripts/work_items/graphql/cache_utils.js`.
    1. Define how GraphQL updates the GraphQL data in `app/assets/javascripts/work_items/graphql/resolvers.js`.
-      - A special `CLEAR_VALUE` constant is required for single value widgets, because we cannot differentiate when a value is `null` because we cleared it, or `null` because we did not 
+      - A special `CLEAR_VALUE` constant is required for single value widgets, because we cannot differentiate when a value is `null` because we cleared it, or `null` because we did not
         set it.
         For example `ee/app/assets/javascripts/work_items/components/work_item_health_status.vue`.
         This is not required for most widgets which support multiple values, where we can differentiate between `[]` and `null`.

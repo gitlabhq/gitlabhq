@@ -10,4 +10,4 @@ This documentation section covers a variety of Integrations.
 
 ## Cloud solutions by provider
 
-[Servicenow](servicenow.md)
+[ServiceNow](servicenow.md)

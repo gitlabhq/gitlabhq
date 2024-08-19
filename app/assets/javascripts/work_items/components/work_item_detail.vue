@@ -759,6 +759,7 @@ export default {
     <work-item-detail-modal
       v-if="!isModal"
       ref="modal"
+      :parent-id="workItem.id"
       :work-item-id="modalWorkItemId"
       :work-item-iid="modalWorkItemIid"
       :work-item-full-path="modalWorkItemNamespaceFullPath"

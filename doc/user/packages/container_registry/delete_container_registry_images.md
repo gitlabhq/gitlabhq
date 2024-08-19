@@ -30,7 +30,7 @@ as eligible for deletion. To actually delete unreferenced container images and r
 must run [garbage collection](../../../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 The container registry on GitLab.com includes an automatic online garbage
-collector. 
+collector.
 With the automatic garbage collector, the following are automatically scheduled
 for deletion in 24 hours if left unreferenced:
 

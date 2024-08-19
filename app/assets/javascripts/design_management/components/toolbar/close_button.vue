@@ -19,7 +19,7 @@ export default {
       }"
       :aria-label="s__('DesignManagement|Go back to designs')"
       data-testid="close-design"
-      class="btn btn-icon gl-px-3 gl-mx-3 gl-border-0"
+      class="btn btn-icon gl-mx-3 gl-border-0 gl-px-3"
       tag="button"
     >
       <gl-icon name="close" />

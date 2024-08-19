@@ -8,11 +8,10 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
-import { getPreferredLocales, s__ } from '~/locale';
+import { __, getPreferredLocales, s__ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
-import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
+import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
 import { newWorkItemFullPath } from '~/work_items/utils';
 import {
@@ -37,6 +36,7 @@ import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.qu
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 
+import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -58,6 +58,7 @@ export default {
     WorkItemLabels,
     WorkItemLoading,
     WorkItemCrmContacts,
+    WorkItemProjectsListbox,
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
@@ -66,15 +67,40 @@ export default {
   },
   inject: ['fullPath'],
   props: {
-    workItemTypeName: {
+    description: {
       type: String,
       required: false,
-      default: null,
+      default: '',
     },
     hideFormTitle: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    parentId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showProjectSelector: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    title: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemTypeName: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -83,6 +109,7 @@ export default {
       isConfidential: false,
       error: null,
       workItemTypes: [],
+      selectedProjectFullPath: null,
       selectedWorkItemTypeId: null,
       loading: false,
       showWorkItemTypeSelect: false,
@@ -240,11 +267,11 @@ export default {
       return this.workItem?.author;
     },
     workItemTitle() {
-      return this.workItem?.title || '';
+      return this.workItem?.title || this.title;
     },
     workItemDescription() {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
-      return descriptionWidget?.description;
+      return descriptionWidget?.description || this.description;
     },
     workItemRolledupDates() {
       return findWidget(WIDGET_TYPE_ROLLEDUP_DATES, this.workItem);
@@ -306,12 +333,17 @@ export default {
         return;
       }
 
+      if (this.showProjectSelector && !this.selectedProjectFullPath) {
+        this.error = __('Please select a project.');
+        return;
+      }
+
       this.loading = true;
 
       const workItemCreateInput = {
         title: this.workItemTitle,
         workItemTypeId: this.selectedWorkItemTypeId,
-        namespacePath: this.fullPath,
+        namespacePath: this.selectedProjectFullPath || this.fullPath,
         confidential: this.workItem.confidential,
         descriptionWidget: {
           description: this.workItemDescription || '',
@@ -359,6 +391,12 @@ export default {
         };
       }
 
+      if (this.parentId) {
+        workItemCreateInput.hierarchyWidget = {
+          parentId: this.parentId,
+        };
+      }
+
       try {
         const response = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
@@ -370,23 +408,9 @@ export default {
           update: (store, { data: { workItemCreate } }) => {
             const { workItem } = workItemCreate;
 
-            store.writeQuery({
-              query: workItemByIidQuery,
-              variables: {
-                fullPath: this.fullPath,
-                iid: workItem.iid,
-              },
-              data: {
-                workspace: {
-                  __typename: TYPENAME_PROJECT,
-                  id: workItem.namespace.id,
-                  workItem: {
-                    __typename: 'WorkItem',
-                    ...workItem,
-                  },
-                },
-              },
-            });
+            if (this.parentId) {
+              addHierarchyChild({ cache: store, id: this.parentId, workItem });
+            }
           },
         });
 
@@ -409,16 +433,27 @@ export default {
   <form @submit.prevent="createWorkItem">
     <work-item-loading v-if="isLoading" />
     <template v-else>
-      <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
+      <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
+        {{ error }}
+      </gl-alert>
       <h1 v-if="!hideFormTitle" class="page-title gl-text-xl gl-pb-5">{{ titleText }}</h1>
-      <div class="gl-mb-5">
-        <gl-loading-icon
-          v-if="$apollo.queries.workItemTypes.loading"
-          size="lg"
-          data-testid="loading-types"
-        />
+      <div class="gl-flex gl-align-items-center gl-gap-4">
+        <gl-form-group
+          v-if="showProjectSelector"
+          class="gl-flex-grow gl-max-w-26"
+          :label="__('Project')"
+        >
+          <work-item-projects-listbox
+            v-model="selectedProjectFullPath"
+            :full-path="fullPath"
+            :is-group="isGroup"
+          />
+        </gl-form-group>
+
+        <gl-loading-icon v-if="$apollo.queries.workItemTypes.loading" size="lg" />
         <gl-form-group
           v-else-if="showWorkItemTypeSelect"
+          class="gl-flex-grow gl-max-w-26"
           :label="__('Type')"
           label-for="work-item-type"
         >
@@ -426,7 +461,6 @@ export default {
             id="work-item-type"
             v-model="selectedWorkItemTypeId"
             :options="formOptions"
-            class="gl-max-w-26"
           />
         </gl-form-group>
       </div>
@@ -445,6 +479,7 @@ export default {
             <work-item-description
               edit-mode
               :autofocus="false"
+              :description="description"
               :full-path="fullPath"
               :show-buttons-below-field="false"
               :work-item-id="workItemId"

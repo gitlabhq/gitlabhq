@@ -50,14 +50,14 @@ export default {
 
 <template>
   <li
-    class="toggle-comments gl-bg-gray-10 gl-display-flex gl-align-items-center gl-p-3 gl-min-h-8 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    class="toggle-comments gl-flex gl-min-h-8 gl-items-center gl-rounded-bl-base gl-rounded-br-base gl-bg-gray-10 gl-p-3"
     :class="{ expanded: !collapsed }"
     data-testid="toggle-comments-wrapper"
   >
     <gl-button
       category="tertiary"
       data-testid="toggle-replies-button"
-      class="gl-my-2 gl-mr-3 gl-p-0!"
+      class="gl-my-2 gl-mr-3 !gl-p-0"
       :icon="iconName"
       @click="$emit('toggle')"
     />
@@ -70,7 +70,7 @@ export default {
         :avatar-size="24"
         badge-tooltip-prop="name"
         :badge-sr-only-text="authorCollapsedTooltip"
-        class="gl-whitespace-nowrap gl-mr-3"
+        class="gl-mr-3 gl-whitespace-nowrap"
       >
         <template #avatar="{ avatar }">
           <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">

@@ -78,7 +78,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="designsCount" class="gl-display-flex gl-align-items-center gl-flex-shrink-0">
+  <div v-if="designsCount" class="gl-flex gl-shrink-0 gl-items-center">
     {{ paginationText }}
     <gl-button-group class="gl-ml-3">
       <gl-button

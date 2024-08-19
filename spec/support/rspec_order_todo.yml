@@ -4014,7 +4014,6 @@
 - './spec/graphql/resolvers/merge_requests_count_resolver_spec.rb'
 - './spec/graphql/resolvers/merge_requests_resolver_spec.rb'
 - './spec/graphql/resolvers/metadata_resolver_spec.rb'
-- './spec/graphql/resolvers/metrics/dashboards/annotation_resolver_spec.rb'
 - './spec/graphql/resolvers/namespace_projects_resolver_spec.rb'
 - './spec/graphql/resolvers/package_details_resolver_spec.rb'
 - './spec/graphql/resolvers/package_pipelines_resolver_spec.rb'

@@ -8,24 +8,34 @@ import eventHub from '~/issues/show/event_hub';
 import {
   convertDescriptionWithNewSort,
   deleteTaskListItem,
+  extractTaskTitleAndDescription,
   insertNextToTaskListItemText,
 } from '~/issues/show/utils';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { WORK_ITEM_TYPE_ENUM_ISSUE } from '../constants';
 
 const FULL_OPACITY = 'gl-opacity-10';
+const CURSOR_GRAB = 'gl-cursor-grab';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   directives: {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
     GlButton,
   },
   props: {
     disableTruncation: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroup: {
       type: Boolean,
       required: false,
       default: false,
@@ -56,8 +66,11 @@ export default {
   },
   data() {
     return {
+      childDescription: '',
+      childTitle: '',
       hasTaskListItemActions: false,
       truncated: false,
+      visible: false,
       checkboxes: [],
     };
   },
@@ -85,13 +98,16 @@ export default {
     isUpdating: {
       handler(isUpdating) {
         this.sortable?.option('disabled', isUpdating);
+        this.disableCheckboxes(isUpdating);
       },
     },
   },
   mounted() {
+    eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
   },
   beforeDestroy() {
+    eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
     this.removeAllPointerEventListeners();
   },
@@ -151,9 +167,12 @@ export default {
       this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
 
       // enable boxes, disabled by default in markdown
+      this.disableCheckboxes(false);
+    },
+    disableCheckboxes(disabled) {
       this.checkboxes.forEach((checkbox) => {
         // eslint-disable-next-line no-param-reassign
-        checkbox.disabled = false;
+        checkbox.disabled = disabled;
       });
     },
     renderTaskListItemActions() {
@@ -180,17 +199,17 @@ export default {
       const pointeroverListener = (event) => {
         const element = event.target.closest('li').querySelector(elementSelector);
         if (!element || isDragging() || this.isUpdating) {
-          element.classList.remove('gl-cursor-grab');
           return;
         }
+        element.classList.add(CURSOR_GRAB);
         element.classList.add(FULL_OPACITY);
-        element.classList.add('gl-cursor-grab');
       };
       const pointeroutListener = (event) => {
         const element = event.target.closest('li').querySelector(elementSelector);
         if (!element) {
           return;
         }
+        element.classList.remove(CURSOR_GRAB);
         element.classList.remove(FULL_OPACITY);
       };
 
@@ -217,12 +236,29 @@ export default {
         this.pointerEventListeners.delete(listItem);
       });
     },
+    convertTaskListItem({ id, sourcepos }) {
+      if (this.workItemId !== id) {
+        return;
+      }
+      const { newDescription, taskDescription, taskTitle } = deleteTaskListItem(
+        this.descriptionText,
+        sourcepos,
+      );
+      const { title, description } = extractTaskTitleAndDescription(taskTitle, taskDescription);
+      this.childTitle = title;
+      this.childDescription = description;
+      this.visible = true;
+      this.newDescription = newDescription;
+    },
     deleteTaskListItem({ id, sourcepos }) {
       if (this.workItemId !== id) {
         return;
       }
       const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
       this.$emit('descriptionUpdated', newDescription);
+    },
+    handleWorkItemCreated() {
+      this.$emit('descriptionUpdated', this.newDescription);
     },
     toggleCheckboxes(event) {
       const { target } = event;
@@ -305,5 +341,17 @@ export default {
         </div>
       </div>
     </div>
+    <create-work-item-modal
+      :description="childDescription"
+      hide-button
+      :is-group="isGroup"
+      :parent-id="workItemId"
+      show-project-selector
+      :title="childTitle"
+      :visible="visible"
+      :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_ISSUE"
+      @hideModal="visible = false"
+      @workItemCreated="handleWorkItemCreated"
+    />
   </div>
 </template>

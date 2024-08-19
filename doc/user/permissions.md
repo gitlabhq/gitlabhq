@@ -550,7 +550,7 @@ Owners must explicitly add these users to the specific subgroups and
 projects.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/index.md)
-to control access to groups and projects in the group hierarchy. You can set the default role to 
+to control access to groups and projects in the group hierarchy. You can set the default role to
 Minimal Access for members automatically added to the root group through SSO.
 
 1. On the left sidebar, select **Search or go to** and find your group.
