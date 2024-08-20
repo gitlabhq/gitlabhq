@@ -33,7 +33,7 @@ enforce a [minimum number of required approvers](settings.md) in the project's s
 Merge requests that target a different project, such as from a fork to the upstream project,
 use the default approval rules from the target (upstream) project, not the source (fork).
 
-Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/scan-result-policies.md) also provide additional flexibility with more granular configuration options.
+Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md) also provide additional flexibility with more granular configuration options.
 
 ## Add an approval rule
 
@@ -291,7 +291,7 @@ DETAILS:
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
 > - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
 
-You can use [merge request approval policies](../../../application_security/policies/scan-result-policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
+You can use [merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
 
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the

@@ -171,7 +171,7 @@ When an approval rule is impossible to satisfy, GitLab shows the rule as
 - The number of required approvals is greater than the number of eligible approvers.
 
 These rules are automatically approved to unblock their respective merge requests, unless you
-created them through a [merge request approval policy](../../../application_security/policies/scan-result-policies.md).
+created them through a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md).
 Invalid approval rules created through a merge request approval policy are:
 
 - Shown with **Action required**.

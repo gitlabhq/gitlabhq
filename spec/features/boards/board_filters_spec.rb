@@ -177,7 +177,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
       it 'loads all the types when opened and submit one as filter', :aggregate_failures do
         expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 3)
 
-        expect_filtered_search_dropdown_results(filter_dropdown, 2)
+        expect_filtered_search_dropdown_results(filter_dropdown, 3)
 
         click_on 'Incident'
         filter_submit.click

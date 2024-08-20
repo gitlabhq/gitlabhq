@@ -45,7 +45,7 @@ compliance:
 |:------------------------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|:-------------------------------------------------------------------------------------------|
 | [Compliance frameworks](../user/group/compliance_frameworks.md)                     | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Describe the type of compliance requirements projects must follow.                         |
 | [Compliance pipelines](../user/group/compliance_pipelines.md) | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Define a pipeline configuration to run for any projects with a given compliance framework. |
-| [Merge request approval policy approval settings](../user/application_security/policies/scan-result-policies.md#approval_settings) | **{dotted-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** Yes | Enforce a merge request approval policy enforcing multiple approvers and override various project settings in all enforced groups or projects across your GitLab instance or group. |
+| [Merge request approval policy approval settings](../user/application_security/policies/merge_request_approval_policies.md#approval_settings) | **{dotted-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** Yes | Enforce a merge request approval policy enforcing multiple approvers and override various project settings in all enforced groups or projects across your GitLab instance or group. |
 
 ## Audit management
 

@@ -571,7 +571,11 @@ class ProjectsController < Projects::ApplicationController
     # behaviour when the user isn't authorized to see the project
     return if project.nil? || performed?
 
-    redirect_to(request.original_url.sub(%r{\.git/?\Z}, ''))
+    uri = URI(request.original_url)
+    # Strip the '.git' part from the path
+    uri.path = uri.path.sub(%r{\.git/?\Z}, '')
+
+    redirect_to(uri.to_s)
   end
 
   def disable_query_limiting

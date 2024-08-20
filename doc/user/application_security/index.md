@@ -379,7 +379,7 @@ For more details, see [extension page](https://marketplace.visualstudio.com/item
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:
 
-- A security vulnerability. For more details, read [Merge request approval policies](policies/scan-result-policies.md).
+- A security vulnerability. For more details, read [Merge request approval policies](policies/merge_request_approval_policies.md).
 
 ## Using private Maven repositories
 

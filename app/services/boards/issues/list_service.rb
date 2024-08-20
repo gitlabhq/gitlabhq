@@ -50,7 +50,9 @@ module Boards
       end
 
       def set_issue_types
-        params[:issue_types] ||= Issue::TYPES_FOR_BOARD_LIST
+        types = Issue::TYPES_FOR_BOARD_LIST.dup
+        types << 'task' if ::Feature.enabled?(:work_items_beta, parent)
+        params[:issue_types] ||= types
       end
 
       def item_model

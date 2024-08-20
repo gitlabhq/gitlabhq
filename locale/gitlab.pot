@@ -5431,9 +5431,6 @@ msgstr ""
 msgid "All child items must be confidential in order to turn on confidentiality."
 msgstr ""
 
-msgid "All eligible users"
-msgstr ""
-
 msgid "All environments"
 msgstr ""
 
@@ -6463,6 +6460,9 @@ msgid "Any Author"
 msgstr ""
 
 msgid "Any Milestone"
+msgstr ""
+
+msgid "Any eligible user"
 msgstr ""
 
 msgid "Any encrypted tokens"
@@ -33858,6 +33858,9 @@ msgid "Minimal Access"
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
+msgstr ""
+
+msgid "Minimum required approvals"
 msgstr ""
 
 msgid "Minimum role required to cancel a pipeline or job"

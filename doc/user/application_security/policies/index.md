@@ -29,7 +29,7 @@ The following policy types are available:
 
 - [Scan execution policy](scan_execution_policies.md). Enforce security scans, either as part of the
   pipeline or on a specified schedule.
-- [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and
+- [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
 
@@ -365,7 +365,7 @@ The workaround is to amend your group or instance push rules to allow branches f
   subgroup the development project belongs to. Linking this way results in approval
   rules from the merge request approval policies not being applied to merge requests in the development project.
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
-  `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
+  `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist.
 - When merge request approval policies are enforced on projects containing manual jobs in their
   pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the

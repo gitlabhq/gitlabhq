@@ -1,0 +1,9 @@
+---
+migration_job_name: DeleteOrphanedDeployTokens
+description: Deletes deploy tokens that were left behind when a project/group was deleted
+feature_category: continuous_delivery
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162957
+milestone: '17.4'
+queued_migration_version: 20240814025044
+finalize_after: '2024-09-22'
+finalized_by: # version of the migration that finalized this BBM

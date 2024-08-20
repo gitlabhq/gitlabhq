@@ -12,7 +12,7 @@ export const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
  *
  * @param {Date} date
  */
-export const newDate = (date) => (date instanceof Date ? new Date(date.getTime()) : new Date());
+export const cloneDate = (date) => (date instanceof Date ? new Date(date.getTime()) : new Date());
 
 /**
  * Returns number of days in a month for provided date.
@@ -87,7 +87,7 @@ export const getTimeframeWindowFrom = (initialStartDate, length) => {
     return [];
   }
 
-  const startDate = newDate(initialStartDate);
+  const startDate = cloneDate(initialStartDate);
   const moveMonthBy = length > 0 ? 1 : -1;
 
   startDate.setDate(1);
@@ -177,7 +177,7 @@ export const calculateRemainingMilliseconds = (endDate) => {
  * @returns {Date} Date in past as Date object
  */
 export const getDateInPast = (date, daysInPast) =>
-  new Date(newDate(date).setDate(date.getDate() - daysInPast));
+  new Date(cloneDate(date).setDate(date.getDate() - daysInPast));
 
 /**
  * Adds a given number of days to a given date and returns the new date.
@@ -187,7 +187,7 @@ export const getDateInPast = (date, daysInPast) =>
  * @returns {Date} Date in future as Date object
  */
 export const getDateInFuture = (date, daysInFuture) =>
-  new Date(newDate(date).setDate(date.getDate() + daysInFuture));
+  new Date(cloneDate(date).setDate(date.getDate() + daysInFuture));
 
 /**
  * Checks if a given date-instance was created with a valid date
@@ -304,7 +304,7 @@ export const nSecondsBefore = (date, numberOfSeconds) => nSecondsAfter(date, -nu
  * @return {Date} A `Date` object `n` days after the provided `Date`
  */
 export const nDaysAfter = (date, numberOfDays, { utc = false } = {}) => {
-  const clone = newDate(date);
+  const clone = cloneDate(date);
 
   const cloneValue = utc
     ? clone.setUTCDate(date.getUTCDate() + numberOfDays)
@@ -342,7 +342,7 @@ export const nDaysBefore = (date, numberOfDays, options) =>
  * @return {Date} A `Date` object `n` months after the provided `Date`
  */
 export const nMonthsAfter = (date, numberOfMonths, { utc = false } = {}) => {
-  const clone = newDate(date);
+  const clone = cloneDate(date);
 
   const cloneValue = utc
     ? clone.setUTCMonth(date.getUTCMonth() + numberOfMonths)
@@ -409,7 +409,7 @@ export const nWeeksBefore = (date, numberOfWeeks, options) =>
  * @return {Date} A `Date` object `n` years after the provided `Date`
  */
 export const nYearsAfter = (date, numberOfYears) => {
-  const clone = newDate(date);
+  const clone = cloneDate(date);
   clone.setUTCMonth(clone.getUTCMonth());
 
   // If the date we are calculating from is Feb 29, return the equivalent result for Feb 28
@@ -500,7 +500,7 @@ export const differenceInMilliseconds = (startDate, endDate = Date.now()) => {
  *
  * @return {Date} the date at the first day of the month
  */
-export const dateAtFirstDayOfMonth = (date) => new Date(newDate(date).setDate(1));
+export const dateAtFirstDayOfMonth = (date) => new Date(cloneDate(date).setDate(1));
 
 /**
  * A utility function which checks if two dates match.
@@ -693,7 +693,7 @@ export const isInTimePeriod = (date, start, end) =>
  * @return {Date} Returns a clone of the date with the time set to midnight
  */
 export const removeTime = (date) => {
-  const clone = newDate(date);
+  const clone = cloneDate(date);
   clone.setHours(0, 0, 0, 0);
   return clone;
 };
@@ -710,7 +710,7 @@ export const removeTime = (date) => {
  * of the provided date
  */
 export const getStartOfDay = (date, { utc = false } = {}) => {
-  const clone = newDate(date);
+  const clone = cloneDate(date);
 
   const cloneValue = utc ? clone.setUTCHours(0, 0, 0, 0) : clone.setHours(0, 0, 0, 0);
 

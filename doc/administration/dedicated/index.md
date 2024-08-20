@@ -42,7 +42,7 @@ The cloud provider account is where a highly resilient GitLab installation resid
 
 ![Diagram of GitLab-managed AWS accounts in an isolated VPC containing a highly resilient GitLab installation.](img/tenant_network_diagram_v17_0.png)
 
-GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/e69207d3-7428-4ed1-b8a7-902c608cf8a2/edit?invitationId=inv_5922f7f4-4a0b-4024-b152-a00a9d0daa22&page=0_0#) files for the diagram in Lucidchart.
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/0815dd58-b926-454e-8354-c33fe3e7bff0/edit?invitationId=inv_a6b618ff-6c18-4571-806a-bfb3fe97cb12) files for the diagram in Lucidchart.
 
 #### Gitaly setup
 
@@ -65,7 +65,7 @@ Both [inbound](../../administration/dedicated/configure_instance.md#inbound-priv
 
 ![Diagram of a GitLab-managed AWS VPC using AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_diagram_v17_1.png)
 
-GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/cff1ce90-f146-457f-9630-d9b2eecdee99/edit?viewport_loc=553%2C-1872%2C2903%2C1277%2C0_0&invitationId=inv_1bf96b4a-8cc0-4a34-844d-a8780f32862a) files for the diagram in Lucidchart.
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/933b958b-bfad-4898-a8ae-182815f159ca/edit?invitationId=inv_38b9a265-dff2-4db6-abdb-369ea1e92f5f) files for the diagram in Lucidchart.
 
 ### Hosted runners for GitLab Dedicated
 
@@ -75,7 +75,7 @@ The following diagram illustrates a GitLab-managed AWS account that contains Git
 
 For more information on how runners authenticate and execute the job payload, see [Runner execution flow](https://docs.gitlab.com/runner#runner-execution-flow).
 
-GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/5dd152c0-53da-48a9-95b3-80fde0afad6d/edit?viewport_loc=534%2C-238%2C2942%2C1600%2Clp8eoEUK3HcI&invitationId=inv_45c946dd-74b7-4446-acbd-0df242bd6140) files for the diagram in Lucidchart.
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/0fb12de8-5236-4d80-9a9c-61c08b714e6f/edit?invitationId=inv_4a12e347-49e8-438e-a28f-3930f936defd) files for the diagram in Lucidchart.
 
 ## Get started
 

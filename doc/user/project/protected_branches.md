@@ -49,7 +49,7 @@ When a branch is protected, the default behavior enforces these restrictions on 
    for that branch at the project level are ignored. All other protections continue
    to use project level settings.
 
-You can implement a [merge request approval policy](../application_security/policies/scan-result-policies.md#approval_settings)
+You can implement a [merge request approval policy](../application_security/policies/merge_request_approval_policies.md#approval_settings)
 to prevent protected branches being unprotected or deleted.
 
 ### When a branch matches multiple rules
