@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.1 (2024-08-20)
+
+### Fixed (3 changes)
+
+- [Merge branch '444926-fix-bug-in-resolve-vulnerabilities-migration' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac8a0cdc00b76c5ad84e8d18f3a7e49ebea2a538)
+- [Turn NotFound from Gitaly into 404 for InfoRefs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3566c2625d62857246b215e191fb137091de1650)
+- [Fix timeout when checking group dependencies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3f3bdb24b185196875a3989f0378d237243e80f6) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Include language server version in code suggestions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b4b98955c5fa55911631800c3cd48f6224bf664) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Do not run pipelines when resolving vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef9c251b19c1ad7aedb591870158fc0085ee5fd9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4360))
+- [Add Octokit::ResponseValidation middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/08d547262c574b00135fb71105e52f03dc3ca8c0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4375))
+- [IP restriction to prevent all group permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e080f2d2c5a578df52f202505e993c560fec6cb2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4368))
+- [Destroy associated releases when removing a tag via Git CLI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b79ada987b82fa756e6ae74f7527dcde8c30d08f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4365))
+
 ## 17.3.0 (2024-08-14)
 
 ### Added (143 changes)
