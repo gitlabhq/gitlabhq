@@ -22,7 +22,6 @@ module Types
         description: 'Name of the pipeline.'
 
       field :sha, GraphQL::Types::String, null: true,
-        method: :sha,
         description: "SHA of the pipeline's commit." do
         argument :format,
           type: Types::ShaFormatEnum,
@@ -188,13 +187,13 @@ module Types
 
       field :triggered_by_path, GraphQL::Types::String, null: true, description: "The path that triggered this pipeline"
 
-      field :source, GraphQL::Types::String, null: true, method: :source, description: "The source of the pipeline"
+      field :source, GraphQL::Types::String, null: true, description: "The source of the pipeline"
 
       field :child, GraphQL::Types::Boolean, null: false, method: :child?, description: "If the pipeline is a child or not"
 
       field :latest, GraphQL::Types::Boolean, null: false, method: :latest?, calls_gitaly: true, description: "If the pipeline is the latest one or not"
 
-      field :ref_text, GraphQL::Types::String, null: false, method: :ref_text, description: "The reference text from the presenter", calls_gitaly: true
+      field :ref_text, GraphQL::Types::String, null: false, description: "The reference text from the presenter", calls_gitaly: true
 
       field :merge_request, Types::MergeRequestType, null: true, description: "The MR which the Pipeline is attached to"
 

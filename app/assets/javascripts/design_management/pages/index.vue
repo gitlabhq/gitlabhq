@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon, GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
@@ -8,6 +8,7 @@ import getDesignListQuery from 'shared_queries/design_management/get_design_list
 import { getFilename, validateImageName } from '~/lib/utils/file_upload';
 import { __, s__ } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DeleteButton from '../components/delete_button.vue';
 import DesignDestroyer from '../components/design_destroyer.vue';
 import Design from '../components/list/item.vue';
@@ -46,11 +47,11 @@ export const i18n = {
 
 export default {
   components: {
-    GlLoadingIcon,
     GlAlert,
     GlButton,
     GlSprintf,
     GlLink,
+    CrudComponent,
     UploadButton,
     Design,
     DesignDestroyer,
@@ -353,37 +354,37 @@ export default {
 <template>
   <div
     data-testid="designs-root"
-    class="gl-mt-4"
-    :class="{ 'gl-new-card': showToolbar }"
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
-    <gl-alert
-      v-if="uploadError"
-      variant="danger"
-      class="gl-mb-3"
-      data-testid="design-update-alert"
-      @dismiss="unsetUpdateError"
+    <crud-component
+      :title="s__('DesignManagement|Designs')"
+      class="!gl-mt-3"
+      :class="{ 'gl-bg-transparent gl-border-0': !showToolbar }"
+      :header-class="{ 'gl-hidden': !showToolbar }"
+      :body-class="{
+        '!gl-my-0': showToolbar && !isLoading,
+        '!gl-m-0 !gl-p-0': !showToolbar && !isLoading,
+      }"
+      :is-loading="isLoading && !error"
+      is-collapsible
+      data-testid="design-toolbar-wrapper"
     >
-      {{ uploadError }}
-    </gl-alert>
-    <header v-if="showToolbar" class="gl-new-card-header" data-testid="design-toolbar-wrapper">
-      <div class="gl-flex gl-w-full gl-flex-wrap gl-items-center gl-justify-between gl-gap-3">
-        <div class="gl-flex gl-items-center">
-          <span class="gl-mr-3 gl-font-bold">{{ s__('DesignManagement|Designs') }}</span>
-          <design-version-dropdown />
-        </div>
+      <template v-if="showToolbar" #title>
+        <design-version-dropdown />
+      </template>
+
+      <template v-if="showToolbar" #actions>
         <div
           v-if="canCreateDesign"
           v-show="hasDesigns"
-          class="gl-flex gl-items-center"
+          class="gl-flex gl-items-center gl-gap-3"
           data-testid="design-selector-toolbar"
         >
           <gl-button
             v-if="isLatestVersion"
             category="tertiary"
             size="small"
-            class="gl-mr-3"
             data-testid="select-all-designs-button"
             @click="toggleDesignsSelection"
             >{{ selectAllButtonText }}
@@ -398,7 +399,6 @@ export default {
               v-if="isLatestVersion"
               :is-deleting="loading"
               button-variant="default"
-              button-class="gl-mr-3"
               button-size="small"
               data-testid="archive-button"
               :loading="loading"
@@ -415,111 +415,114 @@ export default {
             @upload="onUploadDesign"
           />
         </div>
-      </div>
-    </header>
-    <div
-      :class="{
-        'gl-mx-5': showToolbar,
-        'gl-new-card-body !gl-mx-3': hasDesigns,
-      }"
-    >
-      <gl-loading-icon v-if="isLoading" size="sm" class="gl-py-4" />
-      <gl-alert v-else-if="error" variant="danger" :dismissible="false">
-        {{ $options.i18n.designLoadingError }}
-      </gl-alert>
-      <header
-        v-else-if="isDesignCollectionCopying"
-        class="card"
-        data-testid="design-collection-is-copying"
-      >
-        <div class="card-header design-card-header gl-border-b-0">
-          <div class="card-title gl-my-0 gl-flex gl-h-7 gl-items-center">
-            {{
-              s__(
-                'DesignManagement|Your designs are being copied and are on their way… Please refresh to update.',
-              )
-            }}
-          </div>
-        </div>
-      </header>
-      <vue-draggable
-        v-else
-        :value="designs"
-        :disabled="!isLatestVersion || isReorderingInProgress || isMobile"
-        v-bind="$options.dragOptions"
-        tag="ol"
-        draggable=".js-design-tile"
-        class="list-unstyled row"
-        @start="isDraggingDesign = true"
-        @end="isDraggingDesign = false"
-        @change="reorderDesigns"
-        @input="onDesignMove"
-      >
-        <li
-          v-for="design in designs"
-          :key="design.id"
-          class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
-        >
-          <design-dropzone
-            :display-as-card="hasDesigns"
-            :enable-drag-behavior="isDraggingDesign"
-            v-bind="$options.dropzoneProps"
-            @change="onExistingDesignDropzoneChange($event, design.filename)"
-            @error="onDesignDropzoneError"
-          >
-            <design
-              v-bind="design"
-              :is-uploading="isDesignToBeSaved(design.filename)"
-              class="gl-bg-white"
-            />
-            <template #upload-text="{ openFileUpload }">
-              <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
-                <template #link="{ content }">
-                  <gl-link @click.stop="openFileUpload">
-                    {{ content }}
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </template>
-          </design-dropzone>
+      </template>
 
-          <input
-            v-if="canSelectDesign(design.filename)"
-            :checked="isDesignSelected(design.filename)"
-            type="checkbox"
-            class="design-checkbox gl-absolute gl-left-6 gl-top-4 gl-ml-2"
-            data-testid="design-checkbox"
-            :data-qa-design="design.filename"
-            @change="changeSelectedDesigns(design.filename)"
-          />
-        </li>
-        <template #header>
+      <gl-alert
+        v-if="uploadError"
+        variant="danger"
+        class="gl-mt-3"
+        data-testid="design-update-alert"
+        @dismiss="unsetUpdateError"
+      >
+        {{ uploadError }}
+      </gl-alert>
+
+      <div>
+        <gl-alert v-if="error" variant="danger" :dismissible="false">
+          {{ $options.i18n.designLoadingError }}
+        </gl-alert>
+
+        <span
+          v-else-if="isDesignCollectionCopying"
+          class="gl-inline-block gl-py-4 gl-text-subtle"
+          data-testid="design-collection-is-copying"
+        >
+          {{
+            s__(
+              'DesignManagement|Your designs are being copied and are on their way… Please refresh to update.',
+            )
+          }}
+        </span>
+
+        <vue-draggable
+          v-else
+          :value="designs"
+          :disabled="!isLatestVersion || isReorderingInProgress || isMobile"
+          v-bind="$options.dragOptions"
+          tag="ol"
+          draggable=".js-design-tile"
+          class="list-unstyled row"
+          @start="isDraggingDesign = true"
+          @end="isDraggingDesign = false"
+          @change="reorderDesigns"
+          @input="onDesignMove"
+        >
           <li
-            v-if="canCreateDesign"
-            :class="designDropzoneWrapperClass"
-            data-testid="design-dropzone-wrapper"
+            v-for="design in designs"
+            :key="design.id"
+            class="col-md-6 col-lg-3 gl-mt-5 gl-bg-transparent gl-shadow-none js-design-tile"
           >
             <design-dropzone
-              :enable-drag-behavior="isDraggingDesign"
-              :class="{ 'design-list-item': !isDesignListEmpty }"
               :display-as-card="hasDesigns"
+              :enable-drag-behavior="isDraggingDesign"
               v-bind="$options.dropzoneProps"
-              data-testid="design-dropzone-content"
-              @change="onUploadDesign"
+              @change="onExistingDesignDropzoneChange($event, design.filename)"
               @error="onDesignDropzoneError"
             >
+              <design
+                v-bind="design"
+                :is-uploading="isDesignToBeSaved(design.filename)"
+                class="gl-bg-white"
+              />
               <template #upload-text="{ openFileUpload }">
                 <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
                   <template #link="{ content }">
-                    <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
+                    <gl-link @click.stop="openFileUpload">
+                      {{ content }}
+                    </gl-link>
                   </template>
                 </gl-sprintf>
               </template>
             </design-dropzone>
+
+            <input
+              v-if="canSelectDesign(design.filename)"
+              :checked="isDesignSelected(design.filename)"
+              type="checkbox"
+              class="design-checkbox gl-absolute gl-top-4 gl-left-6 gl-ml-2"
+              data-testid="design-checkbox"
+              :data-qa-design="design.filename"
+              @change="changeSelectedDesigns(design.filename)"
+            />
           </li>
-        </template>
-      </vue-draggable>
-    </div>
-    <router-view :key="$route.fullPath" />
+          <template #header>
+            <li
+              v-if="canCreateDesign"
+              :class="designDropzoneWrapperClass"
+              data-testid="design-dropzone-wrapper"
+            >
+              <design-dropzone
+                :enable-drag-behavior="isDraggingDesign"
+                :class="{ 'design-list-item': !isDesignListEmpty }"
+                :display-as-card="hasDesigns"
+                v-bind="$options.dropzoneProps"
+                data-testid="design-dropzone-content"
+                @change="onUploadDesign"
+                @error="onDesignDropzoneError"
+              >
+                <template #upload-text="{ openFileUpload }">
+                  <gl-sprintf :message="$options.i18n.dropzoneDescriptionText">
+                    <template #link="{ content }">
+                      <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
+                    </template>
+                  </gl-sprintf>
+                </template>
+              </design-dropzone>
+            </li>
+          </template>
+        </vue-draggable>
+      </div>
+      <router-view :key="$route.fullPath" />
+    </crud-component>
   </div>
 </template>

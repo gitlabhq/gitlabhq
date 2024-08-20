@@ -103,9 +103,9 @@ export default {
 <template>
   <div
     :class="{ 'gl-pb-5': !visible }"
-    class="gl-border-b-solid gl-border-gray-100 gl-border-1 gl-pt-3"
+    class="gl-border-1 gl-border-gray-100 gl-pt-3 gl-border-b-solid"
   >
-    <div class="gl-w-full gl-display-flex gl-align-items-center gl-px-3">
+    <div class="gl-flex gl-w-full gl-items-center gl-px-3">
       <gl-button
         class="gl-mr-4 gl-fill-current gl-text-gray-500"
         :aria-label="label"
@@ -126,12 +126,12 @@ export default {
         :key="environment.name"
         :environment="environment"
         :class="{ 'gl-mt-5': isFirstEnvironment(index) }"
-        class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-pt-3"
+        class="gl-border-1 gl-border-gray-100 gl-pt-3 gl-border-t-solid"
         in-folder
       />
       <div
         v-if="isMessageShowing"
-        class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-py-5 gl-bg-gray-10 gl-text-center"
+        class="gl-border-1 gl-border-gray-100 gl-bg-gray-10 gl-py-5 gl-text-center gl-border-t-solid"
         data-testid="environment-folder-message-element"
       >
         <gl-sprintf :message="$options.i18n.message">

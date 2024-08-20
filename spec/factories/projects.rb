@@ -223,7 +223,7 @@ FactoryBot.define do
     end
 
     trait :with_namespace_settings do
-      namespace factory: [:namespace, :with_namespace_settings]
+      association :namespace, :with_namespace_settings
     end
 
     trait :with_avatar do
@@ -626,7 +626,7 @@ FactoryBot.define do
   end
 
   trait :in_group do
-    namespace factory: [:group]
+    namespace factory: :group
   end
 
   trait :in_subgroup do

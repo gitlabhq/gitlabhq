@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :create_branch_on_repository do
-      association :project, factory: [:project, :repository]
+      association :project, :repository
 
       transient do
         repository_branch_name { name }

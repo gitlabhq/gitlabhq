@@ -38,11 +38,11 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="deployment-commit" class="gl-display-flex gl-align-items-center">
+  <div data-testid="deployment-commit" class="gl-flex gl-items-center">
     <gl-avatar-link v-gl-tooltip :title="commitAuthor" :href="commitAuthorPath">
       <gl-avatar :size="16" :src="commitAuthorAvatar" />
     </gl-avatar-link>
-    <gl-link v-gl-tooltip :title="commitTitle" :href="commitPath" class="gl-ml-3 gl-str-truncated">
+    <gl-link v-gl-tooltip :title="commitTitle" :href="commitPath" class="gl-str-truncated gl-ml-3">
       {{ commitTitle }}
     </gl-link>
   </div>

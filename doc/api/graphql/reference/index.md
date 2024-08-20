@@ -24258,6 +24258,7 @@ IDE settings and feature flags.
 | <a id="importsourceuserplaceholderuser"></a>`placeholderUser` | [`UserCore`](#usercore) | Placeholder user associated with the import source user. |
 | <a id="importsourceuserreassigntouser"></a>`reassignToUser` | [`UserCore`](#usercore) | User that contributions are reassigned to. |
 | <a id="importsourceuserreassignedbyuser"></a>`reassignedByUser` | [`UserCore`](#usercore) | User that did the reassignment. |
+| <a id="importsourceuserreassignmenterror"></a>`reassignmentError` | [`String`](#string) | Error message if reassignment failed. |
 | <a id="importsourceusersourcehostname"></a>`sourceHostname` | [`String!`](#string) | Source instance hostname. |
 | <a id="importsourceusersourcename"></a>`sourceName` | [`String`](#string) | Name of user in the source instance. |
 | <a id="importsourceusersourceuseridentifier"></a>`sourceUserIdentifier` | [`String!`](#string) | ID of the user in the source instance. |

@@ -58,7 +58,7 @@ And you can ask GitLab Duo Chat to explain code:
 
 - `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
 
-Alternatively, you can use the [`/explain` command](examples.md#explain-code-in-the-ide) to explain the selected code in your editor.
+Alternatively, you can use the [`/explain` command](examples.md#explain-code) to explain the selected code in your editor.
 
 ## Ask about CI/CD
 
@@ -128,12 +128,12 @@ DETAILS:
 
 [Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
-## Explain code in the IDE
+## Explain code
 
 DETAILS:
 **Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** Web IDE, VS Code, JetBrains IDEs
+**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
@@ -307,7 +307,7 @@ Use the following commands to quickly accomplish specific tasks.
 | /clear                 | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)  |
 | /reset                 | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation)  |
 | /tests                 | [Write tests](#write-tests-in-the-ide)                                              |
-| /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)              |
+| /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code)              |
 | /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
 | /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |

@@ -734,3 +734,5 @@ gem 'duo_api', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-sdk', '~> 0.3.0', feature_category: :application_instrumentation
 
 gem 'openbao_client', path: 'gems/openbao_client' # rubocop:todo Gemfile/MissingFeatureCategory
+
+gem 'paper_trail', '~> 15.0' # rubocop:todo Gemfile/MissingFeatureCategory

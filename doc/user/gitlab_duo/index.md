@@ -52,15 +52,18 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](../project/repository/code_suggestions/index.md).
 
-### Code explanation in the IDE
+### Code explanation
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you understand the selected code by explaining it more clearly.
-- LLM: Anthropic: [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
-- View documentation for [explaining code in the IDE](../gitlab_duo_chat/examples.md#explain-code-in-the-ide).
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- View documentation for explaining code in:
+  - [The IDE](../gitlab_duo_chat/examples.md#explain-code).
+  - [A file](../../user/project/repository/code_explain.md).
+  - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
 
 ### Test generation
 
@@ -180,19 +183,6 @@ DETAILS:
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
 - LLM: Anthropic [Claude Instant 1.2](https://docs.anthropic.com/en/docs/about-claude/models#legacy-models)
 - [View documentation](experiments.md#summarize-an-issue-with-issue-description-generation).
-
-### Code explanation in a file or merge request
-
-DETAILS:
-**Tier:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
-
-- Helps you understand the selected code by explaining it more clearly.
-- LLM: Anthropic: [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
-- View documentation for explaining code in:
-  - [A file](../../user/project/repository/code_explain.md).
-  - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
 
 ### Code review summary
 

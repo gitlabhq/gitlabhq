@@ -11,13 +11,16 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  class="gl-text-default hover:gl-text-default"
 >
-  <div
-    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
+  <gl-card-stub
+    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-mb-0 js-design-list-item"
+    footerclass=""
+    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-grow"
+      class="gl-flex gl-grow gl-items-center gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -28,10 +31,6 @@ exports[`Design management list item component with notes renders item with mult
         src="null"
       />
     </gl-intersection-observer-stub>
-  </div>
-  <div
-    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
-  >
     <div
       class="gl-flex gl-flex-col str-truncated-100"
       data-testid="design-file-name"
@@ -56,34 +55,35 @@ exports[`Design management list item component with notes renders item with mult
       </span>
     </div>
     <div
-      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-gap-2 gl-items-center gl-ml-auto gl-text-subtle"
     >
       <gl-icon-stub
-        class="gl-ml-2"
         name="comments"
         size="16"
         variant="current"
       />
       <span
         aria-label="2 comments"
-        class="gl-ml-2"
       >
         2
       </span>
     </div>
-  </div>
+  </gl-card-stub>
 </a>
 `;
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  class="gl-text-default hover:gl-text-default"
 >
-  <div
-    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
+  <gl-card-stub
+    bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
+    class="design-list-item gl-mb-0 js-design-list-item"
+    footerclass=""
+    headerclass="gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-grow"
+      class="gl-flex gl-grow gl-items-center gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -94,10 +94,6 @@ exports[`Design management list item component with notes renders item with sing
         src="null"
       />
     </gl-intersection-observer-stub>
-  </div>
-  <div
-    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
-  >
     <div
       class="gl-flex gl-flex-col str-truncated-100"
       data-testid="design-file-name"
@@ -122,21 +118,19 @@ exports[`Design management list item component with notes renders item with sing
       </span>
     </div>
     <div
-      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-gap-2 gl-items-center gl-ml-auto gl-text-subtle"
     >
       <gl-icon-stub
-        class="gl-ml-2"
         name="comments"
         size="16"
         variant="current"
       />
       <span
         aria-label="1 comment"
-        class="gl-ml-2"
       >
         1
       </span>
     </div>
-  </div>
+  </gl-card-stub>
 </a>
 `;

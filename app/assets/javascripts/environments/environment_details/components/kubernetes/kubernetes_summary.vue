@@ -114,7 +114,7 @@ export default {
     }}</gl-alert>
 
     <div
-      class="gl-flex gl-items-start gl-overflow-x-auto gl-overflow-y-hidden kubernetes-tree-view"
+      class="kubernetes-tree-view gl-flex gl-items-start gl-overflow-x-auto gl-overflow-y-hidden"
     >
       <kubernetes-tree-item
         v-if="hasFluxKustomization"
@@ -130,7 +130,7 @@ export default {
           class="gl-relative"
         >
           <div
-            class="connector gl-border-1 gl-border-t-solid gl-border-gray-200 gl-absolute gl-z-0 gl-top-1/2 gl-right-1/2"
+            class="connector gl-absolute gl-right-1/2 gl-top-1/2 gl-z-0 gl-border-1 gl-border-gray-200 gl-border-t-solid"
             :class="{
               'gl-border-l-solid': !isLast(index),
             }"

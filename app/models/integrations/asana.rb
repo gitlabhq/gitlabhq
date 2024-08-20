@@ -68,7 +68,7 @@ module Integrations
       # - close/s/d
       # - closing
       issue_finder = %r{(?:https://app\.asana\.com/\d+/\w+/(\w+)|#(\w+))}i
-      proceded_keyword_finder = %r{(fix\w*|clos[ei]\w*+)}i
+      proceded_keyword_finder = %r{(fix\w*|clos[ei]\w*)\s*\z}i
 
       message.split(issue_finder).each_slice(2) do |prepended_text, task_id|
         next unless task_id

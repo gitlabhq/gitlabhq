@@ -3,7 +3,7 @@
 module StatAnchorsHelper
   def stat_anchor_attrs(anchor)
     {}.tap do |attrs|
-      attrs[:class] = %w[nav-link gl-flex gl-items-center] << extra_classes(anchor)
+      attrs[:class] = %w[nav-link] << extra_classes(anchor)
       attrs[:itemprop] = anchor.itemprop if anchor.itemprop
       attrs[:data] = anchor.data if anchor.data
     end

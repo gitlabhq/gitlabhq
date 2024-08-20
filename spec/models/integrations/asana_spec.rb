@@ -139,7 +139,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       let(:message) do
         <<-EOF
         minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
-        ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12
+        ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12,
+        bug fixing and worked on #11, will be fixed
+        in #222
         EOF
       end
 
@@ -168,6 +170,18 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
           .with("https://app.asana.com/api/1.0/tasks/12/stories", anything).once.and_return(asana_task_5)
         expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/12", completed_message).once.and_return(asana_task_5)
+
+        asana_task_5 = double(double(data: { gid: 11 }))
+        expect(Gitlab::HTTP_V2).to receive(:post)
+          .with("https://app.asana.com/api/1.0/tasks/11/stories", anything).once.and_return(asana_task_5)
+        expect(Gitlab::HTTP_V2).not_to receive(:put)
+          .with("https://app.asana.com/api/1.0/tasks/11", completed_message)
+
+        asana_task_6 = double(double(data: { gid: 222 }))
+        expect(Gitlab::HTTP_V2).to receive(:post)
+          .with("https://app.asana.com/api/1.0/tasks/222/stories", anything).once.and_return(asana_task_6)
+        expect(Gitlab::HTTP_V2).not_to receive(:put)
+          .with("https://app.asana.com/api/1.0/tasks/222", completed_message)
 
         execute_integration
       end

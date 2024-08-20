@@ -33,7 +33,7 @@ For example, your generated `.gitmodules` configuration might look like the foll
 ```ini
 [submodule "project"]
   path = project
-  url = git@gitlab.com:secret-group/project.git
+  url = git@gitlab.com:group/project.git
 ```
 
 In this case, use the [`GIT_SUBMODULE_FORCE_HTTPS`](runners/configure_runners.md#rewrite-submodule-urls-to-https) variable
@@ -44,7 +44,7 @@ Alternatively, if you also use HTTPS locally, you can configure an HTTPS URL:
 ```ini
 [submodule "project"]
   path = project
-  url = https://gitlab.com/secret-group/project.git
+  url = https://gitlab.com/group/project.git
 ```
 
 You do not need to configure additional variables in this case, but you need to use a

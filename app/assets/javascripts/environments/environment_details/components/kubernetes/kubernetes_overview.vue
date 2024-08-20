@@ -273,10 +273,8 @@ export default {
 };
 </script>
 <template>
-  <div v-if="clusterAgent" class="gl-p-5 gl-bg-gray-10 -gl-mt-3">
-    <div
-      class="gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center"
-    >
+  <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-gray-10 gl-p-5">
+    <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
       <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5 gl-grow" />
       <kubernetes-status-bar
         ref="status_bar"
@@ -346,7 +344,7 @@ export default {
       @close="closeDetailsDrawer"
     >
       <template #title>
-        <h2 class="gl-font-bold gl-m-0 gl-break-anywhere">
+        <h2 class="gl-m-0 gl-font-bold gl-break-anywhere">
           {{ selectedItem.name }}
         </h2>
       </template>

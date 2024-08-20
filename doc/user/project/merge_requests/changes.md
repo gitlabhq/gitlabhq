@@ -222,11 +222,11 @@ To change how a merge request shows changed lines:
 ## Explain code in a merge request
 
 DETAILS:
-**Tier:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 15.11 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 
 If you spend a lot of time trying to understand code that others have created, or
 you struggle to understand code written in a language you are not familiar with,
@@ -261,7 +261,7 @@ We cannot guarantee that the large language model produces results that are corr
 You can also explain code in:
 
 - A [file](../../../user/project/repository/code_explain.md).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code-in-the-ide).
+- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code).
 
 ## Expand or collapse comments
 

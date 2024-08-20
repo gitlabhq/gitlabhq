@@ -90,8 +90,8 @@ export default {
   <div>
     <deploy-freeze-alert :name="environment.name" />
     <header class="top-area gl-justify-content-between gl-border-none">
-      <div class="gl-display-flex gl-flex-grow-1 gl-align-items-center">
-        <h1 class="page-title gl-font-size-h-display">
+      <div class="gl-flex gl-grow gl-items-center">
+        <h1 class="page-title gl-text-size-h-display">
           {{ environment.name }}
         </h1>
         <p

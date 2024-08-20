@@ -391,7 +391,6 @@ tests = [
       spec/db/docs_spec.rb
       spec/lib/gitlab/database/dictionary_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
-      spec/lib/gitlab/database/no_new_tables_with_gitlab_pm_schema_spec.rb
       spec/lib/gitlab/database/sharding_key_spec.rb
     ]
   }

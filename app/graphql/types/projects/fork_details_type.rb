@@ -10,13 +10,11 @@ module Types
       field :ahead, GraphQL::Types::Int,
         null: true,
         calls_gitaly: true,
-        method: :ahead,
         description: 'Number of commits ahead of upstream.'
 
       field :behind, GraphQL::Types::Int,
         null: true,
         calls_gitaly: true,
-        method: :behind,
         description: 'Number of commits behind upstream.'
 
       field :is_syncing, GraphQL::Types::Boolean,

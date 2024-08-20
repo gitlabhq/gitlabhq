@@ -19,6 +19,8 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
 
+    self.primary_key = :id
+
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {

@@ -11,10 +11,11 @@ module MigrationsHelpers
     Gitlab::Database.database_base_models[database_name] || Gitlab::Database.database_base_models[:main]
   end
 
-  def table(name, database: nil)
+  def table(name, database: nil, primary_key: nil)
     Class.new(active_record_base(database: database)) do
       self.table_name = name
       self.inheritance_column = :_type_disabled
+      self.primary_key = primary_key if primary_key.present?
 
       def self.name
         table_name.singularize.camelcase

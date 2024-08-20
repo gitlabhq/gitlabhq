@@ -11564,6 +11564,8 @@ CREATE TABLE import_source_users (
     source_hostname text NOT NULL,
     import_type text NOT NULL,
     reassigned_by_user_id bigint,
+    reassignment_error text,
+    CONSTRAINT check_05708218cd CHECK ((char_length(reassignment_error) <= 255)),
     CONSTRAINT check_0d7295a307 CHECK ((char_length(import_type) <= 255)),
     CONSTRAINT check_199c28ec54 CHECK ((char_length(source_username) <= 255)),
     CONSTRAINT check_562655155f CHECK ((char_length(source_name) <= 255)),
@@ -23189,7 +23191,7 @@ ALTER TABLE ONLY ci_pipelines_config
     ADD CONSTRAINT ci_pipelines_config_pkey PRIMARY KEY (pipeline_id);
 
 ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT ci_pipelines_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT ci_pipelines_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY ci_platform_metrics
     ADD CONSTRAINT ci_platform_metrics_pkey PRIMARY KEY (id);
@@ -27212,8 +27214,6 @@ CREATE INDEX index_ci_pipelines_on_ci_ref_id_and_more ON ci_pipelines USING btre
 
 CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
 
-CREATE UNIQUE INDEX index_ci_pipelines_on_id_and_partition_id ON ci_pipelines USING btree (id, partition_id);
-
 CREATE INDEX index_ci_pipelines_on_merge_request_id ON ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id_and_id ON ci_pipelines USING btree (pipeline_schedule_id, id);
@@ -29649,8 +29649,6 @@ CREATE INDEX index_saml_providers_on_group_id ON saml_providers USING btree (gro
 CREATE INDEX index_saml_providers_on_member_role_id ON saml_providers USING btree (member_role_id);
 
 CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replies USING btree (user_id, name text_pattern_ops);
-
-CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
 
 CREATE UNIQUE INDEX index_sbom_component_versions_on_component_id_and_version ON sbom_component_versions USING btree (component_id, version);
 

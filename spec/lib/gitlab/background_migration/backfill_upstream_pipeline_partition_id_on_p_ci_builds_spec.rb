@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillUpstreamPipelinePartitionIdOnPCiBuilds, feature_category: :continuous_integration do
-  let(:pipelines_table) { table(:ci_pipelines, database: :ci) { |t| t.primary_key = :id } }
+  let(:pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }
 
   let(:jobs_table) { partitioned_table(:p_ci_builds, database: :ci) }
 

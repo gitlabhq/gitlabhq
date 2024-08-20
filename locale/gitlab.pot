@@ -8461,6 +8461,9 @@ msgstr ""
 msgid "BillingPlans|Free guest users"
 msgstr ""
 
+msgid "BillingPlans|Get the most out of GitLab with Ultimate and GitLab Duo Enterprise"
+msgstr ""
+
 msgid "BillingPlans|Have a question? We're here to help."
 msgstr ""
 
@@ -8468,6 +8471,9 @@ msgid "BillingPlans|If you would like to downgrade your plan please contact %{su
 msgstr ""
 
 msgid "BillingPlans|Includes"
+msgstr ""
+
+msgid "BillingPlans|Introducing GitLab Duo Enterprise"
 msgstr ""
 
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Ultimate."
@@ -8495,6 +8501,9 @@ msgid "BillingPlans|Multiple approval rules"
 msgstr ""
 
 msgid "BillingPlans|No credit card required"
+msgstr ""
+
+msgid "BillingPlans|Not ready to trial the full suite of GitLab and GitLab Duo features? Start a free trial of GitLab Duo Pro instead."
 msgstr ""
 
 msgid "BillingPlans|Not the group you're looking for? %{all_groups_link}"
@@ -8527,6 +8536,12 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
+msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{days} days, no credit card required."
+msgstr ""
+
+msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
+msgstr ""
+
 msgid "BillingPlans|Start a free GitLab Duo Pro trial"
 msgstr ""
 
@@ -8534,6 +8549,15 @@ msgid "BillingPlans|Start a free Ultimate trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free Ultimate trial. No credit card required."
+msgstr ""
+
+msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features."
+msgstr ""
+
+msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features. You can try it for free, no credit card required."
+msgstr ""
+
+msgid "BillingPlans|Start free trial of GitLab Ultimate and GitLab Duo Enterprise"
 msgstr ""
 
 msgid "BillingPlans|Static Application Security Testing"
@@ -8561,6 +8585,9 @@ msgid "BillingPlans|To manage the plan for this group, visit the billing section
 msgstr ""
 
 msgid "BillingPlans|Trusted by"
+msgstr ""
+
+msgid "BillingPlans|Try GitLab Duo Pro"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
