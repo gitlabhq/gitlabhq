@@ -16,4 +16,5 @@ tier:
   - premium
   - ultimate
 milestone: "17.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161144
 value_json_schema: "config/metrics/objects_schemas/instance_feature_flags.json"

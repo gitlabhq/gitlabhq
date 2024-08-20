@@ -179,7 +179,7 @@ export default {
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>
                 <clipboard-button
-                  v-gl-tooltip.bottom.html="copySourceBranchTooltip"
+                  tooltip-placement="bottom"
                   :title="copySourceBranchTooltip"
                   :text="getNoteableData.source_branch"
                   size="small"

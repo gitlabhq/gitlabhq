@@ -6,7 +6,7 @@ product_group: code_review
 value_type: number
 status: active
 milestone: '13.12'
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51201
 time_frame: 7d
 instrumentation_class: RedisHLLMetric
 data_source: redis_hll
