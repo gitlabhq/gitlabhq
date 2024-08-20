@@ -1,0 +1,9 @@
+---
+name: write_to_ci_build_tags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472973
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162276
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/478230
+milestone: '17.4'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

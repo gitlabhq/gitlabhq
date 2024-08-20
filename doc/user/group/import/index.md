@@ -176,7 +176,7 @@ sidekiq['queue_groups'] = [
 ```
 
 If you are using GitLab 16.11 and earlier, explicitly disable any
-[queue selectors](../../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+[queue selectors](https://archives.docs.gitlab.com/16.11/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated):
 
 ```ruby
 sidekiq['queue_selector'] = false

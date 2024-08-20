@@ -67,7 +67,7 @@ For example, these changes don't create a conflict:
 1. Branch `one` renames `example.txt` to `example1.txt`
 1. Branch `two` renames `example.txt` to `example_old.txt`.
 
-When these branches merge, both `example1.txt` and `example_old` are present.
+When these branches merge, both `example1.txt` and `example_old.txt` are present.
 
 ## Methods of resolving conflicts
 

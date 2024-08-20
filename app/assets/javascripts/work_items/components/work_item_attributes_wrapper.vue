@@ -346,7 +346,6 @@ export default {
     <participants
       v-if="workItemParticipants.length"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
-      :number-of-less-participants="10"
       :participants="workItemParticipants"
     />
   </div>

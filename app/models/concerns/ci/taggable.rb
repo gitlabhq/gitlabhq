@@ -97,6 +97,8 @@ module Ci
         taggings.create!(tag_id: tag.id, context: 'tags', taggable: self)
       end
 
+      yield(new_tags, old_tags) if block_given?
+
       true
     end
 

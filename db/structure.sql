@@ -7550,6 +7550,7 @@ CREATE TABLE catalog_resource_versions (
     cached_markdown_version integer,
     readme text,
     readme_html text,
+    published_by_id bigint,
     CONSTRAINT check_701bdce47b CHECK ((char_length(semver_prerelease) <= 255))
 );
 
@@ -13999,6 +14000,7 @@ CREATE TABLE observability_metrics_issues_connections (
     updated_at timestamp with time zone NOT NULL,
     metric_type smallint NOT NULL,
     metric_name text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_3c743c1262 CHECK ((char_length(metric_name) <= 500))
 );
 
@@ -26902,6 +26904,8 @@ CREATE INDEX index_catalog_resource_components_on_version_id ON catalog_resource
 
 CREATE INDEX index_catalog_resource_versions_on_project_id ON catalog_resource_versions USING btree (project_id);
 
+CREATE INDEX index_catalog_resource_versions_on_published_by_id ON catalog_resource_versions USING btree (published_by_id);
+
 CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_resource_versions USING btree (release_id);
 
 CREATE INDEX index_catalog_resource_versions_on_resource_id_and_released_at ON catalog_resource_versions USING btree (catalog_resource_id, released_at);
@@ -28793,6 +28797,8 @@ CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requ
 CREATE INDEX index_observability_logs_issues_connections_on_project_id ON observability_logs_issues_connections USING btree (project_id);
 
 CREATE INDEX index_observability_metrics_issues_connections_on_namespace_id ON observability_metrics_issues_connections USING btree (namespace_id);
+
+CREATE INDEX index_observability_metrics_issues_connections_on_project_id ON observability_metrics_issues_connections USING btree (project_id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
 
@@ -33346,6 +33352,9 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY protected_tags
     ADD CONSTRAINT fk_8e4af87648 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY observability_metrics_issues_connections
+    ADD CONSTRAINT fk_8e765678ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
     ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
@@ -33624,6 +33633,9 @@ ALTER TABLE ONLY namespace_bans
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES plans(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_resource_versions
+    ADD CONSTRAINT fk_bd1b87591a FOREIGN KEY (published_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_bd4ae15ce4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

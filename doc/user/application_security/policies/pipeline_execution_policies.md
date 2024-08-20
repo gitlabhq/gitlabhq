@@ -48,7 +48,6 @@ the following sections and tables provide an alternative.
 
 Note the following:
 
-- Jobs variables from pipeline execution policies take precedence over the project's CI/CD configuration.
 - Users triggering a pipeline must have at least read access to the pipeline execution file specified in the pipeline execution policy, otherwise the pipelines do not start.
 - If the pipeline execution file gets deleted or renamed, the pipelines in projects with the policy enforced might stop working.
 - Pipeline execution policy jobs can be assigned to one of the two reserved stages:
@@ -85,11 +84,22 @@ Examples:
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
-### Examples
+## CI/CD variables
+
+Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy 
+and cannot be overwritten from the outside.
+
+Variables can be shared with pipeline execution policies using group or project settings. If a variable is not defined in a pipeline execution policy, the value from group or project settings is applied.
+If the variable is defined in the pipeline execution policy, the group or project setting is overwritten.
+This behavior is independent from the pipeline execution policy strategy.
+
+You can [define project or group variables in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui).
+
+## Examples
 
 These examples demonstrate what you can achieve with pipeline execution policies.
 
-#### Pipeline execution policy
+### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):
@@ -112,7 +122,7 @@ pipeline_execution_policy:
       - id: 361
 ```
 
-##### Customize enforced jobs based on project variables
+### Customize enforced jobs based on project variables
 
 You can customize enforced jobs, based on the presence of a project variable. In this example,
 the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
@@ -134,4 +144,32 @@ policy::container-security:
   script:
     - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
     - echo "CS_IMAGE:$CS_IMAGE"
+```
+
+### Use group or project variables in a pipeline execution policy
+
+You can use group or project variables in a pipeline execution policy.
+
+With a project variable of `PROJECT_VAR="I'm a project"` the following pipeline execution policy job results in: `I'm a project`.
+
+```yaml
+pipeline execution policy job:
+    stage: .pipeline-policy-pre
+    script:
+    - echo "$PROJECT_VAR"
+```
+
+### Enforce a variable's value by using a pipeline execution policy
+
+The value of a variable defined in a pipeline execution policy overrides the value of a group or policy variable with the same name.
+In this example, the project value of variable `PROJECT_VAR` is overwritten and the job results in: `I'm a pipeline execution policy`.
+
+```yaml
+variables:
+  PROJECT_VAR: "I'm a pipeline execution policy"
+
+pipeline execution policy job:
+    stage: .pipeline-policy-pre
+    script:
+    - echo "$PROJECT_VAR"
 ```

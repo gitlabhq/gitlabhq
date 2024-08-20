@@ -24,10 +24,18 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       )
     end
 
-    let(:release) { create(:release, tag: '1.2.0', project: project, sha: project.repository.root_ref_sha) }
+    let(:release) do
+      create(:release,
+        tag: '1.2.0',
+        project: project, sha: project.repository.root_ref_sha, author: project.first_owner
+      )
+    end
+
+    let(:user) { project.first_owner }
+
     let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
-    subject(:execute) { described_class.new(release).execute }
+    subject(:execute) { described_class.new(release, user).execute }
 
     context 'when the project is not a catalog resource' do
       let(:release) { create(:release, tag: '1.2.1') }
@@ -157,6 +165,22 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
 
         expect(response).to be_error
         expect(response.message).to include('Spec must be a valid json schema')
+      end
+    end
+
+    context 'when the user is not the author of the release' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns an error and does not create a version' do
+        response = execute
+
+        expect(Ci::Catalog::Resources::Version.count).to be(0)
+        expect(response).to be_error
+        expect(response.message).to include('Published by must be the same as the release author')
       end
     end
   end

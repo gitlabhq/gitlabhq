@@ -43,7 +43,7 @@ module QA
           praefect_manager.start_node(praefect_manager.secondary_node)
         end
 
-        it 'does not read from the unhealthy node',
+        it 'does not read from the unhealthy node', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834' do
           pre_read_data = praefect_manager.query_read_distribution
 

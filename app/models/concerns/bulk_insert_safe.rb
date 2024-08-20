@@ -77,8 +77,14 @@ module BulkInsertSafe
     # @param [Symbol]  returns           Pass :ids to return an array with the primary key values
     #                                    for all inserted records or nil to omit the underlying
     #                                    RETURNING SQL clause entirely.
+    # @param [Symbol/Array] unique_by    Defines index or columns to use to consider item duplicate
     # @param [Proc]    handle_attributes Block that will receive each item attribute hash
     #                                    prior to insertion for further processing
+    #
+    # Unique indexes can be identified by columns or name:
+    #  - unique_by: :isbn
+    #  - unique_by: %i[ author_id name ]
+    #  - unique_by: :index_books_on_isbn
     #
     # Note that this method will throw on the following occasions:
     # - [PrimaryKeySetError]            when primary keys are set on entities prior to insertion
@@ -87,12 +93,12 @@ module BulkInsertSafe
     #
     # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_insert!(items, validate: true, skip_duplicates: false, returns: nil, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
+    def bulk_insert!(items, validate: true, skip_duplicates: false, returns: nil, unique_by: nil, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
       _bulk_insert_all!(items,
         validate: validate,
         on_duplicate: skip_duplicates ? :skip : :raise,
         returns: returns,
-        unique_by: nil,
+        unique_by: unique_by,
         batch_size: batch_size,
         &handle_attributes)
     end

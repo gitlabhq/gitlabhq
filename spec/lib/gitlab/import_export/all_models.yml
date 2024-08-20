@@ -456,6 +456,7 @@ builds:
 - terraform_state_versions
 - taggings
 - base_tags
+- tag_links
 - tag_taggings
 - tags
 - security_scans
@@ -892,6 +893,7 @@ project:
 - approval_policy_rule_project_links
 - approval_policy_rules
 - secrets_manager
+- observability_metrics
 award_emoji:
 - awardable
 - user

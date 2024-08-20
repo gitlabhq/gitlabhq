@@ -14423,6 +14423,30 @@ The edge type for [`Note`](#note).
 | <a id="noteedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="noteedgenode"></a>`node` | [`Note`](#note) | The item at the end of the edge. |
 
+#### `ObservabilityMetricConnection`
+
+The connection type for [`ObservabilityMetric`](#observabilitymetric).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitymetricconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="observabilitymetricconnectionedges"></a>`edges` | [`[ObservabilityMetricEdge]`](#observabilitymetricedge) | A list of edges. |
+| <a id="observabilitymetricconnectionnodes"></a>`nodes` | [`[ObservabilityMetric]`](#observabilitymetric) | A list of nodes. |
+| <a id="observabilitymetricconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ObservabilityMetricEdge`
+
+The edge type for [`ObservabilityMetric`](#observabilitymetric).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitymetricedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="observabilitymetricedgenode"></a>`node` | [`ObservabilityMetric`](#observabilitymetric) | The item at the end of the edge. |
+
 #### `OncallParticipantTypeConnection`
 
 The connection type for [`OncallParticipantType`](#oncallparticipanttype).
@@ -27570,6 +27594,18 @@ Nuget metadata.
 | <a id="nugetmetadatalicenseurl"></a>`licenseUrl` | [`String`](#string) | License URL of the Nuget package. |
 | <a id="nugetmetadataprojecturl"></a>`projectUrl` | [`String`](#string) | Project URL of the Nuget package. |
 
+### `ObservabilityMetric`
+
+ObservabilityMetric represents a connection between an issue and a metric.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitymetricissue"></a>`issue` | [`Issue`](#issue) | Issues that the metric is attributed to. |
+| <a id="observabilitymetricname"></a>`name` | [`String!`](#string) | Name of the metric. |
+| <a id="observabilitymetrictype"></a>`type` | [`String!`](#string) | OpenTelemetry metric type of the metric. |
+
 ### `OncallParticipantType`
 
 The rotation participant and color palette.
@@ -29892,6 +29928,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectnestedenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectnestedenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
 | <a id="projectnestedenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
+
+##### `Project.observabilityMetricsLinks`
+
+Metrics attached to the project.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ObservabilityMetricConnection`](#observabilitymetricconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectobservabilitymetricslinksname"></a>`name` | [`String`](#string) | Name of the metric. |
+| <a id="projectobservabilitymetricslinkstype"></a>`type` | [`OpenTelemetryMetricType`](#opentelemetrymetrictype) | Type of the metric. |
 
 ##### `Project.packages`
 
@@ -36617,6 +36674,17 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumdays"></a>`DAYS` | Days. |
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
+
+### `OpenTelemetryMetricType`
+
+Enum defining the type of OpenTelemetry metric.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="opentelemetrymetrictypeexponential_histogram_type"></a>`EXPONENTIAL_HISTOGRAM_TYPE` | Exponential Histogram Type type. |
+| <a id="opentelemetrymetrictypegauge_type"></a>`GAUGE_TYPE` | Gauge Type type. |
+| <a id="opentelemetrymetrictypehistogram_type"></a>`HISTOGRAM_TYPE` | Histogram Type type. |
+| <a id="opentelemetrymetrictypesum_type"></a>`SUM_TYPE` | Sum Type type. |
 
 ### `OrganizationGroupProjectDisplay`
 

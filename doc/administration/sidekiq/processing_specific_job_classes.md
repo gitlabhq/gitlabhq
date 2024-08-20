@@ -9,25 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 These are advanced settings. While they are used on GitLab.com, most GitLab
 instances should only add more processes that listen to all queues. This is the
-same approach we take in our [Reference Architectures](../reference_architectures/index.md).
+same approach described in the [Reference Architectures](../reference_architectures/index.md).
 
-GitLab has two options for creating Sidekiq processes that only handle specific
-job classes:
+Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 
-1. [Routing rules](#routing-rules) are used on GitLab.com. They direct jobs
-   inside the application to queue names configured by administrators. This
-   lowers the load on Redis, which is important on very large-scale deployments.
-1. [Queue selectors](#queue-selectors-deprecated) perform the job selection outside the
-   application, when starting the Sidekiq process. This was used on GitLab.com
-   until September 2021, and is retained for compatibility reasons.
-
-Both of these use the same [worker matching query](#worker-matching-query)
-syntax. While they can technically be used together, most deployments should
-choose one or the other; there is no particular benefit in combining them.
+Another alternative is to use [routing rules](#routing-rules) which direct specific
+job classes inside the application to queue names that you configure. Then, the Sidekiq
+processes only need to listen to a handful of the configured queues. Doing so
+lowers the load on Redis, which is important on very large-scale deployments.
 
 ## Routing rules
 
 > - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
+> - Queue selectors [replaced by routing rules](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 17.0.
 
 NOTE:
 Mailer jobs cannot be routed by routing rules, and always go to the
@@ -51,22 +45,21 @@ job classes based on their attributes. The syntax is an ordered array of pairs o
 
 ### Routing rules migration
 
-After the Sidekiq routing rules are changed, administrators must take care with
+After the Sidekiq routing rules are changed, you must take care with
 the migration to avoid losing jobs entirely, especially in a system with long
 queues of jobs. The migration can be done by following the migration steps
 mentioned in [Sidekiq job migration](sidekiq_job_migration.md).
 
 ### Routing rules in a scaled architecture
 
-Routing rules must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes) as they are part of the
-application configuration. Queue selectors can be different across GitLab nodes
-because they only change the arguments to the launched Sidekiq process.
+Routing rules must be the same across all GitLab nodes (especially GitLab Rails
+and Sidekiq nodes) as they are part of the application configuration.
 
 ### Detailed example
 
 This is a comprehensive example intended to show different possibilities.
 A [Helm chart example is also available](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#queues).
-They are not recommendations.
+These are not recommendations.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -98,212 +91,16 @@ They are not recommendations.
    ]
    ```
 
-   If you are using GitLab 16.11 and earlier, explicitly disable any [queue selectors](#queue-selectors-deprecated)
-   that might be enabled:
-
-   ```ruby
-   sidekiq['queue_selector'] = false
-   ```
-
 1. Save the file and reconfigure GitLab:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
-
-<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
-
-## Queue selectors (deprecated)
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
-and is planned for removal in 17.0. Most instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
-Another alternative is to use [routing rules](#routing-rules) (be warned this is an advanced setting). This change is a breaking change.
-
-The `queue_selector` option allows queue groups to be selected in a more general
-way using a [worker matching query](#worker-matching-query). After
-`queue_selector` is set, all `queue_groups` must follow the aforementioned
-syntax.
-
-### Using queue selectors
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   sidekiq['enable'] = true
-   sidekiq['routing_rules'] = [['*', nil]]
-   sidekiq['queue_selector'] = true
-   sidekiq['queue_groups'] = [
-     # Run all non-CPU-bound queues that are high urgency
-     'resource_boundary!=cpu&urgency=high',
-     # Run all continuous integration and pages queues that are not high urgency
-     'feature_category=continuous_integration,pages&urgency!=high',
-     # Run all queues
-     '*'
-   ]
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-### Negate settings (deprecated)
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
-and is planned for removal in 17.0. Most instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
-Another alternative is to use [routing rules](#routing-rules) (be warned this is an advanced setting). This change is a breaking change.
-
-This allows you to have the Sidekiq process work on every queue **except** the
-ones you list. This is generally only used when there are multiple Sidekiq
-nodes. In this example, we exclude all import-related jobs from a Sidekiq node.
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   sidekiq['routing_rules'] = [['*', nil]]
-   sidekiq['negate'] = true
-   sidekiq['queue_selector'] = true
-   sidekiq['queue_groups'] = [
-      "feature_category=importers"
-   ]
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-## Migrating from queue selectors to routing rules
-
-We recommend GitLab deployments add more Sidekiq processes listening to all queues, as in the
-[Reference Architectures](../reference_architectures/index.md). For very large-scale deployments, we recommend
-[routing rules](#routing-rules) instead of [queue selectors](#queue-selectors-deprecated). We use routing rules on GitLab.com as
-it helps to lower the load on Redis.
-
-### Single node setup
-
-To migrate from queue selectors to routing rules in a [single node setup](../reference_architectures/index.md#standalone-non-ha):
-
-1. Open `/etc/gitlab/gitlab.rb`.
-1. Set `sidekiq['queue_selector']` to `false`.
-1. Take all queue `selector`s in the `sidekiq['queue_groups']`.
-1. Give each `selector` a `queue_name` and put them in `[selector, queue_name]` format.
-1. Replace `sidekiq['routing_rules']` with an array of `[selector, queue_name]` entries.
-1. Add a wildcard match of `['*', 'default']` as the last entry in `sidekiq['routing_rules']`. This "catchall" queue has
-   to be named as `default`.
-1. Replace `sidekiq['queue_groups']` with `queue_name`s.
-1. Add at least one `default` queue and at least one `mailers` queue to the `sidekiq['queue_groups']`.
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
-
-   ```shell
-   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
-   ```
-
-NOTE:
-It is important to run the Rake task immediately after reconfiguring GitLab.
-After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
-
-#### Migration example
-
-The following example better illustrates the migration process above:
-
-1. In `/etc/gitlab/gitlab.rb`, check the `urgency` queries in the `sidekiq['queue_groups']`. For example:
-
-   ```ruby
-   sidekiq['routing_rules'] = []
-   sidekiq['queue_selector'] = true
-   sidekiq['queue_groups'] = [
-     'urgency=high',
-     'urgency=low',
-     'urgency=throttled',
-     '*'
-   ]
-   ```
-
-1. Use these same `urgency` queries to update `/etc/gitlab/gitlab.rb` to use routing rules:
-
-   ```ruby
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
-
-   sidekiq['routing_rules'] = [
-     ['urgency=high', 'high_urgency'],
-     ['urgency=low', 'low_urgency'],
-     ['urgency=throttled', 'throttled_urgency'],
-     # Wildcard matching, route the rest to `default` queue
-     ['*', 'default']
-   ]
-
-   sidekiq['queue_selector'] = false
-   sidekiq['queue_groups'] = [
-     'high_urgency',
-     'low_urgency',
-     'throttled_urgency',
-     'default,mailers'
-   ]
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
-
-   ```shell
-   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
-   ```
-
-WARNING:
-As described in [the concurrency section](extra_sidekiq_processes.md#manage-thread-counts-explicitly), we
-recommend setting `min_concurrency` and `max_concurrency` to the same value. For example, if the number of queues
-in a queue group entry is 1, while `min_concurrency` is set to `0`, and `max_concurrency` is set to `20`, the resulting
-concurrency is set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
-bound tasks.
-
-### Multiple node setup
-
-For a multiple node setup:
-
-- Reconfigure all GitLab Rails and Sidekiq nodes with the same `sidekiq['routing_rules']` setting.
-- Alternate between GitLab Rails and Sidekiq nodes as you update and reconfigure the nodes. This ensures the newly configured Sidekiq is ready to consume jobs from the new set of
-  queues during the migration. Otherwise, the new jobs hang until the end of the migration.
-
-Consider the following example of three GitLab Rails nodes and two Sidekiq nodes. To migrate from queue selectors to routing rules:
-
-1. In Sidekiq 1, follow all steps but one in [single node setup](#single-node-setup).
-   **Do not** run the Rake task to [migrate existing jobs](sidekiq_job_migration.md).
-1. Configure the external load balancer to remove Rails 1 from accepting traffic. This step ensures Rails 1 is not serving any request while the Rails process is restarting. For more information, see [issue 428794](https://gitlab.com/gitlab-org/gitlab/-/issues/428794#note_1619505870).
-1. In Rails 1, update `/etc/gitlab/gitlab.rb` to use the same `sidekiq['routing_rules']` setting as Sidekiq 1.
-   Only `sidekiq['routing_rules']` is required in Rails nodes.
-1. Configure the external load balancer to register Rails 1 back.
-1. Repeat steps 1 to 4 for Sidekiq 2 and Rails 2.
-1. Repeat steps 2 to 4 for Rails 3.
-1. If there are more Sidekiq nodes than Rails nodes, follow step 1 on the remaining Sidekiq nodes.
-1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
-
-   ```shell
-   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
-   ```
-
-<!--- end_remove -->
 
 ## Worker matching query
 
-GitLab provides a query syntax to match a worker based on its attributes. This
-query syntax is employed by both [routing rules](#routing-rules) and
-[queue selectors](#queue-selectors-deprecated). A query includes two components:
+GitLab provides a query syntax to match a worker based on its attributes
+employed by routing rules. A query includes two components:
 
 - Attributes that can be selected.
 - Operators used to construct a query.
@@ -345,8 +142,8 @@ neither of those tags.
 
 ### Available operators
 
-Routing rules and queue selectors support the following operators, listed from
-highest to lowest precedence:
+Routing rules support the following operators, listed from highest to lowest
+precedence:
 
 - `|` - the logical `OR` operator. For example, `query_a|query_b` (where `query_a`
   and `query_b` are queries made up of the other operators here) includes

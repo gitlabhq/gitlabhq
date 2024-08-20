@@ -20,9 +20,12 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: major_release)
   end
 
+  subject(:version) { v1_1_0 }
+
   it { is_expected.to belong_to(:release) }
   it { is_expected.to belong_to(:catalog_resource).class_name('Ci::Catalog::Resource') }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:published_by).class_name('User') }
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
   it { is_expected.to delegate_method(:sha).to(:release) }
   it { is_expected.to delegate_method(:author_id).to(:release) }
@@ -31,6 +34,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     it { is_expected.to validate_presence_of(:release) }
     it { is_expected.to validate_presence_of(:catalog_resource) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:published_by).on(:create) }
 
     describe 'semver validation' do
       where(:version, :valid, :semver_major, :semver_minor, :semver_patch, :semver_prerelease) do
@@ -52,6 +56,15 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
           expect(catalog_version.semver_patch).to be semver_patch
           expect(catalog_version.semver_prerelease).to eq semver_prerelease
         end
+      end
+    end
+
+    describe 'validate_published_by_is_release_author' do
+      it 'validates that the published_by user is the release author' do
+        version = build(:ci_catalog_resource_version, release: major_release, published_by: current_user)
+
+        expect(version).to be_invalid
+        expect(version.errors.full_messages).to include('Published by must be the same as the release author')
       end
     end
   end
