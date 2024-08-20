@@ -42,10 +42,10 @@ module Import
     private
 
     def reassign_placeholder_records_batch(model_relation, placeholder_references, user_reference_column)
-      ApplicationRecord.transaction do
+      model_relation.klass.transaction do
         model_relation.update_all({ user_reference_column => import_source_user.reassign_to_user_id })
-        placeholder_references.delete_all
       end
+      placeholder_references.delete_all
     rescue ActiveRecord::RecordNotUnique
       placeholder_references.each do |placeholder_reference|
         reassign_placeholder_record(placeholder_reference, user_reference_column)

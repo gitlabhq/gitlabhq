@@ -123,9 +123,38 @@ For more information, see the:
 
 ## 17.2.1
 
-- Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue will be
-  fixed in a future patch release, likely in GitLab 17.2.2. If you must upgrade to GitLab 17.2.1 and if you encounter an error during the migration, please
-  follow the [workaround to remove unknown sequences](https://gitlab.com/gitlab-org/gitlab/-/issues/474293#current-workaround).
+- Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue has
+  been fixed in GitLab 17.2.2.
+
+- Upgrades to [GitLab 17.2.1 may fail with the error](https://gitlab.com/gitlab-org/gitlab/-/issues/473337):
+
+  ```plaintext
+  PG::DependentObjectsStillExist: ERROR: cannot drop desired object(s) because other objects depend on them
+  ```
+
+  As [described in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/474525#note_2045274993),
+  this database sequence ownership issue has been fixed in GitLab
+  17.2.1. However, you might encounter this if the migrations in 17.2.0
+  did not complete, but the Linux package prevents the upgrade to 17.2.1 or later because of a malformed
+  JSON file. For example, you might see this error:
+
+  ```plaintext
+  Malformed configuration JSON file found at /opt/gitlab/embedded/nodes/gitlab.example.com.json.
+  This usually happens when your last run of `gitlab-ctl reconfigure` didn't complete successfully.
+  This file is used to check if any of the unsupported configurations are enabled,
+  and hence require a working reconfigure before upgrading.
+  Please run `sudo gitlab-ctl reconfigure` to fix it and try again.
+  ```
+
+  The current workaround is to:
+
+  1. Remove the JSON files in `/opt/gitlab/embedded/nodes`:
+
+     ```shell
+     rm /opt/gitlab/embedded/nodes/*.json
+     ```
+
+  1. Upgrade to GitLab 17.2.1 or higher.
 
 ## 17.1.0
 

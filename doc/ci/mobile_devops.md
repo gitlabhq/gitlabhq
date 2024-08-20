@@ -53,7 +53,7 @@ For example:
 
 ```yaml
 test:
-  image: macos-12-xcode-14
+  image: macos-14-xcode-15
   stage: test
   script:
     - fastlane test

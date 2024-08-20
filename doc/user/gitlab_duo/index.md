@@ -128,7 +128,7 @@ DETAILS:
 - Visualize which metrics improved as a result of investments in AI.
 - Compare the performance of teams that are using AI against teams that are not using AI.
 - Track the progress of AI adoption.
-- [View documentation](../analytics/value_streams_dashboard.md#ai-impact-analytics).
+- [View documentation](../analytics/ai_impact_analytics.md).
 
 ## Beta features
 
