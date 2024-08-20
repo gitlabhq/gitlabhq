@@ -10,12 +10,19 @@ module Git
       project.repository.before_push_tag
       TagHooksService.new(project, current_user, params).execute
 
+      destroy_releases
       unlock_artifacts
 
       true
     end
 
     private
+
+    def destroy_releases
+      return unless removing_tag?
+
+      Releases::DestroyService.new(project, current_user, tag: Gitlab::Git.tag_name(ref)).execute
+    end
 
     def unlock_artifacts
       return unless removing_tag?

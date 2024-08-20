@@ -2,7 +2,7 @@
 
 module Gitlab
   module Octokit
-    class Middleware
+    class UrlValidation
       def initialize(app)
         @app = app
       end

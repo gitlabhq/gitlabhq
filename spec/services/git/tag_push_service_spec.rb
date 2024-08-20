@@ -60,6 +60,38 @@ RSpec.describe Git::TagPushService, feature_category: :source_code_management do
     end
   end
 
+  describe 'releases' do
+    context 'create tag' do
+      let(:oldrev) { blankrev }
+
+      it 'does nothing' do
+        expect(Releases::DestroyService).not_to receive(:new)
+
+        service.execute
+      end
+    end
+
+    context 'update tag' do
+      it 'does nothing' do
+        expect(Releases::DestroyService).not_to receive(:new)
+
+        service.execute
+      end
+    end
+
+    context 'delete tag' do
+      let(:newrev) { blankrev }
+
+      it 'removes associated releases' do
+        expect_next_instance_of(Releases::DestroyService, project, user, tag: tag) do |instance|
+          expect(instance).to receive(:execute)
+        end
+
+        service.execute
+      end
+    end
+  end
+
   describe 'artifacts' do
     context 'create tag' do
       let(:oldrev) { blankrev }
