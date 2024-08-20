@@ -856,8 +856,7 @@ module EE
 end
 ```
 
-Note that due to namespace differences, we need to use the full qualifier for some
-constants.
+We need to use the full qualifier for some constants due to namespace differences.
 
 #### EE parameters
 
@@ -1005,7 +1004,7 @@ end
 API::MergeRequests.prepend_mod_with('API::MergeRequests')
 ```
 
-Note that `update_merge_request_ee` doesn't do anything in CE, but
+`update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
 ```ruby
@@ -1188,7 +1187,7 @@ Instead place EE specs in the `ee/spec` folder.
 
 Use `FactoryBot.modify` to extend factories already defined in CE.
 
-Note that you cannot define new factories (even nested ones) inside the `FactoryBot.modify` block. You can do so in a
+You cannot define new factories (even nested ones) inside the `FactoryBot.modify` block. You can do so in a
 separate `FactoryBot.define` block as shown in the example below:
 
 ```ruby

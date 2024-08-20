@@ -211,8 +211,7 @@ configure this:
    echo some-password-here
    ```
 
-   Note that in production, you should avoid storing the password on
-   disk and use a secure mechanism for retrieving a password, such as
+   Avoid storing the password on disk, and use a secure mechanism for retrieving a password, such as
    Vault. For example, the script might look like:
 
    ```shell

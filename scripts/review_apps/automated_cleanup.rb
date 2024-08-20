@@ -79,7 +79,7 @@ module ReviewApps
 
     def perform_gitlab_environment_cleanup!(env_prefix:, days_for_delete:)
       puts "Dry-run mode." if dry_run
-      puts "Checking for GitLab #{env_prefix} environments without any deployments in them, or deployed more than #{days_for_delete} days ago..."
+      puts "Checking for GitLab #{env_prefix} environments deployed more than #{days_for_delete} days ago..."
 
       delete_threshold = threshold_time(days: days_for_delete)
 
@@ -87,9 +87,7 @@ module ReviewApps
         next unless environment.name.start_with?(env_prefix)
         # TODO: Find a way to reset those, so that we can properly delete them.
         next if environment.state == 'stopping' # We cannot delete environments in stopping state
-
-        deployments = gitlab.deployments(project_path, environment: environment.name, order_by: :created_at, sort: :desc)
-        next if deployments.count > 0 && Time.parse(deployments.first.created_at) > delete_threshold
+        next if Time.parse(environment.created_at) > delete_threshold
 
         stop_environment(environment)
         delete_environment(environment)
@@ -217,7 +215,7 @@ if $PROGRAM_NAME == __FILE__
   puts
 
   timed('Review Apps Environments cleanup') do
-    automated_cleanup.perform_gitlab_environment_cleanup!(env_prefix: 'review/', days_for_delete: 7)
+    automated_cleanup.perform_gitlab_environment_cleanup!(env_prefix: 'review/', days_for_delete: 14)
   end
 
   timed('Docs Review Apps environments cleanup') do

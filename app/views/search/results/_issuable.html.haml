@@ -1,33 +1,33 @@
 - position = local_assigns.fetch(:position, nil)
 
-.search-result-row.row.gl-display-flex.gl-sm-flex-direction-row.gl-flex-direction-column.gl-mt-5{ class: 'gl-pb-5! gl-mb-0!' }
+.search-result-row.row.gl-flex.sm:gl-flex-row.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0' }
   .col-sm-9
-    %span.gl-display-flex.gl-align-items-center
+    %span.gl-flex.gl-items-center
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)
       = sprite_icon('eye-slash', css_class: 'gl-text-secondary gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
       = link_to issuable_path(issuable), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }, class: 'gl-w-full' do
         %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(issuable.title, @search_term)
-    .gl-text-secondary.gl-mb-3.gl-mt-2.gl-font-sm
+    .gl-text-secondary.gl-mb-3.gl-mt-2.gl-text-sm
       = issuable_project_reference(issuable)
       &middot;
       = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(issuable.author, avatar: false) }).html_safe
       - if (target_branch = issuable_visible_target_branch(issuable))
-        %span.project-ref-path.has-tooltip.gl-inline-block.gl-text-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: target_branch} }
+        %span.project-ref-path.has-tooltip.gl-inline-block.gl-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: target_branch} }
           &nbsp;
-          = link_to project_ref_path(issuable.project, target_branch), class: 'ref-name gl-text-secondary!' do
+          = link_to project_ref_path(issuable.project, target_branch), class: 'ref-name !gl-text-secondary' do
             = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
             = target_branch
-    .description.term.gl-px-0.gl-font-sm
+    .description.term.gl-px-0.gl-text-sm
       = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)
     - if issuable.labels.any?
       .gl-mt-3
         - presented_labels_sorted_by_title(issuable.labels, issuable.project).each do |label|
           = link_to_label(label)
 
-  .col-sm-3.gl-mt-3.gl-sm-mt-0.gl-text-right
+  .col-sm-3.gl-mt-3.sm:gl-mt-0.gl-text-right
     - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
       %li.gl-list-none
         %span.has-tooltip{ title: _('Upvotes') }
           = sprite_icon('thumb-up', css_class: "gl-align-middle")
           = issuable.upvotes_count
-    %span.gl-text-secondary.gl-font-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe
+    %span.gl-text-secondary.gl-text-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe

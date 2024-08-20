@@ -216,11 +216,11 @@ CPU targets being the lowest common denominator to ensure the widest range of co
 - The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP.
 - The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS.
 
-Depending on other requirements such as memory or network bandwidth as well as cloud provider availability, different machine types are used accordingly throughout the architectures, but it is expected that the target CPUs above should perform well.
+Depending on other requirements such as memory or network bandwidth and cloud provider availability, different machine types are used accordingly throughout the architectures, but it is expected that the target CPUs above should perform well.
 
 If you want, you can select a newer machine type series and have improved performance as a result.
 
-Additionally, ARM CPUs are supported for Linux package environments as well as for any [Cloud Provider services](#cloud-provider-services) where applicable.
+Additionally, ARM CPUs are supported for Linux package environments and for any [Cloud Provider services](#cloud-provider-services) where applicable.
 
 NOTE:
 Any "burstable" instance types are not recommended due to inconsistent performance.
@@ -251,10 +251,10 @@ See [Recommended cloud providers and services](index.md#recommended-cloud-provid
 The reference architectures were tested with repositories of varying sizes that follow best practices.
 
 **However, [large monorepos](../../user/project/repository/monorepos/index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
-Their presence, as well as how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
+Their presence, and how they are used, can put a significant strain on the entire system from Gitaly through to the underlying infrastructure.
 
 WARNING:
-If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 As such, large monorepos come with notable cost. If you have such a repository we strongly recommend
 the following guidance is followed to ensure the best chance of good performance and to keep costs in check:
@@ -415,7 +415,7 @@ Additionally, the following cloud provider services are recommended for use as p
 
 If you choose to use a third party external service:
 
-1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
 1. It's recommended in general to enable Read Replicas for [Database Load Balancing](../postgresql/database_load_balancing.md) if possible, matching the node counts for the standard Linux package deployment. This recommendation is especially so for larger environments (over 200 RPS / 10k users).
 1. Ensure that if a pooler is offered as part of the service that it can handle the total load without bottlenecking.
@@ -433,7 +433,7 @@ Several database cloud provider services are known not to support the above or h
 
 ### Recommendation notes for the Redis services
 
-[When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version. Note that this specifically must not be run in [Cluster mode](../../install/requirements.md#redis) as this is unsupported by GitLab.
+[When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version. This specifically must not be run in [Cluster mode](../../install/requirements.md#redis) as this is unsupported by GitLab.
 
 Redis is primarily single threaded. For environments targeting up to 200 RPS / 10,000 users or higher, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 
@@ -498,7 +498,7 @@ remain compliant.
 ### Why we perform the tests
 
 The Quality Department has a focus on measuring and improving the performance
-of GitLab, as well as creating and validating reference architectures that
+of GitLab, and creating and validating reference architectures that
 self-managed customers can rely on as performant configurations.
 
 For more information, see our [handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/performance-and-scalability/).
@@ -513,7 +513,7 @@ Testing occurs against all reference architectures and cloud providers in an aut
 Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. This is shared as an observation and not as an implicit recommendation.
 
 We aim to have a "test smart" approach where architectures tested have a good range that can also apply to others. Testing focuses on a 10k Linux package
-installation on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers as well as Cloud Native Hybrids.
+installation on GCP as the testing has shown this is a good bellwether for the other architectures and cloud providers and Cloud Native Hybrids.
 
 The Standard Reference Architectures are designed to be platform-agnostic, with everything being run on VMs through [the Linux package](https://docs.gitlab.com/omnibus/). While testing occurs primarily on GCP, ad-hoc testing has shown that they perform similarly on hardware with equivalent specs on other Cloud Providers or if run on premises (bare-metal).
 
@@ -635,9 +635,9 @@ table.test-coverage th {
 
 ## Cost calculator templates
 
-As a starting point, the following table lists initial compute calculator cost templates for the different reference architectures across GCP, AWS, and Azure via each cloud provider's official calculator.
+As a starting point, the following table lists initial compute calculator cost templates for the different reference architectures across GCP, AWS, and Azure by using each cloud provider's official calculator.
 
-However, please be aware of the following caveats:
+However, be aware of the following caveats:
 
 - These are only rough estimate compute templates for the Linux package architectures.
 - They do not take into account dynamic elements such as disk, network or object storage - Which can notably impact costs.
@@ -710,7 +710,7 @@ To get an accurate estimate of costs for your specific environment you must take
 
 Maintaining a Reference Architecture environment is generally the same as any other GitLab environment is generally covered in other sections of this documentation.
 
-In this section you'll find links to documentation for relevant areas as well as any specific Reference Architecture notes.
+In this section you'll find links to documentation for relevant areas and any specific Reference Architecture notes.
 
 ### Scaling an environment
 
@@ -719,7 +719,7 @@ The Reference Architectures have been designed as a starting point and are elast
 NOTE:
 If you're seeing a component continuously exhausting it's given resources it's strongly recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before performing any scaling. This is especially so if you're planning to scale any component significantly.
 
-For most components vertical and horizontal scaling can be applied as normal. However, before doing so though please be aware of the below caveats:
+For most components vertical and horizontal scaling can be applied as usual. However, before doing so, be aware of the below caveats:
 
 - When scaling Puma or Sidekiq vertically the amount of workers will need to be adjusted to use the additional specs. Puma will be scaled automatically on the next reconfigure but Sidekiq will need [its configuration changed beforehand](../sidekiq/extra_sidekiq_processes.md#start-multiple-processes).
 - Redis and PgBouncer are primarily single threaded. If these components are seeing CPU exhaustion they may need to be scaled out horizontally.
@@ -739,13 +739,13 @@ The following components can impact others when they have been significantly sca
 
 - Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis respectively.
   - Redis is primarily single threaded and in some cases may need to be split up into different instances (Cache / Persistent) if the increased throughput causes CPU exhaustion if a combined cluster is currently being used.
-  - PgBouncer is also single threaded but note that a scale out will result in a new pool being added that in turn will increase total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
+  - PgBouncer is also single threaded but a scale out might result in a new pool being added that in turn might increase the total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
 - Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 
 #### Scaling from a non-HA to an HA architecture
 
 While in most cases vertical scaling is only required to increase an environment's resources, if you are moving to an HA environment
-additional steps will be required for the following components to switch over to their HA forms respectively by following the given
+additional steps are required for the following components to switch over to their HA forms respectively by following the given
 documentation for each as follows
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
@@ -764,9 +764,9 @@ You should upgrade a Reference Architecture in the same order as you created it.
 
 ### Monitoring
 
-There are numerous options available to monitor your infrastructure, as well as [GitLab itself](../monitoring/index.md), and you should refer to your selected monitoring solution's documentation for more information.
+There are numerous options available to monitor your infrastructure, and [GitLab itself](../monitoring/index.md), and you should refer to your selected monitoring solution's documentation for more information.
 
-Of note, the GitLab application is bundled with [Prometheus as well as various Prometheus compatible exporters](../monitoring/prometheus/index.md) that could be hooked into your solution.
+Of note, the GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/index.md) that could be hooked into your solution.
 
 ## Update history
 
@@ -790,7 +790,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 **2023:**
 
 - [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139557): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
-- [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expanded details on what each Reference Architecture is designed for, the testing methodology used as well as added details on how to scale environments.
+- [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expanded details on what each Reference Architecture is designed for, the testing methodology used and added details on how to scale environments.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Added expanded notes on disk types, object storage and monitoring.
 - [2023-10-25](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Adjusted Sidekiq configuration example to use Linux Package role.
 - [2023-10-15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133835): Adjusted the Sidekiq recommendations to include a separate node for 2k and tweaks to instance type and counts for 3k and 5k.
@@ -802,7 +802,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2023-08-30](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130470): Expanded section on Geo under the Decision Tree.
 - [2023-08-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128529): Switch config example to use the Sidekiq role for Linux package.
 - [2023-08-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128374): Fixed an AWS Machine type typo for the 50k architecture.
-- [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expand details on what each Reference Architecture is designed for, the testing methodology used as well as added details on how to scale environments.
+- [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expand details on what each Reference Architecture is designed for, the testing methodology used and added details on how to scale environments.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Add expanded notes on disk types, object storage and monitoring.
 - [2023-10-25](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Adjust Sidekiq configuration example to use Linux Package role.
 - [2023-10-15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133835): Adjust the Sidekiq recommendations to include a separate node for 2k and tweaks to instance type and counts for 3k and 5k.
@@ -846,7 +846,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2022-09-22](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98263): Add explicit step to enable Incremental Logging when only Object Storage is being used.
 - [2022-09-22](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98184): Expand guidance on recommended cloud providers and services.
 - [2022-09-09](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97245): Expand Object Storage guidance and updated that NFS support for Git data ends with `15.6`.
-- [2022-08-24](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96150): Add clearer note that Gitaly Cluster is not supported in Kubernetes.
+- [2022-08-24](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96150): Add a clearer note that Gitaly Cluster is not supported in Kubernetes.
 - [2022-08-24](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96021): Add section on supported CPUs and types.
 - [2022-08-18](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95713): Update architecture tables to be clearer for Object Storage support.
 - [2022-08-17](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95185): Increase Cloud Native Hybrid pool specs for 2k architecture to ensure enough resources present for pods. Also increased Sidekiq worker count.
@@ -862,7 +862,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2022-04-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84389): Add cost estimates for AWS and Azure.
 - [2022-04-06](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84483): Update configuration examples for most components to be correctly included for Prometheus monitoring auto discovery.
 - [2022-03-30](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81538): Expand validation and testing result's section with more clearly language and more detail.
-- [2022-03-21](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83019): Add note that additional specs may be needed for Gitaly in some scenarios.
+- [2022-03-21](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83019): Add a note that additional specs may be needed for Gitaly in some scenarios.
 - [2022-03-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82087): Add guidance for preventing the GitLab KAS service running on nodes where not required.
 - [2022-03-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81814): Fix a typo for Praefect TLS port in configuration examples.
 - [2022-02-22](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81247): Add guidance to enable the Gitaly Pack-objects cache.
@@ -883,7 +883,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2021-11-24](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74612): Add recommendations for Database Load Balancing.
 - [2021-11-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73634): Add more detail about testing targets used for the architectures.
 - [2021-10-13](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72052): Add guidance around optionally enabling Incremental Logging via Redis.
-- [2021-10-07](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71784): Update Sidekiq config to include required `external_url` setting.
+- [2021-10-07](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71784): Update Sidekiq configuration to include required `external_url` setting.
 - [2021-10-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71576): Expand guidance around Gitaly Cluster and Gitaly Sharded.
 - [2021-09-29](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70625): Add note on what Cloud Native Hybrid architecture to use with small user counts.
 - [2021-09-27](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70602): Change guidance to now co-locate Redis Sentinel beside Redis on the same node.

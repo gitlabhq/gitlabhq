@@ -1189,12 +1189,14 @@ If you need to emphasize an area in a screenshot, use an arrow.
 
 ![callout example](img/callouts.png)
 
-#### Save the image
+#### Image requirements
 
-- Resize any wide or tall screenshots if needed, but make sure the screenshot is
-  still clear after being resized and compressed.
-- All images **must** be [compressed](#compress-images) to 100KB or less.
-  In many cases, 25-50KB or less is often possible without reducing image quality.
+- Resize any wide or tall screenshots.
+  - Width should be 1000 pixels or less.
+  - Height should be 500 pixels or less.
+  - Make sure the screenshot is still clear after being resized and compressed.
+- All images **must** be [compressed](#compress-images) to 100 KB or less.
+  In many cases, 25-50 KB or less is often possible without reducing image quality.
 - Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image:
   - If the image is of the GitLab interface, append the GitLab version to the filename,
@@ -1207,7 +1209,8 @@ If you need to emphasize an area in a screenshot, use an arrow.
   the `.md` document that you're working on is located.
 - Consider using PNG images instead of JPEG.
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
-- See also how to link and embed [videos](#videos) to illustrate the documentation.
+
+See also how to link and embed [videos](#videos) to illustrate the documentation.
 
 #### Compress images
 

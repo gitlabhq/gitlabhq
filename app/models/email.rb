@@ -14,6 +14,7 @@ class Email < ApplicationRecord
   scope :unconfirmed, -> { where(confirmed_at: nil) }
   scope :unconfirmed_and_created_before, ->(created_cut_off) { unconfirmed.where('created_at < ?', created_cut_off) }
 
+  before_save :detumble_email!, if: ->(email) { email.email_changed? }
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
   devise :confirmable
@@ -48,5 +49,11 @@ class Email < ApplicationRecord
 
   def primary_email_of_another_user?
     User.where(email: email).where.not(id: user_id).exists?
+  end
+
+  def detumble_email!
+    return unless Feature.enabled?(:store_detumbled_email, user, type: :gitlab_com_derisk)
+
+    self.detumbled_email = ::Gitlab::Utils::Email.normalize_email(email)
   end
 end

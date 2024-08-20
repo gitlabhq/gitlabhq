@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+helper.all_changed_files.each do |filename|
+  next unless filename.end_with?('.rb')
+  next if filename.start_with?('spec/', 'ee/spec/', 'jh/spec/', 'qa/')
+
+  cookie_setting.add_suggestions_for(filename)
+end

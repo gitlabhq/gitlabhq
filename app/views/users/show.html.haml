@@ -14,9 +14,9 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 %div{ class: container_class }
-  .user-profile-header.gl-display-flex.gl-justify-content-space-between.gl-flex-direction-column.gl-md-flex-direction-row-reverse.gl-my-5{ 'data-testid': 'user-profile-header' }
+  .user-profile-header.gl-flex.gl-justify-between.gl-flex-col.md:gl-flex-row-reverse.gl-my-5{ 'data-testid': 'user-profile-header' }
     %div
-      .cover-controls.gl-display-flex.gl-gap-3.gl-mb-4.gl-md-justify-content-end.gl-md-flex-direction-row-reverse
+      .cover-controls.gl-flex.gl-gap-3.gl-mb-4.md:gl-justify-end.md:gl-flex-row-reverse
         .js-user-profile-actions{ data: user_profile_actions_data(@user) }
         = render 'users/follow_user'
         -# The following edit button is mutually exclusive to the follow user button, they won't be shown together
@@ -26,20 +26,20 @@
             = s_("UserProfile|Edit profile")
         = render 'users/view_gpg_keys'
         = render 'users/view_user_in_admin_area'
-    .gl-display-flex.gl-flex-direction-row.gl-align-items-center.gl-gap-x-5.gl-mt-2.gl-sm-mt-0
+    .gl-flex.gl-flex-row.gl-items-center.gl-gap-x-5.gl-mt-2.sm:gl-mt-0
       .user-image.gl-relative.gl-md-py-3
         = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer', title: s_('UserProfile|View large avatar') do
           = render Pajamas::AvatarComponent.new(@user, alt: s_('UserProfile|User profile picture'), size: 96, avatar_options: { itemprop: "image" })
         - if @user.status&.busy?
-          = render Pajamas::BadgeComponent.new(s_('UserProfile|Busy'), variant: 'warning', class: 'gl-absolute gl-display-flex gl-justify-content-center gl-align-items-center gl-left-1/2 gl-bg-gray-50 gl-border gl-border-white -gl-translate-x-1/2 gl-top-full -gl-mt-3')
+          = render Pajamas::BadgeComponent.new(s_('UserProfile|Busy'), variant: 'warning', class: 'gl-absolute gl-flex gl-justify-center gl-items-center gl-left-1/2 gl-bg-gray-50 gl-border gl-border-white -gl-translate-x-1/2 gl-top-full -gl-mt-3')
       %div
-        %h1.gl-heading-1.gl-leading-1.gl-mr-2{ class: 'gl-my-0!', itemprop: 'name' }
+        %h1.gl-heading-1.gl-leading-1.gl-mr-2{ class: '!gl-my-0', itemprop: 'name' }
           = user_display_name(@user)
-        .gl-font-size-h2.gl-text-gray-500.gl-font-normal.gl-my-0
+        .gl-text-size-h2.gl-text-gray-500.gl-font-normal.gl-my-0
           = @user.to_reference
         - if !@user.blocked? && @user.confirmed? && @user.status&.customized?
-          .gl-my-2.cover-status.gl-font-sm.gl-pt-2.gl-display-flex.gl-flex-direction-column
-            .gl-inline-flex.gl-gap-3.gl-align-items-baseline
+          .gl-my-2.cover-status.gl-text-sm.gl-pt-2.gl-flex.gl-flex-col
+            .gl-inline-flex.gl-gap-3.gl-items-baseline
               = emoji_icon(@user.status.emoji)
               = markdown_field(@user.status, :message)
   .user-profile{ class: @user.blocked? ? '' : 'user-profile-with-sidebar' }

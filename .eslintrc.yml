@@ -127,8 +127,8 @@ rules:
     - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
       message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
     # This can be removed once GitLab is on Vue 3
-    - selector: MemberExpression[object.type='ThisExpression'][property.name='$delete']
-      message: "$delete is not supported in Vue 3"
+    - selector: MemberExpression[object.type='ThisExpression'][property.name=/(\$delete|\$set)/]
+      message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
   no-restricted-properties:
     - error
     - object: window
@@ -137,11 +137,19 @@ rules:
     # This can be removed once GitLab is on Vue 3
     - object: vm
       property: $delete
-      message: '$delete is not supported in Vue 3'
+      message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
     # This can be removed once GitLab is on Vue 3
     - object: Vue
       property: delete
-      message: 'delete is not supported in Vue 3'
+      message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
+    # This can be removed once GitLab is on Vue 3
+    - object: vm
+      property: $set
+      message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
+    # This can be removed once GitLab is on Vue 3
+    - object: Vue
+      property: set
+      message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
   no-restricted-imports:
     - error
     - paths:
@@ -208,14 +216,18 @@ overrides:
         - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
           message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
         # This can be removed once GitLab is on Vue 3
-        - selector: CallExpression[callee.property.name="$delete"]
-          message: "$delete is restricted from being used. $delete is not supported in Vue 3"
+        - selector: CallExpression[callee.property.name=/(\$delete|\$set)/]
+          message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
       no-restricted-properties:
         - error
         # This can be removed once GitLab is on Vue 3
         - object: Vue
           property: delete
-          message: 'delete is not supported in Vue 3'
+          message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
+        # This can be removed once GitLab is on Vue 3
+        - object: Vue
+          property: set
+          message: "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead."
       no-unsanitized/method: off
       no-unsanitized/property: off
       local-rules/require-valid-help-page-path: off

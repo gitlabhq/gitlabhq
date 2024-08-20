@@ -1,0 +1,9 @@
+---
+name: store_detumbled_email
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/work_items/827
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161663
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/478304
+milestone: '17.4'
+group: group::anti-abuse
+type: gitlab_com_derisk
+default_enabled: false

@@ -29,7 +29,7 @@
       - else
         .gl-relative
           - if local_assigns[:protected_from_deletion]
-            %span.gl-absolute.gl-display-inline-block.gl-w-full.gl-h-full{ data: { container: 'body', toggle: 'popover', placement: local_assigns[:placemet], html: 'true', triggers: 'hover', content: local_assigns[:popover_content] } }
+            %span.gl-absolute.gl-inline-block.gl-w-full.gl-h-full{ data: { container: 'body', toggle: 'popover', placement: local_assigns[:placemet], html: 'true', triggers: 'hover', content: local_assigns[:popover_content] } }
           = render Pajamas::ButtonComponent.new(size: :small,
             variant: :danger,
             href: [protected_branch_entity, protected_branch, { update_section: 'js-protected-branches-settings' }],

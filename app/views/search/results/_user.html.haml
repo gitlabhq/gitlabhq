@@ -6,11 +6,11 @@
     %div
       %div{ class: '!gl-inline-flex' }
         = render Pajamas::AvatarComponent.new(user, size: 32, alt: '')
-        .gl-ml-3{ class: 'gl-text-left!' }
-          = link_to user_path(user), class: 'gl-text-body', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
-            .gl-display-inline-block.gl-font-bold= simple_search_highlight_and_truncate(user.name, @search_term)
+        .gl-ml-3{ class: '!gl-text-left' }
+          = link_to user_path(user), class: 'gl-text-primary', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
+            .gl-inline-block.gl-font-bold= simple_search_highlight_and_truncate(user.name, @search_term)
             = user_status(user)
-            %div{ class: 'gl-text-left!' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
+            %div{ class: '!gl-text-left' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
   %td.gl-text-right{ data: { label: _('Activity') } }
     %div
       %span.gl-font-bold= _('User created:')

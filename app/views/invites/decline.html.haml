@@ -1,8 +1,8 @@
 - page_title _('Invitation declined')
 
-.col-md-7.gl-display-flex.gl-flex-direction-column.gl-mx-auto.gl-w-full.gl-sm-w-auto
-  .gl-align-self-center.gl-mb-4.gl-mt-7.gl-sm-mt-0= sprite_icon('check-circle', size: 48, css_class: 'gl-text-green-400')
-  %h2.gl-font-size-h2= _('You successfully declined the invitation')
+.col-md-7.gl-flex.gl-flex-col.gl-mx-auto.gl-w-full.sm:gl-w-auto
+  .gl-self-center.gl-mb-4.gl-mt-7.sm:gl-mt-0= sprite_icon('check-circle', size: 48, css_class: 'gl-text-green-400')
+  %h2.gl-text-size-h2= _('You successfully declined the invitation')
   %p
     = html_escape(_('We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders.')) % { inviter: sanitize_name(@member.created_by.name) }
   %p

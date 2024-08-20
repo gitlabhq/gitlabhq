@@ -30,7 +30,7 @@ This method ignores all the errors silently (including the ones related to `GITA
 
 A convenient script, [`bin/import-project`](https://gitlab.com/gitlab-org/quality/performance/blob/master/bin/import-project), is provided with [performance](https://gitlab.com/gitlab-org/quality/performance) project to import the Project tarball into a GitLab environment via API from the terminal.
 
-Note that to use the script, it requires some preparation if you haven't done so already:
+It requires some preparation to use the script if you haven't done so already:
 
 1. First, set up [`Ruby`](https://www.ruby-lang.org/en/documentation/installation/) and [`Ruby Bundler`](https://bundler.io) if they aren't already available on the machine.
 1. Next, install the required Ruby Gems via Bundler with `bundle install`.

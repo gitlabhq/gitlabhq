@@ -152,8 +152,8 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
 
 ### Specifying dependencies for the Gem
 
-It is important to note that while the gem has its own `Gemfile`, in the
-actual application the top-level `Gemfile` for the monolith GitLab will be
+While the gem has its own `Gemfile`, in the
+actual application the top-level `Gemfile` for the monolith GitLab is
 used instead of the individual `Gemfile` sitting in the directory of the gem.
 
 This means we should be aware that the `Gemfile` for the gem should not use
@@ -167,7 +167,7 @@ all gems we develop should also be tested against Rack 2, optionally also with
 Rack 3 if a separate `Gemfile` is used in CI. See an
 [example here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140463).
 
-Note that this does not limit to just Rack, but any dependencies.
+This does not limit to just Rack, but any dependencies.
 
 ### Examples of Gem extractions
 

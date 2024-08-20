@@ -2,17 +2,17 @@
   %td{ data: { label: s_('Profiles|Key') } }
     %div{ class: '!gl-flex !gl-pl-0' }
       = sprite_icon('key', css_class: "settings-list-icon gl-hidden sm:gl-inline gl-mr-2")
-      .gl-display-flex.gl-flex-direction-column.gl-text-truncate
-        %p.gl-text-truncate.gl-m-0
+      .gl-flex.gl-flex-col.gl-truncate
+        %p.gl-truncate.gl-m-0
           %code= key.fingerprint
         - if key.subkeys.present?
           .gl-mt-3{ class: '!gl-text-left' }
-            %span.gl-font-sm
+            %span.gl-text-sm
               = _('Subkeys:')
             %ul.subkeys-list
               - key.subkeys.each do |subkey|
                 %li
-                  %p.gl-text-truncate.gl-m-0
+                  %p.gl-truncate.gl-m-0
                     %code= subkey.fingerprint
 
   %td{ data: { label: _('Status') } }

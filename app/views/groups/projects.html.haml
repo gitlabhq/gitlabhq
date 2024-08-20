@@ -14,9 +14,9 @@
   - c.with_body do
     %ul.content-list
       - @projects.each do |project|
-        %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
-          = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 48, class: 'gl-flex-shrink-0 gl-mr-5')
-          .gl-min-w-0.gl-flex-grow-1
+        %li.project-row.gl-items-center{ class: '!gl-flex' }
+          = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 48, class: 'gl-shrink-0 gl-mr-5')
+          .gl-min-w-0.gl-grow
             .title.gl-mr-5
               = link_to project_path(project), class: 'js-prefetch-document' do
                 %span.project-full-name
@@ -34,9 +34,9 @@
 
           = render 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
 
-          .stats.gl-text-secondary.gl-flex-shrink-0.gl-hidden.sm:gl-flex.gl-gap-3
+          .stats.gl-text-secondary.gl-shrink-0.gl-hidden.sm:gl-flex.gl-gap-3
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
-          .controls.gl-flex-shrink-0.gl-ml-5
+          .controls.gl-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
               variant: :link,
               button_options: { class: 'gl-mr-2' }) do

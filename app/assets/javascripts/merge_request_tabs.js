@@ -433,18 +433,20 @@ export default class MergeRequestTabs {
   setCurrentAction(action) {
     this.currentAction = action;
 
+    const pathname = location.pathname.replace(/\/*$/, '');
+
     // Remove a trailing '/commits' '/diffs' '/pipelines'
-    let newState = location.pathname.replace(this.actionRegex, '');
+    let newStatePathname = pathname.replace(this.actionRegex, '');
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {
-      newState += `/${this.currentAction}`;
+      newStatePathname += `/${this.currentAction}`;
     }
 
     // Ensure parameters and hash come along for the ride
-    newState += location.search + location.hash;
+    const newState = newStatePathname + location.search + location.hash;
 
-    if (window.location.pathname !== newState) {
+    if (pathname !== newStatePathname) {
       window.history.pushState(
         {
           url: newState,

@@ -6,7 +6,7 @@
     - @events.sort_by(&:created_at).each do |event|
       %li
         %span.light.js-localtime{ :data => { :datetime => event.created_at.utc.strftime('%Y-%m-%dT%H:%M:%SZ'), :toggle => 'tooltip', :placement => 'top' } }
-          = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
+          = sprite_icon('clock', css_class: 'gl-align-text-bottom')
           = event.created_at.to_time.in_time_zone(local_timezone_instance(@user.timezone)).strftime('%-I:%M%P')
         - if event.visible_to_user?(current_user)
           - if event.push_action?

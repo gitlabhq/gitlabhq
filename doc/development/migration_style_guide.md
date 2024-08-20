@@ -537,7 +537,7 @@ end
 
 #### Changing default value for a column
 
-Note that changing column defaults can cause application downtime if a multi-release process is not followed.
+Changing column defaults can cause application downtime if a multi-release process is not followed.
 See [avoiding downtime in migrations for changing column defaults](database/avoiding_downtime_in_migrations.md#changing-column-defaults) for details.
 
 ```ruby
@@ -749,7 +749,7 @@ ALTER TABLE my_notes ADD COLUMN title text;
 The lock retry helper would repeatedly try the same transaction
 at different time intervals until it succeeded.
 
-Note that `SET LOCAL` scopes the parameter (`lock_timeout`) change to
+`SET LOCAL` scopes the parameter (`lock_timeout`) change to
 the transaction.
 
 ## Removing indexes
@@ -779,7 +779,7 @@ You can verify that the index is not being used with [Grafana](https://dashboard
 sum by (type)(rate(pg_stat_user_indexes_idx_scan{env="gprd", indexrelname="INSERT INDEX NAME HERE"}[30d]))
 ```
 
-Note that it is not necessary to check if the index exists prior to
+It is not necessary to check if the index exists prior to
 removing it, however it is required to specify the name of the
 index that is being removed. This can be done either by passing the name
 as an option to the appropriate form of `remove_index` or `remove_concurrent_index`,
@@ -1447,9 +1447,9 @@ class AddAndSeedMyColumn < Gitlab::Database::Migration[2.1]
 end
 ```
 
-The underlying table is modified and then accessed via ActiveRecord.
+The underlying table is modified and then accessed by using ActiveRecord.
 
-Note that this also needs to be used if the table is modified in a previous, different migration,
+This also needs to be used if the table is modified in a previous, different migration,
 if both migrations are run in the same `db:migrate` process.
 
 This results in the following. Note the inclusion of `my_column`:
@@ -1493,7 +1493,7 @@ different features of GitLab with different usage patterns, thus making assumpti
 on GitLab.com not enough.
 
 To identify a high-traffic table for GitLab.com the following measures are considered.
-Note that the metrics linked here are GitLab-internal only:
+The metrics linked here are GitLab-internal only:
 
 - [Read operations](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22m95%22:%7B%22datasource%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22topk%28500,%20sum%20by%20%28relname%29%20%28rate%28pg_stat_user_tables_seq_tup_read%7Benvironment%3D%5C%22gprd%5C%22%7D%5B12h%5D%29%20%2B%20rate%28pg_stat_user_tables_idx_scan%7Benvironment%3D%5C%22gprd%5C%22%7D%5B12h%5D%29%20%2B%20rate%28pg_stat_user_tables_idx_tup_fetch%7Benvironment%3D%5C%22gprd%5C%22%7D%5B12h%5D%29%29%29%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%7D,%22editorMode%22:%22code%22,%22legendFormat%22:%22__auto%22%7D%5D,%22range%22:%7B%22from%22:%22now-12h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1)
 - [Number of records](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22m95%22:%7B%22datasource%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22topk%28500,%20max%20by%20%28relname%29%20%28pg_stat_user_tables_n_live_tup%7Benvironment%3D%5C%22gprd%5C%22%7D%29%29%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%7D,%22editorMode%22:%22code%22,%22legendFormat%22:%22__auto%22%7D%5D,%22range%22:%7B%22from%22:%22now-6h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1)

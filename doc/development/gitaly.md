@@ -144,7 +144,7 @@ tests. Otherwise, Gitaly fails to boot.
 If you make changes to your local Gitaly in between test runs you need
 to manually run `make` again.
 
-Note that CI tests do not use your locally modified version of
+CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI, you must update
 `GITALY_SERVER_VERSION` as described at the beginning of this section.
 

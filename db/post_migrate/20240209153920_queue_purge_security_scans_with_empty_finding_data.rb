@@ -5,7 +5,7 @@ class QueuePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migration[
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   MIGRATION = "PurgeSecurityScansWithEmptyFindingData"
   DELAY_INTERVAL = 2.minutes
@@ -27,28 +27,36 @@ class QueuePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migration[
   end
 
   def up
-    return if Gitlab.com? || !Gitlab.ee?
+    # temporary until security_findings table is migrated
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/477986'
+    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+      break if Gitlab.com? || !Gitlab.ee?
 
-    first_succeeded_scan = SecurityScan.succeeded.first
+      first_succeeded_scan = SecurityScan.succeeded.first
 
-    return unless first_succeeded_scan
+      break unless first_succeeded_scan
 
-    first_finding = first_succeeded_scan.findings.first
+      first_finding = first_succeeded_scan.findings.first
 
-    return if first_finding&.finding_data.present?
+      break if first_finding&.finding_data.present?
 
-    queue_batched_background_migration(
-      MIGRATION,
-      :security_scans,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      batch_min_value: first_succeeded_scan.id
-    )
+      queue_batched_background_migration(
+        MIGRATION,
+        :security_scans,
+        :id,
+        job_interval: DELAY_INTERVAL,
+        batch_size: BATCH_SIZE,
+        sub_batch_size: SUB_BATCH_SIZE,
+        batch_min_value: first_succeeded_scan.id
+      )
+    end
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :security_scans, :id, [])
+    # temporary until security_findings table is migrated
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/477986'
+    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+      delete_batched_background_migration(MIGRATION, :security_scans, :id, [])
+    end
   end
 end

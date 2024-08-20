@@ -412,6 +412,9 @@ security_scans:
   - table: p_ci_builds
     column: build_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 security_trainings:
   - table: projects
     column: project_id

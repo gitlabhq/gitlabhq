@@ -663,7 +663,7 @@ WARNING:
   circling back with the author about that. Otherwise, if the MR only has a few commits, we'll
   be respecting the author's setting by not squashing them.
 - Go to the merge request's **Pipelines** tab, and select **Run pipeline**. Then, on the **Overview** tab, enable **Auto-merge**.
-  Note that:
+  Consider the following information:
   - If **[the default branch is broken](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master),
     do not merge the merge request** except for
     [very specific cases](https://handbook.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).

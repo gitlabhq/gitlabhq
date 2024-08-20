@@ -169,12 +169,12 @@ including CI and other workloads.
 
 If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
 or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
-If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
-Testing is done regularly via our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
+Testing is done regularly by using the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
 The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
 
-The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
+The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services with NGINX Ingress for Cloud Native Hybrids. These selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
 ## Set up components
 
@@ -529,7 +529,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 
 If you use a third party external service:
 
-1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
@@ -550,7 +550,7 @@ replication and failover requires:
   - An [internal load balancer](#configure-the-internal-load-balancer) (TCP) to balance requests between the PgBouncer nodes.
 - [Database Load Balancing](../postgresql/database_load_balancing.md) enabled.
 
-  A local PgBouncer service to be configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
+  A local PgBouncer service to be configured on each PostgreSQL node. This is separate from the main PgBouncer cluster that tracks the primary.
 
 The following IPs will be used as an example:
 
@@ -2121,7 +2121,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
    sudo gitlab-rake gitlab:db:configure
    ```
 
-   Note that this requires the Rails node to be configured to connect to the primary database
+   This operation requires configuring the Rails node to connect to the primary database
    directly, [bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
    After migrations have completed, you must configure the node to pass through PgBouncer again.
 
@@ -2421,9 +2421,9 @@ For further information on Webservice resource usage, see the Charts documentati
 
 ##### NGINX
 
-It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve as well as take advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve and take advantage of the higher network bandwidth larger machine types typically have.
 
-Note that this isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
+This isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 
 #### Sidekiq
 

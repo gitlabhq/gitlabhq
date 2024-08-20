@@ -6,13 +6,13 @@
       = key.title
 
   %td{ data: { label: s_('Profiles|Key'), testid: 'key' } }
-    .gl-align-items-center{ class: 'gl-display-flex! gl-pl-0!' }
+    .gl-items-center{ class: '!gl-flex !gl-pl-0' }
       - if key.valid? && !key.expired?
         = sprite_icon('key', css_class: icon_classes)
       - else
-        %span.gl-display-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
+        %span.gl-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
           = sprite_icon('warning-solid', css_class: icon_classes)
-      %span.gl-text-truncate.gl-sm-ml-3
+      %span.gl-truncate.sm:gl-ml-3
         = key.fingerprint
 
   %td{ data: { label: s_('Profiles|Usage type'), testid: 'usage-type' } }

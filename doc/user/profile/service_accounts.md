@@ -54,13 +54,13 @@ Prerequisites:
 
 - You must have the Owner role in a top-level group.
 
-1. [Create a service account](../../api/groups.md#create-service-account-user).
+1. [Create a service account](../../api/group_service_accounts.md#create-a-service-account-user).
 
    This service account is associated only with your top-level group.
 
-1. [List all service account users](../../api/groups.md#list-service-account-users).
+1. [List all service account users](../../api/group_service_accounts.md#list-service-account-users).
 
-1. [Create a personal access token](../../api/groups.md#create-personal-access-token-for-service-account-user)
+1. [Create a personal access token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)
    for the service account user.
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
@@ -144,7 +144,7 @@ Prerequisites:
 - For GitLab.com, you must have the Owner role in a top-level group.
 - For self-managed GitLab, you must be an administrator for your self-managed instance.
 
-Use the groups API to [rotate the personal access token](../../api/groups.md#rotate-a-personal-access-token-for-service-account-user) for a service account user.
+Use the groups API to [rotate the personal access token](../../api/group_service_accounts.md#rotate-a-personal-access-token-for-a-service-account-user) for a service account user.
 
 ### Revoke a personal access token
 
@@ -165,7 +165,7 @@ Prerequisites:
 
 - You must have the Owner role in a top-level group.
 
-To delete a service account, [use the groups API to delete the service account user](../../api/groups.md#delete-service-account-user).
+To delete a service account, [use the service accounts API to delete the service account user](../../api/group_service_accounts.md#delete-a-service-account-user).
 
 #### Self-managed GitLab
 

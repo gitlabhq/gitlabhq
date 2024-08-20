@@ -48073,6 +48073,9 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
+msgid "SecurityDescription|The linked group refers to the groups that are linked to security policy projects. Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -48204,7 +48207,7 @@ msgstr ""
 msgid "SecurityOrchestration|Any merge request"
 msgstr ""
 
-msgid "SecurityOrchestration|Apply this policy to %{projectScopeType} %{exceptionType} %{projectSelector}"
+msgid "SecurityOrchestration|Apply this policy to %{projectScopeType} %{projectSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Apply this policy to %{projectScopeType}named %{frameworkSelector}"
@@ -48363,7 +48366,13 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load group projects"
 msgstr ""
 
+msgid "SecurityOrchestration|Failed to load groups"
+msgstr ""
+
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|Failed to load projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Fallback behavior in case of policy failure"
@@ -48809,6 +48818,9 @@ msgstr ""
 msgid "SecurityOrchestration|What does an example message look like?"
 msgstr ""
 
+msgid "SecurityOrchestration|What is linked group?"
+msgstr ""
+
 msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
 msgstr ""
 
@@ -48848,6 +48860,9 @@ msgstr ""
 msgid "SecurityOrchestration|You must select one or more compliance frameworks to which this policy should apply."
 msgstr ""
 
+msgid "SecurityOrchestration|You must select one or more groups from this policy."
+msgstr ""
+
 msgid "SecurityOrchestration|You must select one or more projects to be excluded from this policy."
 msgstr ""
 
@@ -48875,7 +48890,10 @@ msgstr ""
 msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
-msgid "SecurityOrchestration|all subgroups/projects in this group"
+msgid "SecurityOrchestration|all projects in the linked groups"
+msgstr ""
+
+msgid "SecurityOrchestration|all projects in this group"
 msgstr ""
 
 msgid "SecurityOrchestration|any"
@@ -48915,6 +48933,9 @@ msgid "SecurityOrchestration|default"
 msgstr ""
 
 msgid "SecurityOrchestration|except branches"
+msgstr ""
+
+msgid "SecurityOrchestration|except groups"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"

@@ -204,4 +204,37 @@ RSpec.describe Email do
       it_behaves_like 'confirms the email on force_confirm'
     end
   end
+
+  describe '#before_save' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when the feature flag is enabled' do
+      it 'sets the detumbled_email attribute' do
+        email = described_class.new(user: user, email: 'test.user+gitlab@example.com')
+
+        expect { email.save! }.to change { email.detumbled_email }.from(nil).to('test.user@example.com')
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(store_detumbled_email: false)
+      end
+
+      it 'does not set the detumbled_email attribute' do
+        email = described_class.new(user: user, email: 'test.user+gitlab@example.com')
+
+        expect { email.save! }.not_to change { email.detumbled_email }
+      end
+    end
+
+    context 'when the email attribute has not changed' do
+      it 'does not execute the before_action' do
+        email = create(:email)
+
+        expect(email).not_to receive(:detumble_email!)
+        email.update!(confirmed_at: Time.now.utc)
+      end
+    end
+  end
 end

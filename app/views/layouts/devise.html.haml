@@ -8,15 +8,15 @@
     = header_message
     = render "layouts/init_client_detection_flags"
     = yield :sessions_broadcast
-    .gl-h-full.gl-display-flex.gl-flex-wrap
-      .container.gl-align-self-center
+    .gl-h-full.gl-flex.gl-flex-wrap
+      .container.gl-self-center
         .content
           = render "layouts/flash"
           - if custom_text.present?
             .row.gl-mt-5.gl-gap-y-5
               .col-md.order-12.sm-bg-gray
                 .col-sm-12
-                  %h1.gl-mb-5.gl-font-size-h2
+                  %h1.gl-mb-5.gl-text-size-h2
                     = brand_title
                   #js-custom-sign-in-description= custom_text
               .col-md.order-md-12
@@ -28,9 +28,9 @@
             .gl-my-5
               .col-sm-12.gl-text-center
                 = brand_image
-                %h1.mb-3.gl-font-size-h2
+                %h1.mb-3.gl-text-size-h2
                   = brand_title
-              .gl-w-full.gl-sm-w-half.gl-ml-auto.gl-mr-auto.bar
+              .gl-w-full.gl-ml-auto.gl-mr-auto.bar{ class: 'sm:gl-w-1/2' }
                 = yield
 
       = render 'devise/shared/footer'

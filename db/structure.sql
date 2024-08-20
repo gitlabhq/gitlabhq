@@ -33903,9 +33903,6 @@ ALTER TABLE ONLY web_hooks
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_dbbe8917ee FOREIGN KEY (due_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY security_scans
-    ADD CONSTRAINT fk_dbc89265b9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_dc62428d81 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 

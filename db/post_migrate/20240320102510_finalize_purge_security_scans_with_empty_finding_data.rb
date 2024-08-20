@@ -4,7 +4,7 @@ class FinalizePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migrati
   disable_ddl_transaction!
 
   milestone '16.11'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   def up
     return if Gitlab.com? || !Gitlab.ee?

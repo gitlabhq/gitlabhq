@@ -232,6 +232,24 @@ describe('MergeRequestTabs', () => {
       expect(testContext.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
     });
 
+    it('changes from notes ending with a trailing slash', () => {
+      setLocation({
+        pathname: '/foo/bar/-/merge_requests/1/',
+      });
+
+      expect(testContext.subject('diffs')).toBe('/foo/bar/-/merge_requests/1/diffs');
+      expect(testContext.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
+    });
+
+    it('changes from diffs ending with a trailing slash', () => {
+      setLocation({
+        pathname: '/foo/bar/-/merge_requests/1/diffs/',
+      });
+
+      expect(testContext.subject('show')).toBe('/foo/bar/-/merge_requests/1');
+      expect(testContext.subject('commits')).toBe('/foo/bar/-/merge_requests/1/commits');
+    });
+
     it('includes search parameters and hash string', () => {
       setLocation({
         pathname: '/foo/bar/-/merge_requests/1/diffs',
