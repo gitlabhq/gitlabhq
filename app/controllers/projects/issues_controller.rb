@@ -148,6 +148,7 @@ class Projects::IssuesController < Projects::ApplicationController
     create_params = issue_params.merge(
       add_related_issue: add_related_issue,
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      observability_links: params[:observability_links],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
 

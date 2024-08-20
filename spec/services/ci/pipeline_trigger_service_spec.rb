@@ -172,19 +172,6 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
         end
       end
 
-      context 'when job does not have a project' do
-        let(:params) { { token: job.token, ref: 'master', variables: nil } }
-        let(:job) { create(:ci_build, status: :running, pipeline: pipeline, user: user) }
-
-        it 'does nothing', :aggregate_failures do
-          job.update!(project: nil)
-
-          expect { result }.not_to change { Ci::Pipeline.count }
-          expect(result[:message]).to eq('Project has been deleted!')
-          expect(result[:http_status]).to eq(401)
-        end
-      end
-
       context 'when params have a valid job token' do
         context 'when params have an existing ref' do
           let(:params) { { token: job.token, ref: 'master', variables: nil } }

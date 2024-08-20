@@ -1,11 +1,17 @@
 import axios from 'axios';
+import { orderBy } from 'lodash';
 import {
   convertObjectPropsToCamelCase,
   convertObjectPropsToSnakeCase,
 } from '~/lib/utils/common_utils';
 import { TYPENAME_CI_VARIABLE, TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { groupString, instanceString, projectString } from '../constants';
+import {
+  groupString,
+  instanceString,
+  projectString,
+  visibilityToAttributesMap,
+} from '../constants';
 import getProjectVariables from './queries/project_variables.query.graphql';
 import getGroupVariables from './queries/group_variables.query.graphql';
 import getAdminVariables from './queries/variables.query.graphql';
@@ -16,6 +22,7 @@ const prepareVariableForApi = ({ variable, destroy = false }) => {
     id: getIdFromGraphQLId(variable?.id),
     variable_type: variable.variableType.toLowerCase(),
     secret_value: variable.value,
+    ...visibilityToAttributesMap[variable.visibility],
     _destroy: destroy,
   };
 };
@@ -31,7 +38,9 @@ const mapVariableTypes = (variables = [], kind) => {
   });
 };
 
-const prepareProjectGraphQLResponse = ({ data, id, errors = [] }) => {
+const sortVariables = (variables = []) => orderBy(variables, 'key', 'asc');
+
+const prepareProjectGraphQLResponse = ({ data, id, limit, errors = [] }) => {
   return {
     errors,
     project: {
@@ -39,6 +48,7 @@ const prepareProjectGraphQLResponse = ({ data, id, errors = [] }) => {
       id: convertToGraphQLId(TYPENAME_PROJECT, id),
       ciVariables: {
         __typename: 'CiProjectVariableConnection',
+        limit,
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: false,
@@ -46,13 +56,13 @@ const prepareProjectGraphQLResponse = ({ data, id, errors = [] }) => {
           startCursor: '',
           endCursor: '',
         },
-        nodes: mapVariableTypes(data.variables, projectString),
+        nodes: sortVariables(mapVariableTypes(data.variables, projectString)),
       },
     },
   };
 };
 
-const prepareGroupGraphQLResponse = ({ data, id, errors = [] }) => {
+const prepareGroupGraphQLResponse = ({ data, id, limit, errors = [] }) => {
   return {
     errors,
     group: {
@@ -60,6 +70,7 @@ const prepareGroupGraphQLResponse = ({ data, id, errors = [] }) => {
       id: convertToGraphQLId(TYPENAME_GROUP, id),
       ciVariables: {
         __typename: `CiGroupVariableConnection`,
+        limit,
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: false,
@@ -67,7 +78,7 @@ const prepareGroupGraphQLResponse = ({ data, id, errors = [] }) => {
           startCursor: '',
           endCursor: '',
         },
-        nodes: mapVariableTypes(data.variables, groupString),
+        nodes: sortVariables(mapVariableTypes(data.variables, groupString)),
       },
     },
   };
@@ -95,8 +106,10 @@ async function callProjectEndpoint({ endpoint, fullPath, variable, id, cache, de
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
+    const { limit } = cache.readQuery({ query: getProjectVariables, variables: { fullPath } })
+      .project.ciVariables;
 
-    const graphqlData = prepareProjectGraphQLResponse({ data, id });
+    const graphqlData = prepareProjectGraphQLResponse({ data, id, limit });
 
     cache.writeQuery({
       query: getProjectVariables,
@@ -121,8 +134,10 @@ const callGroupEndpoint = async ({ endpoint, fullPath, variable, id, cache, dest
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
+    const { limit } = cache.readQuery({ query: getGroupVariables, variables: { fullPath } }).group
+      .ciVariables;
 
-    const graphqlData = prepareGroupGraphQLResponse({ data, id });
+    const graphqlData = prepareGroupGraphQLResponse({ data, id, limit });
 
     cache.writeQuery({
       query: getGroupVariables,

@@ -150,9 +150,12 @@ To add or update variables in the project settings:
      or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on [protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md).
-   - **Mask variable** Optional. If selected, the variable's **Value** is masked
-     in job logs. The variable fails to save if the value does not meet the
-     [masking requirements](#mask-a-cicd-variable).
+   - **Visibility**:
+      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
+      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
+        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+      - **Masked and hidden**: The variable's **Value** is masked in job logs, and it will not be shown in variables settings.
+        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 After you create a variable, you can use it in the pipeline configuration
 or in [job scripts](#use-cicd-variables-in-job-scripts).
@@ -179,9 +182,12 @@ To add a group variable:
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** Optional. If selected, the variable's **Value** is masked
-     in job logs. The variable fails to save if the value does not meet the
-     [masking requirements](#mask-a-cicd-variable).
+   - **Visibility**:
+      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
+      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
+        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+      - **Masked and hidden**: The variable's **Value** is masked in job logs, and it will not be shown in variables settings.
+        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
@@ -225,8 +231,10 @@ To add an instance variable:
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** Optional. If selected, the variable's **Value** is not shown
-     in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
+   - **Visibility**:
+      - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
+      - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
+        The variable fails to save if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 ## CI/CD variable security
 

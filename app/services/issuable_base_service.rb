@@ -675,7 +675,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def allowed_create_params(params)
-    params
+    params.except(:observability_links)
   end
 
   def allowed_update_params(params)

@@ -11568,6 +11568,12 @@ msgstr ""
 msgid "CiVariables|%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags."
 msgstr ""
 
+msgid "CiVariables|%{strong_start}Flags%{strong_end}"
+msgstr ""
+
+msgid "CiVariables|%{strong_start}Visibility:%{strong_end} Set the visibility level for the value. Can be visible, masked, or masked and hidden."
+msgstr ""
+
 msgid "CiVariables|A variable key can only contain letters, numbers, and '_'."
 msgstr ""
 
@@ -11610,6 +11616,9 @@ msgstr ""
 msgid "CiVariables|Group"
 msgstr ""
 
+msgid "CiVariables|Hidden"
+msgstr ""
+
 msgid "CiVariables|Input variable key"
 msgstr ""
 
@@ -11622,7 +11631,13 @@ msgstr ""
 msgid "CiVariables|Masked"
 msgstr ""
 
+msgid "CiVariables|Masked and hidden"
+msgstr ""
+
 msgid "CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements."
+msgstr ""
+
+msgid "CiVariables|Masked in job logs, and can never be revealed in the CI/CD settings after the variable is saved."
 msgstr ""
 
 msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
@@ -11665,6 +11680,9 @@ msgid "CiVariables|State"
 msgstr ""
 
 msgid "CiVariables|The description of the variable's value or usage."
+msgstr ""
+
+msgid "CiVariables|The value is masked and hidden permanently."
 msgstr ""
 
 msgid "CiVariables|The value must have at least %{charsAmount} characters."

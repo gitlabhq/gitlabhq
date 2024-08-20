@@ -427,6 +427,9 @@ gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client'
 # Required manually in config/initializers/require_async_gem
 gem 'async', '~> 2.12.1', require: false # rubocop:disable Gemfile/MissingFeatureCategory -- This is general utility gem
 
+# Security report schemas used to validate CI job artifacts of security jobs
+gem 'gitlab-security_report_schemas', '0.1.2.min15.0.0.max15.2.0', feature_category: :vulnerability_management
+
 # OpenTelemetry
 group :opentelemetry do
   # Core OpenTelemetry gems

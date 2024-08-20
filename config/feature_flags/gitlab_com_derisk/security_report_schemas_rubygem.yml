@@ -1,0 +1,9 @@
+---
+name: security_report_schemas_rubygem
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383516
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158598
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470692
+milestone: '17.3'
+group: group::threat insights
+type: gitlab_com_derisk
+default_enabled: false

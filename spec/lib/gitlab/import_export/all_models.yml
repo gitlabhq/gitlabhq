@@ -82,6 +82,7 @@ issues:
 - synced_epic
 - observability_metrics
 - observability_logs
+- observability_traces
 work_item_type:
 - issues
 - namespace

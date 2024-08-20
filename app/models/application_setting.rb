@@ -7,7 +7,6 @@ class ApplicationSetting < ApplicationRecord
   include ChronicDurationAttribute
   include IgnorableColumns
   include Sanitizable
-  include SafelyChangeColumnDefault
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
@@ -15,12 +14,9 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
-  ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
   ignore_columns %i[openai_api_key anthropic_api_key vertex_ai_credentials vertex_ai_access_token], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
-
-  columns_changing_default %i[ci_max_total_yaml_size_bytes max_yaml_size_bytes]
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

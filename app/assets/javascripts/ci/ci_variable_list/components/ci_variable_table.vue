@@ -192,6 +192,9 @@ export default {
       if (item.masked) {
         attributes.push(s__('CiVariables|Masked'));
       }
+      if (item.hidden) {
+        attributes.push(s__('CiVariables|Hidden'));
+      }
       if (!item.raw) {
         attributes.push(s__('CiVariables|Expanded'));
       }
@@ -299,6 +302,7 @@ export default {
         </template>
         <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
           <div
+            v-if="!item.hidden"
             class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start -gl-mr-3"
           >
             <span v-if="areValuesHidden" data-testid="hiddenValue">*****</span>
