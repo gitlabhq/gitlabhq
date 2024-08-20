@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.2.3 (2024-08-20)
+
+### Fixed (3 changes)
+
+- [Turn NotFound from Gitaly into 404 for InfoRefs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdd5159fa1f8259dbf92333cf13a2968e814d307)
+- [Fix empty dependency list page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71fc48e515cffcbc46ad4f824dc1990a0eb3b08a) **GitLab Enterprise Edition**
+- [Properly handle empty repository.ff_merge in FromTrainRef merge strategy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63c5e1ce261f03549f19a36867ed83cd928a2c5f) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Include language server version in code suggestions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c9c47052794e5d5bfc86d78c5fdd91c4b910a8b8) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Do not run pipelines when resolving vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a8fa8c6fd40731c93986e54f56d6b581f4dfa92) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4307))
+- [Add Octokit::ResponseValidation middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8cf13d24a0f5aa07c0236238b2a3d61d82615e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4376))
+- [IP restriction to prevent all group permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4b540bf88e05c7e39803652bdbba8978c74ebab6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4340))
+- [Destroy associated releases when removing a tag via Git CLI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb033e98e00bc242a92d7091406f7c91e98a3079) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4366))
+
+### Other (1 change)
+
+- [Check if columns exist before running credit card hashing migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6b7ac482714a0da707cab36e685378d5067d891)
+
 ## 17.2.2 (2024-08-06)
 
 ### Fixed (2 changes)
