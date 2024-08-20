@@ -1,9 +1,11 @@
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
+import StatePresenter from '~/glql/components/presenters/state.vue';
 import TextPresenter from '~/glql/components/presenters/text.vue';
-import LinkPresenter from '~/glql/components/presenters/link.vue';
+import UserPresenter from '~/glql/components/presenters/user.vue';
 import Presenter from '~/glql/core/presenter';
-import { MOCK_ISSUES, MOCK_FIELDS } from '../../mock_data';
+import { MOCK_FIELDS, MOCK_ISSUES } from '../../mock_data';
 
 describe('ListPresenter', () => {
   let wrapper;
@@ -27,24 +29,31 @@ describe('ListPresenter', () => {
     const listItem1 = wrapper.findByTestId('list-item-0');
     const listItem2 = wrapper.findByTestId('list-item-1');
 
-    const linkPresenters1 = listItem1.findAllComponents(LinkPresenter);
-    const linkPresenters2 = listItem2.findAllComponents(LinkPresenter);
+    const issuePresenter1 = listItem1.findComponent(IssuablePresenter);
+    const issuePresenter2 = listItem2.findComponent(IssuablePresenter);
+    const userPresenter1 = listItem1.findComponent(UserPresenter);
+    const userPresenter2 = listItem2.findComponent(UserPresenter);
+    const statePresenter1 = listItem1.findComponent(StatePresenter);
+    const statePresenter2 = listItem2.findComponent(StatePresenter);
     const textPresenter1 = listItem1.findComponent(TextPresenter);
     const textPresenter2 = listItem2.findComponent(TextPresenter);
 
-    expect(linkPresenters1).toHaveLength(2);
-    expect(linkPresenters2).toHaveLength(2);
-
-    expect(linkPresenters1.at(0).props('data')).toBe(MOCK_ISSUES.nodes[0]);
-    expect(linkPresenters1.at(1).props('data')).toBe(MOCK_ISSUES.nodes[0].author);
-    expect(linkPresenters2.at(0).props('data')).toBe(MOCK_ISSUES.nodes[1]);
-    expect(linkPresenters2.at(1).props('data')).toBe(MOCK_ISSUES.nodes[1].author);
+    expect(issuePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0]);
+    expect(issuePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1]);
+    expect(userPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].author);
+    expect(userPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].author);
+    expect(statePresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].state);
+    expect(statePresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].state);
+    expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
+    expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
     expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
     expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual('Issue 1 - foobar -  Open - This is a description');
-    expect(listItem2.text()).toEqual('Issue 2 - janedoe -  Closed - This is another description');
+    expect(listItem1.text()).toEqual('Issue 1 (#1) - @foobar -  Open - This is a description');
+    expect(listItem2.text()).toEqual(
+      'Issue 2 (#2 - closed) - @janedoe -  Closed - This is another description',
+    );
   });
 
   it('renders a ul by default', () => {

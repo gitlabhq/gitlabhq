@@ -11,16 +11,16 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Code Intelligence adds code navigation features common to interactive
+Code intelligence adds code navigation features common to interactive
 development environments (IDE), including:
 
 - Type signatures and symbol documentation.
 - Go-to definition.
 
-Code Intelligence is built into GitLab and powered by [LSIF](https://lsif.dev/)
+Code intelligence is built into GitLab and powered by [LSIF](https://lsif.dev/)
 (Language Server Index Format), a file format for precomputed code
 intelligence data. GitLab processes one LSIF file per project, and
-Code Intelligence does not support different LSIF files per branch.
+Code intelligence does not support different LSIF files per branch.
 
 Follow [epic 4212](https://gitlab.com/groups/gitlab-org/-/epics/4212)
 for progress on upcoming code intelligence enhancements.

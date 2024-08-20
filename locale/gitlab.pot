@@ -15627,7 +15627,7 @@ msgstr ""
 msgid "Couldn't delete work item link due to an internal error."
 msgstr ""
 
-msgid "Couldn't fetch the pinned file."
+msgid "Couldn't fetch the linked file."
 msgstr ""
 
 msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"

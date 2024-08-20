@@ -61,4 +61,4 @@
   - if show_roles
     .controls.member-controls.gl-items-center.gl-self-end
       = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
-      = render Pajamas::BadgeComponent.new(member.human_access, variant: 'neutral', class: '!gl-bg-transparent !gl-shadow-inner-1-gray-100')
+      = render Pajamas::BadgeComponent.new(member.human_access, variant: 'muted')

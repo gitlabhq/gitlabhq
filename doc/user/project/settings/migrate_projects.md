@@ -52,9 +52,9 @@ NOTE:
 If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)
 to move any project to any namespace.
 
-## Transferring a GitLab SaaS project to a different subscription tier
+## Transferring a GitLab.com project to a different subscription tier
 
-When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free:
+When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)

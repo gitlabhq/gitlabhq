@@ -213,16 +213,16 @@ export const isBatchLoading = (state) => state.batchLoadingState === 'loading';
 export const isBatchLoadingError = (state) => state.batchLoadingState === 'error';
 
 export const diffFiles = (state, getters) => {
-  const { pinnedFile } = getters;
-  if (pinnedFile) {
+  const { linkedFile } = getters;
+  if (linkedFile) {
     const diffs = state.diffFiles.slice(0);
-    diffs.splice(diffs.indexOf(pinnedFile), 1);
-    return [pinnedFile, ...diffs];
+    diffs.splice(diffs.indexOf(linkedFile), 1);
+    return [linkedFile, ...diffs];
   }
   return state.diffFiles;
 };
 
-export const pinnedFile = (state) => {
-  if (!state.pinnedFileHash) return null;
-  return state.diffFiles.find((file) => file.file_hash === state.pinnedFileHash);
+export const linkedFile = (state) => {
+  if (!state.linkedFileHash) return null;
+  return state.diffFiles.find((file) => file.file_hash === state.linkedFileHash);
 };

@@ -143,7 +143,7 @@ export default {
       required: false,
       default: '',
     },
-    pinnedFileUrl: {
+    linkedFileUrl: {
       type: String,
       required: false,
       default: '',
@@ -157,7 +157,7 @@ export default {
       autoScrolled: false,
       activeProject: undefined,
       hasScannerError: false,
-      pinnedFileStatus: '',
+      linkedFileStatus: '',
       codequalityData: {},
       sastData: {},
       keydownTime: undefined,
@@ -447,7 +447,7 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
-      'fetchPinnedFile',
+      'fetchLinkedFile',
       'toggleTreeList',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
@@ -536,17 +536,17 @@ export default {
       return !this.diffFiles.length;
     },
     fetchData({ toggleTree = true, fetchMeta = true } = {}) {
-      if (this.pinnedFileUrl && this.pinnedFileStatus !== 'loaded') {
-        this.pinnedFileStatus = 'loading';
-        this.fetchPinnedFile(this.pinnedFileUrl)
+      if (this.linkedFileUrl && this.linkedFileStatus !== 'loaded') {
+        this.linkedFileStatus = 'loading';
+        this.fetchLinkedFile(this.linkedFileUrl)
           .then(() => {
-            this.pinnedFileStatus = 'loaded';
+            this.linkedFileStatus = 'loaded';
             if (toggleTree) this.setTreeDisplay();
           })
           .catch(() => {
-            this.pinnedFileStatus = 'error';
+            this.linkedFileStatus = 'error';
             createAlert({
-              message: __("Couldn't fetch the pinned file."),
+              message: __("Couldn't fetch the linked file."),
             });
           });
       }
@@ -580,7 +580,7 @@ export default {
       }
 
       if (!this.viewDiffsFileByFile) {
-        this.fetchDiffFilesBatch(Boolean(this.pinnedFileUrl))
+        this.fetchDiffFilesBatch(Boolean(this.linkedFileUrl))
           .then(() => {
             if (toggleTree) this.setTreeDisplay();
             // Guarantee the discussions are assigned after the batch finishes.
@@ -774,7 +774,7 @@ export default {
             <gl-loading-icon size="lg" />
           </div>
           <template v-else-if="renderDiffFiles">
-            <div v-if="pinnedFileStatus === 'loading'" class="loading">
+            <div v-if="linkedFileStatus === 'loading'" class="loading">
               <gl-loading-icon size="lg" />
             </div>
             <hidden-files-warning

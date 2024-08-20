@@ -629,7 +629,7 @@ gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitaly', '~> 17.2.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'kas-grpc', '~> 0.6.0', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 17.4.0.pre.rc1', feature_category: :deployment_management
 
 # Lock the version before issues below are resolved:
 # https://gitlab.com/gitlab-org/gitlab/-/issues/473169#note_2028352939

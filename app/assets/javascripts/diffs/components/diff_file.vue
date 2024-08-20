@@ -120,9 +120,9 @@ export default {
   computed: {
     ...mapState('diffs', ['currentDiffFileId', 'conflictResolutionPath', 'canMerge']),
     ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
-    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'pinnedFile']),
-    isPinnedFile() {
-      return this.file === this.pinnedFile;
+    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'linkedFile']),
+    isLinkedFile() {
+      return this.file === this.linkedFile;
     },
     viewBlobHref() {
       return escape(this.file.view_path);
@@ -414,7 +414,7 @@ export default {
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
-      'pinned-file': isPinnedFile,
+      'linked-file': isLinkedFile,
     }"
     :data-path="file.new_path"
     class="diff-file file-holder gl-mb-5"
@@ -477,7 +477,6 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
-      :pinned="isPinnedFile"
       class="js-file-title file-title"
       :class="[
         hasBodyClasses.header,

@@ -40,7 +40,7 @@ export const fileContentsId = (diffFile) => {
 const createDiffUrl = (diffFile) => {
   const url = new URL(window.location);
   if (window?.gon?.features?.pinnedFile) {
-    url.searchParams.set('pin', diffFile.file_hash);
+    url.searchParams.set('file', diffFile.file_hash);
   }
   return url;
 };

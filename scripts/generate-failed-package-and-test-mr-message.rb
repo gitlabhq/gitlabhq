@@ -46,7 +46,7 @@ class GenerateFailedPackageAndTestMrMessage
 
   def content
     <<~MARKDOWN
-    :warning: @#{author_username} The `e2e:package-and-test-ee` job has failed.
+    :warning: @#{author_username} The `e2e:package-and-test-ee` child pipeline has failed.
 
     - `e2e:package-and-test-ee` pipeline: #{failed_package_and_test_pipeline['web_url']}
 

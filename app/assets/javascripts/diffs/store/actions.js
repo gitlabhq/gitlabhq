@@ -221,7 +221,7 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
   }
 };
 
-export const fetchDiffFilesBatch = ({ commit, state, dispatch }, pinnedFileLoading = false) => {
+export const fetchDiffFilesBatch = ({ commit, state, dispatch }, linkedFileLoading = false) => {
   let perPage = state.viewDiffsFileByFile ? 1 : state.perPage;
   let increaseAmount = 1.4;
   const startPage = 0;
@@ -235,7 +235,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }, pinnedFileLoadi
   let totalLoaded = 0;
   let scrolledVirtualScroller = hash === '';
 
-  if (!pinnedFileLoading) {
+  if (!linkedFileLoading) {
     commit(types.SET_BATCH_LOADING_STATE, 'loading');
     commit(types.SET_RETRIEVING_BATCHES, true);
   }
@@ -250,7 +250,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }, pinnedFileLoadi
         commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffFiles });
         commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
-        if (!scrolledVirtualScroller && !pinnedFileLoading) {
+        if (!scrolledVirtualScroller && !linkedFileLoading) {
           const index = state.diffFiles.findIndex(
             (f) =>
               f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
@@ -409,7 +409,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
 export const setHighlightedRow = ({ commit }, { lineCode, event }) => {
   if (event && event.target.href) {
     event.preventDefault();
-    window.history.replaceState(null, undefined, removeParams(['pin'], event.target.href));
+    window.history.replaceState(null, undefined, removeParams(['file'], event.target.href));
   }
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
@@ -670,7 +670,7 @@ export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
   } else {
     if (!state.treeEntries[path]) return;
 
-    dispatch('unpinFile');
+    dispatch('unlinkFile');
 
     const { fileHash } = state.treeEntries[path];
 
@@ -1002,7 +1002,7 @@ export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, n
 };
 
 export const navigateToDiffFileIndex = ({ state, getters, commit, dispatch }, index) => {
-  dispatch('unpinFile');
+  dispatch('unlinkFile');
 
   const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
@@ -1065,22 +1065,22 @@ export const toggleFileCommentForm = ({ state, commit }, filePath) => {
 export const addDraftToFile = ({ commit }, { filePath, draft }) =>
   commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });
 
-export const fetchPinnedFile = ({ state, commit }, pinnedFileUrl) => {
+export const fetchLinkedFile = ({ state, commit }, linkedFileUrl) => {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
 
   commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
 
   return axios
-    .get(pinnedFileUrl)
+    .get(linkedFileUrl)
     .then(({ data: diffData }) => {
       const [{ file_hash }] = diffData.diff_files;
 
-      // we must store pinned file in the `diffs`, otherwise collapsing and commenting on a file won't work
+      // we must store linked file in the `diffs`, otherwise collapsing and commenting on a file won't work
       // once the same file arrives in a file batch we must only update its' position
       // we also must not update file's position since it's loaded out of order
       commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffData.diff_files, updatePosition: false });
-      commit(types.SET_PINNED_FILE_HASH, file_hash);
+      commit(types.SET_LINKED_FILE_HASH, file_hash);
 
       if (!isNoteLink && !state.currentDiffFileId) {
         commit(types.SET_CURRENT_DIFF_FILE, file_hash);
@@ -1103,11 +1103,11 @@ export const fetchPinnedFile = ({ state, commit }, pinnedFileUrl) => {
     });
 };
 
-export const unpinFile = ({ getters, commit }) => {
-  if (!getters.pinnedFile) return;
-  commit(types.SET_PINNED_FILE_HASH, null);
+export const unlinkFile = ({ getters, commit }) => {
+  if (!getters.linkedFile) return;
+  commit(types.SET_LINKED_FILE_HASH, null);
   const newUrl = new URL(window.location);
-  newUrl.searchParams.delete('pin');
+  newUrl.searchParams.delete('file');
   newUrl.hash = '';
   window.history.replaceState(null, undefined, newUrl);
 };

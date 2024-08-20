@@ -128,7 +128,7 @@ describe('diff_row_utils', () => {
       expect(utils.lineHref({ line_code: LINE_CODE }, {})).toContain(`?diff_id=foo`);
     });
 
-    describe('pinned file enabled', () => {
+    describe('linked file enabled', () => {
       beforeEach(() => {
         window.gon.features = { pinnedFile: true };
       });
@@ -137,17 +137,17 @@ describe('diff_row_utils', () => {
         delete window.gon.features;
       });
 
-      it(`should return pinned file URL`, () => {
+      it(`should return linked file URL`, () => {
         const diffFile = getDiffFileMock();
         expect(utils.lineHref({ line_code: LINE_CODE }, diffFile)).toContain(
-          `?pin=${diffFile.file_hash}#${LINE_CODE}`,
+          `?file=${diffFile.file_hash}#${LINE_CODE}`,
         );
       });
     });
   });
 
   describe('createFileUrl', () => {
-    describe('pinned file enabled', () => {
+    describe('linked file enabled', () => {
       beforeEach(() => {
         window.gon.features = { pinnedFile: true };
       });
@@ -156,20 +156,20 @@ describe('diff_row_utils', () => {
         delete window.gon.features;
       });
 
-      it(`should return pinned file URL`, () => {
+      it(`should return linked file URL`, () => {
         const diffFile = getDiffFileMock();
         const url = utils.createFileUrl(diffFile);
-        expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
+        expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
         expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
       });
 
-      it(`removes existing pinned file search param`, () => {
+      it(`removes existing linked file search param`, () => {
         const newLocation = new URL(window.location);
-        newLocation.searchParams.append('pin', 'foo');
+        newLocation.searchParams.append('file', 'foo');
         setWindowLocation(newLocation.toString());
         const diffFile = getDiffFileMock();
         const url = utils.createFileUrl(diffFile);
-        expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
+        expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
         expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
       });
     });
@@ -177,7 +177,7 @@ describe('diff_row_utils', () => {
     it('should return file URL', () => {
       const diffFile = getDiffFileMock();
       const url = utils.createFileUrl(diffFile);
-      expect(url.searchParams.get('pin')).toBe(null);
+      expect(url.searchParams.get('file')).toBe(null);
       expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
     });
   });

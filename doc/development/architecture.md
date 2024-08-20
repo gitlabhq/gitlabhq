@@ -684,7 +684,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 
 #### PostgreSQL
 
-- [Project page](https://github.com/postgres/postgres/blob/master/README)
+- [Project page](https://github.com/postgres/postgres/)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)

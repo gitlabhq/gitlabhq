@@ -1339,14 +1339,14 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_PINNED_FILE_HASH', () => {
-    it('set pinned file hash', () => {
+  describe('SET_LINKED_FILE_HASH', () => {
+    it('set linked file hash', () => {
       const state = {};
       const file = getDiffFileMock();
 
-      mutations[types.SET_PINNED_FILE_HASH](state, file.file_hash);
+      mutations[types.SET_LINKED_FILE_HASH](state, file.file_hash);
 
-      expect(state.pinnedFileHash).toBe(file.file_hash);
+      expect(state.linkedFileHash).toBe(file.file_hash);
     });
   });
 });

@@ -53,7 +53,7 @@ export default {
         'is-active': this.isBlob && this.file.active,
         folder: this.isTree,
         'is-open': this.file.opened,
-        'is-pinned': this.file.pinned,
+        'is-linked': this.file.linked,
       };
     },
     textForTitle() {
@@ -147,7 +147,7 @@ export default {
         :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
       >
         <gl-icon
-          v-if="file.pinned"
+          v-if="file.linked"
           v-gl-tooltip="
             __('This file was linked in the page URL and will appear as the first one in the list')
           "

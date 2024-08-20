@@ -92,14 +92,9 @@ The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for internal testing only, it is not ready for production use.
 
-Migrating data usually requires careful configuration of both the source and destination instances beforehand. For
-example, for [direct transfer migration](../../group/import/direct_transfer_migrations.md#user-accounts).
+Thanks to user contribution and membership mapping you can assign imported contributions and memberships to users on the destination instance after import has completed. No preparation is needed before the import. The process doesn't rely on email addresses, so it's possible to map contributions for users who have different emails on source and destination instances.
 
-With user contribution and membership mapping you can assign imported contributions to users on the destination after migration. This
-approach requires less preparation and allows for users to have different email addresses in different systems.
-
-When using user contribution and membership mapping, each [user must explicitly accept](#accept-contribution-reassignment) assignments of contributions and
-can reject the assignment.
+Each user on destination instance must [explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are attributed to them. They can also reject the assignment.
 
 This feature is an [experiment](../../../policy/experiment-beta-support.md). If you find a bug, open an issue in
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/12378).
@@ -136,6 +131,10 @@ To preserve historical context, the placeholder user name and username are deriv
 
 #### View placeholder users
 
+Prerequisites:
+
+- You must have the Owner role of the group.
+
 Placeholder users are created in the top-level group on the destination instance where a group or project are imported
 to. After the import, to view placeholder users for a group:
 
@@ -160,15 +159,17 @@ differ depending on your product tier and seat count. Placeholder users do not c
 
 | GitLab.com plan | Number of seats | Placeholder user limit on top-level group |
 |:----------------|:----------------|:------------------------------------------|
-| Free and Trial  | Any amount      | 200                                       |
-| Premium         | < 100           | 500                                       |
-| Premium         | 101-500         | 2000                                      |
-| Premium         | 501 - 1000      | 4000                                      |
-| Premium         | > 1000          | 6000                                      |
-| Ultimate        | < 100           | 1000                                      |
-| Ultimate        | 101-500         | 4000                                      |
-| Ultimate        | 501 - 1000      | 6000                                      |
-| Ultimate        | > 1000          | 8000                                      |
+| Free/Bronze and Trial  | Any amount      | 200                                |
+| Premium/Silver  | < 100           | 500                                       |
+| Premium/Silver  | 101-500         | 2000                                      |
+| Premium/Silver  | 501 - 1000      | 4000                                      |
+| Premium/Silver  | > 1000          | 6000                                      |
+| Ultimate/Gold   | < 100           | 1000                                      |
+| Ultimate/Gold   | 101-500         | 4000                                      |
+| Ultimate/Gold   | 501 - 1000      | 6000                                      |
+| Ultimate/Gold   | > 1000          | 8000                                      |
+
+For Premium customers trying out Ultimate (Ultimate trial paid customer plan), Premium limits apply.
 
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
@@ -180,22 +181,23 @@ default limit for self-managed and Dedicated instances.
 Reassignment of contributions and memberships from placeholder users to existing active (non-bot) users occurs on
 the destination instance.
 
-You can request users to accept reassignment of contributions and membership by using:
-
-- [The UI](#request-reassignment-in-ui).
-- [A CSV file](#request-reassignment-by-using-a-csv-file), which is recommended for large numbers of placeholder users.
+You can request users to accept reassignment of contributions and membership [using the UI](#request-reassignment-in-ui).
 
 You can also choose not to reassign contributions and memberships, and [keep them with placeholder users](#keep-as-placeholder).
 
+Contributions of only one placeholder user can be reassigned to an active regular user on destination instance.
+
 Contributions and memberships cannot be reassigned to bot users on the destination instance, even if the original
 contributions were done by bots users. They can only be reassigned to active non-bot users. You might choose to keep
-source bot user contributions [assigned to placeholder users](#keep-as-placeholder).
+source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
 
-The reassignment process starts only after the selected user accepts the reassignment request, which is sent to them by
+The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment), which is sent to them by
 email. After the user accepts the request, all contributions and membership previously attributed to the placeholder
 user are re-attributed to the accepting user. This process can take a few minutes, depending on the number of contributions.
 
-The user selected for reassignment can also reject the request and report it as spam.
+In subsequent imports, if the contributions and memberships belong to the same source user, contributions and memberships are automatically mapped to a user who previously accepted the reassignment for that source user.
+
+The user selected for reassignment can also [reject the request](#reject-contribution-reassignment) or report it as spam, an option available in the reassignment request email.
 
 The reassignment process must be fully completed before you:
 
@@ -204,7 +206,7 @@ The reassignment process must be fully completed before you:
 - Duplicate an imported issue.
 - Promote an imported issue to an epic.
 
-If the process isn't complete, contributions still assigned to placeholder users cannot be reassigned real users and
+If the process isn't complete, contributions still assigned to placeholder users cannot be reassigned to real users and
 they stay associated with placeholder users.
 
 #### Security considerations
@@ -231,53 +233,17 @@ To request a user accept reassignment of contributions and memberships:
 1. In the **Reassign placeholder to** column, select the a user from the dropdown list.
 1. Select **Reassign**.
 
-#### Request reassignment by using a CSV file
+Contributions of only one placeholder user can be reassigned to an active non-bot user on destination instance.
 
-Prerequisites:
-
-- You must have the Owner role of the group.
-
-Reassigning by using a CSV file is recommended, especially for a large number of placeholder users.
-You can download a pre-filled CSV template to streamline the process. This template is pre-filled with
-information about the import and users on source instance:
-
-- `Source host`
-- `Import type`
-- `Source user identifier`
-- `Source user name`
-- `Source username`
-
-Don't update the `Source host`, `Import type`, or `Source user identifier` data, because this information is used to
-find the corresponding record in the database after completed CSV file is uploaded.
-
-The data `Source user name` and `Source username` is used to help you identify the source user and isn't used after the
-CSV upload.
-
-To request reassignment of contributions and memberships by using a CSV file:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
-1. Select the **Placeholders** tab.
-1. Select **Reassign with CSV**.
-1. Download the pre-filled CSV template.
-1. Fill in data for either `GitLab username` or `GitLab public email`, which is used to find the GitLab user on the
-   destination instance. You must use only public email addresses for reassignment.
-1. Upload completed and reviewed CSV file.
-1. Select **Reassign**.
-
-After you select **Reassign**, the reassignment process starts and users receive an email to review and accept the
-contributions reassigned to them.
-
-Before user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
+Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
 
 #### Keep as placeholder
 
-Sometimes you don't want to reassign some contributions or memberships and keep the contributions and memberships
-assigned to placeholder users. For example, you might have former employees that contributed on the source instance,
-but they do not exist as users the on destination instance.
+Sometimes you don't want to reassign contributions and memberships to users on the destination instance. For example, you might have former employees that contributed on the source
+instance, but they do not exist as users the on destination instance. In these cases, you can keep the contributions assigned to placeholder users. Placeholder users do not keep
+membership information because they [cannot be members of projects or groups](#placeholder-user-attributes).
 
-The contributions they've made can remain assigned to placeholder users. Because names and usernames of placeholder
-users resemble names and usernames of source users, you keep some historical context.
+Because names and usernames of placeholder users resemble names and usernames of source users, you keep large part of the historical context.
 
 Remember that if you keep remaining placeholder users as placeholders, you cannot reassign their contributions to
 actual users later. Ensure all required reassignments are completed before keeping the remaining placeholder users as
@@ -374,8 +340,9 @@ listed in the email are:
 - **Reassigned to** - Your full name and username on the GitLab instance.
 - **Reassigned by** - The full name and username of your colleague or manager that performed the import.
 
-If you don't recognize or you notice mistakes in this information, do not proceed and turn to a trusted colleague
-or your manager.
+#### Reject contribution reassignment
+
+If you don't recognize or you notice mistakes in this information, do not proceed at all or reject contribution reassignment and turn to a trusted colleague or your manager.
 
 #### Security considerations
 

@@ -8,7 +8,7 @@ import { extractGroupOrProject, parseQueryText, parseFrontmatter } from '../util
  * @import ApolloClient from '@apollo/client/core';
  */
 
-const REQUIRED_QUERY_FIELDS = ['id', 'iid', 'title', 'webUrl', 'reference'];
+const REQUIRED_QUERY_FIELDS = ['id', 'iid', 'title', 'webUrl', 'reference', 'state', 'type'];
 const DEFAULT_DISPLAY_FIELDS = ['title'];
 
 export default class Executor {

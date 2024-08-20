@@ -23,7 +23,7 @@ export default {
     },
   },
   docsLink: helpPagePath('user/project/import/index', {
-    anchor: 'request-reassignment-by-using-a-csv-file',
+    anchor: 'reassign-contributions-and-memberships',
   }),
   i18n: {
     description: s__(

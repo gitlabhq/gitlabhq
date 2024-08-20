@@ -29,7 +29,7 @@ RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling
     end
 
     let(:merge_request) { instance_double(CommitMergeRequests, execute: [commit_merge_request]) }
-    let(:content) { /The `e2e:package-and-test-ee` job has failed./ }
+    let(:content) { /The `e2e:package-and-test-ee` child pipeline has failed./ }
     let(:merge_request_discussion_client) { instance_double(CreateMergeRequestDiscussion, execute: true) }
     let(:package_and_test_job_client) { instance_double(GetPackageAndTestJob, execute: package_and_test_job) }
 

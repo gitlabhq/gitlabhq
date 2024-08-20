@@ -955,16 +955,16 @@ table.code {
   }
 }
 
-.diff-file.pinned-file .file-title {
+.diff-file.linked-file .file-title {
   background-color: $blue-50;
   border-color: $blue-200;
 }
 
-.diff-file.pinned-file .diff-content {
+.diff-file.linked-file .diff-content {
   border-color: $blue-200;
 }
 
 // This is not inside page_bundles because then it won't receive a proper color value for the dark theme
-.diff-file-row.is-active.is-pinned {
+.diff-file-row.is-active.is-linked {
   background-color: $blue-50;
 }

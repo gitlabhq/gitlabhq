@@ -757,8 +757,8 @@ describe('DiffsStoreActions', () => {
       expect(preventDefault).toHaveBeenCalled();
     });
 
-    it('should filter out pinned file param', () => {
-      const target = { href: `${TEST_HOST}/diffs?pin=foo#abc_11` };
+    it('should filter out linked file param', () => {
+      const target = { href: `${TEST_HOST}/diffs?file=foo#abc_11` };
       const event = { target, preventDefault: jest.fn() };
       testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123', event }, {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
@@ -1362,9 +1362,9 @@ describe('DiffsStoreActions', () => {
           expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
         });
 
-        it('unpins the file', () => {
+        it('unlink the file', () => {
           diffActions.goToFile({ state, commit, getters, dispatch }, file);
-          expect(dispatch).toHaveBeenCalledWith('unpinFile');
+          expect(dispatch).toHaveBeenCalledWith('unlinkFile');
         });
       });
     });
@@ -1987,7 +1987,7 @@ describe('DiffsStoreActions', () => {
         0,
         { flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
-        [{ type: 'unpinFile' }],
+        [{ type: 'unlinkFile' }],
       );
     });
 
@@ -1997,7 +1997,7 @@ describe('DiffsStoreActions', () => {
         0,
         { viewDiffsFileByFile: true, flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
-        [{ type: 'unpinFile' }, { type: 'fetchFileByFile' }],
+        [{ type: 'unlinkFile' }, { type: 'fetchFileByFile' }],
       );
     });
   });
@@ -2139,17 +2139,17 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('fetchPinnedFile', () => {
-    it('fetches pinned file', async () => {
-      const pinnedFileHref = `${TEST_HOST}/pinned-file`;
-      const pinnedFile = getDiffFileMock();
-      const diffFiles = [pinnedFile];
+  describe('fetchLinkedFile', () => {
+    it('fetches linked file', async () => {
+      const linkedFileHref = `${TEST_HOST}/linked-file`;
+      const linkedFile = getDiffFileMock();
+      const diffFiles = [linkedFile];
       const hubSpy = jest.spyOn(diffsEventHub, '$emit');
-      mock.onGet(new RegExp(pinnedFileHref)).reply(HTTP_STATUS_OK, { diff_files: diffFiles });
+      mock.onGet(new RegExp(linkedFileHref)).reply(HTTP_STATUS_OK, { diff_files: diffFiles });
 
       await testAction(
-        diffActions.fetchPinnedFile,
-        pinnedFileHref,
+        diffActions.fetchLinkedFile,
+        linkedFileHref,
         {},
         [
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
@@ -2158,8 +2158,8 @@ describe('DiffsStoreActions', () => {
             type: types.SET_DIFF_DATA_BATCH,
             payload: { diff_files: diffFiles, updatePosition: false },
           },
-          { type: types.SET_PINNED_FILE_HASH, payload: pinnedFile.file_hash },
-          { type: types.SET_CURRENT_DIFF_FILE, payload: pinnedFile.file_hash },
+          { type: types.SET_LINKED_FILE_HASH, payload: linkedFile.file_hash },
+          { type: types.SET_CURRENT_DIFF_FILE, payload: linkedFile.file_hash },
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loaded' },
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
@@ -2172,14 +2172,14 @@ describe('DiffsStoreActions', () => {
     });
 
     it('handles load error', async () => {
-      const pinnedFileHref = `${TEST_HOST}/pinned-file`;
+      const linkedFileHref = `${TEST_HOST}/linked-file`;
       const hubSpy = jest.spyOn(diffsEventHub, '$emit');
-      mock.onGet(new RegExp(pinnedFileHref)).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      mock.onGet(new RegExp(linkedFileHref)).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       try {
         await testAction(
-          diffActions.fetchPinnedFile,
-          pinnedFileHref,
+          diffActions.fetchLinkedFile,
+          linkedFileHref,
           {},
           [
             { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
@@ -2199,23 +2199,23 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('unpinFile', () => {
-    it('unpins pinned file', () => {
-      const pinnedFile = getDiffFileMock();
-      setWindowLocation(`${TEST_HOST}/?pin=${pinnedFile.file_hash}#${pinnedFile.file_hash}_10_10`);
+  describe('unlinkFile', () => {
+    it('unlinks linked file', () => {
+      const linkedFile = getDiffFileMock();
+      setWindowLocation(`${TEST_HOST}/?file=${linkedFile.file_hash}#${linkedFile.file_hash}_10_10`);
       testAction(
-        diffActions.unpinFile,
+        diffActions.unlinkFile,
         undefined,
-        { pinnedFile },
-        [{ type: types.SET_PINNED_FILE_HASH, payload: null }],
+        { linkedFile },
+        [{ type: types.SET_LINKED_FILE_HASH, payload: null }],
         [],
       );
       expect(window.location.hash).toBe('');
       expect(window.location.search).toBe('');
     });
 
-    it('does nothing when no pinned file present', () => {
-      testAction(diffActions.unpinFile, undefined, {}, [], []);
+    it('does nothing when no linked file present', () => {
+      testAction(diffActions.unlinkFile, undefined, {}, [], []);
     });
   });
 });

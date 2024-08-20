@@ -201,7 +201,7 @@ module MergeRequestsHelper
       new_comment_template_paths: new_comment_template_paths(project.group, project).to_json,
       iid: merge_request.iid,
       per_page: DIFF_BATCH_ENDPOINT_PER_PAGE,
-      pinned_file_url: @pinned_file_url
+      linked_file_url: @linked_file_url
     }
   end
 

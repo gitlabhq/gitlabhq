@@ -991,26 +991,26 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('pinned file', () => {
-    const pinnedFileUrl = 'http://localhost.test/pinned-file';
-    let pinnedFile;
+  describe('linked file', () => {
+    const linkedFileUrl = 'http://localhost.test/linked-file';
+    let linkedFile;
 
     beforeEach(() => {
-      pinnedFile = getDiffFileMock();
-      mock.onGet(pinnedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [pinnedFile] });
+      linkedFile = getDiffFileMock();
+      mock.onGet(linkedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [linkedFile] });
       mock
         .onGet(new RegExp(ENDPOINT_BATCH_URL))
         .reply(HTTP_STATUS_OK, { diff_files: [], pagination: {} });
       mock.onGet(new RegExp(ENDPOINT_METADATA_URL)).reply(HTTP_STATUS_OK, diffMetadata);
 
-      createComponent({ props: { shouldShow: true, pinnedFileUrl } });
+      createComponent({ props: { shouldShow: true, linkedFileUrl } });
     });
 
-    it('fetches and displays pinned file', async () => {
+    it('fetches and displays the file', async () => {
       await waitForPromises();
 
       expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')[0].file_hash).toBe(
-        pinnedFile.file_hash,
+        linkedFile.file_hash,
       );
     });
 

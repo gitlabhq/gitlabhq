@@ -833,6 +833,7 @@ project:
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
+- vulnerability_namespace_historical_statistics
 - vulnerability_remediations
 - product_analytics_events
 - pipeline_artifacts

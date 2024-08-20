@@ -40,6 +40,8 @@ describe('Executor', () => {
       title
       webUrl
       reference
+      state
+      type
     }
     pageInfo {
       endCursor
@@ -77,6 +79,8 @@ assignee = currentUser()
       title
       webUrl
       reference
+      state
+      type
       author {
         id
         avatarUrl
@@ -120,6 +124,8 @@ assignee = currentUser()
       title
       webUrl
       reference
+      state
+      type
     }
     pageInfo {
       endCursor
