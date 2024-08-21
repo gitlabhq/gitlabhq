@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.2.4 (2024-08-21)
+
+### Security (1 change)
+
+- [Always build assets image when tagging](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d0e661baad53be4fb7eef3b530b544d05a609953) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4386))
+
 ## 17.2.3 (2024-08-20)
 
 ### Fixed (3 changes)
