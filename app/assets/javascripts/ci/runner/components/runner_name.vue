@@ -16,5 +16,5 @@ export default {
 };
 </script>
 <template>
-  <span class="gl-font-bold gl-align-middle">{{ name }}</span>
+  <span class="gl-align-middle gl-font-bold">{{ name }}</span>
 </template>

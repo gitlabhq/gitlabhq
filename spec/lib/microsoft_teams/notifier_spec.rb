@@ -10,7 +10,6 @@ RSpec.describe MicrosoftTeams::Notifier do
   let(:options) do
     {
       title: 'JohnDoe4/project2',
-      summary: '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6',
       activity: {
         title: 'Issue opened by user6',
         subtitle: 'in [JohnDoe4/project2](http://localhost/namespace2/gitlabhq)',
@@ -23,19 +22,41 @@ RSpec.describe MicrosoftTeams::Notifier do
 
   let(:body) do
     {
-      'sections' => [
+      "type" => "message",
+      "attachments" => [
         {
-          'activityTitle' => 'Issue opened by user6',
-          'activitySubtitle' => 'in [JohnDoe4/project2](http://localhost/namespace2/gitlabhq)',
-          'activityText' => '[#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1)',
-          'activityImage' => 'http://someimage.com'
-        },
-        {
-          text: "[GitLab](https://gitlab.com)\n\n- _Ruby_\n- **Go**\n"
+          "contentType" => "application/vnd.microsoft.card.adaptive",
+          "content" =>
+          {
+            "type" => "AdaptiveCard",
+            msteams: { width: "Full" },
+            "version" => "1.0",
+            "body" => [
+              {
+                "type" => "TextBlock", "text" => "JohnDoe4/project2", "weight" => "bolder", "size" => "medium"
+              },
+              {
+                "type" => "ColumnSet",
+                "columns" => [
+                  {
+                    "type" => "Column", "width" => "auto", "items" => [{ "type" => "Image", "url" => "http://someimage.com", "size" => "medium" }]
+                  },
+                  {
+                    "type" => "Column",
+                    "width" => "stretch",
+                    "items" => [
+                      { "type" => "TextBlock", "text" => "Issue opened by user6", "weight" => "bolder", "wrap" => true },
+                      { "type" => "TextBlock", "text" => "in [JohnDoe4/project2](http://localhost/namespace2/gitlabhq)", "isSubtle" => true, "wrap" => true },
+                      { "type" => "TextBlock", "text" => "[#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1)", "wrap" => true }
+                    ]
+                  }
+                ]
+              },
+              { "type" => "TextBlock", "text" => "[GitLab](https://gitlab.com)\n\n- _Ruby_\n- **Go**\n", "wrap" => true }
+            ]
+          }
         }
-      ],
-      'title' => 'JohnDoe4/project2',
-      'summary' => '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6'
+      ]
     }
   end
 

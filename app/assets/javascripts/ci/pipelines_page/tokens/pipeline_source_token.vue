@@ -29,7 +29,7 @@ export default {
 <template>
   <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
     <template #view>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-items-center">
         <span>{{ activeSource.text }}</span>
       </div>
     </template>

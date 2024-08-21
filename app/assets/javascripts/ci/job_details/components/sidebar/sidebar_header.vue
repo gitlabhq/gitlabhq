@@ -102,9 +102,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-py-3!">
-    <div class="gl-display-flex gl-justify-content-space-between gl-gap-3">
-      <div class="gl-display-flex gl-gap-3">
+  <div class="!gl-py-3">
+    <div class="gl-flex gl-justify-between gl-gap-3">
+      <div class="gl-flex gl-gap-3">
         <template v-if="jobHasPath">
           <gl-button
             v-if="restJob.erase_path"

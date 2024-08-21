@@ -145,11 +145,11 @@ export default {
 </script>
 <template>
   <li
-    class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-gray-100 gl-border-b-solid gl-text-gray-500 gl-py-3"
+    class="gl-flex gl-items-center gl-border-b-1 gl-border-gray-100 gl-py-3 gl-text-gray-500 gl-border-b-solid"
     data-testid="catalog-resource-item"
   >
     <gl-avatar
-      class="gl-mr-4 gl-align-self-start"
+      class="gl-mr-4 gl-self-start"
       :entity-id="entityId"
       :entity-name="resource.name"
       shape="rect"
@@ -157,32 +157,28 @@ export default {
       :src="resource.icon"
       @click="navigateToDetailsPage"
     />
-    <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
+    <div class="gl-flex gl-grow gl-flex-col">
       <div>
-        <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+        <span class="gl-mb-1 gl-text-sm">{{ webPath }}</span>
         <ci-verification-badge
           v-if="isVerified"
           :resource-id="resource.id"
           :verification-level="resource.verificationLevel"
         />
       </div>
-      <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-1">
+      <div class="gl-mb-1 gl-flex gl-flex-wrap gl-gap-2">
         <gl-link
-          class="gl-text-gray-900! gl-mr-1"
+          class="gl-mr-1 !gl-text-gray-900"
           :href="detailsPageHref"
           data-testid="ci-resource-link"
           @click="navigateToDetailsPage"
         >
           <b> {{ resource.name }}</b>
         </gl-link>
-        <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
-          <gl-badge class="gl-h-5 gl-align-self-center" variant="info">{{ name }}</gl-badge>
-          <div class="gl-display-flex gl-align-items-center gl-ml-3">
-            <div
-              v-gl-tooltip.top
-              class="gl-display-flex gl-align-items-center gl-mr-3"
-              :title="usageText"
-            >
+        <div class="gl-flex gl-grow md:gl-justify-between">
+          <gl-badge class="gl-h-5 gl-self-center" variant="info">{{ name }}</gl-badge>
+          <div class="gl-ml-3 gl-flex gl-items-center">
+            <div v-gl-tooltip.top class="gl-mr-3 gl-flex gl-items-center" :title="usageText">
               <gl-icon name="chart" :size="16" />
               <span class="gl-ml-2" data-testid="stats-usage">
                 {{ usageCount }}
@@ -203,24 +199,19 @@ export default {
           </div>
         </div>
       </div>
-      <div
-        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm gl-gap-2"
-      >
+      <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm md:gl-flex-row">
         <div>
-          <markdown
-            class="gl-display-flex gl-flex-basis-two-thirds"
-            :markdown="resource.description"
-          />
+          <markdown class="gl-flex gl-basis-2/3" :markdown="resource.description" />
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-font-sm gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-gray-900"
+            class="gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-sm gl-text-gray-900"
           >
             <span class="gl-font-bold"> &#8226; {{ $options.i18n.components }} </span>
             <gl-sprintf :message="componentNamesSprintfMessage">
               <template #component="{ content }">
                 <gl-truncate
-                  class="gl-max-w-30 gl-ml-2"
+                  class="gl-ml-2 gl-max-w-30"
                   :text="getComponent(content).name"
                   position="end"
                   with-tooltip
@@ -229,8 +220,8 @@ export default {
             </gl-sprintf>
           </div>
         </div>
-        <div class="gl-display-flex gl-justify-content-end gl-flex-shrink-0">
-          <div v-if="hasReleasedVersion" class="gl-flex-shrink-0">
+        <div class="gl-flex gl-shrink-0 gl-justify-end">
+          <div v-if="hasReleasedVersion" class="gl-shrink-0">
             <gl-sprintf :message="$options.i18n.releasedMessage">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">

@@ -59,7 +59,7 @@ export default {
 </script>
 <template>
   <div>
-    <div v-if="isEmpty" class="gl-display-flex">
+    <div v-if="isEmpty" class="gl-flex">
       <gl-empty-state
         :title="$options.i18n.emptyStateTitle"
         :description="$options.i18n.emptyStateDescription"

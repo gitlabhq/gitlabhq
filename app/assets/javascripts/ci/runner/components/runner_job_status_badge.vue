@@ -26,12 +26,12 @@ export default {
       switch (this.jobStatus) {
         case JOB_STATUS_ACTIVE:
           return {
-            classes: 'gl-text-blue-600! gl-shadow-inner-1-gray-400 gl-border-blue-600!',
+            classes: '!gl-text-blue-600 gl-shadow-inner-1-gray-400 !gl-border-blue-600',
             label: I18N_JOB_STATUS_ACTIVE,
           };
         case JOB_STATUS_IDLE:
           return {
-            classes: 'gl-text-gray-700! gl-shadow-inner-1-gray-400 gl-border-gray-500!',
+            classes: '!gl-text-gray-700 gl-shadow-inner-1-gray-400 !gl-border-gray-500',
             label: I18N_JOB_STATUS_IDLE,
           };
         default:

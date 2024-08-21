@@ -85,14 +85,14 @@ export default {
     :visible="visible"
     @hidden="$emit('hidden')"
   >
-    <div class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
+    <div class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
       <strong class="col-sm-3">{{ $options.text.name }}</strong>
       <div class="col-sm-9" data-testid="test-case-name">
         {{ testCase.name }}
       </div>
     </div>
 
-    <div v-if="testCase.file" class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
+    <div v-if="testCase.file" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
       <strong class="col-sm-3">{{ $options.text.file }}</strong>
       <div class="col-sm-9" data-testid="test-case-file">
         <gl-link v-if="testCase.filePath" class="gl-break-words" :href="testCase.filePath">
@@ -109,7 +109,7 @@ export default {
       </div>
     </div>
 
-    <div class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
+    <div class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
       <strong class="col-sm-3">{{ $options.text.duration }}</strong>
       <div v-if="testCase.formattedTime" class="col-sm-9" data-testid="test-case-duration">
         {{ testCase.formattedTime }}
@@ -119,14 +119,14 @@ export default {
       </div>
     </div>
 
-    <div v-if="testCase.recent_failures" class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
+    <div v-if="testCase.recent_failures" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
       <strong class="col-sm-3">{{ $options.text.history }}</strong>
       <div class="col-sm-9" data-testid="test-case-recent-failures">
         <gl-badge variant="warning">{{ failureHistoryMessage }}</gl-badge>
       </div>
     </div>
 
-    <div v-if="testCase.attachment_url" class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
+    <div v-if="testCase.attachment_url" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
       <strong class="col-sm-3">{{ $options.text.attachment }}</strong>
       <gl-link
         class="col-sm-9"
@@ -140,7 +140,7 @@ export default {
 
     <div
       v-if="testCase.system_output"
-      class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3"
+      class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap"
       data-testid="test-case-trace"
     >
       <strong class="col-sm-3 gl-mb-2">{{ $options.text.trace }}</strong>

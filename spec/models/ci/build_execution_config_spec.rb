@@ -39,13 +39,13 @@ RSpec.describe Ci::BuildExecutionConfig, type: :model, feature_category: :pipeli
     let(:execution_config) { FactoryBot.build(:ci_builds_execution_configs, pipeline: pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns partition id to execution config' do
       execution_config.save!
 
-      expect(execution_config.partition_id).to eq(ci_testing_partition_id)
+      expect(execution_config.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

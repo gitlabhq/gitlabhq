@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-3 gl-mb-6">
+  <div class="gl-mb-6 gl-mt-3">
     <label>{{ s__('Runners|Cloud') }}</label>
 
     <div class="gl-flex gl-flex-wrap gl-gap-3">

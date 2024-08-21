@@ -5,7 +5,7 @@ import CiLintResultsParam from './ci_lint_results_param.vue';
 import CiLintResultsValue from './ci_lint_results_value.vue';
 import CiLintWarnings from './ci_lint_warnings.vue';
 
-const thBorderColor = 'gl-border-gray-100!';
+const thBorderColor = '!gl-border-gray-100';
 
 export default {
   correct: {

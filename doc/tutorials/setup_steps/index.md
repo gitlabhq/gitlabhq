@@ -21,8 +21,9 @@ In this tutorial, use the GitLab CLI (`glab`) to:
 
 ## Before you begin
 
-To complete this tutorial, you must install [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`)
-and be signed in.
+- You must install and sign in to the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`).
+- On GitLab.com and self-managed in GitLab 17.3 and later, you must include the
+  `image: registry.gitlab.com/gitlab-org/step-runner:v0` runner image in the `.gitlab-ci.yml` file.
 
 ## Create a step
 

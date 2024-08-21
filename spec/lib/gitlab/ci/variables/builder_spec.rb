@@ -278,11 +278,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     let(:environment_name) { job.expanded_environment_name }
     let(:kubernetes_namespace) { job.expanded_kubernetes_namespace }
     let(:extra_attributes) { {} }
+    let(:trigger_request) { nil }
 
     let(:job_attr) do
       {
         name: job.name,
-        user: job.user,
         stage: job.stage_name,
         yaml_variables: job.yaml_variables,
         options: job.options,
@@ -292,7 +292,15 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
     include_context 'predefined variables result'
 
-    subject { builder.scoped_variables_for_pipeline_seed(job_attr, environment: environment_name, kubernetes_namespace: kubernetes_namespace) }
+    subject do
+      builder.scoped_variables_for_pipeline_seed(
+        job_attr,
+        environment: environment_name,
+        kubernetes_namespace: kubernetes_namespace,
+        user: job.user,
+        trigger_request: trigger_request
+      )
+    end
 
     it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
@@ -400,8 +408,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     end
 
     context 'when pipeline has trigger request' do
-      let(:trigger_request) { create(:ci_trigger_request) }
-      let(:extra_attributes) { { trigger_request: trigger_request } }
+      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
 
       it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
         expect(subject.to_hash).to include(

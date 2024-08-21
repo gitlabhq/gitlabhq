@@ -114,6 +114,11 @@ expires_at_date = "2024-05-22"
 
 # Check for expiring personal access tokens
 PersonalAccessToken.owner_is_human.where(expires_at: expires_at_date).find_each do |token|
+  if token.user.blocked?
+    next
+    # Hide unusable, blocked PATs from output
+  end
+
   puts "Expired personal access token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
 end
 
@@ -126,6 +131,11 @@ PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find
   end
 end
 ```
+
+NOTE:
+To not only hide, but also remove, tokens belonging to blocked users, add `token.destroy!` directly below
+`if token.user.blocked?`. However, this action does not leave an audit event,
+unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ### Find tokens expiring in a given month
 

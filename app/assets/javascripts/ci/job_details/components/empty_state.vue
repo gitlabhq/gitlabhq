@@ -74,19 +74,19 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-empty-state gl-text-center gl-flex-direction-column">
+  <div class="gl-empty-state gl-flex gl-flex-col gl-text-center">
     <div :class="illustrationSizeClass" class="gl-max-w-full">
       <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
       <img alt="" class="gl-max-w-full" :src="illustrationPath" />
     </div>
-    <div class="gl-empty-state-content gl-mx-auto gl-my-0 gl-m-auto gl-p-5">
+    <div class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5">
       <h1
-        class="gl-font-size-h-display gl-leading-36 gl-mt-0 gl-mb-0"
+        class="gl-mb-0 gl-mt-0 gl-text-size-h-display gl-leading-36"
         data-testid="job-empty-state-title"
       >
         {{ title }}
       </h1>
-      <p v-if="content" class="gl-mt-4 gl-mb-0" data-testid="job-empty-state-content">
+      <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
       </p>
       <manual-variables-form
@@ -99,7 +99,7 @@ export default {
       />
       <div
         v-if="action && !shouldRenderManualVariables"
-        class="gl-display-flex gl-flex-wrap gl-mt-5 gl-justify-content-center"
+        class="gl-mt-5 gl-flex gl-flex-wrap gl-justify-center"
       >
         <gl-button
           :href="action.path"

@@ -117,7 +117,7 @@ export default {
 <template>
   <div class="container-fluid gl-grid-rows-auto">
     <div
-      class="row gl-my-3 gl-cursor-pointer gl-display-flex gl-align-items-center"
+      class="row gl-my-3 gl-flex gl-cursor-pointer gl-items-center"
       :aria-pressed="isJobLogVisible"
       role="button"
       tabindex="0"
@@ -128,7 +128,7 @@ export default {
       @mouseover="setActiveRow"
       @mouseout="resetActiveRow"
     >
-      <div class="col-6 gl-text-gray-900 gl-font-bold gl-text-left">
+      <div class="col-6 gl-text-left gl-font-bold gl-text-gray-900">
         <gl-icon :name="jobChevronName" />
         <ci-icon :status="job.detailedStatus" />
         {{ job.name }}
@@ -157,7 +157,7 @@ export default {
     <div v-if="isJobLogVisible" class="row">
       <pre
         v-safe-html="jobTrace"
-        class="gl-bg-gray-900 gl-text-white gl-w-full"
+        class="gl-w-full gl-bg-gray-900 gl-text-white"
         data-testid="job-log"
       ></pre>
     </div>

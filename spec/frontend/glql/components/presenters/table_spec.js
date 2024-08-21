@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -18,6 +19,8 @@ describe('TablePresenter', () => {
       propsData: { data, config, ...moreProps },
     });
   };
+
+  const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
 
   it('renders header rows with sentence cased field names', () => {
     createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } });
@@ -52,8 +55,6 @@ describe('TablePresenter', () => {
     expect(textPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
     expect(textPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
-
     expect(getCells(tableRow1)).toEqual([
       'Issue 1 (#1)',
       '@foobar',
@@ -72,5 +73,54 @@ describe('TablePresenter', () => {
     createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
 
     expect(wrapper.text()).toContain('No data found for this query');
+  });
+
+  const order0 = [
+    ['Issue 1 (#1)', '@foobar', 'Open', 'This is a description'],
+    ['Issue 2 (#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
+  ];
+
+  const order1 = [
+    ['Issue 2 (#2 - closed)', '@janedoe', 'Closed', 'This is another description'],
+    ['Issue 1 (#1)', '@foobar', 'Open', 'This is a description'],
+  ];
+
+  describe.each`
+    headerIndex | headerTitle      | orderAsc  | orderDesc
+    ${0}        | ${'title'}       | ${order0} | ${order1}
+    ${1}        | ${'author'}      | ${order0} | ${order1}
+    ${2}        | ${'state'}       | ${order0} | ${order1}
+    ${3}        | ${'description'} | ${order0} | ${order1}
+  `('when clicking on header cell at index $cellIndex', ({ headerIndex, orderAsc, orderDesc }) => {
+    let actualOrder;
+
+    const triggerClick = async () => {
+      await nextTick();
+      await wrapper.findByTestId(`column-${headerIndex}`).trigger('click');
+
+      actualOrder = wrapper.findAll('tbody tr').wrappers.map(getCells);
+    };
+
+    beforeEach(async () => {
+      createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+
+      await triggerClick();
+    });
+
+    describe('once', () => {
+      it('sorts the table by the field in ascending order', () => {
+        expect(actualOrder).toEqual(orderAsc);
+      });
+    });
+
+    describe('twice', () => {
+      beforeEach(async () => {
+        await triggerClick();
+      });
+
+      it('sorts the table by the field in descending order', () => {
+        expect(actualOrder).toEqual(orderDesc);
+      });
+    });
   });
 });

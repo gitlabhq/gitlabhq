@@ -23,8 +23,10 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
   before do
     project.add_role(user, role)
     sign_in(user)
-    stub_licensed_features(merge_request_approvers: true)
-    stub_licensed_features(external_status_checks: true)
+    stub_licensed_features(
+      merge_request_approvers: true,
+      external_status_checks: true
+    )
   end
 
   context 'When viewed by developer' do

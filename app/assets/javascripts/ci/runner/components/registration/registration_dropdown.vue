@@ -123,7 +123,7 @@ export default {
     v-if="state !== $options.REGISTRATION_TOKEN_HIDDEN"
     ref="runnerRegistrationDropdown"
     :toggle-text="actionText"
-    toggle-class="gl-px-3!"
+    toggle-class="!gl-px-3"
     variant="default"
     category="tertiary"
     v-bind="$attrs"
@@ -148,7 +148,7 @@ export default {
       </gl-sprintf>
     </div>
     <template v-if="state == $options.REGISTRATION_TOKEN_ENABLED">
-      <gl-dropdown-form class="gl-p-4!">
+      <gl-dropdown-form class="!gl-p-4">
         <registration-token input-id="token-value" :value="currentRegistrationToken" @copy="onCopy">
           <template #label-description>
             <gl-icon name="warning" class="gl-text-orange-500" />

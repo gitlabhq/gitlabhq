@@ -50,11 +50,11 @@ export default {
 };
 </script>
 <template>
-  <aside class="file-tree-container gl-mr-5 gl-mb-5">
+  <aside class="file-tree-container gl-mb-5 gl-mr-5">
     <div
       v-gl-tooltip
       :title="ciConfigPath"
-      class="gl-bg-gray-50 gl-py-2 gl-px-3 gl-mb-3 gl-rounded-base"
+      class="gl-mb-3 gl-rounded-base gl-bg-gray-50 gl-px-3 gl-py-2"
     >
       <span class="file-row-name gl-str-truncated" :title="ciConfigPath">
         <file-icon class="file-row-icon" :file-name="ciConfigPath" />

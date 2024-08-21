@@ -183,12 +183,12 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div class="gl-pl-5 gl-pr-4 gl-py-4 gl-display-flex">
+    <div class="gl-flex gl-py-4 gl-pl-5 gl-pr-4">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
-      <div class="media-body gl-display-flex gl-align-items-flex-start gl-flex-direction-row!">
-        <div class="js-code-text code-text gl-align-self-center gl-flex-grow-1">
-          <div class="gl-display-flex gl-align-items-center">
-            <p class="gl-leading-normal gl-m-0">{{ headerText }}</p>
+      <div class="media-body gl-flex !gl-flex-row gl-items-start">
+        <div class="js-code-text code-text gl-grow gl-self-center">
+          <div class="gl-flex gl-items-center">
+            <p class="gl-m-0 gl-leading-normal">{{ headerText }}</p>
             <slot :name="slotName"></slot>
             <help-popover
               v-if="hasPopover"
@@ -203,7 +203,7 @@ export default {
 
         <div
           v-if="isCollapsible"
-          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
+          class="gl-ml-3 gl-border-l-1 gl-border-gray-100 gl-pl-3 gl-border-l-solid"
         >
           <gl-button
             data-testid="report-section-expand-button"

@@ -55,13 +55,13 @@ With quarterly reconciliation, you pay less annually.
 If it's not possible for you to participate in quarterly reconciliations, you can opt out of the
 process by using a contract amendment. In that case, you default to the annual review.
 
-## Timeline for quarterly invoicing and payment
+## Quarterly invoicing and payment
 
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date
 you are billed.
 
-### GitLab SaaS
+### On GitLab.com
 
 Group owners receive an email **on the reconciliation date**.
 The email communicates the [overage seat quantity](gitlab_com/index.md#seats-owed)
@@ -72,7 +72,7 @@ seats, and an invoice is generated for a prorated amount. If a credit card
 is on file, a payment is automatically applied. Otherwise, an invoice is
 sent and subject to your terms.
 
-### Self-managed instances
+### On GitLab self-managed
 
 Administrators receive an email **six days after the reconciliation date**.
 This email communicates the [overage seat quantity](self_managed/index.md#users-over-subscription)
@@ -83,7 +83,27 @@ seats, and an invoice is generated for a prorated amount. If a credit card
 is on file, a payment is automatically applied. Otherwise, an invoice is
 sent and subject to your payment terms.
 
-### Troubleshooting failed payment
+## Quarterly reconciliation eligibility
+
+You are automatically enrolled in quarterly reconciliation if:
+
+- The credit card you used to purchase your subscription is still linked to your GitLab account.
+- You purchased your subscription through an invoice.
+
+You are excluded from quarterly reconciliation if you:
+
+- Purchased your subscription from a reseller or another channel partner.
+- Purchased a multi-year subscription.
+- Purchased your subscription with a purchasing order.
+- Are a public sector customer.
+- Have an offline environment and used a license file to activate your subscription.
+- Are enrolled in a program that provides a free tier such as the GitLab for Education, GitLab for Open Source Program, or GitLab for Startups.
+
+If you are excluded from quarterly reconciliation and not on a free tier, your true-ups are reconciled annually.
+
+## Troubleshooting
+
+### Failed payment
 
 If your credit card is declined during the reconciliation process, an email will be sent with the subject `Your GitLab subscription failed to reconcile`. Follow these instructions to update your payment information, and the reconciliation will be automatically retried:
 
@@ -93,21 +113,3 @@ If your credit card is declined during the reconciliation process, an email will
 1. After the new payment method has been added, select **Edit**, then select **Default** to mark it as the default payment method.
 
 Reconciliation is retried automatically as soon as the payment method is updated.
-
-## Quarterly reconciliation eligibility
-
-### You are automatically enrolled in quarterly reconciliation if
-
-- The credit card you used to purchase your subscription is still linked to your GitLab account.
-- You purchased your subscription through an invoice.
-
-### You are excluded from quarterly reconciliation if
-
-- You purchased your subscription from a reseller or another channel partner.
-- You purchased a multi-year subscription.
-- You purchased your subscription with a purchasing order.
-- You are a public sector customer.
-- You have an offline environment and used a license file to activate your subscription.
-- You are enrolled in a program that provides a free tier such as the GitLab for Education, GitLab for Open Source Program, or GitLab for Startups.
-
-If you are excluded from quarterly reconciliation and not on a free tier, your true-ups are reconciled annually.

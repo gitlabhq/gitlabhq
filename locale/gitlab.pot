@@ -9451,6 +9451,9 @@ msgstr ""
 msgid "BranchRules|Edit allowed to push and merge"
 msgstr ""
 
+msgid "BranchRules|Edit status check"
+msgstr ""
+
 msgid "BranchRules|From users with push access."
 msgstr ""
 
@@ -9539,6 +9542,9 @@ msgid "BranchRules|Something went wrong while updating branch rule."
 msgstr ""
 
 msgid "BranchRules|Status checks"
+msgstr ""
+
+msgid "BranchRules|Status checks created"
 msgstr ""
 
 msgid "BranchRules|Target branch"
@@ -17720,6 +17726,9 @@ msgstr ""
 msgid "Delete deploy key"
 msgstr ""
 
+msgid "Delete deployment"
+msgstr ""
+
 msgid "Delete diagram"
 msgstr ""
 
@@ -19314,6 +19323,12 @@ msgid "Directory name"
 msgstr ""
 
 msgid "Disable"
+msgstr ""
+
+msgid "Disable SSL verification for requests to GitLab Observability Backend"
+msgstr ""
+
+msgid "Disable SSL verification if GitLab Observability Backend is using a self-signed certificate inside a private network."
 msgstr ""
 
 msgid "Disable Two-factor Authentication"
@@ -24165,6 +24180,9 @@ msgid "GitLab Logo"
 msgstr ""
 
 msgid "GitLab Next|Next"
+msgstr ""
+
+msgid "GitLab Observability Backend requests"
 msgstr ""
 
 msgid "GitLab Pages"
@@ -36640,10 +36658,16 @@ msgstr ""
 msgid "Observability|%{events} events"
 msgstr ""
 
+msgid "Observability|Create issues from this page to view them as related items here."
+msgstr ""
+
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
 msgid "Observability|Failed to load observability usage data."
+msgstr ""
+
+msgid "Observability|Failed to load related issues. Try reloading the page."
 msgstr ""
 
 msgid "Observability|Filter data by month:"
@@ -36680,6 +36704,9 @@ msgid "Observability|Last 5 minutes"
 msgstr ""
 
 msgid "Observability|Last 7 days"
+msgstr ""
+
+msgid "Observability|Related issues"
 msgstr ""
 
 msgid "Observability|Sorry, there is no usage data for the selected period"
@@ -38457,16 +38484,31 @@ msgstr ""
 msgid "PagesUsageQuota|Learn about Pages deployments limits"
 msgstr ""
 
+msgid "Pages|+ %{n} more deployments"
+msgstr ""
+
 msgid "Pages|Active"
+msgstr ""
+
+msgid "Pages|An error occurred trying to load the Pages deployments."
 msgstr ""
 
 msgid "Pages|An error occurred while deleting the deployment. Check your connection and try again."
 msgstr ""
 
+msgid "Pages|An error occurred while deleting the deployment. Please check your connection and try again."
+msgstr ""
+
 msgid "Pages|Created"
 msgstr ""
 
+msgid "Pages|Created at"
+msgstr ""
+
 msgid "Pages|Delete"
+msgstr ""
+
+msgid "Pages|Deploy Job"
 msgstr ""
 
 msgid "Pages|Deploy job"
@@ -38476,6 +38518,9 @@ msgid "Pages|Deployments"
 msgstr ""
 
 msgid "Pages|Environment deployments"
+msgstr ""
+
+msgid "Pages|Extra deployments: %{count}"
 msgstr ""
 
 msgid "Pages|Files"
@@ -38517,7 +38562,22 @@ msgstr ""
 msgid "Pages|Some Pages deployments could not be loaded. Try reloading the page."
 msgstr ""
 
+msgid "Pages|State"
+msgstr ""
+
 msgid "Pages|Stopped"
+msgstr ""
+
+msgid "Pages|There was an error trying to delete the deployment"
+msgstr ""
+
+msgid "Pages|There was an error trying to restore the deployment"
+msgstr ""
+
+msgid "Pages|URL"
+msgstr ""
+
+msgid "Pages|We did not find any Projects with Pages deployments in this namespace."
 msgstr ""
 
 msgid "Pagination|First"
@@ -45438,6 +45498,9 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
+msgid "Restore deployment"
+msgstr ""
+
 msgid "Restore group"
 msgstr ""
 
@@ -51899,6 +51962,9 @@ msgstr ""
 msgid "StatusChecks|Service name"
 msgstr ""
 
+msgid "StatusChecks|Unable to create status check. Please try again."
+msgstr ""
+
 msgid "StatusCheck|%{failed} failed"
 msgstr ""
 
@@ -51935,6 +52001,9 @@ msgstr ""
 msgid "StatusCheck|External API is already in use by another status check."
 msgstr ""
 
+msgid "StatusCheck|External API is already in use."
+msgstr ""
+
 msgid "StatusCheck|Failed to load status checks"
 msgstr ""
 
@@ -51944,7 +52013,16 @@ msgstr ""
 msgid "StatusCheck|Invoke an external API as part of the pipeline process."
 msgstr ""
 
+msgid "StatusCheck|Name already exists."
+msgstr ""
+
 msgid "StatusCheck|No status checks are defined yet."
+msgstr ""
+
+msgid "StatusCheck|Please provide a name."
+msgstr ""
+
+msgid "StatusCheck|Please provide a valid URL."
 msgstr ""
 
 msgid "StatusCheck|Provide a shared secret to be used when sending a request for a status check to authenticate request using HMAC."

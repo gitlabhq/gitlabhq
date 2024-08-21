@@ -56,15 +56,15 @@ module Gitlab
           end
         end
 
-        def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:)
+        def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_request:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables_from_job_attr(job_attr, environment))
+            variables.concat(predefined_variables_from_job_attr(job_attr, environment, trigger_request))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             # job.runner.predefined_variables: No need because it's not available in the Seed step.
             variables.concat(kubernetes_variables_from_attr(environment: environment, token: nil, kubernetes_namespace: kubernetes_namespace))
             variables.concat(job_attr[:yaml_variables])
-            variables.concat(user_variables(job_attr[:user]))
+            variables.concat(user_variables(user))
             # job.dependency_variables: No need because dependencies are not in the Seed step.
             variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment))
@@ -188,14 +188,14 @@ module Gitlab
           end
         end
 
-        def predefined_variables_from_job_attr(job_attr, environment)
+        def predefined_variables_from_job_attr(job_attr, environment, trigger_request)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job_attr[:name])
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job_attr[:name]))
             variables.append(key: 'CI_JOB_STAGE', value: job_attr[:stage])
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if ::Ci::Processable::ACTIONABLE_WHEN.include?(job_attr[:when])
-            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job_attr[:trigger_request]
-            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job_attr[:trigger_request].trigger_short_token) if job_attr[:trigger_request]
+            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request
+            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger_request.trigger_short_token) if trigger_request
             variables.append(key: 'CI_NODE_INDEX', value: job_attr[:options][:instance].to_s) if job_attr[:options]&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attr[:options]).to_s)
 

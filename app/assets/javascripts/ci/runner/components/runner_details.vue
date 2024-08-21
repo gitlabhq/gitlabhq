@@ -89,7 +89,7 @@ export default {
 <template>
   <div>
     <div class="gl-pt-4">
-      <dl class="gl-mb-0 gl-display-grid runner-details-grid-template">
+      <dl class="runner-details-grid-template gl-mb-0 gl-grid">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"
@@ -137,7 +137,7 @@ export default {
         </runner-detail>
 
         <runner-maintenance-note-detail
-          class="gl-pt-4 gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid"
+          class="gl-border-t-1 gl-border-t-gray-100 gl-pt-4 gl-border-t-solid"
           :value="runner.maintenanceNoteHtml"
         />
 

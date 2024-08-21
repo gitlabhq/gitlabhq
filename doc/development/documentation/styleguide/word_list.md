@@ -1788,6 +1788,16 @@ Use lowercase for **review app**.
 
 ## roles
 
+A user has a role **for** a project or group.
+
+Use: 
+
+- You must have the Owner role for the group.
+
+Instead of:
+
+- You must have the Owner role in the group.
+
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
 There are two types of roles: [custom](#custom-role) and [default](#default-role).

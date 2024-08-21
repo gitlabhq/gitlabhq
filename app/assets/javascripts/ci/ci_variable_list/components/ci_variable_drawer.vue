@@ -452,7 +452,7 @@ export default {
       <gl-alert
         v-if="isMutationAlertVisible"
         :variant="mutationAlertVariant"
-        class="gl-m-4 gl-pl-9! gl-border-bottom-0"
+        class="gl-m-4 gl-border-b-0 !gl-pl-9"
         data-testid="ci-variable-mutation-alert"
         @dismiss="hideMutationAlert"
       >
@@ -475,17 +475,17 @@ export default {
       </gl-form-group>
       <gl-form-group
         v-if="!hideEnvironmentScope"
-        class="gl-border-none -gl-mb-5"
+        class="-gl-mb-5 gl-border-none"
         label-for="ci-variable-env"
         data-testid="environment-scope"
       >
         <template #label>
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-flex gl-items-center">
             <span class="gl-mr-2">
               {{ $options.i18n.environments }}
             </span>
             <gl-link
-              class="gl-display-flex"
+              class="gl-flex"
               :title="$options.i18n.environmentScopeLinkTitle"
               :href="environmentScopeLink"
               target="_blank"
@@ -507,11 +507,11 @@ export default {
         <gl-form-input
           v-else
           :value="$options.i18n.defaultScope"
-          class="gl-w-full gl-mb-5"
+          class="gl-mb-5 gl-w-full"
           readonly
         />
       </gl-form-group>
-      <gl-form-group class="gl-border-none -gl-mb-3">
+      <gl-form-group class="-gl-mb-3 gl-border-none">
         <template #label>
           <div class="-gl-mb-3">
             {{ $options.i18n.visibility }}
@@ -546,14 +546,14 @@ export default {
           </gl-form-radio>
         </gl-form-radio-group>
       </gl-form-group>
-      <gl-form-group class="gl-border-none -gl-mb-8">
+      <gl-form-group class="-gl-mb-8 gl-border-none">
         <template #label>
-          <div class="gl-display-flex gl-align-items-center -gl-mb-3">
+          <div class="-gl-mb-3 gl-flex gl-items-center">
             <span class="gl-mr-2">
               {{ $options.i18n.flags }}
             </span>
             <gl-link
-              class="gl-display-flex"
+              class="gl-flex"
               :title="$options.i18n.flagsLinkTitle"
               :href="$options.flagLink"
               data-testid="ci-variable-flags-docs-link"
@@ -587,7 +587,7 @@ export default {
       <gl-form-group
         label-for="ci-variable-description"
         :label="$options.i18n.description"
-        class="gl-border-none -gl-mb-5"
+        class="-gl-mb-5 gl-border-none"
         data-testid="ci-variable-description-label"
         :description="$options.i18n.descriptionHelpText"
         optional
@@ -603,16 +603,16 @@ export default {
         v-model="variable.key"
         :token-list="$options.awsTokenList"
         :label-text="$options.i18n.key"
-        class="gl-border-none gl-pb-0! -gl-mb-5"
+        class="-gl-mb-5 gl-border-none !gl-pb-0"
         data-testid="ci-variable-key"
       />
       <p
         v-if="variable.key.length > 0 && !isKeyValid"
-        class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-red-500 gl-border-none"
+        class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-red-500"
       >
         {{ $options.i18n.keyFeedback }}
       </p>
-      <p class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-secondary gl-border-none">
+      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-secondary">
         <gl-sprintf :message="$options.i18n.keyHelpText">
           <template #link="{ content }"
             ><gl-link
@@ -626,12 +626,12 @@ export default {
       <gl-form-group
         :label="$options.i18n.value"
         label-for="ci-variable-value"
-        class="gl-border-none -gl-mb-2"
+        class="-gl-mb-2 gl-border-none"
         data-testid="ci-variable-value-label"
         :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
-        <p v-if="isEditingHiddenVariable" class="gl-mt-2 gl-mb-0" data-testid="hidden-variable-tip">
+        <p v-if="isEditingHiddenVariable" class="gl-mb-0 gl-mt-2" data-testid="hidden-variable-tip">
           {{ $options.i18n.variableIsHidden }}
         </p>
         <gl-form-textarea
@@ -646,7 +646,7 @@ export default {
         />
         <p
           v-if="variable.raw"
-          class="gl-mt-2 gl-mb-0 text-secondary"
+          class="text-secondary gl-mb-0 gl-mt-2"
           data-testid="raw-variable-tip"
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}
@@ -657,12 +657,12 @@ export default {
         :title="$options.i18n.variableReferenceTitle"
         :dismissible="false"
         variant="warning"
-        class="gl-mx-4 gl-pl-9! gl-border-bottom-0"
+        class="gl-mx-4 gl-border-b-0 !gl-pl-9"
         data-testid="has-variable-reference-alert"
       >
         {{ $options.i18n.variableReferenceDescription }}
       </gl-alert>
-      <div class="gl-display-flex">
+      <div class="gl-flex">
         <gl-button
           category="primary"
           class="gl-mr-3"

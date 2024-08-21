@@ -39,12 +39,12 @@ export default {
 };
 </script>
 <template>
-  <p class="build-sidebar-item gl-leading-normal gl-display-flex gl-mb-3">
+  <p class="build-sidebar-item gl-mb-3 gl-flex gl-leading-normal">
     <b v-if="hasTitle" class="gl-mr-3">{{ title }}:</b>
     <gl-link
       v-if="path"
       :href="path"
-      class="gl-text-blue-600!"
+      class="!gl-text-blue-600"
       data-testid="job-sidebar-value-link"
     >
       {{ value }}

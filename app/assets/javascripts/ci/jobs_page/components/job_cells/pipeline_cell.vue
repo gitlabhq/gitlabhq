@@ -40,8 +40,8 @@ export default {
 
 <template>
   <div>
-    <div class="gl-p-3 -gl-mt-3 -gl-mx-3">
-      <gl-link class="gl-text-truncate" :href="pipelinePath" data-testid="pipeline-id">
+    <div class="-gl-mx-3 -gl-mt-3 gl-p-3">
+      <gl-link class="gl-truncate" :href="pipelinePath" data-testid="pipeline-id">
         {{ pipelineId }}
       </gl-link>
 
@@ -54,7 +54,7 @@ export default {
       </span>
     </div>
 
-    <div v-if="job.stage" class="gl-text-truncate gl-font-sm gl-text-secondary gl-mt-1">
+    <div v-if="job.stage" class="gl-mt-1 gl-truncate gl-text-sm gl-text-secondary">
       <span data-testid="job-stage-name">{{ $options.i18n.stageLabel }}: {{ job.stage.name }}</span>
     </div>
   </div>

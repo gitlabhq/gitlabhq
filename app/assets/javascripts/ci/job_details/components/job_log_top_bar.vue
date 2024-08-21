@@ -191,9 +191,9 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar gl-display-flex gl-align-items-center gl-justify-content-space-between">
+  <div class="top-bar gl-flex gl-items-center gl-justify-between">
     <!-- truncated log information -->
-    <div class="gl-hidden sm:gl-block gl-text-truncate" data-testid="showing-last">
+    <div class="gl-hidden gl-truncate sm:gl-block" data-testid="showing-last">
       <template v-if="isJobLogSizeVisible">
         {{ jobLogSize }}
         <gl-sprintf

@@ -394,7 +394,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4 gl-relative">
+  <div class="gl-relative gl-mt-4">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
       v-else-if="showStartScreen || usesExternalConfig"

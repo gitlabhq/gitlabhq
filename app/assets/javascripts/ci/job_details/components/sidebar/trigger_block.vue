@@ -2,7 +2,7 @@
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
 
-const DEFAULT_TD_CLASSES = 'gl-font-sm!';
+const DEFAULT_TD_CLASSES = '!gl-text-sm';
 
 export default {
   fields: [
@@ -67,8 +67,8 @@ export default {
     </p>
 
     <template v-if="hasVariables">
-      <p class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <span class="gl-display-flex gl-font-bold">{{ __('Trigger variables') }}</span>
+      <p class="gl-flex gl-items-center gl-justify-between">
+        <span class="gl-flex gl-font-bold">{{ __('Trigger variables') }}</span>
 
         <gl-button
           v-if="hasValues"
@@ -82,11 +82,11 @@ export default {
 
       <gl-table-lite :items="trigger.variables" :fields="$options.fields" small bordered fixed>
         <template #cell(key)="{ item }">
-          <span class="gl-break-words gl-hyphens-auto">{{ item.key }}</span>
+          <span class="gl-hyphens-auto gl-break-words">{{ item.key }}</span>
         </template>
 
         <template #cell(value)="data">
-          <span class="gl-break-words gl-hyphens-auto">{{ getDisplayValue(data.value) }}</span>
+          <span class="gl-hyphens-auto gl-break-words">{{ getDisplayValue(data.value) }}</span>
         </template>
       </gl-table-lite>
     </template>

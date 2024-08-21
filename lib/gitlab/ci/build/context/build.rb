@@ -20,7 +20,11 @@ module Gitlab
               pipeline
                 .variables_builder
                 .scoped_variables_for_pipeline_seed(
-                  attributes, environment: seed_environment, kubernetes_namespace: seed_kubernetes_namespace
+                  attributes,
+                  user: pipeline.user,
+                  trigger_request: pipeline.legacy_trigger,
+                  environment: seed_environment,
+                  kubernetes_namespace: seed_kubernetes_namespace
                 )
             else
               stub_build.scoped_variables
@@ -56,7 +60,8 @@ module Gitlab
 
           def simple_variables
             pipeline.variables_builder.scoped_variables_for_pipeline_seed(
-              attributes, environment: nil, kubernetes_namespace: nil
+              attributes,
+              environment: nil, kubernetes_namespace: nil, user: pipeline.user, trigger_request: pipeline.legacy_trigger
             )
           end
           strong_memoize_attr :simple_variables

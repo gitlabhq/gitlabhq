@@ -132,8 +132,8 @@ describe('Linked pipeline', () => {
     });
 
     it('applies the reverse-row css class to the card', () => {
-      expect(findLinkedPipeline().classes()).toContain('gl-flex-direction-row-reverse');
-      expect(findLinkedPipeline().classes()).not.toContain('gl-flex-direction-row');
+      expect(findLinkedPipeline().classes()).toContain('gl-flex-row-reverse');
+      expect(findLinkedPipeline().classes()).not.toContain('gl-flex-row');
     });
   });
 
@@ -160,8 +160,8 @@ describe('Linked pipeline', () => {
       });
 
       it('applies the flex-row css class to the card', () => {
-        expect(findLinkedPipeline().classes()).toContain('gl-flex-direction-row');
-        expect(findLinkedPipeline().classes()).not.toContain('gl-flex-direction-row-reverse');
+        expect(findLinkedPipeline().classes()).toContain('gl-flex-row');
+        expect(findLinkedPipeline().classes()).not.toContain('gl-flex-row-reverse');
       });
     });
 
@@ -363,10 +363,10 @@ describe('Linked pipeline', () => {
   describe('expand button', () => {
     it.each`
       pipelineType       | chevronPosition       | buttonBorderClasses | expanded
-      ${downstreamProps} | ${'chevron-lg-right'} | ${'gl-border-l-0!'} | ${false}
-      ${downstreamProps} | ${'chevron-lg-left'}  | ${'gl-border-l-0!'} | ${true}
-      ${upstreamProps}   | ${'chevron-lg-left'}  | ${'gl-border-r-0!'} | ${false}
-      ${upstreamProps}   | ${'chevron-lg-right'} | ${'gl-border-r-0!'} | ${true}
+      ${downstreamProps} | ${'chevron-lg-right'} | ${'!gl-border-l-0'} | ${false}
+      ${downstreamProps} | ${'chevron-lg-left'}  | ${'!gl-border-l-0'} | ${true}
+      ${upstreamProps}   | ${'chevron-lg-left'}  | ${'!gl-border-r-0'} | ${false}
+      ${upstreamProps}   | ${'chevron-lg-right'} | ${'!gl-border-r-0'} | ${true}
     `(
       '$pipelineType.columnTitle pipeline button icon should be $chevronPosition with $buttonBorderClasses if expanded state is $expanded',
       ({ pipelineType, chevronPosition, buttonBorderClasses, expanded }) => {

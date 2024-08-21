@@ -204,6 +204,9 @@ export default {
     accessLevelsDrawerData() {
       return this.isAllowedToMergeDrawerOpen ? this.mergeAccessLevels : this.pushAccessLevels;
     },
+    showStatusChecksWithDrawer() {
+      return this.glFeatures.editBranchRules && !this.isPredefinedRule;
+    },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
@@ -330,9 +333,6 @@ export default {
           this.isAllowForcePushLoading = false;
           this.isCodeOwnersLoading = false;
         });
-    },
-    saveStatusChecksChanges() {
-      // TODO: add mutations to save status check changes
     },
   },
 };
@@ -517,10 +517,11 @@ export default {
 
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <status-checks
-          v-if="glFeatures.editBranchRules"
+          v-if="showStatusChecksWithDrawer"
+          :branch-rule-id="branchRule.id"
           :status-checks="statusChecks"
+          :project-path="projectPath"
           class="gl-mt-3"
-          @saveChanges="saveStatusChecksChanges"
         />
 
         <protection

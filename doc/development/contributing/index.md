@@ -17,6 +17,7 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 ## How to contribute
 
 1. Read the [Code of Conduct](https://about.gitlab.com/community/contribute/code-of-conduct/).
+1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
 1. [Choose or create an issue to work on](#choose-or-create-an-issue).
 1. [Choose a development environment](#choose-a-development-environment).
 1. Make changes and open a merge request.
@@ -67,6 +68,8 @@ For details, see [the issues workflow](issue_workflow.md).
 
 [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access),
 a set of forks mirrored from GitLab repositories in order to improve the contributor experience.
+When you request access to the community forks you will receive an onboarding issue in the
+[community onboarding project](https://gitlab.com/gitlab-community/community-members/onboarding/-/issues).
 For more information, read about the community forks in the [Meta repository README](https://gitlab.com/gitlab-community/meta#why).
 
 Additionally, we recommend you join the [GitLab Discord server](https://discord.com/invite/gitlab),

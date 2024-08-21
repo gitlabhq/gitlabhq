@@ -45,7 +45,7 @@ export default {
 </script>
 <template>
   <div>
-    <h1 class="page-title gl-font-size-h-display gl-mb-0" data-testid="artifacts-page-title">
+    <h1 class="page-title gl-mb-0 gl-text-size-h-display" data-testid="artifacts-page-title">
       {{ $options.i18n.PAGE_TITLE }}
     </h1>
     <div class="gl-mb-6" data-testid="build-artifacts-size">

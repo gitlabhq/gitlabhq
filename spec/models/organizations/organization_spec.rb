@@ -187,7 +187,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
         organization.users << user
       end
 
-      it { is_expected.to eq([default_organization, second_organization, organization]) }
+      it { is_expected.to eq([default_organization, organization, second_organization]) }
     end
   end
 

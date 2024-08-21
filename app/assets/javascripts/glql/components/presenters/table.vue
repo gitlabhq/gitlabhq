@@ -1,8 +1,13 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { toSentenceCase } from '../../utils/common';
+import Sorter from '../../core/sorter';
 
 export default {
   name: 'TablePresenter',
+  components: {
+    GlIcon,
+  },
   inject: ['presenter'],
   props: {
     data: {
@@ -16,15 +21,17 @@ export default {
       validator: ({ fields }) => Array.isArray(fields) && fields.length > 0,
     },
   },
-  computed: {
-    items() {
-      return this.data.nodes;
-    },
-    fields() {
-      return this.config.fields.map((field) => {
-        return { key: field, label: toSentenceCase(field) };
-      });
-    },
+  data() {
+    const items = this.data.nodes.slice();
+
+    return {
+      items,
+      fields: this.config.fields.map((field) => ({
+        key: field,
+        label: toSentenceCase(field),
+      })),
+      sorter: new Sorter(items),
+    };
   },
 };
 </script>
@@ -33,18 +40,28 @@ export default {
     <table class="!gl-mt-0 !gl-mb-2">
       <thead>
         <tr>
-          <th v-for="field in fields" :key="field.key">
-            {{ field.label }}
+          <th v-for="(field, fieldIndex) in fields" :key="field.key">
+            <div
+              :data-testid="`column-${fieldIndex}`"
+              class="gl-cursor-pointer"
+              @click="sorter.sortBy(field.key)"
+            >
+              {{ field.label }}
+              <gl-icon
+                v-if="sorter.options.fieldName === field.key"
+                :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
+              />
+            </div>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="(item, itemIndex) in items"
-          :key="itemIndex"
+          :key="item.id"
           :data-testid="`table-row-${itemIndex}`"
         >
-          <td v-for="(field, fieldIndex) in fields" :key="fieldIndex">
+          <td v-for="field in fields" :key="field.key">
             <component :is="presenter.forField(item, field.key)" />
           </td>
         </tr>

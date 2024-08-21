@@ -108,7 +108,7 @@ export default {
         class="gl-mb-8"
         data-testid="component-section"
       >
-        <h3 class="gl-font-size-h2 gl-mt-0" data-testid="component-name">
+        <h3 class="gl-mt-0 gl-text-size-h2" data-testid="component-name">
           {{ component.name }}
         </h3>
         <pre
@@ -119,7 +119,7 @@ export default {
           generateSnippet(component.includePath)
         }}</code></pre>
         <div class="gl-mt-5">
-          <div class="gl-flex gl-gap-2 gl-mb-4">
+          <div class="gl-mb-4 gl-flex gl-gap-2">
             <b> {{ $options.i18n.inputTitle }}</b>
             <gl-link
               :title="$options.i18n.learnMore"

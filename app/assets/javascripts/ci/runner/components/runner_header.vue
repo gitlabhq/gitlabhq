@@ -35,10 +35,10 @@ export default {
 <template>
   <div class="gl-py-5">
     <div class="gl-flex gl-justify-between">
-      <h1 class="gl-font-size-h-display gl-my-0">{{ name }}</h1>
+      <h1 class="gl-my-0 gl-text-size-h-display">{{ name }}</h1>
       <slot name="actions"></slot>
     </div>
-    <div class="gl-flex gl-items-start gl-gap-3 gl-flex-wrap gl-mt-3">
+    <div class="gl-mt-3 gl-flex gl-flex-wrap gl-items-start gl-gap-3">
       <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
       <runner-type-badge :type="runner.runnerType" />
       <runner-upgrade-status-badge :runner="runner" />

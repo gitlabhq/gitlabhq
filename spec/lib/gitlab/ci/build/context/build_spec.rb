@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { project.first_owner }
 
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:seed_attributes) do
     {
       name: 'some-job',
@@ -39,6 +40,10 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       is_expected.to include('CI_ENVIRONMENT_NAME' => 'test')
       is_expected.to include('CI_ENVIRONMENT_URL'  => 'http://example.com')
       is_expected.to include('KUBECONFIG'          => anything)
+      is_expected.to include('GITLAB_USER_ID'      => user.id.to_s)
+      is_expected.to include('GITLAB_USER_EMAIL'   => user.email)
+      is_expected.to include('GITLAB_USER_LOGIN'   => user.username)
+      is_expected.to include('GITLAB_USER_NAME'    => user.name)
     end
 
     context 'without passed build-specific attributes' do
@@ -53,7 +58,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
   end
 
   describe '#variables' do
-    subject { context.variables.to_hash }
+    subject(:variables) { context.variables.to_hash }
 
     it { expect(context.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
@@ -65,6 +70,71 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       end
 
       it_behaves_like 'variables collection'
+    end
+
+    context 'when the pipeline has a trigger request' do
+      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+
+      it 'includes trigger variables' do
+        expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
+        expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
+      end
+
+      context 'when the FF ci_variables_optimization_for_yaml_and_node is disabled' do
+        before do
+          stub_feature_flags(ci_variables_optimization_for_yaml_and_node: false)
+        end
+
+        context 'when the pipeline has a trigger request' do
+          let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+
+          it 'includes trigger variables' do
+            expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
+            expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
+          end
+        end
+      end
+    end
+
+    context 'when environment and kubernetes namespace include variables' do
+      let(:seed_attributes) do
+        {
+          name: 'some-job',
+          environment: 'env-$CI_COMMIT_REF_NAME',
+          options: {
+            environment: { name: 'env-$CI_COMMIT_REF_NAME', kubernetes: { namespace: 'k8s-$CI_PROJECT_PATH' } }
+          }
+        }
+      end
+
+      let!(:default_cluster) do
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: '*',
+          platform_kubernetes: default_cluster_kubernetes
+        )
+      end
+
+      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+
+      it 'returns a collection of variables' do
+        is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-master')
+        is_expected.to include('KUBE_NAMESPACE' => "k8s-#{project.full_path}")
+      end
+
+      context 'when the FF ci_variables_optimization_for_yaml_and_node is disabled' do
+        before do
+          stub_feature_flags(ci_variables_optimization_for_yaml_and_node: false)
+        end
+
+        it 'returns a collection of variables' do
+          is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-master')
+          is_expected.to include('KUBE_NAMESPACE' => "k8s-#{project.full_path}")
+        end
+      end
     end
   end
 

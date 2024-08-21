@@ -57,7 +57,7 @@ export default {
       v-gl-tooltip.left.viewport
       :href="job.status.details_path"
       :title="tooltipText"
-      class="gl-display-flex gl-align-items-center gl-py-3 gl-pl-7"
+      class="gl-flex gl-items-center gl-py-3 gl-pl-7"
       :data-testid="dataTestId"
     >
       <gl-icon
@@ -69,7 +69,7 @@ export default {
 
       <ci-icon :status="job.status" :show-tooltip="false" class="gl-mr-3" />
 
-      <span class="gl-text-truncate gl-w-full">{{ jobName }}</span>
+      <span class="gl-w-full gl-truncate">{{ jobName }}</span>
 
       <gl-icon v-if="job.retried" name="retry" class="gl-mr-4" />
     </gl-link>

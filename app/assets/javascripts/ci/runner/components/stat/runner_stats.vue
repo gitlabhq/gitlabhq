@@ -93,11 +93,7 @@ export default {
         :data-testid="`runner-stats-${stat.key.toLowerCase()}`"
       />
 
-      <runner-upgrade-status-stats
-        class="gl-display-contents"
-        :scope="scope"
-        :variables="variables"
-      />
+      <runner-upgrade-status-stats class="gl-contents" :scope="scope" :variables="variables" />
 
       <runner-performance-stat class="gl-px-5" />
     </div>

@@ -330,7 +330,7 @@ export default {
 <template>
   <div
     :id="computedJobId"
-    class="ci-job-component gl-display-flex gl-justify-content-space-between gl-pipeline-job-width"
+    class="ci-job-component gl-pipeline-job-width gl-flex gl-justify-between"
     data-testid="ci-job-item"
   >
     <component
@@ -339,16 +339,16 @@ export default {
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
-      class="menu-item gl-text-gray-900 active:gl-no-underline focus:gl-no-underline hover:gl-no-underline hover:gl-bg-strong focus:gl-bg-strong gl-w-full gl-rounded-base"
+      class="menu-item gl-w-full gl-rounded-base gl-text-gray-900 hover:gl-bg-strong hover:gl-no-underline focus:gl-bg-strong focus:gl-no-underline active:gl-no-underline"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
     >
-      <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
+      <div class="gl-flex gl-grow gl-items-center">
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
-        <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
+        <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
           <div
-            class="gl-text-truncate gl-pr-9 gl-leading-normal gl-text-left gl-text-gray-700"
+            class="gl-truncate gl-pr-9 gl-text-left gl-leading-normal gl-text-gray-700"
             :title="job.name"
           >
             {{ job.name }}
@@ -356,7 +356,7 @@ export default {
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-leading-normal gl-text-left"
+            class="gl-truncate gl-pr-9 gl-text-left gl-text-sm gl-leading-normal gl-text-gray-500"
           >
             {{ stageName }}
           </div>
@@ -364,7 +364,7 @@ export default {
       </div>
       <gl-badge
         v-if="isBridge"
-        class="gl-mt-3 gl-ml-7"
+        class="gl-ml-7 gl-mt-3"
         variant="info"
         data-testid="job-bridge-badge"
       >
@@ -414,7 +414,7 @@ export default {
         <gl-link :href="$options.confirmationModalDocLink" target="_blank"
           >{{ $options.i18n.confirmationModal.linkText }}
         </gl-link>
-        <div class="gl-mt-4 gl-display-flex">
+        <div class="gl-mt-4 gl-flex">
           <gl-form>
             <gl-form-checkbox class="gl-min-h-0" @input="toggleSkipRetryModalCheckbox" />
           </gl-form>

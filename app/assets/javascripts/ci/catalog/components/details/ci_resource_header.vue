@@ -105,8 +105,8 @@ export default {
 <template>
   <div>
     <ci-resource-header-skeleton-loader v-if="isLoadingData" class="gl-py-5" />
-    <div v-else class="gl-display-flex gl-justify-content-space-between gl-py-5">
-      <div class="gl-display-flex">
+    <div v-else class="gl-flex gl-justify-between gl-py-5">
+      <div class="gl-flex">
         <gl-avatar-link :href="resource.webPath">
           <gl-avatar
             class="gl-mr-4"
@@ -117,15 +117,13 @@ export default {
             :src="resource.icon"
           />
         </gl-avatar-link>
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-align-items-flex-start gl-justify-content-center"
-        >
-          <div class="gl-font-sm gl-text-secondary">
+        <div class="gl-flex gl-flex-col gl-items-start gl-justify-center">
+          <div class="gl-text-sm gl-text-secondary">
             {{ webPath }}
           </div>
-          <span class="gl-display-flex">
+          <span class="gl-flex">
             <gl-link
-              class="gl-font-lg gl-font-bold gl-text-gray-900 gl-hover-text-gray-900"
+              class="gl-text-lg gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
               :href="resource.webPath"
             >
               {{ resource.name }}
@@ -133,7 +131,7 @@ export default {
             <gl-badge
               v-if="hasLatestVersion"
               v-gl-tooltip
-              class="gl-ml-3 gl-my-1"
+              class="gl-my-1 gl-ml-3"
               variant="info"
               :href="latestVersion.path"
               :title="lastReleaseText"
@@ -174,7 +172,7 @@ export default {
     </div>
     <div
       v-if="isLoadingData"
-      class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
+      class="gl-animate-skeleton-loader gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base"
     ></div>
     <markdown v-else class="gl-mb-5" :markdown="resource.description" />
     <abuse-category-selector

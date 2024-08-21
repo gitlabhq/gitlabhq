@@ -169,7 +169,7 @@ export default {
       <gl-dropdown-divider v-if="shouldRenderDivider" />
       <div data-testid="max-envs-notice">
         <gl-dropdown-item class="gl-list-none" disabled>
-          <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-font-sm">
+          <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-text-sm">
             <template #limit>
               {{ $options.ENVIRONMENT_QUERY_LIMIT }}
             </template>

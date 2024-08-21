@@ -237,7 +237,7 @@ export default {
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <div class="build-header gl-display-flex">
+          <div class="build-header gl-flex">
             <job-header
               :status="job.status"
               :time="headerTime"
@@ -294,8 +294,8 @@ export default {
 
         <div
           v-if="job.archived"
-          class="gl-mt-3 gl-py-2 gl-px-3 gl-align-items-center gl-z-1 gl-m-auto archived-job"
-          :class="{ 'sticky-top gl-border-bottom-0': hasJobLog }"
+          class="archived-job gl-z-1 gl-m-auto gl-mt-3 gl-items-center gl-px-3 gl-py-2"
+          :class="{ 'sticky-top gl-border-b-0': hasJobLog }"
           data-testid="archived-job"
         >
           <gl-icon name="lock" class="gl-align-bottom" />

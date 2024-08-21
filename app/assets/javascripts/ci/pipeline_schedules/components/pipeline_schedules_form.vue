@@ -142,7 +142,7 @@ export default {
     revealText: __('Reveal values'),
     hideText: __('Hide values'),
   },
-  formElementClasses: 'gl-md-mr-3 gl-mb-3 gl-flex-basis-quarter gl-flex-shrink-0 gl-flex-grow-0',
+  formElementClasses: 'md:gl-mr-3 gl-mb-3 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
   computed: {
     dropdownTranslations() {
       return {
@@ -374,7 +374,7 @@ export default {
         <div v-for="(variable, index) in variables" :key="`var-${index}`">
           <div
             v-if="!variable.destroy"
-            class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row gl-mb-3 gl-pb-2"
+            class="gl-mb-3 gl-flex gl-flex-col gl-items-stretch gl-pb-2 md:gl-flex-row"
             data-testid="ci-variable-row"
           >
             <gl-collapsible-listbox
@@ -398,7 +398,7 @@ export default {
               v-if="displayHiddenChars(variable)"
               value="*****************"
               disabled
-              class="gl-mb-3 gl-h-7!"
+              class="gl-mb-3 !gl-h-7"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-hidden-value"
             />
@@ -407,7 +407,7 @@ export default {
               v-else
               v-model="variable.value"
               :placeholder="s__('CiVariables|Input variable value')"
-              class="gl-mb-3 gl-h-7!"
+              class="gl-mb-3 !gl-h-7"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value"
               @change="resetVariable(index)"
@@ -416,7 +416,7 @@ export default {
             <template v-if="variables.length > 1">
               <gl-button
                 v-if="canRemove(index)"
-                class="gl-md-ml-3 gl-mb-3"
+                class="gl-mb-3 md:gl-ml-3"
                 data-testid="remove-ci-variable-row"
                 variant="danger"
                 category="secondary"
@@ -426,7 +426,7 @@ export default {
               />
               <gl-button
                 v-else
-                class="gl-md-ml-3 gl-mb-3 gl-hidden md:gl-block gl-invisible"
+                class="gl-invisible gl-mb-3 gl-hidden md:gl-ml-3 md:gl-block"
                 icon="clear"
                 :aria-label="$options.i18n.removeVariableLabel"
               />
@@ -450,11 +450,11 @@ export default {
       <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
         {{ $options.i18n.activated }}
       </gl-form-checkbox>
-      <div class="gl-display-flex gl-gap-3 gl-flex-wrap">
+      <div class="gl-flex gl-flex-wrap gl-gap-3">
         <gl-button
           variant="confirm"
           data-testid="schedule-submit-button"
-          class="gl-w-full gl-sm-w-auto"
+          class="gl-w-full sm:gl-w-auto"
           @click="scheduleHandler"
         >
           {{ buttonText }}
@@ -462,7 +462,7 @@ export default {
         <gl-button
           :href="schedulesPath"
           data-testid="schedule-cancel-button"
-          class="gl-w-full gl-sm-w-auto"
+          class="gl-w-full sm:gl-w-auto"
         >
           {{ $options.i18n.cancel }}
         </gl-button>

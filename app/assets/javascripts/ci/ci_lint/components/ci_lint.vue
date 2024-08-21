@@ -97,8 +97,8 @@ export default {
       </div>
     </div>
 
-    <div class="col-sm-12 gl-display-flex gl-justify-content-space-between">
-      <div class="gl-display-flex gl-align-items-center">
+    <div class="col-sm-12 gl-flex gl-justify-between">
+      <div class="gl-flex gl-items-center">
         <gl-button
           class="gl-mr-4"
           :loading="loading"

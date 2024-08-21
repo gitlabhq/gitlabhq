@@ -65,7 +65,7 @@ export default {
 
 <template>
   <div
-    class="job-log-viewer gl-font-monospace gl-p-3 gl-font-sm gl-rounded-base"
+    class="job-log-viewer gl-rounded-base gl-p-3 gl-text-sm gl-font-monospace"
     role="log"
     aria-live="polite"
     :aria-busy="loading"

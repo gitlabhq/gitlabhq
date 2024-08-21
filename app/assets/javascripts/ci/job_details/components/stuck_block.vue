@@ -68,11 +68,7 @@ export default {
     <p class="gl-mb-0" :data-testid="stuckData.dataTestId">
       <gl-sprintf :message="stuckData.text">
         <template #link="{ content }">
-          <a
-            class="gl-display-inline-block"
-            :href="protectedBranchSettingsDocsLink"
-            target="_blank"
-          >
+          <a class="gl-inline-block" :href="protectedBranchSettingsDocsLink" target="_blank">
             {{ content }}
           </a>
         </template>

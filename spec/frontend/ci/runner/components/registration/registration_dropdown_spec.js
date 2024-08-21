@@ -160,7 +160,7 @@ describe('RegistrationDropdown', () => {
       });
 
       expect(findDropdown().attributes()).toMatchObject({
-        toggleclass: 'gl-px-3!',
+        toggleclass: '!gl-px-3',
       });
     });
 
@@ -309,7 +309,7 @@ describe('RegistrationDropdown', () => {
         });
 
         expect(findDropdown().attributes()).toMatchObject({
-          toggleclass: 'gl-px-3!',
+          toggleclass: '!gl-px-3',
         });
       });
 

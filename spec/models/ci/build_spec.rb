@@ -5890,7 +5890,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline, ci_stage: ci_stage) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns partition_id to job variables successfully', :aggregate_failures do
@@ -5902,8 +5902,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       ci_build.save!
 
       expect(ci_build.job_variables.count).to eq(2)
-      expect(ci_build.job_variables.first.partition_id).to eq(ci_testing_partition_id)
-      expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id)
+      expect(ci_build.job_variables.first.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 
@@ -5937,7 +5937,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'metadata partitioning', :ci_partitionable do
-    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id_for_check_constraints) }
 
     let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
     let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
@@ -5952,7 +5952,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.metadata).to be_present
       expect(build.metadata).to be_valid
-      expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
+      expect(build.metadata.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 

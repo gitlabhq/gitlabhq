@@ -11,10 +11,43 @@ module MicrosoftTeams
 
     def prepare
       {
-        'activityTitle' => @title,
-        'activitySubtitle' => @subtitle,
-        'activityText' => @text,
-        'activityImage' => @image
+        type: "ColumnSet",
+        columns: [
+          {
+            type: "Column",
+            width: "auto",
+            items: [
+              {
+                type: "Image",
+                url: @image,
+                size: "medium"
+              }
+            ]
+          },
+          {
+            type: "Column",
+            width: "stretch",
+            items: [
+              {
+                type: "TextBlock",
+                text: @title,
+                weight: "bolder",
+                wrap: true
+              },
+              {
+                type: "TextBlock",
+                text: @subtitle,
+                isSubtle: true,
+                wrap: true
+              },
+              {
+                type: "TextBlock",
+                text: @text,
+                wrap: true
+              }
+            ]
+          }
+        ]
       }
     end
   end

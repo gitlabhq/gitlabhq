@@ -151,25 +151,28 @@ If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
 as [external](../../administration/external_users.md).
 
-## Tips for managing users and subscription seats
+## Manage users and subscription seats
 
-Managing the number of users against the number of subscription seats can be a challenge:
+Managing the number of users against the number of subscription seats can be difficult:
 
-- If LDAP integration is enabled, anyone in the configured domain can sign up for a GitLab account.
-  This can result in an unexpected bill at time of renewal.
-- If sign-up is enabled on your instance, anyone who can access the instance can sign up for an
-  account.
+- If [LDAP is integrated with GitLab](../../administration/auth/ldap/index.md), anyone
+  in the configured domain can sign up for a GitLab account. This can result in
+  an unexpected bill at time of renewal.
+- If sign-up is turned on in your instance, anyone who can access the instance can
+  sign up for an account.
 
-GitLab has several features which can help you manage the number of users:
+GitLab has several features to help you manage the number of users. You can:
 
-- Enable the [**Require administrator approval for new sign ups**](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
-  option.
-- Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#configure-common-settings).
-- Enable the [User cap](../../administration/settings/sign_up_restrictions.md#user-cap)
-  option.
-- [Disable new sign-ups](../../administration/settings/sign_up_restrictions.md), and instead manage new
-  users manually.
-- View a breakdown of users by role in the [Users statistics](../../administration/admin_area.md#users-statistics) page.
+- [Require administrator approval for new sign ups](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Automatically block new users, either through
+  [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or
+  [OmniAuth](../../integration/omniauth.md#configure-common-settings).
+- [Limit the number of billable users](../../administration/settings/sign_up_restrictions.md#user-cap)
+  who can sign up or be added to a subscription without administrator approval.
+- [Disable new sign-ups](../../administration/settings/sign_up_restrictions.md),
+  and instead manage new users manually.
+- View a breakdown of users by role in the
+  [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
 ## Subscription data synchronization
 
@@ -358,10 +361,10 @@ renewing for the correct number of active billable users. Inactive user accounts
   you should if you renew inactive user accounts.
 - Can be a security risk. A regular review helps reduce this risk.
 
-For more information, see the:
+For more information, see the documentation on:
 
-- [User statistics documentation](../../administration/admin_area.md#users-statistics).
-- [Tips for managing users and subscription seats](#tips-for-managing-users-and-subscription-seats).
+- [User statistics](../../administration/admin_area.md#users-statistics).
+- [Managing users and subscription seats](#manage-users-and-subscription-seats).
 
 Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
 if you need assistance accessing the Customers Portal or if you need to change
@@ -488,10 +491,10 @@ To enable or disable automatic subscription renewal:
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
    You are taken to the **Subscriptions & purchases** page.
 1. Check the subscription card:
-   - If the card displays **Expires on <date>**, your subscription is not
+   - If the card displays **Expires on DATE**, your subscription is not
      set to automatically renew. To enable automatic renewal, in
      **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
-   - If the card displays **Auto-renews on <date>**, your subscription is set to
+   - If the card displays **Auto-renews on DATE**, your subscription is set to
      automatically renew. To disable automatic renewal:
      1. In **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
      1. Select a reason for cancelling.

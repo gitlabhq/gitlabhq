@@ -1,15 +1,5 @@
 :ruby
-  # rubocop: disable Lint/DuplicateBranch -- The feature enabled needs to take precedence
-  title = if merge_request_dashboard_enabled?(current_user)
-            _('Merge requests')
-          elsif params[:reviewer_username] == current_user.username
-            _("Review requests")
-          elsif params[:assignee_username] == current_user.username
-            _("Assigned merge requests")
-          else
-            _("Merge requests")
-          end
-  # rubocop: enable Lint/DuplicateBranch
+  title = _("Merge requests")
   page_title title
   @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
   add_page_specific_style 'page_bundles/issuable_list'

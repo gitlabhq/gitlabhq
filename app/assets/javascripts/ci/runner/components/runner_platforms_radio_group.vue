@@ -53,7 +53,7 @@ export default {
 
 <template>
   <gl-form-radio-group v-model="model">
-    <div class="gl-mt-3 gl-mb-6">
+    <div class="gl-mb-6 gl-mt-3">
       <label>{{ s__('Runners|Operating systems') }}</label>
 
       <div class="gl-flex gl-flex-wrap gl-gap-3">
@@ -76,7 +76,7 @@ export default {
 
     <slot name="cloud-options"></slot>
 
-    <div class="gl-mt-3 gl-mb-6">
+    <div class="gl-mb-6 gl-mt-3">
       <label>{{ s__('Runners|Containers') }}</label>
 
       <div class="gl-flex gl-flex-wrap gl-gap-3">

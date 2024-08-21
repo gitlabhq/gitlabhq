@@ -58,7 +58,7 @@ export default {
       </template>
       <template #user>
         <gl-link
-          class="js-user-link gl-text-inherit gl-font-bold"
+          class="js-user-link gl-font-bold gl-text-inherit"
           :href="createdBy.webUrl"
           :data-user-id="createdById"
           :data-username="createdBy.username"

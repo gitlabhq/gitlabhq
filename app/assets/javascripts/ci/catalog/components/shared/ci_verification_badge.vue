@@ -61,19 +61,19 @@ export default {
   <span>
     <span :id="popoverTarget">
       <gl-icon
-        class="gl-text-blue-500 gl-ml-1"
+        class="gl-ml-1 gl-text-blue-500"
         :name="$options.verificationLevelOptions[verificationLevel].icon"
       />
       <span
         v-if="showText"
         data-testid="verification-badge-text"
-        class="gl-text-blue-500 gl-font-bold gl-cursor-default"
+        class="gl-cursor-default gl-font-bold gl-text-blue-500"
       >
         {{ $options.verificationLevelOptions[verificationLevel].badgeText }}
       </span>
     </span>
     <gl-popover :target="popoverTarget" triggers="hover focus" :placement="popoverPlacement">
-      <div class="gl-display-flex gl-flex-direction-column gl-gap-4">
+      <div class="gl-flex gl-flex-col gl-gap-4">
         <span>
           <gl-sprintf :message="$options.verificationLevelOptions[verificationLevel].popoverText">
             <template #bold="{ content }">

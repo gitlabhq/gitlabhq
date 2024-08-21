@@ -52,7 +52,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-gap-3 gl-mb-4">
+  <div class="gl-mb-4 gl-flex gl-flex-wrap gl-gap-3">
     <gl-button
       v-if="showFileTreeToggle"
       id="file-tree-toggle"

@@ -56,7 +56,7 @@ export default {
 <template>
   <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
     <template #view>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-items-center">
         <div :class="findActiveRunnerType.class">
           <gl-icon :name="findActiveRunnerType.icon" class="gl-mr-2 gl-block" />
         </div>
@@ -69,7 +69,7 @@ export default {
         :key="index"
         :value="runnerType.value"
       >
-        <div class="gl-display-flex" :class="runnerType.class">
+        <div class="gl-flex" :class="runnerType.class">
           <gl-icon :name="runnerType.icon" class="gl-mr-3" />
           <span>{{ runnerType.text }}</span>
         </div>

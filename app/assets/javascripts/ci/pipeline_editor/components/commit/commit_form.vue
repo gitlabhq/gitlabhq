@@ -144,7 +144,7 @@ export default {
           </gl-sprintf>
         </gl-form-checkbox>
       </gl-form-group>
-      <div class="gl-display-flex gl-py-5">
+      <div class="gl-flex gl-py-5">
         <gl-button
           type="submit"
           class="js-no-auto-disable gl-mr-3"

@@ -245,7 +245,7 @@ export default {
       :runner-types="$options.TABS_RUNNER_TYPES"
     />
 
-    <div class="gl-flex gl-flex-col md:gl-flex-row gl-gap-3" :class="$options.FILTER_CSS_CLASSES">
+    <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row" :class="$options.FILTER_CSS_CLASSES">
       <runner-filtered-search-bar
         v-model="search"
         :tokens="searchTokens"

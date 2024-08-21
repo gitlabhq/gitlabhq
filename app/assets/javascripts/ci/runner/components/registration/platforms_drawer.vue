@@ -76,7 +76,7 @@ export default {
     @close="onClose"
   >
     <template #title>
-      <h2 class="gl-my-0 gl-font-size-h2 gl-leading-24">
+      <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
         {{ s__('Runners|Install GitLab Runner') }}
       </h2>
     </template>

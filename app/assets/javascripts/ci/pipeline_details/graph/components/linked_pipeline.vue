@@ -31,8 +31,8 @@ export default {
   },
   styles: {
     actionSizeClasses: ['gl-h-7 gl-w-7'],
-    flatLeftBorder: ['gl-rounded-bottom-left-none!', 'gl-rounded-top-left-none!'],
-    flatRightBorder: ['gl-rounded-bottom-right-none!', 'gl-rounded-top-right-none!'],
+    flatLeftBorder: ['!gl-rounded-bl-none', '!gl-rounded-tl-none'],
+    flatRightBorder: ['!gl-rounded-br-none', '!gl-rounded-tr-none'],
   },
   props: {
     columnTitle: {
@@ -86,8 +86,8 @@ export default {
     },
     buttonBorderClasses() {
       return this.isUpstream
-        ? ['gl-border-r-0!', ...this.$options.styles.flatRightBorder]
-        : ['gl-border-l-0!', ...this.$options.styles.flatLeftBorder];
+        ? ['!gl-border-r-0', ...this.$options.styles.flatRightBorder]
+        : ['!gl-border-l-0', ...this.$options.styles.flatLeftBorder];
     },
     buttonShadowClass() {
       return this.isExpandBtnFocus ? '' : '!gl-shadow-none';
@@ -228,10 +228,10 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="linked-pipeline-container gl-h-full !gl-flex gl-w-full sm:gl-w-auto"
+    class="linked-pipeline-container !gl-flex gl-h-full gl-w-full sm:gl-w-auto"
     :class="{
-      'gl-flex-direction-row-reverse': isUpstream,
-      'gl-flex-direction-row': !isUpstream,
+      'gl-flex-row-reverse': isUpstream,
+      'gl-flex-row': !isUpstream,
     }"
     data-testid="linked-pipeline-container"
     :aria-expanded="expanded"
@@ -241,22 +241,22 @@ export default {
     <gl-tooltip v-if="showCardTooltip" :target="() => $refs.linkedPipeline">
       {{ cardTooltipText }}
     </gl-tooltip>
-    <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
+    <div class="gl-border gl-w-full gl-rounded-lg gl-bg-white gl-p-3" :class="cardClasses">
       <div class="gl-flex gl-gap-x-3">
         <ci-icon
           v-if="!pipelineIsLoading"
           :status="pipelineStatus"
           :use-link="false"
-          class="gl-align-self-start"
+          class="gl-self-start"
         />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
-        <div class="gl-flex gl-flex-col gl-leading-normal gl-downstream-pipeline-job-width">
+        <div class="gl-downstream-pipeline-job-width gl-flex gl-flex-col gl-leading-normal">
           <span class="gl-truncate" data-testid="downstream-title-content">
             {{ downstreamTitle }}
           </span>
-          <div class="gl-truncate gl-p-2 -gl-m-2">
+          <div class="-gl-m-2 gl-truncate gl-p-2">
             <gl-link
-              class="gl-text-blue-500! gl-font-sm"
+              class="gl-text-sm !gl-text-blue-500"
               :href="pipeline.path"
               data-testid="pipelineLink"
               >#{{ pipeline.id }}</gl-link
@@ -269,7 +269,7 @@ export default {
           :title="action.ariaLabel"
           :loading="isActionLoading"
           :icon="action.icon"
-          class="gl-rounded-full!"
+          class="!gl-rounded-full"
           :class="$options.styles.actionSizeClasses"
           :aria-label="action.ariaLabel"
           @click="action.method"
@@ -278,7 +278,7 @@ export default {
         />
         <div v-else :class="$options.styles.actionSizeClasses"></div>
       </div>
-      <div class="gl-pt-2 gl-ml-7">
+      <div class="gl-ml-7 gl-pt-2">
         <gl-badge variant="info" data-testid="downstream-pipeline-label">
           {{ label }}
         </gl-badge>
@@ -289,7 +289,7 @@ export default {
         :id="buttonId"
         v-gl-tooltip
         :title="expandBtnText"
-        class="gl-border! gl-rounded-lg!"
+        class="!gl-border !gl-rounded-lg"
         :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses, buttonShadowClass]"
         :icon="expandedIcon"
         :aria-label="expandBtnText"

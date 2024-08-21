@@ -109,7 +109,7 @@ export default {
       ];
     },
     tdClasses() {
-      return this.useFailedJobsWidget ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
+      return this.useFailedJobsWidget ? '!gl-pb-0 !gl-border-none' : 'pl-p-5!';
     },
     pipelinesWithDetails() {
       if (this.useFailedJobsWidget) {
@@ -179,7 +179,7 @@ export default {
         <pipeline-url
           :pipeline="item"
           :pipeline-id-type="pipelineIdType"
-          ref-color="gl-text-black-normal"
+          ref-color="gl-text-default"
         />
       </template>
 
@@ -215,7 +215,7 @@ export default {
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"
-          class="-gl-ml-4 -gl-mt-3 -gl-mb-1"
+          class="-gl-mb-1 -gl-ml-4 -gl-mt-3"
         />
       </template>
     </gl-table-lite>

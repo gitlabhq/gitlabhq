@@ -50,7 +50,7 @@ export default {
 <template>
   <gl-disclosure-dropdown-item :item="item" class="ci-job-component">
     <template #list-item>
-      <div class="gl-flex -gl-my-2 gl-h-6">
+      <div class="-gl-my-2 gl-flex gl-h-6">
         <job-name-component
           v-gl-tooltip.viewport.left
           class="-gl-my-2"
