@@ -70,6 +70,10 @@ module Gitlab
         gon.time_display_format = current_user.time_display_format
       end
 
+      if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
+        gon.current_organization = current_organization.slice(:id, :name, :web_url, :avatar_url)
+      end
+
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
       push_frontend_feature_flag(:source_editor_toolbar)
@@ -141,6 +145,20 @@ module Gitlab
       gon.analytics_url = ENV['GITLAB_ANALYTICS_URL']
       gon.analytics_id = ENV['GITLAB_ANALYTICS_ID']
     end
+
+    # `::Current.organization` is only valid within the context of a request,
+    # but it can be called from everywhere. So how do we avoid accidentally
+    # calling it outside of the context of a request? We banned it with
+    # Rubocop.
+    #
+    # This method is acceptable because it is only included by controllers.
+    # This method intentionally looks like Devise's `current_user` method,
+    # which has similar properties.
+    # rubocop:disable Gitlab/AvoidCurrentOrganization -- This method follows the spirit of the rule
+    def current_organization
+      ::Current.organization
+    end
+    # rubocop:enable Gitlab/AvoidCurrentOrganization
   end
 end
 

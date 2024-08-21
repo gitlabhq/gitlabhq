@@ -30,6 +30,8 @@ class RemoveCrmContactsWidgetFromWorkItemTypes < Gitlab::Database::Migration[2.2
   end
 
   def down
+    WorkItemType.reset_column_information
+
     widgets = []
 
     WORK_ITEM_TYPES.each do |type_name|

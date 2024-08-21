@@ -145,7 +145,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe '.default_by_type' do
-    let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
+    let(:default_issue_type) { described_class.find_by(base_type: :issue) }
     let(:base_type) { :issue }
 
     subject { described_class.default_by_type(base_type) }

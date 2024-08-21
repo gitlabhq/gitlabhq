@@ -24,6 +24,8 @@ class ChangeEpicsHierarchyRestrictions < Gitlab::Database::Migration[2.1]
   private
 
   def upsert_epic_restrictions(stepping_down: false)
+    MigrationWorkItemType.reset_column_information
+
     issue_type = MigrationWorkItemType.find_by_name_and_namespace_id('Issue', nil)
     epic_type = MigrationWorkItemType.find_by_name_and_namespace_id('Epic', nil)
 

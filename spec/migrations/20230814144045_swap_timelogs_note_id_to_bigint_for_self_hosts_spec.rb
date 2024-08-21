@@ -97,7 +97,7 @@ RSpec.describe SwapTimelogsNoteIdToBigintForSelfHosts, feature_category: :databa
         connection.execute('ALTER TABLE timelogs DROP COLUMN IF EXISTS note_id_convert_to_bigint')
       end
 
-      it 'swaps the columns' do
+      it 'swaps the columns', :aggregate_failures do
         disable_migrations_output do
           reversible_migration do |migration|
             migration.before -> {

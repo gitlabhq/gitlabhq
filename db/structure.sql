@@ -20282,7 +20282,6 @@ CREATE TABLE work_item_types (
     description text,
     description_html text,
     icon_name text,
-    namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     CONSTRAINT check_104d2410f6 CHECK ((char_length(name) <= 255)),
@@ -26587,8 +26586,6 @@ CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON v
 
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
-CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
-
 CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
 CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
@@ -30515,6 +30512,8 @@ CREATE INDEX index_work_item_related_link_restrictions_on_target_type_id ON work
 
 CREATE INDEX index_work_item_types_on_base_type_and_id ON work_item_types USING btree (base_type, id);
 
+CREATE UNIQUE INDEX index_work_item_types_on_name_unique ON work_item_types USING btree (TRIM(BOTH FROM lower(name)));
+
 CREATE UNIQUE INDEX index_work_item_widget_definitions_on_default_witype_and_name ON work_item_widget_definitions USING btree (work_item_type_id, name) WHERE (namespace_id IS NULL);
 
 CREATE UNIQUE INDEX index_work_item_widget_definitions_on_namespace_type_and_name ON work_item_widget_definitions USING btree (namespace_id, work_item_type_id, name);
@@ -30846,8 +30845,6 @@ CREATE INDEX wi_datessources_namespace_id_index ON work_item_dates_sources USING
 CREATE INDEX wi_datessources_start_date_sourcing_milestone_id_index ON work_item_dates_sources USING btree (start_date_sourcing_milestone_id);
 
 CREATE INDEX wi_datessources_start_date_sourcing_work_item_id_index ON work_item_dates_sources USING btree (start_date_sourcing_work_item_id);
-
-CREATE UNIQUE INDEX work_item_types_namespace_id_and_name_unique ON work_item_types USING btree (namespace_id, btrim(lower(name)));
 
 ALTER INDEX analytics_cycle_analytics_issue_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_00_pkey;
 
@@ -34454,9 +34451,6 @@ ALTER TABLE ONLY boards_epic_lists
 
 ALTER TABLE ONLY approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_2020a7124a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_types
-    ADD CONSTRAINT fk_rails_20f694a960 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_statuses
     ADD CONSTRAINT fk_rails_2178592333 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

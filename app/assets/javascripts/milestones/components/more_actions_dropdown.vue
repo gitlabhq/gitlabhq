@@ -39,6 +39,7 @@ export default {
     'groupName',
     'issueCount',
     'mergeRequestCount',
+    'size',
   ],
   data() {
     return {
@@ -49,6 +50,9 @@ export default {
     };
   },
   computed: {
+    widthClasses() {
+      return this.size === 'small' ? 'gl-min-w-6' : 'gl-min-w-7';
+    },
     hasUrl() {
       return this.editUrl || this.closeUrl || this.reopenUrl || this.promoteUrl;
     },
@@ -169,7 +173,9 @@ export default {
     no-caret
     :toggle-text="$options.i18n.actionsLabel"
     text-sr-only
-    class="gl-relative gl-w-full gl-sm-w-auto gl-min-w-7"
+    class="gl-relative gl-w-full sm:gl-w-auto"
+    :class="widthClasses"
+    :size="size"
     :data-testid="showTestIdIfNotDetailPage"
     @shown="showDropdown"
     @hidden="hideDropdown"

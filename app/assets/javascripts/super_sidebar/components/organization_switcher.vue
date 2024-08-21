@@ -3,7 +3,6 @@ import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink } from '@
 import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { defaultOrganization } from '~/organizations/mock_data';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -67,9 +66,7 @@ export default {
       return this.$apollo.queries.organizations.loading;
     },
     currentOrganization() {
-      // TODO - use `gon.current_organization` when backend supports it.
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/437095
-      return defaultOrganization;
+      return window.gon.current_organization;
     },
     nodes() {
       return this.organizations.nodes || [];
@@ -135,7 +132,7 @@ export default {
   <gl-disclosure-dropdown :items="items" class="gl-block" placement="bottom" @shown="onShown">
     <template #toggle>
       <button
-        class="organization-switcher-button gl-flex gl-w-full gl-items-center gl-gap-3 gl-rounded-base gl-border-none gl-p-3 gl-leading-1"
+        class="user-bar-button organization-switcher-button gl-flex gl-items-center gl-text-left gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-leading-1 gl-w-full"
         data-testid="toggle-button"
       >
         <gl-avatar

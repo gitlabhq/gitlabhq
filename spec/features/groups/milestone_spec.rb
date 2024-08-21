@@ -153,33 +153,15 @@ RSpec.describe 'Group milestones', feature_category: :team_planning do
       end
 
       it 'renders milestones' do
-        expect(page).to have_content('v1.0')
-        expect(page).to have_content('v1.1')
-        expect(page).to have_content('GL-113')
-        expect(page).to have_link(
+        expect(first('.milestone')).to have_link(
           'v1.0',
           href: project_milestone_path(project, active_project_milestone1)
         )
-        expect(page).to have_link(
-          '1 Issue',
-          href: project_issues_path(project, milestone_title: 'v1.0')
-        )
-        expect(page).to have_link(
-          '0 Merge requests',
-          href: project_merge_requests_path(project, milestone_title: 'v1.0')
-        )
-        expect(page).to have_link(
-          'GL-113',
-          href: group_milestone_path(group, active_group_milestone)
-        )
-        expect(page).to have_link(
-          '0 Issues',
-          href: issues_group_path(group, milestone_title: 'GL-113')
-        )
-        expect(page).to have_link(
-          '0 Merge requests',
-          href: merge_requests_group_path(group, milestone_title: 'GL-113')
-        )
+        expect(first('.milestone')).to have_content('0/1 complete')
+        expect(first('.milestone')).to have_content('0%')
+
+        expect(page).to have_content('v1.1')
+        expect(page).to have_content('GL-113')
       end
     end
   end

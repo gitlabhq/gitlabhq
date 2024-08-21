@@ -760,6 +760,9 @@ msgstr[1] ""
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
 
+msgid "%{count} releases"
+msgstr ""
+
 msgid "%{count} selected"
 msgstr ""
 
@@ -1685,6 +1688,9 @@ msgid "+%{tags} more"
 msgstr ""
 
 msgid ", "
+msgstr ""
+
+msgid ", and %{number} more"
 msgstr ""
 
 msgid ", or "
@@ -33794,9 +33800,6 @@ msgstr ""
 msgid "Milestones|Failed to delete milestone %{milestoneTitle}"
 msgstr ""
 
-msgid "Milestones|Group Milestone"
-msgstr ""
-
 msgid "Milestones|Labels from issues in this milestone will appear here."
 msgstr ""
 
@@ -33810,9 +33813,6 @@ msgid "Milestones|Ongoing Issues (open and assigned)"
 msgstr ""
 
 msgid "Milestones|Organize issues and merge requests into a cohesive group, and set optional start and due dates. %{learn_more_link}"
-msgstr ""
-
-msgid "Milestones|Project Milestone"
 msgstr ""
 
 msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
@@ -33839,7 +33839,7 @@ msgstr ""
 msgid "Milestones|Use milestones to track issues and merge requests over a fixed period of time"
 msgstr ""
 
-msgid "Milestone|%{percentage}%{percent} complete"
+msgid "Milestone|%{percentage}%{percent}"
 msgstr ""
 
 msgid "Milestone|Copy milestone ID: %{id}"

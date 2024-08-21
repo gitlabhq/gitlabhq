@@ -191,7 +191,7 @@ module Gitlab
 
           ::WorkItems::Type.upsert_all(
             base_types,
-            unique_by: :idx_work_item_types_on_namespace_id_and_name_null_namespace
+            unique_by: :index_work_item_types_on_name_unique
           )
 
           upsert_widgets

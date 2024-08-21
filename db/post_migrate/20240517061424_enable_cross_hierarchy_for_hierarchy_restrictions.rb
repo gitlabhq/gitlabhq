@@ -25,6 +25,8 @@ class EnableCrossHierarchyForHierarchyRestrictions < Gitlab::Database::Migration
   private
 
   def upsert_enable_cross_hierarchy_restrictions(stepping_down: false)
+    MigrationWorkItemType.reset_column_information
+
     issue_type = MigrationWorkItemType.find_by_name_and_namespace_id('Issue', nil)
     task_type = MigrationWorkItemType.find_by_name_and_namespace_id('Task', nil)
     objective_type = MigrationWorkItemType.find_by_name_and_namespace_id('Objective', nil)

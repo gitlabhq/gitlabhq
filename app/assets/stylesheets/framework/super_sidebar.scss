@@ -295,14 +295,15 @@ $command-palette-spacing: px-to-rem(14px);
     }
 
     .organization-switcher-button {
-      background-color: transparent;
-      color: var(--super-sidebar-user-bar-button-color);
+      &:not(:active),
+      &:not(:hover),
+      &:not(:focus) {
+        background-color: transparent;
+        box-shadow: none;
+      }
 
-      &:active,
-      &:hover,
-      &:focus {
-        background-color: var(--super-sidebar-user-bar-button-hover-bg);
-        color: var(--super-sidebar-user-bar-button-hover-color);
+      .gl-avatar {
+        color: var(--super-sidebar-user-bar-button-color);
       }
     }
 

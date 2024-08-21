@@ -29,6 +29,8 @@ class UpdateHierarchyRestrictionSubepicsMaximumDepth < Gitlab::Database::Migrati
   private
 
   def upsert_epic_restrictions(max_depth: OLD_DEPTH)
+    MigrationWorkItemType.reset_column_information
+
     epic_type = MigrationWorkItemType.find_by_name_and_namespace_id('Epic', nil)
 
     unless epic_type

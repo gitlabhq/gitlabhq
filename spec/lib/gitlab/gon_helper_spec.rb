@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GonHelper, feature_category: :shared do
+  let_it_be(:organization) { create(:organization) }
   let(:helper) do
     Class.new do
       include Gitlab::GonHelper
@@ -75,6 +76,43 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
 
           helper.add_gon_variables
         end
+      end
+    end
+
+    context 'when ui_for_organizations feature flag is enabled' do
+      context 'when current_organization is set' do
+        before do
+          allow(::Current).to receive(:organization).and_return(organization)
+        end
+
+        it 'exposes current_organization' do
+          expect(gon).to receive(:current_organization=).with(
+            organization.slice(:id, :name, :web_url, :avatar_url)
+          )
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when current_organization is not set' do
+        it 'does not expose current_organization' do
+          expect(gon).not_to receive(:current_organization=)
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
+    context 'when ui_for_organizations feature flag is disabled' do
+      before do
+        allow(::Current).to receive(:organization).and_return(organization)
+        stub_feature_flags(ui_for_organizations: false)
+      end
+
+      it 'does not expose current_organization' do
+        expect(gon).not_to receive(:current_organization=)
+
+        helper.add_gon_variables
       end
     end
   end

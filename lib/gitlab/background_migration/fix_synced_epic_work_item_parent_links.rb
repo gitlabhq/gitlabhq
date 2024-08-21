@@ -66,7 +66,7 @@ module Gitlab
       end
 
       def issue_work_item_type_id
-        @issue_work_item_type_id ||= WorkItemType.find_by(namespace_id: nil, name: 'Issue').id
+        @issue_work_item_type_id ||= WorkItemType.find_by(name: 'Issue').id
       end
     end
   end

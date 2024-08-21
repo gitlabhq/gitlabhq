@@ -23,6 +23,7 @@ describe('moreActionsDropdown', () => {
     issueCount: 1,
     mergeRequestCount: 2,
     isDetailPage: false,
+    size: 'medium',
   };
 
   const createComponent = ({ provideData = {}, propsData = {} } = {}) => {
