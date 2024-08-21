@@ -415,20 +415,8 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         margin-left: 1rem;
       }
 
-      .description-version {
-        position: relative;
-
-        .btn.delete-description-history {
-          position: absolute;
-          top: 18px;
-          right: 10px;
-        }
-
-        pre {
-          max-height: $dropdown-max-height-lg;
-          white-space: pre-wrap;
-          padding-right: 30px;
-        }
+      .description-version pre {
+        max-height: $dropdown-max-height-lg;
       }
 
       .system-note-commit-list-toggler {

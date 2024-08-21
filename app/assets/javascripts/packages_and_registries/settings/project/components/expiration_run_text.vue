@@ -41,7 +41,7 @@ export default {
   >
     <gl-form-input
       id="expiration-policy-info-text"
-      class="gl-pl-0!"
+      class="!gl-pl-0"
       plaintext
       :value="parsedValue"
     />

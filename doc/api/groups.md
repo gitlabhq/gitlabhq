@@ -2659,6 +2659,7 @@ PUT /groups/:id/push_rule
 | `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `reject_unsigned_commits`                     | boolean        | no       | Reject commit when it’s not signed |
 | `reject_non_dco_commits`                      | boolean        | no       | Reject commit when it’s not DCO certified |
+
 <!-- markdownlint-enable MD056 -->
 
 ```shell

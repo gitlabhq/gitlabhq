@@ -167,7 +167,7 @@ export default {
 <template>
   <settings-section :heading="$options.i18n.PACKAGE_FORWARDING_SETTINGS_HEADER">
     <template #description>
-      <span class="gl-block gl-mb-2" data-testid="description">
+      <span class="gl-mb-2 gl-block" data-testid="description">
         {{ $options.i18n.PACKAGE_FORWARDING_SETTINGS_DESCRIPTION }}
       </span>
       <gl-sprintf :message="$options.i18n.PACKAGE_FORWARDING_SECURITY_DESCRIPTION">

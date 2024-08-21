@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/types/alert_management/alert_type.rb'
-    - 'app/graphql/types/award_emojis/award_emoji_type.rb'
-    - 'app/graphql/types/board_list_type.rb'
-    - 'app/graphql/types/branch_protections/base_access_level_type.rb'
-    - 'app/graphql/types/branch_rules/branch_protection_type.rb'
-    - 'app/graphql/types/ci/job_token_scope_type.rb'
-    - 'app/graphql/types/ci/pipeline_type.rb'
-    - 'app/graphql/types/ci/runner_status_enum.rb'
-    - 'app/graphql/types/ci/runner_type.rb'
-    - 'app/graphql/types/ci/runner_web_url_edge.rb'
-    - 'app/graphql/types/ci/status_action_type.rb'
-    - 'app/graphql/types/clusters/agent_token_type.rb'
-    - 'app/graphql/types/clusters/agent_type.rb'
-    - 'app/graphql/types/container_expiration_policy_type.rb'
-    - 'app/graphql/types/container_repository_tag_type.rb'
     - 'app/graphql/types/container_repository_type.rb'
     - 'app/graphql/types/deployment_tag_type.rb'
     - 'app/graphql/types/design_management/design_at_version_type.rb'

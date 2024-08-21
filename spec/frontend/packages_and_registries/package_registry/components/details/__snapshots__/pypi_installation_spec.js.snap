@@ -3,10 +3,10 @@
 exports[`PypiInstallation renders all the messages 1`] = `
 <div>
   <div
-    class="gl-align-items-center gl-display-flex gl-justify-content-space-between"
+    class="gl-flex gl-items-center gl-justify-between"
   >
     <h3
-      class="gl-font-lg"
+      class="gl-text-lg"
     >
       Installation
     </h3>
@@ -195,7 +195,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
     </div>
   </fieldset>
   <h3
-    class="gl-font-lg"
+    class="gl-text-lg"
   >
     Registry setup
   </h3>

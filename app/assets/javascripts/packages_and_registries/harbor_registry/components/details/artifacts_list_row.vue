@@ -81,8 +81,12 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center">
-        <router-link class="gl-text-body gl-font-bold gl-break-all" data-testid="name" :to="linkTo">
+      <div class="gl-flex gl-items-center">
+        <router-link
+          class="gl-break-all gl-font-bold gl-text-primary"
+          data-testid="name"
+          :to="linkTo"
+        >
           {{ artifact.digest }}
         </router-link>
         <clipboard-button
@@ -98,7 +102,7 @@ export default {
       <span class="gl-mr-3" data-testid="size">
         {{ formattedSize }}
       </span>
-      <span id="tagsCount" class="gl-display-flex gl-align-items-center" data-testid="tags-count">
+      <span id="tagsCount" class="gl-flex gl-items-center" data-testid="tags-count">
         <gl-icon name="tag" class="gl-mr-2" />
         {{ tagsCountText }}
       </span>

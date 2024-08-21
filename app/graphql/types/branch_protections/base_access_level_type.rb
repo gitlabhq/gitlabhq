@@ -13,7 +13,7 @@ module Types
       field :access_level_description,
         type: GraphQL::Types::String,
         null: false,
-        description: 'Human readable representation for this access level.',
+        description: 'Human readable representation for the access level.',
         method: 'humanize'
     end
   end

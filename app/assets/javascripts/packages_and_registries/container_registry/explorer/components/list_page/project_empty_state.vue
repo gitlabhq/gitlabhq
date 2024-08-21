@@ -75,7 +75,7 @@ export default {
           <clipboard-button
             :text="dockerLoginCommand"
             :title="$options.i18n.copyLoginTitle"
-            class="gl-m-0!"
+            class="!gl-m-0"
           />
         </template>
       </gl-form-input-group>
@@ -93,7 +93,7 @@ export default {
           <clipboard-button
             :text="dockerBuildCommand"
             :title="$options.i18n.copyBuildTitle"
-            class="gl-m-0!"
+            class="!gl-m-0"
           />
         </template>
       </gl-form-input-group>
@@ -103,7 +103,7 @@ export default {
           <clipboard-button
             :text="dockerPushCommand"
             :title="$options.i18n.copyPushTitle"
-            class="gl-m-0!"
+            class="!gl-m-0"
           />
         </template>
       </gl-form-input-group>

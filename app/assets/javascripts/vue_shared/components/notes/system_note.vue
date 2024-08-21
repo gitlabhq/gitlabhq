@@ -95,6 +95,12 @@ export default {
     descriptionVersion() {
       return this.descriptionVersions[this.note.description_version_id];
     },
+    singleLineDescription() {
+      return !this.descriptionVersion?.match(/\n/g);
+    },
+    deleteButtonClasses() {
+      return this.singleLineDescription ? 'gl-top-5 gl-right-2 gl-mt-2' : 'gl-top-6 gl-right-3';
+    },
     isMergeRequest() {
       return this.getNoteableData.noteableType === 'MergeRequest';
     },
@@ -212,11 +218,15 @@ export default {
             <span>{{ __('Toggle commit list') }}</span>
           </div>
         </div>
-        <div v-if="shouldShowDescriptionVersion" class="description-version pt-2">
+        <div v-if="shouldShowDescriptionVersion" class="description-version gl-relative !gl-pt-3">
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
             <gl-skeleton-loader />
           </pre>
-          <pre v-else v-safe-html="descriptionVersion" class="wrapper mt-2"></pre>
+          <pre
+            v-else
+            v-safe-html="descriptionVersion"
+            class="wrapper gl-mt-3 gl-whitespace-pre-wrap gl-pr-7"
+          ></pre>
           <gl-button
             v-if="displayDeleteButton"
             v-gl-tooltip
@@ -225,7 +235,8 @@ export default {
             variant="default"
             category="tertiary"
             icon="remove"
-            class="delete-description-history"
+            class="gl-absolute"
+            :class="deleteButtonClasses"
             data-testid="delete-description-version-button"
             @click="deleteDescriptionVersion"
           />

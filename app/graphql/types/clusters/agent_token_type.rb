@@ -11,7 +11,7 @@ module Types
 
       field :cluster_agent,
         Types::Clusters::AgentType,
-        description: 'Cluster agent this token is associated with.',
+        description: 'Cluster agent the token is associated with.',
         null: true
 
       field :created_at,

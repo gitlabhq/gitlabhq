@@ -15,7 +15,7 @@ module Types
       description: 'ID (global ID) of the list.'
 
     field :collapsed, GraphQL::Types::Boolean, null: true,
-      description: 'Indicates if the list is collapsed for this user.'
+      description: 'Indicates if the list is collapsed for the user.'
     field :issues_count, GraphQL::Types::Int, null: true,
       description: 'Count of issues in the list.'
     field :label, Types::LabelType, null: true,

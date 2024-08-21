@@ -87,6 +87,55 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
   cause these issues.
 
+## Issues to be aware of when upgrading from 17.3
+
+- Migration failures when upgrading from GitLab 17.3.
+
+  When upgrading from 17.3 to 17.4, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+
+  ```shell
+  main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
+  main: == 20240812040748 AddUniqueConstraintToRemoteDevelopmentAgentConfigs: migrating 
+  main: -- transaction_open?(nil)
+  main:    -> 0.0000s
+  main: -- view_exists?(:postgres_partitions)
+  main:    -> 0.0181s
+  main: -- index_exists?(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
+  main:    -> 0.0026s
+  main: -- execute("SET statement_timeout TO 0")
+  main:    -> 0.0004s
+  main: -- add_index(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
+  main: -- execute("RESET statement_timeout")
+  main:    -> 0.0002s
+  main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+
+  PG::UniqueViolation: ERROR:  could not create unique index "index_remote_development_agent_configs_on_unique_agent_id"
+  DETAIL:  Key (cluster_agent_id)=(1000141) is duplicated.
+  ```
+
+  This error occurs because the migration adds a unique constraint on the `cluster_agent_id` column in the `remote_development_agent_configs` table, but there are still duplicate entries. The previous migration is supposed to remove these duplicates, but in rare cases, new duplicates may be inserted between the two migrations.
+
+  To safely resolve this issue, follow these steps:
+
+  1. Open the Rails console where the migrations are being run.
+  1. Copy and paste the script below into the console and execute it.
+  1. Re-run the migrations, and they should complete successfully.
+
+   ```Ruby
+   # Get the IDs to keep for each cluster_agent_id; if there are duplicates, only the row with the latest updated_at will be kept.
+   latest_ids = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.select("DISTINCT ON (cluster_agent_id) id")
+     .order("cluster_agent_id, updated_at DESC")
+     .map(&:id)
+
+   # Get the list of remote_development_agent_configs to be removed.
+   agent_configs_to_remove = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.where.not(id: latest_ids)
+
+   # Delete all duplicated agent_configs.
+   agent_configs_to_remove.delete_all
+   ```
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:

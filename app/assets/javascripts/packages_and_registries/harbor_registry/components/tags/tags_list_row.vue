@@ -46,11 +46,8 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center">
-        <div
-          data-testid="name"
-          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-whitespace-nowrap"
-        >
+      <div class="gl-flex gl-items-center">
+        <div data-testid="name" class="gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap">
           {{ tag.name }}
         </div>
         <clipboard-button

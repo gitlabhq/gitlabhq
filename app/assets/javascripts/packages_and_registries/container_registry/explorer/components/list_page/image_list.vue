@@ -27,7 +27,7 @@ export default {
 
 <template>
   <ul class="gl-pl-0">
-    <li v-for="(listItem, index) in images" :key="index" class="gl-list-style-none">
+    <li v-for="(listItem, index) in images" :key="index" class="gl-list-none">
       <image-list-row
         :item="listItem"
         :metadata-loading="metadataLoading"

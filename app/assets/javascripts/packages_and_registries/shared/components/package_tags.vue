@@ -57,7 +57,7 @@ export default {
     tagBadgeClass(index) {
       return {
         'gl-hidden': true,
-        'gl-display-flex': this.tagCount === 1,
+        'gl-flex': this.tagCount === 1,
         'md:!gl-flex': this.tagCount > 1,
         'gl-mr-2': index !== this.tagsToRender.length - 1,
         'gl-ml-3': !this.hideLabel && index === 0,
@@ -68,9 +68,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
-    <div v-if="!hideLabel" data-testid="tagLabel" class="gl-display-flex gl-align-items-center">
-      <gl-icon name="labels" class="gl-text-gray-500 gl-mr-3" />
+  <div class="gl-flex gl-items-center">
+    <div v-if="!hideLabel" data-testid="tagLabel" class="gl-flex gl-items-center">
+      <gl-icon name="labels" class="gl-mr-3 gl-text-gray-500" />
       <span class="gl-font-bold">{{ tagsDisplay }}</span>
     </div>
 
@@ -89,7 +89,7 @@ export default {
       data-testid="moreBadge"
       variant="muted"
       :title="moreTagsTooltip"
-      class="gl-hidden md:gl-flex gl-ml-2"
+      class="gl-ml-2 gl-hidden md:gl-flex"
       ><gl-sprintf :message="__('+%{tags} more')">
         <template #tags>
           {{ moreTagsDisplay }}
@@ -101,7 +101,7 @@ export default {
       v-if="moreTagsDisplay && hideLabel"
       data-testid="moreBadge"
       variant="muted"
-      class="md:gl-hidden gl-ml-2"
+      class="gl-ml-2 md:gl-hidden"
       >{{ tagsDisplay }}</gl-badge
     >
   </div>

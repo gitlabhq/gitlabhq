@@ -248,11 +248,6 @@ When using repository cleanup, note:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.
 

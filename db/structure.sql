@@ -29592,9 +29592,9 @@ CREATE UNIQUE INDEX index_releases_on_project_tag_unique ON releases USING btree
 
 CREATE INDEX index_releases_on_released_at ON releases USING btree (released_at);
 
-CREATE INDEX index_remote_development_agent_configs_on_cluster_agent_id ON remote_development_agent_configs USING btree (cluster_agent_id);
-
 CREATE INDEX index_remote_development_agent_configs_on_project_id ON remote_development_agent_configs USING btree (project_id);
+
+CREATE UNIQUE INDEX index_remote_development_agent_configs_on_unique_agent_id ON remote_development_agent_configs USING btree (cluster_agent_id);
 
 CREATE INDEX index_remote_mirrors_on_last_successful_update_at ON remote_mirrors USING btree (last_successful_update_at);
 

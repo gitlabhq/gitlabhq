@@ -7,7 +7,7 @@ class AuthorizedProjectsWorker
 
   sidekiq_options retry: 3
 
-  feature_category :system_access
+  feature_category :permissions
   urgency :high
   weight 2
   idempotent!

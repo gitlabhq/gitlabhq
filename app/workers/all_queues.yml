@@ -2435,7 +2435,7 @@
   :tags: []
 - :name: authorized_projects
   :worker_name: AuthorizedProjectsWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

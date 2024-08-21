@@ -9308,11 +9308,11 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerexpirationpolicycadence"></a>`cadence` | [`ContainerExpirationPolicyCadenceEnum`](#containerexpirationpolicycadenceenum) | This container expiration policy schedule. |
 | <a id="mutationupdatecontainerexpirationpolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerexpirationpolicyenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether this container expiration policy is enabled. |
+| <a id="mutationupdatecontainerexpirationpolicyenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the container expiration policy is enabled. |
 | <a id="mutationupdatecontainerexpirationpolicykeepn"></a>`keepN` | [`ContainerExpirationPolicyKeepEnum`](#containerexpirationpolicykeepenum) | Number of tags to retain. |
-| <a id="mutationupdatecontainerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will expire. |
-| <a id="mutationupdatecontainerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will be preserved. |
-| <a id="mutationupdatecontainerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
+| <a id="mutationupdatecontainerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching the regex pattern will expire. |
+| <a id="mutationupdatecontainerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching the regex pattern will be preserved. |
+| <a id="mutationupdatecontainerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="mutationupdatecontainerexpirationpolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path where the container expiration policy is located. |
 
 #### Fields
@@ -11664,9 +11664,9 @@ The edge type for [`CiRunner`](#cirunner).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="cirunneredgeediturl"></a>`editUrl` | [`String`](#string) | Web URL of the runner edit page. The value depends on where you put this field in the query. You can use it for projects or groups. |
+| <a id="cirunneredgeediturl"></a>`editUrl` | [`String`](#string) | Web URL of the runner edit page. The value depends on where you put the field in the query. You can use it for projects or groups. |
 | <a id="cirunneredgenode"></a>`node` | [`CiRunner`](#cirunner) | The item at the end of the edge. |
-| <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put this field in the query. You can use it for projects or groups. |
+| <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put the field in the query. You can use it for projects or groups. |
 
 #### `CiRunnerManagerConnection`
 
@@ -17181,7 +17181,7 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="alertmanagementalertendedat"></a>`endedAt` | [`Time`](#time) | Timestamp the alert ended. |
 | <a id="alertmanagementalertenvironment"></a>`environment` | [`Environment`](#environment) | Environment for the alert. |
-| <a id="alertmanagementalerteventcount"></a>`eventCount` | [`Int`](#int) | Number of events of this alert. |
+| <a id="alertmanagementalerteventcount"></a>`eventCount` | [`Int`](#int) | Number of events of the alert. |
 | <a id="alertmanagementalerthosts"></a>`hosts` | [`[String!]`](#string) | List of hosts the alert came from. |
 | <a id="alertmanagementalertid"></a>`id` | [`ID!`](#id) | ID of the alert. |
 | <a id="alertmanagementalertiid"></a>`iid` | [`String!`](#string) | Internal ID of the alert. |
@@ -17918,7 +17918,7 @@ An emoji awarded by a user.
 | <a id="awardemojiemoji"></a>`emoji` | [`String!`](#string) | Emoji as an icon. |
 | <a id="awardemojiname"></a>`name` | [`String!`](#string) | Emoji name. |
 | <a id="awardemojiunicode"></a>`unicode` | [`String!`](#string) | Emoji in Unicode. |
-| <a id="awardemojiunicodeversion"></a>`unicodeVersion` | [`String!`](#string) | Unicode version for this emoji. |
+| <a id="awardemojiunicodeversion"></a>`unicodeVersion` | [`String!`](#string) | Unicode version for the emoji. |
 | <a id="awardemojiuser"></a>`user` | [`UserCore!`](#usercore) | User who awarded the emoji. |
 
 ### `BaseService`
@@ -18263,7 +18263,7 @@ Represents a list for an issue board.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="boardlistassignee"></a>`assignee` | [`UserCore`](#usercore) | Assignee in the list. |
-| <a id="boardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for this user. |
+| <a id="boardlistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for the user. |
 | <a id="boardlistid"></a>`id` | [`ID!`](#id) | ID (global ID) of the list. |
 | <a id="boardlistissuescount"></a>`issuesCount` | [`Int`](#int) | Count of issues in the list. |
 | <a id="boardlistiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the list. |
@@ -18314,8 +18314,8 @@ Branch protection details for a branch rule.
 | ---- | ---- | ----------- |
 | <a id="branchprotectionallowforcepush"></a>`allowForcePush` | [`Boolean!`](#boolean) | Toggle force push to the branch for users with write access. |
 | <a id="branchprotectioncodeownerapprovalrequired"></a>`codeOwnerApprovalRequired` | [`Boolean!`](#boolean) | Enforce code owner approvals before allowing a merge. |
-| <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when this branch is the source branch. (see [Connections](#connections)) |
-| <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when this branch is the source branch. (see [Connections](#connections)) |
+| <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when the branch is the source branch. (see [Connections](#connections)) |
+| <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when the branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionunprotectaccesslevels"></a>`unprotectAccessLevels` | [`UnprotectAccessLevelConnection`](#unprotectaccesslevelconnection) | Details about who can unprotect this branch. (see [Connections](#connections)) |
 
 ### `BranchRule`
@@ -18817,9 +18817,9 @@ CI/CD variables for a project.
 | <a id="cirunneraccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel!`](#cirunneraccesslevel) | Access level of the runner. |
 | <a id="cirunneractive"></a>`active` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 14.8. Use paused. |
 | <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for administrators. |
-| <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from this runner. |
-| <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of this runner. |
-| <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created this runner. |
+| <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from the runner. |
+| <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner. |
+| <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the runner. |
 | <a id="cirunnercreationmethod"></a>`creationMethod` **{warning-solid}** | [`CiRunnerCreationMethod`](#cirunnercreationmethod) | **Introduced** in GitLab 17.0. **Status**: Experiment. Type of runner registration. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
@@ -19090,7 +19090,7 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
-| <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project this cluster agent is associated with. |
+| <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project the cluster agent is associated with. |
 | <a id="clusteragentremotedevelopmentagentconfig"></a>`remoteDevelopmentAgentConfig` | [`RemoteDevelopmentAgentConfig`](#remotedevelopmentagentconfig) | Remote development agent config for the cluster agent. |
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
@@ -19154,7 +19154,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="clusteragenttokenclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent this token is associated with. |
+| <a id="clusteragenttokenclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent the token is associated with. |
 | <a id="clusteragenttokencreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the token was created. |
 | <a id="clusteragenttokencreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User who created the token. |
 | <a id="clusteragenttokendescription"></a>`description` | [`String`](#string) | Description of the token. |
@@ -19572,12 +19572,12 @@ A tag expiration policy designed to keep only the images that matter most.
 | ---- | ---- | ----------- |
 | <a id="containerexpirationpolicycadence"></a>`cadence` | [`ContainerExpirationPolicyCadenceEnum!`](#containerexpirationpolicycadenceenum) | This container expiration policy schedule. |
 | <a id="containerexpirationpolicycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was created. |
-| <a id="containerexpirationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this container expiration policy is enabled. |
+| <a id="containerexpirationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the container expiration policy is enabled. |
 | <a id="containerexpirationpolicykeepn"></a>`keepN` | [`ContainerExpirationPolicyKeepEnum`](#containerexpirationpolicykeepenum) | Number of tags to retain. |
-| <a id="containerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will expire. |
-| <a id="containerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will be preserved. |
-| <a id="containerexpirationpolicynextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that this container expiration policy will get executed. |
-| <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
+| <a id="containerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching the regex pattern will expire. |
+| <a id="containerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching the regex pattern will be preserved. |
+| <a id="containerexpirationpolicynextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that the container expiration policy will get executed. |
+| <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="containerexpirationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was updated. |
 
 ### `ContainerRegistryProtectionRule`
@@ -19735,7 +19735,7 @@ A tag from a container repository.
 | <a id="containerrepositorytagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 | <a id="containerrepositorytagpath"></a>`path` | [`String!`](#string) | Path of the tag. |
 | <a id="containerrepositorytagpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp when the tag was published. |
-| <a id="containerrepositorytagreferrers"></a>`referrers` | [`[ContainerRepositoryReferrer!]`](#containerrepositoryreferrer) | Referrers for this tag. |
+| <a id="containerrepositorytagreferrers"></a>`referrers` | [`[ContainerRepositoryReferrer!]`](#containerrepositoryreferrer) | Referrers for the tag. |
 | <a id="containerrepositorytagrevision"></a>`revision` | [`String`](#string) | Revision of the tag. |
 | <a id="containerrepositorytagshortrevision"></a>`shortRevision` | [`String`](#string) | Short revision of the tag. |
 | <a id="containerrepositorytagtotalsize"></a>`totalSize` | [`BigInt`](#bigint) | Size of the tag. |
@@ -25095,7 +25095,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergeaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
-| <a id="mergeaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="mergeaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for the access level. |
 | <a id="mergeaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
 | <a id="mergeaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
@@ -28195,16 +28195,16 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the pipeline's creation. |
 | <a id="pipelinedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | DAST profile associated with the pipeline. |
 | <a id="pipelinedetailedstatus"></a>`detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
-| <a id="pipelinedownstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Pipelines this pipeline will trigger. (see [Connections](#connections)) |
+| <a id="pipelinedownstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Pipelines the pipeline will trigger. (see [Connections](#connections)) |
 | <a id="pipelineduration"></a>`duration` | [`Int`](#int) | Duration of the pipeline in seconds. |
-| <a id="pipelinefailurereason"></a>`failureReason` | [`String`](#string) | The reason why the pipeline failed. |
+| <a id="pipelinefailurereason"></a>`failureReason` | [`String`](#string) | Reason why the pipeline failed. |
 | <a id="pipelinefinishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of the pipeline's completion. |
 | <a id="pipelineid"></a>`id` | [`ID!`](#id) | ID of the pipeline. |
 | <a id="pipelineiid"></a>`iid` | [`String!`](#string) | Internal ID of the pipeline. |
 | <a id="pipelinejobartifacts"></a>`jobArtifacts` | [`[CiJobArtifact!]`](#cijobartifact) | Job artifacts of the pipeline. |
 | <a id="pipelinelatest"></a>`latest` | [`Boolean!`](#boolean) | If the pipeline is the latest one or not. |
 | <a id="pipelinemanualvariables"></a>`manualVariables` | [`PipelineManualVariableConnection`](#pipelinemanualvariableconnection) | CI/CD variables added to a manual pipeline. (see [Connections](#connections)) |
-| <a id="pipelinemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The MR which the Pipeline is attached to. |
+| <a id="pipelinemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | MR which the Pipeline is attached to. |
 | <a id="pipelinemergerequesteventtype"></a>`mergeRequestEventType` | [`PipelineMergeRequestEventType`](#pipelinemergerequesteventtype) | Event type of the pipeline associated with a merge request. |
 | <a id="pipelinename"></a>`name` | [`String`](#string) | Name of the pipeline. |
 | <a id="pipelinepath"></a>`path` | [`String`](#string) | Relative path to the pipeline's page. |
@@ -28212,19 +28212,19 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinequeuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the pipeline was queued before starting. |
 | <a id="pipelineref"></a>`ref` | [`String`](#string) | Reference to the branch from which the pipeline was triggered. |
 | <a id="pipelinerefpath"></a>`refPath` | [`String`](#string) | Reference path to the branch from which the pipeline was triggered. |
-| <a id="pipelinereftext"></a>`refText` | [`String!`](#string) | The reference text from the presenter. |
+| <a id="pipelinereftext"></a>`refText` | [`String!`](#string) | Reference text from the presenter. |
 | <a id="pipelineretryable"></a>`retryable` | [`Boolean!`](#boolean) | Specifies if a pipeline's jobs can be retried. |
 | <a id="pipelinesecurityreportsummary"></a>`securityReportSummary` | [`SecurityReportSummary`](#securityreportsummary) | Vulnerability and scanned resource counts for each security scanner of the pipeline. |
-| <a id="pipelinesource"></a>`source` | [`String`](#string) | The source of the pipeline. |
+| <a id="pipelinesource"></a>`source` | [`String`](#string) | Source of the pipeline. |
 | <a id="pipelinesourcejob"></a>`sourceJob` | [`CiJob`](#cijob) | Job where pipeline was triggered from. |
 | <a id="pipelinestages"></a>`stages` | [`CiStageConnection`](#cistageconnection) | Stages of the pipeline. (see [Connections](#connections)) |
 | <a id="pipelinestartedat"></a>`startedAt` | [`Time`](#time) | Timestamp when the pipeline was started. |
 | <a id="pipelinestatus"></a>`status` | [`PipelineStatusEnum!`](#pipelinestatusenum) | Status of the pipeline (CREATED, WAITING_FOR_RESOURCE, PREPARING, WAITING_FOR_CALLBACK, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, CANCELING, SKIPPED, MANUAL, SCHEDULED). |
 | <a id="pipelinestuck"></a>`stuck` | [`Boolean!`](#boolean) | If the pipeline is stuck. |
 | <a id="pipelinetestreportsummary"></a>`testReportSummary` | [`TestReportSummary!`](#testreportsummary) | Summary of the test report generated by the pipeline. |
-| <a id="pipelinetotaljobs"></a>`totalJobs` | [`Int!`](#int) | The total number of jobs in the pipeline. |
+| <a id="pipelinetotaljobs"></a>`totalJobs` | [`Int!`](#int) | Total number of jobs in the pipeline. |
 | <a id="pipelinetrigger"></a>`trigger` | [`Boolean!`](#boolean) | If the pipeline was created by a Trigger request. |
-| <a id="pipelinetriggeredbypath"></a>`triggeredByPath` | [`String`](#string) | The path that triggered this pipeline. |
+| <a id="pipelinetriggeredbypath"></a>`triggeredByPath` | [`String`](#string) | Path that triggered the pipeline. |
 | <a id="pipelineupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the pipeline's last activity. |
 | <a id="pipelineupstream"></a>`upstream` | [`Pipeline`](#pipeline) | Pipeline that triggered the pipeline. |
 | <a id="pipelineuser"></a>`user` | [`UserCore`](#usercore) | Pipeline user. |
@@ -28232,14 +28232,14 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelineusesneeds"></a>`usesNeeds` | [`Boolean`](#boolean) | Indicates if the pipeline has jobs with `needs` dependencies. |
 | <a id="pipelinewarningmessages"></a>`warningMessages` | [`[PipelineMessage!]`](#pipelinemessage) | Pipeline warning messages. |
 | <a id="pipelinewarnings"></a>`warnings` | [`Boolean!`](#boolean) | Indicates if a pipeline has warnings. |
-| <a id="pipelineyamlerrormessages"></a>`yamlErrorMessages` | [`String`](#string) | The pipeline YAML errors. |
+| <a id="pipelineyamlerrormessages"></a>`yamlErrorMessages` | [`String`](#string) | Pipeline YAML errors. |
 | <a id="pipelineyamlerrors"></a>`yamlErrors` | [`Boolean!`](#boolean) | If the pipeline has YAML errors. |
 
 #### Fields with arguments
 
 ##### `Pipeline.job`
 
-Specific job in this pipeline, either by name or ID.
+Specific job in the pipeline, either by name or ID.
 
 Returns [`CiJob`](#cijob).
 
@@ -31094,7 +31094,7 @@ Defines which user roles, users, or groups can push to a protected branch.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pushaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
-| <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for the access level. |
 | <a id="pushaccessleveldeploykey"></a>`deployKey` | [`AccessLevelDeployKey`](#accessleveldeploykey) | Deploy key assigned to the access level. |
 | <a id="pushaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
 | <a id="pushaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
@@ -32204,7 +32204,7 @@ Progress of standards adherence checks.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="statusactionbuttontitle"></a>`buttonTitle` | [`String`](#string) | Title for the button, for example: Retry this job. |
+| <a id="statusactionbuttontitle"></a>`buttonTitle` | [`String`](#string) | Title for the button, for example: Retry the job. |
 | <a id="statusactionconfirmationmessage"></a>`confirmationMessage` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Custom confirmation message for a manual job. |
 | <a id="statusactionicon"></a>`icon` | [`String`](#string) | Icon used in the action button. |
 | <a id="statusactionid"></a>`id` | [`String!`](#string) | ID for a status action. |
@@ -32734,7 +32734,7 @@ Defines which user roles, users, or groups can unprotect a protected branch.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="unprotectaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
-| <a id="unprotectaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="unprotectaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for the access level. |
 | <a id="unprotectaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
 | <a id="unprotectaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
@@ -35177,7 +35177,7 @@ Values for sorting runners.
 | Value | Description |
 | ----- | ----------- |
 | <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
-| <a id="cirunnerstatusnever_contacted"></a>`NEVER_CONTACTED` | Runner that has never contacted this instance. |
+| <a id="cirunnerstatusnever_contacted"></a>`NEVER_CONTACTED` | Runner that has never contacted the instance. |
 | <a id="cirunnerstatusoffline"></a>`OFFLINE` | Runner that has not contacted this instance within the last 2 hours. Will be considered `STALE` if offline for more than 7 days. |
 | <a id="cirunnerstatusonline"></a>`ONLINE` | Runner that contacted this instance within the last 2 hours. |
 | <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |

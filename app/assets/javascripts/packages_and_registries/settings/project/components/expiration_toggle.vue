@@ -52,7 +52,7 @@ export default {
       label-position="left"
       :disabled="disabled"
     />
-    <div class="gl-text-subtle gl-mt-2" data-testid="description">
+    <div class="gl-mt-2 gl-text-subtle" data-testid="description">
       <gl-sprintf :message="toggleText">
         <template #strong="{ content }">
           {{ content }}

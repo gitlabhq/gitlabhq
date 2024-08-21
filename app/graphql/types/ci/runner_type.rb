@@ -24,11 +24,11 @@ module Types
       field :admin_url, GraphQL::Types::String, null: true,
         description: 'Admin URL of the runner. Only available for administrators.'
       field :contacted_at, Types::TimeType, null: true,
-        description: 'Timestamp of last contact from this runner.'
+        description: 'Timestamp of last contact from the runner.'
       field :created_at, Types::TimeType, null: true,
-        description: 'Timestamp of creation of this runner.'
+        description: 'Timestamp of creation of the runner.'
       field :created_by, Types::UserType, null: true,
-        description: 'User that created this runner.',
+        description: 'User that created the runner.',
         method: :creator
       field :creation_method, Types::Ci::RunnerCreationMethodEnum, null: true,
         method: :registration_type,

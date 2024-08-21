@@ -87,7 +87,7 @@ export default {
 
 <template>
   <div>
-    <h3 v-if="isLoading || showMetadata" class="gl-font-lg" data-testid="title">
+    <h3 v-if="isLoading || showMetadata" class="gl-text-lg" data-testid="title">
       {{ $options.i18n.componentTitle }}
     </h3>
     <gl-alert
@@ -100,7 +100,7 @@ export default {
     <additional-metadata-loader v-if="isLoading" />
     <div
       v-if="showMetadata"
-      class="gl-bg-gray-50 gl-shadow-inner-1-gray-100 gl-rounded-base"
+      class="gl-rounded-base gl-bg-gray-50 gl-shadow-inner-1-gray-100"
       data-testid="main"
     >
       <component

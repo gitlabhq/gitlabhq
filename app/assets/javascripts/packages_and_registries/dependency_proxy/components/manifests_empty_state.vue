@@ -59,14 +59,14 @@ export default {
           id="code-example"
           readonly
           :value="$options.codeExample"
-          class="gl-w-7/10 gl-mx-auto"
+          class="gl-mx-auto gl-w-7/10"
           select-on-click
         >
           <template #append>
             <clipboard-button
               :text="$options.codeExample"
               :title="$options.i18n.copyExample"
-              class="gl-m-0!"
+              class="!gl-m-0"
             />
           </template>
         </gl-form-input-group>

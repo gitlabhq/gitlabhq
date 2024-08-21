@@ -161,7 +161,7 @@ export default {
       />
 
       <code-instruction
-        class="gl-w-20 gl-mt-5"
+        class="gl-mt-5 gl-w-20"
         :label="s__('PackageRegistry|Maven Command')"
         :instruction="$options.MAVEN_INSTALLATION_COMMAND"
         :copy-text="s__('PackageRegistry|Copy Maven command')"
@@ -169,7 +169,7 @@ export default {
         :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
       />
 
-      <h3 class="gl-font-lg">{{ s__('PackageRegistry|Registry setup') }}</h3>
+      <h3 class="gl-text-lg">{{ s__('PackageRegistry|Registry setup') }}</h3>
       <p>
         <gl-sprintf :message="$options.i18n.setupText">
           <template #code="{ content }">

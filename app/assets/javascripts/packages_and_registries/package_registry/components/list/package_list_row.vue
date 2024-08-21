@@ -123,14 +123,11 @@ export default {
       />
     </template>
     <template #left-primary>
-      <div
-        class="gl-display-flex gl-align-items-center gl-gap-3 gl-mr-5 gl-min-w-0"
-        data-testid="package-name"
-      >
+      <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">
         <router-link
           v-if="containsWebPathLink"
           :class="errorPackageStyle"
-          class="gl-text-body gl-min-w-0 gl-break-all"
+          class="gl-min-w-0 gl-break-all gl-text-primary"
           data-testid="details-link"
           :to="{ name: 'details', params: { id: packageId } }"
         >
@@ -162,11 +159,11 @@ export default {
     <template #left-secondary>
       <div
         v-if="!errorStatusRow"
-        class="gl-display-flex gl-align-items-center"
+        class="gl-flex gl-items-center"
         data-testid="left-secondary-infos"
       >
         <gl-truncate
-          class="gl-max-w-15 gl-md-max-w-26"
+          class="gl-max-w-15 md:gl-max-w-26"
           :text="packageEntity.version"
           :with-tooltip="true"
         />

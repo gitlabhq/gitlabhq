@@ -197,7 +197,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column">
+  <div class="gl-flex gl-flex-col">
     <slot v-if="isListEmpty && !isLoading" name="empty-state"></slot>
 
     <div v-else-if="isLoading">

@@ -2,7 +2,7 @@
 
 exports[`Container Expiration Policy Settings Form Cadence matches snapshot 1`] = `
 <expiration-dropdown-stub
-  class="gl-mb-0! gl-mr-7"
+  class="!gl-mb-0 gl-mr-7"
   data-testid="cadence-dropdown"
   description=""
   dropdownclass=""
@@ -15,7 +15,7 @@ exports[`Container Expiration Policy Settings Form Cadence matches snapshot 1`] 
 
 exports[`Container Expiration Policy Settings Form Enable matches snapshot 1`] = `
 <expiration-toggle-stub
-  class="gl-mb-0!"
+  class="!gl-mb-0"
   data-testid="enable-toggle"
   value="true"
 />

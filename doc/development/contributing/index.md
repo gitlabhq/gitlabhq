@@ -33,6 +33,7 @@ For example:
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner)
 - [Gitaly](https://gitlab.com/gitlab-org/gitaly)
 - [GLab](https://gitlab.com/gitlab-org/cli)
+- [GitLab Terraform Provider](https://gitlab.com/gitlab-org/terraform-provider-gitlab)
 
 We have [development style guides for each technology](style_guides.md) to help you align with our coding standards.
 
@@ -47,7 +48,10 @@ Select the appropriate template and add all the necessary information about the 
 That way you can get more guidance and support.
 
 If you're not sure what to work on, you can
-[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?label_name%5B%5D=quick%20win).
+[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&first_page_size=100),
+and filter specifically for [documentation `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=documentation&first_page_size=100),
+[backend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=backend&first_page_size=100),
+or [frontend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=frontend&first_page_size=100).
 
 When you find an issue you want to work on, leave a comment on it.
 This helps the GitLab team and members of the wider GitLab community know that you will be working on that issue.
@@ -55,6 +59,7 @@ This helps the GitLab team and members of the wider GitLab community know that y
 This is a good opportunity to [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
 Confirm that the issue is still valid, clarify your intended approach, and ask if a feature or change is likely to be accepted.
 You do not need to be assigned to the issue to get started.
+If the issue already has an assignee, ask if they are still working on the issue or if they would like to collaborate.
 
 For details, see [the issues workflow](issue_workflow.md).
 

@@ -26,11 +26,11 @@ exports[`packages_list_row renders 1`] = `
           class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-primary"
         >
           <div
-            class="gl-align-items-center gl-display-flex gl-gap-3 gl-min-w-0 gl-mr-5"
+            class="gl-flex gl-gap-3 gl-items-center gl-min-w-0 gl-mr-5"
             data-testid="package-name"
           >
             <a
-              class="gl-break-all gl-min-w-0 gl-text-body"
+              class="gl-break-all gl-min-w-0 gl-text-primary"
               data-testid="details-link"
             >
               @gitlab-org/package-15
@@ -41,11 +41,11 @@ exports[`packages_list_row renders 1`] = `
           class="gl-flex gl-gap-3 gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-sm gl-text-subtle"
         >
           <div
-            class="gl-align-items-center gl-display-flex"
+            class="gl-flex gl-items-center"
             data-testid="left-secondary-infos"
           >
             <gl-truncate-stub
-              class="gl-max-w-15 gl-md-max-w-26"
+              class="gl-max-w-15 md:gl-max-w-26"
               position="end"
               text="1.0.0"
               withtooltip="true"

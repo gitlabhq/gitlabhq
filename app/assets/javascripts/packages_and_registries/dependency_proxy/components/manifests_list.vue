@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div class="gl-mt-6">
-    <h3 class="gl-font-base gl-pb-3 gl-mb-0 gl-border-b-1 gl-border-gray-100 gl-border-b-solid">
+    <h3 class="gl-mb-0 gl-border-b-1 gl-border-gray-100 gl-pb-3 gl-text-base gl-border-b-solid">
       {{ $options.i18n.listTitle }}
     </h3>
 
@@ -61,7 +61,7 @@ export default {
           />
         </li>
       </ul>
-      <div class="gl-display-flex gl-justify-content-center">
+      <div class="gl-flex gl-justify-center">
         <gl-keyset-pagination
           v-bind="pagination"
           class="gl-mt-3"

@@ -38,7 +38,7 @@ module Types
         value: :stale
 
       value 'NEVER_CONTACTED',
-        description: 'Runner that has never contacted this instance.',
+        description: 'Runner that has never contacted the instance.',
         value: :never_contacted
     end
   end
