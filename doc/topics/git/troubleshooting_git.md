@@ -336,10 +336,13 @@ return this error:
 
 To resolve this issue, you can update the password expiration by either:
 
-- Using the `gitlab-rails console`:
+- Using the [GitLab Rails console](../../administration/operations/rails_console.md)
+  to check and update the user data:
 
   ```ruby
-  gitlab-rails console
+  user = User.find_by_username('<USERNAME>')
+  user.password_expired?
+  user.password_expires_at
   user.update!(password_expires_at: nil)
   ```
 

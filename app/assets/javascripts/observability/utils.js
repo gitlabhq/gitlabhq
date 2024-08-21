@@ -1,5 +1,6 @@
 import { padWithZeros } from '~/lib/utils/datetime/date_format_utility';
 import { isValidDate, differenceInMinutes } from '~/lib/utils/datetime_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -192,4 +193,10 @@ export function isTracingDateRangeOutOfBounds({ value, startDate, endDate }) {
     return differenceInMinutes(startDate, endDate) > HOURS_QUERY_LIMIT * 60;
   }
   return false;
+}
+
+export function urlWithStringifiedPayloadParam(url, payload, paramName) {
+  return mergeUrlParams({ [paramName]: JSON.stringify(payload) }, url, {
+    spreadArrays: true,
+  });
 }

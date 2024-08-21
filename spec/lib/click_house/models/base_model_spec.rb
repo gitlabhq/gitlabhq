@@ -90,6 +90,19 @@ RSpec.describe ClickHouse::Models::BaseModel, feature_category: :database do
     end
   end
 
+  describe '#group' do
+    it 'returns a new instance with grouped results' do
+      dummy_instance = dummy_class.new(query_builder)
+
+      expect(query_builder).to receive(:group).with(:id, :name).and_return(updated_query_builder)
+
+      new_instance = dummy_instance.group(:id, :name)
+
+      expect(new_instance).to be_a(dummy_class)
+      expect(new_instance).not_to eq(dummy_instance)
+    end
+  end
+
   describe '#select' do
     it 'returns a new instance with selected fields' do
       dummy_instance = dummy_class.new(query_builder)

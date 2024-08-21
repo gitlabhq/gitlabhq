@@ -212,6 +212,10 @@ dast_site_validations:
   - table: projects
     column: project_id
     on_delete: async_delete
+dast_sites:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 deployment_clusters:
   - table: clusters
     column: cluster_id

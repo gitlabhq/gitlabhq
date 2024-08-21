@@ -278,6 +278,30 @@ RSpec.describe ClickHouse::QueryBuilder, feature_category: :database do
     end
   end
 
+  describe '#group' do
+    it 'builds correct group query' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "test_table"
+        GROUP BY column1
+      SQL
+
+      sql = builder.group(:column1).to_sql
+
+      expect(sql).to eq(expected_sql)
+    end
+
+    it 'chains multiple groups when called multiple times' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "test_table"
+        GROUP BY column1, column2
+      SQL
+
+      sql = builder.group(:column1).group(:column2).to_sql
+
+      expect(sql).to eq(expected_sql)
+    end
+  end
+
   describe '#to_sql' do
     it 'delegates to the Arel::SelectManager' do
       expect(builder.send(:manager)).to receive(:to_sql)

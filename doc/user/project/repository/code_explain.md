@@ -42,4 +42,4 @@ We cannot guarantee that the large language model produces results that are corr
 You can also explain code in:
 
 - A [merge request](../../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code).
+- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-selected-code).

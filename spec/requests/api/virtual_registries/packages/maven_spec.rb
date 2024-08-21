@@ -7,18 +7,18 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
   include WorkhorseHelpers
   include HttpBasicAuthHelpers
 
-  let_it_be_with_reload(:registry) { create(:virtual_registries_packages_maven_registry) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:registry) { create(:virtual_registries_packages_maven_registry, group: group) }
   let_it_be(:upstream) { create(:virtual_registries_packages_maven_upstream, registry: registry) }
-  let_it_be(:group) { registry.group }
   let_it_be(:project) { create(:project, namespace: group) }
-  let_it_be(:user) { project.creator }
-  let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+  let_it_be(:user) { create(:user, owner_of: project) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
   let_it_be(:deploy_token) do
     create(:deploy_token, :group, groups: [group], read_virtual_registry: true)
   end
 
-  let_it_be(:headers) { user_basic_auth_header(user, personal_access_token) }
+  let(:personal_access_token) { create(:personal_access_token, user: user) }
+  let(:headers) { user_basic_auth_header(user, personal_access_token) }
 
   shared_examples 'disabled feature flag' do
     before do
@@ -95,11 +95,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     end
 
     context 'with a non member user' do
-      let_it_be(:user) { build_stubbed(:user) }
+      let_it_be(:user) { create(:user) }
 
       where(:group_access_level, :status) do
-        'PUBLIC'   | :ok
-        'INTERNAL' | :ok
+        'PUBLIC'   | :forbidden
+        'INTERNAL' | :forbidden
         'PRIVATE'  | :not_found
       end
 
@@ -108,11 +108,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
           group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_access_level, false))
         end
 
-        if params[:status] == :ok
-          it_behaves_like 'successful response'
-        else
-          it_behaves_like 'returning response status', params[:status]
-        end
+        it_behaves_like 'returning response status', params[:status]
       end
     end
 
@@ -323,11 +319,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     end
 
     context 'with a non member user' do
-      let_it_be(:user) { build_stubbed(:user) }
+      let_it_be(:user) { create(:user) }
 
       where(:group_access_level, :status) do
-        'PUBLIC'   | :ok
-        'INTERNAL' | :ok
+        'PUBLIC'   | :forbidden
+        'INTERNAL' | :forbidden
         'PRIVATE'  | :forbidden
       end
       with_them do
@@ -335,11 +331,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
           group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_access_level, false))
         end
 
-        if params[:status] == :ok
-          it_behaves_like 'successful response'
-        else
-          it_behaves_like 'returning response status', params[:status]
-        end
+        it_behaves_like 'returning response status', params[:status]
       end
     end
 
@@ -588,8 +580,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
       let_it_be(:user) { create(:user) }
 
       where(:group_access_level, :status) do
-        'PUBLIC'   | :ok
-        'INTERNAL' | :ok
+        'PUBLIC'   | :forbidden
+        'INTERNAL' | :forbidden
         'PRIVATE'  | :forbidden
       end
 
@@ -598,11 +590,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
           group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_access_level, false))
         end
 
-        if params[:status] == :ok
-          it_behaves_like 'successful response'
-        else
-          it_behaves_like 'returning response status', params[:status]
-        end
+        it_behaves_like 'returning response status', params[:status]
       end
     end
 
@@ -782,11 +770,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     end
 
     context 'with a non member user' do
-      let_it_be(:user) { build_stubbed(:user) }
+      let_it_be(:user) { create(:user) }
 
       where(:group_access_level, :status) do
-        'PUBLIC'   | :ok
-        'INTERNAL' | :ok
+        'PUBLIC'   | :forbidden
+        'INTERNAL' | :forbidden
         'PRIVATE'  | :forbidden
       end
 
@@ -795,11 +783,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
           group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_access_level, false))
         end
 
-        if params[:status] == :ok
-          it_behaves_like 'successful response'
-        else
-          it_behaves_like 'returning response status', params[:status]
-        end
+        it_behaves_like 'returning response status', params[:status]
       end
     end
 

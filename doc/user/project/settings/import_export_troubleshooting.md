@@ -199,6 +199,13 @@ e.send(:design_repo_saver).send(:save)
 # The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....
 s = Gitlab::ImportExport::Saver.new(exportable: p, shared: p.import_export_shared, user: u)
 
+# Prior to GitLab 17.0, the `user` parameter was not supported. If you encounter an
+# error with the above or are unsure whether or not to supply the `user`
+# argument, use the following check:
+Gitlab::ImportExport::Saver.instance_method(:initialize).parameters.include?([:keyreq, :user])
+# If the preceding check returns false, omit the user argument:
+s = Gitlab::ImportExport::Saver.new(exportable: p, shared: p.import_export_shared)
+
 # To try and upload use:
 s.send(:compress_and_save)
 s.send(:save_upload)

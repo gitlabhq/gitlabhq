@@ -261,7 +261,7 @@ We cannot guarantee that the large language model produces results that are corr
 You can also explain code in:
 
 - A [file](../../../user/project/repository/code_explain.md).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code).
+- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-selected-code).
 
 ## Expand or collapse comments
 

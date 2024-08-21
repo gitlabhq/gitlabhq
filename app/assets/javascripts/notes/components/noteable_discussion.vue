@@ -180,7 +180,6 @@ export default {
       return {
         'is-replying gl-pt-0!': this.isReplying,
         'internal-note': this.isDiscussionInternal,
-        'public-note': !this.isDiscussionInternal,
         'gl-pt-0!': !this.discussion.diff_discussion && this.isReplying,
       };
     },

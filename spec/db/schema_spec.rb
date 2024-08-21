@@ -10,31 +10,33 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
+    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     application_settings: %w[instance_administration_project_id instance_administrators_group_id],
+    ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
+    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
+    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
+    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
+    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
+    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
+    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
+    p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
-    users: [%w[accepted_term_id]],
-    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
-    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-    p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
-    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
-    ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
-    snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    snippets: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    users: [%w[accepted_term_id]]
   }.with_indifferent_access.freeze
 
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.

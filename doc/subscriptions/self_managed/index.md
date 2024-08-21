@@ -277,7 +277,11 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 ## View your subscription
 
-If you are an administrator, you can view the status of your subscription:
+Prerequisites:
+
+- You must be an administrator.
+
+You can view the status of your subscription:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.

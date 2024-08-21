@@ -34,10 +34,46 @@ its knowledge base is updated daily.
 - On GitLab.com the, the most recent version of the documentation is used.
 - On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.
 
-## Ask about code
+## Explain selected code
 
 DETAILS:
-**Tier GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+
+You can ask GitLab Duo Chat to explain selected code:
+
+1. Select some code in your IDE.
+1. In Duo Chat, type `/explain`.
+
+   ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat.png)
+
+You can also add additional instructions to be considered, for example:
+
+- `/explain the performance`
+- `/explain focus on the algorithm`
+- `/explain the performance gains or losses using this code`
+- `/explain the object inheritance` (classes, object-oriented)
+- `/explain why a static variable is used here` (C++)
+- `/explain how this function would cause a segmentation fault` (C)
+- `/explain how concurrency works in this context` (Go)
+- `/explain how the request reaches the client` (REST API, database)
+
+For more information, see [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code).
+
+In the GitLab UI, you can also explain code in:
+
+- A [file](../project/repository/code_explain.md).
+- A [merge request](../project/merge_requests/changes.md#explain-code-in-a-merge-request).
+
+## Ask about or generate code
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
 **LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -45,7 +81,15 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
 
-You can also ask GitLab Duo Chat to generate code:
+You can ask GitLab Duo Chat questions about code by pasting that code into
+the Duo Chat window. For example:
+
+```plaintext
+Provide a clear explanation of this Ruby code: def sum(a, b) a + b end.
+Describe what this code does and how it works.
+```
+
+You can also ask Chat to generate code. For example:
 
 - `Write a Ruby function that prints 'Hello, World!' when called.`
 - `Develop a JavaScript program that simulates a two-player Tic-Tac-Toe game. Provide both game logic and user interface, if applicable.`
@@ -54,11 +98,45 @@ You can also ask GitLab Duo Chat to generate code:
 - `Create a product-consumer example with threads and shared memory in C++. Use atomic locks when possible.`
 - `Generate Rust code for high performance gRPC calls. Provide a source code example for a server and client.`
 
-And you can ask GitLab Duo Chat to explain code:
+## Refactor code in the IDE
 
-- `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
+DETAILS:
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
-Alternatively, you can use the [`/explain` command](examples.md#explain-code) to explain the selected code in your editor.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+
+`/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
+You can include additional instructions to be considered. For example:
+
+- Use a specific coding pattern, for example `/refactor with ActiveRecord` or `/refactor into a class providing static functions`.
+- Use a specific library, for example `/refactor using mysql`.
+- Use a specific function/algorithm, for example `/refactor into a stringstream with multiple lines` in C++.
+- Refactor to a different programming language, for example `/refactor to TypeScript`.
+- Focus on performance, for example `/refactor improving performance`.
+- Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
+
+## Fix code in the IDE
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
+
+`/fix` is a special command to generate a fix suggestion for the selected code in your editor.
+You can include additional instructions to be considered. For example:
+
+- Focus on grammar and typos, for example, `/fix grammar mistakes and typos`.
+- Focus on a concrete algorithm or problem description, for example, `/fix duplicate database inserts` or `/fix race conditions`.
+- Focus on potential bugs that are not directly visible, for example, `/fix potential bugs`.
+- Focus on code performance problems, for example, `/fix performance problems`.
+- Focus on fixing the build when the code does not compile, for example, `/fix the build`.
 
 ## Ask about CI/CD
 
@@ -127,74 +205,6 @@ DETAILS:
 `/vulnerability_explain` is a special command you can use when you are viewing a SAST vulnerability report.
 
 [Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
-
-## Explain code
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
-
-`/explain` is a special command to explain the selected code in your editor.
-You can also add additional instructions to be considered, for example: `/explain the performance`
-See [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code) for more information.
-
-- `/explain focus on the algorithm`
-- `/explain the performance gains or losses using this code`
-- `/explain the object inheritance` (classes, object-oriented)
-- `/explain why a static variable is used here` (C++)
-- `/explain how this function would cause a segmentation fault` (C)
-- `/explain how concurrency works in this context` (Go)
-- `/explain how the request reaches the client` (REST API, database)
-
-You can also use the Web UI to explain code in:
-
-- A [file](../project/repository/code_explain.md).
-- A [merge request](../project/merge_requests/changes.md#explain-code-in-a-merge-request).
-
-## Refactor code in the IDE
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
-
-`/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
-You can include additional instructions to be considered. For example:
-
-- Use a specific coding pattern, for example `/refactor with ActiveRecord` or `/refactor into a class providing static functions`.
-- Use a specific library, for example `/refactor using mysql`.
-- Use a specific function/algorithm, for example `/refactor into a stringstream with multiple lines` in C++.
-- Refactor to a different programming language, for example `/refactor to TypeScript`.
-- Focus on performance, for example `/refactor improving performance`.
-- Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
-
-## Fix code in the IDE
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
-
-`/fix` is a special command to generate a fix suggestion for the selected code in your editor.
-You can include additional instructions to be considered. For example:
-
-- Focus on grammar and typos, for example, `/fix grammar mistakes and typos`.
-- Focus on a concrete algorithm or problem description, for example, `/fix duplicate database inserts` or `/fix race conditions`.
-- Focus on potential bugs that are not directly visible, for example, `/fix potential bugs`.
-- Focus on code performance problems, for example, `/fix performance problems`.
-- Focus on fixing the build when the code does not compile, for example, `/fix the build`.
 
 ## Write tests in the IDE
 
@@ -307,8 +317,8 @@ Use the following commands to quickly accomplish specific tasks.
 | /clear                 | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)  |
 | /reset                 | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation)  |
 | /tests                 | [Write tests](#write-tests-in-the-ide)                                              |
-| /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code)              |
-| /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
-| /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |
+| /explain               | [Explain code](#explain-selected-code)              |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)   |
+| /refactor              | [Refactor the code](#refactor-code-in-the-ide)        |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
-| /fix                   | [Fix the code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)        |
+| /fix                   | [Fix the code](#fix-code-in-the-ide)        |

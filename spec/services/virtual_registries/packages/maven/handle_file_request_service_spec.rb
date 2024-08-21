@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :aggregate_failures, feature_category: :virtual_registry do
   let_it_be(:registry) { create(:virtual_registries_packages_maven_registry, :with_upstream) }
   let_it_be(:project) { create(:project, namespace: registry.group) }
+  let_it_be(:user) { create(:user, owner_of: project) }
 
-  let(:user) { project.creator }
   let(:upstream) { registry.upstream }
   let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
   let(:upstream_resource_url) { upstream.url_for(path) }

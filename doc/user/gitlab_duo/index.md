@@ -61,7 +61,7 @@ DETAILS:
 - Helps you understand the selected code by explaining it more clearly.
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - View documentation for explaining code in:
-  - [The IDE](../gitlab_duo_chat/examples.md#explain-code).
+  - [The IDE](../gitlab_duo_chat/examples.md#explain-selected-code).
   - [A file](../../user/project/repository/code_explain.md).
   - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
 

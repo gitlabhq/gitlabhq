@@ -246,7 +246,7 @@ Merge train pipelines run a single `pre-merge-checks` job which ensures the late
 
 1. A [Merged Results pipeline](../../ci/pipelines/merged_results_pipelines.md)
 1. A [`tier-3` pipeline](#pipeline-tiers) (i.e. full pipeline, not predictive one)
-1. Created at most 8 hours ago
+1. Created at most 8 hours ago (72 hours for stable branches)
 
 We opened [a feedback issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/513)
 to iterate on this solution.

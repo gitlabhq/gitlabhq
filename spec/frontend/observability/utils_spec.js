@@ -7,6 +7,7 @@ import {
   formattedTimeFromDate,
   isTracingDateRangeOutOfBounds,
   validatedDateRangeQuery,
+  urlWithStringifiedPayloadParam,
 } from '~/observability/utils';
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -269,5 +270,17 @@ describe('validatedDateRangeQuery', () => {
   it('returns the default time range when dateRangeValue is undefined', () => {
     const result = validatedDateRangeQuery(undefined, '', '');
     expect(result).toEqual({ value: '1h' });
+  });
+});
+
+describe('urlWithStringifiedPayloadParam', () => {
+  it('returns the url with a stringified param', () => {
+    expect(
+      urlWithStringifiedPayloadParam(
+        'http://gdk.test:3443/?foo=bar',
+        { a: 'b', c: 'd' },
+        'my_param',
+      ),
+    ).toBe('http://gdk.test:3443/?foo=bar&my_param=%7B%22a%22%3A%22b%22%2C%22c%22%3A%22d%22%7D');
   });
 });

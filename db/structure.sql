@@ -7743,15 +7743,27 @@ CREATE SEQUENCE ci_build_trace_chunks_id_seq
 
 ALTER SEQUENCE ci_build_trace_chunks_id_seq OWNED BY ci_build_trace_chunks.id;
 
-CREATE TABLE ci_build_trace_metadata (
+CREATE TABLE p_ci_build_trace_metadata (
     build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
     trace_artifact_id bigint,
-    archival_attempts smallint DEFAULT 0 NOT NULL,
-    checksum bytea,
-    remote_checksum bytea,
     last_archival_attempt_at timestamp with time zone,
     archived_at timestamp with time zone,
-    partition_id bigint NOT NULL
+    archival_attempts smallint DEFAULT 0 NOT NULL,
+    checksum bytea,
+    remote_checksum bytea
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE ci_build_trace_metadata (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    trace_artifact_id bigint,
+    last_archival_attempt_at timestamp with time zone,
+    archived_at timestamp with time zone,
+    archival_attempts smallint DEFAULT 0 NOT NULL,
+    checksum bytea,
+    remote_checksum bytea
 );
 
 CREATE TABLE ci_builds (
@@ -20970,6 +20982,8 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
+ALTER TABLE ONLY p_ci_build_trace_metadata ATTACH PARTITION ci_build_trace_metadata FOR VALUES IN ('100', '101', '102');
+
 ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
@@ -23143,8 +23157,11 @@ ALTER TABLE ONLY ci_build_report_results
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT ci_build_trace_chunks_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY p_ci_build_trace_metadata
+    ADD CONSTRAINT p_ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
+
 ALTER TABLE ONLY ci_build_trace_metadata
-    ADD CONSTRAINT ci_build_trace_metadata_pkey PRIMARY KEY (build_id);
+    ADD CONSTRAINT ci_build_trace_metadata_pkey PRIMARY KEY (build_id, partition_id);
 
 ALTER TABLE ONLY p_ci_builds_metadata
     ADD CONSTRAINT p_ci_builds_metadata_pkey PRIMARY KEY (id, partition_id);
@@ -26196,6 +26213,10 @@ CREATE INDEX ca_aggregations_last_full_run_at ON analytics_cycle_analytics_aggre
 
 CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytics_aggregations USING btree (last_incremental_run_at NULLS FIRST) WHERE (enabled IS TRUE);
 
+CREATE INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ON ONLY p_ci_build_trace_metadata USING btree (trace_artifact_id);
+
+CREATE INDEX ci_build_trace_metadata_trace_artifact_id_idx ON ci_build_trace_metadata USING btree (trace_artifact_id);
+
 CREATE INDEX p_ci_builds_status_created_at_project_id_idx ON ONLY p_ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
@@ -27021,10 +27042,6 @@ CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_resu
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
 
 CREATE INDEX index_ci_build_trace_chunks_on_partition_id_build_id ON ci_build_trace_chunks USING btree (partition_id, build_id);
-
-CREATE UNIQUE INDEX index_ci_build_trace_metadata_on_partition_id_build_id ON ci_build_trace_metadata USING btree (partition_id, build_id);
-
-CREATE INDEX index_ci_build_trace_metadata_on_trace_artifact_id_partition_id ON ci_build_trace_metadata USING btree (trace_artifact_id, partition_id);
 
 CREATE INDEX p_ci_builds_metadata_build_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) WHERE (has_exposed_artifacts IS TRUE);
 
@@ -30380,8 +30397,6 @@ CREATE INDEX index_vulnerability_occurrence_pipelines_occurrence_id_and_id ON vu
 
 CREATE INDEX index_vulnerability_occurrence_pipelines_on_pipeline_id ON vulnerability_occurrence_pipelines USING btree (pipeline_id);
 
-CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occurrences USING btree (project_id, report_type, project_fingerprint);
-
 CREATE INDEX index_vulnerability_occurrences_for_override_uuids_logic ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint);
 
 CREATE INDEX index_vulnerability_occurrences_on_initial_pipeline_id ON vulnerability_occurrences USING btree (initial_pipeline_id);
@@ -32254,6 +32269,10 @@ ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_part
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
+ALTER INDEX p_ci_build_trace_metadata_pkey ATTACH PARTITION ci_build_trace_metadata_pkey;
+
+ALTER INDEX index_p_ci_build_trace_metadata_on_trace_artifact_id ATTACH PARTITION ci_build_trace_metadata_trace_artifact_id_idx;
+
 ALTER INDEX p_ci_builds_status_created_at_project_id_idx ATTACH PARTITION ci_builds_gitlab_monitor_metrics;
 
 ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
@@ -32844,7 +32863,7 @@ ALTER TABLE ONLY coverage_fuzzing_corpuses
 ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_20cf0eb2f9 FOREIGN KEY (default_compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY ci_build_trace_metadata
+ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_star_projects
@@ -35028,9 +35047,6 @@ ALTER TABLE ONLY project_compliance_framework_settings
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_6f6cf8e66e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY dast_sites
-    ADD CONSTRAINT fk_rails_6febb6ea9c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_rails_7027b7eaa9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -35502,7 +35518,7 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_stages
 ALTER TABLE ONLY metrics_dashboard_annotations
     ADD CONSTRAINT fk_rails_aeb11a7643 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_build_trace_metadata
+ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_trackers
