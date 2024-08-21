@@ -351,7 +351,7 @@ export default {
         :is-discussion-resolvable="isDiscussionResolvable"
         :has-replies="hasReplies"
         :full-path="fullPath"
-        class="gl-pl-3 gl-mt-3"
+        class="gl-mt-3 gl-pl-3"
         @cancelEditing="isEditing = false"
         @toggleResolveDiscussion="$emit('resolve')"
         @submitForm="updateNote"

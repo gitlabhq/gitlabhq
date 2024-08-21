@@ -123,7 +123,7 @@ export default {
     hide-footer
     size="lg"
     :modal-id="$options.WORK_ITEM_DETAIL_MODAL_ID"
-    header-class="gl-p-0 gl-pb-2!"
+    header-class="gl-p-0 !gl-pb-2"
     scrollable
     :title="$options.i18n.modalTitle"
     :data-testid="$options.WORK_ITEM_DETAIL_MODAL_ID"
@@ -139,7 +139,7 @@ export default {
       :work-item-id="workItemId"
       :work-item-iid="displayedWorkItemIid"
       :modal-work-item-full-path="workItemFullPath"
-      class="gl-p-5 -gl-mt-3 gl-bg-inherit gl-isolate"
+      class="gl-isolate -gl-mt-3 gl-bg-inherit gl-p-5"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"

@@ -105,7 +105,7 @@ export default {
       searchStarted: false,
       error: '',
       textInputAttrs: {
-        class: 'gl-min-w-fit-content!',
+        class: '!gl-min-w-fit',
       },
     };
   },
@@ -190,7 +190,7 @@ export default {
         return input;
       }
 
-      return highlighter(`<span class="gl-text-black-normal">${input}</span>`, this.searchTerm);
+      return highlighter(`<span class="gl-text-default">${input}</span>`, this.searchTerm);
     },
     unsetError() {
       this.error = '';
@@ -220,7 +220,7 @@ export default {
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
       :placeholder="$options.i18n.addInputPlaceholder"
-      menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
+      menu-class="gl-dropdown-menu-wide dropdown-reduced-height !gl-min-h-7"
       :container-class="tokenSelectorContainerClass"
       data-testid="work-item-token-select-input"
       :text-input-attrs="textInputAttrs"
@@ -234,12 +234,12 @@ export default {
     >
       <template #token-content="{ token }"> {{ token.iid }} {{ token.title }} </template>
       <template #dropdown-item-content="{ dropdownItem }">
-        <div class="gl-display-flex">
+        <div class="gl-flex">
           <div
             v-safe-html="formatResults(dropdownItem.iid)"
-            class="gl-text-secondary gl-font-sm gl-mr-4"
+            class="gl-mr-4 gl-text-sm gl-text-secondary"
           ></div>
-          <div v-safe-html="formatResults(dropdownItem.title)" class="gl-text-truncate"></div>
+          <div v-safe-html="formatResults(dropdownItem.title)" class="gl-truncate"></div>
         </div>
       </template>
       <template #no-results-content>

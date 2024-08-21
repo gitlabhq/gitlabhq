@@ -401,7 +401,7 @@ export default {
     @submit.prevent="addOrCreateMethod"
   >
     <template v-if="isCreateForm">
-      <div class="gl-display-flex gl-gap-x-3">
+      <div class="gl-flex gl-gap-x-3">
         <gl-form-group
           class="gl-w-full"
           :label="$options.i18n.titleInputLabel"
@@ -439,7 +439,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-mb-5 gl-md-mb-3!"
+        class="gl-mb-5 md:!gl-mb-3"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >
@@ -467,7 +467,7 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500 gl-mt-3" data-testid="work-items-error">
+      <div v-if="error" class="gl-mt-3 gl-text-red-500" data-testid="work-items-error">
         {{ error }}
       </div>
       <div

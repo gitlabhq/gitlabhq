@@ -258,10 +258,10 @@ export default {
         v-if="shouldRolledUpWeightBeVisible"
         ref="weightData"
         data-testid="rollup-weight"
-        class="gl-font-normal gl-ml-3 gl-display-flex gl-align-items-center gl-cursor-help gl-gap-2 gl-text-secondary"
+        class="gl-ml-3 gl-flex gl-cursor-help gl-items-center gl-gap-2 gl-font-normal gl-text-secondary"
       >
         <gl-icon name="weight" class="gl-text-secondary" />
-        <span data-testid="weight-value" class="gl-font-sm">{{ rolledUpWeight }}</span>
+        <span data-testid="weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
         <gl-tooltip :target="() => $refs.weightData">
           <span class="gl-font-bold">
             {{ __('Weight') }}

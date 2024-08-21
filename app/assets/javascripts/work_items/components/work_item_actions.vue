@@ -393,15 +393,15 @@ export default {
     >
       <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
-          class="gl-display-flex gl-justify-content-end gl-w-full"
+          class="gl-flex gl-w-full gl-justify-end"
           :data-testid="$options.notificationsToggleFormTestId"
         >
           <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
-              class="work-item-dropdown-toggle"
               label-position="left"
+              class="work-item-dropdown-toggle gl-justify-between"
               @change="toggleNotifications($event)"
             />
           </template>
@@ -483,7 +483,7 @@ export default {
           @action="handleDelete"
         >
           <template #list-item>
-            <span class="gl-text-danger gl-font-bold">{{ i18n.deleteWorkItem }}</span>
+            <span class="gl-font-bold gl-text-danger">{{ i18n.deleteWorkItem }}</span>
           </template>
         </gl-disclosure-dropdown-item>
       </template>

@@ -104,7 +104,12 @@ export default {
         @action="$emit('toggle-show-labels')"
       >
         <template #list-item>
-          <gl-toggle :value="showLabels" :label="$options.i18n.showLabels" label-position="left" />
+          <gl-toggle
+            :value="showLabels"
+            :label="$options.i18n.showLabels"
+            class="gl-justify-between"
+            label-position="left"
+          />
         </template>
       </gl-disclosure-dropdown-item>
 

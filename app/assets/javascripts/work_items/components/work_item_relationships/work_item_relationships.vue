@@ -266,7 +266,7 @@ export default {
             <work-item-relationship-list
               v-if="linksBlocks.length"
               :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-mb-5 gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-border-b-solid':
                   linksIsBlockedBy.length,
               }"
               :linked-items="linksBlocks"
@@ -286,7 +286,7 @@ export default {
             <work-item-relationship-list
               v-if="linksIsBlockedBy.length"
               :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-mb-5 gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-border-b-solid':
                   linksRelatesTo.length,
               }"
               :linked-items="linksIsBlockedBy"

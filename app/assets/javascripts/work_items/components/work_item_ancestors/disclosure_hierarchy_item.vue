@@ -41,19 +41,19 @@ export default {
 </script>
 
 <template>
-  <li class="disclosure-hierarchy-item gl-display-flex gl-min-w-0">
+  <li class="disclosure-hierarchy-item gl-flex gl-min-w-0">
     <gl-link
       :id="itemId"
       :href="item.webUrl"
-      class="disclosure-hierarchy-button gl-text-gray-900 gl-hover-text-decoration-none gl-active-text-decoration-none!"
+      class="disclosure-hierarchy-button gl-text-gray-900 hover:gl-no-underline active:!gl-no-underline"
       :class="{ 'gl-cursor-help': item.ancestorNotAvailable }"
     >
       <gl-icon
         v-if="shouldDisplayIcon(item.icon)"
         :name="item.icon"
-        class="gl-mx-2 gl-text-gray-600 gl-flex-shrink-0"
+        class="gl-mx-2 gl-shrink-0 gl-text-gray-600"
       />
-      <span class="gl-z-200 gl-text-truncate">{{ item.title }}</span>
+      <span class="gl-z-200 gl-truncate">{{ item.title }}</span>
     </gl-link>
     <!--
       @slot Additional content to be displayed in an item.

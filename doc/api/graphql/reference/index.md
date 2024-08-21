@@ -28781,7 +28781,7 @@ Project-level settings for product analytics provider.
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
 | <a id="projectmergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
-| <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
+| <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
 | <a id="projectmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | <a id="projectname"></a>`name` | [`String!`](#string) | Name of the project (without namespace). |
 | <a id="projectnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Full name of the project with its namespace. |

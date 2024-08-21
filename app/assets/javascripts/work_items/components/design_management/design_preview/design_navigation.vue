@@ -80,8 +80,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="designsCount" class="gl-display-flex gl-align-items-center gl-flex-shrink-0">
-    <div class="gl-w-5 gl-mr-2 gl-text-right">{{ currentIndex + 1 }}</div>
+  <div v-if="designsCount" class="gl-flex gl-shrink-0 gl-items-center">
+    <div class="gl-mr-2 gl-w-5 gl-text-right">{{ currentIndex + 1 }}</div>
     <div>{{ paginationText }}</div>
     <gl-button-group class="gl-ml-3">
       <gl-button

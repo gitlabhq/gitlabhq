@@ -103,11 +103,11 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="isStickyHeaderShowing"
-        class="issue-sticky-header gl-fixed gl-bg-default gl-border-b gl-z-3 gl-py-2"
+        class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-2"
         data-testid="work-item-sticky-header"
       >
         <div
-          class="work-item-sticky-header-text gl-items-center gl-mx-auto gl-px-5 xl:gl-px-6 gl-flex gl-gap-3"
+          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
         >
           <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
           <gl-loading-icon v-if="updateInProgress" />
@@ -119,7 +119,7 @@ export default {
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <gl-link
-            class="gl-truncate gl-block gl-font-bold gl-pr-3 gl-mr-auto gl-text-black"
+            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-black"
             href="#top"
             :title="workItem.title"
           >

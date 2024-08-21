@@ -67,11 +67,7 @@ export default {
       <div class="gl-new-card-title-wrapper">
         <h2 class="gl-new-card-title">
           <div aria-hidden="true">
-            <gl-link
-              :id="anchorLinkId"
-              class="gl-text-decoration-none gl-hidden"
-              :href="anchorLink"
-            />
+            <gl-link :id="anchorLinkId" class="gl-hidden gl-no-underline" :href="anchorLink" />
           </div>
           <slot name="header"></slot>
         </h2>

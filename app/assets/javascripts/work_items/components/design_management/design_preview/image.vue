@@ -140,12 +140,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mx-auto gl-my-auto js-design-image">
+  <div class="js-design-image gl-mx-auto gl-my-auto">
     <gl-icon v-if="imageError" class="gl-text-gray-200" name="media-broken" :size="48" />
     <img
       v-show="!imageError"
       ref="contentImg"
-      class="gl-max-h-full gl-border"
+      class="gl-border gl-max-h-full"
       :src="image"
       :alt="name"
       :style="imageStyle"

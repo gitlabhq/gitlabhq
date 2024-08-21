@@ -256,7 +256,7 @@
         },
         "reports": {
           "type": "object",
-          "markdownDescription": "Reports will be uploaded as artifacts, and often displayed in the Gitlab UI, such as in Merge Requests. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsreports).",
+          "markdownDescription": "Reports will be uploaded as artifacts, and often displayed in the Gitlab UI, such as in merge requests. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsreports).",
           "additionalProperties": false,
           "properties": {
             "junit": {
@@ -290,7 +290,8 @@
                 "coverage_format": {
                   "description": "Code coverage format used by the test framework.",
                   "enum": [
-                    "cobertura", "jacoco"
+                    "cobertura",
+                    "jacoco"
                   ]
                 },
                 "path": {

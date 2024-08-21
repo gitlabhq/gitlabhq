@@ -148,7 +148,7 @@ export default {
 
 <template>
   <div
-    class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-break-words gl-hyphens-auto gl-min-w-0 gl-rounded-base gl-p-3 gl-gap-3"
+    class="item-body work-item-link-child gl-relative gl-flex gl-min-w-0 gl-grow gl-gap-3 gl-hyphens-auto gl-break-words gl-rounded-base gl-p-3"
     data-testid="links-child"
   >
     <div ref="stateIcon" class="gl-cursor-help">
@@ -157,8 +157,8 @@ export default {
         {{ childItemType }}
       </gl-tooltip>
     </div>
-    <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
-      <div class="gl-flex gl-justify-between gl-gap-3 gl-min-w-0 gl-mb-2">
+    <div class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-wrap">
+      <div class="gl-mb-2 gl-flex gl-min-w-0 gl-justify-between gl-gap-3">
         <div class="item-title gl-min-w-0">
           <span v-if="childItem.confidential">
             <gl-icon
@@ -172,7 +172,7 @@ export default {
           </span>
           <gl-link
             :href="childItem.webUrl"
-            class="gl-break-words gl-hyphens-auto gl-font-semibold"
+            class="gl-hyphens-auto gl-break-words gl-font-semibold"
             @click.exact="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"
@@ -180,7 +180,7 @@ export default {
             {{ childItem.title }}
           </gl-link>
         </div>
-        <div class="gl-display-flex gl-justify-content-end">
+        <div class="gl-flex gl-justify-end">
           <gl-avatars-inline
             v-if="assignees.length"
             :avatars="assignees"
@@ -189,7 +189,7 @@ export default {
             :avatar-size="16"
             badge-tooltip-prop="name"
             :badge-sr-only-text="assigneesCollapsedTooltip"
-            class="gl-whitespace-nowrap gl-mr-3"
+            class="gl-mr-3 gl-whitespace-nowrap"
           >
             <template #avatar="{ avatar }">
               <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
@@ -221,7 +221,7 @@ export default {
         :metadata-widgets="metadataWidgets"
         class="ml-xl-0"
       />
-      <div v-if="displayLabels" class="gl-display-flex gl-flex-wrap">
+      <div v-if="displayLabels" class="gl-flex gl-flex-wrap">
         <gl-label
           v-for="label in labels"
           :key="label.id"
@@ -229,7 +229,7 @@ export default {
           :background-color="label.color"
           :description="label.description"
           :scoped="showScopedLabel(label)"
-          class="gl-mt-2 gl-mr-2 gl-mb-auto"
+          class="gl-mb-auto gl-mr-2 gl-mt-2"
           tooltip-placement="top"
         />
       </div>
@@ -237,7 +237,7 @@ export default {
     <div v-if="canUpdate">
       <gl-button
         v-gl-tooltip
-        class="-gl-mt-2 -gl-mr-2"
+        class="-gl-mr-2 -gl-mt-2"
         category="tertiary"
         size="small"
         icon="close"

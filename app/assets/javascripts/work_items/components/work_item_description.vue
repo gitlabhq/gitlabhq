@@ -310,7 +310,7 @@ export default {
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"
         />
-        <div class="gl-display-flex">
+        <div class="gl-flex">
           <gl-alert v-if="hasConflicts" :dismissible="false" variant="danger" class="gl-w-full">
             <p>
               {{

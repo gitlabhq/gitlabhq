@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     headerClasses() {
-      return this.useH2 ? 'gl-font-size-h1 gl-m-0' : 'gl-font-base gl-m-0';
+      return this.useH2 ? 'gl-text-size-h1 gl-m-0' : 'gl-text-base gl-m-0';
     },
   },
   methods: {
@@ -65,13 +65,11 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-pb-3 gl-align-items-center"
-  >
+  <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-pb-3">
     <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">{{
       $options.i18n.activityLabel
     }}</component>
-    <div class="gl-display-flex gl-gap-3">
+    <div class="gl-flex gl-gap-3">
       <work-item-activity-sort-filter
         :work-item-type="workItemType"
         :loading="disableActivityFilterSort"

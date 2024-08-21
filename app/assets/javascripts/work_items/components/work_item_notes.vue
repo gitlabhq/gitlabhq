@@ -355,7 +355,7 @@ export default {
       @changeFilter="filterDiscussions"
     />
     <work-item-notes-loading v-if="initialLoading" class="gl-mt-5" />
-    <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
+    <div v-else class="issuable-discussion gl-mb-5 !gl-clearfix">
       <template v-if="!initialLoading">
         <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
           <ul class="notes notes-form timeline">

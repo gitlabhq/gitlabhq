@@ -296,7 +296,7 @@ export default {
 <template>
   <div
     ref="presentationViewport"
-    class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+    class="overflow-auto gl-relative gl-h-full gl-w-full gl-p-5"
     :style="presentationStyle"
     @mousedown="onPresentationMousedown"
     @mousemove="onPresentationMousemove"
@@ -308,7 +308,7 @@ export default {
     @touchcancel="onPresentationMouseup"
   >
     <gl-loading-icon v-if="isLoading" size="xl" class="gl-flex gl-h-full gl-items-center" />
-    <div v-else class="gl-h-full gl-w-full gl-flex gl-items-center gl-relative">
+    <div v-else class="gl-relative gl-flex gl-h-full gl-w-full gl-items-center">
       <design-image
         v-if="image"
         :image="image"

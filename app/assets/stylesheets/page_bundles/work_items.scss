@@ -6,12 +6,6 @@ $work-item-overview-right-sidebar-width: 20rem;
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-token-selector-token-container {
-  display: flex;
-  align-items: center;
-}
-
 .hide-unfocused-input-decoration:not(:focus, :hover),
 .hide-unfocused-input-decoration:disabled {
   background-color: transparent;
@@ -20,84 +14,14 @@ $work-item-overview-gap-width: 2rem;
   box-shadow: none;
 }
 
-.work-item-assignees {
-  .assign-myself {
-    display: none;
-  }
-
-  @include media-breakpoint-up(sm) {
-    .assignees-selector:hover .assign-myself {
-      display: block;
-    }
-  }
-}
-
-.work-item-due-date {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-datepicker-input.gl-form-input.form-control {
-    width: 10rem;
-
-    &:not(:focus, :hover) {
-      box-shadow: none;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      ~ .gl-datepicker-actions {
-        display: none;
-      }
-    }
-
-    &[disabled] {
-      background-color: var(--white, $white);
-      box-shadow: none;
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      ~ .gl-datepicker-actions {
-        display: none;
-      }
-    }
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-datepicker-actions:focus,
-  .gl-datepicker-actions:hover {
-    display: flex !important;
-  }
-}
-
-.work-item-labels {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-token {
-    padding-left: $gl-spacing-scale-1;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-token-close {
-    display: none;
-  }
-}
-
-// sticky error placement for errors in modals , by default it is 83px for full view
+// sticky error placement for errors in modals, by default it is 83px for full view
 #work-item-detail-modal {
   .flash-container.flash-container-page.sticky {
     top: -8px;
   }
 }
 
-
-.work-item-notifications-form {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-toggle {
-    margin-left: auto;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-toggle-label {
-    font-weight: $gl-font-weight-normal;
-  }
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-modal .work-item-view,
+.work-item-view,
 .work-item-drawer .work-item-view:not(:has(.design-detail)) {
   container-name: work-item-view;
   container-type: inline-size;
@@ -170,13 +94,6 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-field-label {
-  .work-item-overview & {
-    max-width: 30%;
-    flex: none;
-  }
-}
-
 .work-item-field-value {
   .work-item-overview & {
     max-width: 65%;
@@ -191,29 +108,9 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-parent-field-value {
-  .work-item-overview & {
-    max-width: 75%;
-  }
-}
-
-.token-selector-menu-class {
-  .work-item-overview & {
-    width: 100%;
-    min-width: 100%;
-  }
-}
-
-// There is no props to set label class in GlToggle
-// and the font weight is bold in the component
-// Here, we are overriding the margin and the font weight
-
+// There is no props to set the font weight class in GlToggle
+// Here, we are overriding the font weight
 .work-item-dropdown-toggle {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-toggle {
-    margin-left: auto;
-  }
-
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-toggle-label {
     font-weight: normal;
@@ -374,7 +271,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-.work-item-description .truncated{
+.work-item-description .truncated {
   max-height: clamp(16rem, 40vh, 32rem);
   overflow: hidden;
 }

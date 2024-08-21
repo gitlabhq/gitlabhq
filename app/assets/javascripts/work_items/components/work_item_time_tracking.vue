@@ -107,8 +107,8 @@ export default {
 
 <template>
   <div data-testid="work-item-time-tracking">
-    <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-      <h3 class="gl-heading-5 gl-mb-2!">
+    <div class="gl-flex gl-items-center gl-justify-between">
+      <h3 class="gl-heading-5 !gl-mb-2">
         {{ __('Time tracking') }}
       </h3>
       <gl-button
@@ -123,17 +123,14 @@ export default {
       />
     </div>
 
-    <div
-      class="gl-display-flex gl-align-items-center gl-gap-2 gl-font-sm"
-      data-testid="time-tracking-body"
-    >
+    <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm" data-testid="time-tracking-body">
       <template v-if="totalTimeSpent || timeEstimate">
         <span class="gl-text-secondary">{{ s__('TimeTracking|Spent') }}</span>
         <gl-button
           v-if="canUpdate"
           v-gl-modal="'time-tracking-report'"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
-          class="gl-font-sm!"
+          class="!gl-text-sm"
           variant="link"
         >
           {{ humanTotalTimeSpent }}
@@ -144,7 +141,7 @@ export default {
         <template v-if="timeEstimate">
           <gl-progress-bar
             v-gl-tooltip="progressBarTooltipText"
-            class="gl-flex-grow-1 gl-mx-2"
+            class="gl-mx-2 gl-grow"
             :value="timeRemainingPercent"
             :variant="progressBarVariant"
           />
@@ -153,7 +150,7 @@ export default {
             v-if="canUpdate"
             v-gl-modal="$options.setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
-            class="gl-font-sm!"
+            class="!gl-text-sm"
             variant="link"
           >
             {{ humanTimeEstimate }}
@@ -165,7 +162,7 @@ export default {
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="$options.setTimeEstimateModalId"
-          class="gl-font-sm! gl-ml-auto"
+          class="gl-ml-auto !gl-text-sm"
           variant="link"
         >
           {{ s__('TimeTracking|Add estimate') }}
@@ -176,7 +173,7 @@ export default {
           <template #estimate="{ content }">
             <gl-button
               v-gl-modal="$options.setTimeEstimateModalId"
-              class="gl-font-sm! gl-align-baseline"
+              class="gl-align-baseline !gl-text-sm"
               variant="link"
             >
               {{ content }}
@@ -185,7 +182,7 @@ export default {
           <template #timeSpent="{ content }">
             <gl-button
               v-gl-modal="$options.createTimelogModalId"
-              class="gl-font-sm! gl-align-baseline"
+              class="gl-align-baseline !gl-text-sm"
               variant="link"
             >
               {{ content }}

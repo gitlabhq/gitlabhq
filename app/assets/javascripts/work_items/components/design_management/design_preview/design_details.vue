@@ -161,9 +161,9 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top gl-w-full gl-flex gl-justify-content-center gl-flex-col gl-lg-flex-direction-row gl-bg-gray-10"
+    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-gray-10 lg:gl-flex-row"
   >
-    <div class="gl-flex gl-overflow-hidden gl-grow gl-flex-col gl-relative">
+    <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
       <design-toolbar
         :work-item-title="workItemTitle"
         :design="design"
@@ -173,10 +173,8 @@ export default {
         :all-designs="allDesigns"
         @toggle-sidebar="toggleSidebar"
       />
-      <div
-        class="gl-flex gl-overflow-hidden gl-flex-col gl-lg-flex-direction-row gl-grow gl-relative"
-      >
-        <div class="gl-flex gl-overflow-hidden gl-flex-grow-2 gl-flex-col gl-relative">
+      <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
+        <div class="gl-relative gl-flex gl-flex-grow-2 gl-flex-col gl-overflow-hidden">
           <div v-if="errorMessage" class="gl-p-5">
             <gl-alert variant="danger" @dismiss="errorMessage = null">
               {{ errorMessage }}

@@ -182,7 +182,7 @@ export default {
   <div class="work-item-attributes-wrapper">
     <template v-if="workItemAssignees">
       <work-item-assignees
-        class="gl-mb-5 js-assignee"
+        class="js-assignee gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
         :work-item-id="workItem.id"
@@ -209,7 +209,7 @@ export default {
     </template>
     <template v-if="workItemLabels">
       <work-item-labels
-        class="gl-mb-5 js-labels"
+        class="js-labels gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
         :work-item-id="workItem.id"
@@ -247,7 +247,7 @@ export default {
     </template>
     <template v-if="workItemMilestone">
       <work-item-milestone
-        class="gl-mb-5 js-milestone"
+        class="js-milestone gl-mb-5"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-milestone="workItemMilestone.milestone"
@@ -316,7 +316,7 @@ export default {
     </template>
     <template v-if="workItemHierarchy && showParent">
       <work-item-parent
-        class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+        class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
@@ -334,7 +334,7 @@ export default {
     />
     <work-item-time-tracking
       v-if="workItemTimeTracking"
-      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+      class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
       :can-update="canUpdate"
       :time-estimate="workItemTimeTracking.timeEstimate"
       :timelogs="workItemTimeTracking.timelogs.nodes"
@@ -345,7 +345,7 @@ export default {
     />
     <participants
       v-if="workItemParticipants.length"
-      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+      class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
       :participants="workItemParticipants"
     />
   </div>

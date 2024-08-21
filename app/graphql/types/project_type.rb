@@ -758,7 +758,7 @@ module Types
 
     {
       issues: "Issues are",
-      merge_requests: "Merge Requests are",
+      merge_requests: "Merge requests are",
       wiki: 'Wikis are',
       snippets: 'Snippets are',
       container_registry: 'Container Registry is'

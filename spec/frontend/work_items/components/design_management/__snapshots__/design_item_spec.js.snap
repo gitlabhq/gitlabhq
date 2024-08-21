@@ -14,7 +14,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
-    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-grow"
@@ -36,7 +36,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
       class="gl-flex gl-flex-col str-truncated-100"
     >
       <span
-        class="gl-font-sm str-truncated-100"
+        class="gl-text-sm str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -65,7 +65,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
       />
       <span
         aria-label="2 comments"
-        class="gl-font-sm gl-ml-2"
+        class="gl-ml-2 gl-text-sm"
       >
         2
       </span>
@@ -79,7 +79,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
-    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
       class="gl-grow"
@@ -101,7 +101,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
       class="gl-flex gl-flex-col str-truncated-100"
     >
       <span
-        class="gl-font-sm str-truncated-100"
+        class="gl-text-sm str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -130,7 +130,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
       />
       <span
         aria-label="1 comment"
-        class="gl-font-sm gl-ml-2"
+        class="gl-ml-2 gl-text-sm"
       >
         1
       </span>

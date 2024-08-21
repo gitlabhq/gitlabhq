@@ -28,7 +28,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 
 const ALLOWED_ICONS = ['issue-close'];
 const ICON_COLORS = {
-  'issue-close': 'gl-bg-blue-100! gl-text-blue-700',
+  'issue-close': '!gl-bg-blue-100 gl-text-blue-700',
 };
 
 export default {
@@ -116,11 +116,11 @@ export default {
       :class="[
         getIconColor,
         {
-          'gl-bg-gray-50 gl-text-gray-600 system-note-icon': isAllowedIcon,
-          'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
+          'system-note-icon gl-bg-gray-50 gl-text-gray-600': isAllowedIcon,
+          'system-note-tiny-dot !gl-bg-gray-900': !isAllowedIcon,
         },
       ]"
-      class="gl-float-left gl-flex gl-justify-center gl-items-center gl-rounded-full gl-relative"
+      class="gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
     >
       <gl-icon v-if="isAllowedIcon" :size="12" :name="note.systemNoteIconName" />
     </div>
@@ -140,7 +140,7 @@ export default {
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
-              class="gl-vertical-align-text-bottom gl-font-sm!"
+              class="gl-align-text-bottom !gl-text-sm"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
@@ -148,7 +148,7 @@ export default {
         </note-header>
       </div>
       <div class="note-body">
-        <div v-if="shouldShowDescriptionVersion" class="description-version gl-pt-3! gl-pl-4">
+        <div v-if="shouldShowDescriptionVersion" class="description-version !gl-pt-3 gl-pl-4">
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
             <gl-skeleton-loader />
           </pre>

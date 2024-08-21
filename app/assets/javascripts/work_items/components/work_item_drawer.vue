@@ -73,12 +73,12 @@ export default {
     :open="open"
     data-testid="work-item-drawer"
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-    class="gl-w-full gl-sm-w-40p gl-leading-reset"
+    class="gl-w-full gl-leading-reset sm:gl-w-4/10"
     @close="$emit('close')"
   >
     <template #title>
       <gl-link
-        class="gl-text-black-normal"
+        class="gl-text-default"
         :href="activeItem.webUrl"
         @click.prevent="redirectToWorkItem"
         >{{ __('Open full view') }}</gl-link
@@ -90,7 +90,7 @@ export default {
         :work-item-iid="activeItem.iid"
         :modal-work-item-full-path="activeItemFullPath"
         is-drawer
-        class="gl-pt-0! work-item-drawer"
+        class="work-item-drawer !gl-pt-0"
         @deleteWorkItem="deleteWorkItem"
         v-on="$listeners"
       />

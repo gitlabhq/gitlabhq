@@ -283,7 +283,7 @@ export default {
     v-bind="treeRootOptions"
     class="content-list"
     data-testid="child-items-container"
-    :class="{ 'gl-cursor-grab sortable-container': canReorder, 'disabled-content': disableList }"
+    :class="{ 'sortable-container gl-cursor-grab': canReorder, 'disabled-content': disableList }"
     @end="handleDragOnEnd"
   >
     <work-item-link-child

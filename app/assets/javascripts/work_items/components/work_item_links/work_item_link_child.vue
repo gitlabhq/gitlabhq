@@ -159,7 +159,7 @@ export default {
     childItemClass() {
       return {
         'gl-ml-5': !this.hasChildren,
-        'gl-ml-0!': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
+        '!gl-ml-0': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
       };
     },
   },
@@ -269,8 +269,8 @@ export default {
 </script>
 
 <template>
-  <li class="tree-item gl-p-0! gl-border-bottom-0!">
-    <div class="gl-display-flex gl-align-items-flex-start">
+  <li class="tree-item !gl-border-b-0 !gl-p-0">
+    <div class="gl-flex gl-items-start">
       <gl-button
         v-if="hasChildren"
         v-gl-tooltip.hover
@@ -280,7 +280,7 @@ export default {
         category="tertiary"
         size="small"
         :loading="isLoadingChildren && !fetchNextPageInProgress"
-        class="gl-px-0! gl-py-3!"
+        class="!gl-px-0 !gl-py-3"
         data-testid="expand-child"
         @click="toggleItem"
       />

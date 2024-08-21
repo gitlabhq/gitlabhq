@@ -36,7 +36,7 @@ export default {
     <h4
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-font-sm gl-font-semibold gl-text-gray-700 gl-mt-3 gl-mb-2 gl-ml-3"
+      class="gl-mb-2 gl-ml-3 gl-mt-3 gl-text-sm gl-font-semibold gl-text-gray-700"
     >
       {{ heading }}
     </h4>
@@ -45,7 +45,7 @@ export default {
         <li
           v-for="linkedItem in linkedItems"
           :key="linkedItem.workItem.id"
-          class="gl-pt-0! gl-pb-0! gl-border-b-0!"
+          class="!gl-border-b-0 !gl-pb-0 !gl-pt-0"
         >
           <work-item-link-child-contents
             :child-item="linkedItem.workItem"

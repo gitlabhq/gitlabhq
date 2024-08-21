@@ -315,7 +315,7 @@ export default {
     <div
       v-else
       ref="description"
-      class="work-item-description description md gl-clearfix gl-relative"
+      class="work-item-description description md gl-relative gl-clearfix"
     >
       <div
         ref="gfm-content"
@@ -329,7 +329,7 @@ export default {
         class="description-more gl-block gl-w-full"
         data-test-id="description-read-more"
       >
-        <div class="show-all-btn gl-w-full gl-flex gl-justify-center gl-items-center">
+        <div class="show-all-btn gl-flex gl-w-full gl-items-center gl-justify-center">
           <gl-button
             variant="confirm"
             category="tertiary"

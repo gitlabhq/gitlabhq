@@ -72,12 +72,12 @@ export default {
   <design-disclosure :open="isOpen">
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0">
-        <design-description v-if="showDescription" :design="design" class="gl-my-5 gl-border-b" />
+        <design-description v-if="showDescription" :design="design" class="gl-border-b gl-my-5" />
         <div v-if="isLoading" class="gl-my-5">
           <gl-skeleton-loader />
         </div>
         <template v-else>
-          <h3 data-testid="unresolved-discussion-count" class="!gl-leading-20 gl-text-lg gl-my-5">
+          <h3 data-testid="unresolved-discussion-count" class="gl-my-5 gl-text-lg !gl-leading-20">
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state

@@ -1,7 +1,7 @@
 import { start } from '@gitlab/web-ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from '~/ide/constants';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
-import { handleTracking } from '~/ide/lib/gitlab_web_ide/handle_tracking_event';
+import { handleTracking, handleUpdateUrl } from '~/ide/lib/gitlab_web_ide';
 import Tracking from '~/tracking';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -140,6 +140,7 @@ describe('ide/init_gitlab_web_ide', () => {
         },
         handleTracking,
         telemetryEnabled,
+        handleContextUpdate: handleUpdateUrl,
       });
     });
 

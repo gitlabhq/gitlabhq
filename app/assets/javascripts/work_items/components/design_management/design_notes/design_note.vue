@@ -67,7 +67,7 @@ export default {
       :href="author.webUrl"
       :data-user-id="authorId"
       :data-username="author.username"
-      class="gl-float-left gl-mr-3 link-inherit-color js-user-link"
+      class="link-inherit-color js-user-link gl-float-left gl-mr-3"
     >
       <gl-avatar
         :size="32"
@@ -96,7 +96,7 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-inline-block gl-mb-2 gl-text-sm link-inherit-color"
+            class="note-timestamp system-note-separator link-inherit-color gl-mb-2 gl-inline-block gl-text-sm"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
@@ -104,7 +104,7 @@ export default {
           <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
         </span>
       </div>
-      <div class="gl-flex gl-items-start -gl-mt-2 -gl-mr-2">
+      <div class="-gl-mr-2 -gl-mt-2 gl-flex gl-items-start">
         <slot name="resolve-discussion"></slot>
       </div>
     </div>

@@ -507,7 +507,7 @@ export default {
           >
             <template v-if="workItemAssignees">
               <work-item-assignees
-                class="gl-mb-5 js-assignee"
+                class="js-assignee gl-mb-5"
                 :can-update="canUpdate"
                 :full-path="fullPath"
                 :work-item-id="workItemId"
@@ -532,7 +532,7 @@ export default {
             </template>
             <template v-if="workItemLabels">
               <work-item-labels
-                class="gl-mb-5 js-labels"
+                class="js-labels gl-mb-5"
                 :can-update="canUpdate"
                 :full-path="fullPath"
                 :work-item-id="workItemId"
@@ -576,7 +576,7 @@ export default {
               />
             </template>
           </aside>
-          <div class="gl-py-3 gl-flex gl-gap-3 gl-col-start-1">
+          <div class="gl-col-start-1 gl-flex gl-gap-3 gl-py-3">
             <gl-button
               variant="confirm"
               :loading="loading"

@@ -5,7 +5,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
   data-testid="work-item-linked-items-list"
 >
   <h4
-    class="gl-font-semibold gl-font-sm gl-mb-2 gl-ml-3 gl-mt-3 gl-text-gray-700"
+    class="gl-font-semibold gl-mb-2 gl-ml-3 gl-mt-3 gl-text-gray-700 gl-text-sm"
     data-testid="work-items-list-heading"
   >
     Blocking
@@ -17,7 +17,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
       class="content-list work-items-list"
     >
       <li
-        class="gl-border-b-0! gl-pb-0! gl-pt-0!"
+        class="!gl-border-b-0 !gl-pb-0 !gl-pt-0"
       >
         <work-item-link-child-contents-stub
           canupdate="true"

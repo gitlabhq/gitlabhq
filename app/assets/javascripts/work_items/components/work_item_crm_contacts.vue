@@ -269,13 +269,13 @@ export default {
     @updateValue="updateItems"
   >
     <template #readonly>
-      <div class="gl-gap-2 gl-mt-1">
+      <div class="gl-mt-1 gl-gap-2">
         <div
           v-for="[organizationName, contacts] in selectedOrganizations"
           :key="organizationName"
           data-testid="organization"
         >
-          <div class="gl-text-secondary gl-mt-3">{{ organizationName }}</div>
+          <div class="gl-mt-3 gl-text-secondary">{{ organizationName }}</div>
           <div
             v-for="contact in contacts"
             :id="`contact_container_${contact.id}`"

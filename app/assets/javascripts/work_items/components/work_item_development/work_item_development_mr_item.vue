@@ -61,10 +61,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-items-center gl-justify-between gl-gap-2 gl-mb-2">
+  <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
     <gl-link
       :href="mergeRequest.webUrl"
-      class="gfm-merge_request gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline gl-truncate"
+      class="gfm-merge_request gl-truncate gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline"
       data-reference-type="merge_request"
       :data-project-path="projectPath"
       :data-iid="mergeRequest.iid"

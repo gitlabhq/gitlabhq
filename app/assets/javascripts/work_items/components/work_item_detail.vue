@@ -568,7 +568,7 @@ export default {
           :svg-path="$options.noAccessSvg"
         />
         <div v-else data-testid="detail-wrapper">
-          <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
+          <div class="gl-block gl-flex-row gl-items-start gl-gap-3 sm:!gl-flex">
             <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
@@ -581,7 +581,7 @@ export default {
                 @error="updateError = $event"
               />
             </div>
-            <div class="gl-flex gl-self-start gl-ml-auto gl-gap-3 gl-mt-1">
+            <div class="gl-ml-auto gl-mt-1 gl-flex gl-gap-3 gl-self-start">
               <gl-button
                 v-if="shouldShowEditButton"
                 category="secondary"

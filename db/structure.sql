@@ -1250,6 +1250,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_54707c384ad7() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "security_orchestration_policy_configurations"
+  WHERE "security_orchestration_policy_configurations"."id" = NEW."security_orchestration_policy_configuration_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_56d49f4ed623() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1851,6 +1867,22 @@ IF NEW."group_id" IS NULL THEN
   INTO NEW."group_id"
   FROM "audit_events_external_audit_event_destinations"
   WHERE "audit_events_external_audit_event_destinations"."id" = NEW."external_audit_event_destination_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_c59fe6f31e71() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "security_orchestration_policy_configurations"
+  WHERE "security_orchestration_policy_configurations"."id" = NEW."security_orchestration_policy_configuration_id";
 END IF;
 
 RETURN NEW;
@@ -17760,6 +17792,8 @@ CREATE TABLE security_orchestration_policy_rule_schedules (
     policy_index integer NOT NULL,
     cron text NOT NULL,
     rule_index integer DEFAULT 0 NOT NULL,
+    project_id bigint,
+    namespace_id bigint,
     CONSTRAINT check_915825a76e CHECK ((char_length(cron) <= 255))
 );
 
@@ -29759,6 +29793,10 @@ CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) 
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
+CREATE INDEX index_security_orchestration_policy_rule_schedules_on_namespace ON security_orchestration_policy_rule_schedules USING btree (namespace_id);
+
+CREATE INDEX index_security_orchestration_policy_rule_schedules_on_project_i ON security_orchestration_policy_rule_schedules USING btree (project_id);
+
 CREATE INDEX index_security_policies_on_policy_management_project_id ON security_policies USING btree (security_policy_management_project_id);
 
 CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
@@ -32437,6 +32475,8 @@ CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_
 
 CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_4b43790d717f();
 
+CREATE TRIGGER trigger_54707c384ad7 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_54707c384ad7();
+
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
 
 CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
@@ -32510,6 +32550,8 @@ CREATE TRIGGER trigger_b2612138515d BEFORE INSERT OR UPDATE ON project_relation_
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
+
+CREATE TRIGGER trigger_c59fe6f31e71 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_c59fe6f31e71();
 
 CREATE TRIGGER trigger_c5eec113ea76 BEFORE INSERT OR UPDATE ON dast_pre_scan_verifications FOR EACH ROW EXECUTE FUNCTION trigger_c5eec113ea76();
 
@@ -32987,6 +33029,9 @@ ALTER TABLE ONLY scan_result_policy_violations
 
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT fk_3d71295ac9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules
+    ADD CONSTRAINT fk_3e78b9a150 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_checks
     ADD CONSTRAINT fk_3fbfa4295c FOREIGN KEY (requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
@@ -33683,6 +33728,9 @@ ALTER TABLE ONLY project_compliance_standards_adherence
 
 ALTER TABLE p_ci_runner_machine_builds
     ADD CONSTRAINT fk_bb490f12fe_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_orchestration_policy_rule_schedules
+    ADD CONSTRAINT fk_bcbb90477f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT fk_bcc024eef2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

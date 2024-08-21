@@ -140,17 +140,17 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" class="gl-my-2" />
-    <div v-if="shouldShowDevWidget" class="gl-border-t gl-border-gray-50 gl-mb-5 gl-pt-5">
-      <div class="gl-flex gl-items-center gl-gap-3 gl-justify-between">
+    <div v-if="shouldShowDevWidget" class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5">
+      <div class="gl-flex gl-items-center gl-justify-between gl-gap-3">
         <h3
-          class="!gl-mb-0 gl-heading-5 gl-flex gl-items-center gl-gap-2"
+          class="gl-heading-5 !gl-mb-0 gl-flex gl-items-center gl-gap-2"
           data-testid="dev-widget-label"
         >
           {{ $options.i18n.development }}
           <gl-button
             v-if="showAutoCloseInformation"
             v-gl-tooltip
-            class="hover:!gl-bg-transparent !gl-p-0"
+            class="!gl-p-0 hover:!gl-bg-transparent"
             category="tertiary"
             :title="tooltipText"
             :aria-label="tooltipText"

@@ -230,9 +230,9 @@ export default {
 </script>
 
 <template>
-  <div class="timeline-discussion-body gl-overflow-visible!">
-    <div class="note-body gl-p-0! gl-overflow-visible!">
-      <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note">
+  <div class="timeline-discussion-body !gl-overflow-visible">
+    <div class="note-body !gl-overflow-visible !gl-p-0">
+      <form class="common-note-form gfm-form js-main-target-form new-note gl-grow">
         <comment-field-layout
           :with-alert-container="isWorkItemConfidential"
           :noteable-data="getWorkItemData"

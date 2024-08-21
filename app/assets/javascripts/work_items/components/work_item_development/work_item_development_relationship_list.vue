@@ -74,7 +74,7 @@ export default {
 </script>
 <template>
   <div>
-    <ul ref="list-body" class="gl-list-none gl-m-0 gl-p-0" data-testid="work-item-dev-items-list">
+    <ul ref="list-body" class="gl-m-0 gl-list-none gl-p-0" data-testid="work-item-dev-items-list">
       <li v-for="item in uncollapsedItems" :key="itemId(item)" class="gl-mr-3">
         <component :is="itemComponent(item)" :merge-request="itemObject(item)" />
       </li>

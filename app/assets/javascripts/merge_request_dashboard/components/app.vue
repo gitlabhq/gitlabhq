@@ -25,7 +25,7 @@ export default {
 <template>
   <div>
     <div class="page-title-holder gl-flex">
-      <h1 class="page-title gl-font-size-h-display">{{ __('Merge Requests') }}</h1>
+      <h1 class="page-title gl-font-size-h-display">{{ __('Merge requests') }}</h1>
     </div>
     <merge-requests-query
       v-for="(list, i) in lists"

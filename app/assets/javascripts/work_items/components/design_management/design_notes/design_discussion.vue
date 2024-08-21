@@ -59,7 +59,7 @@ export default {
 <template>
   <div class="design-discussion-wrapper" @click="$emit('update-active-discussion')">
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
-    <ul class="design-discussion bordered-box gl-relative gl-p-0 gl-list-none">
+    <ul class="design-discussion bordered-box gl-relative gl-list-none gl-p-0">
       <design-note :note="firstNote">
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
           <gl-button
@@ -73,10 +73,10 @@ export default {
           />
         </template>
         <template v-if="discussion.resolved" #resolved-status>
-          <p class="gl-text-gray-500 gl-text-sm gl-m-0 gl-mt-5" data-testid="resolved-message">
+          <p class="gl-m-0 gl-mt-5 gl-text-sm gl-text-gray-500" data-testid="resolved-message">
             {{ __('Resolved by') }}
             <gl-link
-              class="gl-text-gray-500 gl-no-underline gl-text-sm link-inherit-color"
+              class="link-inherit-color gl-text-sm gl-text-gray-500 gl-no-underline"
               :href="discussion.resolvedBy.webUrl"
               target="_blank"
               >{{ discussion.resolvedBy.name }}</gl-link

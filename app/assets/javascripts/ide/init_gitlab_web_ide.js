@@ -7,6 +7,7 @@ import {
   getOAuthConfig,
   setupRootElement,
   handleTracking,
+  handleUpdateUrl,
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 import { renderWebIdeError } from './render_web_ide_error';
@@ -84,6 +85,7 @@ export const initGitlabWebIDE = async (el) => {
       editorFont,
       extensionsGallerySettings,
       codeSuggestionsEnabled,
+      handleContextUpdate: handleUpdateUrl,
       handleTracking,
       // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
       telemetryEnabled: Tracking.enabled(),

@@ -97,7 +97,7 @@ export default {
 <template>
   <widget-wrapper v-if="hasDesigns" data-testid="designs-root" :error="error">
     <template #header>
-      <span class="gl-font-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+      <span class="gl-mr-3 gl-font-bold">{{ s__('DesignManagement|Designs') }}</span>
     </template>
     <template #header-suffix>
       <design-version-dropdown :all-versions="allVersions" />
@@ -107,7 +107,7 @@ export default {
         <li
           v-for="design in designs"
           :key="design.id"
-          class="col-md-6 col-lg-3 gl-mt-5 gl-px-3 gl-bg-transparent gl-shadow-none js-design-tile"
+          class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-px-3 gl-shadow-none"
         >
           <design
             v-bind="design"

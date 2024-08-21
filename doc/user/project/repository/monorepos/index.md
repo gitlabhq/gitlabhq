@@ -240,7 +240,25 @@ performance problems.
 You can use [`git-sizer`](https://github.com/github/git-sizer) to get a snapshot
 of repository characteristics and discover problem aspects of your monorepo.
 
-For example:
+To get a _full_ clone of your repository, you need a full Git mirror or bare clone to
+ensure all Git references are present. To profile your repository:
+
+1. [Install `git-sizer`](https://github.com/github/git-sizer?tab=readme-ov-file#getting-started).
+1. Get a full clone of your repository:
+
+   ```shell
+   git clone --mirror <git_repo_url>
+   ```
+    
+   After cloning, the repository will be in the bare Git format that is compatible with `git-sizer`.
+1. Run `git-sizer` with all statistics in the directory of your Git repository:
+
+   ```shell
+   git-sizer -v
+   ```
+
+After processing, the output of `git-sizer` should look like the following with a level of concern
+on each aspect of the repository:
 
 ```shell
 Processing blobs: 1652370
