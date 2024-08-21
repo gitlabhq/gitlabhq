@@ -127,7 +127,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       });
 
       it('enables the button', () => {
-        expect(findApplyButton().attributes('disabled')).toBe(undefined);
+        expect(findApplyButton().attributes().disabled).toBeUndefined();
       });
     });
   });

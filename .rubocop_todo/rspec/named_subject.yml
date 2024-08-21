@@ -1216,7 +1216,6 @@ RSpec/NamedSubject:
     - 'spec/controllers/admin/applications_controller_spec.rb'
     - 'spec/controllers/admin/ci/variables_controller_spec.rb'
     - 'spec/controllers/admin/instance_review_controller_spec.rb'
-    - 'spec/controllers/admin/integrations_controller_spec.rb'
     - 'spec/controllers/admin/users_controller_spec.rb'
     - 'spec/controllers/application_controller_spec.rb'
     - 'spec/controllers/concerns/check_rate_limit_spec.rb'

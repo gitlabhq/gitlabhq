@@ -737,6 +737,8 @@
   - 1
 - - search_zoekt_project_transfer
   - 1
+- - secrets_management_provision_project_secrets_manager
+  - 1
 - - security_create_security_policy_project
   - 1
 - - security_delete_orchestration_configuration

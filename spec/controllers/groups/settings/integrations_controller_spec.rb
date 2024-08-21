@@ -151,6 +151,23 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
         expect { subject }.to change { Integrations::Jira.for_group(group.id).count }.by(-1)
           .and change { Integrations::Jira.inherit_from_id(integration.id).count }.by(-1)
       end
+
+      context 'when integration does not allow manual activation' do
+        let_it_be(:integration) do
+          create(:gitlab_slack_application_integration, :group, group: group,
+            slack_integration: build(:slack_integration)
+          )
+        end
+
+        it 'renders unprocessable_entity' do
+          stub_application_setting(slack_app_enabled: true)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(response.body).to eq({ message: 'Integration cannot be reset.' }.to_json)
+        end
+      end
     end
   end
 end

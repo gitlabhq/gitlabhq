@@ -522,7 +522,7 @@ class Integration < ApplicationRecord
     active && persisted?
   end
 
-  def show_active_box?
+  def manual_activation?
     true
   end
 

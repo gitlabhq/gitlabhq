@@ -467,7 +467,7 @@ describe('app_index.vue', () => {
       });
 
       it('disables the new release button', () => {
-        expect(findNewReleaseButton().attributes('disabled')).toBe('true');
+        expect(findNewReleaseButton().attributes().disabled).toBe('true');
       });
 
       it('sets the correct tooltip text', () => {

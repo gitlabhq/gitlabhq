@@ -47,7 +47,11 @@ export default {
       );
     },
     showResetButton() {
-      return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
+      return (
+        this.isInstanceOrGroupLevel &&
+        this.propsSource.resetPath &&
+        this.propsSource.manualActivation
+      );
     },
     showTestButton() {
       return this.propsSource.canTest;

@@ -28681,6 +28681,9 @@ msgstr ""
 msgid "Integrations|Instance-level integration management"
 msgstr ""
 
+msgid "Integrations|Integration cannot be reset."
+msgstr ""
+
 msgid "Integrations|Integration details"
 msgstr ""
 

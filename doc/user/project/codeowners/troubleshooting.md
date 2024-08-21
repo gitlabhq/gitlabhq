@@ -29,6 +29,8 @@ A Code Owner approval rule is optional if any of these conditions are true:
 
 ## Approvals do not show
 
+The [`CODEOWNERS` file](index.md#codeowners-file) must be present in the target branch before the merge request is created.
+
 Code Owner approval rules only update when the merge request is created.
 If you update the `CODEOWNERS` file, close the merge request and create a new one.
 

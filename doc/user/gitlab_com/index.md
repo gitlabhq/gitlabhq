@@ -287,8 +287,10 @@ GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you
 
 For outgoing connections from CI/CD runners, we are not providing static IP addresses.
 Most GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
-Any IP-based firewall can be configured by looking up
+You can configure any IP-based firewall by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
+MacOS runners are hosted on AWS and have a different IP range.
+For more information, see [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html).
 
 ## Hostname list
 

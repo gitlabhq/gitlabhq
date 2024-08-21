@@ -111,7 +111,7 @@ describe('GlobalSearchSort', () => {
       });
 
       it('sets the UI correctly', () => {
-        expect(findSortDirectionButton().attributes('disabled')).toBe(disabled);
+        expect(findSortDirectionButton().attributes().disabled).toBe(disabled);
         expect(findSortDirectionButton().attributes('title')).toBe(sortUi.tooltip);
         expect(findSortDirectionButton().attributes('icon')).toBe(sortUi.icon);
       });

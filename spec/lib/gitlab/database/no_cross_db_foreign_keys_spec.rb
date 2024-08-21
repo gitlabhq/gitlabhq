@@ -35,12 +35,7 @@ RSpec.describe 'cross-database foreign keys' do
       'subscription_user_add_on_assignments.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
       'subscription_add_on_purchases.subscription_add_on_id',    # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
 
-      'sbom_component_versions.component_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/479140
-      'sbom_occurrences.component_id',
-      'sbom_occurrences.component_version_id',
-      'sbom_occurrences.source_id',
-      'sbom_occurrences.source_package_id',
-      'sbom_occurrences_vulnerabilities.sbom_occurrence_id',
+      'sbom_occurrences_vulnerabilities.sbom_occurrence_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/479142
       'sbom_occurrences_vulnerabilities.vulnerability_id',
 
       'security_findings.scanner_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/479141
@@ -62,7 +57,6 @@ RSpec.describe 'cross-database foreign keys' do
       'vulnerability_occurrence_pipelines.occurrence_id',
       'vulnerability_occurrences.scanner_id',
       'vulnerability_occurrences.primary_identifier_id',
-      'vulnerability_occurrences.vulnerability_id',
       'vulnerability_occurrences.vulnerability_id',
       'vulnerability_reads.vulnerability_id',
       'vulnerability_reads.scanner_id',

@@ -105,6 +105,16 @@ export default {
       required: false,
       default: '',
     },
+    headerText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    addButtonText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -134,8 +144,16 @@ export default {
     shouldShowTokenBody() {
       return this.hasRelatedIssues || this.isFetching;
     },
-    headerText() {
-      return issuablesBlockHeaderTextMap[this.issuableType];
+    headerTextDisplay() {
+      return this.headerText ? this.headerText : issuablesBlockHeaderTextMap[this.issuableType];
+    },
+    addButtonTextDisplay() {
+      if (!this.canAdmin) {
+        return;
+      }
+
+      // eslint-disable-next-line consistent-return
+      return this.addButtonText ? this.addButtonText : __('Add');
     },
     helpLinkText() {
       return issuablesBlockHelpTextMap[this.issuableType];
@@ -200,10 +218,10 @@ export default {
     ref="relatedIssuesWidget"
     is-collapsible
     :is-loading="isFetching"
-    :title="headerText"
+    :title="headerTextDisplay"
     :icon="issuableTypeIcon"
     :count="badgeLabel"
-    :toggle-text="canAdmin ? __('Add') : ''"
+    :toggle-text="addButtonTextDisplay"
     :toggle-aria-label="addIssuableButtonText"
     :help-path="helpPath"
     :help-link-text="helpLinkText"

@@ -15,7 +15,7 @@ prepare-as-if-foss-branch:
     auto_stop_in: 2 weeks
     on_stop: delete-as-if-foss-branch
   before_script:
-    - git clone --single-branch --branch master "${FOSS_REPOSITORY}" gitlab-foss
+    - git clone --single-branch --branch master --depth 1 "${FOSS_REPOSITORY}" gitlab-foss
     - git -C gitlab-foss checkout -b "${AS_IF_FOSS_BRANCH}" master
     - git -C gitlab-foss rev-parse HEAD
     - rm -r .git/

@@ -95,7 +95,7 @@ describe('tags list row', () => {
       ({ digest, disabled, isDisabled }) => {
         mountComponent({ tag: { ...tag, digest }, disabled });
 
-        expect(findCheckbox().attributes('disabled')).toBe(isDisabled);
+        expect(findCheckbox().attributes().disabled).toBe(isDisabled);
       },
     );
 
@@ -398,7 +398,7 @@ describe('tags list row', () => {
             mountComponent({ ...defaultProps, disabled: true });
             await nextTick();
 
-            expect(finderFunction().findComponent(ClipboardButton).attributes('disabled')).toBe(
+            expect(finderFunction().findComponent(ClipboardButton).attributes().disabled).toBe(
               'true',
             );
           });

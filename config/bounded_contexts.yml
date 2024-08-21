@@ -141,7 +141,7 @@ domains:
       - geo_replication
 
   GitlabSubscriptions:
-    description:
+    description: Managing subscription related code for GitLab.com and Self-Managed
     feature_categories:
       - seat_cost_management
       - plan_provisioning

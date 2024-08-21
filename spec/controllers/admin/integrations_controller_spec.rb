@@ -85,12 +85,12 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
     let_it_be(:integration) { create(:jira_integration, :instance) }
     let_it_be(:inheriting_integration) { create(:jira_integration, inherit_from_id: integration.id) }
 
-    subject do
+    subject(:post_reset) do
       post :reset, params: { id: integration.class.to_param }
     end
 
     it 'returns 200 OK', :aggregate_failures do
-      subject
+      post_reset
 
       expected_json = {}.to_json
 
@@ -100,8 +100,25 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
     end
 
     it 'deletes the integration and all inheriting integrations' do
-      expect { subject }.to change { Integrations::Jira.for_instance.count }.by(-1)
+      expect { post_reset }.to change { Integrations::Jira.for_instance.count }.by(-1)
         .and change { Integrations::Jira.inherit_from_id(integration.id).count }.by(-1)
+    end
+
+    context 'when integration does not allow manual activation' do
+      let_it_be(:integration) do
+        create(:gitlab_slack_application_integration, :instance,
+          slack_integration: build(:slack_integration)
+        )
+      end
+
+      it 'renders unprocessable_entity' do
+        stub_application_setting(slack_app_enabled: true)
+
+        post_reset
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to eq({ message: 'Integration cannot be reset.' }.to_json)
+      end
     end
   end
 end

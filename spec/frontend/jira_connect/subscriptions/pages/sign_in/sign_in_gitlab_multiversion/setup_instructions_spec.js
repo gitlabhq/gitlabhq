@@ -63,7 +63,7 @@ describe('SetupInstructions', () => {
       });
 
       it('disables button when not all steps are checked', () => {
-        expect(findNextButton().attributes('disabled')).toBe('true');
+        expect(findNextButton().attributes().disabled).toBe('true');
       });
     });
 

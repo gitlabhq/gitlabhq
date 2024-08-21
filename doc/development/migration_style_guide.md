@@ -415,18 +415,18 @@ are run. It's important to maintain a rough correlation between:
 1. When a migration is added to the GitLab codebase.
 1. The timestamp of the migration itself.
 
-A new migration's timestamp should *never* be before the previous hard stop.
+A new migration's timestamp should *never* be before the previous [required upgrade stop](database/required_stops.md).
 Migrations are occasionally squashed, and if a migration is added whose timestamp
-falls before the previous hard stop, a problem like what happened in
+falls before the previous required stop, a problem like what happened in
 [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) can occur.
 
 For example, if we are currently developing against GitLab 16.0, the previous
-hard stop is 15.11. 15.11 was released on April 23rd, 2023. Therefore, the
+required stop is 15.11. 15.11 was released on April 23rd, 2023. Therefore, the
 minimum acceptable timestamp would be 20230424000000.
 
 #### Best practice
 
-While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last hard stop.
+While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last required stop.
 
 To update a migration timestamp:
 

@@ -15,7 +15,7 @@ RSpec.shared_examples 'integration settings form' do
         navigate_to_integration(integration)
 
         within_testid 'integration-settings-form' do
-          if integration.show_active_box?
+          if integration.manual_activation?
             expect(page).to have_field('Active', type: 'checkbox', wait: 0),
               "#{integration.title} active field not present #{page}"
           end

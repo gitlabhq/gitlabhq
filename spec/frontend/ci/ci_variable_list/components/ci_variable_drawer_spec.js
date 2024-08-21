@@ -194,7 +194,7 @@ describe('CI Variable Drawer', () => {
         });
 
         expect(findEnvironmentScopeDropdown().exists()).toBe(false);
-        expect(findDisabledEnvironmentScopeDropdown().attributes('readonly')).toBe('readonly');
+        expect(findDisabledEnvironmentScopeDropdown().attributes('readonly')).toBeDefined();
       });
     });
 
@@ -371,7 +371,7 @@ describe('CI Variable Drawer', () => {
 
           await nextTick();
 
-          expect(findConfirmBtn().attributes('disabled')).toBe(submitButtonDisabledState);
+          expect(findConfirmBtn().attributes().disabled).toBe(submitButtonDisabledState);
           expect(wrapper.text()).toContain(feedbackMessage);
         });
       });

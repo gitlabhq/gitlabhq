@@ -30,7 +30,7 @@ describe('RunnerBulkDeleteCheckbox', () => {
 
   const expectCheckboxToBe = (state) => {
     const expected = stateToAttrs[state];
-    expect(findCheckbox().attributes('disabled')).toBe(expected.disabled);
+    expect(findCheckbox().attributes().disabled).toBe(expected.disabled);
     expect(findCheckbox().attributes('checked')).toBe(expected.checked);
     expect(findCheckbox().attributes('indeterminate')).toBe(expected.indeterminate);
   };

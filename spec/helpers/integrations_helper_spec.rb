@@ -57,7 +57,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
         :id,
         :project_id,
         :group_id,
-        :show_active,
+        :manual_activation,
         :activated,
         :activate_disabled,
         :type,
