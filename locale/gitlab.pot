@@ -19806,6 +19806,12 @@ msgstr ""
 msgid "DuoCodeReview|I have encountered some issues while I was reviewing. Please try again later."
 msgstr ""
 
+msgid "DuoEnterpriseTrial|Activate my trial"
+msgstr ""
+
+msgid "DuoEnterpriseTrial|Apply your GitLab Duo Enterprise trial to an existing group"
+msgstr ""
+
 msgid "DuoEnterpriseTrial|Congratulations, your free GitLab Duo Enterprise trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
@@ -19834,6 +19840,9 @@ msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial"
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial on %{group_name}"
+msgstr ""
+
+msgid "DuoEnterpriseTrial|Start your free GitLab Duo Pro trial"
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hosted model deployment"

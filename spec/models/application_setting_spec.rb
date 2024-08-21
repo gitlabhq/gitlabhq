@@ -42,6 +42,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.group_shared_groups_api_limit).to eq(60) }
     it { expect(setting.groups_api_limit).to eq(200) }
     it { expect(setting.project_api_limit).to eq(400) }
+    it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
     it { expect(setting.receptive_cluster_agents_enabled).to eq(false) }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }

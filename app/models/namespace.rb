@@ -362,6 +362,10 @@ class Namespace < ApplicationRecord
     ensure
       Gitlab::SafeRequestStore[:require_organization] = current_value
     end
+
+    def username_reserved?(username)
+      without_project_namespaces.where(parent_id: nil).find_by_path_or_name(username).present?
+    end
   end
 
   def to_reference_base(from = nil, full: false, absolute_path: false)

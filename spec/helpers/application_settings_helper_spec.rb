@@ -70,6 +70,7 @@ RSpec.describe ApplicationSettingsHelper do
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
           group_shared_groups_api_limit
           group_invited_groups_api_limit
+          project_invited_groups_api_limit
         ])
     end
 

@@ -286,6 +286,7 @@ module ApplicationSettingImplementation
         group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
         project_api_limit: 400,
+        project_invited_groups_api_limit: 60,
         projects_api_limit: 2000,
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,

@@ -2105,6 +2105,41 @@ Example response:
 }
 ```
 
+## List a project's invited groups
+
+Get a list of invited groups in the given project. When accessed without authentication, only public invited groups are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited) |
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+```plaintext
+GET /projects/:id/invited_groups
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 35,
+    "web_url": "https://gitlab.example.com/groups/twitter",
+    "name": "Twitter",
+    "avatar_url": null,
+    "full_name": "Twitter",
+    "full_path": "twitter"
+  }
+]
+```
+
 ## Unstar a project
 
 Unstars a given project. Returns status code `304` if the project is not starred.

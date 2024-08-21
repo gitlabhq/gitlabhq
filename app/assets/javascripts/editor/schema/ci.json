@@ -259,6 +259,10 @@
           "markdownDescription": "Reports will be uploaded as artifacts, and often displayed in the Gitlab UI, such as in merge requests. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsreports).",
           "additionalProperties": false,
           "properties": {
+            "annotations": {
+              "type": "string",
+              "description": "Path to JSON file with annotations report."
+            },
             "junit": {
               "description": "Path for file(s) that should be parsed as JUnit XML result",
               "oneOf": [

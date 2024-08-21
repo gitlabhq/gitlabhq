@@ -513,6 +513,7 @@ module ApplicationSettingsHelper
       :group_projects_api_limit,
       :groups_api_limit,
       :project_api_limit,
+      :project_invited_groups_api_limit,
       :projects_api_limit,
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,

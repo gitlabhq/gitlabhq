@@ -237,8 +237,25 @@ module Gitlab
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
-      rescue GRPC::FailedPrecondition => e
-        raise Gitlab::Git::CommitError, e
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :reference_update
+          # Historically UserFFBranch returned a successful response with a missing BranchUpdate if
+          # updating the reference failed. The RPC has been updated to return a bad status when the
+          # reference update fails. Match the previous behavior until call sites have been adapted.
+          nil
+        else
+          if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
+            raise Gitlab::Git::CommitError, e
+          end
+
+          raise
+        end
       end
 
       # rubocop:disable Metrics/ParameterLists

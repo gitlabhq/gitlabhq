@@ -894,6 +894,27 @@ module API
         present_groups groups
       end
 
+      desc 'Get a list of invited groups in this project' do
+        success Entities::Group
+        is_array true
+        tags %w[projects]
+      end
+      params do
+        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Filter by group relation'
+        optional :search, type: String, desc: 'Search for a specific group'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+
+        use :pagination
+        use :with_custom_attributes
+      end
+      get ':id/invited_groups', feature_category: :groups_and_projects do
+        check_rate_limit_by_user_or_ip!(:project_invited_groups_api)
+
+        project = find_project!(params[:id])
+        groups = ::Namespaces::Projects::InvitedGroupsFinder.new(project, current_user, declared_params).execute
+        present_groups groups
+      end
+
       desc 'Start the housekeeping task for a project' do
         detail 'This feature was introduced in GitLab 9.0.'
         success code: 201

@@ -63,16 +63,18 @@ RSpec.describe Namespaces::Groups::InvitedGroupsFinder, feature_category: :group
       let(:new_group) { create(:group) }
       let(:direct_group) { create(:group) }
       let(:sub_group) { create(:group, parent: new_group) }
+      let(:direct_group_2) { create(:group) }
 
       before do
         create(:group_group_link, shared_group: new_group, shared_with_group: direct_group)
         create(:group_group_link, shared_group: new_group, shared_with_group: sub_group)
+        create(:group_group_link, shared_group: sub_group, shared_with_group: direct_group_2)
       end
 
       subject(:results) { described_class.new(new_group, current_user, params).execute }
 
       context 'when relation is direct' do
-        let(:params) { { relation: "direct" } }
+        let(:params) { { relation: ["direct"] } }
 
         it 'returns only direct invited groups' do
           expect(results).to contain_exactly(direct_group, sub_group)
@@ -80,7 +82,7 @@ RSpec.describe Namespaces::Groups::InvitedGroupsFinder, feature_category: :group
       end
 
       context 'when no inherited relation is present' do
-        let(:params) { { relation: "inherited" } }
+        let(:params) { { relation: ["inherited"] } }
 
         it 'returns no invited groups' do
           expect(results).to be_empty
@@ -88,12 +90,22 @@ RSpec.describe Namespaces::Groups::InvitedGroupsFinder, feature_category: :group
       end
 
       context 'when inherited relation is present with respect to sub group' do
-        let(:params) { { relation: "inherited" } }
+        let(:params) { { relation: %w[inherited] } }
 
         subject(:results) { described_class.new(sub_group, current_user, params).execute }
 
-        it 'returns no invited groups' do
+        it 'returns invited groups' do
           expect(results).to contain_exactly(sub_group, direct_group)
+        end
+      end
+
+      context 'when direct and inherited relation is present with respect to sub group' do
+        let(:params) { { relation: %w[inherited direct] } }
+
+        subject(:results) { described_class.new(sub_group, current_user, params).execute }
+
+        it 'returns all invited groups' do
+          expect(results).to contain_exactly(sub_group, direct_group, direct_group_2)
         end
       end
     end

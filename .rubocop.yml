@@ -538,6 +538,7 @@ Gitlab/RSpec/AvoidSetup:
     - 'ee/spec/features/registrations/saas/**/*'
     - 'ee/spec/features/trials/saas/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
+    - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/**/*'
 
 RSpec/DuplicateSpecLocation:
   Enabled: true

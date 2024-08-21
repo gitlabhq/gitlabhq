@@ -376,7 +376,7 @@ module API
         tags %w[groups]
       end
       params do
-        optional :relation, type: String, values: %w[direct inherited], desc: 'Include group relations'
+        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Include group relations'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
 
@@ -384,12 +384,10 @@ module API
         use :with_custom_attributes
       end
       get ":id/invited_groups", feature_category: :groups_and_projects do
-        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
-          check_rate_limit_by_user_or_ip!(:group_invited_groups_api)
-        end
+        check_rate_limit_by_user_or_ip!(:group_invited_groups_api)
 
         group = find_group!(params[:id])
-        groups = ::Namespaces::Groups::InvitedGroupsFinder.new(group, current_user, declared(params)).execute
+        groups = ::Namespaces::Groups::InvitedGroupsFinder.new(group, current_user, declared_params).execute
         present_groups params, groups
       end
 

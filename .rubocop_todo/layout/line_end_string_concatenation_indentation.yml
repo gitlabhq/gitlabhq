@@ -134,7 +134,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/components/namespaces/storage/user_pre_enforcement_alert_component.rb'
     - 'ee/app/controllers/concerns/insights_actions.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
-    - 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'
     - 'ee/app/graphql/ee/mutations/ci/project_ci_cd_settings_update.rb'
     - 'ee/app/graphql/ee/mutations/issues/create.rb'

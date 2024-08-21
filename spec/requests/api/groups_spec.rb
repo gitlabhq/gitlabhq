@@ -2231,18 +2231,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api(path)
-      end
-    end
-
     context 'when authenticated as user' do
       it 'returns the invited groups in the group', :aggregate_failures do
         expect_log_keys(caller_id: "GET /api/:version/groups/:id/invited_groups",
@@ -2354,7 +2342,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it 'filters the invited groups in the group based on relation params', :aggregate_failures do
-        get api("/groups/#{relation_main_group.id}/invited_groups", user1), params: { relation: 'direct' }
+        get api("/groups/#{relation_main_group.id}/invited_groups", user1), params: { relation: ['direct'] }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2363,7 +2351,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it 'returns error message when include relation is invalid' do
-        get api("/groups/#{relation_main_group.id}/invited_groups", user1), params: { relation: 'some random' }
+        get api("/groups/#{relation_main_group.id}/invited_groups", user1), params: { relation: ['some random'] }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq("relation does not have a valid value")

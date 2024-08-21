@@ -76,3 +76,8 @@ artifacts-access-all:
 artifacts-access-invalid-value:
   artifacts:
     access: random
+
+annotations-report-annotations-not-string:
+  artifacts:
+    reports:
+      annotations: 1

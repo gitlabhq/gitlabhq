@@ -518,12 +518,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
     let(:response) { Gitaly::UserFFBranchResponse.new(branch_update: branch_update) }
 
-    before do
-      expect_any_instance_of(Gitaly::OperationService::Stub)
-        .to receive(:user_ff_branch).with(request, kind_of(Hash))
-        .and_return(response)
-    end
-
     subject do
       client.user_ff_branch(user,
         source_sha: source_sha,
@@ -532,30 +526,109 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       )
     end
 
-    it 'sends a user_ff_branch message and returns a BranchUpdate object' do
-      expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
-      expect(subject.newrev).to eq(source_sha)
-      expect(subject.repo_created).to be(false)
-      expect(subject.branch_created).to be(false)
-    end
-
-    context 'when the response has no branch_update' do
-      let(:response) { Gitaly::UserFFBranchResponse.new }
-
-      it { expect(subject).to be_nil }
-    end
-
-    context "when the pre-receive hook fails" do
-      let(:response) do
-        Gitaly::UserFFBranchResponse.new(
-          branch_update: nil,
-          pre_receive_error: "pre-receive hook error message\n"
-        )
+    context 'with response' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_ff_branch).with(request, kind_of(Hash))
+          .and_return(response)
       end
 
-      it "raises the error" do
-        # the PreReceiveError class strips the GL-HOOK-ERR prefix from this error
-        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "pre-receive hook failed.")
+      it 'sends a user_ff_branch message and returns a BranchUpdate object' do
+        expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+        expect(subject.newrev).to eq(source_sha)
+        expect(subject.repo_created).to be(false)
+        expect(subject.branch_created).to be(false)
+      end
+
+      context 'when the response has no branch_update' do
+        let(:response) { Gitaly::UserFFBranchResponse.new }
+
+        it { expect(subject).to be_nil }
+      end
+
+      context "when the pre-receive hook fails" do
+        let(:response) do
+          Gitaly::UserFFBranchResponse.new(
+            branch_update: nil,
+            pre_receive_error: "pre-receive hook error message\n"
+          )
+        end
+
+        it "raises the error" do
+          # the PreReceiveError class strips the GL-HOOK-ERR prefix from this error
+          expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "pre-receive hook failed.")
+        end
+      end
+    end
+
+    context 'with exception' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_ff_branch).with(request, kind_of(Hash))
+          .and_raise(exception)
+      end
+
+      context 'with CustomHookError' do
+        let(:exception) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            "custom hook error",
+            Gitaly::UserFFBranchError.new(
+              custom_hook: Gitaly::CustomHookError.new(
+                stdout: "some stdout",
+                stderr: "GitLab: some custom hook error message",
+                hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+              )))
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq("some custom hook error message")
+          end
+        end
+      end
+
+      context 'with ReferenceUpdateError' do
+        let(:exception) do
+          new_detailed_error(GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+            "some ignored error message",
+            Gitaly::UserFFBranchError.new(reference_update: Gitaly::ReferenceUpdateError.new))
+        end
+
+        it 'returns nil' do
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'with FailedPrecondition' do
+        let(:exception) do
+          GRPC::FailedPrecondition.new('failed precondition error')
+        end
+
+        it 'returns CommitError' do
+          expect { subject }.to raise_error(Gitlab::Git::CommitError, exception.message)
+        end
+      end
+
+      context 'with a bad status' do
+        let(:exception) do
+          GRPC::Internal.new('internal error')
+        end
+
+        it 'raises the exception' do
+          expect { subject }.to raise_error(GRPC::Internal, exception.message)
+        end
+      end
+
+      context 'with unhandled exception' do
+        let(:exception) do
+          RuntimeError.new('unhandled exception')
+        end
+
+        it 'raises the exception' do
+          expect { subject }.to raise_error(RuntimeError, exception.message)
+        end
       end
     end
   end
