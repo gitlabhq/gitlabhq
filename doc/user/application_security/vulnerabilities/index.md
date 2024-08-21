@@ -127,9 +127,9 @@ To resolve the vulnerability:
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.
 
-### Availability
+### Limitations of Vulnerability Resolution
 
-Vulnerability Resolution is available for a subset of the SAST rules that we cover. We are continually testing and adding more rules to this feature.
+Vulnerability Resolution is enabled for the following list of vulnerability classes. If you see that the button is disabled, that means that the CWE is not part of the supported list at this time. We are actively testing and expanding coverage for Vulnerability Resolution to more classes of vulnerabilities. 
 
 <br><br>
 <details><summary style="color:#5943b6"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>

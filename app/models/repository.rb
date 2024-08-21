@@ -1110,6 +1110,10 @@ class Repository
     blob_data_at(sha, '.lfsconfig')
   end
 
+  def has_gitattributes?
+    blob_data_at('HEAD', '.gitattributes').present?
+  end
+
   def changelog_config(ref, path)
     blob_data_at(ref, path)
   end

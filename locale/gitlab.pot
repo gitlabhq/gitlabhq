@@ -40293,6 +40293,9 @@ msgstr ""
 msgid "Port"
 msgstr ""
 
+msgid "Possible LFS configuration issue. This project contains LFS objects but there is no .gitattributes file. You can ignore this message if you recently added a `.gitattributes` file."
+msgstr ""
+
 msgid "Possible to override in each project."
 msgstr ""
 

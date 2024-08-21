@@ -875,6 +875,54 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#show_lfs_misconfiguration_banner?' do
+    before do
+      allow(project).to receive(:lfs_enabled?).and_return(true)
+    end
+
+    subject { helper.show_lfs_misconfiguration_banner?(project) }
+
+    it { is_expected.to be_falsey }
+
+    context 'when the project contains an lfs_object' do
+      before do
+        create(:lfs_objects_project, project: project)
+      end
+
+      context 'when it does not have a .gitattributes file' do
+        before do
+          allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+        end
+
+        it { is_expected.to be_truthy }
+
+        context 'when lfs is not enabled' do
+          before do
+            allow(project).to receive(:lfs_enabled?).and_return(false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when lfs_misconfiguration_banner feature flag is disabled' do
+          before do
+            stub_feature_flags(lfs_misconfiguration_banner: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'when it does have a .gitattributes file' do
+        before do
+          allow(project.repository).to receive(:has_gitattributes?).and_return(true)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#project_title' do
     subject { helper.project_title(project) }
 

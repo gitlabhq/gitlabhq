@@ -60,8 +60,9 @@ export default {
     onDragStart(handle, event) {
       const { image } = this.$refs;
       const computedStyle = window.getComputedStyle(image);
-      const width = parseInt(image.getAttribute('width') || computedStyle.width, 10);
-      const height = parseInt(image.getAttribute('height') || computedStyle.height, 10);
+      const width = parseInt(image.getAttribute('width'), 10) || parseInt(computedStyle.width, 10);
+      const height =
+        parseInt(image.getAttribute('height'), 10) || parseInt(computedStyle.height, 10);
 
       this.dragData = {
         handle,

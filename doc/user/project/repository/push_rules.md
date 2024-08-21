@@ -291,7 +291,7 @@ to use them as standard characters in a match condition.
 - [Signing commits with SSH](signed_commits/ssh.md)
 - [Signing commits with X.509](signed_commits/x509.md)
 - [Protected branches](../protected_branches.md)
-- [Client-side secret detection](../../application_security/secret_detection/client/index.md)
+- [Secret detection](../../application_security/secret_detection/index.md)
 
 ## Troubleshooting
 

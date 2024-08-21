@@ -716,6 +716,33 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#has_gitattributes?' do
+    let(:project) { create(:project, :repository) }
+
+    subject { repository.has_gitattributes? }
+
+    context 'when there is a .gitattributes file' do
+      before do
+        create_file_in_repo(project, 'master', 'master', '.gitattributes', 'some contents')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when there is not a .gitattributes file' do
+      before do
+        repository.delete_file(
+          project.creator,
+          '.gitattributes',
+          message: "Remove .gitattributes",
+          branch_name: project.default_branch_or_main
+        )
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#merged_to_root_ref?' do
     let_it_be(:project) { create(:project, :repository) }
 

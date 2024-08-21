@@ -68,9 +68,33 @@ GitLab 16.8.
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
-### User accounts
+### User contributions and membership mapping
 
-To ensure GitLab maps users and their contributions correctly:
+> - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
+> - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
+
+Users are never created during a migration. Instead, contributions and membership of users on the source instance are
+mapped to users on the destination instance. The type of mapping of a user's membership depends on the
+[membership type](../../../user/project/members/index.md#membership-types) on source instance:
+
+- Direct memberships are mapped as direct memberships on the destination instance.
+- Inherited memberships are mapped as inherited memberships on the destination instance.
+- Shared memberships are mapped as direct memberships on the destination instance unless the user has an existing shared
+  membership. Full support for mapping shared memberships is proposed in
+  [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
+
+When mapping [inherited and shared](../../../user/project/members/index.md#membership-types) memberships, if the user
+has an existing membership in the destination namespace with a [higher role](../../../user/permissions.md#roles) than
+the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
+elevated permissions.
+
+NOTE:
+There is a [known issue](index.md#known-issues) affecting the mapping of shared memberships.
+
+#### Configure users on destination instance
+
+To ensure GitLab maps users and their contributions correctly between the source and destination instances:
 
 1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
    administrator access. When migrating to GitLab.com or a self-managed GitLab instance you can:

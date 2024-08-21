@@ -403,6 +403,16 @@ module ProjectsHelper
       project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
+  def show_lfs_misconfiguration_banner?(project)
+    return false unless Feature.enabled?(:lfs_misconfiguration_banner)
+    return false unless project.repository
+    return false unless project.lfs_enabled?
+
+    Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
+      project.lfs_objects.any? && !project.repository.has_gitattributes?
+    end
+  end
+
   def project_permissions_panel_data(project)
     {
       packagesAvailable: ::Gitlab.config.packages.enabled,

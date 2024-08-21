@@ -12,4 +12,5 @@
       = render 'shared/auto_devops_callout'
     = render_if_exists 'projects/above_size_limit_warning', project: project
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project
-    = render_if_exists 'projects/terraform_banner', project: project
+    = render 'projects/terraform_banner', project: project
+    = render 'projects/lfs_misconfiguration_banner', project: project

@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       value_type: 'string',
       status: 'active',
       milestone: '14.1',
+      introduced_by_url: 'http://gdk.test',
       key_path: 'uuid',
       product_group: 'product_analytics',
       time_frame: 'none',
