@@ -3094,7 +3094,6 @@ RSpec/NamedSubject:
     - 'spec/services/files/create_service_spec.rb'
     - 'spec/services/files/delete_service_spec.rb'
     - 'spec/services/files/multi_service_spec.rb'
-    - 'spec/services/files/update_service_spec.rb'
     - 'spec/services/git/base_hooks_service_spec.rb'
     - 'spec/services/git/branch_hooks_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'

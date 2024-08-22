@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillDeployTokensShardingKey, feature_category: :continuous_delivery do
+RSpec.describe RequeueBackfillDeployTokensShardingKey, feature_category: :continuous_delivery do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

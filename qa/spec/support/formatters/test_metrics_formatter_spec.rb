@@ -534,21 +534,50 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         freeze_time { example.run }
       end
 
-      it "creates correct json files and uploads metrics to gcs" do
-        run_spec
+      context "with test running in parallel enabled" do
+        before do
+          stub_env('QA_PARALLEL_RUN', 'true')
+        end
 
-        expect(gcs_client).to have_received(:put_object).with(
-          metrics_gcs_bucket_name,
-          /test-metrics-\S+\.json/,
-          [test_data].to_json,
-          **gcs_client_options
-        )
-        expect(gcs_client).to have_received(:put_object).with(
-          metrics_gcs_bucket_name,
-          /fabrication-metrics-\S+\.json/,
-          [fabrication_data].to_json,
-          **gcs_client_options
-        )
+        it "creates correct json files and uploads metrics to gcs" do
+          run_spec
+
+          expect(gcs_client).to have_received(:put_object).with(
+            metrics_gcs_bucket_name,
+            /test-metrics-\S+-#{Process.pid}-\S+\.json/,
+            [test_data].to_json,
+            **gcs_client_options
+          )
+          expect(gcs_client).to have_received(:put_object).with(
+            metrics_gcs_bucket_name,
+            /fabrication-metrics-\S+-#{Process.pid}-\S+\.json/,
+            [fabrication_data].to_json,
+            **gcs_client_options
+          )
+        end
+      end
+
+      context "without test running in parallel enabled" do
+        before do
+          stub_env('QA_PARALLEL_RUN', 'false')
+        end
+
+        it "creates correct json files and uploads metrics to gcs" do
+          run_spec
+
+          expect(gcs_client).to have_received(:put_object).with(
+            metrics_gcs_bucket_name,
+            /test-metrics-\S+\.json/,
+            [test_data].to_json,
+            **gcs_client_options
+          )
+          expect(gcs_client).to have_received(:put_object).with(
+            metrics_gcs_bucket_name,
+            /fabrication-metrics-\S+\.json/,
+            [fabrication_data].to_json,
+            **gcs_client_options
+          )
+        end
       end
     end
 

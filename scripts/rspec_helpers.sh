@@ -303,10 +303,10 @@ function run_e2e_specs() {
   local tests=$2
   local tags=$3
 
-  export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $url -- $tests $tags --order random --force-color --format documentation --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-\${QA_RSPEC_RETRIED:-false}.json"
+  export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $url -- $tests $tags --order random --force-color --format documentation"
   echo "Running e2e specs via command: '$QA_COMMAND'"
 
-  if eval "$QA_COMMAND --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"; then
+  if eval "$QA_COMMAND"; then
     echo "Test run finished successfully"
   else
     retry_failed_e2e_rspec_examples
@@ -331,23 +331,45 @@ function retry_failed_e2e_rspec_examples() {
 
   local junit_retry_file="tmp/retried-rspec-${CI_JOB_ID}.xml"
 
+  local INITIAL_STATUS_QA_PARALLEL_RUN="${QA_PARALLEL_RUN}"
+
   export QA_RSPEC_RETRIED="true"
   export NO_KNAPSACK="true"
+  export QA_PARALLEL_RUN="false"
 
   echoinfo "Initial test run failed, retrying tests in new process" "yes"
 
-  if eval "$QA_COMMAND --format RspecJunitFormatter --out ${junit_retry_file} --only-failures"; then
+  if eval "$QA_COMMAND --only-failures"; then
     echosuccess "Retry run finished successfully" "yes"
   else
     rspec_run_status=$?
     echoerr "Retry run did not finish successfully, job will be failed!" "yes"
   fi
 
-  echoinfo "Merging junit reports" "yes"
-  bundle exec junit_merge ${junit_retry_file} tmp/rspec-${CI_JOB_ID}.xml --update-only
+  if [[ "${INITIAL_STATUS_QA_PARALLEL_RUN}" == "true" ]]; then
+    echoinfo "Merging junit parallel reports" "yes"
+    handle_junit_report_parallel
+  else
+    echoinfo "Merging junit reports" "yes"
+    bundle exec junit_merge tmp/rspec-*-retried-false.xml
+    mv tmp/rspec-*-retried-false.xml "tmp/rspec-${CI_JOB_ID}.xml"
+    bundle exec junit_merge tmp/rspec-*-retried-true.xml tmp/rspec-${CI_JOB_ID}.xml --update-only
+  fi
+
   echosuccess " junit results merged successfully!"
 
   exit $rspec_run_status
+}
+
+
+function handle_junit_report_parallel() {
+  local junit_retry_file=$(ls tmp/rspec-*-retried-true.xml)
+
+  bundle exec junit_merge tmp/rspec-*-retried-false*.xml
+  mv "$(ls tmp/rspec-*-retried-false*.xml | tail -n 1)" "tmp/rspec-${CI_JOB_ID}.xml"
+  rm tmp/rspec-*-retried-false*.xml
+
+  bundle exec junit_merge --update-only $junit_retry_file "tmp/rspec-${CI_JOB_ID}.xml"
 }
 
 function retry_failed_rspec_examples() {

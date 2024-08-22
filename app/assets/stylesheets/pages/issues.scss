@@ -237,7 +237,6 @@ ul.related-merge-requests > li gl-emoji {
   right: var(--application-bar-right);
   width: auto;
   top: $calc-application-header-height;
-  max-width: calc(100vw - var(--application-bar-left));
 }
 
 .limit-container-width {

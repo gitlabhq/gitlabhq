@@ -5,7 +5,7 @@ module ExportCsv
     # Target attachment size before base64 encoding
     TARGET_FILESIZE = 15.megabytes
 
-    def initialize(relation, resource_parent, fields = [])
+    def initialize(relation, resource_parent = nil, fields = [])
       @objects = relation
       @resource_parent = resource_parent
       @fields = fields

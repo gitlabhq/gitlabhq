@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continuous_integration do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :pipeline_composition do
   include Ci::PipelineMessageHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -110,26 +110,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
       expect(pipeline).not_to be_persisted
       expect(pipeline).to be_failed
       expect(pipeline).to be_filtered_by_rules
-    end
-
-    context 'when there are pipeline_execution_policies' do
-      let(:policy_pipeline) { create(:ci_pipeline, project: project, user: user) }
-      let(:command) do
-        Gitlab::Ci::Pipeline::Chain::Command.new(
-          project: project,
-          current_user: user,
-          origin_ref: 'master',
-          pipeline_execution_policies: [policy_pipeline],
-          seeds_block: nil)
-      end
-
-      it 'does not break the chain' do
-        expect(step.break?).to be false
-      end
-
-      it 'does not append an error' do
-        expect(pipeline.errors).to be_empty
-      end
     end
   end
 

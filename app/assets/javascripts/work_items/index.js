@@ -32,6 +32,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     hasIssueWeightsFeature,
     iid,
     issuesListPath,
+    epicsListPath,
     labelsManagePath,
     registerPath,
     signInPath,
@@ -77,7 +78,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       hasSubepicsFeature: parseBoolean(hasSubepicsFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
-      issuesListPath,
+      // TODO: remove `epicsListPath` with https://gitlab.com/gitlab-org/gitlab/-/issues/473073
+      issuesListPath: epicsListPath || issuesListPath,
       labelsManagePath,
       registerPath,
       signInPath,

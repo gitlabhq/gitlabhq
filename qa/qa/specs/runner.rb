@@ -47,18 +47,39 @@ module QA
       end
 
       def perform
-        args = []
-        args.push('--tty') if tty
-        args.push(rspec_tags)
-        args.push(options)
+        args = build_initial_args
+        configure_rspec_formatters!(args)
+        args.push(DEFAULT_TEST_PATH_ARGS) unless custom_test_paths?
 
-        unless Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
-          args.push(DEFAULT_TEST_PATH_ARGS)
+        run_rspec(args)
+      end
+
+      private
+
+      def build_initial_args
+        [].tap do |args|
+          args.push('--tty') if tty
+          args.push(rspec_tags)
+          args.push(options)
         end
+      end
 
+      def custom_test_paths?
+        Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
+      end
+
+      def configure_rspec_formatters!(args)
+        if Runtime::Env.parallel_run?
+          use_parallel_formatter!(args)
+        else
+          use_default_formatter!(args)
+        end
+      end
+
+      def run_rspec(args)
         if Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten) { |status| abort if status.nonzero? }
-        elsif Runtime::Scenario.attributes[:parallel]
+          KnapsackRunner.run(args.flatten, parallel: false) { |status| abort if status.nonzero? }
+        elsif parallel_execution?
           ParallelRunner.run(args.flatten)
         elsif Runtime::Scenario.attributes[:loop]
           LoopRunner.run(args.flatten)
@@ -71,7 +92,37 @@ module QA
         end
       end
 
-      private
+      def parallel_execution?
+        !Runtime::Env.rspec_retried? && Runtime::Env.parallel_run?
+      end
+
+      def use_default_formatter!(args)
+        filename = "tmp/rspec-#{ENV['CI_JOB_ID']}-retried-#{Runtime::Env.rspec_retried?}"
+
+        { "QA::Support::JsonFormatter" => "json", "RspecJunitFormatter" => "xml" }.each do |formatter, extension|
+          next if args.flatten.include?(formatter)
+
+          args.push("--format", formatter, "--out", "#{filename}.#{extension}")
+        end
+      end
+
+      def use_parallel_formatter!(args)
+        return unless Runtime::Env.running_in_ci?
+
+        retried_state = Runtime::Env.rspec_retried?
+
+        filename = if Runtime::Env.rspec_retried?
+                     "tmp/rspec-#{ENV['CI_JOB_ID']}-retried-#{retried_state}"
+                   else
+                     "tmp/rspec-#{ENV['CI_JOB_ID']}-retried-#{retried_state}-$TEST_ENV_NUMBER"
+                   end
+
+        { "QA::Support::JsonFormatter" => "json", "RspecJunitFormatter" => "xml" }.each do |formatter, extension|
+          next if args.flatten.include?(formatter)
+
+          args.push("--format", formatter, "--out", "#{filename}.#{extension}")
+        end
+      end
 
       def count_examples_only(args)
         args.unshift('--dry-run')

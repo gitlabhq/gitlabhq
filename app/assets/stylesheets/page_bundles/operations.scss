@@ -45,12 +45,6 @@
     }
   }
 
-  &-header {
-    &-failed {
-      background-color: var(--red-100, $red-100);
-    }
-  }
-
   &-skeleton-info {
     border-radius: $gl-padding;
     height: $gl-padding;

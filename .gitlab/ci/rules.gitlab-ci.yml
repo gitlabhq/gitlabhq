@@ -1758,6 +1758,7 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         COVERBAND_ENABLED: "true"
+        QA_PARALLEL_RUN: "false"
 
 .qa:rules:e2e:test-on-cng:
   rules:

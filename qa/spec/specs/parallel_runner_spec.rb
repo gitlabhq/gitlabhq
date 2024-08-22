@@ -1,58 +1,67 @@
 # frozen_string_literal: true
 
+require 'etc'
+
 RSpec.describe QA::Specs::ParallelRunner do
   include QA::Support::Helpers::StubEnv
 
+  subject(:runner) { described_class }
+
+  let(:parallel_tests) { instance_double(ParallelTests::CLI, run: nil) }
+
   before do
-    allow(QA::Runtime::Scenario).to receive(:attributes).and_return(parallel: true)
-    stub_env('GITLAB_QA_ACCESS_TOKEN', 'skip_token_creation')
+    allow(ParallelTests::CLI).to receive(:new).and_return(parallel_tests)
+    allow(Etc).to receive(:nprocessors).and_return(8)
+    allow(ENV).to receive(:store)
+
+    allow(QA::Runtime::Browser).to receive(:configure!)
+    allow(QA::Runtime::Release).to receive(:perform_before_hooks)
+
+    stub_env("QA_GITLAB_URL", "http://127.0.0.1:3000")
+    stub_env("QA_PARALLEL_PROCESSES", "8")
   end
 
-  it 'passes args to parallel_tests' do
-    expect_cli_arguments(['--tag', '~orchestrated', *QA::Specs::Runner::DEFAULT_TEST_PATH_ARGS])
+  it "runs cli without additional rspec args" do
+    runner.run([])
 
-    subject.run(['--tag', '~orchestrated', *QA::Specs::Runner::DEFAULT_TEST_PATH_ARGS])
+    expect(parallel_tests).to have_received(:run).with([
+      "--type", "rspec",
+      "-n", "8",
+      "--serialize-stdout",
+      "--first-is-1",
+      "--combine-stderr"
+    ])
   end
 
-  it 'passes a given test path to parallel_tests and adds a separator' do
-    expect_cli_arguments(%w[-- qa/specs/features/foo])
+  it "runs cli with additional rspec args" do
+    runner.run(["--force-color", "qa/specs/features/api"])
 
-    subject.run(%w[qa/specs/features/foo])
+    expect(parallel_tests).to have_received(:run).with([
+      "--type", "rspec",
+      "-n", "8",
+      "--serialize-stdout",
+      "--first-is-1",
+      "--combine-stderr",
+      "--", "--force-color",
+      "--", "qa/specs/features/api"
+    ])
   end
 
-  it 'passes tags and test paths to parallel_tests and adds a separator' do
-    expect_cli_arguments(%w[--tag smoke -- qa/specs/features/foo qa/specs/features/bar])
+  context "with QA_GITLAB_URL not set" do
+    before do
+      stub_env("QA_GITLAB_URL", nil)
 
-    subject.run(%w[--tag smoke qa/specs/features/foo qa/specs/features/bar])
-  end
-
-  it 'passes tags and test paths with separators to parallel_tests' do
-    expect_cli_arguments(%w[-- --tag smoke -- qa/specs/features/foo qa/specs/features/bar])
-
-    subject.run(%w[-- --tag smoke -- qa/specs/features/foo qa/specs/features/bar])
-  end
-
-  it 'passes supported environment variables' do
-    # Test only env vars starting with GITLAB because some of the others
-    # affect how the runner behaves, and we're not concerned with those
-    # behaviors in this test
-    gitlab_env_vars = QA::Runtime::Env::ENV_VARIABLES.reject { |v| !v.start_with?('GITLAB') }
-
-    gitlab_env_vars.each do |k, v|
-      stub_env(k, v)
+      QA::Support::GitlabAddress.instance_variable_set(:@initialized, nil)
     end
 
-    gitlab_env_vars['QA_RUNTIME_SCENARIO_ATTRIBUTES'] = '{"parallel":true}'
+    after do
+      QA::Support::GitlabAddress.instance_variable_set(:@initialized, nil)
+    end
 
-    expect_cli_arguments([], gitlab_env_vars)
+    it "sets QA_GITLAB_URL variable for subprocess" do
+      runner.run([])
 
-    subject.run([])
-  end
-
-  def expect_cli_arguments(arguments, env = { 'QA_RUNTIME_SCENARIO_ATTRIBUTES' => '{"parallel":true}' })
-    cmd = "bundle exec parallel_test -t rspec --combine-stderr --serialize-stdout -- #{arguments.join(' ')}"
-    expect(Open3).to receive(:popen2e)
-      .with(hash_including(env), cmd)
-      .and_return(0)
+      expect(ENV).to have_received(:store).with("QA_GITLAB_URL", "http://127.0.0.1:3000")
+    end
   end
 end

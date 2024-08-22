@@ -5770,6 +5770,9 @@ msgstr ""
 msgid "An error occurred while fetching ancestors"
 msgstr ""
 
+msgid "An error occurred while fetching branches."
+msgstr ""
+
 msgid "An error occurred while fetching branches. Retry the search."
 msgstr ""
 
@@ -22149,6 +22152,9 @@ msgstr ""
 msgid "Export requirements"
 msgstr ""
 
+msgid "Export seat usage history"
+msgstr ""
+
 msgid "Export this group with all related data."
 msgstr ""
 
@@ -32597,6 +32603,9 @@ msgid "Maximum number of value streams per namespace exceeded"
 msgstr ""
 
 msgid "Maximum number of variables loaded (2000)"
+msgstr ""
+
+msgid "Maximum of %{limit} branches listed. For more branches, enter a search query."
 msgstr ""
 
 msgid "Maximum of 255 characters"
@@ -47887,9 +47896,6 @@ msgstr ""
 msgid "Secrets|Enter a value for the secret"
 msgstr ""
 
-msgid "Secrets|Environments"
-msgstr ""
-
 msgid "Secrets|Expires"
 msgstr ""
 
@@ -56140,9 +56146,6 @@ msgid "Todos|set %{who} as an approver"
 msgstr ""
 
 msgid "Todos|yourself"
-msgstr ""
-
-msgid "Toggle DuoChat"
 msgstr ""
 
 msgid "Toggle GitLab Next"

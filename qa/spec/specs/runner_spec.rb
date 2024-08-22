@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Specs::Runner do
+  include QA::Support::Helpers::StubEnv
+
   shared_examples 'excludes default skipped, and geo' do
     it 'excludes the default skipped and geo tags, and includes default args' do
-      expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+      expect_rspec_runner_arguments(
+        DEFAULT_SKIPPED_TAGS + ['--tag', '~geo'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS
+      )
 
       subject.perform
     end
@@ -11,6 +15,21 @@ RSpec.describe QA::Specs::Runner do
 
   before do
     stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated --tag ~transient].freeze)
+    stub_const('QA::Specs::Runner::DEFAULT_TEST_PATH_ARGS', [
+      '--',
+      File.expand_path('./features', __dir__)
+    ].freeze)
+    stub_const('QA::Specs::Runner::DEFAULT_STD_ARGS', [$stderr, $stdout].freeze)
+    stub_env('CI_JOB_ID', '7396369488')
+  end
+
+  def dynamic_formatters
+    [
+      '--format', 'QA::Support::JsonFormatter',
+      '--out', "tmp/rspec-#{ENV['CI_JOB_ID']}-retried-false.json",
+      '--format', 'RspecJunitFormatter',
+      '--out', "tmp/rspec-#{ENV['CI_JOB_ID']}-retried-false.xml"
+    ]
   end
 
   describe '#perform' do
@@ -28,7 +47,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'sets the `--tty` flag' do
         expect_rspec_runner_arguments(
-          ['--tty'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS]
+          ['--tty'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS
         )
 
         subject.perform
@@ -50,7 +69,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'sets the `--dry-run` flag' do
         expect_rspec_runner_arguments(
-          ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
+          ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS,
           [$stderr, anything]
         )
 
@@ -87,7 +106,7 @@ RSpec.describe QA::Specs::Runner do
 
         it 'includes the option value in the file name' do
           expect_rspec_runner_arguments(
-            ['--dry-run', '--tag', '~geo', '--tag', 'actioncable', *described_class::DEFAULT_TEST_PATH_ARGS],
+            ['--dry-run', '--tag', '~geo', '--tag', 'actioncable'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS,
             [$stderr, anything]
           )
 
@@ -115,7 +134,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'sets the `--dry-run` flag' do
         expect_rspec_runner_arguments(
-          ['--dry-run', *described_class::DEFAULT_TEST_PATH_ARGS],
+          ['--dry-run'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS,
           [$stderr, anything]
         )
 
@@ -141,7 +160,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'focuses on the given tags' do
         expect_rspec_runner_arguments(
-          ['--tag', 'orchestrated', '--tag', 'github', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS]
+          ['--tag', 'orchestrated', '--tag', 'github', '--tag', '~geo'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS
         )
 
         subject.perform
@@ -152,7 +171,7 @@ RSpec.describe QA::Specs::Runner do
       subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke] } }
 
       it 'focuses on the given tag without excluded tags' do
-        expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS)
 
         subject.perform
       end
@@ -162,7 +181,7 @@ RSpec.describe QA::Specs::Runner do
       subject { described_class.new.tap { |runner| runner.options = %w[qa/specs/features/foo] } }
 
       it 'passes the given tests path and excludes the default skipped, and geo tags' do
-        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', 'qa/specs/features/foo'])
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo'] + ['qa/specs/features/foo'] + dynamic_formatters)
 
         subject.perform
       end
@@ -172,7 +191,7 @@ RSpec.describe QA::Specs::Runner do
       subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke qa/specs/features/foo] } }
 
       it 'focuses on the given tag and includes the path without excluding the orchestrated or transient tags' do
-        expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke', 'qa/specs/features/foo'])
+        expect_rspec_runner_arguments(['--tag', '~geo', '--tag', 'smoke'] + ['qa/specs/features/foo'] + dynamic_formatters)
 
         subject.perform
       end
@@ -184,7 +203,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_signup_disabled tag' do
-        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_signup_disabled'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS)
 
         subject.perform
       end
@@ -196,7 +215,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_live_env tag' do
-        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_live_env'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS)
         subject.perform
       end
     end
@@ -213,7 +232,7 @@ RSpec.describe QA::Specs::Runner do
       subject { described_class.new.tap { |runner| runner.tags = %i[geo] } }
 
       it 'includes the geo tag' do
-        expect_rspec_runner_arguments(['--tag', 'geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(['--tag', 'geo'] + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS)
         subject.perform
       end
     end
@@ -230,8 +249,7 @@ RSpec.describe QA::Specs::Runner do
 
         it 'includes default args and excludes all unsupported tags' do
           expect_rspec_runner_arguments(
-            DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *excluded_feature_tags_except(feature),
-                                    *described_class::DEFAULT_TEST_PATH_ARGS]
+            DEFAULT_SKIPPED_TAGS + ['--tag', '~geo'] + excluded_feature_tags_except(feature) + dynamic_formatters + described_class::DEFAULT_TEST_PATH_ARGS
           )
 
           subject.perform
@@ -273,8 +291,8 @@ RSpec.describe QA::Specs::Runner do
 
     def expect_rspec_runner_arguments(arguments, std_arguments = described_class::DEFAULT_STD_ARGS)
       expect(RSpec::Core::Runner).to receive(:run)
-                                       .with(arguments, *std_arguments)
-                                       .and_return(0)
+                                     .with(arguments, *std_arguments)
+                                     .and_return(0)
     end
   end
 end

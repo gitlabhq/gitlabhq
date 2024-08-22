@@ -1,31 +1,52 @@
 # frozen_string_literal: true
 
-require 'open3'
+require "parallel_tests"
+require "etc"
 
 module QA
   module Specs
-    module ParallelRunner
-      module_function
+    class ParallelRunner
+      class << self
+        def run(rspec_args)
+          used_processes = Runtime::Env.parallel_processes || Etc.nprocessors
 
-      def run(args)
-        unless args.include?('--')
-          index = args.index { |opt| opt.include?('features') }
+          args = [
+            "--type", "rspec",
+            "-n", used_processes.to_s,
+            "--serialize-stdout",
+            '--first-is-1',
+            "--combine-stderr"
+          ]
 
-          args.insert(index, '--') if index
+          unless rspec_args.include?('--')
+            index = rspec_args.index { |opt| opt.include?("qa/specs/features") }
+
+            rspec_args.insert(index, '--') if index
+          end
+
+          args.push("--", *rspec_args) unless rspec_args.empty?
+
+          set_environment!
+          perform_global_setup!
+
+          ParallelTests::CLI.new.run(args)
         end
 
-        env = {}
-        Runtime::Env::ENV_VARIABLES.each_key do |key|
-          env[key] = ENV[key] if ENV[key]
+        private
+
+        def perform_global_setup!
+          Runtime::Browser.configure!
+          Runtime::Release.perform_before_hooks
         end
-        env['QA_RUNTIME_SCENARIO_ATTRIBUTES'] = Runtime::Scenario.attributes.to_json
-        env['GITLAB_QA_ACCESS_TOKEN'] = Runtime::API::Client.new(:gitlab).personal_access_token unless env['GITLAB_QA_ACCESS_TOKEN']
 
-        cmd = "bundle exec parallel_test -t rspec --combine-stderr --serialize-stdout -- #{args.flatten.join(' ')}"
-        ::Open3.popen2e(env, cmd) do |_, out, wait|
-          out.each { |line| puts line }
+        def set_environment!
+          ENV.store("NO_KNAPSACK", "true")
+          ENV.store("QA_PARALLEL_RUN", "false")
 
-          exit wait.value.exitstatus
+          return if ENV["QA_GITLAB_URL"].present?
+
+          Support::GitlabAddress.define_gitlab_address_attribute!
+          ENV.store("QA_GITLAB_URL", Support::GitlabAddress.address_with_port(with_default_port: false))
         end
       end
     end

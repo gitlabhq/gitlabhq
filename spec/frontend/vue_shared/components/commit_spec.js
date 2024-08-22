@@ -43,7 +43,7 @@ describe('Commit component', () => {
       },
     });
 
-    expect(wrapper.find('.icon-container').findComponent(GlIcon).exists()).toBe(true);
+    expect(wrapper.findByTestId('commit-ref-info').findComponent(GlIcon).exists()).toBe(true);
   });
 
   describe('Given all the props', () => {
@@ -73,17 +73,17 @@ describe('Commit component', () => {
     });
 
     it('should render a link to the ref url', () => {
-      expect(wrapper.find('.ref-name').attributes('href')).toBe(props.commitRef.ref_url);
+      expect(wrapper.findByTestId('ref-name').attributes('href')).toBe(props.commitRef.ref_url);
     });
 
     it('should render the ref name', () => {
-      expect(wrapper.find('.ref-name').text()).toContain(props.commitRef.name);
+      expect(wrapper.findByTestId('ref-name').text()).toContain(props.commitRef.name);
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
-      expect(wrapper.find('.commit-sha').attributes('href')).toEqual(props.commitUrl);
+      expect(wrapper.findByTestId('commit-sha').attributes('href')).toEqual(props.commitUrl);
 
-      expect(wrapper.find('.commit-sha').text()).toContain(props.shortSha);
+      expect(wrapper.findByTestId('commit-sha').text()).toContain(props.shortSha);
     });
 
     it('should render icon for commit', () => {
@@ -107,9 +107,9 @@ describe('Commit component', () => {
     });
 
     it('should render the commit title', () => {
-      expect(wrapper.find('.commit-row-message').attributes('href')).toEqual(props.commitUrl);
+      expect(wrapper.findByTestId('commit-title').attributes('href')).toEqual(props.commitUrl);
 
-      expect(wrapper.find('.commit-row-message').text()).toContain(props.title);
+      expect(wrapper.findByTestId('commit-title').text()).toContain(props.title);
     });
   });
 
@@ -130,7 +130,7 @@ describe('Commit component', () => {
 
       createComponent(props);
 
-      expect(wrapper.find('.commit-title span').text()).toContain(
+      expect(wrapper.findByTestId('commit-no-title').text()).toContain(
         "Can't find HEAD commit for this branch",
       );
     });
@@ -152,7 +152,7 @@ describe('Commit component', () => {
       };
 
       createComponent(props);
-      const refEl = wrapper.find('.ref-name');
+      const refEl = wrapper.findByTestId('ref-name');
 
       expect(refEl.text()).toContain('main');
 
@@ -183,7 +183,7 @@ describe('Commit component', () => {
       };
 
       createComponent(props);
-      const refEl = wrapper.find('.ref-name');
+      const refEl = wrapper.findByTestId('ref-name');
 
       expect(refEl.text()).toContain('1234');
 
@@ -216,7 +216,7 @@ describe('Commit component', () => {
 
       createComponent(props);
 
-      expect(wrapper.find('.ref-name').exists()).toBe(false);
+      expect(wrapper.findByTestId('ref-name').exists()).toBe(false);
     });
   });
 
