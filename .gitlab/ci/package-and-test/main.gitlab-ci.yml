@@ -73,6 +73,7 @@ instance-ff-inverse:
 # ------------------------------------------
 
 # ========== instance ===========
+
 instance:
   extends:
     - .parallel
@@ -311,7 +312,9 @@ mtls:
     - !reference [.rules:test:manual, rules]
 
 mattermost:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
@@ -320,7 +323,9 @@ mattermost:
     - !reference [.rules:test:manual, rules]
 
 registry:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
@@ -330,7 +335,9 @@ registry:
 
 
 repository-storage:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
@@ -420,7 +427,9 @@ importers:
 # ========== ai-gateway ===========
 
 .ai-gateway-base:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
 
 ai-gateway:
   extends:

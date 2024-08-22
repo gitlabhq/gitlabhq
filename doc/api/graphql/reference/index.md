@@ -10380,6 +10380,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
 | <a id="mutationworkitemcreatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsCreateInput`](#workitemwidgetlabelscreateinput) | Input for labels widget. |
+| <a id="mutationworkitemcreatelinkeditemswidget"></a>`linkedItemsWidget` | [`WorkItemWidgetLinkedItemsCreateInput`](#workitemwidgetlinkeditemscreateinput) | Input for linked items widget. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | Full path of the namespace(project or group) the work item is created in. |
 | <a id="mutationworkitemcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Please use namespace_path instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
@@ -41043,6 +41044,15 @@ Attributes for value stream stage.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetlabelsupdateinputaddlabelids"></a>`addLabelIds` | [`[LabelID!]`](#labelid) | Global IDs of labels to be added to the work item. |
 | <a id="workitemwidgetlabelsupdateinputremovelabelids"></a>`removeLabelIds` | [`[LabelID!]`](#labelid) | Global IDs of labels to be removed from the work item. |
+
+### `WorkItemWidgetLinkedItemsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetlinkeditemscreateinputlinktype"></a>`linkType` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Type of link. Defaults to `RELATED`. |
+| <a id="workitemwidgetlinkeditemscreateinputworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to link. Maximum number of IDs you can provide: 10. |
 
 ### `WorkItemWidgetMilestoneInput`
 

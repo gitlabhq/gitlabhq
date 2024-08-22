@@ -734,14 +734,6 @@ module QA
         enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
       end
 
-      def parallel_processes
-        ENV.fetch('QA_PARALLEL_PROCESSES', 2).to_i
-      end
-
-      def parallel_run?
-        enabled?(ENV["QA_PARALLEL_RUN"], default: false)
-      end
-
       private
 
       def remote_grid_credentials

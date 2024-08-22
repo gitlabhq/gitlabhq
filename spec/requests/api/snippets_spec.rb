@@ -282,8 +282,9 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
 
     shared_examples 'snippet creation' do
       let(:snippet) { Snippet.find(json_response["id"]) }
+      let(:organization_id) { Current.organization_id }
 
-      it 'creates a new snippet' do
+      it 'creates a new snippet', :with_current_organization do
         expect do
           subject
         end.to change { PersonalSnippet.count }.by(1)
@@ -294,6 +295,7 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
         expect(json_response['file_name']).to eq(file_path)
         expect(json_response['files']).to eq(snippet.blobs.map { |blob| snippet_blob_file(blob) })
         expect(json_response['visibility']).to eq(params[:visibility])
+        expect(Snippet.find(json_response['id']).organization_id).to eq(organization_id)
       end
 
       it 'creates repository' do

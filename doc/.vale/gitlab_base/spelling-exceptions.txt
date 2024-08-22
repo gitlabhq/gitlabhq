@@ -456,6 +456,8 @@ hyperparameters
 iCalendar
 iCloud
 idempotence
+IDEs
+IDE's
 idmapper
 Iglu
 IIFEs

@@ -32,6 +32,7 @@ For example, you can use GitLab Duo Workflow to:
 
 Before you can use GitLab Duo Workflow in VS Code:
 
+1. Request access in the `#f_duo_workflow` Slack channel.
 1. Install the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
    Minimum version 5.8.0.
 1. In VS Code, [set the Docker socket file path](#install-docker-and-set-the-socket-file-path).

@@ -5026,6 +5026,9 @@ msgstr ""
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
+msgid "AiPowered|Enabling these features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -5042,6 +5045,15 @@ msgid "AiPowered|Off by default"
 msgstr ""
 
 msgid "AiPowered|On by default"
+msgstr ""
+
+msgid "AiPowered|Setting unavailable"
+msgstr ""
+
+msgid "AiPowered|These features are being developed and might be unstable. %{linkStart}What do experiment and beta mean?%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgroups, and projects."
@@ -24185,6 +24197,9 @@ msgstr ""
 msgid "GitLab Duo didn't find any reviewable files. Code Review request skipped."
 msgstr ""
 
+msgid "GitLab Duo experiment and beta features"
+msgstr ""
+
 msgid "GitLab Duo features"
 msgstr ""
 
@@ -26065,9 +26080,6 @@ msgstr ""
 msgid "GroupSettings|Git abuse rate limit"
 msgstr ""
 
-msgid "GroupSettings|GitLab Duo experiment and beta features"
-msgstr ""
-
 msgid "GroupSettings|Group CI/CD settings were successfully updated."
 msgstr ""
 
@@ -26180,9 +26192,6 @@ msgid "GroupSettings|Transfer group"
 msgstr ""
 
 msgid "GroupSettings|Use GitLab Duo features"
-msgstr ""
-
-msgid "GroupSettings|Use experiment and beta Duo features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
@@ -58018,6 +58027,9 @@ msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
+msgstr ""
+
+msgid "Use experiment and beta GitLab Duo features"
 msgstr ""
 
 msgid "Use hashed storage"

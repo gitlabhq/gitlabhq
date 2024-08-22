@@ -339,6 +339,81 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         end
       end
     end
+
+    context 'with linked items widget input' do
+      let_it_be(:items) { create_list(:work_item, 2, :task, project: project) }
+
+      let(:widgets_response) { mutation_response['workItem']['widgets'] }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetLinkedItems {
+              linkedItems {
+                nodes {
+                  linkType
+                  workItem { id }
+                }
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      let(:input) do
+        {
+          title: 'item1',
+          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          linkedItemsWidget: { 'workItemsIds' => items.map(&:to_gid).map(&:to_s), 'linkType' => 'RELATED' }
+        }
+      end
+
+      it 'creates work item with related items' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { WorkItem.count }.by(1)
+           .and change { WorkItems::RelatedWorkItemLink.count }.by(2)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(widgets_response).to include(
+          {
+            'linkedItems' => { 'nodes' => [
+              { 'linkType' => 'relates_to', "workItem" => { "id" => items[1].to_global_id.to_s } },
+              { 'linkType' => 'relates_to', "workItem" => { "id" => items[0].to_global_id.to_s } }
+            ] },
+            'type' => 'LINKED_ITEMS'
+          }
+        )
+      end
+
+      context 'when number of items exceeds maximum allowed' do
+        before do
+          stub_const('Types::WorkItems::Widgets::LinkedItemsCreateInputType::MAX_WORK_ITEMS', 1)
+        end
+
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: [Types::WorkItems::Widgets::LinkedItemsCreateInputType::ERROR_MESSAGE]
+      end
+
+      context 'with invalid items' do
+        let_it_be(:items) { create_list(:work_item, 2, :task, project: create(:project, :private)) }
+
+        it 'creates the work item without linking items' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+          end.to change { WorkItem.count }.by(1)
+             .and not_change { WorkItems::RelatedWorkItemLink.count }
+
+          expect(mutation_response['errors']).to contain_exactly(
+            'No matching work item found. Make sure you are adding a valid ID and you have access to the item.'
+          )
+        end
+      end
+    end
   end
 
   context 'the user is not allowed to create a work item' do

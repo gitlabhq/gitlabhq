@@ -34,6 +34,10 @@ module Mutations
         ::Types::WorkItems::Widgets::LabelsCreateInputType,
         required: false,
         description: 'Input for labels widget.'
+      argument :linked_items_widget,
+        ::Types::WorkItems::Widgets::LinkedItemsCreateInputType,
+        required: false,
+        description: 'Input for linked items widget.'
       argument :namespace_path,
         GraphQL::Types::ID,
         required: false,

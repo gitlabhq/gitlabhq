@@ -141,7 +141,6 @@ gdk-qa-blocking:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-    QA_PARALLEL_RUN: false
 
 gdk-qa-blocking-ff-inverse:
   extends: gdk-qa-blocking

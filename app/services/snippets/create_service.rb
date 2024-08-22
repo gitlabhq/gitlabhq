@@ -57,7 +57,7 @@ module Snippets
     end
 
     def organization_id
-      Current.organization_id || Organizations::Organization::DEFAULT_ORGANIZATION_ID
+      params[:organization_id].presence || Organizations::Organization::DEFAULT_ORGANIZATION_ID
     end
 
     # If the snippet_actions param is present

@@ -2,22 +2,7 @@
 # Cop supports --autocorrect.
 RSpec/ReturnFromStub:
   Exclude:
-    - 'ee/spec/helpers/ee/auth_helper_spec.rb'
-    - 'ee/spec/helpers/ee/ci/pipelines_helper_spec.rb'
-    - 'ee/spec/helpers/ee/lock_helper_spec.rb'
-    - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/helpers/ee/security_orchestration_helper_spec.rb'
-    - 'ee/spec/helpers/preferences_helper_spec.rb'
-    - 'ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb'
-    - 'ee/spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
-    - 'ee/spec/lib/ee/feature_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/checks/push_rules/branch_check_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/database_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/health_check_spec.rb'
-    - 'ee/spec/lib/gitlab/geo_spec.rb'
-    - 'ee/spec/lib/gitlab/git_access_spec.rb'
-    - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/group_saml_spec.rb'
     - 'ee/spec/lib/system_check/geo/authorized_keys_check_spec.rb'
     - 'ee/spec/lib/system_check/geo/http_connection_check_spec.rb'
