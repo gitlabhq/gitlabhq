@@ -1,9 +1,9 @@
 <script>
 import produce from 'immer';
-import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { sprintf, __, n__ } from '~/locale';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import relatedMergeRequestsQuery from '../queries/related_merge_requests.query.graphql';
 
@@ -51,9 +51,7 @@ export default {
     },
   },
   components: {
-    GlIcon,
-    GlLink,
-    GlLoadingIcon,
+    CrudComponent,
     RelatedIssuableItem,
   },
   props: {
@@ -109,65 +107,36 @@ export default {
 </script>
 
 <template>
-  <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
-    <div class="gl-new-card">
-      <div class="gl-new-card-header gl-flex-col">
-        <div class="gl-new-card-title-wrapper">
-          <gl-link
-            class="anchor gl-absolute gl-no-underline"
-            href="#related-merge-requests"
-            aria-labelledby="related-merge-requests"
-          />
-          <h3 id="related-merge-requests" class="gl-new-card-title">
-            {{ __('Related merge requests') }}
-          </h3>
-          <div class="gl-new-card-count">
-            <template v-if="totalCount">
-              <gl-icon name="merge-request" class="gl-mr-2" />
-              <span data-testid="count">{{ totalCount }}</span>
-            </template>
-          </div>
-        </div>
-        <p
-          v-if="hasClosingMergeRequest && !isFetchingMergeRequests"
-          class="gl-new-card-description"
-        >
-          {{ closingMergeRequestsText }}
-        </p>
-      </div>
-      <div class="gl-new-card-body">
-        <div class="gl-new-card-content">
-          <gl-loading-icon
-            v-if="isFetchingMergeRequests"
-            size="sm"
-            label="Fetching related merge requests"
-            class="gl-py-2"
-          />
-          <ul class="content-list related-items-list">
-            <li
-              v-for="mr in mergeRequests"
-              :key="mr.id"
-              class="list-item !gl-m-0 !gl-border-b-0 !gl-p-0"
-            >
-              <related-issuable-item
-                :id-key="idKey(mr)"
-                :display-reference="displayReference(mr)"
-                :title="mr.title"
-                :milestone="mr.milestone"
-                :assignees="mr.assignees.nodes"
-                :created-at="mr.createdAt"
-                :merged-at="mr.mergedAt"
-                :path="mr.webUrl"
-                :state="mr.state"
-                :pipeline-status="mr.headPipeline && mr.headPipeline.detailedStatus"
-                path-id-separator="!"
-                is-merge-request
-                class="-gl-mx-2"
-              />
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  <crud-component
+    v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)"
+    anchor-id="related-merge-requests"
+    :is-loading="isFetchingMergeRequests"
+    :title="__('Related merge requests')"
+    icon="merge-request"
+    :count="totalCount"
+    is-collapsible
+  >
+    <template v-if="hasClosingMergeRequest && !isFetchingMergeRequests" #description>
+      {{ closingMergeRequestsText }}
+    </template>
+
+    <ul class="content-list related-items-list !-gl-mx-3 !gl-my-3">
+      <li v-for="mr in mergeRequests" :key="mr.id" class="!gl-py-0 !gl-border-b-0">
+        <related-issuable-item
+          :id-key="idKey(mr)"
+          :display-reference="displayReference(mr)"
+          :title="mr.title"
+          :milestone="mr.milestone"
+          :assignees="mr.assignees.nodes"
+          :created-at="mr.createdAt"
+          :merged-at="mr.mergedAt"
+          :path="mr.webUrl"
+          :state="mr.state"
+          :pipeline-status="mr.headPipeline && mr.headPipeline.detailedStatus"
+          path-id-separator="!"
+          is-merge-request
+        />
+      </li>
+    </ul>
+  </crud-component>
 </template>

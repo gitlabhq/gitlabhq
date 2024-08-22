@@ -1284,7 +1284,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/packages/mark_packages_for_destruction_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
-    - 'spec/services/packages/nuget/search_service_spec.rb'
     - 'spec/services/packages/rubygems/dependency_resolver_service_spec.rb'
     - 'spec/services/pages_domains/create_service_spec.rb'
     - 'spec/services/post_receive_service_spec.rb'

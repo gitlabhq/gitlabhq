@@ -131,12 +131,18 @@ export default {
     :class="{ 'gl-mt-5': isCollapsible }"
   >
     <header
-      class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-default gl-bg-default gl-px-5 gl-py-4 gl-leading-24"
-      :class="[headerClass, { 'gl-border-b-0 gl-rounded-base': !isContentVisible }]"
+      class="crud-header gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-default gl-bg-default gl-px-5 gl-py-4"
+      :class="[
+        headerClass,
+        {
+          'gl-border-b-0 gl-rounded-base': !isContentVisible,
+          'gl-relative gl-pr-9': isCollapsible,
+        },
+      ]"
     >
       <div class="gl-flex gl-flex-col gl-self-center">
         <h2
-          class="gl-m-0 gl-inline-flex gl-gap-3 gl-text-base gl-font-bold gl-leading-24"
+          class="gl-m-0 gl-inline-flex gl-items-start gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
           data-testid="crud-title"
         >
           <gl-link
@@ -162,7 +168,7 @@ export default {
         </h2>
         <p
           v-if="description || $scopedSlots.description"
-          class="gl-mb-0 gl-mt-1 gl-text-sm gl-text-subtle"
+          class="gl-mb-0 gl-mt-2 gl-text-sm gl-text-subtle gl-leading-normal"
           data-testid="crud-description"
         >
           <slot v-if="$scopedSlots.description" name="description"></slot>
@@ -179,10 +185,7 @@ export default {
           @click="showForm"
           >{{ toggleText }}</gl-button
         >
-        <div
-          v-if="isCollapsible"
-          class="gl-border-l-1 gl-border-l-solid gl-border-default gl-pl-3 gl-h-6"
-        >
+        <div v-if="isCollapsible" class="gl-h-6 gl-absolute gl-top-4 gl-right-5">
           <gl-button
             v-gl-tooltip
             :title="toggleLabel"

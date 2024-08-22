@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import PrivateIcon from '../icons/private_icon.vue';
 
@@ -7,52 +7,51 @@ export default {
   name: 'MemberSource',
   i18n: {
     private: __('Private'),
-    inherited: __('Inherited'),
-    indirect: __('Indirect'),
-    directMember: __('Direct member'),
+    inheritedMember: s__('Members|Inherited from %{group}'),
+    sharedMember: s__('Members|Invited group %{group}'),
+    directMember: s__('Members|Direct member'),
     directMemberWithCreatedBy: s__('Members|Direct member by %{createdBy}'),
-    indirectMemberWithCreatedBy: s__('Members|%{group} by %{createdBy}'),
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
-  components: { GlSprintf, PrivateIcon },
+  components: { GlSprintf, GlLink, PrivateIcon },
   props: {
-    memberSource: {
+    member: {
       type: Object,
-      required: false,
-      default() {
-        return {};
-      },
-    },
-    isDirectMember: {
-      type: Boolean,
       required: true,
-    },
-    isSharedWithGroupPrivate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    createdBy: {
-      type: Object,
-      required: false,
-      default: null,
     },
   },
   computed: {
+    memberSource() {
+      return this.member.source;
+    },
+    isDirectMember() {
+      return this.member.isDirectMember;
+    },
+    isInheritedMember() {
+      return this.member.isInheritedMember;
+    },
+    isSharedWithGroupPrivate() {
+      return this.member.isSharedWithGroupPrivate;
+    },
+    createdBy() {
+      return this.member.createdBy;
+    },
     showCreatedBy() {
       return this.createdBy?.name && this.createdBy?.webUrl;
     },
-    tooltipHover() {
-      return gon.features?.webuiMembersInheritedUsers
-        ? this.$options.i18n.indirect
-        : this.$options.i18n.inherited;
-    },
-    messageWithCreatedBy() {
-      return this.isDirectMember
-        ? this.$options.i18n.directMemberWithCreatedBy
-        : this.$options.i18n.indirectMemberWithCreatedBy;
+    message() {
+      if (this.isDirectMember) {
+        if (this.showCreatedBy) {
+          return this.$options.i18n.directMemberWithCreatedBy;
+        }
+
+        return this.$options.i18n.directMember;
+      }
+
+      if (this.isInheritedMember) {
+        return this.$options.i18n.inheritedMember;
+      }
+
+      return this.$options.i18n.sharedMember;
     },
   },
 };
@@ -63,20 +62,14 @@ export default {
     <span>{{ $options.i18n.private }}</span>
     <private-icon />
   </div>
-  <span v-else-if="showCreatedBy">
-    <gl-sprintf :message="messageWithCreatedBy">
+  <div v-else>
+    <gl-sprintf :message="message">
       <template #group>
-        <a v-gl-tooltip.hover="tooltipHover" :href="memberSource.webUrl">{{
-          memberSource.fullName
-        }}</a>
+        <gl-link :href="memberSource.webUrl">{{ memberSource.fullName }}</gl-link>
       </template>
       <template #createdBy>
-        <a :href="createdBy.webUrl">{{ createdBy.name }}</a>
+        <gl-link :href="createdBy.webUrl">{{ createdBy.name }}</gl-link>
       </template>
     </gl-sprintf>
-  </span>
-  <span v-else-if="isDirectMember">{{ $options.i18n.directMember }}</span>
-  <a v-else v-gl-tooltip.hover="tooltipHover" :href="memberSource.webUrl">{{
-    memberSource.fullName
-  }}</a>
+  </div>
 </template>

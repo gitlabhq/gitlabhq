@@ -490,17 +490,31 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
   let_it_be(:package_name) { 'dummy.package' }
   let_it_be(:package) { create(:nuget_package, project: project, name: package_name) }
 
+  let(:not_found_response) { :not_found }
+
   subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
-  before do
+  shared_examples 'successfull reponse' do
+    it 'returns a successfull response' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to match_schema(json_schema)
+    end
+  end
+
+  before_all do
     [subgroup, group, project].each do |entity|
       entity.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
     end
     project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
+  end
+
+  before do
     stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
   end
 
-  it_behaves_like 'returning response status', :ok
+  it_behaves_like 'successfull reponse'
 
   context 'when target package is in a private registry and group has another public registry' do
     let(:other_project) { create(:project, group: target, visibility_level: target.visibility_level) }
@@ -510,14 +524,24 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
       other_project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
     end
 
-    it_behaves_like 'returning response status', :not_found
+    it 'returns no packages' do
+      subject
+
+      expect(response).to have_gitlab_http_status(not_found_response)
+
+      if not_found_response == :ok
+        expect(json_response).to match_schema(json_schema)
+        expect(json_response['totalHits']).to eq(0)
+        expect(json_response['data']).to be_empty
+      end
+    end
 
     context 'when package is in the project with public registry' do
       before do
         package.update!(project: other_project)
       end
 
-      it_behaves_like 'returning response status', :ok
+      it_behaves_like 'successfull reponse'
     end
   end
 

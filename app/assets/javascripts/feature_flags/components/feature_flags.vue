@@ -161,7 +161,7 @@ export default {
           <span>{{ featureFlagsLimit }}</span>
         </template>
         <template #pricingLink="{ content }">
-          <promo-page-link href="/pricing" target="_blank">{{ content }}</promo-page-link>
+          <promo-page-link path="/pricing" target="_blank">{{ content }}</promo-page-link>
         </template>
       </gl-sprintf>
     </gl-alert>

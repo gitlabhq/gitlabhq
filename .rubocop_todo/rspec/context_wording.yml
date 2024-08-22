@@ -2540,7 +2540,6 @@ RSpec/ContextWording:
     - 'spec/services/packages/helm/process_file_service_spec.rb'
     - 'spec/services/packages/maven/metadata/create_versions_xml_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
-    - 'spec/services/packages/nuget/search_service_spec.rb'
     - 'spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'
     - 'spec/services/packages/rubygems/dependency_resolver_service_spec.rb'
     - 'spec/services/packages/rubygems/process_gem_service_spec.rb'

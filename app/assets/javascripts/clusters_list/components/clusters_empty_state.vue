@@ -46,7 +46,7 @@ export default {
     <gl-alert variant="warning" :dismissible="false">
       <gl-sprintf :message="$options.i18n.alertText">
         <template #link="{ content }">
-          <promo-page-link :href="$options.blogPostPath" target="_blank">
+          <promo-page-link :path="$options.blogPostPath" target="_blank">
             {{ content }}
           </promo-page-link>
         </template>

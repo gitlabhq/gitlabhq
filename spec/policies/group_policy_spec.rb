@@ -1126,7 +1126,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  # This block can be removed when packages_dependency_proxy_pass_token_to_policy is rolled out
   describe 'dependency proxy' do
     shared_examples 'disallows all dependency proxy access' do
       it { is_expected.to be_disallowed(:read_dependency_proxy) }
@@ -1177,45 +1176,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
           it { is_expected.to be_allowed(:read_dependency_proxy) }
           it { is_expected.to be_allowed(:admin_dependency_proxy) }
-        end
-      end
-
-      context 'deploy token user' do
-        let!(:group_deploy_token) do
-          create(:group_deploy_token, group: group, deploy_token: deploy_token)
-        end
-
-        subject { described_class.new(deploy_token, group) }
-
-        context 'with insufficient scopes' do
-          let_it_be(:deploy_token) { create(:deploy_token, :group) }
-
-          it_behaves_like 'disallows all dependency proxy access'
-        end
-
-        context 'with sufficient scopes' do
-          let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-
-          it_behaves_like 'allows dependency proxy read access but not admin'
-        end
-      end
-
-      context 'group access token user' do
-        let_it_be(:bot_user) { create(:user, :project_bot) }
-        let_it_be(:token) { create(:personal_access_token, user: bot_user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
-
-        subject { described_class.new(bot_user, group) }
-
-        context 'not a member of the group' do
-          it_behaves_like 'disallows all dependency proxy access'
-        end
-
-        context 'a member of the group' do
-          before do
-            group.add_guest(bot_user)
-          end
-
-          it_behaves_like 'allows dependency proxy read access but not admin'
         end
       end
 

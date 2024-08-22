@@ -13,13 +13,13 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  href: 'pricing',
+  path: 'pricing',
 };
 
 export const LinkWithLeadingSlash = Template.bind({});
 LinkWithLeadingSlash.args = {
   ...Default.args,
-  href: '/sales',
+  path: '/sales',
 };
 
 export const CustomAttributes = Template.bind({});

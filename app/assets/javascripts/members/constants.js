@@ -61,7 +61,7 @@ export const FIELDS = [
   },
   {
     key: FIELD_KEY_MAX_ROLE,
-    label: __('Max role'),
+    label: __('Role'),
     thClass: 'col-max-role',
     tdClass: 'col-max-role !gl-align-middle',
     sort: {

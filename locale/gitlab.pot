@@ -19304,9 +19304,6 @@ msgstr ""
 msgid "Dimension"
 msgstr ""
 
-msgid "Direct member"
-msgstr ""
-
 msgid "Direct members"
 msgstr ""
 
@@ -28315,9 +28312,6 @@ msgstr ""
 msgid "Indexing status"
 msgstr ""
 
-msgid "Indirect"
-msgstr ""
-
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
@@ -28361,9 +28355,6 @@ msgid "InfrastructureRegistry|You have no Terraform modules in your group"
 msgstr ""
 
 msgid "InfrastructureRegistry|You have no Terraform modules in your project"
-msgstr ""
-
-msgid "Inherited"
 msgstr ""
 
 msgid "Inherited:"
@@ -32980,9 +32971,6 @@ msgstr[1] ""
 msgid "Membership"
 msgstr ""
 
-msgid "Members|%{group} by %{createdBy}"
-msgstr ""
-
 msgid "Members|%{time} by %{user}"
 msgstr ""
 
@@ -33052,6 +33040,9 @@ msgstr ""
 msgid "Members|Direct"
 msgstr ""
 
+msgid "Members|Direct member"
+msgstr ""
+
 msgid "Members|Direct member by %{createdBy}"
 msgstr ""
 
@@ -33083,6 +33074,12 @@ msgid "Members|Indirect"
 msgstr ""
 
 msgid "Members|Inherited"
+msgstr ""
+
+msgid "Members|Inherited from %{group}"
+msgstr ""
+
+msgid "Members|Invited group %{group}"
 msgstr ""
 
 msgid "Members|LDAP override enabled."
@@ -37411,6 +37408,12 @@ msgstr ""
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
 msgstr ""
 
+msgid "Organization|Accessible by any signed in user except external users."
+msgstr ""
+
+msgid "Organization|Accessible without any authentication."
+msgstr ""
+
 msgid "Organization|An error occurred changing your organization URL. Please try again."
 msgstr ""
 
@@ -37453,6 +37456,9 @@ msgstr ""
 msgid "Organization|Changing an organization's URL can have unintended side effects."
 msgstr ""
 
+msgid "Organization|Choose organization visibility level."
+msgstr ""
+
 msgid "Organization|Choose what organization you want to see by default."
 msgstr ""
 
@@ -37474,6 +37480,12 @@ msgstr ""
 msgid "Organization|Home organization"
 msgstr ""
 
+msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
+msgstr ""
+
+msgid "Organization|Learn more about visibility levels"
+msgstr ""
+
 msgid "Organization|Manage"
 msgstr ""
 
@@ -37487,6 +37499,9 @@ msgid "Organization|New organization"
 msgstr ""
 
 msgid "Organization|No organizations available to switch to."
+msgstr ""
+
+msgid "Organization|Only accessible by organization members."
 msgstr ""
 
 msgid "Organization|Org ID"
@@ -37543,6 +37558,9 @@ msgstr ""
 msgid "Organization|Perform advanced options such as deleting the organization."
 msgstr ""
 
+msgid "Organization|Private - The organization can only be viewed by members."
+msgstr ""
+
 msgid "Organization|Projects are hosted/created in groups. Before creating a project, you must create a group."
 msgstr ""
 
@@ -37580,6 +37598,9 @@ msgid "Organization|Update your organization name, description, and avatar."
 msgstr ""
 
 msgid "Organization|View all"
+msgstr ""
+
+msgid "Organization|Who can see this organization?"
 msgstr ""
 
 msgid "Organization|You can now start using your new organization."

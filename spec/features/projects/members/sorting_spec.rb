@@ -24,22 +24,22 @@ RSpec.describe 'Projects > Members > Sorting', :js, feature_category: :groups_an
     expect_sort_by('Account', :asc)
   end
 
-  it 'sorts by max role ascending' do
+  it 'sorts by role ascending' do
     visit_members_list(sort: :access_level_asc)
 
     expect(first_row).to have_content(developer.name)
     expect(second_row).to have_content(maintainer.name)
 
-    expect_sort_by('Max role', :asc)
+    expect_sort_by('Role', :asc)
   end
 
-  it 'sorts by max role descending' do
+  it 'sorts by role descending' do
     visit_members_list(sort: :access_level_desc)
 
     expect(first_row).to have_content(maintainer.name)
     expect(second_row).to have_content(developer.name)
 
-    expect_sort_by('Max role', :desc)
+    expect_sort_by('Role', :desc)
   end
 
   it 'sorts by user created on ascending' do

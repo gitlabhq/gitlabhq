@@ -56,7 +56,7 @@ export default {
     @dismiss="dismissAlert"
   >
     {{ $options.i18n.contentLabel }}
-    <promo-page-link :href="$options.learnMorePath" target="_blank">
+    <promo-page-link :path="$options.learnMorePath" target="_blank">
       {{ $options.i18n.learnMoreLabel }}
     </promo-page-link>
   </gl-alert>

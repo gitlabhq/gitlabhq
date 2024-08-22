@@ -6,11 +6,9 @@ import { joinPaths } from '~/lib/utils/url_utility';
 
 let wrapper;
 
-const createComponent = (props = {}, slots = {}) => {
+const createComponent = (propsData = {}, slots = {}) => {
   wrapper = shallowMount(PromoPageLink, {
-    propsData: {
-      ...props,
-    },
+    propsData,
     slots,
     stubs: {
       GlLink: true,
@@ -22,27 +20,27 @@ const findGlLink = () => wrapper.findComponent(GlLink);
 
 describe('HelpPageLink', () => {
   it('renders a link', () => {
-    const href = 'pricing';
-    createComponent({ href });
+    const path = 'pricing';
+    createComponent({ path });
 
     const link = findGlLink();
-    const expectedHref = joinPaths(PROMO_URL, href);
+    const expectedHref = joinPaths(PROMO_URL, path);
     expect(link.attributes().href).toBe(expectedHref);
   });
 
   it('with a leading slash and anchor', () => {
-    const href = '/pricing#anchor';
-    createComponent({ href });
+    const path = '/pricing#anchor';
+    createComponent({ path });
 
     const link = findGlLink();
-    const expectedHref = joinPaths(PROMO_URL, href);
+    const expectedHref = joinPaths(PROMO_URL, path);
     expect(link.attributes().href).toBe(expectedHref);
   });
 
   it('renders slot content', () => {
-    const href = 'pricing';
+    const path = 'pricing';
     const slotContent = 'slot content';
-    createComponent({ href }, { default: slotContent });
+    createComponent({ path }, { default: slotContent });
 
     const link = findGlLink();
     expect(link.text()).toBe(slotContent);

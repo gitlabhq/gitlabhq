@@ -260,14 +260,7 @@ export default {
       </template>
 
       <template #cell(source)="{ item: member }">
-        <members-table-cell #default="{ isDirectMember }" :member="member">
-          <member-source
-            :is-direct-member="isDirectMember"
-            :member-source="member.source"
-            :created-by="member.createdBy"
-            :is-shared-with-group-private="member.isSharedWithGroupPrivate"
-          />
-        </members-table-cell>
+        <member-source :member="member" />
       </template>
 
       <template #cell(granted)="{ item: { createdAt, createdBy } }">

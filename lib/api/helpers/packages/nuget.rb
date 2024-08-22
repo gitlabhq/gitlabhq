@@ -30,7 +30,13 @@ module API
           )
         end
 
-        def search_packages(_search_term, search_options)
+        def search_packages
+          search_options = {
+            include_prerelease_versions: params[:prerelease],
+            per_page: params[:take],
+            padding: params[:skip]
+          }
+
           ::Packages::Nuget::SearchService
             .new(current_user, project_or_group, params[:q], search_options)
             .execute

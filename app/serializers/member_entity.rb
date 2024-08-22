@@ -28,7 +28,15 @@ class MemberEntity < Grape::Entity
   expose :last_owner?, as: :is_last_owner
 
   expose :is_direct_member do |member, options|
-    member.source == options[:source]
+    direct_member?(member, options)
+  end
+
+  expose :is_inherited_member do |member, options|
+    inherited_member?(member, options)
+  end
+
+  expose :is_shared_member do |member, options|
+    !direct_member?(member, options) && !inherited_member?(member, options)
   end
 
   expose :access_level do
@@ -80,6 +88,20 @@ class MemberEntity < Grape::Entity
 
   def current_user
     options[:current_user]
+  end
+
+  def direct_member?(member, options)
+    member.source == options[:source]
+  end
+
+  def inherited_member?(member, options)
+    if options[:source].is_a?(Project)
+      return false unless options[:group]
+
+      options[:group].self_and_ancestor_ids.include?(member.source.id)
+    else
+      options[:source].ancestor_ids.include?(member.source.id)
+    end
   end
 end
 

@@ -7978,7 +7978,6 @@
 - './spec/services/packages/npm/create_tag_service_spec.rb'
 - './spec/services/packages/nuget/create_dependency_service_spec.rb'
 - './spec/services/packages/nuget/metadata_extraction_service_spec.rb'
-- './spec/services/packages/nuget/search_service_spec.rb'
 - './spec/services/packages/nuget/sync_metadatum_service_spec.rb'
 - './spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'
 - './spec/services/packages/pypi/create_package_service_spec.rb'

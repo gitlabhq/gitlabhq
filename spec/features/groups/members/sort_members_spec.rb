@@ -32,22 +32,22 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :groups
     expect_sort_by('Account', :asc)
   end
 
-  it 'sorts by max role ascending' do
+  it 'sorts by role ascending' do
     visit_members_list(sort: :access_level_asc)
 
     expect(first_row.text).to include(developer.name)
     expect(second_row.text).to include(owner.name)
 
-    expect_sort_by('Max role', :asc)
+    expect_sort_by('Role', :asc)
   end
 
-  it 'sorts by max role descending' do
+  it 'sorts by role descending' do
     visit_members_list(sort: :access_level_desc)
 
     expect(first_row.text).to include(owner.name)
     expect(second_row.text).to include(developer.name)
 
-    expect_sort_by('Max role', :desc)
+    expect_sort_by('Role', :desc)
   end
 
   it 'sorts by user created on ascending' do

@@ -5,6 +5,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   include SendFileUpload
   include ::PackagesHelper # for event tracking
   include WorkhorseRequest
+  include Gitlab::Utils::StrongMemoize
 
   before_action :ensure_group
   before_action :ensure_token_granted!, only: [:blob, :manifest]
@@ -96,6 +97,11 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   private
+
+  def group
+    Group.find_by_full_path(params[:group_id], follow_redirects: true)
+  end
+  strong_memoize_attr :group
 
   def send_manifest(manifest, from_cache:)
     response.headers[DependencyProxy::Manifest::DIGEST_HEADER] = manifest.digest

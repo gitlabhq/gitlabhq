@@ -243,7 +243,7 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 ## Inheritance
 
 If a user belongs to a group, they are a _direct member_ of the group
-and an [inherited member](project/members/index.md#inherited-membership)
+and an [inherited member](project/members/index.md#membership-types)
 of any subgroups or projects. If a user is assigned a custom role
 by the top-level group, the permissions of the role are also inherited by subgroups
 and projects.

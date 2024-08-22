@@ -90,21 +90,13 @@ module API
                 tags %w[nuget_packages]
               end
               get format: :json, urgency: :low do
-                search_options = {
-                  include_prerelease_versions: params[:prerelease],
-                  per_page: params[:take],
-                  padding: params[:skip]
-                }
-
-                results = search_packages(params[:q], search_options)
-
                 track_package_event(
                   'search_package',
                   :nuget,
                   **snowplow_gitlab_standard_context.merge(category: 'API::NugetPackages')
                 )
 
-                present ::Packages::Nuget::SearchResultsPresenter.new(results),
+                present ::Packages::Nuget::SearchResultsPresenter.new(search_packages),
                   with: ::API::Entities::Nuget::SearchResults
               end
             end

@@ -28,11 +28,11 @@ Indirect membership can be inherited, shared, or inherited shared.
 
 | Membership type                               | Membership process |
 | --------------------------------------------- | ------------------ |
-| [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
-| [Indirect](#indirect-membership)  | The user is not added directly to the current group or project. Instead, the user becomes a member by inheriting from a parent group, or inviting the current group or project to another group. |
-| [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
-| [Shared](share_project_with_groups.md) | The user is a member of a group or project invited to the current group or project or one of its ancestors. |
-| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project invited to the current group or project. |
+| Direct | The user is added directly to the current group or project. |
+| Inherited | The user is a member of a parent group that contains the current group or project. |
+| [Shared](share_project_with_groups.md) | The user is a member of a group invited to the current group or project. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a group invited to an ancestor of the current group or project. |
+| Indirect | An umbrella term for inherited, shared, or inherited shared members. |
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -61,6 +61,16 @@ flowchart RL
   B-->|Inherited membership in Project X\nIndirect membership in Group A|D
   G-->|Group C invited to Project X|E
 ```
+
+![Project members page](img/project_members_v17_4.png)
+
+In the above example:
+
+- **Administrator** is an inherited member from the **demo** group.
+- **User 0** is an inherited member from the **demo** group.
+- **User 1** is a shared member from the **Acme** group that is invited to this project.
+- **User 2** is an inherited shared member from the **Toolbox** group that is invited to the **demo** group.
+- **User 3** is a direct member added to this project.
 
 ## Add users to a project
 
@@ -115,51 +125,12 @@ role for the group. For example, the maximum role you can set is:
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
-## Inherited membership
-
-When your project belongs to a group, project members inherit their role
-from the group.
-
-![Project members page](img/project_members_v14_4.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
-  which contains the project.
-- **User 1** has been added directly to the project. In the **Source** column, they are listed
-  as a **Direct member**.
-- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
-  They have inherited their role in the project from the **demo** group.
+## Updating expiration and role
 
 If a user is:
 
-- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
-- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group that the member originates from.
-
-## Indirect membership
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/444476) in GitLab 16.10 [with a flag](../../feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-If your project belongs to a group, the users gain membership to the project through either inheritance from a parent group or through sharing the project or the project's parent group with another group.
-
-![Project members page](img/project_members_v16_10.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** and **User 1** have the Guest role in the project. They have indirect membership through **Twitter** group, which contains the project.
-- **Administrator** is the [Owner](../../permissions.md) of the group.
-
-If a user is:
-
-- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly in the project.
-- An indirect member from a parent group or shared group, the **Expiration** and **Max role** fields must be updated in the group that the member originates from.
+- A direct member of a project, the **Expiration** and **Role** fields can be updated directly on the project.
+- An inherited, shared, or inherited shared member, the **Expiration** and **Role** fields must be updated on the group that the member originates from.
 
 ## Add groups to a project
 
@@ -291,11 +262,11 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
-### Display inherited members
+### Display indirect members
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
-1. In the **Filter members** box, select `Membership` `=` `Inherited`.
+1. In the **Filter members** box, select `Membership` `=` `Indirect`.
 1. Press <kbd>Enter</kbd>.
 
 ### Search for members in a project
@@ -313,7 +284,7 @@ You can sort members in ascending or descending order by:
 
 - **Account** name
 - **Access granted** date
-- **Max role** the members have in the group
+- **Role** the members have in the project
 - **User created** date
 - **Last activity** date
 - **Last sign-in** date

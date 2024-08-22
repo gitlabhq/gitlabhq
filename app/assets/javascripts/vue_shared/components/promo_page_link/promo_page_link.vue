@@ -7,7 +7,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
  * Component to link to GitLab website.
  *
  * @example
- * <promo-page-link href="pricing">
+ * <promo-page-link path="pricing">
  *   Usage Quotas help.
  * </promo-page-link>
  */
@@ -17,17 +17,17 @@ export default {
     GlLink,
   },
   props: {
-    href: {
+    path: {
       type: String,
       required: true,
     },
   },
   computed: {
     compiledHref() {
-      return joinPaths(PROMO_URL, this.href);
+      return joinPaths(PROMO_URL, this.path);
     },
     attributes() {
-      const { href, ...attrs } = this.$attrs;
+      const { path, ...attrs } = this.$attrs;
       return attrs;
     },
   },
