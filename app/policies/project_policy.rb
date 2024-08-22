@@ -496,11 +496,6 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
   end
 
-  rule { ~anonymous & can?(:metrics_dashboard) }.policy do
-    enable :create_metrics_user_starred_dashboard
-    enable :read_metrics_user_starred_dashboard
-  end
-
   rule { packages_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:package))
   end
@@ -600,7 +595,6 @@ class ProjectPolicy < BasePolicy
     enable :read_deploy_token
     enable :create_deploy_token
     enable :destroy_deploy_token
-    enable :read_prometheus_alerts
     enable :admin_terraform_state
     enable :create_freeze_period
     enable :read_freeze_period

@@ -277,7 +277,7 @@ describe('diffs/components/app', () => {
       });
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
         store.state.diffs.diffFiles,
       );
     });
@@ -583,7 +583,7 @@ describe('diffs/components/app', () => {
       });
 
       expect(wrapper.findComponent({ name: 'DynamicScroller' }).exists()).toBe(true);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
         store.state.diffs.diffFiles,
       );
     });

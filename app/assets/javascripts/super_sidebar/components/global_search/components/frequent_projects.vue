@@ -6,19 +6,24 @@ import FrequentItems from './frequent_items.vue';
 
 export default {
   name: 'FrequentlyVisitedProjects',
+  components: {
+    FrequentItems,
+  },
+  inject: ['projectsPath'],
   apollo: {
     frecentProjects: {
       query: currentUserFrecentProjectsQuery,
     },
   },
-  components: {
-    FrequentItems,
-  },
-  inject: ['projectsPath'],
   i18n: {
     groupName: s__('Navigation|Frequently visited projects'),
     viewAllText: s__('Navigation|View all my projects'),
     emptyStateText: s__('Navigation|Projects you visit often will appear here.'),
+  },
+  computed: {
+    items() {
+      return this.frecentProjects || [];
+    },
   },
   FREQUENTLY_VISITED_PROJECTS_HANDLE,
 };
@@ -29,7 +34,7 @@ export default {
     :loading="$apollo.queries.frecentProjects.loading"
     :empty-state-text="$options.i18n.emptyStateText"
     :group-name="$options.i18n.groupName"
-    :items="frecentProjects"
+    :items="items"
     view-all-items-icon="project"
     :view-all-items-text="$options.i18n.viewAllText"
     :view-all-items-path="projectsPath"

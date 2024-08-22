@@ -54,7 +54,7 @@ class RemoveCrmContactsWidgetFromWorkItemTypes < Gitlab::Database::Migration[2.2
 
     WidgetDefinition.upsert_all(
       widgets,
-      unique_by: :index_work_item_widget_definitions_on_default_witype_and_name
+      on_duplicate: :skip
     )
   end
 end

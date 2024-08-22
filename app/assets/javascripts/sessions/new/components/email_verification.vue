@@ -30,6 +30,10 @@ export default {
     UpdateEmail,
   },
   props: {
+    username: {
+      type: String,
+      required: true,
+    },
     obfuscatedEmail: {
       type: String,
       required: true,
@@ -168,6 +172,7 @@ export default {
     <gl-form v-else @submit.prevent="verify">
       <section class="gl-mb-5">
         <gl-sprintf :message="$options.i18n.explanation">
+          <template #username>{{ username }}</template>
           <template #email>
             <strong>{{ email }}</strong>
           </template>

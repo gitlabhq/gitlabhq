@@ -229,6 +229,22 @@ e2e:test-on-gdk:
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
+e2e:test-product-analytics:
+  extends:
+    - .qa:rules:e2e:test-on-gdk
+  stage: qa
+  allow_failure: true
+  variables:
+    PIPELINE_NAME: E2E Product Analytics
+    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
+    GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+  needs:
+    - build-gdk-image
+    - build-qa-image
+  trigger:
+    project: gitlab-org/analytics-section/product-analytics/devkit
+    strategy: depend
+
 e2e:test-on-cng:
   extends:
     - .e2e-trigger-base

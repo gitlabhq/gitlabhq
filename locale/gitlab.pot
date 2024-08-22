@@ -10150,6 +10150,9 @@ msgstr ""
 msgid "Buy now"
 msgstr ""
 
+msgid "Buy subscription"
+msgstr ""
+
 msgid "By default, all projects and groups use the global notifications setting."
 msgstr ""
 
@@ -13095,6 +13098,9 @@ msgstr ""
 msgid "CodeSuggestions|A user can be assigned a %{title} seat only once each billable month."
 msgstr ""
 
+msgid "CodeSuggestions|Before you can buy GitLab Duo seats, you'll need a Premium or Ultimate subscription."
+msgstr ""
+
 msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
 msgstr ""
 
@@ -13123,6 +13129,12 @@ msgid "CodeSuggestions|Manage seat assignments for %{addOnName}."
 msgstr ""
 
 msgid "CodeSuggestions|Run health check"
+msgstr ""
+
+msgid "CodeSuggestions|To buy GitLab Duo seats and regain access, you'll need a Premium or Ultimate subscription."
+msgstr ""
+
+msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
 msgstr ""
 
 msgid "CodeSuggestions|trial"
@@ -27211,9 +27223,6 @@ msgstr ""
 msgid "IdentityVerification|For added security, you'll need to verify your identity."
 msgstr ""
 
-msgid "IdentityVerification|For added security, you'll need to verify your identity. We've sent a verification code to %{email}"
-msgstr ""
-
 msgid "IdentityVerification|GitLab will not charge or store your payment information, it will only be used for verification."
 msgstr ""
 
@@ -27350,6 +27359,9 @@ msgid "IdentityVerification|We've sent a verification code to +%{phoneNumber}"
 msgstr ""
 
 msgid "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity in a few quick steps."
+msgstr ""
+
+msgid "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity. We've sent a verification code to %{email}"
 msgstr ""
 
 msgid "IdentityVerification|You will receive a text containing a code. Standard charges may apply."
@@ -48237,6 +48249,11 @@ msgstr ""
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{scanners} of %{severities} severity level"
+msgid_plural "SecurityOrchestration|%{scanners} of %{severities} severity levels"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityOrchestration|%{state} and %{statuses}"
 msgstr ""
 
@@ -48292,6 +48309,9 @@ msgid "SecurityOrchestration|All projects linked to security policy project."
 msgstr ""
 
 msgid "SecurityOrchestration|All projects linked to this project except:"
+msgstr ""
+
+msgid "SecurityOrchestration|All scanners"
 msgstr ""
 
 msgid "SecurityOrchestration|All sources"
@@ -48678,6 +48698,9 @@ msgid "SecurityOrchestration|Required approvals exceed eligible approvers."
 msgstr ""
 
 msgid "SecurityOrchestration|Requires no approvals if any of the following occur:"
+msgstr ""
+
+msgid "SecurityOrchestration|Resolve the following vulnerabilities that are no longer detected on the default branch:"
 msgstr ""
 
 msgid "SecurityOrchestration|Resolved"

@@ -44,6 +44,7 @@ issues:
 - issuable_severity
 - issuable_sla
 - issue_assignees
+- issue_stage_events
 - search_data
 - closed_by
 - epic_issue
@@ -228,6 +229,7 @@ merge_requests:
 - merge_head_diff
 - merge_request_context_commits
 - merge_request_context_commit_diff_files
+- merge_request_stage_events
 - events
 - merge_requests_closing_issues
 - cached_closes_issues
@@ -823,7 +825,6 @@ project:
 - jira_imports
 - compliance_framework_settings
 - compliance_management_frameworks
-- metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
 - freeze_periods

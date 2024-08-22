@@ -27,6 +27,7 @@ module SessionsHelper
 
   def verification_data(user)
     {
+      username: user.username,
       obfuscated_email: obfuscated_email(verification_email(user)),
       verify_path: session_path(:user),
       resend_path: users_resend_verification_code_path,

@@ -160,7 +160,7 @@ describe('IssuableItem', () => {
       it('returns `issuable.assignees` reference when it is available', () => {
         wrapper = createComponent();
 
-        expect(wrapper.vm.assignees).toBe(mockIssuable.assignees);
+        expect(wrapper.vm.assignees).toStrictEqual(mockIssuable.assignees);
       });
     });
 

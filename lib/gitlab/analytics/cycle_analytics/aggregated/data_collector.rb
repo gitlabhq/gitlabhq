@@ -15,7 +15,7 @@ module Gitlab
 
           MAX_COUNT = 10001
 
-          delegate :serialized_records, to: :records_fetcher
+          delegate :serialized_records, :records_for_graphql, to: :records_fetcher
 
           def initialize(stage:, params: {})
             @stage = stage

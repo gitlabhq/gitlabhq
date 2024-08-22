@@ -16238,6 +16238,29 @@ The edge type for [`ValueStream`](#valuestream).
 | <a id="valuestreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="valuestreamedgenode"></a>`node` | [`ValueStream`](#valuestream) | The item at the end of the edge. |
 
+#### `ValueStreamStageItemsConnection`
+
+The connection type for [`ValueStreamStageItems`](#valuestreamstageitems).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageitemsconnectionedges"></a>`edges` | [`[ValueStreamStageItemsEdge]`](#valuestreamstageitemsedge) | A list of edges. |
+| <a id="valuestreamstageitemsconnectionnodes"></a>`nodes` | [`[ValueStreamStageItems]`](#valuestreamstageitems) | A list of nodes. |
+| <a id="valuestreamstageitemsconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ValueStreamStageItemsEdge`
+
+The edge type for [`ValueStreamStageItems`](#valuestreamstageitems).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageitemsedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="valuestreamstageitemsedgenode"></a>`node` | [`ValueStreamStageItems`](#valuestreamstageitems) | The item at the end of the edge. |
+
 #### `VulnerabilitiesCountByDayConnection`
 
 The connection type for [`VulnerabilitiesCountByDay`](#vulnerabilitiescountbyday).
@@ -33352,6 +33375,17 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 | <a id="valuestreamstagemetricsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue or the merge request. |
 | <a id="valuestreamstagemetricstimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Aggregation timeframe. Filters the issue or the merge request creation time for FOSS projects, and the end event timestamp for licensed projects or groups. |
 
+### `ValueStreamStageItems`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageitemsduration"></a>`duration` | [`String`](#string) | Duration of the item on the stage. |
+| <a id="valuestreamstageitemsdurationinmilliseconds"></a>`durationInMilliseconds` | [`BigInt`](#bigint) | Duration of item on stage in milliseconds. |
+| <a id="valuestreamstageitemsendeventtimestamp"></a>`endEventTimestamp` | [`Time`](#time) | When exited the stage. |
+| <a id="valuestreamstageitemsrecord"></a>`record` | [`Issuable`](#issuable) | Item record. |
+
 ### `ValueStreamStageMetrics`
 
 #### Fields
@@ -33361,6 +33395,28 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 | <a id="valuestreamstagemetricsaverage"></a>`average` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Average duration in seconds. |
 | <a id="valuestreamstagemetricscount"></a>`count` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Limited item count. The backend counts maximum 1000 items, for free projects, and maximum 10,000 items for licensed projects or licensed groups. |
 | <a id="valuestreamstagemetricsmedian"></a>`median` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Median duration in seconds. |
+
+#### Fields with arguments
+
+##### `ValueStreamStageMetrics.items`
+
+Items in the stage.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ValueStreamStageItemsConnection`](#valuestreamstageitemsconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagemetricsitemssort"></a>`sort` | [`ValueStreamStageItemSort`](#valuestreamstageitemsort) | Sort stage items by criteria. |
 
 ### `VulnerabilitiesCountByDay`
 
@@ -37669,6 +37725,17 @@ Stage event identifiers.
 | <a id="valuestreamstageeventmerge_request_merged"></a>`MERGE_REQUEST_MERGED` | Merge request merged event. |
 | <a id="valuestreamstageeventmerge_request_reviewer_first_assigned"></a>`MERGE_REQUEST_REVIEWER_FIRST_ASSIGNED` | Merge request reviewer first assigned event. |
 | <a id="valuestreamstageeventplan_stage_start"></a>`PLAN_STAGE_START` | Plan stage start event. |
+
+### `ValueStreamStageItemSort`
+
+Sorting values available to value stream stage items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="valuestreamstageitemsortduration_asc"></a>`DURATION_ASC` | Duration by ascending order. |
+| <a id="valuestreamstageitemsortduration_desc"></a>`DURATION_DESC` | Duration by ascending order. |
+| <a id="valuestreamstageitemsortend_event_asc"></a>`END_EVENT_ASC` | Stage end event time by ascending order. |
+| <a id="valuestreamstageitemsortend_event_desc"></a>`END_EVENT_DESC` | Stage end event time by descending order. |
 
 ### `VerificationStateEnum`
 

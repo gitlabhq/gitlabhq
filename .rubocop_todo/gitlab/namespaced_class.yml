@@ -385,7 +385,6 @@ Gitlab/NamespacedClass:
     - 'app/policies/project_policy.rb'
     - 'app/policies/project_snippet_policy.rb'
     - 'app/policies/project_statistics_policy.rb'
-    - 'app/policies/prometheus_alert_policy.rb'
     - 'app/policies/protected_branch_access_policy.rb'
     - 'app/policies/protected_branch_policy.rb'
     - 'app/policies/release_policy.rb'

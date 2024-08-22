@@ -53,7 +53,7 @@ describe('IssuableForm', () => {
 
         wrapper.vm.handleUpdateSelectedLabels(labels);
 
-        expect(wrapper.vm.selectedLabels).toBe(labels);
+        expect(wrapper.vm.selectedLabels).toStrictEqual(labels);
       });
     });
   });

@@ -42,6 +42,15 @@ module Gitlab
             end
           end
         end
+
+        def records_for_graphql
+          query_with_select = query.select(subject_class.arel_table[Arel.star], *time_columns)
+
+          records =
+            order_by(query_with_select, sort, direction).limit(MAX_RECORDS)
+
+          preload_associations(records)
+        end
         # rubocop: enable CodeReuse/ActiveRecord
 
         private

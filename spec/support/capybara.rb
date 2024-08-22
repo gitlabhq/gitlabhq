@@ -13,30 +13,6 @@ timeout = ENV['CI'] || ENV['CI_SERVER'] ? 30 : 10
 # Support running Capybara on a specific port to allow saving commonly used pages
 Capybara.server_port = ENV['CAPYBARA_PORT'] if ENV['CAPYBARA_PORT']
 
-# Define an error class for JS console messages
-JSConsoleError = Class.new(StandardError)
-
-# Filter out innocuous JS console messages
-JS_CONSOLE_FILTER = Regexp.union(
-  [
-    '"[HMR] Waiting for update signal from WDS..."',
-    '"[WDS] Hot Module Replacement enabled."',
-    '"[WDS] Live Reloading enabled."',
-    'Download the Vue Devtools extension',
-    'Download the Apollo DevTools',
-    "Unrecognized feature: 'interest-cohort'",
-    'Does this page need fixes or improvements?',
-
-    # Needed after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933
-    # which opts out gitlab from FloC by default
-    # see https://web.dev/floc/ for more info on FloC
-    "Origin trial controlled feature not enabled: 'interest-cohort'",
-
-    # ERR_CONNECTION error could happen due to automated test session disabling browser network request
-    'net::ERR_CONNECTION'
-  ]
-)
-
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 
 SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 150 : 99
@@ -139,6 +115,7 @@ end
 
 RSpec.configure do |config|
   config.include CapybaraHelpers, type: :feature
+  config.include BrowserConsoleHelpers, type: :feature
 
   config.before(:context, :js) do
     # This prevents Selenium from creating thousands of connections while waiting for
@@ -159,6 +136,8 @@ RSpec.configure do |config|
   end
 
   config.before(:example, :js) do
+    clear_browser_logs
+
     session = Capybara.current_session
 
     allow(Gitlab::Application.routes).to receive(:default_url_options).and_return(
@@ -200,17 +179,8 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
-    # when a test fails, display any messages in the browser's console
-    # but fail don't add the message if the failure is a pending test that got
-    # fixed. If we raised the `JSException` the fixed test would be marked as
-    # failed again.
     if example.exception && !example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
-      console = page.driver.browser.logs.get(:browser)&.reject { |log| log.message =~ JS_CONSOLE_FILTER }
-
-      if console.present?
-        message = "Unexpected browser console output:\n" + console.map(&:message).join("\n")
-        raise JSConsoleError, message
-      end
+      raise_if_unexpected_browser_console_output
     end
 
     # prevent localStorage from introducing side effects based on test order

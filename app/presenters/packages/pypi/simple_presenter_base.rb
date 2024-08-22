@@ -13,7 +13,7 @@ module Packages
       end
 
       def body
-        <<-HTML
+        <<-HTML.lstrip
         <!DOCTYPE html>
         <html>
           <head>

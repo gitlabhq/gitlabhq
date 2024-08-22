@@ -65,6 +65,20 @@ module Gitlab
             end
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
+          def records_for_graphql
+            # Convert duration milliseconds to seconds to be compatible with non-aggregated data format
+            extra_columns_to_select = ['duration_in_milliseconds / 1000 AS total_time']
+
+            preloads_for_issuable = MAPPINGS.fetch(subject_class).fetch(:includes_for_query)
+
+            query
+              .limit(MAX_RECORDS)
+              .select(stage_event_model.arel_table[Arel.star], extra_columns_to_select)
+              .preload(issuable: preloads_for_issuable)
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
           def limited_query
             query
               .page(page)

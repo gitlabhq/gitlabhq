@@ -75,7 +75,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_LOAD_BADGES, badges);
 
       expect(store.state.isLoading).toBe(false);
-      expect(store.state.badges).toBe(badges);
+      expect(store.state.badges).toStrictEqual(badges);
     });
   });
 
@@ -168,7 +168,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_RENDERED_BADGE, dummyBadge);
 
       expect(store.state.isRendering).toBe(false);
-      expect(store.state.renderedBadge).toBe(dummyBadge);
+      expect(store.state.renderedBadge).toStrictEqual(dummyBadge);
     });
   });
 
@@ -220,7 +220,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_UPDATED_BADGE, newBadge);
 
       expect(store.state.badges.length).toBe(badgeCount);
-      expect(store.state.badges[badgeIndex]).toBe(newBadge);
+      expect(store.state.badges[badgeIndex]).toStrictEqual(newBadge);
     });
   });
 
@@ -389,7 +389,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.UPDATE_BADGE_IN_FORM, dummyBadge);
 
-      expect(store.state.badgeInEditForm).toBe(dummyBadge);
+      expect(store.state.badgeInEditForm).toStrictEqual(dummyBadge);
     });
 
     it('sets badgeInAddForm if isEditing is false', () => {
@@ -397,7 +397,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.UPDATE_BADGE_IN_FORM, dummyBadge);
 
-      expect(store.state.badgeInAddForm).toBe(dummyBadge);
+      expect(store.state.badgeInAddForm).toStrictEqual(dummyBadge);
     });
   });
 
@@ -412,7 +412,7 @@ describe('Badges store mutations', () => {
     it('sets badgeInModal', () => {
       store.commit(types.UPDATE_BADGE_IN_MODAL, dummyBadge);
 
-      expect(store.state.badgeInModal).toBe(dummyBadge);
+      expect(store.state.badgeInModal).toStrictEqual(dummyBadge);
     });
   });
 });

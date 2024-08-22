@@ -168,8 +168,8 @@ describe('Code Coverage', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.selectedDailyCoverage).not.toBe(originalSelectedData);
-      expect(wrapper.vm.selectedDailyCoverage).toBe(expectedData);
+      expect(wrapper.vm.selectedDailyCoverage).not.toStrictEqual(originalSelectedData);
+      expect(wrapper.vm.selectedDailyCoverage).toStrictEqual(expectedData);
     });
   });
 });

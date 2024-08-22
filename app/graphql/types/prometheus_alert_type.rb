@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# All references to this type are deprecated and always return nil,
+# so this type should no longer be initialized
 module Types
   class PrometheusAlertType < BaseObject
     graphql_name 'PrometheusAlert'
     description 'The alert condition for Prometheus'
 
-    authorize :read_prometheus_alerts
+    authorize :admin_operations
 
     field :id, GraphQL::Types::ID, null: false,
       description: 'ID of the alert condition.'

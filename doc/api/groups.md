@@ -547,6 +547,7 @@ Example response:
 ## List a group's invited groups
 
 Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 

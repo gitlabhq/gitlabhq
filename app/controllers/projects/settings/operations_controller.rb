@@ -5,7 +5,6 @@ module Projects
     class OperationsController < Projects::ApplicationController
       layout 'project_settings'
       before_action :authorize_admin_operations!
-      before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
 
       before_action do
         push_frontend_feature_flag(:integrated_error_tracking, project)

@@ -922,12 +922,16 @@
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
+      changes: *ruby-version-patterns
+    - <<: *if-merge-request
       changes: *qa-patterns
+    - <<: *if-merge-request
+      changes: *gitaly-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *ci-build-images-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
       changes: *code-qa-patterns
     # Rules to support .qa:rules:package-and-test-ee
@@ -939,7 +943,12 @@
       changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
+    - <<: *if-merge-request
+      changes: *gdk-component-patterns
 
+# These rules have to include rules from ".qa:rules:e2e:test-on-gdk" which are also used
+# for "e2e:test-product-analytics" job in "qa.gitkab-ci.yml".
+# "e2e:test-product-analytics" job requires QA image to be built.
 .build-images:rules:build-qa-image:
   rules:
     - <<: *if-not-canonical-namespace
@@ -1784,7 +1793,6 @@
     # - !reference [".qa:rules:e2e-schedule-blocking", rules]
     # - <<: *if-merge-request
     #   changes: *cng-orchestrator-patterns
-
 
 .qa:rules:package-and-test-nightly:
   rules:

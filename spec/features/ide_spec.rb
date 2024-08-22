@@ -31,7 +31,7 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
   end
 
   shared_examples "new Web IDE" do
-    it 'loads new Web IDE', :aggregate_failures, :js_fail_console_error do
+    it 'loads new Web IDE', :aggregate_failures do
       iframe = find(ide_iframe_selector)
 
       page.within_frame(iframe) do
@@ -40,6 +40,8 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
         # Verify that the built-in GitLab Workflow Extension loads
         expect(page).to have_css('#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions')
       end
+
+      expect_page_to_have_no_console_errors
     end
   end
 

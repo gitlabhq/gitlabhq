@@ -1796,6 +1796,48 @@ If you are stubbing an `ee` feature flag, then use:
   stub_licensed_features(my_feature_flag: false)
 ```
 
+#### Asserting browser console errors
+
+By default, feature specs won't fail if a browser console error is found. Sometimes we want to cover that there are not
+unexpected console errors which could indicate an integration problem.
+
+To set a feature spec to fail if it encounters browser console errors, use `expect_page_to_have_no_console_errors` from
+the `BrowserConsoleHelpers` support module:
+
+```ruby
+RSpec.describe 'Pipeline', :js do
+  after do
+    expect_page_to_have_no_console_errors
+  end
+
+  # ...
+end
+```
+
+NOTE:
+`expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
+using the Chrome driver.
+
+Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
+**will not** fail if the message is observed, you can pass an `allow:` parameter to
+`expect_page_to_have_no_console_errors`:
+
+```ruby
+RSpec.describe 'Pipeline', :js do
+  after do
+    expect_page_to_have_no_console_errors(allow: [
+      "Blow up!",
+      /Foo.*happens/
+    ])
+  end
+
+  # ...
+end
+```
+
+Update the `BROWSER_CONSOLE_ERROR_FILTER` constant in `spec/support/helpers/browser_console_helpers.rb` to change
+the list of console errors that should be globally ignored.
+
 ### Debugging
 
 You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs goes though the commands quickly and leaves you no time to look around.
