@@ -14,7 +14,7 @@ module Import
     def accept
       result = ::Import::SourceUsers::AcceptReassignmentService.new(source_user, current_user: current_user).execute
 
-      if result.status == :success
+      if result.success?
         flash[:raw] = banner('accept_invite')
         redirect_to(dashboard_groups_path)
       else
@@ -23,7 +23,9 @@ module Import
     end
 
     def decline
-      if source_user.reject
+      result = ::Import::SourceUsers::RejectReassignmentService.new(source_user, current_user: current_user).execute
+
+      if result.success?
         flash[:raw] = banner('reject_invite')
         redirect_to(dashboard_groups_path)
       else

@@ -33,19 +33,19 @@ export default {
 </script>
 <template>
   <div data-testid="work-item-linked-items-list">
-    <h4
+    <h3
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-mb-2 gl-ml-3 gl-mt-3 gl-text-sm gl-font-semibold gl-text-gray-700"
+      class="gl-text-sm gl-font-semibold gl-text-subtle gl-mx-5 gl-mt-4 gl-mb-2"
     >
       {{ heading }}
-    </h4>
+    </h3>
     <div class="work-items-list-body">
       <ul ref="list" class="work-items-list content-list">
         <li
           v-for="linkedItem in linkedItems"
           :key="linkedItem.workItem.id"
-          class="!gl-border-b-0 !gl-pb-0 !gl-pt-0"
+          class="!gl-py-0 !-gl-mx-3 !gl-border-b-0"
         >
           <work-item-link-child-contents
             :child-item="linkedItem.workItem"

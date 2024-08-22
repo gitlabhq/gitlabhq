@@ -1,12 +1,12 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
@@ -63,15 +63,18 @@ describe('WorkItemRelationships', () => {
       mocks: {
         $toast,
       },
+      stubs: {
+        CrudComponent,
+      },
     });
 
     await waitForPromises();
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
-  const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('links-empty');
-  const findLinkedItemsCountContainer = () => wrapper.findByTestId('linked-items-count');
+  const findErrorMessage = () => wrapper.findComponent(GlAlert);
+  const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
+  const findLinkedItemsCountContainer = () => wrapper.findByTestId('crud-count');
   const findLinkedItemsHelpLink = () => wrapper.findByTestId('help-link');
   const findAllWorkItemRelationshipListComponents = () =>
     wrapper.findAllComponents(WorkItemRelationshipList);
@@ -88,7 +91,7 @@ describe('WorkItemRelationships', () => {
   it('renders the component with with defaults', async () => {
     await createComponent();
 
-    expect(wrapper.find('.work-item-relationships').exists()).toBe(true);
+    expect(wrapper.findByTestId('work-item-relationships').exists()).toBe(true);
     expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
     expect(findAddButton().exists()).toBe(true);
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
@@ -126,7 +129,7 @@ describe('WorkItemRelationships', () => {
       workItemQueryHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
-    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+    expect(findErrorMessage().text()).toBe(errorMessage);
   });
 
   it('does not render add button when there is no permission', async () => {
@@ -202,7 +205,7 @@ describe('WorkItemRelationships', () => {
 
       await waitForPromises();
 
-      expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+      expect(findErrorMessage().text()).toBe(errorMessage);
     },
   );
 

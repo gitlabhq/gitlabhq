@@ -27,6 +27,24 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
       it { is_expected.to validate_presence_of(:reassign_to_user_id) }
     end
+
+    context 'when rejected' do
+      subject { build(:import_source_user, :rejected) }
+
+      it { is_expected.not_to validate_absence_of(:reassign_to_user_id) }
+    end
+
+    context 'when pending_reassignment' do
+      subject { build(:import_source_user, :pending_reassignment) }
+
+      it { is_expected.to validate_absence_of(:reassign_to_user_id) }
+    end
+
+    context 'when keep_as_placeholder' do
+      subject { build(:import_source_user, :keep_as_placeholder) }
+
+      it { is_expected.to validate_absence_of(:reassign_to_user_id) }
+    end
   end
 
   describe 'scopes' do
@@ -75,35 +93,6 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       import_source_user = create(:import_source_user, :awaiting_approval, reassign_to_user: nil)
 
       expect { import_source_user.accept! }.to raise_error(StateMachines::InvalidTransition)
-    end
-  end
-
-  describe 'after_transition callbacks' do
-    subject(:source_user) { create(:import_source_user, :awaiting_approval, :with_reassign_to_user) }
-
-    it 'does not unset reassign_to_user on other transitions' do
-      expect { source_user.accept! }
-        .not_to change { source_user.reload.reassign_to_user }
-    end
-
-    it 'unsets reassign_to_user when rejected' do
-      expect { source_user.reject! }
-        .to change { source_user.reload.reassign_to_user }
-        .from(an_instance_of(User)).to(nil)
-    end
-
-    it 'unsets reassign_to_user when assignment is cancelled' do
-      expect { source_user.cancel_reassignment! }
-        .to change { source_user.reload.reassign_to_user }
-              .from(an_instance_of(User)).to(nil)
-    end
-
-    it 'unsets reassign_to_user when kept as placeholder' do
-      source_user = create(:import_source_user, :with_reassign_to_user)
-
-      expect { source_user.keep_as_placeholder! }
-        .to change { source_user.reload.reassign_to_user }
-        .from(an_instance_of(User)).to(nil)
     end
   end
 

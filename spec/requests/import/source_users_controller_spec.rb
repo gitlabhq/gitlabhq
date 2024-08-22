@@ -93,16 +93,18 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
   describe 'POST /decline' do
     let(:path) { decline_import_source_user_path(source_user) }
+    let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
 
     subject(:reject_invite) { post path }
 
     context 'when signed in' do
       before do
         sign_in(source_user.reassign_to_user)
+        allow(message_delivery).to receive(:deliver_now)
+        allow(Notify).to receive(:import_source_user_rejected).and_return(message_delivery)
       end
 
       it { expect { reject_invite }.to change { source_user.reload.rejected? }.from(false).to(true) }
-      it { expect { reject_invite }.to change { source_user.reload.reassign_to_user }.from(instance_of(User)).to(nil) }
 
       it 'redirects with a notice' do
         reject_invite

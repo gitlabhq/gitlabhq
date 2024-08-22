@@ -181,11 +181,7 @@ export default {
 </script>
 
 <template>
-  <gl-form
-    class="gl-new-card-add-form"
-    data-testid="link-work-item-form"
-    @submit.stop.prevent="linkWorkItem"
-  >
+  <gl-form data-testid="link-work-item-form" @submit.stop.prevent="linkWorkItem">
     <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
@@ -216,34 +212,35 @@ export default {
         :max-selection-limit="maxWorkItems"
         @searching="searchInProgress = $event"
       />
-      <div v-if="errorMessage" class="gl-mb-2 gl-text-red-500">
+      <div v-if="errorMessage" class="gl-mb-2 gl-text-danger">
         {{ $options.i18n.maxItemsErrorMessage }}
       </div>
-      <div v-if="!errorMessage" data-testid="max-work-item-note" class="gl-text-gray-500">
+      <div v-if="!errorMessage" data-testid="max-work-item-note" class="gl-text-subtle">
         {{ $options.i18n.maxItemsNoteLabel }}
       </div>
       <div
         v-if="showWorkItemsToAddInvalidMessage"
-        class="gl-text-red-500"
+        class="gl-text-danger"
         data-testid="work-items-invalid"
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
     </div>
-    <gl-button
-      data-testid="link-work-item-button"
-      category="primary"
-      variant="confirm"
-      size="small"
-      type="submit"
-      :disabled="isSubmitButtonDisabled"
-      :loading="isSubmitting"
-      class="gl-mr-2"
-    >
-      {{ $options.i18n.addButtonLabel }}
-    </gl-button>
-    <gl-button category="secondary" size="small" @click="$emit('cancel')">
-      {{ s__('WorkItem|Cancel') }}
-    </gl-button>
+    <div class="gl-flex gl-gap-3">
+      <gl-button
+        data-testid="link-work-item-button"
+        category="primary"
+        variant="confirm"
+        size="small"
+        type="submit"
+        :disabled="isSubmitButtonDisabled"
+        :loading="isSubmitting"
+      >
+        {{ $options.i18n.addButtonLabel }}
+      </gl-button>
+      <gl-button category="secondary" size="small" @click="$emit('cancel')">
+        {{ s__('WorkItem|Cancel') }}
+      </gl-button>
+    </div>
   </gl-form>
 </template>

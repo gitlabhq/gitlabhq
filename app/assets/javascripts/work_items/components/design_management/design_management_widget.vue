@@ -1,19 +1,21 @@
 <script>
+import { GlAlert } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { findDesignWidget } from '~/work_items/utils';
 
-import WidgetWrapper from '../widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getWorkItemDesignListQuery from './graphql/design_collection.query.graphql';
 import Design from './design_item.vue';
 import DesignVersionDropdown from './design_version_dropdown.vue';
 
 export default {
   components: {
+    GlAlert,
     Design,
     DesignVersionDropdown,
-    WidgetWrapper,
+    CrudComponent,
   },
   inject: ['fullPath'],
   props: {
@@ -95,14 +97,21 @@ export default {
 </script>
 
 <template>
-  <widget-wrapper v-if="hasDesigns" data-testid="designs-root" :error="error">
-    <template #header>
-      <span class="gl-mr-3 gl-font-bold">{{ s__('DesignManagement|Designs') }}</span>
-    </template>
-    <template #header-suffix>
+  <crud-component
+    v-if="hasDesigns"
+    anchor-name="designs"
+    :title="s__('DesignManagement|Designs')"
+    data-testid="designs-root"
+  >
+    <template #title>
       <design-version-dropdown :all-versions="allVersions" />
     </template>
-    <template #body>
+
+    <template #default>
+      <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+        {{ error }}
+      </gl-alert>
+
       <ol class="list-unstyled row gl-px-3">
         <li
           v-for="design in designs"
@@ -111,7 +120,7 @@ export default {
         >
           <design
             v-bind="design"
-            class="gl-bg-white"
+            class="gl-bg-default"
             :is-uploading="false"
             :work-item-iid="workItemIid"
           />
@@ -119,5 +128,5 @@ export default {
       </ol>
       <router-view :key="$route.fullPath" :all-designs="designs" />
     </template>
-  </widget-wrapper>
+  </crud-component>
 </template>

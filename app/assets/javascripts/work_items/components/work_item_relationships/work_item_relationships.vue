@@ -1,9 +1,10 @@
 <script>
 import { produce } from 'immer';
-import { GlLoadingIcon, GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
@@ -13,7 +14,6 @@ import {
   LINKED_ITEMS_ANCHOR,
 } from '../../constants';
 
-import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
@@ -21,11 +21,10 @@ import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 export default {
   helpPath: helpPagePath('/user/okrs.md#linked-items-in-okrs'),
   components: {
-    GlLoadingIcon,
-    GlIcon,
+    GlAlert,
     GlButton,
     GlLink,
-    WidgetWrapper,
+    CrudComponent,
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
     WorkItemMoreActions,
@@ -94,7 +93,6 @@ export default {
       linksRelatesTo: [],
       linksIsBlockedBy: [],
       linksBlocks: [],
-      isShownLinkItemForm: false,
       widgetName: LINKED_ITEMS_ANCHOR,
       showLabels: true,
     };
@@ -119,15 +117,15 @@ export default {
       return this.linkedWorkItems.length;
     },
     isEmptyRelatedWorkItems() {
-      return !this.isShownLinkItemForm && !this.error && this.linkedWorkItems.length === 0;
+      return !this.error && this.linkedWorkItems.length === 0;
     },
   },
   methods: {
     showLinkItemForm() {
-      this.isShownLinkItemForm = true;
+      this.$refs.widget.showForm();
     },
     hideLinkItemForm() {
-      this.isShownLinkItemForm = false;
+      this.$refs.widget.hideForm();
     },
     async removeLinkedItem(linkedItem) {
       try {
@@ -204,24 +202,17 @@ export default {
 };
 </script>
 <template>
-  <widget-wrapper
-    :error="error"
-    class="work-item-relationships"
-    :widget-name="widgetName"
-    @dismissAlert="error = undefined"
+  <crud-component
+    ref="widget"
+    :anchor-id="widgetName"
+    :title="$options.i18n.title"
+    :count="linkedWorkItemsCount"
+    icon="issues"
+    :is-loading="isLoading"
+    is-collapsible
+    data-testid="work-item-relationships"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">
-          {{ $options.i18n.title }}
-        </h3>
-        <div v-if="linkedWorkItemsCount" class="gl-new-card-count">
-          <gl-icon name="link" class="gl-mr-2" />
-          <span data-testid="linked-items-count">{{ linkedWorkItemsCount }}</span>
-        </div>
-      </div>
-    </template>
-    <template #header-right>
+    <template #actions>
       <gl-button
         v-if="canAdminWorkItemLink"
         data-testid="link-item-add-button"
@@ -240,88 +231,89 @@ export default {
         @toggle-show-labels="showLabels = !showLabels"
       />
     </template>
-    <template #body>
-      <div class="gl-new-card-content gl-px-0">
-        <work-item-add-relationship-form
-          v-if="isShownLinkItemForm"
-          :work-item-id="workItemId"
-          :work-item-iid="workItemIid"
-          :work-item-full-path="workItemFullPath"
-          :children-ids="childrenIds"
-          :work-item-type="workItemType"
-          @submitted="hideLinkItemForm"
-          @cancel="hideLinkItemForm"
-        />
-        <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
-        <template v-else>
-          <div v-if="!isShownLinkItemForm && isEmptyRelatedWorkItems" data-testid="links-empty">
-            <p class="gl-new-card-empty">
-              {{ $options.i18n.emptyStateMessage }}
-              <gl-link :href="$options.helpPath" data-testid="help-link">
-                {{ __('Learn more.') }}
-              </gl-link>
-            </p>
-          </div>
-          <template v-else>
-            <work-item-relationship-list
-              v-if="linksBlocks.length"
-              :class="{
-                'gl-mb-5 gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-border-b-solid':
-                  linksIsBlockedBy.length,
-              }"
-              :linked-items="linksBlocks"
-              :heading="$options.i18n.blockingTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-            <work-item-relationship-list
-              v-if="linksIsBlockedBy.length"
-              :class="{
-                'gl-mb-5 gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-border-b-solid':
-                  linksRelatesTo.length,
-              }"
-              :linked-items="linksIsBlockedBy"
-              :heading="$options.i18n.blockedByTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-            <work-item-relationship-list
-              v-if="linksRelatesTo.length"
-              :linked-items="linksRelatesTo"
-              :heading="$options.i18n.relatedToTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-          </template>
-        </template>
-      </div>
+
+    <template #form>
+      <work-item-add-relationship-form
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
+        :work-item-full-path="workItemFullPath"
+        :children-ids="childrenIds"
+        :work-item-type="workItemType"
+        @submitted="hideLinkItemForm"
+        @cancel="hideLinkItemForm"
+      />
     </template>
-  </widget-wrapper>
+
+    <template v-if="isEmptyRelatedWorkItems" #empty>
+      {{ $options.i18n.emptyStateMessage }}
+      <gl-link :href="$options.helpPath" data-testid="help-link">
+        {{ __('Learn more.') }}
+      </gl-link>
+    </template>
+
+    <template #default>
+      <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+        {{ error }}
+      </gl-alert>
+
+      <work-item-relationship-list
+        v-if="linksBlocks.length"
+        class="gl-pb-3"
+        :class="{
+          'gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-default':
+            linksIsBlockedBy.length || linksRelatesTo.length,
+        }"
+        :linked-items="linksBlocks"
+        :heading="$options.i18n.blockingTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+      <work-item-relationship-list
+        v-if="linksIsBlockedBy.length"
+        class="gl-pb-3"
+        :class="{
+          'gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-default': linksRelatesTo.length,
+        }"
+        :linked-items="linksIsBlockedBy"
+        :heading="$options.i18n.blockedByTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+      <work-item-relationship-list
+        v-if="linksRelatesTo.length"
+        class="gl-pb-3"
+        :linked-items="linksRelatesTo"
+        :heading="$options.i18n.relatedToTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+    </template>
+  </crud-component>
 </template>
