@@ -159,6 +159,7 @@ module API
         mount ::API::Hooks::TriggerTest, with: {
           entity: ProjectHook
         }
+        mount ::API::Hooks::ResendHook
       end
     end
   end

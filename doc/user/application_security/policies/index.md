@@ -327,6 +327,8 @@ If you have group or instance [push rules that do not allow branch name patterns
 
 The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.
 
+Starting from GitLab 17.4, newly created security policy projects will bypass the existing group or instance push rules to allow branches and commit message with any patterns. This exception applies only to the security policy project and does not affect other projects.
+
 ### Troubleshooting common security policy issues
 
 - Confirm that scanners are properly configured and producing results for the latest branch.

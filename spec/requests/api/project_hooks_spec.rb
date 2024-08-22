@@ -69,6 +69,9 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
     it_behaves_like 'test web-hook endpoint'
     it_behaves_like 'POST webhook API endpoints with a branch filter', '/projects/:id'
     it_behaves_like 'PUT webhook API endpoints with a branch filter', '/projects/:id'
+    it_behaves_like 'resend web-hook event endpoint' do
+      let(:unauthorized_user) { user3 }
+    end
 
     it_behaves_like 'get web-hook event endpoint' do
       let(:unauthorized_user) { user3 }

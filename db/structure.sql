@@ -17807,6 +17807,7 @@ CREATE TABLE security_orchestration_policy_rule_schedules (
     rule_index integer DEFAULT 0 NOT NULL,
     project_id bigint,
     namespace_id bigint,
+    policy_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_915825a76e CHECK ((char_length(cron) <= 255))
 );
 

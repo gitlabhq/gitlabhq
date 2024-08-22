@@ -1,4 +1,4 @@
-- bulk_imports_disabled = !Gitlab::CurrentSettings.bulk_import_enabled?
+- bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled? || Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
 
 = gitlab_ui_form_with url: configure_import_bulk_imports_path(namespace_id: params[:parent_id]), class: 'gl-show-field-errors' do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-gray-100.gl-border-1.gl-p-5.gl-mt-4
@@ -8,7 +8,7 @@
       = render Pajamas::ButtonComponent.new(href: history_import_bulk_imports_path, category: :secondary, variant: :confirm, size: :small) do
         = s_('BulkImport|View import history')
 
-    - if bulk_imports_disabled
+    - if !bulk_imports_enabled
       = render Pajamas::AlertComponent.new(dismissible: false, variant: :tip) do |c|
         - c.with_body do
           = s_('GroupsNew|Importing groups by direct transfer is currently disabled.')
@@ -33,7 +33,7 @@
       = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
     .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'
-      = f.text_field :bulk_import_gitlab_url, disabled: bulk_imports_disabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
+      = f.text_field :bulk_import_gitlab_url, disabled: !bulk_imports_enabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
         required: true,
         title: s_('GroupsNew|Enter the URL for the source instance.'),
         id: 'import_gitlab_url',
@@ -48,10 +48,10 @@
         = safe_format(s_('GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.'), tag_pair('<code></code>'.html_safe, :code_start , :code_end), tag_pair(pat_link, :pat_link_start, :pat_link_end), tag_pair(short_living_link, :short_living_link_start, :short_living_link_end))
       = f.password_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,
-        disabled: bulk_imports_disabled,
+        disabled: !bulk_imports_enabled,
         autocomplete: 'off',
         title: s_('GroupsNew|Please fill in your personal access token.'),
         id: 'import_gitlab_token',
         data: { testid: 'import-gitlab-token' }
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit s_('GroupsNew|Connect instance'), disabled: bulk_imports_disabled, pajamas_button: true, data: { testid: 'connect-instance-button' }
+    = f.submit s_('GroupsNew|Connect instance'), disabled: !bulk_imports_enabled, pajamas_button: true, data: { testid: 'connect-instance-button' }

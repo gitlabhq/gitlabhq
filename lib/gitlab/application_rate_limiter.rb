@@ -45,6 +45,7 @@ module Gitlab
           web_hook_calls_mid: { interval: 1.minute },
           web_hook_calls_low: { interval: 1.minute },
           web_hook_test: { threshold: 5, interval: 1.minute },
+          web_hook_event_resend: { threshold: 5, interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists: { threshold: 20, interval: 1.minute },
           user_followers: { threshold: 100, interval: 1.minute },

@@ -225,6 +225,7 @@ To inspect the request and response details of a webhook event:
 
 To send the request again with the same data and the same [`Idempotency-Key` header](#delivery-headers)), select **Resend Request**.
 If the webhook URL has changed, you cannot resend the request.
+For programmatic resends, please refer to our [API documentation](../../../api/projects.md#resend-project-hook-event).
 
 ## Webhook receiver requirements
 

@@ -60007,6 +60007,9 @@ msgstr ""
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
+msgid "WebHooks|The current user is not authorized to resend a hook event"
+msgstr ""
+
 msgid "WebIDE|Fork project"
 msgstr ""
 

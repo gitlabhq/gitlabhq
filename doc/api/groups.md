@@ -2048,6 +2048,31 @@ GET /groups/:id/hooks/:hook_id/events
 ]
 ```
 
+### Resend group hook event
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+
+Resends a specific hook event.
+
+This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
+To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+[disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+
+```plaintext
+POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
+```
+
+| Attribute | Type             | Required | Description             |
+|-----------|------------------|----------|-------------------------|
+| `hook_id` | integer          | Yes      | The ID of a group hook. |
+| `hook_event_id`      | integer | Yes      | The ID of a hook event. |
+
+```json
+{
+  "response_status": 200
+}
+```
+
 ### Add group hook
 
 Adds a hook to a specified group.

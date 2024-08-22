@@ -835,6 +835,66 @@ RSpec.shared_examples 'test web-hook endpoint' do
   end
 end
 
+RSpec.shared_examples 'resend web-hook event endpoint' do
+  include StubRequests
+
+  before do
+    stub_full_request(hook.url, method: :post).to_return(status: 200)
+  end
+
+  let_it_be(:log) { create(:web_hook_log, web_hook: hook, response_status: '404') }
+
+  it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_event_resend do
+    let(:current_user) { user }
+
+    def request
+      post api("#{hook_uri}/events/#{log.id}/resend", current_user, admin_mode: current_user.admin?), params: {}
+    end
+
+    context 'when ops flag is disabled' do
+      before do
+        stub_feature_flags(web_hook_event_resend_api_endpoint_rate_limit: false)
+      end
+
+      it 'does not block the request' do
+        request
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+  end
+
+  it 'successfully posts a hook' do
+    post api("#{hook_uri}/events/#{log.id}/resend", user, admin_mode: user.admin?), params: {}
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(json_response['response_status']).to eq(200)
+  end
+
+  it "returns a 404 error when web hook log not found" do
+    post api("#{hook_uri}/events/#{non_existing_record_id}/resend", user, admin_mode: user.admin?), params: {}
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it "return 403 when current user is not authorized" do
+    post api("#{hook_uri}/events/#{log.id}/resend", unauthorized_user, admin_mode: false), params: {}
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  context 'when hook URL has changed' do
+    let_it_be(:log) { create(:web_hook_log, web_hook: hook, response_status: '404', url_hash: 'new_hash') }
+
+    it "returns 422" do
+      post api("#{hook_uri}/events/#{log.id}/resend", user, admin_mode: user.admin?), params: {}
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('The hook URL has changed, and this log entry cannot be retried')
+    end
+  end
+end
+
 RSpec.shared_examples 'get web-hook event endpoint' do
   describe 'hooks events' do
     let_it_be(:log_200) { create(:web_hook_log, web_hook: hook) }

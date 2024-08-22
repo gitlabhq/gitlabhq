@@ -34,7 +34,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. |
+| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed). |
 
 Example request:
