@@ -190,6 +190,10 @@ dast_profiles_tags:
   - table: tags
     column: tag_id
     on_delete: async_delete
+dast_scanner_profiles:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_scanner_profiles_builds:
   - table: ci_builds
     column: ci_build_id

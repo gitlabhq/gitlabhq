@@ -221,12 +221,6 @@ module QA
           config.default_normalize_ws = true
         end
 
-        Chemlab.configure do |config|
-          config.browser = Capybara.current_session.driver.browser # reuse Capybara session
-          config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
-          config.hide_banner = true
-        end
-
         @configured = true
       end
 

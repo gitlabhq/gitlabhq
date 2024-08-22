@@ -7,7 +7,7 @@ feature_categories:
 description: A scanner profile defines the scanner settings used to run an on-demand scan
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37404
 milestone: '13.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

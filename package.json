@@ -297,6 +297,7 @@
     "miragejs": "^0.1.40",
     "mock-apollo-client": "1.2.0",
     "nodemon": "^2.0.19",
+    "postcss-loader": "^8.1.1",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prosemirror-test-builder": "^1.1.1",
     "stylelint": "^16.1.0",

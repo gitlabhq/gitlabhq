@@ -71,16 +71,16 @@ card "**Redis**" as redis #FF6347
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]--> monitor
+elb -[#6a9be7,norank]--> monitor
 
 gitlab -[#32CD32]--> gitaly
 gitlab -[#32CD32]--> postgres
-gitlab -[#32CD32]-> object_storage
+gitlab -[#32CD32]> object_storage
 gitlab -[#32CD32]--> redis
 
-sidekiq -[#ff8dd1]r-> object_storage
-sidekiq -[#ff8dd1]----> redis
-sidekiq .[#ff8dd1]----> postgres
+sidekiq -[#ff8dd1]> object_storage
+sidekiq -[#ff8dd1]--> redis
+sidekiq .[#ff8dd1]--> postgres
 sidekiq -[hidden]-> monitor
 
 monitor .[#7FFFD4]u-> gitlab
@@ -382,8 +382,6 @@ the Linux package:
    redis['bind'] = '0.0.0.0'
    redis['port'] = 6379
    redis['password'] = 'SECRET_PASSWORD_HERE'
-
-   gitlab_rails['enable'] = false
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -957,6 +955,7 @@ running [Prometheus](../monitoring/prometheus/index.md):
    1.1.1.3: gitaly1
    1.1.1.4: rails1
    1.1.1.5: rails2
+   1.1.1.6: sidekiq
    ```
 
    Add the following to `/etc/gitlab/gitlab.rb`:
@@ -1003,13 +1002,13 @@ running [Prometheus](../monitoring/prometheus/index.md):
      {
         'job_name': 'gitlab-sidekiq',
         'static_configs' => [
-        'targets' => ['1.1.1.4:8082', '1.1.1.5:8082'],
+        'targets' => ['1.1.1.6:8082'],
         ],
      },
      {
         'job_name': 'static-node',
         'static_configs' => [
-        'targets' => ['1.1.1.1:9100', '1.1.1.2:9100', '1.1.1.3:9100', '1.1.1.4:9100', '1.1.1.5:9100'],
+        'targets' => ['1.1.1.1:9100', '1.1.1.2:9100', '1.1.1.3:9100', '1.1.1.4:9100', '1.1.1.5:9100', '1.1.1.6:9100'],
         ],
      },
    ]

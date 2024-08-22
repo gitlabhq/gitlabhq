@@ -1,5 +1,6 @@
 import { GlDisclosureDropdown, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
@@ -77,5 +78,22 @@ describe('WorkItemMoreActions', () => {
   it('show labels toggle emits event when clicked on the dropdown item', () => {
     findToggleDropdownItem().vm.$emit('action');
     expect(wrapper.emitted('toggle-show-labels')).toStrictEqual([[]]);
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(() => {
+      createComponent({ workItemType: 'Epic' });
+    });
+
+    it('View on roadmap button should have tracking', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(findDropdownItems().at(1).element);
+
+      findDropdownItems().at(1).vm.$emit('action');
+      await nextTick();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('view_epic_on_roadmap', {}, undefined);
+    });
   });
 });

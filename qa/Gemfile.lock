@@ -8,13 +8,6 @@ PATH
       rake (~> 13.0)
 
 PATH
-  remote: gems/chemlab-gitlab
-  specs:
-    chemlab-library-gitlab (0.3.0)
-      chemlab (~> 0.9)
-      zeitwerk (~> 2.4)
-
-PATH
   remote: gems/gitlab-cng
   specs:
     gitlab-cng (0.0.1)
@@ -77,16 +70,7 @@ GEM
     capybara-screenshot (1.0.26)
       capybara (>= 1.0, < 4)
       launchy
-    chemlab (0.11.1)
-      colorize (~> 0.8)
-      i18n (~> 1.8)
-      rake (>= 12, < 14)
-      selenium-webdriver (>= 3, < 5)
-      watir (>= 6, < 8)
-    chemlab-library-www-gitlab-com (0.1.1)
-      chemlab (~> 0.4)
     coderay (1.1.2)
-    colorize (0.8.1)
     concurrent-ruby (1.2.3)
     crass (1.0.6)
     debug_inspector (1.1.0)
@@ -375,9 +359,6 @@ GEM
     uuid (2.3.9)
       macaddr (~> 1.0)
     warning (1.4.0)
-    watir (7.1.0)
-      regexp_parser (>= 1.2, < 3)
-      selenium-webdriver (~> 4.0)
     websocket (1.2.10)
     wisper (2.0.1)
     xpath (3.2.0)
@@ -393,9 +374,6 @@ DEPENDENCIES
   allure-rspec (~> 2.24.5)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
-  chemlab (~> 0.11, >= 0.11.1)
-  chemlab-library-gitlab!
-  chemlab-library-www-gitlab-com (~> 0.1, >= 0.1.1)
   deprecation_toolkit (~> 2.2.0)
   factory_bot (~> 6.4.6)
   faker (~> 3.4, >= 3.4.2)

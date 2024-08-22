@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.1 (2024-08-20)
+
+### Fixed (3 changes)
+
+- [Merge branch '444926-fix-bug-in-resolve-vulnerabilities-migration' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac8a0cdc00b76c5ad84e8d18f3a7e49ebea2a538)
+- [Turn NotFound from Gitaly into 404 for InfoRefs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3566c2625d62857246b215e191fb137091de1650)
+- [Fix timeout when checking group dependencies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3f3bdb24b185196875a3989f0378d237243e80f6) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Include language server version in code suggestions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b4b98955c5fa55911631800c3cd48f6224bf664) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Do not run pipelines when resolving vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef9c251b19c1ad7aedb591870158fc0085ee5fd9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4360))
+- [Add Octokit::ResponseValidation middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/08d547262c574b00135fb71105e52f03dc3ca8c0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4375))
+- [IP restriction to prevent all group permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e080f2d2c5a578df52f202505e993c560fec6cb2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4368))
+- [Destroy associated releases when removing a tag via Git CLI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b79ada987b82fa756e6ae74f7527dcde8c30d08f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4365))
+
 ## 17.3.0 (2024-08-14)
 
 ### Added (143 changes)
@@ -726,6 +745,35 @@ entry.
 - [Protected packages: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/c84c1efb2b0d204765ba121e9ad523d44fdb3712) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146173))
 - [Dynamically gets the column type for assertion](https://gitlab.com/gitlab-org/gitlab/-/commit/1389a3daffd104925cce71776903cbf527723222) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159099))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c94fca35b909440ec66ea35c97ab11aa847dde58) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158180))
+
+## 17.2.4 (2024-08-21)
+
+### Security (1 change)
+
+- [Always build assets image when tagging](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d0e661baad53be4fb7eef3b530b544d05a609953) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4386))
+
+## 17.2.3 (2024-08-20)
+
+### Fixed (3 changes)
+
+- [Turn NotFound from Gitaly into 404 for InfoRefs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdd5159fa1f8259dbf92333cf13a2968e814d307)
+- [Fix empty dependency list page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71fc48e515cffcbc46ad4f824dc1990a0eb3b08a) **GitLab Enterprise Edition**
+- [Properly handle empty repository.ff_merge in FromTrainRef merge strategy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63c5e1ce261f03549f19a36867ed83cd928a2c5f) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Include language server version in code suggestions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c9c47052794e5d5bfc86d78c5fdd91c4b910a8b8) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Do not run pipelines when resolving vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a8fa8c6fd40731c93986e54f56d6b581f4dfa92) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4307))
+- [Add Octokit::ResponseValidation middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8cf13d24a0f5aa07c0236238b2a3d61d82615e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4376))
+- [IP restriction to prevent all group permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4b540bf88e05c7e39803652bdbba8978c74ebab6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4340))
+- [Destroy associated releases when removing a tag via Git CLI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb033e98e00bc242a92d7091406f7c91e98a3079) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4366))
+
+### Other (1 change)
+
+- [Check if columns exist before running credit card hashing migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6b7ac482714a0da707cab36e685378d5067d891)
 
 ## 17.2.2 (2024-08-06)
 
@@ -1547,6 +1595,29 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/121d4e81b497b6795650aef58122a92222d91894) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155349))
 - [Remove "use_remote_mirror_destroy_service" feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/74e1e921d003960afd6f259384aee2dfec18f30e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155852))
 - [Protected containers: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/4606b5ef64f75acdd581258a0b93034195626e83) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146177))
+
+## 17.1.6 (2024-08-21)
+
+### Security (1 change)
+
+- [Always build assets image when tagging](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b10a04aa687e6fbdf6c26b5756dcbb3748728e9a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4385))
+
+## 17.1.5 (2024-08-20)
+
+### Fixed (1 change)
+
+- [Properly handle empty repository.ff_merge in FromTrainRef merge strategy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b3fa341da06a3cbec69e2c32c5b3a336fcba6df7) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Include language server version in code suggestions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02b9f967f7f68865d6dfcfd550e9967689239791) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Do not run pipelines when resolving vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b962ee1ac8f2ab653435937008c5c4d869aa17f8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4308))
+- [Add Octokit::ResponseValidation middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f0483d356530afafa070302e50f34a12634b28a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4377))
+- [IP restriction to prevent all group permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aecd6dd35b1bfd45d1cb7442afc9a9bf312310b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4341))
+- [Destroy associated releases when removing a tag via Git CLI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7478a869a7a2722377da289a6b16d77b608ccfc2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4367))
 
 ## 17.1.4 (2024-08-06)
 

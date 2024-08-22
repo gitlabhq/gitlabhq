@@ -6,6 +6,7 @@ import {
   GlToggle,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { workItemRoadmapPath } from '../../utils';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '../../constants';
 
@@ -22,6 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     workItemIid: {
       type: String,
@@ -113,7 +115,11 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <gl-disclosure-dropdown-item v-if="shouldShowViewRoadmapAction" :item="viewOnARoadmap" />
+      <gl-disclosure-dropdown-item
+        v-if="shouldShowViewRoadmapAction"
+        :item="viewOnARoadmap"
+        @action="trackEvent('view_epic_on_roadmap')"
+      />
     </gl-disclosure-dropdown>
   </div>
 </template>

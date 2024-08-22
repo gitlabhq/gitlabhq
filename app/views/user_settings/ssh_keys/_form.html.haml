@@ -21,7 +21,7 @@
       .col.form-group
         .js-access-tokens-expires-at{ data: {min_date: Date.tomorrow, max_date: max_date, default_date_offset: 365, description: ssh_key_expires_field_description } }
           = f.label :expires_at, s_('Profiles|Expiration date'), class: 'label-bold'
-          = f.text_field :expires_at, class: "gl-datepicker-input form-control gl-form-input", placeholder: 'YYYY-MM-DD', min: Date.tomorrow, max: max_date, data: { js_name: 'expiresAt' }
+          = f.text_field :expires_at, class: "form-control gl-form-input", placeholder: 'YYYY-MM-DD', min: Date.tomorrow, max: max_date, data: { js_name: 'expiresAt' }
           %p.form-text.text-muted= ssh_key_expires_field_description
 
     .js-add-ssh-key-validation-warning.hide

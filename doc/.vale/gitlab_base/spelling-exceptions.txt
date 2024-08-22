@@ -152,7 +152,6 @@ ChatOps
 checksummable
 checksummed
 checksumming
-Chemlab
 chipset
 chipsets
 CIDRs

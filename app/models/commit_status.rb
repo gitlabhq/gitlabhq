@@ -50,7 +50,7 @@ class CommitStatus < Ci::ApplicationRecord
   validates :name, presence: true, unless: :importing?
   validates :ci_stage, presence: true, on: :create, unless: :importing?
   validates :ref, :target_url, :description, length: { maximum: 255 }
-  validates :project, presence: true, on: :create
+  validates :project, presence: true
 
   alias_attribute :author, :user
   alias_attribute :pipeline_id, :commit_id

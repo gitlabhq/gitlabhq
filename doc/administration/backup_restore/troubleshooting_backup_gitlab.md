@@ -204,6 +204,14 @@ You should verify that the secrets are the root cause before deleting any data.
    TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs CASCADE;
    ```
 
+## Container registry is not restored
+
+If you restore a backup from an environment that uses the [container registry](../../user/packages/container_registry/index.md) 
+to a newly installed environment where the container registry is not enabled, the container registry is not restored.
+
+To also restore the container registry, you need to [enable it](../packages/container_registry.md#enable-the-container-registry) in the new
+environment before you restore the backup.
+
 ## Container registry push failures after restoring from a backup
 
 If you use the [container registry](../../user/packages/container_registry/index.md),

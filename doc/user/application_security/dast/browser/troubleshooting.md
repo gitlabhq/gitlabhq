@@ -113,6 +113,9 @@ dast:
     DAST_LOG_FILE_CONFIG: "loglevel:debug,cache:warn"           # file log defaults to DEBUG level, logs CACHE module at WARN
 ```
 
+By default, the file log is a job artifact called `gl-dast-scan.log`.
+To [configure this path](configuration/variables.md), modify the `DAST_LOG_FILE_PATH` CI/CD variable.
+
 ### Log levels
 
 The log levels that can be configured are as follows:

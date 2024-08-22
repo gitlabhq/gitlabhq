@@ -17,8 +17,6 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/parameter_filter'
-require 'chemlab_gitlab'
-
 module QA
   root = "#{__dir__}/qa"
 
@@ -100,7 +98,6 @@ Warning.process do |warning|
   QA::Runtime::Logger.warn(warning.strip)
 end
 
-Warning.ignore(/already initialized constant Chemlab::Vendor|previous definition of Vendor was here/)
 # ignore faraday-multipart warning produced by octokit as it is only required for functionality we don't use
 # see: https://github.com/octokit/octokit.rb/issues/1701
 Warning.ignore(/To use multipart middleware with Faraday v2\.0/)

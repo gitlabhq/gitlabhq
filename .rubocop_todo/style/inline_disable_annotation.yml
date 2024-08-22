@@ -2416,7 +2416,6 @@ Style/InlineDisableAnnotation:
     - 'metrics_server/override_gitlab_current_settings.rb'
     - 'metrics_server/override_rails_constants.rb'
     - 'metrics_server/settings_overrides.rb'
-    - 'qa/chemlab-library-gitlab.gemspec'
     - 'qa/qa/ee/page/admin/subscription.rb'
     - 'qa/qa/ee/page/main/banner.rb'
     - 'qa/qa/ee/page/project/monitor/on_call_schedule/index.rb'

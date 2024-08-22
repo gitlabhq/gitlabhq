@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Octokit::Middleware, feature_category: :importers do
-  let(:app) { double(:app) }
+RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
+  let(:app) { instance_double(Octokit::Response::RaiseError) }
   let(:middleware) { described_class.new(app) }
 
   shared_examples 'Allowed URL' do
