@@ -309,7 +309,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           expect(page).to have_content(comment)
           expect(page).to have_content "#{user.name} closed"
 
-          new_discussion = all(comments_selector)[-2]
+          new_discussion = all(comments_selector)[-1]
 
           expect(new_discussion).to have_selector '.discussion'
         end

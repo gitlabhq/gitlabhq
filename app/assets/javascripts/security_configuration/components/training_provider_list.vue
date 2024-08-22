@@ -231,7 +231,7 @@ export default {
     </gl-alert>
     <div
       v-if="isLoading"
-      class="gl-bg-white gl-py-6 gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100"
+      class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-white gl-py-6"
     >
       <gl-skeleton-loader :width="350" :height="44">
         <rect width="200" height="8" x="10" y="0" rx="4" />
@@ -239,10 +239,10 @@ export default {
         <rect width="100" height="8" x="10" y="35" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <ul v-else class="gl-list-none gl-m-0 gl-p-0">
+    <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
         <gl-card :body-class="{ 'gl-bg-gray-10': !securityTrainingEnabled }">
-          <div class="gl-display-flex">
+          <div class="gl-flex">
             <gl-toggle
               :value="provider.isEnabled"
               :label="__('Training mode')"
@@ -261,8 +261,8 @@ export default {
               ></div>
             </div>
             <div class="gl-ml-3">
-              <div class="gl-display-flex gl-justify-content-space-between">
-                <h3 class="gl-font-lg gl-m-0 gl-mb-2">
+              <div class="gl-flex gl-justify-between">
+                <h3 class="gl-m-0 gl-mb-2 gl-text-lg">
                   {{ provider.name }}
                 </h3>
                 <span

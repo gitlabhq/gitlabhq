@@ -201,6 +201,7 @@ export default {
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
           :internal-note="isDiscussionInternal"
+          :variant="diffLine ? 'diff' : ''"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <template #avatar-badge>

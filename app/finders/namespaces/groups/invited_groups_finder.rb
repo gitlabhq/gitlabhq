@@ -29,7 +29,7 @@ module Namespaces
 
         group_links = group_group_links(group, include_relations)
         groups = Group.id_in(group_links.select(:shared_with_group_id)).public_or_visible_to_user(current_user)
-        groups = filter_groups(groups)
+        groups = apply_filters(groups)
         sort(groups).with_route
       end
 

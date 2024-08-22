@@ -195,7 +195,7 @@ export default {
         v-if="urlHasChanged"
         variant="warning"
         :dismissible="false"
-        class="gl-my-4 gl-form-input-xl"
+        class="gl-form-input-xl gl-my-4"
       >
         {{ $options.i18n.tokenWillBeCleared }}
       </gl-alert>

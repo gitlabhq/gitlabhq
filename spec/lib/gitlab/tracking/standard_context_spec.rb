@@ -68,6 +68,13 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       let(:project_id) { 2 }
       let(:namespace_id) { 3 }
       let(:plan_name) { "plan name" }
+      let(:hostname) { 'example.com' }
+      let(:version) { '17.3.0' }
+
+      before do
+        allow(Gitlab::Environment).to receive(:hostname).and_return(hostname)
+        allow(Gitlab).to receive(:version_info).and_return(version)
+      end
 
       subject do
         described_class.new(user_id: user_id, project_id: project_id, namespace_id: namespace_id, plan_name: plan_name)
@@ -80,6 +87,8 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:project_id]).to eq(project_id)
         expect(json_data[:namespace_id]).to eq(namespace_id)
         expect(json_data[:plan]).to eq(plan_name)
+        expect(json_data[:host_name]).to eq(hostname)
+        expect(json_data[:instance_version]).to eq(version)
       end
     end
 

@@ -81,7 +81,7 @@ export default {
 
     <br />
 
-    <div class="gl-display-flex gl-align-items-center">
+    <div class="gl-flex gl-items-center">
       <gl-toggle
         :disabled="isRunningMutation"
         :value="toggleValue"

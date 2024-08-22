@@ -496,10 +496,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   .diff-content {
     margin-left: 2.5rem;
 
-    &.outdated-lines-wrapper {
-      margin-left: 0;
-    }
-
     .line_holder td:first-of-type {
       @include gl-border-l;
     }

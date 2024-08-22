@@ -31,12 +31,12 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const ICON_COLORS = {
-  check: 'gl-bg-green-100 gl-text-green-700',
-  'merge-request-close': 'gl-bg-red-100 gl-text-red-700',
-  merge: 'gl-bg-blue-100 gl-text-blue-700',
-  'issue-close': 'gl-bg-blue-100 gl-text-blue-700',
-  issues: 'gl-bg-green-100 gl-text-green-700',
-  error: 'gl-bg-red-100 gl-text-red-700',
+  check: 'gl-bg-green-100 gl-text-green-700 icon-success',
+  'merge-request-close': 'gl-bg-red-100 gl-text-red-700 icon-danger',
+  merge: 'gl-bg-blue-100 gl-text-blue-700 icon-info',
+  'issue-close': 'gl-bg-blue-100 gl-text-blue-700 icon-info',
+  issues: 'gl-bg-green-100 gl-text-green-700 icon-success',
+  error: 'gl-bg-red-100 gl-text-red-700 icon-danger',
 };
 
 export default {
@@ -60,6 +60,11 @@ export default {
     note: {
       type: Object,
       required: true,
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -147,28 +152,33 @@ export default {
 <template>
   <timeline-entry-item
     :id="noteAnchorId"
-    :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
-    class="note system-note note-wrapper"
+    :class="{
+      target: isTargetNote,
+      'pr-0': shouldShowDescriptionVersion,
+      [`system-note-variant-${variant}`]: variant,
+    }"
+    class="system-note-v2"
   >
     <div
       :class="[
         iconBgClass,
         {
-          'system-note-icon': isAllowedIcon,
-          'system-note-tiny-dot !gl-bg-gray-900': !isAllowedIcon,
+          'system-note-icon-v2 gl-h-6 gl-w-6 gl-ml-2 -gl-mt-1': isAllowedIcon,
+          'system-note-dot gl-h-3 gl-w-3 gl-mt-3 -gl-top-1 gl-ml-4 gl-border-2 gl-border-gray-50 gl-border-solid gl-bg-gray-900':
+            !isAllowedIcon,
         },
       ]"
-      class="timeline-icon gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
+      class="gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
     >
       <gl-icon
         v-if="isAllowedIcon"
         :name="systemNoteIconName"
-        :size="12"
+        :size="14"
         data-testid="timeline-icon"
       />
     </div>
-    <div class="timeline-content">
-      <div class="note-header">
+    <div class="gl-ml-7">
+      <div class="gl-flex gl-justify-between gl-items-start">
         <note-header
           :author="note.author"
           :created-at="note.created_at"
@@ -203,29 +213,36 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body">
+      <div class="note-body-v2 gl-pl-3 gl-pb-3">
         <div
           v-safe-html="note.note_html"
-          :class="{ 'system-note-commit-list': hasMoreCommits, 'hide-shade': expanded }"
-          class="note-text md"
+          :class="{
+            'gl-block gl-overflow-hidden': hasMoreCommits,
+            'system-note-commit-list-v2': hasMoreCommits && !expanded,
+          }"
+          class="note-text-v2 md"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div
-            class="system-note-commit-list-toggler flex-row gl-pl-4 gl-pt-3"
+            class="flex-row gl-pl-4 gl-pt-3 gl-text-blue-500 gl-cursor-pointer hover:gl-underline gl-relative gl-z-2"
             @click="expanded = !expanded"
           >
             <gl-icon :name="toggleIcon" :size="12" class="gl-mr-2" />
             <span>{{ __('Toggle commit list') }}</span>
           </div>
         </div>
-        <div v-if="shouldShowDescriptionVersion" class="description-version gl-relative !gl-pt-3">
+        <div
+          v-if="shouldShowDescriptionVersion"
+          class="gl-relative !gl-pt-3"
+          data-testid="description-version"
+        >
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
             <gl-skeleton-loader />
           </pre>
           <pre
             v-else
             v-safe-html="descriptionVersion"
-            class="wrapper gl-mt-3 gl-whitespace-pre-wrap gl-pr-7"
+            class="gl-mt-3 gl-whitespace-pre-wrap gl-pr-7"
           ></pre>
           <gl-button
             v-if="displayDeleteButton"
@@ -243,7 +260,7 @@ export default {
         </div>
         <div
           v-if="lines.length && showLines"
-          class="diff-content outdated-lines-wrapper gl-mt-4 gl-overflow-hidden gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200"
+          class="gl-pl-0 gl-overflow-visible gl-my-2 gl-mr-5 gl-overflow-hidden gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200"
         >
           <table
             :class="$options.userColorSchemeClass"
@@ -268,7 +285,7 @@ export default {
             </tr>
           </table>
         </div>
-        <div v-else-if="showLines" class="mt-4">
+        <div v-else-if="showLines" class="gl-mt-4">
           <gl-skeleton-loader />
         </div>
       </div>

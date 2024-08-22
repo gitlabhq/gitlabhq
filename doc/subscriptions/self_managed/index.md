@@ -26,26 +26,24 @@ If you're purchasing a subscription for an existing **Free** GitLab self-managed
 instance, ensure you're purchasing enough seats to
 [cover your users](../../administration/admin_area.md#administering-users).
 
-### Subscription seats
+## How GitLab bills for users
 
 A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
-according to the [maximum number](#maximum-users) of users enabled during the subscription period.
-For instances that aren't offline or on a closed network, the maximum number of
+according to the [maximum number](#maximum-users) of users enabled during the
+subscription period.
+
+For instances that are not offline or on a closed network, the maximum number of
 simultaneous users in the GitLab self-managed installation is checked each quarter.
 
-If an instance is unable to generate a quarterly usage report, the existing [true up model](#users-over-subscription) is used.
-Prorated charges are not possible without a quarterly usage report.
-
-## View user totals
-
-View the lists of users in your instance:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Users**.
+If an instance is unable to generate a quarterly usage report, the existing
+[true up model](#users-over-subscription) is used. Prorated charges are not
+possible without a quarterly usage report.
 
 ### Billable users
 
 Billable users count toward the number of subscription seats purchased in your subscription.
+
+The number of billable users changes when you block, deactivate, or [add](#add-seats-to-a-subscription) users to your instance during your current subscription period.
 
 A user is not counted as a billable user if:
 
@@ -61,75 +59,46 @@ A user is not counted as a billable user if:
     - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
-    - Other [internal users](../../administration/internal_users.md#internal-users).
+    - Other [internal users](../../administration/internal_users.md).
 
 The amount of **Billable users** is reported once a day in the **Admin** area.
 
-#### Check daily and historical billable users
+### Users in license
 
-Prerequisites:
-
-- You must be an administrator.
-
-You can get a list of daily and historical billable users in your GitLab instance:
-
-1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Count the number of users in the instance:
-
-   ```ruby
-   User.billable.count
-   ```
-
-1. Get the historical maximum number of users on the instance from the past year:
-
-   ```ruby
-   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
-   ```
-
-#### Update daily and historical billable users
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can trigger a manual update of the daily and historical billable users in your GitLab instance.
-
-1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Force an update of the daily billable users:
-
-   ```ruby
-   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
-   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
-   ```
-
-1. Force an update of the historical max billable users:
-
-   ```ruby
-   ::HistoricalDataWorker.new.perform
-   ```
+The number of users you've paid for in the current license loaded on the system.
+The number does not change unless you add seats during your current subscription period.
 
 ### Maximum users
 
-The number of _maximum users_ reflects the highest peak of billable users for the current license period.
+The number of maximum users reflects the highest number of billable users on
+your system for the current license period.
 
 ### Users over subscription
 
-The number of _users over subscription_ shows how many users are in excess of the number allowed by the subscription. This number reflects the current subscription period.
+A GitLab subscription is valid for a specific number of seats.
+The number of users over subscription shows how many users are in excess of the
+number allowed by the subscription, in the current subscription period.
 
-For example, if:
+Calculated as `Maximum users` - `Users in subscription` for the current license
+term. For example, you purchase a subscription for 10 users.
 
-- The subscription allows 100 users and
-- **Maximum users** is 150,
+| Event                                              | Billable users   | Maximum users |
+|:---------------------------------------------------|:-----------------|:--------------|
+| Ten users occupy all 10 seats.                     | 10               | 10            |
+| Two new users join.                                | 12               | 12            |
+| Three users leave and their accounts are blocked.  | 9                | 12            |
+| Four new users join.                               | 13               | 13            |
 
-Then this value would be 50.
+Users over subscription = 13 - 10 (Maximum users - users in license)
 
-If the **Maximum users** value is less than or equal to 100, then this value is 0.
+The users over subscription value is always zero for trial license.
 
-A trial license always displays zero for **Users over subscription**.
+If users over subscription value is above zero, then you have more users in your
+GitLab instance than you are licensed for. You must pay for the additional users
+[before or at the time of renewal](../quarterly_reconciliation.md). This is
+called the _true up_ process. If you do not do this, your license key does not work.
 
-If you add more users to your GitLab instance than you are licensed for, payment for the additional users is due [at the time of renewal](../quarterly_reconciliation.md).
-
-If you do not add these users during the renewal process, your license key will not work.
+To view the number of users over subscription, go to the **Admin** area.
 
 ### Free Guest users
 
@@ -150,6 +119,58 @@ NOTE:
 If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
 as [external](../../administration/external_users.md).
+
+## View users
+
+View the lists of users in your instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Users**.
+
+Select a user to view their account information.
+
+### Check daily and historical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can get a list of daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+### Update daily and historical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```
 
 ## Manage users and subscription seats
 
@@ -289,20 +310,15 @@ You can view the status of your subscription:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
 
-The **Subscription** page includes the following details:
+The **Subscription** page includes the following information:
 
 - Licensee
 - Plan
 - When it was uploaded, started, and when it expires
-
-It also displays the following information:
-
-| Field              | Description |
-|:-------------------|:------------|
-| Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
-| Billable users     | The daily count of billable users on your system. The count may change as you block, deactivate, or add users to your instance. |
-| Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
-| Users over subscription | Calculated as `Maximum users` - `Users in subscription` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
+- Number of [users in license](#users-in-license)
+- Number of [billable users](#billable-users)
+- [Maximum users](#maximum-users)
+- Number of [users over subscription](#users-over-subscription)
 
 ## Export your license usage
 
@@ -324,7 +340,7 @@ The **License Usage** CSV includes the following details:
 - Generated at (the timestamp for when the file was exported)
 - Table of historical user counts for each day in the period:
   - Timestamp the count was recorded
-  - Billable user count
+  - [Billable user](#billable-users) count
 
 NOTES:
 
@@ -338,8 +354,8 @@ Do not open the license usage file. If you open the file, failures might occur w
 
 You can renew your subscription starting from 15 days before your subscription expires. To renew your subscription:
 
-1. [Prepare for renewal by reviewing your account.](#review-your-account)
-1. [Renew your GitLab self-managed subscription.](#renew-subscription-manually)
+1. [Prepare for renewal by reviewing your account](#review-your-account).
+1. [Renew your GitLab self-managed subscription](#renew-subscription-manually).
 
 ### Review your account
 
@@ -369,28 +385,6 @@ For more information, see the documentation on:
 Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
 if you need assistance accessing the Customers Portal or if you need to change
 the contact person who manages your subscription.
-
-#### Users over subscription
-
-A GitLab subscription is valid for a specific number of seats. The number of users over subscription
-is the number of _maximum users_ that exceed the users in subscription for the current subscription term.
-You must pay for this number of users either before renewal, or at the time of renewal. This is
-called the _true up_ process.
-
-To view the number of users over subscription go to the **Admin area**.
-
-##### Users over subscription example
-
-You purchase a subscription for 10 users.
-
-| Event                                              | Billable users | Maximum users |
-|:---------------------------------------------------|:-----------------|:--------------|
-| Ten users occupy all 10 seats.                     | 10               | 10            |
-| Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are blocked.  | 9                | 12            |
-| Four new users join.                               | 13               | 13            |
-
-Users over subscription = 13 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 
@@ -468,7 +462,7 @@ An invoice is generated for the renewal and available for viewing or download on
 
 When a subscription is set to auto-renew, it renews automatically on the expiration date (at midnight UTC) without a gap in available service. Subscriptions purchased through the Customers Portal are set to auto-renew by default.
 
-The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-user-totals) at the time of renewal, if that number is higher than the current subscription quantity. Before auto-renewal you should [prepare for the renewal](#review-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
+The number of user licenses is adjusted to fit the [number of billable users in your instance](#view-users) at the time of renewal, if that number is higher than the current subscription quantity. Before auto-renewal you should [prepare for the renewal](#review-your-account) at least 2 days before the renewal date, so that your changes synchronize to GitLab in time for your renewal. To auto-renew your subscription,
 you must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
 
 You can view and download your renewal invoice on the Customers Portal [Invoices](https://customers.gitlab.com/invoices) page. If your account has a [saved credit card](../customers_portal.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription, after which your GitLab tier is downgraded.

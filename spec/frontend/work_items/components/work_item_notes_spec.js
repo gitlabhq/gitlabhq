@@ -205,15 +205,18 @@ describe('WorkItemNotes component', () => {
     });
 
     it('puts form at start of list in when sorting by newest first', async () => {
-      await findActivityHeader().vm.$emit('changeSort', DESC);
+      findActivityHeader().vm.$emit('changeSort', DESC);
+      await nextTick();
 
-      expect(findAllListItems().at(0).is(WorkItemAddNote)).toEqual(true);
+      expect(findAllListItems().at(0).element.tagName).toBe('WORK-ITEM-ADD-NOTE-STUB');
     });
 
     it('puts form at end of list in when sorting by oldest first', async () => {
-      await findActivityHeader().vm.$emit('changeSort', ASC);
+      findActivityHeader().vm.$emit('changeSort', ASC);
+      await nextTick();
 
-      expect(findAllListItems().at(-1).is(WorkItemAddNote)).toEqual(true);
+      const lastIndex = findAllListItems().length - 1;
+      expect(findAllListItems().at(lastIndex).element.tagName).toBe('WORK-ITEM-ADD-NOTE-STUB');
     });
   });
 

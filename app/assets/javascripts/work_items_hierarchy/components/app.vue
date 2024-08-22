@@ -58,7 +58,7 @@ export default {
   <div>
     <gl-banner
       v-if="bannerVisible"
-      class="gl-mt-4 gl-px-5!"
+      class="gl-mt-4 !gl-px-5"
       :title="s__('Hierarchy|Help us improve work items in GitLab!')"
       :button-text="s__('Hierarchy|Take the work items survey')"
       button-link="https://forms.gle/u1BmRp8rTbwj52iq5"
@@ -73,7 +73,7 @@ export default {
         }}
       </p>
     </gl-banner>
-    <h3 class="gl-mt-5!">{{ s__('Hierarchy|Planning hierarchy') }}</h3>
+    <h3 class="!gl-mt-5">{{ s__('Hierarchy|Planning hierarchy') }}</h3>
     <p>
       {{
         s__(
@@ -82,18 +82,18 @@ export default {
       }}
     </p>
 
-    <div class="gl-font-bold gl-mb-2">{{ s__('Hierarchy|Current structure') }}</div>
-    <p class="gl-mb-3!">{{ s__('Hierarchy|You can start using these items now.') }}</p>
+    <div class="gl-mb-2 gl-font-bold">{{ s__('Hierarchy|Current structure') }}</div>
+    <p class="!gl-mb-3">{{ s__('Hierarchy|You can start using these items now.') }}</p>
     <hierarchy :work-item-types="workItemTypes.available" />
 
     <div
       v-if="hasUnavailableStructure"
       data-testid="unavailable-structure"
-      class="gl-font-bold gl-mt-5 gl-mb-2"
+      class="gl-mb-2 gl-mt-5 gl-font-bold"
     >
       {{ s__('Hierarchy|Unavailable structure') }}
     </div>
-    <p v-if="hasUnavailableStructure" class="gl-mb-3!">
+    <p v-if="hasUnavailableStructure" class="!gl-mb-3">
       {{ s__('Hierarchy|These items are unavailable in the current structure.') }}
     </p>
     <hierarchy :work-item-types="workItemTypes.unavailable" />

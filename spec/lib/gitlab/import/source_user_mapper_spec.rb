@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
+RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_category: :importers do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:import_type) { 'github' }
   let_it_be(:source_hostname) { 'github.com' }
@@ -76,6 +76,22 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
     context 'when the placeholder user limit has not been reached' do
       it_behaves_like 'creates an import_source_user and a unique placeholder user'
 
+      it 'caches the created object and does not query the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).once.and_call_original
+
+        2.times do
+          expect(described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_or_create_source_user(
+            source_name: source_name,
+            source_username: source_username,
+            source_user_identifier: source_user_identifier
+          ).source_user_identifier).to eq(source_user_identifier)
+        end
+      end
+
       context 'when retried and another source user is not created while waiting' do
         before do
           allow_next_instance_of(described_class) do |source_user_mapper|
@@ -133,6 +149,42 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
       let(:source_user_identifier) { '999999' }
 
       it { is_expected.to be_nil }
+
+      it 'does not cache the result and queries the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).twice.and_call_original
+
+        2.times do
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        end
+      end
+    end
+
+    context 'when called multiple times' do
+      it 'returns the same result' do
+        expect(find_source_user).to eq(
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        )
+      end
+
+      it 'caches the result and does not query the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).once.and_call_original
+
+        2.times do
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        end
+      end
     end
   end
 end

@@ -437,10 +437,10 @@ export default {
         {{ error }}
       </gl-alert>
       <h1 v-if="!hideFormTitle" class="page-title gl-text-xl gl-pb-5">{{ titleText }}</h1>
-      <div class="gl-flex gl-align-items-center gl-gap-4">
+      <div class="gl-flex gl-items-center gl-gap-4">
         <gl-form-group
           v-if="showProjectSelector"
-          class="gl-flex-grow gl-max-w-26"
+          class="gl-max-w-26 gl-flex-grow"
           :label="__('Project')"
         >
           <work-item-projects-listbox
@@ -453,7 +453,7 @@ export default {
         <gl-loading-icon v-if="$apollo.queries.workItemTypes.loading" size="lg" />
         <gl-form-group
           v-else-if="showWorkItemTypeSelect"
-          class="gl-flex-grow gl-max-w-26"
+          class="gl-max-w-26 gl-flex-grow"
           :label="__('Type')"
           label-for="work-item-type"
         >

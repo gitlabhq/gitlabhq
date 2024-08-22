@@ -293,8 +293,13 @@ new_sha: Gitlab::Git::SHA1_BLANK_SHA }
 
       @logger = if Rails.env.development? || Rails.env.production?
                   Logger.new($stdout).tap do |stdout_logger|
-                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
                     stdout_logger.level = debug? ? Logger::DEBUG : Logger::INFO
+
+                    if ::Gitlab.next_rails?
+                      ActiveSupport::BroadcastLogger.new(stdout_logger, Rails.logger, Rails.logger)
+                    else
+                      stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
+                    end
                   end
                 else
                   Rails.logger

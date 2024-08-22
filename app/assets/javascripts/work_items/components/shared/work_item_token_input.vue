@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       workspaceWorkItems: [],
+      workItemsByReference: [],
       searchTerm: '',
       searchStarted: false,
       error: '',

@@ -41,6 +41,10 @@ module ClickHouseHelpers
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
 
+  def self.default_timezone
+    ActiveRecord.default_timezone
+  end
+
   def clickhouse_fixture(table, data, db = :main)
     return if data.empty?
 

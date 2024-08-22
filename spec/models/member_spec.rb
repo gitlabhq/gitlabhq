@@ -236,7 +236,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.in_hierarchy' do
+    describe 'hierarchy related scopes' do
       let(:root_ancestor) { create(:group) }
       let(:project) { create(:project, group: root_ancestor) }
       let(:subgroup) { create(:group, parent: root_ancestor) }
@@ -247,29 +247,53 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       let!(:subgroup_member) { create(:group_member, group: subgroup) }
       let!(:subgroup_project_member) { create(:project_member, project: subgroup_project) }
 
-      let(:hierarchy_members) do
-        [
-          root_ancestor_member,
-          project_member,
-          subgroup_member,
-          subgroup_project_member
-        ]
+      describe '.in_hierarchy' do
+        let(:hierarchy_members) do
+          [
+            root_ancestor_member,
+            project_member,
+            subgroup_member,
+            subgroup_project_member
+          ]
+        end
+
+        context 'for a project' do
+          subject { described_class.in_hierarchy(project) }
+
+          it { is_expected.to contain_exactly(*hierarchy_members) }
+
+          context 'with scope prefix' do
+            subject { described_class.where.not(source: project).in_hierarchy(subgroup) }
+
+            it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
+          end
+
+          context 'with scope suffix' do
+            subject { described_class.in_hierarchy(project).where.not(source: project) }
+
+            it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
+          end
+        end
+
+        context 'for a group' do
+          subject(:group_related_members) { described_class.in_hierarchy(subgroup) }
+
+          it { is_expected.to contain_exactly(*hierarchy_members) }
+        end
       end
 
-      subject { described_class.in_hierarchy(project) }
+      describe '.for_self_and_descendants' do
+        let(:expected_members) do
+          [
+            project_member,
+            subgroup_member,
+            subgroup_project_member
+          ]
+        end
 
-      it { is_expected.to contain_exactly(*hierarchy_members) }
+        subject(:self_and_descendant_members) { described_class.for_self_and_descendants(subgroup) }
 
-      context 'with scope prefix' do
-        subject { described_class.where.not(source: project).in_hierarchy(subgroup) }
-
-        it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
-      end
-
-      context 'with scope suffix' do
-        subject { described_class.in_hierarchy(project).where.not(source: project) }
-
-        it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
+        it { is_expected.to contain_exactly(*expected_members) }
       end
     end
 

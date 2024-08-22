@@ -27,7 +27,7 @@ module Namespaces
         return Group.none unless can?(current_user, :read_project, project)
 
         groups = group_links(include_relations).public_or_visible_to_user(current_user)
-        groups = filter_groups(groups)
+        groups = apply_filters(groups)
         sort(groups).with_route
       end
 

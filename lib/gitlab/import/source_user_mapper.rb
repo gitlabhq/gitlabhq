@@ -5,6 +5,8 @@ module Gitlab
     class SourceUserMapper
       include Gitlab::ExclusiveLeaseHelpers
 
+      LRU_CACHE_SIZE = 8000
+
       def initialize(namespace:, import_type:, source_hostname:)
         @namespace = namespace
         @import_type = import_type
@@ -12,7 +14,7 @@ module Gitlab
       end
 
       def find_source_user(source_user_identifier)
-        ::Import::SourceUser.find_source_user(
+        cache_from_request_store[source_user_identifier] ||= ::Import::SourceUser.find_source_user(
           source_user_identifier: source_user_identifier,
           namespace: namespace,
           source_hostname: source_hostname,
@@ -25,16 +27,22 @@ module Gitlab
 
         return source_user if source_user
 
-        create_source_user(
+        source_user = create_source_user(
           source_name: source_name,
           source_username: source_username,
           source_user_identifier: source_user_identifier
         )
+
+        cache_from_request_store[source_user_identifier] = source_user
       end
 
       private
 
       attr_reader :namespace, :import_type, :source_hostname
+
+      def cache_from_request_store
+        Gitlab::SafeRequestStore[:source_user_cache] ||= LruRedux::Cache.new(LRU_CACHE_SIZE)
+      end
 
       def create_source_user(source_name:, source_username:, source_user_identifier:)
         in_lock(lock_key(source_user_identifier), sleep_sec: 2.seconds) do |retried|

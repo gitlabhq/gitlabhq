@@ -22601,6 +22601,7 @@ GPG signature for a signed commit.
 | <a id="groupsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within this group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
+| <a id="groupstandardroles"></a>`standardRoles` **{warning-solid}** | [`StandardRoleConnection`](#standardroleconnection) | **Introduced** in GitLab 17.4. **Status**: Experiment. Standard roles available for the instance, available only for self-managed. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |

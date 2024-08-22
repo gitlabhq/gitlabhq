@@ -260,7 +260,7 @@ export default {
         v-if="linksBlocks.length"
         class="gl-pb-3"
         :class="{
-          'gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-default':
+          'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid':
             linksIsBlockedBy.length || linksRelatesTo.length,
         }"
         :linked-items="linksBlocks"
@@ -281,7 +281,7 @@ export default {
         v-if="linksIsBlockedBy.length"
         class="gl-pb-3"
         :class="{
-          'gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-default': linksRelatesTo.length,
+          'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid': linksRelatesTo.length,
         }"
         :linked-items="linksIsBlockedBy"
         :heading="$options.i18n.blockedByTitle"

@@ -10,7 +10,7 @@ const APPLY_SUGGESTION_ERROR_MESSAGE = __(
 
 export default {
   components: { GlBadge, GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
-  directives: { 'gl-tooltip': GlTooltipDirective },
+  directives: { GlTooltip: GlTooltipDirective },
   props: {
     batchSuggestionsCount: {
       type: Number,

@@ -151,7 +151,7 @@ export default {
       </template>
     </user-callout-dismisser>
     <header>
-      <h1 class="gl-font-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
+      <h1 class="gl-text-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
     </header>
     <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
       <template #default="{ dismiss, shouldShowCallout }">

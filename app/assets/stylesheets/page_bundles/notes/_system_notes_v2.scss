@@ -1,0 +1,94 @@
+// System notes on main activity feed
+
+@mixin activity-line-gradient($color-1, $color-2) {
+  content: '';
+  display: block;
+  position: absolute;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, $color-1, $color-2);
+}
+
+.system-note-v2 {
+  .note-text-v2 {
+    p:first-child {
+      display: none;
+    }
+
+    ul {
+      margin: $gl-spacing-scale-2 0;
+    }
+  }
+
+  .note-body-v2 {
+    p {
+      margin-left: $gl-spacing-scale-5;
+    }
+  }
+
+  .system-note-message {
+    a {
+      color: $blue-500;
+    }
+
+    .gfm-project_member {
+      color: $blue-700;
+    }
+  }
+}
+
+.system-note-icon-v2 {
+  &.icon-success{
+    --bg-color: var(--green-100, #{$green-100});
+  }
+
+  &.icon-danger {
+    --bg-color: var(--red-100, #{$red-100});
+  }
+
+  &.icon-info {
+    --bg-color: var(--blue-100, #{$blue-100});
+  }
+
+  &:not(.mr-system-note-empty) {
+    &::before {
+      @include activity-line-gradient(transparent, var(--bg-color));
+      bottom: 100%;
+    }
+
+    &::after {
+      @include activity-line-gradient(var(--bg-color), transparent);
+      top: 100%;
+    }
+  }
+}
+
+.system-note-v2:first-child :is(.system-note-icon-v2::before, .system-note-icon-v2::after) {
+  display: none;
+}
+
+.system-note-commit-list-v2 {
+  max-height: 70px;
+
+  &::after {
+    content: '';
+    height: 70px;
+    position: absolute;
+    left: $gl-spacing-scale-2;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba($white, 0.1) -50px, $body-bg 100%);
+  }
+}
+
+
+// System notes on diffs
+
+.system-note-variant-diff {
+  .system-note-dot {
+    top: 0;
+    margin-top: $gl-spacing-scale-4;
+    margin-left: $gl-spacing-scale-5;
+  }
+}

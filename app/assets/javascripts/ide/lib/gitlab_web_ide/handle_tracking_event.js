@@ -8,7 +8,7 @@ export const handleTracking = ({ name, data }) => {
   if (data && Object.keys(data).length) {
     Tracking.event(undefined, snakeCaseEventName, {
       /* See GitLab snowplow schema for a definition of the extra field
-       * https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/1-0-9.
+       * https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_standard/jsonschema/1-1-0.
        */
       extra: convertObjectPropsToSnakeCase(data, {
         deep: true,

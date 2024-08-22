@@ -34,6 +34,50 @@ its knowledge base is updated daily.
 - On GitLab.com the, the most recent version of the documentation is used.
 - On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.
 
+## Ask about a specific issue
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
+
+You can ask about a specific GitLab issue. For example:
+
+- `Generate a summary for the issue identified via this link: <link to your issue>`
+- When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
+- `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
+
+NOTE:
+If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
+<!-- Video published on 2024-04-17 -->
+
+## Ask about a specific epic
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab.com in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed and GitLab Dedicated in GitLab 16.8.
+
+You can ask about a specific GitLab epic. For example:
+
+- `Generate a summary for the epic identified via this link: <link to your epic>`
+- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
+- `What are the unique use cases raised by commenters in <link to your epic>?`
+
+NOTE:
+If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
 ## Explain selected code
 
 DETAILS:
@@ -98,6 +142,30 @@ You can also ask Chat to generate code. For example:
 - `Create a product-consumer example with threads and shared memory in C++. Use atomic locks when possible.`
 - `Generate Rust code for high performance gRPC calls. Provide a source code example for a server and client.`
 
+## Ask follow up questions
+
+You can ask follow-up questions to delve deeper into the topic or task at hand.
+This helps you get more detailed and precise responses tailored to your specific needs,
+whether it's for further clarification, elaboration, or additional assistance.
+
+A follow-up to the question `Write a Ruby function that prints 'Hello, World!' when called` could be:
+
+- `Can you also explain how I can call and execute this Ruby function in a typical Ruby environment, such as the command line?`
+
+A follow-up to the question `How to start a C# project?` could be:
+
+- `Can you also please explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
+
+## Ask about errors
+
+Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
+
+- `Explain this error message in Java: Int and system cannot be resolved to a type`
+- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
+- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
+- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
+- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
+
 ## Refactor code in the IDE
 
 DETAILS:
@@ -137,6 +205,26 @@ You can include additional instructions to be considered. For example:
 - Focus on potential bugs that are not directly visible, for example, `/fix potential bugs`.
 - Focus on code performance problems, for example, `/fix performance problems`.
 - Focus on fixing the build when the code does not compile, for example, `/fix the build`.
+
+## Write tests in the IDE
+
+DETAILS:
+**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+
+`/tests` is a special command to generate a testing suggestion for the selected code in your editor.
+You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
+See [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code) for more information.
+
+- Use a specific test framework, for example `/tests using the Boost.test framework` (C++) or `/tests using Jest` (JavaScript).
+- Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
+- Focus on performance, for example `/tests focus on performance`.
+- Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
 
 ## Ask about CI/CD
 
@@ -205,94 +293,6 @@ DETAILS:
 `/vulnerability_explain` is a special command you can use when you are viewing a SAST vulnerability report.
 
 [Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
-
-## Write tests in the IDE
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
-
-`/tests` is a special command to generate a testing suggestion for the selected code in your editor.
-You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
-See [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code) for more information.
-
-- Use a specific test framework, for example `/tests using the Boost.test framework` (C++) or `/tests using Jest` (JavaScript).
-- Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
-- Focus on performance, for example `/tests focus on performance`.
-- Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
-
-## Ask about errors
-
-Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
-
-- `Explain this error message in Java: Int and system cannot be resolved to a type`
-- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
-- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
-- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
-- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
-
-## Ask follow up questions
-
-You can ask follow-up questions to delve deeper into the topic or task at hand.
-This helps you get more detailed and precise responses tailored to your specific needs,
-whether it's for further clarification, elaboration, or additional assistance.
-
-A follow-up to the question `Write a Ruby function that prints 'Hello, World!' when called` could be:
-
-- `Can you also explain how I can call and execute this Ruby function in a typical Ruby environment, such as the command line?`
-
-A follow-up to the question `How to start a C# project?` could be:
-
-- `Can you also please explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
-
-## Ask about a specific issue
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
-
-You can ask about a specific GitLab issue. For example:
-
-- `Generate a summary for the issue identified via this link: <link to your issue>`
-- When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
-- `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
-
-NOTE:
-If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
-<!-- Video published on 2024-04-17 -->
-
-## Ask about a specific epic
-
-DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab.com in GitLab 16.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed and GitLab Dedicated in GitLab 16.8.
-
-You can ask about a specific GitLab epic. For example:
-
-- `Generate a summary for the epic identified via this link: <link to your epic>`
-- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
-- `What are the unique use cases raised by commenters in <link to your epic>?`
-
-NOTE:
-If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ## Delete or reset the conversation
 

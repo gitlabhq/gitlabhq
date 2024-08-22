@@ -68,12 +68,12 @@ export default {
 
       return {
         'gl-ml-auto': true,
-        'gl-flex-shrink-0': true,
+        'gl-shrink-0': true,
         'gl-text-gray-500': !enabled,
         'gl-text-green-500': enabled,
         'gl-w-full': hasBadge,
-        'gl-justify-content-space-between': hasBadge,
-        'gl-display-flex': hasBadge,
+        'gl-justify-between': hasBadge,
+        'gl-flex': hasBadge,
         'gl-mb-4': hasBadge,
       };
     },
@@ -125,11 +125,8 @@ export default {
 
 <template>
   <gl-card :class="cardClasses">
-    <div
-      class="gl-display-flex gl-align-items-baseline"
-      :class="{ 'gl-flex-direction-column-reverse': hasBadge }"
-    >
-      <h3 class="gl-font-lg gl-m-0 gl-mr-3">{{ feature.name }}</h3>
+    <div class="gl-flex gl-items-baseline" :class="{ 'gl-flex-col-reverse': hasBadge }">
+      <h3 class="gl-m-0 gl-mr-3 gl-text-lg">{{ feature.name }}</h3>
 
       <div
         v-if="isNotSastIACTemporaryHack"
@@ -204,7 +201,7 @@ export default {
     </template>
 
     <div v-if="hasSecondary" data-testid="secondary-feature">
-      <h4 class="gl-font-base gl-m-0 gl-mt-6">{{ feature.secondary.name }}</h4>
+      <h4 class="gl-m-0 gl-mt-6 gl-text-base">{{ feature.secondary.name }}</h4>
 
       <p class="gl-mb-0 gl-mt-5">{{ feature.secondary.description }}</p>
 

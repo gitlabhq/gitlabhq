@@ -16,7 +16,7 @@
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh
-    - log_disk_usage # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
+    - log_disk_usage before_script # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
 
 .default-before_script:
   before_script:

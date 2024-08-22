@@ -84,13 +84,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-mb-3">
+  <div class="gl-mb-3 gl-flex gl-items-start gl-gap-3">
     <gl-form-group
       :label="$options.i18n.valueLabel"
       :label-for="valueInputId"
       :invalid-feedback="valueInvalidFeedback"
       :state="valueState"
-      class="gl-flex-grow-1 gl-mb-0"
+      class="gl-mb-0 gl-grow"
       data-testid="mask-item-value"
     >
       <gl-form-input
@@ -107,7 +107,7 @@ export default {
       :label-for="keyInputId"
       :invalid-feedback="keyInvalidFeedback"
       :state="keyState"
-      class="gl-flex-grow-1 gl-mb-0"
+      class="gl-mb-0 gl-grow"
       data-testid="mask-item-key"
     >
       <gl-form-input

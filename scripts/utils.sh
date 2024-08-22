@@ -480,9 +480,14 @@ function define_trigger_branch_in_build_env() {
 }
 
 function log_disk_usage() {
+  caller=$1
+  echo "[log_disk_usage ${caller}] start"
+
   echo -e "df -h"
   df -h
 
   echo -e "\n\nls -lhS tmp"
   ls -lhS tmp
+
+  echo "[log_disk_usage ${caller}] end"
 }

@@ -19,7 +19,7 @@ RSpec.describe 'Merge request > User sees system notes', :js, feature_category: 
     it 'shows the system note' do
       visit project_merge_request_path(public_project, merge_request)
 
-      expect(page).to have_css('.system-note')
+      expect(page).to have_css('.system-note-v2')
     end
   end
 
@@ -27,7 +27,7 @@ RSpec.describe 'Merge request > User sees system notes', :js, feature_category: 
     it 'hides the system note' do
       visit project_merge_request_path(public_project, merge_request)
 
-      expect(page).not_to have_css('.system-note')
+      expect(page).not_to have_css('.system-note-v2')
     end
   end
 end

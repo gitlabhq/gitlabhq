@@ -66,7 +66,11 @@ class Member < ApplicationRecord
   end
 
   scope :in_hierarchy, ->(source) do
-    groups = source.root_ancestor.self_and_descendants
+    for_self_and_descendants(source.root_ancestor)
+  end
+
+  scope :for_self_and_descendants, ->(source) do
+    groups = source.self_and_descendants
     group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
     projects = source.root_ancestor.all_projects
