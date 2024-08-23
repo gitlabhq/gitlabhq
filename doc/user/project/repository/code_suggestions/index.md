@@ -59,7 +59,7 @@ Prerequisites:
 
 - You must have [one of the supported IDE extensions](supported_extensions.md#supported-editor-extensions).
 - Your organization must have purchased the GitLab Duo Pro add-on and
-  [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+  [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - For self-managed GitLab, you must have GitLab 16.8 or later, and have
   [configured proxy settings](../../../../subscriptions/subscription-add-ons.md#configure-network-and-proxy-settings).
 To use Code Suggestions:

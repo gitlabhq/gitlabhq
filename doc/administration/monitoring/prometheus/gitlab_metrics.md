@@ -188,6 +188,7 @@ The following metrics are available:
 | `gitlab_keeparound_refs_created_total` | Counter | 16.10 | Counts the number of keep-around refs actually created | `source` |
 | `search_advanced_index_repair_total` | Counter | 17.3 | Counts the number of index repair operations | `document_type` |
 | `search_advanced_boolean_settings` | Gauge | 17.3 | Current state of Advanced search boolean settings | `name` |
+| `gitlab_http_router_rule_total` | Counter | 17.4 | Counts occurrences of HTTP Router rule's `rule_action` and `rule_type` | `rule_action`, `rule_type` |
 
 ## Metrics controlled by a feature flag
 

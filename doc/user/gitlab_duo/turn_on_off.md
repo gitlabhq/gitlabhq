@@ -19,7 +19,7 @@ GitLab Duo features that are generally available are automatically turned on for
   - For the best experience, you should upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
 - If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
 - For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),
-  [you must assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats)
+  [you must assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
   to the users you want to have access.
 
 GitLab Duo features that are experimental or beta are turned off by default
@@ -235,8 +235,8 @@ You can use command-line tools such as `curl` to verify the connectivity.
 In addition to [turning on GitLab Duo features](turn_on_off.md#prerequisites),
 you can also do the following:
 
-1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-pro-seats).
-1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
+1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
     - Verify that the extension is up-to-date.
     - Run extension setting health checks, and test the authentication.

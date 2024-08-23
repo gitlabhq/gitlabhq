@@ -31,7 +31,7 @@ A flash message with Code Suggestions check status is displayed at the top of th
 If suggestions are not displayed, follow these steps:
 
 1. Ensure you have [installed a supported IDE extension](supported_extensions.md#supported-editor-extensions)
-1. Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+1. Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 
 If suggestions are still not displayed, try the following troubleshooting steps.
 

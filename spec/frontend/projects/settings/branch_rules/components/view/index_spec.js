@@ -11,6 +11,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
 import RuleDrawer from '~/projects/settings/branch_rules/components/view/rule_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -125,8 +126,7 @@ describe('View branch rules', () => {
 
   const findBranchName = () => wrapper.findByTestId('branch');
   const findAllBranches = () => wrapper.findByTestId('all-branches');
-  const findBranchProtectionCrud = () => wrapper.findByTestId('status-checks');
-  const findBranchProtectionTitle = () => wrapper.findByTestId('crud-title');
+  const findSettingsSection = () => wrapper.findComponent(SettingsSection);
   const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
   const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
@@ -176,14 +176,13 @@ describe('View branch rules', () => {
   });
 
   it('renders a branch protection title', () => {
-    expect(findBranchProtectionTitle().exists()).toBe(true);
+    expect(findSettingsSection().attributes('heading')).toBe('Protect branch');
   });
 
   it('renders a branch protection component for push rules', () => {
     expect(findAllowedToPush().props()).toMatchObject({
-      header: sprintf(I18N.allowedToPushHeader, {
-        total: 2,
-      }),
+      header: 'Allowed to push and merge',
+      count: 2,
       ...protectionMockProps,
     });
   });
@@ -224,9 +223,8 @@ describe('View branch rules', () => {
 
   it('renders a branch protection component for merge rules', () => {
     expect(findAllowedToMerge().props()).toMatchObject({
-      header: sprintf(I18N.allowedToMergeHeader, {
-        total: 2,
-      }),
+      header: 'Allowed to merge',
+      count: 2,
       ...protectionMockProps,
     });
   });
@@ -385,7 +383,7 @@ describe('View branch rules', () => {
     });
 
     it('does not render Protect Branch section', () => {
-      expect(findBranchProtectionCrud().exists()).toBe(false);
+      expect(findSettingsSection().exists()).toBe(false);
     });
   });
 

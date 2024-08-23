@@ -91,6 +91,17 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       sign_in(user)
     end
 
+    let(:headers) do
+      {
+        'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+        'X-Gitlab-Http-Router-Rule-Type' => 'FIRST_CELL'
+      }
+    end
+
+    subject(:perform_request) do
+      get root_path, headers: headers
+    end
+
     it 'includes the HTTP ROUTER headers in ApplicationContext' do
       expect_next_instance_of(RootController) do |controller|
         expect(controller).to receive(:index).and_wrap_original do |m, *args|
@@ -98,15 +109,79 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
 
           expect(Gitlab::ApplicationContext.current).to include(
             'meta.http_router_rule_action' => 'classify',
-            'meta.http_router_rule_type' => 'FirstCell'
+            'meta.http_router_rule_type' => 'FIRST_CELL'
           )
         end
       end
 
-      get root_path, headers: {
-        'X-Gitlab-Http-Router-Rule-Action' => 'classify',
-        'X-Gitlab-Http-Router-Rule-Type' => 'FirstCell'
-      }
+      perform_request
+    end
+
+    context 'for counters' do
+      let(:http_router_rule_counter) { Gitlab::Metrics.counter(:gitlab_http_router_rule_total, 'description') }
+
+      context 'when the headers are present' do
+        context 'for classify action' do
+          it 'increments the counter' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'classify', rule_type: 'FIRST_CELL')
+            }.by(1)
+          end
+        end
+
+        context 'for proxy action' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Action' => 'proxy'
+            }
+          end
+
+          it 'increments the counter' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'proxy', rule_type: nil)
+            }.by(1)
+          end
+        end
+
+        context 'for invalid action and type' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Action' => 'invalid',
+              'X-Gitlab-Http-Router-Rule-Type' => 'invalid'
+            }
+          end
+
+          it 'does not increment the counter' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'invalid', rule_type: 'invalid')
+            }.by(0)
+          end
+        end
+
+        context 'when action is not present and type is present' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Type' => 'FIRST_CELL'
+            }
+          end
+
+          it 'does not increment the counter' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: nil, rule_type: 'FIRST_CELL')
+            }.by(0)
+          end
+        end
+      end
+
+      context 'when the headers are absent' do
+        let(:headers) { {} }
+
+        it 'does not increment the counter' do
+          expect { perform_request }.to change {
+            http_router_rule_counter.get(rule_action: nil, rule_type: nil)
+          }.by(0)
+        end
+      end
     end
   end
 

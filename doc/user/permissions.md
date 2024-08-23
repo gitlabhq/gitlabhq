@@ -160,6 +160,7 @@ Project Owners can do any listed action, and also can delete pipelines:
 | Run CI/CD job                                                                                                                  |            |       |          |     ✓     |     ✓      |       |
 | Run CI/CD pipeline for a protected branch                                                                                      |            |       |          |     ✓     |     ✓      | Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches). |
 | Stop [environments](../ci/environments/index.md)                                                                               |            |       |          |     ✓     |     ✓      |       |
+| Delete [environments](../ci/environments/index.md)                                                                             |            |       |          |     ✓     |     ✓      |       |
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                                 |            |       |          |     ✓     |     ✓      |       |
 | Use pipeline editor                                                                                                            |            |       |          |     ✓     |     ✓      |       |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |          |     ✓     |     ✓      |       |
@@ -352,7 +353,7 @@ Project permissions for [GitLab Duo](gitlab_duo/index.md):
 | Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
 | <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-project)                        |            |       |          |           | ✓           | ✓     |      |
-| <br>Use Duo features                                                                                        |            | ✓     | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
+| <br>Use Duo features                                                                                        |            | ✓     | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).     |
 
 ## Group members permissions
 
@@ -527,11 +528,11 @@ Group permissions for [GitLab Duo](../user/gitlab_duo/index.md):
 
 | Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
-| <br>Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-pro-seats) |            |       |          |           |            | ✓     |       |
+| <br>Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |          |           |            | ✓     |       |
 | <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group)                          |            |       |          |           | ✓         | ✓     |       |
 | <br>Configure [self-hosted models](../administration/self_hosted_models/configure_duo_features.md)          |            |       |          |           |            | ✓     |       |
 | <br>Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)   |            |       |          |           |            | ✓     |       |
-| <br>Use Duo features                                                                                        |            |       | ✓        | ✓         | ✓          | ✓     | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
+| <br>Use Duo features                                                                                        |            |       | ✓        | ✓         | ✓          | ✓     | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).     |
 
 ## Users with Minimal Access
 

@@ -50,7 +50,7 @@ div.innerHTML = `
       </defs>
     </svg>
     <h2>Don't want to see this message anymore?</h2>
-    <p class="gl-text-body">
+    <p class="gl-text-primary">
       Follow the documentation to switch to using Vite.<br />
       Vite compiles frontend assets faster and eliminates the need for this message.
     </p>

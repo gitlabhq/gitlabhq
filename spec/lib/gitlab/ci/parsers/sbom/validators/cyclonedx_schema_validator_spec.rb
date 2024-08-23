@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator,
   end
 
   context 'when spec version is supported' do
-    where(:spec_version) { %w[1.4 1.5] }
+    where(:spec_version) { %w[1.4 1.5 1.6] }
 
     with_them do
       it_behaves_like 'a validator that performs the expected validations'

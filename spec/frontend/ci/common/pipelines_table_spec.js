@@ -1,4 +1,4 @@
-import { GlTableLite } from '@gitlab/ui';
+import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -57,6 +57,7 @@ describe('Pipelines Table', () => {
     });
   };
 
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findGlTableLite = () => wrapper.findComponent(GlTableLite);
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
@@ -213,6 +214,36 @@ describe('Pipelines Table', () => {
         it('does not render', () => {
           expect(findTableRows()).toHaveLength(pipelines.length);
           expect(findPipelineFailureWidget().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('async pipeline creation', () => {
+      describe('when isCreatingPipeline is enabled', () => {
+        beforeEach(() => {
+          createComponent({ props: { isCreatingPipeline: true } });
+        });
+
+        it('Adds an additional loader row to the pipelines table', () => {
+          expect(findTableRows()).toHaveLength(pipelines.length + 1);
+        });
+
+        it('renders the skeleton loader', () => {
+          expect(findSkeletonLoader().exists()).toBe(true);
+        });
+      });
+
+      describe('when isCreatingPipeline is disabled', () => {
+        beforeEach(() => {
+          createComponent();
+        });
+
+        it('does not add a loader row to the pipelines table', () => {
+          expect(findTableRows()).toHaveLength(pipelines.length);
+        });
+
+        it('does not render skeleton loader', () => {
+          expect(findSkeletonLoader().exists()).toBe(false);
         });
       });
     });

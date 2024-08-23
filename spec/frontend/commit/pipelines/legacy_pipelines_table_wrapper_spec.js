@@ -252,6 +252,14 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
             expect(findRunPipelineBtn().props('disabled')).toBe(false);
           });
+
+          it('sets isCreatingPipeline to true in pipelines table', async () => {
+            expect(findPipelinesTable().props('isCreatingPipeline')).toBe(false);
+
+            await findRunPipelineBtn().trigger('click');
+
+            expect(findPipelinesTable().props('isCreatingPipeline')).toBe(true);
+          });
         });
 
         describe('when asyncMergeRequestPipelineCreation is disabled', () => {

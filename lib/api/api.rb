@@ -89,6 +89,8 @@ module API
         feature_category: feature_category,
         **http_router_rule_context
       )
+
+      increment_http_router_metrics
     end
 
     before do
@@ -201,7 +203,8 @@ module API
     helpers ::API::Helpers::CommonHelpers
     helpers ::API::Helpers::PerformanceBarHelpers
     helpers ::API::Helpers::RateLimiter
-    helpers Gitlab::HttpRouterRuleContext
+    helpers Gitlab::HttpRouter::RuleContext
+    helpers Gitlab::HttpRouter::RuleMetrics
 
     namespace do
       after do

@@ -32824,6 +32824,9 @@ msgstr ""
 msgid "MemberRole|Custom role"
 msgstr ""
 
+msgid "MemberRole|Custom role created on %{dateTime}"
+msgstr ""
+
 msgid "MemberRole|Custom roles"
 msgstr ""
 
@@ -32852,6 +32855,9 @@ msgid "MemberRole|Failed to delete role."
 msgstr ""
 
 msgid "MemberRole|Failed to delete role. %{error}"
+msgstr ""
+
+msgid "MemberRole|Failed to fetch role."
 msgstr ""
 
 msgid "MemberRole|Failed to fetch roles."
@@ -32944,7 +32950,13 @@ msgstr ""
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr ""
 
+msgid "MemberRole|This role is available by default and cannot be changed."
+msgstr ""
+
 msgid "MemberRole|To delete custom role, remove role from all group members."
+msgstr ""
+
+msgid "MemberRole|To delete custom role, remove role from all users."
 msgstr ""
 
 msgid "MemberRole|Update role"

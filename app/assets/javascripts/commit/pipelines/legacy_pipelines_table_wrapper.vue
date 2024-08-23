@@ -296,10 +296,11 @@ export default {
       </gl-button>
 
       <pipelines-table
+        :is-creating-pipeline="state.isRunningMergeRequestPipeline"
+        :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :view-type="viewType"
-        :pipeline-id-type="$options.pipelineIdKey"
         @cancel-pipeline="onCancelPipeline"
         @refresh-pipelines-table="onRefreshPipelinesTable"
         @retry-pipeline="onRetryPipeline"

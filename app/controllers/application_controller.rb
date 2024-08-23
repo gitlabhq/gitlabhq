@@ -28,7 +28,8 @@ class ApplicationController < BaseActionController
   include CheckRateLimit
   include RequestPayloadLogger
   include StrongPaginationParams
-  include Gitlab::HttpRouterRuleContext
+  include Gitlab::HttpRouter::RuleContext
+  include Gitlab::HttpRouter::RuleMetrics
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization
@@ -42,6 +43,7 @@ class ApplicationController < BaseActionController
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
+  before_action :increment_http_router_metrics
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
