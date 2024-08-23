@@ -201,7 +201,7 @@ export default {
       </template>
 
       <template #empty>
-        <p class="gl-new-card-empty gl-text-center gl-mb-0">{{ $options.i18n.emptyState }}</p>
+        <p class="gl-text-subtle gl-mb-0">{{ $options.i18n.emptyState }}</p>
       </template>
     </gl-table>
 

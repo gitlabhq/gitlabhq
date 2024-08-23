@@ -66,10 +66,10 @@ export default {
 
 <template>
   <div>
-    <div class="gl-leading-20 gl-font-bold gl-flex gl-w-full gl-align-items-center gl-mb-3">
+    <div class="gl-mb-3 gl-flex gl-w-full gl-items-center gl-font-bold gl-leading-20">
       <template v-if="loadingReviewers">
-        <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-20"></div>
-        <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-4 gl-ml-auto"></div>
+        <div class="gl-animate-skeleton-loader gl-h-4 gl-w-20 gl-rounded-base"></div>
+        <div class="gl-animate-skeleton-loader gl-ml-auto gl-h-4 gl-w-4 gl-rounded-base"></div>
       </template>
       <template v-else>
         {{ reviewersTitle }}
@@ -77,9 +77,9 @@ export default {
       </template>
     </div>
     <div v-if="loadingReviewers">
-      <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-mb-3 gl-max-w-20!"></div>
-      <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-mb-3 gl-max-w-20!"></div>
-      <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-max-w-20!"></div>
+      <div class="gl-animate-skeleton-loader gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
+      <div class="gl-animate-skeleton-loader gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
+      <div class="gl-animate-skeleton-loader gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
     </div>
     <uncollapsed-reviewer-list
       v-else-if="reviewers.length"
@@ -90,7 +90,7 @@ export default {
     />
     <gl-empty-state v-else :svg-path="$options.noReviewersAssignedSvg" :svg-height="70">
       <template #description>
-        <p class="gl-font-normal gl-mb-3">{{ __('No reviewers assigned') }}</p>
+        <p class="gl-mb-3 gl-font-normal">{{ __('No reviewers assigned') }}</p>
         <update-reviewers
           v-if="userPermissions.adminMergeRequest"
           :selected-reviewers="currentUser"

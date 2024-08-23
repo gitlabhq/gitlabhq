@@ -271,7 +271,7 @@ export default {
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
-          class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note"
+          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
         >
           <markdown-editor
             ref="markdownEditor"

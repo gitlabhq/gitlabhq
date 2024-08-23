@@ -29,11 +29,15 @@
 
   .system-note-message {
     a {
-      color: $blue-500;
+      @apply gl-text-blue-500;
     }
 
     .gfm-project_member {
-      color: $blue-700;
+      @apply gl-text-blue-700;
+
+      &.current-user {
+        @apply gl-text-orange-700;
+      }
     }
   }
 }
@@ -78,7 +82,7 @@
     left: $gl-spacing-scale-2;
     right: 0;
     bottom: 0;
-    background: linear-gradient(rgba($white, 0.1) -50px, $body-bg 100%);
+    background: linear-gradient(180deg, transparent -50px, var(--gl-background-color-default) 100%);
   }
 }
 

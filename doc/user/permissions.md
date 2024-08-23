@@ -343,7 +343,7 @@ Project permissions for [user management](project/members/index.md).
 | Action                                          | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
 | Manage [team members](project/members/index.md) |       |          |           |     ✓      |   ✓   | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
-| Share (invite) projects with groups             |       |          |           |     ✓      |   ✓   | When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
+| Share (invite) projects with groups             |       |          |           |     ✓      |   ✓   | When [Share Group Lock](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
 | View 2FA status of members                      |       |          |           |     ✓      |   ✓   |       |
 
 ### GitLab Duo

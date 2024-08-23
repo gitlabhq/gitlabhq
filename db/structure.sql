@@ -26346,6 +26346,8 @@ CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON 
 
 CREATE INDEX i_software_license_policies_on_custom_software_license_id ON software_license_policies USING btree (custom_software_license_id);
 
+CREATE INDEX i_vuln_occurrences_on_proj_report_loc_dep_pkg_ver_file_img ON vulnerability_occurrences USING btree (project_id, report_type, ((((location -> 'dependency'::text) -> 'package'::text) ->> 'name'::text)), (((location -> 'dependency'::text) ->> 'version'::text)), COALESCE((location ->> 'file'::text), (location ->> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 1]));
+
 CREATE INDEX idx_abuse_reports_user_id_status_and_category ON abuse_reports USING btree (user_id, status, category);
 
 CREATE INDEX idx_addon_purchases_on_last_refreshed_at_desc_nulls_last ON subscription_add_on_purchases USING btree (last_assigned_users_refreshed_at DESC NULLS LAST);

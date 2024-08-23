@@ -1504,7 +1504,15 @@ module Ci
     end
 
     def track_ci_pipeline_created_event
-      Gitlab::InternalEvents.track_event('create_ci_internal_pipeline', project: project, user: user)
+      Gitlab::InternalEvents.track_event(
+        'create_ci_internal_pipeline',
+        project: project,
+        user: user,
+        additional_properties: {
+          label: source,
+          property: config_source
+        }
+      )
     end
   end
 end

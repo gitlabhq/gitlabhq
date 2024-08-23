@@ -102,10 +102,8 @@ module Projects
       end
 
       def pre_receive_secret_detection_feature_flag_enabled?
-        return false unless project.licensed_feature_available?(:pre_receive_secret_detection)
-
-        Feature.enabled?(:pre_receive_secret_detection_beta_release) && Feature.enabled?(
-          :pre_receive_secret_detection_push_check, project)
+        project.licensed_feature_available?(:pre_receive_secret_detection) &&
+          Feature.enabled?(:pre_receive_secret_detection_push_check, project)
       end
 
       def project_settings

@@ -66,7 +66,7 @@ export default {
 <template>
   <div class="issue-details issuable-details">
     <div v-if="model.latestVersion">
-      <h3 class="gl-font-lg">
+      <h3 class="gl-text-lg">
         {{ s__('MlModelRegistry|Latest version') }}:
 
         <gl-link :href="model.latestVersion._links.showPath" data-testid="model-version-link">

@@ -40,7 +40,7 @@ export default {
     },
     liClasses() {
       return this.collapsed
-        ? 'gl-text-gray-500 gl-rounded-bottom-left-base! gl-rounded-bottom-right-base!'
+        ? 'gl-text-gray-500 !gl-rounded-bl-base !gl-rounded-br-base'
         : 'gl-border-b';
     },
     buttonIcon() {
@@ -62,11 +62,11 @@ export default {
 <template>
   <li
     :class="liClasses"
-    class="toggle-replies-widget gl-display-flex! gl-align-items-center gl-flex-wrap gl-bg-gray-10 gl-py-3 gl-px-5 gl-border"
+    class="toggle-replies-widget gl-border !gl-flex gl-flex-wrap gl-items-center gl-bg-gray-10 gl-px-5 gl-py-3"
   >
     <gl-button
       ref="toggle"
-      class="gl-my-2 gl-mr-3 gl-p-0!"
+      class="gl-my-2 gl-mr-3 !gl-p-0"
       category="tertiary"
       :icon="buttonIcon"
       :aria-label="buttonLabel"
@@ -99,7 +99,7 @@ export default {
         <template #name>
           <gl-link
             :href="lastReply.author.path || lastReply.author.webUrl"
-            class="gl-text-body! gl-text-decoration-none! gl-mx-2"
+            class="gl-mx-2 !gl-text-primary !gl-no-underline"
           >
             {{ lastReply.author.name }}
           </gl-link>
@@ -112,7 +112,7 @@ export default {
     </template>
     <gl-button
       v-else
-      class="gl-text-body! gl-text-decoration-none!"
+      class="!gl-text-primary !gl-no-underline"
       variant="link"
       data-testid="collapse-replies-button"
       @click="toggle"

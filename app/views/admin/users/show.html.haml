@@ -39,10 +39,20 @@
             %span.gl-text-secondary= _('Email:')
             .gl-col-span-2
               %strong= render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
-          %li{ class: list_item_classes, data: { testid: 'email-verification-last-sent-at' } }
-            %span.gl-text-secondary= s_('UserProfile|Email verification last sent at:')
+
+          %li{ class: list_item_classes, data: { testid: 'email-confirmation-code-last-sent-at' } }
+            %span.gl-text-secondary= s_('UserProfile|Email confirmation code last sent at:')
             .gl-col-span-2
               %strong= @user.confirmation_sent_at&.to_fs(:medium) || _('never')
+              - if email_verification_token_expired?(email_sent_at: @user.confirmation_sent_at )
+                %span= _('(code expired)')
+          %li{ class: list_item_classes, data: { testid: 'email-verification-code-last-sent-at' } }
+            %span.gl-text-secondary= s_('UserProfile|Locked account email verification code last sent at:')
+            .gl-col-span-2
+              %strong= @user.locked_at&.to_fs(:medium) || _('never')
+              - if email_verification_token_expired?(email_sent_at: @user.locked_at)
+                %span= _('(code expired)')
+
           - @user.emails.reject(&:user_primary_email?).each do |email|
             %li{ class: list_item_classes }
               %span.gl-text-secondary= _('Secondary email:')

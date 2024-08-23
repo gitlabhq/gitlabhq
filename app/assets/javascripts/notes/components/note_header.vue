@@ -209,7 +209,7 @@ export default {
       </a>
       <span
         v-if="!isSystemNote && !emailParticipant"
-        class="text-nowrap author-username gl-text-truncate"
+        class="text-nowrap author-username gl-truncate"
       >
         <a
           ref="authorUsernameLink"

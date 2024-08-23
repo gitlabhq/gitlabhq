@@ -6,6 +6,11 @@ identifiers:
 - project
 - namespace
 - user
+additional_properties:
+  label:
+    description: The source of the pipeline, e.g. a push, a schedule or similar.
+  property:
+    description: The source of the config, e.g. the repository, auto_devops or similar.
 product_group: pipeline_execution
 milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142356

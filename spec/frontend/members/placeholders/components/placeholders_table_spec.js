@@ -3,7 +3,14 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAvatarLabeled, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlBadge,
+  GlEmptyState,
+  GlKeysetPagination,
+  GlLoadingIcon,
+  GlTable,
+} from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -12,11 +19,9 @@ import PlaceholdersTable from '~/members/placeholders/components/placeholders_ta
 import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
-import setWindowLocation from 'helpers/set_window_location_helper';
 
 import {
   PLACEHOLDER_STATUS_FAILED,
-  QUERY_PARAM_FAILED,
   PLACEHOLDER_USER_STATUS,
 } from '~/import_entities/import_groups/constants';
 
@@ -71,6 +76,7 @@ describe('PlaceholdersTable', () => {
     });
   };
 
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findTable = () => wrapper.findComponent(GlTable);
@@ -118,6 +124,7 @@ describe('PlaceholdersTable', () => {
         after: null,
         before: null,
         fullPath: mockGroup.path,
+        search: null,
         first: 20,
         statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
@@ -290,15 +297,78 @@ describe('PlaceholdersTable', () => {
     });
   });
 
+  describe('when querySearch is passed', () => {
+    const sourceUsersSearchQueryHandler = jest
+      .fn()
+      .mockResolvedValue(mockSourceUsersQueryResponse({ nodes: [mockSourceUsers[4]] }));
+
+    describe('when search is too short (less than 3 characters)', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: shallowMount,
+          queryHandler: sourceUsersSearchQueryHandler,
+          props: { querySearch: 'ab' },
+        });
+      });
+
+      it('does not call query', () => {
+        expect(sourceUsersSearchQueryHandler).not.toHaveBeenCalled();
+      });
+
+      it('renders empty state with short query description', () => {
+        expect(findEmptyState().props('description')).toBe(
+          'Enter at least three characters to search.',
+        );
+      });
+    });
+
+    describe('when search has no results', () => {
+      beforeEach(() => {
+        const sourceUsersNoResultsQueryHandler = jest
+          .fn()
+          .mockResolvedValue(mockSourceUsersQueryResponse({ nodes: [] }));
+
+        createComponent({
+          mountFn: shallowMount,
+          queryHandler: sourceUsersNoResultsQueryHandler,
+          props: { querySearch: 'nonexistent' },
+        });
+      });
+
+      it('renders empty state with no results message', () => {
+        expect(findEmptyState().props('description')).toBe('Edit your search and try again');
+      });
+    });
+
+    describe('when search has results', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: shallowMount,
+          queryHandler: sourceUsersSearchQueryHandler,
+          props: { querySearch: 'abc' },
+        });
+      });
+
+      it('calls query with search', () => {
+        expect(sourceUsersSearchQueryHandler).toHaveBeenCalledTimes(1);
+        expect(sourceUsersSearchQueryHandler).toHaveBeenCalledWith({
+          after: null,
+          before: null,
+          fullPath: mockGroup.path,
+          search: 'abc',
+          first: 20,
+          statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
+        });
+      });
+    });
+  });
+
   describe('correctly filters users with failed status', () => {
     const sourceUsersFailureQueryHandler = jest
       .fn()
       .mockResolvedValue(mockSourceUsersQueryResponse({ nodes: [mockSourceUsers[4]] }));
 
     beforeEach(async () => {
-      setWindowLocation(`?status=${QUERY_PARAM_FAILED}`);
-      await waitForPromises();
-
       createComponent({
         mountFn: shallowMount,
         queryHandler: sourceUsersFailureQueryHandler,
@@ -322,6 +392,7 @@ describe('PlaceholdersTable', () => {
         after: null,
         before: null,
         fullPath: mockGroup.path,
+        search: null,
         first: 20,
         statuses: [PLACEHOLDER_STATUS_FAILED],
       });

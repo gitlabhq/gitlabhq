@@ -219,7 +219,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/models/incident_management/oncall_shift.rb'
     - 'ee/app/models/integrations/google_cloud_platform/artifact_registry.rb'
     - 'ee/app/models/members/member_role.rb'
-    - 'ee/app/models/namespaces/block_seat_overages/enforcement.rb'
     - 'ee/app/models/protected_environment.rb'
     - 'ee/app/services/audit_events/protected_branch_audit_event_service.rb'
     - 'ee/app/services/boards/epic_lists/destroy_service.rb'

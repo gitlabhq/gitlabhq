@@ -131,7 +131,7 @@ export default {
                   category="tertiary"
                 />
               </div>
-              <div class="file-actions gl-flex gl-items-center gl-ml-auto gl-align-self-start">
+              <div class="file-actions gl-ml-auto gl-flex gl-items-center gl-self-start">
                 <gl-button-group v-if="file.type === 'text'" class="gl-mr-3">
                   <gl-button
                     :selected="file.resolveMode === 'interactive'"
@@ -157,10 +157,10 @@ export default {
                 </gl-button>
               </div>
             </div>
-            <div class="diff-content diff-wrap-lines gl-rounded-bottom-base">
+            <div class="diff-content diff-wrap-lines gl-rounded-b-base">
               <div
                 v-if="file.resolveMode === 'interactive' && file.type === 'text'"
-                class="file-content gl-rounded-bottom-base"
+                class="file-content gl-rounded-b-base"
               >
                 <parallel-conflict-lines v-if="isParallel" :file="file" />
                 <inline-conflict-lines v-else :file="file" />

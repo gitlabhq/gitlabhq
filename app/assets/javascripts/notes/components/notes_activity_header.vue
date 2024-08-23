@@ -51,10 +51,10 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-sm-align-items-center gl-flex-direction-column gl-sm-flex-direction-row gl-justify-content-space-between gl-pt-5 gl-pb-3"
+    class="gl-flex gl-flex-col gl-justify-between gl-pb-3 gl-pt-5 sm:gl-flex-row sm:gl-items-center"
   >
-    <h2 class="gl-font-size-h1 gl-m-0">{{ __('Activity') }}</h2>
-    <div class="gl-display-flex gl-gap-3 gl-w-full gl-sm-w-auto gl-mt-3 gl-sm-mt-0">
+    <h2 class="gl-m-0 gl-text-size-h1">{{ __('Activity') }}</h2>
+    <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 sm:gl-mt-0 sm:gl-w-auto">
       <ai-summarize-notes
         v-if="showAiActions"
         :resource-global-id="resourceGlobalId"

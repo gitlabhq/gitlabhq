@@ -138,11 +138,8 @@ export default {
       :searching="isLoading"
       :disabled="disabled"
       searchable
-      class="gl-w-full dropdown-target-project"
-      :toggle-class="[
-        'gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown',
-        toggleClass,
-      ]"
+      class="dropdown-target-project gl-w-full"
+      :toggle-class="['!gl-items-start !gl-justify-start mr-compare-dropdown', toggleClass]"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

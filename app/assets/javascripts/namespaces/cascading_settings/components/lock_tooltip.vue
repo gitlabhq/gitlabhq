@@ -50,7 +50,7 @@ export default {
         :message="s__('CascadingSettings|This setting has been enforced by an owner of %{link}.')"
       >
         <template #link>
-          <gl-link :href="ancestorNamespace.path" class="gl-font-sm">{{
+          <gl-link :href="ancestorNamespace.path" class="gl-text-sm">{{
             ancestorNamespace.fullName
           }}</gl-link>
         </template>

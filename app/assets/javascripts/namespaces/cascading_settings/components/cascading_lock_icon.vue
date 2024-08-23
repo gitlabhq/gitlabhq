@@ -46,7 +46,7 @@ export default {
 
 <template>
   <span>
-    <gl-button :ref="$options.refName" class="gl-hover-bg-transparent! !gl-p-0" category="tertiary">
+    <gl-button :ref="$options.refName" class="!gl-p-0 hover:!gl-bg-transparent" category="tertiary">
       <gl-icon name="lock" :aria-label="$options.i18n.lockIconLabel" class="!gl-text-gray-400" />
     </gl-button>
     <lock-tooltip

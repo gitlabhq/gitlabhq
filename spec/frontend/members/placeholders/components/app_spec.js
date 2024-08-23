@@ -8,6 +8,8 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -76,12 +78,63 @@ describe('PlaceholdersTabApp', () => {
     });
   };
 
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTabAt = (index) => wrapper.findAllComponents(GlTab).at(index);
   const findUnassignedTable = () => wrapper.findByTestId('placeholders-table-unassigned');
   const findReassignedTable = () => wrapper.findByTestId('placeholders-table-reassigned');
   const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
   const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
+
+  describe('filter and search', () => {
+    const searchTerm = 'source user 1';
+    const searchTokens = [
+      { type: FILTERED_SEARCH_TERM, value: { data: searchTerm } },
+      { type: FILTERED_SEARCH_TERM, value: { data: '' } },
+    ];
+
+    it('renders FilteredSearchBar', () => {
+      createComponent();
+
+      expect(findFilteredSearchBar().exists()).toBe(true);
+    });
+
+    describe('without initial search query', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('updates URL on search', async () => {
+        findFilteredSearchBar().vm.$emit('onFilter', searchTokens);
+        await nextTick();
+
+        expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
+        expect(window.location.search).toBe(`?tab=placeholders&search=source+user+1`);
+      });
+    });
+
+    describe('with status and search queries present on load', () => {
+      beforeEach(() => {
+        setWindowLocation('?status=failed&search=foo');
+        createComponent();
+      });
+
+      it('passes props to table', () => {
+        expect(findUnassignedTable().props()).toMatchObject({
+          querySearch: 'foo',
+          queryStatuses: [PLACEHOLDER_STATUS_FAILED],
+        });
+      });
+
+      it('updates URL on new search', async () => {
+        findFilteredSearchBar().vm.$emit('onFilter', searchTokens);
+        await nextTick();
+
+        expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
+        expect(window.location.search).toBe(`?tab=placeholders&status=failed&search=source+user+1`);
+      });
+    });
+  });
 
   it('renders tabs', () => {
     createComponent();

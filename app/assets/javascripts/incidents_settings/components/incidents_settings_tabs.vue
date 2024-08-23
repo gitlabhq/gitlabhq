@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTabs, GlTab } from '@gitlab/ui';
+import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 import PagerDutySettingsForm from './pagerduty_form.vue';
 
@@ -8,6 +9,7 @@ export default {
     GlButton,
     GlTabs,
     GlTab,
+    SettingsBlock,
     PagerDutySettingsForm,
     ServiceLevelAgreementForm: () =>
       import('ee_component/incidents_settings/components/service_level_agreement_form.vue'),
@@ -23,27 +25,15 @@ export default {
 </script>
 
 <template>
-  <section
-    id="incident-management-settings"
-    data-testid="incidents-settings-content"
-    class="settings no-animate"
-  >
-    <div class="settings-header">
-      <h4
-        ref="sectionHeader"
-        class="settings-title js-settings-toggle js-settings-toggle-trigger-only"
-      >
-        {{ $options.i18n.headerText }}
-      </h4>
-      <gl-button ref="toggleBtn" class="js-settings-toggle">{{
-        $options.i18n.expandBtnLabel
-      }}</gl-button>
-      <p ref="sectionSubHeader" class="gl-text-secondary">
-        {{ $options.i18n.subHeaderText }}
-      </p>
-    </div>
+  <settings-block id="incident-management-settings" data-testid="incidents-settings-content">
+    <template #title>
+      <span ref="sectionHeader">{{ $options.i18n.headerText }}</span>
+    </template>
+    <template #description>
+      <span ref="sectionSubHeader">{{ $options.i18n.subHeaderText }}</span>
+    </template>
 
-    <div class="settings-content">
+    <template #default>
       <gl-tabs>
         <service-level-agreement-form />
         <gl-tab
@@ -54,6 +44,6 @@ export default {
           <component :is="tab.component" class="gl-pt-3" :data-testid="`${tab.component}-tab`" />
         </gl-tab>
       </gl-tabs>
-    </div>
-  </section>
+    </template>
+  </settings-block>
 </template>

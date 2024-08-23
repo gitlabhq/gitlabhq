@@ -7,6 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Group access and permissions
 
 Configure your groups to control group permissions and access.
+For more information, see also [Sharing projects and groups](../project/members/sharing_projects_groups.md).
 
 ## Group push rules
 
@@ -151,52 +152,6 @@ NOTE:
 Removing a domain from the **Restrict membership by email** list does not remove the users with this email domain from the groups and projects under this group.
 Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
 Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email** list.
-
-## Prevent group sharing outside the group hierarchy
-
-You can configure a top-level group so its subgroups and projects
-cannot invite other groups outside of the top-level group's hierarchy.
-This option is only available for top-level groups.
-
-For example, in the following group and project hierarchy:
-
-- **Animals > Dogs > Dog Project**
-- **Animals > Cats**
-- **Plants > Trees**
-
-If you prevent group sharing outside the hierarchy for the **Animals** group:
-
-- **Dogs** can invite the group **Cats**.
-- **Dogs** cannot invite the group **Trees**.
-- **Dog Project** can invite the group **Cats**.
-- **Dog Project** cannot invite the group **Trees**.
-
-To prevent sharing outside of the group's hierarchy:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
-1. Select **Save changes**.
-
-## Prevent a project from being shared with groups
-
-[Sharing a project with another group](../project/members/share_project_with_groups.md)
-increases the number of users who can invite yet more members to the project.
-Each (sub)group can be an additional source of access permissions,
-which can be confusing and difficult to control.
-
-To restrict the permission to invite project members to a single source,
-prevent a project from being shared with other groups:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Select **Projects in `<group_name>` cannot be shared with other groups**.
-1. Select **Save changes**.
-
-This setting, when enabled, applies to all subgroups unless overridden by a group Owner. Groups already
-added to a project lose access when the setting is enabled.
 
 ## Prevent users from requesting access to a group
 

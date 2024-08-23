@@ -36,9 +36,7 @@ export default {
 
 <template>
   <div class="gl-mt-3" data-testid="disabled-comments">
-    <span
-      class="issuable-note-warning gl-display-inline-block gl-w-full gl-px-5 gl-py-4 gl-rounded-base"
-    >
+    <span class="issuable-note-warning gl-inline-block gl-w-full gl-rounded-base gl-px-5 gl-py-4">
       <gl-icon :size="16" name="lock" class="icon" />
       <span v-if="isProjectArchived">
         {{ projectArchivedWarning }}

@@ -160,20 +160,20 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-default gl-hidden md:gl-flex gl-flex-col gl-justify-end gl-border-b"
+      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default md:gl-flex"
       :class="{ 'gl-invisible': !isStickyHeaderVisible }"
     >
       <div
-        class="issue-sticky-header-text gl-flex gl-flex-col gl-items-center gl-mx-auto gl-w-full"
+        class="issue-sticky-header-text gl-mx-auto gl-flex gl-w-full gl-flex-col gl-items-center"
         :class="{ 'container-limited': !isFluidLayout }"
       >
-        <div class="gl-w-full gl-flex gl-items-center gl-gap-2">
+        <div class="gl-flex gl-w-full gl-items-center gl-gap-2">
           <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
           <imported-badge v-if="isImported" :importable-type="$options.TYPE_MERGE_REQUEST" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-hidden lg:gl-block gl-font-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
+            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default lg:gl-block"
           ></a>
           <div class="gl-flex gl-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
@@ -184,20 +184,20 @@ export default {
                   :text="getNoteableData.source_branch"
                   size="small"
                   category="tertiary"
-                  class="gl-mx-1 js-source-branch-copy"
+                  class="js-source-branch-copy gl-mx-1"
                 />
               </template>
               <template #source>
                 <gl-link
                   :title="getNoteableData.source_branch"
                   :href="getNoteableData.source_branch_path"
-                  class="gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-mt-2 gl-truncate gl-max-w-26"
+                  class="gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-bg-blue-50 gl-px-2 gl-text-sm gl-font-monospace"
                   data-testid="source-branch"
                 >
                   <span
                     v-if="isForked"
                     v-gl-tooltip
-                    class="gl-align-middle -gl-mr-2"
+                    class="-gl-mr-2 gl-align-middle"
                     :title="__('The source project is a fork')"
                   >
                     <gl-icon name="fork" :size="12" class="gl-ml-1" />
@@ -209,7 +209,7 @@ export default {
                 <gl-link
                   :title="getNoteableData.target_branch"
                   :href="getNoteableData.target_branch_path"
-                  class="gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-mt-2 gl-truncate gl-max-w-26 gl-ml-2"
+                  class="gl-ml-2 gl-mt-2 gl-max-w-26 gl-truncate gl-rounded-base gl-bg-blue-50 gl-px-2 gl-text-sm !gl-text-blue-500 gl-font-monospace"
                 >
                   {{ getNoteableData.target_branch }}
                 </gl-link>
@@ -217,9 +217,9 @@ export default {
             </gl-sprintf>
           </div>
         </div>
-        <div class="gl-w-full gl-flex">
+        <div class="gl-flex gl-w-full">
           <ul
-            class="merge-request-tabs nav-tabs nav nav-links gl-flex gl-flex-nowrap gl-m-0 gl-p-0 gl-border-b-0"
+            class="merge-request-tabs nav-tabs nav nav-links gl-m-0 gl-flex gl-flex-nowrap gl-border-b-0 gl-p-0"
           >
             <li
               v-for="(tab, index) in tabs"
@@ -239,7 +239,7 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-hidden lg:gl-flex gl-items-center gl-ml-auto">
+          <div class="gl-ml-auto gl-hidden gl-items-center lg:gl-flex">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
             <div v-if="isSignedIn" :class="{ 'gl-flex gl-gap-3': isNotificationsTodosButtons }">
               <todo-widget

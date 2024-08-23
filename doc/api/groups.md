@@ -1236,7 +1236,7 @@ PUT /groups/:id
 | `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
-| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy). This attribute is only available on top-level groups. |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to set up two-factor authentication. |
@@ -2531,7 +2531,7 @@ documentation.
 
 ## Share Groups with Groups
 
-These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/manage.md#share-a-group-with-another-group) page.
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) page.
 
 ### Create a link to share a group with another group
 

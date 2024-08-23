@@ -77,7 +77,7 @@ export default {
 
 <template>
   <gl-sorting
-    class="gl-display-flex"
+    class="gl-flex"
     dropdown-class="gl-w-full"
     block
     data-testid="members-sort-dropdown"

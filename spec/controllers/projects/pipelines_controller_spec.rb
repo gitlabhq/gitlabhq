@@ -792,7 +792,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
 
     with_them do
-      let(:params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: chart } }
+      let!(:params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: chart } }
 
       it_behaves_like 'tracking unique visits', :charts do
         let(:request_params) { params }

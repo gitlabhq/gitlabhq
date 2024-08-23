@@ -118,7 +118,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-justify-center mr-users-list">
+  <div class="mr-users-list gl-flex gl-justify-center">
     <gl-avatars-inline
       v-if="sortedUsers.length"
       :avatars="sortedUsers"
@@ -139,14 +139,14 @@ export default {
           <gl-avatar :src="user.avatarUrl" :size="32" />
           <span
             v-if="isCurrentUser(user)"
-            class="gl-absolute -gl-top-2 -gl-left-2 gl-rounded-full gl-p-1 gl-w-5 gl-h-5 gl-flex gl-justify-center gl-items-center gl-bg-blue-500 gl-text-white"
+            class="gl-absolute -gl-left-2 -gl-top-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-bg-blue-500 gl-p-1 gl-text-white"
             data-testid="current-user"
           >
             <gl-icon name="user" class="gl-block" :size="12" />
           </span>
           <span
             v-if="reviewStateIcon(user)"
-            class="gl-absolute -gl-bottom-2 -gl-right-2 gl-rounded-full gl-p-1 gl-w-5 gl-h-5 gl-flex gl-justify-center gl-items-center"
+            class="gl-absolute -gl-bottom-2 -gl-right-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
             :class="reviewStateIcon(user).class"
             data-testid="review-state-icon"
           >

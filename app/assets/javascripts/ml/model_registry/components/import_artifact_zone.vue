@@ -158,7 +158,7 @@ export default {
       :description="subfolderValid ? $options.i18n.subfolderDescription : ''"
     >
       <div>
-        <label for="subfolderId" class="gl-font-weight-bold" data-testid="subfolderLabel">{{
+        <label for="subfolderId" class="gl-font-bold" data-testid="subfolderLabel">{{
           $options.i18n.subfolderLabel
         }}</label>
         <gl-icon id="toolTipSubfolderId" v-gl-tooltip name="information-o" tabindex="0" />

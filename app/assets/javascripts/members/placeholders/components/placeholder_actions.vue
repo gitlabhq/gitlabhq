@@ -313,11 +313,11 @@ export default {
 
         <template #footer>
           <div
-            class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-flex gl-flex-col !gl-p-2 !gl-pt-0"
+            class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-gray-200 !gl-p-2 !gl-pt-0 gl-border-t-solid"
           >
             <gl-button
               category="tertiary"
-              class="!gl-justify-start gl-mt-2"
+              class="gl-mt-2 !gl-justify-start"
               data-testid="dont-reassign-button"
               @click="onSelect('')"
             >

@@ -106,8 +106,8 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-header gl-display-flex gl-align-items-center">
-    <div v-once class="timeline-avatar gl-align-self-start gl-flex-shrink-0 gl-flex-shrink">
+  <div class="discussion-header gl-flex gl-items-center">
+    <div v-once class="timeline-avatar gl-flex-shrink gl-shrink-0 gl-self-start">
       <gl-avatar-link
         v-if="author"
         :href="author.path"
@@ -118,7 +118,7 @@ export default {
         <gl-avatar :src="author.avatar_url" :alt="author.name" :size="32" />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content gl-w-full gl-ml-3" :class="toggleClass">
+    <div class="timeline-content gl-ml-3 gl-w-full" :class="toggleClass">
       <note-header
         :author="author"
         :created-at="firstNote.created_at"

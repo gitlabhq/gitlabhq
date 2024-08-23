@@ -148,7 +148,7 @@ export default {
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
           :internal-note="isDiscussionInternal"
-          :class="{ 'gl-border-top-0!': isFileDiscussion }"
+          :class="{ '!gl-border-t-0': isFileDiscussion }"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >

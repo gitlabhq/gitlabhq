@@ -220,7 +220,7 @@ Example response:
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have
 access to the project and each group must
-[have this project shared](../user/project/members/share_project_with_groups.md). These access levels
+[have this project shared](../user/project/members/sharing_projects_groups.md). These access levels
 allow [more granular control over protected branch access](../user/project/protected_branches.md).
 
 ```shell
@@ -398,7 +398,7 @@ To update:
 
 - `user_id`: Ensure the updated user has access to the project. You must also pass the
   `id` of the `access_level` in the respective hash.
-- `group_id`: Ensure the updated group [has this project shared](../user/project/members/share_project_with_groups.md).
+- `group_id`: Ensure the updated group [has this project shared](../user/project/members/sharing_projects_groups.md).
   You must also pass the `id` of the `access_level` in the respective hash.
 
 To delete:

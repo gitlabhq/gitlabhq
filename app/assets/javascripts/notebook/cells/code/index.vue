@@ -51,7 +51,7 @@ export default {
       language="python"
       :code="code"
       :max-height="maxHeight"
-      class="gl-border gl-p-4!"
+      class="gl-border !gl-p-4"
     />
   </div>
 </template>

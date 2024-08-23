@@ -36,7 +36,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
       end
 
       it 'renders form for incident management' do
-        expect(page).to have_selector('h4', text: 'Incidents')
+        expect(page).to have_selector('h2', text: 'Incidents')
       end
 
       it 'sets correct default values' do

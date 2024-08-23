@@ -91,7 +91,7 @@ export default {
     },
   },
   docsLink: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'push-to-a-project-repository-using-a-job-token',
+    anchor: 'git-push-to-your-project-repository',
   }),
 };
 </script>

@@ -136,7 +136,7 @@ export default {
   <div>
     <title-area>
       <template #title>
-        <div class="gl-flex-grow-1 gl-display-flex gl-align-items-center">
+        <div class="gl-flex gl-grow gl-items-center">
           <span>{{ $options.i18n.TITLE_LABEL }}</span>
           <gl-experiment-badge :help-page-url="$options.docHref" type="beta" />
         </div>

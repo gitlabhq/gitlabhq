@@ -114,8 +114,8 @@ To view a list of seats being used:
 
 For each user, a list shows groups and projects where the user is a direct member.
 
-- **Group invite** indicates the user is a member of a [group shared with a group](../../user/group/manage.md#share-a-group-with-another-group).
-- **Project invite** indicates the user is a member of a [group shared with a project](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group).
+- **Group invite** indicates the user is a member of a [group shared with a group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
+- **Project invite** indicates the user is a member of a [group shared with a project](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project).
 
 The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
 The counts for **Max seats used** and **Seats owed** are updated once per day.
@@ -221,7 +221,7 @@ To remove a billable user from your subscription:
 1. In the row for the user you want to remove, on the right side, select **Remove user**.
 1. Re-type the username and select **Remove user**.
 
-If you add a member to a group by using the [share a group with another group](../../user/group/manage.md#share-a-group-with-another-group) feature, you can't remove the member by using this method. Instead, you can either:
+If you add a member to a group by using the [share a group with another group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) feature, you can't remove the member by using this method. Instead, you can either:
 
 - Remove the member from the shared group. You must be a group owner to do this.
 - From the group's membership page, remove access from the entire shared group.

@@ -73,7 +73,7 @@ Prerequisites:
 ### `CODEOWNERS` file
 
 A `CODEOWNERS` file (with no extension) specifies the users or
-[shared groups](../members/share_project_with_groups.md) responsible for
+[shared groups](../members/sharing_projects_groups.md) responsible for
 specific files and directories in a repository.
 
 Each repository uses a single `CODEOWNERS` file. GitLab checks these locations
@@ -137,7 +137,7 @@ The eligible Code Owners are:
 
 ##### Inviting subgroups to projects in parent groups
 
-You can [invite](../members/share_project_with_groups.md) **Subgroup Y** to **Project A**
+You can [invite](../members/sharing_projects_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.
 
 ```mermaid

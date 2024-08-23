@@ -3,14 +3,12 @@
 - add_page_specific_style 'page_bundles/alert_management_settings'
 - add_page_specific_style 'page_bundles/paginated_table'
 
-%section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded), data: { testid: 'alerts-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Alerts')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = _('Expand')
-    %p.gl-text-secondary
-      = _('Display alerts from all configured monitoring tools.')
-      = link_to _('Learn more.'), help_page_path('operations/incident_management/integrations'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Alerts'),
+  id: 'js-alert-management-settings',
+  testid: 'alerts-settings-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Display alerts from all configured monitoring tools.')
+    = link_to _('Learn more.'), help_page_path('operations/incident_management/integrations'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     .js-alerts-settings{ data: alerts_settings_data }

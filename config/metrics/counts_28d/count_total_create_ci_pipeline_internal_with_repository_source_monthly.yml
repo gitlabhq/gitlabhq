@@ -1,0 +1,23 @@
+---
+key_path: counts.count_total_create_ci_pipeline_internal_with_repository_source_monthly
+description: Monthly count of internal pipelines created that were defined by a gitlab-ci file in the repository
+product_group: pipeline_execution
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163352
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: create_ci_internal_pipeline
+  filter:
+    property: repository_source

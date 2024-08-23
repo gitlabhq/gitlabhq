@@ -23,7 +23,10 @@ module Ci
       with_reactive_cache(sha) { |result| result }
     end
 
-    def calculate_reactive_cache(sha)
+    # Changing parameters in an `calculate_reactive_cache` method is like changing parameters in a Sidekiq worker.
+    # So, we need to follow the same rules: https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#add-an-argument
+    # That's why `ref` is an optional parameter for now.
+    def calculate_reactive_cache(sha, ref = nil) # rubocop:disable Lint/UnusedMethodArgument -- explained above
       config = ::Gitlab::Ci::ProjectConfig.new(project: project, sha: sha)
 
       return {} unless config.exists?

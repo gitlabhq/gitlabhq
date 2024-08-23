@@ -2,10 +2,10 @@
 
 exports[`MemberActivity with a member that does not have all of the fields renders \`User created\` field 1`] = `
 <div
-  class="gl-display-flex gl-flex-direction-column gl-gap-2"
+  class="gl-flex gl-flex-col gl-gap-2"
 >
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -27,10 +27,10 @@ exports[`MemberActivity with a member that does not have all of the fields rende
 
 exports[`MemberActivity with a member that has all fields and "requestAcceptedAt" field in the member entity is not null should use this field to display an access granted date 1`] = `
 <div
-  class="gl-display-flex gl-flex-direction-column gl-gap-2"
+  class="gl-flex gl-flex-col gl-gap-2"
 >
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -48,7 +48,7 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
     </span>
   </div>
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -66,7 +66,7 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
     </span>
   </div>
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -88,10 +88,10 @@ exports[`MemberActivity with a member that has all fields and "requestAcceptedAt
 
 exports[`MemberActivity with a member that has all fields renders \`User created\`, \`Access granted\`, and \`Last activity\` fields 1`] = `
 <div
-  class="gl-display-flex gl-flex-direction-column gl-gap-2"
+  class="gl-flex gl-flex-col gl-gap-2"
 >
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -109,7 +109,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
     </span>
   </div>
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"
@@ -127,7 +127,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
     </span>
   </div>
   <div
-    class="gl-display-flex gl-gap-3"
+    class="gl-flex gl-gap-3"
   >
     <svg
       aria-hidden="true"

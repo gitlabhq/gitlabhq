@@ -249,6 +249,13 @@ module UsersHelper
     )
   end
 
+  def email_verification_token_expired?(email_sent_at:)
+    return false unless email_sent_at
+
+    token_valid_for = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes
+    (email_sent_at + token_valid_for).before?(Time.zone.now)
+  end
+
   private
 
   def admin_users_paths

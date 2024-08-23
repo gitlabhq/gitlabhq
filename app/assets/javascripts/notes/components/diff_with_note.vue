@@ -130,7 +130,7 @@ export default {
             <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
               {{ __('Unable to load the diff') }}
               <gl-button
-                class="gl-font-regular js-toggle-lazy-diff-retry-button"
+                class="js-toggle-lazy-diff-retry-button gl-font-regular"
                 @click="fetchDiff"
               >
                 {{ __('Try again') }}
@@ -144,7 +144,7 @@ export default {
           </tr>
         </template>
         <tr class="notes_holder">
-          <td :class="{ 'gl-border-top-0!': isFileDiscussion }" class="notes-content" colspan="3">
+          <td :class="{ '!gl-border-t-0': isFileDiscussion }" class="notes-content" colspan="3">
             <slot></slot>
           </td>
         </tr>

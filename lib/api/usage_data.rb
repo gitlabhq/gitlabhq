@@ -28,9 +28,7 @@ module API
         project_id = params[:project_id]
         additional_properties = params.fetch(:additional_properties, {}).symbolize_keys
 
-        unless Gitlab::Tracking::AiTracking.track_via_code_suggestions?(event_name, current_user)
-          Gitlab::Tracking::AiTracking.track_event(event_name, additional_properties.merge(user: current_user))
-        end
+        Gitlab::Tracking::AiTracking.track_event(event_name, additional_properties.merge(user: current_user))
 
         track_event(
           event_name,

@@ -63,7 +63,7 @@ class Gitlab::Seeder::TriageOps
     master-broken::gitlab-com-overloaded
     master-broken::infrastructure
     master-broken::infrastructure::failed-to-pull-image
-    master-broken::infrastructure::gitlab-com-overloaded
+    master-broken::gitlab-com-overloaded
     master-broken::infrastructure::runner-disk-full
     master-broken::job-timeout
     master-broken::multi-version-db-upgrade

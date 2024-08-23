@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isSharedWithGroupPrivate" class="gl-display-flex gl-gap-x-2">
+  <div v-if="isSharedWithGroupPrivate" class="gl-flex gl-gap-x-2">
     <span>{{ $options.i18n.private }}</span>
     <private-icon />
   </div>

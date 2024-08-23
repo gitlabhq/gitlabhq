@@ -125,7 +125,7 @@ To be eligible as an approver for a project, a user must be a member of at least
 
 - The project.
 - The project's immediate parent [group](#group-approvers).
-- A group that has been [shared](../../members/share_project_with_groups.md) with the project.
+- A group that has been [shared](../../members/sharing_projects_groups.md) with the project.
 - A [group added as approvers](#group-approvers).
 
 Users with the Developer role can approve merge requests if one of the following is true:
@@ -136,7 +136,7 @@ Users with the Developer role can approve merge requests if one of the following
 
 Users with the Reporter role can approve only if both of the following are true:
 
-- The users are part of a group that has been [shared](../../members/share_project_with_groups.md) with the project.
+- The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
   The group must have at least the Reporter role.
 - The group has been added as merge request approvers.
 
@@ -159,7 +159,7 @@ can approve the rule. **Inherited members** cannot approve the rule.
 
 Typically the group is a subgroup in your top-level namespace, unless you are
 collaborating with an external group. If you are collaborating with another group,
-you must [share access to the project](../../members/share_project_with_groups.md)
+you must [share access to the project](../../members/sharing_projects_groups.md)
 before assigning the group as a group approver.
 
 A user's membership in an approver group affects their individual ability to
@@ -208,7 +208,7 @@ To enable approval permissions for these users without granting them push access
 1. [Create a new group](../../../group/index.md#create-a-group).
 1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
    and select the Reporter role for the user.
-1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group),
+1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with at least the Reporter role.
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.

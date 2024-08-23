@@ -39,7 +39,7 @@ export default {
     :class="{ 'is-active': isActive }"
     @click="$emit('item-selected', level)"
   >
-    <div class="gl-display-flex gl-flex-direction-column">
+    <div class="gl-flex gl-flex-col">
       <span class="gl-font-bold">{{ title }}</span>
       <span class="gl-text-gray-500">{{ description }}</span>
     </div>

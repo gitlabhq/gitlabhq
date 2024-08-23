@@ -38,7 +38,7 @@ import {
   matchingBranchesCount,
   protectableBranchesMockResponse,
   allowedToMergeDrawerProps,
-  protectionMockProps,
+  protectionPropsMock,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -181,14 +181,14 @@ describe('View branch rules', () => {
 
   it('renders a branch protection component for push rules', () => {
     expect(findAllowedToPush().props()).toMatchObject({
+      roles: protectionPropsMock.roles,
       header: 'Allowed to push and merge',
       count: 2,
-      ...protectionMockProps,
     });
   });
 
   it('passes expected roles for push rules via props', () => {
-    expect(findAllowedToPush().props('roles')).toEqual(protectionMockProps.roles);
+    expect(findAllowedToPush().props('roles')).toEqual(protectionPropsMock.roles);
   });
 
   it('does not render Allow force push toggle if there are no push rules set', async () => {
@@ -223,14 +223,14 @@ describe('View branch rules', () => {
 
   it('renders a branch protection component for merge rules', () => {
     expect(findAllowedToMerge().props()).toMatchObject({
+      roles: protectionPropsMock.roles,
       header: 'Allowed to merge',
       count: 2,
-      ...protectionMockProps,
     });
   });
 
   it('passes expected roles form merge rules via props', () => {
-    expect(findAllowedToMerge().props('roles')).toEqual(protectionMockProps.roles);
+    expect(findAllowedToMerge().props('roles')).toEqual(protectionPropsMock.roles);
   });
 
   it('does not render a branch protection component for approvals', () => {

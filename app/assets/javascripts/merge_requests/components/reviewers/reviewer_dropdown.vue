@@ -156,7 +156,7 @@ export default {
         @hidden="updateReviewers"
       >
         <template #list-item="{ item }">
-          <span class="gl-display-flex gl-align-items-center">
+          <span class="gl-flex gl-items-center">
             <div class="gl-relative gl-mr-3">
               <gl-avatar :size="32" :src="item.avatarUrl" :entity-name="item.value" />
               <gl-icon
@@ -166,8 +166,8 @@ export default {
                 class="reviewer-merge-icon"
               />
             </div>
-            <span class="gl-display-flex gl-flex-direction-column">
-              <span class="gl-font-bold gl-white-space-nowrap">{{ item.text }}</span>
+            <span class="gl-flex gl-flex-col">
+              <span class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</span>
               <span class="gl-text-gray-400"> {{ item.secondaryText }}</span>
             </span>
           </span>

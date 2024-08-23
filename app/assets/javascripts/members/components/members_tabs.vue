@@ -112,7 +112,7 @@ export default {
     <template #tabs-end>
       <gl-button
         v-if="shouldShowExportButton"
-        class="gl-align-self-center gl-ml-auto"
+        class="gl-ml-auto gl-self-center"
         icon="export"
         :href="exportCsvPath"
       >

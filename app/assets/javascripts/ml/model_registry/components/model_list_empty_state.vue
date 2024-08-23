@@ -53,7 +53,7 @@ export default {
       <gl-button v-gl-modal="modalId" variant="confirm" class="gl-mx-2 gl-mb-3">{{
         primaryText
       }}</gl-button>
-      <gl-button v-gl-modal="$options.mlflowModalId" class="gl-mb-3 gl-mr-3 gl-mx-2">
+      <gl-button v-gl-modal="$options.mlflowModalId" class="gl-mx-2 gl-mb-3 gl-mr-3">
         {{ $options.mlflowDocs }}
       </gl-button>
     </template>

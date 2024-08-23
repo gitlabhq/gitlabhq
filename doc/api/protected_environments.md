@@ -123,7 +123,7 @@ Elements in the `deploy_access_levels` and `approval_rules` array should be one 
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
 `{access_level: integer}`. Optionally, you can specify the `group_inheritance_type` on each as one of the [valid group inheritance types](#group-inheritance-types).
 
-Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md).
+Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md).
 
 ```shell
 curl --header 'Content-Type: application/json' --request POST \
@@ -195,7 +195,7 @@ Elements in the `deploy_access_levels` and `approval_rules` array should be one 
 To update:
 
 - **`user_id`**: Ensure the updated user has access to the project. You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
-- **`group_id`**: Ensure the updated group [have this project shared](../user/project/members/share_project_with_groups.md). You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
+- **`group_id`**: Ensure the updated group [have this project shared](../user/project/members/sharing_projects_groups.md). You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
 
 To delete:
 

@@ -493,7 +493,7 @@ export default {
     @filter="handleFilter"
   >
     <template #nav-actions>
-      <div class="gl-display-flex gl-gap-3">
+      <div class="gl-flex gl-gap-3">
         <gl-button
           v-if="newMergeRequestPath"
           variant="confirm"

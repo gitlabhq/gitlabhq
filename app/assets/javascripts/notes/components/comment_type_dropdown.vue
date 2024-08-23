@@ -137,7 +137,7 @@ export default {
 
 <template>
   <gl-button-group
-    class="js-comment-button js-comment-submit-button comment-type-dropdown gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0"
+    class="js-comment-button js-comment-submit-button comment-type-dropdown gl-mb-3 gl-w-full md:gl-mb-0 md:gl-w-auto"
     :data-track-label="trackingLabel"
     data-track-action="click_button"
     data-testid="comment-button"

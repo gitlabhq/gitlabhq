@@ -29,8 +29,8 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center">
-        <gl-link class="gl-text-body" :href="pathToDetails">
+      <div class="gl-flex gl-items-center">
+        <gl-link class="gl-text-primary" :href="pathToDetails">
           <gl-truncate :text="candidate.name" />
         </gl-link>
       </div>

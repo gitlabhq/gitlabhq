@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div>
-    <h3 class="gl-font-lg gl-mt-5">{{ $options.i18n.DESCRIPTION_LABEL }}</h3>
+    <h3 class="gl-mt-5 gl-text-lg">{{ $options.i18n.DESCRIPTION_LABEL }}</h3>
 
     <div v-if="modelVersion.description">
       {{ modelVersion.description }}
@@ -61,7 +61,7 @@ export default {
         :package-type="packageType"
       >
         <template v-if="showImportArtifactZone" #upload="{ refetch }">
-          <h3 data-testid="uploadHeader" class="gl-text-lg gl-mt-5">
+          <h3 data-testid="uploadHeader" class="gl-mt-5 gl-text-lg">
             {{ __('Upload artifacts') }}
           </h3>
           <import-artifact-zone :path="importPath" @change="refetch" />

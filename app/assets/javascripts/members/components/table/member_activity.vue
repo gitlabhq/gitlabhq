@@ -28,18 +28,18 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-gap-2">
-    <div v-if="userCreated" class="gl-display-flex gl-gap-3">
+  <div class="gl-flex gl-flex-col gl-gap-2">
+    <div v-if="userCreated" class="gl-flex gl-gap-3">
       <gl-icon
         ref="userCreated"
         v-gl-tooltip.${userCreated}
-        class="gl-ml-2 -gl-mr-2 gl-text-gray-500"
+        class="-gl-mr-2 gl-ml-2 gl-text-gray-500"
         name="assignee"
         :title="s__('Members|User created')"
       />
       <user-date :date="userCreated" />
     </div>
-    <div v-if="accessGranted" class="gl-display-flex gl-gap-3">
+    <div v-if="accessGranted" class="gl-flex gl-gap-3">
       <gl-icon
         ref="memberCreatedAt"
         v-gl-tooltip.${memberCreatedAt}
@@ -49,7 +49,7 @@ export default {
       />
       <user-date :date="accessGranted" />
     </div>
-    <div v-if="lastActivity" class="gl-display-flex gl-gap-3">
+    <div v-if="lastActivity" class="gl-flex gl-gap-3">
       <gl-icon
         ref="lastActivity"
         v-gl-tooltip.${lastActivity}

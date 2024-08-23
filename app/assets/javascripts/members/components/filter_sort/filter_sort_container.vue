@@ -29,7 +29,7 @@ export default {
 
 <template>
   <div v-if="showContainer" class="gl-bg-gray-10 gl-p-3 md:gl-flex">
-    <members-filtered-search-bar v-if="filteredSearchBar.show" class="gl-p-3 gl-flex-grow-1" />
-    <sort-dropdown v-if="showSortDropdown" class="gl-p-3 gl-flex-shrink-0" />
+    <members-filtered-search-bar v-if="filteredSearchBar.show" class="gl-grow gl-p-3" />
+    <sort-dropdown v-if="showSortDropdown" class="gl-shrink-0 gl-p-3" />
   </div>
 </template>
