@@ -92,7 +92,7 @@ export default {
       data-testid="assignee-link"
     >
       <span class="js-assignee-tooltip">
-        <span class="gl-font-bold gl-block">{{ s__('Label|Assignee') }}</span> {{ assignee.name }}
+        <span class="gl-block gl-font-bold">{{ s__('Label|Assignee') }}</span> {{ assignee.name }}
         <span v-if="assignee.username" class="text-white-50">@{{ assignee.username }}</span>
       </span>
     </user-avatar-link>

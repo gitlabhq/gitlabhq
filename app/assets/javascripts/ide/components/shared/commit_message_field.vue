@@ -70,14 +70,14 @@ export default {
 
 <template>
   <fieldset
-    class="gl-rounded-base gl-shadow-inner-1-gray-400 gl-py-4 gl-px-5"
+    class="gl-rounded-base gl-px-5 gl-py-4 gl-shadow-inner-1-gray-400"
     :class="{
-      'gl-outline-none gl-focus-ring-border-1-gray-900!': isFocused,
+      'gl-focus-ring-border-1-gray-900! gl-outline-none': isFocused,
     }"
   >
     <div
       v-once
-      class="gl-display-flex gl-align-items-center gl-border-b-solid gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-mb-3"
+      class="gl-mb-3 gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-border-b-solid"
     >
       <div>{{ __('Commit Message') }}</div>
       <div id="commit-message-popover-container">
@@ -91,8 +91,8 @@ export default {
         />
       </div>
     </div>
-    <div class="gl-relative gl-w-full gl-h-13 gl-overflow-hidden">
-      <div class="gl-absolute gl-z-1 gl-font-monospace gl-text-transparent">
+    <div class="gl-relative gl-h-13 gl-w-full gl-overflow-hidden">
+      <div class="gl-absolute gl-z-1 gl-text-transparent gl-font-monospace">
         <div
           data-testid="highlights"
           :style="{
@@ -109,7 +109,7 @@ export default {
             ><mark
               v-show="line.highlightedText"
               data-testid="highlights-mark"
-              class="gl-px-1 gl-py-0 gl-bg-orange-100 gl-text-transparent gl-whitespace-pre-wrap gl-break-anywhere"
+              class="gl-whitespace-pre-wrap gl-bg-orange-100 gl-px-1 gl-py-0 gl-text-transparent gl-break-anywhere"
               v-text="line.highlightedText"
             >
             </mark>
@@ -120,7 +120,7 @@ export default {
         ref="textarea"
         :placeholder="placeholder"
         :value="text"
-        class="gl-absolute gl-w-full gl-h-full gl-z-2 gl-font-monospace p-0 gl-outline-none gl-bg-transparent gl-border-0"
+        class="p-0 gl-absolute gl-z-2 gl-h-full gl-w-full gl-border-0 gl-bg-transparent gl-outline-none gl-font-monospace"
         dir="auto"
         name="commit-message"
         @scroll="handleScroll"

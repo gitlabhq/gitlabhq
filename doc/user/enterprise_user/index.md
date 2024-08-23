@@ -191,6 +191,25 @@ To disable 2FA:
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
 
+### Enable the extension marketplace for the Web IDE and workspaces
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) in GitLab 17.4 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by feature flags.
+For more information, see the history.
+
+If you have the Owner role for a top-level group, you can
+enable the extension marketplace for enterprise users.
+
+To enable the extension marketplace for the Web IDE and workspaces:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.
+1. Select **Save changes**.
+
 ### Prevent enterprise users from creating groups and projects outside the corporate group
 
 A SAML identity administrator can configure the SAML response to set:

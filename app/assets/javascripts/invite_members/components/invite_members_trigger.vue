@@ -89,7 +89,7 @@ export default {
   </gl-button>
   <gl-link v-else-if="isWithEmojiTrigger" v-bind="componentAttributes" @click="openModal">
     {{ displayText }}
-    <gl-emoji class="gl-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
+    <gl-emoji class="gl-mr-1 gl-align-baseline gl-text-size-reset" :data-name="icon" />
   </gl-link>
   <gl-dropdown-item
     v-else-if="isDropdownWithEmojiTrigger"
@@ -97,7 +97,7 @@ export default {
     @click="openModal"
   >
     {{ displayText }}
-    <gl-emoji class="gl-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
+    <gl-emoji class="gl-mr-1 gl-align-baseline gl-text-size-reset" :data-name="icon" />
   </gl-dropdown-item>
   <gl-disclosure-dropdown-item
     v-else-if="isDisclosureTrigger"

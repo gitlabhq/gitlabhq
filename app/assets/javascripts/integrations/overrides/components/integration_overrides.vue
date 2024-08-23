@@ -120,7 +120,7 @@ export default {
     >
       <template #cell(name)="{ item }">
         <gl-link
-          class="gl-inline-flex gl-align-items-center gl-hover-text-decoration-none gl-text-body!"
+          class="gl-inline-flex gl-items-center !gl-text-primary hover:gl-no-underline"
           :href="item.full_path"
         >
           <project-avatar
@@ -140,7 +140,7 @@ export default {
         <gl-loading-icon size="lg" class="gl-my-2" />
       </template>
     </gl-table>
-    <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+    <div class="gl-mt-5 gl-flex gl-justify-center">
       <template v-if="showPagination">
         <gl-pagination
           :per-page="$options.DEFAULT_PER_PAGE"

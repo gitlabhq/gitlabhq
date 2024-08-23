@@ -46,7 +46,7 @@ describe('AlertMappingBuilder', () => {
       const input = findColumnInRow(index + 1, 0).findComponent(GlFormInput);
       const types = field.types.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(' or ');
       expect(input.attributes('value')).toBe(`${field.label} (${types})`);
-      expect(input.attributes('disabled')).toBe('');
+      expect(input.attributes('disabled')).toBeDefined();
     });
   });
 

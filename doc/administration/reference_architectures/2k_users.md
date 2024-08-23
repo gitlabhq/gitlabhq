@@ -390,6 +390,9 @@ the Linux package:
          'redis.addr' => 'redis://0.0.0.0:6379',
          'redis.password' => 'SECRET_PASSWORD_HERE',
    }
+
+   # Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace

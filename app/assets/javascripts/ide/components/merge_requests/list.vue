@@ -78,7 +78,7 @@ export default {
 <template>
   <div>
     <label
-      class="dropdown-input gl-pt-3 gl-pb-5 gl-mb-0 gl-border-b-1 gl-border-b-solid gl-block"
+      class="dropdown-input gl-mb-0 gl-block gl-border-b-1 gl-pb-5 gl-pt-3 gl-border-b-solid"
       @click.stop
     >
       <tokened-input
@@ -106,7 +106,7 @@ export default {
                 class="btn-link gl-button gl-flex gl-items-center"
                 @click.stop="setSearchType(searchType)"
               >
-                <span class="gl-flex gl-mr-3 ide-search-list-current-icon">
+                <span class="ide-search-list-current-icon gl-mr-3 gl-flex">
                   <gl-icon :size="16" name="search" />
                 </span>
                 <span>{{ searchType.label }}</span>
@@ -122,7 +122,7 @@ export default {
               />
             </li>
           </template>
-          <li v-else class="ide-search-list-empty gl-flex gl-items-center justify-content-center">
+          <li v-else class="ide-search-list-empty justify-content-center gl-flex gl-items-center">
             {{ __('No merge requests found') }}
           </li>
         </ul>

@@ -163,7 +163,7 @@ describe('Incidents List', () => {
 
       expect(link.text()).toBe(title);
       expect(link.attributes('href')).toContain(`issues/incident/${iid}`);
-      expect(link.find('.gl-text-truncate').exists()).toBe(true);
+      expect(link.find('.gl-truncate').exists()).toBe(true);
     });
 
     describe('Assignees', () => {
@@ -200,7 +200,7 @@ describe('Incidents List', () => {
         expect(statuses.length).toBe(mockIncidents.length);
         statuses.forEach((status, index) => {
           expect(status.text()).toEqual(expectedStatuses[index]);
-          expect(status.classes('gl-text-truncate')).toBe(true);
+          expect(status.classes('gl-truncate')).toBe(true);
         });
       });
     });

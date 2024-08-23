@@ -103,21 +103,17 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-inline-block">
+    <div class="gl-inline-block">
       <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" icon-size="sm">
         {{ mappedStatus.text }}
       </gl-badge>
     </div>
     <gl-accordion v-if="hasStats" :header-level="3">
       <gl-accordion-item :title="__('Details')">
-        <ul class="gl-p-0 gl-mb-3 gl-list-none gl-font-sm">
+        <ul class="gl-mb-3 gl-list-none gl-p-0 gl-text-sm">
           <li v-for="key in knownStats" :key="key">
-            <div class="gl-display-flex gl-w-20 gl-align-items-center">
-              <gl-icon
-                :size="12"
-                class="gl-mr-3 gl-flex-shrink-0"
-                v-bind="getStatisticIconProps(key)"
-              />
+            <div class="gl-flex gl-w-20 gl-items-center">
+              <gl-icon :size="12" class="gl-mr-3 gl-shrink-0" v-bind="getStatisticIconProps(key)" />
               <span class="">{{ $options.STATISTIC_ITEMS[key] }}</span>
               <span class="gl-ml-auto">
                 {{ stats.imported[key] || 0 }}/{{ stats.fetched[key] }}

@@ -23,11 +23,6 @@
 
 .gl-dark {
   .gl-datepicker-theme {
-    .pika-prev,
-    .pika-next {
-      filter: invert(0.9);
-    }
-
     .is-selected > .pika-button {
       color: $gray-900;
     }

@@ -170,8 +170,6 @@ Rails/StrongParams:
     - 'app/controllers/projects/ml/model_versions_controller.rb'
     - 'app/controllers/projects/ml/models_controller.rb'
     - 'app/controllers/projects/notes_controller.rb'
-    - 'app/controllers/projects/packages/infrastructure_registry_controller.rb'
-    - 'app/controllers/projects/packages/package_files_controller.rb'
     - 'app/controllers/projects/pages_domains_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
     - 'app/controllers/projects/pipelines/application_controller.rb'

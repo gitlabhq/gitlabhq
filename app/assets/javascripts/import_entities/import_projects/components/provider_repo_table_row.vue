@@ -167,12 +167,12 @@ export default {
         >{{ repo.importSource.fullName }}
         <gl-icon v-if="repo.importSource.providerLink" name="external-link" />
       </gl-link>
-      <div v-if="isFinished" class="gl-font-sm gl-mt-2">
+      <div v-if="isFinished" class="gl-mt-2 gl-text-sm">
         <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">
           <template #link>
             <gl-link
               :href="repo.importedProject.fullPath"
-              class="gl-font-sm"
+              class="gl-text-sm"
               target="_blank"
               data-testid="go-to-project-link"
             >
@@ -183,24 +183,24 @@ export default {
       </div>
     </td>
     <td data-testid="fullPath">
-      <div class="gl-display-flex gl-sm-flex-wrap">
+      <div class="gl-flex sm:gl-flex-wrap">
         <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
         <template v-else-if="isImportNotStarted || isSelectedForReimport">
-          <div class="gl-display-flex gl-align-items-stretch gl-w-full">
+          <div class="gl-flex gl-w-full gl-items-stretch">
             <import-target-dropdown
               :selected="importTarget.targetNamespace"
               :user-namespace="userNamespace"
               @select="onSelect"
             />
             <div
-              class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1 gl-border-gray-400"
+              class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-t-1 gl-border-solid gl-border-gray-400 gl-px-3"
             >
               /
             </div>
             <gl-form-input
               ref="newNameInput"
               v-model="newNameInput"
-              class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+              class="gl-rounded-bl-none gl-rounded-tl-none"
               data-testid="project-path-field"
             />
           </div>

@@ -134,7 +134,7 @@ export default {
 
 <template>
   <article
-    class="ide position-relative gl-flex flex-column align-items-stretch"
+    class="ide position-relative flex-column align-items-stretch gl-flex"
     :class="{ [`theme-${themeName}`]: themeName }"
   >
     <cannot-push-code-alert

@@ -360,7 +360,7 @@ export default {
       <template #header-actions>
         <gl-button
           v-if="isHeaderButtonVisible"
-          class="gl-my-3 gl-mr-5 create-incident-button"
+          class="create-incident-button gl-my-3 gl-mr-5"
           data-testid="create-incident-button"
           :loading="redirecting"
           :disabled="redirecting"
@@ -406,7 +406,7 @@ export default {
           <template #cell(title)="{ item }">
             <div
               :class="{
-                'gl-display-flex gl-align-items-center gl-max-w-full': isClosed(item),
+                'gl-flex gl-max-w-full gl-items-center': isClosed(item),
               }"
             >
               <gl-link
@@ -414,14 +414,14 @@ export default {
                 :href="showIncidentLink(item)"
                 class="gl-min-w-0"
               >
-                <tooltip-on-truncate :title="item.title" class="gl-text-truncate gl-block">
+                <tooltip-on-truncate :title="item.title" class="gl-block gl-truncate">
                   {{ item.title }}
                 </tooltip-on-truncate>
               </gl-link>
               <gl-icon
                 v-if="isClosed(item)"
                 name="issue-close"
-                class="gl-ml-2 gl-fill-blue-500 gl-flex-shrink-0"
+                class="gl-ml-2 gl-shrink-0 gl-fill-blue-500"
                 :size="16"
                 data-testid="incident-closed"
               />
@@ -432,17 +432,14 @@ export default {
             <tooltip-on-truncate
               :title="getEscalationStatus(item.escalationStatus)"
               data-testid="incident-escalation-status"
-              class="gl-block gl-text-truncate"
+              class="gl-block gl-truncate"
             >
               {{ getEscalationStatus(item.escalationStatus) }}
             </tooltip-on-truncate>
           </template>
 
           <template #cell(createdAt)="{ item }">
-            <time-ago-tooltip
-              :time="item.createdAt"
-              class="gl-block gl-max-w-full gl-text-truncate"
-            />
+            <time-ago-tooltip :time="item.createdAt" class="gl-block gl-max-w-full gl-truncate" />
           </template>
 
           <template v-if="slaFeatureAvailable" #cell(incidentSla)="{ item }">
@@ -451,7 +448,7 @@ export default {
               :issue-iid="item.iid"
               :project-path="projectPath"
               :sla-due-at="item.slaDueAt"
-              class="gl-block gl-max-w-full gl-text-truncate"
+              class="gl-block gl-max-w-full gl-truncate"
             />
           </template>
 

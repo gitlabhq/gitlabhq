@@ -84,7 +84,7 @@ export default {
         v-for="tabView in aliveTabViews"
         v-show="tabView.name === currentView"
         :key="tabView.name"
-        class="flex-fill gl-overflow-hidden js-tab-view gl-h-full"
+        class="flex-fill js-tab-view gl-h-full gl-overflow-hidden"
       >
         <component :is="tabView.component" />
       </div>

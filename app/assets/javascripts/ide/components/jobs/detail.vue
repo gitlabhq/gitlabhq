@@ -77,13 +77,13 @@ export default {
 </script>
 
 <template>
-  <div class="ide-pipeline build-page gl-flex flex-column flex-fill">
+  <div class="ide-pipeline build-page flex-column flex-fill gl-flex">
     <header class="ide-job-header gl-flex gl-items-center">
       <gl-button category="secondary" icon="chevron-left" size="small" @click="setDetailJob(null)">
         {{ __('View jobs') }}
       </gl-button>
     </header>
-    <div class="top-bar gl-flex border-left-0 mr-3">
+    <div class="top-bar border-left-0 mr-3 gl-flex">
       <job-description :job="detailJob" />
       <div class="controllers ml-auto">
         <a
@@ -101,7 +101,7 @@ export default {
         <scroll-button :disabled="isScrolledToBottom" direction="down" @click="scrollDown" />
       </div>
     </div>
-    <pre ref="buildJobLog" class="build-log mb-0 gl-h-full mr-3" @scroll="scrollBuildLog">
+    <pre ref="buildJobLog" class="build-log mb-0 mr-3 gl-h-full" @scroll="scrollBuildLog">
       <code
         v-show="!detailJob.isLoading"
         v-safe-html="jobOutput"

@@ -267,13 +267,13 @@ export default {
     @hidden="onReset"
   >
     <content-transition
-      class="gl-display-grid"
+      class="gl-grid"
       transition-name="invite-modal-transition"
       :slots="contentSlots"
       :current-slot="currentSlot"
     >
       <template #[$options.DEFAULT_SLOT]>
-        <div class="gl-display-flex" data-testid="modal-base-intro-text">
+        <div class="gl-flex" data-testid="modal-base-intro-text">
           <slot name="intro-text-before"></slot>
           <p>
             <gl-sprintf :message="introText">
@@ -302,7 +302,7 @@ export default {
         <slot name="after-members-input"></slot>
 
         <gl-form-group
-          class="gl-sm-w-half gl-w-full"
+          class="gl-w-full sm:gl-w-1/2"
           :label="$options.ACCESS_LEVEL"
           :label-for="dropdownId"
         >
@@ -324,7 +324,7 @@ export default {
         </gl-form-group>
 
         <gl-form-group
-          class="gl-sm-w-half gl-w-full"
+          class="gl-w-full sm:gl-w-1/2"
           :label="$options.ACCESS_EXPIRE_DATE"
           :label-for="datepickerId"
         >
@@ -344,11 +344,9 @@ export default {
     </content-transition>
 
     <template #modal-footer>
-      <div
-        class="gl-m-0 gl-w-full gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row-reverse"
-      >
+      <div class="gl-m-0 gl-flex gl-w-full gl-flex-col sm:gl-flex-row-reverse">
         <gl-button
-          class="gl-w-full gl-sm-w-auto gl-sm-ml-3!"
+          class="gl-w-full sm:!gl-ml-3 sm:gl-w-auto"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
           @click.prevent="onSubmit"
@@ -357,7 +355,7 @@ export default {
         </gl-button>
 
         <gl-button
-          class="gl-w-full gl-sm-w-auto"
+          class="gl-w-full sm:gl-w-auto"
           data-testid="invite-modal-cancel"
           v-bind="actionCancel.attributes"
           @click="onCancel"

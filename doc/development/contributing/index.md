@@ -162,16 +162,8 @@ Request an Enterprise Edition Developers License according to the [documented pr
 
 ## Get help
 
-If you need any help while contributing to GitLab:
+How to find help contributing to GitLab:
 
-- If you need help with a merge request or need help finding a reviewer:
-  - Don't hesitate to ask for help by typing `@gitlab-bot help` in a comment.
-  - Find reviewers and maintainers of GitLab projects in our
-    [handbook](https://handbook.gitlab.com/handbook/engineering/projects/) and
-    [mention](../../user/group/subgroups/index.md#mention-subgroups) them in a comment.
-- Join the community on the [GitLab Community Discord](https://discord.com/invite/gitlab) and find other
-  contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/).
-- For any other questions or feedback on contributing:
-  - Ping `@gitlab-org/developer-relations/contributor-success` in a comment on your merge request or issue.
-  - Feel free to [make a new issue with the Contributor Success team](https://gitlab.com/gitlab-org/community-relations/contributor-success/team-task/-/issues/) sharing your experience.
-- Did you run out of compute minutes for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.
+- Type `@gitlab-bot help` in a comment on a merge request or issue.
+- Join the [GitLab Community Discord](https://discord.gg/gitlab) and ask for help in the `#contribute` channel.
+- Email the Contributor Success team at `contributors@gitlab.com`.

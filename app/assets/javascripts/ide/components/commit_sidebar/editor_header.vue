@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex ide-commit-editor-header gl-align-items-center">
+  <div class="ide-commit-editor-header gl-flex gl-items-center">
     <file-icon :file-name="activeFile.name" :size="16" class="gl-mr-3" />
     <strong class="gl-mr-3">
       <template v-if="activeFile.prevPath && activeFile.prevPath !== activeFile.path">

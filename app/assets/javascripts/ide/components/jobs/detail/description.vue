@@ -24,7 +24,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-items-center">
-    <ci-icon :status="job.status" class="gl-items-center gl-border gl-inline-flex gl-z-1" />
+    <ci-icon :status="job.status" class="gl-border gl-z-1 gl-inline-flex gl-items-center" />
     <span class="gl-ml-3">
       {{ job.name }}
       <a

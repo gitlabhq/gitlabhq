@@ -97,7 +97,7 @@ export default {
       </gl-form-checkbox>
     </template>
 
-    <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
+    <div v-if="enableJiraIssues" class="gl-mt-3 gl-pl-6">
       <gl-form-group
         v-if="!isIssueCreation"
         :label="s__('JiraService|Jira project keys')"

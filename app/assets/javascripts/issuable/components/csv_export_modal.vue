@@ -76,12 +76,12 @@ export default {
     :modal-id="modalId"
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
-    body-class="gl-p-0!"
+    body-class="!gl-p-0"
     :title="exportText"
     data-testid="export-issuable-modal"
   >
     <div
-      class="gl-justify-content-start gl-align-items-center gl-p-4 gl-border-b-solid gl-border-1 gl-border-gray-50"
+      class="gl-items-center gl-justify-start gl-border-1 gl-border-gray-50 gl-p-4 gl-border-b-solid"
     >
       <gl-icon name="check" class="gl-color-green-400" />
       <strong class="gl-m-3">{{ issuableCountText }}</strong>

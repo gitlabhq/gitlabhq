@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-whitespace-nowrap gl-inline-flex gl-align-items-center gl-gap-3">
+  <div class="gl-inline-flex gl-items-center gl-gap-3 gl-whitespace-nowrap">
     <template v-if="isProjectCreationAllowed">
       <gl-button-group v-if="showImportActions">
         <gl-button

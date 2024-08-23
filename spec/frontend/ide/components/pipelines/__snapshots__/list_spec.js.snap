@@ -5,7 +5,7 @@ exports[`IDE pipelines list when loaded renders empty state when no latestPipeli
   class="ide-pipeline"
 >
   <div
-    class="gl-display-flex gl-flex-direction-column gl-h-full gl-justify-content-center"
+    class="gl-flex gl-flex-col gl-h-full gl-justify-center"
   >
     <empty-state-stub />
   </div>

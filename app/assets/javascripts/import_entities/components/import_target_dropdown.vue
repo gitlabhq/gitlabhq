@@ -159,7 +159,7 @@ export default {
     :toggle-text="listboxToggleText"
     searchable
     fluid-width
-    toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+    toggle-class="!gl-rounded-tr-none !gl-rounded-br-none"
     data-testid="target-namespace-dropdown"
     @select="onSelect"
     @search="onSearch"

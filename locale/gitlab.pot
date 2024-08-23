@@ -26059,6 +26059,9 @@ msgstr ""
 msgid "GroupSettings|Enable email notifications"
 msgstr ""
 
+msgid "GroupSettings|Enable extension marketplace"
+msgstr ""
+
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
 msgstr ""
 
@@ -26069,6 +26072,9 @@ msgid "GroupSettings|Enabling these features is your acceptance of the %{link_st
 msgstr ""
 
 msgid "GroupSettings|Enforce SSH Certificates"
+msgstr ""
+
+msgid "GroupSettings|Enterprise user accounts can use the extension marketplace in the Web IDE and workspaces."
 msgstr ""
 
 msgid "GroupSettings|Experiment"
@@ -60052,6 +60058,9 @@ msgid "We've found no vulnerabilities"
 msgstr ""
 
 msgid "Web IDE"
+msgstr ""
+
+msgid "Web IDE and workspaces"
 msgstr ""
 
 msgid "Web Terminal"

@@ -51,8 +51,8 @@ describe('CommitMessageField', () => {
     });
 
     it('is added on textarea focus', () => {
-      expect(wrapper.attributes('class')).toEqual(
-        expect.stringContaining('gl-outline-none gl-focus-ring-border-1-gray-900!'),
+      expect(wrapper.attributes('class').split(' ')).toEqual(
+        expect.arrayContaining(['gl-outline-none', 'gl-focus-ring-border-1-gray-900!']),
       );
     });
 
@@ -60,8 +60,8 @@ describe('CommitMessageField', () => {
       findTextArea().trigger('blur');
       await nextTick();
 
-      expect(wrapper.attributes('class')).toEqual(
-        expect.not.stringContaining('gl-outline-none gl-focus-ring-border-1-gray-900!'),
+      expect(wrapper.attributes('class').split(' ')).not.toEqual(
+        expect.arrayContaining(['gl-outline-none', 'gl-focus-ring-border-1-gray-900!']),
       );
     });
   });

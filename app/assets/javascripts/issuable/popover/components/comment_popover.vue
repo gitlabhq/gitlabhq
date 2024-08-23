@@ -100,12 +100,12 @@ export default {
 <template>
   <gl-popover :target="target" boundary="viewport" :css-classes="$options.cssClasses" :show="show">
     <gl-skeleton-loader v-if="loading" :lines="2" :height="24" equal-width-lines />
-    <div v-if="author" class="gl-text-secondary gl-flex gl-gap-2">
+    <div v-if="author" class="gl-flex gl-gap-2 gl-text-secondary">
       <gl-avatar :src="author.avatarUrl" :size="16" />
       <div>
         <gl-sprintf :message="__('%{author} commented %{time}')">
           <template #author>
-            <span class="gl-text-sm gl-break-all">{{ author.name }}</span>
+            <span class="gl-break-all gl-text-sm">{{ author.name }}</span>
           </template>
           <template #time>
             <span class="gl-text-sm">{{ noteCreatedAt }}</span>

@@ -893,21 +893,25 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
 
 - The `detailed_merge_status` field can contain one of the following values related to the merge request:
   - `approvals_syncing`: The merge request's approvals are syncing.
-  - `blocked_status`: Blocked by another merge request.
   - `checking`: Git is testing if a valid merge is possible.
   - `ci_must_pass`: A CI/CD pipeline must succeed before merge.
   - `ci_still_running`: A CI/CD pipeline is still running.
+  - `commits_status`: Source branch should exist, and contain commits.
   - `conflict`: Conflicts exist between the source and target branches.
   - `discussions_not_resolved`: All discussions must be resolved before merge.
   - `draft_status`: Can't merge because the merge request is a draft.
-  - `external_status_checks`: All status checks must pass before merge.
   - `jira_association_missing`: The title or description must reference a Jira issue. To configure, see
     [Require associated Jira issue for merge requests to be merged](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
   - `mergeable`: The branch can merge cleanly into the target branch.
+  - `merge_request_blocked`: Blocked by another merge request.
   - `need_rebase`: The merge request must be rebased.
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
+  - `preparing`: Merge request diff is being created.
   - `requested_changes`: The merge request has reviewers who have requested changes.
+  - `security_policy_evaluation`: All security policies must be evaluated.
+    Requires the `policy_mergability_check` feature flag to be enabled.
+  - `status_checks_must_pass`: All status checks must pass before merge.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `locked_paths`: Paths locked by other users must be unlocked before merging to default branch.
   - `locked_lfs_files`: LFS files locked by other users must be unlocked before merge.

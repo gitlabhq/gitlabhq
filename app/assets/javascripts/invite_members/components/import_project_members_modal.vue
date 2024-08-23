@@ -289,14 +289,14 @@ export default {
         data-testid="alert-member-error"
       >
         {{ $options.labels.memberErrorListText }}
-        <ul class="gl-pl-5 gl-mb-0">
+        <ul class="gl-mb-0 gl-pl-5">
           <li v-for="error in errorsLimited" :key="error.member" data-testid="errors-limited-item">
             <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
           </li>
         </ul>
         <template v-if="shouldErrorsSectionExpand">
           <gl-collapse v-model="isErrorsSectionExpanded">
-            <ul class="gl-pl-5 gl-mb-0">
+            <ul class="gl-mb-0 gl-pl-5">
               <li
                 v-for="error in errorsExpanded"
                 :key="error.member"
@@ -307,7 +307,7 @@ export default {
             </ul>
           </gl-collapse>
           <gl-button
-            class="gl-text-decoration-none! !gl-shadow-none gl-mt-3"
+            class="gl-mt-3 !gl-no-underline !gl-shadow-none"
             data-testid="accordion-button"
             variant="link"
             @click="toggleErrorExpansion"
@@ -339,7 +339,7 @@ export default {
       :invalid-feedback="invalidFeedbackMessage"
       :state="validationState"
       data-testid="form-group"
-      label-class="gl-pt-3!"
+      label-class="!gl-pt-3"
       :label="$options.i18n.projectLabel"
       :label-for="$options.projectSelectLabelId"
     >

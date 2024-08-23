@@ -64,13 +64,13 @@ export default {
     v-on="$listeners"
   >
     <template #title>
-      <h2 class="gl-font-size-h2 gl-mt-0" data-testid="title">{{ $options.i18n.addExclusions }}</h2>
+      <h2 class="gl-mt-0 gl-text-size-h2" data-testid="title">{{ $options.i18n.addExclusions }}</h2>
     </template>
 
     <template #default>
       <list-selector
         type="groups"
-        class="gl-m-5 gl-p-0!"
+        class="gl-m-5 !gl-p-0"
         autofocus
         disable-namespace-dropdown
         :selected-items="groupExclusions"
@@ -80,7 +80,7 @@ export default {
 
       <list-selector
         type="projects"
-        class="gl-m-5 gl-p-0!"
+        class="gl-m-5 !gl-p-0"
         :selected-items="projectExclusions"
         @select="handleSelectExclusion"
         @delete="handleRemoveExclusion"

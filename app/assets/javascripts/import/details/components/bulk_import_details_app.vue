@@ -18,7 +18,7 @@ export default {
     {
       key: 'source_title',
       label: __('Title'),
-      tdClass: 'gl-md-w-30 gl-break-anywhere',
+      tdClass: 'md:gl-w-30 gl-break-anywhere',
     },
     {
       key: 'error',
@@ -64,8 +64,8 @@ export default {
 
 <template>
   <div>
-    <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
-      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+    <h1 class="gl-my-0 gl-flex gl-items-center gl-gap-3 gl-py-4 gl-text-size-h1">
+      <img :src="$options.gitlabLogo" class="gl-h-6 gl-w-6" />
       <span>{{ title }}</span>
     </h1>
 
