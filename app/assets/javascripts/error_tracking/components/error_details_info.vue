@@ -5,10 +5,9 @@ import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { trackClickErrorLinkToSentryOptions } from '../events_tracking';
 
 const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit';
-const HEADER_CLASS =
-  'gl-p-2 gl-font-bold gl-display-flex gl-justify-content-center gl-align-items-center';
+const HEADER_CLASS = 'gl-p-2 gl-font-bold gl-flex gl-justify-center gl-items-center';
 const BODY_CLASS =
-  'gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column gl-my-0 gl-p-4 gl-font-bold gl-text-center gl-flex-grow-1 gl-font-lg';
+  'gl-flex gl-justify-center gl-items-center gl-flex-col gl-my-0 gl-p-4 gl-font-bold gl-text-center gl-grow gl-text-lg';
 
 export default {
   components: {
@@ -55,10 +54,7 @@ export default {
 
 <template>
   <div>
-    <div
-      v-if="error"
-      class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-my-7 gl-gap-y-6"
-    >
+    <div v-if="error" class="gl-my-7 gl-flex gl-flex-wrap gl-justify-center gl-gap-y-6">
       <gl-card
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
@@ -102,13 +98,13 @@ export default {
 
         <template v-if="error.integrated" #default>
           <time-ago-tooltip :time="error.firstSeen" />
-          <span v-if="shortFirstReleaseVersion" class="gl-font-sm gl-text-secondary">
+          <span v-if="shortFirstReleaseVersion" class="gl-text-sm gl-text-secondary">
             <gl-icon name="commit" class="gl-mr-1" :size="12" />{{ shortFirstReleaseVersion }}
           </span>
         </template>
 
         <template v-else #default>
-          <gl-link :href="firstReleaseLink" target="_blank" class="gl-font-lg">
+          <gl-link :href="firstReleaseLink" target="_blank" class="gl-text-lg">
             <time-ago-tooltip :time="error.firstSeen" />
           </gl-link>
         </template>
@@ -127,13 +123,13 @@ export default {
 
         <template v-if="error.integrated" #default>
           <time-ago-tooltip :time="error.lastSeen" />
-          <span v-if="shortLastReleaseVersion" class="gl-font-sm gl-text-secondary">
+          <span v-if="shortLastReleaseVersion" class="gl-text-sm gl-text-secondary">
             <gl-icon name="commit" class="gl-mr-1" :size="12" />{{ shortLastReleaseVersion }}
           </span>
         </template>
 
         <template v-else #default>
-          <gl-link :href="lastReleaseLink" target="_blank" class="gl-font-lg">
+          <gl-link :href="lastReleaseLink" target="_blank" class="gl-text-lg">
             <time-ago-tooltip :time="error.lastSeen" />
           </gl-link>
         </template>
@@ -151,7 +147,7 @@ export default {
         </template>
 
         <template #default>
-          <gl-link :href="error.gitlabCommitPath" class="gl-font-lg">
+          <gl-link :href="error.gitlabCommitPath" class="gl-text-lg">
             {{ shortGitlabCommit }}
           </gl-link>
         </template>

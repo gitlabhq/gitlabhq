@@ -53317,6 +53317,9 @@ msgstr ""
 msgid "Terms"
 msgstr ""
 
+msgid "Terms and privacy"
+msgstr ""
+
 msgid "Terms of Service Agreement and Privacy Policy"
 msgstr ""
 

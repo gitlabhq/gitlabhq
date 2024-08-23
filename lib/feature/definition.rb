@@ -60,6 +60,10 @@ module Feature
         raise Feature::InvalidFeatureFlagError, "Feature flag '#{name}' has an invalid path: '#{path}'. Ensure to update #{path}"
       end
 
+      unless milestone.nil? || milestone.is_a?(String)
+        raise InvalidFeatureFlagError, "Feature flag '#{name}' milestone must be a string"
+      end
+
       validate_default_enabled!
     end
 

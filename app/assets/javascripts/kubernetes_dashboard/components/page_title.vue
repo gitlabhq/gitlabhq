@@ -15,9 +15,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-flex gl-items-center">
     <h1 class="gl-heading-2"><slot></slot></h1>
-    <div class="gl-ml-4 gl-mb-5">
+    <div class="gl-mb-5 gl-ml-4">
       <gl-icon name="kubernetes-agent" class="gl-text-gray-500" />
       <gl-sprintf :message="$options.i18n.agentTitle">
         <template #name> {{ agent.name }} </template>

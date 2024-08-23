@@ -33,7 +33,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         ...props,
       },
       directives: {
-        tooltip: createMockDirective('tooltip'),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -46,7 +46,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         ariaLabel: button.attributes('aria-label'),
         classes: button.classes(),
         icon: button.findComponent(GlIcon).props('name'),
-        tooltip: getBinding(button.element, 'tooltip').value,
+        tooltip: getBinding(button.element, 'gl-tooltip').value,
       };
     });
   const clickTab = () => findButtons().at(TEST_CURRENT_INDEX).trigger('click');

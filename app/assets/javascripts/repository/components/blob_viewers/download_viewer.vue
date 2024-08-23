@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-text-center gl-py-13 gl-bg-gray-50">
+  <div class="gl-bg-gray-50 gl-py-13 gl-text-center">
     <gl-link :href="filePath" rel="nofollow" :download="fileName" target="_blank">
       <div>
         <gl-icon :size="16" name="download" class="gl-text-gray-900" />

@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-mb-2">
+  <div class="gl-mb-2 gl-flex gl-flex-wrap">
     <template v-if="renderGroup">
       <gl-button
         v-for="emoji in emojis"
@@ -39,7 +39,7 @@ export default {
         @keydown.enter="clickEmoji(emoji)"
       >
         <template #emoji>
-          <gl-emoji :data-name="emoji" class="gl-mr-0!" />
+          <gl-emoji :data-name="emoji" class="!gl-mr-0" />
         </template>
       </gl-button>
     </template>

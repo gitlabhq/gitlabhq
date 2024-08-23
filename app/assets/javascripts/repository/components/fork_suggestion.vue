@@ -24,7 +24,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-justify-content-end gl-align-items-center gl-bg-gray-10 gl-px-5 gl-py-2 gl-border-1 gl-border-b-solid gl-border-gray-100"
+    class="gl-flex gl-items-center gl-justify-end gl-border-1 gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-2 gl-border-b-solid"
   >
     <span class="gl-mr-6" data-testid="message">{{ $options.i18n.message }}</span>
 

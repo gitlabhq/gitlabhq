@@ -54,12 +54,10 @@ export default {
 
 <template>
   <gl-tab :title="$options.i18n.title">
-    <div class="gl-mt-5 gl-display-flex gl-flex-wrap">
+    <div class="gl-mt-5 gl-flex gl-flex-wrap">
       <div class="gl-w-full" data-testid="activity-section">
-        <div
-          class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
-        >
-          <h4 class="gl-flex-grow-1">{{ $options.i18n.activity }}</h4>
+        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+          <h4 class="gl-grow">{{ $options.i18n.activity }}</h4>
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
         <activity-calendar />
@@ -67,10 +65,8 @@ export default {
         <contribution-events v-else :events="events" />
       </div>
       <div class="gl-w-full" data-testid="personal-projects-section">
-        <div
-          class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
-        >
-          <h4 class="gl-flex-grow-1">{{ $options.i18n.personalProjects }}</h4>
+        <div class="gl-flex gl-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+          <h4 class="gl-grow">{{ $options.i18n.personalProjects }}</h4>
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
         <gl-loading-icon v-if="personalProjectsLoading" class="gl-mt-5" size="md" />

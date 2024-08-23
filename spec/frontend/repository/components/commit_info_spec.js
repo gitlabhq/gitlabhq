@@ -52,14 +52,14 @@ describe('Repository last commit component', () => {
 
     expect(findCommitterWrapper().classes()).toEqual([
       'committer',
-      'gl-flex-basis-full',
+      'gl-basis-full',
       'gl-inline-flex',
     ]);
     expect(findUserLink().classes()).toEqual([
       'commit-author-link',
       'js-user-link',
-      'gl-display-inline-block',
-      'gl-text-truncate',
+      'gl-inline-block',
+      'gl-truncate',
     ]);
   });
 

@@ -182,14 +182,14 @@ export default {
   <div
     ref="issuableFormWrapper"
     :class="{ focus: isInputFocused }"
-    class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-px-3 gl-pt-2 gl-pb-0"
+    class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-px-3 gl-pb-0 gl-pt-2"
     @click="onIssuableFormWrapperClick"
   >
-    <ul class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-list-none gl-m-0 gl-p-0">
+    <ul class="gl-m-0 gl-flex gl-list-none gl-flex-wrap gl-items-baseline gl-p-0">
       <li
         v-for="(reference, index) in references"
         :key="reference"
-        class="gl-max-w-full gl-mb-2 gl-mr-2"
+        class="gl-mb-2 gl-mr-2 gl-max-w-full"
       >
         <issue-token
           :id-key="index"
@@ -205,7 +205,7 @@ export default {
           "
         />
       </li>
-      <li class="gl-mb-2 gl-flex-grow-1">
+      <li class="gl-mb-2 gl-grow">
         <input
           :id="inputId"
           ref="input"

@@ -97,7 +97,7 @@ export default {
 
 <template>
   <div :data-link-type="listLinkType">
-    <h4 v-if="heading" class="gl-text-sm gl-font-semibold gl-text-subtle gl-mx-5 gl-mt-4 -gl-mb-2">
+    <h4 v-if="heading" class="gl-mx-5 -gl-mb-2 gl-mt-4 gl-text-sm gl-font-semibold gl-text-subtle">
       {{ heading }}
     </h4>
     <div class="related-issues-token-body" :class="{ 'sortable-container': canReorder }">
@@ -120,7 +120,7 @@ export default {
           }"
           :data-key="issue.id"
           :data-ordering-id="issuableOrderingId(issue)"
-          class="js-related-issues-token-list-item list-item !gl-p-0 !gl-border-b-0"
+          class="js-related-issues-token-list-item list-item !gl-border-b-0 !gl-p-0"
         >
           <related-issuable-item
             :id-key="issue.id"

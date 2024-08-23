@@ -44,15 +44,14 @@ export default {
 </script>
 
 <template>
-  <li class="gl-leading-20 gl-py-3 gl-border-b-solid gl-border-b-2 gl-border-b-gray-100">
+  <li class="gl-border-b-2 gl-border-b-gray-100 gl-py-3 gl-leading-20 gl-border-b-solid">
     <div
       :class="{
-        'gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center':
-          collapsible,
+        'gl-flex gl-flex-wrap gl-items-center gl-justify-between': collapsible,
       }"
     >
       <slot name="label">
-        <label class="gl-font-bold gl-mb-0"> {{ label }} </label>
+        <label class="gl-mb-0 gl-font-bold"> {{ label }} </label>
       </slot>
 
       <gl-button
@@ -72,7 +71,7 @@ export default {
       </div>
     </gl-collapse>
 
-    <div v-else class="gl-text-gray-500 gl-mb-0 gl-mt-2">
+    <div v-else class="gl-mb-0 gl-mt-2 gl-text-gray-500">
       <slot></slot>
     </div>
   </li>

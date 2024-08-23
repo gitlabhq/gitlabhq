@@ -18,6 +18,7 @@ module Abuse
       end
 
       AntiAbuse::TrustScore.create!(user: user, source: source, score: score.to_f, correlation_id_value: correlation_id)
+      AntiAbuse::TrustScoreCleanupWorker.perform_async(user.id, source)
     end
   end
 end

@@ -108,8 +108,8 @@ export default {
       {{ item.kind }}
     </workload-details-item>
     <workload-details-item v-if="itemLabels.length" :label="$options.i18n.labels">
-      <div class="gl-display-flex gl-flex-wrap gl-gap-2">
-        <gl-badge v-for="label of itemLabels" :key="label" class="gl-max-w-full gl-w-auto">
+      <div class="gl-flex gl-flex-wrap gl-gap-2">
+        <gl-badge v-for="label of itemLabels" :key="label" class="gl-w-auto gl-max-w-full">
           <gl-truncate :text="label" with-tooltip />
         </gl-badge>
       </div>
@@ -142,9 +142,9 @@ export default {
       <div
         v-for="(container, index) of item.containers"
         :key="index"
-        class="gl-flex gl-justify-between gl-items-center gl-py-3 gl-px-5"
+        class="gl-flex gl-items-center gl-justify-between gl-px-5 gl-py-3"
         :class="{
-          'gl-border-t-solid gl-border-t-1 gl-border-t-gray-100': index > 0,
+          'gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid': index > 0,
         }"
       >
         {{ container.name }}

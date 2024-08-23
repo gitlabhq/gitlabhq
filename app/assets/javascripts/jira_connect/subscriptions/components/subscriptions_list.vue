@@ -35,7 +35,7 @@ export default {
     {
       key: 'actions',
       label: '',
-      tdClass: 'gl-text-right !gl-align-middle gl-pl-0!',
+      tdClass: 'gl-text-right !gl-align-middle !gl-pl-0',
     },
   ],
   i18n: {

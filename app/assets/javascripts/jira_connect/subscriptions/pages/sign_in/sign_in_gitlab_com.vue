@@ -31,9 +31,9 @@ export default {
 
 <template>
   <div>
-    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraConnect|GitLab for Jira Configuration') }}</h2>
+    <h2 class="gl-mb-7 gl-text-center">{{ s__('JiraConnect|GitLab for Jira Configuration') }}</h2>
     <div v-if="hasSubscriptions">
-      <div class="gl-flex gl-justify-end gl-mb-3">
+      <div class="gl-mb-3 gl-flex gl-justify-end">
         <sign-in-oauth-button
           :gitlab-base-path="$options.GITLAB_COM_BASE_PATH"
           @sign-in="$emit('sign-in-oauth', $event)"

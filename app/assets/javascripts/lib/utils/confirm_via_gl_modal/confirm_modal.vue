@@ -109,7 +109,7 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="confirmationModal"
-    body-class="gl-display-flex"
+    body-class="gl-flex"
     data-testid="confirmation-modal"
     :size="size"
     :title="title"
@@ -120,7 +120,7 @@ export default {
     @primary="$emit('confirmed')"
     @hidden="$emit('closed')"
   >
-    <div v-if="!modalHtmlMessage" class="gl-align-self-center"><slot></slot></div>
-    <div v-else v-safe-html="modalHtmlMessage" class="gl-align-self-center"></div>
+    <div v-if="!modalHtmlMessage" class="gl-self-center"><slot></slot></div>
+    <div v-else v-safe-html="modalHtmlMessage" class="gl-self-center"></div>
   </gl-modal>
 </template>

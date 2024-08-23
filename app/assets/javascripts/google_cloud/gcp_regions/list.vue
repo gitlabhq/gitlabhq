@@ -44,7 +44,7 @@ export default {
     />
 
     <div v-else>
-      <h2 class="gl-font-size-h2">{{ $options.i18n.listTitle }}</h2>
+      <h2 class="gl-text-size-h2">{{ $options.i18n.listTitle }}</h2>
       <p>{{ $options.i18n.description }}</p>
 
       <gl-table :items="list" :fields="$options.tableFields" />

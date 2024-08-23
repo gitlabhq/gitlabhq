@@ -183,7 +183,7 @@ export default {
           :checked="linkedIssueType"
         />
       </gl-form-group>
-      <p class="gl-font-bold gl-mb-2">
+      <p class="gl-mb-2 gl-font-bold">
         {{ issuableInputText }}
       </p>
     </template>
@@ -209,7 +209,7 @@ export default {
     <p v-if="hasError" class="gl-field-error">
       {{ addRelatedErrorMessage }}
     </p>
-    <div class="gl-flex gl-gap-3 gl-mt-5">
+    <div class="gl-mt-5 gl-flex gl-gap-3">
       <gl-button
         ref="addButton"
         category="primary"

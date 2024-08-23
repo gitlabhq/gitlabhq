@@ -37,7 +37,7 @@ import TimelineChart from './timeline_chart.vue';
 const isValidErrorId = (errorId) => {
   return /^[0-9]+$/.test(errorId);
 };
-export const tableDataClass = 'gl-flex md:gl-table-cell gl-align-items-center';
+export const tableDataClass = 'gl-flex md:gl-table-cell gl-items-center';
 export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
@@ -317,14 +317,14 @@ export default {
 
       <!-- Search / Filter Bar -->
       <div
-        class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center gl-m-0 gl-p-5 gl-bg-gray-50 gl-border"
+        class="gl-border gl-m-0 gl-flex gl-flex-col gl-bg-gray-50 gl-p-5 md:gl-flex-row md:gl-items-center"
       >
-        <div class="search-box gl-display-flex gl-flex-grow-1 gl-mb-2 gl-md-mb-0">
+        <div class="search-box gl-mb-2 gl-flex gl-grow md:gl-mb-0">
           <div class="filtered-search-box gl-mb-0">
             <gl-dropdown
               :text="__('Recent searches')"
               class="filtered-search-history-dropdown-wrapper"
-              toggle-class="filtered-search-history-dropdown-toggle-button !gl-shadow-none gl-border-r-gray-200! gl-border-1! gl-rounded-0!"
+              toggle-class="filtered-search-history-dropdown-toggle-button !gl-shadow-none !gl-border-r-gray-200 !gl-border-1 !gl-rounded-none"
               :disabled="loading"
             >
               <div v-if="!$options.hasLocalStorage" class="gl-px-5">
@@ -344,11 +344,11 @@ export default {
               </template>
               <div v-else class="gl-px-5">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
-            <div class="filtered-search-input-container gl-flex-grow-1">
+            <div class="filtered-search-input-container gl-grow">
               <gl-form @submit.prevent="searchByQuery(errorSearchQuery)">
                 <gl-form-input
                   v-model="errorSearchQuery"
-                  class="gl-pl-3! filtered-search"
+                  class="filtered-search !gl-pl-3"
                   :disabled="loading"
                   :placeholder="__('Search or filter results…')"
                   autofocus
@@ -371,7 +371,7 @@ export default {
 
         <gl-dropdown
           :text="$options.statusFilters[statusFilter]"
-          class="status-dropdown gl-md-ml-2 gl-md-mr-2 gl-mb-2 gl-md-mb-0"
+          class="status-dropdown gl-md-mr-2 gl-mb-2 md:gl-mb-0 md:gl-ml-2"
           :disabled="loading"
           right
         >
@@ -380,7 +380,7 @@ export default {
             :key="status"
             @click="filterErrors(status, label)"
           >
-            <span class="gl-display-flex">
+            <span class="gl-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentStatusFilter(status) }"
@@ -397,7 +397,7 @@ export default {
             :key="field"
             @click="sortErrorsByField(field)"
           >
-            <span class="gl-display-flex">
+            <span class="gl-flex">
               <gl-icon
                 class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentSortField(field) }"
@@ -415,7 +415,7 @@ export default {
 
       <!-- Results Table -->
       <template v-else>
-        <h4 class="gl-block md:!gl-hidden gl-my-5">{{ __('Open errors') }}</h4>
+        <h4 class="gl-my-5 gl-block md:!gl-hidden">{{ __('Open errors') }}</h4>
 
         <gl-table
           class="error-list-table gl-mt-5"
@@ -439,14 +439,14 @@ export default {
 
           <!-- table row -->
           <template #cell(error)="errors">
-            <div class="gl-display-flex gl-flex-direction-column">
+            <div class="gl-flex gl-flex-col">
               <gl-link
-                class="gl-display-flex gl-max-w-full gl-text-body"
+                class="gl-flex gl-max-w-full gl-text-primary"
                 :href="getDetailsLink(errors.item.id)"
               >
-                <strong class="gl-text-truncate">{{ errors.item.title.trim() }}</strong>
+                <strong class="gl-truncate">{{ errors.item.title.trim() }}</strong>
               </gl-link>
-              <span class="gl-text-secondary gl-text-truncate gl-max-w-full">
+              <span class="gl-max-w-full gl-truncate gl-text-secondary">
                 {{ errors.item.culprit }}
               </span>
             </div>

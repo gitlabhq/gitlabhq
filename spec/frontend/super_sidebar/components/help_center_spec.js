@@ -114,6 +114,38 @@ describe('HelpCenter component', () => {
       });
     });
 
+    describe('If Terms of Service and Data Privacy is set', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, terms: '/-/users/terms' });
+      });
+
+      it('shows link to Terms of Service and Data Privacy', () => {
+        expect(findDropdownGroup(0).props('group').items).toEqual([
+          ...DEFAULT_HELP_ITEMS,
+          expect.objectContaining({
+            text: HelpCenter.i18n.terms,
+            href: '/-/users/terms',
+            extraAttrs: {
+              ...trackingAttrs('terms'),
+            },
+          }),
+        ]);
+      });
+    });
+
+    describe('If Terms of Service and Data Privacy is undefined', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, terms: undefined });
+      });
+
+      it('does not show link to Terms of Service and Data Privacy', () => {
+        const menuItems = findDropdownGroup(0)
+          .props('group')
+          .items.map(({ text }) => text);
+        expect(menuItems).not.toContain('Terms and privacy');
+      });
+    });
+
     describe('showKeyboardShortcuts', () => {
       let button;
 

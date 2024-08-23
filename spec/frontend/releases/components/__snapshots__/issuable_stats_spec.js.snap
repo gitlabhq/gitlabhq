@@ -2,7 +2,7 @@
 
 exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
 <div
-  class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-mb-5 gl-mr-6"
+  class="gl-flex gl-flex-col gl-mb-5 gl-mr-6 gl-shrink-0"
 >
   <span
     class="gl-mb-2"
@@ -19,7 +19,7 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
     </span>
   </span>
   <div
-    class="gl-display-flex"
+    class="gl-flex"
   >
     <span
       class="gl-whitespace-pre-wrap"

@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <header
-      class="jira-connect-header gl-flex gl-items-center gl-justify-center gl-px-5 gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-bg-white"
+      class="jira-connect-header gl-flex gl-items-center gl-justify-center gl-border-b-1 gl-border-b-gray-100 gl-bg-white gl-px-5 gl-border-b-solid"
     >
       <gl-link :href="gitlabUrl" target="_blank">
         <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />
@@ -106,7 +106,7 @@ export default {
       <user-link v-if="userSignedIn" :user="currentUser" class="gl-fixed gl-right-4" />
     </header>
 
-    <main class="jira-connect-app gl-px-5 gl-pt-7 gl-pb-7 gl-mx-auto gl-flex gl-flex-col gl-gap-7">
+    <main class="jira-connect-app gl-mx-auto gl-flex gl-flex-col gl-gap-7 gl-px-5 gl-pb-7 gl-pt-7">
       <div class="gl-grow">
         <browser-support-alert v-if="!isBrowserSupported" class="gl-mb-7" />
         <div v-else data-testid="jira-connect-app">
@@ -129,7 +129,7 @@ export default {
             </template>
           </gl-alert>
 
-          <div class="gl-max-w-limited gl-mx-auto gl-px-5 gl-mb-7">
+          <div class="gl-mx-auto gl-mb-7 gl-max-w-limited gl-px-5">
             <sign-in-page
               v-show="!userSignedIn"
               :has-subscriptions="hasSubscriptions"
@@ -143,7 +143,7 @@ export default {
       </div>
 
       <div class="gl-flex-grow-2">
-        <feedback-banner class="gl-max-w-80 gl-mx-auto" />
+        <feedback-banner class="gl-mx-auto gl-max-w-80" />
       </div>
     </main>
   </div>

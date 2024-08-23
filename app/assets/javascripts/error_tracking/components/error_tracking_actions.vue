@@ -44,29 +44,29 @@ export default {
 
 <template>
   <div>
-    <gl-button-group class="gl-flex-direction-column gl-md-flex-direction-row -gl-ml-6">
+    <gl-button-group class="-gl-ml-6 gl-flex-col md:gl-flex-row">
       <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-mb-4 gl-block gl-w-full md:gl-mb-0"
         :title="ignoreBtn.title"
         :aria-label="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
       >
-        <gl-icon class="gl-hidden md:gl-inline gl-m-0" :name="ignoreBtn.icon" :size="12" />
+        <gl-icon class="gl-m-0 gl-hidden md:gl-inline" :name="ignoreBtn.icon" :size="12" />
         <span class="md:gl-hidden">{{ ignoreBtn.title }}</span>
       </gl-button>
       <gl-button
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-mb-4 gl-block gl-w-full md:gl-mb-0"
         :title="resolveBtn.title"
         :aria-label="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       >
-        <gl-icon class="gl-hidden md:gl-inline gl-m-0" :name="resolveBtn.icon" :size="12" />
+        <gl-icon class="gl-m-0 gl-hidden md:gl-inline" :name="resolveBtn.icon" :size="12" />
         <span class="md:gl-hidden">{{ resolveBtn.title }}</span>
       </gl-button>
     </gl-button-group>
@@ -74,7 +74,7 @@ export default {
       :href="detailsLink"
       category="primary"
       variant="confirm"
-      class="gl-block md:!gl-hidden gl-mb-4 gl-md-mb-0"
+      class="gl-mb-4 gl-block md:gl-mb-0 md:!gl-hidden"
     >
       {{ __('More details') }}
     </gl-button>

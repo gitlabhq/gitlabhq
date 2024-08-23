@@ -54,12 +54,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-mr-6 gl-mb-5">
+  <div class="gl-mb-5 gl-mr-6 gl-flex gl-shrink-0 gl-flex-col">
     <span class="gl-mb-2">
       {{ label }}
       <gl-badge variant="muted">{{ total }}</gl-badge>
     </span>
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <span class="gl-whitespace-pre-wrap" data-testid="open-stat">
         <gl-sprintf :message="__('Open: %{open}')">
           <template #open>

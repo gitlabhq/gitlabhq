@@ -206,9 +206,9 @@ export default {
     </main>
     <aside class="col-md-6 gl-pt-3">
       <div
-        class="gl-border-1 gl-border-gray-100 gl-border-solid border-radius-default gl-bg-gray-10"
+        class="border-radius-default gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10"
       >
-        <h6 class="gl-p-2 gl-px-4 text-secondary" data-testid="editor-header">
+        <h6 class="text-secondary gl-p-2 gl-px-4" data-testid="editor-header">
           {{ sprintf($options.i18n.draft, { filename }) }}
         </h6>
         <div class="gl-relative gl-overflow-hidden">
@@ -223,15 +223,13 @@ export default {
           />
           <div
             v-if="showPlaceholder"
-            class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 gl-filter-blur-1"
+            class="gl-filter-blur-1 gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
             data-testid="placeholder-overlay"
           >
             <div
-              class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 gl-bg-white gl-opacity-5 gl-z-2"
+              class="gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0 gl-z-2 gl-bg-white gl-opacity-5"
             ></div>
-            <div
-              class="gl-relative gl-h-full gl-display-flex gl-align-items-center gl-justify-content-center gl-z-3"
-            >
+            <div class="gl-relative gl-z-3 gl-flex gl-h-full gl-items-center gl-justify-center">
               <div class="gl-max-w-34">
                 <h4 data-testid="filename">{{ filename }}</h4>
                 <p data-testid="description">

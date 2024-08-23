@@ -50,7 +50,7 @@ export default {
   <section
     v-if="isVisible"
     id="se-toolbar"
-    class="file-buttons gl-display-flex gl-align-items-center gl-justify-content-end"
+    class="file-buttons gl-flex gl-items-center gl-justify-end"
   >
     <div v-if="hasGroupItems($options.groups.file)">
       <source-editor-toolbar-button
@@ -62,7 +62,7 @@ export default {
     </div>
     <div
       v-if="hasGroupItems($options.groups.edit)"
-      class="md-header-toolbar gl-display-flex gl-flex-wrap gl-gap-3 gl-ml-auto"
+      class="md-header-toolbar gl-ml-auto gl-flex gl-flex-wrap gl-gap-3"
     >
       <source-editor-toolbar-button
         v-for="item in getGroupItems($options.groups.edit)"
@@ -71,7 +71,7 @@ export default {
         @click="$emit('click', item)"
       />
     </div>
-    <div v-if="hasGroupItems($options.groups.settings)" class="gl-align-self-start">
+    <div v-if="hasGroupItems($options.groups.settings)" class="gl-self-start">
       <source-editor-toolbar-button
         v-for="item in getGroupItems($options.groups.settings)"
         :key="item.id"

@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-flex">
     <slot name="before"></slot>
     <gl-button
       v-if="showBackButton"

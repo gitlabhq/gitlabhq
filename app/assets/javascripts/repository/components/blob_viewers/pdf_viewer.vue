@@ -39,7 +39,7 @@ export default {
   <div>
     <pdf-viewer v-if="!tooLargeToDisplay" :pdf="url" @pdflabload="handleOnLoad" />
 
-    <div v-else class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-p-5">
+    <div v-else class="gl-flex gl-flex-col gl-items-center gl-p-5">
       <p>{{ $options.i18n.tooLargeDescription }}</p>
 
       <gl-button icon="download" category="secondary" variant="confirm" :href="url" download>{{

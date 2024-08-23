@@ -61,7 +61,7 @@ export default {
     />
 
     <div v-else>
-      <h2 class="gl-font-size-h2">{{ $options.i18n.title }}</h2>
+      <h2 class="gl-text-size-h2">{{ $options.i18n.title }}</h2>
       <p>{{ $options.i18n.description }}</p>
       <gl-table :fields="$options.fields" :items="tableData">
         <template #cell(gcp_project)="{ value }">

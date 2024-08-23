@@ -9,8 +9,9 @@ module Gitlab
 
           TRIVY_SOURCE_PACKAGE_FIELD = 'SrcName'
 
-          def initialize(data)
+          def initialize(data, project: nil)
             @data = data
+            @project = project
           end
 
           def parse
@@ -21,7 +22,8 @@ module Gitlab
               purl: purl,
               version: data['version'],
               properties: properties,
-              source_package_name: source_package_name
+              source_package_name: source_package_name,
+              licenses: licenses
             )
           end
 
@@ -53,6 +55,17 @@ module Gitlab
             Enums::Sbom.container_scanning_purl_type?(purl.type)
           end
           strong_memoize_attr :container_scanning_component?
+
+          def licenses
+            return [] unless Feature.enabled?(:license_scanning_with_sbom_licenses, @project)
+
+            data.fetch('licenses', []).filter_map do |license_data|
+              license = License.new(license_data).parse
+              next unless license
+
+              license
+            end
+          end
         end
       end
     end

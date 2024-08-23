@@ -26,7 +26,7 @@ export default {
 
 <template>
   <div class="gl-mx-4">
-    <h2 class="gl-font-size-h2">{{ $options.i18n.title }}</h2>
+    <h2 class="gl-text-size-h2">{{ $options.i18n.title }}</h2>
     <p>{{ $options.i18n.description }}</p>
     <gl-form :action="url" method="post">
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

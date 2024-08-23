@@ -85,14 +85,14 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-gap-5 gl-align-items-center gl-font-sm">
-    <div v-if="commit" class="gl-display-flex gl-align-items-center gl-gap-2 js-commit-info">
+  <div class="gl-flex gl-items-center gl-gap-5 gl-text-sm">
+    <div v-if="commit" class="js-commit-info gl-flex gl-items-center gl-gap-2">
       <gl-icon ref="commitIcon" name="commit" class="gl-text-secondary" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link
           v-if="commitPath"
           :href="commitPath"
-          class="gl-font-monospace gl-text-secondary gl-mr-0"
+          class="gl-mr-0 gl-text-secondary gl-font-monospace"
         >
           {{ commit.shortId }}
         </gl-link>
@@ -100,28 +100,28 @@ export default {
       </div>
     </div>
 
-    <div v-if="tagName" class="gl-display-flex gl-align-items-center gl-gap-2 js-tag-info">
+    <div v-if="tagName" class="js-tag-info gl-flex gl-items-center gl-gap-2">
       <gl-icon name="tag" class="gl-text-secondary" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
-        <gl-link v-if="tagPath" :href="tagPath" class="gl-font-monospace gl-mr-0 gl-text-secondary">
+        <gl-link v-if="tagPath" :href="tagPath" class="gl-mr-0 gl-text-secondary gl-font-monospace">
           {{ tagName }}
         </gl-link>
         <span v-else>{{ tagName }}</span>
       </div>
     </div>
-    <div v-if="timeAt || author" class="gl-display-flex gl-align-items-center js-author-date-info">
+    <div v-if="timeAt || author" class="js-author-date-info gl-flex gl-items-center">
       <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
       <template v-if="timeAt">
         <span
           v-gl-tooltip.bottom
           :title="tooltipTitle(timeAt)"
-          class="gl-text-secondary gl-flex-shrink-0"
+          class="gl-shrink-0 gl-text-secondary"
         >
           {{ atTimeAgo }}&nbsp;
         </span>
       </template>
 
-      <div v-if="author" class="gl-display-flex gl-align-items-center gl-gap-1">
+      <div v-if="author" class="gl-flex gl-items-center gl-gap-1">
         <span class="gl-text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
           :link-href="author.webUrl"

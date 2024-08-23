@@ -25,7 +25,7 @@ export default {
 </script>
 <template>
   <div>
-    <h1 class="page-title gl-font-size-h-display">{{ s__('FeatureFlags|New feature flag') }}</h1>
+    <h1 class="page-title gl-text-size-h-display">{{ s__('FeatureFlags|New feature flag') }}</h1>
 
     <gl-alert v-if="error.length" variant="warning" class="gl-mb-5" :dismissible="false">
       <p v-for="(message, index) in error" :key="index" class="gl-mb-0">{{ message }}</p>

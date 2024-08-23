@@ -125,7 +125,7 @@ export default {
       >
         <div class="table-section section-10" role="gridcell">
           <div class="table-mobile-header" role="rowheader">{{ s__('FeatureFlags|ID') }}</div>
-          <div class="table-mobile-content gl-text-left js-feature-flag-id">
+          <div class="table-mobile-content js-feature-flag-id gl-text-left">
             {{ featureFlagIidText(featureFlag) }}
           </div>
         </div>
@@ -157,9 +157,9 @@ export default {
             {{ s__('FeatureFlags|Feature flag') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left gl-flex flex-column js-feature-flag-title gl-mr-5"
+            class="table-mobile-content flex-column js-feature-flag-title gl-mr-5 gl-flex gl-text-left"
           >
-            <div class="gl-flex gl-align-items-center">
+            <div class="gl-flex gl-items-center">
               <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
                 {{ featureFlag.name }}
               </div>
@@ -180,13 +180,13 @@ export default {
             {{ s__('FeatureFlags|Environment Specs') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left gl-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
+            class="table-mobile-content justify-content-end justify-content-md-start js-feature-flag-environments gl-flex gl-flex-wrap gl-text-left"
           >
             <strategy-label
               v-for="strategy in featureFlag.strategies"
               :key="strategy.id"
               data-testid="strategy-label"
-              class="gl-w-full gl-mr-3 gl-mt-2 gl-whitespace-normal gl-text-left"
+              class="gl-mr-3 gl-mt-2 gl-w-full gl-whitespace-normal gl-text-left"
               v-bind="strategyBadgeText(strategy)"
             />
           </div>

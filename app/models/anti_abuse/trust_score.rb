@@ -16,16 +16,11 @@ module AntiAbuse
     scope :order_created_at_desc, -> { order(created_at: :desc) }
 
     before_create :assign_correlation_id
-    after_commit :remove_old_scores
 
     private
 
     def assign_correlation_id
       self.correlation_id_value ||= Labkit::Correlation::CorrelationId.current_id || ''
-    end
-
-    def remove_old_scores
-      AntiAbuse::UserTrustScore.new(user).remove_old_scores(source)
     end
   end
 end

@@ -96,7 +96,7 @@ export default {
       @close="closeDetailsDrawer"
     >
       <template #title>
-        <h4 class="gl-font-bold gl-font-size-h2 gl-m-0 gl-break-anywhere">
+        <h4 class="gl-m-0 gl-text-size-h2 gl-font-bold gl-break-anywhere">
           {{ selectedItem.name }}
         </h4>
       </template>

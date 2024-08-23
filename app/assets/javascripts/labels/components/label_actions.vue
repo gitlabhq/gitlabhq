@@ -85,7 +85,7 @@ export default {
         text: this.$options.i18n.delete,
         action: this.onDelete,
         extraAttrs: {
-          class: 'gl-text-red-500!',
+          class: '!gl-text-red-500',
           'data-testid': `delete-label-action`,
         },
       });

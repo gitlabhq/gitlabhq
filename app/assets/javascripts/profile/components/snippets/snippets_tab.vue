@@ -105,7 +105,7 @@ export default {
         :user-info="userInfo"
         :class="{ 'gl-border-b': !isLastSnippet(index) }"
       />
-      <div class="gl-display-flex gl-justify-content-center gl-mt-6">
+      <div class="gl-mt-6 gl-flex gl-justify-center">
         <gl-keyset-pagination
           v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"
           v-bind="pageInfo"

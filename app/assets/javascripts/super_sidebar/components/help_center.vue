@@ -29,6 +29,7 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
+    terms: __('Terms and privacy'),
   },
   props: {
     sidebarData: {
@@ -108,6 +109,13 @@ export default {
               href: `${PROMO_URL}/submit-feedback`,
               extraAttrs: {
                 ...this.trackingAttrs('submit_feedback'),
+              },
+            },
+            this.sidebarData.terms && {
+              text: this.$options.i18n.terms,
+              href: this.sidebarData.terms,
+              extraAttrs: {
+                ...this.trackingAttrs('terms'),
               },
             },
           ].filter(Boolean),

@@ -278,7 +278,7 @@ export default {
         :path-id-separator="pathIdSeparator"
         :related-issues="category.issues"
         :class="{
-          'gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-default':
+          'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid':
             index !== categorisedIssues.length - 1,
         }"
         @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"

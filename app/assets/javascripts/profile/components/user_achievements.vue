@@ -78,10 +78,10 @@ export default {
 
 <template>
   <div v-if="hasUserAchievements">
-    <h2 class="gl-font-base gl-mb-2 gl-mt-4">
+    <h2 class="gl-mb-2 gl-mt-4 gl-text-base">
       {{ $options.i18n.achievementsLabel }}
     </h2>
-    <div class="gl-flex gl-gap-3 gl-flex-wrap">
+    <div class="gl-flex gl-flex-wrap gl-gap-3">
       <div
         v-for="userAchievement in userAchievements"
         :key="userAchievement.id"

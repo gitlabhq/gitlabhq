@@ -177,7 +177,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex flex-column">
+  <div class="flex-column gl-flex">
     <page-heading :heading="headingText">
       <template #description>
         <span class="js-subtitle-text">
@@ -272,7 +272,7 @@ export default {
 
       <asset-links-form />
 
-      <div class="gl-flex gl-gap-x-3 pt-3">
+      <div class="pt-3 gl-flex gl-gap-x-3">
         <gl-button
           class="js-no-auto-disable"
           category="primary"

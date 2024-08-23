@@ -28,11 +28,11 @@ export default {
 
 <template>
   <div>
-    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraConnect|GitLab for Jira Configuration') }}</h2>
+    <h2 class="gl-mb-7 gl-text-center">{{ s__('JiraConnect|GitLab for Jira Configuration') }}</h2>
 
     <gl-loading-icon v-if="subscriptionsLoading" size="lg" />
     <div v-else-if="hasSubscriptions && !subscriptionsError">
-      <div class="gl-flex gl-justify-end gl-mb-3">
+      <div class="gl-mb-3 gl-flex gl-justify-end">
         <add-namespace-button />
       </div>
 

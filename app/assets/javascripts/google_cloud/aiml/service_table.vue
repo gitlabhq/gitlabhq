@@ -98,7 +98,7 @@ export default {
 </script>
 <template>
   <div class="gl-mx-3">
-    <h2 class="gl-font-size-h2">{{ $options.i18n.aiml }}</h2>
+    <h2 class="gl-text-size-h2">{{ $options.i18n.aiml }}</h2>
     <p>{{ $options.i18n.aimlDescription }}</p>
     <gl-table :fields="$options.fields" :items="$options.items">
       <template #cell(action)="{ value }">

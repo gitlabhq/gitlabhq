@@ -59,13 +59,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-py-5">
+  <div class="gl-flex gl-items-center gl-py-5">
     <gl-avatar :size="48" :src="userInfo.avatarUrl" class="gl-mr-3" />
-    <div class="gl-display-flex gl-flex-direction-column gl-align-items-flex-start">
+    <div class="gl-flex gl-flex-col gl-items-start">
       <gl-link
         data-testid="snippet-url"
         :href="snippet.webUrl"
-        class="gl-text-gray-900 gl-font-bold gl-mb-2"
+        class="gl-mb-2 gl-font-bold gl-text-gray-900"
         >{{ snippet.title }}</gl-link
       >
       <span class="gl-text-gray-500">
@@ -84,8 +84,8 @@ export default {
         </gl-sprintf>
       </span>
     </div>
-    <div class="gl-ml-auto gl-display-flex gl-flex-direction-column gl-align-items-flex-end">
-      <div class="gl-display-flex gl-align-items-center gl-mb-2">
+    <div class="gl-ml-auto gl-flex gl-flex-col gl-items-end">
+      <div class="gl-mb-2 gl-flex gl-items-center">
         <span
           v-gl-tooltip
           data-testid="snippet-blob"

@@ -66,7 +66,7 @@ export default {
       'rotateEndpoint',
     ]),
     topAreaBaseClasses() {
-      return ['gl-display-flex', 'gl-flex-direction-column'];
+      return ['gl-flex', 'gl-flex-col'];
     },
     canUserRotateToken() {
       return this.rotateEndpoint !== '';
@@ -175,7 +175,7 @@ export default {
       @token="rotateInstanceId()"
     />
     <div :class="topAreaBaseClasses">
-      <div class="gl-flex md:!gl-hidden gl-flex-direction-column">
+      <div class="gl-flex gl-flex-col md:!gl-hidden">
         <gl-button
           v-if="userListPath"
           :href="userListPath"
@@ -206,11 +206,9 @@ export default {
           {{ s__('FeatureFlags|New feature flag') }}
         </gl-button>
       </div>
-      <div
-        class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
-      >
-        <div class="gl-display-flex gl-align-items-center">
-          <h2 class="page-title gl-font-size-h-display gl-my-0">
+      <div class="gl-mt-6 gl-flex gl-flex-row gl-items-baseline gl-justify-between">
+        <div class="gl-flex gl-items-center">
+          <h2 class="page-title gl-my-0 gl-text-size-h-display">
             {{ s__('FeatureFlags|Feature flags') }}
           </h2>
           <gl-badge
@@ -221,7 +219,7 @@ export default {
             >{{ countBadgeContents }}</gl-badge
           >
         </div>
-        <div class="gl-hidden md:gl-flex gl-align-items-center gl-justify-content-end">
+        <div class="gl-hidden gl-items-center gl-justify-end md:gl-flex">
           <gl-button
             v-if="userListPath"
             :href="userListPath"

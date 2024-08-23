@@ -16,9 +16,9 @@ export default {
 <template>
   <div
     ref="toc"
-    class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-p-3 gl-m-3 gl-bg-gray-10"
+    class="gl-m-3 gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-p-3"
   >
-    <strong class="gl-text-sm gl-py-3">{{ __('On this page') }}</strong>
+    <strong class="gl-py-3 gl-text-sm">{{ __('On this page') }}</strong>
     <ul class="wiki-pages gl-text-sm">
       <table-of-contents-heading
         v-for="(heading, index) in headings"

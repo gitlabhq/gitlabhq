@@ -53,7 +53,7 @@ export default {
 
 <template>
   <div
-    class="gl-align-items-center gl-display-flex gl-flex-wrap gl-gap-3 gl-justify-content-md-end project-repo-buttons"
+    class="gl-justify-content-md-end project-repo-buttons gl-flex gl-flex-wrap gl-items-center gl-gap-3"
   >
     <gl-button
       v-if="adminPath"
