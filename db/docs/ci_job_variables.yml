@@ -8,7 +8,6 @@ description: CI/CD variables set to a job when running it manually.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14784
 milestone: '12.2'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463243
 desired_sharding_key:
   project_id:
     references: projects

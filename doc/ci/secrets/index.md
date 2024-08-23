@@ -54,6 +54,8 @@ tutorial for a version of this feature. It's available to all
 subscription levels, supports writing secrets to and deleting secrets from Vault,
 and supports multiple secrets engines.
 
+You must replace the `vault.example.com` URL below with the URL of your Vault server, and `gitlab.example.com` with the URL of your GitLab instance.
+
 ## Vault Secrets Engines
 
 > - `generic` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab Runner 16.11.
@@ -108,9 +110,13 @@ To configure your Vault server:
      If no role is specified, Vault uses the [default role](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role)
      specified when the authentication method was configured.
    - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
-   - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://developer.hashicorp.com/vault/docs/enterprise/namespaces) to use for reading secrets and authentication.
-     If no namespace is specified, Vault uses the `root` ("`/`") namespace.
-     The setting is ignored by Vault Open Source.
+   - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://developer.hashicorp.com/vault/docs/enterprise/namespaces)
+     to use for reading secrets and authentication. With:
+     - Vault, the `root` ("`/`") namespace is used when no namespace is specified.
+     - Vault Open source, the setting is ignored.
+     - [HashiCorp Cloud Platform (HCP)](https://www.hashicorp.com/cloud) Vault, a namespace
+       is required. HCP Vault uses the `admin` namespace as the root namespace by default.
+       For example, `VAULT_NAMESPACE=admin`.
 
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
@@ -128,7 +134,7 @@ the secrets stored in Vault by defining them with the [`vault` keyword](../yaml/
 job_using_vault:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.com
+      aud: https://vault.example.com
   secrets:
     DATABASE_PASSWORD:
       vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
@@ -151,7 +157,7 @@ To overwrite the default behavior, set the `file` option explicitly:
 secrets:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.com
+      aud: https://vault.example.com
   DATABASE_PASSWORD:
     vault: production/db/password@ops
     file: false
@@ -172,7 +178,7 @@ For example, to set the secret engine and path for Artifactory:
 job_using_vault:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.com
+      aud: https://vault.example.com
   secrets:
     JFROG_TOKEN:
       vault:
@@ -212,6 +218,7 @@ $ vault write auth/jwt/role/myproject-production - <<EOF
   "policies": ["myproject-production"],
   "token_explicit_max_ttl": 60,
   "user_claim": "user_email",
+  "bound_audiences": "https://vault.example.com",
   "bound_claims_type": "glob",
   "bound_claims": {
     "project_id": "42",

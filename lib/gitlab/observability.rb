@@ -14,6 +14,10 @@ module Gitlab
       'https://observe.gitlab.com'
     end
 
+    def alerts_url
+      "#{Gitlab::Observability.observability_url}/observability/v1/alerts"
+    end
+
     def should_enable_observability_auth_scopes?(resource)
       # Enable the needed oauth scopes if tracing is enabled.
       if resource.is_a?(Group) || resource.is_a?(Project)

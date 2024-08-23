@@ -1088,9 +1088,26 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
     end
 
-    context 'while saving references to issues that the updated merge request closes' do
-      let(:first_issue) { create(:issue, project: project) }
-      let(:second_issue) { create(:issue, project: project) }
+    context 'while saving references to issues that the updated merge request closes', :aggregate_failures do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group, :public) }
+      let_it_be(:project) { create(:project, :private, :repository, group: group, developers: user) }
+      let_it_be(:merge_request, refind: true) { create(:merge_request, :simple, :unchanged, source_project: project) }
+      let_it_be(:first_issue) { create(:issue, project: project) }
+      let_it_be(:second_issue) { create(:issue, project: project) }
+
+      shared_examples 'merge request update that triggers work item updated subscription' do
+        it 'triggers a workItemUpdated subscription for all affected records' do
+          service = described_class.new(project: project, current_user: user, params: update_params)
+          allow(service).to receive(:execute_hooks)
+
+          WorkItem.where(id: issues_to_notify).find_each do |work_item|
+            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
+          end
+
+          service.execute(merge_request)
+        end
+      end
 
       it 'creates a `MergeRequestsClosingIssues` record marked as from_mr_description for each issue' do
         issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
@@ -1125,6 +1142,34 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         expect do
           service.execute(merge_request.reload)
         end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
+      end
+
+      it_behaves_like 'merge request update that triggers work item updated subscription' do
+        let(:update_params) { { description: "Closes #{first_issue.to_reference}" } }
+        let(:issues_to_notify) { [first_issue] }
+      end
+
+      context 'when MergeRequestsClosingIssues already exist' do
+        let_it_be(:third_issue) { create(:issue, project: project) }
+
+        before_all do
+          merge_request.update!(description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}")
+          merge_request.cache_merge_request_closes_issues!(user)
+        end
+
+        context 'when description updates MergeRequestsClosingIssues records' do
+          it_behaves_like 'merge request update that triggers work item updated subscription' do
+            let(:update_params) { { description: "Closes #{third_issue.to_reference} and #{second_issue.to_reference}" } }
+            let(:issues_to_notify) { [first_issue, second_issue, third_issue] }
+          end
+        end
+
+        context 'when description is not updated' do
+          it_behaves_like 'merge request update that triggers work item updated subscription' do
+            let(:update_params) { { state_event: 'close' } }
+            let(:issues_to_notify) { [first_issue, second_issue] }
+          end
+        end
       end
     end
 

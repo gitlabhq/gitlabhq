@@ -168,6 +168,25 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
     end
   end
 
+  describe '#reverse_merge!' do
+    it 'merges in place with the existing options' do
+      options.reverse_merge!(more: 'configs')
+
+      expect(options.to_hash).to eq(
+        'foo' => { 'bar' => 'baz' },
+        'more' => 'configs'
+      )
+    end
+
+    context 'when the merge hash replaces existing configs' do
+      it 'merges in place with the duplicated options not replaced' do
+        options.reverse_merge!(foo: 'configs')
+
+        expect(options.to_hash).to eq('foo' => { 'bar' => 'baz' })
+      end
+    end
+  end
+
   describe '#deep_merge' do
     it 'returns a new object with the options merged' do
       expect(options.deep_merge(foo: { more: 'configs' }).to_hash).to eq('foo' => {

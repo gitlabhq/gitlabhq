@@ -24,7 +24,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     end
 
     let(:env) do
-      path_with_query_params = [path, query_params.to_query.presence].compact.join('?')
+      path_with_query_params = [path, querify(query_params).presence].compact.join('?')
       Rack::MockRequest.env_for(path_with_query_params, method: method)
     end
 
@@ -37,15 +37,6 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 .with(decoded_fullpath, match_new_line: false)
                 .and_call_original
         expect(::Gitlab::AppLogger).not_to receive(:warn)
-        expect(subject).to eq(fake_response)
-      end
-    end
-
-    shared_examples 'excluded path' do
-      it 'does not log anything' do
-        expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
-        expect(::Gitlab::AppLogger).not_to receive(:warn)
-
         expect(subject).to eq(fake_response)
       end
     end
@@ -84,7 +75,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           '/foo/bar'            | { x: 'foo' }                         | 'no issue'
           '/foo/bar'            | { x: 'foo/../bar' }                  | 'path traversal'
           '/foo/bar'            | { x: 'foo%2Fbar' }                   | 'no issue'
-          '/foo/bar'            | { x: 'foo%2F..%2Fbar' }              | 'no issue'
+          '/foo/bar'            | { x: 'foo%2F..%2Fbar' }              | 'path traversal'
           '/foo/bar'            | { x: 'foo%252F..%252Fbar' }          | 'no issue'
           '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' }          | 'path traversal'
 
@@ -98,10 +89,39 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
         described_class::EXCLUDED_QUERY_PARAM_NAMES.each do |param_name|
           context "with the excluded query parameter #{param_name}" do
             let(:path) { '/foo/bar' }
-            let(:query_params) { { param_name => 'an%2F..%2Fattempt', :x => 'test' } }
+            let(:query_params) { { param_name => 'an/../attempt', :x => 'test' } }
             let(:decoded_fullpath) { '/foo/bar?x=test' }
 
             it_behaves_like 'no issue'
+          end
+
+          context "with the excluded query parameter #{param_name} nested one level" do
+            let(:path) { '/foo/bar' }
+            let(:query_params) { { "level_1[#{param_name}]" => 'an/../attempt', :x => 'test' } }
+            let(:decoded_fullpath) { '/foo/bar?x=test' }
+
+            it_behaves_like 'no issue'
+          end
+
+          context "with the excluded query parameter #{param_name} nested two levels" do
+            let(:path) { '/foo/bar' }
+            let(:query_params) { { "level_1[level_2][#{param_name}]" => 'an/../attempt', :x => 'test' } }
+            let(:decoded_fullpath) { '/foo/bar?x=test' }
+
+            it_behaves_like 'no issue'
+          end
+
+          context "with the excluded query parameter #{param_name} nested above the max level" do
+            let(:path) { '/foo/bar' }
+
+            let(:query_params) do
+              {
+                "level_1[level_2][level_3][level_4][level_5][level_6][#{param_name}]" => 'an/../attempt',
+                :x => 'test'
+              }
+            end
+
+            it_behaves_like 'path traversal'
           end
         end
       end
@@ -144,6 +164,11 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           end
         end
       end
+    end
+
+    # Can't use params.to_query as #to_query will encode values
+    def querify(params)
+      params.map { |k, v| "#{k}=#{v}" }.join('&')
     end
   end
 end

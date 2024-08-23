@@ -384,8 +384,13 @@ class IssuableBaseService < ::BaseContainerService
       end
     end
 
+    trigger_update_subscriptions(issuable, old_associations)
+
     issuable
   end
+
+  # Overriden in child class
+  def trigger_update_subscriptions(issuable, old_associations); end
 
   def transaction_update(issuable, opts = {})
     touch = opts[:save_with_touch] || false

@@ -930,6 +930,9 @@ Gitlab.ee do
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::CleanupWorker'
+  Settings.cron_jobs['observability_alert_query_worker'] ||= {}
+  Settings.cron_jobs['observability_alert_query_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['observability_alert_query_worker']['job_class'] = 'Observability::AlertQueryWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1020,6 +1023,23 @@ end
 Gitlab.ee do
   Settings['cloud_connector'] = {}
   Settings.cloud_connector['base_url'] ||= ENV['CLOUD_CONNECTOR_BASE_URL'] || 'https://cloud.gitlab.com'
+end
+
+#
+# Duo Workflow
+#
+Gitlab.ee do
+  Settings['duo_workflow'] ||= {}
+  Settings.duo_workflow.reverse_merge!(
+    secure: true
+  )
+
+  # Default to proxy via Cloud Connector
+  unless Settings.duo_workflow['service_url'].present?
+    cloud_connector_uri = URI.parse(Settings.cloud_connector.base_url)
+    Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
+    Settings.duo_workflow['secure'] = cloud_connector_uri.scheme == 'https'
+  end
 end
 
 #

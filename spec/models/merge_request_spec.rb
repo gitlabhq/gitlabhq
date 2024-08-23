@@ -1326,55 +1326,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
-    context 'when merge request closing issues exist' do
-      let_it_be(:issue2) { create(:issue, project: project) }
-
-      before do
-        create(
-          :merge_requests_closing_issues,
-          issue: issue,
-          merge_request: subject,
-          from_mr_description: false
-        )
-        create(
-          :merge_requests_closing_issues,
-          issue: issue2,
-          merge_request: subject,
-          from_mr_description: true
-        )
-      end
-
-      context 'when new merge request closing issue records are created' do
-        it 'triggers a workItemUpdated subscription for all affected work items (added/removed/updated)' do
-          issue3 = create(:issue, project: project)
-
-          # issue is updated, issue 2 is removed, issue 3 is added
-          WorkItem.where(id: [issue, issue2, issue3]).find_each do |work_item|
-            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
-          end
-
-          expect do
-            subject.update_columns(description: "Fixes #{issue.to_reference} Closes #{issue3.to_reference}")
-            subject.cache_merge_request_closes_issues!(subject.author)
-          end.to not_change { subject.merge_requests_closing_issues.count }.from(2)
-        end
-      end
-
-      context 'when new merge request closing issue records are not created' do
-        it 'triggers a workItemUpdated subscription for all affected work items (removed/updated)' do
-          # issue is updated, issue 2 is removed
-          WorkItem.where(id: [issue, issue2]).find_each do |work_item|
-            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
-          end
-
-          expect do
-            subject.update_columns(description: "Fixes #{issue.to_reference}")
-            subject.cache_merge_request_closes_issues!(subject.author)
-          end.to change { subject.merge_requests_closing_issues.count }.from(2).to(1)
-        end
-      end
-    end
-
     it 'does not cache closed issues when merge request is closed' do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
 

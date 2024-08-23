@@ -40314,9 +40314,6 @@ msgstr ""
 msgid "Please select a Jira project"
 msgstr ""
 
-msgid "Please select a group"
-msgstr ""
-
 msgid "Please select a project."
 msgstr ""
 

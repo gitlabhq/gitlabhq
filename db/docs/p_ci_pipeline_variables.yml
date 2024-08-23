@@ -8,7 +8,6 @@ description: Routing table for ci_pipeline_variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141270
 milestone: '16.9'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463244
 desired_sharding_key:
   project_id:
     references: projects

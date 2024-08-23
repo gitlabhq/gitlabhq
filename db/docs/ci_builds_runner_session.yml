@@ -8,7 +8,6 @@ description: Store build-related runner session. Data is removed after the respe
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6208
 milestone: '11.1'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459994
 desired_sharding_key:
   project_id:
     references: projects

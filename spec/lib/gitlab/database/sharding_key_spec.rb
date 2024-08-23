@@ -309,9 +309,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     issue_url_regex = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/issues/\d+\z}
 
     entries_with_issue_link.each do |entry|
-      if entry.sharding_key.present?
+      if entry.sharding_key.present? || entry.desired_sharding_key.present?
         expect(entry.sharding_key_issue_url).not_to be_present,
-          "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it has a valid sharding key." \
+          "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it " \
+          "has a valid sharding key/desired sharding key."
       else
         expect(entry.sharding_key_issue_url).to match(issue_url_regex),
           "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \

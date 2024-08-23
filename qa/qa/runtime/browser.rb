@@ -72,6 +72,8 @@ module QA
             # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
             chrome_options[:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
 
+            chrome_options[:args] << 'disable-search-engine-choice-screen'
+
             # Allows chrome to consider all actions as secure when no ssl is used
             Runtime::Scenario.attributes[:gitlab_address].tap do |address|
               next unless address.start_with?('http://')
