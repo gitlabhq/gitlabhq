@@ -45,8 +45,8 @@ Install one of the following GitLab-approved LLM models:
 | Model                                                                                                                       | Code Completion | Code Generation | Duo Chat |
 |-----------------------------------------------------------------------------------------------------------------------------|-----------------|-----------------|----------|
 | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                                                                  | ✅               | -               | -        |
-| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                                                            | -               | ✅               | -        |
-| [CodeGemma 7b](https://huggingface.co/google/codegemma-7b)                                                                  | ✅               | -               | -        |
+| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)                                                          | -               | ✅               | -        |
+| [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)                                                        | ✅               | -               | -        |
 | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)                                                   | ✅               | -               | -        |
 | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)                                               | -               | ✅               | -        |
 | [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama)) | ✅               | ✅               | -        |
@@ -56,11 +56,57 @@ Install one of the following GitLab-approved LLM models:
 
 ### Recommended serving architectures
 
-For Mistral, you should use one of the following architectures:
+You should use one of the following architectures:
 
 - [vLLM](https://docs.vllm.ai/en/stable/)
 - [TensorRT-LLM](https://docs.mistral.ai/deployment/self-deployment/overview/)
 - [Ollama and litellm](litellm_proxy_setup.md)
+
+#### Litellm config examples for quickly getting started with Ollama
+
+```yaml
+model_list:
+  - model_name: mistral
+    litellm_params:
+      model: ollama/mistral:latest
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: mixtral
+    litellm_params:
+      model: ollama/mixtral:latest
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codegemma
+    litellm_params:
+      model: ollama/codegemma
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codestral
+    litellm_params:
+      model: ollama/codestral
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codellama
+    litellm_params:
+      model: ollama/codellama:13b
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codellama_13b_code
+    litellm_params:
+      model: ollama/codellama:code
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: deepseekcoder
+    litellm_params:
+      model: ollama/deepseekcoder
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: mixtral_8x22b
+    litellm_params:
+      model: ollama/mixtral:8x22b
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codegemma_2b
+    litellm_params:
+      model: ollama/codegemma:2b
+      api_base: YOUR_HOSTING_SERVER
+  - model_name: codegemma_7b
+    litellm_params:
+      model: ollama/codegemma:code
+      api_base: YOUR_HOSTING_SERVER
+```
 
 ## Step 2: Install the GitLab AI Gateway
 

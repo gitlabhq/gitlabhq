@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import BoolPresenter from '../components/presenters/bool.vue';
 import CollectionPresenter from '../components/presenters/collection.vue';
 import HealthPresenter from '../components/presenters/health.vue';
@@ -98,21 +97,6 @@ export default class Presenter {
     };
 
     return this;
-  }
-
-  /**
-   * Mount the initialized component to the given element
-   *
-   * @param {Element} element
-   * @returns {Vue}
-   */
-  mount(element) {
-    const container = document.createElement('div');
-    element.parentNode.replaceChild(container, element);
-
-    const ComponentInstance = Vue.extend(this.#component);
-
-    return new ComponentInstance().$mount(container);
   }
 
   get component() {

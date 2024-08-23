@@ -28,10 +28,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-gap-2 gl-text-left!">
+  <div class="gl-flex gl-flex-col gl-gap-2 !gl-text-left">
     <gl-link
       :href="subject.webUrl"
-      class="gl-text-gray-900 gl-hover-text-gray-900 gl-font-bold"
+      class="gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
       data-testid="title-container"
     >
       {{ subject.title }}
@@ -39,7 +39,7 @@ export default {
     <span>
       <gl-link
         :href="subject.webUrl"
-        class="gl-text-gray-900 gl-hover-text-gray-900"
+        class="gl-text-gray-900 hover:gl-text-gray-900"
         data-testid="reference-container"
       >
         {{ issuableFullReference }}

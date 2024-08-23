@@ -44,8 +44,8 @@ export default {
   },
   classes: {
     headerClasses: [
-      'gl-display-flex',
-      'gl-justify-content-space-between',
+      'gl-flex',
+      'gl-justify-between',
       'gl-pb-5',
       'gl-border-b-1',
       'gl-border-b-solid',
@@ -54,9 +54,9 @@ export default {
     tableHeaderClasses: commonTableClasses.join(' '),
     tableRowClasses: [
       ...commonTableClasses,
-      'gl-display-flex',
-      'gl-justify-content-space-between',
-      'gl-align-items-center',
+      'gl-flex',
+      'gl-justify-between',
+      'gl-items-center',
     ].join(' '),
   },
   ADD_USER_MODAL_ID,

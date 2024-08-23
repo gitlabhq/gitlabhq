@@ -17,7 +17,8 @@ describe('renderGFM', () => {
 
     beforeEach(() => {
       element = document.createElement('div');
-      element.innerHTML = '<pre><code data-canonical-lang="glql"></code></pre>';
+      element.innerHTML =
+        '<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>';
     });
 
     describe('when glqlIntegration is enabled', () => {
@@ -28,7 +29,7 @@ describe('renderGFM', () => {
       it('calls renderGlql', () => {
         renderGFM(element);
 
-        expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild.firstElementChild]);
+        expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild]);
       });
     });
 

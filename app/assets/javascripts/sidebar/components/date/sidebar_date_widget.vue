@@ -286,7 +286,7 @@ export default {
       <gl-icon
         ref="epicDatePopover"
         name="question-o"
-        class="gl-ml-3 gl-cursor-pointer gl-text-blue-600 hide-collapsed"
+        class="hide-collapsed gl-ml-3 gl-cursor-pointer gl-text-blue-600"
         tabindex="0"
         :aria-label="$options.i18n.help"
         data-testid="inherit-date-popover"
@@ -301,7 +301,7 @@ export default {
     <template #collapsed>
       <div v-gl-tooltip.viewport.left :title="dateLabel" class="sidebar-collapsed-icon">
         <gl-icon :size="16" name="calendar" />
-        <span class="gl-pt-2 gl-px-3 gl-font-sm">{{ formattedDate }}</span>
+        <span class="gl-px-3 gl-pt-2 gl-text-sm">{{ formattedDate }}</span>
       </div>
       <sidebar-inherit-date
         v-if="canInherit && !initialLoading"

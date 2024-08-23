@@ -56,7 +56,7 @@ export default {
 </script>
 <template>
   <div
-    class="hide-collapsed gl-display-flex gl-align-items-center gl-leading-20 gl-text-gray-900 gl-font-bold gl-gap-2"
+    class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-gray-900"
   >
     {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
@@ -66,7 +66,7 @@ export default {
         :title="
           glFeatures.reviewerAssignDrawer ? __('Add or edit reviewers') : __('Change reviewer')
         "
-        class="gl-ml-auto hide-collapsed gl-float-right"
+        class="hide-collapsed gl-float-right gl-ml-auto"
         :class="{ 'js-sidebar-dropdown-toggle edit-link': !glFeatures.reviewerAssignDrawer }"
         data-track-action="click_edit_button"
         data-track-label="right_sidebar"

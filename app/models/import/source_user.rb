@@ -107,6 +107,11 @@ module Import
 
         reorder(sort_order[:order_by] => sort_order[:sort])
       end
+
+      def namespace_placeholder_user_count(namespace, limit:)
+        for_namespace(namespace).distinct.limit(limit).count(:placeholder_user_id) -
+          (namespace.namespace_import_user.present? ? 1 : 0)
+      end
     end
 
     def mapped_user

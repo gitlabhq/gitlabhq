@@ -39,7 +39,7 @@ export default {
 
 <template>
   <div
-    class="labels-select-dropdown-contents gl-w-full gl-my-2 gl-py-3 gl-rounded-base gl-absolute"
+    class="labels-select-dropdown-contents gl-absolute gl-my-2 gl-w-full gl-rounded-base gl-py-3"
     data-testid="labels-select-dropdown-contents"
     :style="directionStyle"
   >

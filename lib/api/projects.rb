@@ -4,10 +4,13 @@ module API
   class Projects < ::API::Base
     include PaginationParams
     include Helpers::CustomAttributes
+    include APIGuard
 
     helpers Helpers::ProjectsHelpers
 
     before { authenticate_non_get! }
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     feature_category :groups_and_projects, %w[
       /projects/:id/custom_attributes

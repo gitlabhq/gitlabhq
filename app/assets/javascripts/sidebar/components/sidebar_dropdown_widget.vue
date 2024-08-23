@@ -302,7 +302,7 @@ export default {
           class="sidebar-collapsed-icon"
         >
           <gl-icon :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
-          <span class="collapse-truncated-title gl-pt-2 gl-px-3 gl-font-sm">
+          <span class="collapse-truncated-title gl-px-3 gl-pt-2 gl-text-sm">
             {{ attributeTitle }}
           </span>
         </div>
@@ -328,7 +328,7 @@ export default {
         >
           <gl-link
             v-gl-tooltip="tooltipText"
-            class="gl-text-inherit gl-hover-text-blue-800"
+            class="gl-text-inherit hover:gl-text-blue-800"
             :href="attributeUrl"
             :data-testid="`${formatIssuableAttribute.kebab}-link`"
           >
@@ -346,10 +346,10 @@ export default {
         boundary="viewport"
         triggers="click"
       >
-        <div class="gl-mb-4 gl-font-base">
+        <div class="gl-mb-4 gl-text-base">
           {{ i18n.editConfirmation }}
         </div>
-        <div class="gl-display-flex gl-align-items-center">
+        <div class="gl-flex gl-items-center">
           <gl-button
             size="small"
             variant="confirm"

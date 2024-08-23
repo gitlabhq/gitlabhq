@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-header-content gl-flex gl-align-items-center gl-leading-1">
+  <div class="file-header-content gl-flex gl-items-center gl-leading-1">
     <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
 
     <a :href="fileUrl" :title="$options.i18n.fileLink">

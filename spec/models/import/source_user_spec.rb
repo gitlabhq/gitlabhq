@@ -228,6 +228,40 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '.namespace_placeholder_user_count' do
+    let_it_be_with_refind(:namespace) { create(:namespace) }
+
+    subject(:namespace_placeholder_user_count) do
+      described_class.namespace_placeholder_user_count(namespace, limit: 100)
+    end
+
+    before_all do
+      placeholder_user = create(:import_source_user, namespace: namespace).placeholder_user
+      create_list(:import_source_user, 2, placeholder_user: placeholder_user, namespace: namespace)
+      create(:import_source_user, :completed, placeholder_user: nil, namespace: namespace)
+      create(:import_source_user)
+    end
+
+    it 'returns the count of records with unique placeholder users for the namespace' do
+      expect(namespace_placeholder_user_count).to eq(1)
+    end
+
+    it 'does not count the import user type' do
+      import_user = create(:namespace_import_user, namespace: namespace).import_user
+      create(:import_source_user, placeholder_user: import_user, namespace: namespace)
+
+      expect(namespace_placeholder_user_count).to eq(1)
+    end
+
+    it 'can limit the count to optimize the query' do
+      create(:import_source_user, namespace: namespace)
+
+      expect(described_class.namespace_placeholder_user_count(namespace, limit: 1)).to eq(1)
+      expect(described_class.namespace_placeholder_user_count(namespace, limit: 2)).to eq(2)
+      expect(described_class.namespace_placeholder_user_count(namespace, limit: 3)).to eq(2)
+    end
+  end
+
   describe '#mapped_user' do
     let_it_be(:source_user) { build(:import_source_user, :with_reassign_to_user) }
 

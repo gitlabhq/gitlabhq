@@ -64,7 +64,7 @@ export default {
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />
-      <span v-else class="gl-pt-2 gl-px-3 gl-font-sm">
+      <span v-else class="gl-px-3 gl-pt-2 gl-text-sm">
         {{ participantCount }}
       </span>
     </div>

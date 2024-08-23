@@ -5725,6 +5725,9 @@ msgstr ""
 msgid "An error occurred previewing the blob"
 msgstr ""
 
+msgid "An error occurred when trying to display this GLQL block:"
+msgstr ""
+
 msgid "An error occurred when updating the title"
 msgstr ""
 
@@ -15687,6 +15690,9 @@ msgstr ""
 msgid "Couldn't reorder child due to an internal error."
 msgstr ""
 
+msgid "Counter exceeded max value"
+msgstr ""
+
 msgid "Country or region"
 msgstr ""
 
@@ -19504,6 +19510,9 @@ msgid "Display as:"
 msgstr ""
 
 msgid "Display blame info"
+msgstr ""
+
+msgid "Display block"
 msgstr ""
 
 msgid "Display by"
@@ -37239,6 +37248,9 @@ msgid "One or more of your personal access tokens will expire in %{days_to_expir
 msgstr ""
 
 msgid "Online license"
+msgstr ""
+
+msgid "Only %{n} GLQL blocks can be automatically displayed on a page. Click the button below to manually display this block."
 msgstr ""
 
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."

@@ -19,6 +19,8 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
   let_it_be(:import_source_user_from_another_import) { create(:import_source_user) }
 
   describe '#find_or_create_source_user' do
+    let_it_be(:import_user) { create(:namespace_import_user, namespace: namespace).import_user }
+
     let(:source_name) { 'Pry Contributor' }
     let(:source_username) { 'a_pry_contributor' }
     let(:source_user_identifier) { '123456' }
@@ -126,6 +128,24 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
 
         it_behaves_like 'it does not create an import_source_user or placeholder user'
+      end
+    end
+
+    context 'when the placeholder user limit has been reached' do
+      before do
+        allow_next_instance_of(Import::PlaceholderUserLimit) do |limit|
+          allow(limit).to receive(:exceeded?).and_return(true)
+        end
+      end
+
+      it 'does not create any placeholder users and assigns the import user' do
+        expect { find_or_create_source_user }
+          .to change { Import::SourceUser.count }.by(1)
+          .and not_change { User.count }
+
+        new_import_source_user = Import::SourceUser.last
+
+        expect(new_import_source_user.placeholder_user).to eq(import_user)
       end
     end
   end

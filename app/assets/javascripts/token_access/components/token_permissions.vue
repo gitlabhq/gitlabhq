@@ -105,7 +105,7 @@ export default {
 
       <gl-form-checkbox :checked="allowPushToRepo" @input="updateAllowPushToRepo">
         {{ s__('CICD|Allow Git push requests to the repository') }}
-        <p class="gl-text-subtle gl-mb-3">
+        <p class="gl-mb-3 gl-text-subtle">
           {{
             s__(
               'CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job.',

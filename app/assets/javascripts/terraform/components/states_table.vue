@@ -132,26 +132,26 @@ export default {
     :items="states"
     :fields="fields"
     data-testid="terraform-states-table"
-    details-td-class="gl-p-0!"
+    details-td-class="!gl-p-0"
     fixed
     stacked="md"
   >
     <template #cell(name)="{ item }">
       <div
         data-testid="terraform-states-table-name"
-        class="gl-flex gl-align-center gl-justify-end md:gl-justify-start gl-gap-3"
+        class="gl-align-center gl-flex gl-justify-end gl-gap-3 md:gl-justify-start"
       >
         <p class="gl-m-0 gl-text-gray-900">
           {{ item.name }}
         </p>
 
         <div v-if="item.loadingLock">
-          <gl-loading-icon size="sm" class="gl-pr-1 gl-inline" />
+          <gl-loading-icon size="sm" class="gl-inline gl-pr-1" />
           {{ loadingLockText(item) }}
         </div>
 
         <div v-else-if="item.loadingRemove">
-          <gl-loading-icon size="sm" class="gl-pr-1 gl-inline" />
+          <gl-loading-icon size="sm" class="gl-inline gl-pr-1" />
           {{ $options.i18n.removing }}
         </div>
 
@@ -182,7 +182,7 @@ export default {
     <template #cell(pipeline)="{ item }">
       <div
         data-testid="terraform-states-table-pipeline"
-        class="gl-flex gl-gap-3 gl-items-center gl-justify-end md:gl-justify-start"
+        class="gl-flex gl-items-center gl-justify-end gl-gap-3 md:gl-justify-start"
       >
         <gl-link v-if="pipelineID(item)" :href="pipelinePath(item)">
           #{{ pipelineID(item) }}

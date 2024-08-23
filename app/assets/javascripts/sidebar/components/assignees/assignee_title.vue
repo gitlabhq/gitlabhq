@@ -39,12 +39,12 @@ export default {
 };
 </script>
 <template>
-  <div class="hide-collapsed gl-leading-20 gl-mb-2 gl-text-gray-900 gl-font-bold">
+  <div class="hide-collapsed gl-mb-2 gl-font-bold gl-leading-20 gl-text-gray-900">
     {{ assigneeTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <a
       v-if="editable"
-      class="js-sidebar-dropdown-toggle edit-link btn gl-text-gray-900! gl-ml-auto hide-collapsed btn-default btn-sm gl-button btn-default-tertiary gl-float-right"
+      class="js-sidebar-dropdown-toggle edit-link btn hide-collapsed btn-default btn-sm gl-button btn-default-tertiary gl-float-right gl-ml-auto !gl-text-gray-900"
       href="#"
       data-test-id="edit-link"
       data-track-action="click_edit_button"

@@ -184,7 +184,7 @@ export default {
       <template #prepend>
         <emoji-picker
           dropdown-class="gl-h-full"
-          toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none! gl-h-7!"
+          toggle-class="btn emoji-menu-toggle-button !gl-px-4 !gl-rounded-tr-none !gl-rounded-br-none !gl-h-7"
           :right="false"
           @click="handleEmojiClick"
         >

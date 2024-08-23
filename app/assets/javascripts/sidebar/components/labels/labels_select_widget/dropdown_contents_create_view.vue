@@ -153,7 +153,7 @@ export default {
       />
     </gl-form-group>
     <sidebar-color-picker v-model.trim="selectedColor" :suggested-colors="suggestedColors" />
-    <div class="gl-flex gl-justify-end gl-gap-3 gl-mt-2">
+    <div class="gl-mt-2 gl-flex gl-justify-end gl-gap-3">
       <gl-button
         class="js-btn-cancel-create"
         size="small"

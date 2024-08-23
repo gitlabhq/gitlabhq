@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-mb-2 gl-font-bold gl-font-sm">
+    <div class="gl-mb-2 gl-text-sm gl-font-bold">
       {{ filterData.header }}
     </div>
     <gl-form-radio-group v-model="selectedFilter">

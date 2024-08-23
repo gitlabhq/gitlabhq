@@ -62,17 +62,12 @@ export default {
   <div>
     <clipboard-button
       v-if="!isLoading"
-      css-class="sidebar-collapsed-icon js-dont-change-state gl-rounded-0! gl-hover-bg-transparent"
+      css-class="sidebar-collapsed-icon js-dont-change-state !gl-rounded-none hover:gl-bg-transparent"
       v-bind="clipboardProps"
     />
 
-    <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-space-between hide-collapsed"
-    >
-      <span
-        class="gl-overflow-hidden gl-text-overflow-ellipsis gl-whitespace-nowrap"
-        :title="value"
-      >
+    <div class="hide-collapsed gl-flex gl-items-center gl-justify-between">
+      <span class="gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap" :title="value">
         <gl-sprintf :message="$options.i18n.templateText">
           <template #name>{{ name }}</template>
           <template #value>{{ value }}</template>

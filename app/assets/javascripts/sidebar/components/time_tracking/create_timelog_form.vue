@@ -207,11 +207,8 @@ export default {
     <p>
       {{ modalText }}
     </p>
-    <form
-      class="gl-display-flex gl-flex-direction-column js-quick-submit"
-      @submit.prevent="registerTimeSpent"
-    >
-      <div class="gl-display-flex gl-gap-3">
+    <form class="js-quick-submit gl-flex gl-flex-col" @submit.prevent="registerTimeSpent">
+      <div class="gl-flex gl-gap-3">
         <gl-form-group
           key="time-spent"
           label-for="time-spent"

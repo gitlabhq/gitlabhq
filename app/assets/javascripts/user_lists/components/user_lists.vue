@@ -75,22 +75,20 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-flex-direction-column">
-      <div class="gl-flex md:!gl-hidden gl-flex-direction-column">
+    <div class="gl-flex gl-flex-col">
+      <div class="gl-flex gl-flex-col md:!gl-hidden">
         <gl-button v-if="hasNewPath" :href="newUserListPath" variant="confirm">
           {{ s__('UserLists|New user list') }}
         </gl-button>
       </div>
-      <div
-        class="gl-display-flex gl-align-items-baseline gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-mt-6"
-      >
-        <div class="gl-display-flex gl-align-items-center">
-          <h2 class="gl-font-size-h2 gl-my-0">
+      <div class="gl-mt-6 gl-flex gl-flex-col gl-items-baseline gl-justify-between md:gl-flex-row">
+        <div class="gl-flex gl-items-center">
+          <h2 class="gl-my-0 gl-text-size-h2">
             {{ s__('UserLists|User Lists') }}
           </h2>
           <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
         </div>
-        <div class="gl-display-flex gl-align-items-center gl-justify-content-end">
+        <div class="gl-flex gl-items-center gl-justify-end">
           <gl-button v-if="hasNewPath" :href="newUserListPath" variant="confirm">
             {{ s__('UserLists|New user list') }}
           </gl-button>

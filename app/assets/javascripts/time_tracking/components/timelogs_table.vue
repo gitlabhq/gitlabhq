@@ -30,7 +30,7 @@ export default {
         {
           key: 'spentAt',
           label: s__('TimeTrackingReport|Spent at'),
-          tdClass: 'gl-md-w-30',
+          tdClass: 'md:gl-w-30',
         },
         {
           key: 'source',
@@ -39,12 +39,12 @@ export default {
         {
           key: 'user',
           label: s__('TimeTrackingReport|User'),
-          tdClass: 'gl-md-w-20',
+          tdClass: 'md:gl-w-20',
         },
         {
           key: 'timeSpent',
           label: s__('TimeTrackingReport|Time spent'),
-          tdClass: 'gl-md-w-15',
+          tdClass: 'md:gl-w-15',
         },
         {
           key: 'summary',
@@ -71,7 +71,7 @@ export default {
 <template>
   <gl-table :items="entries" :fields="fields" stacked="md" show-empty>
     <template #cell(spentAt)="{ item: { spentAt } }">
-      <div data-testid="date-container" class="gl-text-left!">{{ formatDate(spentAt) }}</div>
+      <div data-testid="date-container" class="!gl-text-left">{{ formatDate(spentAt) }}</div>
     </template>
 
     <template #cell(source)="{ item }">
@@ -80,7 +80,7 @@ export default {
 
     <template #cell(user)="{ item: { user } }">
       <user-avatar-link
-        class="gl-display-flex gl-text-gray-900 gl-hover-text-gray-900"
+        class="gl-flex gl-text-gray-900 hover:gl-text-gray-900"
         :link-href="user.webPath"
         :img-src="user.avatarUrl"
         :img-size="16"
@@ -91,13 +91,13 @@ export default {
     </template>
 
     <template #cell(timeSpent)="{ item: { timeSpent } }">
-      <div data-testid="time-spent-container" class="gl-text-left!">
+      <div data-testid="time-spent-container" class="!gl-text-left">
         {{ formatTimeSpent(timeSpent) }}
       </div>
     </template>
 
     <template #cell(summary)="{ item }">
-      <div data-testid="summary-container" class="gl-text-left!">
+      <div data-testid="summary-container" class="!gl-text-left">
         {{ extractTimelogSummary(item) }}
       </div>
     </template>

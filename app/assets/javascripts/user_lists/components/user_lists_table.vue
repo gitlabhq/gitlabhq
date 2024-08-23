@@ -72,24 +72,24 @@ export default {
       v-for="list in userLists"
       :key="list.id"
       data-testid="ffUserList"
-      class="gl-border-b-solid gl-border-gray-100 gl-border-b-1 gl-w-full gl-py-4 gl-display-flex gl-justify-content-space-between"
+      class="gl-flex gl-w-full gl-justify-between gl-border-b-1 gl-border-gray-100 gl-py-4 gl-border-b-solid"
     >
-      <div class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-flex-grow-1">
-        <span data-testid="ffUserListName" class="gl-font-bold gl-mb-2">
+      <div class="gl-flex gl-grow gl-flex-col gl-overflow-hidden">
+        <span data-testid="ffUserListName" class="gl-mb-2 gl-font-bold">
           {{ list.name }}
         </span>
         <span
           v-gl-tooltip
           :title="tooltipTitle(list.created_at)"
           data-testid="ffUserListTimestamp"
-          class="gl-text-gray-300 gl-mb-2"
+          class="gl-mb-2 gl-text-gray-300"
         >
           {{ createdTimeago(list) }}
         </span>
         <span data-testid="ffUserListIds" class="gl-str-truncated">{{ displayList(list) }}</span>
       </div>
 
-      <gl-button-group class="gl-align-self-start gl-mt-2">
+      <gl-button-group class="gl-mt-2 gl-self-start">
         <gl-button
           :href="list.path"
           category="secondary"

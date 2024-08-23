@@ -315,8 +315,8 @@ gem 'device_detector' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis
 gem 'redis-namespace', '~> 1.11.0', feature_category: :redis
-gem 'redis', '~> 5.2.0', feature_category: :redis
-gem 'redis-clustering', '~> 5.2.0', feature_category: :redis
+gem 'redis', '~> 5.3.0', feature_category: :redis
+gem 'redis-clustering', '~> 5.3.0', feature_category: :redis
 gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis session store

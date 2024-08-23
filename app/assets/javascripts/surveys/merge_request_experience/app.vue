@@ -133,27 +133,27 @@ export default {
       <transition name="survey-slide-up">
         <div
           v-if="visible"
-          class="mr-experience-survey-body gl-relative gl-display-flex gl-flex-direction-column gl-bg-white gl-p-5 gl-border gl-rounded-base"
+          class="mr-experience-survey-body gl-border gl-relative gl-flex gl-flex-col gl-rounded-base gl-bg-white gl-p-5"
         >
           <gl-button
             v-tooltip="$options.i18n.close"
             :aria-label="$options.i18n.close"
             variant="default"
             category="tertiary"
-            class="gl-top-4 gl-right-3 gl-absolute"
+            class="gl-absolute gl-right-3 gl-top-4"
             icon="close"
             @click="dismiss"
           />
           <div
             v-if="stepIndex === 0"
-            class="mr-experience-survey-legal gl-border-t gl-mt-5 gl-pt-3 gl-text-gray-500 gl-font-sm"
+            class="mr-experience-survey-legal gl-border-t gl-mt-5 gl-pt-3 gl-text-sm gl-text-gray-500"
             role="note"
           >
             <p class="gl-m-0">
               <gl-sprintf :message="$options.i18n.legal">
                 <template #link="{ content }">
                   <a
-                    class="gl-underline gl-text-gray-500"
+                    class="gl-text-gray-500 gl-underline"
                     :href="$options.privacyLink"
                     target="_blank"
                     rel="noreferrer nofollow"

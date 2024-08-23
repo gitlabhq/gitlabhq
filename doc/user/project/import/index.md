@@ -152,29 +152,29 @@ Placeholder users are created per [import source](#supported-import-sources) and
   creates new placeholder users under that top-level group.
 
 WARNING:
-You must set up your paid namespace before the import.
+If importing to GitLab.com, you must set up your paid namespace before the import.
 
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits
-differ depending on your product tier and seat count. Placeholder users do not count towards license limits.
+differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
-| GitLab.com plan | Number of seats | Placeholder user limit on top-level group |
-|:----------------|:----------------|:------------------------------------------|
-| Free/Bronze and Trial  | Any amount      | 200                                |
-| Premium/Silver  | < 100           | 500                                       |
-| Premium/Silver  | 101-500         | 2000                                      |
-| Premium/Silver  | 501 - 1000      | 4000                                      |
-| Premium/Silver  | > 1000          | 6000                                      |
-| Ultimate/Gold   | < 100           | 1000                                      |
-| Ultimate/Gold   | 101-500         | 4000                                      |
-| Ultimate/Gold   | 501 - 1000      | 6000                                      |
-| Ultimate/Gold   | > 1000          | 8000                                      |
+| GitLab.com plan          | Number of seats | Placeholder user limit on top-level group |
+|:-------------------------|:----------------|:------------------------------------------|
+| Free and any trial       | Any amount      | 200                                       |
+| Premium                  | < 100           | 500                                       |
+| Premium                  | 101-500         | 2000                                      |
+| Premium                  | 501 - 1000      | 4000                                      |
+| Premium                  | > 1000          | 6000                                      |
+| Ultimate and open source | < 100           | 1000                                      |
+| Ultimate and open source | 101-500         | 4000                                      |
+| Ultimate and open source | 501 - 1000      | 6000                                      |
+| Ultimate and open source | > 1000          | 8000                                      |
 
+Customers on legacy Bronze, Silver, or Gold plans have the corresponding Free, Premium, or Ultimate limits.
 For Premium customers trying out Ultimate (Ultimate trial paid customer plan), Premium limits apply.
 
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
-The default limit for a GitLab instance is "unlimited". Above limits are set for GitLab.com. Admins can adjust the
-default limit for self-managed and Dedicated instances.
+The above limits are for GitLab.com. Self-managed GitLab has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
 
 ### Reassign contributions and memberships
 

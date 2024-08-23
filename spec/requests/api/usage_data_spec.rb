@@ -263,6 +263,96 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
   end
 
+  describe 'POST /usage_data/track_events' do
+    let(:endpoint) { '/usage_data/track_events' }
+    let(:event) { 'web_ide_viewed' }
+    let(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project) }
+    let(:additional_properties) do
+      {
+        label: 'label3',
+        property: 'admin',
+        lang: 'ruby'
+      }
+    end
+
+    context 'without authentication' do
+      it 'returns 401 response' do
+        post api(endpoint), params: { events: [{ event: event }] }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with the amount events greater than the limit' do
+      let(:params) do
+        {
+          events: Array.new(API::UsageData::MAXIMUM_TRACKED_EVENTS * 2) { { event: event } }
+        }
+      end
+
+      it 'returns bad request' do
+        expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+        post(api(endpoint, user), params: params)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'with correct params' do
+      let(:params) do
+        {
+          events: [
+            {
+              event: event,
+              namespace_id: namespace.id,
+              project_id: project.id,
+              additional_properties: additional_properties
+            }
+          ]
+        }
+      end
+
+      it 'tracks the events' do
+        expect(Gitlab::InternalEvents).to receive(:track_event)
+                                            .with(
+                                              event,
+                                              send_snowplow_event: false,
+                                              namespace: namespace,
+                                              user: user,
+                                              project: project,
+                                              additional_properties: additional_properties
+                                            )
+
+        post api(endpoint, user), params: params
+      end
+
+      it 'triggers internal events and returns status ok' do
+        post api(endpoint, user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'with incorrect params' do
+        let(:params) do
+          {
+            events: [
+              {
+                event: 1
+              }
+            ]
+          }
+        end
+
+        it 'returns bad request' do
+          expect { post(api(endpoint, user), params: params) }
+            .not_to trigger_internal_events(event)
+        end
+      end
+    end
+  end
+
   describe 'GET /usage_data/metric_definitions' do
     let(:endpoint) { '/usage_data/metric_definitions' }
     let(:metric_yaml) do

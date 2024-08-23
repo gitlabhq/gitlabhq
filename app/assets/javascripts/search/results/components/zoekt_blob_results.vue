@@ -104,15 +104,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-justify-center gl-flex-col">
+  <div class="gl-flex gl-flex-col gl-justify-center">
     <gl-loading-icon v-if="isLoading" size="sm" />
     <div v-if="hasResults && !isLoading && !hasError" class="gl-relative">
       <gl-card
         v-for="file in blobSearch.files"
         :key="projectPathAndFilePath(file)"
-        class="file-result-holder gl-my-5 file-holder"
+        class="file-result-holder file-holder gl-my-5"
         :header-class="{
-          'gl-border-b-0!': !hasCode(file),
+          '!gl-border-b-0': !hasCode(file),
           'gl-new-card-header file-title': true,
         }"
         footer-class="gl-new-card-footer"

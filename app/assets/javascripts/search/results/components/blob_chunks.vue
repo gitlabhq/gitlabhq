@@ -47,11 +47,11 @@ export default {
       <div
         v-for="line in chunk.lines"
         :key="line.lineNumber"
-        class="line_holder code-search-line gl-display-flex"
+        class="line_holder code-search-line gl-flex"
         data-testid="search-blob-line"
       >
         <div class="line-numbers" data-testid="search-blob-line-numbers">
-          <div class="gl-display-flex">
+          <div class="gl-flex">
             <span class="diff-line-num gl-pl-3">
               <gl-link
                 v-gl-tooltip
@@ -66,7 +66,7 @@ export default {
                 v-gl-tooltip
                 :href="`${fileUrl}#L${line.lineNumber}`"
                 :title="__('View Line in repository')"
-                class="gl-display-flex! gl-align-items-center gl-justify-content-end"
+                class="!gl-flex gl-items-center gl-justify-end"
                 >{{ line.lineNumber }}</gl-link
               >
             </span>

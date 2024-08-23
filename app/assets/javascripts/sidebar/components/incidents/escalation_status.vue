@@ -82,7 +82,7 @@ export default {
   >
     <template #list-item="{ item }">
       <span class="gl-block">{{ item.text }}</span>
-      <span v-if="item.subtext" class="gl-font-sm gl-text-gray-500">{{ item.subtext }}</span>
+      <span v-if="item.subtext" class="gl-text-sm gl-text-gray-500">{{ item.subtext }}</span>
     </template>
   </gl-collapsible-listbox>
 </template>

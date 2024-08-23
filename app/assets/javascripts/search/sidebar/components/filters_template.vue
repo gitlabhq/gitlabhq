@@ -45,7 +45,7 @@ export default {
     @submit.prevent="applyQueryWithTracking"
   >
     <slot></slot>
-    <div class="gl-display-flex gl-align-items-center gl-mt-4">
+    <div class="gl-mt-4 gl-flex gl-items-center">
       <gl-button
         category="primary"
         variant="confirm"

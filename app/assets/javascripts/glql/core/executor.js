@@ -63,8 +63,12 @@ export default class Executor {
     this.#compiler.fields = uniq([...REQUIRED_QUERY_FIELDS, ...config.fields]);
 
     const limit = Math.min(100, parseInt(config.limit, 10) || 100);
+    const { output } = this.#compiler.compile('graphql', query, limit);
+    if (output.toLowerCase().startsWith('error')) {
+      throw new Error(output.replace(/^error: /i, ''));
+    }
 
-    this.#compiled = { query: this.#compiler.compile('graphql', query, limit).output, config };
+    this.#compiled = { query: output, config };
 
     return this;
   }

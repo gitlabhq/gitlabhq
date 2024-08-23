@@ -147,15 +147,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-pb-0 gl-md-pt-0 label-filter gl-relative">
-    <div class="gl-mb-2 gl-font-bold gl-font-sm" data-testid="label-filter-title">
+  <div class="label-filter gl-relative gl-pb-0 md:gl-pt-0">
+    <div class="gl-mb-2 gl-text-sm gl-font-bold" data-testid="label-filter-title">
       {{ $options.labelFilterData.header }}
     </div>
     <div>
       <gl-label
         v-for="label in unappliedNewLabels"
         :key="label.key"
-        class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
         :data-key="label.key"
         :background-color="inactiveLabelColor(label)"
         :title="label.title"
@@ -165,7 +165,7 @@ export default {
       <gl-label
         v-for="label in unselectedLabels"
         :key="label.key"
-        class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
         :data-key="label.key"
         :background-color="inactiveLabelColor(label)"
         :title="label.title"
@@ -175,7 +175,7 @@ export default {
       <gl-label
         v-for="label in appliedSelectedLabels"
         :key="label.key"
-        class="gl-mr-2 gl-mb-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
         :data-key="label.key"
         :background-color="label.color"
         :title="label.title"
@@ -211,7 +211,7 @@ export default {
       v-if="isFocused"
       v-outside="closeDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-2 !gl-w-full gl-min-w-full! gl-max-w-none!"
+      class="header-search-dropdown-menu gl-absolute gl-z-2 gl-mt-3 !gl-w-full !gl-min-w-full !gl-max-w-none gl-overflow-y-auto gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-200 gl-bg-white gl-shadow-x0-y2-b4-s0"
     >
       <div class="header-search-dropdown-content gl-py-2">
         <dropdown-keyboard-navigation

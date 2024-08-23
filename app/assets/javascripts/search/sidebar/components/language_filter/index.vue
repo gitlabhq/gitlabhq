@@ -75,12 +75,12 @@ export default {
 
 <template>
   <div v-if="hasBuckets" class="language-filter-checkbox">
-    <div class="gl-mb-2 gl-font-bold gl-font-sm">
+    <div class="gl-mb-2 gl-text-sm gl-font-bold">
       {{ $options.languageFilterData.header }}
     </div>
     <div
       v-if="!aggregations.error"
-      class="gl-overflow-x-hidden gl-overflow-y-auto"
+      class="gl-overflow-y-auto gl-overflow-x-hidden"
       :class="{ 'language-filter-max-height': showAll }"
     >
       <checkbox-filter
@@ -100,7 +100,7 @@ export default {
         category="tertiary"
         variant="link"
         size="small"
-        button-text-classes="gl-font-sm"
+        button-text-classes="gl-text-sm"
         @click="onShowMore"
       >
         {{ $options.i18n.showMore }}

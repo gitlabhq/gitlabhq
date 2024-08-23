@@ -27,7 +27,7 @@ export default {
 
     <small
       v-if="snippet.updatedAt !== snippet.createdAt"
-      class="edited-text gl-text-secondary gl-display-inline-block gl-mt-4"
+      class="edited-text gl-mt-4 gl-inline-block gl-text-secondary"
     >
       <gl-sprintf :message="__('Edited %{timeago}')">
         <template #timeago>

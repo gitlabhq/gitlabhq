@@ -53,7 +53,7 @@ export default {
     :data-username="user.username"
     :data-cannot-merge="cannotMerge"
     data-placement="left"
-    class="gl-inline-block js-user-link !gl-text-inherit gl-hover-text-blue-800!"
+    class="js-user-link gl-inline-block !gl-text-inherit hover:!gl-text-blue-800"
   >
     <!-- use gl-flex so that slot can be appropriately styled -->
     <span class="gl-flex">

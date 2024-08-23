@@ -56,7 +56,7 @@ export default {
           <div class="gl-flex gl-items-center">
             <gl-icon :size="16" :name="option.icon" />
             <span
-              class="gl-font-semibold gl-ml-2 js-visibility-option"
+              class="js-visibility-option gl-ml-2 gl-font-semibold"
               data-testid="visibility-content"
               :data-qa-visibility="option.label"
               >{{ option.label }}</span

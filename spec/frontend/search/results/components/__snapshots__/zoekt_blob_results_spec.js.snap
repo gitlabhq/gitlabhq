@@ -58,7 +58,7 @@ exports[`ZoektBlobResults when component loads normally renders component proper
       class="file-holder file-result-holder gl-card gl-my-5"
     >
       <div
-        class="file-title gl-border-b-0! gl-card-header gl-new-card-header"
+        class="!gl-border-b-0 file-title gl-card-header gl-new-card-header"
       >
         <blob-header-stub
           filepath="test/spec/test_utils_spec.js"

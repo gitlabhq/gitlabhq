@@ -197,7 +197,7 @@ export default {
       {{ $options.i18n.itemsFound(showableItems.length) }}
     </template>
     <template #list-item="{ item }">
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-items-center">
         <gl-avatar
           :src="item.avatar_url"
           :entity-id="item.id"
@@ -207,13 +207,13 @@ export default {
           class="gl-mr-3"
           aria-hidden="true"
         />
-        <div class="gl-display-flex gl-flex-direction-column">
+        <div class="gl-flex gl-flex-col">
           <span
             v-safe-html="highlightedItemName(item)"
-            class="gl-font-bold gl-whitespace-nowrap"
+            class="gl-whitespace-nowrap gl-font-bold"
             data-testid="item-title"
           ></span>
-          <span class="gl-font-sm gl-text-gray-700" data-testid="item-namespace">
+          <span class="gl-text-sm gl-text-gray-700" data-testid="item-namespace">
             {{ truncatedNamespace(item) }}</span
           >
         </div>

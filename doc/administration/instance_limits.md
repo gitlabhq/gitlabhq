@@ -336,6 +336,25 @@ webhooks that would be triggered by the series.
 
 Blocked recursive webhook calls are logged in `auth.log` with the message `"Recursive webhook blocked from executing"`.
 
+## Import placeholder user limits
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455903) in GitLab 17.4.
+
+The number of [placeholder users](../user/project/import/index.md#placeholder-users) created during an import can be limited per top-level namespace.
+
+The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
+
+To change this limit for a self-managed installation, run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(import_placeholder_user_limit_tier_1: 200)
+```
+
+Set the limit to `0` to disable it.
+
 ## Pull Mirroring Interval
 
 The [minimum wait time between pull refreshes](../user/project/repository/mirror/index.md)

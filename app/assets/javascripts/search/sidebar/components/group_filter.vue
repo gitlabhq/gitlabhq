@@ -67,7 +67,7 @@ export default {
 
 <template>
   <div>
-    <h5 :id="labelId" class="gl-mt-0 gl-mb-2 gl-font-sm">
+    <h5 :id="labelId" class="gl-mb-2 gl-mt-0 gl-text-sm">
       {{ $options.i18n.groupFieldLabel }}
     </h5>
     <searchable-dropdown

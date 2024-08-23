@@ -133,7 +133,7 @@ export default {
         <gl-button
           :loading="moveInProgress"
           size="medium"
-          class="gl-w-full js-sidebar-dropdown-toggle hide-collapsed"
+          class="js-sidebar-dropdown-toggle hide-collapsed gl-w-full"
           data-testid="dropdown-button"
           :disabled="moveInProgress || disabled"
           >{{ dropdownButtonTitle }}</gl-button

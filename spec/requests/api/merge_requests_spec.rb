@@ -2036,6 +2036,20 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(json_response.first['id']).to eq(pipeline.id)
       end
 
+      context 'with oauth token that has ai_workflows scope' do
+        let(:user) { create(:user) }
+        let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it "allows access" do
+          get api(
+            "/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines",
+            oauth_access_token: token
+          )
+
+          expect_successful_response_with_paginated_array
+        end
+      end
+
       it 'exposes basic attributes' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines")
 

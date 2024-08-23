@@ -70,7 +70,7 @@ export default {
     <gl-label
       v-for="label in sortedSelectedLabels"
       :key="label.id"
-      class="gl-mr-2 gl-mb-2"
+      class="gl-mb-2 gl-mr-2"
       :data-qa-label-name="label.title"
       :title="label.title"
       :description="label.description"

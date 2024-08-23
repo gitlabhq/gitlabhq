@@ -143,4 +143,10 @@ assignee = currentUser()
       limit: 5,
     });
   });
+
+  it('throws an error if the query compilation returns an error', () => {
+    expect(() => {
+      executor.compile('invalid query');
+    }).toThrow('Unexpected `q`, expected operator (one of IN, =, !=, >, or <)');
+  });
 });

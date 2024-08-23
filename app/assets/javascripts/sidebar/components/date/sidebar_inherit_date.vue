@@ -67,14 +67,14 @@ export default {
 
 <template>
   <div class="hide-collapsed gl-mt-3">
-    <div class="gl-display-flex gl-align-items-baseline" data-testid="sidebar-fixed-date">
+    <div class="gl-flex gl-items-baseline" data-testid="sidebar-fixed-date">
       <gl-form-radio
         v-model="dateIsFixed"
         :value="true"
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
+        <span :class="dateIsFixed ? 'gl-font-bold gl-text-gray-900' : 'gl-text-gray-500'">
           {{ $options.i18n.fixed }}
         </span>
       </gl-form-radio>
@@ -88,14 +88,14 @@ export default {
         @reset-date="$emit('reset-date', $event)"
       />
     </div>
-    <div class="gl-display-flex gl-align-items-baseline" data-testid="sidebar-inherited-date">
+    <div class="gl-flex gl-items-baseline" data-testid="sidebar-inherited-date">
       <gl-form-radio
         v-model="dateIsFixed"
         :value="false"
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="!dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
+        <span :class="!dateIsFixed ? 'gl-font-bold gl-text-gray-900' : 'gl-text-gray-500'">
           {{ $options.i18n.inherited }}
         </span>
       </gl-form-radio>

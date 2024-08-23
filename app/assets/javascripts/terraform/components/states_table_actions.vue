@@ -208,7 +208,7 @@ export default {
       right
       :data-testid="`terraform-state-actions-${state.name}`"
       :disabled="loading"
-      toggle-class="gl-px-3! !gl-shadow-none"
+      toggle-class="!gl-px-3 !gl-shadow-none"
     >
       <template #button-content>
         <gl-icon class="gl-mr-0" name="ellipsis_v" />
