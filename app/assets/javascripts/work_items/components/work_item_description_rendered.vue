@@ -12,6 +12,8 @@ import {
   insertNextToTaskListItemText,
 } from '~/issues/show/utils';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
+import { handleLocationHash } from '~/lib/utils/common_utils';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { WORK_ITEM_TYPE_ENUM_ISSUE } from '../constants';
 
@@ -125,7 +127,28 @@ export default {
         this.renderTaskListItemActions();
       }
 
-      this.truncateLongDescription();
+      this.truncateOrScrollToAnchor();
+    },
+    /**
+     * Work Item description is truncated when they exceed 40% of the viewport height (see truncateLongDescription below)
+     * Also, it is not rendered before DOMContentLoaded is complete so even if truncation is not done, anchoring
+     * to a link within description doesn't cause page to scroll, so we need handle both these scenarios manually.
+     *
+     * This method checks if Work Item was opened with an anchor pointed to a link within description.
+     * If yes, it will prevent description from truncating and will scroll the page to the anchor.
+     * If no, it will truncate the description as per default behaviour.
+     */
+    truncateOrScrollToAnchor() {
+      const hash = getLocationHash();
+      const hashSelector = `href="#${hash}"`;
+      const isLocationHashAnchoredInDescription =
+        hash && this.descriptionHtml?.includes(hashSelector);
+
+      if (isLocationHashAnchoredInDescription) {
+        handleLocationHash();
+      } else {
+        this.truncateLongDescription();
+      }
     },
     renderSortableLists() {
       // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.

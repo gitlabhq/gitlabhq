@@ -34,7 +34,7 @@ You can add files to a repository:
 - After you create a project, by using:
   - [The web editor](web_editor.md#upload-a-file).
   - [The UI](#add-a-file-from-the-ui).
-  - [The command line](../../../gitlab-basics/add-file.md).
+  - [The command line](../../../topics/git/add_files.md).
 
 ### Add a file from the UI
 

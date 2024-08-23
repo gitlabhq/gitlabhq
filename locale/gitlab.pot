@@ -27853,6 +27853,9 @@ msgstr ""
 msgid "Import|You have insufficient permissions to update the import source user"
 msgstr ""
 
+msgid "Import|already assigned to another placeholder"
+msgstr ""
+
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
@@ -62593,10 +62596,10 @@ msgstr ""
 msgid "Your account has been deactivated. You will not be able to: "
 msgstr ""
 
-msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
+msgid "Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password."
 msgstr ""
 
-msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
+msgid "Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password."
 msgstr ""
 
 msgid "Your account is locked."

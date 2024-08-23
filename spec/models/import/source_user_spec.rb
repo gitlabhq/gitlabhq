@@ -15,6 +15,14 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     it { is_expected.to validate_presence_of(:placeholder_user_id) }
     it { is_expected.not_to validate_presence_of(:reassign_to_user_id) }
 
+    it 'validates uniqueness of reassign_to_user_id' do
+      create(:import_source_user, :reassignment_in_progress)
+
+      is_expected.to validate_uniqueness_of(:reassign_to_user_id)
+        .scoped_to(:namespace_id, :source_hostname, :import_type)
+        .with_message('already assigned to another placeholder')
+    end
+
     context 'when completed' do
       subject { build(:import_source_user, :completed) }
 

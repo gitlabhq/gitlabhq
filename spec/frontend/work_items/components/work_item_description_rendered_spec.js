@@ -2,12 +2,14 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/lib/utils/common_utils');
 
 describe('WorkItemDescriptionRendered', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
@@ -82,6 +84,35 @@ describe('WorkItemDescriptionRendered', () => {
       });
 
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+    });
+  });
+
+  describe('with anchor to description item', () => {
+    const anchorHash = '#description-anchor';
+
+    afterAll(() => {
+      window.location.hash = '';
+    });
+
+    it('scrolls matching link into view', async () => {
+      window.location.hash = anchorHash;
+      createComponent({
+        workItemDescription: {
+          description: 'This is a long description',
+          descriptionHtml: `<p>This is a long description</p><a href="${anchorHash}">Some anchor</a>`,
+        },
+        mockComputed: {
+          isTruncated() {
+            return true;
+          },
+        },
+      });
+      jest.spyOn(wrapper.vm, 'truncateLongDescription');
+
+      await nextTick();
+
+      expect(handleLocationHash).toHaveBeenCalled();
+      expect(wrapper.vm.truncateLongDescription).not.toHaveBeenCalled();
     });
   });
 

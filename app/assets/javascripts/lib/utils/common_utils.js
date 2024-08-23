@@ -28,6 +28,7 @@ export const checkPageAndAction = (page, action) => {
 
 export const isInIncidentPage = () => checkPageAndAction('incidents', 'show');
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInWorkItemPage = () => checkPageAndAction('work_items', 'show');
 export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
 export const isInMRPage = () =>
   checkPageAndAction('merge_requests', 'show') ||
@@ -92,6 +93,8 @@ export const handleLocationHash = () => {
   const getFixedIssuableTitle = () => document.querySelector('.issue-sticky-header');
   const getMRStickyHeader = () => document.querySelector('.merge-request-sticky-header');
   const isIssuePage = isInIssuePage();
+  const isEpicPage = isInEpicPage();
+  const isWorkItemPage = isInWorkItemPage();
 
   let adjustment = 0;
   let fixedIssuableTitleOffset = 0;
@@ -122,7 +125,7 @@ export const handleLocationHash = () => {
     window.scrollBy(0, adjustment);
   });
 
-  if (isIssuePage) {
+  if (isIssuePage || isEpicPage || isWorkItemPage) {
     if (fixedIssuableTitleOffset === 0) {
       setTimeout(() => {
         fixedIssuableTitleOffset = -1 * getElementOffsetHeight(getFixedIssuableTitle());

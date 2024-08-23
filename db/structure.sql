@@ -8883,6 +8883,38 @@ CREATE SEQUENCE cluster_agent_tokens_id_seq
 
 ALTER SEQUENCE cluster_agent_tokens_id_seq OWNED BY cluster_agent_tokens.id;
 
+CREATE TABLE cluster_agent_url_configurations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    agent_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_by_user_id bigint,
+    status smallint DEFAULT 0 NOT NULL,
+    url text NOT NULL,
+    ca_cert text,
+    client_key text,
+    client_cert text,
+    tls_host text,
+    public_key bytea,
+    encrypted_private_key bytea,
+    encrypted_private_key_iv bytea,
+    CONSTRAINT check_1ffcfef6d6 CHECK ((char_length(tls_host) <= 2048)),
+    CONSTRAINT check_25ef8c679c CHECK ((char_length(ca_cert) <= 16384)),
+    CONSTRAINT check_93a57284e5 CHECK ((char_length(client_cert) <= 16384)),
+    CONSTRAINT check_e3736d97df CHECK ((char_length(client_key) <= 16384)),
+    CONSTRAINT check_ed21ced327 CHECK ((char_length(url) <= 2048))
+);
+
+CREATE SEQUENCE cluster_agent_url_configurations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cluster_agent_url_configurations_id_seq OWNED BY cluster_agent_url_configurations.id;
+
 CREATE TABLE cluster_agents (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -8892,6 +8924,7 @@ CREATE TABLE cluster_agents (
     created_by_user_id bigint,
     has_vulnerabilities boolean DEFAULT false NOT NULL,
     connection_mode smallint DEFAULT 0 NOT NULL,
+    is_receptive boolean DEFAULT false NOT NULL,
     CONSTRAINT check_3498369510 CHECK ((char_length(name) <= 255))
 );
 
@@ -21304,6 +21337,8 @@ ALTER TABLE ONLY cloud_connector_access ALTER COLUMN id SET DEFAULT nextval('clo
 
 ALTER TABLE ONLY cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('cluster_agent_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY cluster_agent_url_configurations ALTER COLUMN id SET DEFAULT nextval('cluster_agent_url_configurations_id_seq'::regclass);
+
 ALTER TABLE ONLY cluster_agents ALTER COLUMN id SET DEFAULT nextval('cluster_agents_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_enabled_grants ALTER COLUMN id SET DEFAULT nextval('cluster_enabled_grants_id_seq'::regclass);
@@ -23338,6 +23373,9 @@ ALTER TABLE ONLY cloud_connector_access
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT cluster_agent_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cluster_agent_url_configurations
+    ADD CONSTRAINT cluster_agent_url_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT cluster_agents_pkey PRIMARY KEY (id);
@@ -27476,6 +27514,12 @@ CREATE INDEX index_cluster_agent_tokens_on_project_id ON cluster_agent_tokens US
 
 CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_agent_tokens USING btree (token_encrypted);
 
+CREATE INDEX index_cluster_agent_url_configurations_on_agent_id ON cluster_agent_url_configurations USING btree (agent_id);
+
+CREATE INDEX index_cluster_agent_url_configurations_on_project_id ON cluster_agent_url_configurations USING btree (project_id);
+
+CREATE INDEX index_cluster_agent_url_configurations_on_user_id ON cluster_agent_url_configurations USING btree (created_by_user_id) WHERE (created_by_user_id IS NOT NULL);
+
 CREATE INDEX index_cluster_agents_on_created_by_user_id ON cluster_agents USING btree (created_by_user_id);
 
 CREATE INDEX index_cluster_agents_on_project_id_and_has_vulnerabilities ON cluster_agents USING btree (project_id, has_vulnerabilities);
@@ -28201,8 +28245,6 @@ CREATE INDEX index_import_source_user_placeholder_references_on_source_user_ ON 
 CREATE INDEX index_import_source_users_on_namespace_id_and_status ON import_source_users USING btree (namespace_id, status);
 
 CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_users USING btree (placeholder_user_id);
-
-CREATE INDEX index_import_source_users_on_reassign_to_user_id ON import_source_users USING btree (reassign_to_user_id);
 
 CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source_users USING btree (reassigned_by_user_id);
 
@@ -30784,6 +30826,8 @@ CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_appr
 
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
+CREATE UNIQUE INDEX unique_import_source_users_on_reassign_to_user_id_and_import ON import_source_users USING btree (reassign_to_user_id, namespace_id, source_hostname, import_type);
+
 CREATE UNIQUE INDEX unique_import_source_users_source_identifier_and_import_source ON import_source_users USING btree (source_user_identifier, namespace_id, source_hostname, import_type);
 
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
@@ -32670,6 +32714,9 @@ ALTER TABLE ONLY environments
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_agent_url_configurations
+    ADD CONSTRAINT fk_02c2a4f060 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -32774,6 +32821,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY cluster_agent_url_configurations
+    ADD CONSTRAINT fk_12d4a33b65 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -33086,6 +33136,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_agent_url_configurations
+    ADD CONSTRAINT fk_49b126e246 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_4b1257f385 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

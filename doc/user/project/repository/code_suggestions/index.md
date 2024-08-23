@@ -66,7 +66,7 @@ To use Code Suggestions:
 
 1. Open your Git project in a supported IDE.
 1. Add the project as a remote of your local repository using
-   [`git remote add`](../../../../gitlab-basics/start-using-git.md#git-remote-add).
+   [`git remote add`](../../../../topics/git/commands.md#git-remote-add).
 1. Add your project directory, including the hidden `.git/` folder, to your IDE workspace or project.
 1. Author your code.
    As you type, suggestions are displayed. Code Suggestions provides code snippets

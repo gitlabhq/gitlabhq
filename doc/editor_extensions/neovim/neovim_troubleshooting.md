@@ -118,4 +118,4 @@ If code completions fail:
 This error happens when your local project has not set a remote in `.git/config`.
 
 To resolve this issue: add a Git remote in your local project using
-[`git remote add`](../../gitlab-basics/start-using-git.md#git-remote-add).
+[`git remote add`](../../topics/git/commands.md#git-remote-add).

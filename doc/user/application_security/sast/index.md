@@ -106,6 +106,11 @@ The following GitLab analyzers have reached [End of Support](../../../update/ter
 status and do not receive updates. They were replaced by the Semgrep-based analyzer with
 [GitLab-managed rules](rules.md).
 
+After you upgrade to GitLab 17.3.1, a one-time data migration [automatically resolves](#automatic-vulnerability-resolution) findings from the analyzers that reached End of Support.
+This includes all of the analyzers listed below except for SpotBugs, because SpotBugs still scans Groovy code.
+The migration only resolves vulnerabilities that you haven't confirmed or dismissed, and it doesn't affect vulnerabilities that were [automatically translated to Semgrep-based scanning](analyzers.md#transition-to-semgrep-based-scanning).
+For details, see [issue 444926](https://gitlab.com/gitlab-org/gitlab/-/issues/444926).
+
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version         | End Of Support GitLab version                                 |
 |------------------------------|--------------------------------------------------------------------------------------------------------------| ---------------------------------        | ------------------------------------------------------------- |
 | .NET Core                    | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 11.0                                     | [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/390416)  |
@@ -326,8 +331,9 @@ To enable and configure SAST with customizations:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
-1. If the project does not have a `.gitlab-ci.yml` file, select **Enable SAST** in the Static
-   Application Security Testing (SAST) row, otherwise select **Configure SAST**.
+1. If the latest pipeline for the default branch of the project has completed
+   and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
+   select **Enable SAST** in the Static Application Security Testing (SAST) row.
 1. Enter the custom SAST values.
 
    Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST

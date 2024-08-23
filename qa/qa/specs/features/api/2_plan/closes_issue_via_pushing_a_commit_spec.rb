@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'airborne'
-
 module QA
   RSpec.describe 'Plan' do
     include Support::API
@@ -39,7 +37,8 @@ module QA
       end
 
       def issue_closed?
-        response = get Runtime::API::Request.new(api_client, "/projects/#{issue.project.id}/issues/#{issue_id}").url
+        response = Support::API.get(Runtime::API::Request.new(api_client,
+          "/projects/#{issue.project.id}/issues/#{issue_id}").url)
         parse_body(response)[:state] == 'closed'
       end
     end
