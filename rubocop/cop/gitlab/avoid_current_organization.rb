@@ -38,15 +38,12 @@ module RuboCop
         MSG = 'Avoid the use of `%{name}` outside of approved application layers. ' \
               'Instead, pass the value down to those layers. ' \
               'See https://gitlab.com/gitlab-org/gitlab/-/issues/442751.'
-        RESTRICT_ON_SEND = %i[
-          organization organization=
-        ].freeze
 
         # @!method current_organization?(node)
         def_node_matcher :current_organization?, <<~PATTERN
           (send
             (const
-              {nil? (cbase)} :Current) {:organization | :organization=} ...)
+              {nil? (cbase)} :Current) {:organization | :organization_id | :organization=} ...)
         PATTERN
 
         def on_send(node)

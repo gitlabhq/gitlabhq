@@ -124,9 +124,62 @@ Signing in to the main GitLab application sets a `_gitlab_session` session cooki
 The [interactive GraphQL explorer](#interactive-graphql-explorer) and the web frontend of
 GitLab itself use this method of authentication.
 
+## Object identifiers
+
+The GitLab GraphQL API uses a mix of identifiers.
+
+[Global IDs](#global-ids), full paths, and internal IDs (IIDs) are all used as arguments in the GitLab
+GraphQL API, but often a particular part of schema does not accept all of these at the same time.
+
+Although the GitLab GraphQL API has historically not been consistent on this, in general you can expect:
+
+- If the object is a project, group, or namespace, you use the object's full path.
+- If an object has an IID, you use a combination of full path and IID.
+- For other objects, you use a [Global ID](#global-ids).
+
+For example, finding a project by its full path `"gitlab-org/gitlab"`:
+
+```graphql
+{
+  project(fullPath: "gitlab-org/gitlab") {
+    id
+    fullPath
+  }
+}
+```
+
+Another example, locking an issue by its project's full path `"gitlab-org/gitlab"` and the issue's IID `"1"`":
+
+```graphql
+mutation {
+  issueSetLocked(input: { projectPath: "gitlab-org/gitlab", iid: "1", locked: true }) {
+    issue {
+      id
+      iid
+    }
+  }
+}
+```
+
+An example of finding a CI runner by its Global ID:
+
+```graphql
+{
+  runner(id: "gid://gitlab/Ci::Runner/1") {
+    id
+  }
+}
+```
+
+Historically, the GitLab GraphQL API has been inconsistent with typing of full path and
+IID fields and arguments, but generally:
+
+- Full path fields and arguments are a GraphQL `ID` type .
+- IID fields and arguments are a GraphQL `String` type.
+
 ### Global IDs
 
-In the GitLab GraphQL API, an `id` field is nearly always a [Global ID](https://graphql.org/learn/global-object-identification/)
+In the GitLab GraphQL API, a field or argument named `id` is nearly always a [Global ID](https://graphql.org/learn/global-object-identification/)
 and never a database primary key ID. A Global ID in the GitLab GraphQL API
 begins with `"gid://gitlab/"`. For example, `"gid://gitlab/Issue/123"`.
 

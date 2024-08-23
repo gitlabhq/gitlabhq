@@ -67,7 +67,10 @@ export default {
 </script>
 
 <template>
-  <small class="js-issue-widgets gl-inline-block gl-text-sm gl-text-secondary">
+  <small
+    v-if="taskStatus || updatedAt"
+    class="js-issue-widgets gl-inline-block gl-text-sm gl-text-subtle"
+  >
     <template v-if="taskStatus">
       <template v-if="showCheck">&check;</template>
       {{ taskStatus }}

@@ -932,9 +932,27 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .note-button.add-diff-note {
-  @include btn-comment-icon;
   opacity: 0;
   will-change: opacity;
+  border-radius: 50%;
+  background: $white;
+  padding: 1px;
+  font-size: 12px;
+  color: $blue-500;
+  border: 1px solid $blue-500;
+  width: 24px;
+  height: 24px;
+
+  &:hover,
+  &.inverted {
+    background: $blue-500;
+    border-color: $blue-600;
+    color: $white;
+  }
+
+  &:active {
+    outline: 0;
+  }
 
   &[disabled] {
     background: $white;
