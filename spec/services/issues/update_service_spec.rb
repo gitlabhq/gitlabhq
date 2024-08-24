@@ -775,6 +775,14 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
           update_issue(milestone_id: milestone.id)
         end
+
+        context 'when also closing the issue' do
+          it 'creates a milestone resource event' do
+            expect do
+              update_issue(milestone_id: create(:milestone, project: project).id, state_event: 'close')
+            end.to change { ResourceMilestoneEvent.count }.by(1)
+          end
+        end
       end
 
       context 'when the milestone is changed' do

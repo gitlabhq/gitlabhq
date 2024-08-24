@@ -236,10 +236,8 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def create(issuable, skip_system_notes: false)
-    initialize_callbacks!(issuable)
-
-    prepare_create_params(issuable)
     handle_quick_actions(issuable)
+    prepare_create_params(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
@@ -253,6 +251,7 @@ class IssuableBaseService < ::BaseContainerService
     params.delete(:remove_contacts)
     add_crm_contact_emails = params.delete(:add_contacts)
 
+    initialize_callbacks!(issuable)
     issuable.assign_attributes(allowed_create_params(params))
 
     before_create(issuable)
@@ -322,10 +321,8 @@ class IssuableBaseService < ::BaseContainerService
 
     old_associations = associations_before_update(issuable)
 
-    initialize_callbacks!(issuable)
-
-    prepare_update_params(issuable)
     handle_quick_actions(issuable)
+    prepare_update_params(issuable)
     filter_params(issuable)
 
     change_additional_attributes(issuable)
@@ -334,6 +331,8 @@ class IssuableBaseService < ::BaseContainerService
     assign_requested_assignees(issuable)
     assign_requested_crm_contacts(issuable)
     widget_params = filter_widget_params
+
+    initialize_callbacks!(issuable)
 
     if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))

@@ -21,7 +21,6 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-view,
 .work-item-drawer .work-item-view:not(:has(.design-detail)) {
   container-name: work-item-view;
   container-type: inline-size;
