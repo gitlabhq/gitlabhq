@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:pinned_file, project)
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
     push_frontend_feature_flag(:async_merge_request_pipeline_creation, current_user)
   end
@@ -458,9 +457,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-    if params[:file] && Feature.enabled?(:pinned_file, @project)
-      @linked_file_url = linked_file_url(@project, @merge_request)
-    end
+    @linked_file_url = linked_file_url(@project, @merge_request) if params[:file]
 
     if merge_request.diffs_batch_cache_with_max_age?
       @diffs_batch_cache_key = @merge_request.merge_head_diff&.patch_id_sha

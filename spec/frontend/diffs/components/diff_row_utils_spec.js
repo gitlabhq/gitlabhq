@@ -129,14 +129,6 @@ describe('diff_row_utils', () => {
     });
 
     describe('linked file enabled', () => {
-      beforeEach(() => {
-        window.gon.features = { pinnedFile: true };
-      });
-
-      afterEach(() => {
-        delete window.gon.features;
-      });
-
       it(`should return linked file URL`, () => {
         const diffFile = getDiffFileMock();
         expect(utils.lineHref({ line_code: LINE_CODE }, diffFile)).toContain(
@@ -147,37 +139,20 @@ describe('diff_row_utils', () => {
   });
 
   describe('createFileUrl', () => {
-    describe('linked file enabled', () => {
-      beforeEach(() => {
-        window.gon.features = { pinnedFile: true };
-      });
-
-      afterEach(() => {
-        delete window.gon.features;
-      });
-
-      it(`should return linked file URL`, () => {
-        const diffFile = getDiffFileMock();
-        const url = utils.createFileUrl(diffFile);
-        expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
-        expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
-      });
-
-      it(`removes existing linked file search param`, () => {
-        const newLocation = new URL(window.location);
-        newLocation.searchParams.append('file', 'foo');
-        setWindowLocation(newLocation.toString());
-        const diffFile = getDiffFileMock();
-        const url = utils.createFileUrl(diffFile);
-        expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
-        expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
-      });
-    });
-
-    it('should return file URL', () => {
+    it(`should return linked file URL`, () => {
       const diffFile = getDiffFileMock();
       const url = utils.createFileUrl(diffFile);
-      expect(url.searchParams.get('file')).toBe(null);
+      expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
+      expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
+    });
+
+    it(`removes existing linked file search param`, () => {
+      const newLocation = new URL(window.location);
+      newLocation.searchParams.append('file', 'foo');
+      setWindowLocation(newLocation.toString());
+      const diffFile = getDiffFileMock();
+      const url = utils.createFileUrl(diffFile);
+      expect(url.searchParams.get('file')).toBe(diffFile.file_hash);
       expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
     });
   });
