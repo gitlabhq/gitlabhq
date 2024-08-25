@@ -113,7 +113,6 @@ Style/RedundantSelf:
     - 'app/models/project_group_link.rb'
     - 'app/models/project_import_data.rb'
     - 'app/models/project_label.rb'
-    - 'app/models/prometheus_alert.rb'
     - 'app/models/protected_branch.rb'
     - 'app/models/protected_tag.rb'
     - 'app/models/raw_usage_data.rb'

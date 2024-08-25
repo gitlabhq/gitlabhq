@@ -422,8 +422,6 @@ class Project < ApplicationRecord
   has_many :ci_access_project_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization'
 
   has_many :prometheus_metrics
-  has_many :prometheus_alerts, inverse_of: :project
-  has_many :prometheus_alert_events, inverse_of: :project
 
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project

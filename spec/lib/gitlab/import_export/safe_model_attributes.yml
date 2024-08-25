@@ -810,12 +810,6 @@ PrometheusMetric:
 - common
 - identifier
 - dashboard_path
-PrometheusAlert:
-- threshold
-- operator
-- environment_id
-- project_id
-- prometheus_metric_id
 Badge:
 - id
 - name

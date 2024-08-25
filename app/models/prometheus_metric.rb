@@ -4,7 +4,6 @@ class PrometheusMetric < ApplicationRecord
   include EachBatch
 
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
-  has_many :prometheus_alerts, inverse_of: :prometheus_metric
 
   enum group: Enums::PrometheusMetric.groups
 

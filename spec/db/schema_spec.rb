@@ -325,8 +325,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     'PrometheusMetric' => %w[group],
     'ResourceLabelEvent' => %w[action],
     'User' => %w[layout dashboard project_view],
-    'Users::Callout' => %w[feature_name],
-    'PrometheusAlert' => %w[operator]
+    'Users::Callout' => %w[feature_name]
   }.freeze
 
   context 'for enums', :eager_load do

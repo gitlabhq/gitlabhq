@@ -269,8 +269,6 @@ Gitlab/NamespacedClass:
     - 'app/models/project_statistics.rb'
     - 'app/models/project_team.rb'
     - 'app/models/project_wiki.rb'
-    - 'app/models/prometheus_alert.rb'
-    - 'app/models/prometheus_alert_event.rb'
     - 'app/models/prometheus_metric.rb'
     - 'app/models/protectable_dropdown.rb'
     - 'app/models/protected_branch.rb'

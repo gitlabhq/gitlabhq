@@ -54,9 +54,6 @@ issues:
 - designs
 - design_versions
 - description_versions
-- prometheus_alerts
-- prometheus_alert_events
-- self_managed_prometheus_alert_events
 - zoom_meetings
 - vulnerability_links
 - related_vulnerabilities
@@ -781,9 +778,6 @@ project:
 - operations_feature_flags
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
-- prometheus_alerts
-- prometheus_alert_events
-- self_managed_prometheus_alert_events
 - software_license_policies
 - software_licenses
 - custom_software_licenses
@@ -904,7 +898,6 @@ priorities:
 - label
 prometheus_metrics:
 - project
-- prometheus_alerts
 timelogs:
 - issue
 - merge_request
@@ -960,13 +953,6 @@ unprotect_access_levels:
 - user
 - protected_branch
 - group
-prometheus_alerts:
-- project
-- prometheus_alert_events
-prometheus_alert_events:
-- project
-self_managed_prometheus_alert_events:
-- project
 epic_issues:
 - issue
 - epic

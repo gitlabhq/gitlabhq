@@ -2077,7 +2077,6 @@ RSpec/ContextWording:
     - 'spec/models/project_label_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/project_team_spec.rb'
-    - 'spec/models/prometheus_alert_event_spec.rb'
     - 'spec/models/protected_branch_spec.rb'
     - 'spec/models/raw_usage_data_spec.rb'
     - 'spec/models/release_highlight_spec.rb'

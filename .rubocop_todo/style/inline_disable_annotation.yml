@@ -477,7 +477,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/project_statistics.rb'
     - 'app/models/project_team.rb'
     - 'app/models/projects/sync_event.rb'
-    - 'app/models/prometheus_alert_event.rb'
     - 'app/models/protectable_dropdown.rb'
     - 'app/models/protected_branch.rb'
     - 'app/models/redirect_route.rb'

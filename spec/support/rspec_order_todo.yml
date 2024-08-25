@@ -6581,8 +6581,6 @@
 - './spec/models/projects/triggered_hooks_spec.rb'
 - './spec/models/project_team_spec.rb'
 - './spec/models/project_wiki_spec.rb'
-- './spec/models/prometheus_alert_event_spec.rb'
-- './spec/models/prometheus_alert_spec.rb'
 - './spec/models/prometheus_metric_spec.rb'
 - './spec/models/protectable_dropdown_spec.rb'
 - './spec/models/protected_branch/merge_access_level_spec.rb'

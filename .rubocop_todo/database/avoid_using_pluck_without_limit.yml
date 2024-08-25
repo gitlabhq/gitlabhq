@@ -54,7 +54,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/project.rb'
     - 'app/models/project_authorizations/changes.rb'
     - 'app/models/project_team.rb'
-    - 'app/models/prometheus_alert.rb'
     - 'app/models/protected_branch.rb'
     - 'app/models/remote_mirror.rb'
     - 'app/models/shard.rb'
