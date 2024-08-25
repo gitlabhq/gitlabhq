@@ -116,10 +116,10 @@ export default {
       />
     </gl-form-group>
 
-    <div class="gl-display-flex gl-flex-wrap">
+    <div class="gl-flex gl-flex-wrap">
       <gl-button
         type="submit"
-        class="gl-sm-mr-3 gl-w-full gl-sm-w-auto"
+        class="gl-w-full sm:gl-mr-3 sm:gl-w-auto"
         data-testid="test-2fa-disable-button"
         variant="danger"
         @click.prevent="
@@ -134,7 +134,7 @@ export default {
       </gl-button>
       <gl-button
         type="submit"
-        class="gl-mt-3 gl-sm-mt-0 gl-w-full gl-sm-w-auto"
+        class="gl-mt-3 gl-w-full sm:gl-mt-0 sm:gl-w-auto"
         data-testid="test-2fa-regenerate-codes-button"
         @click.prevent="
           handleSubmitButtonClick({

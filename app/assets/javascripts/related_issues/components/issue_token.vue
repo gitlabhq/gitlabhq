@@ -50,7 +50,7 @@ export default {
     :class="{
       'issue-token gl-inline-flex gl-align-items-stretch gl-max-w-full gl-leading-24 gl-whitespace-nowrap':
         isCondensed,
-      'flex-row issuable-info-container': !isCondensed,
+      'issuable-info-container flex-row': !isCondensed,
     }"
   >
     <component
