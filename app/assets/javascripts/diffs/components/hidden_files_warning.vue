@@ -53,7 +53,7 @@ export default {
       </template>
     </gl-sprintf>
     <template #actions>
-      <gl-button :href="plainDiffPath" class="gl-mr-3 gl-alert-action">
+      <gl-button :href="plainDiffPath" class="gl-alert-action gl-mr-3">
         {{ $options.i18n.plainDiff }}
       </gl-button>
       <gl-button :href="emailPatchPath" class="gl-alert-action">

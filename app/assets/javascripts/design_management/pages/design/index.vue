@@ -362,7 +362,7 @@ export default {
       </design-destroyer>
 
       <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
-        <div class="gl-relative gl-flex gl-flex-grow-2 gl-flex-col gl-overflow-hidden">
+        <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">
           <div v-if="errorMessage" class="gl-p-5">
             <gl-alert variant="danger" @dismiss="errorMessage = null">
               {{ errorMessage }}

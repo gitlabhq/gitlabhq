@@ -33,7 +33,7 @@ exports[`Design management design index page when loaded renders design index 1`
       class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative lg:gl-flex-row"
     >
       <div
-        class="gl-flex gl-flex-col gl-flex-grow-2 gl-overflow-hidden gl-relative"
+        class="gl-flex gl-flex-col gl-grow-2 gl-overflow-hidden gl-relative"
       >
         <design-presentation-stub
           discussions="[object Object],[object Object]"

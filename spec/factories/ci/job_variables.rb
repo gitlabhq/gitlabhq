@@ -10,5 +10,7 @@ FactoryBot.define do
     trait :dotenv_source do
       source { :dotenv }
     end
+
+    project_id { job.project.id }
   end
 end

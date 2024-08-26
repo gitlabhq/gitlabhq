@@ -3,7 +3,7 @@
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: milestone_header_class(primary, issuables) }) do |c|
   - c.with_header do
-    .gl-flex-grow-2
+    .gl-grow-2
       = title
     .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap{ class: milestone_counter_class(primary) }
       - if show_counter

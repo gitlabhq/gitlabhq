@@ -157,22 +157,25 @@ export default {
 
 <template>
   <div>
-    <filtered-search-bar
-      :namespace="group.path"
-      :initial-filter-value="initialFilterValue"
-      :tokens="filteredSearchTokens"
-      :search-input-placeholder="s__('UserMapping|Search placeholder users')"
-      class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
-      @onFilter="onFilter"
-    />
-
-    <gl-tabs v-model="selectedTabIndex" nav-class="gl-grow gl-items-center gl-mt-3">
+    <gl-tabs
+      v-model="selectedTabIndex"
+      nav-class="gl-grow gl-items-center gl-mt-3"
+      content-class="gl-pt-0"
+    >
       <gl-tab>
         <template #title>
           <span>{{ s__('UserMapping|Awaiting reassignment') }}</span>
           <gl-badge class="gl-tab-counter-badge">{{ unassignedCount || 0 }}</gl-badge>
         </template>
 
+        <filtered-search-bar
+          :namespace="group.path"
+          :initial-filter-value="initialFilterValue"
+          :tokens="filteredSearchTokens"
+          :search-input-placeholder="s__('UserMapping|Search placeholder users')"
+          class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+          @onFilter="onFilter"
+        />
         <placeholders-table
           key="unassigned"
           data-testid="placeholders-table-unassigned"
@@ -188,6 +191,14 @@ export default {
           <gl-badge class="gl-tab-counter-badge">{{ reassignedCount || 0 }}</gl-badge>
         </template>
 
+        <filtered-search-bar
+          :namespace="group.path"
+          :initial-filter-value="initialFilterValue"
+          :tokens="filteredSearchTokens"
+          :search-input-placeholder="s__('UserMapping|Search placeholder users')"
+          class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+          @onFilter="onFilter"
+        />
         <placeholders-table
           key="reassigned"
           data-testid="placeholders-table-reassigned"

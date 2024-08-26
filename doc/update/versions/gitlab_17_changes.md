@@ -87,6 +87,36 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
   cause these issues.
 
+### Linux package installations
+
+Specific information applies to Linux package installations:
+
+- The binaries for PostgreSQL 13 have been removed.
+
+  Prior to upgrading, you must ensure your installation is using
+  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
+### Non-expiring access tokens
+
+Access tokens that have no expiration date are valid indefinitely, which is a
+security risk if the access token is divulged.
+
+When you upgrade to GitLab 16.0 and later, any [personal](../../user/profile/personal_access_tokens.md),
+[project](../../user/project/settings/project_access_tokens.md), or
+[group](../../user/group/settings/group_access_tokens.md) access
+token that does not have an expiration date automatically has an expiration
+date set at one year from the date of upgrade.
+
+Before this automatic expiry date is applied, you should do the following to minimize disruption:
+
+1. [Identify any access tokens without an expiration date](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date).
+1. [Give those tokens an expiration date](../../security/tokens/index.md#extend-token-lifetime).
+
+For more information, see the:
+
+- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
+
 ## Issues to be aware of when upgrading from 17.3
 
 - Migration failures when upgrading from GitLab 17.3.
@@ -135,36 +165,6 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
    # Delete all duplicated agent_configs.
    agent_configs_to_remove.delete_all
    ```
-
-### Linux package installations
-
-Specific information applies to Linux package installations:
-
-- The binaries for PostgreSQL 13 have been removed.
-
-  Prior to upgrading, you must ensure your installation is using
-  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
-
-### Non-expiring access tokens
-
-Access tokens that have no expiration date are valid indefinitely, which is a
-security risk if the access token is divulged.
-
-When you upgrade to GitLab 16.0 and later, any [personal](../../user/profile/personal_access_tokens.md),
-[project](../../user/project/settings/project_access_tokens.md), or
-[group](../../user/group/settings/group_access_tokens.md) access
-token that does not have an expiration date automatically has an expiration
-date set at one year from the date of upgrade.
-
-Before this automatic expiry date is applied, you should do the following to minimize disruption:
-
-1. [Identify any access tokens without an expiration date](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date).
-1. [Give those tokens an expiration date](../../security/tokens/index.md#extend-token-lifetime).
-
-For more information, see the:
-
-- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
-- [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
 ## 17.3.0
 

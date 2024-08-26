@@ -5,8 +5,6 @@ module Gitlab
     module Tags
       class BulkInsert
         class BuildsTagsConfiguration
-          include Gitlab::Utils::StrongMemoize
-
           def self.applies_to?(record)
             record.is_a?(::Ci::Build)
           end
@@ -40,9 +38,8 @@ module Gitlab
           end
 
           def monomorphic_taggings?
-            ::Feature.enabled?(:write_to_ci_build_tags, @project)
+            true
           end
-          strong_memoize_attr :monomorphic_taggings?
         end
       end
     end

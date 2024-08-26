@@ -11,77 +11,62 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/), GitLab reviews your seat usage and sends you an invoice for any overages.
-This review can occur:
+In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/),
+GitLab reviews your seat usage and sends you an invoice for any overages.
+This review occurs either quarterly (quarterly reconciliation process) or annually (annual true-up process).
 
-- **Annually**. This process is also known as **the annual true-up process**. This process requires you to pay the full annual subscription fee for users added anytime during the year.
-- **Quarterly**. With this process, you pay on a prorated basis for the remaining portion of the subscription term.
+## Quarterly reconciliation versus annual true-ups
 
-## Quarterly reconciliation vs. annual true-ups
+With **quarterly reconciliation**, you are billed per quarter on a prorated basis for the remaining portion of the subscription term.
+You pay for the maximum number of seats you used during the quarter.
+You pay less annually, which can result in substantial savings.
 
-Quarterly reconciliation can result in substantial savings.
+With **annual true-up**, you pay the full annual subscription fee for users added at any time during the year.
 
-Let's say in January you purchased an annual license for 100 users. This chart shows your usage during the year.
-The number of users went up and down, with 120 as the maximum. The dark purple indicates the most users you had each quarter.
+If you cannot participate in quarterly reconciliation, you can opt out of the process by using a contract amendment,
+and default to the annual review.
 
-![License overview](img/quarterly_reconciliation.png)
+### Example
 
-If you are being billed annually:
+For example, in January you purchased an annual license for 100 users, where each extra seat costs $100.
+Throughout the year, the number of users fluctuated between 95 and 120.
+
+The following chart illustrates the number of users during the year, per month and quarter.
+
+![Bar chart with number of users per month and quarter](img/quarterly_reconciliation.png)
+
+If you are billed annually:
 
 - During the year, you went over the license by 20 users.
-- If we pretend each extra seat is $100, then you pay $100 x 20 users.
+- For the extra seats, you pay $100 x 20 users.
+- The annual total cost is $2000.
 
-Annual total: **$2000**
+If you are billed quarterly:
 
-If you are being billed quarterly, you pay for the maximum number of seats you used during the quarter,
-and for only the remaining quarters. Your invoice is prorated for the remaining portion of the subscription term.
-
-Using the same example, if a seat is $100 per year, then it is $25 per quarter.
-
-- In Q1, you had a maximum of 110 users. 10 users over subscription x $25 per user x 3 quarters = **$750**
-  The license is now paid for 110 users.
-
-- In Q2, 105 users was the maximum. You did not go over 110 users, so no charge.
-
-- In Q3, you had 120 users. 10 users over subscription x $25 per user x 1 remaining quarter = **$250**
-  The license is now paid for 120 users.
-
-- In Q4, you had 120 users. You did not exceed the number of users. However, if you had, you would not be charged, because in Q4, there are no charges for exceeding the number.
-
-Annual total: **$1000**
-
-With quarterly reconciliation, you pay less annually.
-
-If it's not possible for you to participate in quarterly reconciliations, you can opt out of the
-process by using a contract amendment. In that case, you default to the annual review.
+- In Q1 you had 110 users. 10 users over subscription x $25 per user x 3 quarters = $750.
+  You now pay a license for 110 users.
+- In Q2 you had 105 users. You did not go over 110 users, so you are not charged.
+- In Q3 you had 120 users. 10 users over subscription x $25 per user x 1 remaining quarter = $250.
+  You now pay a license for 120 users.
+- In Q4 you had 120 users. You did not exceed the number of users from Q3, so you are not charged.
+  However, even if you exceeded the number you would not be charged, because in Q4 there are no charges for exceeding the number.
+- The annual total cost is $1000.
 
 ## Quarterly invoicing and payment
 
 At the end of each subscription quarter, GitLab notifies you about overages.
-The date you're notified about the overage is not the same as the date
-you are billed.
+The date you're notified about the overage is not the same as the date you are billed.
 
-### On GitLab.com
+1. An email that communicates the [overage seat quantity](gitlab_com/index.md#seats-owed)
+and expected invoice amount is sent:
 
-Group owners receive an email **on the reconciliation date**.
-The email communicates the [overage seat quantity](gitlab_com/index.md#seats-owed)
-and expected invoice amount.
+   - On GitLab.com: On the reconciliation date, to group owners.
+   - On GitLab self-managed: Six days after the reconciliation date, to administrators.
 
-**Seven days later**, the subscription is updated to include the additional
-seats, and an invoice is generated for a prorated amount. If a credit card
-is on file, a payment is automatically applied. Otherwise, an invoice is
-sent and subject to your terms.
-
-### On GitLab self-managed
-
-Administrators receive an email **six days after the reconciliation date**.
-This email communicates the [overage seat quantity](self_managed/index.md#users-over-subscription)
-and expected invoice amount.
-
-**Seven days later**, the subscription is updated to include the additional
-seats, and an invoice is generated for a prorated amount. If a credit card
-is on file, a payment is automatically applied. Otherwise, an invoice is
-sent and subject to your payment terms.
+1. Seven days after the email notification, the subscription is updated to include the additional seats,
+and an invoice is generated for a prorated amount.
+If a credit card is on file, the payment applies automatically.
+Otherwise, you receive an invoice, which is subject to your payment terms.
 
 ## Quarterly reconciliation eligibility
 
@@ -97,7 +82,8 @@ You are excluded from quarterly reconciliation if you:
 - Purchased your subscription with a purchasing order.
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
-- Are enrolled in a program that provides a free tier such as the GitLab for Education, GitLab for Open Source Program, or GitLab for Startups.
+- Are enrolled in a program that provides a free tier such as the GitLab for Education,
+GitLab for Open Source Program, or GitLab for Startups.
 
 If you are excluded from quarterly reconciliation and not on a free tier, your true-ups are reconciled annually.
 
@@ -105,11 +91,12 @@ If you are excluded from quarterly reconciliation and not on a free tier, your t
 
 ### Failed payment
 
-If your credit card is declined during the reconciliation process, an email will be sent with the subject `Your GitLab subscription failed to reconcile`. Follow these instructions to update your payment information, and the reconciliation will be automatically retried:
+If your credit card is declined during the reconciliation process, you receive an email with the subject `Your GitLab subscription failed to reconcile`.
+To resolve this issue, you must [update your payment information](customers_portal.md#set-a-default-payment-method).
 
 1. Sign in to your account at `https://customers.gitlab.com`.
 1. On the left sidebar, select **Billing account settings**.
 1. Under **Payment methods**, select **Add new payment method**.
-1. After the new payment method has been added, select **Edit**, then select **Default** to mark it as the default payment method.
+1. To mark the new payment method as default, select **Edit** > **Default**.
 
-Reconciliation is retried automatically as soon as the payment method is updated.
+When the payment method is updated, reconciliation is retried automatically.

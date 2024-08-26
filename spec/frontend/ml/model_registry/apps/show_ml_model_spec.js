@@ -92,7 +92,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         canWriteModelRegistry,
         maxAllowedFileSize: 99999,
         latestVersion: '',
-        markdownPreviewPath: 'path/to/preview',
+        markdownPreviewPath: '/markdown-preview',
       },
       stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
@@ -156,7 +156,10 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     beforeEach(() => createWrapper());
 
     it('displays version creation button', () => {
-      expect(findModelVersionCreate().props()).toEqual({ modelGid: 'gid://gitlab/Ml::Model/1' });
+      expect(findModelVersionCreate().props()).toEqual({
+        modelGid: 'gid://gitlab/Ml::Model/1',
+        disableAttachments: true,
+      });
     });
 
     describe('when user has no permission to write model registry', () => {

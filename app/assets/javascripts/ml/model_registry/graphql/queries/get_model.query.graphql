@@ -11,6 +11,7 @@ query getModel($id: MlModelID!) {
       version
       packageId
       description
+      descriptionHtml
       candidate {
         id
         name

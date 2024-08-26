@@ -49,7 +49,8 @@ module Ci
             source: :dotenv,
             key: key,
             value: value,
-            raw: false
+            raw: false,
+            project_id: artifact.project_id
           )
         end
       end

@@ -92,9 +92,9 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-space-between">
-      <div class="gl-flex-grow-1">
-        <h1 class="page-title gl-font-size-h-display">
+    <div class="gl-flex gl-justify-between">
+      <div class="gl-grow">
+        <h1 class="page-title gl-text-size-h-display">
           <gl-sprintf :message="$options.i18n.header">
             <template #iid>{{ deploymentIid }}</template>
           </gl-sprintf>
@@ -117,7 +117,7 @@ export default {
         <deployment-deploy-block
           v-if="isManual"
           :deployment="deployment"
-          class="gl-w-9/10 gl-mt-4"
+          class="gl-mt-4 gl-w-9/10"
         />
         <deployment-timeline
           v-if="hasApprovalSummary"

@@ -756,7 +756,7 @@ export default {
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files gl-flex gl-mt-2"
+        class="files gl-mt-2 gl-flex"
       >
         <diffs-file-tree :visible="renderFileTree" @toggled="fileTreeToggled" />
         <div class="col-12 col-md-auto diff-files-holder">
@@ -835,7 +835,7 @@ export default {
             <div
               v-if="showFileByFileNavigation"
               data-testid="file-by-file-navigation"
-              class="gl-display-grid gl-text-center"
+              class="gl-grid gl-text-center"
             >
               <gl-pagination
                 class="gl-mx-auto"

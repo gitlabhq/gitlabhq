@@ -34263,6 +34263,9 @@ msgstr ""
 msgid "MlModelRegistry|Enter a model name"
 msgstr ""
 
+msgid "MlModelRegistry|Enter a model version description"
+msgstr ""
+
 msgid "MlModelRegistry|Enter a semantic version"
 msgstr ""
 
@@ -34416,7 +34419,7 @@ msgstr ""
 msgid "MlModelRegistry|Store and manage your machine learning models and versions"
 msgstr ""
 
-msgid "MlModelRegistry|Subfolder (optional)"
+msgid "MlModelRegistry|Subfolder"
 msgstr ""
 
 msgid "MlModelRegistry|Subfolder cannot contain spaces"

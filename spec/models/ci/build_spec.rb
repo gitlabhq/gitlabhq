@@ -1901,20 +1901,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(build.tag_links).to be_empty
       end
     end
-
-    context 'with write_to_ci_build_tags disabled' do
-      before do
-        stub_feature_flags(write_to_ci_build_tags: false)
-      end
-
-      it 'does not save tag_links' do
-        build.save!
-
-        expect(build.tags.count).to eq(1)
-        expect(build.tags.first.name).to eq('tag')
-        expect(build.tag_links).to be_empty
-      end
-    end
   end
 
   describe '#has_tags?' do

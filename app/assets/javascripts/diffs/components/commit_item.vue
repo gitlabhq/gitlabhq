@@ -90,8 +90,8 @@ export default {
 
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit">
-    <div class="gl-block sm:gl-flex gl-flex-row-reverse gl-justify-between gl-items-start">
-      <div class="commit-actions gl-flex-row gl-hidden sm:gl-flex gl-items-center gl-justify-end">
+    <div class="gl-block gl-flex-row-reverse gl-items-start gl-justify-between sm:gl-flex">
+      <div class="commit-actions gl-hidden gl-flex-row gl-items-center gl-justify-end sm:gl-flex">
         <div
           v-if="commit.signature_html"
           v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
@@ -99,7 +99,7 @@ export default {
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
-          class="gl-inline-flex mb-2"
+          class="mb-2 gl-inline-flex"
         />
         <gl-button-group class="gl-ml-4" data-testid="commit-sha-group">
           <gl-button label class="gl-font-monospace" data-testid="commit-sha-short-id">{{
@@ -113,7 +113,7 @@ export default {
         </gl-button-group>
       </div>
       <div>
-        <div class="gl-flex float-left gl-items-center align-self-start">
+        <div class="float-left align-self-start gl-flex gl-items-center">
           <gl-form-checkbox
             v-if="isSelectable"
             :checked="checked"
@@ -125,11 +125,11 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell gl-hidden sm:gl-block gl-my-2 gl-mr-4"
+            class="avatar-cell gl-my-2 gl-mr-4 gl-hidden sm:gl-block"
           />
         </div>
         <div
-          class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-grow-1 gl-min-w-0"
+          class="commit-detail flex-list gl-flex gl-min-w-0 gl-grow gl-items-center gl-justify-between"
         >
           <div class="commit-content" data-testid="commit-content">
             <a
@@ -171,7 +171,7 @@ export default {
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
         :class="{ 'js-toggle-content': collapsible, '!gl-block': !collapsible }"
-        class="commit-row-description gl-mb-3 gl-text-body gl-whitespace-pre-wrap"
+        class="commit-row-description gl-mb-3 gl-whitespace-pre-wrap gl-text-primary"
       ></pre>
     </div>
   </li>

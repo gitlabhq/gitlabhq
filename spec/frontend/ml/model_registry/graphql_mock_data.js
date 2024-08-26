@@ -107,6 +107,7 @@ export const modelVersionWithCandidate = {
   version: '1.0.4999',
   packageId: 'gid://gitlab/Packages::Package/12',
   description: 'A model version description',
+  descriptionHtml: 'A model version description',
   candidate,
   _links: {
     showPath: '/root/test-project/-/ml/models/1/versions/5000',

@@ -142,7 +142,7 @@ export default {
         </div>
       </div>
 
-      <div class="gl-flex-grow-2">
+      <div class="gl-grow-2">
         <feedback-banner class="gl-mx-auto gl-max-w-80" />
       </div>
     </main>

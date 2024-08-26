@@ -1,5 +1,6 @@
 <script>
 import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
+import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
 import * as i18n from '../translations';
 import CandidateDetail from './candidate_detail.vue';
 
@@ -10,6 +11,7 @@ export default {
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     CandidateDetail,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
+    IssuableDescription,
   },
   inject: ['projectPath', 'canWriteModelRegistry', 'importPath'],
   props: {
@@ -18,6 +20,26 @@ export default {
       required: true,
     },
     allowArtifactImport: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    taskListUpdatePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    dataUpdateUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    canEditRequirement: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    enableTaskList: {
       type: Boolean,
       required: false,
       default: false,
@@ -36,6 +58,12 @@ export default {
     showImportArtifactZone() {
       return this.canWriteModelRegistry && this.importPath && this.allowArtifactImport;
     },
+    issuable() {
+      return {
+        titleHtml: this.modelVersion.name,
+        descriptionHtml: this.modelVersion.descriptionHtml,
+      };
+    },
   },
   i18n,
 };
@@ -45,11 +73,23 @@ export default {
   <div>
     <h3 class="gl-mt-5 gl-text-lg">{{ $options.i18n.DESCRIPTION_LABEL }}</h3>
 
-    <div v-if="modelVersion.description">
-      {{ modelVersion.description }}
-    </div>
-    <div v-else class="gl-text-secondary">
-      {{ $options.i18n.NO_DESCRIPTION_PROVIDED_LABEL }}
+    <div class="issue-details issuable-details">
+      <div
+        v-if="modelVersion.descriptionHtml"
+        class="detail-page-description js-detail-page-description content-block gl-pt-4"
+      >
+        <issuable-description
+          data-testid="description"
+          :issuable="issuable"
+          :enable-task-list="enableTaskList"
+          :can-edit="canEditRequirement"
+          :data-update-url="dataUpdateUrl"
+          :task-list-update-path="taskListUpdatePath"
+        />
+      </div>
+      <div v-else class="gl-text-secondary" data-testid="emptyDescriptionState">
+        {{ $options.i18n.NO_DESCRIPTION_PROVIDED_LABEL }}
+      </div>
     </div>
 
     <template v-if="modelVersion.packageId">

@@ -121,16 +121,16 @@ export default {
     </gl-skeleton-loader>
   </div>
   <div v-else>
-    <div class="gl-display-flex gl-gap-3 gl-mb-3 gl-align-items-center">
+    <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
       <deployment-status-link :status="status" :deployment-job="job" />
       <gl-badge v-if="needsApproval" variant="warning">
         {{ $options.i18n.needsApproval }}
       </gl-badge>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-items-center">
         <gl-icon name="environment" class="gl-mr-2" />
         <gl-link :href="environmentPath">{{ environmentName }}</gl-link>
       </div>
-      <div v-if="shortSha" class="gl-font-monospace gl-display-flex gl-align-items-center">
+      <div v-if="shortSha" class="gl-flex gl-items-center gl-font-monospace">
         <gl-icon ref="deployment-commit-icon" name="commit" class="gl-mr-2" />
         <gl-link v-gl-tooltip :title="$options.i18n.commitSha" :href="commitPath">
           {{ shortSha }}
@@ -142,11 +142,7 @@ export default {
           size="small"
         />
       </div>
-      <time-ago-tooltip
-        v-if="timeagoTime"
-        :time="timeagoTime"
-        class="gl-display-flex gl-align-items-center"
-      >
+      <time-ago-tooltip v-if="timeagoTime" :time="timeagoTime" class="gl-flex gl-items-center">
         <template #default="{ timeAgo }">
           <gl-icon name="calendar" class="gl-mr-2" />
           <span class="gl-mr-2 gl-whitespace-nowrap">

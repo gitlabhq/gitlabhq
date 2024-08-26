@@ -129,7 +129,7 @@ rectangle Runner {
 
 Batched background migrations are executed in a context of a Sidekiq process.
 The usual Sidekiq rules apply, especially the rule that jobs should be small
-and idempotent. Make sure that in case that your migration job is retried, data
+and idempotent. Ensure that in the case where your migration job is retried, data
 integrity is guaranteed.
 
 See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)

@@ -1305,8 +1305,6 @@ module Ci
     override :save_tags
     def save_tags
       super do |new_tags, old_tags|
-        next if ::Feature.disabled?(:write_to_ci_build_tags, project)
-
         if old_tags.present?
           tag_links
             .where(tag_id: old_tags)

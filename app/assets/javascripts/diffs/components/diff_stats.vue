@@ -63,17 +63,17 @@ export default {
     <div v-else class="diff-stats-contents">
       <div v-if="hasDiffFiles" class="diff-stats-group">
         <gl-icon name="doc-code" class="diff-stats-icon gl-text-gray-500" />
-        <span class="gl-text-gray-500 gl-font-bold">{{ diffFilesCountText }} {{ filesText }}</span>
+        <span class="gl-font-bold gl-text-gray-500">{{ diffFilesCountText }} {{ filesText }}</span>
       </div>
       <div
-        class="diff-stats-group gl-text-green-600 gl-display-flex gl-align-items-center"
+        class="diff-stats-group gl-flex gl-items-center gl-text-green-600"
         :class="{ 'gl-font-bold': isCompareVersionsHeader }"
       >
         <span>+</span>
         <span data-testid="js-file-addition-line">{{ addedLines }}</span>
       </div>
       <div
-        class="diff-stats-group gl-text-red-500 gl-display-flex gl-align-items-center"
+        class="diff-stats-group gl-flex gl-items-center gl-text-red-500"
         :class="{ 'gl-font-bold': isCompareVersionsHeader }"
       >
         <span>−</span>

@@ -114,20 +114,17 @@ export default {
 
 <template>
   <div
-    class="gl-responsive-table-row gl-align-items-flex-start deploy-key gl-bg-gray-10 gl-md-pl-5 gl-md-pr-5 gl-border-gray-100!"
+    class="gl-responsive-table-row deploy-key gl-items-start !gl-border-gray-100 gl-bg-gray-10 md:gl-pl-5 md:gl-pr-5"
   >
     <div class="table-section section-40">
-      <div
-        role="rowheader"
-        class="table-mobile-header gl-align-self-start gl-font-bold gl-text-gray-700"
-      >
+      <div role="rowheader" class="table-mobile-header gl-self-start gl-font-bold gl-text-gray-700">
         {{ s__('DeployKeys|Deploy key') }}
       </div>
       <div class="table-mobile-content" data-testid="key-container">
         <p class="title gl-font-semibold gl-text-gray-700" data-testid="key-title-content">
           {{ deployKey.title }}
         </p>
-        <dl class="gl-font-sm gl-mb-0">
+        <dl class="gl-mb-0 gl-text-sm">
           <dt>{{ __('SHA256') }}</dt>
           <dd class="fingerprint" data-testid="key-sha256-fingerprint-content">
             {{ deployKey.fingerprintSha256 }}
@@ -147,27 +144,27 @@ export default {
       <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ s__('DeployKeys|Project usage') }}
       </div>
-      <div class="table-mobile-content deploy-project-list gl-display-flex gl-flex-wrap">
+      <div class="table-mobile-content deploy-project-list gl-flex gl-flex-wrap">
         <template v-if="projects.length > 0">
           <gl-badge
             v-gl-tooltip
             :href="firstProject.project.fullPath"
             :title="projectTooltipTitle(firstProject)"
             :icon="firstProject.canPush ? 'lock-open' : 'lock'"
-            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
+            class="deploy-project-label gl-mb-2 gl-mr-2 gl-truncate"
           >
-            <span class="gl-text-truncate">{{ projectName(firstProject) }}</span>
+            <span class="gl-truncate">{{ projectName(firstProject) }}</span>
           </gl-badge>
 
           <gl-badge
             v-if="isExpandable"
             v-gl-tooltip
             :title="restProjectsTooltip"
-            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
+            class="deploy-project-label gl-mb-2 gl-mr-2 gl-truncate"
             href="#"
             @click.native="toggleExpanded"
           >
-            <span class="gl-text-truncate">{{ restProjectsLabel }}</span>
+            <span class="gl-truncate">{{ restProjectsLabel }}</span>
           </gl-badge>
 
           <gl-badge
@@ -178,9 +175,9 @@ export default {
             :href="deployKeysProject.project.fullPath"
             :title="projectTooltipTitle(deployKeysProject)"
             :icon="deployKeysProject.canPush ? 'lock-open' : 'lock'"
-            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
+            class="deploy-project-label gl-mb-2 gl-mr-2 gl-truncate"
           >
-            <span class="gl-text-truncate">{{ projectName(deployKeysProject) }}</span>
+            <span class="gl-truncate">{{ projectName(deployKeysProject) }}</span>
           </gl-badge>
         </template>
         <span v-else class="gl-text-secondary">{{ __('None') }}</span>
@@ -190,7 +187,7 @@ export default {
       <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ __('Created') }}
       </div>
-      <div class="table-mobile-content gl-text-gray-700 key-created-at">
+      <div class="table-mobile-content key-created-at gl-text-gray-700">
         <span v-gl-tooltip :title="tooltipTitle(deployKey.createdAt)">
           <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.createdAt) }}</span>
         </span>
@@ -200,7 +197,7 @@ export default {
       <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ __('Expires') }}
       </div>
-      <div class="table-mobile-content gl-text-gray-700 key-expires-at">
+      <div class="table-mobile-content key-expires-at gl-text-gray-700">
         <span
           v-if="deployKey.expiresAt"
           v-gl-tooltip

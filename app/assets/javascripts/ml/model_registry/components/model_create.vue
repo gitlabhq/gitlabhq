@@ -5,7 +5,6 @@ import {
   GlForm,
   GlFormGroup,
   GlFormInput,
-  GlFormTextarea,
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
@@ -30,7 +29,6 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
-    GlFormTextarea,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
   directives: {
@@ -38,11 +36,6 @@ export default {
   },
   inject: ['projectPath', 'maxAllowedFileSize', 'markdownPreviewPath'],
   props: {
-    initialValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
     disableAttachments: {
       type: Boolean,
       required: false,
@@ -53,8 +46,8 @@ export default {
     return {
       name: null,
       version: null,
-      description: this.initialValue || '',
-      versionDescription: null,
+      description: '',
+      versionDescription: '',
       errorMessage: null,
       selectedFile: emptyArtifactFile,
       modelData: null,
@@ -174,12 +167,12 @@ export default {
     },
     resetModal() {
       this.name = null;
-      this.modelData = null;
-      this.description = null;
       this.version = null;
-      this.versionDescription = null;
+      this.description = '';
+      this.versionDescription = '';
       this.errorMessage = null;
       this.selectedFile = emptyArtifactFile;
+      this.modelData = null;
       this.versionData = null;
     },
     hideAlert() {
@@ -188,6 +181,11 @@ export default {
     setDescription(newText) {
       if (!this.isSubmitting) {
         this.description = newText;
+      }
+    },
+    setVersionDescription(newVersionText) {
+      if (!this.isSubmitting) {
+        this.versionDescription = newVersionText;
       }
     },
   },
@@ -271,7 +269,7 @@ export default {
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
-          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
+          class="common-note-form gfm-form js-main-target-form gl-grow new-note"
         >
           <markdown-editor
             ref="markdownEditor"
@@ -316,12 +314,22 @@ export default {
           label-for="versionDescriptionId"
           optional
           :optional-text="$options.modal.optionalText"
+          class="common-note-form gfm-form js-main-target-form gl-grow new-note"
         >
-          <gl-form-textarea
-            id="versionDescriptionId"
-            v-model="versionDescription"
+          <markdown-editor
+            ref="markdownEditor"
             data-testid="versionDescriptionId"
+            :value="versionDescription"
+            enable-autocomplete
+            :autocomplete-data-sources="autocompleteDataSources"
+            :enable-content-editor="true"
+            :form-field-props="$options.descriptionFormFieldProps"
+            :render-markdown-path="markdownPreviewPath"
+            :markdown-docs-path="markdownDocPath"
+            :disable-attachments="disableAttachments"
             :placeholder="$options.modal.versionDescriptionPlaceholder"
+            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
+            @input="setVersionDescription"
           />
         </gl-form-group>
         <gl-form-group

@@ -55,6 +55,10 @@ ci_job_token_project_scope_links:
   - table: projects
     column: target_project_id
     on_delete: async_delete
+ci_job_variables:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_minutes_additional_packs:
   - table: namespaces
     column: namespace_id

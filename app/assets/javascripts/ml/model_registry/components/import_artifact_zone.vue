@@ -136,7 +136,7 @@ export default {
     uploadSingleMessage: s__(
       'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
     ),
-    subfolderLabel: s__('MlModelRegistry|Subfolder (optional)'),
+    subfolderLabel: s__('MlModelRegistry|Subfolder'),
     successfulUpload: s__('MlModelRegistry|Uploaded files successfully'),
     subfolderPlaceholder: s__('MlModelRegistry|folder name'),
     subfolderTooltip: s__(
@@ -144,6 +144,7 @@ export default {
     ),
     subfolderInvalid: s__('MlModelRegistry|Subfolder cannot contain spaces'),
     subfolderDescription: s__('MlModelRegistry|Enter a subfolder name to organize your artifacts.'),
+    optionalText: s__('MlModelRegistry|(Optional)'),
   },
   validFileMimetypes: [],
 };
@@ -160,6 +161,9 @@ export default {
       <div>
         <label for="subfolderId" class="gl-font-bold" data-testid="subfolderLabel">{{
           $options.i18n.subfolderLabel
+        }}</label>
+        <label class="gl-font-weight-normal" data-testid="subfolderLabelOptional">{{
+          $options.i18n.optionalText
         }}</label>
         <gl-icon id="toolTipSubfolderId" v-gl-tooltip name="information-o" tabindex="0" />
         <gl-tooltip target="toolTipSubfolderId">

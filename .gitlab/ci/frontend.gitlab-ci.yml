@@ -33,7 +33,7 @@
         if ! gitlab_assets_archive_doesnt_exist; then
           # We remove all assets from the native cache as they could pollute the fresh assets from the package
           rm -rf public/assets/ app/assets/javascripts/locale/**/app.js
-          run_timed_command "download_and_extract_gitlab_assets"
+          run_timed_command "retry download_and_extract_gitlab_assets"
         fi
       fi
     - assets_compile_script

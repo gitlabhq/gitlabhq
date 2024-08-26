@@ -28,6 +28,7 @@ describe('ImportArtifactZone', () => {
   const emulateFileDrop = () => zone().vm.$emit('change', file);
   const subfolderInput = () => wrapper.findByTestId('subfolderId');
   const subfolderLabel = () => wrapper.findByTestId('subfolderLabel');
+  const subfolderLabelOptional = () => wrapper.findByTestId('subfolderLabelOptional');
   const subfolderGroup = () => wrapper.findByTestId('subfolderGroup');
   const alert = () => wrapper.findComponent(GlAlert);
 
@@ -121,7 +122,11 @@ describe('ImportArtifactZone', () => {
     });
 
     it('displays the subfolder label', () => {
-      expect(subfolderLabel().text()).toBe('Subfolder (optional)');
+      expect(subfolderLabel().text()).toBe('Subfolder');
+    });
+
+    it('displays the subfolder as optional', () => {
+      expect(subfolderLabelOptional().text()).toBe('(Optional)');
     });
 
     it('displays the subfolder description initial state', async () => {
