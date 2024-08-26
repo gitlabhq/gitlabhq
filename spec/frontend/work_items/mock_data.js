@@ -62,6 +62,8 @@ export const mockCrmContacts = [
       __typename: 'CustomerRelationsOrganization',
       id: 'gid://gitlab/CustomerRelations::Organization/55',
       name: 'Anderson LLC-4',
+      description: null,
+      defaultRate: null,
     },
   },
   {
@@ -77,6 +79,8 @@ export const mockCrmContacts = [
       __typename: 'CustomerRelationsOrganization',
       id: 'gid://gitlab/CustomerRelations::Organization/55',
       name: 'Anderson LLC-4',
+      description: null,
+      defaultRate: null,
     },
   },
   {
@@ -556,13 +560,6 @@ export const objectiveType = {
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Objective',
   iconName: 'issue-type-objective',
-};
-
-export const keyResultType = {
-  __typename: 'WorkItemType',
-  id: 'gid://gitlab/WorkItems::Type/2411',
-  name: 'Key Result',
-  iconName: 'issue-type-keyresult',
 };
 
 export const issueType = {
@@ -1462,74 +1459,6 @@ export const deleteWorkItemMutationErrorResponse = {
   },
 };
 
-export const workItemHierarchyEmptyResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItem: {
-        id: 'gid://gitlab/WorkItem/1',
-        iid: '1',
-        archived: false,
-        state: 'OPEN',
-        workItemType: {
-          id: 'gid://gitlab/WorkItems::Type/1',
-          name: 'Issue',
-          iconName: 'issue-type-issue',
-          __typename: 'WorkItemType',
-        },
-        title: 'New title',
-        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
-        description: '',
-        createdAt: '2022-08-03T12:41:54Z',
-        updatedAt: null,
-        closedAt: null,
-        author: mockAssignees[0],
-        namespace: {
-          __typename: 'Project',
-          id: '1',
-          fullPath: 'test-project-path',
-          name: 'Project name',
-        },
-        userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
-          adminParentLink: false,
-          createNote: false,
-          adminWorkItemLink: true,
-          __typename: 'WorkItemPermissions',
-        },
-        confidential: false,
-        reference: 'test-project-path#1',
-        createNoteEmail:
-          'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
-        widgets: [
-          {
-            type: 'HIERARCHY',
-            parent: null,
-            hasChildren: false,
-            children: {
-              pageInfo: {
-                hasNextPage: false,
-                hasPreviousPage: false,
-                startCursor: null,
-                endCursor: null,
-                __typename: 'PageInfo',
-              },
-              count: 1,
-              nodes: [],
-              __typename: 'WorkItemConnection',
-            },
-            __typename: 'WorkItemWidgetHierarchy',
-          },
-        ],
-        __typename: 'WorkItem',
-      },
-    },
-  },
-};
-
 export const workItemHierarchyNoUpdatePermissionResponse = {
   data: {
     workItem: {
@@ -1875,28 +1804,6 @@ export const workItemObjectiveWithChild = {
     workItemObjectiveMetadataWidgets.LABELS,
   ],
   __typename: 'WorkItem',
-};
-
-export const workItemObjectiveNoMetadata = {
-  ...workItemObjectiveWithChild,
-  widgets: [
-    {
-      type: 'HIERARCHY',
-      hasChildren: true,
-      __typename: 'WorkItemWidgetHierarchy',
-    },
-    {
-      __typename: 'WorkItemWidgetProgress',
-      type: 'PROGRESS',
-      progress: null,
-      updatedAt: null,
-    },
-    {
-      __typename: 'WorkItemWidgetMilestone',
-      type: 'MILESTONE',
-      milestone: null,
-    },
-  ],
 };
 
 export const workItemHierarchyTreeEmptyResponse = {
@@ -2314,98 +2221,6 @@ export const searchedObjectiveResponse = {
   },
 };
 
-export const searchWorkItemsTextResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItems: {
-        id: 'gid://gitlab/WorkItem/459',
-        iid: '3',
-        title: 'Task 2',
-        confidential: false,
-        __typename: 'WorkItem',
-      },
-    },
-  },
-};
-
-export const searchWorkItemsIidResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItems: {
-        nodes: [],
-      },
-      workItemsByIid: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/460',
-            iid: '101',
-            title: 'Task 3',
-            confidential: false,
-            __typename: 'WorkItem',
-          },
-        ],
-      },
-    },
-  },
-};
-
-export const searchWorkItemsURLRefResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItems: {
-        nodes: [],
-      },
-      workItemsByIid: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/460',
-            iid: '101',
-            title: 'Task 3',
-            __typename: 'WorkItem',
-          },
-        ],
-      },
-    },
-  },
-};
-
-export const searchWorkItemsTextIidResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItems: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/459',
-            iid: '3',
-            title: 'Task 123',
-            confidential: false,
-            __typename: 'WorkItem',
-          },
-        ],
-      },
-      workItemsByIid: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/460',
-            iid: '123',
-            title: 'Task 2',
-            confidential: false,
-            __typename: 'WorkItem',
-          },
-        ],
-      },
-    },
-  },
-};
-
 export const searchWorkItemsResponse = ({ workItems = [], workItemsByIid = [] } = {}) => {
   return {
     data: {
@@ -2421,51 +2236,6 @@ export const searchWorkItemsResponse = ({ workItems = [], workItemsByIid = [] } 
       },
     },
   };
-};
-
-export const projectMembersResponseWithCurrentUser = {
-  data: {
-    workspace: {
-      id: '1',
-      __typename: 'Project',
-      users: {
-        nodes: [
-          {
-            id: 'user-2',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/5',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: '/rookie',
-              status: null,
-            },
-          },
-          {
-            id: 'user-1',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              webPath: '/root',
-              status: null,
-            },
-          },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: null,
-          startCursor: null,
-        },
-      },
-    },
-  },
 };
 
 export const projectMembersAutocompleteResponseWithCurrentUser = {
@@ -2500,172 +2270,12 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
   },
 };
 
-export const projectMembersResponseWithDuplicates = {
-  data: {
-    workspace: {
-      id: '1',
-      __typename: 'Project',
-      users: {
-        nodes: [
-          {
-            id: 'user-2',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/5',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: 'rookie',
-              status: null,
-            },
-          },
-          {
-            id: 'user-4',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/5',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: 'rookie',
-              status: null,
-            },
-          },
-          {
-            id: 'user-1',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              webPath: '/root',
-              status: null,
-            },
-          },
-          {
-            id: 'user-3',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              webPath: '/root',
-              status: null,
-            },
-          },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: null,
-          startCursor: null,
-        },
-      },
-    },
-  },
-};
-
-export const projectMembersResponseWithCurrentUserWithNextPage = {
-  data: {
-    workspace: {
-      id: '1',
-      __typename: 'Project',
-      users: {
-        nodes: [
-          {
-            id: 'user-2',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/5',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: '/root',
-              status: null,
-            },
-          },
-          {
-            id: 'user-1',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              webPath: '/root',
-              status: null,
-            },
-          },
-        ],
-        pageInfo: {
-          hasNextPage: true,
-          endCursor: 'endCursor',
-          startCursor: 'startCursor',
-        },
-      },
-    },
-  },
-};
-
 export const projectMembersAutocompleteResponseWithNoMatchingUsers = {
   data: {
     workspace: {
       id: '1',
       __typename: 'Project',
       users: [],
-    },
-  },
-};
-
-export const projectMembersResponseWithNoMatchingUsers = {
-  data: {
-    workspace: {
-      id: '1',
-      __typename: 'Project',
-      users: {
-        nodes: [],
-        pageInfo: {
-          endCursor: null,
-          hasNextPage: false,
-          startCursor: null,
-        },
-      },
-    },
-  },
-};
-
-export const projectMembersResponseWithoutCurrentUser = {
-  data: {
-    workspace: {
-      id: '1',
-      __typename: 'Project',
-      users: {
-        nodes: [
-          {
-            id: 'user-2',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/5',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: 'rookie',
-              status: null,
-            },
-          },
-        ],
-      },
     },
   },
 };
@@ -4453,16 +4063,24 @@ export const removeLinkedWorkItemResponse = (message, errors = []) => {
   };
 };
 
-export const groupWorkItemsQueryResponse = {
+export const groupWorkItemStateCountsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
-      name: 'Test',
       workItemStateCounts: {
         all: 3,
         closed: 1,
         opened: 2,
       },
+    },
+  },
+};
+
+export const groupWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      name: 'Test',
       workItems: {
         pageInfo: {
           hasNextPage: true,
@@ -4526,29 +4144,6 @@ export const groupWorkItemsQueryResponse = {
             },
           },
         ],
-      },
-    },
-  },
-};
-
-export const emptyGroupWorkItemsQueryResponse = {
-  data: {
-    group: {
-      id: 'gid://gitlab/Group/3',
-      workItemStateCounts: {
-        all: 0,
-        closed: 0,
-        opened: 0,
-      },
-      workItems: {
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: 'startCursor',
-          endCursor: 'endCursor',
-          __typename: 'PageInfo',
-        },
-        nodes: [],
       },
     },
   },

@@ -132,7 +132,7 @@ export default {
   <gl-disclosure-dropdown :items="items" class="gl-block" placement="bottom" @shown="onShown">
     <template #toggle>
       <button
-        class="user-bar-button organization-switcher-button gl-flex gl-items-center gl-text-left gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-leading-1 gl-w-full"
+        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-gap-3 gl-rounded-base gl-border-none gl-p-3 gl-text-left gl-leading-1"
         data-testid="toggle-button"
       >
         <gl-avatar

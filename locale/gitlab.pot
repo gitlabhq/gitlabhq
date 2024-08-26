@@ -16329,7 +16329,13 @@ msgstr ""
 msgid "Crm|Organizations"
 msgstr ""
 
+msgid "Crm|Rate"
+msgstr ""
+
 msgid "Crm|Select contacts"
+msgstr ""
+
+msgid "Crm|View contact details"
 msgstr ""
 
 msgid "Cron time zone"
@@ -32791,10 +32797,16 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRole|%{count} of %{total} permissions added"
+msgstr ""
+
 msgid "MemberRole|%{count} of %{total} permissions selected"
 msgstr ""
 
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
+msgstr ""
+
+msgid "MemberRole|Access level"
 msgstr ""
 
 msgid "MemberRole|Actions"
@@ -32840,6 +32852,9 @@ msgid "MemberRole|Custom role created on %{dateTime}"
 msgstr ""
 
 msgid "MemberRole|Custom roles"
+msgstr ""
+
+msgid "MemberRole|Default"
 msgstr ""
 
 msgid "MemberRole|Delete custom role?"
@@ -32917,6 +32932,9 @@ msgstr ""
 msgid "MemberRole|Role"
 msgstr ""
 
+msgid "MemberRole|Role ID"
+msgstr ""
+
 msgid "MemberRole|Role details"
 msgstr ""
 
@@ -32924,6 +32942,9 @@ msgid "MemberRole|Role is assigned to one or more group members. Remove role fro
 msgstr ""
 
 msgid "MemberRole|Role successfully deleted."
+msgstr ""
+
+msgid "MemberRole|Role type"
 msgstr ""
 
 msgid "MemberRole|Save role"
@@ -60988,6 +61009,9 @@ msgid "WorkItem|Add a to do"
 msgstr ""
 
 msgid "WorkItem|All activity"
+msgstr ""
+
+msgid "WorkItem|An error occurred while getting work item counts."
 msgstr ""
 
 msgid "WorkItem|Ancestor"

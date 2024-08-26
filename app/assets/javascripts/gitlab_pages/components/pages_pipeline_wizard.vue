@@ -67,7 +67,7 @@ export default {
   <div>
     <div
       v-if="loading"
-      class="gl-p-3 gl-rounded-base gl-text-center"
+      class="gl-rounded-base gl-p-3 gl-text-center"
       data-testid="onboarding-mutation-loading"
     >
       <gl-loading-icon />

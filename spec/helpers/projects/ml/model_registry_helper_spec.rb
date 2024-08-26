@@ -99,7 +99,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         "canWriteModelRegistry" => true,
         'maxAllowedFileSize' => 10737418240,
         "importPath" => "/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/",
-        "modelPath" => "/#{project.full_path}/-/ml/models/1"
+        "modelPath" => "/#{project.full_path}/-/ml/models/1",
+        "markdownPreviewPath" => "/#{project.full_path}/-/preview_markdown"
       })
     end
 

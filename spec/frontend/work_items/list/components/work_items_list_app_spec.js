@@ -35,10 +35,14 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
+import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
-import { groupWorkItemsQueryResponse } from '../../mock_data';
+import {
+  groupWorkItemsQueryResponse,
+  groupWorkItemStateCountsQueryResponse,
+} from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -56,6 +60,8 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueApollo);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
+  const countsQueryHandler = jest.fn().mockResolvedValue(groupWorkItemStateCountsQueryResponse);
+  const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -65,11 +71,12 @@ describeSkipVue3(skipReason, () => {
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
-    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
+    sortPreferenceMutationResponse = mutationHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemsListApp, {
       apolloProvider: createMockApollo([
         [getWorkItemsQuery, queryHandler],
+        [getWorkItemStateCountsQuery, countsQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
       ]),
       provide: {
@@ -113,7 +120,7 @@ describeSkipVue3(skipReason, () => {
     });
 
     it('renders tab counts', () => {
-      expect(cloneDeep(findIssuableList().props('tabCounts'))).toEqual({
+      expect(findIssuableList().props('tabCounts')).toEqual({
         all: 3,
         closed: 1,
         opened: 2,
@@ -371,13 +378,12 @@ describeSkipVue3(skipReason, () => {
 
       describe('when user is signed in', () => {
         it('calls mutation to save sort preference', async () => {
-          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          mountComponent();
           await waitForPromises();
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
-          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
+          expect(mutationHandler).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
         });
 
         it('captures error when mutation response has errors', async () => {
@@ -396,16 +402,12 @@ describeSkipVue3(skipReason, () => {
 
       describe('when user is signed out', () => {
         it('does not call mutation to save sort preference', async () => {
-          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-          mountComponent({
-            provide: { isSignedIn: false },
-            sortPreferenceMutationResponse: mutationMock,
-          });
+          mountComponent({ provide: { isSignedIn: false } });
           await waitForPromises();
 
           findIssuableList().vm.$emit('sort', CREATED_DESC);
 
-          expect(mutationMock).not.toHaveBeenCalled();
+          expect(mutationHandler).not.toHaveBeenCalled();
         });
       });
     });

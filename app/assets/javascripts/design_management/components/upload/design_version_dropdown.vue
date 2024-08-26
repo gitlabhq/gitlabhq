@@ -92,7 +92,7 @@ export default {
         />
         <span class="gl-flex gl-flex-col">
           <span class="gl-font-bold">{{ versionText(item) }}</span>
-          <span v-if="item.author" class="gl-text-sm gl-text-subtle gl-mt-1">
+          <span v-if="item.author" class="gl-mt-1 gl-text-sm gl-text-subtle">
             <span class="gl-block">{{ getAuthorName(item.author) }}</span>
             <time-ago v-if="item.createdAt" :time="item.createdAt" tooltip-placement="bottom" />
           </span>

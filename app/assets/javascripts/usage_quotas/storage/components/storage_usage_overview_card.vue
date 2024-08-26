@@ -35,7 +35,7 @@ export default {
       <div class="gl-font-bold" data-testid="namespace-storage-card-title">
         {{ s__('UsageQuota|Namespace storage used') }}
       </div>
-      <div class="gl-text-size-h-display gl-font-bold gl-leading-1 gl-my-3">
+      <div class="gl-my-3 gl-text-size-h-display gl-font-bold gl-leading-1">
         <number-to-human-size label-class="gl-text-lg" :value="Number(usedStorage)" plain-zero />
       </div>
       <hr class="gl-my-4" />

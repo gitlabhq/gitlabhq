@@ -206,7 +206,7 @@ When you're creating a new issue, you can complete the following fields:
 - [Description template](../description_templates.md): overwrites anything in the Description text box
 - Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
 - Checkbox to make the issue [confidential](confidential_issues.md)
-- [Assignees](managing_issues.md#assignee)
+- [Assignees](managing_issues.md#assignees)
 - [Weight](issue_weight.md)
 - [Epic](../../group/epics/index.md)
 - [Due date](due_dates.md)

@@ -194,7 +194,7 @@ export default {
     <div class="gl-pt-5">
       <div class="gl-flex gl-justify-between">
         <div>
-          <h4 class="gl-text-lg gl-mb-3 gl-mt-0">{{ $options.TOTAL_USAGE_TITLE }}</h4>
+          <h4 class="gl-mb-3 gl-mt-0 gl-text-lg">{{ $options.TOTAL_USAGE_TITLE }}</h4>
           <p>
             {{ $options.TOTAL_USAGE_SUBTITLE }}
             <gl-link
@@ -206,7 +206,7 @@ export default {
           </p>
         </div>
         <p
-          class="gl-m-0 gl-text-size-h-display gl-font-bold gl-whitespace-nowrap"
+          class="gl-m-0 gl-whitespace-nowrap gl-text-size-h-display gl-font-bold"
           data-testid="total-usage"
         >
           {{ totalUsage }}
@@ -216,7 +216,7 @@ export default {
     <div v-if="!isStatisticsEmpty" class="gl-w-full">
       <sectioned-percentage-bar class="gl-mt-5" :sections="sections" />
     </div>
-    <div class="gl-w-full gl-my-5">
+    <div class="gl-my-5 gl-w-full">
       <gl-button
         :loading="loadingRecalculateSize"
         category="secondary"

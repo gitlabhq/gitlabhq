@@ -347,6 +347,43 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
+  describe 'GET /internal/kubernetes/receptive_agents' do
+    def send_request(headers: {})
+      get api('/internal/kubernetes/receptive_agents'), headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:receptive_agent1) do
+      agent = create(:cluster_agent, project: project, is_receptive: true)
+      create(:cluster_agent_url_configuration, :certificate_auth, agent: agent)
+
+      agent
+    end
+
+    let_it_be(:receptive_agent2) do
+      agent = create(:cluster_agent, project: project, is_receptive: true)
+      create(:cluster_agent_url_configuration, :public_key_auth, agent: agent)
+
+      agent
+    end
+
+    include_examples 'authorization'
+    include_examples 'error handling'
+
+    it 'returns all receptive agents' do
+      send_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include('agents')
+      agents = json_response['agents']
+      expect(agents.count).to eq(2)
+      expect(agents).to contain_exactly(
+        hash_including('id' => receptive_agent1.id),
+        hash_including('id' => receptive_agent2.id)
+      )
+    end
+  end
+
   describe 'POST /internal/kubernetes/agent_configuration' do
     def send_request(headers: {}, params: {})
       post api('/internal/kubernetes/agent_configuration'), params: params, headers: headers.reverse_merge(jwt_auth_headers)

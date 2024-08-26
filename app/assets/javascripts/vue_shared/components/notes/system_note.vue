@@ -163,8 +163,8 @@ export default {
       :class="[
         iconBgClass,
         {
-          'system-note-icon-v2 gl-h-6 gl-w-6 gl-ml-2 -gl-mt-1': isAllowedIcon,
-          'system-note-dot gl-h-3 gl-w-3 gl-mt-3 -gl-top-1 gl-ml-4 gl-border-2 gl-border-gray-50 gl-border-solid gl-bg-gray-900':
+          'system-note-icon-v2 -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
+          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-gray-50 gl-bg-gray-900':
             !isAllowedIcon,
         },
       ]"
@@ -178,7 +178,7 @@ export default {
       />
     </div>
     <div class="gl-ml-7">
-      <div class="gl-flex gl-justify-between gl-items-start">
+      <div class="gl-flex gl-items-start gl-justify-between">
         <note-header
           :author="note.author"
           :created-at="note.created_at"
@@ -213,7 +213,7 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body-v2 gl-pl-3 gl-pb-3">
+      <div class="note-body-v2 gl-pb-3 gl-pl-3">
         <div
           v-safe-html="note.note_html"
           :class="{
@@ -224,7 +224,7 @@ export default {
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div
-            class="flex-row gl-pl-4 gl-pt-3 gl-text-blue-500 gl-cursor-pointer hover:gl-underline gl-relative gl-z-2"
+            class="flex-row gl-relative gl-z-2 gl-cursor-pointer gl-pl-4 gl-pt-3 gl-text-blue-500 hover:gl-underline"
             @click="expanded = !expanded"
           >
             <gl-icon :name="toggleIcon" :size="12" class="gl-mr-2" />
@@ -260,7 +260,7 @@ export default {
         </div>
         <div
           v-if="lines.length && showLines"
-          class="gl-pl-0 gl-overflow-visible gl-my-2 gl-mr-5 gl-overflow-hidden gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200"
+          class="gl-my-2 gl-mr-5 gl-overflow-hidden gl-overflow-visible gl-rounded-small gl-border-1 gl-border-solid gl-border-gray-200 gl-pl-0"
         >
           <table
             :class="$options.userColorSchemeClass"

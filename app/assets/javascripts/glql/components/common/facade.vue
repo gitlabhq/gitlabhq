@@ -114,11 +114,11 @@ export default {
     </gl-alert>
 
     <component :is="presenterComponent" v-if="presenterComponent" />
-    <div v-else class="gl-relative markdown-code-block">
+    <div v-else class="markdown-code-block gl-relative">
       <gl-loading-icon
         v-if="loading"
         size="lg"
-        class="gl-absolute gl-z-2 gl-top-1/2 gl-left-1/2 -gl-translate-x-1/2 -gl-translate-y-1/2"
+        class="gl-absolute gl-left-1/2 gl-top-1/2 gl-z-2 -gl-translate-x-1/2 -gl-translate-y-1/2"
       />
       <pre
         :class="preClasses"

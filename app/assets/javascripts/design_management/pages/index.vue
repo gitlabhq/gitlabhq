@@ -360,7 +360,7 @@ export default {
     <crud-component
       :title="s__('DesignManagement|Designs')"
       class="!gl-mt-3"
-      :class="{ 'gl-bg-transparent gl-border-0': !showToolbar }"
+      :class="{ 'gl-border-0 gl-bg-transparent': !showToolbar }"
       :header-class="{ 'gl-hidden': !showToolbar }"
       :body-class="{
         '!gl-my-0': showToolbar && !isLoading,
@@ -460,7 +460,7 @@ export default {
           <li
             v-for="design in designs"
             :key="design.id"
-            class="col-md-6 col-lg-3 gl-mt-5 gl-bg-transparent gl-shadow-none js-design-tile"
+            class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
           >
             <design-dropzone
               :display-as-card="hasDesigns"
@@ -489,7 +489,7 @@ export default {
               v-if="canSelectDesign(design.filename)"
               :checked="isDesignSelected(design.filename)"
               type="checkbox"
-              class="design-checkbox gl-absolute gl-top-4 gl-left-6 gl-ml-2"
+              class="design-checkbox gl-absolute gl-left-6 gl-top-4 gl-ml-2"
               data-testid="design-checkbox"
               :data-qa-design="design.filename"
               @change="changeSelectedDesigns(design.filename)"

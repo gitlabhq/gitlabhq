@@ -111,7 +111,7 @@ export default {
         {{ item.cronTimezone.formattedTimezone }}
       </template>
       <template #cell(actions)="{ item }">
-        <div class="gl-flex gl-justify-end gl-gap-2 -gl-mt-2 -gl-mb-2">
+        <div class="-gl-mb-2 -gl-mt-2 gl-flex gl-justify-end gl-gap-2">
           <gl-button
             v-gl-modal.deploy-freeze-modal
             icon="pencil"
@@ -132,7 +132,7 @@ export default {
         </div>
       </template>
       <template #empty>
-        <p data-testid="empty-freeze-periods" class="gl-text-subtle gl-text-center gl-mb-0">
+        <p data-testid="empty-freeze-periods" class="gl-mb-0 gl-text-center gl-text-subtle">
           <gl-sprintf :message="$options.i18n.emptyStateText">
             <template #strong="{ content }">
               {{ content }}

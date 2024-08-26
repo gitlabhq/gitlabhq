@@ -198,15 +198,6 @@ export default {
         "
       />
     </template>
-    <template v-if="workItemCrmContacts">
-      <work-item-crm-contacts
-        class="gl-mb-5"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-      />
-    </template>
     <template v-if="workItemLabels">
       <work-item-labels
         class="js-labels gl-mb-5"
@@ -343,6 +334,15 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
     />
+    <template v-if="workItemCrmContacts">
+      <work-item-crm-contacts
+        class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+      />
+    </template>
     <participants
       v-if="workItemParticipants.length"
       class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"

@@ -197,37 +197,54 @@ GitLab has several features to help you manage the number of users. You can:
 
 ## Subscription data synchronization
 
-Subscription data can be automatically synchronized between your self-managed instance and GitLab.
-To enable subscription data synchronization you must have:
+Prerequisites:
 
 - GitLab Enterprise Edition (EE).
 - Connection to the internet, and must not have an offline environment.
 - [Activated](../../administration/license.md) your instance with an activation code.
 
-When your instance is activated, and data is synchronized, the following processes are automated:
+Your [subscription data](#subscription-data) is automatically synchronized once
+a day between your self-managed instance and GitLab.
+
+At approximately 3:00 AM (UTC), this daily synchronization job sends
+[subscription data](#subscription-data) to the Customers Portal. For this reason,
+updates and renewals might not apply immediately.
+
+The data is sent securely through an encrypted HTTPS connection to
+`customers.gitlab.com` on port `443`. If the job fails, it retries up to 12 times
+over approximately 17 hours.
+
+After you have set up automatic data synchronization, the following processes are
+also automated.
 
 - [Quarterly subscription reconciliation](../quarterly_reconciliation.md).
 - Subscription renewals.
 - Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
-At approximately 03:00 UTC, a daily synchronization job sends subscription data to the Customers
-Portal. For this reason, updates and renewals might not apply immediately.
+### Manually synchronize subscription data
 
-The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port
-`443`. If the job fails, it retries up to 12 times over approximately 17 hours.
+You can also manually synchronize subscription data at any time.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Subscription**.
+1. In the **Subscription details** section, select **Sync** (**{retry}**).
+
+A synchronization job is then queued. When the job finishes, the subscription
+details are updated.
 
 ### Subscription data
 
-The daily synchronization job sends **only** the following information to the Customers Portal:
+The daily synchronization job sends the following information to the
+Customers Portal:
 
 - Date
 - Timestamp
-- License key
-  - Company name (encrypted within license key)
-  - Licensee name (encrypted within license key)
-  - Licensee email (encrypted within license key)
-- Historical maximum user count
-- Billable users count
+- License key, with the following encrypted within the key:
+  - Company name
+  - Licensee name
+  - Licensee email
+- Historical [maximum user count](#maximum-users)
+- [Billable users count](#billable-users)
 - GitLab version
 - Hostname
 - Instance ID
@@ -282,22 +299,6 @@ Example of a license sync request:
   "instance_id": "9367590b-82ad-48cb-9da7-938134c29088"
 }
 ```
-
-### Manually synchronize subscription data
-
-Prerequisites:
-
-- GitLab Enterprise Edition (EE).
-- Connection to the internet, and must not have an offline environment.
-- [Activated](../../administration/license.md) your instance with an activation code.
-
-You can manually synchronize your subscription details at any time.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Subscription**.
-1. In the **Subscription details** section, select **Sync** (**{retry}**).
-
-A job is queued. When the job finishes, the subscription details are updated.
 
 ## View your subscription
 

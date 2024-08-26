@@ -19,6 +19,6 @@ export default {
   <div
     v-if="organization.description_html"
     v-safe-html="organization.description_html"
-    class="gl-mt-5 md"
+    class="md gl-mt-5"
   ></div>
 </template>

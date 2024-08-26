@@ -222,7 +222,7 @@ export default {
         <gl-form-group
           label="Description"
           label-for="descriptionId"
-          class="common-note-form gfm-form js-main-target-form gl-grow new-note"
+          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
           optional
           :optional-text="$options.modal.optionalText"
         >

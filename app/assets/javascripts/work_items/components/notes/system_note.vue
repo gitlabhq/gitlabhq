@@ -125,8 +125,8 @@ export default {
       :class="[
         getIconColor,
         {
-          'system-note-icon-v2 gl-h-6 gl-w-6 gl-ml-2 -gl-mt-1': isAllowedIcon,
-          'system-note-dot gl-h-3 gl-w-3 gl-mt-3 -gl-top-1 gl-ml-4 gl-border-2 gl-border-gray-50 gl-border-solid gl-bg-gray-900':
+          'system-note-icon-v2 -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
+          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-gray-50 gl-bg-gray-900':
             !isAllowedIcon,
         },
       ]"
@@ -135,7 +135,7 @@ export default {
       <gl-icon v-if="isAllowedIcon" :size="14" :name="note.systemNoteIconName" />
     </div>
     <div class="gl-ml-7">
-      <div class="gl-flex gl-justify-between gl-items-start">
+      <div class="gl-flex gl-items-start gl-justify-between">
         <note-header
           :author="note.author"
           :created-at="note.createdAt"
@@ -157,7 +157,7 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body-v2 gl-pl-3 gl-pb-3">
+      <div class="note-body-v2 gl-pb-3 gl-pl-3">
         <div v-if="shouldShowDescriptionVersion" class="gl-relative !gl-pt-3">
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
             <gl-skeleton-loader />

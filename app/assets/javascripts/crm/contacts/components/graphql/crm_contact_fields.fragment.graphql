@@ -9,5 +9,7 @@ fragment ContactFragment on CustomerRelationsContact {
   organization {
     id
     name
+    description
+    defaultRate
   }
 }

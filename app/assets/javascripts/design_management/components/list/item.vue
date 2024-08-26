@@ -147,7 +147,7 @@ export default {
         <div
           v-if="icon.name"
           data-testid="design-event"
-          class="gl-absolute gl-top-3 gl-right-3 gl-mr-1"
+          class="gl-absolute gl-right-3 gl-top-3 gl-mr-1"
         >
           <span :title="icon.tooltip" :aria-label="icon.tooltip">
             <gl-icon
@@ -177,7 +177,7 @@ export default {
             v-show="showImage"
             :src="imageLink"
             :alt="filename"
-            class="gl-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
+            class="design-img gl-mx-auto gl-block gl-max-h-full gl-w-auto gl-max-w-full"
             :data-testid="`design-img-${id}`"
             @load="onImageLoad"
             @error="onImageError"
@@ -186,10 +186,10 @@ export default {
       </template>
 
       <template #default>
-        <div class="gl-flex gl-flex-col str-truncated-100" data-testid="design-file-name">
+        <div class="str-truncated-100 gl-flex gl-flex-col" data-testid="design-file-name">
           <span
             v-gl-tooltip
-            class="gl-font-semibold str-truncated-100"
+            class="str-truncated-100 gl-font-semibold"
             :data-testid="`design-img-filename-${id}`"
             :title="filename"
             >{{ filename }}</span

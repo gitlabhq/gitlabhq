@@ -137,7 +137,7 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-flex-col gl-p-4 gl-gap-2 gl-border gl-rounded-lg"
+    class="gl-border gl-flex gl-flex-col gl-gap-2 gl-rounded-lg gl-p-4"
     :class="{ 'gl-bg-blue-50': isPrimary, 'gl-border-red-500': hasError }"
     @click="toggleDetail"
   >
@@ -160,14 +160,14 @@ export default {
       </div>
     </div>
     <div
-      class="gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-gap-4 md:gl-gap-7 md:gl-justify-between gl-overflow-hidden"
+      class="gl-flex gl-flex-col gl-gap-4 gl-overflow-hidden md:gl-flex-row md:gl-items-center md:gl-justify-between md:gl-gap-7"
     >
       <div class="gl-flex gl-items-center gl-gap-4">
         <div>
           <gl-icon
             name="chevron-lg-right"
             :class="{ 'gl-rotate-90': showDetail }"
-            class="gl-transition-transform reduce-motion:gl-transition-none gl-text-secondary"
+            class="reduce-motion:gl-transition-none gl-text-secondary gl-transition-transform"
           />
         </div>
         <div data-testid="deployment-type" class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap">
@@ -185,7 +185,7 @@ export default {
             </div>
           </template>
         </div>
-        <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap gl-truncate">
+        <div class="gl-flex gl-flex-col gl-gap-2 gl-truncate gl-text-nowrap">
           <div class="gl-flex gl-items-center gl-gap-2" data-testid="deployment-url">
             <a
               v-if="deployment.active"
@@ -196,19 +196,19 @@ export default {
             >
               {{ deployment.url }}
             </a>
-            <span v-else class="gl-text-secondary gl-w-full gl-truncate">
+            <span v-else class="gl-w-full gl-truncate gl-text-secondary">
               {{ deployment.url }}
             </span>
           </div>
         </div>
       </div>
-      <div class="gl-flex gl-flex-col gl-gap-5 gl-items-stretch md:gl-items-end">
-        <div class="gl-flex gl-gap-6 gl-items-end gl-justify-between md:gl-justify-end">
+      <div class="gl-flex gl-flex-col gl-items-stretch gl-gap-5 md:gl-items-end">
+        <div class="gl-flex gl-items-end gl-justify-between gl-gap-6 md:gl-justify-end">
           <div
             class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
             data-testid="deployment-created-at"
           >
-            <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.createdLabel }}</div>
+            <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.createdLabel }}</div>
             <div>
               <gl-icon name="play" class="mr-1 gl-text-secondary" />
               <user-date
@@ -224,10 +224,10 @@ export default {
       ref="details"
       :style="detailStyle"
       data-testid="deployment-details"
-      class="gl-flex gl-flex-col md:gl-flex-row gl-gap-4 md:gl-gap-7 gl-overflow-hidden gl-transition-all motion-reduce:gl-transition-none"
+      class="gl-flex gl-flex-col gl-gap-4 gl-overflow-hidden gl-transition-all motion-reduce:gl-transition-none md:gl-flex-row md:gl-gap-7"
     >
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-ci-build-id">
-        <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.deployJobLabel }}</div>
+        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.deployJobLabel }}</div>
         <div>
           <gl-icon name="deployments" class="mr-1 gl-text-secondary" />
           <a :href="ciBuildUrl" @click.stop>
@@ -239,28 +239,28 @@ export default {
         class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
         data-testid="deployment-root-directory"
       >
-        <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.rootDirLabel }}</div>
+        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.rootDirLabel }}</div>
         <div>
           <gl-icon name="folder" class="mr-1 gl-text-secondary" />
           /{{ deployment.rootDirectory || 'public' }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-file-count">
-        <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.filesLabel }}</div>
+        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.filesLabel }}</div>
         <div>
           <gl-icon name="documents" class="mr-1 gl-text-secondary" />
           {{ deployment.fileCount }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-size">
-        <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.sizeLabel }}</div>
+        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.sizeLabel }}</div>
         <div>
           <gl-icon name="disk" class="mr-1 gl-text-secondary" />
           <number-to-human-size :value="deployment.size" />
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-updated-at">
-        <div class="gl-text-secondary gl-text-sm">{{ $options.i18n.lastUpdatedLabel }}</div>
+        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.lastUpdatedLabel }}</div>
         <div>
           <gl-icon name="clear-all" class="mr-1 gl-text-secondary" />
           <user-date
@@ -270,7 +270,7 @@ export default {
         </div>
       </div>
       <div v-if="!deployment.active" class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap">
-        <div class="gl-text-secondary gl-text-sm">
+        <div class="gl-text-sm gl-text-secondary">
           {{ $options.i18n.deleteScheduledAtLabel }}
         </div>
         <div>
@@ -281,8 +281,8 @@ export default {
           />
         </div>
       </div>
-      <div class="gl-hidden md:gl-block gl-flex-grow"></div>
-      <div class="md:gl-h-full gl-flex gl-items-end">
+      <div class="gl-hidden gl-flex-grow md:gl-block"></div>
+      <div class="gl-flex gl-items-end md:gl-h-full">
         <gl-button
           v-if="deployment.active"
           icon="remove"

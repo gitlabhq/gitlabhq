@@ -68,8 +68,8 @@ export default {
   <div>
     <div class="gl-mb-3 gl-flex gl-w-full gl-items-center gl-font-bold gl-leading-20">
       <template v-if="loadingReviewers">
-        <div class="gl-animate-skeleton-loader gl-h-4 gl-w-20 gl-rounded-base"></div>
-        <div class="gl-animate-skeleton-loader gl-ml-auto gl-h-4 gl-w-4 gl-rounded-base"></div>
+        <div class="gl-h-4 gl-w-20 gl-rounded-base gl-animate-skeleton-loader"></div>
+        <div class="gl-ml-auto gl-h-4 gl-w-4 gl-rounded-base gl-animate-skeleton-loader"></div>
       </template>
       <template v-else>
         {{ reviewersTitle }}
@@ -77,9 +77,9 @@ export default {
       </template>
     </div>
     <div v-if="loadingReviewers">
-      <div class="gl-animate-skeleton-loader gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
-      <div class="gl-animate-skeleton-loader gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
-      <div class="gl-animate-skeleton-loader gl-h-4 !gl-max-w-20 gl-rounded-base"></div>
+      <div class="gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base gl-animate-skeleton-loader"></div>
+      <div class="gl-mb-3 gl-h-4 !gl-max-w-20 gl-rounded-base gl-animate-skeleton-loader"></div>
+      <div class="gl-h-4 !gl-max-w-20 gl-rounded-base gl-animate-skeleton-loader"></div>
     </div>
     <uncollapsed-reviewer-list
       v-else-if="reviewers.length"

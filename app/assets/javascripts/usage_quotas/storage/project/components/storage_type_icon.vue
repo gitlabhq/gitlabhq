@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <template>
-  <span class="gl-inline-flex gl-items-start gl-justify-center gl-min-w-8 gl-pr-2 gl-pt-1">
+  <span class="gl-inline-flex gl-min-w-8 gl-items-start gl-justify-center gl-pr-2 gl-pt-1">
     <gl-icon :name="iconName(name)" :size="16" class="gl-mt-1" />
   </span>
 </template>

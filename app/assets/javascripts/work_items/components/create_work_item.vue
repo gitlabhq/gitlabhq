@@ -520,16 +520,6 @@ export default {
                 @error="$emit('error', $event)"
               />
             </template>
-            <template v-if="workItemCrmContacts">
-              <work-item-crm-contacts
-                class="gl-mb-5"
-                :full-path="fullPath"
-                :work-item-id="workItemId"
-                :work-item-iid="workItemIid"
-                :work-item-type="selectedWorkItemTypeName"
-                @error="$emit('error', $event)"
-              />
-            </template>
             <template v-if="workItemLabels">
               <work-item-labels
                 class="js-labels gl-mb-5"
@@ -572,6 +562,16 @@ export default {
                 :work-item="workItem"
                 :full-path="fullPath"
                 :can-update="canUpdate"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemCrmContacts">
+              <work-item-crm-contacts
+                class="gl-mb-5"
+                :full-path="fullPath"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
+                :work-item-type="selectedWorkItemTypeName"
                 @error="$emit('error', $event)"
               />
             </template>

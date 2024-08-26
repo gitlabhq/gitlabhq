@@ -1,0 +1,41 @@
+query getWorkItemStateCounts(
+  $includeDescendants: Boolean = true
+  $fullPath: ID!
+  $sort: WorkItemSort
+  $state: IssuableState
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $confidential: Boolean
+  $labelName: [String!]
+  $milestoneTitle: [String!]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $types: [IssueType!]
+  $not: NegatedWorkItemFilterInput
+  $or: UnionedWorkItemFilterInput
+) {
+  group(fullPath: $fullPath) {
+    id
+    workItemStateCounts(
+      includeDescendants: $includeDescendants
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      not: $not
+      or: $or
+    ) {
+      all
+      closed
+      opened
+    }
+  }
+}

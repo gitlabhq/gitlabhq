@@ -153,9 +153,20 @@ For example:
 To export seat usage data as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Billing**.
-1. Under **Seats currently in use**, select **See usage**.
-1. Select **Export list**.
+1. Select **Settings > Usage Quotas**.
+1. In the **Seats** tab, select **Export list**.
+
+### Export seat usage history
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To export seat usage history as a CSV file:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. In the **Seats** tab, select **Export seat usage history**.
 
 The generated list contains all seats being used,
 and is not affected by the current search.

@@ -162,7 +162,7 @@ export default {
         <label for="subfolderId" class="gl-font-bold" data-testid="subfolderLabel">{{
           $options.i18n.subfolderLabel
         }}</label>
-        <label class="gl-font-weight-normal" data-testid="subfolderLabelOptional">{{
+        <label class="gl-font-normal" data-testid="subfolderLabelOptional">{{
           $options.i18n.optionalText
         }}</label>
         <gl-icon id="toolTipSubfolderId" v-gl-tooltip name="information-o" tabindex="0" />

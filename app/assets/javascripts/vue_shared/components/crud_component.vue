@@ -135,7 +135,7 @@ export default {
       :class="[
         headerClass,
         {
-          'gl-border-b-0 gl-rounded-base': !isContentVisible,
+          'gl-rounded-base gl-border-b-0': !isContentVisible,
           'gl-relative gl-pr-9': isCollapsible,
         },
       ]"
@@ -168,7 +168,7 @@ export default {
         </h2>
         <p
           v-if="description || $scopedSlots.description"
-          class="gl-mb-0 gl-mt-2 gl-text-sm gl-text-subtle gl-leading-normal"
+          class="gl-mb-0 gl-mt-2 gl-text-sm gl-leading-normal gl-text-subtle"
           data-testid="crud-description"
         >
           <slot v-if="$scopedSlots.description" name="description"></slot>
@@ -185,7 +185,7 @@ export default {
           @click="showForm"
           >{{ toggleText }}</gl-button
         >
-        <div v-if="isCollapsible" class="gl-h-6 gl-absolute gl-top-4 gl-right-5">
+        <div v-if="isCollapsible" class="gl-absolute gl-right-5 gl-top-4 gl-h-6">
           <gl-button
             v-gl-tooltip
             :title="toggleLabel"
@@ -195,7 +195,7 @@ export default {
             :aria-label="toggleLabel"
             :aria-expanded="ariaExpandedAttr"
             :aria-controls="anchorId"
-            class="gl-self-start -gl-mr-2"
+            class="-gl-mr-2 gl-self-start"
             data-testid="crud-collapse-toggle"
             @click="toggleCollapse"
           />
@@ -225,7 +225,7 @@ export default {
 
       <div
         v-if="$scopedSlots.pagination"
-        class="crud-pagination gl-flex gl-justify-center gl-p-5 gl-border-t"
+        class="crud-pagination gl-border-t gl-flex gl-justify-center gl-p-5"
         data-testid="crud-pagination"
       >
         <slot name="pagination"></slot>

@@ -17,7 +17,7 @@ describe('RunnerDeleteButton', () => {
   let wrapper;
 
   const findBtn = () => wrapper.findComponent(GlButton);
-  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
+  const getTooltip = () => getBinding(findBtn().element, 'gl-tooltip').value;
 
   const createComponent = ({ props = {}, loading, onClick = jest.fn() } = {}) => {
     wrapper = shallowMountExtended(RunnerDeleteButton, {

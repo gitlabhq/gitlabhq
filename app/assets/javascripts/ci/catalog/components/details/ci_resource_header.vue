@@ -172,7 +172,7 @@ export default {
     </div>
     <div
       v-if="isLoadingData"
-      class="gl-animate-skeleton-loader gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base"
+      class="gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base gl-animate-skeleton-loader"
     ></div>
     <markdown v-else class="gl-mb-5" :markdown="resource.description" />
     <abuse-category-selector

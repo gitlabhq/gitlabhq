@@ -708,7 +708,7 @@ RSpec.shared_examples 'work items crm contacts' do
       wait_for_requests
 
       select_listbox_item(contact_name)
-      click_button 'Apply'
+      send_keys(:escape)
 
       expect(page).to have_css '.gl-link', text: contact_name
 
@@ -722,6 +722,7 @@ RSpec.shared_examples 'work items crm contacts' do
   it 'passes axe automated accessibility testing' do
     within_testid 'work-item-crm-contacts' do
       click_button _('Edit')
+      find('.gl-listbox-search-input').click
 
       wait_for_requests
 

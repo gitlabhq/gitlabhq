@@ -136,12 +136,12 @@ export default {
         :project-avatar-url="project.avatarUrl"
         :size="16"
         :alt="project.name"
-        class="gl-inline-block gl-mr-2 !gl-text-center"
+        class="gl-mr-2 gl-inline-block !gl-text-center"
       />
 
       <gl-link
         :href="getUsageQuotasUrl(project.webUrl)"
-        class="!gl-text-gray-900 js-project-link gl-break-anywhere"
+        class="js-project-link !gl-text-gray-900 gl-break-anywhere"
         data-testid="project-link"
       >
         {{ getProjectRelativePath(project.nameWithNamespace) }}
@@ -152,7 +152,7 @@ export default {
       <template v-if="isCostFactored(project)">
         <number-to-human-size :value="project.statistics.costFactoredStorageSize" />
 
-        <div class="gl-text-gray-600 gl-mt-2 gl-text-sm">
+        <div class="gl-mt-2 gl-text-sm gl-text-gray-600">
           <gl-sprintf :message="s__('UsageQuotas|(of %{totalStorageSize})')">
             <template #totalStorageSize>
               <number-to-human-size :value="project.statistics.storageSize" />

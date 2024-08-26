@@ -136,7 +136,7 @@ failures += compareApplicationUtilsToTailwind(applicationUtilsLight, tailwind);
 console.log('## Comparing tailwind dark mode');
 failures += compareApplicationUtilsToTailwind(applicationUtilsDark, tailwind, darkModeResolver);
 
-console.log('# Checking whether legacy GitLab utility classes are used with tailwind modifiers');
+console.log('# Checking whether legacy GitLab utility classes are used');
 
 console.log('## Reducing utility definitions to minimally used');
 const { rules } = await toMinimalUtilities();
@@ -147,6 +147,25 @@ failures += ensureNoLegacyUtilIsUsedWithATailwindModifier(rules);
 console.log('# Checking if we have tailwind equivalents of all classes');
 const equivalents = JSON.parse(await readFile(EQUIV_FILE, 'utf-8'));
 failures += ensureWeHaveTailwindEquivalentsForLegacyUtils(rules, equivalents);
+
+const keys = new Set(Object.keys(rules));
+
+// animate-skeleton-loader is alright and will be introduced
+// https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/4545
+keys.delete('.animate-skeleton-loader');
+
+if (keys.size > 0) {
+  console.warn('You are introducing legacy utilities:');
+  console.warn(
+    `\t${Array.from(keys)
+      .map((x) => x.replace(/^\./, '.gl-'))
+      .sort()
+      .join('\n\t')}`,
+  );
+  console.warn('Please migrate them to tailwind utilities:');
+  console.warn('https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/tailwind-migration.md');
+  failures += 1;
+}
 
 if (failures) {
   process.exitCode = 1;

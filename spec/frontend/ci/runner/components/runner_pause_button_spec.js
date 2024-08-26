@@ -15,9 +15,9 @@ import RunnerPauseAction from '~/ci/runner/components/runner_pause_action.vue';
 describe('RunnerPauseButton', () => {
   let wrapper;
 
-  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
   const findRunnerPauseAction = () => wrapper.findComponent(RunnerPauseAction);
   const findBtn = () => wrapper.findComponent(GlButton);
+  const getTooltip = () => getBinding(findBtn().element, 'gl-tooltip').value;
 
   const createComponent = ({
     props = {},

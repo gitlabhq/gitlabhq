@@ -53,7 +53,7 @@ export default {
       <div class="gl-flex gl-flex-row">
         <storage-type-icon :name="item.id" :data-testid="`${item.id}-icon`" />
         <div>
-          <p class="gl-font-bold gl-mb-0" :data-testid="`${item.id}-name`">
+          <p class="gl-mb-0 gl-font-bold" :data-testid="`${item.id}-name`">
             <gl-link
               v-if="item.detailsPath && item.value"
               :data-testid="`${item.id}-details-link`"
@@ -97,7 +97,7 @@ export default {
         <gl-icon
           :id="item.id + '-warning-icon'"
           name="warning"
-          class="gl-mt-2 lg:gl-mt-0 lg:gl-ml-2"
+          class="gl-mt-2 lg:gl-ml-2 lg:gl-mt-0"
           :data-testid="item.id + '-warning-icon'"
         />
         <gl-popover

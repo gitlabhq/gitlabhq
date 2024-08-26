@@ -48,7 +48,8 @@ module Projects
           can_write_model_registry: can_write_model_registry?(user, project),
           import_path: model_version_artifact_import_path(project.id, model_version.id),
           model_path: project_ml_model_path(project, model_version.model),
-          max_allowed_file_size: max_allowed_file_size(project)
+          max_allowed_file_size: max_allowed_file_size(project),
+          markdown_preview_path: preview_markdown_path(project)
         }
 
         to_json(data)

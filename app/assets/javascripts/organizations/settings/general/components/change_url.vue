@@ -102,9 +102,9 @@ export default {
     >
       <template #header>
         <div class="gl-flex gl-grow">
-          <h4 class="gl-text-base gl-leading-24 gl-m-0">{{ $options.i18n.cardHeaderTitle }}</h4>
+          <h4 class="gl-m-0 gl-text-base gl-leading-24">{{ $options.i18n.cardHeaderTitle }}</h4>
         </div>
-        <p class="gl-text-subtle gl-text-sm gl-m-0">{{ $options.i18n.cardHeaderDescription }}</p>
+        <p class="gl-m-0 gl-text-sm gl-text-subtle">{{ $options.i18n.cardHeaderDescription }}</p>
       </template>
       <gl-form :id="$options.formId">
         <gl-form-fields

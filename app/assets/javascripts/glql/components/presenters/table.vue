@@ -37,7 +37,7 @@ export default {
 </script>
 <template>
   <div class="!gl-my-4">
-    <table class="!gl-mt-0 !gl-mb-2">
+    <table class="!gl-mb-2 !gl-mt-0">
       <thead>
         <tr>
           <th v-for="(field, fieldIndex) in fields" :key="field.key">

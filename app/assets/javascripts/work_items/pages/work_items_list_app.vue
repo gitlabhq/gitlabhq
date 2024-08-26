@@ -55,6 +55,7 @@ import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { STATE_CLOSED, STATE_OPEN, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
+import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
 import { sortOptions, urlSortParams } from './list/constants';
 
 const EmojiToken = () =>
@@ -111,14 +112,14 @@ export default {
       error: undefined,
       filterTokens: [],
       hasAnyIssues: false,
-      isInitialAllCountSet: false,
+      isInitialLoadComplete: false,
       pageInfo: {},
       pageParams: getInitialPageParams(),
       pageSize: DEFAULT_PAGE_SIZE,
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
       state: STATUS_OPEN,
-      tabCounts: {},
       workItems: [],
+      workItemStateCounts: {},
       activeItem: null,
       isRefetching: false,
     };
@@ -127,34 +128,14 @@ export default {
     workItems: {
       query: getWorkItemsQuery,
       variables() {
-        return {
-          fullPath: this.fullPath,
-          sort: this.sortKey,
-          state: this.state,
-          search: this.searchQuery,
-          ...this.apiFilterParams,
-          ...this.pageParams,
-          includeDescendants: !this.apiFilterParams.fullPath,
-          types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
-        };
+        return this.queryVariables;
       },
       update(data) {
-        return data.group.workItems.nodes ?? [];
+        return data?.group.workItems.nodes ?? [];
       },
       result({ data }) {
-        const { all, closed, opened } = data?.group.workItemStateCounts ?? {};
-
         this.pageInfo = data?.group.workItems.pageInfo ?? {};
-        this.tabCounts = {
-          [STATUS_OPEN]: opened,
-          [STATUS_CLOSED]: closed,
-          [STATUS_ALL]: all,
-        };
 
-        if (!this.isInitialAllCountSet) {
-          this.hasAnyIssues = Boolean(all);
-          this.isInitialAllCountSet = true;
-        }
         if (data?.group) {
           const rootBreadcrumbName =
             this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
@@ -167,6 +148,27 @@ export default {
         this.error = s__(
           'WorkItem|Something went wrong when fetching work items. Please try again.',
         );
+        Sentry.captureException(error);
+      },
+    },
+    workItemStateCounts: {
+      query: getWorkItemStateCountsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.group.workItemStateCounts ?? {};
+      },
+      result({ data }) {
+        const { all } = data?.group.workItemStateCounts ?? {};
+
+        if (!this.isInitialLoadComplete) {
+          this.hasAnyIssues = Boolean(all);
+          this.isInitialLoadComplete = true;
+        }
+      },
+      error(error) {
+        this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
     },
@@ -199,6 +201,18 @@ export default {
     },
     namespace() {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+    },
+    queryVariables() {
+      return {
+        fullPath: this.fullPath,
+        sort: this.sortKey,
+        state: this.state,
+        search: this.searchQuery,
+        ...this.apiFilterParams,
+        ...this.pageParams,
+        includeDescendants: !this.apiFilterParams.fullPath,
+        types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
+      };
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -333,6 +347,14 @@ export default {
     showPageSizeSelector() {
       return this.workItems.length > 0;
     },
+    tabCounts() {
+      const { all, closed, opened } = this.workItemStateCounts;
+      return {
+        [STATUS_OPEN]: opened,
+        [STATUS_CLOSED]: closed,
+        [STATUS_ALL]: all,
+      };
+    },
     typeTokenOptions() {
       return getTypeTokenOptions({
         hasEpicsFeature: this.hasEpicsFeature,
@@ -343,9 +365,9 @@ export default {
   },
   watch: {
     eeWorkItemUpdateCount() {
-      // Only reset isInitialAllCountSet when there's no issues to minimize unmounting IssuableList
+      // Only reset isInitialLoadComplete when there's no issues to minimize unmounting IssuableList
       if (!this.hasAnyIssues) {
-        this.isInitialAllCountSet = false;
+        this.isInitialLoadComplete = false;
       }
       this.$apollo.queries.workItems.refetch();
     },
@@ -468,7 +490,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="!isInitialAllCountSet && !error" class="gl-mt-5" size="lg" />
+  <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
 
   <div v-else-if="hasAnyIssues || error">
     <work-item-drawer

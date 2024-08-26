@@ -137,7 +137,7 @@ To reorder list items, when viewing an epic:
 1. Drag the row to the new position in the list.
 1. Release the grip icon.
 
-## Bulk edit epics
+### Bulk edit epics
 
 Users with at least the Reporter role can manage epics.
 
@@ -154,6 +154,49 @@ To update multiple epics at the same time:
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
+
+## Assignees
+
+DETAILS:
+**Status:** Beta
+**Offering:** GitLab.com, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+If your administrator [enabled the new look for epics](epic_work_items.md),
+an epic can be assigned to one or more users.
+
+The assignees can be changed as often as needed.
+The idea is that the assignees are people responsible for the epic.
+
+If a user is not a member of a group, an epic can only be assigned to them if another group member
+assigns them.
+
+This feature is in [beta](../../../policy/experiment-beta-support.md).
+If you find a bug, use the
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
+
+### Change assignee on an epic
+
+Prerequisites:
+
+- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- You must have at least the Reporter role for the group.
+
+To change the assignee on an epic:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan > Epics**, then select your epic to view it.
+1. On the right sidebar, in the **Assignees** section, select **Edit**.
+1. From the dropdown list, select the users to add as an assignee.
+1. Select any area outside the dropdown list.
+
+The assignee is changed without having to refresh the page.
 
 ## Delete an epic
 

@@ -7123,6 +7123,32 @@ Input type: `MlModelVersionDeleteInput`
 | <a id="mutationmlmodelversiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmlmodelversiondeletemodelversion"></a>`modelVersion` | [`MlModelVersion`](#mlmodelversion) | Deleted model version. |
 
+### `Mutation.mlModelVersionEdit`
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Input type: `MlModelVersionEditInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioneditclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelversioneditdescription"></a>`description` | [`String!`](#string) | Description of the model version. |
+| <a id="mutationmlmodelversioneditmodelid"></a>`modelId` | [`MlModelID!`](#mlmodelid) | Global ID of the model the version belongs to. |
+| <a id="mutationmlmodelversioneditprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the model to mutate is in. |
+| <a id="mutationmlmodelversioneditversion"></a>`version` | [`String!`](#string) | Model version. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioneditclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelversionediterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmlmodelversioneditmodelversion"></a>`modelVersion` | [`MlModelVersion`](#mlmodelversion) | Model after mutation. |
+
 ### `Mutation.namespaceBanDestroy`
 
 Input type: `NamespaceBanDestroyInput`

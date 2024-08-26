@@ -66,6 +66,17 @@ module API
           end
         end
 
+        namespace 'kubernetes/receptive_agents' do
+          desc 'GET receptive agents' do
+            detail 'Retrieve agents to maintain a connection with'
+          end
+          get '/', feature_category: :deployment_management, urgency: :low do
+            present ::Clusters::Agents::UrlConfiguration.active,
+              with: Entities::Clusters::ReceptiveAgent,
+              root: :agents
+          end
+        end
+
         namespace 'kubernetes/agent_configuration' do
           desc 'POST agent configuration' do
             detail 'Store configuration for an agent'
