@@ -63,7 +63,7 @@ describe('Blob Header Filepath', () => {
     it('should have classes', () => {
       createComponent();
       expect(getById('file-title-content').attributes('class')).toEqual(
-        'file-title-name mr-1 js-blob-header-filepath gl-break-all gl-text-decoration-none!',
+        'file-title-name mr-1 js-blob-header-filepath gl-break-all !gl-no-underline',
       );
     });
 

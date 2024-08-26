@@ -32,7 +32,7 @@ export default {
 </script>
 <template>
   <div class="js-file-title file-title-flex-parent">
-    <div class="gl-display-flex gl-align-items-center gl-w-full">
+    <div class="gl-flex gl-w-full gl-items-center">
       <gl-form-input
         v-model="name"
         :placeholder="s__('Snippets|File name (e.g. test.rb)')"

@@ -281,7 +281,7 @@ export default {
     <gl-alert v-if="showNoAlertsMsg" @dismiss="errorAlertDismissed">
       <gl-sprintf :message="$options.i18n.noAlertsMsg">
         <template #link="{ content }">
-          <gl-link class="gl-display-inline-block" :href="populatingAlertsHelpUrl" target="_blank">
+          <gl-link class="gl-inline-block" :href="populatingAlertsHelpUrl" target="_blank">
             {{ content }}
           </gl-link>
         </template>
@@ -340,7 +340,7 @@ export default {
         >
           <template #cell(severity)="{ item }">
             <div
-              class="gl-inline-flex gl-align-items-center justify-content-between"
+              class="justify-content-between gl-inline-flex gl-items-center"
               data-testid="severityField"
             >
               <gl-icon
@@ -363,7 +363,7 @@ export default {
 
           <template #cell(alertLabel)="{ item }">
             <div
-              class="gl-max-w-full text-truncate"
+              class="text-truncate gl-max-w-full"
               :title="`${item.iid} - ${item.title}`"
               data-testid="idField"
             >

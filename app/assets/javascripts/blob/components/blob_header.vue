@@ -140,7 +140,7 @@ export default {
 </script>
 <template>
   <div class="js-file-title file-title-flex-parent">
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <table-of-contents class="gl-pr-2" />
       <blob-filepath :blob="blob" :show-path="showPath" :show-blob-size="showBlobSize">
         <template #filepath-prepend>
@@ -149,7 +149,7 @@ export default {
       </blob-filepath>
     </div>
 
-    <div class="gl-display-flex gl-flex-wrap file-actions">
+    <div class="file-actions gl-flex gl-flex-wrap">
       <viewer-switcher
         v-if="!hideViewerSwitcher"
         v-model="viewer"

@@ -153,8 +153,8 @@ describe('Board list component', () => {
         const block = wrapper.find(maxIssueCountWarningClass);
 
         expect(block.exists()).toBe(true);
-        expect(block.attributes('class')).toContain(
-          'gl-rounded-bottom-left-base gl-rounded-bottom-right-base',
+        expect(block.attributes('class').split(' ')).toEqual(
+          expect.arrayContaining(['gl-rounded-bl-base', 'gl-rounded-br-base']),
         );
       });
       it('shows cut line', () => {

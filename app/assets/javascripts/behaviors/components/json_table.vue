@@ -50,19 +50,19 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline-block gl-max-w-full">
+  <div class="gl-inline-block gl-max-w-full">
     <gl-form-input
       v-if="hasFilter"
       v-model="filterInput"
       :placeholder="__('Type to search')"
-      class="gl-mb-2!"
+      class="!gl-mb-2"
     />
     <gl-table
       :fields="cleanedFields"
       :items="items"
       :filter="filterInput"
       show-empty
-      class="gl-mt-0!"
+      class="!gl-mt-0"
     >
       <template v-if="caption" #table-caption>
         <small>{{ caption }}</small>

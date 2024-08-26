@@ -241,6 +241,7 @@ module API
         mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
         mount ::API::Clusters::AgentTokens
+        mount ::API::Clusters::AgentUrlConfigurations
         mount ::API::Clusters::Agents
         mount ::API::Commits
         mount ::API::CommitStatuses

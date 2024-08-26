@@ -10,7 +10,7 @@ module Import
     belongs_to :source_user, class_name: 'Import::SourceUser'
     belongs_to :namespace
 
-    validates :model, :namespace_id, :source_user_id, :user_reference_column, presence: true
+    validates :model, :namespace_id, :source_user_id, :user_reference_column, :alias_version, presence: true
     validates :numeric_key, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
     validates :composite_key,
       json_schema: { filename: 'import_source_user_placeholder_reference_composite_key' },
@@ -37,21 +37,22 @@ module Import
       numeric_key
       source_user_id
       user_reference_column
+      alias_version
     ].freeze
 
     SerializationError = Class.new(StandardError)
 
     def aliased_model
-      PlaceholderReferences::AliasResolver.aliased_model(model)
+      PlaceholderReferences::AliasResolver.aliased_model(model, version: alias_version)
     end
 
     def aliased_user_reference_column
-      PlaceholderReferences::AliasResolver.aliased_column(model, user_reference_column)
+      PlaceholderReferences::AliasResolver.aliased_column(model, user_reference_column, version: alias_version)
     end
 
     def aliased_composite_key
       composite_key.transform_keys do |key|
-        PlaceholderReferences::AliasResolver.aliased_column(model, key)
+        PlaceholderReferences::AliasResolver.aliased_column(model, key, version: alias_version)
       end
     end
 

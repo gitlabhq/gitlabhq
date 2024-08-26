@@ -11615,6 +11615,7 @@ CREATE TABLE import_source_user_placeholder_references (
     model text NOT NULL,
     user_reference_column text NOT NULL,
     composite_key jsonb,
+    alias_version smallint NOT NULL,
     CONSTRAINT check_782140eb9d CHECK ((char_length(user_reference_column) <= 50)),
     CONSTRAINT check_d17bd9dd4d CHECK ((char_length(model) <= 150))
 );

@@ -93,12 +93,12 @@ export default {
     <gl-loading-icon v-if="isLoading" size="lg" />
     <div v-show="!isLoading" data-testid="clusters-cards-container">
       <gl-card
-        header-class="gl-bg-white gl-display-flex gl-align-items-center gl-justify-content-space-between gl-py-4"
+        header-class="gl-bg-white gl-flex gl-items-center gl-justify-between gl-py-4"
         body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >
         <template #header>
-          <h3 data-testid="agent-card-title" class="gl-my-0 gl-font-normal gl-font-size-h2">
+          <h3 data-testid="agent-card-title" class="gl-my-0 gl-text-size-h2 gl-font-normal">
             <gl-sprintf :message="agentsCardTitle.message"
               ><template #number>{{ agentsCardTitle.number }}</template>
               <template #total>{{ agentsCardTitle.total }}</template>
@@ -121,7 +121,7 @@ export default {
                   <gl-link
                     :href="$options.i18n.agent.tooltip.link"
                     target="_blank"
-                    class="gl-font-sm"
+                    class="gl-text-sm"
                   >
                     {{ content }}</gl-link
                   >
@@ -153,12 +153,12 @@ export default {
 
       <gl-card
         class="gl-mt-6"
-        header-class="gl-bg-white gl-display-flex gl-align-items-center gl-justify-content-space-between"
+        header-class="gl-bg-white gl-flex gl-items-center gl-justify-between"
         body-class="gl-pb-0 cluster-card-item"
         footer-class="gl-text-right"
       >
         <template #header>
-          <h3 class="gl-my-1 gl-font-normal gl-font-size-h2" data-testid="clusters-card-title">
+          <h3 class="gl-my-1 gl-text-size-h2 gl-font-normal" data-testid="clusters-card-title">
             <gl-sprintf :message="clustersCardTitle.message"
               ><template #number>{{ clustersCardTitle.number }}</template>
               <template #total>{{ clustersCardTitle.total }}</template>

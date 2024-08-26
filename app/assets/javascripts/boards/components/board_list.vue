@@ -615,7 +615,7 @@ export default {
 <template>
   <div
     v-show="!list.collapsed"
-    class="board-list-component gl-relative gl-h-full gl-display-flex gl-flex-direction-column gl-min-h-0"
+    class="board-list-component gl-relative gl-flex gl-h-full gl-min-h-0 gl-flex-col"
     data-testid="board-list-cards-area"
   >
     <div
@@ -648,13 +648,12 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-bg-red-50 gl-rounded-bottom-left-base gl-rounded-bottom-right-base':
-          boardItemsSizeExceedsMax,
+        'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardItemsSizeExceedsMax,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
       }"
       :draggable="canMoveIssue ? '.board-card' : false"
-      class="board-list gl-w-full gl-h-full gl-list-none gl-mb-0 gl-p-3 gl-pt-0 gl-overflow-x-hidden"
+      class="board-list gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-0"
       data-testid="tree-root-wrapper"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
@@ -714,7 +713,7 @@ export default {
         <!-- for supporting previous structure with intersection observer -->
         <li
           v-if="showCount"
-          class="board-list-count gl-text-center gl-text-secondary gl-py-4"
+          class="board-list-count gl-py-4 gl-text-center gl-text-secondary"
           data-issue-id="-1"
         >
           <gl-loading-icon

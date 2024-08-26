@@ -38,10 +38,7 @@ export default {
 <template>
   <div>
     <nav class="review-bar-component js-review-bar" data-testid="review_bar_component">
-      <div
-        class="review-bar-content gl-flex gl-justify-content-end"
-        data-testid="review-bar-content"
-      >
+      <div class="review-bar-content gl-flex gl-justify-end" data-testid="review-bar-content">
         <preview-dropdown />
         <submit-dropdown />
       </div>

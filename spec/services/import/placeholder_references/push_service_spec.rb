@@ -46,11 +46,20 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     end
 
     it 'pushes data to Redis' do
-      expected_result = [nil, 'MergeRequest', 234, 9, 123, 'author_id'].to_json
+      expected_result = [nil, 'MergeRequest', 234, 9, 123, 'author_id', 1].to_json
 
       expect(result).to be_success
       expect(result.payload).to eq(serialized_reference: expected_result)
       expect(set).to contain_exactly(expected_result)
+    end
+
+    it 'sets the alias_version value from PlaceholderReferences::AliasResolver' do
+      expected_result = [nil, 'MergeRequest', 234, 9, 123, 'author_id', 192].to_json
+      allow(Import::PlaceholderReferences::AliasResolver)
+        .to receive(:version_for_model).with('MergeRequest').and_return(192)
+
+      expect(result).to be_success
+      expect(result.payload).to eq(serialized_reference: expected_result)
     end
 
     context 'when composite_key is provided' do
@@ -59,7 +68,7 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
 
       it 'pushes data to Redis containing the composite_key' do
         expected_result = [
-          { 'foo' => 1 }, 'MergeRequest', 234, nil, 123, 'author_id'
+          { 'foo' => 1 }, 'MergeRequest', 234, nil, 123, 'author_id', 1
         ].to_json
 
         expect(result).to be_success
@@ -98,7 +107,9 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     end
 
     it 'pushes data to Redis' do
-      expected_result = [nil, 'MergeRequest', source_user.namespace_id, record.id, source_user.id, 'author_id'].to_json
+      expected_result = [
+        nil, 'MergeRequest', source_user.namespace_id, record.id, source_user.id, 'author_id', 1
+      ].to_json
 
       expect(result).to be_success
       expect(result.payload).to eq(serialized_reference: expected_result)
@@ -110,7 +121,7 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
 
       it 'pushes a composition key' do
         expected_result = [
-          { issue_id: 1, user_id: 2 }, 'IssueAssignee', source_user.namespace_id, nil, source_user.id, 'author_id'
+          { issue_id: 1, user_id: 2 }, 'IssueAssignee', source_user.namespace_id, nil, source_user.id, 'author_id', 1
         ].to_json
 
         expect(result).to be_success
@@ -122,6 +133,10 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     # rubocop:disable RSpec/VerifiedDoubles -- Custom object
     context 'when record does not respond to :id' do
       let(:record) { double(:record) }
+
+      before do
+        allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
+      end
 
       it_behaves_like 'raises error'
 
@@ -136,6 +151,10 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
 
     context 'when record id is an string' do
       let(:record) { double(:record, id: 'string') }
+
+      before do
+        allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
+      end
 
       it_behaves_like 'raises error'
 

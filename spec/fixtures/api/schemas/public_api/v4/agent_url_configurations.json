@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "agent_url_configuration.json"
+  }
+}

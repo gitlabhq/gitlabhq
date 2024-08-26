@@ -141,7 +141,7 @@ export default {
       @close="unsetActiveListId"
     >
       <template #title>
-        <h2 class="gl-my-0 gl-font-size-h2 gl-leading-24">
+        <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
           {{ $options.listSettingsText }}
         </h2>
       </template>

@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden md:gl-flex gl-align-items-center">
+  <div class="gl-hidden gl-items-center md:gl-flex">
     <gl-button
       ref="toggleFocusModeButton"
       v-gl-tooltip

@@ -8,7 +8,7 @@ import {
   GlLink,
   GlModal,
 } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -40,6 +40,7 @@ describe('AlertsSettingsForm', () => {
   });
 
   const createComponent = async ({
+    mountFn = mount,
     props = {},
     multiIntegrations = true,
     currentIntegration = null,
@@ -59,7 +60,7 @@ describe('AlertsSettingsForm', () => {
     );
 
     wrapper = extendedWrapper(
-      mount(AlertsSettingsForm, {
+      mountFn(AlertsSettingsForm, {
         apolloProvider,
         propsData: {
           loading: false,
@@ -130,7 +131,7 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
-      await createComponent({ props: { canAddIntegration: false } });
+      await createComponent({ mountFn: shallowMount, props: { canAddIntegration: false } });
 
       expect(findSelect().attributes('disabled')).toBeDefined();
       expect(findMultiSupportText().exists()).toBe(true);

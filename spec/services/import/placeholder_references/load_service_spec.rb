@@ -15,7 +15,8 @@ RSpec.describe Import::PlaceholderReferences::LoadService, feature_category: :im
         model: 'Foo',
         namespace_id: source_user.namespace_id,
         source_user_id: source_user.id,
-        user_reference_column: 'user_id'
+        user_reference_column: 'user_id',
+        alias_version: 1
       }
     end
 

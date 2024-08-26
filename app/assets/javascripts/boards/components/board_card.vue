@@ -138,12 +138,12 @@ export default {
   <li
     :class="[
       {
-        'multi-select gl-bg-blue-50 gl-border-blue-200': multiSelectVisible,
+        'multi-select gl-border-blue-200 gl-bg-blue-50': multiSelectVisible,
         'gl-cursor-grab': isDraggable,
         'is-disabled': isDisabled,
         'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
-        'gl-pl-4 gl-border-l-solid gl-border-4': itemColor,
+        'gl-border-4 gl-pl-4 gl-border-l-solid': itemColor,
       },
     ]"
     :index="index"
@@ -152,7 +152,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board-card"
-    class="board-card gl-p-4 gl-rounded-base gl-leading-normal gl-relative gl-mb-3"
+    class="board-card gl-relative gl-mb-3 gl-rounded-base gl-p-4 gl-leading-normal"
     @click="toggleIssue($event)"
   >
     <board-card-inner

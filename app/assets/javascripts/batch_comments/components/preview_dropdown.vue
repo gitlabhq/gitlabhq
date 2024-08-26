@@ -65,9 +65,9 @@ export default {
 
     <template #header>
       <div
-        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200"
+        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-border-b-solid"
       >
-        <span class="gl-flex-grow-1 gl-font-bold gl-font-sm gl-pr-2">
+        <span class="gl-grow gl-pr-2 gl-text-sm gl-font-bold">
           {{ n__('%d pending comment', '%d pending comments', draftsCount) }}
         </span>
       </div>

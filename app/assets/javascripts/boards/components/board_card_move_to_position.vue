@@ -105,7 +105,7 @@ export default {
       title: $options.i18n.moveCardText,
       boundary: 'viewport',
     }"
-    class="move-to-position gl-block gl-absolute gl-top-3 gl-right-3 js-no-trigger"
+    class="move-to-position js-no-trigger gl-absolute gl-right-3 gl-top-3 gl-block"
     size="small"
     category="tertiary"
     :items="$options.BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS"

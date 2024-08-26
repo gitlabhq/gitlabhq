@@ -35,7 +35,8 @@ module Import
           namespace_id: source_user_namespace_id,
           user_reference_column: user_reference_column,
           numeric_key: numeric_key,
-          composite_key: composite_key
+          composite_key: composite_key,
+          alias_version: PlaceholderReferences::AliasResolver.version_for_model(model.name)
         )
       end
 

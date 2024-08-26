@@ -59,7 +59,7 @@ export default {
     </template>
 
     <template #tooltip-content>
-      <div class="gl-display-flex gl-justify-content-space-between gl-gap-6">
+      <div class="gl-flex gl-justify-between gl-gap-6">
         <span data-testid="tooltip-label">{{ tooltipLabel }}</span>
         <span data-testid="tooltip-value">{{ tooltipValue }}</span>
       </div>

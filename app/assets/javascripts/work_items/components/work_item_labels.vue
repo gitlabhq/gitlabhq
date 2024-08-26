@@ -250,7 +250,7 @@ export default {
             input: {
               workItemType: this.workItemType,
               fullPath: this.fullPath,
-              labels: this.visibleLabels.filter(({ id }) => selectedIds.includes(id)),
+              labels: this.labelsCache.filter(({ id }) => selectedIds.includes(id)),
             },
           },
         });

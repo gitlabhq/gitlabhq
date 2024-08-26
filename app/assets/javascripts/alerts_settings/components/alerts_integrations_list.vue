@@ -162,7 +162,7 @@ export default {
             v-gl-tooltip
             name="check"
             :size="16"
-            class="gl-text-green-500 gl-hover-cursor-pointer gl-mr-3"
+            class="gl-mr-3 gl-text-green-500 hover:gl-cursor-pointer"
             :title="$options.i18n.status.enabled.tooltip"
           />
           {{ $options.i18n.status.enabled.name }}
@@ -172,7 +172,7 @@ export default {
             v-gl-tooltip
             name="warning-solid"
             :size="16"
-            class="gl-text-red-600 gl-hover-cursor-pointer gl-mr-3"
+            class="gl-mr-3 gl-text-red-600 hover:gl-cursor-pointer"
             :title="$options.i18n.status.disabled.tooltip"
           />
           {{ $options.i18n.status.disabled.name }}
@@ -180,7 +180,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-button-group class="gl-ml-3 -gl-mt-2 -gl-mb-2">
+        <gl-button-group class="-gl-mb-2 -gl-mt-2 gl-ml-3">
           <gl-button
             icon="settings"
             :aria-label="$options.i18n.editIntegration"

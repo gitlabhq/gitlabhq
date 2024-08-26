@@ -265,7 +265,7 @@ export default {
         <h3>{{ title }}</h3>
       </template>
       <gl-alert v-if="errorMessages.length" variant="danger" @dismiss="errorMessages = []">
-        <ul class="gl-mb-0! gl-ml-5">
+        <ul class="!gl-mb-0 gl-ml-5">
           <li v-for="error in errorMessages" :key="error">
             {{ error }}
           </li>

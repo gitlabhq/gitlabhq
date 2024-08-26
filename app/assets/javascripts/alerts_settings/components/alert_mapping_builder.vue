@@ -131,20 +131,16 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-table gl-w-full gl-mt-5">
-    <div class="gl-display-table-row">
-      <h5 id="gitlabFieldsHeader" class="gl-display-table-cell gl-pb-3 gl-pr-3">
+  <div class="gl-mt-5 gl-table gl-w-full">
+    <div class="gl-table-row">
+      <h5 id="gitlabFieldsHeader" class="gl-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.gitlabKeyTitle }}
       </h5>
-      <h5 class="gl-display-table-cell gl-pb-3 gl-pr-3">&nbsp;</h5>
-      <h5 id="parsedFieldsHeader" class="gl-display-table-cell gl-pb-3 gl-pr-3">
+      <h5 class="gl-table-cell gl-pb-3 gl-pr-3">&nbsp;</h5>
+      <h5 id="parsedFieldsHeader" class="gl-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.payloadKeyTitle }}
       </h5>
-      <h5
-        v-if="hasFallbackColumn"
-        id="fallbackFieldsHeader"
-        class="gl-display-table-cell gl-pb-3 gl-pr-3"
-      >
+      <h5 v-if="hasFallbackColumn" id="fallbackFieldsHeader" class="gl-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.fallbackKeyTitle }}
         <gl-icon
           v-gl-tooltip
@@ -155,8 +151,8 @@ export default {
       </h5>
     </div>
 
-    <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
+    <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-table-row">
+      <div class="gl-table-cell gl-w-3/10 gl-py-3 gl-pr-3 gl-align-middle">
         <gl-form-input
           aria-labelledby="gitlabFieldsHeader"
           disabled
@@ -164,15 +160,15 @@ export default {
         />
       </div>
 
-      <div class="gl-display-table-cell gl-pr-3 gl-align-middle">
+      <div class="gl-table-cell gl-pr-3 gl-align-middle">
         <div class="right-arrow gl-relative gl-w-full gl-bg-gray-400">
           <i
-            class="right-arrow-head gl-absolute gl-border-solid gl-border-gray-400 gl-display-inline-block gl-p-2"
+            class="right-arrow-head gl-absolute gl-inline-block gl-border-solid gl-border-gray-400 gl-p-2"
           ></i>
         </div>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
+      <div class="gl-table-cell gl-w-3/10 gl-py-3 gl-pr-3 gl-align-middle">
         <gl-collapsible-listbox
           :items="dropdownItems(gitlabField.searchTerm, gitlabField.mappingFields)"
           :selected="selectedValue(gitlabField.mapping)"
@@ -193,7 +189,7 @@ export default {
         </gl-collapsible-listbox>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-w-3/10">
+      <div class="gl-table-cell gl-w-3/10 gl-py-3">
         <gl-collapsible-listbox
           v-if="Boolean(gitlabField.numberOfFallbacks)"
           :items="dropdownItems(gitlabField.fallbackSearchTerm, gitlabField.mappingFields)"

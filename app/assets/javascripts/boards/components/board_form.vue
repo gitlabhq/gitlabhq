@@ -325,7 +325,7 @@ export default {
     </p>
     <gl-form v-else data-testid="board-form-wrapper" @submit.prevent="submit">
       <div v-if="!readonly" class="gl-mb-5" data-testid="board-form">
-        <label class="gl-font-bold gl-font-lg" for="board-new-name">
+        <label class="gl-text-lg gl-font-bold" for="board-new-name">
           {{ $options.i18n.titleFieldLabel }}
         </label>
         <input
@@ -359,7 +359,7 @@ export default {
       />
     </gl-form>
     <template v-if="canDelete" #modal-footer>
-      <div class="gl-display-flex gl-justify-content-space-between gl-w-full gl-m-0">
+      <div class="gl-m-0 gl-flex gl-w-full gl-justify-between">
         <gl-button
           category="secondary"
           variant="danger"

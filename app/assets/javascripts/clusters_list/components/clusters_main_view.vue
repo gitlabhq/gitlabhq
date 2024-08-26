@@ -78,7 +78,7 @@ export default {
     <gl-tabs
       v-model="selectedTabIndex"
       sync-active-tab-with-query-params
-      nav-class="gl-flex-grow-1 gl-align-items-center"
+      nav-class="gl-grow gl-items-center"
       lazy
     >
       <gl-tab
@@ -86,7 +86,7 @@ export default {
         :key="idx"
         :title="tab.title"
         :query-param-value="tab.queryParamValue"
-        class="gl-leading-20 gl-mt-5"
+        class="gl-mt-5 gl-leading-20"
       >
         <component
           :is="tab.component"

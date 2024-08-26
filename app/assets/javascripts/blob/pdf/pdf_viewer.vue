@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div class="js-pdf-viewer container-fluid md gl-mt-3 gl-mb-3">
+  <div class="js-pdf-viewer container-fluid md gl-mb-3 gl-mt-3">
     <div v-if="loading && !error" class="text-center loading">
       <gl-loading-icon class="mt-5" size="lg" />
     </div>

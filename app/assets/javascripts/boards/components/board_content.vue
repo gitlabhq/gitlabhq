@@ -237,11 +237,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-cloak
-    data-testid="boards-list"
-    class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
-  >
+  <div v-cloak data-testid="boards-list" class="gl-flex gl-min-h-0 gl-grow gl-flex-col">
     <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="dismissError">
       {{ error }}
     </gl-alert>
@@ -250,7 +246,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6 gl-whitespace-nowrap gl-overflow-x-auto"
+      class="boards-list gl-w-full gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6"
       @end="updateListPosition"
     >
       <board-column
@@ -268,7 +264,7 @@ export default {
       />
 
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
-        <div v-if="!addColumnFormVisible" class="gl-display-inline-block gl-pl-2">
+        <div v-if="!addColumnFormVisible" class="gl-inline-block gl-pl-2">
           <board-add-new-column-trigger
             v-if="canAdminList"
             :is-new-list-showing="addColumnFormVisible"
@@ -301,7 +297,7 @@ export default {
       <template #create-list-button>
         <div
           v-if="!addColumnFormVisible"
-          class="gl-mt-5 gl-display-inline-block gl-pl-3 gl-sticky gl-top-5"
+          class="gl-sticky gl-top-5 gl-mt-5 gl-inline-block gl-pl-3"
         >
           <board-add-new-column-trigger
             v-if="canAdminList"

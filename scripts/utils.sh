@@ -486,8 +486,7 @@ function log_disk_usage() {
   echo -e "df -h"
   df -h
 
-  echo -e "\n\nls -lhS tmp"
-  ls -lhS tmp
-
+  echo -e "du -h -d 1"
+  du -h -d 1
   echo "[log_disk_usage ${caller}] end"
 }

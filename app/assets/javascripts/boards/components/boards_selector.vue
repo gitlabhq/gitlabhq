@@ -282,15 +282,15 @@ export default {
         </template>
 
         <template #footer>
-          <div v-if="hasMissingBoards" class="gl-border-t gl-font-sm gl-px-4 gl-pt-4 gl-pb-3">
+          <div v-if="hasMissingBoards" class="gl-border-t gl-px-4 gl-pb-3 gl-pt-4 gl-text-sm">
             {{ s__('Boards|Some of your boards are hidden, add a license to see them again.') }}
           </div>
-          <div v-if="canAdminBoard" class="gl-border-t gl-py-2 gl-px-2">
+          <div v-if="canAdminBoard" class="gl-border-t gl-px-2 gl-py-2">
             <gl-button
               v-if="showCreate"
               v-gl-modal-directive="'board-config-modal'"
               block
-              class="gl-justify-content-start!"
+              class="!gl-justify-start"
               category="tertiary"
               data-testid="create-new-board-button"
               data-track-action="click_button"

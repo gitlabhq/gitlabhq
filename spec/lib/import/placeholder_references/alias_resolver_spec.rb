@@ -13,7 +13,7 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
         MSG
       end
 
-      described_class::ALIASES.each_value do |model_alias|
+      described_class::ALIASES.each_value.flat_map(&:values).each do |model_alias|
         model = model_alias[:model]
         column_names = model.columns.map(&:name)
 
@@ -24,14 +24,68 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
     end
   end
 
+  describe ".version_for_model" do
+    let(:aliases) do
+      {
+        "Note" => {
+          1 => {
+            model: Note,
+            columns: { "author_id" => "author_id" }
+          },
+          2 => {
+            model: Note,
+            columns: { "author_id" => "user_id" }
+          }
+        }
+      }
+    end
+
+    before do
+      stub_const("#{described_class}::ALIASES", aliases)
+    end
+
+    it "returns the max version available for the model" do
+      expect(described_class.version_for_model("Note")).to eq(2)
+    end
+
+    context "when the model does not exist" do
+      it "returns version 1 after reporting a missing alias" do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          .with(described_class::MissingAlias.new("ALIASES must be extended to include Issue"))
+
+        expect(described_class.version_for_model("Issue")).to eq(1)
+      end
+    end
+  end
+
   describe ".aliased_model" do
-    subject(:aliased_model) { described_class.aliased_model(model) }
+    subject(:aliased_model) { described_class.aliased_model(model, version: 1) }
+
+    let(:model) { "Note" }
 
     context "when model exists" do
-      let(:model) { "Note" }
-
       it "returns the model" do
         expect(aliased_model).to eq(Note)
+      end
+    end
+
+    context "when there are multiple versions" do
+      let(:aliases) do
+        {
+          "Note" => {
+            1 => { model: Note, columns: { "author_id" => "author_id" } },
+            2 => { model: Issue, columns: { "author_id" => "author_id" } }
+          }
+        }
+      end
+
+      before do
+        stub_const("#{described_class}::ALIASES", aliases)
+      end
+
+      it "returns the value for the right version" do
+        expect(described_class.aliased_model(model, version: 1)).to eq(Note)
+        expect(described_class.aliased_model(model, version: 2)).to eq(Issue)
       end
     end
 
@@ -41,9 +95,11 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       let(:aliases) do
         {
           "Description" => {
-            model: Note,
-            columns: {
-              "author_id" => "author_id"
+            1 => {
+              model: Note,
+              columns: {
+                "author_id" => "author_id"
+              }
             }
           }
         }
@@ -62,8 +118,9 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       let(:model) { "Blob" }
 
       it "returns a constantized version of the passed string after reporting a missing alias" do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-          .with(described_class::MissingAlias)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          described_class::MissingAlias.new("ALIASES must be extended to include Blob for version 1")
+        )
 
         expect(aliased_model).to eq(Blob)
       end
@@ -73,8 +130,9 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       let(:model) { "NotARealModel" }
 
       it "returns nil after reporting a missing alias" do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-          .with(described_class::MissingAlias)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          described_class::MissingAlias.new("ALIASES must be extended to include NotARealModel for version 1")
+        )
 
         expect(aliased_model).to be_nil
       end
@@ -82,7 +140,7 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
   end
 
   describe ".aliased_column" do
-    subject(:aliased_column) { described_class.aliased_column(model, column) }
+    subject(:aliased_column) { described_class.aliased_column(model, column, version: 1) }
 
     let(:model) { "Note" }
     let(:column) { "author_id" }
@@ -91,13 +149,35 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       expect(aliased_column).to eq("author_id")
     end
 
+    context "when there are multiple versions" do
+      let(:aliases) do
+        {
+          "Note" => {
+            1 => { model: Note, columns: { "author_id" => "author_id" } },
+            2 => { model: Issue, columns: { "author_id" => "user_id" } }
+          }
+        }
+      end
+
+      before do
+        stub_const("#{described_class}::ALIASES", aliases)
+      end
+
+      it "returns the value for the right version" do
+        expect(described_class.aliased_column(model, column, version: 1)).to eq("author_id")
+        expect(described_class.aliased_column(model, column, version: 2)).to eq("user_id")
+      end
+    end
+
     context "when the column has changed" do
       let(:aliases) do
         {
           "Note" => {
-            model: Note,
-            columns: {
-              "author_id" => "user_id"
+            1 => {
+              model: Note,
+              columns: {
+                "author_id" => "user_id"
+              }
             }
           }
         }
@@ -116,8 +196,9 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       let(:column) { "test123_id" }
 
       it "returns the same column after reporting a missing alias" do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-          .with(described_class::MissingAlias)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          described_class::MissingAlias.new("ALIASES must be extended to include Note.test123_id for version 1")
+        )
 
         expect(aliased_column).to eq("test123_id")
       end

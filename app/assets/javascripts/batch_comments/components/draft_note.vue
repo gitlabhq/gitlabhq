@@ -86,7 +86,7 @@ export default {
     :note="draft"
     :line="line"
     :discussion-root="true"
-    class="draft-note-component draft-note gl-mb-0!"
+    class="draft-note-component draft-note !gl-mb-0"
     @handleEdit="handleEditing"
     @cancelForm="handleNotEditing"
     @updateSuccess="handleNotEditing"

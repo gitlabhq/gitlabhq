@@ -57,18 +57,16 @@ export default {
     size="lg"
     :title="$options.i18n.title"
     data-testid="modal-shortcuts"
-    body-class="shortcut-help-body gl-p-0!"
+    body-class="shortcut-help-body !gl-p-0"
     :visible="true"
     :hide-footer="true"
     @hidden="$emit('hidden')"
   >
-    <div
-      class="gl-sticky gl-top-0 gl-py-5 gl-px-5 gl-display-flex gl-align-items-center gl-bg-white"
-    >
+    <div class="gl-sticky gl-top-0 gl-flex gl-items-center gl-bg-white gl-px-5 gl-py-5">
       <gl-search-box-by-type
         v-model.trim="searchTerm"
         :aria-label="$options.i18n.search"
-        class="gl-w-1/2 gl-mr-3"
+        class="gl-mr-3 gl-w-1/2"
       />
       <span>
         <gl-sprintf
@@ -93,19 +91,19 @@ export default {
         :key="group.id"
         class="shortcut-help-mapping gl-mb-4"
       >
-        <strong class="shortcut-help-mapping-title gl-w-1/2 gl-display-inline-block">
+        <strong class="shortcut-help-mapping-title gl-inline-block gl-w-1/2">
           {{ group.name }}
         </strong>
         <div
           v-for="keybinding in group.keybindings"
           :key="keybinding.id"
-          class="gl-display-flex gl-align-items-center"
+          class="gl-flex gl-items-center"
         >
           <shortcut
-            class="gl-w-2/5 gl-flex-shrink-0 gl-text-right gl-pr-4"
+            class="gl-w-2/5 gl-shrink-0 gl-pr-4 gl-text-right"
             :shortcuts="keybinding.defaultKeys"
           />
-          <div class="gl-w-1/2 gl-flex-shrink-0 gl-flex-grow-1">
+          <div class="gl-w-1/2 gl-shrink-0 gl-grow">
             {{ keybinding.description }}
           </div>
         </div>

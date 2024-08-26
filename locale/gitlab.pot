@@ -12639,6 +12639,12 @@ msgstr ""
 msgid "ClusterAgent|An agent can have only two active tokens at a time"
 msgstr ""
 
+msgid "ClusterAgent|Receptive agents are disabled for this GitLab instance"
+msgstr ""
+
+msgid "ClusterAgent|URL configuration already exists for this agent"
+msgstr ""
+
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
 msgstr ""
 
@@ -12646,6 +12652,12 @@ msgid "ClusterAgent|User has insufficient permissions to revoke the token for th
 msgstr ""
 
 msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
+msgstr ""
+
+msgid "ClusterAgent|You have insufficient permissions to create an url configuration for this agent"
+msgstr ""
+
+msgid "ClusterAgent|You have insufficient permissions to delete this agent url configuration"
 msgstr ""
 
 msgid "ClusterAgent|You have insufficient permissions to delete this cluster agent"

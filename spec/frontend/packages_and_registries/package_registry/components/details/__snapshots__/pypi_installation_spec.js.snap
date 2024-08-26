@@ -178,7 +178,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
         </div>
       </div>
       <small
-        class="form-text text-gl-muted"
+        class="form-text text-muted"
         id="reference-8"
         tabindex="-1"
       >

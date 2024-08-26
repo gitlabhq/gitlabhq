@@ -190,18 +190,18 @@ export default {
       >
         <template #toggle>
           <gl-button
-            class="gl-max-w-full gl-display-flex gl-align-items-center gl-text-truncate"
+            class="gl-flex gl-max-w-full gl-items-center gl-truncate"
             :class="{ '!gl-shadow-inner-1-red-400': !selectedIdValid }"
-            button-text-classes="gl-display-flex"
+            button-text-classes="gl-flex"
           >
             <template v-if="selectedLabel">
               <span
-                class="dropdown-label-box gl-top-0 gl-flex-shrink-0"
+                class="dropdown-label-box gl-top-0 gl-shrink-0"
                 :style="{
                   backgroundColor: selectedLabel.color,
                 }"
               ></span>
-              <div class="gl-text-truncate">{{ selectedLabel.title }}</div>
+              <div class="gl-truncate">{{ selectedLabel.title }}</div>
             </template>
 
             <template v-else>{{ __('Select a label') }}</template>
@@ -210,9 +210,9 @@ export default {
         </template>
 
         <template #list-item="{ item }">
-          <label class="gl-display-flex gl-font-normal gl-break-words gl-hyphens-auto gl-mb-0">
+          <label class="gl-mb-0 gl-flex gl-hyphens-auto gl-break-words gl-font-normal">
             <span
-              class="dropdown-label-box gl-top-0 gl-flex-shrink-0"
+              class="dropdown-label-box gl-top-0 gl-shrink-0"
               :style="{
                 backgroundColor: item.color,
               }"

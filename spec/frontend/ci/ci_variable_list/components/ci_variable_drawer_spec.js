@@ -150,14 +150,14 @@ describe('CI Variable Drawer', () => {
 
       it('renders the selected variable type', () => {
         createComponent({
-          mountFn: mountExtended,
+          mountFn: shallowMountExtended,
           props: {
             areEnvironmentsLoading: true,
             selectedVariable: mockProjectVariableFileType,
           },
         });
 
-        expect(findTypeDropdown().element.value).toBe(variableTypes.fileType);
+        expect(findTypeDropdown().attributes('value')).toBe(variableTypes.fileType);
       });
     });
 

@@ -102,7 +102,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
       />
     </form>
     <div
-      class="gl-display-flex gl-flex-direction-row gl-flex-wrap gl-justify-content-end gl-m-0 gl-mr-3"
+      class="gl-flex gl-flex-row gl-flex-wrap gl-justify-end gl-m-0 gl-mr-3"
     >
       <b-button-stub
         class="gl-button"

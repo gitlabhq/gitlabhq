@@ -24,7 +24,7 @@ describe('AlertMappingBuilder', () => {
   });
 
   const findColumnInRow = (row, column) =>
-    wrapper.findAll('.gl-display-table-row').at(row).findAll('.gl-display-table-cell ').at(column);
+    wrapper.findAll('.gl-table-row').at(row).findAll('.gl-table-cell ').at(column);
 
   const getMappingOptions = (types) => {
     return parsedMapping.payloadAlertFields.filter(({ type }) => types.includes(type));

@@ -63,10 +63,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-direction-column">
+  <div class="gl-flex gl-flex-col">
     <gl-form-group>
-      <div class="gl-flex gl-align-items-center">
-        <h4 class="gl-pr-3 gl-m-0">{{ s__('ClusterIntegration|GitLab Integration') }}</h4>
+      <div class="gl-flex gl-items-center">
+        <h4 class="gl-m-0 gl-pr-3">{{ s__('ClusterIntegration|GitLab Integration') }}</h4>
 
         <div class="js-cluster-enable-toggle-area">
           <gl-toggle
@@ -74,7 +74,7 @@ export default {
             v-model="toggleEnabled"
             v-gl-tooltip:tooltipcontainer
             name="cluster[enabled]"
-            class="gl-mb-0 js-project-feature-toggle"
+            class="js-project-feature-toggle gl-mb-0"
             aria-describedby="toggleCluster"
             :disabled="!editable"
             :label="$options.i18n.toggleLabel"
@@ -136,7 +136,7 @@ export default {
         </gl-sprintf>
       </div>
     </gl-form-group>
-    <div v-if="editable" class="form group gl-flex gl-justify-content-end">
+    <div v-if="editable" class="form group gl-flex gl-justify-end">
       <gl-button
         category="primary"
         variant="confirm"

@@ -459,3 +459,198 @@ Example request:
 ```shell
 curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/tokens/1
 ```
+
+## Receptive agents
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+You must enable the `Receptive Agents` feature in the application settings.
+
+### List URL configurations for a receptive agent
+
+Returns a list of URL configurations for an agent.
+
+You must have at least the Developer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/cluster_agents/:agent_id/url_configurations
+```
+
+Supported attributes:
+
+| Attribute  | Type              | Required  | Description                                                                                                           |
+|------------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `agent_id` | integer or string | yes       | ID of the agent.                                                                                                      |
+
+Response:
+
+The response is a list of URL configurations with the following fields:
+
+| Attribute            | Type           | Description                                                                  |
+|----------------------|----------------|------------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                 |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
+| `url`                | string         | URL for this URL configuration.                                              |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
+| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+
+Example request:
+
+```shell
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "agent_id": 5,
+    "url": "grpcs://localhost:4242",
+    "public_key": "..."
+  }
+]
+```
+
+NOTE:
+Either `public_key` or `client_cert` is set, but never both.
+
+### Get a single agent URL configuration
+
+Gets a single agent URL configuration.
+
+You must have at least the Developer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id
+```
+
+Supported attributes:
+
+| Attribute              | Type              | Required | Description                                                                                                            |
+|------------------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------|
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user.  |
+| `agent_id`             | integer           | yes      | ID of the agent.                                                                                                       |
+| `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                           |
+
+Response:
+
+The response is a single URL configuration with the following fields:
+
+| Attribute            | Type           | Description                                                                  |
+|----------------------|----------------|------------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                 |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
+| `url`                | string         | URL for this URL configuration.                                              |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
+| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+
+Example request:
+
+```shell
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1"
+```
+
+Example response:
+
+```json
+{
+"id": 1,
+"agent_id": 5,
+"url": "grpcs://localhost:4242",
+"public_key": "..."
+}
+```
+
+NOTE:
+Either `public_key` or `client_cert` is set, but never both.
+
+### Create an agent URL configuration
+
+Creates a new URL configuration for an agent.
+
+You must have at least the Maintainer role to use this endpoint.
+
+An agent can have only one URL configuration at the time.
+
+```plaintext
+POST /projects/:id/cluster_agents/:agent_id/url_configurations
+```
+
+Supported attributes:
+
+| Attribute     | Type              | Required | Description                                                                                                                |
+|---------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------|
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user.      |
+| `agent_id`    | integer           | yes      | ID of the agent.                                                                                                           |
+| `url`         | string            | yes      | URL for this URL configuration.                                                                                            |
+| `client_cert` | string            | no       | Base64-encoded client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`. |
+| `client_key`  | string            | no       | Base64-encoded client key in PEM format if mTLS authentication should be used. Must be provided with `client-cert`.        |
+| `ca_cert`     | string            | no       | Base64-encoded CA certificate to verify the agent endpoint.                                                                |
+| `tls_host`    | string            | no       | TLS host name to verify the server name in agent endpoint.                                                                 |
+
+Response:
+
+The response is the new URL configuration with the following fields:
+
+| Attribute            | Type           | Description                                                                  |
+|----------------------|----------------|------------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                 |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
+| `url`                | string         | URL for this URL configuration.                                              |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
+| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+
+Example request:
+
+```shell
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
+    -H "Content-Type:application/json" \
+    -X POST --data '{"url":"grpcs://localhost:4242"}'
+```
+
+Example response:
+
+```json
+{
+"id": 1,
+"agent_id": 5,
+"url": "grpcs://localhost:4242",
+"public_key": "..."
+}
+```
+
+NOTE:
+If the `client_cert` and `client_key` are not provided, a private-public key pair is generated and JWT authentication is used instead of mTLS.
+
+### Delete an agent URL configuration
+
+Deletes an agent URL configuration.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /projects/:id/cluster_agents/:agent_id/url_configurations/:url_configuration_id
+```
+
+Supported attributes:
+
+| Attribute              | Type              | Required | Description                                                                                                           |
+|------------------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `agent_id`             | integer           | yes      | ID of the agent.                                                                                                      |
+| `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                          |
+
+Example request:
+
+```shell
+curl --request DELETE --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations/1
+```

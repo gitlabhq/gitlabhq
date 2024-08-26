@@ -69,8 +69,8 @@ export default {
 </script>
 
 <template>
-  <div class="container-fluid md gl-mt-3 gl-mb-3">
-    <div v-if="loading" class="gl-text-center loading">
+  <div class="container-fluid md gl-mb-3 gl-mt-3">
+    <div v-if="loading" class="loading gl-text-center">
       <gl-loading-icon class="gl-mt-5" size="lg" />
     </div>
     <div v-else>
@@ -82,10 +82,7 @@ export default {
         show-empty
         thead-class="gl-hidden"
       />
-      <div
-        v-if="isTooLarge"
-        class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-p-5"
-      >
+      <div v-if="isTooLarge" class="gl-flex gl-flex-col gl-items-center gl-p-5">
         <p data-testid="large-csv-text">
           {{
             s__(

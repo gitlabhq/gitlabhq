@@ -137,7 +137,7 @@ export default {
 
 <template>
   <div>
-    <label class="gl-font-bold gl-mt-3" data-testid="header-label">{{
+    <label class="gl-mt-3 gl-font-bold" data-testid="header-label">{{
       $options.i18n.headerTitle
     }}</label>
     <gl-collapsible-listbox
