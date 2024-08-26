@@ -1,8 +1,8 @@
 ---
 name: ci_runner_separation_by_plan
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83780
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/361639
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432167
 milestone: '15.0'
 type: ops
-group: group::runner
+group: "group::hosted runners"
 default_enabled: false

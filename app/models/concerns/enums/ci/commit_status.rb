@@ -24,7 +24,7 @@ module Enums
           project_deleted: 15,
           ci_quota_exceeded: 16,
           pipeline_loop_detected: 17,
-          no_matching_runner: 18, # not used anymore, but cannot be deleted because of old data
+          no_matching_runner: 18,
           trace_size_exceeded: 19,
           builds_disabled: 20,
           environment_creation_failure: 21,

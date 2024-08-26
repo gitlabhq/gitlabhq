@@ -104,6 +104,7 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 - [Integrate EKS clusters for application deployment](../../../user/infrastructure/clusters/connect/new_eks_cluster.md). `[GitLab Built]`
 - [GitLab pushing a build Artifact to a CodePipeline monitored S3 location](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`
 - [GitLab Pushing a container to a CodePipeline monitored AWS ECR](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`
+- [Use GitLab.com's Container Registry as an Upstream Registry for AWS ECR via Pull-Through Cache Rules](https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html) [Configuration Tutorial](tutorials/aws_ecr_pull_through_cache.md) `[AWS Built]`
 
 ## End-to-End Solutions for development and deployment of specific development frameworks or ecosystems
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sidekiq::Worker' do
+RSpec.describe 'Sidekiq::Worker', feature_category: :shared do
   shared_examples_for 'a forbiddable operation within a transaction' do
     it 'allows the operation outside of a transaction' do
       expect { operation }.not_to raise_error
@@ -14,11 +14,25 @@ RSpec.describe 'Sidekiq::Worker' do
       end
     end
 
-    it 'allows the oepration within a transaction if skipped' do
+    it 'allows the operation within a transaction if skipped' do
       Sidekiq::Worker.skipping_transaction_check do
         ApplicationRecord.transaction do
           expect { operation }.not_to raise_error
         end
+      end
+    end
+
+    it 'allows the operation if lock thread is set' do
+      Sidekiq::Worker.skipping_transaction_check do
+        thread = Thread.new do
+          Thread.current.abort_on_exception = true
+
+          ApplicationRecord.transaction do
+            expect { operation }.not_to raise_error
+          end
+        end
+
+        thread.join
       end
     end
 

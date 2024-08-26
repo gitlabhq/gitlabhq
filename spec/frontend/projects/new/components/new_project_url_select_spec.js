@@ -67,6 +67,8 @@ describe('NewProjectUrlSelect component', () => {
     inputName: 'input_name',
   };
 
+  const dropdownPlaceholderClass = '!gl-text-gray-500';
+
   let mockQueryResponse;
   let focusInputSpy;
 
@@ -135,7 +137,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown without the class', () => {
-      expect(findToggleButton().classes()).not.toContain('gl-text-gray-500!');
+      expect(findToggleButton().classes()).not.toContain(dropdownPlaceholderClass);
     });
 
     it('renders a hidden input with the given namespace id', () => {
@@ -165,7 +167,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown with the class', () => {
-      expect(findToggleButton().classes()).toContain('!gl-text-gray-500');
+      expect(findToggleButton().classes()).toContain(dropdownPlaceholderClass);
     });
 
     it("renders a hidden input with the user's namespace id", () => {

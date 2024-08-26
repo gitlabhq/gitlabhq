@@ -42,7 +42,13 @@
   @include icon-styles($gray-500);
 }
 
+a.ci-icon:focus {
+  @include gl-focus;
+}
+
 .ci-icon {
+  border-radius: 20px;
+
   // .ci-icon class is used at
   // - app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue
   // - app/helpers/ci/status_helper.rb
@@ -55,42 +61,125 @@
   // Makes the borderless CI icons appear slightly bigger than the default 16px.
   // Could be fixed by making the SVG fill up the canvas in a follow up issue.
   .gl-icon {
-    // fill: currentColor;
     width: 20px;
     height: 20px;
     margin: -2px;
   }
 
-  @mixin ci-icon-style($bg-color, $color, $gl-dark-bg-color: null, $gl-dark-color: null) {
+  @mixin ci-icon-style(
+    $bg-color,
+    $text-color,
+    $border-color,
+    $icon-color,
+    $icon-bg-color,
+
+    $dark-bg-color: null,
+    $dark-text-color: null,
+    $dark-border-color: null,
+    $dark-icon-color: null,
+    $dark-icon-bg-color: null
+  ) {
+    color: $text-color;
+    background-color: $bg-color;
+    border: 2px solid $border-color;
+
+    .gl-dark & {
+      color: $dark-text-color;
+      background-color: $dark-bg-color;
+      border-color: transparent;
+    }
+
     .ci-icon-gl-icon-wrapper {
-      background-color: $bg-color;
-      color: $color;
+      border: 2px solid $border-color;
+      background-color: $icon-bg-color;
+      color: $icon-color;
 
       .gl-dark & {
-        background-color: $gl-dark-bg-color;
-        color: $gl-dark-color;
+        border-color: $dark-border-color;
+        background-color: $dark-icon-bg-color;
+        color: $dark-icon-color;
       }
     }
   }
 
   &.ci-icon-variant-success {
-    @include ci-icon-style($green-500, $white, $green-600, $green-50)
+    @include ci-icon-style(
+      $bg-color: $green-100,
+      $text-color: $green-700,
+      $border-color: $green-100,
+      $icon-color: $white,
+      $icon-bg-color: $green-500,
+
+      $dark-bg-color: $green-600,
+      $dark-text-color: $green-50,
+      $dark-border-color: $green-50,
+      $dark-icon-color: $green-600,
+      $dark-icon-bg-color: $green-50
+    )
   }
 
   &.ci-icon-variant-warning {
-    @include ci-icon-style($orange-500, $white, $orange-600, $orange-50)
+    @include ci-icon-style(
+      $bg-color: $orange-100,
+      $text-color: $orange-700,
+      $border-color: $orange-100,
+      $icon-color: $white,
+      $icon-bg-color: $orange-500,
+
+      $dark-bg-color: $orange-600,
+      $dark-text-color: $orange-50,
+      $dark-border-color: $orange-50,
+      $dark-icon-color: $orange-600,
+      $dark-icon-bg-color: $orange-50
+    )
   }
 
   &.ci-icon-variant-danger {
-    @include ci-icon-style($red-500, $white, $red-600, $red-50)
+    @include ci-icon-style(
+      $bg-color: $red-100,
+      $text-color: $red-700,
+      $border-color: $red-100,
+      $icon-color: $white,
+      $icon-bg-color: $red-500,
+
+      $dark-bg-color: $red-600,
+      $dark-text-color: $red-50,
+      $dark-border-color: $red-50,
+      $dark-icon-color: $red-600,
+      $dark-icon-bg-color: $red-50
+    )
   }
 
   &.ci-icon-variant-info {
-    @include ci-icon-style($white, $blue-500, $blue-600, $blue-50)
+    @include ci-icon-style(
+      $bg-color: $blue-100,
+      $text-color: $blue-700,
+      $border-color: $blue-100,
+      $icon-color: $blue-500,
+      $icon-bg-color: $white,
+
+      $dark-bg-color: $blue-600,
+      $dark-text-color: $blue-50,
+      $dark-border-color: $blue-50,
+      $dark-icon-color: $blue-600,
+      $dark-icon-bg-color: $blue-50
+    )
   }
 
   &.ci-icon-variant-neutral {
-    @include ci-icon-style($white, $gray-500)
+    @include ci-icon-style(
+      $bg-color: $gray-100,
+      $text-color: $gray-700,
+      $border-color: $gray-100,
+      $icon-color: $gray-700,
+      $icon-bg-color: $white,
+
+      $dark-bg-color: $gray-600,
+      $dark-text-color: $gray-50,
+      $dark-border-color: $gray-50,
+      $dark-icon-color: $gray-600,
+      $dark-icon-bg-color: $gray-50
+    )
   }
 }
 

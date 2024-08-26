@@ -654,6 +654,9 @@ Use **dialog** rather than any of these alternatives:
 
 See also [**confirmation dialog**](#confirmation-dialog). For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/dialog-box-dialog-dialogue).
 
+Before using this term, confirm whether **dialog** or [**drawer**](#drawer) is
+the correct term for your use case.
+
 When the dialog is the location of an action, use **on** as a preposition. For example:
 
 - On the **Grant permission** dialog, select **Group**.
@@ -695,6 +698,22 @@ Use **download** to describe saving data to a user's device. For details, see
 [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/download).
 
 Do not confuse download with [export](#export).
+
+## drawer
+
+Use **drawer** to describe a [drawer UI component](../drawers.md) that:
+
+- Appears from the right side of the screen.
+- Displays context-specific information or actions without the user having to
+  leave the current page.
+
+To see examples of drawers:
+
+- Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/-/ci/editor?branch_name=main) and select **Help** (**{information-o}**).
+- Open GitLab Duo Chat.
+
+Before using this term, confirm whether **drawer** or [**dialog**](#dialog) is
+the correct term for your use case.
 
 ## dropdown list
 
@@ -973,6 +992,12 @@ Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless appr
 
 You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
 and should leave it off when you can.
+
+## GitLab Duo Workflow
+
+Use **GitLab Duo Workflow**. After first use, use **Duo Workflow**.
+
+Do not use **Workflow** by itself. 
 
 ## GitLab Flavored Markdown
 

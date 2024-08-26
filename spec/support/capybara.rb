@@ -158,6 +158,21 @@ RSpec.configure do |config|
     end
   end
 
+  # When transactional tests are enabled, Rails ensures that all threads
+  # use the same connection for accessing the database. However this may
+  # cause a false positive with the Sidekiq worker open transaction
+  # check because:
+  #
+  # 1. A browser may have multiple requests in-flight.
+  # 2. A transaction may start in the middle of another request. For example,
+  # an update to a merge request column initiates a transaction via SAVEPOINT.
+  #
+  # To avoid false positives, disable this check. The alternative is to
+  # use the deletion strategy, but that would significantly slow tests.
+  config.around(:each, :js) do |example|
+    Sidekiq::Worker.skipping_transaction_check { example.run }
+  end
+
   # The :capybara_ignore_server_errors metadata means unhandled exceptions raised
   # by the application under test will not necessarily fail the server. This is
   # useful when testing conditions that are expected to raise a 500 error in

@@ -132,6 +132,7 @@ To invite a group to a project:
 1. Select **Invite**.
 
 The invited group is displayed on the **Groups** tab.
+You can also use the REST API to [list a project's invited groups](../../../api/projects.md#list-a-projects-invited-groups).
 
 Private groups are:
 
@@ -155,6 +156,7 @@ To view a group's shared projects:
 1. On the group page, select the **Shared projects** tab.
 
 A list of shared projects is displayed.
+You can also use the REST API to [list a group's shared projects](../../../api/groups.md#list-a-groups-shared-projects).
 
 ### Prevent a project from being shared with groups
 

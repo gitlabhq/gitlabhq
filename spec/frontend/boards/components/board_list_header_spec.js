@@ -104,14 +104,16 @@ describe('Board List Header Component', () => {
   const findBoardListHeader = () => wrapper.findByTestId('board-list-header');
 
   it('renders border when label color is present', () => {
-    createComponent({ listType: ListType.label });
-
-    expect(findBoardListHeader().classes()).toContain(
+    const expected = [
       'gl-border-t-solid',
       'gl-border-4',
-      'gl-rounded-top-left-base',
-      'gl-rounded-top-right-base',
-    );
+      'gl-rounded-tl-base',
+      'gl-rounded-tr-base',
+    ];
+
+    createComponent({ listType: ListType.label });
+
+    expect(findBoardListHeader().classes()).toEqual(expect.arrayContaining(expected));
   });
 
   describe('Add issue button', () => {

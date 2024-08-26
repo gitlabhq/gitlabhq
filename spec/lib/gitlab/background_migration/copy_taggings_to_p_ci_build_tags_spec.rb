@@ -46,7 +46,7 @@ RSpec.describe Gitlab::BackgroundMigration::CopyTaggingsToPCiBuildTags, feature_
   end
 
   describe '#perform' do
-    it 'copies records over into p_ci_build_tags' do
+    it 'copies records over into p_ci_build_tags', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480267' do
       expect { migration.perform }
         .to change { ci_build_tags_table.count }
         .from(0)

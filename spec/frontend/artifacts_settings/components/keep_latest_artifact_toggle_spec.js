@@ -111,7 +111,9 @@ describe('Keep latest artifact toggle', () => {
     });
 
     it('sets correct setting value in toggle with query result', () => {
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findToggle().props().value).toBe(
+        keepLatestArtifactProjectMock.data.project.ciCdSettings.keepLatestArtifact,
+      );
     });
 
     it('toggle is enabled when application setting is enabled', () => {

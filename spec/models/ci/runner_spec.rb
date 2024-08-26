@@ -206,6 +206,35 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         expect(runner.errors.full_messages).to include('Public projects minutes cost factor needs to be non-negative')
       end
     end
+
+    describe '#no_allowed_plan_ids' do
+      let_it_be(:default_plan) { create(:default_plan) }
+
+      context 'when runner is instance type' do
+        let(:runner) { create(:ci_runner, :instance) }
+
+        it 'allows assign allowed_plans' do
+          runner.allowed_plan_ids = [default_plan.id]
+
+          expect(runner).to be_valid
+          puts runner.errors.full_messages
+        end
+      end
+
+      context 'when runner is not an instance type' do
+        let(:runner) { create(:ci_runner, :group) }
+
+        subject { runner.allowed_plan_ids = [default_plan.id] }
+
+        it 'allows assign allowed_plans' do
+          runner.allowed_plan_ids = [default_plan.id]
+
+          expect(runner).not_to be_valid
+          expect(runner.errors.full_messages).to include('Runner cannot have allowed plans assigned')
+          puts runner.errors.full_messages
+        end
+      end
+    end
   end
 
   describe 'constraints' do
@@ -1384,6 +1413,19 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
     end
 
+    context 'deduplicates on allowed_plan_ids' do
+      before do
+        create_list(:ci_runner, 2, allowed_plan_ids: [1, 2])
+        create_list(:ci_runner, 2, allowed_plan_ids: [3, 4])
+      end
+
+      it 'creates two matchers' do
+        expect(matchers.size).to eq(2)
+
+        expect(matchers.map(&:allowed_plan_ids)).to match_array([[1, 2], [3, 4]])
+      end
+    end
+
     context 'with runner_ids' do
       before do
         create_list(:ci_runner, 2)
@@ -1399,7 +1441,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#runner_matcher' do
     let(:runner) do
-      build_stubbed(:ci_runner, :instance_type, tag_list: %w[tag1 tag2])
+      build_stubbed(:ci_runner, :instance_type, tag_list: %w[tag1 tag2], allowed_plan_ids: [1, 2])
     end
 
     subject(:matcher) { runner.runner_matcher }
@@ -1417,6 +1459,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     it { expect(matcher.access_level).to eq(runner.access_level) }
 
     it { expect(matcher.tag_list).to match_array(runner.tag_list) }
+
+    it { expect(matcher.allowed_plan_ids).to match_array(runner.allowed_plan_ids) }
   end
 
   describe '#uncached_contacted_at' do

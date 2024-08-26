@@ -8163,7 +8163,8 @@ CREATE TABLE ci_pending_builds (
     minutes_exceeded boolean DEFAULT false NOT NULL,
     tag_ids integer[] DEFAULT '{}'::integer[],
     namespace_traversal_ids integer[] DEFAULT '{}'::integer[],
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    plan_id integer
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -8575,6 +8576,7 @@ CREATE TABLE ci_runners (
     registration_type smallint DEFAULT 0 NOT NULL,
     creator_id bigint,
     creation_state smallint DEFAULT 0 NOT NULL,
+    allowed_plan_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -27277,6 +27279,8 @@ CREATE INDEX index_ci_pending_builds_on_namespace_id ON ci_pending_builds USING 
 
 CREATE UNIQUE INDEX index_ci_pending_builds_on_partition_id_build_id ON ci_pending_builds USING btree (partition_id, build_id);
 
+CREATE INDEX index_ci_pending_builds_on_plan_id ON ci_pending_builds USING btree (plan_id);
+
 CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING btree (project_id);
 
 CREATE INDEX index_ci_pending_builds_on_tag_ids ON ci_pending_builds USING btree (tag_ids) WHERE (cardinality(tag_ids) > 0);
@@ -32460,6 +32464,8 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELETE ON organizations FOR EACH ROW EXECUTE FUNCTION prevent_delete_of_default_organization();
 

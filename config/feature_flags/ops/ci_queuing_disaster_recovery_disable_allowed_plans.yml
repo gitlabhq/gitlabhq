@@ -1,0 +1,8 @@
+---
+name: ci_queuing_disaster_recovery_disable_allowed_plans
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761
+rollout_issue_url:
+milestone: "17.4"
+type: ops
+group: "group::hosted runners"
+default_enabled: false

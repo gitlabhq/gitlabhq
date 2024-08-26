@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
       private_projects_minutes_cost_factor: 1,
       run_untagged: false,
       access_level: 'ref_protected',
-      tag_list: %w[tag1 tag2]
+      tag_list: %w[tag1 tag2],
+      allowed_plan_ids: []
     }
   end
 
@@ -64,7 +65,8 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
     context 'with an instance of BuildMatcher' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:ref_protected, :build_protected, :run_untagged, :runner_tags, :build_tags, :result) do
+      where(:ref_protected, :build_protected, :run_untagged, :runner_tags,
+        :build_tags, :result) do
         # the `ref_protected? && !build.protected?` part:
         true              | true            | true         | []          | []         | true
         true              | false           | true         | []          | []         | false
@@ -82,6 +84,9 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
       end
 
       with_them do
+        let(:record) { build.build_matcher }
+        let(:allowed_plan_ids) { [] } # Used only in the EE codebase
+
         let(:build_attributes) do
           {
             tag_list: build_tags,
@@ -93,11 +98,10 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
           {
             access_level: ref_protected ? 'ref_protected' : 'not_protected',
             run_untagged: run_untagged,
-            tag_list: runner_tags
+            tag_list: runner_tags,
+            allowed_plan_ids: allowed_plan_ids
           }
         end
-
-        let(:record) { build.build_matcher }
 
         it { is_expected.to eq(result) }
       end

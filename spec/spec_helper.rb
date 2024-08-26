@@ -296,6 +296,7 @@ RSpec.configure do |config|
       # These feature flag are by default disabled and used in disaster recovery mode
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
+      stub_feature_flags(ci_queuing_disaster_recovery_disable_allowed_plans: false)
 
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.

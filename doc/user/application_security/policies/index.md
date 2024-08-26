@@ -259,6 +259,33 @@ the dialog.
 All users who have access to the project policy page and are not project owners instead view a
 button linking out to the associated security policy project.
 
+## Policy recommendations
+
+When implementing policies, consider the following recommendations.
+
+### Branch names
+
+When specifying branch names in a policy, use a generic category of protected branches, such as
+**default branch** or **all protected branches**, not individual branch names.
+
+A policy is enforced on a project only if the specified branch exists in that project. For example,
+if your policy enforces rules on branch `main` but some projects in scope are using `production` as
+their default branch, the policy is not applied for the latter.
+
+### Push rules
+
+In GitLab 17.3 and earlier, if you use push rules to
+[validate branch names](../../project/repository/push_rules.md#validate-branch-names)
+ensure they allow creation of branches with the prefix `update-policy-`. This branch naming prefix
+is used when a security policy is created or amended. For example, `update-policy-1659094451`, where
+`1659094451` is the timestamp. If push rules block the creation of the branch the following error
+occurs:
+
+> Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
+
+In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
+projects are excluded from push rules that enforce branch name validation.
+
 ## Policy management
 
 The Policies page displays deployed policies for all available environments. You can check a
@@ -317,19 +344,7 @@ instructions and a demonstration of how to use the Vulnerability-Check Migration
 
 ## Troubleshooting
 
-### `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`
-
-When you create a new security policy or change an existing policy, a new branch is automatically
-created with the branch name following the pattern `update-policy-<timestamp>`. For example:
-`update-policy-1659094451`.
-
-If you have group or instance [push rules that do not allow branch name patterns](../../project/repository/push_rules.md#validate-branch-names) that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`.
-
-The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.
-
-Starting from GitLab 17.4, newly created security policy projects will bypass the existing group or instance push rules to allow branches and commit message with any patterns. This exception applies only to the security policy project and does not affect other projects.
-
-### Troubleshooting common security policy issues
+When working with security policies, consider these troubleshooting tips:
 
 - Confirm that scanners are properly configured and producing results for the latest branch.
   Security Policies are designed to require approval when there are no results (no security report),
@@ -348,11 +363,6 @@ Starting from GitLab 17.4, newly created security policy projects will bypass th
   and if no supported files are found it does not run any jobs. See the
   [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
   for more details.
-- Check for any branch configuration conflicts. For example, if your policy is configured to enforce
-  rules on `main` but some projects in the scope are using `master` as their default branch, the
-  policy is not applied for the latter. You can define policies to enforce rules generically on
-  `default` branches regardless of the name used in the project or on `all protected branches` to
-  address this issue.
 - Merge request approval policies created at the group or subgroup level can take some time to apply
   to all the merge requests in the group.
 - Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more

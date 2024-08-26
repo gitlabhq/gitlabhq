@@ -1,0 +1,8 @@
+---
+name: ci_queuing_include_allowed_plans
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432167
+milestone: '17.4'
+type: development
+group: "group::hosted runners"
+default_enabled: false

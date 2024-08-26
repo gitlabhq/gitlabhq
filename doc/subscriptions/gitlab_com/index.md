@@ -199,6 +199,7 @@ The user must not be assigned any other role, anywhere in the instance or in the
   [a set of permissions](../../user/permissions.md#project-members-permissions).
 - If your project is public, all users, including those with the Guest role
   can access your project.
+- For GitLab.com, if a user with the Guest role creates a project in their personal namespace, it does not consume a seat. The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
 
 ### Add seats to your subscription
 
