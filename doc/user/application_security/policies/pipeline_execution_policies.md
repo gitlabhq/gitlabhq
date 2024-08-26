@@ -173,3 +173,28 @@ pipeline execution policy job:
     script:
     - echo "$PROJECT_VAR"
 ```
+
+### Example `policy.yml` with security policy scopes
+
+In this example, the security policy's `policy_scope`:
+
+- Includes any project with compliance frameworks with an ID of `9` applied to them.
+- Excludes projects with an ID of `456`.
+
+```yaml
+pipeline_execution_policy:
+- name: Pipeline execution policy
+  description: ''
+  enabled: true
+  pipeline_config_strategy: inject_ci
+  content:
+    include:
+    - project: my-group/pipeline-execution-ci-project
+      file: policy-ci.yml
+  policy_scope:
+    compliance_frameworks:
+    - id: 9
+    projects:
+      excluding:
+      - id: 456
+```

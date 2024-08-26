@@ -47,6 +47,17 @@ framework has a compliance pipeline configured or not.
 
 Therefore, communicate with project users about compliance pipeline configuration to reduce uncertainty and confusion.
 
+### Multiple compliance frameworks
+
+You can [apply to a single project](compliance_frameworks.md#apply-a-compliance-framework-to-a-project) multiple compliance frameworks with compliance pipelines configured.
+In this case, only the first compliance framework applied to a project has its compliance pipeline included in the project pipeline.
+
+To ensure that the correct compliance pipeline is included in a project:
+
+1. Remove all compliance frameworks from the project.
+1. Apply the compliance framework with the correct compliance pipeline to the project.
+1. Apply additional compliance frameworks to the project.
+
 ## Configure a compliance pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.

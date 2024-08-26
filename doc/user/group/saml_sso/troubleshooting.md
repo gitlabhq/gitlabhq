@@ -40,11 +40,15 @@ To generate a SAML Response:
 1. Install one of the [browser debugging tools](#saml-debugging-tools).
 1. Open a new browser tab.
 1. Open the SAML tracer console:
-   - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the opened developer
-     console.
+   - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the developer console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
-1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
-1. Select **Authorize** or attempt to sign in. A SAML response is displayed in the tracer console that resembles this
+1. For GitLab.com Groups:
+   - Go to the GitLab single sign-on URL for the group.
+   - Select **Authorize** or attempt to sign 
+1. For Self Managed Instance: 
+   - Go to the instance home page  
+   - Click on the `SAML Login` button to sign in
+1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
 
