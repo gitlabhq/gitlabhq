@@ -90,7 +90,7 @@ export default {
         v-if="moreText"
         v-gl-tooltip
         :title="moreText"
-        class="diff-comments-more-count js-diff-comment-avatar js-diff-comment-plus"
+        class="diff-comments-more-count js-diff-comment-avatar js-diff-comment-plus gl-flex gl-justify-center gl-items-center gl-h-6 gl-min-w-6"
         data-container="body"
         data-placement="top"
         role="button"

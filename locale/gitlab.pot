@@ -13050,12 +13050,6 @@ msgstr ""
 msgid "Code block"
 msgstr ""
 
-msgid "Code completion test failed: %{error}"
-msgstr ""
-
-msgid "Code completion test was successful"
-msgstr ""
-
 msgid "Code coverage results are not yet available. Try again later."
 msgstr ""
 
@@ -13122,6 +13116,9 @@ msgstr ""
 msgid "CodeSuggestions|%{title} seats used"
 msgstr ""
 
+msgid "CodeSuggestions|A code snippet must be passable to the AI-gateway for users to utilize GitLab Duo in their IDE."
+msgstr ""
+
 msgid "CodeSuggestions|A user can be assigned a %{title} seat only once each billable month."
 msgstr ""
 
@@ -13143,6 +13140,9 @@ msgstr ""
 msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
+msgid "CodeSuggestions|GitLab Duo should be operational."
+msgstr ""
+
 msgid "CodeSuggestions|Introducing GitLab Duo"
 msgstr ""
 
@@ -13155,10 +13155,31 @@ msgstr ""
 msgid "CodeSuggestions|Manage seat assignments for %{addOnName}."
 msgstr ""
 
+msgid "CodeSuggestions|No health problems detected"
+msgstr ""
+
+msgid "CodeSuggestions|Not operational. Resolve issues to use GitLab Duo."
+msgstr ""
+
+msgid "CodeSuggestions|Outbound and inbound connections from clients to the GitLab instance must be allowed."
+msgstr ""
+
+msgid "CodeSuggestions|Problems detected with setup"
+msgstr ""
+
 msgid "CodeSuggestions|Run health check"
 msgstr ""
 
+msgid "CodeSuggestions|Tests are running"
+msgstr ""
+
+msgid "CodeSuggestions|The active subscription must sync with customers.gitlab.com every 72 hours."
+msgstr ""
+
 msgid "CodeSuggestions|To buy GitLab Duo seats and regain access, you'll need a Premium or Ultimate subscription."
+msgstr ""
+
+msgid "CodeSuggestions|Updating..."
 msgstr ""
 
 msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
@@ -13855,6 +13876,12 @@ msgid "ComplianceFrameworks|New framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|No framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level group"
+msgstr ""
+
+msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level group %{linkStart}namespace%{linkEnd} to assign it to a project."
 msgstr ""
 
 msgid "ComplianceFrameworks|Policy"
@@ -26847,6 +26874,9 @@ msgid "Hide password"
 msgstr ""
 
 msgid "Hide payload"
+msgstr ""
+
+msgid "Hide results"
 msgstr ""
 
 msgid "Hide shared projects"
@@ -50760,6 +50790,9 @@ msgstr ""
 msgid "Show project milestones"
 msgstr ""
 
+msgid "Show results"
+msgstr ""
+
 msgid "Show sub-group milestones"
 msgstr ""
 
@@ -53023,6 +53056,9 @@ msgstr ""
 msgid "Synced"
 msgstr ""
 
+msgid "Synchronization"
+msgstr ""
+
 msgid "Synchronize LDAP"
 msgstr ""
 
@@ -53057,6 +53093,9 @@ msgid "SynthaxHighlightingTheme|Solarized Light"
 msgstr ""
 
 msgid "System default (%{default})"
+msgstr ""
+
+msgid "System exchange"
 msgstr ""
 
 msgid "System header and footer"
@@ -57708,25 +57747,7 @@ msgstr ""
 msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
-msgid "UsageQuotas|Failed"
-msgstr ""
-
-msgid "UsageQuotas|GitLab Duo should be operational."
-msgstr ""
-
-msgid "UsageQuotas|Health check results"
-msgstr ""
-
 msgid "UsageQuotas|Namespace transfer data used"
-msgstr ""
-
-msgid "UsageQuotas|Not operational. Resolve issues to use GitLab Duo."
-msgstr ""
-
-msgid "UsageQuotas|Passed"
-msgstr ""
-
-msgid "UsageQuotas|Tests are running..."
 msgstr ""
 
 msgid "UsageQuota|%{linkTitle} help link"
@@ -58435,6 +58456,9 @@ msgstr ""
 msgid "UserMapping|Download the pre-filled CSV template."
 msgstr ""
 
+msgid "UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
 msgid "UserMapping|Import details:"
 msgstr ""
 
@@ -58456,7 +58480,7 @@ msgstr ""
 msgid "UserMapping|Notify again"
 msgstr ""
 
-msgid "UserMapping|Once you select \"Reassign\", the processing will start and users will receive and email to accept the contribution reassignment. Once a users has accepted the reassignment, it cannot be undone. Check all data is correct before continuing."
+msgid "UserMapping|Once you select \"Reassign\", the processing will start and users will receive an email to accept the contribution reassignment. Once a user has accepted the reassignment, it cannot be undone. Check all data is correct before continuing."
 msgstr ""
 
 msgid "UserMapping|Original user: %{source_name} (%{source_username})"
@@ -58589,6 +58613,9 @@ msgid "UserMapping|To learn more about reassignments, %{link_start}visit the doc
 msgstr ""
 
 msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link})."
+msgstr ""
+
+msgid "UserMapping|Unable to upload the file. Check that the file follows the CSV template and try again."
 msgstr ""
 
 msgid "UserMapping|Upload reviewed and completed CSV file."

@@ -5,10 +5,17 @@ module Emails
     def execute(email)
       raise StandardError, 'Cannot delete primary email' if email.user_primary_email?
 
-      email.destroy && update_secondary_emails!(email.email)
+      return unless email.destroy
+
+      reset_email_in_notification_settings!(email)
+      update_secondary_emails!(email.email)
     end
 
     private
+
+    def reset_email_in_notification_settings!(deleted_email)
+      NotificationSetting.reset_email_for_user!(deleted_email)
+    end
 
     def update_secondary_emails!(deleted_email)
       result = ::Users::UpdateService.new(@current_user, user: @user).execute do |user|

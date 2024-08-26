@@ -67,9 +67,6 @@ If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that
 failed to replicate is **lost**.
 
-You can use the
-[Geo status API](../../../../api/geo_nodes.md#retrieve-project-sync-or-verification-failures-that-occurred-on-the-current-node)
-to review failed objects and the reasons for failure.
 A common cause of replication failures is the data being missing on the
 **primary** site - you can resolve these failures by restoring the data from backup,
 or removing references to the missing data.

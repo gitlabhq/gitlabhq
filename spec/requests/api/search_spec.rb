@@ -387,6 +387,16 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
+      context 'for ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it 'is successful' do
+          get api(endpoint, oauth_access_token: oauth_token), params: { scope: 'milestones', search: 'awesome' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context 'global search is disabled for the given scope' do
         it 'returns forbidden response' do
           allow_next_instance_of(SearchService) do |instance|

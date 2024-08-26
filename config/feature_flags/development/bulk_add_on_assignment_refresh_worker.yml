@@ -1,8 +1,0 @@
----
-name: bulk_add_on_assignment_refresh_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134223
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428258
-milestone: '16.5'
-type: development
-group: group::provision
-default_enabled: false

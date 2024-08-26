@@ -432,6 +432,8 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/remote-ruleset-project"
 ```
 
+The group access token must have the `read_repository` scope and at least the Reporter role. For details, see [Repository permissions](../../../../user/permissions.md#repository).
+
 See [bot users for groups](../../../../user/group/settings/group_access_tokens.md#bot-users-for-groups) to learn how to find the username associated with a group access token.
 
 #### Replace the default ruleset

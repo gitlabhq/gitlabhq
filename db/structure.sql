@@ -30243,6 +30243,8 @@ CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING 
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
+CREATE INDEX index_user_id_and_notification_email_to_notification_settings ON notification_settings USING btree (user_id, notification_email, id) WHERE (notification_email IS NOT NULL);
+
 CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_callouts USING btree (namespace_id);
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);

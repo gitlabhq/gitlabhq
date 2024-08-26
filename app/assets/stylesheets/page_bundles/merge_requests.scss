@@ -33,7 +33,6 @@
     .diff-comments-more-count {
       padding-left: 2px;
       padding-right: 2px;
-      width: auto;
     }
   }
 }
@@ -48,7 +47,6 @@
   border-color: var(--white, $white);
   cursor: pointer;
   transition: all 0.1s ease-out;
-  @include code-icon-size();
 
   @for $i from 1 through 4 {
     &:nth-child(#{$i}) {
@@ -65,7 +63,6 @@
   padding-left: 0;
   padding-right: 0;
   overflow: hidden;
-  @include code-icon-size();
 }
 
 .diff-file-changes {

@@ -6,17 +6,20 @@ RSpec.shared_examples 'desired sharding key backfill job' do
       sbom_occurrences_vulnerabilities: {
         sbom_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
       },
+      vulnerability_occurrence_pipelines: {
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
+      },
       vulnerability_finding_evidences: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },
       vulnerability_finding_links: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },
       vulnerability_finding_signatures: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },
       vulnerability_flags: {
-        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/473014'
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },
       dast_site_validations: { dast_site_tokens: 'https://gitlab.com/gitlab-org/gitlab/-/issues/474985' }
     }

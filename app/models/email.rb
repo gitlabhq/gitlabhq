@@ -52,8 +52,6 @@ class Email < ApplicationRecord
   end
 
   def detumble_email!
-    return unless Feature.enabled?(:store_detumbled_email, user, type: :gitlab_com_derisk)
-
     self.detumbled_email = ::Gitlab::Utils::Email.normalize_email(email)
   end
 end

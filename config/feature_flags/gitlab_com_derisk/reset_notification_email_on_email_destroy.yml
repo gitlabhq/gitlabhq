@@ -1,0 +1,9 @@
+---
+name: reset_notification_email_on_email_destroy
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438600
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163192
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480351
+milestone: '17.4'
+group: group::personal productivity
+type: gitlab_com_derisk
+default_enabled: false

@@ -24,7 +24,7 @@ Additionally, we use the [GitLab Development Kit](https://gitlab.com/gitlab-org/
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
 You can find these pipelines at <https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules>
-(requires the Developer role). Results are reported in the `#qa-master` Slack channel.
+(requires the Developer role). Results are reported in the `#e2e-run-master` Slack channel.
 
 ### Testing staging
 
