@@ -45,7 +45,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     expect(page).to have_content('Merge request revert failed:')
   end
 
-  it 'reverts a merge request in a new merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/457549' do
+  it 'reverts a merge request in a new merge request', :sidekiq_might_not_need_inline do
     revert_commit(create_merge_request: true)
 
     expect(page).to have_content('The merge request has been successfully reverted. You can now submit a merge request to get this change into the original branch.')

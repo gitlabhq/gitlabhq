@@ -1,0 +1,17 @@
+#import "./work_item_hierarchy.fragment.graphql"
+
+mutation workItemMove(
+  $input: workItemsHierarchyReorderInput!
+  $pageSize: Int = 100
+  $endCursor: String = ""
+) {
+  workItemsHierarchyReorder(input: $input) {
+    workItem {
+      ...WorkItemHierarchy
+    }
+    parentWorkItem {
+      ...WorkItemHierarchy
+    }
+    errors
+  }
+}

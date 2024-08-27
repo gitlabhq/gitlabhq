@@ -8,9 +8,6 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
   include Sanitizable
 
-  ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
-  ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'

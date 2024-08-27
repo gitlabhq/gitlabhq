@@ -585,7 +585,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/middleware/sidekiq_web_static_spec.rb'
     - 'spec/lib/gitlab/middleware/speedscope_spec.rb'
     - 'spec/lib/gitlab/middleware/webhook_recursion_detection_spec.rb'
-    - 'spec/lib/gitlab/octokit/middleware_spec.rb'
     - 'spec/lib/gitlab/optimistic_locking_spec.rb'
     - 'spec/lib/gitlab/pages/settings_spec.rb'
     - 'spec/lib/gitlab/pagination/cursor_based_keyset_spec.rb'

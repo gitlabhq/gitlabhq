@@ -7,9 +7,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
-import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_item_tree_children.vue';
+import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import {
   WIDGET_TYPE_HIERARCHY,
@@ -24,8 +24,6 @@ import {
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeFailureResponse,
-  changeIndirectWorkItemParentMutationResponse,
-  workItemUpdateFailureResponse,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -34,37 +32,47 @@ describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
   const workItemFullPath = 'test-project-path';
-  let getWorkItemTreeQueryHandler;
-  let mutationChangeParentHandler;
-
-  const $toast = {
-    show: jest.fn(),
-    hide: jest.fn(),
-  };
 
   Vue.use(VueApollo);
 
   const findWorkItemLinkChildContents = () => wrapper.findComponent(WorkItemLinkChildContents);
+  const findExpandButton = () => wrapper.findByTestId('expand-child');
+  const findTreeChildren = () => wrapper.findComponent(WorkItemChildrenWrapper);
+  const getWidgetHierarchy = () =>
+    workItemHierarchyTreeResponse.data.workItem.widgets.find(
+      (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+    );
+  const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
+  const findFirstItem = () => getChildrenNodes()[0];
+
+  const mockToggleHierarchyTreeChildResolver = jest.fn();
+  const getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
 
   const createComponent = ({
     canUpdate = true,
     issuableGid = WORK_ITEM_ID,
-    childItem = workItemTask,
-    workItemType = WORK_ITEM_TYPE_VALUE_TASK,
-    apolloProvider = null,
+    childItem = workItemObjectiveWithChild,
+    workItemType = WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+    workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
+    isExpanded = false,
   } = {}) => {
-    getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
-    mutationChangeParentHandler = jest
-      .fn()
-      .mockResolvedValue(changeIndirectWorkItemParentMutationResponse);
+    const mockApollo = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]], {
+      Mutation: {
+        toggleHierarchyTreeChild: mockToggleHierarchyTreeChildResolver,
+      },
+    });
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: isExpandedHierarchyTreeChildQuery,
+      variables: {
+        id: childItem.id,
+      },
+      data: {
+        isExpandedHierarchyTreeChild: { id: childItem.id, isExpanded },
+      },
+    });
 
     wrapper = shallowMountExtended(WorkItemLinkChild, {
-      apolloProvider:
-        apolloProvider ||
-        createMockApollo([
-          [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
-          [updateWorkItemMutation, mutationChangeParentHandler],
-        ]),
+      apolloProvider: mockApollo,
       propsData: {
         canUpdate,
         issuableGid,
@@ -72,8 +80,8 @@ describe('WorkItemLinkChild', () => {
         workItemType,
         workItemFullPath,
       },
-      mocks: {
-        $toast,
+      stubs: {
+        WorkItemChildrenWrapper,
       },
     });
   };
@@ -82,65 +90,29 @@ describe('WorkItemLinkChild', () => {
     createAlert.mockClear();
   });
 
-  describe('renders WorkItemLinkChildContents', () => {
-    beforeEach(() => {
-      createComponent({
-        childItem: workItemObjectiveWithChild,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-      });
-    });
-
-    it('with default props', () => {
-      expect(findWorkItemLinkChildContents().props()).toEqual({
-        childItem: workItemObjectiveWithChild,
-        canUpdate: true,
-        showLabels: true,
-        workItemFullPath,
-      });
-    });
-  });
-
-  describe('nested children', () => {
-    const findExpandButton = () => wrapper.findByTestId('expand-child');
-    const findTreeChildren = () => wrapper.findComponent(WorkItemTreeChildren);
-
-    const getWidgetHierarchy = () =>
-      workItemHierarchyTreeResponse.data.workItem.widgets.find(
-        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-      );
-    const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
-    const findFirstItem = () => getChildrenNodes()[0];
-
-    beforeEach(() => {
-      createComponent({
-        childItem: workItemObjectiveWithChild,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-      });
-    });
-
-    it('displays expand button when item has children, children are not displayed by default', () => {
-      expect(findExpandButton().exists()).toBe(true);
-      expect(findTreeChildren().exists()).toBe(false);
-    });
-
+  describe('when clicking on expand button', () => {
     it('fetches and displays children of item when clicking on expand button', async () => {
+      createComponent();
       await findExpandButton().vm.$emit('click');
 
       expect(findExpandButton().props('loading')).toBe(true);
       await waitForPromises();
 
+      expect(mockToggleHierarchyTreeChildResolver).toHaveBeenCalled();
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalled();
-      expect(findTreeChildren().exists()).toBe(true);
+    });
+  });
 
-      const childrenNodes = getChildrenNodes();
-      expect(findTreeChildren().props('children')).toEqual(childrenNodes);
+  describe('child is already expanded', () => {
+    beforeEach(async () => {
+      createComponent({ isExpanded: true });
+      await waitForPromises();
     });
 
     it('does not fetch children if already fetched once while clicking expand button', async () => {
-      findExpandButton().vm.$emit('click'); // Expand for the first time
-      await waitForPromises();
-
       expect(findTreeChildren().exists()).toBe(true);
+      const childrenNodes = getChildrenNodes();
+      expect(findTreeChildren().props('children')).toEqual(childrenNodes);
 
       await findExpandButton().vm.$emit('click'); // Collapse
       findExpandButton().vm.$emit('click'); // Expand again
@@ -149,19 +121,35 @@ describe('WorkItemLinkChild', () => {
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalledTimes(1); // ensure children were fetched only once.
       expect(findTreeChildren().exists()).toBe(true);
     });
+  });
+
+  describe('without children', () => {
+    beforeEach(() => {
+      createComponent({ childItem: workItemTask, workItemType: WORK_ITEM_TYPE_VALUE_TASK });
+    });
+
+    it('does not display expand button', () => {
+      expect(findExpandButton().exists()).toBe(false);
+    });
+  });
+
+  describe('nested children', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('displays expand button when item has children, children are not displayed by default', () => {
+      expect(findExpandButton().exists()).toBe(true);
+      expect(findTreeChildren().exists()).toBe(false);
+    });
 
     it('calls createAlert when children fetch request fails on clicking expand button', async () => {
       const getWorkItemTreeQueryFailureHandler = jest
         .fn()
         .mockRejectedValue(workItemHierarchyTreeFailureResponse);
-      const apolloProvider = createMockApollo([
-        [getWorkItemTreeQuery, getWorkItemTreeQueryFailureHandler],
-      ]);
 
       createComponent({
-        childItem: workItemObjectiveWithChild,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-        apolloProvider,
+        workItemTreeQueryHandler: getWorkItemTreeQueryFailureHandler,
       });
 
       findExpandButton().vm.$emit('click');
@@ -174,106 +162,48 @@ describe('WorkItemLinkChild', () => {
       });
     });
 
-    it('click event on child emits `click` event', async () => {
-      findExpandButton().vm.$emit('click');
-      await waitForPromises();
+    it('click event on child emits `click` event', () => {
+      createComponent({ isExpanded: true });
 
       findTreeChildren().vm.$emit('click', 'event');
 
       expect(wrapper.emitted('click')).toEqual([['event']]);
     });
 
-    it('shows toast on removing child item', async () => {
-      findExpandButton().vm.$emit('click');
-      await waitForPromises();
+    it('emits event on removing child item', () => {
+      createComponent({ isExpanded: true });
 
       findTreeChildren().vm.$emit('removeChild', findFirstItem());
-      await waitForPromises();
 
-      expect($toast.show).toHaveBeenCalledWith('Child removed', {
-        action: { onClick: expect.any(Function), text: 'Undo' },
-      });
+      expect(wrapper.emitted('removeChild')).toEqual([[workItemObjectiveWithChild]]);
     });
 
-    it('renders correct number of children after the removal', async () => {
-      findExpandButton().vm.$emit('click');
-      await waitForPromises();
-
-      const childrenNodes = getChildrenNodes();
-      expect(findTreeChildren().props('children')).toEqual(childrenNodes);
-
-      findTreeChildren().vm.$emit('removeChild', findFirstItem());
-      await waitForPromises();
-
-      expect(findTreeChildren().props('children')).toEqual([]);
-    });
-
-    it('calls correct mutation with correct variables', async () => {
-      const firstItem = findFirstItem();
-
-      findExpandButton().vm.$emit('click');
-      await waitForPromises();
-
-      findTreeChildren().vm.$emit('removeChild', firstItem);
-
-      expect(mutationChangeParentHandler).toHaveBeenCalledWith({
-        input: {
-          id: firstItem.id,
-          hierarchyWidget: {
-            parentId: null,
-          },
-        },
-      });
-    });
-
-    it('shows the alert when workItem update fails', async () => {
-      mutationChangeParentHandler = jest.fn().mockRejectedValue(workItemUpdateFailureResponse);
-      const apolloProvider = createMockApollo([
-        [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
-        [updateWorkItemMutation, mutationChangeParentHandler],
-      ]);
-
-      createComponent({
-        childItem: workItemObjectiveWithChild,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-        apolloProvider,
-      });
-
-      findExpandButton().vm.$emit('click');
-      await waitForPromises();
-
-      findTreeChildren().vm.$emit('removeChild', findFirstItem());
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        error: expect.any(Object),
-        message: 'Something went wrong while removing child.',
+    describe('renders WorkItemLinkChildContents', () => {
+      it('with default props', () => {
+        expect(findWorkItemLinkChildContents().props()).toEqual({
+          childItem: workItemObjectiveWithChild,
+          canUpdate: true,
+          showLabels: true,
+          workItemFullPath,
+        });
       });
     });
 
     describe('pagination', () => {
       const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
-      const expandButton = async () => {
-        findExpandButton().vm.$emit('click');
-        await waitForPromises();
-      };
       let workItemTreeQueryHandler;
-      let apolloProvider;
 
       beforeEach(async () => {
         workItemTreeQueryHandler = jest
           .fn()
           .mockResolvedValue(workItemHierarchyPaginatedTreeResponse);
-        apolloProvider = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]]);
 
         createComponent({
-          childItem: workItemObjectiveWithChild,
-          workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-          apolloProvider,
+          workItemTreeQueryHandler,
+          isExpanded: true,
         });
 
-        await expandButton();
+        await waitForPromises();
       });
 
       it('shows work-item-children-load-more component when hasNextPage is true and node is expanded', () => {

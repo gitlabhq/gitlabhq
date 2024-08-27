@@ -17,6 +17,7 @@ export async function mountMergeRequestListsApp() {
   Vue.use(VueRouter);
 
   const {
+    autocompleteAwardEmojisPath,
     fullPath,
     hasAnyMergeRequests,
     hasScopedLabelsFeature,
@@ -46,6 +47,7 @@ export async function mountMergeRequestListsApp() {
     }),
     provide: {
       fullPath,
+      autocompleteAwardEmojisPath,
       hasAnyMergeRequests: parseBoolean(hasAnyMergeRequests),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       initialSort,

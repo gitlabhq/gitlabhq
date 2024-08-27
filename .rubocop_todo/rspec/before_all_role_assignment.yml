@@ -645,7 +645,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/support/shared_contexts/gitlab_team_member_shared_context.rb'
     - 'ee/spec/support/shared_contexts/project_approval_rules_shared_context.rb'
     - 'ee/spec/support/shared_examples/controllers/projects/license_scanning_report_comparison_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/finders/scan_policy_base_finder_examples.rb'
     - 'ee/spec/support/shared_examples/models/protected_environments/authorizable_examples.rb'
     - 'ee/spec/support/shared_examples/policies/dast_on_demand_scans_shared_examples.rb'
     - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'

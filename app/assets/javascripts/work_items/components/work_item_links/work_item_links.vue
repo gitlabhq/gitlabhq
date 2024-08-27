@@ -345,6 +345,7 @@ export default {
           />
           <work-item-children-wrapper
             :children="children"
+            :parent="workItem"
             :can-update="canUpdate"
             :full-path="fullPath"
             :work-item-id="issuableGid"

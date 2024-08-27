@@ -89,3 +89,8 @@ extend type Mutation {
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }
+
+type LocalWorkItemChildIsExpanded {
+  id: WorkItemID!
+  isExpanded: Boolean!
+}

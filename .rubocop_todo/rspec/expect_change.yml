@@ -149,7 +149,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/vulnerabilities/starboard_vulnerability_create_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
     - 'ee/spec/services/vulnerability_merge_request_links/create_service_spec.rb'
-    - 'ee/spec/services/work_items/widgets/iteration_service/update_service_spec.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/work_items/update_weight_widget_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/geo/geo_log_cursor_event_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/incident_management/pending_escalations_shared_examples.rb'

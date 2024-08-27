@@ -7,6 +7,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import {
+  findHierarchyWidgets,
   findHierarchyWidgetChildren,
   isNotesWidget,
   newWorkItemFullPath,
@@ -155,7 +156,7 @@ export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) =
   });
 };
 
-export const addHierarchyChild = ({ cache, id, workItem }) => {
+export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   const queryArgs = {
     query: getWorkItemTreeQuery,
     variables: { id },
@@ -169,11 +170,16 @@ export const addHierarchyChild = ({ cache, id, workItem }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const existingChild = findHierarchyWidgetChildren(draftState?.workItem).find(
-        (child) => child.id === workItem?.id,
-      );
+      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      widget.hasChildren = true;
+      const children = findHierarchyWidgetChildren(draftState?.workItem) || [];
+      const existingChild = children.find((child) => child.id === workItem?.id);
       if (!existingChild) {
-        findHierarchyWidgetChildren(draftState?.workItem).unshift(workItem);
+        if (atIndex !== null) {
+          children.splice(atIndex, 0, workItem);
+        } else {
+          children.unshift(workItem);
+        }
       }
     }),
   });
@@ -224,9 +230,13 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
+      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
       const children = findHierarchyWidgetChildren(draftState?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       if (index >= 0) children.splice(index, 1);
+      if (children.length === 0) {
+        widget.hasChildren = false;
+      }
     }),
   });
 };
@@ -540,4 +550,14 @@ export const setNewWorkItemCache = async (
       },
     },
   });
+};
+
+export const optimisticUserPermissions = {
+  deleteWorkItem: false,
+  updateWorkItem: false,
+  adminParentLink: false,
+  setWorkItemMetadata: false,
+  createNote: false,
+  adminWorkItemLink: false,
+  __typename: 'WorkItemPermissions',
 };

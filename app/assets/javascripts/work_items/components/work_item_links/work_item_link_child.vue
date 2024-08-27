@@ -1,28 +1,20 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__ } from '~/locale';
-import { isScopedLabel } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
-import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
-import {
-  STATE_OPEN,
-  WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
-} from '../../constants';
+import { STATE_OPEN, WORK_ITEM_TYPE_VALUE_TASK } from '../../constants';
 import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
+import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
+import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
-import WorkItemTreeChildren from './work_item_tree_children.vue';
 
 export default {
   name: 'WorkItemLinkChild',
   components: {
     GlButton,
-    WorkItemTreeChildren,
+    WorkItemChildrenWrapper: () => import('./work_item_children_wrapper.vue'),
     WorkItemLinkChildContents,
     WorkItemChildrenLoadMore,
   },
@@ -67,15 +59,17 @@ export default {
       required: false,
       default: false,
     },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       isExpanded: false,
       isLoadingChildren: false,
-      activeToast: null,
       children: [],
-      childrenBeforeRemoval: [],
-      hasChildren: false,
       fetchNextPageInProgress: false,
       hierarchyWidget: {},
       childItemId: '',
@@ -110,7 +104,6 @@ export default {
         return {};
       },
       error(error) {
-        this.isExpanded = !this.isExpanded;
         createAlert({
           message: s__('Hierarchy|Something went wrong while fetching children.'),
           captureError: true,
@@ -118,8 +111,24 @@ export default {
         });
       },
     },
+    isExpanded: {
+      query: isExpandedHierarchyTreeChildQuery,
+      variables() {
+        return { id: this.childItem.id };
+      },
+      update(data) {
+        this.childItemId = data?.isExpandedHierarchyTreeChild?.id;
+        return data?.isExpandedHierarchyTreeChild?.isExpanded || false;
+      },
+    },
   },
   computed: {
+    hasChildren() {
+      return (
+        findHierarchyWidgets(this.childItem.widgets).hasChildren ||
+        this.hierarchyWidget?.hasChildren
+      );
+    },
     pageInfo() {
       return this.hierarchyWidget.pageInfo || {};
     },
@@ -128,9 +137,6 @@ export default {
     },
     endCursor() {
       return this.pageInfo?.endCursor || '';
-    },
-    canHaveChildren() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE;
     },
     isItemOpen() {
       return this.childItem.state === STATE_OPEN;
@@ -162,25 +168,23 @@ export default {
         '!gl-ml-0': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
       };
     },
-  },
-  watch: {
-    childItem: {
-      handler(val) {
-        this.hasChildren = this.getWidgetByType(val, WIDGET_TYPE_HIERARCHY)?.hasChildren;
-      },
-      immediate: true,
+    showChildrenDropzone() {
+      return !this.hasChildren && this.allowedChildTypes.length > 0;
     },
   },
   methods: {
     toggleItem() {
-      this.isExpanded = !this.isExpanded;
       if (this.children.length === 0 && this.hasChildren) {
         this.isLoadingChildren = true;
         this.childItemId = this.childItem.id;
       }
-    },
-    getWidgetByType(workItem, widgetType) {
-      return workItem?.widgets?.find((widget) => widget.type === widgetType);
+      this.$apollo.mutate({
+        mutation: toggleHierarchyTreeChildMutation,
+        variables: {
+          id: this.childItem.id,
+          isExpanded: !this.isExpanded,
+        },
+      });
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -202,67 +206,6 @@ export default {
           this.fetchNextPageInProgress = false;
         }
       }
-    },
-    showScopedLabel(label) {
-      return isScopedLabel(label) && this.allowsScopedLabels;
-    },
-    async removeChild({ id }) {
-      this.cloneChildren();
-
-      try {
-        const { data } = await this.updateWorkItem(id, null);
-        if (!data?.workItemUpdate?.errors?.length) {
-          this.filterRemovedChild(id);
-
-          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
-            action: {
-              text: s__('WorkItem|Undo'),
-              onClick: this.undoChildRemoval.bind(this, id),
-            },
-          });
-        }
-      } catch (error) {
-        this.showAlert(s__('WorkItem|Something went wrong while removing child.'), error);
-        Sentry.captureException(error);
-        this.restoreChildren();
-      }
-    },
-    async undoChildRemoval(childId) {
-      try {
-        const { data } = await this.updateWorkItem(childId, this.childItem.id);
-        if (!data?.workItemUpdate?.errors?.length) {
-          this.activeToast?.hide();
-          this.restoreChildren();
-        }
-      } catch (error) {
-        this.showAlert(s__('WorkItem|Something went wrong while undoing child removal.'), error);
-        Sentry.captureException(error);
-      } finally {
-        this.activeToast?.hide();
-        this.childrenBeforeRemoval = [];
-      }
-    },
-    async updateWorkItem(childId, parentId) {
-      return this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
-      });
-    },
-    cloneChildren() {
-      this.childrenBeforeRemoval = cloneDeep(this.children);
-    },
-    filterRemovedChild(childId) {
-      this.children = this.children.filter(({ id }) => id !== childId);
-    },
-    restoreChildren() {
-      this.children = [...this.childrenBeforeRemoval];
-    },
-    showAlert(message, error) {
-      createAlert({
-        message,
-        captureError: true,
-        error,
-      });
     },
   },
 };
@@ -296,15 +239,20 @@ export default {
         @removeChild="$emit('removeChild', childItem)"
       />
     </div>
-    <work-item-tree-children
-      v-if="isExpanded"
+    <work-item-children-wrapper
+      v-if="isExpanded || showChildrenDropzone"
+      class="!gl-ml-6"
       :can-update="canUpdate"
       :work-item-id="issuableGid"
+      :work-item-iid="childItem.iid"
       :work-item-type="workItemType"
       :children="children"
+      :parent="childItem"
       :show-labels="showLabels"
-      :work-item-full-path="workItemFullPath"
-      @removeChild="removeChild"
+      :full-path="workItemFullPath"
+      :is-top-level="false"
+      @removeChild="$emit('removeChild', childItem)"
+      @error="$emit('error', $event)"
       @click="$emit('click', $event)"
     />
     <work-item-children-load-more

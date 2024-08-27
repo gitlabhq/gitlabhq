@@ -3267,7 +3267,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/usage/metrics/instrumentations/gitlab_for_jira_app_proxy_installations_count_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/hostname_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/jira_imports_total_imported_issues_count_metric_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/instrumentations/merge_request_widget_extension_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/service_ping_features_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/snowplow_configured_to_gitlab_collector_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/snowplow_enabled_metric_spec.rb'

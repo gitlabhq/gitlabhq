@@ -13,6 +13,7 @@ import {
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_ASSIGNEE,
@@ -51,6 +52,7 @@ function createComponent({ provide = {} } = {}) {
 
   wrapper = shallowMountExtended(MergeRequestsListApp, {
     provide: {
+      autocompleteAwardEmojisPath: 'pathy/pathface',
       fullPath: 'gitlab-org/gitlab',
       hasAnyMergeRequests: true,
       hasScopedLabelsFeature: false,
@@ -136,6 +138,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });
     });
@@ -147,6 +150,7 @@ describe('Merge requests list app', () => {
         draft: 'yes',
         'label_name[]': 'fluff',
         milestone_title: 'milestone',
+        my_reaction_emoji: '🔥',
         'target_branches[]': 'branch-a',
         'source_branches[]': 'branch-b',
       };
@@ -185,6 +189,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });
 
@@ -195,6 +200,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);

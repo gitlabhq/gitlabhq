@@ -69,7 +69,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/models/vulnerabilities/scanner.rb'
     - 'ee/app/models/vulnerabilities/statistic.rb'
     - 'ee/app/services/ee/ip_restrictions/update_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/duo_pro/bulk_assign_service.rb'
     - 'ee/app/services/gitlab_subscriptions/trials/base_apply_trial_service.rb'
     - 'ee/app/services/incident_management/oncall_rotations/edit_service.rb'
     - 'ee/app/services/incident_management/oncall_rotations/remove_participant_service.rb'

@@ -1181,7 +1181,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/finders/projects/integrations/jira/issues_finder.rb'
     - 'ee/app/finders/security/approval_groups_finder.rb'
     - 'ee/app/finders/security/findings_finder.rb'
-    - 'ee/app/finders/security/scan_policy_base_finder.rb'
     - 'ee/app/finders/status_page/incident_comments_finder.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
     - 'ee/app/graphql/ee/types/issue_connection_type.rb'

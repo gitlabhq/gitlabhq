@@ -32781,6 +32781,9 @@ ALTER TABLE ONLY remote_development_agent_configs
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT fk_0a57f2271b FOREIGN KEY (dast_site_validation_id) REFERENCES dast_site_validations(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY project_saved_replies
+    ADD CONSTRAINT fk_0ace76afbb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_0b85e6c388 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 

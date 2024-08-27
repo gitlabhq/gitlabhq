@@ -12,6 +12,8 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
+
+import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 
@@ -37,6 +39,8 @@ export const config = {
           epicBoardList: {
             keyArgs: ['id'],
           },
+          isExpandedHierarchyTreeChild: (_, { variables, toReference }) =>
+            toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
         },
       },
       Project: {
@@ -256,6 +260,19 @@ export const resolvers = {
     },
     localWorkItemBulkUpdate(_, { input }) {
       return workItemBulkEdit(input);
+    },
+    toggleHierarchyTreeChild(_, { id, isExpanded = false }, { cache }) {
+      cache.writeQuery({
+        query: isExpandedHierarchyTreeChildQuery,
+        variables: { id },
+        data: {
+          isExpandedHierarchyTreeChild: {
+            id,
+            isExpanded,
+            __typename: 'LocalWorkItemChildIsExpanded',
+          },
+        },
+      });
     },
   },
 };

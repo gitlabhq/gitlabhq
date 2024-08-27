@@ -5,6 +5,7 @@ import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
+import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -30,6 +31,8 @@ import {
   TOKEN_TYPE_REVIEWER,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TITLE_LABEL,
   TOKEN_TYPE_LABEL,
   TOKEN_TITLE_RELEASE,
@@ -70,6 +73,8 @@ const MilestoneToken = () =>
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 
 export default {
   name: 'MergeRequestsListApp',
@@ -83,6 +88,7 @@ export default {
     MergeRequestMoreActionsDropdown,
   },
   inject: [
+    'autocompleteAwardEmojisPath',
     'fullPath',
     'hasAnyMergeRequests',
     'hasScopedLabelsFeature',
@@ -180,17 +186,7 @@ export default {
     },
     searchTokens() {
       const preloadedUsers = [];
-
-      if (gon.current_user_id) {
-        preloadedUsers.push({
-          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
-          name: gon.current_user_fullname,
-          username: gon.current_username,
-          avatar_url: gon.current_user_avatar_url,
-        });
-      }
-
-      return [
+      const tokens = [
         {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
@@ -299,6 +295,30 @@ export default {
           releasesEndpoint: this.releasesEndpoint,
         },
       ];
+
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          operators: OPERATORS_IS_NOT,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-my_reaction`,
+        });
+      }
+
+      return tokens;
     },
     showPaginationControls() {
       return (
@@ -354,6 +374,9 @@ export default {
             message: this.$options.i18n.errorFetchingBranches,
           });
         });
+    },
+    fetchEmojis() {
+      return axios.get(this.autocompleteAwardEmojisPath);
     },
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo

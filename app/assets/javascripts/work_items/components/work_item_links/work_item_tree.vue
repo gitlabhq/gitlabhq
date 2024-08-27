@@ -102,7 +102,7 @@ export default {
       widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
       fetchNextPageInProgress: false,
-      workItem: null,
+      workItem: {},
       disableContent: false,
     };
   },
@@ -184,7 +184,7 @@ export default {
       return this.pageInfo?.hasNextPage;
     },
     workItemNamespaceName() {
-      return this.workItem?.namespace.fullName;
+      return this.workItem?.namespace?.fullName;
     },
     shouldRolledUpWeightBeVisible() {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;
@@ -310,6 +310,7 @@ export default {
         />
         <work-item-children-wrapper
           :children="children"
+          :parent="workItem"
           :can-update="canUpdateChildren"
           :full-path="fullPath"
           :work-item-id="workItemId"
@@ -317,6 +318,7 @@ export default {
           :work-item-type="workItemType"
           :show-labels="showLabels"
           :disable-content="disableContent"
+          :allowed-child-types="allowedChildTypes"
           @error="error = $event"
           @show-modal="showModal"
         />

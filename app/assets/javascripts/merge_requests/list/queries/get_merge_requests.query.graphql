@@ -17,6 +17,7 @@ query getMergeRequests(
   $releaseTag: String
   $milestoneTitle: String
   $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
   $sourceBranches: [String!]
   $targetBranches: [String!]
   $not: MergeRequestsResolverNegatedParams
@@ -40,6 +41,7 @@ query getMergeRequests(
       releaseTag: $releaseTag
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       sourceBranches: $sourceBranches
       targetBranches: $targetBranches
       not: $not
