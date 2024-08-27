@@ -1014,6 +1014,7 @@ module Gitlab
       # @param [String] start_sha: The sha to be used as the parent of the commit.
       # @param [Gitlab::Git::Repository] start_repository: The repository that contains the start branch or sha. Defaults to use this repository.
       # @param [Boolean] force: Force update the branch.
+      # @param [String] target_sha: The latest sha of the target branch (optional). Used to prevent races in updates between different clients.
       # @return [Gitlab::Git::OperationService::BranchUpdate]
       #
       # rubocop:disable Metrics/ParameterLists
@@ -1021,12 +1022,12 @@ module Gitlab
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_sha: nil, start_repository: nil,
-        force: false, sign: true)
+        force: false, sign: true, target_sha: nil)
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
-            message, actions, author_email, author_name,
-            start_branch_name, start_repository, force, start_sha, sign)
+            message, actions, author_email, author_name, start_branch_name,
+            start_repository, force, start_sha, sign, target_sha)
         end
       end
       # rubocop:enable Metrics/ParameterLists

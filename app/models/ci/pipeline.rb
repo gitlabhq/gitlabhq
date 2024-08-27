@@ -20,6 +20,7 @@ module Ci
     include FastDestroyAll::Helpers
 
     self.primary_key = :id
+    self.sequence_name = :ci_pipelines_id_seq
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 

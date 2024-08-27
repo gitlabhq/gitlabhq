@@ -80,6 +80,16 @@
     margin-bottom: $gl-padding;
   }
 
+  // Shift the anchor link for a heading inside a details summary to the left
+  // to make room for the summary toggle
+  details summary {
+    h1, h2, h3, h4, h5, h6 {
+      a.anchor {
+        margin-left: -2rem;
+      }
+    }
+  }
+
   summary > * {
     display: inline-block;
     margin-bottom: 0;

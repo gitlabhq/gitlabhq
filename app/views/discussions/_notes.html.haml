@@ -22,7 +22,7 @@
       - elsif !current_user
         .disabled-comment.gl-text-center.gl-text-secondary
           Please
-          = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
+          = link_to _("register"), new_session_path(:user, redirect_to_referer: 'yes')
           or
-          = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
+          = link_to _("sign in"), new_session_path(:user, redirect_to_referer: 'yes')
           to reply

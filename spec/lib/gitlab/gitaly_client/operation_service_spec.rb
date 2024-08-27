@@ -1180,17 +1180,19 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:force) { false }
     let(:start_sha) { nil }
     let(:sign) { true }
+    let(:target_sha) { nil }
 
     subject do
       client.user_commit_files(
         user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
-        'master', repository, force, start_sha, sign)
+        'master', repository, force, start_sha, sign, target_sha)
     end
 
     context 'when UserCommitFiles RPC is called' do
       let(:force) { true }
       let(:start_sha) { project.commit.id }
       let(:sign) { false }
+      let(:target_sha) { 'target_sha' }
 
       it 'successfully builds the header' do
         expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_commit_files) do |_, req_enum|
@@ -1199,6 +1201,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(header.force).to eq(force)
           expect(header.start_sha).to eq(start_sha)
           expect(header.sign).to eq(sign)
+          expect(header.expected_old_oid).to eq(target_sha)
         end.and_return(Gitaly::UserCommitFilesResponse.new)
 
         subject
@@ -1438,6 +1441,32 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect { subject }.to raise_error do |error|
             expect(error).to be_a(Gitlab::Git::PreReceiveError)
             expect(error.message).to eq("some custom hook error message")
+          end
+        end
+      end
+
+      context 'with an invalid target_sha' do
+        context 'when the target_sha is not in a valid format' do
+          let(:target_sha) { 'asdf' }
+
+          it 'raises CommandError' do
+            expect { subject }.to raise_error(Gitlab::Git::CommandError)
+          end
+        end
+
+        context 'when the target_sha is valid but not present in the repo' do
+          let(:target_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff0' }
+
+          it 'raises CommandError' do
+            expect { subject }.to raise_error(Gitlab::Git::CommandError)
+          end
+        end
+
+        context 'when the target_sha is present in the repo but is not the latest' do
+          let(:target_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+
+          it 'raises FailedPrecondition' do
+            expect { subject }.to raise_error(GRPC::FailedPrecondition)
           end
         end
       end

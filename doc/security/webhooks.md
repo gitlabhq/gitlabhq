@@ -192,6 +192,6 @@ This error can occur when outbound requests to the GitLab cloud server are not a
 
 1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
-1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually sychronize your license](../subscriptions/self_managed/index.md#manually-synchronize-subscription-data)
+1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/self_managed/index.md#manually-synchronize-subscription-data)
 
 For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

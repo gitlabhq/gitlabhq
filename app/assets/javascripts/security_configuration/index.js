@@ -5,7 +5,6 @@ import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
 import { augmentFeatures } from './utils';
-import { securityFeatures } from './constants';
 
 export const initSecurityConfiguration = (el) => {
   if (!el) {
@@ -31,10 +30,7 @@ export const initSecurityConfiguration = (el) => {
     containerScanningForRegistryEnabled,
   } = el.dataset;
 
-  const { augmentedSecurityFeatures } = augmentFeatures(
-    securityFeatures,
-    features ? JSON.parse(features) : [],
-  );
+  const { augmentedSecurityFeatures } = augmentFeatures(features ? JSON.parse(features) : []);
 
   return new Vue({
     el,

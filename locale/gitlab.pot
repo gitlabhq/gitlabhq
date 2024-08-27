@@ -357,6 +357,16 @@ msgid_plural "%d layers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d matching branch"
+msgid_plural "%d matching branches"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d matching environment"
+msgid_plural "%d matching environments"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d merge request"
 msgid_plural "%d merge requests"
 msgstr[0] ""
@@ -1007,6 +1017,9 @@ msgstr ""
 msgid "%{label_name} was removed"
 msgstr ""
 
+msgid "%{lastUsed} by"
+msgstr ""
+
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -1202,6 +1215,9 @@ msgid "%{reviewer_names} was removed from reviewers."
 msgid_plural "%{reviewer_names} were removed from reviewers."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{rotationDate} (%{rotationPeriod})"
+msgstr ""
 
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
@@ -10434,7 +10450,16 @@ msgstr ""
 msgid "CVE|Why Request a CVE ID?"
 msgstr ""
 
-msgid "CVS|Toggle CVS"
+msgid "CVS|Action unavailable"
+msgstr ""
+
+msgid "CVS|Container Scanning for Registry is disabled"
+msgstr ""
+
+msgid "CVS|Container Scanning for Registry is enabled"
+msgstr ""
+
+msgid "CVS|Only a project maintainer or owner can toggle this feature."
 msgstr ""
 
 msgid "Cadence is not automated"
@@ -45812,7 +45837,7 @@ msgstr ""
 msgid "Rollback"
 msgstr ""
 
-msgid "Rotation schedule"
+msgid "Rotation reminder"
 msgstr ""
 
 msgid "Ruby"
@@ -48281,6 +48306,9 @@ msgid "SecurityConfiguration|Something went wrong. Please refresh the page, or t
 msgstr ""
 
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
+msgstr ""
+
+msgid "SecurityConfiguration|Toggle Container Scanning for Registry"
 msgstr ""
 
 msgid "SecurityConfiguration|Toggle secret push protection"

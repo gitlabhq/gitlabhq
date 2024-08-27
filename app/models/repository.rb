@@ -885,6 +885,11 @@ class Repository
       options[:start_repository] = start_project.repository.raw_repository
     end
 
+    skip_target_sha = options.delete(:skip_target_sha)
+    unless skip_target_sha || Feature.disabled?(:validate_target_sha_in_user_commit_files, project)
+      options[:target_sha] = self.commit(options[:branch_name])&.sha
+    end
+
     with_cache_hooks { raw.commit_files(user, **options) }
   end
 

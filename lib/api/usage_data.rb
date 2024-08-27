@@ -112,22 +112,28 @@ module API
         status :ok
       end
 
-      desc 'Track gitlab internal events' do
-        detail 'This feature was introduced in GitLab 16.2.'
-        success code: 200
-        failure [
-          { code: 401, message: 'Unauthorized' },
-          { code: 404, message: 'Not found' }
-        ]
-        tags %w[usage_data]
-      end
-      params do
-        use :event_params
-      end
-      post 'track_event', urgency: :low do
-        process_event(params)
+      resource :track_event do
+        allow_access_with_scope :ai_workflows
 
-        status :ok
+        desc 'Track gitlab internal events' do
+          detail 'This feature was introduced in GitLab 16.2.'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[usage_data]
+        end
+
+        params do
+          use :event_params
+        end
+
+        post urgency: :low do
+          process_event(params)
+
+          status :ok
+        end
       end
 
       desc 'Track multiple gitlab internal events' do

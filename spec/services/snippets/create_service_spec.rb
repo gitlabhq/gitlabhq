@@ -118,6 +118,14 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         expect(blob.data).to eq base_opts[:content]
       end
 
+      it 'passes along correct commit attributes' do
+        expect_next_instance_of(Repository) do |repository|
+          expect(repository).to receive(:commit_files).with(anything, a_hash_including(skip_target_sha: true))
+        end
+
+        subject
+      end
+
       context 'when repository creation action fails' do
         before do
           allow_next_instance_of(Snippet) do |instance|

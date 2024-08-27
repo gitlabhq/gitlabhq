@@ -14,7 +14,7 @@ import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
  * @returns {Object} Object with enriched features from constants divided into Security and compliance Features
  */
 
-export const augmentFeatures = (securityFeatures, features = []) => {
+export const augmentFeatures = (features = []) => {
   const featuresByType = features.reduce((acc, feature) => {
     acc[feature.type] = convertObjectPropsToCamelCase(feature, { deep: true });
     return acc;
@@ -31,7 +31,6 @@ export const augmentFeatures = (securityFeatures, features = []) => {
     const augmented = {
       ...feature,
       ...featuresByType[feature.type],
-      ...securityFeatures[feature.type],
     };
 
     // Secondary layer copies some values from the first layer

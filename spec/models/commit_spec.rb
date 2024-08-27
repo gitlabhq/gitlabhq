@@ -17,6 +17,7 @@ RSpec.describe Commit do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(StaticModel) }
     it { is_expected.to include_module(Presentable) }
+    it { is_expected.to include_module(GlobalID::Identification) }
   end
 
   describe '.lazy' do

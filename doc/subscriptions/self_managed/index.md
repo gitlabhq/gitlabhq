@@ -323,33 +323,40 @@ The **Subscription** page includes the following information:
 
 ## Export your license usage
 
-If you are an administrator, you can export your license usage into a CSV:
+Prerequisites:
+
+- You must be an administrator.
+
+You can export your license usage into a CSV file.
+
+This file contains the information GitLab uses to manually process
+[quarterly reconciliations](../../subscriptions/quarterly_reconciliation.md)
+or [renewals](#renew-your-subscription). If your instance is firewalled or an
+offline environment, you must provide GitLab with this information.
+
+WARNING:
+Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../../administration/license_file.md#submit-license-usage-data).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
-This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.
+### License usage file contents
 
-The **License Usage** CSV includes the following details:
+The license usage file includes the following information:
 
 - License key
 - Licensee email
-- License start date
-- License end date
+- License start date (UTC)
+- License end date (UTC)
 - Company
-- Generated at (the timestamp for when the file was exported)
+- Timestamp the file was generated at and exported (UTC)
 - Table of historical user counts for each day in the period:
-  - Timestamp the count was recorded
+  - Timestamp the count was recorded (UTC)
   - [Billable user](#billable-users) count
 
-NOTES:
-
-- All date timestamps are displayed in UTC.
-- A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
-
-WARNING:
-Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../../administration/license_file.md#submit-license-usage-data).
+NOTE:
+A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Renew your subscription
 

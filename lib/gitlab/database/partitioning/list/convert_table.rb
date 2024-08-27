@@ -214,6 +214,8 @@ module Gitlab
                   .not_inherited
                   .any? { |p_fk| p_fk.name == fk.name }
 
+              next if fk.referenced_table_name == table_name.to_s
+
               migration_context.add_concurrent_foreign_key(
                 parent_table_name,
                 fk.referenced_table_name,

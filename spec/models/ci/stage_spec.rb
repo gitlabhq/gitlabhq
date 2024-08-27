@@ -128,6 +128,54 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
     end
   end
 
+  describe 'ordered statuses in stage' do
+    let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'test') }
+
+    describe '#ordered_latest_statuses' do
+      context 'with expected job order' do
+        let_it_be(:bridge_job) { create(:ci_bridge, :success, ci_stage: stage, name: 'bridge_job') }
+        let_it_be(:another_job) { create(:ci_build, ci_stage: stage, status: :manual, name: 'another_job') }
+        let_it_be(:job) { create(:ci_build, :success, ci_stage: stage, name: 'job') }
+        let_it_be(:another_job_2) { create(:ci_build, ci_stage: stage, status: :skipped, name: 'another_job_2') }
+
+        it 'returns the stage with jobs in the correct order' do
+          job_names = stage.ordered_latest_statuses
+          expected_order = [another_job, bridge_job, job, another_job_2]
+
+          expect(job_names).to eq(expected_order)
+        end
+      end
+    end
+
+    describe '#ordered_retried_statuses' do
+      let_it_be(:retried_job_1) do
+        create(:ci_build, :retried, ci_stage: stage, status: :success, name: 'retried_job_1')
+      end
+
+      let_it_be(:retried_job_2) { create(:ci_build, :retried, ci_stage: stage, status: :failed, name: 'retried_job_2') }
+      let_it_be(:retried_job_3) do
+        create(:ci_build, :retried, ci_stage: stage, status: :canceled, name: 'retried_job_3')
+      end
+
+      let_it_be(:retried_job_4) do
+        create(:ci_build, :retried, ci_stage: stage, status: :running, name: 'retried_job_4')
+      end
+
+      let_it_be(:retried_job_5) do
+        create(:ci_build, :retried, ci_stage: stage, status: :pending, name: 'retried_job_5')
+      end
+
+      it 'returns retried statuses in the correct order based on ORDERED_STATUSES' do
+        ordered_statuses = stage.ordered_retried_statuses
+
+        expected_order = %w[failed pending running canceled success]
+        expect(ordered_statuses.map(&:status)).to eq(expected_order)
+        expect(ordered_statuses.map(&:name)).to eq(%w[retried_job_2 retried_job_5 retried_job_4 retried_job_3
+          retried_job_1])
+      end
+    end
+  end
+
   describe '#update_status' do
     context 'when stage objects needs to be updated' do
       before do

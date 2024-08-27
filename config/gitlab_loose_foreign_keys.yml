@@ -342,6 +342,16 @@ p_ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_pipelines:
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
@@ -491,6 +501,10 @@ vulnerability_occurrences:
   - table: ci_pipelines
     column: latest_pipeline_id
     on_delete: async_nullify
+vulnerability_remediations:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_scanners:
   - table: projects
     column: project_id

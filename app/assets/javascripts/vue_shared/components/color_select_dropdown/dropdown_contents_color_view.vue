@@ -44,7 +44,7 @@ export default {
         :is-checked="isColorSelected(color)"
         is-check-centered
         is-check-item
-        @click.native.capture.stop="handleColorClick(color)"
+        @click.capture.native.stop="handleColorClick(color)"
       >
         <color-item :color="color.color" :title="color.title" />
       </gl-dropdown-item>

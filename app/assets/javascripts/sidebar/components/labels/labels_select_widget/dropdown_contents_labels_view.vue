@@ -167,8 +167,8 @@ export default {
             :active="shouldHighlightFirstItem && index === 0"
             active-class="is-focused"
             data-testid="labels-list"
-            @focus.native.capture="handleFocus($event, index)"
-            @click.native.capture.stop="handleLabelClick(label)"
+            @focus.capture.native="handleFocus($event, index)"
+            @click.capture.native.stop="handleLabelClick(label)"
           >
             <label-item :label="label" />
           </gl-dropdown-item>

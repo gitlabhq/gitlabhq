@@ -124,5 +124,9 @@ module Snippets
     def restricted_files_actions
       :create
     end
+
+    def commit_attrs(snippet, msg)
+      super.merge(skip_target_sha: true)
+    end
   end
 end

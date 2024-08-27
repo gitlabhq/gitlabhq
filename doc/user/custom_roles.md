@@ -175,8 +175,9 @@ If you are assigning a custom role to an existing:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage > Members**.
-1. Select the **Max role** dropdown list for the member you want to select a custom role for.
-1. On the **Change role** dialog, select a different custom role.
+1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
+1. Using the **Role** dropdown list, select the custom role you want to assign to the member.
+1. Select **Update role** to assign the role.
 
 ### Use the API to assign a custom role
 
@@ -225,8 +226,9 @@ To remove a custom role from a group member:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
-1. Select the **Max role** dropdown list for the member you want to remove a custom role from.
-1. On the **Change role** dialog, select a default role.
+1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
+1. Using the **Role** dropdown list, select the default role you want to assign to the member.
+1. Select **Update role** to assign the role.
 
 ### Use the API to change user role
 

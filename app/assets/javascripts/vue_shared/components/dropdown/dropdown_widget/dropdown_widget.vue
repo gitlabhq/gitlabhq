@@ -158,7 +158,7 @@ export default {
               :is-checked="isSelected(option)"
               is-check-centered
               is-check-item
-              @click.native.capture.stop="selectOption(option)"
+              @click.capture.native.stop="selectOption(option)"
             >
               <slot name="preset-item" :item="option">
                 {{ option.title }}
@@ -175,7 +175,7 @@ export default {
             :avatar-url="avatarUrl(option)"
             :secondary-text="secondaryText(option)"
             data-testid="unselected-option"
-            @click.native.capture.stop="selectOption(option)"
+            @click.capture.native.stop="selectOption(option)"
           >
             <slot name="item" :item="option">
               {{ option.title }}

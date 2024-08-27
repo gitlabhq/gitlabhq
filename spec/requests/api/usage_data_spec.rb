@@ -202,6 +202,26 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
+    context 'with oauth token that has ai_workflows scope' do
+      let(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let(:params) { { event: known_event } }
+
+      it 'allows access' do
+        expect(Gitlab::InternalEvents).to receive(:track_event)
+          .with(
+            known_event,
+            send_snowplow_event: false,
+            user: user,
+            namespace: nil,
+            project: nil,
+            additional_properties: {}
+          )
+        post api(endpoint, oauth_access_token: oauth_access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'with usage ping enabled' do
       let_it_be(:namespace) { create(:namespace) }
       let_it_be(:project) { create(:project) }

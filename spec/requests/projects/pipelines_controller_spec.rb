@@ -145,6 +145,24 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      it 'returns retried builds in the correct order' do
+        create(:ci_build, :retried, :failed, pipeline: pipeline, stage: 'build', name: 'retried_job_1')
+        create(:ci_build, :retried, :success, pipeline: pipeline, stage: 'build', name: 'retried_job_2')
+        create(:ci_build, :retried, :running, pipeline: pipeline, stage: 'build', name: 'retried_job_3')
+        create(:ci_build, :retried, :canceled, pipeline: pipeline, stage: 'build', name: 'retried_job_4')
+        create(:ci_build, :retried, :pending, pipeline: pipeline, stage: 'build', name: 'retried_job_5')
+
+        request_build_stage(retried: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        retried_jobs = json_response['retried']
+        job_names = retried_jobs.pluck('name')
+        expected_order = %w[retried_job_1 retried_job_5 retried_job_3 retried_job_4 retried_job_2]
+
+        expect(job_names).to eq(expected_order)
+      end
     end
 
     def request_build_stage(params = {})

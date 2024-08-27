@@ -4307,19 +4307,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#commit_files' do
-    let(:project) { create(:project, :empty_repo) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:target_sha) { repository.commit('master').sha }
+    let(:expected_params) do
+      [user, 'master', 'commit message', [], 'author email', 'author name', nil, nil, true, nil, false, target_sha]
+    end
 
-    it 'calls UserCommitFiles RPC' do
-      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
-        expect(client).to receive(:user_commit_files).with(
-          user, 'extra-branch', 'commit message', [],
-          'author email', 'author name', nil, nil, true, nil, false
-        )
-      end
-
+    subject do
       repository.commit_files(
         user,
-        branch_name: 'extra-branch',
+        branch_name: 'master',
         message: 'commit message',
         author_name: 'author name',
         author_email: 'author email',
@@ -4327,6 +4324,45 @@ RSpec.describe Repository, feature_category: :source_code_management do
         force: true,
         sign: false
       )
+    end
+
+    it 'finds and passes the branches target_sha' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+        expect(client).to receive(:user_commit_files).with(*expected_params)
+      end
+
+      subject
+    end
+
+    context 'when validate_target_sha_in_user_commit_files feature flag is disabled' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:target_sha) { nil }
+
+      before do
+        stub_feature_flags(validate_target_sha_in_user_commit_files: false)
+      end
+
+      it 'does not find or pass the branches target_sha' do
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+          expect(client).to receive(:user_commit_files).with(*expected_params)
+        end
+        expect(repository).not_to receive(:commit)
+
+        subject
+      end
+    end
+
+    context 'with an empty branch' do
+      let_it_be(:project) { create(:project, :empty_repo) }
+      let(:target_sha) { nil }
+
+      it 'calls UserCommitFiles RPC' do
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+          expect(client).to receive(:user_commit_files).with(*expected_params)
+        end
+
+        subject
+      end
     end
   end
 end

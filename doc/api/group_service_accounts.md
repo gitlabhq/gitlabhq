@@ -12,13 +12,13 @@ DETAILS:
 
 Interact with [service accounts](../user/profile/service_accounts.md) by using the REST API.
 
+Prerequisites:
+
+- You must be an administrator of the self-managed instance, or have the Owner role for the GitLab.com group.
+
 ## List service account users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
-
-Prerequisites:
-
-- You must be an administrator of the self-managed instance, or have the Owner role for the group.
 
 Lists all service account users that are provisioned by group.
 

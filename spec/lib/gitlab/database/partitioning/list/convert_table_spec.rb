@@ -320,6 +320,21 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
           expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
         end
       end
+
+      context 'when table has FK referencing itself' do
+        before do
+          connection.execute(<<~SQL)
+            ALTER TABLE #{table_name} ADD COLUMN auto_canceled_by_id bigint;
+            ALTER TABLE #{table_name} ADD CONSTRAINT self_referencing FOREIGN KEY (#{partitioning_column}, auto_canceled_by_id) REFERENCES #{table_name} (#{partitioning_column}, id) ON DELETE SET NULL;
+          SQL
+        end
+
+        it 'does not duplicate the FK', :aggregate_failures do
+          expect { partition }.not_to raise_error
+
+          expect(migration_context.foreign_keys(parent_table_name).map(&:name)).not_to include("self_referencing")
+        end
+      end
     end
 
     context 'when a single partitioning value is given' do

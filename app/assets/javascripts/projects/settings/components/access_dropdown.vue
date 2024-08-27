@@ -454,7 +454,7 @@ export default {
         data-testid="role-dropdown-item"
         is-check-item
         :is-checked="isSelected(role)"
-        @click.native.capture.stop="onItemClick(role)"
+        @click.capture.native.stop="onItemClick(role)"
       >
         {{ role.text }}
       </gl-dropdown-item>
@@ -472,7 +472,7 @@ export default {
         :avatar-url="group.avatar_url"
         is-check-item
         :is-checked="isSelected(group)"
-        @click.native.capture.stop="onItemClick(group)"
+        @click.capture.native.stop="onItemClick(group)"
       >
         {{ group.name }}
       </gl-dropdown-item>
@@ -491,7 +491,7 @@ export default {
         :secondary-text="user.username"
         is-check-item
         :is-checked="isSelected(user)"
-        @click.native.capture.stop="onItemClick(user)"
+        @click.capture.native.stop="onItemClick(user)"
       >
         {{ user.name }}
       </gl-dropdown-item>
@@ -509,7 +509,7 @@ export default {
         is-check-item
         :is-checked="isSelected(key)"
         class="gl-truncate"
-        @click.native.capture.stop="onItemClick(key)"
+        @click.capture.native.stop="onItemClick(key)"
       >
         <div class="gl-truncate gl-font-bold">{{ key.title }}</div>
         <div class="gl-truncate gl-text-gray-700">

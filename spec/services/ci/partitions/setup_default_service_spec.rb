@@ -12,16 +12,6 @@ RSpec.describe Ci::Partitions::SetupDefaultService, feature_category: :ci_scalin
   describe '.execute' do
     subject(:execute) { service.execute }
 
-    context 'when ci_partitioning_first_records is disabled' do
-      before do
-        stub_feature_flags(ci_partitioning_first_records: false)
-      end
-
-      it 'does not create the default ci_partitions' do
-        expect { execute }.not_to change { Ci::Partition }
-      end
-    end
-
     context 'when current ci_partition exists' do
       let!(:current_partition) { create(:ci_partition, :current) }
 
