@@ -290,7 +290,7 @@ export default {
           :key="organizationName"
           data-testid="organization"
         >
-          <div class="gl-text-secondary gl-mt-3">{{ organizationName }}</div>
+          <div class="gl-mt-3 gl-text-secondary">{{ organizationName }}</div>
           <div v-for="contact in contacts" :key="contact.id" data-testid="contact">
             <gl-link
               :id="`contact_${contact.id}`"
@@ -324,7 +324,7 @@ export default {
                 </div>
                 <div
                   v-if="organizationName !== s__('Crm|No organization')"
-                  class="gl-bg-gray-50 gl-rounded-base gl-p-3 gl-flex gl-flex-col gl-gap-2"
+                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-gray-50 gl-p-3"
                 >
                   <div class="gl-font-bold">{{ organizationName }}</div>
                   <div

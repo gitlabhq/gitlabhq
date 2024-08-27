@@ -7,8 +7,14 @@ RSpec.describe Ci::RunnerManagerBuild, model: true, feature_category: :fleet_vis
   let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
 
-  it { is_expected.to belong_to(:build) }
-  it { is_expected.to belong_to(:runner_manager) }
+  describe 'associations' do
+    it { is_expected.to belong_to(:build) }
+    it { is_expected.to belong_to(:runner_manager) }
+  end
+
+  describe 'validation' do
+    it { is_expected.to validate_presence_of(:build) }
+  end
 
   describe 'partitioning' do
     context 'with build' do

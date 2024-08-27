@@ -43,7 +43,7 @@ export default {
         :project-id="projectId"
       />
     </template>
-    <div v-else class="gl-text-subtle gl-bg-gray-10 gl-p-5" data-testid="empty-state">
+    <div v-else class="gl-bg-gray-10 gl-p-5 gl-text-subtle" data-testid="empty-state">
       {{ s__('DeployKeys|No deploy keys found, start by adding a new one above.') }}
     </div>
   </div>

@@ -25757,6 +25757,9 @@ msgstr ""
 msgid "Group wikis"
 msgstr ""
 
+msgid "Group work item bulk edit is a licensed feature not available for this group."
+msgstr ""
+
 msgid "Group-level wiki is disabled."
 msgstr ""
 
@@ -35705,6 +35708,9 @@ msgid "No more than %{max_issues} issues can be updated at the same time"
 msgstr ""
 
 msgid "No more than %{max_work_items} work items can be modified at the same time."
+msgstr ""
+
+msgid "No more than %{max_work_items} work items can be updated at the same time"
 msgstr ""
 
 msgid "No open merge requests"

@@ -42,6 +42,7 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
+  include WorkItems::Parent
   include UpdatedAtFilterable
   include IgnorableColumns
   include CrossDatabaseIgnoredTables

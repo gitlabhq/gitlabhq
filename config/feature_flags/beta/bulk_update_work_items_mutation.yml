@@ -1,0 +1,9 @@
+---
+name: bulk_update_work_items_mutation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434296
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161507
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/476586
+milestone: '17.4'
+group: group::project management
+type: beta
+default_enabled: true

@@ -13,7 +13,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'ml_model_metadata', # has a desired sharding key instead.
-      'p_ci_finished_pipeline_ch_sync_events', # https://gitlab.com/gitlab-org/gitlab/-/issues/470152
       'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
       'p_ci_stages', # https://gitlab.com/gitlab-org/gitlab/-/issues/448630
       'sbom_occurrences_vulnerabilities' # https://gitlab.com/gitlab-org/gitlab/-/issues/432900

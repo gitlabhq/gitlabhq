@@ -42,27 +42,37 @@ RSpec.describe Gitlab::BackgroundMigration::CopyTaggingsToPCiBuildTags, feature_
     taggings_table.create!(tag_id: tag1.id, taggable_id: job2.id, taggable_type: 'CommitStatus', context: :tags)
     taggings_table.create!(tag_id: tag2.id, taggable_id: job2.id, taggable_type: 'CommitStatus', context: :tags)
     taggings_table.create!(tag_id: tag4.id, taggable_id: job2.id, taggable_type: 'CommitStatus', context: :tags)
-    taggings_table.create!(tag_id: tag3.id, taggable_id: 5, taggable_type: 'Ci::Runner', context: :tags)
+    taggings_table.create!(tag_id: tag3.id, taggable_id: job2.id, taggable_type: 'Ci::Runner', context: :tags)
   end
 
   describe '#perform' do
-    it 'copies records over into p_ci_build_tags', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480267' do
+    it 'copies records over into p_ci_build_tags', :aggregate_failures do
       expect { migration.perform }
         .to change { ci_build_tags_table.count }
         .from(0)
         .to(6)
 
-      expect(taggings_table.where(taggable_id: job1).pluck(:tag_id))
-        .to match_array(ci_build_tags_table.where(build_id: job1).pluck(:tag_id))
+      expect(tag_ids_from_taggings_for(job1))
+        .to match_array(build_tags_for(job1).pluck(:tag_id))
 
-      expect(taggings_table.where(taggable_id: job2).pluck(:tag_id))
-        .to match_array(ci_build_tags_table.where(build_id: job2).pluck(:tag_id))
+      expect(tag_ids_from_taggings_for(job2))
+        .to match_array(build_tags_for(job2).pluck(:tag_id))
 
-      expect(ci_build_tags_table.where(build_id: job1).pluck(:project_id).uniq)
+      expect(build_tags_for(job1).pluck(:project_id).uniq)
         .to contain_exactly(1)
 
-      expect(ci_build_tags_table.where(build_id: job2).pluck(:project_id).uniq)
+      expect(build_tags_for(job2).pluck(:project_id).uniq)
         .to contain_exactly(2)
+    end
+
+    def tag_ids_from_taggings_for(job)
+      taggings_table
+        .where(taggable_id: job, taggable_type: 'CommitStatus')
+        .pluck(:tag_id)
+    end
+
+    def build_tags_for(job)
+      ci_build_tags_table.where(build_id: job)
     end
   end
 end
