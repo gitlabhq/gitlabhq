@@ -380,9 +380,12 @@ to an entire instance.
 Most integrations only act in a project context, but can be still configured
 for the group and instance.
 
-For some integrations it can make sense to only make it available on the project level.
-To do that, the integration must be removed from `Integration::INTEGRATION_NAMES` and
-added to `Integration::PROJECT_SPECIFIC_INTEGRATION_NAMES` instead.
+For some integrations it can make sense to only make it available on certain levels (project, group, or instance).
+To do that, the integration must be removed from `Integration::INTEGRATION_NAMES` and instead added to:
+
+- `Integration::PROJECT_LEVEL_ONLY_INTEGRATION_NAMES` to only allow enabling on the project level.
+- `Integration::INSTANCE_LEVEL_ONLY_INTEGRATION_NAMES` to only allow enabling on the instance level.
+- `Integration::PROJECT_AND_GROUP_LEVEL_ONLY_INTEGRATION_NAMES` to prevent enabling on the instance level.
 
 When developing a new integration, we also recommend you gate the availability behind a
 [feature flag](../feature_flags/index.md) in `Integration.available_integration_names`.

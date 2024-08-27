@@ -194,13 +194,13 @@ PATH
       omniauth (~> 2.0)
 
 PATH
-  remote: vendor/gems/sidekiq-7.1.6
+  remote: vendor/gems/sidekiq-7.2.4
   specs:
-    sidekiq (7.1.6)
+    sidekiq (7.2.4)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
-      redis-client (>= 0.14.0)
+      redis-client (>= 0.19.0)
 
 PATH
   remote: vendor/gems/sidekiq-reliable-fetch

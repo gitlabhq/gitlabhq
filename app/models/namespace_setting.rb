@@ -18,7 +18,7 @@ class NamespaceSetting < ApplicationRecord
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
   enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
-  enum seat_control: { off: 0, user_cap: 1 }, _prefix: true
+  enum seat_control: { off: 0, user_cap: 1, block_overages: 2 }, _prefix: true
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 

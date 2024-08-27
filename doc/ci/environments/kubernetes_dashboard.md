@@ -35,7 +35,7 @@ add one when you create an environment.
 
 Prerequisites:
 
-- A GitLab agent for Kubernetes is [configured](../../user/clusters/agent/install/index.md) and shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
+- A GitLab agent for Kubernetes is [installed](../../user/clusters/agent/install/index.md) and [`user_access`](../../user/clusters/agent/user_access.md) for the environment's project or its parent group.
 
 ::Tabs
 

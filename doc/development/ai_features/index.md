@@ -695,6 +695,52 @@ Gitlab::Llm::Anthropic::Client.new(user, unit_primitive: 'your_feature')
 - [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
 - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF).
 
+## Logs
+
+### Overview
+
+In addition to standard logging in the GitLab Rails Monolith instance, specialized logging is available for features based on large language models (LLMs).
+
+### Implementation
+
+#### Logger Class
+
+To implement LLM-specific logging, use the `Gitlab::Llm::Logger` class.
+
+#### Privacy Considerations
+
+**Important**: User inputs and complete prompts containing user data must not be logged unless explicitly permitted.
+
+### Feature Flag
+
+A feature flag named `expanded_ai_logging` controls the logging of sensitive data.
+Use the `info_or_debug` helper method for conditional logging based on the feature flag status:
+
+- If the feature flag is enabled for the current user, it logs the information on `info` level (logs are accessible in Kibana).
+- If the feature flag is disabled for the current user, it logs the information on `debug` level (logs are not accessible in Kibana).
+
+### Best Practices
+
+When implementing logging for LLM features, consider the following:
+
+- Identify critical information for debugging purposes.
+- Ensure compliance with privacy requirements by not logging sensitive user data without proper authorization.
+- Use the `info_or_debug` helper method to respect the `expanded_ai_logging` feature flag.
+- Structure your logs to provide meaningful insights for troubleshooting and analysis.
+
+### Example Usage
+
+```ruby
+# Logging non-sensitive information
+Gitlab::Llm::Logger.build.info("LLM feature initialized")
+
+# Logging potentially sensitive information
+Gitlab::Llm::Logger.build.info_or_debug(user, message:"User prompt processed: #{sanitized_prompt}")
+
+# Logging application error information
+Gitlab::Llm::Logger.build.error(user, message: "System application error: #{sanitized_error_message}")
+```
+
 ## Security
 
 Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).

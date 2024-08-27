@@ -14,19 +14,24 @@ This page type:
 
 ## Format
 
-The top-level navigation should be in this format:
+The top-level page should be in this format.
 
 ```markdown
 # Title (The name of the top-level page, like "Manage your organization")
 
 Briefly describe the workflow's key features. Use the active voice, for example, "Manage projects to track issues, plan work, and collaborate on code."
 
-- [Title of first page]()
-- [Title of second page]()
-- [Title of third page]()
+| | | |
+|--|--|--|
+| [**Getting started**](../../user/get_started/get_started_projects.md) **{chevron-right}**<br><br>Overview of how features fit together. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword.  |
+| [**Page name**](file.md) **{chevron-right}****<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. |
+
 ```
 
-Update the list of pages when a new page is added, or if the pages are reordered.
+- For each page, use three to four keywords to describe the page contents.
+- For **Getting started** pages, use `Overview of how features fit together`.
+
+Update the table when a new page is added, or if the pages are reordered.
 
 ## Top-level page titles
 

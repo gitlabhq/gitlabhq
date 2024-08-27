@@ -11,12 +11,13 @@
 .gfm-project_member,
 .md a.gfm-project_member {
   padding: 0 2px;
-  background-color: $blue-100;
+  @apply gl-text-blue-700;
+  @apply gl-bg-blue-100;
   border-radius: $gl-border-radius-base;
-  color: $blue-700;
 
   &.current-user {
-    background-color: $orange-100;
+    @apply gl-text-orange-800;
+    @apply gl-bg-orange-100;
   }
 }
 

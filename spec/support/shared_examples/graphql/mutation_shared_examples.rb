@@ -51,3 +51,14 @@ RSpec.shared_examples 'a mutation that returns errors in the response' do |error
     expect(mutation_response['errors']).to match_array(errors)
   end
 end
+
+RSpec.shared_examples 'a query that returns a top-level access error' do
+  it do
+    expect(graphql_errors).to be_present
+
+    error_messages = graphql_errors.pluck('message')
+
+    errors = [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+    expect(error_messages).to match_array(errors)
+  end
+end

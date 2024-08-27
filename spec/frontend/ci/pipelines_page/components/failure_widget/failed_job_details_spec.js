@@ -48,7 +48,7 @@ describe('FailedJobDetails component', () => {
   const findJobId = () => wrapper.findComponent(GlLink);
   const findJobLog = () => wrapper.findByTestId('job-log');
   const findJobName = () => wrapper.findByText(defaultProps.job.name);
-  const findRetryButton = () => wrapper.findByLabelText('Retry');
+  const findRetryButton = () => wrapper.findByTestId('retry-button');
   const findRow = () => wrapper.findByTestId('widget-row');
   const findStageName = () => wrapper.findByText(defaultProps.job.stage.name);
 

@@ -52,6 +52,11 @@ export default {
     label() {
       return sprintf(this.$options.i18n.label, { accessTokenType: this.accessTokenType });
     },
+    isNameOrScopesSet() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      return urlParams.has('name') || urlParams.has('scopes');
+    },
   },
   mounted() {
     /** @type {HTMLFormElement} */
@@ -61,6 +66,14 @@ export default {
     this.submitButton = this.form.querySelector(
       'button[type=submit][data-testid=create-token-button]',
     );
+
+    // If param is set, open form on page load.
+    if (this.isNameOrScopesSet) {
+      document.querySelectorAll('.js-token-card').forEach((el) => {
+        el.querySelector('.js-add-new-token-form').style.display = 'block';
+        el.querySelector('.js-toggle-button').style.display = 'none';
+      });
+    }
   },
   methods: {
     beforeDisplayResults() {

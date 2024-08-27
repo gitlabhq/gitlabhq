@@ -17,6 +17,12 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `allow_protected_branches_for_group`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
+Use the Group-level protected branches API to manage protected branch rules.
+It provides endpoints to list, create, update, and delete protected branch rules that apply to projects within a group.
+
+WARNING:
+Group-level protected branch settings are restricted to top-level groups only.
+
 ## Valid access levels
 
 The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method.

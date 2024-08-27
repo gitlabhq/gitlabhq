@@ -54,3 +54,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::ProjectConfig::Source.prepend_mod

@@ -90,9 +90,9 @@ certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
 by [customizing the Helm installation](install/index.md#customize-the-helm-installation).
-Add `--set-file config.caCert=my-custom-ca.pem` to the `helm install` command. The file should be a valid PEM or DER-encoded certificate.
+Add `--set-file config.kasCaCert=my-custom-ca.pem` to the `helm install` command. The file should be a valid PEM or DER-encoded certificate.
 
-When you deploy `agentk` with a set `config.caCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
+When you deploy `agentk` with a set `config.kasCaCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
 
 ```yaml
 $ kubectl get configmap -lapp=gitlab-agent -o yaml

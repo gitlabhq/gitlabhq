@@ -149,6 +149,7 @@ export default {
             :loading="isLoadingAction"
             :title="$options.i18n.retry"
             :aria-label="$options.i18n.retry"
+            data-testid="retry-button"
             @click.stop="retryJob"
           />
         </span>

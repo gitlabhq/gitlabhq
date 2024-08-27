@@ -21,19 +21,25 @@ class Integration < ApplicationRecord
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
     datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
-    gitlab_slack_application hangouts_chat harbor irker jira jira_cloud_app matrix
+    gitlab_slack_application hangouts_chat harbor irker jira matrix
     mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
   ].freeze
 
-  INSTANCE_SPECIFIC_INTEGRATION_NAMES = %w[
+  # Integrations that can only be enabled on the instance-level
+  INSTANCE_LEVEL_ONLY_INTEGRATION_NAMES = %w[
     beyond_identity
   ].freeze
 
-  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
-  PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
+  # Integrations that can only be enabled on the project-level
+  PROJECT_LEVEL_ONLY_INTEGRATION_NAMES = %w[
     apple_app_store google_play jenkins
+  ].freeze
+
+  # Integrations that cannot be enabled on the instance-level
+  PROJECT_AND_GROUP_LEVEL_ONLY_INTEGRATION_NAMES = %w[
+    jira_cloud_app
   ].freeze
 
   # Fake integrations to help with local development.
@@ -134,7 +140,7 @@ class Integration < ApplicationRecord
   }
 
   scope :for_instance, -> {
-    types = available_integration_types(include_project_specific: false, include_instance_specific: true)
+    types = available_integration_types(include_project_specific: false, include_group_specific: false)
     where(instance: true, type: types)
   }
 
@@ -285,14 +291,18 @@ class Integration < ApplicationRecord
   end
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
-    return unless name.in?(available_integration_names(include_project_specific: false,
+    return unless name.in?(available_integration_names(
+      include_project_specific: false,
+      include_group_specific: group_id.present?,
       include_instance_specific: instance))
 
     integration_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
   end
 
   def self.find_or_initialize_all_non_project_specific(scope, include_instance_specific: false)
-    scope + build_nonexistent_integrations_for(scope, include_instance_specific: include_instance_specific)
+    scope + build_nonexistent_integrations_for(scope,
+      include_group_specific: !include_instance_specific,
+      include_instance_specific: include_instance_specific)
   end
 
   def self.build_nonexistent_integrations_for(...)
@@ -304,11 +314,12 @@ class Integration < ApplicationRecord
 
   # Returns a list of integration types that do not exist in the given scope.
   # Example: ["AsanaService", ...]
-  def self.nonexistent_integration_types_for(scope, include_instance_specific: false)
+  def self.nonexistent_integration_types_for(scope, include_group_specific: false, include_instance_specific: false)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
     available_integration_types(
       include_project_specific: false,
+      include_group_specific: include_group_specific,
       include_instance_specific: include_instance_specific
     ) - scope.map(&:type)
   end
@@ -317,12 +328,14 @@ class Integration < ApplicationRecord
   # Returns a list of available integration names.
   # Example: ["asana", ...]
   def self.available_integration_names(
-    include_project_specific: true, include_dev: true, include_instance_specific: true, include_disabled: false
+    include_project_specific: true, include_group_specific: true, include_instance_specific: true, include_dev: true,
+    include_disabled: false
   )
-    names = integration_names
-    names += project_specific_integration_names if include_project_specific
-    names += dev_integration_names if include_dev
-    names += instance_specific_integration_names if include_instance_specific
+    names = integration_names.dup
+    names.concat(project_specific_integration_names) if include_project_specific
+    names.concat(dev_integration_names) if include_dev
+    names.concat(instance_specific_integration_names) if include_instance_specific
+    names.concat(project_and_group_specific_integration_names) if include_project_specific || include_group_specific
     names -= disabled_integration_names unless include_disabled
 
     names.sort_by(&:downcase)
@@ -336,13 +349,11 @@ class Integration < ApplicationRecord
       names.delete('gitlab_slack_application')
     end
 
-    names.delete('jira_cloud_app') unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-
     names
   end
 
   def self.instance_specific_integration_names
-    INSTANCE_SPECIFIC_INTEGRATION_NAMES
+    INSTANCE_LEVEL_ONLY_INTEGRATION_NAMES
   end
 
   def self.instance_specific_integration_types
@@ -356,7 +367,7 @@ class Integration < ApplicationRecord
   end
 
   def self.project_specific_integration_names
-    names = PROJECT_SPECIFIC_INTEGRATION_NAMES.dup
+    names = PROJECT_LEVEL_ONLY_INTEGRATION_NAMES.dup
 
     if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) &&
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
@@ -365,6 +376,13 @@ class Integration < ApplicationRecord
 
     names
   end
+
+  def self.project_and_group_specific_integration_names
+    names = PROJECT_AND_GROUP_LEVEL_ONLY_INTEGRATION_NAMES.dup
+    names.delete('jira_cloud_app') unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+    names
+  end
+  private_class_method :project_and_group_specific_integration_names
 
   # Returns a list of available integration types.
   # Example: ["Integrations::Asana", ...]

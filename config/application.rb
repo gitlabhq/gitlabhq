@@ -20,6 +20,7 @@ Bundler.require(*Rails.groups)
 module Gitlab
   class Application < Rails::Application
     config.load_defaults 7.0
+
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #
@@ -37,7 +38,6 @@ module Gitlab
     config.active_record.automatic_scope_inversing = nil # New default is true
     config.active_record.verify_foreign_keys_for_fixtures = nil # New default is true
     config.active_record.partial_inserts = true # New default is false
-    config.active_support.cache_format_version = nil # New default is 7.0
     config.active_support.disable_to_s_conversion = false # New default is true
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
@@ -46,7 +46,6 @@ module Gitlab
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
-    ActiveSupport.utc_to_local_returns_utc_offset_times = false
     config.action_view.preload_links_header = false
 
     # Rails 5.2
@@ -89,6 +88,11 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/patch/old_redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
+
+    unless ::Gitlab.next_rails?
+      config.active_support.cache_format_version = nil
+      ActiveSupport.utc_to_local_returns_utc_offset_times = false
+    end
 
     config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
 

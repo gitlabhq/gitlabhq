@@ -154,7 +154,6 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
 
     visit user_settings_personal_access_tokens_path({ name: name, scopes: scopes })
 
-    click_button 'Add new token'
     expect(page).to have_field("Token name", with: name)
     expect(find("#personal_access_token_scopes_api")).to be_checked
     expect(find("#personal_access_token_scopes_read_user")).to be_checked

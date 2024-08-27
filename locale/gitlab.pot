@@ -29081,6 +29081,9 @@ msgstr ""
 msgid "Invitation declined"
 msgstr ""
 
+msgid "Invitations above seat count are blocked"
+msgstr ""
+
 msgid "Invitations do not require administrator approval"
 msgstr ""
 
@@ -45703,6 +45706,12 @@ msgstr ""
 msgid "Restrict projects for this runner"
 msgstr ""
 
+msgid "Restricted access"
+msgstr ""
+
+msgid "Restricted access and user cap cannot be turned on. The group or one of its subgroups or projects is shared externally."
+msgstr ""
+
 msgid "Restricted shift times are not available for hourly shifts"
 msgstr ""
 
@@ -58281,7 +58290,7 @@ msgstr ""
 msgid "User and IP rate limits"
 msgstr ""
 
-msgid "User cap cannot be enabled. The group or one of its subgroups or projects is shared externally."
+msgid "User cap cannot be turned on. The group or one of its subgroups or projects is shared externally."
 msgstr ""
 
 msgid "User caps is enabled for this group. You can manage members on the %{pending_members_link_start}pending members%{pending_members_link_end} page."
