@@ -608,3 +608,18 @@ create the following empty file:
 ```shell
 sudo touch /etc/gitlab/skip-auto-backup
 ```
+
+### High CPU usage on primary during object verification
+
+From GitLab 16.11 to GitLab 17.2, a missing PostgreSQL index causes high CPU
+usage and slow artifact verification progress. Additionally, the Geo secondary
+sites might report as unhealthy. [Issue 471727](https://gitlab.com/gitlab-org/gitlab/-/issues/471727) describes the behavior in detail.
+
+To determine if you might be experiencing this issue, follow the steps to
+[confirm if you are affected](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#to-confirm-if-you-are-affected).
+
+If you are affected, follow the steps in the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#workaround)
+to manually create the index. Creating the index causes PostgreSQL to
+consume slightly more resources until it finishes. Afterward, CPU usage might
+remain high while verification continues, but queries should complete
+significantly faster, and secondary site status should update correctly.

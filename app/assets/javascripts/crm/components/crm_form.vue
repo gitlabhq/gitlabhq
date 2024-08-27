@@ -289,11 +289,9 @@ export default {
           >
           <gl-form-input v-else :id="field.name" v-bind="field.input" v-model="model[field.name]" />
         </gl-form-group>
-        <span class="gl-float-right">
-          <gl-button data-testid="cancel-button" @click="close(false)">
-            {{ $options.MSG_CANCEL }}
-          </gl-button>
+        <div class="gl-flex">
           <gl-button
+            class="gl-mr-3"
             variant="confirm"
             :disabled="isInvalid"
             :loading="submitting"
@@ -301,7 +299,10 @@ export default {
             type="submit"
             >{{ buttonLabel }}</gl-button
           >
-        </span>
+          <gl-button data-testid="cancel-button" @click="close(false)">
+            {{ $options.MSG_CANCEL }}
+          </gl-button>
+        </div>
       </form>
     </gl-drawer>
   </mounting-portal>

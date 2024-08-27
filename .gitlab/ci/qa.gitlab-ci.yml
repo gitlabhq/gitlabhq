@@ -242,7 +242,7 @@ e2e:test-product-analytics:
     - build-gdk-image
     - build-qa-image
   trigger:
-    project: gitlab-org/analytics-section/product-analytics/devkit
+    project: gitlab-org/analytics-section/product-analytics/product-analytics-devkit-mirror
     strategy: depend
 
 e2e:test-on-cng:

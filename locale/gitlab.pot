@@ -47192,6 +47192,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Add new CI variable"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Add new CI variables"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Add new condition"
 msgstr ""
 
