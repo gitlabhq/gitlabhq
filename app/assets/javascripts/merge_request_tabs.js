@@ -119,6 +119,7 @@ function mountPipelines() {
           targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
           projectId: pipelineTableViewEl.dataset.projectId,
           mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+          isMergeRequestTable: true,
         },
       });
     },

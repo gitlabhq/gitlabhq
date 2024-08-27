@@ -42,22 +42,13 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findUserPermissionsDocsLink = () => wrapper.findByTestId('user-permissions-docs-link');
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
 
-  const createComponent = ({
-    props = {},
-    mountFn = mountExtended,
-    asyncMergeRequestPipelineCreation = true,
-  } = {}) => {
+  const createComponent = ({ props = {}, mountFn = mountExtended } = {}) => {
     wrapper = mountFn(LegacyPipelinesTableWrapper, {
       propsData: {
         endpoint: 'endpoint.json',
         emptyStateSvgPath: 'foo',
         errorStateSvgPath: 'foo',
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          asyncMergeRequestPipelineCreation,
-        },
       },
       mocks: {
         $toast,
@@ -236,7 +227,20 @@ describe('Pipelines table in Commits and Merge requests', () => {
           jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
         });
 
-        describe('when asyncMergeRequestPipelineCreation is enabled', () => {
+        describe('when the table is a merge request table', () => {
+          beforeEach(async () => {
+            createComponent({
+              props: {
+                canRunPipeline: true,
+                isMergeRequestTable: true,
+                mergeRequestId: 3,
+                projectId: '5',
+              },
+            });
+
+            await waitForPromises();
+          });
+
           it('on desktop, shows a loading button', async () => {
             await findRunPipelineBtn().trigger('click');
 
@@ -262,20 +266,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           });
         });
 
-        describe('when asyncMergeRequestPipelineCreation is disabled', () => {
-          beforeEach(async () => {
-            createComponent({
-              props: {
-                canRunPipeline: true,
-                projectId: '5',
-                mergeRequestId: 3,
-              },
-              asyncMergeRequestPipelineCreation: false,
-            });
-
-            await waitForPromises();
-          });
-
+        describe('when the table is not a merge request table', () => {
           it('displays a toast message during pipeline creation', async () => {
             await findRunPipelineBtn().trigger('click');
 

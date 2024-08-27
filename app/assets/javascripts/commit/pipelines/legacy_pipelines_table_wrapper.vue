@@ -9,7 +9,6 @@ import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import PipelinesService from '~/ci/pipelines_page/services/pipelines_service';
 import PipelineStore from '~/ci/pipeline_details/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 
 export default {
@@ -23,8 +22,13 @@ export default {
     PipelinesTable,
     TablePagination,
   },
-  mixins: [PipelinesMixin, glFeatureFlagMixin()],
+  mixins: [PipelinesMixin],
   props: {
+    canCreatePipelineInTargetProject: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     endpoint: {
       type: String,
       required: true,
@@ -37,15 +41,20 @@ export default {
       type: String,
       required: true,
     },
-    viewType: {
-      type: String,
-      required: false,
-      default: 'root',
-    },
-    canCreatePipelineInTargetProject: {
+    isMergeRequestTable: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    mergeRequestId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    projectId: {
+      type: String,
+      required: false,
+      default: '',
     },
     sourceProjectFullPath: {
       type: String,
@@ -57,15 +66,10 @@ export default {
       required: false,
       default: '',
     },
-    projectId: {
+    viewType: {
       type: String,
       required: false,
-      default: '',
-    },
-    mergeRequestId: {
-      type: Number,
-      required: false,
-      default: 0,
+      default: 'root',
     },
   },
 
@@ -82,9 +86,6 @@ export default {
   },
 
   computed: {
-    isUsingAsyncPipelineCreation() {
-      return this.glFeatures?.asyncMergeRequestPipelineCreation;
-    },
     shouldRenderTable() {
       return !this.isLoading && this.state.pipelines.length > 0 && !this.hasError;
     },
@@ -145,7 +146,7 @@ export default {
       const pipelines = resp.data.pipelines || resp.data;
 
       this.store.storePagination(resp.headers);
-      this.setCommonData(pipelines, this.isUsingAsyncPipelineCreation);
+      this.setCommonData(pipelines, this.isMergeRequestTable);
 
       if (resp.headers?.['x-total']) {
         const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
@@ -172,7 +173,7 @@ export default {
       eventHub.$emit('runMergeRequestPipeline', {
         projectId: this.projectId,
         mergeRequestId: this.mergeRequestId,
-        isAsync: this.isUsingAsyncPipelineCreation,
+        isAsync: this.isMergeRequestTable,
       });
     },
     tryRunPipeline() {

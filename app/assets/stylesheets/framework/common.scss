@@ -495,11 +495,6 @@ li.note {
   padding-right: $gl-spacing-scale-3;
 }
 
-// used in the Markdown rendering of labels
-.scoped-label-tooltip-title {
-  color: var(--theme-indigo-300, $theme-indigo-300);
-}
-
 .gl-label-scoped {
   box-shadow: 0 0 0 2px currentColor inset;
 }

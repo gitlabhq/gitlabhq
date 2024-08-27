@@ -83,9 +83,6 @@ export default {
     kubernetes: 'kubernetes-overview',
   },
   methods: {
-    linkClass(index) {
-      return index === this.currentTabIndex ? 'gl-shadow-inner-b-2-theme-accent' : '';
-    },
     updateCurrentTab() {
       const hasKubernetesIntegration = this.environment?.clusterAgent;
       const selectedTabFromUrl = getParameterValues('tab');
@@ -109,7 +106,6 @@ export default {
     <gl-tab
       :title="$options.i18n.kubernetesOverview"
       :query-param-value="$options.params.kubernetes"
-      :title-link-class="linkClass(0)"
     >
       <kubernetes-overview
         :environment-name="environmentName"
@@ -120,7 +116,7 @@ export default {
       />
     </gl-tab>
 
-    <gl-tab :query-param-value="$options.params.deployments" :title-link-class="linkClass(1)">
+    <gl-tab :query-param-value="$options.params.deployments">
       <template #title>
         {{ $options.i18n.deploymentHistory }}
         <gl-badge class="gl-tab-counter-badge">{{ environment.deploymentsDisplayCount }}</gl-badge>

@@ -45,7 +45,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
-    push_frontend_feature_flag(:async_merge_request_pipeline_creation, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]

@@ -205,8 +205,8 @@ To clean up a repository:
    `filter-repo` directory.
 
    If your `commit-map` file is too large, the background cleanup process might time out and fail.
-   As a result, the repository size isn't reduced as expected.
-   To address this, split the file and upload it in parts, for example:
+   As a result, the repository size isn't reduced as expected. To address this, split the file and
+   upload it in parts. Start with `20000` and reduce as needed. For example:
 
    ```shell
    split -l 20000 filter-repo/commit-map filter-repo/commit-map-

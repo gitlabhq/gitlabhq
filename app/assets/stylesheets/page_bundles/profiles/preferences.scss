@@ -9,35 +9,35 @@
     margin-bottom: $gl-padding-8;
 
     &.ui-indigo {
-      background-color: $theme-indigo-900;
+      background-color: var(--gl-color-theme-indigo-900);
     }
 
     &.ui-light-indigo {
-      background-color: $theme-indigo-700;
+      background-color: var(--gl-color-theme-indigo-700);
     }
 
     &.ui-blue {
-      background-color: $theme-blue-900;
+      background-color: var(--gl-color-theme-blue-900);
     }
 
     &.ui-light-blue {
-      background-color: $theme-light-blue-800;
+      background-color: var(--gl-color-theme-light-blue-800);
     }
 
     &.ui-green {
-      background-color: $theme-green-900;
+      background-color: var(--gl-color-theme-green-900);
     }
 
     &.ui-light-green {
-      background-color: $theme-green-800;
+      background-color: var(--gl-color-theme-green-800);
     }
 
     &.ui-red {
-      background-color: $theme-red-900;
+      background-color: var(--gl-color-theme-red-900);
     }
 
     &.ui-light-red {
-      background-color: $theme-light-red-700;
+      background-color: var(--gl-color-theme-light-red-700);
     }
 
     &.ui-gray {
