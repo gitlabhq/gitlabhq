@@ -1,3 +1,18 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitlab-qa.git
+  revision: 7c0b0814c35df0b62a2327f01a3b1557b960f9fa
+  branch: 16-1-stable
+  specs:
+    gitlab-qa (11.2.0)
+      activesupport (~> 6.1)
+      gitlab (~> 4.19)
+      http (~> 5.0)
+      nokogiri (~> 1.10)
+      parallel (>= 1, < 2)
+      rainbow (>= 3, < 4)
+      table_print (= 1.5.7)
+      zeitwerk (>= 2, < 3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -102,15 +117,6 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (11.2.0)
-      activesupport (~> 6.1)
-      gitlab (~> 4.19)
-      http (~> 5.0)
-      nokogiri (~> 1.10)
-      parallel (>= 1, < 2)
-      rainbow (>= 3, < 4)
-      table_print (= 1.5.7)
-      zeitwerk (>= 2, < 3)
     gitlab_quality-test_tooling (0.8.1)
       activesupport (>= 6.1, < 7.1)
       gitlab (~> 4.19)
@@ -323,7 +329,7 @@ DEPENDENCIES
   faraday-retry (~> 2.2)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
-  gitlab-qa (~> 11, >= 11.2.0)
+  gitlab-qa (~> 11, >= 11.2.0)!
   gitlab_quality-test_tooling (~> 0.8.1)
   influxdb-client (~> 2.9)
   knapsack (~> 4.0)
