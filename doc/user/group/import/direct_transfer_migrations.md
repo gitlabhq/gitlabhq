@@ -68,7 +68,7 @@ GitLab 16.8.
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
-### User contributions and membership mapping
+## User contributions and membership mapping
 
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
@@ -92,7 +92,10 @@ elevated permissions.
 NOTE:
 There is a [known issue](index.md#known-issues) affecting the mapping of shared memberships.
 
-#### Configure users on destination instance
+For the new experimental user contribution and membership mapping feature, see
+[User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+
+### Configure users on destination instance
 
 To ensure GitLab maps users and their contributions correctly between the source and destination instances:
 

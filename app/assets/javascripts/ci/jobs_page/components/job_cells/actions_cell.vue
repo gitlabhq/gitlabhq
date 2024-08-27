@@ -271,6 +271,7 @@ export default {
           :aria-label="retryButtonTitle"
           :method="currentJobMethod"
           :disabled="retryBtnDisabled"
+          :loading="retryBtnDisabled"
           data-testid="retry"
           @click="retryJob()"
         />

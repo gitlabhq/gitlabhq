@@ -92,17 +92,40 @@ The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for internal testing only, it is not ready for production use.
 
-Thanks to user contribution and membership mapping you can assign imported contributions and memberships to users on the destination instance after import has completed. No preparation is needed before the import. The process doesn't rely on email addresses, so it's possible to map contributions for users who have different emails on source and destination instances.
+With user contribution and membership mapping, you can assign imported contributions and memberships to users on the
+destination instance after import has completed. Unlike the previous method of user contribution and membership mapping,
+no preparation is needed before the import.
 
-Each user on destination instance must [explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are attributed to them. They can also reject the assignment.
+The process doesn't rely on email addresses, so you can map contributions for users who have different emails on source
+and destination instances.
+
+NOTE:
+This new method of user contribution and membership method is only supported for
+[migrations by using direct transfer](../../group/import/index.md). For information on the other method of user
+contribution and membership mapping for direct transfer migrations, see
+[User contributions and membership mapping](../../group/import/direct_transfer_migrations.md#user-contributions-and-membership-mapping).
+
+Each user on the destination instance that is assigned a mapping can:
+
+- [Explicitly accept](#accept-contribution-reassignment) the assignment before any imported contributions are
+  attributed to them.
+- Reject the assignment.
 
 This feature is an [experiment](../../../policy/experiment-beta-support.md). If you find a bug, open an issue in
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/12378).
+[epic 12378](https://gitlab.com/groups/gitlab-org/-/epics/12378).
+
+### Requirements
+
+- You must be able to create enough users, subject to [user limits](#placeholder-user-limits).
+- If importing to GitLab.com, you must set up your paid namespace before the import.
 
 ### Placeholder users
 
-Instead of immediately attempting to assign contributions to users on the destination instance, supported importers
-create a placeholder user for each imported member, and for any user whose contributions were imported.
+Instead of immediately attempting to assign contributions to users on the destination instance, a
+placeholder user is created for:
+
+- Each imported membership.
+- Any user whose contributions were imported.
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
 to existing users on destination instance.
@@ -151,9 +174,6 @@ Placeholder users are created per [import source](#supported-import-sources) and
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
 
-WARNING:
-If importing to GitLab.com, you must set up your paid namespace before the import.
-
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits
 differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
@@ -179,25 +199,29 @@ The above limits are for GitLab.com. Self-managed GitLab has no placeholder limi
 ### Reassign contributions and memberships
 
 Reassignment of contributions and memberships from placeholder users to existing active (non-bot) users occurs on
-the destination instance.
+the destination instance. On the destination instance, you can:
 
-You can request users to accept reassignment of contributions and membership [using the UI](#request-reassignment-in-ui).
+- Request users to accept reassignment of contributions and membership [in the UI](#request-reassignment-in-ui).
+  The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment),
+  which is sent to them by email.
+- Choose not to reassign contributions and memberships, and [keep them with placeholder users](#keep-as-placeholder).
 
-You can also choose not to reassign contributions and memberships, and [keep them with placeholder users](#keep-as-placeholder).
+All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
+user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
+active regular users.
 
-Contributions of only one placeholder user can be reassigned to an active regular user on destination instance.
+Bot user contributions and memberships on the source instance cannot be reassigned to bot users on the destination instance.
+You might choose to keep source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
 
-Contributions and memberships cannot be reassigned to bot users on the destination instance, even if the original
-contributions were done by bots users. They can only be reassigned to active non-bot users. You might choose to keep
-source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
+Users that receive a reassignment request can:
 
-The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment), which is sent to them by
-email. After the user accepts the request, all contributions and membership previously attributed to the placeholder
-user are re-attributed to the accepting user. This process can take a few minutes, depending on the number of contributions.
+- [Accept the request](#accept-contribution-reassignment). All contributions and membership previously attributed to the placeholder user are re-attributed
+  to the accepting user. This process can take a few minutes, depending on the number of contributions.
+- [Reject the request](#reject-contribution-reassignment) or report it as spam. This option is available in the reassignment
+  request email.
 
-In subsequent imports, if the contributions and memberships belong to the same source user, contributions and memberships are automatically mapped to a user who previously accepted the reassignment for that source user.
-
-The user selected for reassignment can also [reject the request](#reject-contribution-reassignment) or report it as spam, an option available in the reassignment request email.
+In subsequent imports, contributions and memberships that belong to the same source user are automatically mapped to the
+user who previously accepted reassignments for that source user.
 
 The reassignment process must be fully completed before you:
 
@@ -239,11 +263,15 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 
 #### Keep as placeholder
 
-Sometimes you don't want to reassign contributions and memberships to users on the destination instance. For example, you might have former employees that contributed on the source
-instance, but they do not exist as users the on destination instance. In these cases, you can keep the contributions assigned to placeholder users. Placeholder users do not keep
+You might not want to reassign contributions and memberships to users on the destination instance. For example, you
+might have former employees that contributed on the source instance, but they do not exist as users on the destination
+instance.
+
+In these cases, you can keep the contributions assigned to placeholder users. Placeholder users do not keep
 membership information because they [cannot be members of projects or groups](#placeholder-user-attributes).
 
-Because names and usernames of placeholder users resemble names and usernames of source users, you keep large part of the historical context.
+Because names and usernames of placeholder users resemble names and usernames of source users, you keep a lot of
+historical context.
 
 Remember that if you keep remaining placeholder users as placeholders, you cannot reassign their contributions to
 actual users later. Ensure all required reassignments are completed before keeping the remaining placeholder users as
@@ -272,7 +300,7 @@ To keep placeholder users in bulk:
 
 #### Cancel reassignment request
 
-In the time between sending the reassignment request and user accepting that request, you can cancel it:
+Before a user accepts a reassignment request, you can cancel the request:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -282,7 +310,7 @@ In the time between sending the reassignment request and user accepting that req
 
 #### Notify user again about pending reassignment requests
 
-If user is not acting on reassignment request, you can prompt them again by sending another email:
+If a user is not acting on a reassignment request, you can prompt them again by sending another email:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -342,15 +370,21 @@ listed in the email are:
 
 #### Reject contribution reassignment
 
-If you don't recognize or you notice mistakes in this information, do not proceed at all or reject contribution reassignment and turn to a trusted colleague or your manager.
+If you receive an email asking you to confirm reassignment of contributions to yourself and you don't recognize or you
+notice mistakes in this information:
+
+1. Do not proceed at all or reject the contribution reassignment.
+1. Talk to a trusted colleague or your manager.
 
 #### Security considerations
 
 You must review the reassignment details of any reassignment request very carefully. If you were not already informed
 about this process by a trusted colleague or your manager, take extra care.
 
-Rather than accept any reassignments that you have any doubts about, talk to a trusted colleague or your manager and
-don't act on the emails.
+Rather than accept any reassignments that you have any doubts about:
+
+1. Don't act on the emails.
+1. Talk to a trusted colleague or your manager.
 
 Accept reassignments only from the users that you know and trust. Reassignment of contributions is permanent and cannot
 be undone. Accepting the reassignment might cause contributions to be incorrectly attributed to you.

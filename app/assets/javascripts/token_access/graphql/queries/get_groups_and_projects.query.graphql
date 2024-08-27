@@ -1,5 +1,5 @@
 query getTokenAccessGroupsAndProjects($search: String) {
-  groups(search: $search, sort: "id_asc", first: 4) {
+  groups(search: $search, first: 4) {
     nodes {
       id
       name
@@ -7,7 +7,7 @@ query getTokenAccessGroupsAndProjects($search: String) {
       fullPath
     }
   }
-  projects(search: $search, searchNamespaces: true, sort: "id_asc", first: 4) {
+  projects(search: $search, first: 4) {
     nodes {
       id
       name
