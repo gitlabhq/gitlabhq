@@ -37,5 +37,4 @@ Rails/FindEach:
     - 'spec/lib/gitlab/project_template_spec.rb'
     - 'spec/lib/gitlab/sample_data_template_spec.rb'
     - 'spec/migrations/20231003045342_migrate_sidekiq_namespaced_jobs_spec.rb'
-    - 'spec/models/ci_platform_metric_spec.rb'
     - 'spec/workers/authorized_project_update/user_refresh_over_user_range_worker_spec.rb'

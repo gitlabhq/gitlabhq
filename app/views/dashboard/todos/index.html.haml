@@ -31,11 +31,11 @@
       .nav-controls
         - if @allowed_todos.any?(&:pending?)
           .gl-mr-3
-            = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading gl-items-center js-todos-mark-all'}, method: :delete, href: destroy_all_dashboard_todos_path(todos_filter_params)) do
-              = gl_loading_icon(inline: true)
+            = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-items-center js-todos-mark-all'}, method: :delete, href: destroy_all_dashboard_todos_path(todos_filter_params)) do
+              = gl_loading_icon(inline: true, css_class: 'hidden')
               = s_("Todos|Mark all as done")
-            = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading gl-items-center js-todos-undo-all hidden'}, method: :patch, href: bulk_restore_dashboard_todos_path(todos_filter_params)) do
-              = gl_loading_icon(inline: true)
+            = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-items-center js-todos-undo-all hidden'}, method: :patch, href: bulk_restore_dashboard_todos_path(todos_filter_params)) do
+              = gl_loading_icon(inline: true, css_class: 'hidden')
               = s_("Todos|Undo mark all as done")
 
     .todos-filters

@@ -17,7 +17,6 @@ Style/RedundantSelf:
     - 'app/models/ci/running_build.rb'
     - 'app/models/ci/stage.rb'
     - 'app/models/ci/trigger.rb'
-    - 'app/models/ci_platform_metric.rb'
     - 'app/models/clusters/concerns/application_core.rb'
     - 'app/models/clusters/concerns/application_status.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'

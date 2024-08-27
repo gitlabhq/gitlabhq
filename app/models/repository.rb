@@ -315,6 +315,14 @@ class Repository
     false
   end
 
+  def branch_or_tag?(ref)
+    return false unless exists?
+
+    ref = Gitlab::Git.ref_name(ref, types: 'heads|tags')
+
+    branch_exists?(ref) || tag_exists?(ref)
+  end
+
   def search_branch_names(pattern)
     redis_set_cache.search('branch_names', pattern) { branch_names }
   end

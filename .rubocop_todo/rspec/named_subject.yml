@@ -3457,7 +3457,6 @@ RSpec/NamedSubject:
     - 'spec/workers/ci/stuck_builds/drop_scheduled_worker_spec.rb'
     - 'spec/workers/ci/test_failure_history_worker_spec.rb'
     - 'spec/workers/ci/track_failed_build_worker_spec.rb'
-    - 'spec/workers/ci_platform_metrics_update_cron_worker_spec.rb'
     - 'spec/workers/cleanup_container_repository_worker_spec.rb'
     - 'spec/workers/clusters/agents/delete_expired_events_worker_spec.rb'
     - 'spec/workers/clusters/agents/notify_git_push_worker_spec.rb'

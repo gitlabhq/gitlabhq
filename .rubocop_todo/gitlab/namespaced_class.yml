@@ -123,7 +123,6 @@ Gitlab/NamespacedClass:
     - 'app/models/bulk_import.rb'
     - 'app/models/chat_name.rb'
     - 'app/models/chat_team.rb'
-    - 'app/models/ci_platform_metric.rb'
     - 'app/models/commit.rb'
     - 'app/models/commit_collection.rb'
     - 'app/models/commit_range.rb'

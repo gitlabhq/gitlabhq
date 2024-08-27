@@ -67,6 +67,17 @@ RSpec.describe Gitlab::Blame do
           expect(groups[1][:lines][0]).to match(/LC4.*Popen/)
           expect(groups[1][:lines][1]).to match(/LC5.*extend/)
         end
+
+        context 'when highlighed lines are misaligned' do
+          let(:raw_blob) { Gitlab::Git::Blob.new(data: "Test\r\nopen3", path: path, size: 6) }
+          let(:blob) { Blob.new(raw_blob) }
+
+          it 'returns the correct lines' do
+            expect(groups.count).to eq(2)
+            expect(groups[0][:lines][0]).to match(/LC1.*Test/)
+            expect(groups[0][:lines][1]).to match(/LC2.*open3/)
+          end
+        end
       end
     end
 

@@ -41,7 +41,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/identities" --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
+curl --location --request GET "https://gitlab.com/api/v4/groups/33/saml/identities" --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
 Example response:
@@ -73,7 +73,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
+curl --location --request GET "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:
@@ -107,7 +107,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" \
+curl --location --request PATCH "https://gitlab.com/api/v4/groups/33/saml/yrnZW46BrtBFqM7xDzE7dddd" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
 --form "extern_uid=be20d8dcc028677c931e04f387"
 ```
@@ -130,7 +130,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/saml/be20d8dcc028677c931e04f387"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/groups/33/saml/be20d8dcc028677c931e04f387"
 
 ```
 

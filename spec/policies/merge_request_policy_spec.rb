@@ -10,6 +10,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_team_member) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:bot) { create(:user, :project_bot) }
 
   def permissions(user, merge_request)
@@ -65,6 +66,18 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       it "can #{thing}" do
         expect(perms).to be_allowed(thing)
       end
+    end
+  end
+
+  shared_examples_for 'an admin' do
+    let(:subject) { permissions(user, merge_request) }
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it { is_expected.to be_allowed(:approve_merge_request) }
+    end
+
+    context 'when admin mode is disabled' do
+      it { is_expected.to be_disallowed(:approve_merge_request) }
     end
   end
 
@@ -167,6 +180,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         subject { developer }
 
         it_behaves_like 'a user with full access'
+      end
+
+      describe 'an admin' do
+        let(:user) { admin }
+
+        it_behaves_like 'an admin'
       end
 
       describe 'a bot' do
@@ -276,6 +295,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         end
       end
 
+      describe 'an admin' do
+        let(:user) { admin }
+
+        it_behaves_like 'an admin'
+      end
+
       context 'and merge requests are private' do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
@@ -298,6 +323,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
           subject { developer }
 
           it_behaves_like 'a user with full access'
+        end
+
+        describe 'an admin' do
+          let(:user) { admin }
+
+          it_behaves_like 'an admin'
         end
 
         describe 'a bot' do
@@ -329,6 +360,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         subject { developer }
 
         it_behaves_like 'a user with full access'
+      end
+
+      describe 'an admin' do
+        let(:user) { admin }
+
+        it_behaves_like 'an admin'
       end
 
       describe 'a bot' do
@@ -384,6 +421,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
           is_expected.to be_allowed(:reset_merge_request_approvals)
         end
       end
+
+      describe 'an admin' do
+        let(:user) { admin }
+
+        it_behaves_like 'an admin'
+      end
     end
   end
 
@@ -413,6 +456,12 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         it do
           is_expected.not_to be_allowed(:reset_merge_request_approvals)
         end
+      end
+
+      describe 'an admin' do
+        let(:user) { admin }
+
+        it_behaves_like 'an admin'
       end
     end
 

@@ -52,16 +52,15 @@
         = todo_due_date(todo)
         #{time_ago_with_tooltip(todo.created_at)}
 
-
     .todo-actions.gl-mr-4.gl-px-2.gl-sm-px-0.sm:gl-mx-0
       - if todo.pending?
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-flex js-done-todo has-tooltip', title: _('Mark as done')}, method: :delete, href: dashboard_todo_path(todo)), 'aria-label' => _('Mark as done') do
-          = gl_loading_icon(inline: true)
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-icon gl-flex js-done-todo has-tooltip', title: _('Mark as done')}, method: :delete, href: dashboard_todo_path(todo)), 'aria-label' => _('Mark as done') do
+          = gl_loading_icon(inline: true, css_class: 'hidden')
           = sprite_icon('check', css_class: 'js-todo-button-icon')
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-flex js-undo-todo hidden has-tooltip', title: _('Undo')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Undo') do
-          = gl_loading_icon(inline: true)
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-icon gl-flex js-undo-todo hidden has-tooltip', title: _('Undo')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Undo') do
+          = gl_loading_icon(inline: true, css_class: 'hidden')
           = sprite_icon('redo', css_class: 'js-todo-button-icon')
       - else
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-flex js-add-todo has-tooltip', title: _('Re-add this to-do item')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Re-add this to-do item') do
-          = gl_loading_icon(inline: true)
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-icon gl-flex js-add-todo has-tooltip', title: _('Re-add this to-do item')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Re-add this to-do item') do
+          = gl_loading_icon(inline: true, css_class: 'hidden')
           = sprite_icon('redo', css_class: 'js-todo-button-icon')

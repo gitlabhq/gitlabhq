@@ -195,14 +195,6 @@
   }
 }
 
-.btn-loading {
-  &:not(.disabled) {
-    .gl-spinner {
-      display: none;
-    }
-  }
-}
-
 .clone-dropdown-btn a {
   color: $gray-700;
 

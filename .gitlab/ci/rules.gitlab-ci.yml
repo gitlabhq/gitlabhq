@@ -102,6 +102,12 @@
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
+.if-merge-request-labels-run-observability-e2e-tests-main-branch: &if-merge-request-labels-run-observability-e2e-tests-main-branch
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-main-branch/'
+
+.if-merge-request-labels-run-observability-e2e-tests-current-branch: &if-merge-request-labels-run-observability-e2e-tests-current-branch
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-current-branch/'
+
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
@@ -698,6 +704,23 @@
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
   - "qa/gems/gitlab-cng/**/*.rb"
   - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
+
+.observability-code-patterns: &observability-code-patterns
+  # backend
+  - "ee/app/helpers/observability/*"
+  - "ee/app/helpers/projects/observability_helper.rb"
+  - "lib/gitlab/observability.rb"
+  - "ee/lib/ee/gitlab/observability.rb"
+  - "ee/lib/api/internal/observability.rb"
+  - "ee/app/controllers/projects/tracing_controller.rb"
+  - "ee/app/controllers/projects/metrics_controller.rb"
+  - "ee/app/controllers/projects/logs_controller.rb"
+  - "ee/app/services/observability/**/*"
+  # frontend
+  - "app/assets/javascripts/observability/*"
+  - "ee/app/assets/javascripts/logs/*"
+  - "ee/app/assets/javascripts/metrics/*"
+  - "ee/app/assets/javascripts/tracing/*"
 
 ##################
 # Conditions set #
@@ -3326,14 +3349,28 @@
 ###############################
 # Observability Backend rules #
 ###############################
-.observability-backend:rules:
+.observability-backend-main-branch:rules:
   rules:
+    - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
+      when: never
+    - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *observability-code-patterns
+      allow_failure: true
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
+
+.observability-backend-current-branch:rules:
+  rules:
+    - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
+      when: never
+    - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
+      allow_failure: true
     - <<: *if-merge-request
-      changes: *ci-patterns
+      changes: *code-patterns
       when: manual
       allow_failure: true
 

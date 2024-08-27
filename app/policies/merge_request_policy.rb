@@ -48,6 +48,10 @@ class MergeRequestPolicy < IssuablePolicy
     enable :mark_note_as_internal
   end
 
+  rule { admin }.policy do
+    enable :approve_merge_request
+  end
+
   private
 
   def can_approve?

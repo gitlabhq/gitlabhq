@@ -254,6 +254,52 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#branch_or_tag?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ref, :result) do
+      'markdown'                   | true
+      'v1.1.1'                     | true
+      'xyz-invalid'                | false
+      'refs/heads/master'          | true
+      'refs/heads/invalid-xyz'     | false
+      'refs/tags/v1.0.0'           | true
+      'refs/tags/v9.8.7'           | false
+    end
+
+    subject(:branch_or_tag?) { repository.branch_or_tag?(ref) }
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+
+    context 'when a refs/remotes ref is passed' do
+      let(:ref) { 'refs/remotes/origin/master' }
+
+      it { is_expected.to be_falsey }
+
+      context 'when the ref is a branch' do
+        let_it_be(:project) { create(:project, :repository) }
+
+        before do
+          repository.add_branch(user, 'refs/remotes/origin/master', 'master')
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the naked ref is a branch' do
+        let_it_be(:project) { create(:project, :repository) }
+
+        before do
+          repository.add_branch(user, 'origin/master', 'master')
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#search_branch_names' do
     subject(:search_branch_names) { repository.search_branch_names('conflict-*') }
 
