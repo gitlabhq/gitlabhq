@@ -280,37 +280,37 @@ export default {
               class="gl-text-blue-500"
             />
           </gl-form-checkbox>
-          <gl-button
-            category="primary"
-            variant="confirm"
-            data-testid="confirm-button"
-            :disabled="!commentText.length"
-            :loading="isSubmitting"
-            @click="submitForm"
-            >{{ commentButtonTextComputed }}
-          </gl-button>
-          <work-item-state-toggle
-            v-if="isNewDiscussion"
-            class="gl-ml-3"
-            :work-item-id="workItemId"
-            :work-item-iid="workItemIid"
-            :work-item-state="workItemState"
-            :work-item-type="workItemType"
-            :full-path="fullPath"
-            :has-comment="Boolean(commentText.length)"
-            can-update
-            @submit-comment="submitForm"
-            @error="$emit('error', $event)"
-          />
-          <gl-button
-            v-else
-            data-testid="cancel-button"
-            category="primary"
-            class="gl-ml-3"
-            :loading="updateInProgress"
-            @click="cancelEditing"
-            >{{ $options.i18n.cancelButtonText }}
-          </gl-button>
+          <div class="gl-flex gl-gap-3">
+            <gl-button
+              category="primary"
+              variant="confirm"
+              data-testid="confirm-button"
+              :disabled="!commentText.length"
+              :loading="isSubmitting"
+              @click="submitForm"
+              >{{ commentButtonTextComputed }}
+            </gl-button>
+            <work-item-state-toggle
+              v-if="isNewDiscussion"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-state="workItemState"
+              :work-item-type="workItemType"
+              :full-path="fullPath"
+              :has-comment="Boolean(commentText.length)"
+              can-update
+              @submit-comment="submitForm"
+              @error="$emit('error', $event)"
+            />
+            <gl-button
+              v-else
+              data-testid="cancel-button"
+              category="primary"
+              :loading="updateInProgress"
+              @click="cancelEditing"
+              >{{ $options.i18n.cancelButtonText }}
+            </gl-button>
+          </div>
         </div>
       </form>
     </div>

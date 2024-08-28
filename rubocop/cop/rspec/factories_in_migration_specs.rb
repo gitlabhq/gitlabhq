@@ -20,7 +20,7 @@ module RuboCop
         FORBIDDEN_METHODS = %i[build build_list create create_list attributes_for].freeze
 
         def_node_search :forbidden_factory_usage?, <<~PATTERN
-          (send {(const nil? :FactoryBot) nil?} {#{FORBIDDEN_METHODS.map(&:inspect).join(' ')}} ...)
+          (send {(const nil? :FactoryBot) nil?} {#{FORBIDDEN_METHODS.map(&:inspect).join(' ')}} _ ...)
         PATTERN
 
         # Following is what node.children looks like on a match:

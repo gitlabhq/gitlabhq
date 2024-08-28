@@ -87,8 +87,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
 
     &.note-comment,
-    &.note-skeleton,
-    .draft-note {
+    &.note-skeleton {
       .timeline-avatar {
         margin-top: 5px;
       }
@@ -98,14 +97,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         border: 1px solid $border-color;
         border-radius: $gl-border-radius-base;
         padding: $gl-padding-4 $gl-padding-8;
-      }
 
-      &:not(.target) .timeline-content {
-        background-color: $white;
-      }
-
-      &.draft-note .timeline-content {
-        border: 0;
+        .gl-dark & {
+          @apply gl-bg-strong;
+          border-color: var(--gl-background-color-default);
+        }
       }
 
       .note-header-info {
@@ -134,30 +130,24 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
             .timeline-content {
               margin-left: 2.5rem;
-              border-left: 1px solid $border-color;
-              border-right: 1px solid $border-color;
-              border-top: 1px solid $border-color;
+              @apply gl-border;
+              @apply gl-border-b-subtle;
               border-top-left-radius: $gl-border-radius-base;
               border-top-right-radius: $gl-border-radius-base;
               padding: $gl-padding-4 $gl-padding-8;
+
+              .gl-dark & {
+                @apply gl-bg-strong;
+                border-bottom-color: var(--gl-background-color-default);
+              }
             }
-          }
-
-          &:not(.target) .timeline-content {
-            background-color: $white;
-          }
-
-          &.draft-note .timeline-content {
-            margin-left: 0;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
           }
 
           &:not(:first-of-type) .timeline-entry-inner {
             margin-left: 2.5rem;
             border-left: 1px solid $border-color;
             border-right: 1px solid $border-color;
-            background-color: $white;
+            @apply gl-bg-subtle;
 
             .timeline-content {
               padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
@@ -199,10 +189,18 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               margin-left: 2.5rem;
               border-left: 1px solid $border-color;
               border-right: 1px solid $border-color;
-              background-color: $white;
+              @apply gl-bg-subtle;
 
               .timeline-content {
                 padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+                @apply gl-bg-default;
+                @apply gl-border-b;
+                @apply gl-border-b-subtle;
+
+                .gl-dark & {
+                  @apply gl-bg-strong;
+                  border-bottom-color: var(--gl-background-color-default);
+                }
               }
 
               .timeline-avatar {
@@ -218,8 +216,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       }
 
       .discussion-reply-holder {
-        border: 1px solid $border-color;
-        background-color: $white;
+        @apply gl-border-1;
+        @apply gl-border-solid;
+        @apply gl-border-default;
+        @apply gl-border-t-0;
+        @apply gl-bg-subtle;
       }
     }
 
@@ -233,7 +234,9 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .notes-content {
       border: 0;
-      border-top: 1px solid $border-color;
+      @apply gl-border-t-1;
+      @apply gl-border-solid;
+      @apply gl-border-default;
     }
   }
 
@@ -571,28 +574,47 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     position: relative;
   }
 
-  .notes-content .discussion-notes.diff-discussions {
-    border-bottom: 1px solid $border-color;
-
-    &:nth-last-child(1) {
-      border-bottom: 0;
-    }
-  }
-
   .notes_holder {
     font-family: $regular-font;
 
     .diff-td,
     td {
-      border: 1px solid $border-color;
+      @apply gl-border;
       border-left: 0;
+
+      .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
+        @apply gl-bg-default;
+
+        .gl-dark & {
+          @apply gl-bg-strong;
+          border-bottom-color: var(--gl-background-color-default);
+        }
+
+        .toggle-replies-widget {
+          @apply gl-border-b-subtle;
+        }
+
+        .toggle-replies-widget[aria-expanded="false"] {
+          @apply gl-border-b-0;
+        }
+      }
+
+      .notes > .discussion-reply-holder {
+        &:first-child {
+          padding-top: $gl-padding-12;
+        }
+
+        &:not(:first-child):not(:nth-child(2)) {
+          padding-top: 0;
+        }
+      }
 
       &.notes-content {
         border-width: 1px 0;
         padding: 0;
         vertical-align: top;
         white-space: normal;
-        background-color: $white;
+        @apply gl-bg-subtle;
 
         &.parallel {
           border-width: 1px;
@@ -608,7 +630,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         }
 
         .notes {
-          background-color: $white;
+          @apply gl-bg-subtle;
         }
 
         a code {
@@ -625,6 +647,13 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       border-bottom-left-radius: $gl-border-radius-base-inner;
       border-bottom-right-radius: $gl-border-radius-base-inner;
     }
+  }
+}
+
+.diff-files-holder {
+  .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
+    @apply gl-border-b;
+    @apply gl-border-b-subtle;
   }
 }
 
@@ -736,6 +765,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     border-radius: $gl-border-radius-base;
     padding: $gl-padding-8 !important;
     @include gl-border;
+
+    .gl-dark & {
+      @apply gl-bg-strong;
+      @apply gl-border-b;
+      border-bottom-color: var(--gl-background-color-default);
+    }
 
     &.expanded {
       border-bottom-left-radius: 0;
@@ -1051,16 +1086,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
           border: 0;
         }
       }
-    }
-  }
-
-  .draft-note-component.draft-note.timeline-entry {
-    .timeline-content {
-      padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
-    }
-
-    .timeline-avatar {
-      margin: $avatar-m-top 0 0 $avatar-m-left;
     }
   }
 

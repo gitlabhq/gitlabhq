@@ -79,8 +79,8 @@ describe('Toggle replies widget component', () => {
       createComponent({ collapsed: false });
     });
 
-    it('should have expanded class', () => {
-      expect(findToggleWrapper().classes()).toContain('expanded');
+    it('should have aria-expanded set', () => {
+      expect(findToggleWrapper().attributes('aria-expanded')).toBe('true');
     });
 
     it('should render chevron-down icon on the toggle button', () => {

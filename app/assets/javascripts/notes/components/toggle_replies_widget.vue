@@ -38,16 +38,14 @@ export default {
 
       return uniqBy(authors, 'username');
     },
-    liClasses() {
-      return this.collapsed
-        ? 'gl-text-gray-500 !gl-rounded-bl-base !gl-rounded-br-base'
-        : 'gl-border-b';
-    },
     buttonIcon() {
       return this.collapsed ? 'chevron-right' : 'chevron-down';
     },
     buttonLabel() {
       return this.collapsed ? this.$options.i18n.expandReplies : this.$options.i18n.collapseReplies;
+    },
+    ariaState() {
+      return String(!this.collapsed);
     },
   },
   methods: {
@@ -61,12 +59,14 @@ export default {
 
 <template>
   <li
-    :class="liClasses"
-    class="toggle-replies-widget gl-border !gl-flex gl-flex-wrap gl-items-center gl-bg-gray-10 gl-px-5 gl-py-3"
+    :class="{ '!gl-rounded-b-base gl-text-subtle': collapsed }"
+    class="toggle-replies-widget gl-border-r gl-border-l !gl-flex gl-flex-wrap gl-items-center gl-bg-subtle gl-px-5 gl-py-3"
+    :aria-expanded="ariaState"
   >
     <gl-button
       ref="toggle"
       class="gl-my-2 gl-mr-3 !gl-p-0"
+      :class="{ '!gl-text-blue-600': !collapsed }"
       category="tertiary"
       :icon="buttonIcon"
       :aria-label="buttonLabel"
@@ -112,7 +112,7 @@ export default {
     </template>
     <gl-button
       v-else
-      class="!gl-text-primary !gl-no-underline"
+      class="!gl-no-underline"
       variant="link"
       data-testid="collapse-replies-button"
       @click="toggle"

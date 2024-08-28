@@ -11635,6 +11635,26 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
+CREATE TABLE import_placeholder_memberships (
+    id bigint NOT NULL,
+    source_user_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    group_id bigint,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    expires_at date,
+    access_level smallint NOT NULL
+);
+
+CREATE SEQUENCE import_placeholder_memberships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_placeholder_memberships_id_seq OWNED BY import_placeholder_memberships.id;
+
 CREATE TABLE import_source_user_placeholder_references (
     id bigint NOT NULL,
     source_user_id bigint NOT NULL,
@@ -21594,6 +21614,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY import_placeholder_memberships ALTER COLUMN id SET DEFAULT nextval('import_placeholder_memberships_id_seq'::regclass);
+
 ALTER TABLE ONLY import_source_user_placeholder_references ALTER COLUMN id SET DEFAULT nextval('import_source_user_placeholder_references_id_seq'::regclass);
 
 ALTER TABLE ONLY import_source_users ALTER COLUMN id SET DEFAULT nextval('import_source_users_id_seq'::regclass);
@@ -23821,6 +23843,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_placeholder_memberships
+    ADD CONSTRAINT import_placeholder_memberships_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY import_source_user_placeholder_references
     ADD CONSTRAINT import_source_user_placeholder_references_pkey PRIMARY KEY (id);
@@ -28320,6 +28345,14 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_placeholder_memberships_on_group_id ON import_placeholder_memberships USING btree (group_id);
+
+CREATE INDEX index_import_placeholder_memberships_on_namespace_id ON import_placeholder_memberships USING btree (namespace_id);
+
+CREATE INDEX index_import_placeholder_memberships_on_project_id ON import_placeholder_memberships USING btree (project_id);
+
+CREATE INDEX index_import_placeholder_memberships_on_source_user_id ON import_placeholder_memberships USING btree (source_user_id);
 
 CREATE INDEX index_import_source_user_placeholder_references_on_namespace_id ON import_source_user_placeholder_references USING btree (namespace_id);
 
@@ -33042,6 +33075,9 @@ ALTER TABLE ONLY boards
 ALTER TABLE ONLY zoekt_enabled_namespaces
     ADD CONSTRAINT fk_1effa65b25 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_placeholder_memberships
+    ADD CONSTRAINT fk_1f4659deee FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_1fbed67632 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -33437,6 +33473,9 @@ ALTER TABLE ONLY ci_pipeline_chat_data
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_placeholder_memberships
+    ADD CONSTRAINT fk_66286fb5e6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
@@ -34397,6 +34436,9 @@ ALTER TABLE ONLY abuse_report_events
 
 ALTER TABLE ONLY approval_merge_request_rule_sources
     ADD CONSTRAINT fk_fea41830d0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_placeholder_memberships
+    ADD CONSTRAINT fk_ffae4107ac FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -35474,6 +35516,9 @@ ALTER TABLE ONLY packages_conan_metadata
 
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT fk_rails_8c77e5891a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY import_placeholder_memberships
+    ADD CONSTRAINT fk_rails_8cdeffd260 FOREIGN KEY (source_user_id) REFERENCES import_source_users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_messages
     ADD CONSTRAINT fk_rails_8d3b04e3e1_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

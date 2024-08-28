@@ -174,6 +174,18 @@ export const mountExtended = compose(extendedWrapper, mount);
 A setup might be required for type definitions from GitLab codebase and from 3rd party packages to
 be properly displayed in IDEs and tools.
 
+### VS Code settings
+
+If you are having trouble getting VS Code IntelliSense working you may need to increase the amount of 
+memory the TS server is allowed to use. To do this, add the following to your `settings.json` file:
+
+```json
+{
+    "typescript.tsserver.maxTsServerMemory": 8192,
+    "typescript.tsserver.nodePath": "node"
+}
+```
+
 ### Aliases
 
 Our codebase uses many aliases for imports. For example, `import Api from '~/api';` would import a

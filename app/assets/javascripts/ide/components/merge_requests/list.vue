@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlButton } from '@gitlab/ui';
 import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
@@ -19,6 +19,7 @@ export default {
     Item,
     GlIcon,
     GlLoadingIcon,
+    GlButton,
   },
   data() {
     return {
@@ -101,16 +102,9 @@ export default {
         <ul class="mb-0 gl-w-full">
           <template v-if="showSearchTypes">
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
-              <button
-                type="button"
-                class="btn-link gl-button gl-flex gl-items-center"
-                @click.stop="setSearchType(searchType)"
-              >
-                <span class="ide-search-list-current-icon gl-mr-3 gl-flex">
-                  <gl-icon :size="16" name="search" />
-                </span>
-                <span>{{ searchType.label }}</span>
-              </button>
+              <gl-button variant="link" icon="search" @click="setSearchType(searchType)">
+                {{ searchType.label }}
+              </gl-button>
             </li>
           </template>
           <template v-else-if="hasMergeRequests">

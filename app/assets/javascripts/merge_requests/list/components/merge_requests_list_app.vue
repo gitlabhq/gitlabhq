@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchToken, GlButton } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import Api from '~/api';
@@ -82,10 +82,15 @@ export default {
   mergeRequestListTabs,
   components: {
     GlButton,
+    GlLink,
+    GlIcon,
     IssuableList,
     CiIcon,
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: [
     'autocompleteAwardEmojisPath',
@@ -483,7 +488,16 @@ export default {
       this.sortKey = deriveSortKey({ sort, state });
       this.state = state || STATUS_OPEN;
     },
+    isMergeRequestBroken(mergeRequest) {
+      return (
+        mergeRequest.commitCount === 0 ||
+        !mergeRequest.sourceBranchExists ||
+        !mergeRequest.targetBranchExists ||
+        mergeRequest.conflicts
+      );
+    },
   },
+  STATUS_OPEN,
 };
 </script>
 
@@ -533,6 +547,15 @@ export default {
 
     <template #status="{ issuable = {} }">
       {{ getStatus(issuable) }}
+      <gl-link
+        v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
+        v-gl-tooltip
+        :href="issuable.webUrl"
+        :title="__('Cannot be merged automatically')"
+        data-testid="merge-request-cannot-merge"
+      >
+        <gl-icon name="warning-solid" class="gl-text-gray-900" />
+      </gl-link>
     </template>
 
     <template #statistics="{ issuable = {} }">

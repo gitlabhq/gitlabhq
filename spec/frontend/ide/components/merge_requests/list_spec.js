@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
@@ -14,7 +14,7 @@ describe('IDE merge requests list', () => {
   let wrapper;
   let fetchMergeRequestsMock;
 
-  const findSearchTypeButtons = () => wrapper.findAll('button');
+  const findSearchTypeButtons = () => wrapper.findAllComponents(GlButton);
   const findTokenedInput = () => wrapper.findComponent(TokenedInput);
 
   const createComponent = (state = {}) => {
@@ -74,7 +74,7 @@ describe('IDE merge requests list', () => {
     findTokenedInput().vm.$emit('focus');
 
     await nextTick();
-    findSearchTypeButtons().at(0).trigger('click');
+    await findSearchTypeButtons().at(0).vm.$emit('click');
 
     await nextTick();
     const searchType = wrapper.vm.$options.searchTypes[0];
@@ -154,7 +154,7 @@ describe('IDE merge requests list', () => {
 
       describe('with search type', () => {
         beforeEach(async () => {
-          findSearchTypeButtons().at(0).trigger('click');
+          await findSearchTypeButtons().at(0).vm.$emit('click');
 
           await nextTick();
           await input.vm.$emit('focus');

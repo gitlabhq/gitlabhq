@@ -12,10 +12,27 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     subject { described_class.observability_url }
 
     before do
+      stub_rails_env('production')
       stub_config_setting(url: gitlab_url)
     end
 
     it { is_expected.to eq('https://observe.gitlab.com') }
+
+    context 'when in dev environment' do
+      before do
+        stub_rails_env('development')
+      end
+
+      it { is_expected.to eq('https://observe.staging.gitlab.com') }
+    end
+
+    context 'when in test environment' do
+      before do
+        stub_rails_env('test')
+      end
+
+      it { is_expected.to eq('https://observe.staging.gitlab.com') }
+    end
 
     context 'when on staging.gitlab.com' do
       let(:gitlab_url) { Gitlab::Saas.staging_com_url }

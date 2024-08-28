@@ -177,6 +177,15 @@ Potential causes and fixes:
 - [The installation is incomplete](#incomplete-installation)
 - [NGINX Gzip support is disabled](#nginx-gzip-support)
 
+## ActiveRecord::LockWaitTimeout error, retrying after sleep
+
+In rare cases, Sidekiq is busy and locks the table that migrations is trying to alter.
+To resolve this issue, you should put GitLab in read-only mode and stop Sidekiq.
+
+```shell
+gitlab-ctl stop sidekiq
+```
+
 ### Old processes
 
 The most likely cause is that an old Puma process is running, instructing clients

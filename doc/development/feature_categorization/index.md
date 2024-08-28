@@ -42,6 +42,11 @@ For Engineering Productivity internal tooling we use `feature_category: :tooling
 For example, `knapsack` and `crystalball` are both used to run RSpec test
 suites in CI and they don't belong to any product groups.
 
+### Test platform feature category
+
+For gems that are primarily maintained by the [Test Platform sub department](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/), we use `feature_category: :test_platform`.
+For example, `capybara` is defined in both `Gemfile` and `qa/Gemfile` to run tests involving UI. They don't belong to a specific product group.
+
 ### Shared feature category
 
 For gems that are used across different product groups we use

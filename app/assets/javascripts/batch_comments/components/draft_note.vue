@@ -86,7 +86,7 @@ export default {
     :note="draft"
     :line="line"
     :discussion-root="true"
-    class="draft-note-component draft-note !gl-mb-0"
+    class="draft-note !gl-mb-0"
     @handleEdit="handleEditing"
     @cancelForm="handleNotEditing"
     @updateSuccess="handleNotEditing"
@@ -110,7 +110,7 @@ export default {
       <div
         v-if="draftCommands"
         v-safe-html:[$options.safeHtmlConfig]="draftCommands"
-        class="referenced-commands draft-note-commands"
+        class="draft-note-referenced-commands gl-mb-2 gl-ml-3 gl-text-sm gl-text-subtle"
       ></div>
     </template>
   </noteable-note>

@@ -54,6 +54,10 @@ module Analytics
             :sprint_id
           ]
         end
+
+        def assignees_model
+          IssueAssignee
+        end
       end
     end
   end

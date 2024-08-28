@@ -278,20 +278,21 @@ table {
   }
 }
 
+.discussion-body .notes .timeline-entry:first-of-type + .discussion-reply-holder {
+  padding-top: $gl-padding-12;
+}
+
 .discussion-body,
 .diff-file,
 .commit-diff {
   .discussion-reply-holder {
     border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     padding: 0 $gl-padding $gl-padding-12 $gl-padding;
-    border-top: 1px solid $gray-50;
 
     + .new-note {
-      border-top: 1px solid $gray-50;
-    }
-
-    &.is-replying {
-      padding-top: $gl-padding-12;
+      @apply gl-border-t-1;
+      @apply gl-border-solid;
+      @apply gl-border-subtle;
     }
 
     &.internal-note,
@@ -307,9 +308,31 @@ table {
   }
 }
 
+.code-commit .discussion-notes .notes .note-comment:first-child {
+  @apply gl-bg-default;
+  @apply gl-border-b;
+  @apply gl-border-b-subtle;
+
+  .gl-dark & {
+    @apply gl-bg-strong;
+    border-bottom-color: var(--gl-background-color-default);
+  }
+}
+
+.code-commit .discussion-notes .notes .note-comment:first-child {
+  + .discussion-reply-holder {
+    &,
+    + .discussion-reply-holder {
+      margin-top: $gl-padding;
+    }
+  }
+}
+
+
+.code-commit .discussion-reply-holder,
 .diff-td > .content > .discussion-reply-holder {
   padding-top: $gl-padding-12;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
 }
 
 .discussion-with-resolve-btn {

@@ -140,7 +140,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   overflow-y: auto;
   padding: $gl-padding;
   padding-top: 50px;
-  background-color: var(--white, $white);
+  @apply gl-bg-default;
 
   .link-inherit-color {
     &,
@@ -153,10 +153,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
   .toggle-comments {
     line-height: 20px;
-    border-top: 1px solid var(--gl-border-color-default);
+    @apply gl-border-t;
+    @apply gl-border-t-subtle;
 
-    &.expanded {
-      border-bottom: 1px solid var(--gl-border-color-default);
+    &[aria-expanded="true"] {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
@@ -165,6 +165,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       text-decoration: none;
       color: var(--blue-600, $blue-600);
     }
+  }
+
+  .toggle-comments ~ .design-note {
+    @apply gl-bg-subtle;
   }
 
   .design-discussion {
@@ -194,6 +198,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     .reply-wrapper {
       padding: $gl-padding-8;
       border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
+      @apply gl-bg-subtle;
     }
   }
 

@@ -570,9 +570,9 @@ group :test do
   gem 'rspec-parameterized', '~> 1.0', '>= 1.0.2', require: false, feature_category: :tooling
   gem 'os', '~> 1.1', '>= 1.1.4', feature_category: :tooling
 
-  gem 'capybara', '~> 3.40' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'capybara-screenshot', '~> 1.0.26' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'selenium-webdriver', '~> 4.21', '>= 4.21.1' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'capybara', '~> 3.40', feature_category: :test_platform
+  gem 'capybara-screenshot', '~> 1.0.26', feature_category: :test_platform
+  gem 'selenium-webdriver', '~> 4.21', '>= 4.21.1', feature_category: :test_platform
 
   gem 'graphlyte', '~> 1.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

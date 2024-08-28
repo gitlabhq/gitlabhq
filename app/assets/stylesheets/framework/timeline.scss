@@ -28,8 +28,7 @@
 .timeline-entry {
   color: $gl-text-color;
 
-  &:not(.note-form).internal-note .timeline-content,
-  &:not(.note-form).draft-note .timeline-content {
+  &:not(.note-form).internal-note .timeline-content {
     background-color: $orange-50 !important;
   }
 

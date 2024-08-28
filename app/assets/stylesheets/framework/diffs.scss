@@ -873,6 +873,10 @@ table.code {
     .discussion-reply-holder {
       margin-left: 2.5rem;
 
+      &[aria-expanded="false"] {
+        @apply gl-border-b;
+      }
+
       .reply-author-avatar {
         height: 1.5rem;
       }
