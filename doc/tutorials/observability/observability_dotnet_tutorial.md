@@ -6,17 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use GitLab Observability with a .NET application
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
-
-> - Observability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `observability_features`. Disabled by default.
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
+<!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a .NET Core application using GitLab Observability features.
 
@@ -24,7 +17,7 @@ In this tutorial, you'll learn how to create, configure, instrument, and monitor
 
 To follow along this tutorial, you must have:
 
-- A GitLab Ultimate subscription for GitLab.com
+- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
 - A local installation of [.NET](https://dotnet.microsoft.com/en-us/)
 - Basic knowledge of Git, .NET, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -38,7 +31,8 @@ First, create a GitLab project and a corresponding access token.
    - In the **Project name** field, enter `dotnet-O11y-tutorial`.
 1. Select **Create project**.
 1. In the `dotnet-O11y-tutorial` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create a new access token with the Owner role and the `read_api` and `write_observability` scopes. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe.
+   You'll need it later.
 
 ## Create a .NET application
 
@@ -205,18 +199,16 @@ Next, we'll create a .NET web application that we can instrument. For this tutor
    app.Run();
    ```
 
-1. Find your group ID:
-   1. On the left sidebar, select **Search or go to** and find the top-level group with the `dotnet-O11y-tutorial` project. For example, if your project URL is `https://gitlab.com/tankui/observability/dotnet-O11y-tutorial`, the top-level group is `tanuki`.
-   1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
-   1. Select **Copy group ID**. Save the copied ID for later.
 1. Find your project ID:
    1. On the `dotnet-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
    1. Select **Copy project ID**. Save the copied ID for later.
 
-1. Configure and run your application with instrumentation:
+1. Configure your application with instrumentation.
+   If you're using self-managed GitLab, replace `gitlab.com` with your self-managed instance hostname.
+1. Run your application.
 
    ```shell
-   env OTEL_EXPORTER_OTLP_ENDPOINT="https://observe.gitlab.com/v3/{{GROUP_ID}}/{{PROJECT_ID}}/ingest" \
+   env OTEL_EXPORTER_OTLP_ENDPOINT="https://gitlab.com/api/v4/projects/{{PROJECT_ID}}/observability" \
    OTEL_EXPORTER_OTLP_HEADERS="PRIVATE-TOKEN={{ACCESS_TOKEN}}" \
    OTEL_LOG_LEVEL="debug" \
    dotnet run

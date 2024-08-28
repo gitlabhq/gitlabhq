@@ -23,8 +23,6 @@ module Members
     end
 
     def execute
-      return if Feature.disabled?(:webui_members_inherited_users, current_user)
-
       # We don't need to calculate the access level of the current user in the invited groups if:
       #
       # 1. The current user can admin members then the user should be able to see the source of all memberships

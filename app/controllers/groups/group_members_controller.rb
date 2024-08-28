@@ -21,7 +21,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     push_frontend_feature_flag(:importer_user_mapping, current_user)
     push_frontend_feature_flag(:importer_user_mapping_reassignment_csv, current_user)
     push_frontend_feature_flag(:service_accounts_crud, @group)
-    push_frontend_feature_flag(:webui_members_inherited_users, current_user)
   end
 
   skip_before_action :check_two_factor_requirement, only: :leave

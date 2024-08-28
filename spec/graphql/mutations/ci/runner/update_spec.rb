@@ -10,7 +10,7 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner do
   let_it_be(:project2) { create(:project, organization: project1.organization) }
 
   let(:runner) do
-    create(:ci_runner, :project, projects: [project1, project2], active: true, locked: false, run_untagged: true)
+    create(:ci_runner, :project, projects: [project1, project2], locked: false, run_untagged: true)
   end
 
   let(:current_ctx) { { current_user: user } }

@@ -8,11 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `observability_tracing`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md#beta).
 > - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158786) in GitLab 17.3 to the `observability_features` [feature flag](../administration/feature_flags.md), disabled by default. The previous feature flag `observability_tracing` was removed.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/100) for self-managed in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -25,41 +26,30 @@ This feature is in [beta](../policy/experiment-beta-support.md). For more inform
 
 ## Configure distributed tracing for a project
 
-To configure distributed tracing:
-
-1. [Create an access token and enable tracing.](#create-an-access-token)
-1. [Configure your application to use the OpenTelemetry exporter.](#configure-your-application-to-use-the-opentelemetry-exporter)
-
-### Create an access token
+Configure distributed tracing to enable it for a project.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-To enable tracing in a project, you must first create an access token:
+1. Create an access token:
+   1. On the left sidebar, select **Search or go to** and find your project.
+   1. Select **Settings > Access tokens**.
+   1. Create an access token with the `api` scope and **Developer** role or greater.
+      Save the access token value for later.
+1. To configure your application to send GitLab traces, set the following environment variables:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access tokens**.
-1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`.
-1. Copy the value of the access token.
+   ```shell
+   OTEL_EXPORTER = "otlphttp"
+   OTEL_EXPORTER_OTLP_ENDPOINT = "https://gitlab.example.com/api/v4/projects/<gitlab-project-id>/observability/"
+   OTEL_EXPORTER_OTLP_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
+   ```
 
-### Configure your application to use the OpenTelemetry exporter
+   Use the following values:
 
-Next, configure your application to send traces to GitLab.
-
-To do this, set the following environment variables:
-
-```shell
-OTEL_EXPORTER = "otlphttp"
-OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/traces"
-OTEL_EXPORTER_OTLP_TRACES_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
-```
-
-Use the following values:
-
-- `namespace-id`: The top-level namespace ID where your project is located.
-- `gitlab-project-id`: The project ID.
-- `gitlab-access-token`: The access token you [created previously](#create-an-access-token).
+   - `gitlab.example.com` - The hostname for your self-managed instance, or `gitlab.com`
+   - `gitlab-project-id` - The project ID.
+   - `gitlab-access-token` - The access token you created
 
 When your application is configured, run it, and the OpenTelemetry exporter attempts to send
 traces to GitLab.

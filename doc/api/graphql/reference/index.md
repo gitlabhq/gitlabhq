@@ -3079,6 +3079,48 @@ Input type: `ClusterAgentTokenRevokeInput`
 | <a id="mutationclusteragenttokenrevokeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationclusteragenttokenrevokeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.clusterAgentUrlConfigurationCreate`
+
+Input type: `ClusterAgentUrlConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenturlconfigurationcreatecacert"></a>`caCert` | [`String`](#string) | Base64-encoded CA certificate in PEM format to verify the agent endpoint. |
+| <a id="mutationclusteragenturlconfigurationcreateclientcert"></a>`clientCert` | [`String`](#string) | Base64-encoded client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`. |
+| <a id="mutationclusteragenturlconfigurationcreateclientkey"></a>`clientKey` | [`String`](#string) | Base64-encoded client key in PEM format if mTLS authentication should be used. Must be provided with `client_cert`. |
+| <a id="mutationclusteragenturlconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenturlconfigurationcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | Global ID of the cluster agent that will be associated with the new URL configuration. |
+| <a id="mutationclusteragenturlconfigurationcreatetlshost"></a>`tlsHost` | [`String`](#string) | TLS host name to verify the server name in agent endpoint certificate. |
+| <a id="mutationclusteragenturlconfigurationcreateurl"></a>`url` | [`String!`](#string) | URL for the new URL configuration. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenturlconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenturlconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationclusteragenturlconfigurationcreateurlconfiguration"></a>`urlConfiguration` | [`ClusterAgentUrlConfiguration`](#clusteragenturlconfiguration) | URL configuration created after mutation. |
+
+### `Mutation.clusterAgentUrlConfigurationDelete`
+
+Input type: `ClusterAgentUrlConfigurationDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenturlconfigurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenturlconfigurationdeleteid"></a>`id` | [`ClustersAgentsUrlConfigurationID!`](#clustersagentsurlconfigurationid) | Global ID of the agent URL configuration that will be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationclusteragenturlconfigurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationclusteragenturlconfigurationdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.commitCreate`
 
 Input type: `CommitCreateInput`
@@ -11951,6 +11993,30 @@ The edge type for [`ClusterAgentToken`](#clusteragenttoken).
 | <a id="clusteragenttokenedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="clusteragenttokenedgenode"></a>`node` | [`ClusterAgentToken`](#clusteragenttoken) | The item at the end of the edge. |
 
+#### `ClusterAgentUrlConfigurationConnection`
+
+The connection type for [`ClusterAgentUrlConfiguration`](#clusteragenturlconfiguration).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragenturlconfigurationconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="clusteragenturlconfigurationconnectionedges"></a>`edges` | [`[ClusterAgentUrlConfigurationEdge]`](#clusteragenturlconfigurationedge) | A list of edges. |
+| <a id="clusteragenturlconfigurationconnectionnodes"></a>`nodes` | [`[ClusterAgentUrlConfiguration]`](#clusteragenturlconfiguration) | A list of nodes. |
+| <a id="clusteragenturlconfigurationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ClusterAgentUrlConfigurationEdge`
+
+The edge type for [`ClusterAgentUrlConfiguration`](#clusteragenturlconfiguration).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragenturlconfigurationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="clusteragenturlconfigurationedgenode"></a>`node` | [`ClusterAgentUrlConfiguration`](#clusteragenturlconfiguration) | The item at the end of the edge. |
+
 #### `CodeCoverageActivityConnection`
 
 The connection type for [`CodeCoverageActivity`](#codecoverageactivity).
@@ -19183,11 +19249,13 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the cluster agent was created. |
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
+| <a id="clusteragentisreceptive"></a>`isReceptive` | [`Boolean`](#boolean) | Whether the cluster agent is receptive or not. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
 | <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project the cluster agent is associated with. |
 | <a id="clusteragentremotedevelopmentagentconfig"></a>`remoteDevelopmentAgentConfig` | [`RemoteDevelopmentAgentConfig`](#remotedevelopmentagentconfig) | Remote development agent config for the cluster agent. |
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
+| <a id="clusteragenturlconfigurations"></a>`urlConfigurations` | [`ClusterAgentUrlConfigurationConnection`](#clusteragenturlconfigurationconnection) | URL configurations for the cluster agent in case it is a receptive agent. (see [Connections](#connections)) |
 | <a id="clusteragentuseraccessauthorizations"></a>`userAccessAuthorizations` | [`ClusterAgentAuthorizationUserAccess`](#clusteragentauthorizationuseraccess) | User access config for the cluster agent. |
 | <a id="clusteragentvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the agent vulnerabilities. (see [Connections](#connections)) |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
@@ -19256,6 +19324,20 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="clusteragenttokenlastusedat"></a>`lastUsedAt` | [`Time`](#time) | Timestamp the token was last used. |
 | <a id="clusteragenttokenname"></a>`name` | [`String`](#string) | Name given to the token. |
 | <a id="clusteragenttokenstatus"></a>`status` | [`AgentTokenStatus`](#agenttokenstatus) | Current status of the token. |
+
+### `ClusterAgentUrlConfiguration`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragenturlconfigurationcacert"></a>`caCert` | [`String`](#string) | CA certificate of the URL configuration. It is used to verify the agent endpoint. |
+| <a id="clusteragenturlconfigurationclientcert"></a>`clientCert` | [`String`](#string) | Client certificate if JWT authentication is used. |
+| <a id="clusteragenturlconfigurationclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent of the URL configuration. |
+| <a id="clusteragenturlconfigurationid"></a>`id` | [`ClustersAgentsUrlConfigurationID!`](#clustersagentsurlconfigurationid) | Global ID of the URL configuration. |
+| <a id="clusteragenturlconfigurationpublickey"></a>`publicKey` | [`String`](#string) | Public key if JWT authentication is used. |
+| <a id="clusteragenturlconfigurationtlshost"></a>`tlsHost` | [`String`](#string) | TLS host of the URL configuration. It is used to verify the server name in the agent endpoint certificate. |
+| <a id="clusteragenturlconfigurationurl"></a>`url` | [`String`](#string) | URL of the URL configuration. |
 
 ### `CodeCoverageActivity`
 
@@ -35356,11 +35438,9 @@ Values for sorting runners.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
 | <a id="cirunnerstatusnever_contacted"></a>`NEVER_CONTACTED` | Runner that has never contacted the instance. |
 | <a id="cirunnerstatusoffline"></a>`OFFLINE` | Runner that has not contacted this instance within the last 2 hours. Will be considered `STALE` if offline for more than 7 days. |
 | <a id="cirunnerstatusonline"></a>`ONLINE` | Runner that contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
 | <a id="cirunnerstatusstale"></a>`STALE` | Runner that has not contacted this instance within the last 7 days. |
 
 ### `CiRunnerType`
@@ -38470,6 +38550,12 @@ An example `ClustersAgentID` is: `"gid://gitlab/Clusters::Agent/1"`.
 A `ClustersAgentTokenID` is a global ID. It is encoded as a string.
 
 An example `ClustersAgentTokenID` is: `"gid://gitlab/Clusters::AgentToken/1"`.
+
+### `ClustersAgentsUrlConfigurationID`
+
+A `ClustersAgentsUrlConfigurationID` is a global ID. It is encoded as a string.
+
+An example `ClustersAgentsUrlConfigurationID` is: `"gid://gitlab/Clusters::Agents::UrlConfiguration/1"`.
 
 ### `ClustersClusterID`
 

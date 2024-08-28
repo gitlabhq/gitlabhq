@@ -97,10 +97,10 @@ build_image:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
-  only:
-    - branches
-  except:
-    - main
+  rules:
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        when: never
+      - if: $CI_COMMIT_BRANCH
 
 delete_image:
   stage: clean

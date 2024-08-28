@@ -66,12 +66,26 @@ module Types
         null: true,
         description: 'User access config for the cluster agent.'
 
+      field :is_receptive,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Whether the cluster agent is receptive or not.'
+
+      field :url_configurations,
+        AgentUrlConfigurationType.connection_type,
+        null: true,
+        description: 'URL configurations for the cluster agent in case it is a receptive agent.'
+
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
       end
 
       def web_path
         ::Gitlab::Routing.url_helpers.project_cluster_agent_path(object.project, object.name)
+      end
+
+      def url_configurations
+        [object.agent_url_configuration]
       end
     end
   end

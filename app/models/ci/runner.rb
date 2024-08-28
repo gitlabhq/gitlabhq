@@ -73,8 +73,9 @@ module Ci
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
     DEPRECATED_STATUSES = %w[active paused].freeze # TODO: Remove in REST v5. Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/344648
-    AVAILABLE_STATUSES = (DEPRECATED_STATUSES + %w[online offline never_contacted stale]).freeze
-    AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
+    AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
+    AVAILABLE_STATUSES_INCL_DEPRECATED = (DEPRECATED_STATUSES + AVAILABLE_STATUSES).freeze
+    AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES_INCL_DEPRECATED).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze

@@ -905,8 +905,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it { is_expected.to be_truthy }
       end
 
-      context 'that is inactive' do
-        let(:runner_traits) { [:online, :inactive] }
+      context 'that is paused' do
+        let(:runner_traits) { [:online, :paused] }
 
         it { is_expected.to be_falsey }
       end

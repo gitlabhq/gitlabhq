@@ -44,7 +44,7 @@ is displayed.
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-## Summarize an issue with Issue description generation
+## Populate an issue with Issue description generation
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
@@ -59,6 +59,7 @@ Prerequisites:
 
 - You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have permission to view the issue.
+- Only available for the plain text editor.
 
 To generate an issue description:
 

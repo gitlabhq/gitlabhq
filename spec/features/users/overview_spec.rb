@@ -147,7 +147,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       it 'shows an empty followers list with an info message' do
         page.within('#js-legacy-tabs-container') do
           expect(page).to have_content('You do not have any followers')
-          expect(page).not_to have_selector('.gl-card.gl-mb-5')
+          expect(page).not_to have_selector('.gl-card')
           expect(page).not_to have_selector('.gl-pagination')
         end
       end
@@ -165,7 +165,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       it 'shows followers' do
         page.within('#js-legacy-tabs-container') do
           expect(page).to have_content(follower.name)
-          expect(page).to have_selector('.gl-card.gl-mb-5')
+          expect(page).to have_selector('.gl-card')
           expect(page).not_to have_selector('.gl-pagination')
         end
       end
@@ -190,7 +190,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
             expect(page).to have_content(follower.name)
           end
-          expect(page).to have_selector('.gl-card.gl-mb-5')
+          expect(page).to have_selector('.gl-card')
           expect(page).to have_selector('.gl-pagination')
           expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)
         end
@@ -208,7 +208,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       it 'shows an empty following list with an info message' do
         page.within('#js-legacy-tabs-container') do
           expect(page).to have_content('You are not following other users')
-          expect(page).not_to have_selector('.gl-card.gl-mb-5')
+          expect(page).not_to have_selector('.gl-card')
           expect(page).not_to have_selector('.gl-pagination')
         end
       end
@@ -226,7 +226,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       it 'shows following user' do
         page.within('#js-legacy-tabs-container') do
           expect(page).to have_content(followee.name)
-          expect(page).to have_selector('.gl-card.gl-mb-5')
+          expect(page).to have_selector('.gl-card')
           expect(page).not_to have_selector('.gl-pagination')
         end
       end
@@ -251,7 +251,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
             expect(page).to have_content(followee.name)
           end
-          expect(page).to have_selector('.gl-card.gl-mb-5')
+          expect(page).to have_selector('.gl-card')
           expect(page).to have_selector('.gl-pagination')
           expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)
         end

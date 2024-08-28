@@ -182,7 +182,7 @@ DETAILS:
 
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
 - LLM: Anthropic [Claude Instant 1.2](https://docs.anthropic.com/en/docs/about-claude/models#legacy-models)
-- [View documentation](experiments.md#summarize-an-issue-with-issue-description-generation).
+- [View documentation](experiments.md#populate-an-issue-with-issue-description-generation).
 
 ### Code review summary
 

@@ -12,6 +12,7 @@ module Ci
     self.table_name = 'ci_runner_machines'
 
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
+    AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)

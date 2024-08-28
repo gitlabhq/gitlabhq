@@ -185,8 +185,6 @@ module MembershipActions
   end
 
   def shared_members_relations
-    return [] unless Feature.enabled?(:webui_members_inherited_users, current_user)
-
     project_relations = [:invited_groups, :shared_into_ancestors]
     [:shared_from_groups, *(project_relations if params[:project_id])]
   end

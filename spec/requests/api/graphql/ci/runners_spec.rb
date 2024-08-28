@@ -16,12 +16,12 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
 
   describe 'Query.runners' do
     let_it_be(:project) { create(:project, :repository, :public) }
-    let_it_be(:instance_runner) { create(:ci_runner, :instance, description: 'Instance runner') }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance, :online, description: 'Instance runner') }
     let_it_be(:instance_runner_manager) do
       create(:ci_runner_machine, runner: instance_runner, version: 'abc', revision: '123', ip_address: '127.0.0.1')
     end
 
-    let_it_be(:project_runner) { create(:ci_runner, :project, active: false, description: 'Project runner', projects: [project]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, :paused, description: 'Project runner', projects: [project]) }
     let_it_be(:project_runner_manager) do
       create(:ci_runner_machine, runner: project_runner, version: 'def', revision: '456', ip_address: '127.0.0.1')
     end
@@ -57,8 +57,8 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
     it 'returns expected runners' do
       post_graphql(query, current_user: current_user)
 
-      expect(runners_graphql_data['nodes']).to contain_exactly(
-        *Ci::Runner.all.map { |expected_runner| a_graphql_entity_for(expected_runner) }
+      expect(runners_graphql_data['nodes']).to match_array(
+        Ci::Runner.all.map { |expected_runner| a_graphql_entity_for(expected_runner) }
       )
     end
 
@@ -73,8 +73,8 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
         it 'returns expected runners' do
           post_graphql(query, current_user: current_user)
 
-          expect(runners_graphql_data['nodes']).to contain_exactly(
-            *Array(expected_runners).map { |expected_runner| a_graphql_entity_for(expected_runner) }
+          expect(runners_graphql_data['nodes']).to match_array(
+            Array(expected_runners).map { |expected_runner| a_graphql_entity_for(expected_runner) }
           )
         end
       end
@@ -96,9 +96,9 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           end
         end
 
-        context 'runner_type is INSTANCE_TYPE and status is ACTIVE' do
+        context 'runner_type is INSTANCE_TYPE and status is ONLINE' do
           let(:runner_type) { 'INSTANCE_TYPE' }
-          let(:status) { 'ACTIVE' }
+          let(:status) { 'ONLINE' }
 
           let(:expected_runners) { instance_runner }
 
@@ -354,7 +354,7 @@ RSpec.describe 'Group.runners' do
   let_it_be(:group_owner) { create_default(:user, owner_of: group) }
 
   describe 'edges' do
-    let_it_be(:runner) { create(:ci_runner, :group, active: false, description: 'Project runner', groups: [group]) }
+    let_it_be(:runner) { create(:ci_runner, :group, :paused, description: 'Project runner', groups: [group]) }
 
     let(:query) do
       %(

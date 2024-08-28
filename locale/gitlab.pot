@@ -33266,9 +33266,6 @@ msgstr ""
 msgid "Members|Indirect"
 msgstr ""
 
-msgid "Members|Inherited"
-msgstr ""
-
 msgid "Members|Inherited from %{group}"
 msgstr ""
 

@@ -200,15 +200,15 @@ release-image:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 
 deploy:
   stage: deploy
   script:
     - ./deploy.sh
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   environment: production
 ```
 

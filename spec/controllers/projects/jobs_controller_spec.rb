@@ -425,7 +425,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'when no runners are available' do
-        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:runner) { create(:ci_runner, :instance, :paused) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'exposes needed information' do

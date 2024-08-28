@@ -510,14 +510,14 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.active' do
     subject { described_class.active(active_value) }
 
-    let_it_be(:runner1) { create(:ci_runner, :instance, active: false) }
+    let_it_be(:runner1) { create(:ci_runner, :instance, :paused) }
     let_it_be(:runner2) { create(:ci_runner, :instance) }
 
     context 'with active_value set to false' do
       let(:active_value) { false }
 
-      it 'returns inactive runners' do
-        is_expected.to match_array([runner1])
+      it 'returns paused runners' do
+        is_expected.to contain_exactly(runner1)
       end
     end
 
@@ -525,7 +525,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       let(:active_value) { true }
 
       it 'returns active runners' do
-        is_expected.to match_array([runner2])
+        is_expected.to contain_exactly(runner2)
       end
     end
   end
@@ -533,10 +533,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.paused' do
     subject(:paused) { described_class.paused }
 
-    let!(:runner1) { create(:ci_runner, :instance, active: false) }
+    let!(:runner1) { create(:ci_runner, :instance, :paused) }
     let!(:runner2) { create(:ci_runner, :instance) }
 
-    it 'returns inactive runners' do
+    it 'returns paused runners' do
       expect(described_class).to receive(:active).with(false).and_call_original
 
       expect(paused).to contain_exactly(runner1)
@@ -880,8 +880,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
     end
 
-    context 'inactive but online' do
-      let(:runner) { build(:ci_runner, :inactive, :online) }
+    context 'paused but online' do
+      let(:runner) { build(:ci_runner, :paused, :online) }
 
       it { is_expected.to eq(:online) }
     end
@@ -926,8 +926,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       it { is_expected.to eq(:stale) }
     end
 
-    context 'inactive' do
-      let(:runner) { build(:ci_runner, :inactive, :online) }
+    context 'paused' do
+      let(:runner) { build(:ci_runner, :paused, :online) }
 
       it { is_expected.to eq(:paused) }
     end
@@ -1884,13 +1884,13 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       subject { described_class.active(false).with_upgrade_status(:available) }
 
       before do
-        create(:ci_runner_machine, runner: inactive_runner_14_0_0, version: '14.0.0')
+        create(:ci_runner_machine, runner: paused_runner_14_0_0, version: '14.0.0')
       end
 
-      let(:inactive_runner_14_0_0) { create(:ci_runner, active: false) }
+      let(:paused_runner_14_0_0) { create(:ci_runner, :paused) }
 
       it 'returns runner matching the composed scope' do
-        is_expected.to contain_exactly(inactive_runner_14_0_0)
+        is_expected.to contain_exactly(paused_runner_14_0_0)
       end
     end
   end

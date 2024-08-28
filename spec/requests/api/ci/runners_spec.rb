@@ -96,7 +96,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         let(:query) { { scope: :paused } }
 
         before_all do
-          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+          create(:ci_runner, :project, :paused, description: 'Paused project runner', projects: [project])
         end
 
         it 'filters runners by scope' do
@@ -106,7 +106,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           expect(response).to include_pagination_headers
 
           expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
+            a_hash_including('description' => 'Paused project runner')
           ]
         end
 
@@ -148,9 +148,9 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         end
       end
 
-      context 'with an inactive runner' do
+      context 'with a paused runner' do
         let_it_be(:runner) do
-          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+          create(:ci_runner, :project, :paused, description: 'Paused project runner', projects: [project])
         end
 
         context 'when filtering by paused' do
@@ -159,7 +159,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           it 'filters runners by paused state' do
             perform_request
 
-            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused project runner'))
           end
         end
 
@@ -169,7 +169,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           it 'filters runners by status' do
             perform_request
 
-            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused project runner'))
           end
         end
 
@@ -386,8 +386,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           end
         end
 
-        context 'with an inactive runner' do
-          let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
+        context 'with an paused runner' do
+          let_it_be(:runner) { create(:ci_runner, :project, :paused, description: 'Paused project runner', projects: [project]) }
 
           context 'when filtering runners by paused status' do
             let(:query) { { paused: true } }
@@ -395,7 +395,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             it 'filters runners by status' do
               perform_request
 
-              expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+              expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused project runner'))
             end
           end
 
@@ -405,7 +405,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             it 'filters runners by status' do
               perform_request
 
-              expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+              expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused project runner'))
             end
 
             context 'and status is invalid' do
@@ -1978,8 +1978,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         end
       end
 
-      context 'with an inactive runner' do
-        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
+      context 'with a paused runner' do
+        let_it_be(:runner) { create(:ci_runner, :project, :paused, description: 'Paused project runner', projects: [project]) }
 
         context 'when filtering by paused status' do
           let(:query) { { paused: true } }
@@ -1988,7 +1988,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             perform_request
 
             expect(json_response).to contain_exactly(
-              a_hash_including('description' => 'Inactive project runner')
+              a_hash_including('description' => 'Paused project runner')
             )
           end
         end
@@ -2000,7 +2000,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             perform_request
 
             expect(json_response).to contain_exactly(
-              a_hash_including('description' => 'Inactive project runner')
+              a_hash_including('description' => 'Paused project runner')
             )
           end
 
@@ -2120,8 +2120,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         end
       end
 
-      context 'with an inactive runner' do
-        let_it_be(:runner) { create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group]) }
+      context 'with a paused runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, :paused, description: 'Paused group runner', groups: [group]) }
 
         context 'when filtering by paused status' do
           let(:query) { { paused: true } }
@@ -2129,7 +2129,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           it 'filters runners by status' do
             perform_request
 
-            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive group runner'))
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused group runner'))
           end
         end
 
@@ -2139,7 +2139,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           it 'returns runners by valid status' do
             perform_request
 
-            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive group runner'))
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Paused group runner'))
           end
 
           context 'and status is invalid' do

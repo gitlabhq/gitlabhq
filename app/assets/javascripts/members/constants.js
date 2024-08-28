@@ -139,12 +139,7 @@ export const FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS = {
   operators: OPERATORS_IS,
   options: [
     { value: 'exclude', title: s__('Members|Direct') },
-    {
-      value: 'only',
-      title: gon.features?.webuiMembersInheritedUsers
-        ? s__('Members|Indirect')
-        : s__('Members|Inherited'),
-    },
+    { value: 'only', title: s__('Members|Indirect') },
   ],
 };
 

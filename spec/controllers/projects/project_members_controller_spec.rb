@@ -107,18 +107,6 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
         shared_examples 'users are invited through groups' do
           let_it_be(:invited_group_member) { create(:user) }
 
-          context 'when webui_members_inherited_users is disabled' do
-            before do
-              stub_feature_flags(webui_members_inherited_users: false)
-            end
-
-            it 'lists only direct members' do
-              get :index, params: { namespace_id: project.namespace, project_id: project }
-
-              expect(assigns(:project_members).map(&:user_id)).not_to include(invited_group_member.id)
-            end
-          end
-
           it 'lists invited group members by default' do
             get :index, params: { namespace_id: project.namespace, project_id: project }
 

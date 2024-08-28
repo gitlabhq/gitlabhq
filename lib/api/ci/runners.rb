@@ -21,7 +21,7 @@ module API
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES, desc: 'The type of runners to return'
           optional :paused, type: Boolean,
             desc: 'Whether to include only runners that are accepting or ignoring new jobs'
-          optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
+          optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED,
             desc: 'The status of runners to return'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
             desc: 'A list of runner tags', documentation: { example: "['macos', 'shell']" }
@@ -48,7 +48,7 @@ module API
 
         def apply_filter(runners, params)
           runners = filter_runners(runners, params[:type], allowed_scopes: ::Ci::Runner::AVAILABLE_TYPES)
-          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
+          runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED)
           runners = filter_runners(runners, params[:paused] ? 'paused' : 'active', allowed_scopes: %w[paused active]) if params.include?(:paused)
           runners = runners.with_version_prefix(params[:version_prefix]) if params[:version_prefix]
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
@@ -122,7 +122,7 @@ module API
         end
         get do
           runners = current_user.ci_owned_runners
-          runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
+          runners = filter_runners(runners, params[:scope], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED)
           runners = apply_filter(runners, params)
 
           present paginate(runners), with: Entities::Ci::Runner

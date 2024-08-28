@@ -9,8 +9,8 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
     describe '#execute' do
       shared_examples 'executes as admin' do
         context 'with 2 runners' do
-          let_it_be(:runner1) { create(:ci_runner, active: true) }
-          let_it_be(:runner2) { create(:ci_runner, active: false) }
+          let_it_be(:runner1) { create(:ci_runner) }
+          let_it_be(:runner2) { create(:ci_runner, :paused) }
 
           context 'with empty params' do
             it 'returns all runners' do
@@ -112,7 +112,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           end
 
           context 'by status' do
-            Ci::Runner::AVAILABLE_STATUSES.each do |status|
+            Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED.each do |status|
               it "calls the corresponding :#{status} scope on Ci::Runner" do
                 expect(Ci::Runner).to receive(:with_status).with(status).and_call_original
 
@@ -264,8 +264,8 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
       shared_examples 'executes as normal user' do
         it 'raises Gitlab::Access::AccessDeniedError' do
           user = create :user
-          create :ci_runner, active: true
-          create :ci_runner, active: false
+          create :ci_runner
+          create :ci_runner, :paused
 
           expect do
             described_class.new(current_user: user, params: {}).execute
@@ -294,8 +294,8 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
       context 'when user is nil' do
         it 'raises Gitlab::Access::AccessDeniedError' do
           user = nil
-          create :ci_runner, active: true
-          create :ci_runner, active: false
+          create :ci_runner
+          create :ci_runner, :paused
 
           expect do
             described_class.new(current_user: user, params: {}).execute
@@ -320,7 +320,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
     let_it_be(:project_6) { create(:project, group: sub_group_4) }
     let_it_be(:runner_instance) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
     let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago, groups: [group]) }
-    let_it_be(:runner_sub_group_1) { create(:ci_runner, :group, :inactive, contacted_at: 11.minutes.ago, groups: [sub_group_1]) }
+    let_it_be(:runner_sub_group_1) { create(:ci_runner, :group, :paused, contacted_at: 11.minutes.ago, groups: [sub_group_1]) }
     let_it_be(:runner_sub_group_2) { create(:ci_runner, :group, contacted_at: 10.minutes.ago, groups: [sub_group_2]) }
     let_it_be(:runner_sub_group_3) { create(:ci_runner, :group, contacted_at: 9.minutes.ago, groups: [sub_group_3]) }
     let_it_be(:runner_sub_group_4) { create(:ci_runner, :group, contacted_at: 8.minutes.ago, groups: [sub_group_4]) }
@@ -616,12 +616,12 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
         end
 
         context 'filtering' do
-          let_it_be(:runner_instance_inactive) { create(:ci_runner, :instance, active: false, contacted_at: 13.minutes.ago) }
-          let_it_be(:runner_instance_active) { create(:ci_runner, :instance, active: true, contacted_at: 13.minutes.ago) }
-          let_it_be(:runner_project_active) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: true, projects: [project]) }
-          let_it_be(:runner_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [project]) }
-          let_it_be(:runner_other_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [other_project]) }
-          let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner_instance_inactive, version: '15.10.0') }
+          let_it_be(:runner_instance_paused) { create(:ci_runner, :instance, :paused, contacted_at: 13.minutes.ago) }
+          let_it_be(:runner_instance_active) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
+          let_it_be(:runner_project_active) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, projects: [project]) }
+          let_it_be(:runner_project_paused) { create(:ci_runner, :project, :paused, contacted_at: 5.minutes.ago, projects: [project]) }
+          let_it_be(:runner_other_project_paused) { create(:ci_runner, :project, :paused, contacted_at: 5.minutes.ago, projects: [other_project]) }
+          let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner_instance_paused, version: '15.10.0') }
 
           context 'by search term' do
             let_it_be(:runner_project_1) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, description: 'runner_project_search', projects: [project]) }
@@ -639,7 +639,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             let(:extra_params) { { active: false } }
 
             it 'returns the correct runners' do
-              expect(subject).to match_array([runner_instance_inactive, runner_project_inactive])
+              expect(subject).to match_array([runner_instance_paused, runner_project_paused])
             end
           end
 
@@ -647,7 +647,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             let(:extra_params) { { status_status: 'paused' } }
 
             it 'returns correct runner' do
-              expect(subject).to match_array([runner_instance_inactive, runner_project_inactive])
+              expect(subject).to match_array([runner_instance_paused, runner_project_paused])
             end
           end
 
@@ -667,7 +667,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             let(:extra_params) { { type_type: 'project_type' } }
 
             it 'returns correct runners' do
-              expect(subject).to match_array([runner_project_active, runner_project_inactive])
+              expect(subject).to match_array([runner_project_active, runner_project_paused])
             end
           end
 
@@ -686,7 +686,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             let(:extra_params) { { version_prefix: '15.' } }
 
             it 'returns correct runners' do
-              is_expected.to contain_exactly(runner_instance_inactive)
+              is_expected.to contain_exactly(runner_instance_paused)
             end
           end
         end

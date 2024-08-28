@@ -80,7 +80,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
         let(:args) do
           {
             active: true,
-            status: 'active',
+            status: 'offline',
             upgrade_status: 'recommended',
             type: :instance_type,
             tag_list: ['active_runner'],
@@ -95,7 +95,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
         let(:expected_params) do
           {
             active: true,
-            status_status: 'active',
+            status_status: 'offline',
             upgrade_status: 'recommended',
             type_type: :instance_type,
             tag_name: ['active_runner'],

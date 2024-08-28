@@ -56,7 +56,7 @@ class GroupMembersFinder < UnionFinder
 
     if include_relations.include?(:shared_from_groups)
       related_groups[:shared_from_groups] =
-        if group.member?(user) && Feature.enabled?(:webui_members_inherited_users, user)
+        if group.member?(user)
           Group.shared_into_ancestors(group)
         else
           Group.shared_into_ancestors(group).public_or_visible_to_user(user)

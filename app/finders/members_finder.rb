@@ -85,7 +85,7 @@ class MembersFinder
 
   def project_invited_groups
     invited_groups_including_ancestors = project.invited_groups.self_and_ancestors
-    if Feature.disabled?(:webui_members_inherited_users, current_user) || !project.member?(current_user)
+    unless project.member?(current_user)
       invited_groups_including_ancestors = invited_groups_including_ancestors.public_or_visible_to_user(current_user)
     end
 

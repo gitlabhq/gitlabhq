@@ -118,7 +118,7 @@ Benefits of using the Collector:
    ```yaml
    exporters:
      otlphttp/gitlab:
-       endpoint: https://observe.gitlab.com/v3/<group_id>/<project_id>/ingest/
+       endpoint: https://gitlab.com/api/v4/projects/<project_id>/observability/
        headers:
          "private-token": "<your_token>"
 
@@ -134,15 +134,11 @@ Benefits of using the Collector:
 
    Replace the placeholders with the following values:
 
-   - `<group_id>`: The top-level group ID for your project.
-     On the group homepage, in the upper-right corner,
-     select the vertical ellipsis (**{ellipsis_v}**), then **Copy group ID**.
-
    - `<project_id>`: The project ID. On the project homepage,
      in the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then **Copy project ID**.
-
-   - `<your_token>`: An access token created in the project with the `Owner` role and
-     `read_api` and `write_observability` scopes. Create a token at the project's **Settings** > **Access tokens**.
+   - `<your_token>`: An access token created in the project with the `Developer` role and
+     `api` scope. Create a token at the project's **Settings** > **Access tokens**.
+   - `gitlab.com`: Replace with your GitLab host if running a self-managed instance.
 
 1. Instrument your application to send data to the Collector.
    Use the language-specific guides above, but point to your Collector instead of GitLab.

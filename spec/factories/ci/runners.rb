@@ -104,7 +104,7 @@ FactoryBot.define do
       end
     end
 
-    trait :inactive do
+    trait :paused do
       active { false }
     end
 

@@ -1,13 +1,12 @@
 - user = local_assigns.fetch(:user)
 
-.col-lg-3.col-md-4.col-sm-12
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
-    - c.with_body do
-      = render Pajamas::AvatarComponent.new(user, size: 48, alt: "", class: 'gl-float-left gl-mr-3')
+= render Pajamas::CardComponent.new(body_options: { class: 'gl-flex gl-gap-3' }) do |c|
+  - c.with_body do
+    = render Pajamas::AvatarComponent.new(user, size: 48, alt: "")
 
-      .user-info
-        .block-truncated
-          = link_to user.name, user_path(user), class: 'user js-user-link', data: { user_id: user.id, testid: 'user-link', qa_username: user.username }
+    .gl-grow.user-info
+      .gl-line-clamp-1.gl-break-all
+        = link_to user.name, user_path(user), class: 'js-user-link', data: { user_id: user.id, testid: 'user-link', qa_username: user.username }
 
-        .block-truncated
-          %span.gl-text-gray-900= user.to_reference
+      .gl-line-clamp-1.gl-break-all
+        %span.gl-text-secondary= user.to_reference

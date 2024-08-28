@@ -1287,13 +1287,13 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 1. If you're running Gitaly Cluster, ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
-1. When applying the new structure to your configuration
-   - Replace the `...` with the value from the old key.
-   - When configuring `storage` to replace `git_data_dirs`, **you must append `repositories` to the path** as documented below.
-     If you miss this out your Git repositories are inaccessible until the configuration is fixed.
-     This misconfiguration can cause metadata deletion, and is the reason for disabling repository verification.
-   - Skip any keys you haven't configured a value for previously.
-   - Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+1. To apply the new structure to your configuration:
+   1. Replace the `...` with the value from the old key.
+   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented below. If
+      you don't complete this step, your Git repositories are inaccessible until the configuration is fixed. This
+      misconfiguration can cause metadata deletion.
+   1. Skip any keys you haven't configured a value for previously.
+   1. Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
@@ -1301,6 +1301,9 @@ To protect against configuration mistakes, temporarily disable repository verifi
    by removing `verification_interval: 0`.
 
 The new structure is documented below with the old keys described in a comment above the new keys.
+
+WARNING:
+Double check your update to `storage`. You must append `/repositories` to the value of `path`.
 
 ```ruby
 gitaly['configuration'] = {

@@ -6,17 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use GitLab Observability with a Java Spring application
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
-
-> - Observability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `observability_features`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
+<!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a Java Spring application using GitLab Observability features.
 
@@ -24,7 +15,7 @@ In this tutorial, you'll learn how to create, configure, instrument, and monitor
 
 To follow along this tutorial, you must have:
 
-- A GitLab Ultimate subscription for GitLab.com
+- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
 - A local installation of Ruby on Rails
 - Basic knowledge of Git, Java Spring, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -39,7 +30,8 @@ First, create a GitLab project and a corresponding access token.
     - In the **Project name** field, enter a name such as `test-spring-o11y`
 1. Select **Create project**.
 1. In the `test-sprint-o11y` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create a new access token with the Owner role and the `read_api` and `write_observability` scopes. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe.
+   You'll need it later.
 
 ## Run the application
 
@@ -107,15 +99,13 @@ The OpenTelemetry autoconfigure libraries read their configuration from environm
 
     ![Configuration menu](img/java_configuration_menu.png)
 
-1. Add the following set of environment variables, replacing `{{PATH_TO_JAVA_AGENT}}`, `{{NAMESPACE_ID}}`, `{{PROJECT_ID}}`, `{{PROJECT_ACCESS_TOKEN}}` and `{{SERVICE_NAME}}` with the correct values.
+1. Add the following set of environment variables, replacing `{{PATH_TO_JAVA_AGENT}}`, `{{PROJECT_ID}}`, `{{PROJECT_ACCESS_TOKEN}}` and `{{SERVICE_NAME}}` with the correct values. If using a self-managed GitLab instance, replace `gitlab.com` with your self-managed instance hostname.
    - `JAVA_TOOL_OPTIONS=-javaagent:{{PATH_TO_JAVA_AGENT}}/opentelemetry-javaagent.jar`
-   - `OTEL_EXPORTER_OTLP_ENDPOINT=https://observe.gitlab.com/v3/{{NAMESPACE_ID}}/{{PROJECT_ID}}/ingest`
+   - `OTEL_EXPORTER_OTLP_ENDPOINT=https://gitlab.com/api/v4/projects/{{PROJECT_ID}}/observability`
    - `OTEL_EXPORTER_OTLP_HEADERS=PRIVATE-TOKEN\={{PROJECT_ACCESS_TOKEN}}`
-   - `OTEL_LOGS_EXPORTER=otlp`
+   - `OTEL_EXPORTER=otlphttp`
    - `OTEL_METRIC_EXPORT_INTERVAL=15000`
-   - `OTEL_METRICS_EXPORTER=otlp`
    - `OTEL_SERVICE_NAME=example-java-application`
-   - `OTEL_TRACES_EXPORTER=otlp`
 
 1. Restart the application and reload the page at `http://localhost:8000` a few times.
 
