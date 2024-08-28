@@ -13,11 +13,7 @@ module QA
 
       let(:project) { create(:project, :private, name: 'nuget-package-project', template_name: 'dotnetcore') }
       let(:personal_access_token) do
-        unless Page::Main::Menu.perform(&:signed_in?)
-          Flow::Login.sign_in
-        end
-
-        Resource::PersonalAccessToken.fabricate!
+        Resource::PersonalAccessToken.fabricate_via_api!.token
       end
 
       let(:group_deploy_token) do
@@ -33,7 +29,10 @@ module QA
 
       let(:package) { build(:package, name: "dotnetcore-#{SecureRandom.hex(8)}", project: project) }
 
-      let(:another_project) { create(:project, name: 'nuget-package-install-project', template_name: 'dotnetcore', group: project.group) }
+      let(:another_project) do
+        create(:project, name: 'nuget-package-install-project', template_name: 'dotnetcore', group: project.group)
+      end
+
       let(:package_project_inbound_job_token_disabled) do
         Resource::CICDSettings.fabricate_via_api! do |settings|
           settings.project_path = project.full_path
@@ -56,11 +55,12 @@ module QA
           group: project.group)
       end
 
+      before do
+        Flow::Login.sign_in
+      end
+
       after do
         runner.remove_via_api!
-        package.remove_via_api!
-        project.remove_via_api!
-        another_project.remove_via_api!
       end
 
       where(:case_name, :authentication_token_type, :token_name, :testcase) do
@@ -96,64 +96,52 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', :blocking, testcase: params[:testcase] do
-          Flow::Login.sign_in
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', :blocking,
+          testcase: params[:testcase] do
+          nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget',
+            'nuget_upload_package.yaml.erb')).result(binding)
 
-          nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_upload_package.yaml.erb')).result(binding)
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'update', file_path: '.gitlab-ci.yml', content: nuget_upload_yaml }
+          ])
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              { action: 'update', file_path: '.gitlab-ci.yml', content: nuget_upload_yaml }
-            ])
-          end
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: 2)
+          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
 
-          project.visit!
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy')
-          end
-
+          project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
-          another_project.visit!
+          nuget_install_yaml = ERB.new(read_fixture('package_managers/nuget',
+            'nuget_install_package.yaml.erb')).result(binding)
 
-          nuget_install_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_install_package.yaml.erb')).result(binding)
-
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: another_project, commit_message: 'Add new csproj file', actions: [
-              {
-                action: 'create',
-                file_path: 'otherdotnet.csproj',
-                content: <<~XML
+          create(:commit, project: another_project, commit_message: 'Add new csproj file', actions: [
+            {
+              action: 'create',
+              file_path: 'otherdotnet.csproj',
+              content: <<~XML
                   <Project Sdk="Microsoft.NET.Sdk">
                     <PropertyGroup>
                       <OutputType>Exe</OutputType>
                       <TargetFramework>net7.0</TargetFramework>
                     </PropertyGroup>
                   </Project>
-                XML
-              },
-              { action: 'update', file_path: '.gitlab-ci.yml', content: nuget_install_yaml }
-            ])
-          end
+              XML
+            },
+            { action: 'update', file_path: '.gitlab-ci.yml', content: nuget_install_yaml }
+          ])
 
-          Flow::Pipeline.visit_latest_pipeline
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: another_project, size: 2)
+          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: another_project)
 
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('install')
-          end
-
+          another_project.visit_job('install')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
           project.group.visit!
-
           Page::Group::Menu.perform(&:go_to_package_registry)
-
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)
           end

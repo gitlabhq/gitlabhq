@@ -74,3 +74,23 @@ The log volume chart at the top shows the number of logs ingested over the given
 It is also possible to see log line details such as metadata and resource attributes.
 
 ![logs details](img/logs_details_v17_1.png)
+
+### Create an issue for a log
+
+You can create an issue to track any action taken to resolve or investigate a log. To create an issue for a log:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Logs**.
+1. From the list of logs, select a log.
+1. In the details drawer, select **Create issue**.
+
+The issue is created in the selected project and pre-filled with information from the log.
+You can edit the issue title and description.
+
+### View issues related to a log
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Logs**.
+1. From the list of logs, select a log.
+1. In the details drawer, scroll to **Related issues**.
+1. Optional. To view the issue details, select an issue.

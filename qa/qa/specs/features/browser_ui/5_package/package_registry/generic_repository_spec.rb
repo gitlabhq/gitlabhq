@@ -23,8 +23,6 @@ module QA
       end
 
       before do
-        Flow::Login.sign_in
-
         generic_packages_yaml = ERB.new(read_fixture('package_managers/generic',
           'generic_upload_install_package.yaml.erb')).result(binding)
 
@@ -33,10 +31,9 @@ module QA
           { action: 'create', file_path: 'file.txt', content: file_txt }
         ])
 
-        Flow::Pipeline.wait_for_pipeline_creation(project: project)
-
-        project.visit!
-        Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed', wait: 180)
+        Flow::Login.sign_in
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
       end
 
       after do
@@ -45,6 +42,16 @@ module QA
 
       it 'uploads a generic package and downloads it', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
+        project.visit_job('upload')
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 180)
+        end
+
+        project.visit_job('download')
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 180)
+        end
+
         Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|

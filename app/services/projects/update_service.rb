@@ -144,6 +144,9 @@ module Projects
     end
 
     # overridden by EE module
+    def audit_topic_change(from:); end
+
+    # overridden by EE module
     def remove_unallowed_params
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 
@@ -173,6 +176,8 @@ module Projects
       end
 
       update_pending_builds if runners_settings_toggled?
+
+      audit_topic_change(from: @previous_topics)
 
       publish_events
     end
@@ -246,6 +251,9 @@ module Projects
     end
 
     def build_topics
+      # Used in EE. Can't be cached in override due to Gitlab/ModuleWithInstanceVariables cop
+      @previous_topics = project.topic_list
+
       topics = params.delete(:topics)
       tag_list = params.delete(:tag_list)
       topic_list = topics || tag_list

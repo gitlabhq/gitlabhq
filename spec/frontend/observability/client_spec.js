@@ -654,15 +654,15 @@ describe('buildClient', () => {
 
       it('sets the search query param based on the search filter', async () => {
         await client.fetchMetrics({
-          filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
+          filters: { search: [{ value: 'foo' }, { value: 'bar' }] },
         });
-        expect(getQueryParam()).toBe('search=foo+bar');
+        expect(getQueryParam()).toBe('search=foo&search=bar');
       });
 
       it('ignores empty search', async () => {
         await client.fetchMetrics({
           filters: {
-            search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
+            search: [{ value: '' }, { value: null }, { value: undefined }],
           },
         });
         expect(getQueryParam()).toBe('');
@@ -711,7 +711,7 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe('');
       });
 
-      it('handles attribute filter', async () => {
+      it('handles attributes filter', async () => {
         await client.fetchMetrics({
           filters: {
             attribute: [
@@ -719,10 +719,16 @@ describe('buildClient', () => {
               { value: 'foo.baz', operator: '=' },
               { value: 'not-supported', operator: '!=' },
             ],
+            traceId: [
+              { operator: '=', value: 'traceId' },
+              { operator: '=', value: 'traceId2' },
+            ],
             unsupported: [{ value: 'foo.bar', operator: '=' }],
           },
         });
-        expect(getQueryParam()).toBe('attributes=foo.bar&attributes=foo.baz');
+        expect(getQueryParam()).toBe(
+          'attributes=foo.bar&attributes=foo.baz&trace_id=traceId&trace_id=traceId2',
+        );
       });
     });
 

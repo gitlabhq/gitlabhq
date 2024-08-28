@@ -10,7 +10,7 @@ module QA
       include Support::Helpers::MaskToken
 
       let(:project) { create(:project, :private, name: 'nuget-package-project', template_name: 'dotnetcore') }
-      let(:personal_access_token) { Resource::PersonalAccessToken.fabricate! }
+      let(:personal_access_token) { Resource::PersonalAccessToken.fabricate_via_api!.token }
       let(:project_deploy_token) do
         create(:project_deploy_token,
           name: 'package-deploy-token',
@@ -32,10 +32,12 @@ module QA
           project: project)
       end
 
+      before do
+        Flow::Login.sign_in
+      end
+
       after do
         runner.remove_via_api!
-        package.remove_via_api!
-        project.remove_via_api!
       end
 
       where do
@@ -82,14 +84,11 @@ module QA
         end
 
         it 'publishes a nuget package and installs', :blocking, testcase: params[:testcase] do
-          Flow::Login.sign_in
-
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: project, actions: [
-              {
-                action: 'update',
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
+          create(:commit, project: project, actions: [
+            {
+              action: 'update',
+              file_path: '.gitlab-ci.yml',
+              content: <<~YAML
                   stages:
                     - deploy
                     - install
@@ -118,46 +117,36 @@ module QA
                       - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
                     tags:
                       - "runner-for-#{project.name}"
-                YAML
-              },
-              {
-                action: 'update',
-                file_path: 'dotnetcore.csproj',
-                content: <<~XML
+              YAML
+            },
+            {
+              action: 'update',
+              file_path: 'dotnetcore.csproj',
+              content: <<~XML
                   <Project Sdk="Microsoft.NET.Sdk">
                     <PropertyGroup>
                       <OutputType>Exe</OutputType>
                       <TargetFramework>net5.0</TargetFramework>
                     </PropertyGroup>
                   </Project>
-                XML
-              }
-            ])
-          end
+              XML
+            }
+          ])
 
-          project.visit!
-          Flow::Pipeline.visit_latest_pipeline
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: 2)
+          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
 
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy')
-          end
-
+          project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
-          page.go_back
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('install')
-          end
-
+          project.visit_job('install')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
           Page::Project::Menu.perform(&:go_to_package_registry)
-
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)
           end

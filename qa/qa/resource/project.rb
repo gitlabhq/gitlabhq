@@ -415,6 +415,13 @@ module QA
         parse_body(api_get_from(api_latest_pipeline_path))
       end
 
+      def visit_latest_pipeline
+        url = latest_pipeline[:web_url]
+        Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)}'s latest pipeline at #{url}")
+        visit(url)
+        Support::WaitForRequests.wait_for_requests
+      end
+
       # Waits for a pipeline to be available with the attributes as specified.
       #
       # @param [Hash] **kwargs optional query arguments, see: https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines
@@ -435,6 +442,13 @@ module QA
 
       def job_by_name(job_name)
         jobs.find { |job| job[:name] == job_name }
+      end
+
+      def visit_job(job_name)
+        url = job_by_name(job_name)[:web_url]
+        Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)}'s job #{job_name} at #{url}")
+        visit(url)
+        Support::WaitForRequests.wait_for_requests
       end
 
       def issues(auto_paginate: false, attempts: 0)

@@ -38,11 +38,11 @@ const SEARCH_FILTER_NAME = 'search';
  * @param {String} operator - The operator
  * @returns String | undefined - Query param name
  */
-function getFilterParamName(filterName, operator, filterToQueryMapping) {
-  const paramKey = filterToQueryMapping[filterName];
+
+function getFilterParamName(paramKey, operator) {
   if (!paramKey) return undefined;
 
-  if (operator === '=' || filterName === SEARCH_FILTER_NAME) {
+  if (operator === '=' || !operator /* 'search' filter has an undefined operator */) {
     return paramKey;
   }
 
@@ -100,6 +100,66 @@ function addDateRangeFilterToQueryParams(dateRangeFilter, params) {
   }
 }
 
+/**
+ * Get valid filters for a given filter name
+ *
+ * @param {Object} attributesFilters - The filter object containing attribute filters
+ * @param {string} filterName - The name of the filter to validate
+ * @param {Object} supportedFilters - Object defining supported filters and their operators
+ * @returns {Array} - Array of valid filter objects for the given filter name
+ */
+function getValidFilters(attributesFilters, filterName, supportedFilters) {
+  const filterValues = Array.isArray(attributesFilters[filterName])
+    ? attributesFilters[filterName].filter(({ value }) => Boolean(value)) // ignore empty strings
+    : [];
+  return filterValues.filter(
+    (f) =>
+      (filterName === SEARCH_FILTER_NAME && supportedFilters[filterName]) ||
+      supportedFilters[filterName].includes(f.operator),
+  );
+}
+
+/**
+ * Adds attribute filters to query parameters. It mutates `queryParams`
+ *
+ * @param {Object} attributesFilters - The filter object containing attribute filters
+ * @param {URLSearchParams} queryParams - The URLSearchParams object to add the filters to
+ * @param {Object} supportedFilters - Object defining supported filters and their operators, e.g
+ *
+ *  const supportedFilters = {
+ *    durationMs: ['>', '<'],
+ *    status: [ '=' ]
+ *  }
+ *
+ * @param {Object} filterToQueryParamMap - Mapping of filter names to query parameter names. Values can either be string or handler functions, e.g
+ *
+ *    filterToQueryParamMap = {
+ *      aFilter: 'a_filter_query_param',
+ *      anotherFilter: (value, operator, params) => { ...custom logic }
+ *    }
+ *
+ */
+function addAttributesFiltersToQueryParams({
+  attributesFilters,
+  queryParams,
+  supportedFilters,
+  filterToQueryParamMap,
+}) {
+  Object.keys(supportedFilters).forEach((filterName) => {
+    getValidFilters(attributesFilters, filterName, supportedFilters).forEach(
+      ({ operator, value: rawValue }) => {
+        const queryParamMapping = filterToQueryParamMap[filterName];
+        if (typeof queryParamMapping === 'string' && rawValue) {
+          const paramName = getFilterParamName(queryParamMapping, operator);
+          queryParams.append(paramName, rawValue);
+        } else if (typeof queryParamMapping === 'function') {
+          queryParamMapping(rawValue, operator, queryParams);
+        }
+      },
+    );
+  });
+}
+
 /** ****
  *
  * Tracing API
@@ -139,53 +199,34 @@ const SUPPORTED_TRACING_FILTERS = {
  * Mapping of filter name to tracing query param
  */
 const TRACING_FILTER_TO_QUERY_PARAM = {
-  durationMs: 'duration_nano',
   operation: 'operation',
   service: 'service_name',
   traceId: 'trace_id',
   status: 'status',
-  // `attribute` is handled separately, see `handleAttributeFilter` method
+  durationMs: (durationMs, operator, params) => {
+    const paramName = getFilterParamName('duration_nano', operator);
+    const durationNano = durationMs * 1e6; // converting ms to nano
+    if (paramName && durationNano) {
+      params.append(paramName, durationNano);
+    }
+  },
+  attribute: (value, operator, params) =>
+    handleAttributeFilter(value, operator, params, 'attr_name', 'attr_value'),
 };
 
 /**
- * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
- *  e.g:
+ * Adds tracing attribute filters to query parameters
  *
- *  filterObj =  {
- *      durationMs: [{operator: '>', value: '100'}, {operator: '<', value: '1000' }],
- *      operation: [{operator: '=', value: 'someOp' }],
- *      service: [{operator: '!=', value: 'foo' }]
- *    }
- *
- * It handles converting the filter to the proper supported query params
- *
- * @param {Object} filterObj : An Object representing filters
- * @returns URLSearchParams
+ * @param {Object} attributesFilters - An object representing tracing attribute filters
+ * @param {URLSearchParams} queryParams - The URLSearchParams object to add the filters to
  */
-function addTracingAttributesFiltersToQueryParams(filterObj, filterParams) {
-  Object.keys(SUPPORTED_TRACING_FILTERS).forEach((filterName) => {
-    const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
-    const validFilters = filterValues.filter((f) =>
-      SUPPORTED_TRACING_FILTERS[filterName].includes(f.operator),
-    );
-
-    validFilters.forEach(({ operator, value: rawValue }) => {
-      if (filterName === 'attribute') {
-        handleAttributeFilter(rawValue, operator, filterParams, 'attr_name', 'attr_value');
-      } else {
-        const paramName = getFilterParamName(filterName, operator, TRACING_FILTER_TO_QUERY_PARAM);
-        let value = rawValue;
-        if (filterName === 'durationMs') {
-          // converting durationMs to duration_nano
-          value *= 1000000;
-        }
-        if (paramName && value) {
-          filterParams.append(paramName, value);
-        }
-      }
-    });
+function addTracingAttributesFiltersToQueryParams(attributesFilters, queryParams) {
+  addAttributesFiltersToQueryParams({
+    attributesFilters,
+    queryParams,
+    supportedFilters: SUPPORTED_TRACING_FILTERS,
+    filterToQueryParamMap: TRACING_FILTER_TO_QUERY_PARAM,
   });
-  return filterParams;
 }
 
 /**
@@ -310,45 +351,49 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
-function handleMetricsAttributeFilters(attributeFilters, params) {
-  if (Array.isArray(attributeFilters)) {
-    attributeFilters.forEach(
-      ({ operator, value }) => operator === '=' && params.append('attributes', value),
-    );
-  }
-}
-
 /** ****
  *
  * Metrics API
  *
  * ***** */
 
+/**
+ * Filters (and operators) allowed by metrics query API
+ */
+const SUPPORTED_METRICS_FILTERS = {
+  attribute: ['='],
+  traceId: ['='],
+  search: [],
+};
+
+/**
+ * Mapping of filter name to metrics query param
+ */
+const METRICS_FILTER_TO_QUERY_PARAM = {
+  traceId: 'trace_id',
+  search: 'search',
+  attribute: (value, operator, urlParams) =>
+    operator === '=' && urlParams.append('attributes', value),
+};
+
 async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   try {
-    const params = new URLSearchParams();
+    const queryParams = new URLSearchParams();
 
-    if (Array.isArray(filters.search)) {
-      const search = filters.search
-        .map((f) => f.value)
-        .join(' ')
-        .trim();
+    addAttributesFiltersToQueryParams({
+      attributesFilters: filters,
+      queryParams,
+      supportedFilters: SUPPORTED_METRICS_FILTERS,
+      filterToQueryParamMap: METRICS_FILTER_TO_QUERY_PARAM,
+    });
 
-      if (search) {
-        params.append('search', search);
-        if (limit) {
-          params.append('limit', limit);
-        }
-      }
-    }
-
-    if (filters.attribute) {
-      handleMetricsAttributeFilters(filters.attribute, params);
+    if (filters.search && limit) {
+      queryParams.append('limit', limit);
     }
 
     const { data } = await axios.get(metricsUrl, {
       withCredentials: true,
-      params,
+      params: queryParams,
     });
     if (!Array.isArray(data.metrics)) {
       throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -498,48 +543,25 @@ const LOGS_FILTER_TO_QUERY_PARAM = {
   fingerprint: 'fingerprint',
   traceFlags: 'trace_flags',
   search: 'body',
-  // `attribute` and `resource_attribute` are handled separately
+  attribute: (value, operator, params) =>
+    handleAttributeFilter(value, operator, params, 'log_attr_name', 'log_attr_value'),
+  resourceAttribute: (value, operator, params) =>
+    handleAttributeFilter(value, operator, params, 'res_attr_name', 'res_attr_value'),
 };
 
 /**
- * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
- *  e.g:
+ * Adds logs attribute filters to query parameters
  *
- *  filterObj =  {
- *      severityName: [{operator: '=', value: 'info' }],
- *      service: [{operator: '!=', value: 'foo' }]
- *    }
- *
- * It handles converting the filter to the proper supported query params
- *
- * @param {Object} filterObj : An Object representing handleAttributeFilter
- * @returns URLSearchParams
+ * @param {Object} attributesFilters - An object representing logs attribute filters
+ * @param {URLSearchParams} queryParams - The URLSearchParams object to add the filters to
  */
-function addLogsAttributesFiltersToQueryParams(filterObj, filterParams) {
-  Object.keys(SUPPORTED_LOGS_FILTERS).forEach((filterName) => {
-    const filterValues = Array.isArray(filterObj[filterName])
-      ? filterObj[filterName].filter(({ value }) => Boolean(value)) // ignore empty strings
-      : [];
-    const validFilters = filterValues.filter(
-      (f) =>
-        (filterName === SEARCH_FILTER_NAME && SUPPORTED_LOGS_FILTERS[filterName]) ||
-        SUPPORTED_LOGS_FILTERS[filterName].includes(f.operator),
-    );
-    validFilters.forEach(({ operator, value: rawValue }) => {
-      if (filterName === 'attribute') {
-        handleAttributeFilter(rawValue, operator, filterParams, 'log_attr_name', 'log_attr_value');
-      } else if (filterName === 'resourceAttribute') {
-        handleAttributeFilter(rawValue, operator, filterParams, 'res_attr_name', 'res_attr_value');
-      } else {
-        const paramName = getFilterParamName(filterName, operator, LOGS_FILTER_TO_QUERY_PARAM);
-        const value = rawValue;
-        if (paramName && value) {
-          filterParams.append(paramName, value);
-        }
-      }
-    });
+function addLogsAttributesFiltersToQueryParams(attributesFilters, queryParams) {
+  addAttributesFiltersToQueryParams({
+    attributesFilters,
+    queryParams,
+    supportedFilters: SUPPORTED_LOGS_FILTERS,
+    filterToQueryParamMap: LOGS_FILTER_TO_QUERY_PARAM,
   });
-  return filterParams;
 }
 
 export async function fetchLogs(

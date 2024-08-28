@@ -390,7 +390,6 @@ class User < ApplicationRecord
   end
 
   after_create_commit :create_default_organization_user
-  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
@@ -2735,10 +2734,6 @@ class User < ApplicationRecord
 
   def create_default_organization_user
     Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
-  end
-
-  def update_default_organization_user
-    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
   end
 
   # method overridden in EE

@@ -14608,6 +14608,30 @@ The edge type for [`ObservabilityMetric`](#observabilitymetric).
 | <a id="observabilitymetricedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="observabilitymetricedgenode"></a>`node` | [`ObservabilityMetric`](#observabilitymetric) | The item at the end of the edge. |
 
+#### `ObservabilityTraceConnection`
+
+The connection type for [`ObservabilityTrace`](#observabilitytrace).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitytraceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="observabilitytraceconnectionedges"></a>`edges` | [`[ObservabilityTraceEdge]`](#observabilitytraceedge) | A list of edges. |
+| <a id="observabilitytraceconnectionnodes"></a>`nodes` | [`[ObservabilityTrace]`](#observabilitytrace) | A list of nodes. |
+| <a id="observabilitytraceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ObservabilityTraceEdge`
+
+The edge type for [`ObservabilityTrace`](#observabilitytrace).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitytraceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="observabilitytraceedgenode"></a>`node` | [`ObservabilityTrace`](#observabilitytrace) | The item at the end of the edge. |
+
 #### `OncallParticipantTypeConnection`
 
 The connection type for [`OncallParticipantType`](#oncallparticipanttype).
@@ -27876,6 +27900,17 @@ ObservabilityMetric represents a connection between an issue and a metric.
 | <a id="observabilitymetricname"></a>`name` | [`String!`](#string) | Name of the metric. |
 | <a id="observabilitymetrictype"></a>`type` | [`String!`](#string) | OpenTelemetry metric type of the metric. |
 
+### `ObservabilityTrace`
+
+ObservabilityTrace represents a connection between an issue and a trace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitytraceissue"></a>`issue` | [`Issue!`](#issue) | Issue associated with the trace. |
+| <a id="observabilitytracetraceidentifier"></a>`traceIdentifier` | [`String!`](#string) | Identifier of the trace. |
+
 ### `OncallParticipantType`
 
 The rotation participant and color palette.
@@ -30244,6 +30279,26 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectobservabilitymetricslinksname"></a>`name` | [`String`](#string) | Name of the metric. |
 | <a id="projectobservabilitymetricslinkstype"></a>`type` | [`OpenTelemetryMetricType`](#opentelemetrymetrictype) | Type of the metric. |
+
+##### `Project.observabilityTracesLinks`
+
+Traces attached to the project.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ObservabilityTraceConnection`](#observabilitytraceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectobservabilitytraceslinkstraceidentifier"></a>`traceIdentifier` | [`String`](#string) | Identifier of the trace. |
 
 ##### `Project.packages`
 

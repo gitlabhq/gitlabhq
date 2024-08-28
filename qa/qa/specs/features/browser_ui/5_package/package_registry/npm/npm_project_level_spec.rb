@@ -73,26 +73,18 @@ module QA
             { action: 'create', file_path: 'package.json', content: package_json }
           ])
 
-          Flow::Pipeline.wait_for_pipeline_creation(project: project)
-          project.visit!
-          Flow::Pipeline.visit_latest_pipeline
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
 
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy')
-          end
-
+          project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
-          page.go_back
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('install')
-          end
-
+          project.visit_job('install')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)
+
             job.click_browse_button
           end
 
@@ -102,9 +94,7 @@ module QA
             expect(artifacts).to have_content('mypackage')
           end
 
-          project.visit!
           Page::Project::Menu.perform(&:go_to_package_registry)
-
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)
 

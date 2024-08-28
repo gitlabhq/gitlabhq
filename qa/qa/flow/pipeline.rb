@@ -5,6 +5,9 @@ module QA
     module Pipeline
       extend self
 
+      AVAILABLE_STATUSES = %w[created waiting_for_resource preparing waiting_for_callback pending running success
+        failed canceling canceled skipped manual scheduled].freeze
+
       # Acceptable statuses:
       # Canceled, Created, Failed, Manual, Passed
       # Pending, Running, Skipped
@@ -40,9 +43,35 @@ module QA
       # Trying to let it wait for up to 4 minutes, any longer than that is unacceptable in most scenarios.
       #
       # Provide a different size when more than 1 pipelines are expected.
-      def wait_for_pipeline_creation(project:, size: 1, wait: 240)
+      def wait_for_pipeline_creation_via_api(project:, size: 1, wait: 240)
+        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to be created...")
         Support::Waiter.wait_until(message: 'Wait for pipeline to be created', max_duration: wait) do
           project.pipelines.present? && project.pipelines.size >= size
+        end
+      end
+
+      def wait_for_latest_pipeline_to_have_status(project:, status: nil, wait: 240)
+        raise "'#{status}' is an invalid pipeline status." if AVAILABLE_STATUSES.exclude?(status)
+
+        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to have status #{status}...")
+        Support::Waiter.wait_until(message: "Wait for latest pipeline #{status}", max_duration: wait) do
+          pipeline = project.latest_pipeline
+          pipeline[:status] == status
+        end
+      end
+
+      def wait_for_latest_pipeline_to_start(project:, wait: 60)
+        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to start...")
+        wait_for_latest_pipeline_to_have_status(project: project, status: 'running', wait: wait)
+      end
+
+      # To wait for pipeline to complete regardless of status
+      #
+      def wait_for_latest_pipeline_to_finish(project:, wait: 240)
+        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to finish...")
+        Support::Waiter.wait_until(message: 'Wait for latest pipeline to run', max_duration: wait) do
+          pipeline = project.latest_pipeline
+          pipeline[:started_at].present? && pipeline[:finished_at].present?
         end
       end
     end

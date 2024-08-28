@@ -36851,6 +36851,9 @@ msgstr ""
 msgid "ObservabilityMetrics|Selected dimensions"
 msgstr ""
 
+msgid "ObservabilityMetrics|Trace ID"
+msgstr ""
+
 msgid "ObservabilityMetrics|Track health data from your systems. Send metric data to this project using OpenTelemetry. %{docsLink}"
 msgstr ""
 

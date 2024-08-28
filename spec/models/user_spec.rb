@@ -1813,53 +1813,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  context 'when after_update_commit :update_default_organization_user on default organization' do
-    let_it_be(:default_organization) { create(:organization, :default) }
-
-    context 'when user is changed to an instance admin' do
-      let_it_be(:user) { create(:user) }
-
-      it 'changes user to owner in the organization' do
-        expect(default_organization.owner?(user)).to be(false)
-
-        expect { user.update!(admin: true) }.not_to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(true)
-      end
-
-      context 'when non admin attribute is updated' do
-        it 'does not change the organization_user' do
-          expect(default_organization.owner?(user)).to be(false)
-
-          expect { user.update!(name: 'Bob') }.not_to change { Organizations::OrganizationUser.count }
-          expect(default_organization.owner?(user)).to be(false)
-        end
-      end
-    end
-
-    context 'when user is changed from admin to regular user' do
-      let_it_be(:user) { create(:admin) }
-
-      it 'changes user to default access_level in organization' do
-        expect(default_organization.owner?(user)).to be(true)
-
-        expect { user.update!(admin: false) }.not_to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(false)
-        expect(default_organization.user?(user)).to be(true)
-      end
-    end
-
-    context 'when user did not already exist in the default organization' do
-      let_it_be(:user) { create(:user, :without_default_org) }
-
-      it 'changes user to owner in the organization' do
-        expect(default_organization.user?(user)).to be(false)
-
-        expect { user.update!(admin: true) }.to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(true)
-      end
-    end
-  end
-
   context 'when after_create_commit :create_default_organization_user on default organization' do
     let_it_be(:default_organization) { create(:organization, :default) }
     let(:user) { create(:user) }

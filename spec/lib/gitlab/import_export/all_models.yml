@@ -891,6 +891,7 @@ project:
 - approval_policy_rules
 - secrets_manager
 - observability_metrics
+- observability_traces
 - observability_logs
 award_emoji:
 - awardable

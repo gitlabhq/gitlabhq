@@ -15,7 +15,7 @@ module QA
       let(:package_project) { create(:project, :with_readme, :private, name: "#{package_type}_package_project") }
       let(:package) { build(:package, name: package_name, project: package_project) }
 
-      let(:runner) do
+      let!(:runner) do
         create(:project_runner,
           name: "qa-runner-#{Time.now.to_i}",
           tags: ["runner-for-#{package_project.name}"],
@@ -40,13 +40,10 @@ module QA
 
       before do
         Flow::Login.sign_in_unless_signed_in
-        runner
       end
 
       after do
         runner.remove_via_api!
-        package.remove_via_api!
-        package_project.remove_via_api!
       end
 
       where do
@@ -89,28 +86,21 @@ module QA
           settings_xml = ERB.new(read_fixture('package_managers/maven/project', 'settings.xml.erb'))
                                     .result(binding)
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: package_project, actions: [
-              { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
-              { action: 'create', file_path: 'pom.xml', content: pom_xml },
-              { action: 'create', file_path: 'settings.xml', content: settings_xml }
-            ])
-          end
+          create(:commit, project: package_project, actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
+            { action: 'create', file_path: 'pom.xml', content: pom_xml },
+            { action: 'create', file_path: 'settings.xml', content: settings_xml }
+          ])
 
-          package_project.visit!
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: package_project)
+          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: package_project)
 
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy-and-install')
-          end
-
+          package_project.visit_job('deploy-and-install')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
           Page::Project::Menu.perform(&:go_to_package_registry)
-
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package_name)
 

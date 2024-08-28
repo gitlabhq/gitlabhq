@@ -37,6 +37,17 @@ export const mockGraphQlIssueLinks = [
   },
 ];
 
+export const createRelatedIssuesQueryMockResult = (linksName) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/3',
+      [linksName]: {
+        nodes: [...mockGraphQlIssueLinks],
+      },
+    },
+  },
+});
+
 export const mockRelatedIssues = [
   {
     id: 647,
