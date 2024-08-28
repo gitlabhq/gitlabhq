@@ -102,7 +102,7 @@ These shortcuts are available when viewing issues:
 | <kbd>m</kbd>                  | Change milestone. |
 | <kbd>l</kbd>                  | Change label. |
 | <kbd>c</kbd> + <kbd>r</kbd>   | Copy issue reference. |
-| <kbd>r</kbd>                  | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>r</kbd>                  | Start writing a comment. Pre-selected text is quoted in the comment. |
 | <kbd>→</kbd>                  | Go to the next design. |
 | <kbd>←</kbd>                  | Go to the previous design. |
 | <kbd>Escape</kbd>             | Close the design. |
@@ -120,7 +120,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>p</kbd>                      |                                   | Move to previous unresolved discussion. |
 | <kbd>b</kbd>                      |                                   | Copy source branch name. |
 | <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
-| <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. |
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd> | Publish your comment immediately. |
 | <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/index.md#start-a-review). |
 | <kbd>c</kbd>                      |                                   | Move to next commit. |

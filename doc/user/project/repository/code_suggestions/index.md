@@ -193,12 +193,30 @@ possible (for example, because of network restrictions), you can disable direct 
 code completion requests are sent indirectly through the GitLab self-managed instance, and might result in your requests
 having higher latency.
 
-To disable direct connections to the gateway:
+::Tabs
+
+:::TabTitle In 17.4 and later
+
+In GitLab 17.4 and later, follow these instructions to disable direct connections to the gateway.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo features**.
+1. Under **Connection method** Choose an option:
+   - To minimize latency for code completion requests, select **Direct connections**.
+   - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
+1. Select **Save changes**.
+
+:::TabTitle In 17.3 and earlier
+
+In GitLab 17.3 and earlier, follow these instructions to disable direct connections to the gateway.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **AI-powered features**.
 1. Select the **Disable direct connections for code suggestions** checkbox.
+
+::EndTabs
 
 ## Inference window context
 

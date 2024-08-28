@@ -11,6 +11,7 @@
     - .qa-cache
   variables:
     USE_BUNDLE_INSTALL: "false"
+    BUNDLE_GEMFILE: "Gemfile"
     SETUP_DB: "false"
   before_script:
     - !reference [.default-before_script, before_script]

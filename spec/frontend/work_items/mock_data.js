@@ -765,6 +765,57 @@ export const mockLinkedItems = {
   __typename: 'WorkItemWidgetLinkedItems',
 };
 
+export const workItemLinkedItemsResponse = {
+  data: {
+    workspace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        widgets: [mockLinkedItems],
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};
+
+export const workItemEmptyLinkedItemsResponse = {
+  data: {
+    workspace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        widgets: [
+          {
+            type: WIDGET_TYPE_LINKED_ITEMS,
+            linkedItems: {
+              nodes: [],
+              __typename: 'LinkedWorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetLinkedItems',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};
+
+export const workItemBlockedByLinkedItemsResponse = {
+  data: {
+    workspace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        widgets: [mockBlockedByLinkedItem],
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};
+
 export const workItemDevelopmentNodes = [
   {
     fromMrDescription: true,

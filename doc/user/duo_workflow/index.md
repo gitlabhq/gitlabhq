@@ -100,16 +100,15 @@ GitLab Duo Workflow is aware of the context you're working in, specifically:
 |---------------|--------------------------------------------------------------------------------------------------------|
 | Merge requests| Enter the merge request ID and project ID in the Duo Workflow panel                                |
 
-In addition, Duo Workflow has access to:
+In addition, Duo Workflow has read-only access to:
 
-- The GitLab API for project and merge request information.
-- The CI/CD pipeline for task execution. For details, see [merge request 162091](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162091).
+- The GitLab API for fetching project and merge request information.
+- Merge request's CI pipeline trace to locate errors in the pipeline job execution.
 
 ## Current limitations
 
 Duo Workflow has the following limitations:
 
-- Higher latency due to CI/CD pipeline-based execution.
 - No copy and paste functionality. For details, see [issue 380](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/380).
 - Execution steps not displayed in UI.
 - Cannot push changes automatically.

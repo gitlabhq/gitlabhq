@@ -1143,8 +1143,10 @@
 ######################
 # Dev fixtures rules #
 ######################
-.dev-fixtures:rules:ee-and-foss:
+.dev-fixtures:rules:foss-only:
   rules:
+    - <<: *if-not-foss
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-default-refs

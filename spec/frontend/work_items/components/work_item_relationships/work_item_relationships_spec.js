@@ -10,24 +10,24 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from '~/work_items/components/work_item_relationships/work_item_add_relationship_form.vue';
+import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
 import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 
 import {
-  workItemByIidResponseFactory,
-  mockLinkedItems,
-  mockBlockingLinkedItem,
   removeLinkedWorkItemResponse,
+  workItemLinkedItemsResponse,
+  workItemEmptyLinkedItemsResponse,
 } from '../../mock_data';
 
 describe('WorkItemRelationships', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  const emptyLinkedWorkItemsQueryHandler = jest
+
+  const workItemLinkedItemsSuccessHandler = jest
     .fn()
-    .mockResolvedValue(workItemByIidResponseFactory());
+    .mockResolvedValue(workItemLinkedItemsResponse);
   const removeLinkedWorkItemSuccessMutationHandler = jest
     .fn()
     .mockResolvedValue(removeLinkedWorkItemResponse('Successfully unlinked IDs: 2.'));
@@ -39,13 +39,13 @@ describe('WorkItemRelationships', () => {
   };
 
   const createComponent = async ({
-    workItemQueryHandler = emptyLinkedWorkItemsQueryHandler,
     workItemType = 'Task',
-    isGroup = false,
+    workItemLinkedItemsHandler = workItemLinkedItemsSuccessHandler,
     removeLinkedWorkItemMutationHandler = removeLinkedWorkItemSuccessMutationHandler,
+    canAdminWorkItemLink = true,
   } = {}) => {
     const mockApollo = createMockApollo([
-      [workItemByIidQuery, workItemQueryHandler],
+      [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
       [removeLinkedItemsMutation, removeLinkedWorkItemMutationHandler],
     ]);
 
@@ -54,11 +54,9 @@ describe('WorkItemRelationships', () => {
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
-        workItemFullPath: 'test-project-path',
+        workItemFullPath: 'gitlab-org/gitlab-test',
+        canAdminWorkItemLink,
         workItemType,
-      },
-      provide: {
-        isGroup,
       },
       mocks: {
         $toast,
@@ -82,14 +80,22 @@ describe('WorkItemRelationships', () => {
   const findWorkItemRelationshipForm = () => wrapper.findComponent(WorkItemAddRelationshipForm);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
 
+  it('calls workItemLinkedItemsQuery query', () => {
+    createComponent();
+
+    expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
+  });
+
   it('shows loading icon when query is not processed', () => {
     createComponent();
 
     expect(findLoadingIcon().exists()).toBe(true);
   });
 
-  it('renders the component with with defaults', async () => {
-    await createComponent();
+  it('renders the component with defaults if no linked items exist', async () => {
+    await createComponent({
+      workItemLinkedItemsHandler: jest.fn().mockResolvedValue(workItemEmptyLinkedItemsResponse),
+    });
 
     expect(wrapper.findByTestId('work-item-relationships').exists()).toBe(true);
     expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
@@ -100,23 +106,10 @@ describe('WorkItemRelationships', () => {
     );
   });
 
-  it('renders blocking linked item lists', async () => {
-    await createComponent({
-      workItemQueryHandler: jest
-        .fn()
-        .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockBlockingLinkedItem })),
-    });
-
-    expect(findAllWorkItemRelationshipListComponents().length).toBe(1);
-    expect(findLinkedItemsCountContainer().text()).toBe('1');
-  });
-
   it('renders blocking, blocked by and related to linked item lists with proper count', async () => {
-    await createComponent({
-      workItemQueryHandler: jest
-        .fn()
-        .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
-    });
+    await createComponent();
+
+    await waitForPromises();
 
     // renders all 3 lists: blocking, blocked by and related to
     expect(findAllWorkItemRelationshipListComponents().length).toBe(3);
@@ -126,18 +119,14 @@ describe('WorkItemRelationships', () => {
   it('shows an alert when list loading fails', async () => {
     const errorMessage = 'Some error';
     await createComponent({
-      workItemQueryHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
+      workItemLinkedItemsHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
     expect(findErrorMessage().text()).toBe(errorMessage);
   });
 
   it('does not render add button when there is no permission', async () => {
-    await createComponent({
-      workItemQueryHandler: jest
-        .fn()
-        .mockResolvedValue(workItemByIidResponseFactory({ canAdminWorkItemLink: false })),
-    });
+    await createComponent({ canAdminWorkItemLink: false });
 
     expect(findAddButton().exists()).toBe(false);
   });
@@ -152,18 +141,8 @@ describe('WorkItemRelationships', () => {
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
 
-  it('calls the work item query', () => {
-    createComponent();
-
-    expect(emptyLinkedWorkItemsQueryHandler).toHaveBeenCalled();
-  });
-
   it('removes linked item and shows toast message when removeLinkedItem event is emitted', async () => {
-    await createComponent({
-      workItemQueryHandler: jest
-        .fn()
-        .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
-    });
+    await createComponent();
 
     expect(findLinkedItemsCountContainer().text()).toBe('3');
 
@@ -193,9 +172,6 @@ describe('WorkItemRelationships', () => {
     'shows an error message when there is $errorType while removing items',
     async ({ mutationMock, errorMessage }) => {
       await createComponent({
-        workItemQueryHandler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
         removeLinkedWorkItemMutationHandler: mutationMock,
       });
 
@@ -223,11 +199,7 @@ describe('WorkItemRelationships', () => {
     });
 
     it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
-      await createComponent({
-        workItemQueryHandler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ linkedItems: mockLinkedItems })),
-      });
+      await createComponent();
 
       expect(findAllWorkItemRelationshipListComponents().at(0).props('showLabels')).toBe(true);
 

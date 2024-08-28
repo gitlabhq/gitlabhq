@@ -5045,6 +5045,12 @@ msgstr ""
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
+msgid "AiPowered|Connection method"
+msgstr ""
+
+msgid "AiPowered|Direct connections"
+msgstr ""
+
 msgid "AiPowered|Enabling these features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5057,6 +5063,15 @@ msgstr ""
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
 msgstr ""
 
+msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to https://gitlab.com:443."
+msgstr ""
+
+msgid "AiPowered|Indirect connections through GitLab self-managed instance"
+msgstr ""
+
+msgid "AiPowered|Might result in requests having higher latency."
+msgstr ""
+
 msgid "AiPowered|Never on"
 msgstr ""
 
@@ -5067,6 +5082,9 @@ msgid "AiPowered|On by default"
 msgstr ""
 
 msgid "AiPowered|Setting unavailable"
+msgstr ""
+
+msgid "AiPowered|Specify how code completion requests are sent to the AI gateway."
 msgstr ""
 
 msgid "AiPowered|These features are being developed and might be unstable. %{linkStart}What do experiment and beta mean?%{linkEnd}"

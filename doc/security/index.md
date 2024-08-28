@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-## General Information
+## General information
 
 This section covers some general information and recommendations regarding the platform.
 
@@ -39,7 +39,7 @@ Specifically, you should exclude the following GitLab directories from scanning:
 
 You can find all those directories listed in the [Linux package configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration.html).
 
-### User Accounts
+### User accounts
 
 - [Review authentication options](../administration/auth/index.md).
 - [Configure password length limits](password_length_limits.md).
@@ -51,13 +51,13 @@ You can find all those directories listed in the [Linux package configuration do
 - [How to reset a user password](reset_user_password.md).
 - [How to unlock a locked user](unlock_user.md).
 
-### Data Access
+### Data access
 
 - [Information exclusivity](information_exclusivity.md).
 - [Protecting and removing user file uploads](user_file_uploads.md).
 - [Proxying linked images for user privacy](asset_proxy.md).
 
-### Platform Usage & Settings
+### Platform usage and settings
 
 - [Review GitLab token type and usages](token_overview.md).
 - [How to configure rate limits improve security and availability](rate_limits.md).
@@ -85,3 +85,7 @@ Self-managed GitLab customers and administrators are responsible for the securit
 ## Response
 
 - [Responding to security incidents](responding_to_security_incidents.md).
+
+## Rate limits
+
+For information about rate limits, see [Rate limits](rate_limits.md).

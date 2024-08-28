@@ -24,7 +24,7 @@ export default {
 
 <template>
   <gl-form-input
-    class="reply-placeholder-input-field"
+    class="reply-placeholder-input-field js-discussion-reply-field-placeholder"
     data-testid="discussion-reply-tab"
     :placeholder="placeholderText"
     :aria-label="labelText"

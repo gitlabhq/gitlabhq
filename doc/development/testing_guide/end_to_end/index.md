@@ -30,7 +30,7 @@ You can find these pipelines at <https://gitlab.com/gitlab-org/gitlab/-/pipeline
 
 We run scheduled pipelines each night to test staging.
 You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/pipelines>
-(requires the Developer role). Results are reported in the `#qa-staging` Slack channel.
+(requires the Developer role). Results are reported in the `#e2e-run-staging` Slack channel.
 
 ### Testing code in merge requests
 

@@ -481,7 +481,7 @@ module Gitlab
         end
 
         def to_sql_date_literal(date)
-          connection.quote(date.strftime('%Y-%m-%d'))
+          connection.quote(date.iso8601)
         end
 
         def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)

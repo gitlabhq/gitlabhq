@@ -6,13 +6,10 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
-import {
-  WIDGET_TYPE_LINKED_ITEMS,
-  LINKED_CATEGORIES_MAP,
-  LINKED_ITEMS_ANCHOR,
-} from '../../constants';
+import { findLinkedItemsWidget } from '../../utils';
+import { LINKED_CATEGORIES_MAP, LINKED_ITEMS_ANCHOR } from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
@@ -43,6 +40,10 @@ export default {
       type: String,
       required: true,
     },
+    canAdminWorkItemLink: {
+      type: Boolean,
+      required: true,
+    },
     workItemType: {
       type: String,
       required: false,
@@ -50,22 +51,21 @@ export default {
     },
   },
   apollo: {
-    workItem: {
-      query: workItemByIidQuery,
+    linkedWorkItems: {
+      query: workItemLinkedItemsQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
-      update(data) {
-        return data.workspace.workItem ?? {};
-      },
       skip() {
         return !this.workItemIid;
       },
-      error(e) {
-        this.error = e.message || this.$options.i18n.fetchError;
+      update({ workspace }) {
+        if (!workspace?.workItem) return [];
+
+        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
       },
       async result() {
         // When work items are switched in a modal, the data props are not getting reset.
@@ -85,6 +85,9 @@ export default {
           }
         });
       },
+      error(e) {
+        this.error = e.message || this.$options.i18n.fetchError;
+      },
     },
   },
   data() {
@@ -95,20 +98,12 @@ export default {
       linksBlocks: [],
       widgetName: LINKED_ITEMS_ANCHOR,
       showLabels: true,
+      linkedWorkItems: [],
     };
   },
   computed: {
-    canAdminWorkItemLink() {
-      return this.workItem?.userPermissions?.adminWorkItemLink;
-    },
     isLoading() {
-      return this.$apollo.queries.workItem.loading;
-    },
-    linkedWorkItemsWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
-    },
-    linkedWorkItems() {
-      return this.linkedWorkItemsWidget?.linkedItems?.nodes || [];
+      return this.$apollo.queries.linkedWorkItems.loading;
     },
     childrenIds() {
       return this.linkedWorkItems.map((item) => item.workItem.id);
@@ -148,7 +143,7 @@ export default {
               return;
             }
             const queryArgs = {
-              query: workItemByIidQuery,
+              query: workItemLinkedItemsQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);
@@ -161,9 +156,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  draftState.workspace.workItem.widgets?.find(
-                    (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
-                  )?.linkedItems?.nodes || [];
+                  findLinkedItemsWidget(draftState.workspace.workItem).linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {
                   return item.workItem.id === linkedItem.id;
                 });

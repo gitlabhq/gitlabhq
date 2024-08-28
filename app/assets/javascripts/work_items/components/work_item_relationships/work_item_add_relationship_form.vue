@@ -4,10 +4,10 @@ import { GlFormGroup, GlForm, GlFormRadioGroup, GlButton, GlAlert } from '@gitla
 import { __, s__ } from '~/locale';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
+import { findLinkedItemsWidget } from '../../utils';
 import {
   LINK_ITEM_FORM_HEADER_LABEL,
-  WIDGET_TYPE_LINKED_ITEMS,
   LINKED_ITEM_TYPE_VALUE,
   MAX_WORK_ITEMS,
   I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
@@ -121,7 +121,7 @@ export default {
             },
           ) => {
             const queryArgs = {
-              query: workItemByIidQuery,
+              query: workItemLinkedItemsQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);
@@ -133,13 +133,9 @@ export default {
             cache.writeQuery({
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
-                const linkedItemsWidget = draftState.workspace.workItem?.widgets?.find(
-                  (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
-                );
+                const linkedItemsWidget = findLinkedItemsWidget(draftState.workspace.workItem);
 
-                linkedItemsWidget.linkedItems = workItem.widgets?.find(
-                  (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
-                ).linkedItems;
+                linkedItemsWidget.linkedItems = findLinkedItemsWidget(workItem)?.linkedItems;
               }),
             });
           },

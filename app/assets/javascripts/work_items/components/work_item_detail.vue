@@ -243,6 +243,9 @@ export default {
     canSetWorkItemMetadata() {
       return this.workItem.userPermissions?.setWorkItemMetadata;
     },
+    canAdminWorkItemLink() {
+      return this.workItem.userPermissions?.adminWorkItemLink;
+    },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
@@ -732,6 +735,7 @@ export default {
               :work-item-iid="workItemIid"
               :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
+              :can-admin-work-item-link="canAdminWorkItemLink"
               @showModal="openInModal"
             />
             <work-item-notes

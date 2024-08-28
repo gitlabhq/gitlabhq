@@ -54,6 +54,9 @@ default:
 .if-not-security-canonical-sync: &if-not-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH != "gitlab-org/security/gitlab" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != $CI_DEFAULT_BRANCH'
 
+.if-merge-request-labels-run-with-rails-next: &if-merge-request-labels-run-with-rails-next
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-with-rails-next/'
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
@@ -101,6 +104,10 @@ workflow:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: '$CI_DEFAULT_BRANCH security->canonical sync'
         SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
+    - <<: *if-merge-request-labels-run-with-rails-next
+      variables:
+        <<: [*next-ruby-variables, *default-merge-request-variables]
+        BUNDLE_GEMFILE: Gemfile.next
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
@@ -171,6 +178,7 @@ variables:
   BUNDLE_WITHOUT: "production:development"
   BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
   BUNDLE_FROZEN: "true"
+  BUNDLE_GEMFILE: Gemfile
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max_old_space_size=5120
   GIT_DEPTH: "20"
