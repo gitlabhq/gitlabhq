@@ -30,7 +30,7 @@ There are still instances where the GitLab REST API is used, such as when creati
 For [client-side state management](state_management.md) in Vue, depending on the specific needs of the feature,
 we use:
 
-- [Apollo](https://www.apollographql.com/) (our primary [GraphQL client](graphql.md))
+- [Apollo](https://www.apollographql.com/) (default choice for applications relying on [GraphQL](graphql.md))
 - [Pinia](pinia.md) (in [pilot phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279))
 - Stateful components.
 

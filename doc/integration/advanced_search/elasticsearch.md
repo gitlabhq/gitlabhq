@@ -70,10 +70,23 @@ NOTE:
 Before you use a new Elasticsearch cluster in production, see the
 [Elasticsearch documentation on important settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
 
-### Elasticsearch access control configuration
+### Service-linked role for AWS OpenSearch
 
-Elasticsearch offers role based access control to secure the cluster. To access and perform operations in the
-Elasticsearch cluster, the `Username` configured in the Admin UI must have role(s) assigned that grant the following
+You must have a [service-linked role](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr.html) in your AWS account named `AWSServiceRoleForAmazonOpenSearchService` when you create OpenSearch domains.
+This role is account wide and is used by **all** OpenSearch domains.
+
+In most cases, this role is created automatically when you use the AWS Management Console to create the first OpenSearch domain.
+To create a service-linked role manually, see the [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr-aos.html#create-slr).
+
+### Access requirements
+
+GitLab supports both [HTTP and role-based authentication methods](#advanced-search-configuration)
+depending on your requirements and the backend service you use.
+
+#### Role-based access control for Elasticsearch
+
+Elasticsearch can offer role-based access control to further secure a cluster. To access and perform operations in the
+Elasticsearch cluster, the `Username` configured in the **Admin** area must have roles that grant the following
 privileges. The `Username` makes requests from GitLab to the search cluster.
 
 For more information,
@@ -99,25 +112,41 @@ and [Elasticsearch security privileges](https://www.elastic.co/guide/en/elastics
 }
 ```
 
-### AWS OpenSearch service configuration
+#### Access control for AWS OpenSearch
 
-AWS OpenSearch offers multiple methods of access control which are supported by GitLab:
+Prerequisites:
 
-- [Domain level access policy](#domain-level-access-policy-configuration)
-- Fine-grained access control
-  - [With IAM ARN as master user](#connecting-with-an-iam-user)
-  - [With master user](#connecting-with-a-master-user-in-the-internal-database)
+- The domain access policy for AWS OpenSearch must allow `es:ESHttp*` actions.
 
-For more details on fine-grained access control see
-[recommended configurations](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-recommendations)
+GitLab supports the following methods of access control for AWS OpenSearch:
 
-#### Domain level access policy configuration
+- [**VPC domain access policy**](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html#vpc-security): where the AWS OpenSearch domain is deployed and accessible in a VPC internally
+- [**Resource-based (domain) access policy**](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-resource): where the AWS OpenSearch domain is configured with an IAM policy
+- [**Identity-based policy**](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html#ac-types-identity): where clients use IAM principals with policies to configure access
 
-Configure the AWS OpenSearch domain access policy to allow `es:ESHttp*` actions. You can customize
-the following example configuration to limit principals or resources:
+Advanced options such as [fine-grained access control](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html) are also available.
 
-NOTE:
-All `es:ESHttp` actions are required by GitLab.
+##### Resource-based policy examples
+
+Here's an example of a resource-based (domain) access policy where `es:ESHttp*` actions are allowed:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "es:ESHttp*"
+      ],
+      "Resource": "arn:aws:es:us-west-1:987654321098:domain/test-domain/*"
+    }
+  ]
+}
+```
+
+Here's an example of a resource-based (domain) access policy where `es:ESHttp*` actions are allowed only for a specific IAM principal:
 
 ```json
 {
@@ -127,42 +156,41 @@ All `es:ESHttp` actions are required by GitLab.
       "Effect": "Allow",
       "Principal": {
         "AWS": [
-          "*"
+          "arn:aws:iam::123456789012:user/test-user"
         ]
       },
       "Action": [
         "es:ESHttp*"
       ],
-      "Resource": "arn:aws:es:REGION:AWS_ACCOUNT_ID:domain/DOMAIN_NAME/*"
+      "Resource": "arn:aws:es:us-west-1:987654321098:domain/test-domain/*"
     }
   ]
 }
 ```
 
-For more information,
-see [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html).
+#### Identity-based policy examples
 
-##### Service linked role configuration
+Here's an example of an identity-based access policy attached to an IAM principal where `es:ESHttp*` actions are allowed:
 
-The GitLab Rails and Sidekiq nodes require permissions to communicate with the search cluster.
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "es:ESHttp*",
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+```
 
-Create an IAM role with the following options and attach the role to the GitLab Rails and Sidekiq nodes:
+##### Fine-grained access control examples
 
-- Trusted entity type: `AWS Service` for `EC2` service
-- Permission policy: `AmazonOpenSearchServiceFullAccess`
-
-##### Connecting with a domain level access policy only
-
-When using a domain level access policy, you must check the box **Use AWS OpenSearch Service with IAM credentials** and
-fill in **AWS region** while leaving **AWS Access Key** and **AWS Secret Access Key** blank in the advanced search settings.
-
-NOTE:
-Domain level access policy can be used standalone or in addition to fine-grained access control policies.
-
-#### Fine-grained access control configuration
-
-To access and perform operations in the AWS OpenSearch cluster, the user in **Username** must have role(s) assigned that
-grant the following privileges. This user makes requests from GitLab to the search cluster.
+To access and perform operations in the AWS OpenSearch cluster with fine-grained access control,
+your GitLab user must have the following privileges.
 
 For more information,
 see [OpenSearch access control permissions](https://opensearch.org/docs/latest/security/access-control/permissions/)
@@ -204,19 +232,38 @@ The index pattern `*` requires a few permissions for Advanced search to work.
 }
 ```
 
-##### Connecting with a master user in the internal database
+#### Connecting to AWS OpenSearch Service
 
-When using fine-grained access control with a user in the internal database, you should use HTTP basic
-authentication to connect to AWS OpenSearch. You can provide the master username and password as part of the
-AWS OpenSearch URL or in the **Username** and **Password** text boxes in the advanced search settings. See
-[Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html)
-for details.
+Depending on your access requirements, your GitLab user can have:
 
-##### Connecting with an IAM user
+- HTTP basic authentication
+- Role-based authentication
 
-When using fine-grained access control with IAM credentials, you must check the box **Use AWS OpenSearch Service with
-IAM credentials** in the **AWS OpenSearch IAM credentials** section in the advanced search settings.
-Provide the **AWS region**, **AWS Access Key**, and **AWS Secret Access Key**.
+##### HTTP basic authentication
+
+By default, GitLab attempts to connect to the configured backend directly without authentication.
+
+If you created a user for AWS OpenSearch (for example, with fine-grained access control),
+you can enter the username and password in the AWS OpenSearch URL or the advanced search settings.
+For more information, see the
+[AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-http-auth.html).
+
+##### Role-based authentication
+
+To use role-based authentication:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Advanced Search**.
+1. In the **AWS OpenSearch IAM credentials** section,
+   select the **Use AWS OpenSearch Service with IAM credentials** checkbox.
+1. Select **Save changes**.
+
+For an IAM role, you can use:
+
+- [**The instance profile**](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html):
+  set **AWS region** only for GitLab to use the IAM role attached to the instance or pod (EKS IRSA).
+- **A specific role:** set **AWS region**, **AWS access key ID**, and **AWS Secret access key** for GitLab to use the keys to authenticate directly.
 
 ## Upgrade to a new Elasticsearch major version
 
@@ -419,7 +466,7 @@ The following Elasticsearch settings are available:
 | `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards and replicas per index`    | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
 | `Limit the amount of namespace and project data to index` | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed). For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
-| `Using AWS OpenSearch Service with IAM credentials` | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
+| `Use AWS OpenSearch Service with IAM credentials` | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
 | `AWS Access Key`                                      | The AWS access key. |
 | `AWS Secret Access Key`                               | The AWS secret access key. |

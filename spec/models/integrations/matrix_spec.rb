@@ -8,7 +8,8 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
       {
         body: be_present,
         msgtype: 'm.text',
-        format: 'org.matrix.custom.html'
+        format: 'org.matrix.custom.html',
+        formatted_body: be_present
       }
     end
   end
@@ -51,6 +52,46 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
       it 'sets webhook value with custom hostname' do
         expect(integration).to be_valid
         expect(integration.webhook).to start_with("https://gitlab.example.com/_matrix/client/v3/rooms/")
+      end
+    end
+  end
+
+  describe '#notify' do
+    let(:message) { instance_double(Integrations::ChatMessage::PushMessage, summary: '_Test message') }
+    let(:header) { { 'Content-Type' => 'application/json' } }
+    let(:response) { instance_double(HTTParty::Response, success?: true) }
+    let(:body) do
+      {
+        body: '_Test message',
+        msgtype: 'm.text',
+        format: 'org.matrix.custom.html',
+        formatted_body: Banzai.render_and_post_process('_Test message', context)
+      }.compact_blank
+    end
+
+    before do
+      allow(Gitlab::HTTP).to receive(:put).and_return(response)
+    end
+
+    context 'with project-level integration' do
+      let(:subject) { create(:matrix_integration) }
+      let(:context) { { project: subject.project } }
+
+      it 'sends PUT request with `project` context' do
+        expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))
+
+        subject.send(:notify, message, {})
+      end
+    end
+
+    context 'without project-level integration' do
+      let(:subject) { create(:matrix_integration, :instance) }
+      let(:context) { { skip_project_check: true } }
+
+      it 'sends PUT request with `skip_project_check` context' do
+        expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))
+
+        subject.send(:notify, message, {})
       end
     end
   end

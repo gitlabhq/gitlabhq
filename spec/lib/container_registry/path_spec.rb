@@ -160,6 +160,17 @@ RSpec.describe ContainerRegistry::Path do
       end
     end
 
+    context 'when initialized with a project' do
+      subject { described_class.new(path, project: project) }
+
+      let(:project) { create(:project) }
+      let(:path) { 'any_path' }
+
+      it 'returns initialized project' do
+        expect(subject.repository_project).to eq project
+      end
+    end
+
     context 'when matching multi-level path' do
       let(:project) do
         create(:project, group: group, path: 'some_project')

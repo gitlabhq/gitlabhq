@@ -99,4 +99,19 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       end
     end
   end
+
+  describe '.search_by_relative_path' do
+    let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
+    let_it_be(:other_cached_response) do
+      create(:virtual_registries_packages_maven_cached_response, relative_path: 'other/path')
+    end
+
+    subject { described_class.search_by_relative_path(relative_path) }
+
+    context 'with a matching relative path' do
+      let(:relative_path) { cached_response.relative_path.slice(3, 8) }
+
+      it { is_expected.to contain_exactly(cached_response) }
+    end
+  end
 end

@@ -45,6 +45,30 @@ RSpec.describe Gitlab::Kas::Client do
       allow(token).to receive(:audience=).with(described_class::JWT_AUDIENCE)
     end
 
+    describe '#get_server_info' do
+      let(:stub) { instance_double(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest) }
+      let(:server_info) { double }
+      let(:response) { double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoResponse, current_server_info: server_info) }
+
+      subject { described_class.new.get_server_info }
+
+      before do
+        expect(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest).to receive(:new)
+          .and_return(request)
+
+        expect(stub).to receive(:get_server_info)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { is_expected.to eq(server_info) }
+    end
+
     describe '#get_connected_agents_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
       let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest) }

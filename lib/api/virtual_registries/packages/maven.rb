@@ -5,7 +5,6 @@ module API
     module Packages
       class Maven < ::API::Base
         include ::API::Helpers::Authentication
-        include ::API::Concerns::VirtualRegistries::Packages::Endpoint
 
         feature_category :virtual_registry
         urgency :low
@@ -52,6 +51,12 @@ module API
             route_param :id, type: Integer, desc: 'The ID of the maven virtual registry' do
               namespace :upstreams do
                 include ::API::Concerns::VirtualRegistries::Packages::Maven::UpstreamEndpoints
+
+                route_param :upstream_id, type: Integer, desc: 'The ID of the maven virtual registry upstream' do
+                  namespace :cached_responses do
+                    include ::API::Concerns::VirtualRegistries::Packages::Maven::CachedResponseEndpoints
+                  end
+                end
               end
             end
           end
@@ -82,15 +87,19 @@ module API
               desc: 'Package path',
               documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar' }
           end
-          get ':id/*path', format: false do
-            service_response = ::VirtualRegistries::Packages::Maven::HandleFileRequestService.new(
-              registry: registry,
-              current_user: current_user,
-              params: { path: declared_params[:path] }
-            ).execute
+          namespace ':id/*path' do
+            include ::API::Concerns::VirtualRegistries::Packages::Endpoint
 
-            send_error_response_from!(service_response: service_response) if service_response.error?
-            send_successful_response_from(service_response: service_response)
+            get format: false do
+              service_response = ::VirtualRegistries::Packages::Maven::HandleFileRequestService.new(
+                registry: registry,
+                current_user: current_user,
+                params: { path: params[:path] }
+              ).execute
+
+              send_error_response_from!(service_response: service_response) if service_response.error?
+              send_successful_response_from(service_response: service_response)
+            end
           end
         end
       end

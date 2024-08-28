@@ -5,6 +5,7 @@ module VirtualRegistries
     module Maven
       class CachedResponse < ApplicationRecord
         include FileStoreMounter
+        include Gitlab::SQL::Pattern
 
         belongs_to :group
         belongs_to :upstream, class_name: 'VirtualRegistries::Packages::Maven::Upstream', inverse_of: :cached_responses
@@ -30,6 +31,10 @@ module VirtualRegistries
         before_validation :set_object_storage_key,
           if: -> { object_storage_key.blank? && relative_path && upstream && upstream.registry }
         attr_readonly :object_storage_key
+
+        scope :search_by_relative_path, ->(query) do
+          fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
+        end
 
         private
 

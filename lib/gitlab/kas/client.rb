@@ -7,6 +7,7 @@ module Gitlab
       JWT_AUDIENCE = 'gitlab-kas'
 
       STUB_CLASSES = {
+        server_info: Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub,
         agent_tracker: Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub,
         configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub,
         autoflow: Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub,
@@ -18,6 +19,18 @@ module Gitlab
       def initialize
         raise ConfigurationError, 'GitLab KAS is not enabled' unless Gitlab::Kas.enabled?
         raise ConfigurationError, 'KAS internal URL is not configured' unless Gitlab::Kas.internal_url.present?
+      end
+
+      # Return GitLab KAS server info
+      # This method only returns information about a single KAS server instance without taking into account
+      # that there are potentially multiple KAS replicas running, which may not have the same server info.
+      # This is particularly the case during a rollout.
+      def get_server_info
+        request = Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest.new
+
+        stub_for(:server_info)
+          .get_server_info(request, metadata: metadata)
+          .current_server_info
       end
 
       def get_connected_agents_by_agent_ids(agent_ids:)

@@ -144,7 +144,7 @@ To create a configuration secret for the proxy:
 
    ```shell
    helm repo add gitlab-workspaces-proxy \
-     https://gitlab.com/api/v4/projects/gitlab-org%2fremote-development%2fgitlab-workspaces-proxy/packages/helm/devel
+     https://gitlab.com/api/v4/projects/gitlab-org%2fworkspaces%2fgitlab-workspaces-proxy/packages/helm/devel
    ```
 
 1. Modify the `ingress.className` parameter if you're using a different Ingress class:
@@ -154,7 +154,7 @@ To create a configuration secret for the proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version 0.1.13 \
+     --version 0.1.14 \
      --namespace=gitlab-workspaces \
      --create-namespace \
      --set="auth.client_id=${CLIENT_ID}" \

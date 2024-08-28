@@ -106,7 +106,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'config/initializers/fog_core_patch.rb'
     - 'config/initializers/rubyzip.rb'
     - 'config/initializers/sawyer_patch.rb'
-    - 'config/initializers/seed_fu.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/routes/merge_requests.rb'
     - 'danger/ce_ee_vue_templates/Dangerfile'

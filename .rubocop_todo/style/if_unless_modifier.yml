@@ -261,7 +261,6 @@ Style/IfUnlessModifier:
     - 'config/initializers/jira.rb'
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'
     - 'config/initializers/remove_active_job_execute_callback.rb'
-    - 'config/initializers/seed_fu.rb'
     - 'config/initializers/stackprof.rb'
     - 'config/initializers/validate_database_config.rb'
     - 'config/initializers_before_autoloader/002_sidekiq.rb'

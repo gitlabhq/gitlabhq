@@ -84,6 +84,8 @@ module API
                 get do
                   authorize! :read_virtual_registry, registry
 
+                  # TODO: refactor this when we support multiple upstreams.
+                  # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
                   not_found! if upstream&.id != params[:upstream_id]
 
                   present upstream, with: Entities::VirtualRegistries::Packages::Maven::Upstream
@@ -137,6 +139,8 @@ module API
                 delete do
                   authorize! :destroy_virtual_registry, registry
 
+                  # TODO: refactor this when we support multiple upstreams.
+                  # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
                   not_found! if upstream&.id != params[:upstream_id]
 
                   destroy_conditionally!(upstream)

@@ -88,10 +88,13 @@ module Integrations
     end
 
     def notify(message, _opts)
+      context = project_level? ? { project: project } : { skip_project_check: true }
+
       body = {
         body: message.summary,
         msgtype: 'm.text',
-        format: 'org.matrix.custom.html'
+        format: 'org.matrix.custom.html',
+        formatted_body: Banzai.render_and_post_process(message.summary, context)
       }.compact_blank
 
       header = { 'Content-Type' => 'application/json' }
@@ -100,6 +103,10 @@ module Integrations
       response = Gitlab::HTTP.put(url, headers: header, body: Gitlab::Json.dump(body))
 
       response if response.success?
+    end
+
+    def custom_data(data)
+      super(data).merge(markdown: true)
     end
   end
 end

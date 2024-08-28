@@ -112,5 +112,15 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
         )
       end
     end
+
+    context 'with TarInvalidError' do
+      before do
+        allow_next_instance_of(Gem::Package::TarReader::Entry) do |instance|
+          allow(instance).to receive(:full_name).and_raise(::Gem::Package::TarInvalidError)
+        end
+      end
+
+      it_behaves_like 'processing the package file'
+    end
   end
 end
