@@ -33658,9 +33658,6 @@ ALTER TABLE ONLY packages_debian_group_architectures
 ALTER TABLE ONLY dast_site_profiles_builds
     ADD CONSTRAINT fk_94e80df60e FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY zoekt_repositories
-    ADD CONSTRAINT fk_94edfec0da FOREIGN KEY (zoekt_index_id) REFERENCES zoekt_indices(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT fk_94f7c8a81e FOREIGN KEY (comment_author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -34233,9 +34230,6 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY zoekt_indices
-    ADD CONSTRAINT fk_ef0e75ac42 FOREIGN KEY (zoekt_replica_id) REFERENCES zoekt_replicas(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
@@ -36306,6 +36300,12 @@ ALTER TABLE ONLY work_item_colors
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_work_item_dates_sources_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_indices
+    ADD CONSTRAINT fk_zoekt_indices_on_zoekt_replica_id FOREIGN KEY (zoekt_replica_id) REFERENCES zoekt_replicas(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY zoekt_repositories
+    ADD CONSTRAINT fk_zoekt_repositories_on_zoekt_index_id FOREIGN KEY (zoekt_index_id) REFERENCES zoekt_indices(id) ON DELETE RESTRICT;
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_issue_id_fkey FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

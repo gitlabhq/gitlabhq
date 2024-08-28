@@ -465,6 +465,16 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :assignee_or_reviewer, ->(user, assigned_review_states, reviewer_state) do
+    assigned_to_scope = assigned_to(user)
+    assigned_to_scope = assigned_to_scope.review_states(assigned_review_states) if assigned_review_states
+
+    from_union(
+      assigned_to_scope,
+      review_requested_to(user, reviewer_state)
+    )
+  end
+
   scope :without_hidden, -> {
     if Feature.enabled?(:hide_merge_requests_from_banned_users)
       where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))

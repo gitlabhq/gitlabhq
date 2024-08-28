@@ -91,7 +91,7 @@ export default {
       const currentUser = this.isCurrentUser(user);
       const thisIsYouText = currentUser ? __('This is you.') : '';
 
-      let titleType = 'default';
+      let titleType;
 
       if (this.type === 'ASSIGNEES') {
         titleType = this.type;
@@ -100,7 +100,7 @@ export default {
       }
 
       return sprintf(
-        USER_TOOLTIP_TITLES[titleType],
+        USER_TOOLTIP_TITLES[titleType] || USER_TOOLTIP_TITLES.default,
         {
           name: user.name,
           you: thisIsYouText,

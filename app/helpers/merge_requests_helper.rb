@@ -362,71 +362,56 @@ module MergeRequestsHelper
     {
       lists: [
         {
-          title: _('Open'),
+          title: _('Returned to you'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewerWildcardId: 'NONE'
+            reviewStates: %w[REVIEWED REQUESTED_CHANGES]
           }
         },
         {
           title: _('Reviews requested'),
           query: 'reviewRequestedMergeRequests',
           variables: {
-            reviewStates: %w[UNREVIEWED REVIEW_STARTED]
+            reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
           }
         },
         {
-          title: _('Returned to you'),
+          title: _('Assigned to you'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+            reviewerWildcardId: 'NONE'
           }
         },
         {
-          title: _('Waiting for reviewers'),
-          query: 'assignedMergeRequests',
+          title: _('Waiting for others'),
+          query: 'assigneeOrReviewerMergeRequests',
           variables: {
-            reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+            reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
+            assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
           }
         },
         {
-          title: _('Yours approved'),
-          query: 'assignedMergeRequests',
-          variables: {
-            reviewState: 'APPROVED'
-          }
-        },
-        {
-          title: _('Reviewed'),
-          query: 'reviewRequestedMergeRequests',
-          variables: {
-            reviewStates: %w[REQUESTED_CHANGES REVIEWED]
-          }
-        },
-        {
-          title: _('Reviews approved'),
+          title: _('Approved by you'),
           query: 'reviewRequestedMergeRequests',
           variables: {
             reviewState: 'APPROVED'
           }
         },
         {
-          title: _('Merged as assignee (1 week ago)'),
+          title: _('Approved by others'),
           query: 'assignedMergeRequests',
           variables: {
-            state: 'merged',
-            mergedAfter: 1.week.ago.to_time.iso8601
+            reviewState: 'APPROVED'
           }
         },
         {
-          title: _('Merged as reviewer (1 week ago)'),
-          query: 'reviewRequestedMergeRequests',
+          title: _('Merged recently'),
+          query: 'assigneeOrReviewerMergeRequests',
           variables: {
             state: 'merged',
-            mergedAfter: 1.week.ago.to_time.iso8601
+            mergedAfter: 2.weeks.ago.to_time.iso8601
           }
         }
-
       ]
     }
   end

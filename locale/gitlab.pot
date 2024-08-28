@@ -7123,6 +7123,12 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
+msgid "Approved by others"
+msgstr ""
+
+msgid "Approved by you"
+msgstr ""
+
 msgid "Approved members will use an additional seat in your subscription, which may override your user cap."
 msgid_plural "Approved members will use an additional %d seats in your subscription, which may override your user cap."
 msgstr[0] ""
@@ -7515,6 +7521,9 @@ msgid "Assigned to %{assignee_name}"
 msgstr ""
 
 msgid "Assigned to me"
+msgstr ""
+
+msgid "Assigned to you"
 msgstr ""
 
 msgid "Assignee"
@@ -33745,16 +33754,13 @@ msgstr ""
 msgid "Merged %{timeAgo} by"
 msgstr ""
 
-msgid "Merged as assignee (1 week ago)"
-msgstr ""
-
-msgid "Merged as reviewer (1 week ago)"
-msgstr ""
-
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
 msgid "Merged by"
+msgstr ""
+
+msgid "Merged recently"
 msgstr ""
 
 msgid "Merged this merge request."
@@ -45805,9 +45811,6 @@ msgstr ""
 msgid "Review time is the amount of time since the first comment in a merge request."
 msgstr ""
 
-msgid "Reviewed"
-msgstr ""
-
 msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] ""
@@ -45820,9 +45823,6 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
-msgstr ""
-
-msgid "Reviews approved"
 msgstr ""
 
 msgid "Reviews requested"
@@ -60103,7 +60103,7 @@ msgstr ""
 msgid "Waiting for merge (open and assigned)"
 msgstr ""
 
-msgid "Waiting for reviewers"
+msgid "Waiting for others"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
@@ -62974,9 +62974,6 @@ msgid "Your work"
 msgstr ""
 
 msgid "Your work items are being imported. Once finished, you'll receive a confirmation email."
-msgstr ""
-
-msgid "Yours approved"
 msgstr ""
 
 msgid "You’re about to permanently delete the %{issuableType} ‘%{strongOpen}%{issuableTitle}%{strongClose}’. To avoid data loss, consider %{strongOpen}closing this %{issuableType}%{strongClose} instead. Once deleted, it cannot be undone or recovered."

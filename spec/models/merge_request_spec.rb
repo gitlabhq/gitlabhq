@@ -233,6 +233,33 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.assignee_or_reviewer' do
+      let_it_be(:merge_request5) do
+        create(:merge_request, :prepared, :unique_branches, assignees: [user1], reviewers: [user2], created_at:
+              2.days.ago)
+      end
+
+      it 'returns merge requests that the user is a reviewer or an assignee of' do
+        expect(described_class.assignee_or_reviewer(user1, nil, nil)).to match_array([merge_request1, merge_request2, merge_request5])
+      end
+
+      context 'when the user is an assignee and a reviewer reviewed' do
+        before_all do
+          merge_request5.merge_request_reviewers.update_all(state: :reviewed)
+        end
+
+        it { expect(described_class.assignee_or_reviewer(user1, MergeRequestReviewer.states[:reviewed], nil)).to match_array([merge_request1, merge_request2, merge_request5]) }
+
+        it { expect(described_class.assignee_or_reviewer(user1, MergeRequestReviewer.states[:requested_changes], nil)).to match_array([merge_request1, merge_request2]) }
+      end
+
+      context 'when the user is a reviewer and left a review' do
+        it { expect(described_class.assignee_or_reviewer(user1, nil, MergeRequestReviewer.states[:reviewed])).to match_array([merge_request2, merge_request5]) }
+
+        it { expect(described_class.assignee_or_reviewer(user1, nil, MergeRequestReviewer.states[:requested_changes])).to match_array([merge_request1, merge_request5]) }
+      end
+    end
+
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])

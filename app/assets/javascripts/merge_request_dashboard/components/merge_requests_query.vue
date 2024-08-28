@@ -1,14 +1,21 @@
 <script>
 import reviewerQuery from '../queries/reviewer.query.graphql';
 import assigneeQuery from '../queries/assignee.query.graphql';
+import assigneeOrReviewerQuery from '../queries/assignee_or_reviewer.query.graphql';
 
 const PER_PAGE = 20;
+
+const QUERIES = {
+  reviewRequestedMergeRequests: reviewerQuery,
+  assignedMergeRequests: assigneeQuery,
+  assigneeOrReviewerMergeRequests: assigneeOrReviewerQuery,
+};
 
 export default {
   apollo: {
     mergeRequests: {
       query() {
-        return this.query === 'reviewRequestedMergeRequests' ? reviewerQuery : assigneeQuery;
+        return QUERIES[this.query];
       },
       update(d) {
         return d.currentUser?.[this.query] || {};

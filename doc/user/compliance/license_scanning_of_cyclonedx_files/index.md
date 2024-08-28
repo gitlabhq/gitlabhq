@@ -256,3 +256,14 @@ To remove the unneeded data:
    PackageMetadata::PackageVersionLicense.delete_all
    PackageMetadata::PackageVersion.delete_all
    ```
+
+### Dependency licenses are unknown
+
+Open source license information is stored in the database and used to resolve licenses for a
+project's dependencies. A dependency's license may appear as `unknown` if license information does
+not exist or if that data is not yet available in the database.
+
+Lookups for a dependency's licenses are done upon pipeline completion, so if this data was not
+available at that time an `unknown` license is recorded. This license is shown up until a subsequent
+pipeline is executed at which point another license lookup is made. If a lookup confirms the
+dependency's license has changed, the new license is shown at this time.
