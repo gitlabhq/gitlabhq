@@ -385,7 +385,7 @@ module Ci
     def owner_project
       return unless project_type?
 
-      runner_projects.order(:id).first.project
+      runner_projects.order(:id).first&.project
     end
 
     def belongs_to_one_project?

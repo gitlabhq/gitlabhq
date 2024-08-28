@@ -360,20 +360,36 @@ describe('Badges store actions', () => {
       expect(axios.get).not.toHaveBeenCalled();
     });
 
+    it('returns immediately if imageUrl is invalid', async () => {
+      jest.spyOn(axios, 'get').mockImplementation(() => {});
+      badgeInForm.imageUrl = 'foo';
+
+      await actions.renderBadge({ state, dispatch });
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('returns immediately if linkUrl is invalid', async () => {
+      jest.spyOn(axios, 'get').mockImplementation(() => {});
+      badgeInForm.linkUrl = 'foo';
+
+      await actions.renderBadge({ state, dispatch });
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+
     it('escapes user input', async () => {
       jest
         .spyOn(axios, 'get')
         .mockImplementation(() => Promise.resolve({ data: createDummyBadgeResponse() }));
-      badgeInForm.imageUrl = '&make-sandwich=true';
-      badgeInForm.linkUrl = '<script>I am dangerous!</script>';
+      badgeInForm.imageUrl = "https://example.com?param=<script>alert('XSS')</script>";
+      badgeInForm.linkUrl = "https://example.com?param=<script>alert('XSS')</script>";
 
       await actions.renderBadge({ state, dispatch });
       expect(axios.get.mock.calls.length).toBe(1);
       const url = axios.get.mock.calls[0][0];
 
-      expect(url).toMatch(new RegExp(`^${dummyEndpointUrl}/render?`));
-      expect(url).toMatch(/\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&/);
-      expect(url).toMatch(/&image_url=%26make-sandwich%3Dtrue$/);
+      expect(url).toContain(
+        "/render?link_url=https%3A%2F%2Fexample.com%3Fparam%3D%3Cscript%3Ealert('XSS')%3C%2Fscript%3E&image_url=https%3A%2F%2Fexample.com%3Fparam%3D%3Cscript%3Ealert('XSS')%3C%2Fscript%3E",
+      );
     });
 
     it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', async () => {

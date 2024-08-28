@@ -141,7 +141,6 @@ export default {
           >
             <gl-button
               v-gl-tooltip
-              v-gl-modal.edit-badge-modal
               :disabled="item.isDeleting"
               category="tertiary"
               icon="pencil"

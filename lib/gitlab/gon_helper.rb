@@ -36,7 +36,6 @@ module Gitlab
       gon.promo_url              = ApplicationHelper.promo_url
       gon.forum_url              = Gitlab::Saas.community_forum_url
       gon.docs_url               = Gitlab::Saas.doc_url
-      gon.organization_http_header_name = ::Organizations::ORGANIZATION_HTTP_HEADER
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')

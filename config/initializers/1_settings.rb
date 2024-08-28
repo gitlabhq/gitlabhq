@@ -1028,7 +1028,9 @@ end
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
   Settings.duo_workflow.reverse_merge!(
-    secure: true
+    secure: true,
+    executor_binary_url: 'https://gitlab.com/api/v4/projects/58711783/releases/permalink/latest',
+    executor_version: 'latest'
   )
 
   # Default to proxy via Cloud Connector

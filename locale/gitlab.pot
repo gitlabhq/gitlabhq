@@ -8156,7 +8156,22 @@ msgstr ""
 msgid "Badges|Badge image URL"
 msgstr ""
 
+msgid "Badges|Badge image URL is invalid."
+msgstr ""
+
+msgid "Badges|Badge image URL is required."
+msgstr ""
+
 msgid "Badges|Badge image preview"
+msgstr ""
+
+msgid "Badges|Badge link is invalid."
+msgstr ""
+
+msgid "Badges|Badge link is required."
+msgstr ""
+
+msgid "Badges|Badge name is required."
 msgstr ""
 
 msgid "Badges|Badge saved."
@@ -8166,9 +8181,6 @@ msgid "Badges|Delete badge?"
 msgstr ""
 
 msgid "Badges|Edit badge"
-msgstr ""
-
-msgid "Badges|Enter a valid URL"
 msgstr ""
 
 msgid "Badges|Example: %{exampleUrl}"
@@ -8207,10 +8219,10 @@ msgstr ""
 msgid "Badges|Reload badge image"
 msgstr ""
 
-msgid "Badges|Save changes"
+msgid "Badges|Saving the badge failed, please check the entered URLs and try again."
 msgstr ""
 
-msgid "Badges|Saving the badge failed, please check the entered URLs and try again."
+msgid "Badges|Supported %{docsLinkStart}placeholders%{docsLinkEnd}: %{placeholders}"
 msgstr ""
 
 msgid "Badges|Supported %{docsLinkStart}variables%{docsLinkEnd}: %{placeholders}"
