@@ -7,7 +7,7 @@ import App from './components/app.vue';
 export function initMergeRequestDashboard(el) {
   Vue.use(VueApollo);
 
-  const { lists } = JSON.parse(el.dataset.initialData);
+  const { lists, switch_dashboard_path: switchDashboardPath } = JSON.parse(el.dataset.initialData);
 
   return new Vue({
     el,
@@ -49,6 +49,7 @@ export function initMergeRequestDashboard(el) {
         },
       ),
     }),
+    provide: { switchDashboardPath },
     render(createElement) {
       return createElement(App, {
         props: {

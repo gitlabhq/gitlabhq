@@ -35,7 +35,7 @@ appears in the merge request widget. Use the app to go to your changes.
 
 The `review-docs-cleanup` job is triggered automatically on merge. This job deletes the review app.
 
-You must have the Developer role in the project. Users without the Developer role, such
+You must have the Developer role for the project. Users without the Developer role, such
 as external contributors, cannot run the manual job. In that case, ask someone from
 the GitLab team to run the job.
 

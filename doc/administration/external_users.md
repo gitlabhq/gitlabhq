@@ -24,7 +24,7 @@ External users:
 - Can only access public snippets.
 
 Access can be granted by adding the user as member to the project or group.
-Like usual users, they receive a role in the project or group with all
+Like usual users, they receive a role for the project or group with all
 the abilities that are mentioned in the [permissions table](../user/permissions.md#project-members-permissions).
 For example, if an external user is added as Guest, and your project is internal or
 private, they do not have access to the code; you need to grant the external

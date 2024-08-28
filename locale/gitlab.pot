@@ -13174,6 +13174,9 @@ msgstr ""
 msgid "CodeSuggestions|%{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
 msgstr ""
 
+msgid "CodeSuggestions|%{linkStart}GitLab Duo%{linkEnd} is only available to instances with a synchronized subscription. Add an activation code to synchronize your subscription."
+msgstr ""
+
 msgid "CodeSuggestions|%{title}"
 msgstr ""
 
@@ -13234,6 +13237,9 @@ msgstr ""
 msgid "CodeSuggestions|Run health check"
 msgstr ""
 
+msgid "CodeSuggestions|Subscription not synchronized"
+msgstr ""
+
 msgid "CodeSuggestions|Tests are running"
 msgstr ""
 
@@ -13246,7 +13252,13 @@ msgstr ""
 msgid "CodeSuggestions|Updating..."
 msgstr ""
 
+msgid "CodeSuggestions|You have successfully added a license that activates on %{date}."
+msgstr ""
+
 msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
+msgstr ""
+
+msgid "CodeSuggestions|Your subscription was successfully activated."
 msgstr ""
 
 msgid "CodeSuggestions|trial"
@@ -37476,6 +37488,9 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
+msgid "Open action menu"
+msgstr ""
+
 msgid "Open color picker"
 msgstr ""
 
@@ -40858,6 +40873,9 @@ msgstr ""
 msgid "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."
 msgstr ""
 
+msgid "Premium plan"
+msgstr ""
+
 msgid "Preparing the report for the scan."
 msgstr ""
 
@@ -43425,7 +43443,7 @@ msgstr ""
 msgid "Promotions|Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository."
 msgstr ""
 
-msgid "Promotions|See the other features in the %{subscription_link_start}Premium plan%{subscription_link_end}"
+msgid "Promotions|See the other features in the %{subscription_link}"
 msgstr ""
 
 msgid "Promotions|Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
@@ -53106,6 +53124,12 @@ msgid "Switch branch"
 msgstr ""
 
 msgid "Switch branch/tag"
+msgstr ""
+
+msgid "Switch to new dashboard"
+msgstr ""
+
+msgid "Switch to old dashboard"
 msgstr ""
 
 msgid "Switch to plain text editing"

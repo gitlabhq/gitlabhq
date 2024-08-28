@@ -153,7 +153,7 @@ You can edit a dependent merge request and remove a dependency.
 
 Prerequisites:
 
-- You must have a role in the project that allows you to edit merge requests.
+- You must have a role for the project that allows you to edit merge requests.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and identify your merge request.

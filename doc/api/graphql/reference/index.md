@@ -14560,6 +14560,30 @@ The edge type for [`Note`](#note).
 | <a id="noteedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="noteedgenode"></a>`node` | [`Note`](#note) | The item at the end of the edge. |
 
+#### `ObservabilityLogConnection`
+
+The connection type for [`ObservabilityLog`](#observabilitylog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitylogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="observabilitylogconnectionedges"></a>`edges` | [`[ObservabilityLogEdge]`](#observabilitylogedge) | A list of edges. |
+| <a id="observabilitylogconnectionnodes"></a>`nodes` | [`[ObservabilityLog]`](#observabilitylog) | A list of nodes. |
+| <a id="observabilitylogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ObservabilityLogEdge`
+
+The edge type for [`ObservabilityLog`](#observabilitylog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitylogedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="observabilitylogedgenode"></a>`node` | [`ObservabilityLog`](#observabilitylog) | The item at the end of the edge. |
+
 #### `ObservabilityMetricConnection`
 
 The connection type for [`ObservabilityMetric`](#observabilitymetric).
@@ -23499,8 +23523,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouplabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
 | <a id="grouplabelsincludedescendantgroups"></a>`includeDescendantGroups` | [`Boolean`](#boolean) | Include labels from descendant groups. |
 | <a id="grouplabelsonlygrouplabels"></a>`onlyGroupLabels` | [`Boolean`](#boolean) | Include only group level labels. |
-| <a id="grouplabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. |
+| <a id="grouplabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. Ignored if using `title`. |
 | <a id="grouplabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+| <a id="grouplabelstitle"></a>`title` | [`String`](#string) | Exact match on title. Cannot be used with `searchTerm`. `searchIn` will be ignored if `title` argument is provided. |
 
 ##### `Group.memberRoles`
 
@@ -27824,6 +27849,21 @@ Nuget metadata.
 | <a id="nugetmetadatalicenseurl"></a>`licenseUrl` | [`String`](#string) | License URL of the Nuget package. |
 | <a id="nugetmetadataprojecturl"></a>`projectUrl` | [`String`](#string) | Project URL of the Nuget package. |
 
+### `ObservabilityLog`
+
+ObservabilityLog represents a connection between an issue and a log entry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="observabilitylogfingerprint"></a>`fingerprint` | [`String!`](#string) | Log fingerprint of the log. |
+| <a id="observabilitylogissue"></a>`issue` | [`Issue!`](#issue) | Issue associated with the log. |
+| <a id="observabilitylogservicename"></a>`serviceName` | [`String!`](#string) | Service name of the log. |
+| <a id="observabilitylogseveritynumber"></a>`severityNumber` | [`Int!`](#int) | Severity number of the log. |
+| <a id="observabilitylogtimestamp"></a>`timestamp` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of the log. |
+| <a id="observabilitylogtraceidentifier"></a>`traceIdentifier` | [`String!`](#string) | Trace identifier of the log. |
+
 ### `ObservabilityMetric`
 
 ObservabilityMetric represents a connection between an issue and a metric.
@@ -29990,8 +30030,9 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectlabelsincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Include labels from ancestor groups. |
-| <a id="projectlabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. |
+| <a id="projectlabelssearchin"></a>`searchIn` | [`[LabelSearchFieldList!]!`](#labelsearchfieldlist) | Specify which fields to search in. Ignored if using `title`. |
 | <a id="projectlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+| <a id="projectlabelstitle"></a>`title` | [`String`](#string) | Exact match on title. Cannot be used with `searchTerm`. `searchIn` will be ignored if `title` argument is provided. |
 
 ##### `Project.memberRoles`
 
@@ -30158,6 +30199,30 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectnestedenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectnestedenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
 | <a id="projectnestedenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
+
+##### `Project.observabilityLogsLinks`
+
+Logs attached to the project.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ObservabilityLogConnection`](#observabilitylogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectobservabilitylogslinksfingerprint"></a>`fingerprint` | [`String`](#string) | Fingerprint of the log. |
+| <a id="projectobservabilitylogslinksservicename"></a>`serviceName` | [`String`](#string) | Service name of the log. |
+| <a id="projectobservabilitylogslinksseveritynumber"></a>`severityNumber` | [`Int`](#int) | Severity number of the log. |
+| <a id="projectobservabilitylogslinkstimestamp"></a>`timestamp` | [`ISO8601DateTime`](#iso8601datetime) | Log timestamp of the log. |
+| <a id="projectobservabilitylogslinkstraceidentifier"></a>`traceIdentifier` | [`String`](#string) | Trace id of the log. |
 
 ##### `Project.observabilityMetricsLinks`
 

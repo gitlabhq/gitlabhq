@@ -2874,10 +2874,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Import members from another project.
 
-If the importing member's role in the target project is:
+If the importing member's role for the target project is:
 
-- Maintainer, then members with the Owner role in the source project are imported with the Maintainer role.
-- Owner, then members with the Owner role in the source project are imported with the Owner role.
+- Maintainer, then members with the Owner role for the source project are imported with the Maintainer role.
+- Owner, then members with the Owner role for the source project are imported with the Owner role.
 
 ```plaintext
 POST /projects/:id/import_project_members/:project_id

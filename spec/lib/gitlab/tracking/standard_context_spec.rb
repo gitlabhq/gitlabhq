@@ -89,6 +89,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:plan]).to eq(plan_name)
         expect(json_data[:host_name]).to eq(hostname)
         expect(json_data[:instance_version]).to eq(version)
+        expect(json_data[:correlation_id]).to eq(Labkit::Correlation::CorrelationId.current_or_new_id)
       end
     end
 

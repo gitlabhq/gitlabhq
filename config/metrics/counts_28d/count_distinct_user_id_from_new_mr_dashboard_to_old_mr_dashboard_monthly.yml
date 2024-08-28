@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_new_mr_dashboard_to_old_mr_dashboard_monthly
+description: Monthly count of unique users who toggled the old dashboard from the new dashboard
+product_group: code_review
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475243
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: toggle_merge_request_redesign
+  unique: user.id
+  filter:
+    value: 1

@@ -40,7 +40,7 @@ the [Git commands you need](#update-the-default-branch-name-in-your-repository) 
 
 Prerequisites:
 
-- You have the Owner or Maintainer role in the project.
+- You have the Owner or Maintainer role for the project.
 
 To update the default branch for an individual [project](../../index.md):
 

@@ -142,6 +142,47 @@ The optimization underlying mechanic is based on the concept of time efficiency.
 the exponential moving average of time efficiencies for the last N jobs and updates the batch
 size of the batched background migration to its optimal value.
 
+#### For GitLab SAAS
+
+When updating a large dataset specify different batch sizes for GitLab SAAS.
+
+```ruby
+# frozen_string_literal: true
+
+class BatchedMigration < Gitlab::Database::Migration[2.2]
+  BATCH_SIZE = 1000
+  SUB_BATCH_SIZE = 100
+  GITLAB_OPTIMIZED_BATCH_SIZE = 75_000
+  GITLAB_OPTIMIZED_SUB_BATCH_SIZE = 250
+
+  def up
+    queue_batched_background_migration(
+      MIGRATION,
+      TABLE_NAME,
+      COLUMN_NAME,
+      job_interval: DELAY_INTERVAL,
+      **batch_sizes
+    )
+  end
+
+  private
+
+  def batch_sizes
+    if Gitlab.com_except_jh?
+      {
+        batch_size: GITLAB_OPTIMIZED_BATCH_SIZE,
+        sub_batch_size: GITLAB_OPTIMIZED_SUB_BATCH_SIZE
+      }
+    else
+      {
+        batch_size: BATCH_SIZE,
+        sub_batch_size: SUB_BATCH_SIZE
+      }
+    end
+  end
+end
+```
+
 ### Job retry mechanism
 
 The batched background migrations retry mechanism ensures that a job is executed again in case of failure.

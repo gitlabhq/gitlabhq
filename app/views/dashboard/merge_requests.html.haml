@@ -9,7 +9,7 @@
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
 - if merge_request_dashboard_enabled?(current_user)
-  #js-merge-request-dashboard{ data: { initial_data: merge_request_dashboard_data.to_json } }
+  #js-merge-request-dashboard{ data: { initial_data: merge_request_dashboard_data(current_user).to_json } }
     = render ::Layouts::PageHeadingComponent.new(_('Merge requests'))
     = gl_loading_icon(size: 'lg')
 - else
@@ -17,6 +17,8 @@
     - c.with_actions do
       - if current_user
         = render 'shared/new_project_item_vue_select'
+      - if current_user&.merge_request_dashboard_enabled?
+        .js-action-dropdown{ data: { switchDashboardPath: merge_requests_dashboard_path } }
 
   .top-area
     = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)

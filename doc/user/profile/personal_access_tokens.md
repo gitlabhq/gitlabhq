@@ -127,7 +127,7 @@ In GitLab 17.3 and later, you can use the Admin UI to disable personal access to
 
 Prerequisites:
 
-- You must have the Owner role in the group that the enterprise user belongs to.
+- You must have the Owner role for the group that the enterprise user belongs to.
 
 Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/index.md):
 
@@ -254,7 +254,7 @@ Allowing personal access tokens for service accounts to be created with no expir
 
 Prerequisites:
 
-- You must have the Owner role in the top-level group.
+- You must have the Owner role for the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General > Permissions and group features**.

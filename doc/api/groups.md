@@ -1541,7 +1541,7 @@ by the group or subgroups.
 
 This endpoint is an [experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
 
-Requires Owner role in the group.
+Requires Owner role for the group.
 
 ```plaintext
 GET /groups/:id/users
@@ -2745,7 +2745,7 @@ details are returned in the response.
 The following criteria must be met:
 
 - The group must be a top-level group.
-- You must have the Owner role in the group.
+- You must have the Owner role for the group.
 - The token type is one of:
   - Personal access token
   - Group access token

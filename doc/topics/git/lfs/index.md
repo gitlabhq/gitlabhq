@@ -259,7 +259,7 @@ Git LFS is enabled by default for both self-managed instances and GitLab.com.
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 To enable or disable Git LFS at the project level:
 

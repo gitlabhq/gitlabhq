@@ -563,7 +563,7 @@ in your project, you can select **CI/CD Catalog**.
 Visibility of components in the CI/CD catalog follows the component source project's
 [visibility setting](../../user/public_access.md). Components with source projects set to:
 
-- Private are visible only to users assigned at least the Guest role in the source component project.
+- Private are visible only to users assigned at least the Guest role for the source component project.
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
 
@@ -581,7 +581,7 @@ you must set the project as a catalog project.
 
 Prerequisites:
 
-- You must have the Owner role in the project.
+- You must have the Owner role for the project.
 
 To set the project as a catalog project:
 
@@ -603,7 +603,7 @@ However, publishing a component's releases in the catalog makes it discoverable 
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
   - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar) defined.

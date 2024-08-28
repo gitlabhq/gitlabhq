@@ -99,7 +99,7 @@ To add or subtract changed lines, next to **From line**, select **+** or **-**.
 
 Prerequisites:
 
-- You must be the author of the merge request, or have at least the Developer role in the project.
+- You must be the author of the merge request, or have at least the Developer role for the project.
 
 To apply suggested changes directly from the merge request:
 
@@ -187,7 +187,7 @@ For example, to customize the commit message to output
 
 Prerequisites:
 
-- You must have a role in the project that allows you to commit to the source branch.
+- You must have a role for the project that allows you to commit to the source branch.
 
 To reduce the number of commits added to your branch, apply multiple
 suggestions in a single commit.

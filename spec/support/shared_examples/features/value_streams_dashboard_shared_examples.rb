@@ -104,14 +104,6 @@ RSpec.shared_examples 'renders dora performers score' do
 
     expect(dora_performers_score).to have_content format(_("DORA performers score for %{name} group"), name: group.name)
     expect(dora_performers_chart_title).to have_content _("Total projects (3) with DORA metrics")
-
-    within dora_performers_score do
-      legend = find_by_testid('gl-chart-legend')
-      expect(legend).to have_content 'High Avg: 1 · Max: 1'
-      expect(legend).to have_content 'Medium Avg: 750m · Max: 1'
-      expect(legend).to have_content 'Low Avg: 750m · Max: 2'
-      expect(legend).to have_content 'Not included Avg: 500m · Max: 1'
-    end
   end
 end
 

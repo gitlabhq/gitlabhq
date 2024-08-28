@@ -24,15 +24,15 @@ RSpec.describe Gitlab::RenderTimeout do
   end
 
   describe 'banzai_timeout_disabled?' do
-    context 'when DISABLE_BANZAI_TIMEOUT set' do
+    context 'when GITLAB_DISABLE_MARKDOWN_TIMEOUT set' do
       it 'returns true' do
-        stub_env('DISABLE_BANZAI_TIMEOUT' => '1')
+        stub_env('GITLAB_DISABLE_MARKDOWN_TIMEOUT' => '1')
 
         expect(described_class.banzai_timeout_disabled?).to be_truthy
       end
     end
 
-    context 'when DISABLE_BANZAI_TIMEOUT is not set' do
+    context 'when GITLAB_DISABLE_MARKDOWN_TIMEOUT is not set' do
       it 'returns false' do
         expect(described_class.banzai_timeout_disabled?).to be_falsey
       end

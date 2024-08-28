@@ -414,13 +414,15 @@ class Member < ApplicationRecord
       pluck(:user_id)
     end
 
-    def with_group_group_sharing_access(shared_groups)
+    def with_group_group_sharing_access(shared_groups, custom_role_for_group_link_enabled)
+      columns = member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
+
       joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
-        .select(member_columns_with_group_sharing_access)
+        .select(columns)
         .where(group_group_links: { shared_group_id: shared_groups })
     end
 
-    def member_columns_with_group_sharing_access
+    def member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
@@ -429,7 +431,7 @@ class Member < ApplicationRecord
           args = [group_group_link_table[:group_access], arel_table[:access_level]]
           smallest_value_arel(args, 'access_level')
         when 'member_role_id'
-          member_role_id(group_group_link_table, arel_table)
+          member_role_id(group_group_link_table, custom_role_for_group_link_enabled)
         else
           arel_table[column_name]
         end
@@ -441,8 +443,8 @@ class Member < ApplicationRecord
     end
 
     # overriden in EE
-    def member_role_id(_group_group_link_table, group_member_table)
-      group_member_table[:member_role_id]
+    def member_role_id(_group_link_table, _custom_role_for_group_link_enabled)
+      arel_table[:member_role_id]
     end
   end
 

@@ -47,7 +47,7 @@ For a full list of checks and their API equivalents, see
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 - If your project configuration requires it, all threads in the
   merge request [must be resolved](index.md#resolve-a-thread).
 - The merge request must have received all required approvals.
@@ -142,7 +142,7 @@ CI providers with it.
 Prerequisites:
 
 - Ensure your project's CI/CD configuration runs a pipeline for every merge request.
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 To enable this setting:
 
@@ -166,7 +166,7 @@ merge requests from merging.
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 To change this behavior:
 

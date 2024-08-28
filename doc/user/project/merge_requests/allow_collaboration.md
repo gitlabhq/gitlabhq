@@ -54,7 +54,7 @@ You can push directly to the branch of the forked repository if:
 
 - The author of the merge request has enabled contributions from upstream
   members.
-- You have at least the Developer role in the
+- You have at least the Developer role for the
   upstream project.
 
 In the following example:

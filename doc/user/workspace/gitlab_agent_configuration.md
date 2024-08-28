@@ -91,7 +91,7 @@ Running workspaces stop when they are automatically terminated or manually stopp
 
 ## Legacy agent authorization strategy
 
-In GitLab 17.1 and earlier, an agent doesn't have to be allowed to be available in a group for creating workspaces. You can use an agent present anywhere in the top-level group (or the root group) of a workspace project to create a workspace, as long as the remote development module is enabled and you have at least the Developer role in the root group.
+In GitLab 17.1 and earlier, an agent doesn't have to be allowed to be available in a group for creating workspaces. You can use an agent present anywhere in the top-level group (or the root group) of a workspace project to create a workspace, as long as the remote development module is enabled and you have at least the Developer role for the root group.
 For example, if the path to your workspace project is `top-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-group` and in any of its subgroups.
 

@@ -3,6 +3,7 @@ import { GlButton, GlIcon, GlAlert } from '@gitlab/ui';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
+import ActionDropdown from './action_dropdown.vue';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
+    ActionDropdown,
   },
   props: {
     lists: {
@@ -25,7 +27,10 @@ export default {
 <template>
   <div>
     <div class="page-title-holder gl-flex">
-      <h1 class="page-title gl-text-size-h-display">{{ __('Merge requests') }}</h1>
+      <h1 class="page-title gl-text-size-h-display">{{ __('Merge Requests') }}</h1>
+      <div class="gl-ml-auto gl-self-center">
+        <action-dropdown />
+      </div>
     </div>
     <merge-requests-query
       v-for="(list, i) in lists"

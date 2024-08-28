@@ -196,7 +196,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "vulnerability_export_parts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476218',
       "vulnerability_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476219',
       "personal_access_tokens" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/477750',
-      "sbom_components" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/469436'
+      "sbom_components" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/469436',
+      "subscription_user_add_on_assignments" => "https://gitlab.com/gitlab-org/gitlab/-/issues/480697"
     }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)

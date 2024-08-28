@@ -318,7 +318,7 @@ after a few hours.
 
 Prerequisites:
 
-- You have the Owner or Maintainer role in the project.
+- You have the Owner or Maintainer role for the project.
 
 To do this:
 

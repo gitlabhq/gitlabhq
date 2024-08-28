@@ -203,6 +203,6 @@ box as you type it.
 If it doesn't, it's possible that:
 
 - The feature related to the quick action isn't available to you based on your subscription tier or
-  user role in the group or project.
+  user role for the group or project.
 - A required condition for the quick action isn't met.
   For example, you're running `/unlabel` on an issue without any labels.

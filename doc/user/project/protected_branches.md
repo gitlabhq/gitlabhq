@@ -143,7 +143,7 @@ is ignored in favor of the group level setting.
 
 Prerequisites:
 
-- You must have the Owner role in the group.
+- You must have the Owner role for the group.
 
 To protect a branch for all the projects in a group:
 

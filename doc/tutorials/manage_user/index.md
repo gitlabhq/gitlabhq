@@ -258,10 +258,10 @@ Review the invite errors and try again:
 - Alex Smith: Access level should be greater than or equal to Owner inherited membership from group Development
 ```
 
-> You cannot give Alex a subgroup role with an access level less than their role in the subgroup's parent group, as they have an inherited membership from the parent group.
+> You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group, as they have an inherited membership from the parent group.
 
 You decide to keep Alex as an Owner in this subgroup as it is appropriate given
-their role in the organization. Select **Cancel** to cancel this invite.
+their role for the organization. Select **Cancel** to cancel this invite.
 
 The Product Management subgroup has the correct members and roles. Next you will
 add users to the Engineering subgroup.
@@ -339,14 +339,14 @@ Grayson Garcia should be in the **User Experience** subgroup as well.
 ### Add users to other subgroups
 
 You can add Grayson to the **User Experience** subgroup as a specific role, while
-keeping their role in the **Technical Writing** subgroup the same.
+keeping their role for the **Technical Writing** subgroup the same.
 
 1. Go to the **User Experience** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**. You and Alex
    Smith are currently the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Invite Grayson Garcia as a Developer, a role with a lower level of permissions
-   than their Maintainer role in the **Technical Writing** subgroup.
+   than their Maintainer role for the **Technical Writing** subgroup.
 
 This means that Grayson Garcia does not have an unnecessarily high level of permissions
 in the User Experience subgroup.

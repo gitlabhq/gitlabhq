@@ -31,7 +31,7 @@ Branches are public by default. To protect the confidentiality of your work, you
 must create your branches and merge requests in the same namespace, but downstream
 in a private fork. If you create your private fork in the same namespace as the
 public repository, your fork inherits the permissions of the upstream public repository.
-Users with the Developer role in the upstream public repository inherit those upstream
+Users with the Developer role for the upstream public repository inherit those upstream
 permissions in your downstream private fork without action by you. These users can
 immediately push code to branches in your private fork to help fix the confidential issue.
 
@@ -41,7 +41,7 @@ namespace than the upstream repository. The two namespaces might not contain the
 
 Prerequisites:
 
-- You have the Owner or Maintainer role in the public repository, as you need one
+- You have the Owner or Maintainer role for the public repository, as you need one
   of these roles to [create a subgroup](../../group/subgroups/index.md).
 - You have [forked](../repository/forking_workflow.md) the public repository.
 - Your fork has a **Visibility level** of _Private_.

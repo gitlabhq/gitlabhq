@@ -349,7 +349,7 @@ Make sure you are using the expected authentication mechanism.
 ### `Not Found` or `404` error when pulling image
 
 Errors like these might indicate that the user running the job doesn't have
-a minimum of the Guest role in the Dependency Proxy group:
+a minimum of the Guest role for the Dependency Proxy group:
 
 - ```plaintext
   ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found

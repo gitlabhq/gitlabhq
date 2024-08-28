@@ -28,7 +28,7 @@ After a merge request merges, you can revert all changes in the merge request.
 
 Prerequisites:
 
-- You must have a role in the project that allows you to edit merge requests, and add
+- You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
 - Your project must use the [merge method](methods/index.md#fast-forward-merge) **Merge Commit**,
   set in your project's **Settings > Merge requests**.
@@ -67,7 +67,7 @@ You can revert any commit in a repository into either:
 
 Prerequisites:
 
-- Your role in the project must allow you to edit merge requests, and add
+- Your role for the project must allow you to edit merge requests, and add
   code to the repository.
 - The commit must not have already been reverted, as the **Revert** option is not
   shown in this case.

@@ -264,6 +264,10 @@ module MergeRequestsHelper
     { identity_verification_required: 'false' }
   end
 
+  def merge_request_dashboard_enabled?(current_user)
+    current_user.merge_request_dashboard_enabled? && !current_page?(merge_requests_search_dashboard_path)
+  end
+
   private
 
   def review_requested_merge_requests_count
@@ -354,12 +358,9 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
-  def merge_request_dashboard_enabled?(current_user)
-    current_user.merge_request_dashboard_enabled?
-  end
-
-  def merge_request_dashboard_data
+  def merge_request_dashboard_data(current_user)
     {
+      switch_dashboard_path: merge_request_dashboard_enabled?(current_user) ? merge_requests_search_dashboard_path : merge_requests_dashboard_path,
       lists: [
         {
           title: _('Returned to you'),

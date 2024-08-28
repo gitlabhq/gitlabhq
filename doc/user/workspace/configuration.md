@@ -46,7 +46,7 @@ To set up infrastructure for workspaces:
 Prerequisites:
 
 - Ensure your [workspace infrastructure](#set-up-workspace-infrastructure) is already set up.
-- You must have at least the Developer role in the workspace or agent project.
+- You must have at least the Developer role for the workspace or agent project.
 - In each project where you want to create a workspace, create a [devfile](index.md#devfile):
   1. On the left sidebar, select **Search or go to** and find your project.
   1. In the root directory of your project, create a file named `devfile`.
@@ -175,7 +175,7 @@ No agents available to create workspaces. Please consult Workspaces documentatio
 
 To resolve this issue:
 
-- If you do not have at least the Developer role in the workspace or agent project, contact your administrator.
+- If you do not have at least the Developer role for the workspace or agent project, contact your administrator.
 - If the ancestor groups of the project do not have an allowed agent,
   [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group) for any of these groups.
 - If the `remote_development` module is disabled for the GitLab agent,

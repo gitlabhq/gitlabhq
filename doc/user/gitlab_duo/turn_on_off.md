@@ -183,7 +183,7 @@ You can turn on GitLab Duo experiment and beta features for your group on GitLab
 
 Prerequisites:
 
-- You must have the Owner role in the top-level group.
+- You must have the Owner role for the top-level group.
 
 To turn on GitLab Duo experiment and beta features for a top-level group:
 

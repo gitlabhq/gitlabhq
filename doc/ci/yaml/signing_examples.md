@@ -111,13 +111,13 @@ described [above](#verification).
 
 ```yaml
 verify_image:
-  image: alpine:3.18
+  image: alpine:3.20
   stage: verify
   before_script:
     - apk add --update cosign docker
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - cosign verify "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" --certificate-identity "https://gitlab.com/my-group/my-project//path/to/.gitlab-ci.yml@refs/heads/main" --certificate-oidc-issuer "https://gitlab.com"
+    - cosign verify "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" --certificate-identity "https://gitlab.com/my-group/my-project//path/to/.gitlab-ci.yml@refs/heads/main" --certificate-oidc-issuer "https://gitlab.com"
 ```
 
 **Additional details**:

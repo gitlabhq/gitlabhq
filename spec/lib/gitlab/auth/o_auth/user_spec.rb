@@ -658,7 +658,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
                 uid: uid,
                 username: uid,
                 name: 'John Doe',
-                email: ['john@mail.com'],
+                email: ['John@mail.com'],
                 dn: dn
               )
             end
@@ -703,11 +703,13 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
             context "and LDAP user has an account already" do
               let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@mail.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
-              it "adds the omniauth identity to the LDAP account" do
+              before do
                 allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
 
                 oauth_user.save # rubocop:disable Rails/SaveBang
+              end
 
+              it "adds the omniauth identity to the LDAP account" do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
                 expect(gl_user.name).to eql 'John Doe'
@@ -720,6 +722,16 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
+              end
+
+              it "has name and email set as synced" do
+                expect(gl_user.user_synced_attributes_metadata.name_synced).to be_truthy
+                expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
+              end
+
+              it "has name and email set as read-only" do
+                expect(gl_user.read_only_attribute?(:name)).to be_truthy
+                expect(gl_user.read_only_attribute?(:email)).to be_truthy
               end
             end
           end

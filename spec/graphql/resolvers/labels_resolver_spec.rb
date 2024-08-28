@@ -48,6 +48,20 @@ RSpec.describe Resolvers::LabelsResolver do
       end
     end
 
+    context 'with mutually exclusive arguments' do
+      let(:params) do
+        {
+          title: 'matching', search_term: 'anything'
+        }
+      end
+
+      it 'returns a top-level error' do
+        expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError) do
+          resolve_labels(project, params)
+        end
+      end
+    end
+
     describe 'association preloading' do
       let_it_be(:project) { create(:project, :private, group: sub_subgroup) }
 

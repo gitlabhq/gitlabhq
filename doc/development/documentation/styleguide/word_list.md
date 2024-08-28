@@ -997,7 +997,7 @@ and should leave it off when you can.
 
 Use **GitLab Duo Workflow**. After first use, use **Duo Workflow**.
 
-Do not use **Workflow** by itself. 
+Do not use **Workflow** by itself.
 
 ## GitLab Flavored Markdown
 
@@ -1815,13 +1815,13 @@ Use lowercase for **review app**.
 
 A user has a role **for** a project or group.
 
-Use: 
+Use:
 
 - You must have the Owner role for the group.
 
 Instead of:
 
-- You must have the Owner role in the group.
+- You must have the Owner role for the group.
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 

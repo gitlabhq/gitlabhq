@@ -282,7 +282,7 @@ module Gitlab
 
           if creating_linked_ldap_user?
             metadata.set_attribute_synced(:name, true) if gl_user.name == ldap_person.name
-            metadata.set_attribute_synced(:email, true) if gl_user.email == ldap_person.email&.first
+            metadata.set_attribute_synced(:email, true) if gl_user.email.downcase == ldap_person.email&.first&.downcase
             metadata.provider = ldap_person.provider
           end
         end

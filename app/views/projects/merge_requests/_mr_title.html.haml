@@ -12,9 +12,9 @@
       - c.with_body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.gl-block.gl-pt-5{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
+  .detail-page-header.border-bottom-0.gl-block.gl-pt-5.gl-gap-4{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
     .detail-page-header-body
-      %h1.title.gl-heading-1.gl-my-0.gl-block.gl-grow.gl-break-anywhere{ class: '!gl-m-0', data: { testid: 'title-content' } }
+      %h1.title.gl-heading-1.gl-block.gl-grow.gl-break-anywhere{ class: '!gl-m-0', data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle

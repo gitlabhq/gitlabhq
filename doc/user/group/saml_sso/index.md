@@ -424,11 +424,11 @@ automatically confirms user accounts. Users still receive an
 
 Prerequisites:
 
-- You must have the Owner role in the group that the enterprise user belongs to.
+- You must have the Owner role for the group that the enterprise user belongs to.
 - The group SSO must be enabled.
 
 You can disable password authentication for the group's [enterprise users](../../enterprise_user/index.md).
-This stops enterprise users from using their username and password to authenticate. 
+This stops enterprise users from using their username and password to authenticate.
 Instead, these users can do either of the following:
 
 - Use the group's SAML IdP to authenticate with GitLab web UI.

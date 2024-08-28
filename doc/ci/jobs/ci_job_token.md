@@ -106,7 +106,7 @@ Add groups or projects to the allowlist only when cross-project access is needed
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the current project. If the allowed project
+- You must have at least the Maintainer role for the current project. If the allowed project
   is internal or private, you must have at least the Guest role in that project.
 - You must not have more than 200 groups and projects added to the allowlist.
 

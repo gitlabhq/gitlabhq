@@ -72,7 +72,7 @@ Prerequisites:
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
 - A project in the group. This project will be linked to the verified domains, and should not be deleted.
-- You must have the Owner role in the top-level group.
+- You must have the Owner role for the top-level group.
 
 Domain verification applies at the top-level group and to all subgroups and projects
 nested under that top-level parent group.
