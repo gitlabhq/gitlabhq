@@ -880,6 +880,11 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
+msgid "%{groupsLength} group"
+msgid_plural "%{groupsLength} groups"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{host} connection failed: %{error}."
 msgstr ""
 
@@ -5521,6 +5526,16 @@ msgstr ""
 
 msgid "All projects"
 msgstr ""
+
+msgid "All projects in %{groupsLength} group with exceptions:"
+msgid_plural "All projects in %{groupsLength} groups with exceptions:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "All projects in %{groupsLength} group:"
+msgid_plural "All projects in %{groupsLength} groups:"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "All projects selected"
 msgstr ""
@@ -48453,6 +48468,9 @@ msgstr[1] ""
 msgid "SecurityOrchestration|%{state} and %{statuses}"
 msgstr ""
 
+msgid "SecurityOrchestration|(%{groups})"
+msgstr ""
+
 msgid "SecurityOrchestration|+%{numberOfAdditionalLabels} more"
 msgstr ""
 
@@ -48493,6 +48511,9 @@ msgid "SecurityOrchestration|Add regular branches"
 msgstr ""
 
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
+msgstr ""
+
+msgid "SecurityOrchestration|All projects in linked groups"
 msgstr ""
 
 msgid "SecurityOrchestration|All projects in the group."
@@ -48675,6 +48696,9 @@ msgstr ""
 msgid "SecurityOrchestration|Exception branches"
 msgstr ""
 
+msgid "SecurityOrchestration|Exception projects"
+msgstr ""
+
 msgid "SecurityOrchestration|Exceptions"
 msgstr ""
 
@@ -48763,6 +48787,9 @@ msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
 msgid "SecurityOrchestration|License Scan"
+msgstr ""
+
+msgid "SecurityOrchestration|Linked groups"
 msgstr ""
 
 msgid "SecurityOrchestration|List branches in the format %{boldStart}branch-name@group-name/project-name,%{boldEnd} separated by a comma (,)."
@@ -63971,7 +63998,9 @@ msgid "frontmatter"
 msgstr ""
 
 msgid "group"
-msgstr ""
+msgid_plural "groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "group access token"
 msgstr ""

@@ -90,19 +90,40 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
   end
 
   describe '#rolled_up_counts_by_type' do
-    subject { described_class.new(work_item_parent).rolled_up_counts_by_type }
+    let_it_be(:work_item) { create(:work_item, :epic, namespace: group) }
+    let_it_be(:sub_epic) { create(:work_item, :epic, :closed, namespace: group) }
+    let_it_be(:sub_sub_epic) { create(:work_item, :epic, namespace: group) }
+    let_it_be(:sub_epic_2) { create(:work_item, :epic, namespace: group) }
+    let_it_be(:sub_issue) { create(:work_item, :issue, :closed, project: project) }
+    let_it_be(:sub_issue_2) { create(:work_item, :issue, project: project) }
+    let_it_be(:sub_task) { create(:work_item, :task, project: project) }
+
+    subject { described_class.new(work_item).rolled_up_counts_by_type }
+
+    before_all do
+      create(:parent_link, work_item_parent: work_item, work_item: sub_epic)
+      create(:parent_link, work_item_parent: sub_epic, work_item: sub_sub_epic)
+      create(:parent_link, work_item_parent: sub_epic, work_item: sub_issue)
+      create(:parent_link, work_item_parent: sub_issue, work_item: sub_task)
+      create(:parent_link, work_item_parent: work_item, work_item: sub_epic_2)
+      create(:parent_link, work_item_parent: sub_epic_2, work_item: sub_issue_2)
+    end
 
     it 'returns placeholder data' do
-      is_expected.to eq([
+      is_expected.to contain_exactly(
+        {
+          work_item_type: WorkItems::Type.default_by_type(:epic),
+          counts_by_state: { all: 3, opened: 2, closed: 1 }
+        },
         {
           work_item_type: WorkItems::Type.default_by_type(:issue),
-          counts_by_state: { all: 0, opened: 0, closed: 0 }
+          counts_by_state: { all: 2, opened: 1, closed: 1 }
         },
         {
           work_item_type: WorkItems::Type.default_by_type(:task),
-          counts_by_state: { all: 0, opened: 0, closed: 0 }
+          counts_by_state: { all: 1, opened: 1, closed: 0 }
         }
-      ])
+      )
     end
   end
 end

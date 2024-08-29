@@ -7,6 +7,7 @@
 module WorkItems
   class Type < ApplicationRecord
     include IgnorableColumns
+    include Gitlab::Utils::StrongMemoize
 
     DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
 
@@ -159,6 +160,25 @@ module WorkItems
 
       cached_data || allowed_parent_types_by_name
     end
+
+    def descendant_types
+      descendant_types = []
+      next_level_child_types = allowed_child_types(cache: true)
+
+      loop do
+        descendant_types += next_level_child_types
+
+        # We remove types that we've already seen to avoid circular dependencies
+        next_level_child_types = next_level_child_types.flat_map do |type|
+          type.allowed_child_types(cache: true)
+        end - descendant_types
+
+        break if next_level_child_types.empty?
+      end
+
+      descendant_types
+    end
+    strong_memoize_attr :descendant_types
 
     private
 

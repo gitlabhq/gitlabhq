@@ -3,6 +3,8 @@
 module WorkItems
   module Widgets
     class Hierarchy < Base
+      include Gitlab::Utils::StrongMemoize
+
       def parent
         work_item.work_item_parent
       end
@@ -20,17 +22,9 @@ module WorkItems
       end
 
       def rolled_up_counts_by_type
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/474913
-        [
-          {
-            work_item_type: WorkItems::Type.default_by_type(:issue),
-            counts_by_state: { all: 0, opened: 0, closed: 0 }
-          },
-          {
-            work_item_type: WorkItems::Type.default_by_type(:task),
-            counts_by_state: { all: 0, opened: 0, closed: 0 }
-          }
-        ]
+        work_item.work_item_type.descendant_types.map do |descendant_type|
+          { work_item_type: descendant_type, counts_by_state: counts_by_state(descendant_type) }
+        end
       end
 
       def self.quick_action_commands
@@ -52,6 +46,26 @@ module WorkItems
           { children: value }
         end
       end
+
+      private
+
+      def counts_by_state(work_item_type)
+        open_count = counts_by_type_and_state.fetch([work_item_type.id, WorkItem.available_states[:opened]], 0)
+        closed_count = counts_by_type_and_state.fetch([work_item_type.id, WorkItem.available_states[:closed]], 0)
+
+        {
+          all: open_count + closed_count,
+          opened: open_count,
+          closed: closed_count
+        }
+      end
+
+      def counts_by_type_and_state
+        work_item.descendants
+          .group(:work_item_type_id, :state_id)
+          .count
+      end
+      strong_memoize_attr :counts_by_type_and_state
     end
   end
 end

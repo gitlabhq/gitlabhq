@@ -184,7 +184,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 hasParent
                 rolledUpCountsByType {
                   workItemType {
-                    id
+                    name
                   }
                   countsByState {
                     all
@@ -213,18 +213,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'hasParent' => false,
                 'rolledUpCountsByType' => match_array([
                   hash_including(
-                    'workItemType' => hash_including('id' => anything),
+                    'workItemType' => hash_including('name' => 'Task'),
                     'countsByState' => {
-                      'all' => 0,
-                      'opened' => 0,
-                      'closed' => 0
-                    }
-                  ),
-                  hash_including(
-                    'workItemType' => hash_including('id' => anything),
-                    'countsByState' => {
-                      'all' => 0,
-                      'opened' => 0,
+                      'all' => 2,
+                      'opened' => 2,
                       'closed' => 0
                     }
                   )

@@ -324,6 +324,24 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
+  describe '#descendant_types' do
+    let(:epic_type) { create(:work_item_type, :non_default) }
+    let(:issue_type) { create(:work_item_type, :non_default) }
+    let(:task_type) { create(:work_item_type, :non_default) }
+
+    subject { epic_type.descendant_types }
+
+    before do
+      create(:hierarchy_restriction, parent_type: epic_type, child_type: epic_type)
+      create(:hierarchy_restriction, parent_type: epic_type, child_type: issue_type)
+      create(:hierarchy_restriction, parent_type: issue_type, child_type: task_type)
+    end
+
+    it 'returns all possible descendant types' do
+      is_expected.to contain_exactly(epic_type, issue_type, task_type)
+    end
+  end
+
   describe '#calculate_reactive_cache' do
     let(:work_item_type) { build(:work_item_type) }
 

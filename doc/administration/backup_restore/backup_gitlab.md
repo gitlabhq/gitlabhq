@@ -284,6 +284,8 @@ Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
 
+For detailed information about the backup process, see [Backup archive process](backup_archive_process.md).
+
 ### Backup options
 
 The command-line tool GitLab provides to back up your instance can accept more

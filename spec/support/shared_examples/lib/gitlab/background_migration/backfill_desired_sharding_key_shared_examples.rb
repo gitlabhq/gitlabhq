@@ -6,6 +6,9 @@ RSpec.shared_examples 'desired sharding key backfill job' do
       sbom_occurrences_vulnerabilities: {
         sbom_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
       },
+      vulnerability_occurrence_identifiers: {
+        vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
+      },
       vulnerability_occurrence_pipelines: {
         vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },
