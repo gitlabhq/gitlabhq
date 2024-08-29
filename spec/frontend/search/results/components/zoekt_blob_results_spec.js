@@ -1,21 +1,16 @@
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlCard } from '@gitlab/ui';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 
 import EmptyResult from '~/search/results/components/result_empty.vue';
 import { MOCK_QUERY, mockGetBlobSearchQuery } from '../../mock_data';
 
 jest.mock('~/alert');
 
-Vue.use(VueApollo);
 Vue.use(Vuex);
 
 describe('ZoektBlobResults', () => {
@@ -25,28 +20,22 @@ describe('ZoektBlobResults', () => {
     currentScope: jest.fn(() => 'blobs'),
   };
 
-  const blobSearchHandler = jest.fn().mockResolvedValue(mockGetBlobSearchQuery);
-  const mockQueryLoading = jest.fn().mockReturnValue(new Promise(() => {}));
-  const mockQueryEmpty = jest.fn().mockReturnValue({});
-  const mockQueryError = jest.fn().mockRejectedValue(new Error('Network error'));
+  const defaultState = { ...MOCK_QUERY, query: { scope: 'blobs' }, searchType: 'zoekt' };
+  const defaultProps = { hasResults: true, isLoading: false, blobSearch: {} };
 
-  const createComponent = ({
-    initialState = { query: { scope: 'blobs' }, searchType: 'zoekt' },
-    queryHandler = blobSearchHandler,
-  } = {}) => {
-    const requestHandlers = [[getBlobSearchQuery, queryHandler]];
-    const apolloProvider = createMockApollo(requestHandlers);
-
+  const createComponent = ({ initialState = {}, propsData = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
-        query: MOCK_QUERY,
+        ...defaultState,
         ...initialState,
       },
       getters: getterSpies,
     });
-    // apolloMock = createMockApollo([[getBlobSearchQuery, blobSearchHandler]]);
     wrapper = shallowMountExtended(ZoektBlobResults, {
-      apolloProvider,
+      propsData: {
+        ...defaultProps,
+        ...propsData,
+      },
       store,
       stubs: {
         GlCard,
@@ -60,7 +49,7 @@ describe('ZoektBlobResults', () => {
   describe('when loading results', () => {
     beforeEach(async () => {
       createComponent({
-        queryHandler: mockQueryLoading,
+        propsData: { isLoading: true },
       });
       jest.advanceTimersByTime(500);
       await waitForPromises();
@@ -73,7 +62,11 @@ describe('ZoektBlobResults', () => {
 
   describe('when component loads normally', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent({
+        propsData: {
+          blobSearch: mockGetBlobSearchQuery.data.blobSearch,
+        },
+      });
       jest.advanceTimersByTime(500);
       await waitForPromises();
     });
@@ -87,7 +80,7 @@ describe('ZoektBlobResults', () => {
   describe('when component has no results', () => {
     beforeEach(async () => {
       createComponent({
-        queryHandler: mockQueryEmpty,
+        propsData: { hasResults: false },
       });
       jest.advanceTimersByTime(500);
       await waitForPromises();
@@ -96,22 +89,6 @@ describe('ZoektBlobResults', () => {
     it(`renders component properly`, async () => {
       await nextTick();
       expect(findEmptyResult().exists()).toBe(true);
-    });
-  });
-
-  describe('when component has load error', () => {
-    beforeEach(async () => {
-      createComponent({ queryHandler: mockQueryError });
-      jest.runOnlyPendingTimers();
-      await nextTick();
-    });
-
-    it('calls createAlert', () => {
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Could not load search results. Please refresh the page to try again.',
-        captureError: true,
-        error: expect.any(Error),
-      });
     });
   });
 });

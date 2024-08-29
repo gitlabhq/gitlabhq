@@ -51,7 +51,7 @@ export default {
     <div
       v-for="(chunk, index) in chunksToShow(file)"
       :key="`chunk${index}`"
-      class="chunks-block gl-border-slate-400 gl-border-b last:gl-border-0"
+      class="chunks-block gl-border-b gl-border-subtle last:gl-border-0"
     >
       <blob-chunks :chunk="chunk" :blame-link="file.blameUrl" :file-url="file.fileUrl" />
     </div>

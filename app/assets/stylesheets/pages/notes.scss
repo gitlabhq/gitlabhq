@@ -35,6 +35,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   .main-notes-list::before {
     background: var(--gray-50, $gray-50);
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark .modal-body & {
       background: var(--gray-100, $gray-100);
     }
@@ -43,10 +44,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   .timeline-entry:not(.draft-note):last-child::before {
     background: var(--white);
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       background: var(--gray-10);
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark .modal-body & {
       background: var(--gray-50, $gray-50);
     }
@@ -98,6 +101,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         border-radius: $gl-border-radius-base;
         padding: $gl-padding-4 $gl-padding-8;
 
+        // stylelint-disable-next-line gitlab/no-gl-class
         .gl-dark & {
           @apply gl-bg-strong;
           border-color: var(--gl-background-color-default);
@@ -136,6 +140,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               border-top-right-radius: $gl-border-radius-base;
               padding: $gl-padding-4 $gl-padding-8;
 
+              // stylelint-disable-next-line gitlab/no-gl-class
               .gl-dark & {
                 @apply gl-bg-strong;
                 border-bottom-color: var(--gl-background-color-default);
@@ -197,6 +202,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
                 @apply gl-border-b;
                 @apply gl-border-b-subtle;
 
+                // stylelint-disable-next-line gitlab/no-gl-class
                 .gl-dark & {
                   @apply gl-bg-strong;
                   border-bottom-color: var(--gl-background-color-default);
@@ -585,6 +591,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
         @apply gl-bg-default;
 
+        // stylelint-disable-next-line gitlab/no-gl-class
         .gl-dark & {
           @apply gl-bg-strong;
           border-bottom-color: var(--gl-background-color-default);
@@ -766,6 +773,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     padding: $gl-padding-8 !important;
     @include gl-border;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       @apply gl-bg-strong;
       @apply gl-border-b;

@@ -1335,7 +1335,7 @@ entry.
 - [Add UserStarredProjectsResolver sort argument](https://gitlab.com/gitlab-org/gitlab/-/commit/077ca496eaadc0a9383a552ed32294233de2f7e7) by @jzeng88 ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153651))
 - [Migrates gl-display-inline-flex to gl-inline-flex](https://gitlab.com/gitlab-org/gitlab/-/commit/3aa4f990bde82a9c6fb59d7c726a02bddc693cea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154887))
 - [Multiple frameworks labels](https://gitlab.com/gitlab-org/gitlab/-/commit/ca5a43e01aadde03cf32218f62f7e56eb5709f05) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156570)) **GitLab Enterprise Edition**
-- [Add permissions checking to AI impact dashboard](https://gitlab.com/gitlab-org/gitlab/-/commit/23bf0938f52424ec382ba745b57375234b769949) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156555)) **GitLab Enterprise Edition**
+- [Add permissions checking to AI Impact Dashboard](https://gitlab.com/gitlab-org/gitlab/-/commit/23bf0938f52424ec382ba745b57375234b769949) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156555)) **GitLab Enterprise Edition**
 - [Admin settings: Migrate security settings to use SettingsBlock](https://gitlab.com/gitlab-org/gitlab/-/commit/467df2db45835010a9b4210982fe662f2f30e8b4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157043))
 - [Externalize strings on ldap_group_links](https://gitlab.com/gitlab-org/gitlab/-/commit/2fcc3e2fd12ea0c6813e7c88a1548c90cecf24e0) by @MAlvarez32 ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155271))
 - [Improve usability of environment folders](https://gitlab.com/gitlab-org/gitlab/-/commit/076d3d3a212c3a93ec60863090c3a0fa185ecd05) by @antonkalmykov ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157104))
@@ -2246,7 +2246,7 @@ entry.
 - [Rate limit project / group notifications per user](gitlab-org/gitlab@ea40bb22bfd028d687faeaaa6cf9734777decde0) ([merge request](gitlab-org/gitlab!153786))
 - [Allow redirecting wiki directories on rename](gitlab-org/gitlab@8b9d3640355e73b9ed6196aeeafb923d3cb8f3be) ([merge request](gitlab-org/gitlab!153289))
 - [Add NOT NULL constraint to "path_locks.project_id"](gitlab-org/gitlab@8630330b599fcd0e15cc28680fac9b0c31c0ebea) ([merge request](gitlab-org/gitlab!153090))
-- [Add metric start date tooltip to AI impact dashboard](gitlab-org/gitlab@8999b334c8612b21a553c2b14d7ef342700854f4) ([merge request](gitlab-org/gitlab!153141)) **GitLab Enterprise Edition**
+- [Add metric start date tooltip to AI Impact Dashboard](gitlab-org/gitlab@8999b334c8612b21a553c2b14d7ef342700854f4) ([merge request](gitlab-org/gitlab!153141)) **GitLab Enterprise Edition**
 - [Create parent links for imported epics](gitlab-org/gitlab@d6132daae948ef8daada9fbbb37e0d98f7337040) ([merge request](gitlab-org/gitlab!154445))
 - [Migrate d-inline-block to gl-inline-block](gitlab-org/gitlab@cb06f5c91a046b7b86dda6793d4c3a6ceff3b6d7) ([merge request](gitlab-org/gitlab!152739))
 - [Docs(Epic Header): add entry to describe counts](gitlab-org/gitlab@494803b1a5ba348ce7ea43c0d94960e8ca6f68f1) ([merge request](gitlab-org/gitlab!154391)) **GitLab Enterprise Edition**
@@ -3175,7 +3175,7 @@ entry.
 - [Include template in deprecated flafinder-sast job](gitlab-org/gitlab@7bce91fd3639660b11b7669831f9ddc0d13bbe50) ([merge request](gitlab-org/gitlab!151298))
 - [Add AzureRM support to orphan artifacts cleanup](gitlab-org/gitlab@627eb5411af6f76a03c067131c7846c5c8d9129d) ([merge request](gitlab-org/gitlab!140497))
 - [Fix work item child status icon color](gitlab-org/gitlab@e5770bc16824362e06c73d56957255c5500f60c7) ([merge request](gitlab-org/gitlab!151094))
-- [Use locale-specific formatting for numbers in the AI Impact dashboard](gitlab-org/gitlab@07a2c3c576b7d0574c0d649ac7931d14606b5305) ([merge request](gitlab-org/gitlab!150882)) **GitLab Enterprise Edition**
+- [Use locale-specific formatting for numbers in the AI Impact Dashboard](gitlab-org/gitlab@07a2c3c576b7d0574c0d649ac7931d14606b5305) ([merge request](gitlab-org/gitlab!150882)) **GitLab Enterprise Edition**
 - [Allows ml_model pending destruction](gitlab-org/gitlab@4b3d7a7eaf03cb799fdd91781347bcafdd9fa040) ([merge request](gitlab-org/gitlab!150808))
 - [Fixes issue with registry search query params when removed](gitlab-org/gitlab@2f13fba9b1c405de37dc7b618f5472f129859989) ([merge request](gitlab-org/gitlab!150934))
 - [MR list: Fix overlapping search icon](gitlab-org/gitlab@7421cb36c6481acafb30435cb81695ff97bf6a3c) ([merge request](gitlab-org/gitlab!151045))

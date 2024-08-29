@@ -38,7 +38,7 @@ fragment MergeRequestDashboardFragment on MergeRequest {
       ...CiIcon
     }
   }
-  userDiscussionsCount
+  userNotesCount
   createdAt
   updatedAt
   ...MergeRequestApprovalFragment

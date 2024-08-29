@@ -64,7 +64,7 @@ This extension provides these custom commands:
 
 | Command name                   | Default keyboard shortcut | Feature |
 |--------------------------------|---------------------------|---------|
-| `GitLab.ToggleCodeSuggestions` | not applicable            | Enable or disable automated code suggestions. |
+| `GitLab.ToggleCodeSuggestions` | not applicable            | Enable or disable automated Code Suggestions. |
 
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 

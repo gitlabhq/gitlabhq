@@ -9,6 +9,7 @@ const createState = ({
   groupInitialJson,
   projectInitialJson,
   defaultBranchName,
+  repositoryRef,
 }) => ({
   urlQuery: cloneDeep(query),
   query,
@@ -33,6 +34,7 @@ const createState = ({
   groupInitialJson,
   projectInitialJson,
   defaultBranchName,
+  repositoryRef,
 });
 
 export default createState;

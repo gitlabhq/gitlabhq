@@ -470,6 +470,19 @@ vulnerability_export_parts:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+vulnerability_exports:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: namespaces
+    column: group_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_delete
 vulnerability_feedback:
   - table: ci_pipelines
     column: pipeline_id

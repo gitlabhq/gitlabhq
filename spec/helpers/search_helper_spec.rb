@@ -1189,8 +1189,12 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   end
 
   describe '#should_show_zoekt_results?' do
+    before do
+      allow(self).to receive(:current_user).and_return(nil)
+    end
+
     it 'returns false for any scope and search type' do
-      expect(should_show_zoekt_results?(:any_scope, :any_type)).to be false
+      expect(should_show_zoekt_results?(:some_scope, :some_type)).to be false
     end
   end
 end

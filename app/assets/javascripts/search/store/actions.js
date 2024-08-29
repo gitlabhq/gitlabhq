@@ -118,7 +118,7 @@ export const setQuery = ({ state, commit, getters }, { key, value }) => {
     getters.currentScope === SCOPE_BLOB &&
     gon.features.zoektMultimatchFrontend
   ) {
-    const newUrl = setUrlParams({ ...state.query, page: null }, window.location.href, false, true);
+    const newUrl = setUrlParams({ ...state.query }, window.location.href, false, true);
     updateHistory({ state: state.query, url: newUrl, replace: true });
   }
 };

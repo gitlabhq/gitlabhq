@@ -13,7 +13,7 @@ const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
   if (!el) return {};
 
-  const { navigationJson, searchType, searchLevel, groupInitialJson, projectInitialJson } =
+  const { navigationJson, searchType, searchLevel, groupInitialJson, projectInitialJson, ref } =
     el.dataset;
 
   const navigationJsonParsed = JSON.parse(navigationJson);
@@ -26,6 +26,7 @@ const sidebarInitState = () => {
     searchLevel,
     groupInitialJsonParsed,
     projectInitialJsonParsed,
+    ref,
   };
 };
 
@@ -49,6 +50,7 @@ export const initSearchApp = () => {
     searchLevel,
     groupInitialJsonParsed: groupInitialJson,
     projectInitialJsonParsed: projectInitialJson,
+    ref,
   } = sidebarInitState() || {};
 
   const { defaultBranchName } = topBarInitState() || {};
@@ -61,6 +63,7 @@ export const initSearchApp = () => {
     groupInitialJson,
     projectInitialJson,
     defaultBranchName,
+    repositoryRef: ref,
   });
 
   initTopbar(store);

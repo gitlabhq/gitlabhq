@@ -127,9 +127,32 @@ back into Sidekiq to be retried.
 
 ## Define an event
 
-An `Event` object represents a domain event that occurred in a bounded context.
-Notify other bounded contexts about something
-that happened by publishing events, so that they can react to it.
+An `Event` object represents a domain event that occurred in a [bounded context](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).
+Producers can notify other bounded contexts about something that happened by publishing events, so that they can react to it. An event should be named `<domain_object><action>Event`, where the `action` is in past tense, e.g. `ReviewerAddedEvent` instead of `AddReviewerEvent`. The `domain_object` may be elided when it is obvious based on the bounded context, e.g. `MergeRequest::ApprovedEvent` instead of `MergeRequest::MergeRequestApprovedEvent`.
+
+### Guidance for good events
+
+Events are a public interface, just like an API or a UI. Collaborate with your
+product and design counterparts to ensure new events will address the needs of
+subscribers. Whenever possible, new events should strive to meet the following
+principles:
+
+- **Semantic**: Events should describe what occurred within the bounded context, _not_ the intended
+  action for subscribers.
+- **Specific**: Events should be narrowly defined without being overly precise. This minimizes the
+  amount of event filtering that subscribers have to perform, as well as the number of unique events
+  to which they need to subscribe. Consider using properties to communicate additional information.
+- **Scoped**: Events should be scoped to their bounded context. Avoid publishing events about domain objects that are not contained by your bounded context.
+
+#### Examples
+
+| Principle | Good | Bad |
+| --- | --- | --- |
+| Semantic | `MergeRequest::ApprovedEvent` | `MergeRequest::NotifyAuthorEvent` |
+| Specific | `MergeRequest::ReviewerAddedEvent` | &bull;&nbsp;`MergeRequest::ChangedEvent` <br> &bull;&nbsp;`MergeRequest::CodeownerAddedAsReviewerEvent` |
+| Scoped | `MergeRequest::CreatedEvent` | `Project::MergeRequestCreatedEvent` |
+
+### Creating the event schema
 
 Define new event classes under `app/events/<namespace>/` with a name representing something that happened in the past:
 

@@ -144,7 +144,7 @@ Prerequisites:
    what you want to build. Code Generation treats your code comments like chat. Your code comments
    update the `user_instruction`, and then improve the next results you receive.
 
-As you work, GitLab Duo provides code suggestions that use your other open files
+As you work, GitLab Duo provides Code Suggestions that use your other open files
 (within [truncation limits](#truncation-of-file-content))
 as extra context.
 

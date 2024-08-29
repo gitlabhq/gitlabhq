@@ -43,6 +43,7 @@
 .branches-list .branch-item:not(:last-of-type) {
   border-bottom: 1px solid $border-color;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dark & {
     border-bottom-color: $gray-800;
   }

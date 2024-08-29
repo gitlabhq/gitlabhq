@@ -51,11 +51,6 @@ describe('BlobFooter', () => {
   describe('component with too many results', () => {
     beforeEach(() => {
       createComponent({
-        // matchCountTotal: 100,
-        // matchCount: 100,
-        // filePath: 'test/file.js',
-        // projectPath: 'Testjs/Test',
-        // fileLink: 'https://gitlab.com/test/file.js',
         file: {
           ...mockDataForBlobBody,
           chunks: [

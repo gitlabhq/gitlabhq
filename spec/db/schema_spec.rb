@@ -36,7 +36,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     snippets: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
-    users: [%w[accepted_term_id]]
+    users: [%w[accepted_term_id]],
+    subscription_add_on_purchases: [["subscription_add_on_id"]] # index handled via composite index with namespace_id
   }.with_indifferent_access.freeze
 
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.

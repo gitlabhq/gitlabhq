@@ -23,6 +23,7 @@ import {
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { collapseSystemNotes } from '~/work_items/notes/collapse_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemHistoryOnlyFilterNote from '~/work_items/components/notes/work_item_history_only_filter_note.vue';
@@ -284,6 +285,18 @@ export default {
     reportAbuse(isOpen, reply = {}) {
       this.$emit('openReportAbuse', reply);
     },
+    noteId(note) {
+      return getIdFromGraphQLId(note.id);
+    },
+    isHashTargeted(discussion) {
+      return (
+        discussion.notes.nodes.length &&
+        discussion.notes.nodes.some((note) => this.targetNoteHash === `note_${this.noteId(note)}`)
+      );
+    },
+    isDiscussionExpandedOnLoad(discussion) {
+      return !this.isDiscussionResolved(discussion) || this.isHashTargeted(discussion);
+    },
     isDiscussionResolved(discussion) {
       return discussion.notes.nodes[0]?.discussion?.resolved;
     },
@@ -390,7 +403,7 @@ export default {
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="isWorkItemConfidential"
-                :is-expanded-on-load="!isDiscussionResolved(discussion)"
+                :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @reportAbuse="reportAbuse(true, $event)"
                 @error="$emit('error', $event)"

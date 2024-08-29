@@ -8,6 +8,7 @@ import createState from '~/badges/store/state';
 import mutations from '~/badges/store/mutations';
 import actions from '~/badges/store/actions';
 import BadgeList from '~/badges/components/badge_list.vue';
+import Badge from '~/badges/components/badge.vue';
 import { createDummyBadge } from '../dummy_badge';
 
 Vue.use(Vuex);
@@ -27,6 +28,7 @@ describe('BadgeList component', () => {
   const findButtons = () => wrapper.findByTestId('badge-actions').findAllComponents(GlButton);
   const findEditButton = () => wrapper.findByTestId('edit-badge-button');
   const findDeleteButton = () => wrapper.findByTestId('delete-badge');
+  const findBadge = () => wrapper.findComponent(Badge);
 
   const createComponent = (customState) => {
     mockedActions = Object.fromEntries(Object.keys(actions).map((name) => [name, jest.fn()]));
@@ -100,10 +102,7 @@ describe('BadgeList component', () => {
     });
 
     it('renders the badge', () => {
-      const badgeImage = wrapper.find('.project-badge');
-
-      expect(badgeImage.exists()).toBe(true);
-      expect(badgeImage.attributes('src')).toBe(badges[0].renderedImageUrl);
+      expect(findBadge().props('imageUrl')).toBe(badges[0].renderedImageUrl);
     });
 
     it('renders the badge name', () => {

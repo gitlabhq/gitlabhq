@@ -27,7 +27,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
    1. If you'd like to test that Code Suggestions is working from inside the VS Code Extension, then follow the [steps to set up a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
       - Once you complete the steps below, to test you are hitting your local `/code_suggestions/completions` endpoint and not production, follow these steps:
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
-        1. Open a new file inside of this VS Code window and begin typing to see code suggestions in action.
+        1. Open a new file inside of this VS Code window and begin typing to see Code Suggestions in action.
         1. You will see completion request URLs being fetched that match the Git remote URL for your GDK.
 
 1. Main Application (GDK):
@@ -35,7 +35,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
    1. Enable Feature Flag ```ai_duo_code_suggestions_switch```:
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
-      1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
+      1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the Code Suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
    1. [Setup AI Gateway](../ai_features/index.md#required-install-ai-gateway).
    1. Run your GDK server with `gdk start` if it's not already running.
 

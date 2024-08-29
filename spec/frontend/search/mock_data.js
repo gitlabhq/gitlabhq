@@ -906,6 +906,19 @@ export const defaultProvide = {
   },
 };
 
+export const mockGetBlobSearchQueryEmpty = {
+  data: {
+    blobSearch: {
+      fileCount: 0,
+      files: [],
+      matchCount: 0,
+      perPage: 0,
+      searchLevel: 'PROJECT',
+      searchType: 'ZOEKT',
+    },
+  },
+};
+
 export const mockGetBlobSearchQuery = {
   data: {
     blobSearch: {

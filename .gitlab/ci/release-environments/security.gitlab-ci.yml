@@ -103,6 +103,7 @@ release-environments-qa:
     - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
   retry:
     max: 2
+    when: always
 
 release-environments-notification-failure:
   stage: finish

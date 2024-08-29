@@ -60,6 +60,7 @@
   }
 
   .dark-mode-override {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       background-color: $white;
     }

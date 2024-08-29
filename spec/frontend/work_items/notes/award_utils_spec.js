@@ -18,7 +18,7 @@ function getFirstNote(workItem) {
 }
 
 describe('Work item note award utils', () => {
-  const workItem = getWorkItem(mockWorkItemNotesResponseWithComments.data);
+  const workItem = getWorkItem(mockWorkItemNotesResponseWithComments().data);
   const firstNote = getFirstNote(workItem);
   const fullPath = 'test-project-path';
   const workItemIid = workItem.iid;
@@ -60,7 +60,7 @@ describe('Work item note award utils', () => {
       apolloProvider.clients.defaultClient.writeQuery({
         query: workItemNotesByIidQuery,
         variables: { fullPath, iid: workItemIid },
-        ...mockWorkItemNotesResponseWithComments,
+        ...mockWorkItemNotesResponseWithComments(),
       });
     });
 

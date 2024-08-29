@@ -303,7 +303,7 @@ subscription aiCompletionResponse(
 }
 ```
 
-The [subscription for chat](duo_chat.md#graphql-subscription) behaves differently.
+The [subscription for Chat](duo_chat.md#graphql-subscription) behaves differently.
 
 To not have many concurrent subscriptions, you should also only subscribe to the subscription once the mutation is sent by using [`skip()`](https://apollo.vuejs.org/guide-option/subscriptions.html#skipping-the-subscription).
 

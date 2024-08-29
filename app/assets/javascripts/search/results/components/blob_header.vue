@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { s__ } from '~/locale';
@@ -8,6 +9,7 @@ export default {
   components: {
     FileIcon,
     ClipboardButton,
+    GlLink,
   },
   props: {
     filePath: {
@@ -39,7 +41,7 @@ export default {
   <div class="file-header-content gl-flex gl-items-center gl-leading-1">
     <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
 
-    <a :href="fileUrl" :title="$options.i18n.fileLink">
+    <gl-link :href="fileUrl" :title="$options.i18n.fileLink">
       <template v-if="projectPath">
         <strong class="project-path-content" data-testid="project-path-content"
           >{{ projectPath }}:
@@ -47,7 +49,7 @@ export default {
       </template>
 
       <strong class="file-name-content" data-testid="file-name-content">{{ filePath }}</strong>
-    </a>
+    </gl-link>
     <clipboard-button
       :text="filePath"
       :gfm="gfmCopyText"

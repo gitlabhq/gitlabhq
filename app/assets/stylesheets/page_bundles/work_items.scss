@@ -287,6 +287,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     width: 100%;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, $white 100%);
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       background: linear-gradient(180deg, rgba(31, 30, 36, 0.00) 0%, $gray-950 100%);
     }
@@ -296,6 +297,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     pointer-events: auto;
     background-color: $white;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       background-color: $gray-950;
     }
@@ -306,6 +308,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
       flex: 1;
       border-top: 1px solid $gray-50;
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       .gl-dark & {
         border-top: 1px solid $gray-900;
       }

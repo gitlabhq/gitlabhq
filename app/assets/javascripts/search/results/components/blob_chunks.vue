@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
+import { s__ } from '~/locale';
 
 export default {
   name: 'BlobChunks',
@@ -11,6 +12,10 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
+  },
+  i18n: {
+    viewBlame: s__('GlobalSearch|View blame'),
+    viewLine: s__('GlobalSearch|View line in repository'),
   },
   props: {
     chunk: {
@@ -56,24 +61,26 @@ export default {
               <gl-link
                 v-gl-tooltip
                 :href="`${blameLink}#L${line.lineNumber}`"
-                :title="__('View blame')"
+                :title="$options.i18n.viewBlame"
                 class="js-navigation-open"
                 ><gl-icon name="git"
               /></gl-link>
             </span>
-            <span class="diff-line-num flex-grow-1 gl-pr-3">
+            <span class="diff-line-num gl-grow gl-pr-3">
               <gl-link
                 v-gl-tooltip
                 :href="`${fileUrl}#L${line.lineNumber}`"
-                :title="__('View Line in repository')"
+                :title="$options.i18n.viewLine"
                 class="!gl-flex gl-items-center gl-justify-end"
                 >{{ line.lineNumber }}</gl-link
               >
             </span>
           </div>
         </div>
-        <pre class="code highlight flex-grow-1" data-testid="search-blob-line-code">
-          <span v-safe-html="highlightedRichText(line.richText)"></span>
+        <pre class="code highlight gl-grow" data-testid="search-blob-line-code">
+          <code class="!gl-inline">
+            <span v-safe-html="highlightedRichText(line.richText)" class="line"></span>
+          </code>
         </pre>
       </div>
     </div>

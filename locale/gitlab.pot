@@ -24828,7 +24828,7 @@ msgstr ""
 msgid "GlobalSearch|Commits"
 msgstr ""
 
-msgid "GlobalSearch|Could not load search results. Please refresh the page to try again."
+msgid "GlobalSearch|Could not load search results. Refresh the page to try again."
 msgstr ""
 
 msgid "GlobalSearch|Explore"
@@ -25020,6 +25020,21 @@ msgstr ""
 msgid "GlobalSearch|Show more"
 msgstr ""
 
+msgid "GlobalSearch|Showing 1 code result for %{term}"
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "GlobalSearch|Showing 1 code result for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}"
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "GlobalSearch|Showing 1 code result for %{term} in group %{groupNameLink}"
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in group %{groupNameLink}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "GlobalSearch|Showing top %{maxItems}"
 msgstr ""
 
@@ -25057,6 +25072,12 @@ msgid "GlobalSearch|Type to filter labels."
 msgstr ""
 
 msgid "GlobalSearch|Users"
+msgstr ""
+
+msgid "GlobalSearch|View blame"
+msgstr ""
+
+msgid "GlobalSearch|View line in repository"
 msgstr ""
 
 msgid "GlobalSearch|View syntax options."
@@ -59389,9 +59410,6 @@ msgid "View"
 msgstr ""
 
 msgid "View File Metadata"
-msgstr ""
-
-msgid "View Line in repository"
 msgstr ""
 
 msgid "View Stage: %{title}"

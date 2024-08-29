@@ -70,7 +70,7 @@ describe('BlobChunks', () => {
       expect(findGlLink().at(0).findComponent(GlIcon).props('name')).toBe('git');
 
       expect(findGlLink().at(1).attributes('href')).toBe('https://gitlab.com/file/test.js#L1');
-      expect(findGlLink().at(1).attributes('title')).toBe('View Line in repository');
+      expect(findGlLink().at(1).attributes('title')).toBe('View line in repository');
       expect(findGlLink().at(1).text()).toBe('1');
     });
   });
