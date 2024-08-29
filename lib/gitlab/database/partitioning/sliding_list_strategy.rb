@@ -177,11 +177,11 @@ module Gitlab
         end
 
         def with_lock_retries(&block)
-          Gitlab::Database::WithLockRetries.new(
+          Gitlab::Database::Partitioning::WithPartitioningLockRetries.new(
             klass: self.class,
             logger: Gitlab::AppLogger,
             connection: model.connection
-          ).run(&block)
+          ).run(raise_on_exhaustion: true, &block)
         end
       end
     end
