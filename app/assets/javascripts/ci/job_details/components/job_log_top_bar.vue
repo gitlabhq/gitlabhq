@@ -4,7 +4,6 @@ import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__, sprintf } from '~/locale';
 import { compactJobLog } from '~/ci/job_details/utils';
-import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -13,12 +12,8 @@ export default {
     scrollToTopButtonLabel: s__('Job|Scroll to top'),
     scrollToNextFailureButtonLabel: s__('Job|Scroll to next failure'),
     showRawButtonLabel: s__('Job|Show complete raw'),
-    searchPlaceholder: s__('Job|Search job log'),
+    searchPlaceholder: s__('Job|Search visible log output'),
     noResults: s__('Job|No search results found'),
-    searchPopoverTitle: s__('Job|Job log search'),
-    searchPopoverDescription: s__(
-      'Job|Search for substrings in your job log output. Currently search is only supported for the visible job log output, not for any log output that is truncated due to size.',
-    ),
     logLineNumberNotFound: s__('Job|We could not find this element'),
     enterFullscreen: s__('Job|Show full screen'),
     exitFullScreen: s__('Job|Exit full screen'),
@@ -29,7 +24,6 @@ export default {
     GlButton,
     GlSearchBoxByClick,
     GlSprintf,
-    HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -200,7 +194,7 @@ export default {
           v-if="rawPath && isComplete && logViewerPath"
           :message="
             s__(
-              'Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}view full log%{fullLinkEnd}.',
+              'Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}.',
             )
           "
         >
@@ -221,21 +215,12 @@ export default {
 
       <gl-search-box-by-click
         v-model="searchTerm"
-        class="gl-mr-3 gl-flex-nowrap"
+        class="gl-mr-3 gl-w-30 gl-flex-nowrap"
         :placeholder="$options.i18n.searchPlaceholder"
         data-testid="job-log-search-box"
         @clear="$emit('searchResults', [])"
         @submit="searchJobLog"
       />
-
-      <help-popover class="gl-mr-3">
-        <template #title>{{ $options.i18n.searchPopoverTitle }}</template>
-
-        <p class="gl-mb-0">
-          {{ $options.i18n.searchPopoverDescription }}
-        </p>
-      </help-popover>
-
       <!-- links -->
       <gl-button
         v-if="rawPath"

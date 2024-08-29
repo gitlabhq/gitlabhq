@@ -182,10 +182,21 @@ describe('Job actions cell', () => {
     },
   );
 
+  it('retry job button goes into loading state after click', async () => {
+    createComponent(retryableJob);
+
+    expect(findRetryButton().props('loading')).toBe(false);
+
+    findRetryButton().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(findRetryButton().props('loading')).toBe(true);
+  });
+
   it.each`
     button                  | action          | jobType
     ${findPlayButton}       | ${'play'}       | ${playableJob}
-    ${findRetryButton}      | ${'retry'}      | ${retryableJob}
     ${findCancelButton}     | ${'cancel'}     | ${cancelableJob}
     ${findUnscheduleButton} | ${'unschedule'} | ${scheduledJob}
   `('disables the $action button after first request', async ({ button, jobType }) => {

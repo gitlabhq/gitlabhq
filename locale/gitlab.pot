@@ -30705,7 +30705,7 @@ msgstr ""
 msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
 msgstr ""
 
-msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}view full log%{fullLinkEnd}."
+msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}full log%{fullLinkEnd}."
 msgstr ""
 
 msgid "Job|%{searchLength} results found for %{searchTerm}"
@@ -30768,9 +30768,6 @@ msgstr ""
 msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
-msgid "Job|Job log search"
-msgstr ""
-
 msgid "Job|Keep"
 msgstr ""
 
@@ -30819,10 +30816,7 @@ msgstr ""
 msgid "Job|Scroll to top"
 msgstr ""
 
-msgid "Job|Search for substrings in your job log output. Currently search is only supported for the visible job log output, not for any log output that is truncated due to size."
-msgstr ""
-
-msgid "Job|Search job log"
+msgid "Job|Search visible log output"
 msgstr ""
 
 msgid "Job|Show complete raw"
@@ -60056,6 +60050,9 @@ msgid "Vulnerability|Identifier code"
 msgstr ""
 
 msgid "Vulnerability|Identifiers"
+msgstr ""
+
+msgid "Vulnerability|Image and tag"
 msgstr ""
 
 msgid "Vulnerability|Image:"
