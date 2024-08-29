@@ -237,7 +237,7 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>N</td>
     </tr>
     <tr>
-      <td>Cocoapods</td>
+      <td>Cocoapods<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup></td>
       <td>All versions</td>
       <td><a href="https://cocoapods.org/">CocoaPods</a></td>
       <td><code>Podfile.lock</code></td>
@@ -296,6 +296,12 @@ The following languages and dependency managers are supported by Dependency Scan
     <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
     <p>
       Excludes both <code>pip</code> and <code>setuptools</code> from the report as they are required by the installer.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
+    <p>
+      Only SBOM, without advisories. See <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/468764">spike on CocoaPods advisories research</a>.
     </p>
   </li>
 </ol>

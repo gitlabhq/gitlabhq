@@ -1,11 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlAlert, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
@@ -39,15 +39,16 @@ describe('WorkItemTree', () => {
     .fn()
     .mockResolvedValue(workItemHierarchyTreeResponse);
 
-  const findEmptyState = () => wrapper.findByTestId('tree-empty');
+  const findEmptyState = () => wrapper.findByTestId('crud-empty');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findToggleFormSplitButton = () => wrapper.findComponent(WorkItemActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
-  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
+  const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findRolledUpWeight = () => wrapper.findByTestId('rollup-weight');
   const findRolledUpWeightValue = () => wrapper.findByTestId('weight-value');
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
 
   const createComponent = async ({
     workItemType = 'Objective',
@@ -78,7 +79,7 @@ describe('WorkItemTree', () => {
       provide: {
         hasSubepicsFeature,
       },
-      stubs: { WidgetWrapper },
+      stubs: { CrudComponent },
     });
     await waitForPromises();
   };
@@ -123,7 +124,7 @@ describe('WorkItemTree', () => {
     findWorkItemLinkChildrenWrapper().vm.$emit('error', errorMessage);
     await nextTick();
 
-    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+    expect(findErrorMessage().text()).toBe(errorMessage);
   });
 
   it.each`
@@ -212,7 +213,7 @@ describe('WorkItemTree', () => {
     });
 
     it('does not display link menu on children', () => {
-      expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
+      expect(findWorkItemLinkChildrenWrapper().exists()).toBe(false);
     });
   });
 
@@ -320,13 +321,20 @@ describe('WorkItemTree', () => {
         },
       );
 
-      it('should show the correct value when rolledUpWeight is visible', () => {
-        createComponent({ showRolledUpWeight: true, rolledUpWeight: 10 });
+      it('should show the correct value when rolledUpWeight is visible', async () => {
+        await createComponent({ showRolledUpWeight: true, rolledUpWeight: 10 });
 
         expect(findRolledUpWeight().exists()).toBe(true);
         expect(findRolledUpWeight().findComponent(GlIcon).props('name')).toBe('weight');
         expect(findRolledUpWeightValue().text()).toBe('10');
       });
     });
+  });
+
+  it('renders children count', async () => {
+    await createComponent({ showRolledUpWeight: true });
+
+    expect(findCrudComponent().props('icon')).toBe('issue-type-task');
+    expect(findCrudComponent().props('count')).toBe(1);
   });
 });

@@ -142,7 +142,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       end
 
       it 'shows related issues count' do
-        expect(find_by_testid('crud-count')).to have_content('2')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('2')
+        end
       end
     end
 
@@ -153,7 +155,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       end
 
       it 'shows related issues count' do
-        expect(find_by_testid('crud-count')).to have_content('1')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('1')
+        end
       end
     end
   end
@@ -175,7 +179,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       end
 
       it 'shows related issues count' do
-        expect(find_by_testid('crud-count')).to have_content('0')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('0')
+        end
       end
 
       it 'add related issue' do
@@ -194,7 +200,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         # Check if related issues are present
         expect(items.count).to eq(1)
         expect(items[0].text).to eq(issue_b.title)
-        expect(find_by_testid('crud-count')).to have_content('1')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('1')
+        end
       end
 
       it 'add cross-project related issue' do
@@ -210,7 +218,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         expect(items.count).to eq(1)
         expect(items[0].text).to eq(issue_project_b_a.title)
-        expect(find_by_testid('crud-count')).to have_content('1')
+
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('1')
+        end
       end
 
       it 'pressing enter should submit the form' do
@@ -224,7 +235,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         expect(items.count).to eq(1)
         expect(items[0].text).to eq(issue_project_b_a.title)
-        expect(find_by_testid('crud-count')).to have_content('1')
+
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('1')
+        end
       end
 
       it 'disallows duplicate entries' do
@@ -236,7 +250,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         expect(items[0].text).to eq('duplicate')
 
         # Pending issues aren't counted towards the related issue count
-        expect(find_by_testid('crud-count')).to have_content('0')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('0')
+        end
       end
 
       it 'allows us to remove pending issues' do
@@ -284,7 +300,9 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       end
 
       it 'shows related issues count' do
-        expect(find_by_testid('crud-count')).to have_content('2')
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('2')
+        end
       end
 
       it 'shows related issues' do
@@ -324,7 +342,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         expect(items[0].text).to eq(issue_b.title)
         expect(items[1].text).to eq(issue_c.title)
         expect(items[2].text).to eq(issue_d.title)
-        expect(find_by_testid('crud-count')).to have_content('3')
+
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('3')
+        end
       end
 
       it 'add invalid related issue' do
@@ -341,7 +362,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         expect(items.count).to eq(2)
         expect(items[0].text).to eq(issue_b.title)
         expect(items[1].text).to eq(issue_c.title)
-        expect(find_by_testid('crud-count')).to have_content('2')
+
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('2')
+        end
       end
 
       it 'add unauthorized related issue' do
@@ -358,7 +382,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
         expect(items.count).to eq(2)
         expect(items[0].text).to eq(issue_b.title)
         expect(items[1].text).to eq(issue_c.title)
-        expect(find_by_testid('crud-count')).to have_content('2')
+
+        within_testid('related-issues-block') do
+          expect(find_by_testid('crud-count')).to have_content('2')
+        end
       end
     end
   end

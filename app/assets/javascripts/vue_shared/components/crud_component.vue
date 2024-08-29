@@ -159,11 +159,11 @@ export default {
             class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
             data-testid="crud-count"
           >
-            <slot v-if="$scopedSlots.count" name="count"></slot>
-            <template v-else>
+            <template v-if="displayedCount">
               <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
               {{ displayedCount }}
             </template>
+            <slot v-if="$scopedSlots.count" name="count"></slot>
           </span>
         </h2>
         <p

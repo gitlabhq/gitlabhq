@@ -466,7 +466,7 @@ export default {
   <component
     :is="treeRootWrapper"
     v-bind="treeRootOptions"
-    class="content-list"
+    class="content-list !gl-p-3"
     data-testid="child-items-container"
     :class="{ 'sortable-container gl-cursor-grab': canReorder, 'disabled-content': disableList }"
     :move="onMove"

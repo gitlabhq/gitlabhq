@@ -494,8 +494,8 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
 
   subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
-  shared_examples 'successfull reponse' do
-    it 'returns a successfull response' do
+  shared_examples 'successful response' do
+    it 'returns a successful response' do
       subject
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -514,7 +514,7 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
     stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
   end
 
-  it_behaves_like 'successfull reponse'
+  it_behaves_like 'successful response'
 
   context 'when target package is in a private registry and group has another public registry' do
     let(:other_project) { create(:project, group: target, visibility_level: target.visibility_level) }
@@ -541,7 +541,7 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
         package.update!(project: other_project)
       end
 
-      it_behaves_like 'successfull reponse'
+      it_behaves_like 'successful response'
     end
   end
 

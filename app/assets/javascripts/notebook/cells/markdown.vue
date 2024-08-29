@@ -46,7 +46,7 @@ function deHTMLify(t) {
 }
 function renderKatex(t) {
   let text = t;
-  let numInline = 0; // number of successfull converted math formulas
+  let numInline = 0; // number of successful converted math formulas
 
   if (typeof katex !== 'undefined') {
     const katexString = text

@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAlert } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 
@@ -7,11 +8,11 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
+import { stubComponent } from 'helpers/stub_component';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 
 import { resolvers } from '~/graphql_shared/issuable_client';
-import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -75,22 +76,20 @@ describe('WorkItemLinks', () => {
             show: showModal,
           },
         }),
-        WidgetWrapper: stubComponent(WidgetWrapper, {
-          template: RENDER_ALL_SLOTS_TEMPLATE,
-        }),
+        CrudComponent,
       },
     });
 
     await waitForPromises();
   };
 
-  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
-  const findEmptyState = () => wrapper.findByTestId('links-empty');
+  const findErrorMessage = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findByTestId('crud-empty');
   const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findToggleCreateFormButton = () => wrapper.findByTestId('toggle-create-form');
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
-  const findChildrenCount = () => wrapper.findByTestId('children-count');
+  const findChildrenCount = () => wrapper.findByTestId('crud-count');
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategoryModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
@@ -171,7 +170,7 @@ describe('WorkItemLinks', () => {
       fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
-    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+    expect(findErrorMessage().text()).toBe(errorMessage);
   });
 
   it('displays number of children', async () => {

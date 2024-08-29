@@ -6,6 +6,9 @@ module Gitlab
       include Gitlab::ExclusiveLeaseHelpers
 
       LRU_CACHE_SIZE = 8000
+      LOCK_TTL = 15.seconds.freeze
+      LOCK_SLEEP = 0.3.seconds.freeze
+      LOCK_RETRIES = 100
 
       def initialize(namespace:, import_type:, source_hostname:)
         @namespace = namespace.root_ancestor
@@ -45,7 +48,9 @@ module Gitlab
       end
 
       def create_source_user(source_name:, source_username:, source_user_identifier:)
-        in_lock(lock_key(source_user_identifier), sleep_sec: 2.seconds) do |retried|
+        in_lock(
+          lock_key(source_user_identifier), ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRIES
+        ) do |retried|
           if retried
             source_user = find_source_user(source_user_identifier)
             next source_user if source_user

@@ -1,7 +1,8 @@
 <script>
-import { GlIcon, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlIcon, GlTooltip } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
@@ -16,7 +17,6 @@ import {
 import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
-import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -28,15 +28,15 @@ export default {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
+    GlAlert,
+    GlIcon,
+    GlTooltip,
     WorkItemActionsSplitButton,
-    WidgetWrapper,
+    CrudComponent,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
     WorkItemMoreActions,
-    GlLoadingIcon,
-    GlIcon,
-    GlTooltip,
   },
   inject: ['hasSubepicsFeature'],
   props: {
@@ -96,7 +96,6 @@ export default {
   data() {
     return {
       error: undefined,
-      isShownAddForm: false,
       formType: null,
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
@@ -172,7 +171,7 @@ export default {
       return this.$apollo.queries.hierarchyWidget.loading;
     },
     showEmptyMessage() {
-      return !this.isShownAddForm && this.children.length === 0 && !this.isLoadingChildren;
+      return this.children.length === 0 && !this.isLoadingChildren;
     },
     pageInfo() {
       return this.hierarchyWidget?.pageInfo;
@@ -206,8 +205,7 @@ export default {
       ];
     },
     showAddForm(formType, childType) {
-      this.$refs.wrapper.show();
-      this.isShownAddForm = true;
+      this.$refs.workItemTree.showForm();
       this.formType = formType;
       this.childType = childType;
       this.$nextTick(() => {
@@ -215,7 +213,7 @@ export default {
       });
     },
     hideAddForm() {
-      this.isShownAddForm = false;
+      this.$refs.workItemTree.hideForm();
     },
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
@@ -245,22 +243,24 @@ export default {
 </script>
 
 <template>
-  <widget-wrapper
-    ref="wrapper"
-    :widget-name="widgetName"
-    :error="error"
+  <crud-component
+    ref="workItemTree"
+    :title="$options.WORK_ITEMS_TREE_TEXT.title"
+    :anchor-id="widgetName"
+    :count="childrenIds.length"
+    icon="issue-type-task"
+    :is-loading="isLoadingChildren && !fetchNextPageInProgress"
+    is-collapsible
     data-testid="work-item-tree"
-    @dismissAlert="error = undefined"
   >
-    <template #header>
-      {{ $options.WORK_ITEMS_TREE_TEXT.title }}
+    <template #count>
       <span
         v-if="shouldRolledUpWeightBeVisible"
         ref="weightData"
         data-testid="rollup-weight"
         class="gl-ml-3 gl-flex gl-cursor-help gl-items-center gl-gap-2 gl-font-normal gl-text-secondary"
       >
-        <gl-icon name="weight" class="gl-text-secondary" />
+        <gl-icon name="weight" class="gl-text-subtle" />
         <span data-testid="weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
         <gl-tooltip :target="() => $refs.weightData">
           <span class="gl-font-bold">
@@ -269,7 +269,8 @@ export default {
         </gl-tooltip>
       </span>
     </template>
-    <template #header-right>
+
+    <template #actions>
       <work-item-actions-split-button
         v-if="canUpdateChildren"
         :actions="addItemsActions"
@@ -284,53 +285,57 @@ export default {
         @toggle-show-labels="showLabels = !showLabels"
       />
     </template>
-    <template #body>
-      <div class="gl-new-card-content gl-px-0">
-        <div v-if="showEmptyMessage" data-testid="tree-empty">
-          <p class="gl-new-card-empty">
-            {{ $options.WORK_ITEMS_TREE_TEXT.empty }}
-          </p>
-        </div>
-        <work-item-links-form
-          v-if="isShownAddForm"
-          ref="wiLinksForm"
-          data-testid="add-tree-form"
-          :full-path="fullPath"
-          :full-name="workItemNamespaceName"
-          :issuable-gid="workItemId"
-          :work-item-iid="workItemIid"
-          :form-type="formType"
-          :parent-work-item-type="parentWorkItemType"
-          :children-type="childType"
-          :children-ids="childrenIds"
-          :parent-confidential="confidential"
-          @cancel="hideAddForm"
-          @addChild="$emit('addChild')"
-          @update-in-progress="disableContent = $event"
-        />
-        <work-item-children-wrapper
-          :children="children"
-          :parent="workItem"
-          :can-update="canUpdateChildren"
-          :full-path="fullPath"
-          :work-item-id="workItemId"
-          :work-item-iid="workItemIid"
-          :work-item-type="workItemType"
-          :show-labels="showLabels"
-          :disable-content="disableContent"
-          :allowed-child-types="allowedChildTypes"
-          @error="error = $event"
-          @show-modal="showModal"
-        />
-        <gl-loading-icon v-if="isLoadingChildren && !fetchNextPageInProgress" size="md" />
-        <work-item-children-load-more
-          v-if="hasNextPage"
-          data-testid="work-item-load-more"
-          class="gl-ml-4 gl-pl-1"
-          :fetch-next-page-in-progress="fetchNextPageInProgress"
-          @fetch-next-page="fetchNextPage"
-        />
-      </div>
+
+    <template #form>
+      <work-item-links-form
+        ref="wiLinksForm"
+        data-testid="add-tree-form"
+        :full-path="fullPath"
+        :full-name="workItemNamespaceName"
+        :issuable-gid="workItemId"
+        :work-item-iid="workItemIid"
+        :form-type="formType"
+        :parent-work-item-type="parentWorkItemType"
+        :children-type="childType"
+        :children-ids="childrenIds"
+        :parent-confidential="confidential"
+        @success="hideAddForm"
+        @cancel="hideAddForm"
+        @addChild="$emit('addChild')"
+        @update-in-progress="disableContent = $event"
+      />
     </template>
-  </widget-wrapper>
+
+    <template v-if="showEmptyMessage" #empty>
+      {{ $options.WORK_ITEMS_TREE_TEXT.empty }}
+    </template>
+
+    <template #default>
+      <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+        {{ error }}
+      </gl-alert>
+
+      <work-item-children-wrapper
+        :children="children"
+        :parent="workItem"
+        :can-update="canUpdateChildren"
+        :full-path="fullPath"
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
+        :work-item-type="workItemType"
+        :show-labels="showLabels"
+        :disable-content="disableContent"
+        :allowed-child-types="allowedChildTypes"
+        @error="error = $event"
+        @show-modal="showModal"
+      />
+      <work-item-children-load-more
+        v-if="hasNextPage"
+        data-testid="work-item-load-more"
+        class="gl-ml-4 gl-pl-1"
+        :fetch-next-page-in-progress="fetchNextPageInProgress"
+        @fetch-next-page="fetchNextPage"
+      />
+    </template>
+  </crud-component>
 </template>
