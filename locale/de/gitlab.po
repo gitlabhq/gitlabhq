@@ -61262,11 +61262,11 @@ msgstr[1] "Dateien"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr "Fund wurde nicht gefunden oder ist bereits mit einer Sicherheitslücke verknüpft."
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
-msgstr "für den Arbeitsbereich muss eine zugehörige RemoteDevelopmentAgentConfig vorhanden sein"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
+msgstr "für den Arbeitsbereich muss eine zugehörige WorkspacesAgentConfig vorhanden sein"
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
-msgstr "für den Workspace muss mit der dns_zone der zugehörigen RemoteDevelopmentAgentConfig übereinstimmen"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
+msgstr "für den Workspace muss mit der dns_zone der zugehörigen WorkspacesAgentConfig übereinstimmen"
 
 msgid "for this project"
 msgstr "für dieses Projekt"
@@ -62710,4 +62710,3 @@ msgstr "{Projekt}"
 
 msgid "✔"
 msgstr "✔"
-

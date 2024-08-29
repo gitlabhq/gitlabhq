@@ -60912,11 +60912,11 @@ msgstr[0] "文件"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr "結果無法找到或已與漏洞關聯。"
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
-msgstr "工作區必須有關聯的 RemoteDevelopmentAgentConfig"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
+msgstr "工作區必須有關聯的 WorkspacesAgentConfig"
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
-msgstr "工作區必須與關聯的 RemoteDevelopmentAgentConfig 的 dns_zone 匹配"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
+msgstr "工作區必須與關聯的 WorkspacesAgentConfig 的 dns_zone 匹配"
 
 msgid "for this project"
 msgstr "對於這個專案"
@@ -62342,4 +62342,3 @@ msgstr "{project}"
 
 msgid "✔"
 msgstr "✔"
-

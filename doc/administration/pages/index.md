@@ -950,6 +950,25 @@ To set the maximum number of GitLab Pages custom domains for a project:
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
 
+## Configure the default expiry for extra deployments
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456477) in GitLab 17.4.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To configure the default duration for the instance after which
+[extra deployments](../../user/project/pages/index.md#create-multiple-deployments)
+are deleted:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Preferences**.
+1. Expand **Pages**.
+1. Enter a value for **Default expiration for extra deployments in seconds**.
+   Use `0` if extra deployments should not expire by default.
+1. Select **Save changes**.
+
 ## Set maximum number of files per GitLab Pages website
 
 The total number of file entries (including directories and symlinks) is limited to `200,000` per GitLab Pages website.

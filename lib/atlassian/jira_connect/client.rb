@@ -73,12 +73,7 @@ module Atlassian
 
       def store_deploy_info(project:, deployments:, **opts)
         items = deployments.map { |d| ::Atlassian::JiraConnect::Serializers::DeploymentEntity.represent(d, opts) }
-
-        if Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-          items.select! { |d| d.associations.present? }
-        else
-          items.reject! { |d| d.issue_keys.empty? }
-        end
+        items.select! { |d| d.associations.present? }
 
         return if items.empty?
 

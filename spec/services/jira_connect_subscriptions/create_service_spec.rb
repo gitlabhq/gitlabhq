@@ -63,15 +63,6 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
       expect(PropagateIntegrationWorker).to have_received(:perform_async)
     end
 
-    it 'does not create integration when feature flag is disabled and returns success' do
-      stub_feature_flags(enable_jira_connect_configuration: false)
-
-      expect(subject[:status]).to eq(:success)
-
-      expect { subject }.not_to change { Integrations::JiraCloudApp.count }
-      expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
-    end
-
     it 'does not create integration when instance is not configured for Jira Cloud app and returns success' do
       stub_application_setting(jira_connect_application_key: nil)
 

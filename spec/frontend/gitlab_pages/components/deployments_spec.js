@@ -44,6 +44,7 @@ describe('PagesDeployments', () => {
                   pathPrefix: versioned ? '_stg' : '',
                   size: 1082,
                   updatedAt: '2024-05-23T11:48:34Z',
+                  expiresAt: versioned ? '2024-05-23T13:37:22Z' : null,
                   url: 'http://abc.pages.io/',
                 })),
             },

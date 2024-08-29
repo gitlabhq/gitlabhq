@@ -93,8 +93,10 @@ function run_rspec_rails_non_fast {
   done < <(git grep -L -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_rails+=(
+      "ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb"
       "ee/spec/graphql/types/query_type_spec.rb"
       "ee/spec/graphql/types/subscription_type_spec.rb"
+      "ee/spec/models/ee/clusters/agent_spec.rb"
       "ee/spec/requests/api/internal/kubernetes_spec.rb"
       "spec/graphql/types/subscription_type_spec.rb"
       "spec/support_specs/matchers/result_matchers_spec.rb"

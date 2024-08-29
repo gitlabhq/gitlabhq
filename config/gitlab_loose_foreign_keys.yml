@@ -490,6 +490,13 @@ vulnerability_historical_statistics:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_merge_request_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
 vulnerability_namespace_historical_statistics:
   - table: namespaces
     column: namespace_id

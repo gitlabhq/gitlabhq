@@ -61262,10 +61262,10 @@ msgstr[1] "archivos"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
 msgstr ""
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
 msgstr ""
 
 msgid "for this project"
@@ -62710,4 +62710,3 @@ msgstr "{project}"
 
 msgid "✔"
 msgstr "✔"
-

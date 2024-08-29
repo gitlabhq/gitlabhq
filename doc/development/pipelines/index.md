@@ -642,11 +642,11 @@ fail.
 #### Troubleshooting `rspec:undercoverage` failures
 
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
-that can cause false positive failures. You can test coverage locally to determine if it's
-safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
+that can cause false positive failures. Such false positive falures may also happen if you are updating database migration that is too old.
+You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
 test causing the failure:
 
-1. Run `SIMPLECOV=1 bundle exec rspec <spec>`.
+1. Run `RUN_ALL_MIGRATION_TESTS=1 SIMPLECOV=1 bundle exec rspec <spec>`.
 1. Run `scripts/undercoverage`.
 
 If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.

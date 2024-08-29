@@ -15,6 +15,7 @@ export const primaryDeployment = {
 export const environmentDeployment = {
   ...primaryDeployment,
   pathPrefix: '_stg',
+  expiresAt: '2023-04-02T12:00:00Z',
 };
 
 export const deleteDeploymentResult = {

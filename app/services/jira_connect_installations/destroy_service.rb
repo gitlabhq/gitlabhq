@@ -29,8 +29,6 @@ module JiraConnectInstallations
     end
 
     def deactivate_jira_cloud_app_integrations(subscriptions_namespace_ids)
-      return unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-
       subscriptions_namespace_ids.each do |namespace_id|
         JiraConnect::JiraCloudAppDeactivationWorker.perform_async(namespace_id)
       end

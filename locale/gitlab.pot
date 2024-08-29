@@ -4024,6 +4024,9 @@ msgstr ""
 msgid "AdminSettings|Cube API URL"
 msgstr ""
 
+msgid "AdminSettings|Default expiration time for extra deployments (in seconds)"
+msgstr ""
+
 msgid "AdminSettings|Delete inactive projects"
 msgstr ""
 
@@ -4283,6 +4286,9 @@ msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (mi
 msgstr ""
 
 msgid "AdminSettings|Set options for cost factors of forks"
+msgstr ""
+
+msgid "AdminSettings|Set the default time after which extra deployments expire (0 for unlimited). %{link_start}What are extra deployments%{link_end}?"
 msgstr ""
 
 msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered group runners."
@@ -38779,6 +38785,9 @@ msgstr ""
 msgid "Pages|Environment deployments"
 msgstr ""
 
+msgid "Pages|Expires at"
+msgstr ""
+
 msgid "Pages|Extra deployments: %{count}"
 msgstr ""
 
@@ -63971,10 +63980,10 @@ msgstr[1] ""
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
 msgstr ""
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
 msgstr ""
 
 msgid "for this project"

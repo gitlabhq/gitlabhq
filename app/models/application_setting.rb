@@ -593,6 +593,7 @@ class ApplicationSetting < ApplicationRecord
       :notes_create_limit,
       :package_registry_cleanup_policies_worker_capacity,
       :packages_cleanup_package_file_worker_capacity,
+      :pages_extra_deployments_default_expiry_seconds,
       :pipeline_limit_per_project_user_sha,
       :project_api_limit,
       :project_invited_groups_api_limit,
@@ -729,6 +730,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
+
+  jsonb_accessor :pages,
+    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
+
+  validates :pages, json_schema: { filename: "application_setting_pages" }
 
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,

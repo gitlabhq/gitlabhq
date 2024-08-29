@@ -232,6 +232,12 @@ The number of extra deployments is limited by the root-level namespace. For spec
 - Self-managed GitLab instances, see
   [Number of extra Pages deployments when using multiple deployments](../../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
+### Expiration
+
+By default, extra deployments expire after 24 hours, after which they are deleted.
+If you're using a self-hosted instance, your instance admin can
+[configure a different duration](../../../administration/pages/index.md#configure-the-default-expiry-for-extra-deployments).
+
 ### Path clash
 
 `pages.path_prefix` can take dynamic values from [CI/CD variables](../../../ci/variables/index.md)

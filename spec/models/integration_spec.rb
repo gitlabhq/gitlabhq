@@ -1279,14 +1279,6 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       it { is_expected.to include('jira_cloud_app') }
-
-      context 'when the enable_jira_connect_configuration flag is disabled' do
-        before do
-          stub_feature_flags(enable_jira_connect_configuration: false)
-        end
-
-        it { is_expected.not_to include('jira_cloud_app') }
-      end
     end
   end
 

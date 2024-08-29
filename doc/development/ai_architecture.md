@@ -109,38 +109,9 @@ The following models have been approved for use:
 - [Anthropic models](https://docs.anthropic.com/claude/docs/models-overview)
 - [Suggested reviewer](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10)
 
-### Vector stores
+### Embeddings
 
-NOTE:
-There is a proposal to change vector stores for improving the quality of search results. See [RAG for GitLab Duo](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_duo_rag/) for more information.
-
-The following vector stores have been approved for use:
-
-- [`pgvector`](https://github.com/pgvector/pgvector) is a Postgres extension adding support for storing vector embeddings and calculating ANN (approximate nearest neighbor).
-
-### Indexing Update
-
-NOTE:
-There is a proposal to change indexing update for improving the quality of search results. See [RAG for GitLab Duo](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_duo_rag/) for more information.
-
-We are currently using sequential scan, which provides perfect recall. We are considering adding an index if we can ensure that it still produces accurate results, as noted in the `pgvector` indexing [documentation](https://github.com/pgvector/pgvector#indexing).
-
-Given that the table contains thousands of entries, indexing with these updated settings would likely improve search speed while maintaining high accuracy. However, more testing may be needed to verify the optimal configuration for this dataset size before deploying to production.
-
-A [draft MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122035) has been created to update the index.
-
-The index function has been updated to improve search quality. This was tested locally by setting the `ivfflat.probes` value to `10` with the following SQL command:
-
-```ruby
-::Embedding::Vertex::GitlabDocumentation.connection.execute("SET ivfflat.probes = 10")
-```
-
-Setting the `probes` value for indexing improves results, as per the neighbor [documentation](https://github.com/ankane/neighbor#indexing).
-
-For optimal `probes` and `lists` values:
-
-- Use `lists` equal to `rows / 1000` for tables with up to 1 million rows and `sqrt(rows)` for larger datasets.
-- For `probes` start with `lists / 10` for tables up to 1 million rows and `sqrt(lists)` for larger datasets.
+For more information regarding GitLab embeddings, see our [AI embeddings architecture](ai_features/embeddings.md).
 
 ## Code Suggestions
 

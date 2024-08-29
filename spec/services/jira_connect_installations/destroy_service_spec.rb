@@ -38,14 +38,6 @@ RSpec.describe JiraConnectInstallations::DestroyService, feature_category: :inte
       expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
     end
 
-    it 'does not schedule a JiraCloudAppDeactivationWorker background job but deletes the installation when FF disabled' do
-      stub_feature_flags(enable_jira_connect_configuration: false)
-
-      expect(JiraConnect::JiraCloudAppDeactivationWorker).not_to receive(:perform_async)
-
-      expect { subject }.to change(JiraConnectInstallation, :count).by(-1)
-    end
-
     context 'and the installation has an instance_url set' do
       let!(:installation) { create(:jira_connect_installation, instance_url: 'http://example.com') }
 

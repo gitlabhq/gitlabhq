@@ -294,7 +294,8 @@ module ApplicationSettingImplementation
         nuget_skip_metadata_url_validation: false,
         ai_action_api_rate_limit: 160,
         code_suggestions_api_rate_limit: 60,
-        require_personal_access_token_expiry: true
+        require_personal_access_token_expiry: true,
+        pages_extra_deployments_default_expiry_seconds: 86400
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

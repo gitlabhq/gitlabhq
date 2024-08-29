@@ -229,6 +229,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           max_terraform_state_size_bytes
           members_delete_limit
           notes_create_limit
+          pages_extra_deployments_default_expiry_seconds
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
           pipeline_limit_per_project_user_sha

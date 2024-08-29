@@ -60912,11 +60912,11 @@ msgstr[0] "ファイル"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr "発見されないか、すでに脆弱性に関連付けられています"
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
-msgstr "ワークスペースにはRemoteDevelopmentAgentConfigが関連付けられている必要があるため"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
+msgstr "ワークスペースにはWorkspacesAgentConfigが関連付けられている必要があるため"
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
-msgstr "ワークスペースの場合、関連付けれられたRemoteDevelopmentAgentConfigのdns_zoneと一致する必要があります"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
+msgstr "ワークスペースの場合、関連付けれられたWorkspacesAgentConfigのdns_zoneと一致する必要があります"
 
 msgid "for this project"
 msgstr "このプロジェクトでは"
@@ -62342,4 +62342,3 @@ msgstr "{プロジェクト}"
 
 msgid "✔"
 msgstr "✔"
-

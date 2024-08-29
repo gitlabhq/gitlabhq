@@ -37,6 +37,7 @@ export default {
     deleteScheduledAtLabel: s__('Pages|Scheduled for deletion at'),
     deleteBtnLabel: s__('Pages|Delete'),
     restoreBtnLabel: s__('Pages|Restore'),
+    expiresAtLabel: s__('Pages|Expires at'),
   },
   static: {
     SHORT_DATE_FORMAT_WITH_TIME,
@@ -265,6 +266,22 @@ export default {
           <gl-icon name="clear-all" class="mr-1 gl-text-secondary" />
           <user-date
             :date="deployment.updatedAt"
+            :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"
+          />
+        </div>
+      </div>
+      <div
+        v-if="deployment.active && deployment.expiresAt"
+        class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
+        data-testid="deployment-expires-at"
+      >
+        <div class="gl-text-sm gl-text-secondary">
+          {{ $options.i18n.expiresAtLabel }}
+        </div>
+        <div>
+          <gl-icon name="remove" class="gl-mr-2 gl-text-secondary" />
+          <user-date
+            :date="deployment.expiresAt"
             :date-format="$options.static.SHORT_DATE_FORMAT_WITH_TIME"
           />
         </div>

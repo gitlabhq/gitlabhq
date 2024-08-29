@@ -2054,7 +2054,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/background_migration/backfill_project_member_namespace_id.rb'
     - 'lib/gitlab/background_migration/backfill_project_namespace_on_issues.rb'
     - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
-    - 'lib/gitlab/background_migration/backfill_project_statistics_storage_size_with_recent_size.rb'
     - 'lib/gitlab/background_migration/backfill_project_statistics_storage_size_without_pipeline_artifacts_size_job.rb'
     - 'lib/gitlab/background_migration/backfill_workspace_personal_access_token.rb'
     - 'lib/gitlab/background_migration/batched_migration_job.rb'

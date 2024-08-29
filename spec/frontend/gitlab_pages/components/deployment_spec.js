@@ -76,6 +76,14 @@ describe('PagesDeployment', () => {
         expect(
           wrapper.findByTestId('deployment-updated-at').findComponent(UserDate).props('date'),
         ).toBe(deployment.updatedAt);
+
+        if (deployment.expiresAt) {
+          expect(
+            wrapper.findByTestId('deployment-expires-at').findComponent(UserDate).props('date'),
+          ).toBe(deployment.expiresAt);
+        } else {
+          expect(wrapper.findByTestId('deployment-expires-at').exists()).toBe(false);
+        }
       });
 
       it('toggles deployment details on click', async () => {

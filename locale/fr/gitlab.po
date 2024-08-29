@@ -61262,11 +61262,11 @@ msgstr[1] "fichiers"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr "la découverte est introuvable ou est déjà rattachée à une vulnérabilité"
 
-msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
-msgstr "dans un espace de travail doit avoir un RemoteDevelopmentAgentConfig associé"
+msgid "for Workspace must have an associated WorkspacesAgentConfig"
+msgstr "dans un espace de travail doit avoir un WorkspacesAgentConfig associé"
 
-msgid "for Workspace must match the dns_zone of the associated RemoteDevelopmentAgentConfig"
-msgstr "pour l'espace de travail doit correspondre à dns_zone du RemoteDevelopmentAgentConfig associé"
+msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
+msgstr "pour l'espace de travail doit correspondre à dns_zone du WorkspacesAgentConfig associé"
 
 msgid "for this project"
 msgstr "pour ce projet"
@@ -62710,4 +62710,3 @@ msgstr "{project}"
 
 msgid "✔"
 msgstr "✔"
-

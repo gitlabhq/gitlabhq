@@ -348,6 +348,7 @@ module ApplicationSettingsHelper
       :plantuml_url,
       :diagramsnet_enabled,
       :diagramsnet_url,
+      :pages_extra_deployments_default_expiry_seconds,
       :polling_interval_multiplier,
       :project_export_enabled,
       :prometheus_metrics_enabled,

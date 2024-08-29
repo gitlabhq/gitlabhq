@@ -13,6 +13,15 @@ RSpec.configure do |config|
   #   end
   # end
   config.before(:context, :migration) do
+    @migration_out_of_test_window = false
+
+    if migration_out_of_test_window?(described_class)
+      @migration_out_of_test_window = true
+
+      skip "Skipping because migration #{described_class} is outside the test window. " \
+        "Run with `RUN_ALL_MIGRATION_TESTS=1 bundle exec rspec <spec> if you need to run this spec."
+    end
+
     schema_migrate_down!
   end
 
@@ -21,7 +30,7 @@ RSpec.configure do |config|
   end
 
   config.append_after(:context, :migration) do
-    recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables
+    recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables unless @migration_out_of_test_window
   end
 
   config.around(:each, :migration) do |example|

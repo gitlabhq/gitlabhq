@@ -2950,7 +2950,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/elasticsearch_indexed_namespace.rb'
     - 'ee/app/models/elasticsearch_indexed_project.rb'
     - 'ee/app/models/embedding/application_record.rb'
-    - 'ee/app/models/embedding/vertex/gitlab_documentation.rb'
     - 'ee/app/models/epic/metrics.rb'
     - 'ee/app/models/epic/related_epic_link.rb'
     - 'ee/app/models/epic_issue.rb'

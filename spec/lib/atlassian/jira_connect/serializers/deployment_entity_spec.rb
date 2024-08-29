@@ -38,15 +38,6 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
       end
     end
 
-    context 'with/without enable_jira_connect_configuration FF still valid' do
-      it 'is valid according to the deployment info schema' do
-        allow(Feature).to receive(:enabled?).and_return(true)
-        allow(Feature).to receive(:enabled?).with(:enable_jira_connect_configuration).and_return(false)
-
-        expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
-      end
-    end
-
     context 'when the project has GitLab for Jira Cloud app, and service keys configured' do
       let_it_be(:integration) { create(:jira_cloud_app_integration, project: project) }
 
