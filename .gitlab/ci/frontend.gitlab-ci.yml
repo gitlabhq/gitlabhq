@@ -48,6 +48,8 @@ compile-production-assets:
     - .compile-assets-base
     - .production
     - .frontend:rules:compile-production-assets
+  tags:
+    - saas-linux-large-amd64
   artifacts:
     name: webpack-report
     expire_in: 31d

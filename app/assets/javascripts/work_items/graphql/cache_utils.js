@@ -180,6 +180,8 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
         } else {
           children.unshift(workItem);
         }
+        widget.hasChildren = children?.length > 0;
+        widget.count = children?.length || 0;
       }
     }),
   });
@@ -234,9 +236,8 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
       const children = findHierarchyWidgetChildren(draftState?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       if (index >= 0) children.splice(index, 1);
-      if (children.length === 0) {
-        widget.hasChildren = false;
-      }
+      widget.hasChildren = children?.length > 0;
+      widget.count = children?.length || 0;
     }),
   });
 };

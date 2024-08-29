@@ -241,9 +241,9 @@ You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or [simila
 to run the job's container image on your local machine. Then, run the job's `script` commands
 in the container and verify the behavior.
 
-### Troubleshoot a failed job with root cause analysis
+### Troubleshoot a failed job with Root Cause Analysis
 
-You can use root cause analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ## Job configuration issues
 

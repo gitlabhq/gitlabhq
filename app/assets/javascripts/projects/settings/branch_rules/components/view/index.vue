@@ -18,8 +18,8 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
+import { getAccessLevels, getAccessLevelInputFromEdges } from 'ee_else_ce/projects/settings/utils';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
-import { getAccessLevels, getAccessLevelInputFromEdges } from '../../../utils';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import RuleDrawer from './rule_drawer.vue';
@@ -414,6 +414,7 @@ export default {
           :roles="accessLevelsDrawerData.roles"
           :users="accessLevelsDrawerData.users"
           :groups="accessLevelsDrawerData.groups"
+          :deploy-keys="accessLevelsDrawerData.deployKeys"
           :is-loading="isRuleUpdating"
           :group-id="groupId"
           :title="accessLevelsDrawerTitle"
@@ -431,6 +432,7 @@ export default {
           :roles="pushAccessLevels.roles"
           :users="pushAccessLevels.users"
           :groups="pushAccessLevels.groups"
+          :deploy-keys="pushAccessLevels.deployKeys"
           :empty-state-copy="$options.i18n.allowedToPushEmptyState"
           :help-text="$options.i18n.allowedToPushDescription"
           is-edit-available

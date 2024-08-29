@@ -1,5 +1,12 @@
 <script>
-import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective, GlBadge } from '@gitlab/ui';
+import {
+  GlAvatarsInline,
+  GlAvatar,
+  GlAvatarLink,
+  GlTooltipDirective,
+  GlBadge,
+  GlIcon,
+} from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import { accessLevelsConfig } from './constants';
 
@@ -16,7 +23,7 @@ export default {
   MAX_VISIBLE_AVATARS,
   AVATAR_SIZE,
   accessLevelsConfig,
-  components: { GlAvatarsInline, GlAvatar, GlAvatarLink, GlBadge },
+  components: { GlAvatarsInline, GlAvatar, GlAvatarLink, GlBadge, GlIcon },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -42,6 +49,11 @@ export default {
       default: () => [],
     },
     groups: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    deployKeys: {
       type: Array,
       required: false,
       default: () => [],
@@ -124,6 +136,15 @@ export default {
         :data-qa-role="$options.accessLevelsConfig[item].accessLevelLabel"
       >
         {{ $options.accessLevelsConfig[item].accessLevelLabel }}
+      </gl-badge>
+
+      <gl-badge
+        v-for="deployKey in deployKeys"
+        :key="deployKey.id"
+        class="gl-mr-2"
+        data-testid="deploy-key"
+        ><gl-icon name="key" class="gl-mr-2" />
+        {{ deployKey.title }}
       </gl-badge>
     </div>
   </div>

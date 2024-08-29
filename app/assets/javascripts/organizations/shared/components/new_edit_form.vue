@@ -7,12 +7,19 @@ import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
+import {
+  ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+} from '~/visibility_level/constants';
 import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
   FORM_FIELD_PATH,
   FORM_FIELD_DESCRIPTION,
   FORM_FIELD_AVATAR,
+  FORM_FIELD_VISIBILITY_LEVEL,
   MAX_DESCRIPTION_COUNT,
   FORM_FIELD_PATH_VALIDATORS,
   FORM_FIELD_DESCRIPTION_VALIDATORS,
@@ -28,6 +35,8 @@ export default {
     OrganizationUrlField,
     AvatarUploadDropzone,
     MarkdownField,
+    HelpPageLink,
+    VisibilityLevelRadioButtons,
   },
   i18n: {
     cancel: __('Cancel'),
@@ -39,6 +48,10 @@ export default {
     anchor: 'supported-markdown-for-organization-description',
   }),
   restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
+  // Organizations in Cells 1.0 can only be private
+  // https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/#organizations-on-cells-10-fy24q2-fy25q4
+  availableVisibilityLevels: [VISIBILITY_LEVEL_PRIVATE_INTEGER],
+  ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
   inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {
     loading: {
@@ -54,6 +67,7 @@ export default {
           [FORM_FIELD_PATH]: '',
           [FORM_FIELD_DESCRIPTION]: '',
           [FORM_FIELD_AVATAR]: null,
+          [FORM_FIELD_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_INTEGER,
         };
       },
     },
@@ -61,7 +75,13 @@ export default {
       type: Array,
       required: false,
       default() {
-        return [FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR];
+        return [
+          FORM_FIELD_NAME,
+          FORM_FIELD_PATH,
+          FORM_FIELD_DESCRIPTION,
+          FORM_FIELD_AVATAR,
+          FORM_FIELD_VISIBILITY_LEVEL,
+        ];
       },
     },
     submitButtonText: {
@@ -128,6 +148,13 @@ export default {
           groupAttrs: {
             class: 'gl-w-full',
             labelSrOnly: true,
+          },
+        },
+        [FORM_FIELD_VISIBILITY_LEVEL]: {
+          label: s__('Organization|Organization visibility level'),
+          labelDescription: {
+            text: s__('Organization|Who can see this organization?'),
+            linkText: s__('Organization|Learn more about visibility levels'),
           },
         },
       };
@@ -229,6 +256,23 @@ export default {
           :value="value"
           :entity="formValues"
           :label="fields.avatar.label"
+          @input="input"
+        />
+      </template>
+
+      <template #group(visibilityLevel)-label-description>
+        {{ fields.visibilityLevel.labelDescription.text }}
+        <help-page-link
+          href="user/organization/index"
+          anchor="view-an-organizations-visibility-level"
+          >{{ fields.visibilityLevel.labelDescription.linkText }}</help-page-link
+        >.
+      </template>
+      <template #input(visibilityLevel)="{ value, input }">
+        <visibility-level-radio-buttons
+          :checked="value"
+          :visibility-levels="$options.availableVisibilityLevels"
+          :visibility-level-descriptions="$options.ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS"
           @input="input"
         />
       </template>

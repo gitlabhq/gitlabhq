@@ -5,7 +5,6 @@ import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   FORM_TYPES,
-  WIDGET_TYPE_HIERARCHY,
   WORK_ITEMS_TREE_TEXT,
   WORK_ITEM_TYPE_VALUE_MAP,
   WORK_ITEMS_TYPE_MAP,
@@ -132,18 +131,16 @@ export default {
       error() {
         this.error = s__('WorkItems|An error occurred while fetching children');
       },
+      result() {
+        if (this.hasNextPage && this.children.length === 0) {
+          this.fetchNextPage();
+        }
+      },
     },
   },
   computed: {
     childrenIds() {
       return this.children.map((c) => c.id);
-    },
-    hasIndirectChildren() {
-      return this.children
-        .map(
-          (child) => child.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY) || {},
-        )
-        .some((hierarchy) => hierarchy.hasChildren);
     },
     addItemsActions() {
       let childTypes = this.allowedChildTypes;

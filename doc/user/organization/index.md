@@ -40,6 +40,9 @@ To view the organizations you have access to:
 
 ## Create an organization
 
+NOTE:
+In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/) organizations can be only private.
+
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New organization**.
 1. In the **Organization name** text box, enter a name for the organization.
 1. In the **Organization URL** text box, enter a path for the organization.

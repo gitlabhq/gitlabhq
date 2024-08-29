@@ -1,6 +1,7 @@
 import * as timeago from 'timeago.js';
-import { languageCode, s__ } from '~/locale';
+import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import { DEFAULT_DATE_TIME_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { languageCode, s__ } from '~/locale';
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -129,7 +130,7 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
   function addTimeAgoTooltip() {
     elements.forEach((el) => {
       // Recreate with custom template
-      el.setAttribute('title', localeDateFormat.asDateTimeFull.format(el.dateTime));
+      el.setAttribute('title', localeDateFormat.asDateTimeFull.format(newDate(el.dateTime)));
     });
   }
 

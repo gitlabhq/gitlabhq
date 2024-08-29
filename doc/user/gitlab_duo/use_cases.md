@@ -11,7 +11,7 @@ The following use cases provide practical examples, exercises, and workflows wit
 Learn how to:
 
 - Refactor existing source code.
-- Use root cause analysis to debug problems.
+- Use GitLab Duo Root Cause Analysis to debug problems.
 - Solve security vulnerabilities.
 
 ## Use GitLab Duo to solve development challenges
@@ -548,7 +548,7 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
 ```
 
 [SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) to understand the problem.
-Vulnerability resolution helps to generate an MR.
+Vulnerability Resolution helps to generate an MR.
 If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Duo Chat to refine. For example:
 
 1. Open VS Code or the Web IDE with GitLab Duo enabled, and add a comment with instructions:

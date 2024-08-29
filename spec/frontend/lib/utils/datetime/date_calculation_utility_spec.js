@@ -8,8 +8,26 @@ import {
   isInTimePeriod,
   differenceInMinutes,
   getMonthsBetweenDates,
+  newDate,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
+
+describe('newDate', () => {
+  it.each`
+    string                             | expected
+    ${'2022-03-22'}                    | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00'}              | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00'}           | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00.000'}       | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00.000Z'}      | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T01:00:00.000+01:00'} | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${1647907200000}                   | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${new Date('2022-03-22T00:00')}    | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${null}                            | ${new Date('1970-01-01T00:00:00.000Z')}
+  `('returns $expected given $string when timezone=GMT', ({ string, expected }) => {
+    expect(newDate(string)).toEqual(expected);
+  });
+});
 
 describe('newDateAsLocaleTime', () => {
   it.each`

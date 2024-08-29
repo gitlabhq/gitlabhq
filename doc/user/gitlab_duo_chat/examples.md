@@ -252,9 +252,9 @@ You can also ask to explain specific job errors by copy-pasting the error messag
 
 - `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
 
-Alternatively, you can use root cause analysis to [troubleshoot failed CI/CD jobs](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot failed CI/CD jobs](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
-## Troubleshoot failed CI/CD jobs with root cause analysis
+## Troubleshoot failed CI/CD jobs with Root Cause Analysis
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
@@ -322,5 +322,5 @@ Use the following commands to quickly accomplish specific tasks.
 | /explain               | [Explain code](#explain-selected-code)              |
 | /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)   |
 | /refactor              | [Refactor the code](#refactor-code-in-the-ide)        |
-| /troubleshoot          | [Troubleshoot failed CI/CD jobs with root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
+| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
 | /fix                   | [Fix the code](#fix-code-in-the-ide)        |

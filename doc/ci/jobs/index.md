@@ -81,9 +81,9 @@ In each place, if you hover over the failed job you can see the reason it failed
 
 You can also see the reason it failed on the Job detail page.
 
-### Troubleshoot a failed job with root cause analysis
+### Troubleshoot a failed job with Root Cause Analysis
 
-You can use root cause analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ## The order of jobs in a pipeline
 

@@ -272,3 +272,40 @@ variables:
 ```
 
 If you're using the Kubernetes executor, you may need to override the default Kubernetes resource settings. Refer to the [Kubernetes executor documentation](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources) for details on how to adjust container resources to prevent memory issues.
+
+## No `package-lock.json` file in NPM projects
+
+By default, the Dependency Scanning job runs only when there is a `package-lock.json` file in the repository. However, some NPM projects generate the `package-lock.json` file during the build process, instead of storing them in the Git repository.
+
+To scan dependencies in these projects:
+
+1. Generate the `package-lock.json` file in a build job.
+1. Store the generated file as an artifact.
+1. Modify the Dependency Scanning job to use the artifact and adjust its rules.
+
+For example, your configuration might look like this:
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+build:
+  script:
+    - npm i
+  artifacts:
+    paths:
+      - package-lock.json  # Store the generated package-lock.json as an artifact
+
+gemnasium-dependency_scanning:
+  needs: ["build"]
+  rules:
+    - if: "$DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'"
+      when: never
+    - if: "$DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/"
+      when: never
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bdependency_scanning\b/ && $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: 'false'
+    - if: "$CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\\bdependency_scanning\\b/"
+```

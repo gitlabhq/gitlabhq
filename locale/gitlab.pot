@@ -3727,7 +3727,7 @@ msgstr ""
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}."
 msgstr ""
 
-msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above."
+msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider."
 msgstr ""
 
 msgid "AdminArea|Minimal access"
@@ -9527,6 +9527,9 @@ msgstr ""
 msgid "BranchRules|Delete rule"
 msgstr ""
 
+msgid "BranchRules|Deploy keys"
+msgstr ""
+
 msgid "BranchRules|Developers and Maintainers"
 msgstr ""
 
@@ -9639,6 +9642,9 @@ msgid "BranchRules|Status checks"
 msgstr ""
 
 msgid "BranchRules|Status checks created"
+msgstr ""
+
+msgid "BranchRules|Status checks updated"
 msgstr ""
 
 msgid "BranchRules|Target branch"
@@ -25460,10 +25466,10 @@ msgstr ""
 msgid "GoogleCloud|Generated service account is linked to the selected branch or tag"
 msgstr ""
 
-msgid "GoogleCloud|GitLab group ID"
+msgid "GoogleCloud|GitLab group ID %{groupId}"
 msgstr ""
 
-msgid "GoogleCloud|GitLab project ID"
+msgid "GoogleCloud|GitLab project ID %{projectId}"
 msgstr ""
 
 msgid "GoogleCloud|Google Artifact Management"
@@ -37799,6 +37805,9 @@ msgstr ""
 msgid "Organization|Organization successfully created."
 msgstr ""
 
+msgid "Organization|Organization visibility level"
+msgstr ""
+
 msgid "Organization|Organization was successfully updated."
 msgstr ""
 
@@ -40171,13 +40180,22 @@ msgstr ""
 msgid "Pipeline|Merge request pipeline"
 msgstr ""
 
+msgid "Pipeline|Merge request pipeline runs on the contents of the merge request's source branch, not the target branch."
+msgstr ""
+
 msgid "Pipeline|Merge train pipeline"
 msgstr ""
 
 msgid "Pipeline|Merge train pipeline jobs can not be retried"
 msgstr ""
 
+msgid "Pipeline|Merge train pipeline runs on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch."
+msgstr ""
+
 msgid "Pipeline|Merged result pipeline"
+msgstr ""
+
+msgid "Pipeline|Merged result pipeline runs on the contents of the merge request combined with the contents of the target branch."
 msgstr ""
 
 msgid "Pipeline|No failed jobs in this pipeline 🎉"
@@ -40310,6 +40328,15 @@ msgid "Pipeline|View pipeline"
 msgstr ""
 
 msgid "Pipeline|We are currently unable to fetch pipeline data"
+msgstr ""
+
+msgid "Pipeline|What is a merge request pipeline?"
+msgstr ""
+
+msgid "Pipeline|What is a merge train pipeline?"
+msgstr ""
+
+msgid "Pipeline|What is a merged result pipeline?"
 msgstr ""
 
 msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."
@@ -52250,10 +52277,16 @@ msgstr ""
 msgid "StatusChecks|Invoke an external API as part of the pipeline process."
 msgstr ""
 
+msgid "StatusChecks|No changes were made to the status check."
+msgstr ""
+
 msgid "StatusChecks|Service name"
 msgstr ""
 
 msgid "StatusChecks|Unable to create status check. Please try again."
+msgstr ""
+
+msgid "StatusChecks|Unable to update status check. Please try again."
 msgstr ""
 
 msgid "StatusCheck|%{failed} failed"

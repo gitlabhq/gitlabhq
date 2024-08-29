@@ -55,6 +55,11 @@ export default {
       required: false,
       default: () => [],
     },
+    deployKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     title: {
       type: String,
       required: true,
@@ -73,6 +78,7 @@ export default {
     return {
       updatedGroups: this.groups,
       updatedUsers: this.users,
+      updatedDeployKeys: this.deployKeys,
       isAdminSelected: null,
       isMaintainersSelected: null,
       isDevelopersAndMaintainersSelected: null,
@@ -94,6 +100,7 @@ export default {
 
       this.updatedGroups = this.groups;
       this.updatedUsers = this.users;
+      this.updatedDeployKeys = this.deployKeys;
     },
   },
   methods: {
@@ -118,6 +125,7 @@ export default {
       const ruleEditRoles = [
         ...this.formatItemsData(this.updatedUsers, 'userId', 'User'), // eslint-disable-line @gitlab/require-i18n-strings
         ...this.formatItemsData(this.updatedGroups, 'groupId', 'Group'), // eslint-disable-line @gitlab/require-i18n-strings
+        ...this.formatItemsData(this.updatedDeployKeys, 'deployKeyId', 'DeployKey'),
       ];
       let ruleEditAccessLevels = [];
       if (this.isAdminSelected) {

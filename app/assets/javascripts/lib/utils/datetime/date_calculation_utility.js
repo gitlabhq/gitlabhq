@@ -3,8 +3,48 @@ import { __, n__ } from '~/locale';
 import { getDayName, parseSeconds } from './date_format_utility';
 
 const DAYS_IN_WEEK = 7;
+
+export const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd format
 export const SECONDS_IN_DAY = 86400;
 export const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Creates a new `Date` object.
+ * If a `Date` object is provided, then it is cloned.
+ *
+ * This function fixes a bug with the `Date` constructor where
+ * passing a date-only string results in a date 1 day behind
+ * for timezones that are behind UTC.
+ *
+ * From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date:
+ *
+ * > When the time zone offset is absent, **date-only forms are
+ * interpreted as a UTC time and date-time forms are interpreted
+ * as local time**. This is due to a historical spec error that
+ * was not consistent with ISO 8601 but could not be changed
+ * due to web compatibility.
+ *
+ * For example, the bug `new Date('2020-02-02')` results in
+ * `Sat Feb 01 2020 16:00:00 GMT-0800 (Pacific Standard Time)`
+ * for UTC-8 timezone.
+ *
+ * With this function, `newDate('2020-02-02')` results in
+ * `Wed Feb 02 2022 00:00:00 GMT-0800 (Pacific Standard Time)`
+ * for UTC-8 timezone.
+ *
+ * @param {string|number|Date} date
+ * @returns {Date}
+ */
+export const newDate = (date) => {
+  if (typeof date === 'string' && DATE_ONLY_REGEX.test(date)) {
+    const parts = date.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // month is 0-indexed
+    const day = parseInt(parts[2], 10);
+    return new Date(year, month, day);
+  }
+  return new Date(date);
+};
 
 /**
  * This method allows you to create new Date instance from existing

@@ -111,11 +111,6 @@ domains:
     feature_categories:
       - container_registry
 
-  DependencyManagement:
-    description:
-    feature_categories:
-      - dependency_management
-
   DependencyProxy:
     description: Dependency Proxy for container images.
     feature_categories:

@@ -90,6 +90,9 @@ export default {
           return;
         }
         this.updateQueryParam();
+        if (this.hasNextPage && this.children.length === 0) {
+          this.fetchNextPage();
+        }
       },
     },
     parentIssue: {

@@ -23,7 +23,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to beta in GitLab 16.10.
 
-Use GitLab Duo Merge request summary to create a merge request description when you
+Use GitLab Duo Merge Request Summary to create a merge request description when you
 create or edit a merge request.
 
 1. [Create a new merge request](creating_merge_requests.md).

@@ -110,6 +110,11 @@ export default {
           error,
         });
       },
+      result() {
+        if (this.hasNextPage && this.children.length === 0) {
+          this.fetchNextPage();
+        }
+      },
     },
     isExpanded: {
       query: isExpandedHierarchyTreeChildQuery,

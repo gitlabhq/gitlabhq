@@ -212,3 +212,30 @@ export const DETAILED_MERGE_STATUS = {
 
 export const MT_SKIP_TRAIN = 'skip';
 export const MT_RESTART_TRAIN = 'restart';
+
+// Pipeline event type names
+
+export const PIPELINE_EVENT_TYPE_MERGE_TRAIN = 'Merge train pipeline';
+export const PIPELINE_EVENT_TYPE_MERGED_RESULT = 'Merged result pipeline';
+export const PIPELINE_EVENT_TYPE_MERGE_REQUEST = 'Merge request pipeline';
+
+export const PIPELINE_EVENT_TYPE_MAP = {
+  [PIPELINE_EVENT_TYPE_MERGE_TRAIN]: {
+    title: s__('Pipeline|What is a merge train pipeline?'),
+    content: s__(
+      'Pipeline|Merge train pipeline runs on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
+    ),
+  },
+  [PIPELINE_EVENT_TYPE_MERGED_RESULT]: {
+    title: s__('Pipeline|What is a merged result pipeline?'),
+    content: s__(
+      'Pipeline|Merged result pipeline runs on the contents of the merge request combined with the contents of the target branch.',
+    ),
+  },
+  [PIPELINE_EVENT_TYPE_MERGE_REQUEST]: {
+    title: s__('Pipeline|What is a merge request pipeline?'),
+    content: s__(
+      "Pipeline|Merge request pipeline runs on the contents of the merge request's source branch, not the target branch.",
+    ),
+  },
+};

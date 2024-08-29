@@ -9,6 +9,7 @@ export const i18n = {
   rolesTitle: s__('BranchRules|Roles'),
   usersAndGroupsTitle: s__('BranchRules|Users & groups'),
   groupsTitle: s__('BranchRules|Groups'),
+  deployKeysTitle: s__('BranchRules|Deploy keys'),
 };
 
 export default {
@@ -54,6 +55,11 @@ export default {
       required: false,
       default: () => [],
     },
+    deployKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     statusChecks: {
       type: Array,
       required: false,
@@ -84,6 +90,9 @@ export default {
     hasGroups() {
       return Boolean(this.groups.length);
     },
+    hasDeployKeys() {
+      return Boolean(this.deployKeys.length);
+    },
     hasStatusChecks() {
       return Boolean(this.statusChecks.length);
     },
@@ -91,7 +100,13 @@ export default {
       return this.hasRoles || this.hasUsers;
     },
     showEmptyState() {
-      return !this.hasRoles && !this.hasUsers && !this.hasGroups && !this.hasStatusChecks;
+      return (
+        !this.hasRoles &&
+        !this.hasUsers &&
+        !this.hasGroups &&
+        !this.hasStatusChecks &&
+        !this.hasDeployKeys
+      );
     },
     showHelpText() {
       return Boolean(this.helpText.length);
@@ -129,6 +144,14 @@ export default {
       :users="users"
       :groups="groups"
       :title="$options.i18n.usersAndGroupsTitle"
+    />
+
+    <!-- Deploy keys -->
+    <protection-row
+      v-if="hasDeployKeys"
+      :show-divider="showDivider"
+      :deploy-keys="deployKeys"
+      :title="$options.i18n.deployKeysTitle"
     />
 
     <!-- Status checks -->

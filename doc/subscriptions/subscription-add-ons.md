@@ -43,11 +43,11 @@ After you purchase GitLab Duo, you can assign seats to billable users to grant a
 
 ### For GitLab.com
 
+To use GitLab Duo features in any project or group, you must assign the user to a seat in at least one top-level group.
+
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
-1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
-
-To use GitLab Duo features in any project or group, a user must be assigned a seat in at least one top-level group.
+1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 ### For self-managed
 
@@ -62,7 +62,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
-1. To the right of the user, turn on the toggle to assign GitLab Duo.
+1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 #### Configure network and proxy settings
 
