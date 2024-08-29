@@ -7488,7 +7488,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'validation #changing_shared_runners_enabled_is_allowed' do
+  describe '#changing_shared_runners_enabled_is_allowed' do
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
       :shared_runners_enabled     | true  | true
       :shared_runners_enabled     | false | true
@@ -7508,6 +7508,27 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         unless valid_record
           expect(project.errors[:shared_runners_enabled]).to contain_exactly('cannot be enabled because parent group does not allow it')
         end
+      end
+    end
+  end
+
+  describe '#parent_organization_match' do
+    let_it_be(:group) { create(:group, :with_organization) }
+
+    subject(:project) { build(:project, namespace: group, organization: organization) }
+
+    context "when project belongs to parent's organization" do
+      let(:organization) { group.organization }
+
+      it { is_expected.to be_valid }
+    end
+
+    context "when project does not belong to parent's organization" do
+      let(:organization) { build(:organization) }
+
+      it 'is not valid and adds an error message' do
+        expect(project).not_to be_valid
+        expect(project.errors[:organization_id]).to include("must match the parent organization's ID")
       end
     end
   end

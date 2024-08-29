@@ -332,18 +332,18 @@ To compare branches in a repository:
 1. Select the **Target** repository and branch. Exact matches are shown first.
 1. Below **Show changes**, select the method to compare branches:
    <!-- vale gitlab_base.SubstitutionWarning = NO -->
-   <!-- Disable Vale so it doesn't flag "since" -->
+   <!-- Disable Vale gitlab_base.SubstitutionWarning rule so that Vale doesn't flag "since" -->
    - **Only incoming changes from source** (default) shows differences from the source branch since
      the latest common commit on both branches.
      It doesn't include unrelated changes made to the target branch after the source branch was created.
      This method uses the `git diff <from>...<to>`
-     [Git command](https://git-scm.com/docs/git-diff#Documentation/git-diff.txt-emgitdiffemltoptionsgtltcommitgtltcommitgt--ltpathgt82308203-1).
+     [Git command](../../../../topics/git/commands.md).
      To compare branches, this method uses the merge base instead of the actual commit, so
      changes from cherry-picked commits are shown as new changes.
    - **Include changes to target since source was created** shows all the differences between the two
      branches.
      This method uses the `git diff <from> <to>`
-     [Git command](https://git-scm.com/docs/git-diff#Documentation/git-diff.txt-emgitdiffemltoptionsgt--merge-baseltcommitgtltcommitgt--ltpathgt82308203).
+     [Git command](../../../../topics/git/commands.md).
    <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Select **Compare** to show the list of commits, and changed files.
 1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** (**{substitute}**).

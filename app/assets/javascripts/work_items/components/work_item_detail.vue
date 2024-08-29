@@ -262,13 +262,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
     hasParent() {
-      // TODO: This is a temporary check till the issue work item migration is completed
-      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
-      const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
-
-      if (workItemType === WORK_ITEM_TYPE_VALUE_TASK) {
-        return glFeatures.namespaceLevelWorkItems && parentWorkItem;
-      }
+      const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
       if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
         return hasSubepicsFeature && parentWorkItem;
@@ -277,6 +271,15 @@ export default {
       return Boolean(parentWorkItem);
     },
     shouldShowAncestors() {
+      // TODO: This is a temporary check till the issue work item migration is completed
+      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
+      if (
+        this.workItemType === WORK_ITEM_TYPE_VALUE_TASK &&
+        !this.glFeatures.namespaceLevelWorkItems
+      ) {
+        return false;
+      }
+
       // Checks whether current work item has parent
       // or it is in hierarchy but there is no permission to view the parent
       return this.hasParent || this.workItemHierarchy?.hasParent;

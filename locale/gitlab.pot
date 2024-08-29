@@ -10220,9 +10220,6 @@ msgstr ""
 msgid "Burnup chart could not be generated due to too many events"
 msgstr ""
 
-msgid "Business metrics (Custom)"
-msgstr ""
-
 msgid "Busy"
 msgstr ""
 
@@ -12336,9 +12333,6 @@ msgid "CloudSeed|Vision AI"
 msgstr ""
 
 msgid "Cluster"
-msgstr ""
-
-msgid "Cluster Health"
 msgstr ""
 
 msgid "Cluster cache cleared."
@@ -16577,9 +16571,6 @@ msgid "Custom emoji will be available to use in every project in the group."
 msgstr ""
 
 msgid "Custom hostname (for private commit emails)"
-msgstr ""
-
-msgid "Custom metrics"
 msgstr ""
 
 msgid "Custom notification events"
@@ -45730,24 +45721,6 @@ msgstr ""
 msgid "Response initiated"
 msgstr ""
 
-msgid "Response metrics (AWS ELB)"
-msgstr ""
-
-msgid "Response metrics (Custom)"
-msgstr ""
-
-msgid "Response metrics (HA Proxy)"
-msgstr ""
-
-msgid "Response metrics (NGINX Ingress VTS)"
-msgstr ""
-
-msgid "Response metrics (NGINX Ingress)"
-msgstr ""
-
-msgid "Response metrics (NGINX)"
-msgstr ""
-
 msgid "Response text"
 msgstr ""
 
@@ -53243,12 +53216,6 @@ msgstr ""
 msgid "System information"
 msgstr ""
 
-msgid "System metrics (Custom)"
-msgstr ""
-
-msgid "System metrics (Kubernetes)"
-msgstr ""
-
 msgid "System output"
 msgstr ""
 
@@ -57013,7 +56980,7 @@ msgstr[1] ""
 msgid "Trials|Your 30-day trial has ended"
 msgstr ""
 
-msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
+msgid "Trials|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""
 
 msgid "Trial|Activate my trial"
@@ -58577,10 +58544,10 @@ msgstr ""
 msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
 msgstr ""
 
-msgid "UserMapping|Accept reassignments only from users that you trust. Reassignment of contributions is permanent. Accepting these reassignments might cause contributions to be incorrectly attributed to you."
+msgid "UserMapping|Approve reassignment"
 msgstr ""
 
-msgid "UserMapping|Approve reassignment"
+msgid "UserMapping|Approve reassignments only from users that you trust. After approval, contributions will be assigned to you. The assignment is permanent."
 msgstr ""
 
 msgid "UserMapping|Awaiting reassignment"
@@ -64802,6 +64769,9 @@ msgid "must match %{association}.project_id"
 msgstr ""
 
 msgid "must match one of the following file types: %{extension_list}"
+msgstr ""
+
+msgid "must match the parent organization's ID"
 msgstr ""
 
 msgid "must not be an owner of the namespace"

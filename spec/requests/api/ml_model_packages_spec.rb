@@ -303,10 +303,10 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
   describe 'GET /api/v4/projects/:project_id/packages/ml_models/:model_version_id/files/(*path)/:file_name' do
     include_context 'ml model authorize permissions table'
 
-    let_it_be(:file_name) { 'model.md5' }
+    let_it_be(:file_name) { Addressable::URI.escape('Mo_de-l v12.md5') }
     let_it_be(:package) { model_version.package }
-    let_it_be(:package_file_1) { create(:package_file, :generic, package: package, file_name: 'model.md5') }
-    let_it_be(:package_file_2) { create(:package_file, :generic, package: package, file_name: 'my_dir%2Fmodel.md5') }
+    let_it_be(:package_file_1) { create(:package_file, :generic, package: package, file_name: file_name) }
+    let_it_be(:package_file_2) { create(:package_file, :generic, package: package, file_name: "my_dir%2F#{file_name}") }
 
     let(:file_path) { '' }
     let(:full_path) { "#{file_path}#{file_name}" }

@@ -6,23 +6,26 @@ import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vu
 describe('WorkItemStateBadge', () => {
   let wrapper;
 
-  const createComponent = ({ workItemState = STATE_OPEN } = {}) => {
+  const createComponent = ({ workItemState = STATE_OPEN, showIcon = true } = {}) => {
     wrapper = shallowMount(WorkItemStateBadge, {
       propsData: {
         workItemState,
+        showIcon,
       },
     });
   };
   const findStatusBadge = () => wrapper.findComponent(GlBadge);
 
   it.each`
-    state           | icon              | stateText   | variant
-    ${STATE_OPEN}   | ${'issue-open-m'} | ${'Open'}   | ${'success'}
-    ${STATE_CLOSED} | ${'issue-close'}  | ${'Closed'} | ${'info'}
+    state           | showIcon | icon              | stateText   | variant
+    ${STATE_OPEN}   | ${true}  | ${'issue-open-m'} | ${'Open'}   | ${'success'}
+    ${STATE_CLOSED} | ${true}  | ${'issue-close'}  | ${'Closed'} | ${'info'}
+    ${STATE_OPEN}   | ${false} | ${null}           | ${'Open'}   | ${'success'}
+    ${STATE_CLOSED} | ${false} | ${null}           | ${'Closed'} | ${'info'}
   `(
     'renders icon as "$icon" and text as "$stateText" when the work item state is "$state"',
-    ({ state, icon, stateText, variant }) => {
-      createComponent({ workItemState: state });
+    ({ state, showIcon, icon, stateText, variant }) => {
+      createComponent({ workItemState: state, showIcon });
 
       expect(findStatusBadge().props('icon')).toBe(icon);
       expect(findStatusBadge().props('variant')).toBe(variant);

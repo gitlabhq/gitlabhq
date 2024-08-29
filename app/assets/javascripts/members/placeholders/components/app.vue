@@ -173,6 +173,7 @@ export default {
           :initial-filter-value="initialFilterValue"
           :tokens="filteredSearchTokens"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
+          terms-as-tokens
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
           @onFilter="onFilter"
         />
@@ -196,6 +197,7 @@ export default {
           :initial-filter-value="initialFilterValue"
           :tokens="filteredSearchTokens"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
+          terms-as-tokens
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
           @onFilter="onFilter"
         />

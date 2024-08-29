@@ -110,7 +110,7 @@ export default {
       </div>
     </div>
     <section class="header-main-content gl-mr-3 gl-flex gl-items-center">
-      <ci-icon class="gl-mr-3" :status="status" show-status-text />
+      <ci-icon class="gl-mr-3 gl-leading-1" :status="status" show-status-text />
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
       <template v-else>{{ __('Created') }}</template>

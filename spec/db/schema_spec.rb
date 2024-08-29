@@ -323,7 +323,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     'NotificationSetting' => %w[level],
     'Project' => %w[auto_cancel_pending_pipelines],
     'ProjectAutoDevops' => %w[deploy_strategy],
-    'PrometheusMetric' => %w[group],
     'ResourceLabelEvent' => %w[action],
     'User' => %w[layout dashboard project_view],
     'Users::Callout' => %w[feature_name]

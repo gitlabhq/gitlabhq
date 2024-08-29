@@ -3721,7 +3721,6 @@ RSpec/FeatureCategory:
     - 'spec/models/projects/project_topic_spec.rb'
     - 'spec/models/projects/topic_spec.rb'
     - 'spec/models/projects/wiki_repository_spec.rb'
-    - 'spec/models/prometheus_metric_spec.rb'
     - 'spec/models/protectable_dropdown_spec.rb'
     - 'spec/models/push_event_payload_spec.rb'
     - 'spec/models/push_event_spec.rb'

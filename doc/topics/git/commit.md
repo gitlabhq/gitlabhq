@@ -193,3 +193,7 @@ To create and use a Git alias for the
    ```shell
    git mwps origin <local-branch-name>
    ```
+
+## Related topics
+
+- [Common Git commands](commands.md)

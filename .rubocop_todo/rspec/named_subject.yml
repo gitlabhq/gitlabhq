@@ -2647,7 +2647,6 @@ RSpec/NamedSubject:
     - 'spec/models/projects/import_export/relation_export_upload_spec.rb'
     - 'spec/models/projects/project_topic_spec.rb'
     - 'spec/models/projects/topic_spec.rb'
-    - 'spec/models/prometheus_metric_spec.rb'
     - 'spec/models/protected_branch_spec.rb'
     - 'spec/models/release_highlight_spec.rb'
     - 'spec/models/releases/source_spec.rb'

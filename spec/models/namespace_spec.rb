@@ -253,6 +253,27 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '#parent_organization_match' do
+      let_it_be(:group) { create(:group, :with_organization) }
+
+      subject(:namespace) { build(:group, parent: group, organization: organization) }
+
+      context "when namespace belongs to parent's organization" do
+        let(:organization) { group.organization }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when namespace does not belong to parent's organization" do
+        let(:organization) { build(:organization) }
+
+        it 'is not valid and adds an error message' do
+          expect(namespace).not_to be_valid
+          expect(namespace.errors[:organization_id]).to include("must match the parent organization's ID")
+        end
+      end
+    end
   end
 
   describe "ReferencePatternValidation" do

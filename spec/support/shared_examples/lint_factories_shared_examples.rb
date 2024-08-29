@@ -168,7 +168,6 @@ module Support
         project_namespace
         project_repository
         project_security_setting
-        prometheus_metric
         protected_branch
         protected_branch_merge_access_level
         protected_branch_push_access_level

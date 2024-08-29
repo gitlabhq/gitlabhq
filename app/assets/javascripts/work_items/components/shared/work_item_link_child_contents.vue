@@ -15,6 +15,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
+import WorkItemStateBadge from '../work_item_state_badge.vue';
 import {
   STATE_OPEN,
   WIDGET_TYPE_PROGRESS,
@@ -44,6 +45,7 @@ export default {
     RichTimestampTooltip,
     WorkItemLinkChildMetadata,
     WorkItemTypeIcon,
+    WorkItemStateBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -99,20 +101,17 @@ export default {
     isChildItemOpen() {
       return this.childItem.state === STATE_OPEN;
     },
-    statusIconName() {
-      return this.isChildItemOpen ? 'issue-open-m' : 'issue-close';
-    },
     childItemType() {
       return this.childItem.workItemType.name;
-    },
-    statusIconClass() {
-      return this.isChildItemOpen ? 'gl-text-green-500' : 'gl-text-blue-500';
     },
     stateTimestamp() {
       return this.isChildItemOpen ? this.childItem.createdAt : this.childItem.closedAt;
     },
     stateTimestampTypeText() {
       return this.isChildItemOpen ? this.$options.i18n.created : this.$options.i18n.closed;
+    },
+    childItemTypeColorClass() {
+      return this.isChildItemOpen ? 'gl-text-secondary' : 'gl-text-gray-300';
     },
     hasMetadata() {
       if (this.metadataWidgets) {
@@ -152,7 +151,7 @@ export default {
     data-testid="links-child"
   >
     <div ref="stateIcon" class="gl-cursor-help">
-      <work-item-type-icon class="gl-text-secondary" :work-item-type="childItemType" />
+      <work-item-type-icon :color-class="childItemTypeColorClass" :work-item-type="childItemType" />
       <gl-tooltip :target="() => $refs.stateIcon">
         {{ childItemType }}
       </gl-tooltip>
@@ -172,6 +171,7 @@ export default {
           </span>
           <gl-link
             :href="childItem.webUrl"
+            :class="{ '!gl-text-secondary': !isChildItemOpen }"
             class="gl-hyphens-auto gl-break-words gl-font-semibold"
             @click.exact="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
@@ -180,7 +180,7 @@ export default {
             {{ childItem.title }}
           </gl-link>
         </div>
-        <div class="gl-flex gl-justify-end">
+        <div class="gl-flex gl-items-center gl-justify-end">
           <gl-avatars-inline
             v-if="assignees.length"
             :avatars="assignees"
@@ -202,11 +202,7 @@ export default {
             class="gl-cursor-help"
             data-testid="item-status-icon"
           >
-            <gl-icon
-              :class="statusIconClass"
-              :name="statusIconName"
-              :aria-label="stateTimestampTypeText"
-            />
+            <work-item-state-badge :work-item-state="childItem.state" :show-icon="false" />
           </span>
           <rich-timestamp-tooltip
             :target="`statusIcon-${childItem.id}`"
@@ -237,7 +233,7 @@ export default {
     <div v-if="canUpdate">
       <gl-button
         v-gl-tooltip
-        class="-gl-mr-2 -gl-mt-2"
+        class="-gl-mr-1 -gl-mt-1"
         category="tertiary"
         size="small"
         icon="close"

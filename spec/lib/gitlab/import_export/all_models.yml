@@ -762,7 +762,6 @@ project:
 - wiki_repository_state
 - source_pipelines
 - sourced_pipelines
-- prometheus_metrics
 - vulnerabilities
 - vulnerability_exports
 - vulnerability_findings
@@ -898,8 +897,6 @@ award_emoji:
 - user
 priorities:
 - label
-prometheus_metrics:
-- project
 timelogs:
 - issue
 - merge_request

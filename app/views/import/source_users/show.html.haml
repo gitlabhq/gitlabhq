@@ -27,7 +27,7 @@
           source_hostname: source_hostname,
           destination_group: destination_group)
         = succeed '.' do
-          = link_to s_('UserMapping|Learn more about reassignments'), help_page_path('user/project/import/index', anchor: 'reassign-contributions-and-memberships')
+          = link_to s_('UserMapping|Learn more about reassignments'), help_page_path('user/project/import/index', anchor: 'accept-contribution-reassignment')
       %h5
         = s_('UserMapping|Import details:')
       %p.gl-mb-5
@@ -44,10 +44,11 @@
         = safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username)
       %p.gl-mb-0
         %strong
-          = s_('UserMapping|Accept reassignments only from users that you trust. Reassignment of contributions is permanent. Accepting these reassignments might cause contributions to be incorrectly attributed to you.')
+          = s_('UserMapping|Approve reassignments only from users that you trust. After approval, contributions will be assigned to you. The assignment is permanent.')
 
     - c.with_footer do
-      = render Pajamas::ButtonComponent.new(variant: :danger, method: :post, href: accept_import_source_user_path(@source_user)) do
-        = s_('UserMapping|Approve reassignment')
-      = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user)) do
-        = s_('UserMapping|Reject')
+      .gl-flex.gl-gap-3
+        = render Pajamas::ButtonComponent.new(variant: :danger, method: :post, href: accept_import_source_user_path(@source_user)) do
+          = s_('UserMapping|Approve reassignment')
+        = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user)) do
+          = s_('UserMapping|Reject')

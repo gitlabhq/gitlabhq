@@ -16,8 +16,17 @@ FactoryBot.define do
     has_external_wiki { false }
 
     # Associations
+    namespace do
+      next group if group
+
+      if @overrides[:organization]
+        association(:namespace, organization: @overrides[:organization])
+      else
+        association(:namespace)
+      end
+    end
+
     organization { namespace&.organization }
-    namespace
     creator { group ? association(:user) : namespace&.owner }
 
     transient do

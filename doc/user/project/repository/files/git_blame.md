@@ -85,4 +85,5 @@ The output includes:
 
 ## Related topics
 
-- [Git file blame REST API](../../../../api/repository_files.md#get-file-blame-from-repository).
+- [Git file blame REST API](../../../../api/repository_files.md#get-file-blame-from-repository)
+- [Common Git commands](../../../../topics/git/commands.md)

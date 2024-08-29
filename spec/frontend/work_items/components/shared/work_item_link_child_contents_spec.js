@@ -1,4 +1,4 @@
-import { GlLabel, GlIcon, GlLink, GlButton, GlAvatarsInline } from '@gitlab/ui';
+import { GlLabel, GlLink, GlButton, GlAvatarsInline } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,7 +7,7 @@ import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/w
 
 import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
-
+import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
 
@@ -30,8 +30,8 @@ describe('WorkItemLinkChildContents', () => {
   const mockAssignees = ASSIGNEES.assignees.nodes;
   const mockLabels = LABELS.labels.nodes;
 
-  const findStatusIconComponent = () =>
-    wrapper.findByTestId('item-status-icon').findComponent(GlIcon);
+  const findStatusBadgeComponent = () =>
+    wrapper.findByTestId('item-status-icon').findComponent(WorkItemStateBadge);
   const findConfidentialIconComponent = () => wrapper.findByTestId('confidential-icon');
   const findTitleEl = () => wrapper.findComponent(GlLink);
   const findStatusTooltipComponent = () => wrapper.findComponent(RichTimestampTooltip);
@@ -61,16 +61,15 @@ describe('WorkItemLinkChildContents', () => {
   });
 
   it.each`
-    status      | childItem             | statusIconName    | statusIconColorClass   | rawTimestamp                   | tooltipContents
-    ${'open'}   | ${workItemTask}       | ${'issue-open-m'} | ${'gl-text-green-500'} | ${workItemTask.createdAt}      | ${'Created'}
-    ${'closed'} | ${closedWorkItemTask} | ${'issue-close'}  | ${'gl-text-blue-500'}  | ${closedWorkItemTask.closedAt} | ${'Closed'}
+    status      | childItem             | workItemState | rawTimestamp                   | tooltipContents
+    ${'open'}   | ${workItemTask}       | ${'OPEN'}     | ${workItemTask.createdAt}      | ${'Created'}
+    ${'closed'} | ${closedWorkItemTask} | ${'CLOSED'}   | ${closedWorkItemTask.closedAt} | ${'Closed'}
   `(
     'renders item status icon and tooltip when item status is `$status`',
-    ({ childItem, statusIconName, statusIconColorClass, rawTimestamp, tooltipContents }) => {
+    ({ childItem, workItemState, rawTimestamp, tooltipContents }) => {
       createComponent({ childItem });
 
-      expect(findStatusIconComponent().props('name')).toBe(statusIconName);
-      expect(findStatusIconComponent().classes()).toContain(statusIconColorClass);
+      expect(findStatusBadgeComponent().props('workItemState')).toBe(workItemState);
       expect(findStatusTooltipComponent().props('rawTimestamp')).toBe(rawTimestamp);
       expect(findStatusTooltipComponent().props('timestampTypeText')).toContain(tooltipContents);
     },

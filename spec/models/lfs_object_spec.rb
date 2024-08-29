@@ -2,15 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe LfsObject do
+RSpec.describe LfsObject, feature_category: :source_code_management do
   context 'scopes' do
     describe '.not_existing_in_project' do
-      it 'contains only lfs objects not linked to the project' do
-        project = create(:project)
-        create(:lfs_objects_project, project: project)
-        other_lfs_object = create(:lfs_object)
+      let_it_be(:project) { create(:project) }
+      let_it_be(:lfs_objects_project) { create(:lfs_objects_project, project: project) }
+      let_it_be(:design_lfs_object_project) { create(:lfs_objects_project, project: project, repository_type: :design) }
+      let_it_be(:other_lfs_object) { create(:lfs_object) }
 
-        expect(described_class.not_linked_to_project(project)).to contain_exactly(other_lfs_object)
+      subject { described_class.not_linked_to_project(project) }
+
+      it { is_expected.to contain_exactly(other_lfs_object) }
+
+      context 'when repository_type is specified' do
+        subject { described_class.not_linked_to_project(project, repository_type: :design) }
+
+        it { is_expected.to contain_exactly(other_lfs_object, lfs_objects_project.lfs_object) }
       end
     end
 

@@ -157,6 +157,7 @@ class Namespace < ApplicationRecord
   validate :nesting_level_allowed, unless: -> { project_namespace? }
   validate :changing_shared_runners_enabled_is_allowed, unless: -> { project_namespace? }
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
+  validate :parent_organization_match, if: :require_organization?
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
@@ -732,6 +733,13 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  def parent_organization_match
+    return unless parent
+    return if parent.organization_id == organization_id
+
+    errors.add(:organization_id, _("must match the parent organization's ID"))
+  end
 
   def cross_namespace_reference?(from)
     return false if from == self

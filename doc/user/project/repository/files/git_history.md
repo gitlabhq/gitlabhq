@@ -67,6 +67,7 @@ Date:   Fri Oct 20 17:53:25 2023 +0000
 ## Related topics
 
 - [Git blame](git_blame.md) for line-by-line information about a file
+- [Common Git commands](../../../../topics/git/commands.md)
 
 ## Troubleshooting
 
