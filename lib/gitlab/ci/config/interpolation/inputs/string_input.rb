@@ -43,7 +43,7 @@ module Gitlab
 
             override :validate_regex
             def validate_regex(value, default)
-              return unless spec.key?(:regex)
+              return unless spec.key?(:regex) && value.is_a?(String)
 
               safe_regex = ::Gitlab::UntrustedRegexp.new(spec[:regex])
 

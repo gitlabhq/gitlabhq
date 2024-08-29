@@ -33730,6 +33730,9 @@ msgstr ""
 msgid "MergeRequest|No files found"
 msgstr ""
 
+msgid "MergeRequest|Remove reviewer"
+msgstr ""
+
 msgid "MergeRequest|Reviewed by @%{username} but not yet approved"
 msgstr ""
 
@@ -56711,7 +56714,10 @@ msgstr ""
 msgid "Tracing|Tracing"
 msgstr ""
 
-msgid "Tracing|View Logs"
+msgid "Tracing|View logs"
+msgstr ""
+
+msgid "Tracing|View metrics"
 msgstr ""
 
 msgid "Tracing|You must select a Service and Operation first."
@@ -57332,6 +57338,9 @@ msgid "Unable to parse JSON"
 msgstr ""
 
 msgid "Unable to parse the vulnerability report's options."
+msgstr ""
+
+msgid "Unable to remove a reviewer at the moment, try again later"
 msgstr ""
 
 msgid "Unable to save iteration. Please try again"

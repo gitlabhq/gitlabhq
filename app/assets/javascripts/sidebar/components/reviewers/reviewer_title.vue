@@ -83,6 +83,7 @@ export default {
       <reviewer-drawer
         :open="drawerOpen"
         @request-review="(params) => $emit('request-review', params)"
+        @remove-reviewer="(data) => $emit('remove-reviewer', data)"
         @close="toggleDrawerOpen(false)"
       />
     </mounting-portal>

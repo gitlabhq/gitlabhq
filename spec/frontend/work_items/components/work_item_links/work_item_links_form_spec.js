@@ -93,6 +93,7 @@ describe('WorkItemLinksForm', () => {
       ]),
       propsData: {
         fullPath: 'group-a',
+        isGroup,
         issuableGid: 'gid://gitlab/WorkItem/1',
         parentConfidential,
         parentIteration,
@@ -105,7 +106,6 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         hasIterationsFeature,
-        isGroup,
       },
       stubs: {
         GlFormGroup: stubComponent(GlFormGroup, {

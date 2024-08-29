@@ -182,7 +182,7 @@ Prerequisites:
    from the Visual Studio Marketplace.
 1. Configure the extension following the
    [setup instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
-1. Enable the feature by toggling the `gitlab.aiAssistedCodeSuggestions.enabledSupportedLanguages` setting.
+1. Enable the feature by toggling the `gitlab.duoCodeSuggestions.enabledSupportedLanguages` setting.
 
 :::TabTitle JetBrains IDEs
 

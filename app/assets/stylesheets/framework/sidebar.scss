@@ -235,7 +235,7 @@
       z-index: 1;
       position: relative;
       padding: $gl-padding-4 0;
-      
+
       &.opened {
         color: $green-500;
       }
@@ -243,7 +243,7 @@
       &.closed {
         color: $blue-500;
       }
-      
+
       svg {
         vertical-align: baseline;
       }
@@ -270,17 +270,17 @@
 }
 
 .assignee-grid {
-  grid-template-areas: ' attention   user';
+  grid-template-areas: 'attention user';
   grid-template-columns: min-content 1fr;
 }
 
 .reviewer-grid {
-  grid-template-areas: ' user approval    rerequest';
-  grid-template-columns: 1fr  min-content min-content;
+  grid-template-areas: 'user approval rerequest remove';
+  grid-template-columns: 1fr;
 
   &.attention-requests {
-    grid-template-areas: ' attention   user approval';
-    grid-template-columns: min-content 1fr  min-content;
+    grid-template-areas: 'attention user approval remove';
+    grid-template-columns: auto 1fr;
   }
 }
 

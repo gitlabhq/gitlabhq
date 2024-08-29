@@ -23,7 +23,6 @@ export default {
     UncollapsedAssigneeList,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -51,6 +50,11 @@ export default {
       default: false,
     },
     canInviteMembers: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroup: {
       type: Boolean,
       required: false,
       default: false,

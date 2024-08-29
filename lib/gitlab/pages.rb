@@ -9,6 +9,12 @@ module Gitlab
 
     include JwtAuthenticatable
 
+    class UniqueDomainGenerationFailure < StandardError
+      def initialize(msg = "Can't generate unique domain for GitLab Pages")
+        super(msg)
+      end
+    end
+
     class << self
       def verify_api_request(request_headers)
         decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: 'gitlab-pages')
@@ -35,9 +41,7 @@ module Gitlab
         return if project.project_setting.pages_unique_domain_in_database.present?
 
         project.project_setting.pages_unique_domain_enabled = true
-        project.project_setting.pages_unique_domain = Gitlab::Pages::RandomDomain.generate(
-          project_path: project.path,
-          namespace_path: project.parent.full_path)
+        project.project_setting.pages_unique_domain = generate_unique_domain(project)
       end
 
       def multiple_versions_enabled_for?(project)
@@ -46,6 +50,17 @@ module Gitlab
         ::Feature.enabled?(:pages_multiple_versions_setting, project) &&
           project.licensed_feature_available?(:pages_multiple_versions) &&
           project.project_setting.pages_multiple_versions_enabled
+      end
+
+      private
+
+      def generate_unique_domain(project)
+        10.times do
+          pages_unique_domain = Gitlab::Pages::RandomDomain.generate(project_path: project.path)
+          return pages_unique_domain unless ProjectSetting.unique_domain_exists?(pages_unique_domain)
+        end
+
+        raise UniqueDomainGenerationFailure
       end
     end
   end

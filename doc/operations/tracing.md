@@ -85,3 +85,23 @@ To request a limit increase to 1,048,576 bytes per minute, contact GitLab suppor
 ## Data retention
 
 GitLab has a retention limit of 30 days for all traces.
+
+## Create an issue for a trace
+
+You can create an issue to track any action taken to resolve or investigate a trace. To create an issue for a trace:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Traces**.
+1. From the list of traces, select a trace.
+1. Select **Create issue**.
+
+The issue is created in the selected project and pre-filled with information from the trace.
+You can edit the issue title and description.
+
+## View issues related to a trace
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Traces**.
+1. From the list of traces, select a trace.
+1. Scroll to **Related issues**.
+1. Optional. To view the issue details, select an issue.

@@ -297,9 +297,8 @@ DETAILS:
 **Tier:** Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
->   Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
->   GitLab 14.8.
+> - Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/336395) support for passthrough chains and included additional passthrough types of `git` and `url` in GitLab 17.2.
 
 You can customize the behavior of pipeline secret detection by [creating a ruleset configuration file](#create-a-ruleset-configuration-file),

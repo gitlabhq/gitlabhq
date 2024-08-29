@@ -17952,6 +17952,22 @@ CREATE SEQUENCE security_policy_project_links_id_seq
 
 ALTER SEQUENCE security_policy_project_links_id_seq OWNED BY security_policy_project_links.id;
 
+CREATE TABLE security_policy_requirements (
+    id bigint NOT NULL,
+    compliance_framework_security_policy_id bigint NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE security_policy_requirements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_policy_requirements_id_seq OWNED BY security_policy_requirements.id;
+
 CREATE TABLE security_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22158,6 +22174,8 @@ ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security
 
 ALTER TABLE ONLY security_policy_project_links ALTER COLUMN id SET DEFAULT nextval('security_policy_project_links_id_seq'::regclass);
 
+ALTER TABLE ONLY security_policy_requirements ALTER COLUMN id SET DEFAULT nextval('security_policy_requirements_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
@@ -24800,6 +24818,9 @@ ALTER TABLE ONLY security_policies
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT security_policy_project_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_policy_requirements
+    ADD CONSTRAINT security_policy_requirements_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -30023,6 +30044,10 @@ CREATE UNIQUE INDEX index_security_policy_project_links_on_project_and_policy ON
 
 CREATE INDEX index_security_policy_project_links_on_project_id ON security_policy_project_links USING btree (project_id);
 
+CREATE INDEX index_security_policy_requirements_on_compliance_requirement_id ON security_policy_requirements USING btree (compliance_requirement_id);
+
+CREATE INDEX index_security_policy_requirements_on_namespace_id ON security_policy_requirements USING btree (namespace_id);
+
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
@@ -30944,6 +30969,8 @@ CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_nam
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
+
+CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_policy ON security_policy_requirements USING btree (compliance_framework_security_policy_id, compliance_requirement_id);
 
 CREATE UNIQUE INDEX uniq_idx_streaming_destination_id_and_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
 
@@ -33357,6 +33384,9 @@ ALTER TABLE ONLY incident_management_timeline_events
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_45054f9c45 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_policy_requirements
+    ADD CONSTRAINT fk_458f7f5ad5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33452,6 +33482,9 @@ ALTER TABLE ONLY project_export_jobs
 
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT fk_5b3d11e1ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY security_policy_requirements
+    ADD CONSTRAINT fk_5b4fae9635 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_broadcast_message_dismissals
     ADD CONSTRAINT fk_5c0cfb74ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -33989,6 +34022,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_b69fa2b2df FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_policy_requirements
+    ADD CONSTRAINT fk_b6e48e3428 FOREIGN KEY (compliance_framework_security_policy_id) REFERENCES compliance_framework_security_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT fk_b74c45b71f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

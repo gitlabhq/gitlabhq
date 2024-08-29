@@ -39,10 +39,10 @@ module Projects
       else
         update_failed!
       end
-    rescue ValidationError => e
-      error(e.message)
     rescue ApiError => e
       error(e.message, status: :api_error)
+    rescue ValidationError, Gitlab::Pages::UniqueDomainGenerationFailure => e
+      error(e.message)
     end
 
     def run_auto_devops_pipeline?

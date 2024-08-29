@@ -421,6 +421,18 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
       end
     end
 
+    context 'when given a value that is not a string' do
+      let(:specs) { { test_input: { regex: '^input_value$' } } }
+      let(:args) { { test_input: 999 } }
+
+      it 'is invalid' do
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to contain_exactly(
+          '`test_input` input: provided value is not a string'
+        )
+      end
+    end
+
     context 'when the pattern is unsafe' do
       let(:specs) { { test_input: { regex: 'a++' } } }
       let(:args) { { test_input: 'aaaaaaaaaaaaaaaaaaaaa' } }

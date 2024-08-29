@@ -24,6 +24,11 @@ export default {
     WorkItemTokenInput,
   },
   props: {
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -205,6 +210,7 @@ export default {
         :children-ids="childrenIds"
         :are-work-items-to-add-valid="areWorkItemsToAddValid"
         :full-path="workItemFullPath"
+        :is-group="isGroup"
         :max-selection-limit="maxWorkItems"
         @searching="searchInProgress = $event"
       />

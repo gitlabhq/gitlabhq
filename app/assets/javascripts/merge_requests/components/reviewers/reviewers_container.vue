@@ -83,10 +83,12 @@ export default {
     </div>
     <uncollapsed-reviewer-list
       v-else-if="reviewers.length"
+      :is-editable="userPermissions.adminMergeRequest"
       :root-path="relativeUrlRoot"
       :users="reviewers"
       issuable-type="merge_request"
       @request-review="(params) => $emit('request-review', params)"
+      @remove-reviewer="(params) => $emit('remove-reviewer', params)"
     />
     <gl-empty-state v-else :svg-path="$options.noReviewersAssignedSvg" :svg-height="70">
       <template #description>

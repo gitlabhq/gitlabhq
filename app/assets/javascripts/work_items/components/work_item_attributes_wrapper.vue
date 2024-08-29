@@ -60,6 +60,11 @@ export default {
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItem: {
       type: Object,
       required: true,
@@ -185,6 +190,7 @@ export default {
         class="js-assignee gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
+        :is-group="isGroup"
         :work-item-id="workItem.id"
         :assignees="workItemAssignees.assignees.nodes"
         :participants="workItemParticipants"
@@ -203,6 +209,7 @@ export default {
         class="js-labels gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
+        :is-group="isGroup"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
@@ -314,6 +321,7 @@ export default {
         :parent="workItemParent"
         :has-parent="hasParent"
         :group-path="groupPath"
+        :is-group="isGroup"
         @error="$emit('error', $event)"
       />
     </template>

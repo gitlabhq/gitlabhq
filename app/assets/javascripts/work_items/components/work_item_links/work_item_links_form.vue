@@ -36,11 +36,16 @@ export default {
     WorkItemProjectsListbox,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIterationsFeature', 'isGroup'],
+  inject: ['hasIterationsFeature'],
   props: {
     fullPath: {
       type: String,
       required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     issuableGid: {
       type: String,
@@ -450,6 +455,7 @@ export default {
       <work-item-token-input
         v-model="workItemsToAdd"
         :is-create-form="isCreateForm"
+        :is-group="isGroup"
         :parent-work-item-id="issuableGid"
         :children-type="childrenType"
         :children-ids="childrenIds"

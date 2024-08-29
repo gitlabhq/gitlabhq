@@ -111,6 +111,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
+      # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
       context 'generic package' do
         subject { build_stubbed(:generic_package) }
 
@@ -262,6 +264,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
 
+      # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
       context 'generic package' do
         subject { build_stubbed(:generic_package) }
 
@@ -1173,34 +1177,65 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to eq(normalized_version) }
   end
 
-  describe "#publish_creation_event" do
+  describe '#publish_creation_event' do
     let_it_be(:project) { create(:project) }
 
-    let(:version) { '-' }
-    let(:package_type) { :generic }
+    let(:package) { build_stubbed(:generic_package) }
 
-    subject { described_class.create!(project: project, name: 'incoming', version: version, package_type: package_type) }
-
-    context 'when package is generic' do
-      it 'publishes an event' do
-        expect { subject }
-          .to publish_event(::Packages::PackageCreatedEvent)
-                .with({
-                  project_id: project.id,
-                  id: kind_of(Numeric),
-                  name: "incoming",
-                  version: "-",
-                  package_type: 'generic'
-                })
-      end
+    it 'publishes an event' do
+      expect { package.publish_creation_event }
+        .to publish_event(::Packages::PackageCreatedEvent)
+              .with({
+                project_id: package.project_id,
+                id: package.id,
+                name: package.name,
+                version: package.version,
+                package_type: package.package_type
+              })
     end
 
-    context 'when package is not generic' do
-      let(:package_type) { :debian }
-      let(:version) { 1 }
+    # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
+    context 'with after_create_commit callback' do
+      let(:name) { FFaker::Lorem.word }
+      let(:version) { '1.0.0' }
 
-      it 'does not create event' do
-        expect { subject }.not_to publish_event(::Packages::PackageCreatedEvent)
+      subject(:create_package) do
+        described_class.create!(project: project, name: name, version: version, package_type: package_type)
+      end
+
+      context 'when package is generic' do
+        let(:package_type) { 'generic' }
+
+        it 'does not create event' do
+          expect { create_package }.not_to publish_event(::Packages::PackageCreatedEvent)
+        end
+
+        context 'when generic_extract_generic_package_model is disabled' do
+          before do
+            stub_feature_flags(generic_extract_generic_package_model: false)
+          end
+
+          it 'publishes an event' do
+            expect { create_package }
+              .to publish_event(::Packages::PackageCreatedEvent)
+                      .with({
+                        project_id: project.id,
+                        id: kind_of(Numeric),
+                        name: name,
+                        version: version,
+                        package_type: package_type
+                      })
+          end
+        end
+      end
+
+      context 'when package is not generic' do
+        let(:package_type) { 'debian' }
+
+        it 'does not create event' do
+          expect { create_package }.not_to publish_event(::Packages::PackageCreatedEvent)
+        end
       end
     end
   end
@@ -1234,6 +1269,20 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           it 'maps to the correct class' do
             is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
           end
+        end
+      end
+    end
+
+    context 'when generic_extract_generic_package_model is disabled' do
+      before do
+        stub_feature_flags(generic_extract_generic_package_model: false)
+      end
+
+      context 'for package format generic' do
+        let(:format) { :generic }
+
+        it 'maps to Packages::Package' do
+          is_expected.to eq(described_class)
         end
       end
     end

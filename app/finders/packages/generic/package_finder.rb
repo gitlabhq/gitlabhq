@@ -8,11 +8,17 @@ module Packages
       end
 
       def execute!(package_name, package_version)
-        project
-          .packages
-          .generic
-          .installable
-          .by_name_and_version!(package_name, package_version)
+        if Feature.enabled?(:generic_extract_generic_package_model, Feature.current_request)
+          Packages::Generic::Package.for_projects(project)
+            .installable
+            .by_name_and_version!(package_name, package_version)
+        else
+          project
+            .packages
+            .generic
+            .installable
+            .by_name_and_version!(package_name, package_version)
+        end
       end
 
       private

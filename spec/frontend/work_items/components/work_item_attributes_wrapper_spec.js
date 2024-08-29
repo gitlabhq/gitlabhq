@@ -70,11 +70,6 @@ describe('WorkItemAttributesWrapper component', () => {
         groupPath,
       },
       provide: {
-        hasIssueWeightsFeature: true,
-        hasIterationsFeature: true,
-        hasOkrsFeature: true,
-        hasIssuableHealthStatusFeature: true,
-        projectNamespace: 'namespace',
         hasSubepicsFeature: true,
         glFeatures: {
           workItemsBeta,

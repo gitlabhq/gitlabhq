@@ -12,7 +12,16 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
   ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
-  ignore_columns %i[openai_api_key anthropic_api_key vertex_ai_credentials vertex_ai_access_token], remove_with: '17.3', remove_after: '2024-08-15'
+  ignore_columns %i[
+    encrypted_openai_api_key
+    encrypted_openai_api_key_iv
+    encrypted_anthropic_api_key
+    encrypted_anthropic_api_key_iv
+    encrypted_vertex_ai_credentials
+    encrypted_vertex_ai_credentials_iv
+    encrypted_vertex_ai_access_token
+    encrypted_vertex_ai_access_token_iv
+  ], remove_with: '17.5', remove_after: '2024-09-19'
   ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50

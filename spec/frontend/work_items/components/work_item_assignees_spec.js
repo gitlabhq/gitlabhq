@@ -78,9 +78,6 @@ describe('WorkItemAssignees component', () => {
     ]);
 
     wrapper = mountFn(WorkItemAssignees, {
-      provide: {
-        isGroup: false,
-      },
       propsData: {
         assignees,
         fullPath: 'test-project-path',

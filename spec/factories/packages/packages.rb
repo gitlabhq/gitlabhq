@@ -139,7 +139,9 @@ FactoryBot.define do
       end
     end
 
-    factory :generic_package do
+    # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
+    factory :generic_package_legacy do
       sequence(:name) { |n| "generic-package-#{n}" }
       version { '1.0.0' }
       package_type { :generic }

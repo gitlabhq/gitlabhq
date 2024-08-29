@@ -44,6 +44,11 @@ export default {
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemType: {
       type: String,
       required: true,
@@ -292,6 +297,7 @@ export default {
         data-testid="add-tree-form"
         :full-path="fullPath"
         :full-name="workItemNamespaceName"
+        :is-group="isGroup"
         :issuable-gid="workItemId"
         :work-item-iid="workItemIid"
         :form-type="formType"

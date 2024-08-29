@@ -11,8 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in
-> GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `jacoco_coverage_reports`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `jacoco_coverage_reports`. Disabled by default.
 
 For JaCoCo coverage reports to work, you must generate a properly formatted [JaCoCo XML file](https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml)
 that provides [line coverage](https://www.eclemma.org/jacoco/trunk/doc/counters.html).

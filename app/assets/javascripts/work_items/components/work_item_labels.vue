@@ -33,11 +33,16 @@ export default {
     WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canAdminLabel', 'isGroup', 'issuesListPath', 'labelsManagePath'],
+  inject: ['canAdminLabel', 'issuesListPath', 'labelsManagePath'],
   props: {
     fullPath: {
       type: String,
       required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     workItemId: {
       type: String,

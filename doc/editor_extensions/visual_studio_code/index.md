@@ -92,7 +92,7 @@ To add more languages to Code Suggestions:
    1. On the top bar, go to **Code > Settings > Extensions**.
    1. Search for **GitLab Workflow** in the list, then select **Manage** (**{settings}**) **> Extension Settings**.
    1. In your **User** settings, find
-      **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
+      **GitLab › Duo Code Suggestions: Additional Languages** and select **Add Item**.
 1. In **Item**, add the language identifier, and select **OK**.
 
 ## Integrate with GitLab

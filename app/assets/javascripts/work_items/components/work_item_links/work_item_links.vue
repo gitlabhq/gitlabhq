@@ -314,6 +314,7 @@ export default {
         data-testid="add-links-form"
         :full-path="fullPath"
         :full-name="workItem.namespace.fullName"
+        :is-group="false"
         :issuable-gid="issuableGid"
         :work-item-iid="iid"
         :children-ids="childrenIds"

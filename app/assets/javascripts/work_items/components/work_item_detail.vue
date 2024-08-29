@@ -7,7 +7,7 @@ import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { TYPENAME_GROUP, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
@@ -251,6 +251,9 @@ export default {
     },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
+    },
+    isGroupWorkItem() {
+      return this.workItem.namespace?.id.includes(TYPENAME_GROUP);
     },
     workItemsAlphaEnabled() {
       return this.glFeatures.workItemsAlpha;
@@ -701,6 +704,7 @@ export default {
               <work-item-attributes-wrapper
                 :class="{ 'gl-top-3': isDrawer }"
                 :full-path="workItemFullPath"
+                :is-group="isGroupWorkItem"
                 :work-item="workItem"
                 :group-path="groupPath"
                 @error="updateError = $event"
@@ -718,6 +722,7 @@ export default {
             <work-item-tree
               v-if="showWorkItemTree"
               :full-path="workItemFullPath"
+              :is-group="isGroupWorkItem"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
@@ -734,6 +739,7 @@ export default {
             />
             <work-item-relationships
               v-if="workItemLinkedItems"
+              :is-group="isGroupWorkItem"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
               :work-item-full-path="workItemFullPath"

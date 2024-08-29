@@ -27,7 +27,6 @@ export default {
     GlAlert,
   },
   directives: { SafeHtml },
-  inject: ['isGroup'],
   props: {
     value: {
       type: Array,
@@ -37,6 +36,11 @@ export default {
     fullPath: {
       type: String,
       required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     childrenType: {
       type: String,

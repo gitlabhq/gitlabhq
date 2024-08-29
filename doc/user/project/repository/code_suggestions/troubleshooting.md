@@ -41,7 +41,7 @@ If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
-1. In **GitLab > AI Assisted Code Suggestions**, select the **GitLab Duo Code Suggestions**
+1. In **GitLab > Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 
 ### View Code Suggestions logs

@@ -27,6 +27,11 @@ export default {
     WorkItemMoreActions,
   },
   props: {
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -227,6 +232,7 @@ export default {
 
     <template #form>
       <work-item-add-relationship-form
+        :is-group="isGroup"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-full-path="workItemFullPath"

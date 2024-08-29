@@ -99,7 +99,6 @@ describe('WorkItemDetail component', () => {
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
 
   const createComponent = ({
-    isGroup = false,
     isModal = false,
     isDrawer = false,
     updateInProgress = false,
@@ -142,15 +141,9 @@ describe('WorkItemDetail component', () => {
           workItemsBeta,
           namespaceLevelWorkItems,
         },
-        hasIssueWeightsFeature: true,
-        hasIterationsFeature: true,
-        hasOkrsFeature: true,
         hasSubepicsFeature,
-        hasIssuableHealthStatusFeature: true,
-        projectNamespace: 'namespace',
         fullPath: 'group/project',
         groupPath: 'group',
-        isGroup,
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {

@@ -38,7 +38,7 @@ export default {
     GlPopover,
     WorkItemSidebarDropdownWidget,
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -65,6 +65,11 @@ export default {
       default: '',
     },
     hasParent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroup: {
       type: Boolean,
       required: false,
       default: false,

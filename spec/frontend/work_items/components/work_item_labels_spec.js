@@ -82,7 +82,6 @@ describe('WorkItemLabels component', () => {
       ]),
       provide: {
         canAdminLabel: true,
-        isGroup,
         issuesListPath: 'test-project-path/issues',
         labelsManagePath: 'test-project-path/labels',
       },
@@ -91,6 +90,7 @@ describe('WorkItemLabels component', () => {
         workItemIid,
         canUpdate,
         fullPath: 'test-project-path',
+        isGroup,
         workItemType: 'Task',
       },
     });
