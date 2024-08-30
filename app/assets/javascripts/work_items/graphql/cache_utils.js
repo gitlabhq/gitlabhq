@@ -380,6 +380,7 @@ export const setNewWorkItemCache = async (
           type: 'WEIGHT',
           weight: null,
           rolledUpWeight: 0,
+          rolledUpCompletedWeight: 0,
           widgetDefinition: {
             editable: weightWidgetData?.editable,
             rollUp: weightWidgetData?.rollUp,

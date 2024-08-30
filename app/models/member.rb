@@ -190,6 +190,7 @@ class Member < ApplicationRecord
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
+  scope :including_user, -> { includes(:user) }
 
   scope :distinct_on_user_with_max_access_level, ->(for_object) do
     valid_objects = %w[Project Namespace]

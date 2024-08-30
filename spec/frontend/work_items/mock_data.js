@@ -1069,6 +1069,8 @@ export const workItemResponseFactory = ({
   editableWeightWidget = true,
   hasParent = false,
   healthStatus = 'onTrack',
+  rolledUpWeight = 0,
+  rolledUpCompletedWeight = 0,
 } = {}) => ({
   data: {
     workItem: {
@@ -1161,7 +1163,8 @@ export const workItemResponseFactory = ({
           ? {
               type: 'WEIGHT',
               weight: null,
-              rolledUpWeight: 0,
+              rolledUpWeight,
+              rolledUpCompletedWeight,
               widgetDefinition: {
                 editable: editableWeightWidget,
                 rollUp: !editableWeightWidget,

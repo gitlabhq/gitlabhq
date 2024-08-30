@@ -326,12 +326,6 @@ export default {
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
-    showRolledUpWeight() {
-      return this.workItemWeight?.widgetDefinition?.rollUp;
-    },
-    rolledUpWeight() {
-      return this.workItemWeight?.rolledUpWeight;
-    },
     workItemBodyClass() {
       return {
         'gl-pt-5': !this.updateError && !this.isModal,
@@ -729,8 +723,6 @@ export default {
               :work-item-iid="workItemIid"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
-              :rolled-up-weight="rolledUpWeight"
-              :show-rolled-up-weight="showRolledUpWeight"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"

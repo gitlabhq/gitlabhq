@@ -7,6 +7,10 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
   subject(:upstream) { build(:virtual_registries_packages_maven_upstream) }
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :virtual_registries_packages_maven_upstream }
+  end
+
   describe 'associations' do
     it do
       is_expected.to have_many(:cached_responses)

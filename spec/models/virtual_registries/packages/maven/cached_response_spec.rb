@@ -114,4 +114,11 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       it { is_expected.to contain_exactly(cached_response) }
     end
   end
+
+  context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.upstream_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
+      let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, upstream: parent) }
+    end
+  end
 end

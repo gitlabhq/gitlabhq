@@ -61444,6 +61444,9 @@ msgstr ""
 msgid "WorkItem|Pink"
 msgstr ""
 
+msgid "WorkItem|Progress"
+msgstr ""
+
 msgid "WorkItem|Promoted to objective."
 msgstr ""
 
@@ -61658,6 +61661,9 @@ msgid "WorkItem|blocks"
 msgstr ""
 
 msgid "WorkItem|is blocked by"
+msgstr ""
+
+msgid "WorkItem|issue weight completed"
 msgstr ""
 
 msgid "WorkItem|item"

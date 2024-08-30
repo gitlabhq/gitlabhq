@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -46,9 +46,6 @@ describe('WorkItemTree', () => {
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
-  const findRolledUpWeight = () => wrapper.findByTestId('rollup-weight');
-  const findRolledUpWeightValue = () => wrapper.findByTestId('weight-value');
-  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
 
   const createComponent = async ({
     workItemType = 'Objective',
@@ -59,8 +56,6 @@ describe('WorkItemTree', () => {
     canUpdateChildren = true,
     hasSubepicsFeature = true,
     workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
-    showRolledUpWeight = false,
-    rolledUpWeight = 0,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -72,8 +67,6 @@ describe('WorkItemTree', () => {
         confidential,
         canUpdate,
         canUpdateChildren,
-        showRolledUpWeight,
-        rolledUpWeight,
       },
       apolloProvider: createMockApollo([[getWorkItemTreeQuery, workItemHierarchyTreeHandler]]),
       provide: {
@@ -301,40 +294,5 @@ describe('WorkItemTree', () => {
 
       expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
     });
-  });
-
-  describe('rollup data', () => {
-    describe('rolledUp weight', () => {
-      it.each`
-        showRolledUpWeight | rolledUpWeight | rollUpWeightVisible | expected
-        ${false}           | ${0}           | ${false}            | ${'rollup weight is not displayed'}
-        ${false}           | ${10}          | ${false}            | ${'rollup weight is not displayed'}
-        ${true}            | ${0}           | ${true}             | ${'rollup weight is displayed'}
-        ${true}            | ${null}        | ${false}            | ${'rollup weight is not displayed'}
-        ${true}            | ${10}          | ${true}             | ${'rollup weight is displayed'}
-      `(
-        'When showRolledUpWeight is $showRolledUpWeight and rolledUpWeight is $rolledUpWeight, $expected',
-        ({ showRolledUpWeight, rollUpWeightVisible, rolledUpWeight }) => {
-          createComponent({ showRolledUpWeight, rolledUpWeight });
-
-          expect(findRolledUpWeight().exists()).toBe(rollUpWeightVisible);
-        },
-      );
-
-      it('should show the correct value when rolledUpWeight is visible', async () => {
-        await createComponent({ showRolledUpWeight: true, rolledUpWeight: 10 });
-
-        expect(findRolledUpWeight().exists()).toBe(true);
-        expect(findRolledUpWeight().findComponent(GlIcon).props('name')).toBe('weight');
-        expect(findRolledUpWeightValue().text()).toBe('10');
-      });
-    });
-  });
-
-  it('renders children count', async () => {
-    await createComponent({ showRolledUpWeight: true });
-
-    expect(findCrudComponent().props('icon')).toBe('issue-type-task');
-    expect(findCrudComponent().props('count')).toBe(1);
   });
 });

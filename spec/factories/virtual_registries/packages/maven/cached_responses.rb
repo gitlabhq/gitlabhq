@@ -5,7 +5,7 @@ FactoryBot.define do
     class: 'VirtualRegistries::Packages::Maven::CachedResponse' do
     upstream { association :virtual_registries_packages_maven_upstream }
     group { upstream.group }
-    relative_path { '/a/relative/path/test.txt' }
+    relative_path { |n| "/a/relative/path/test-#{n}.txt" }
     size { 1.kilobyte }
     upstream_etag { OpenSSL::Digest.hexdigest('SHA256', 'test') }
     content_type { 'text/plain' }

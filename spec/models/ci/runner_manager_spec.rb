@@ -567,12 +567,12 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     it { is_expected.to be_empty }
 
     context 'with an existing build' do
-      let!(:build) { create(:ci_build) }
+      let!(:existing_build) { create(:ci_build) }
       let!(:runner_machine_build) do
-        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+        create(:ci_runner_machine_build, runner_manager: runner_manager, build: existing_build)
       end
 
-      it { is_expected.to contain_exactly build }
+      it { is_expected.to contain_exactly existing_build }
     end
   end
 end

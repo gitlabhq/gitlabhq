@@ -23,14 +23,15 @@ Requests to this endpoint are proxied to the
 
 Supported attributes:
 
-| Attribute                | Type    | Required | Description                                                             |
-|--------------------------|---------|----------|-------------------------------------------------------------------------|
-| `content`                | string  | Yes      | Question sent to Chat.                                                  |
-| `resource_type`          | string  | No       | Type of resource that is sent with Chat question.                       |
-| `resource_id`            | string  | No       | ID of the resource.                                                     |
-| `referer_url`            | string  | No       | Referer URL.                                                            |
-| `client_subscription_id` | string  | No       | Client Subscription ID.                                                 |
-| `with_clean_history`     | boolean | No       | Indicates if we need to reset the history before and after the request. |
+| Attribute                | Type            | Required | Description                                                             |
+|--------------------------|-----------------|----------|-------------------------------------------------------------------------|
+| `content`                | string          | Yes      | Question sent to Chat.                                                  |
+| `resource_type`          | string          | No       | Type of resource that is sent with Chat question.                       |
+| `resource_id`            | string, integer | No       | ID of the resource. Can be a resource ID (integer) or a commit hash (string).                                                 |
+| `referer_url`            | string          | No       | Referer URL.                                                            |
+| `client_subscription_id` | string          | No       | Client Subscription ID.                                                 |
+| `with_clean_history`     | boolean         | No       | Indicates if we need to reset the history before and after the request. |
+| `project_id`             | integer         | No       | Project ID. Required if `resource_type` is a commit.                    |
 
 Example request:
 

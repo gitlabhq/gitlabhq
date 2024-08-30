@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlIcon, GlTooltip } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
@@ -20,6 +20,7 @@ import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
+import WorkItemRolledUpData from './work_item_rolled_up_data.vue';
 
 export default {
   FORM_TYPES,
@@ -28,14 +29,13 @@ export default {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
     GlAlert,
-    GlIcon,
-    GlTooltip,
     WorkItemActionsSplitButton,
     CrudComponent,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
     WorkItemMoreActions,
+    WorkItemRolledUpData,
   },
   inject: ['hasSubepicsFeature'],
   props: {
@@ -85,16 +85,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    showRolledUpWeight: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    rolledUpWeight: {
-      type: Number,
-      required: false,
-      default: 0,
     },
   },
   data() {
@@ -256,20 +246,12 @@ export default {
     data-testid="work-item-tree"
   >
     <template #count>
-      <span
-        v-if="shouldRolledUpWeightBeVisible"
-        ref="weightData"
-        data-testid="rollup-weight"
-        class="gl-ml-3 gl-flex gl-cursor-help gl-items-center gl-gap-2 gl-font-normal gl-text-secondary"
-      >
-        <gl-icon name="weight" class="gl-text-subtle" />
-        <span data-testid="weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
-        <gl-tooltip :target="() => $refs.weightData">
-          <span class="gl-font-bold">
-            {{ __('Weight') }}
-          </span>
-        </gl-tooltip>
-      </span>
+      <work-item-rolled-up-data
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
+        :work-item-type="workItemType"
+        :full-path="fullPath"
+      />
     </template>
 
     <template #actions>
