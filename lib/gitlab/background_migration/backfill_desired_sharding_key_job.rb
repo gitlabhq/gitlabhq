@@ -9,12 +9,8 @@ module Gitlab
       scope_to ->(relation) { relation.where(backfill_column => nil) }
 
       def perform
-        ::Gitlab::Database.allow_cross_joins_across_databases(
-          url: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
-        ) do
-          each_sub_batch do |sub_batch|
-            sub_batch.connection.execute(construct_query(sub_batch: sub_batch))
-          end
+        each_sub_batch do |sub_batch|
+          sub_batch.connection.execute(construct_query(sub_batch: sub_batch))
         end
       end
 

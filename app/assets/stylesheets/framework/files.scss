@@ -16,10 +16,6 @@
     }
   }
 
-  &.file-holder-no-border {
-    border: 0;
-  }
-
   &.readme-holder {
     margin: $gl-padding 0;
   }
@@ -33,16 +29,6 @@
     padding: 10px $gl-padding;
     word-wrap: break-word;
 
-    &.file-title-clear {
-      padding-left: 0;
-      padding-right: 0;
-      background-color: transparent;
-
-      .file-actions {
-        right: 0;
-      }
-    }
-
     .file-actions {
       .btn:not(.btn-icon) {
         padding: 0 10px;
@@ -53,10 +39,6 @@
 
     a:not(.btn) {
       color: $gl-text-color;
-    }
-
-    .left-options {
-      margin-top: -3px;
     }
   }
 
@@ -167,10 +149,6 @@
         padding: $gl-padding;
       }
     }
-
-    .content-visibility-auto {
-      content-visibility: auto;
-    }
   }
 }
 
@@ -204,21 +182,9 @@ span.idiff {
     }
   }
 
-  .renamed-file {
-    a {
-      color: $orange-500;
-    }
-  }
-
   .deleted-file {
     a {
       color: $red-500;
-    }
-  }
-
-  .edit-file {
-    a {
-      color: $gl-text-color;
     }
   }
 
@@ -310,19 +276,6 @@ span.idiff {
       img {
         max-width: 90%;
         max-height: 70vh;
-      }
-
-      .is-zoomable {
-        cursor: pointer;
-        cursor: zoom-in;
-
-        &.is-zoomed {
-          cursor: pointer;
-          cursor: zoom-out;
-          max-width: none;
-          max-height: none;
-          margin-right: $gl-padding;
-        }
       }
     }
 

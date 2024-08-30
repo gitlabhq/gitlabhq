@@ -15,28 +15,6 @@ input[type='text'].danger {
 }
 
 /**
- * When form input type is number, Firefox & Safari show the up/down arrows
- * on the right side of the input persistently, while Chrome shows it only
- * on hover or focus, this fix allows us to hide the arrows in all browsers.
- * You can conditionally add/remove `hide-spinners` class to have consistent
- * behaviour across browsers.
- */
-
-/* stylelint-disable property-no-vendor-prefix */
-input[type='number'].hide-spinners {
-  -moz-appearance: textfield;
-  appearance: textfield;
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-  }
-}
-/* stylelint-enable property-no-vendor-prefix */
-
-/**
  * When form input type is search, browsers add a clear input button inside
  * the input field. This overlaps with the input field we have already added.
  */
@@ -53,12 +31,6 @@ input[type='search'] {
   }
 }
 /* stylelint-enable property-no-vendor-prefix */
-
-.datetime-controls {
-  select {
-    width: 100px;
-  }
-}
 
 .form-actions {
   margin-top: 0;
@@ -83,15 +55,6 @@ label {
   &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
-}
-
-.label-wrapper {
-  display: block;
-  margin: 0;
-}
-
-.inline-input-group {
-  width: 250px;
 }
 
 .custom-form-control {
@@ -171,10 +134,6 @@ label {
   &::-ms-expand {
     display: none;
   }
-}
-
-.form-control-inline {
-  display: inline;
 }
 
 .form-control::placeholder {

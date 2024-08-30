@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::Ldap::User do
   include LdapHelpers
 
-  let(:ldap_user) { described_class.new(auth_hash) }
+  let_it_be(:organization) { create(:organization) }
+  let(:ldap_user) { described_class.new(auth_hash, organization_id: organization.id) }
   let(:gl_user) { ldap_user.gl_user }
   let(:info) do
     {

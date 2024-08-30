@@ -117,6 +117,19 @@ For more information, see the:
 - [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
+## Issues to be aware of when upgrading from 17.1 and earlier
+
+- If the customer is using GitLab Duo and upgrading to GitLab 17.2.3 or earlier, they must do both of the following:
+  - Resynchronize their license.
+  - Restart the server after the upgrade.
+- If the customer is using GitLab Duo and upgrading to GitLab 17.2.4 or later, they must do either of the following: 
+  - Resynchronize their license.
+  - Wait until the next scheduled license synchronization, which happens every 24 hours.
+
+After the customer has upgraded to GitLab 17.2.4 or later, these steps are not required for future upgrades.
+
+For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/issues/480328).
+
 ## Issues to be aware of when upgrading from 17.3
 
 - Migration failures when upgrading from GitLab 17.3.

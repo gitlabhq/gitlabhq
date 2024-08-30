@@ -33,7 +33,7 @@
         - if @pre_auth.redirect_uri.start_with?('http://', 'https://') && domain != 'localhost'
           = html_escape(_('You will be redirected to %{domain} after authorizing.')) % { domain: "<strong>#{domain}</strong>".html_safe }
   %div
-    = form_tag oauth_authorization_path, method: :post, class: 'inline gl-pr-3' do
+    = form_tag oauth_authorization_path, method: :post, class: 'gl-inline-block gl-pr-3' do
       = hidden_field_tag :client_id, @pre_auth.client.uid
       = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
       = hidden_field_tag :state, @pre_auth.state
@@ -46,7 +46,7 @@
         variant: :confirm,
         button_options: {testid: 'authorization-button'}) do
         = html_escape(_('Authorize %{client_name}')) % { client_name: @pre_auth.client.name.html_safe }
-    = form_tag oauth_authorization_path, method: :delete, class: 'inline' do
+    = form_tag oauth_authorization_path, method: :delete, class: 'gl-inline-block' do
       = hidden_field_tag :client_id, @pre_auth.client.uid
       = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
       = hidden_field_tag :state, @pre_auth.state

@@ -33636,9 +33636,6 @@ ALTER TABLE ONLY integrations
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_725465b774 FOREIGN KEY (dismissed_by_id) REFERENCES users(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33662,9 +33659,6 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_75c2098045 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_76bc5f5455 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_76db6d50c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -33837,9 +33831,6 @@ ALTER TABLE ONLY vulnerability_feedback
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_95650a40d4 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_959d40ad0a FOREIGN KEY (confirmed_by_id) REFERENCES users(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;
 
@@ -34010,9 +34001,6 @@ ALTER TABLE ONLY ml_candidate_metadata
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_b1de915a15 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY project_access_tokens
     ADD CONSTRAINT fk_b27801bfbf FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -34424,9 +34412,6 @@ ALTER TABLE ONLY merge_request_context_commits
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_efa5a1e3fb FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_efb96ab1e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_efc32a39fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -8,7 +8,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const visibilityLevelDescriptions = {
   [VISIBILITY_LEVEL_PRIVATE_INTEGER]: __(
-    `Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user.`,
+    `Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted.`,
   ),
   [VISIBILITY_LEVEL_INTERNAL_INTEGER]: __('Accessible by any user who is logged in.'),
   [VISIBILITY_LEVEL_PUBLIC_INTEGER]: __('Accessible by anyone, regardless of authentication.'),

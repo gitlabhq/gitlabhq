@@ -114,7 +114,7 @@ export default {
         class="col-md-6"
         type="text"
       />
-      <div class="form-text text-muted inline">
+      <div class="form-text text-muted gl-inline-block">
         <gl-sprintf
           :message="
             s__(
@@ -127,7 +127,7 @@ export default {
           </template>
         </gl-sprintf>
         <gl-sprintf
-          class="inline"
+          class="gl-inline-block"
           :message="s__('ClusterIntegration|%{linkStart}More information%{linkEnd}')"
         >
           <template #link="{ content }">

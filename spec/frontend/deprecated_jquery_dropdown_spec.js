@@ -68,7 +68,7 @@ describe('deprecatedJQueryDropdown', () => {
 
   beforeEach(() => {
     setHTMLFixture(htmlDeprecatedJqueryDropdown);
-    test.dropdownContainerElement = $('.dropdown.inline');
+    test.dropdownContainerElement = $('.dropdown');
     test.$dropdownMenuElement = $('.dropdown-menu', test.dropdownContainerElement);
     test.projectsData = JSON.parse(JSON.stringify(mockProjects));
   });

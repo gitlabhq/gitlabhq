@@ -29,8 +29,9 @@ module Gitlab
 
         attr_reader :auth_hash
 
-        def initialize(auth_hash)
+        def initialize(auth_hash, user_params = {})
           self.auth_hash = auth_hash
+          @user_params = user_params
           update_profile
           add_or_update_user_identities
         end
@@ -57,9 +58,7 @@ module Gitlab
 
           block_after_save = needs_blocking?
 
-          Namespace.with_disabled_organization_validation do
-            Users::UpdateService.new(gl_user, user: gl_user).execute!
-          end
+          Users::UpdateService.new(gl_user, user: gl_user).execute!
 
           gl_user.block_pending_approval if block_after_save
           activate_user_if_user_cap_not_reached
@@ -247,7 +246,8 @@ module Gitlab
             email: email,
             password: auth_hash.password,
             password_confirmation: auth_hash.password,
-            password_automatically_set: true
+            password_automatically_set: true,
+            organization_id: @user_params[:organization_id]
           }
         end
 

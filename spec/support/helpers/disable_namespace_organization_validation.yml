@@ -20,8 +20,6 @@
 - ee/spec/features/registrations/start_trial_from_external_site_without_confirmation_spec.rb
 - ee/spec/features/trials/saas/creation_with_no_existing_namespace_flow_spec.rb
 - ee/spec/lib/gitlab/auth/group_saml/user_spec.rb
-- ee/spec/lib/gitlab/auth/ldap/user_spec.rb
-- ee/spec/lib/gitlab/auth/oidc/user_spec.rb
 - ee/spec/lib/gitlab/auth/saml/user_spec.rb
 - ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb
 - ee/spec/lib/ee/gitlab/scim/group/provisioning_service_spec.rb
@@ -33,7 +31,6 @@
 - spec/controllers/admin/groups_controller_spec.rb
 - spec/controllers/admin/users_controller_spec.rb
 - spec/controllers/groups_controller_spec.rb
-- spec/controllers/omniauth_callbacks_controller_spec.rb
 - spec/controllers/registrations_controller_spec.rb
 - spec/features/admin/admin_groups_spec.rb
 - spec/features/dashboard/group_spec.rb
@@ -42,7 +39,6 @@
 - spec/graphql/types/project_type_spec.rb
 - spec/lib/gitlab/auth/atlassian/user_spec.rb
 - spec/lib/gitlab/auth/ldap/user_spec.rb
-- spec/lib/gitlab/auth/o_auth/user_spec.rb
 - spec/lib/gitlab/auth/saml/user_spec.rb
 - spec/models/hooks/system_hook_spec.rb
 - spec/requests/api/groups_spec.rb

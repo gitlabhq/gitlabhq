@@ -474,6 +474,22 @@ virtual_registries_packages_maven_cached_responses:
   - table: virtual_registries_packages_maven_upstreams
     column: upstream_id
     on_delete: async_nullify
+vulnerabilities:
+  - table: users
+    column: dismissed_by_id
+    on_delete: async_nullify
+  - table: users
+    column: resolved_by_id
+    on_delete: async_nullify
+  - table: users
+    column: confirmed_by_id
+    on_delete: async_nullify
+  - table: users
+    column: author_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_export_parts:
   - table: organizations
     column: organization_id

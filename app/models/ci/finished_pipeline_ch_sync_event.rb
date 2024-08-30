@@ -16,12 +16,8 @@ module Ci
     ignore_columns :partition, remove_never: true
 
     partitioned_by :partition, strategy: :sliding_list,
-      next_partition_if: ->(active_partition) do
-        next_partition_if(active_partition)
-      end,
-      detach_partition_if: ->(partition) do
-        detach_partition?(partition)
-      end
+      next_partition_if: ->(active_partition) { any_older_exist?(active_partition, PARTITION_DURATION) },
+      detach_partition_if: ->(partition) { detach_partition?(partition) }
 
     validates :pipeline_id, presence: true
     validates :pipeline_finished_at, presence: true
@@ -47,24 +43,26 @@ module Ci
     scope :pending, -> { where(processed: false) }
     scope :for_partition, ->(partition) { where(partition: partition) }
 
-    def self.next_partition_if(active_partition)
-      oldest_record_in_partition = FinishedPipelineChSyncEvent.for_partition(active_partition.value)
-        .order(:pipeline_finished_at).first
+    def self.detach_partition?(partition)
+      # detach partition if there are no pending events in partition
+      return true unless pending.for_partition(partition.value).exists?
 
-      oldest_record_in_partition.present? &&
-        oldest_record_in_partition.pipeline_finished_at < PARTITION_DURATION.ago
+      # or if there are pending events, they are outside the cleanup threshold
+      return true unless any_newer_exist?(partition, PARTITION_CLEANUP_THRESHOLD)
+
+      false
     end
 
-    def self.detach_partition?(partition)
-      # if there are no pending events
-      return true unless FinishedPipelineChSyncEvent.pending.for_partition(partition.value).exists?
+    def self.any_older_exist?(partition, duration)
+      for_partition(partition.value)
+        .where(arel_table[:pipeline_finished_at].lteq(duration.ago))
+        .exists?
+    end
 
-      # if partition only has the very old data
-      newest_record_in_partition = FinishedPipelineChSyncEvent.for_partition(partition.value)
-        .order(:pipeline_finished_at).last
-
-      newest_record_in_partition.present? &&
-        newest_record_in_partition.pipeline_finished_at < PARTITION_CLEANUP_THRESHOLD.ago
+    def self.any_newer_exist?(partition, duration)
+      for_partition(partition.value)
+        .where(arel_table[:pipeline_finished_at].gt(duration.ago))
+        .exists?
     end
   end
 end

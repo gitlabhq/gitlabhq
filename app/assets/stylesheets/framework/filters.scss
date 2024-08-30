@@ -1,10 +1,6 @@
 .filter-item {
   vertical-align: top;
 
-  &.reset-filters {
-    padding: 7px;
-  }
-
   &.update-issues-btn {
     float: right;
     margin-right: 0;
@@ -12,12 +8,6 @@
     @include media-breakpoint-down(sm) {
       float: none;
     }
-  }
-}
-
-.filters-section {
-  @include media-breakpoint-down(sm) {
-    display: inline-block;
   }
 }
 
@@ -371,12 +361,6 @@
 .filter-dropdown-loading {
   padding: 8px 16px;
   text-align: center;
-}
-
-.search-token-target-branch {
-  .value {
-    @include gl-font-monospace;
-  }
 }
 
 .vue-filtered-search-bar-container {

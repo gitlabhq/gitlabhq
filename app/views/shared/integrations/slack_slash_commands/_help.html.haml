@@ -8,9 +8,9 @@
       = link_to help_page_path('user/project/integrations/slack_slash_commands'), target: '_blank' do
         = _("Learn more.")
         = sprite_icon('external-link')
-    %p.inline
+    %p.gl-inline-block
       = s_("SlackService|After setup, get a list of available Slack slash commands by entering")
-      %kbd.inline /&lt;command&gt; help
+      %kbd.gl-inline-block /&lt;command&gt; help
     - if integration.project_level?
       %p= _("To set up this integration:")
       %ul.list-unstyled.indent-list

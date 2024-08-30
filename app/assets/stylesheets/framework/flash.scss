@@ -28,20 +28,6 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     margin: 0;
   }
 
-  .close-icon-wrapper {
-    padding: ($gl-padding + $gl-padding-4) $gl-padding $gl-padding;
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    cursor: pointer;
-
-    .close-icon {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
   .flash-alert,
   .flash-notice,
   .flash-success,
@@ -73,8 +59,7 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     background-color: $orange-50;
   }
 
-  .flash-text,
-  .flash-action {
+  .flash-text {
     display: inline-block;
   }
 

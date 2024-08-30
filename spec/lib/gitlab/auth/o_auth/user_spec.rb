@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
   include LdapHelpers
 
-  let(:oauth_user) { described_class.new(auth_hash) }
-  let(:oauth_user_2) { described_class.new(auth_hash_2) }
+  let_it_be(:organization) { create(:organization) }
+  let(:oauth_user) { described_class.new(auth_hash, organization_id: organization.id) }
+  let(:oauth_user_2) { described_class.new(auth_hash_2, organization_id: organization.id) }
   let(:gl_user) { oauth_user.gl_user }
   let(:gl_user_2) { oauth_user_2.gl_user }
   let(:uid) { 'my-uid' }
@@ -83,7 +84,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
           nickname: 'jastrom'
         }
         special_hash = OmniAuth::AuthHash.new(uid: dn, provider: 'ldapmain', info: special_info)
-        special_chars_user = described_class.new(special_hash)
+        special_chars_user = described_class.new(special_hash, organization_id: organization.id)
         user = special_chars_user.save
 
         expect(described_class.find_by_uid_and_provider(dn, 'ldapmain')).to eq user

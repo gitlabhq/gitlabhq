@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_category: :system_access do
+RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, :with_current_organization, feature_category: :system_access do
   include LoginHelpers
   include TermsHelper
   using RSpec::Parameterized::TableSyntax
