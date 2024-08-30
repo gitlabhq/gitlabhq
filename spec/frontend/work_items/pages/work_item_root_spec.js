@@ -53,6 +53,7 @@ describe('Work items root component', () => {
       workItemIid: '1',
       modalWorkItemFullPath: '',
       isDrawer: false,
+      modalIsGroup: null,
     });
   });
 

@@ -123,7 +123,7 @@ POST projects/:id/access_tokens
 | `name` | string | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
 | `access_level` | integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
-| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

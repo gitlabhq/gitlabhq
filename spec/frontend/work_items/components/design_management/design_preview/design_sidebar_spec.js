@@ -1,11 +1,16 @@
 import { GlSkeletonLoader, GlEmptyState, GlAccordionItem } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import emptyDiscussionUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignSidebar from '~/work_items/components/design_management/design_preview/design_sidebar.vue';
 import DesignDescription from '~/work_items/components/design_management/design_preview/design_description.vue';
 import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 import DesignDiscussion from '~/work_items/components/design_management/design_notes/design_discussion.vue';
 import mockDesign from './mock_design';
+
+Vue.use(VueApollo);
 
 describe('DesignSidebar', () => {
   let wrapper;
@@ -22,20 +27,30 @@ describe('DesignSidebar', () => {
   const findDisclosure = () => wrapper.findAllComponents(DesignDisclosure);
   const findDesignDescription = () => wrapper.findComponent(DesignDescription);
   const findDiscussions = () => wrapper.findAllComponents(DesignDiscussion);
+  const findFirstDiscussion = () => findDiscussions().at(0);
   const findUnresolvedDiscussions = () => wrapper.findAllByTestId('unresolved-discussion');
   const findResolvedDiscussions = () => wrapper.findAllByTestId('resolved-discussion');
   const findUnresolvedDiscussionsCount = () => wrapper.findByTestId('unresolved-discussion-count');
   const findResolvedCommentsToggle = () => wrapper.findComponent(GlAccordionItem);
+
+  const mockUpdateActiveDiscussionMutationResolver = jest.fn();
+  const mockApollo = createMockApollo([], {
+    Mutation: {
+      updateActiveDesignDiscussion: mockUpdateActiveDiscussionMutationResolver,
+    },
+  });
 
   function createComponent({ design = mockDesign, isLoading = false, isLoggedIn = true } = {}) {
     if (isLoggedIn) {
       window.gon.current_user_id = 1;
     }
     wrapper = shallowMountExtended(DesignSidebar, {
+      apolloProvider: mockApollo,
       propsData: {
         design,
         isLoading,
         isOpen: true,
+        resolvedDiscussionsExpanded: false,
       },
       mocks: {
         $route,
@@ -155,6 +170,36 @@ describe('DesignSidebar', () => {
 
     it('has resolved comments accordion item collapsed', () => {
       expect(findResolvedCommentsToggle().props('visible')).toBe(false);
+    });
+
+    it('emits toggleResolveComments event on resolve comments button click', async () => {
+      findResolvedCommentsToggle().vm.$emit('input', true);
+      await nextTick();
+      expect(wrapper.emitted('toggleResolvedComments')).toHaveLength(1);
+    });
+
+    it('emits correct event to send a mutation to set an active discussion when clicking on a discussion', async () => {
+      findFirstDiscussion().vm.$emit('update-active-discussion');
+      await nextTick();
+
+      expect(mockUpdateActiveDiscussionMutationResolver).toHaveBeenCalledWith(
+        expect.any(Object),
+        { id: mockDesign.discussions.nodes[0].notes.nodes[0].id, source: 'discussion' },
+        expect.any(Object),
+        expect.any(Object),
+      );
+    });
+
+    it('sends a mutation to reset an active discussion when clicking outside of discussion', async () => {
+      wrapper.find('.image-notes').trigger('click');
+      await nextTick();
+
+      expect(mockUpdateActiveDiscussionMutationResolver).toHaveBeenCalledWith(
+        expect.any(Object),
+        { id: undefined, source: 'discussion' },
+        expect.any(Object),
+        expect.any(Object),
+      );
     });
   });
 });

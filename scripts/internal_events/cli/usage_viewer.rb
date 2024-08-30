@@ -6,11 +6,6 @@ module InternalEventsCli
   class UsageViewer
     include Helpers
 
-    IDENTIFIER_EXAMPLES = {
-      %w[namespace project user] => { "namespace" => "project.namespace" },
-      %w[namespace user] => { "namespace" => "group" }
-    }.freeze
-
     PROPERTY_EXAMPLES = {
       'label' => "'string'",
       'property' => "'string'",
@@ -99,7 +94,7 @@ module InternalEventsCli
 
     def rails_examples
       identifier_args = identifiers.map do |identifier|
-        "  #{identifier}: #{identifier_examples[identifier]}"
+        "  #{identifier}: #{identifier}"
       end
 
       property_args = format_additional_properties do |property, value, description|
@@ -129,14 +124,24 @@ module InternalEventsCli
 
     def rspec_examples
       identifier_args = identifiers.map do |identifier|
-        "  let(:#{identifier}) { #{identifier_examples[identifier]} }\n"
+        "  let(:#{identifier}) { create(:#{identifier}) }\n"
       end.join('')
 
-      property_args = format_additional_properties do |property, value, _|
-        "  let(:#{property}) { #{value} }\n"
-      end.join('')
+      property_args = format_additional_properties do |property, value|
+        "    #{property}: #{value}"
+      end
 
-      args = [*identifier_args, *property_args].join('')
+      if property_args.any?
+        property_arg = format_prefix '  ', <<~TEXT
+          let(:additional_properties) do
+            {
+          #{property_args.join(",\n")}
+            }
+          end
+        TEXT
+      end
+
+      args = [*identifier_args, *property_arg].join('')
 
       cli.say format_warning <<~TEXT
         #{divider}
@@ -288,17 +293,14 @@ module InternalEventsCli
     end
 
     def identifiers
-      Array(event['identifiers'])
+      Array(event['identifiers']).tap do |ids|
+        # We always auto assign namespace if project is provided
+        ids.delete('namespace') if ids.include?('project')
+      end
     end
 
     def additional_properties
       Array(event['additional_properties'])
-    end
-
-    def identifier_examples
-      identifiers
-        .to_h { |identifier| [identifier, identifier] }
-        .merge(IDENTIFIER_EXAMPLES[identifiers.sort] || {})
     end
 
     def format_additional_properties

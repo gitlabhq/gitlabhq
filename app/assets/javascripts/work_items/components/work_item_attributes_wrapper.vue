@@ -60,11 +60,6 @@ export default {
       type: String,
       required: true,
     },
-    isGroup: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItem: {
       type: Object,
       required: true,
@@ -73,6 +68,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    isGroup: {
+      type: Boolean,
+      required: true,
     },
   },
   data() {

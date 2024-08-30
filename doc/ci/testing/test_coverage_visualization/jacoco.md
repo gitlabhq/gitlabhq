@@ -13,6 +13,13 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227345) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `jacoco_coverage_reports`. Disabled by default.
 
+[Leave your feedback](https://gitlab.com/gitlab-org/gitlab/-/issues/479804)
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
 For JaCoCo coverage reports to work, you must generate a properly formatted [JaCoCo XML file](https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml)
 that provides [line coverage](https://www.eclemma.org/jacoco/trunk/doc/counters.html).
 
@@ -20,6 +27,10 @@ The JaCoCo coverage reports visualization supports:
 
 - [Instructions (C0 Coverage)](https://www.eclemma.org/jacoco/trunk/doc/counters.html),
   `ci` (covered instructions) in reports.
+
+This feature is in [beta](../../../policy/experiment-beta-support.md). If you have any comments,
+use the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/479804)
+to provide more details.
 
 ## Add JaCoCo coverage job
 
@@ -42,8 +53,9 @@ test-jdk11:
 ```
 
 In this example, the `mvn` command generates the JaCoCo coverage report. The `path`
-points to the generated report. You can use only one report per job, and the results
-of all jobs are aggregated.
+points to the generated report.
+
+If the job generates multiple reports, [use a wildcard in the artifact path](index.md#how-test-coverage-visualization-works)
 
 ## Relative File Paths Correction
 

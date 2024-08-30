@@ -18,6 +18,7 @@ import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplet
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
@@ -262,7 +263,7 @@ describe('List Selector spec', () => {
             isGroupsWithProjectAccess: true,
             projectId: mockProjectId,
           });
-          axiosMock.onGet(mockUrl).replyOnce(200, mockAxiosResponse);
+          axiosMock.onGet(mockUrl).replyOnce(HTTP_STATUS_OK, mockAxiosResponse);
           await emitSearchInput();
         });
 

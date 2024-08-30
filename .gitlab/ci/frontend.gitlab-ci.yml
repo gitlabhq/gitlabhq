@@ -48,6 +48,8 @@ compile-production-assets:
     - .compile-assets-base
     - .production
     - .frontend:rules:compile-production-assets
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
   artifacts:
     name: webpack-report
     expire_in: 31d

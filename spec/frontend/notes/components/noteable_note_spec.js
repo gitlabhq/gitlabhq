@@ -17,6 +17,7 @@ import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { SHOW_CLIENT_SIDE_SECRET_DETECTION_WARNING } from '~/lib/utils/secret_detection';
+import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
@@ -422,7 +423,10 @@ describe('issue_note', () => {
     describe('when updateNote returns errors', () => {
       beforeEach(() => {
         updateNote.mockRejectedValue({
-          response: { status: 422, data: { errors: 'error 1 and error 2' } },
+          response: {
+            status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+            data: { errors: 'error 1 and error 2' },
+          },
         });
       });
 

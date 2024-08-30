@@ -3,6 +3,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 let wrapper;
 let mock;
@@ -39,7 +40,7 @@ const findCommitBox = () => wrapper.findByTestId('commit-box');
 describe('Merge requests compare app component', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet('/commit').reply(200, 'commit content');
+    mock.onGet('/commit').reply(HTTP_STATUS_OK, 'commit content');
   });
 
   afterEach(() => {

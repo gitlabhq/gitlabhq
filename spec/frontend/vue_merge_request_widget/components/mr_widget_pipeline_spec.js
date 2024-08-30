@@ -10,7 +10,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { createAlert } from '~/alert';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_UNAUTHORIZED,
+} from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
@@ -448,7 +452,7 @@ describe('MRWidgetPipeline', () => {
         describe('when user has permission to create a pipeline', () => {
           beforeEach(() => {
             Api.postMergeRequestPipeline.mockRejectedValue({
-              response: { status: 500 },
+              response: { status: HTTP_STATUS_INTERNAL_SERVER_ERROR },
             });
           });
 
@@ -479,7 +483,7 @@ describe('MRWidgetPipeline', () => {
         describe('when user does not have permission to create a pipeline', () => {
           beforeEach(() => {
             Api.postMergeRequestPipeline.mockRejectedValue({
-              response: { status: 401 },
+              response: { status: HTTP_STATUS_UNAUTHORIZED },
             });
           });
 

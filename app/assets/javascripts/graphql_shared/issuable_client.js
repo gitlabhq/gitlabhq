@@ -15,6 +15,7 @@ import {
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
+import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 
 export const config = {
@@ -273,6 +274,17 @@ export const resolvers = {
           },
         },
       });
+    },
+    updateActiveDesignDiscussion: (_, { id = null, source }, { cache }) => {
+      const data = {
+        activeDesignDiscussion: {
+          __typename: 'ActiveDesignDiscussion',
+          id,
+          source,
+        },
+      };
+
+      cache.writeQuery({ query: activeDiscussionQuery, data });
     },
   },
 };

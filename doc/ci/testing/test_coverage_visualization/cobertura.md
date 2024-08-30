@@ -56,6 +56,8 @@ a [blocking manual job](../../jobs/job_control.md#types-of-manual-jobs), the
 pipeline waits for the manual job before continuing and is not considered complete.
 The visualization cannot be displayed if the blocking manual job did not run.
 
+If the job generates multiple reports, [use a wildcard in the artifact path](index.md#how-test-coverage-visualization-works)
+
 ### Automatic class path correction
 
 The coverage report properly matches changed files only if the `filename` of a `class` element

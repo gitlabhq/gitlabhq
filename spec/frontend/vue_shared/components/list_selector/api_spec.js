@@ -11,6 +11,7 @@ import {
   fetchProjects,
   fetchUsers,
 } from '~/vue_shared/components/list_selector/api';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/api');
 jest.mock('~/rest_api');
@@ -114,7 +115,7 @@ describe('List Selector Utils', () => {
         { id: 2, avatar_url: null, name: 'group2' },
       ];
       axiosMock = new MockAdapter(axios);
-      axiosMock.onGet(mockUrl).replyOnce(200, mockAxiosResponse);
+      axiosMock.onGet(mockUrl).replyOnce(HTTP_STATUS_OK, mockAxiosResponse);
     });
 
     afterEach(() => {

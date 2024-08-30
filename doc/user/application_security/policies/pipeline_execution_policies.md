@@ -22,6 +22,8 @@ Use Pipeline execution policies to enforce CI/CD jobs for all applicable project
 
 ## Pipeline execution policies schema
 
+> - The `suffix` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_suffix`. Disabled by default.
+
 The YAML file with pipeline execution policies consists of an array of objects matching pipeline execution
 policy schema nested under the `pipeline_execution_policy` key. You can configure a maximum of five
 policies under the `pipeline_execution_policy` key. Any other policies configured after
@@ -44,6 +46,7 @@ the following sections and tables provide an alternative.
 | `enabled` | `boolean` | true | Flag to enable (`true`) or disable (`false`) the policy. |
 | `content` | `object` of [`content`](#content-type) | true | Reference to the CI/CD configuration to inject into project pipelines. |
 | `pipeline_config_strategy` | `string` | false | Can either be `inject_ci` or `override_project_ci`. See [Pipeline strategies](#pipeline-strategies) for more information. |
+| `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `policy_scope` | `object` of [`policy_scope`](#policy_scope-scope-type) | false | Scopes the policy based on compliance framework labels or projects you define. |
 
 Note the following:
@@ -57,15 +60,45 @@ Note the following:
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
 - You should choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names and it can lead to unwanted results if a job exists multiple times in the same pipeline. The `needs` keyword, for example makes one job dependent on another. In case of multiple jobs with the same name, it will randomly depend on one of them.
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
+- The order of the policies matters for the applied suffix.
+- If any policy applied to a given project has `suffix: never`, the pipeline fails if another job with the same name is already present in the pipeline.
 
 ### Job naming best practice
 
-There is no visible indicator for jobs coming from a security policy. Adding a unique prefix to job names makes it easier to identify them and avoid job name collisions.
+> - Naming conflict handling was introduced in GitLab 17.4 with a flag named `pipeline_execution_policy_suffix`. Disabled by default.
+
+There is no visible indicator for jobs coming from a security policy. Adding a unique prefix or suffix to job names makes it easier to identify them and avoid job name collisions.
 
 Examples:
 
 - `policy1:deployments:sast` - good, unique across policies and projects.
 - `sast` - bad, likely to be used elsewhere.
+
+Pipeline execution policies handles naming conflicts depending on the `suffix` attribute. If there are multiple name with the same job:
+
+- Using `on_conflict` (default), a suffix is added to a job if its name conflicts with another job in the pipeline.
+- Using `never`, no suffix is added in case of conflicts and the pipeline fails.
+
+The suffix is added based on the order in which the jobs are merged onto the main pipeline.
+
+The order is as follows:
+
+1. Project pipeline jobs
+1. Project policy jobs (if applicable)
+1. Group policy jobs (if applicable, ordered by hierarchy, the most top-level group is applied as last)
+
+The applied suffix has the following format:
+
+`:policy-<security-policy-project-id>-<policy-index>`.
+
+Example of the resulting job: `sast:policy-123456-0`.
+
+If multiple policies in on security policy project define the same job name, the numerical suffix corresponds to the index of the conflicting policy.
+
+Example of the resulting jobs:
+
+- `sast:policy-123456-0`
+- `sast:policy-123456-1`
 
 ### `content` type
 

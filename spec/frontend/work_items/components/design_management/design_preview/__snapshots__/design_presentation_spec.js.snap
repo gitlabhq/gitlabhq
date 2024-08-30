@@ -3,6 +3,7 @@
 exports[`DesignPresentation renders empty state when no image provided 1`] = `
 <div
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  data-testid="presentation-viewport"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -13,6 +14,7 @@ exports[`DesignPresentation renders empty state when no image provided 1`] = `
 exports[`DesignPresentation renders image and overlay when image provided 1`] = `
 <div
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+  data-testid="presentation-viewport"
 >
   <div
     class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
@@ -21,6 +23,12 @@ exports[`DesignPresentation renders image and overlay when image provided 1`] = 
       image="test.jpg"
       name="test"
       scale="1"
+    />
+    <design-overlay-stub
+      dimensions="[object Object]"
+      disablecommenting="true"
+      notes=""
+      position="[object Object]"
     />
   </div>
 </div>

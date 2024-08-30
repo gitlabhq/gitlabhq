@@ -27,7 +27,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
-  mapWorkItemWidgetsToIssueFields,
+  mapWorkItemWidgetsToIssuableFields,
   updateUpvotesCount,
 } from 'ee_else_ce/issues/list/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -42,6 +42,7 @@ import {
   STATUS_OPEN,
   WORKSPACE_GROUP,
   WORKSPACE_PROJECT,
+  TYPE_ISSUE,
 } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
@@ -131,6 +132,7 @@ export default {
   name: 'IssuesListAppCE',
   i18n,
   issuableListTabs,
+  issuableType: TYPE_ISSUE.toUpperCase(),
   ISSUES_VIEW_TYPE_KEY,
   ISSUES_GRID_VIEW_KEY,
   ISSUES_LIST_VIEW_KEY,
@@ -825,7 +827,7 @@ export default {
         variables: this.queryVariables,
       });
 
-      const activeIssuable = issuesList.project.issues.nodes.find(
+      const activeIssuable = issuesList[this.namespace].issues.nodes.find(
         (issue) => issue.iid === workItem.iid,
       );
 
@@ -837,7 +839,12 @@ export default {
       }
 
       // handle all other widgets
-      const data = mapWorkItemWidgetsToIssueFields(issuesList, workItem);
+      const data = mapWorkItemWidgetsToIssuableFields({
+        list: issuesList,
+        workItem,
+        namespace: this.namespace,
+        type: 'issue',
+      });
 
       client.writeQuery({ query: getIssuesQuery, variables: this.queryVariables, data });
     },
@@ -846,7 +853,7 @@ export default {
 
       cache.updateQuery({ query: getIssuesQuery, variables: this.queryVariables }, (issuesList) =>
         produce(issuesList, (draftData) => {
-          const activeItem = draftData.project.issues.nodes.find(
+          const activeItem = draftData[this.namespace].issues.nodes.find(
             (issue) => issue.iid === workItemIid,
           );
 
@@ -869,7 +876,7 @@ export default {
         variables: this.queryVariables,
       });
 
-      const data = updateUpvotesCount(issuesList, workItem);
+      const data = updateUpvotesCount({ list: issuesList, workItem, namespace: this.namespace });
 
       client.writeQuery({ query: getIssuesQuery, variables: this.queryVariables, data });
     },
@@ -883,6 +890,7 @@ export default {
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       :active-item="activeIssuable"
+      :issuable-type="$options.issuableType"
       @close="activeIssuable = null"
       @work-item-updated="updateIssuablesCache"
       @work-item-emoji-updated="updateIssuableEmojis"

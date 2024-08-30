@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import DesignDiscussion from '~/work_items/components/design_management/design_notes/design_discussion.vue';
 import DesignNote from '~/work_items/components/design_management/design_notes/design_note.vue';
 import ToggleRepliesWidget from '~/work_items/components/design_management/design_notes/toggle_replies_widget.vue';
-import notes from './mock_notes';
+import notes, { DISCUSSION_1 } from './mock_notes';
 
 const defaultMockDiscussion = {
   id: '0',
@@ -15,6 +15,7 @@ const defaultMockDiscussion = {
 describe('Design discussions component', () => {
   let wrapper;
 
+  const findDesignNotesList = () => wrapper.find('[data-testid="design-discussion-content"]');
   const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
   const findRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
@@ -158,5 +159,26 @@ describe('Design discussions component', () => {
       },
     });
     expect(findRepliesWidget().exists()).toBe(false);
+  });
+
+  describe('active discussions', () => {
+    describe('when any note from a discussion is active', () => {
+      it.each([notes[0], notes[0].discussion.notes.nodes[1]])(
+        'applies correct class to the active discussion',
+        (note) => {
+          createComponent({
+            props: { discussion: DISCUSSION_1 },
+            data: {
+              activeDesignDiscussion: {
+                id: note.id,
+                source: 'pin',
+              },
+            },
+          });
+
+          expect(findDesignNotesList().classes('gl-bg-blue-50')).toBe(true);
+        },
+      );
+    });
   });
 });

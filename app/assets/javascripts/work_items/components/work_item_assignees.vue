@@ -28,6 +28,10 @@ export default {
       type: String,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: true,
+    },
     workItemId: {
       type: String,
       required: true,
@@ -50,11 +54,6 @@ export default {
       default: false,
     },
     canInviteMembers: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isGroup: {
       type: Boolean,
       required: false,
       default: false,

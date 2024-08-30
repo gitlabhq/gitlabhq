@@ -15,6 +15,7 @@ import {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/lib/utils/url_utility');
@@ -110,7 +111,9 @@ describe('OrganizationGroupsNewApp', () => {
   describe('when form is submitted', () => {
     describe('when API is loading', () => {
       beforeEach(async () => {
-        axiosMock.onPost(defaultProvide.groupsOrganizationPath).reply(200, createGroupResponse);
+        axiosMock
+          .onPost(defaultProvide.groupsOrganizationPath)
+          .reply(HTTP_STATUS_OK, createGroupResponse);
         createComponent();
 
         await submitForm();
@@ -124,7 +127,9 @@ describe('OrganizationGroupsNewApp', () => {
 
     describe('when API request is successful', () => {
       beforeEach(async () => {
-        axiosMock.onPost(defaultProvide.groupsOrganizationPath).reply(200, createGroupResponse);
+        axiosMock
+          .onPost(defaultProvide.groupsOrganizationPath)
+          .reply(HTTP_STATUS_OK, createGroupResponse);
         createComponent();
         await submitForm();
         await waitForPromises();
@@ -150,7 +155,9 @@ describe('OrganizationGroupsNewApp', () => {
 
     describe('when API request is not successful', () => {
       beforeEach(async () => {
-        axiosMock.onPost(defaultProvide.groupsOrganizationPath).reply(500);
+        axiosMock
+          .onPost(defaultProvide.groupsOrganizationPath)
+          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
         createComponent();
         await submitForm();
         await waitForPromises();

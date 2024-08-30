@@ -2311,7 +2311,7 @@ POST /users/:user_id/personal_access_tokens
 | ------------ | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `user_id`    | integer | yes      | ID of the user                                                                                                       |
 | `name`       | string  | yes      | Name of the personal access token                                                                                    |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is set to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is set to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 | `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 
 ```shell
@@ -2363,7 +2363,7 @@ POST /user/personal_access_tokens
 |--------------|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `name`       | string | yes      | Name of the personal access token                                                                                                                                                                                                                                                                     |
 | `scopes`     | array  | yes      | Array of scopes of the personal access token. Possible values are `k8s_proxy`                                                                                                                                                                                                                         |
-| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is at the end of the current day. The expiration is subject to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "scopes[]=k8s_proxy" "https://gitlab.example.com/api/v4/user/personal_access_tokens"

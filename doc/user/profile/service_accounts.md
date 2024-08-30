@@ -65,7 +65,7 @@ Prerequisites:
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
 
-   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#when-personal-access-tokens-expire).
+   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#access-token-expiration).
 
    The response includes the personal access token value.
 
@@ -90,7 +90,7 @@ Prerequisites:
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
 
-   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#when-personal-access-tokens-expire).
+   Optional. You can [create a personal access token with no expiry date](personal_access_tokens.md#access-token-expiration).
 
    The response includes the personal access token value.
 

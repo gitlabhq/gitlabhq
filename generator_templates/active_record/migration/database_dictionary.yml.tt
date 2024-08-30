@@ -1,0 +1,10 @@
+---
+table_name: <%= table_name %>
+classes:
+- <%= table_name.classify %>
+feature_categories:
+- todo
+description: TODO
+introduced_by_url: TODO
+milestone: '<%= Gitlab.current_milestone %>'
+gitlab_schema: gitlab_main

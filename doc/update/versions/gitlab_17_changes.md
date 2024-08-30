@@ -205,6 +205,19 @@ For more information, see the:
 
   1. Upgrade to GitLab 17.2.1 or higher.
 
+### Geo installations
+
+- In GitLab 16.11 through GitLab 17.2, a missing PostgreSQL index can cause high CPU usage, slow job artifact verification progress, and slow or timed out Geo metrics status updates. The index was added in GitLab 17.3. To manually add the index, see [Geo Troubleshooting - High CPU usage on primary during job artifact verification](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.11                   |  All                    | None     |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.2                    |  All                    | None     |
+
 ## 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.
@@ -217,3 +230,31 @@ For more information, see the:
   in a failure when running the migrations.
   This is due to a bug.
   [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) has been fixed with GitLab 17.1.2.
+
+### Geo installations
+
+- In GitLab 16.11 through GitLab 17.2, a missing PostgreSQL index can cause high CPU usage, slow job artifact verification progress, and slow or timed out Geo metrics status updates. The index was added in GitLab 17.3. To manually add the index, see [Geo Troubleshooting - High CPU usage on primary during job artifact verification](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.11                   |  All                    | None     |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.2                    |  All                    | None     |
+
+## 17.0.0
+
+### Geo installations
+
+- In GitLab 16.11 through GitLab 17.2, a missing PostgreSQL index can cause high CPU usage, slow job artifact verification progress, and slow or timed out Geo metrics status updates. The index was added in GitLab 17.3. To manually add the index, see [Geo Troubleshooting - High CPU usage on primary during job artifact verification](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.11                   |  All                    | None     |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.2                    |  All                    | None     |

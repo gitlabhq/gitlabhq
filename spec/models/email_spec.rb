@@ -11,6 +11,15 @@ RSpec.describe Email do
     it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
+  describe 'relationships' do
+    subject { build(:email) }
+
+    it do
+      is_expected.to belong_to(:banned_user).class_name('::Users::BannedUser')
+        .with_foreign_key('user_id').inverse_of(:emails)
+    end
+  end
+
   describe 'validations' do
     it_behaves_like 'an object with email-formatted attributes', :email do
       subject { build(:email) }

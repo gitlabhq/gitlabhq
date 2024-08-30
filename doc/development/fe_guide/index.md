@@ -19,7 +19,7 @@ Be wary of [the limitations that come with using Hamlit](https://github.com/k0ku
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS utils which are packaged inside the `gitlab-ui` project and can be seen [in the repository](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) or on [UNPKG](https://unpkg.com/browse/@gitlab/ui@latest/src/scss/utility-mixins/). Favor using these before adding or using any SCSS classes.
+When it comes to CSS, we use a utils-based CSS approach. For more information and to find where CSS utilities are defined, refer to the [SCSS style section](style/scss.md#where-are-css-utility-classes-defined) of this guide.
 
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).

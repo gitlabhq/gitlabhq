@@ -475,7 +475,6 @@ RSpec.describe Cli, feature_category: :service_ping do
         track_internal_event(
           'internal_events_cli_used',
           project: project,
-          namespace: project.namespace,
           user: user
         )
 
@@ -490,9 +489,8 @@ RSpec.describe Cli, feature_category: :service_ping do
 
         it_behaves_like 'internal event tracking' do
           let(:event) { 'internal_events_cli_used' }
-          let(:project) { project }
-          let(:namespace) { project.namespace }
-          let(:user) { user }
+          let(:project) { create(:project) }
+          let(:user) { create(:user) }
         end
 
         --------------------------------------------------
@@ -765,7 +763,6 @@ RSpec.describe Cli, feature_category: :service_ping do
         track_internal_event(
           'internal_events_cli_used',
           project: project,
-          namespace: project.namespace,
           user: user
         )
 
@@ -828,7 +825,6 @@ RSpec.describe Cli, feature_category: :service_ping do
         track_internal_event(
           'internal_events_cli_used',
           project: project,
-          namespace: project.namespace,
           user: user,
           additional_properties: {
             label: 'string', # TODO
@@ -847,11 +843,14 @@ RSpec.describe Cli, feature_category: :service_ping do
 
         it_behaves_like 'internal event tracking' do
           let(:event) { 'internal_events_cli_used' }
-          let(:project) { project }
-          let(:namespace) { project.namespace }
-          let(:user) { user }
-          let(:label) { 'string' }
-          let(:value) { 72 }
+          let(:project) { create(:project) }
+          let(:user) { create(:user) }
+          let(:additional_properties) do
+            {
+              label: 'string',
+              value: 72
+            }
+          end
         end
 
         --------------------------------------------------

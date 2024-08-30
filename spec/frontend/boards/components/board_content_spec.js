@@ -253,6 +253,10 @@ describe('BoardContent', () => {
       createComponent({ workItemDrawerEnabled: true });
     });
 
+    it('does not render board sidebar', () => {
+      expect(wrapper.findComponent(BoardContentSidebar).exists()).toBe(false);
+    });
+
     it('renders board drawer wrapper', () => {
       expect(findDrawerWrapper().exists()).toBe(true);
     });

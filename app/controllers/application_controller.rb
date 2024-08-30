@@ -396,11 +396,11 @@ class ApplicationController < BaseActionController
   end
 
   def bitbucket_server_import_enabled?
-    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server')
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server') || Feature.enabled?(:override_bitbucket_server_disabled, current_user, type: :ops)
   end
 
   def github_import_enabled?
-    Gitlab::CurrentSettings.import_sources.include?('github')
+    Gitlab::CurrentSettings.import_sources.include?('github') || Feature.enabled?(:override_github_disabled, current_user, type: :ops)
   end
 
   def gitea_import_enabled?

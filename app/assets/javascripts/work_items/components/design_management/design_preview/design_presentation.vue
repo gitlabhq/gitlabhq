@@ -3,12 +3,14 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignImage from './image.vue';
+import DesignOverlay from './design_overlay.vue';
 
 const CLICK_DRAG_BUFFER_PX = 2;
 
 export default {
   components: {
     DesignImage,
+    DesignOverlay,
     GlLoadingIcon,
   },
   props: {
@@ -296,6 +298,7 @@ export default {
 <template>
   <div
     ref="presentationViewport"
+    data-testid="presentation-viewport"
     class="overflow-auto gl-relative gl-h-full gl-w-full gl-p-5"
     :style="presentationStyle"
     @mousedown="onPresentationMousedown"
@@ -315,6 +318,19 @@ export default {
         :name="imageName"
         :scale="scale"
         @resize="onImageResize"
+      />
+      <design-overlay
+        v-if="overlayDimensions && overlayPosition"
+        :dimensions="overlayDimensions"
+        :position="overlayPosition"
+        :notes="discussionStartingNotes"
+        :current-comment-form="currentCommentForm"
+        :disable-commenting="!isLoggedIn || isDraggingDesign || disableCommenting"
+        :disable-notes="false"
+        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+        @openCommentForm="openCommentForm"
+        @closeCommentForm="closeCommentForm"
+        @moveNote="moveNote"
       />
     </div>
   </div>

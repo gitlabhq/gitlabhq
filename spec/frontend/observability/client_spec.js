@@ -4,6 +4,7 @@ import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from '~/observability/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/lib/utils/axios_utils');
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -79,7 +80,7 @@ describe('buildClient', () => {
         duration_nano: 3000,
         spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
       };
-      axiosMock.onGet(`${tracingUrl}/trace-1`).reply(200, mockTrace);
+      axiosMock.onGet(`${tracingUrl}/trace-1`).reply(HTTP_STATUS_OK, mockTrace);
 
       const result = await client.fetchTrace('trace-1');
 
@@ -108,7 +109,7 @@ describe('buildClient', () => {
         ],
       };
 
-      axiosMock.onGet(tracingUrl).reply(200, mockResponse);
+      axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, mockResponse);
 
       const result = await client.fetchTraces();
 
@@ -121,21 +122,21 @@ describe('buildClient', () => {
     });
 
     it('rejects if traces are missing', async () => {
-      axiosMock.onGet(tracingUrl).reply(200, {});
+      axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, {});
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
       expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     it('rejects if traces are invalid', async () => {
-      axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
+      axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, { traces: 'invalid' });
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
       expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
     it('passes the abort controller to axios', async () => {
-      axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
+      axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, { traces: [] });
 
       const abortController = new AbortController();
       await client.fetchTraces({ abortController });
@@ -149,7 +150,7 @@ describe('buildClient', () => {
 
     describe('sort order', () => {
       beforeEach(() => {
-        axiosMock.onGet(tracingUrl).reply(200, {
+        axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, {
           traces: [],
         });
       });
@@ -174,7 +175,7 @@ describe('buildClient', () => {
 
     describe('query filter', () => {
       beforeEach(() => {
-        axiosMock.onGet(tracingUrl).reply(200, {
+        axiosMock.onGet(tracingUrl).reply(HTTP_STATUS_OK, {
           traces: [],
         });
       });
@@ -360,7 +361,7 @@ describe('buildClient', () => {
         ],
       };
 
-      axiosMock.onGet(tracingAnalyticsUrl).reply(200, mockResponse);
+      axiosMock.onGet(tracingAnalyticsUrl).reply(HTTP_STATUS_OK, mockResponse);
 
       const result = await client.fetchTracesAnalytics();
 
@@ -373,13 +374,13 @@ describe('buildClient', () => {
     });
 
     it('returns empty array if analytics are missing', async () => {
-      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+      axiosMock.onGet(tracingAnalyticsUrl).reply(HTTP_STATUS_OK, {});
 
       expect(await client.fetchTracesAnalytics()).toEqual([]);
     });
 
     it('passes the abort controller to axios', async () => {
-      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+      axiosMock.onGet(tracingAnalyticsUrl).reply(HTTP_STATUS_OK, {});
 
       const abortController = new AbortController();
       await client.fetchTracesAnalytics({ abortController });
@@ -393,7 +394,7 @@ describe('buildClient', () => {
 
     describe('query filter', () => {
       beforeEach(() => {
-        axiosMock.onGet(tracingAnalyticsUrl).reply(200, {
+        axiosMock.onGet(tracingAnalyticsUrl).reply(HTTP_STATUS_OK, {
           results: [],
         });
       });
@@ -541,7 +542,7 @@ describe('buildClient', () => {
         services: [{ name: 'service-1' }, { name: 'service-2' }],
       };
 
-      axiosMock.onGet(servicesUrl).reply(200, mockResponse);
+      axiosMock.onGet(servicesUrl).reply(HTTP_STATUS_OK, mockResponse);
 
       const result = await client.fetchServices();
 
@@ -553,7 +554,7 @@ describe('buildClient', () => {
     });
 
     it('rejects if services are missing', async () => {
-      axiosMock.onGet(servicesUrl).reply(200, {});
+      axiosMock.onGet(servicesUrl).reply(HTTP_STATUS_OK, {});
 
       const e = 'failed to fetch services. invalid response';
       await expect(client.fetchServices()).rejects.toThrow(e);
@@ -570,7 +571,7 @@ describe('buildClient', () => {
         operations: [{ name: 'operation-1' }, { name: 'operation-2' }],
       };
 
-      axiosMock.onGet(parsedOperationsUrl).reply(200, mockResponse);
+      axiosMock.onGet(parsedOperationsUrl).reply(HTTP_STATUS_OK, mockResponse);
 
       const result = await client.fetchOperations(serviceName);
 
@@ -598,7 +599,7 @@ describe('buildClient', () => {
     });
 
     it('rejects if operations are missing', async () => {
-      axiosMock.onGet(parsedOperationsUrl).reply(200, {});
+      axiosMock.onGet(parsedOperationsUrl).reply(HTTP_STATUS_OK, {});
 
       const e = 'failed to fetch operations. invalid response';
       await expect(client.fetchOperations(serviceName)).rejects.toThrow(e);
@@ -627,7 +628,7 @@ describe('buildClient', () => {
         ],
       };
 
-      axiosMock.onGet(metricsUrl).reply(200, mockResponse);
+      axiosMock.onGet(metricsUrl).reply(HTTP_STATUS_OK, mockResponse);
 
       const result = await client.fetchMetrics();
 
@@ -641,7 +642,7 @@ describe('buildClient', () => {
 
     describe('query filter', () => {
       beforeEach(() => {
-        axiosMock.onGet(metricsUrl).reply(200, {
+        axiosMock.onGet(metricsUrl).reply(HTTP_STATUS_OK, {
           metrics: [],
         });
       });
@@ -733,14 +734,14 @@ describe('buildClient', () => {
     });
 
     it('rejects if metrics are missing', async () => {
-      axiosMock.onGet(metricsUrl).reply(200, {});
+      axiosMock.onGet(metricsUrl).reply(HTTP_STATUS_OK, {});
 
       await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
     });
 
     it('rejects if metrics are invalid', async () => {
-      axiosMock.onGet(metricsUrl).reply(200, { traces: 'invalid' });
+      axiosMock.onGet(metricsUrl).reply(HTTP_STATUS_OK, { traces: 'invalid' });
 
       await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
@@ -750,7 +751,7 @@ describe('buildClient', () => {
   describe('fetchMetric', () => {
     it('fetches the metric from the API', async () => {
       const data = { results: [] };
-      axiosMock.onGet(metricsSearchUrl).reply(200, data);
+      axiosMock.onGet(metricsSearchUrl).reply(HTTP_STATUS_OK, data);
 
       const result = await client.fetchMetric('name', 'type');
 
@@ -763,7 +764,7 @@ describe('buildClient', () => {
     });
 
     it('passes the abort controller to axios', async () => {
-      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+      axiosMock.onGet(metricsSearchUrl).reply(HTTP_STATUS_OK, { results: [] });
 
       const abortController = new AbortController();
       await client.fetchMetric('name', 'type', { abortController });
@@ -776,7 +777,7 @@ describe('buildClient', () => {
     });
 
     it('sets the visual param when specified', async () => {
-      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+      axiosMock.onGet(metricsSearchUrl).reply(HTTP_STATUS_OK, { results: [] });
 
       await client.fetchMetric('name', 'type', { visual: 'heatmap' });
 
@@ -789,7 +790,7 @@ describe('buildClient', () => {
 
     describe('query filter params', () => {
       beforeEach(() => {
-        axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+        axiosMock.onGet(metricsSearchUrl).reply(HTTP_STATUS_OK, { results: [] });
       });
 
       describe('attribute filter', () => {
@@ -961,7 +962,7 @@ describe('buildClient', () => {
     });
 
     it('rejects if results is missing from the response', async () => {
-      axiosMock.onGet(metricsSearchUrl).reply(200, {});
+      axiosMock.onGet(metricsSearchUrl).reply(HTTP_STATUS_OK, {});
       const e = 'metrics are missing/invalid in the response';
 
       await expect(client.fetchMetric('name', 'type')).rejects.toThrow(e);
@@ -995,7 +996,7 @@ describe('buildClient', () => {
         default_group_by_function: 'sum',
       };
 
-      axiosMock.onGet(metricsSearchMetadataUrl).reply(200, data);
+      axiosMock.onGet(metricsSearchMetadataUrl).reply(HTTP_STATUS_OK, data);
 
       const result = await client.fetchMetricSearchMetadata('name', 'type');
 
@@ -1035,7 +1036,7 @@ describe('buildClient', () => {
     const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
 
     beforeEach(() => {
-      axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+      axiosMock.onGet(logsSearchUrl).reply(HTTP_STATUS_OK, mockResponse);
     });
 
     it('fetches logs from the logs URL', async () => {
@@ -1065,14 +1066,14 @@ describe('buildClient', () => {
     });
 
     it('rejects if logs are missing', async () => {
-      axiosMock.onGet(logsSearchUrl).reply(200, {});
+      axiosMock.onGet(logsSearchUrl).reply(HTTP_STATUS_OK, {});
 
       await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
     });
 
     it('rejects if logs are invalid', async () => {
-      axiosMock.onGet(logsSearchUrl).reply(200, { results: 'invalid' });
+      axiosMock.onGet(logsSearchUrl).reply(HTTP_STATUS_OK, { results: 'invalid' });
 
       await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
@@ -1236,7 +1237,7 @@ describe('buildClient', () => {
     };
 
     beforeEach(() => {
-      axiosMock.onGet(logsSearchMetadataUrl).reply(200, mockResponse);
+      axiosMock.onGet(logsSearchMetadataUrl).reply(HTTP_STATUS_OK, mockResponse);
     });
 
     it('fetches logs metadata from the logs URL', async () => {
@@ -1417,7 +1418,7 @@ describe('buildClient', () => {
       },
     };
     beforeEach(() => {
-      axiosMock.onGet(analyticsUrl).reply(200, mockResponse);
+      axiosMock.onGet(analyticsUrl).reply(HTTP_STATUS_OK, mockResponse);
     });
 
     it('fetches analytics data from URL', async () => {

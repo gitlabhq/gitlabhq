@@ -138,8 +138,11 @@ artifacts:
       path: coverage/cobertura-coverage.xml
 ```
 
-The collected coverage report is uploaded to GitLab as an artifact. You can use
-only one report per job.
+The collected coverage report is uploaded to GitLab as an artifact.
+
+You can generate multiple JaCoCo or Corbertura reports within a job and include them in the final
+job artifact using [wildcards](../jobs/job_artifacts.md#with-wildcards).
+The results of the reports are aggregated in the final coverage report.
 
 GitLab can display the results of coverage report in the merge request
 [diff annotations](../testing/test_coverage_visualization/index.md).

@@ -113,6 +113,8 @@ describe('WorkItemDetail component', () => {
     namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
     router = true,
+    modalIsGroup = null,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -128,6 +130,7 @@ describe('WorkItemDetail component', () => {
         isModal,
         workItemIid,
         isDrawer,
+        modalIsGroup,
       },
       data() {
         return {
@@ -145,6 +148,7 @@ describe('WorkItemDetail component', () => {
         fullPath: 'group/project',
         groupPath: 'group',
         reportAbusePath: '/report/abuse/path',
+        isGroup,
       },
       stubs: {
         WorkItemAncestors: true,
@@ -890,6 +894,15 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
         expect(findEditButton().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('calculates correct isGroup prop for attributes wrapper', () => {
+    it('equal to modalIsGroup prop when provided', async () => {
+      createComponent({ modalIsGroup: true });
+      await waitForPromises();
+
+      expect(findWorkItemAttributesWrapper().props('isGroup')).toBe(true);
     });
   });
 });

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 describe('uploadModel', () => {
   const importPath = 'some/path';
@@ -11,7 +12,7 @@ describe('uploadModel', () => {
   let axiosMock;
   beforeEach(() => {
     axiosMock = jest.spyOn(axios, 'put');
-    axiosMock.mockImplementation(() => Promise.resolve({ status: 200 }));
+    axiosMock.mockImplementation(() => Promise.resolve({ status: HTTP_STATUS_OK }));
   });
 
   afterEach(() => {

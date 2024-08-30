@@ -9,7 +9,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
-import { mapWorkItemWidgetsToIssueFields } from '~/issues/list/utils';
+import { mapWorkItemWidgetsToIssuableFields } from '~/issues/list/utils';
 import {
   DraggableItemTypes,
   flashAnimationDuration,
@@ -18,6 +18,7 @@ import {
   ListType,
   listIssuablesQueries,
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
+  BoardType,
 } from 'ee_else_ce/boards/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
@@ -129,6 +130,9 @@ export default {
     issuesDrawerEnabled() {
       return this.glFeatures.issuesListDrawer;
     },
+    namespace() {
+      return this.isGroupBoard ? BoardType.group : BoardType.project;
+    },
   },
   methods: {
     afterFormEnters() {
@@ -229,7 +233,14 @@ export default {
 
       cache.updateQuery(
         { query: listIssuablesQueries[this.issuableType].query, variables },
-        (boardList) => mapWorkItemWidgetsToIssueFields(boardList, workItem, true),
+        (boardList) =>
+          mapWorkItemWidgetsToIssuableFields({
+            list: boardList,
+            workItem,
+            isBoard: true,
+            namespace: this.namespace,
+            type: this.issuableType,
+          }),
       );
     },
   },
@@ -335,6 +346,7 @@ export default {
         <work-item-drawer
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
+          :issuable-type="issuableType"
           @close="onDrawerClosed"
           @work-item-updated="updateBoardCard($event, activeIssuable)"
           @workItemDeleted="onIssuableDeleted(activeIssuable)"
@@ -344,18 +356,19 @@ export default {
       </template>
     </board-drawer-wrapper>
 
-    <board-content-sidebar
-      v-if="isIssueBoard && !issuesDrawerEnabled"
-      :backlog-list-id="backlogListId"
-      :closed-list-id="closedListId"
-      data-testid="issue-boards-sidebar"
-    />
-
-    <epic-board-content-sidebar
-      v-else-if="isEpicBoard"
-      :backlog-list-id="backlogListId"
-      :closed-list-id="closedListId"
-      data-testid="epic-boards-sidebar"
-    />
+    <template v-else>
+      <board-content-sidebar
+        v-if="isIssueBoard"
+        :backlog-list-id="backlogListId"
+        :closed-list-id="closedListId"
+        data-testid="issue-boards-sidebar"
+      />
+      <epic-board-content-sidebar
+        v-else-if="isEpicBoard"
+        :backlog-list-id="backlogListId"
+        :closed-list-id="closedListId"
+        data-testid="epic-boards-sidebar"
+      />
+    </template>
   </div>
 </template>

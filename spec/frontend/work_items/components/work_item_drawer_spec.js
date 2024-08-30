@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
@@ -24,22 +25,27 @@ describe('WorkItemDrawer', () => {
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkItem = () => wrapper.findComponent(WorkItemDetail);
 
-  const createComponent = ({ open = false } = {}) => {
+  const createComponent = ({
+    open = false,
+    activeItem = { iid: '1', webUrl: 'test' },
+    issuableType = TYPE_ISSUE,
+  } = {}) => {
     wrapper = shallowMount(WorkItemDrawer, {
       propsData: {
-        activeItem: {
-          iid: '1',
-          webUrl: 'test',
-        },
+        activeItem,
         open,
+        issuableType,
       },
       listeners: {
         customEvent: mockListener,
       },
       provide: {
         fullPath: '/gitlab-org',
+        reportAbusePath: '',
+        groupPath: '',
+        hasSubepicsFeature: false,
+        isGroup: false,
       },
-      stubs: { workItemDetail: true },
       apolloProvider: createMockApollo([[deleteWorkItemMutation, deleteWorkItemMutationHandler]]),
     });
   };
@@ -102,5 +108,49 @@ describe('WorkItemDrawer', () => {
 
       expect(wrapper.emitted('deleteWorkItemError')).toHaveLength(1);
     });
+  });
+
+  describe('when calculating activeItemFullPath', () => {
+    it('passes active issuable full path to work item detail if provided', () => {
+      const fullPath = '/gitlab-org';
+      createComponent({ activeItem: { fullPath } });
+
+      expect(findWorkItem().props('modalWorkItemFullPath')).toBe(fullPath);
+    });
+
+    describe('when active issuable has no fullPath property', () => {
+      it('passes empty value if active issuable has no reference path or full path', () => {
+        createComponent({ activeItem: {} });
+
+        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('');
+      });
+
+      it('passes correctly calculated path if active issuable is an issue', () => {
+        createComponent({ activeItem: { referencePath: 'gitlab-org/gitlab#35' } });
+
+        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+      });
+
+      it('passes correctly calculated fullPath if active issuable is an epic', () => {
+        createComponent({
+          activeItem: { referencePath: 'gitlab-org/gitlab&35' },
+          issuableType: TYPE_EPIC,
+        });
+
+        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+      });
+    });
+  });
+
+  it('passes modalIsGroup as undefined if issuableType is issue', () => {
+    createComponent();
+
+    expect(findWorkItem().props('modalIsGroup')).toBe(false);
+  });
+
+  it('passes modalIsGroup as true if issuableType is epic', () => {
+    createComponent({ issuableType: TYPE_EPIC });
+
+    expect(findWorkItem().props('modalIsGroup')).toBe(true);
   });
 });

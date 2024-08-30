@@ -11513,7 +11513,7 @@ msgstr ""
 msgid "CiCatalog|Discover CI/CD components that can improve your pipeline with additional functionality."
 msgstr ""
 
-msgid "CiCatalog|Edit your search and try again. Or %{linkStart}learn to create a component repository%{linkEnd}."
+msgid "CiCatalog|Edit your search and try again, or %{linkStart}learn how to create a component project%{linkEnd}."
 msgstr ""
 
 msgid "CiCatalog|Get started with the CI/CD Catalog"
@@ -11531,10 +11531,10 @@ msgstr ""
 msgid "CiCatalog|No component available"
 msgstr ""
 
-msgid "CiCatalog|No release available"
+msgid "CiCatalog|No components match your search criteria"
 msgstr ""
 
-msgid "CiCatalog|No result found"
+msgid "CiCatalog|No release available"
 msgstr ""
 
 msgid "CiCatalog|Partner"
@@ -11558,7 +11558,10 @@ msgstr ""
 msgid "CiCatalog|Remove from the CI/CD catalog"
 msgstr ""
 
-msgid "CiCatalog|Search must be at least 3 characters"
+msgid "CiCatalog|Search incomplete"
+msgstr ""
+
+msgid "CiCatalog|Search keyword must have at least 3 characters"
 msgstr ""
 
 msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
@@ -59701,10 +59704,10 @@ msgstr ""
 msgid "Vulnerability"
 msgstr ""
 
-msgid "Vulnerability Report"
+msgid "Vulnerability Explanation currently only supports vulnerabilities reported by SAST."
 msgstr ""
 
-msgid "Vulnerability explanation currently only supports vulnerabilities reported by SAST."
+msgid "Vulnerability Report"
 msgstr ""
 
 msgid "Vulnerability remediated. Review before resolving."

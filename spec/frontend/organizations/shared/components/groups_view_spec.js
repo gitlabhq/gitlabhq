@@ -7,6 +7,7 @@ import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   renderDeleteSuccessToast,
   deleteParams,
@@ -339,7 +340,7 @@ describe('GroupsView', () => {
       beforeEach(async () => {
         createComponent();
 
-        mockAxios.onDelete(defaultProvide.groupsPath).reply(200, {});
+        mockAxios.onDelete(defaultProvide.groupsPath).reply(HTTP_STATUS_OK, {});
         await waitForPromises();
       });
 

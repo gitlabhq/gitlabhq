@@ -18,7 +18,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
 
   before do
     sign_in(user)
-    allow(controller).to receive(:bitbucket_server_import_enabled?).and_return(true)
+    stub_application_setting(import_sources: ['bitbucket_server'])
   end
 
   describe 'GET new' do
@@ -66,6 +66,35 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
         post :create, params: params, format: :json
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when bitbucket server importer is not enabled' do
+      before do
+        stub_application_setting(import_sources: [])
+        stub_feature_flags(override_bitbucket_server_disabled: false)
+      end
+
+      it 'returns 404' do
+        post :create, params: params, format: :json
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when the override_bitbucket_server_disabled flag is enabled' do
+        before do
+          stub_feature_flags(override_bitbucket_server_disabled: true)
+        end
+
+        it 'returns 200' do
+          allow_next_instance_of(Gitlab::BitbucketServerImport::ProjectCreator) do |service|
+            allow(service).to receive(:execute).and_return(project)
+          end
+
+          post :create, params: params, format: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 

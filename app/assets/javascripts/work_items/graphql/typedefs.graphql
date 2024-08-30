@@ -88,6 +88,16 @@ extend type Mutation {
   localWorkItemBulkUpdate(input: LocalWorkItemBulkUpdateInput!): LocalWorkItemBulkUpdatePayload
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
+  updateActiveDesignDiscussion(id: ID!, source: String!): Boolean
+}
+
+type ActiveDesignDiscussion {
+  id: ID
+  source: String
+}
+
+extend type Query {
+  activeDesignDiscussion: ActiveDesignDiscussion
 }
 
 type LocalWorkItemChildIsExpanded {

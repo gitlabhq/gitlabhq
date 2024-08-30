@@ -89,8 +89,8 @@ describe('WorkItemLabels component', () => {
         workItemId,
         workItemIid,
         canUpdate,
-        fullPath: 'test-project-path',
         isGroup,
+        fullPath: 'test-project-path',
         workItemType: 'Task',
       },
     });

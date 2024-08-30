@@ -277,7 +277,7 @@ export const TODO_PENDING_STATE = 'pending';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
 
-export const WORK_ITEM_TO_ISSUE_MAP = {
+export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: 'assignees',
   [WIDGET_TYPE_LABELS]: 'labels',
   [WIDGET_TYPE_MILESTONE]: 'milestone',
@@ -287,6 +287,7 @@ export const WORK_ITEM_TO_ISSUE_MAP = {
   [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
   [WIDGET_TYPE_TIME_TRACKING]: 'timeEstimate',
+  [WIDGET_TYPE_COLOR]: 'color',
 };
 
 export const LINKED_CATEGORIES_MAP = {

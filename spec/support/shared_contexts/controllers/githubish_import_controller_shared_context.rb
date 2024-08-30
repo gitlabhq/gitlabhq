@@ -7,6 +7,6 @@ RSpec.shared_context 'a GitHub-ish import controller' do
 
   before do
     sign_in(user)
-    allow(controller).to receive(:"#{provider}_import_enabled?").and_return(true)
+    stub_application_setting(import_sources: [provider])
   end
 end

@@ -41,8 +41,7 @@ export default {
     },
     isGroup: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     workItemId: {
       type: String,

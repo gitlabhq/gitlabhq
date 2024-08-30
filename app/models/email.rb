@@ -5,6 +5,7 @@ class Email < ApplicationRecord
   include Gitlab::SQL::Pattern
 
   belongs_to :user, optional: false
+  belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: 'user_id', inverse_of: 'emails'
 
   validates :email, presence: true, uniqueness: true, devise_email: true
 

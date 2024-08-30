@@ -1163,7 +1163,7 @@ describe('CE IssuesListApp component', () => {
         it('updates the assignees field of active issuable', async () => {
           const {
             data: { workItem },
-          } = workItemResponseFactory({ iid: '789' });
+          } = workItemResponseFactory({ id: 'gid://gitlab/WorkItem/123456', iid: '789' });
           findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
@@ -1179,7 +1179,7 @@ describe('CE IssuesListApp component', () => {
         it('updates the labels field of active issuable', async () => {
           const {
             data: { workItem },
-          } = workItemResponseFactory({ iid: '789' });
+          } = workItemResponseFactory({ id: 'gid://gitlab/WorkItem/123456', iid: '789' });
           findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
@@ -1195,6 +1195,7 @@ describe('CE IssuesListApp component', () => {
 
         it('updates the upvotes count of active issuable', async () => {
           const { workItem } = workItemByIidResponseFactory({
+            id: 'gid://gitlab/WorkItem/123456',
             iid: '789',
             awardEmoji: {
               ...mockAwardsWidget,
@@ -1212,7 +1213,7 @@ describe('CE IssuesListApp component', () => {
         it('updates the milestone field of active issuable', async () => {
           const {
             data: { workItem },
-          } = workItemResponseFactory({ iid: '789' });
+          } = workItemResponseFactory({ id: 'gid://gitlab/WorkItem/123456', iid: '789' });
           findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
@@ -1228,7 +1229,11 @@ describe('CE IssuesListApp component', () => {
         it('updates the title and confidential state of active issuable', async () => {
           const {
             data: { workItem },
-          } = workItemResponseFactory({ iid: '789', confidential: true });
+          } = workItemResponseFactory({
+            id: 'gid://gitlab/WorkItem/123456',
+            iid: '789',
+            confidential: true,
+          });
           findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();

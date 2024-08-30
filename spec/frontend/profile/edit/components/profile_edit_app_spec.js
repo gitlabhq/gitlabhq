@@ -12,6 +12,7 @@ import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import { timeRanges } from '~/vue_shared/constants';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/file_utility', () => ({
@@ -108,7 +109,7 @@ describe('Profile Edit App', () => {
 
   describe('when form submit request is successful', () => {
     it('shows success alert', async () => {
-      mockAxios.onPut(stubbedProfilePath).reply(200, {
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
         message: successMessage,
       });
 
@@ -121,7 +122,7 @@ describe('Profile Edit App', () => {
     it('syncs header avatars', async () => {
       jest.spyOn(document, 'dispatchEvent');
       jest.spyOn(URL, 'createObjectURL');
-      mockAxios.onPut(stubbedProfilePath).reply(200, {
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
         message: successMessage,
       });
 
@@ -135,7 +136,7 @@ describe('Profile Edit App', () => {
     });
 
     it('contains changes from the status form', async () => {
-      mockAxios.onPut(stubbedProfilePath).reply(200, {
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
         message: successMessage,
       });
 
@@ -152,7 +153,7 @@ describe('Profile Edit App', () => {
     });
 
     it('contains changes from timezone form', async () => {
-      mockAxios.onPut(stubbedProfilePath).reply(200, {
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
         message: successMessage,
       });
       const selectedTimezoneIndex = 2;
@@ -172,7 +173,7 @@ describe('Profile Edit App', () => {
 
     describe('when clear status after has not been changed', () => {
       it('does not include it in the API request', async () => {
-        mockAxios.onPut(stubbedProfilePath).reply(200, {
+        mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK, {
           message: successMessage,
         });
 
@@ -193,7 +194,7 @@ describe('Profile Edit App', () => {
 
   describe('when form submit request is not successful', () => {
     it('shows error alert', async () => {
-      mockAxios.onPut(stubbedProfilePath).reply(500);
+      mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       submitForm();
       await waitForPromises();
@@ -205,7 +206,7 @@ describe('Profile Edit App', () => {
   });
 
   it('submits API request with avatar file', async () => {
-    mockAxios.onPut(stubbedProfilePath).reply(200);
+    mockAxios.onPut(stubbedProfilePath).reply(HTTP_STATUS_OK);
 
     setAvatar();
     submitForm();

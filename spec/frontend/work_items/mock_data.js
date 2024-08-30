@@ -1018,6 +1018,7 @@ export const workItemDevelopmentFragmentResponse = (
 
 export const workItemResponseFactory = ({
   iid = '1',
+  id = 'gid://gitlab/WorkItem/1',
   canUpdate = false,
   canDelete = false,
   canCreateNote = false,
@@ -1075,7 +1076,7 @@ export const workItemResponseFactory = ({
   data: {
     workItem: {
       __typename: 'WorkItem',
-      id: 'gid://gitlab/WorkItem/1',
+      id,
       iid,
       archived: false,
       title: 'Updated title',

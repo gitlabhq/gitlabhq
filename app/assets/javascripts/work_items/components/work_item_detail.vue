@@ -107,6 +107,11 @@ export default {
       required: false,
       default: '',
     },
+    modalIsGroup: {
+      type: Boolean,
+      required: false,
+      default: null,
+    },
     isDrawer: {
       type: Boolean,
       required: false,
@@ -252,9 +257,6 @@ export default {
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
-    isGroupWorkItem() {
-      return this.workItem.namespace?.id.includes(TYPENAME_GROUP);
-    },
     workItemsAlphaEnabled() {
       return this.glFeatures.workItemsAlpha;
     },
@@ -366,6 +368,9 @@ export default {
     },
     workItemPresent() {
       return !isEmpty(this.workItem);
+    },
+    isGroupWorkItem() {
+      return this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP);
     },
   },
   mounted() {
@@ -698,9 +703,9 @@ export default {
               <work-item-attributes-wrapper
                 :class="{ 'gl-top-3': isDrawer }"
                 :full-path="workItemFullPath"
-                :is-group="isGroupWorkItem"
                 :work-item="workItem"
                 :group-path="groupPath"
+                :is-group="isGroupWorkItem"
                 @error="updateError = $event"
                 @attributesUpdated="$emit('attributesUpdated', $event)"
               />

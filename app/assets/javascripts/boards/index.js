@@ -55,7 +55,7 @@ function mountBoardApp(el) {
     groupId,
     fullPath,
     rootPath,
-    hasScopedLabelsFeature,
+    wiHasScopedLabelsFeature,
     wiGroupPath,
     wiCanAdminLabel,
   } = el.dataset;
@@ -123,7 +123,7 @@ function mountBoardApp(el) {
       multipleIssueBoardsAvailable: parseBoolean(el.dataset.multipleBoardsAvailable),
       scopedIssueBoardFeatureEnabled: parseBoolean(el.dataset.scopedIssueBoardFeatureEnabled),
       allowSubEpics: false,
-      hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
+      hasScopedLabelsFeature: parseBoolean(wiHasScopedLabelsFeature),
       hasIterationsFeature: parseBoolean(el.dataset.iterationFeatureAvailable),
       hasIssueWeightsFeature: parseBoolean(el.dataset.weightFeatureAvailable),
       hasIssuableHealthStatusFeature: parseBoolean(el.dataset.healthStatusFeatureAvailable),

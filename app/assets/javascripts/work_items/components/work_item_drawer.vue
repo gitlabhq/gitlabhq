@@ -2,6 +2,7 @@
 import { GlLink, GlDrawer } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -24,10 +25,25 @@ export default {
       required: false,
       default: () => ({}),
     },
+    issuableType: {
+      type: String,
+      required: false,
+      default: TYPE_ISSUE,
+    },
   },
   computed: {
     activeItemFullPath() {
-      return this.activeItem?.fullPath;
+      if (this.activeItem?.fullPath) {
+        return this.activeItem.fullPath;
+      }
+      const delimiter = this.issuableType === TYPE_EPIC ? '&' : '#';
+      if (!this.activeItem.referencePath) {
+        return undefined;
+      }
+      return this.activeItem.referencePath.split(delimiter)[0];
+    },
+    modalIsGroup() {
+      return this.issuableType === TYPE_EPIC;
     },
   },
   methods: {
@@ -89,6 +105,7 @@ export default {
         :key="activeItem.iid"
         :work-item-iid="activeItem.iid"
         :modal-work-item-full-path="activeItemFullPath"
+        :modal-is-group="modalIsGroup"
         is-drawer
         class="work-item-drawer !gl-pt-0"
         @deleteWorkItem="deleteWorkItem"
