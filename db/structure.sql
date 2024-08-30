@@ -33001,9 +33001,6 @@ ALTER TABLE ONLY design_management_designs_versions
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_0480f2308c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY sbom_occurrences_vulnerabilities
-    ADD CONSTRAINT fk_058f258503 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

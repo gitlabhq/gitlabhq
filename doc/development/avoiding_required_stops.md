@@ -143,7 +143,7 @@ and [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upg
 ### Planning the required stop milestone
 
 We can't add required stops to every milestone, as this hurts our user experience
-while upgrading GitLab. The Distribution group is responsible for helping planing and defining
+while upgrading GitLab. The Distribution group is responsible for helping planning and defining
 when required stops are introduced.
 
 From GitLab 17.5, we will introduce required stops in the X.2, X.5, X.8, and X.11 minor milestones. If you introduce code changes or features that require an upgrade stop, you
@@ -155,7 +155,7 @@ Before releasing a known required stop, complete these steps. If the required st
 is identified after release, the following steps must still be completed:
 
 1. In the same MR, update the [upgrade paths](../update/index.md#upgrade-paths) documentation to include the new
-   required stop, and the [`upgrade_path.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/upgrade_path.yml).
+   required stop, and the [`upgrade_path.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/upgrade_path.yml).
    The `upgrade_path.yml` is the single source of truth (SSoT) for all our required stops.
 1. Communicate the changes with the customer Support and Release management teams.
 1. If the required stops is database related, file an issue with the Database group to

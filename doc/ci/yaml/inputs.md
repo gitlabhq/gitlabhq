@@ -70,7 +70,7 @@ Additionally, use:
   understand the input details or expected values.
 - [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
   for an input.
-- [`spec:inputs:regex`](index.md#specinputsoptions) to specify a regular expression
+- [`spec:inputs:regex`](index.md#specinputsregex) to specify a regular expression
   that the input must match.
 - [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.

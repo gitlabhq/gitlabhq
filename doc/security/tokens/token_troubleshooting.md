@@ -8,6 +8,151 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When working with GitLab tokens, you might encounter the following issues.
 
+## Expired access tokens
+
+If an existing access token is in use and reaches the `expires_at` value, the token
+expires and:
+
+- Can no longer be used for authentication.
+- Is not visible in the UI.
+
+Requests made using this token return a `401 Unauthorized` response. Too many
+unauthorized requests in a short period of time from the same IP address
+result in `403 Forbidden` responses from GitLab.com.
+
+For more information on authentication request limits, see [Git and container registry failed authentication ban](../../user/gitlab_com/index.md#git-and-container-registry-failed-authentication-ban).
+
+### Identify expired access tokens from logs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464652) in GitLab 17.2.
+
+Prerequisites:
+
+You must:
+
+- Be an administrator.
+- Have access to the [`api_json.log`](../../administration/logs/index.md#api_jsonlog) file.
+
+To identify which `401 Unauthorized` requests are failing due to
+expired access tokens, use the following fields in the `api_json.log` file:
+
+|Field name|Description|
+|----------|-----------|
+|`meta.auth_fail_reason`|The reason the request was rejected. Possible values: `token_expired`, `token_revoked`, `insufficient_scope`, and `impersonation_disabled`.|
+|`meta.auth_fail_token_id`|A string describing the type and ID of the attempted token.|
+
+When a user attempts to use an expired token, the `meta.auth_fail_reason`
+is `token_expired`. The following shows an excerpt from a log
+entry:
+
+```json
+{
+  "status": 401,
+  "method": "GET",
+  "path": "/api/v4/user",
+  ...
+  "meta.auth_fail_reason": "token_expired",
+  "meta.auth_fail_token_id": "PersonalAccessToken/12",
+}
+```
+
+`meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
+
+To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#get-single-personal-access-token).
+You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
+
+### Replace expired access tokens
+
+To replace the token:
+
+1. Check where this token may have been used previously, and remove it from any
+   automation might still use the token.
+   - For personal access tokens, use the [API](../../api/personal_access_tokens.md#list-personal-access-tokens)
+     to list tokens that have expired recently. For example, go to `https://gitlab.com/api/v4/personal_access_tokens`,
+     and locate tokens with a specific `expires_at` date.
+   - For project access tokens, use the
+     [project access tokens API](../../api/project_access_tokens.md#list-project-access-tokens)
+     to list recently expired tokens.
+   - For group access tokens, use the
+     [group access tokens API](../../api/group_access_tokens.md#list-group-access-tokens)
+     to list recently expired tokens.
+1. Create a new access token:
+   - For personal access tokens, [use the UI](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
+     or [Users API](../../api/users.md#create-a-personal-access-token).
+   - For a project access token, [use the UI](../../user/project/settings/project_access_tokens.md#create-a-project-access-token)
+     or [project access tokens API](../../api/project_access_tokens.md#create-a-project-access-token).
+   - For a group access token, [use the UI](../../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui)
+     or [group access tokens API](../../api/group_access_tokens.md#create-a-group-access-token).
+1. Replace the old access token with the new access token. This process varies
+   depending on how you use the token, for example if configured as a secret or
+   embedded in an application. Requests made from this token should no longer
+   return `401` responses.
+
+### Extend token lifetime
+
+Delay the expiration of certain tokens with this script.
+
+From GitLab 16.0, all access tokens have an expiration date. After you deploy at least GitLab 16.0,
+any non-expiring access tokens expire one year from the date of deployment.
+
+If this date is approaching and there are tokens that have not yet
+been rotated, you can use this script to delay expiration and give
+users more time to rotate their tokens.
+
+#### Extend lifetime for specific tokens
+
+This script extends the lifetime of all tokens which expire on a specified date, including:
+
+- Personal access tokens
+- Group access tokens
+- Project access tokens
+
+The lifetimes of tokens intentionally set to expire on the specified date are also extended.
+
+To use the script:
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire `extend_expiring_tokens.rb` script below.
+   If desired, change the `expiring_date` to a different date.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire `extend_expiring_tokens.rb` script below, and save it as a file on your instance:
+   - Name it `extend_expiring_tokens.rb`.
+   - If desired, change the `expiring_date` to a different date.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing `/path/to/extend_expiring_tokens.rb`
+   to the _full_ path to your `extend_expiring_tokens.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/extend_expiring_tokens.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
+##### `extend_expiring_tokens.rb`
+
+```ruby
+expiring_date = Date.new(2024, 5, 30)
+new_expires_at = 6.months.from_now
+
+total_updated = PersonalAccessToken
+                  .not_revoked
+                  .without_impersonation
+                  .where(expires_at: expiring_date.to_date)
+                  .update_all(expires_at: new_expires_at.to_date)
+
+puts "Updated #{total_updated} tokens with new expiry date #{new_expires_at}"
+```
+
 ## Identify personal, project, and group access tokens expiring on a certain date
 
 Access tokens that have no expiration date are valid indefinitely, which is a
@@ -51,7 +196,7 @@ and later, or not:
   - [Dates when many tokens expire](#identify-dates-when-many-tokens-expire).
 
 After you have identified tokens affected by this issue, you can run a final script
-to [extend the lifetime of specific tokens](index.md#extend-token-lifetime) if needed.
+to extend the lifetime of specific tokens if needed.
 
 These scripts return results in the following format:
 

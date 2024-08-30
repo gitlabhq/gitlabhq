@@ -1236,7 +1236,7 @@ date set at one year from the date of upgrade.
 Before this automatic expiry date is applied, you should do the following to minimize disruption:
 
 1. [Identify any access tokens without an expiration date](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date).
-1. [Give those tokens an expiration date](../../security/tokens/index.md#extend-token-lifetime).
+1. [Give those tokens an expiration date](../../security/tokens/token_troubleshooting.md#extend-token-lifetime).
 
 For more information, see the:
 

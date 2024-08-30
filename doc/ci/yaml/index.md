@@ -1022,6 +1022,7 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
   not `number` or `boolean`.
 - Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
   not `/regex.*/`.
+- `inputs:regex` uses [RE2](https://github.com/google/re2/wiki/Syntax) to parse regular expressions.
 
 ##### `spec:inputs:type`
 

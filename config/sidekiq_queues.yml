@@ -43,6 +43,12 @@
   - 1
 - - analytics_usage_trends_counter_job
   - 1
+- - anti_abuse_new_abuse_report
+  - 1
+- - anti_abuse_spam_abuse_events
+  - 1
+- - anti_abuse_trust_score
+  - 1
 - - anti_abuse_trust_score_cleanup
   - 1
 - - app_sec_container_scanning_scan_image

@@ -470,18 +470,19 @@ The `identifiers` array describes the detected vulnerability. An identifier obje
 `value` fields are used to [tell if two identifiers are the same](../../user/application_security/vulnerability_report/pipeline.md#deduplication-process).
 The user interface uses the object's `name` and `url` fields to display the identifier.
 
-We recommend that you use the identifiers the GitLab scanners already define:
+We recommend that you use the identifiers the GitLab scanners already [define](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/main/identifier.go):
 
-| Identifier | Type | Example value |
-|------------|------|---------------|
-| [CVE](https://cve.mitre.org/cve/) | `cve` | CVE-2019-10086 |
-| [CWE](https://cwe.mitre.org/data/index.html) | `cwe` | CWE-1026 |
-| [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |
-| [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 |
-| [OWASP](https://owasp.org/Top10/) | `owasp` | A01:2021–Broken Access Control Design |
-| [RHSA](https://access.redhat.com/errata-search/#/) | `rhsa` | RHSA-2020:0111 |
-| [USN](https://ubuntu.com/security/notices) | `usn` | USN-4234-1 |
-| [WASC](http://projects.webappsec.org/Threat-Classification-Reference-Grid)  | `wasc` | WASC-19 |
+| Identifier | Type | Example value | Example name |
+|------------|------|---------------|--------------|
+| [CVE](https://cve.mitre.org/cve/) | `cve` | CVE-2019-10086 | CVE-2019-10086 |
+| [CWE](https://cwe.mitre.org/data/index.html) | `cwe` | 1026 | CWE-1026 |
+| [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 | ELSA-2020-0085 |
+| [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 | OSVDB-113928 |
+| [OWASP](https://owasp.org/Top10/) | `owasp` | A01:2021 | A01:2021 - Broken Access Control |
+| [RHSA](https://access.redhat.com/errata-search/#/) | `rhsa` | RHSA-2020:0111 | RHSA-2020:0111 |
+| [USN](https://ubuntu.com/security/notices) | `usn` | USN-4234-1 | USN-4234-1 |
+| [GHSA](https://github.com/advisories) | `ghsa` | GHSA-38jh-8h67-m7mj | GHSA-38jh-8h67-m7mj |
+| [HACKERONE](https://hackerone.com/hacktivity/overview) | `hackerone` | 698789 | HACKERONE-698789 |
 
 The generic identifiers listed above are defined in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common),
 which is shared by some of the analyzers that GitLab maintains. You can [contribute](https://gitlab.com/gitlab-org/security-products/analyzers/common/blob/master/issue/identifier.go)

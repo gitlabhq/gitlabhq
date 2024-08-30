@@ -74,7 +74,7 @@ Keep in mind that:
 - **Secondary** sites talk to the **primary** site to:
   - Get user data for logins (API).
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
-- The **primary** site doesn't talk to **secondary** sites to notify for changes (API).
+- The **primary** site talks to the **secondary** sites for viewing replication details. The **primary** does a GraphQL query against the **secondary** site for sync and verification data (API).
 - You can push directly to a **secondary** site (for both HTTP and SSH,
   including Git LFS), and it will proxy the requests to the **primary** site.
 - There are [limitations](#limitations) when using Geo.

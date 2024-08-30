@@ -426,6 +426,10 @@ sbom_occurrences:
   - table: projects
     column: project_id
     on_delete: async_delete
+sbom_occurrences_vulnerabilities:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 sbom_source_packages:
   - table: organizations
     column: organization_id
