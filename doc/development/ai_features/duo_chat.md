@@ -404,7 +404,7 @@ in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitl
 
 In MRs, the end-to-end tests exercise the Duo Chat functionality of self-managed instances by using an instance of the GitLab Linux package
 integrated with the `latest` version of AI Gateway. The instance of AI Gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
-To view the results of these tests, open the `e2e:package-and-test-ee` child pipeline and view the `ai-gateway` job.
+To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipeline and view the `ai-gateway` job.
 
 The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
 

@@ -64,7 +64,7 @@ compile-production-assets as-if-foss:
   extends:
     - compile-production-assets
     - .as-if-foss
-    - .qa:rules:package-and-test-ce:follow-up
+    - .qa:rules:test-on-omnibus-ce:follow-up
 
 follow-up:compile-production-assets:
   extends:

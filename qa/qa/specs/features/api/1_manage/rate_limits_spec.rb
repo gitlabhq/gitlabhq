@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env, only: {
-    condition: -> { ENV['QA_RUN_TYPE']&.match?("e2e-package-and-test") }
+    condition: -> { ENV['QA_RUN_TYPE']&.match?("e2e-test-on-omnibus") }
   } do
     describe 'rate limits', :blocking, product_group: :import_and_integrate do
       let(:rate_limited_user) { create(:user) }

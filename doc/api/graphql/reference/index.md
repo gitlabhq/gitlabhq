@@ -342,6 +342,22 @@ DETAILS:
 
 Returns [`CloudConnectorStatus`](#cloudconnectorstatus).
 
+### `Query.components`
+
+Find software dependencies by name.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`[Component!]`](#component).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycomponentsname"></a>`name` | [`String`](#string) | Entire name or part of the name. |
+
 ### `Query.containerRepository`
 
 Find a container repository.
@@ -19729,6 +19745,17 @@ Compliance violation associated with a merged merge request.
 | <a id="complianceviolationseveritylevel"></a>`severityLevel` | [`ComplianceViolationSeverity!`](#complianceviolationseverity) | Severity of the compliance violation. |
 | <a id="complianceviolationviolatinguser"></a>`violatingUser` | [`UserCore!`](#usercore) | User suspected of causing the compliance violation. |
 
+### `Component`
+
+A software dependency used by a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="componentid"></a>`id` | [`SbomComponentID!`](#sbomcomponentid) | ID of the dependency. |
+| <a id="componentname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+
 ### `ComposerMetadata`
 
 Composer metadata.
@@ -29643,6 +29670,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectdependenciescomponentids"></a>`componentIds` | [`[SbomComponentID!]`](#sbomcomponentid) | Filter dependencies by component IDs. |
 | <a id="projectdependenciescomponentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
 | <a id="projectdependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="projectdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
@@ -39355,6 +39383,12 @@ An example `RemoteDevelopmentWorkspaceID` is: `"gid://gitlab/RemoteDevelopment::
 A `RemoteDevelopmentWorkspacesAgentConfigID` is a global ID. It is encoded as a string.
 
 An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteDevelopment::WorkspacesAgentConfig/1"`.
+
+### `SbomComponentID`
+
+A `SbomComponentID` is a global ID. It is encoded as a string.
+
+An example `SbomComponentID` is: `"gid://gitlab/Sbom::Component/1"`.
 
 ### `SecurityTrainingProviderID`
 

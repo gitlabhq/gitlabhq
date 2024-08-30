@@ -282,7 +282,7 @@ To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
-- The `e2e:package-and-test` job.
+- The `e2e:test-on-omnibus` job.
 - The `rspec:undercoverage` job.
 - The entire [review apps process](../testing_guide/review_apps.md).
 
@@ -299,13 +299,13 @@ Forcing all jobs on docs only related MRs would not have the prerequisite jobs a
 
 ### End-to-end jobs
 
-The [`e2e:package-and-test`](../testing_guide/end_to_end/index.md#using-the-package-and-test-job) child pipeline
+The [`e2e:test-on-omnibus`](../testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) child pipeline
 runs end-to-end jobs automatically depending on changes, and is manual in other cases.
-See `.qa:rules:package-and-test` in
+See `.qa:rules:test-on-omnibus` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
 the specific list of rules.
 
-If you want to force `e2e:package-and-test` to run regardless of your changes, you can add the
+If you want to force `e2e:test-on-omnibus` to run regardless of your changes, you can add the
 `pipeline:run-all-e2e` label to the merge request.
 
 The [`e2e:test-on-gdk`](../testing_guide/end_to_end/index.md#using-the-test-on-gdk-job) child pipeline runs `:blocking`
@@ -923,7 +923,7 @@ graph RL;
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["e2e:package-and-test-ee (103 minutes)"];
+  2_4-1["e2e:test-on-omnibus-ee (103 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

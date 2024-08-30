@@ -106,7 +106,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/.gitlab/ci/package-and-test/ @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/test-on-omnibus/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/qa-common/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery

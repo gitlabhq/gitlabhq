@@ -14,6 +14,9 @@ Learn how to:
 - Use GitLab Duo Root Cause Analysis to debug problems.
 - Solve security vulnerabilities.
 
+NOTE:
+If you have self-managed GitLab: For the best experience, upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
+
 ## Use GitLab Duo to solve development challenges
 
 ### Start with a C# application

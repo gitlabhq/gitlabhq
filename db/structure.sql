@@ -17918,8 +17918,6 @@ CREATE TABLE security_policies (
     description text,
     checksum text NOT NULL,
     scope jsonb DEFAULT '{}'::jsonb NOT NULL,
-    actions jsonb DEFAULT '[]'::jsonb NOT NULL,
-    approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     security_policy_management_project_id bigint NOT NULL,
     content jsonb DEFAULT '{}'::jsonb NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,

@@ -34,9 +34,9 @@ You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/p
 
 ### Testing code in merge requests
 
-#### Using the package-and-test job
+#### Using the test-on-omnibus job
 
-It is possible to run end-to-end tests for a merge request by triggering the `e2e:package-and-test` manual action in the `qa` stage (not
+It is possible to run end-to-end tests for a merge request by triggering the `e2e:test-on-omnibus` manual action in the `qa` stage (not
 available for forks).
 
 **This runs end-to-end tests against a custom EE (with an Ultimate license)
@@ -57,7 +57,7 @@ graph TB
 
 subgraph " `gitlab-org/gitlab` pipeline"
     A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
-    A2[`qa` stage<br>`e2e:package-and-test` job]
+    A2[`qa` stage<br>`e2e:test-on-omnibus` job]
     end
 
 subgraph " `gitlab-org/build/omnibus-gitlab-mirror` pipeline"
@@ -70,7 +70,7 @@ subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
 ```
 
 1. In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
-   1. Developer triggers the `e2e:package-and-test` manual action (available once the `build-qa-image` and
+   1. Developer triggers the `e2e:test-on-omnibus` manual action (available once the `build-qa-image` and
       `build-assets-image` jobs are done), that can be found in GitLab merge
       requests. This starts a e2e test child pipeline.
    1. E2E child pipeline triggers a downstream pipeline in
@@ -98,8 +98,8 @@ This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
-For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:package-and-test` pipeline, see
-[`e2e:package-and-test` setup documentation](test_pipelines.md).
+For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:test-on-omnibus` pipeline, see
+[`e2e:test-on-omnibus` setup documentation](test_pipelines.md).
 
 #### Using the `test-on-gdk` job
 
@@ -216,7 +216,7 @@ Use these environment variables to configure metrics export:
 | -------- | -------- | ----------- |
 | `QA_INFLUXDB_URL` | `true` | Should be set to `https://influxdb.quality.gitlab.net`. No default value. |
 | `QA_INFLUXDB_TOKEN` | `true` | InfluxDB write token that can be found under `Influxdb auth tokens` document in `Gitlab-QA` `1Password` vault. No default value. |
-| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `e2e:package-and-test`. Automatically inferred from the project name for live environment test executions. No default value. |
+| `QA_RUN_TYPE` | `false` | Arbitrary name for test execution, like `e2e:test-on-omnibus`. Automatically inferred from the project name for live environment test executions. No default value. |
 | `QA_EXPORT_TEST_METRICS` | `false` | Flag to enable or disable metrics export to InfluxDB. Defaults to `false`. |
 | `QA_SAVE_TEST_METRICS` | `false` | Flag to enable or disable saving metrics as JSON file. Defaults to `false`. |
 
@@ -250,7 +250,7 @@ a link to the current test report.
 
 Each type of scheduled pipeline generates a static link for the latest test report according to its stage:
 
-- [`master`](http://gitlab-qa-allure-reports.s3.amazonaws.com/e2e-package-and-test/master/index.html)
+- [`master`](http://gitlab-qa-allure-reports.s3.amazonaws.com/e2e-test-on-omnibus/master/index.html)
 - [`staging-full`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-full/master/index.html)
 - [`staging-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-sanity/master/index.html)
 - [`canary-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/canary-sanity/master/index.html)

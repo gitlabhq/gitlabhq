@@ -2,9 +2,9 @@
 
 require 'fast_spec_helper'
 require 'gitlab/rspec/all'
-require_relative '../../scripts/generate-failed-package-and-test-mr-message'
+require_relative '../../scripts/generate-failed-test-on-omnibus-mr-message'
 
-RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling do
+RSpec.describe GenerateFailedTestOnOmnibusMrMessage, feature_category: :tooling do
   include StubENV
 
   describe '#execute' do
@@ -29,11 +29,11 @@ RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling
     end
 
     let(:merge_request) { instance_double(CommitMergeRequests, execute: [commit_merge_request]) }
-    let(:content) { /The `e2e:package-and-test-ee` child pipeline has failed./ }
+    let(:content) { /The `e2e:test-on-omnibus-ee` child pipeline has failed./ }
     let(:merge_request_discussion_client) { instance_double(CreateMergeRequestDiscussion, execute: true) }
-    let(:package_and_test_job_client) { instance_double(GetPackageAndTestJob, execute: package_and_test_job) }
+    let(:package_and_test_job_client) { instance_double(GetTestOnOmnibusJob, execute: package_and_test_job) }
 
-    subject { described_class.new(options).execute }
+    subject(:discussion_added) { described_class.new(options).execute }
 
     before do
       stub_env(
@@ -44,12 +44,12 @@ RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling
         'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'asdf1234'
       )
 
-      allow(GetPackageAndTestJob).to receive(:new)
+      allow(GetTestOnOmnibusJob).to receive(:new)
         .with(API::DEFAULT_OPTIONS)
         .and_return(package_and_test_job_client)
     end
 
-    context 'when package-and-test fails' do
+    context 'when test-on-omnibus fails' do
       before do
         allow(CommitMergeRequests).to receive(:new)
           .with(API::DEFAULT_OPTIONS.merge(sha: ENV['CI_MERGE_REQUEST_SOURCE_BRANCH_SHA']))
@@ -63,16 +63,16 @@ RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling
 
         expect(merge_request_discussion_client).to receive(:execute).with(content)
 
-        expect(subject).to eq(true)
+        expect(discussion_added).to eq(true)
       end
     end
 
-    context 'when package-and-test is did not fail' do
-      let(:package_and_test_job_client) { instance_double(GetPackageAndTestJob, execute: nil) }
+    context 'when test-on-omnibus is did not fail' do
+      let(:package_and_test_job_client) { instance_double(GetTestOnOmnibusJob, execute: nil) }
 
       it 'does not add a discussion' do
         expect(CreateMergeRequestDiscussion).not_to receive(:new)
-        expect(subject).to eq(nil)
+        expect(discussion_added).to eq(nil)
       end
     end
   end

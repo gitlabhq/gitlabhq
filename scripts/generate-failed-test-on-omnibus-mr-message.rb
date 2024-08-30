@@ -7,9 +7,9 @@ require 'json'
 
 require_relative 'api/create_merge_request_discussion'
 require_relative 'api/commit_merge_requests'
-require_relative 'api/get_package_and_test_job'
+require_relative 'api/get_test_on_omnibus_job'
 
-class GenerateFailedPackageAndTestMrMessage
+class GenerateFailedTestOnOmnibusMrMessage
   DEFAULT_OPTIONS = {
     project: nil
   }.freeze
@@ -35,7 +35,7 @@ class GenerateFailedPackageAndTestMrMessage
   end
 
   def failed_package_and_test_pipeline
-    @failed_package_and_test_pipeline ||= GetPackageAndTestJob.new(API::DEFAULT_OPTIONS).execute
+    @failed_package_and_test_pipeline ||= GetTestOnOmnibusJob.new(API::DEFAULT_OPTIONS).execute
   end
 
   def merge_request
@@ -46,11 +46,11 @@ class GenerateFailedPackageAndTestMrMessage
 
   def content
     <<~MARKDOWN
-    :warning: @#{author_username} The `e2e:package-and-test-ee` child pipeline has failed.
+    :warning: @#{author_username} The `e2e:test-on-omnibus-ee` child pipeline has failed.
 
-    - `e2e:package-and-test-ee` pipeline: #{failed_package_and_test_pipeline['web_url']}
+    - `e2e:test-on-omnibus-ee` pipeline: #{failed_package_and_test_pipeline['web_url']}
 
-    `e2e:package-and-test-ee` pipeline is allowed to fail due its [flakiness](#{package_and_test_link}). Failures should be
+    `e2e:test-on-omnibus-ee` pipeline is allowed to fail due its [flakiness](#{package_and_test_link}). Failures should be
     investigated to guarantee this backport complies with the Quality standards.
 
     Ping your team's associated Software Engineer in Test (SET) to confirm the failures are unrelated to the merge request.
@@ -63,12 +63,12 @@ class GenerateFailedPackageAndTestMrMessage
   end
 
   def package_and_test_link
-    "https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test"
+    "https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/dashboards"
   end
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = GenerateFailedPackageAndTestMrMessage::DEFAULT_OPTIONS.dup
+  options = GenerateFailedTestOnOmnibusMrMessage::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|
     opts.on("-h", "--help", "Prints this help") do
@@ -77,5 +77,5 @@ if $PROGRAM_NAME == __FILE__
     end
   end.parse!
 
-  GenerateFailedPackageAndTestMrMessage.new(options).execute
+  GenerateFailedTestOnOmnibusMrMessage.new(options).execute
 end

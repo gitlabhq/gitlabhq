@@ -1,4 +1,4 @@
-# Default variables for package-and-test
+# Default variables for e2e test pipelines
 
 variables:
   FF_TIMESTAMPS: "true"
@@ -9,7 +9,7 @@ variables:
   FEATURE_FLAGS: ""
   QA_LOG_LEVEL: "info"
   QA_TESTS: ""
-  # run all tests by default when package-and-test is included natively in other projects
+  # run all tests by default when test-on-omnibus is included natively in other projects
   # this will be overridden when selective test execution is used in gitlab canonical project
   QA_RUN_ALL_TESTS: "true"
   # Used by gitlab-qa to set up a volume for `${CI_PROJECT_DIR}/qa/rspec:/home/gitlab/qa/rspec/`

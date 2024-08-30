@@ -20,7 +20,7 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 * [ ] This MR has a [severity label] assigned (if applicable).
 * [ ] Set the milestone of the merge request to match the target backport branch version.
 * [ ] This MR has been approved by a maintainer (only one approval is required).
-* [ ] Ensure the `e2e:package-and-test-ee` job has either succeeded or been approved by a Software Engineer in Test.
+* [ ] Ensure the `e2e:test-on-omnibus-ee` job has either succeeded or been approved by a Software Engineer in Test.
 
 #### Note to the merge request author and maintainer
 

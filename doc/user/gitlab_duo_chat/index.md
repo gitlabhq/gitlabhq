@@ -44,6 +44,9 @@ Visual Studio support is
 You can express interest in other IDE extension support
 [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
+NOTE:
+If you have self-managed GitLab: For the best experience, upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
+
 ## The context Chat is aware of
 
 GitLab Duo Chat is sometimes aware of the context you're working in.

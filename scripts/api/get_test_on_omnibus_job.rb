@@ -6,7 +6,7 @@
 require 'gitlab'
 require_relative 'default_options'
 
-class GetPackageAndTestJob
+class GetTestOnOmnibusJob
   FAILED_STATUS = [
     'failed',
     'passed with warnings',
@@ -32,7 +32,7 @@ class GetPackageAndTestJob
     package_and_test_bridge = client
       .pipeline_bridges(project, pipeline_id, per_page: 100)
       .auto_paginate
-      .find { |job| job.name.include?('package-and-test-ee') }
+      .find { |job| job.name.include?('test-on-omnibus-ee') }
 
     return if package_and_test_bridge&.downstream_pipeline.nil?
 
@@ -43,7 +43,7 @@ class GetPackageAndTestJob
 
     status = package_and_test_pipeline.detailed_status
 
-    return package_and_test_pipeline if FAILED_STATUS.include?(status&.label)
+    package_and_test_pipeline if FAILED_STATUS.include?(status&.label)
   end
 
   private

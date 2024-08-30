@@ -3,14 +3,14 @@
   dependencies: []
   cache: {}
 
-notify-package-and-test-failure:
+notify-test-on-omnibus-failure:
   extends:
     - .notify-defaults
-    - .notify:rules:notify-package-and-test-failure
+    - .notify:rules:notify-test-on-omnibus-failure
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   before_script:
     - source scripts/utils.sh
     - apt-get update
     - install_gitlab_gem
   script:
-    - scripts/generate-failed-package-and-test-mr-message.rb
+    - scripts/generate-failed-test-on-omnibus-mr-message.rb

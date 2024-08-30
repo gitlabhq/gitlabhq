@@ -95,7 +95,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       let(:pipeline_bridges_response) do
         [
           {
-            'name' => 'e2e:package-and-test-ee',
+            'name' => 'e2e:test-on-omnibus-ee',
             'status' => pipeline_bridge_state,
             'downstream_pipeline' => {
               'id' => '123',
@@ -181,27 +181,27 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when no package-and-test bridge is found' do
+      context 'when no test-on-omnibus bridge is found' do
         let(:pipeline_bridges_response) { nil }
 
         it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test bridge is created' do
+      context 'when test-on-omnibus bridge is created' do
         let(:pipeline_bridge_state) { 'created' }
 
         it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test bridge has been canceled and no downstream pipeline is generated' do
+      context 'when test-on-omnibus bridge has been canceled and no downstream pipeline is generated' do
         let(:pipeline_bridge_state) { 'canceled' }
 
         let(:pipeline_bridges_response) do
           [
             {
-              'name' => 'e2e:package-and-test-ee',
+              'name' => 'e2e:test-on-omnibus-ee',
               'status' => pipeline_bridge_state,
               'downstream_pipeline' => nil
             }
@@ -212,21 +212,21 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test job is in a non-successful state' do
+      context 'when test-on-omnibus job is in a non-successful state' do
         let(:package_and_qa_state) { 'running' }
 
         it_behaves_like 'with a warning', described_class::WARN_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test job is in manual state' do
+      context 'when test-on-omnibus job is in manual state' do
         let(:package_and_qa_state) { 'manual' }
 
         it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 
-      context 'when package-and-test job is canceled' do
+      context 'when test-on-omnibus job is canceled' do
         let(:package_and_qa_state) { 'canceled' }
 
         it_behaves_like 'with a failure', described_class::NEEDS_PACKAGE_AND_TEST_MESSAGE
@@ -245,7 +245,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when not an applicable version' do
         let(:target_branch) { '15-0-stable-ee' }
 
-        it 'warns about the package-and-test pipeline and the version' do
+        it 'warns about the test-on-omnibus pipeline and the version' do
           expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
           expect(stable_branch).to receive(:warn).with(described_class::VERSION_WARNING_MESSAGE)
 
@@ -253,11 +253,11 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         end
       end
 
-      context 'with multiple package-and-test pipelines' do
+      context 'with multiple test-on-omnibus pipelines' do
         let(:pipeline_bridges_response) do
           [
             {
-              'name' => 'e2e:package-and-test-ee',
+              'name' => 'e2e:test-on-omnibus-ee',
               'status' => 'success',
               'downstream_pipeline' => {
                 'id' => '123',
@@ -265,7 +265,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
               }
             },
             {
-              'name' => 'follow-up:e2e:package-and-test-ee',
+              'name' => 'follow-up:e2e:test-on-omnibus-ee',
               'status' => 'failed',
               'downstream_pipeline' => {
                 'id' => '456',
@@ -281,7 +281,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when the version API request fails' do
         let(:response_success) { false }
 
-        it 'warns about the package-and-test pipeline and the version request' do
+        it 'warns about the test-on-omnibus pipeline and the version request' do
           expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
           expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
 

@@ -348,7 +348,7 @@ function fail_pipeline_early() {
   fi
 }
 
-# We're inlining this function in `.gitlab/ci/package-and-test/main.gitlab-ci.yml` so make sure to reflect any changes there
+# We're inlining this function in `.gitlab/ci/test-on-omnibus/main.gitlab-ci.yml` so make sure to reflect any changes there
 function assets_image_tag() {
   local cache_assets_hash_file="cached-assets-hash.txt"
 

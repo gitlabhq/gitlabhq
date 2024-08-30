@@ -194,7 +194,7 @@ module QA
 
         issue << "# Blocking specs with failures #{execution_interval}"
         issue << "**Note:**"
-        issue << "* Only failures from the nightly, e2e-package-and-test and e2e-test-on-gdk pipelines are considered"
+        issue << "* Only failures from the nightly, e2e-test-on-omnibus and e2e-test-on-gdk pipelines are considered"
         issue << "* Only specs that have a failure rate of equal or greater than 1 percent are considered"
         issue << "* Quarantine MRs will be created for all specs listed below"
         issue << "Total amount: **#{test_count(unstable_blocking_test_runs)}**"
@@ -441,8 +441,8 @@ module QA
         return true if failed_count == 0 ||
           # skip if a failure issue does not exist or
           failure_issue&.exclude?('issues') ||
-          # skip if run type is other than nightly and non-MR e2e-package-and-test pipeline or
-          (failed_run_type & %w[e2e-package-and-test e2e-test-on-gdk nightly]).empty? ||
+          # skip if run type is other than nightly and non-MR e2e-test-on-omnibus pipeline or
+          (failed_run_type & %w[e2e-test-on-omnibus e2e-test-on-gdk nightly]).empty? ||
           # skip if failure rate of tests is less than or equal to 1 percent
           failure_rate <= 1
 
@@ -596,7 +596,7 @@ module QA
               r.run_type == "staging-sanity" or
               r.run_type == "production-full" or
               r.run_type == "production-sanity" or
-              r.run_type == "e2e-package-and-test" or
+              r.run_type == "e2e-test-on-omnibus" or
               r.run_type == "e2e-test-on-gdk" or
               r.run_type == "nightly"
             )

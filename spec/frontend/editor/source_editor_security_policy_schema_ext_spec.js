@@ -16,8 +16,13 @@ jest.mock('~/ide/utils');
 
 const mockNamespacePath = 'mock-namespace';
 
+const $defs = {
+  reused_policy: { items: { properties: { flam: 'jam' } } },
+  policy_scope: { type: 'object' },
+};
+
 const mockSchema = {
-  $defs: { reused_policy: { items: { properties: { flam: 'jam' } } } },
+  $defs,
   title: 'mockSchema',
   description: 'mockDescriptions',
   type: 'Object',
@@ -32,6 +37,7 @@ const mockCommonData = {
   title: 'mockSchema',
   description: 'mockDescriptions',
   type: 'Object',
+  $defs,
 };
 
 const mockScanExecutionPolicyProperties = {

@@ -44,12 +44,12 @@ Note that tests are using `Chrome` web browser by default so it should be instal
 
 Tests are executed in merge request pipelines as part of the development lifecycle.
 
-- [e2e:package-and-test](../doc/development/testing_guide/end_to_end/index.md#using-the-package-and-test-job)
+- [e2e:test-on-omnibus](../doc/development/testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job)
 - [e2e:test-on-gdk](../doc/development/testing_guide/end_to_end/index.md#using-the-test-on-gdk-job)
 
 ### Including tests in other projects
 
-Pipeline template for `package-and-test` E2E tests is designed in a way so it can be included as a child pipeline in other projects.
+Pipeline template for `test-on-omnibus` E2E tests is designed in a way so it can be included as a child pipeline in other projects.
 
 Minimal configuration example would look like this:
 
@@ -66,7 +66,7 @@ qa-test:
     include:
       - project: gitlab-org/gitlab
         ref: master
-        file: .gitlab/ci/package-and-test/main.gitlab-ci.yml
+        file: .gitlab/ci/test-on-omnibus/main.gitlab-ci.yml
 ```
 
 To set GitLab version used for testing, following environment variables can be used:

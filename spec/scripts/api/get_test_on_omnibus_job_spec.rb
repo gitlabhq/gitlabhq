@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/VerifiedDoubles
+# rubocop:disable RSpec/VerifiedDoubles -- simplify mocking gitlab client response objects
 
 require 'fast_spec_helper'
-require_relative '../../../scripts/api/get_package_and_test_job'
+require_relative '../../../scripts/api/get_test_on_omnibus_job'
 
-RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
+RSpec.describe GetTestOnOmnibusJob, feature_category: :tooling do
   describe '#execute' do
     let(:options) do
       {
@@ -27,7 +27,7 @@ RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
         double(
           :bridge,
           id: 3,
-          name: 'e2e:package-and-test-ee',
+          name: 'e2e:test-on-omnibus-ee',
           downstream_pipeline: double(:downstream_pipeline, id: 1),
           status: bridge_status
         )
@@ -36,11 +36,11 @@ RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
 
     let(:detailed_status_label) { 'passed with warnings' }
 
-    let(:package_and_test_pipeline) do
+    let(:test_on_omnibus_pipeline) do
       double(
         :pipeline,
         id: 1,
-        name: 'e2e:package-and-test-ee',
+        name: 'e2e:test-on-omnibus-ee',
         detailed_status: double(
           :detailed_status,
           text: 'passed',
@@ -60,20 +60,20 @@ RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
 
       allow(client)
         .to receive(:pipeline)
-        .and_return(package_and_test_pipeline)
+        .and_return(test_on_omnibus_pipeline)
     end
 
-    subject { described_class.new(options).execute }
+    subject(:test_on_omnibus_job) { described_class.new(options).execute }
 
-    it 'returns a package-and-test pipeline that passed with warnings' do
-      expect(subject).to eq(package_and_test_pipeline)
+    it 'returns a test-on-omnibus pipeline that passed with warnings' do
+      expect(test_on_omnibus_job).to eq(test_on_omnibus_pipeline)
     end
 
     context 'when the bridge can not be found' do
       let(:bridges_response) { [] }
 
       it 'returns nothing' do
-        expect(subject).to be_nil
+        expect(test_on_omnibus_job).to be_nil
       end
     end
 
@@ -85,14 +85,14 @@ RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
           double(
             :bridge,
             id: 3,
-            name: 'e2e:package-and-test-ee',
+            name: 'e2e:test-on-omnibus-ee',
             downstream_pipeline: nil
           )
         ]
       end
 
       it 'returns nothing' do
-        expect(subject).to be_nil
+        expect(test_on_omnibus_job).to be_nil
       end
     end
 
@@ -100,45 +100,45 @@ RSpec.describe GetPackageAndTestJob, feature_category: :tooling do
       let(:bridge_status) { 'failed' }
 
       it 'returns the downstream_pipeline' do
-        expect(subject).to eq(package_and_test_pipeline)
+        expect(test_on_omnibus_job).to eq(test_on_omnibus_pipeline)
       end
     end
 
-    context 'when the package-and-test can not be found' do
-      let(:package_and_test_pipeline) { nil }
+    context 'when the test-on-omnibus can not be found' do
+      let(:test_on_omnibus_pipeline) { nil }
 
       it 'returns nothing' do
-        expect(subject).to be_nil
+        expect(test_on_omnibus_job).to be_nil
       end
     end
 
-    context 'when the package-and-test does not include a detailed status' do
-      let(:package_and_test_pipeline) do
+    context 'when the test-on-omnibus does not include a detailed status' do
+      let(:test_on_omnibus_pipeline) do
         double(
           :pipeline,
-          name: 'e2e:package-and-test-ee',
+          name: 'e2e:test-on-omnibus-ee',
           detailed_status: nil
         )
       end
 
       it 'returns nothing' do
-        expect(subject).to be_nil
+        expect(test_on_omnibus_job).to be_nil
       end
     end
 
-    context 'when the package-and-test succeeds' do
+    context 'when the test-on-omnibus succeeds' do
       let(:detailed_status_label) { 'passed' }
 
       it 'returns nothing' do
-        expect(subject).to be_nil
+        expect(test_on_omnibus_job).to be_nil
       end
     end
 
-    context 'when the package-and-test is canceled' do
+    context 'when the test-on-omnibus is canceled' do
       let(:detailed_status_label) { 'canceled' }
 
-      it 'returns a failed package-and-test pipeline' do
-        expect(subject).to eq(package_and_test_pipeline)
+      it 'returns a failed test-on-omnibus pipeline' do
+        expect(test_on_omnibus_job).to eq(test_on_omnibus_pipeline)
       end
     end
   end
