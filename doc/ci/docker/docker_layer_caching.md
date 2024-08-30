@@ -15,6 +15,15 @@ time you create a build. Recent versions of Docker (Docker 1.13 and later) can
 use a pre-existing image as a cache during the `docker build` step. This significantly
 accelerates the build process.
 
+In Docker 27.0.1 and later, the default `docker` build driver only supports cache backends when the `containerd` image store is enabled.
+
+To use Docker caching with Docker 27.0.1 and later, do one of the following:
+
+- Enable the `containerd` image store in your Docker daemon configuration.
+- Select a different build driver.
+
+For more information, see [Cache storage backends](https://docs.docker.com/build/cache/backends/).
+
 ## How Docker caching works
 
 When running `docker build`, each command in `Dockerfile` creates a layer.

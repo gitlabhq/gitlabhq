@@ -11,5 +11,5 @@ Use GitLab to speed up and simplify your infrastructure management practices.
 
 | | | |
 |--|--|--|
-| [**Getting started**](../get_started/get_started_managing_infrastructure.md) **{chevron-right}**<br><br>Overview of how features fit together. | [**Infrastructure as Code**](iac/index.md) **{chevron-right}**<br><br>Infrastructure management, versioning, automation, state storage, modules. | [**Create Kubernetes clusters**](../clusters/create/index.md) **{chevron-right}**<br><br>Amazon EKS, Azure AKS, Google GKE, Civo. |
-| [**Connect Kubernetes clusters**](../clusters/agent/index.md) **{chevron-right}**<br><br>Kubernetes integration, GitOps, CI/CD, agent deployment, cluster management. | [**Runbooks**](../project/clusters/runbooks/index.md) **{chevron-right}**<br><br>Executable runbooks, automation, troubleshooting, operations. | |
+| [**Getting started**](../get_started/get_started_managing_infrastructure.md)<br>Overview of how features fit together. | [**Infrastructure as Code**](iac/index.md)<br>Infrastructure management, versioning, automation, state storage, modules. | [**Create Kubernetes clusters**](../clusters/create/index.md)<br>Amazon EKS, Azure AKS, Google GKE, Civo. |
+| [**Connect Kubernetes clusters**](../clusters/agent/index.md)<br>Kubernetes integration, GitOps, CI/CD, agent deployment, cluster management. | [**Runbooks**](../project/clusters/runbooks/index.md)<br>Executable runbooks, automation, troubleshooting, operations. | |

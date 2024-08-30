@@ -7,7 +7,7 @@
   groups_requiring_saml_reauth: todo_groups_requiring_saml_reauth(@todos)
 
 - add_page_specific_style 'page_bundles/todos'
-- add_page_specific_style 'page_bundles/issuable'
+- add_issuable_stylesheet
 - filter_by_done = params[:state] == 'done'
 - open_todo_count = todos_has_filtered_results? && !filter_by_done ? @allowed_todos.count : todos_pending_count
 - done_todo_count = todos_has_filtered_results? && filter_by_done ? @allowed_todos.count : todos_done_count

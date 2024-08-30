@@ -125,12 +125,11 @@ export default {
 
     <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm" data-testid="time-tracking-body">
       <template v-if="totalTimeSpent || timeEstimate">
-        <span class="gl-text-secondary">{{ s__('TimeTracking|Spent') }}</span>
+        <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
         <gl-button
           v-if="canUpdate"
           v-gl-modal="'time-tracking-report'"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
-          class="!gl-text-sm"
           variant="link"
         >
           {{ humanTotalTimeSpent }}
@@ -145,12 +144,11 @@ export default {
             :value="timeRemainingPercent"
             :variant="progressBarVariant"
           />
-          <span class="gl-text-secondary">{{ s__('TimeTracking|Estimate') }}</span>
+          <span class="gl-text-subtle">{{ s__('TimeTracking|Estimate') }}</span>
           <gl-button
             v-if="canUpdate"
             v-gl-modal="$options.setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
-            class="!gl-text-sm"
             variant="link"
           >
             {{ humanTimeEstimate }}
@@ -162,18 +160,18 @@ export default {
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="$options.setTimeEstimateModalId"
-          class="gl-ml-auto !gl-text-sm"
+          class="gl-ml-auto"
           variant="link"
         >
           {{ s__('TimeTracking|Add estimate') }}
         </gl-button>
       </template>
-      <span v-else-if="canUpdate" class="gl-text-secondary">
+      <span v-else-if="canUpdate" class="gl-text-subtle">
         <gl-sprintf :message="$options.i18n.addTimeTrackingMessage">
           <template #estimate="{ content }">
             <gl-button
               v-gl-modal="$options.setTimeEstimateModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
             >
               {{ content }}
@@ -182,7 +180,7 @@ export default {
           <template #timeSpent="{ content }">
             <gl-button
               v-gl-modal="$options.createTimelogModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
             >
               {{ content }}
@@ -190,7 +188,7 @@ export default {
           </template>
         </gl-sprintf>
       </span>
-      <span v-else class="gl-text-secondary">
+      <span v-else class="gl-text-subtle">
         {{ __('No estimate or time spent') }}
       </span>
     </div>

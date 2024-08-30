@@ -41044,6 +41044,9 @@ msgstr ""
 msgid "Privacy"
 msgstr ""
 
+msgid "Privacy statement"
+msgstr ""
+
 msgid "Private"
 msgstr ""
 

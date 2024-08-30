@@ -11,5 +11,5 @@ Store your source files in a repository and create merge requests. Write, debug,
 
 | | | |
 |--|--|--|
-| [**Getting started**](../user/get_started/get_started_managing_code.md) **{chevron-right}**<br><br>Overview of how features fit together. | [**Repositories**](../user/project/repository/index.md) **{chevron-right}**<br><br>Version control, code storage, Git repositories, repository monitoring. | [**Merge requests**](../user/project/merge_requests/index.md) **{chevron-right}**<br><br>Code review, collaboration, branch merging, commits. |
-| [**Remote development**](../user/project/remote_development/index.md) **{chevron-right}**<br><br>Web IDE, workspaces. | | |
+| [**Getting started**](../user/get_started/get_started_managing_code.md)<br>Overview of how features fit together. | [**Repositories**](../user/project/repository/index.md)<br>Version control, code storage, Git repositories, repository monitoring. | [**Merge requests**](../user/project/merge_requests/index.md)<br>Code review, collaboration, branch merging, commits. |
+| [**Remote development**](../user/project/remote_development/index.md)<br>Web IDE, workspaces. | | |

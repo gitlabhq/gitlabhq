@@ -217,7 +217,7 @@ export default {
 </script>
 
 <template>
-  <section class="gl-pb-4" data-testid="work-item-start-due-dates">
+  <section data-testid="work-item-start-due-dates">
     <div class="gl-flex gl-items-center gl-gap-3">
       <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-heading-5 !gl-mb-0">
         {{ $options.i18n.dates }}

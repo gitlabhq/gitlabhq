@@ -186,7 +186,7 @@ export default {
   <div class="work-item-attributes-wrapper">
     <template v-if="workItemAssignees">
       <work-item-assignees
-        class="js-assignee gl-mb-5"
+        class="js-assignee work-item-attributes-item"
         :can-update="canUpdate"
         :full-path="fullPath"
         :is-group="isGroup"
@@ -205,7 +205,7 @@ export default {
     </template>
     <template v-if="workItemLabels">
       <work-item-labels
-        class="js-labels gl-mb-5"
+        class="js-labels work-item-attributes-item"
         :can-update="canUpdate"
         :full-path="fullPath"
         :is-group="isGroup"
@@ -218,7 +218,7 @@ export default {
     </template>
     <template v-if="isWorkItemWeightEditable">
       <work-item-weight
-        class="gl-mb-5"
+        class="work-item-attributes-item"
         :can-update="canUpdate"
         :weight="workItemWeight.weight"
         :work-item-id="workItem.id"
@@ -229,6 +229,7 @@ export default {
     </template>
     <template v-if="workItemRolledupDates && showRolledupDates">
       <work-item-rolledup-dates
+        class="work-item-attributes-item"
         :can-update="canUpdate"
         :full-path="fullPath"
         :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
@@ -244,7 +245,7 @@ export default {
     </template>
     <template v-if="workItemMilestone">
       <work-item-milestone
-        class="js-milestone gl-mb-5"
+        class="js-milestone work-item-attributes-item"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-milestone="workItemMilestone.milestone"
@@ -258,7 +259,7 @@ export default {
     </template>
     <template v-if="workItemIteration">
       <work-item-iteration
-        class="gl-mb-5"
+        class="work-item-attributes-item"
         :full-path="fullPath"
         :iteration="workItemIteration.iteration"
         :can-update="canUpdate"
@@ -273,6 +274,7 @@ export default {
     </template>
     <template v-if="workItemDueDate && !showRolledupDates">
       <work-item-due-date
+        class="work-item-attributes-item"
         :can-update="canUpdate"
         :due-date="workItemDueDate.dueDate"
         :start-date="workItemDueDate.startDate"
@@ -284,7 +286,7 @@ export default {
     </template>
     <template v-if="workItemProgress">
       <work-item-progress
-        class="gl-mb-5"
+        class="work-item-attributes-item"
         :can-update="canUpdate"
         :progress="workItemProgress.progress"
         :work-item-id="workItem.id"
@@ -294,7 +296,7 @@ export default {
     </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
-        class="gl-mb-5"
+        class="work-item-attributes-item"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
@@ -304,7 +306,7 @@ export default {
     </template>
     <template v-if="workItemColor">
       <work-item-color
-        class="gl-mb-5"
+        class="work-item-attributes-item"
         :work-item="workItem"
         :full-path="fullPath"
         :can-update="canUpdate"
@@ -313,7 +315,7 @@ export default {
     </template>
     <template v-if="workItemHierarchy && showParent">
       <work-item-parent
-        class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
+        class="work-item-attributes-item"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
@@ -332,7 +334,7 @@ export default {
     />
     <work-item-time-tracking
       v-if="workItemTimeTracking"
-      class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
+      class="work-item-attributes-item"
       :can-update="canUpdate"
       :time-estimate="workItemTimeTracking.timeEstimate"
       :timelogs="workItemTimeTracking.timelogs.nodes"
@@ -352,7 +354,7 @@ export default {
     </template>
     <participants
       v-if="workItemParticipants.length"
-      class="gl-border-t gl-mb-5 gl-border-gray-50 gl-pt-5"
+      class="work-item-attributes-item"
       :participants="workItemParticipants"
     />
   </div>

@@ -411,7 +411,8 @@
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
-    border-bottom: 1px solid $border-color;
+    @apply gl-border-b;
+    @apply gl-border-subtle;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $right-sidebar-inner-width;
@@ -506,7 +507,7 @@
             top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
             height: calc(#{$calc-application-viewport-height} - #{$mr-sticky-header-height} - var(--mr-review-bar-height));
             position: sticky;
-            padding: 0 15px;
+            padding: 0 $gl-spacing-scale-3;
             margin-bottom: calc((#{$content-wrapper-padding} * -1) + var(--mr-review-bar-height));
             overflow-y: auto;
             overscroll-behavior: contain;

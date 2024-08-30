@@ -1,8 +1,7 @@
 @import 'mixins_and_variables_and_functions';
-@import './notes/system_notes_v2';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
-$work-item-overview-right-sidebar-width: 20rem;
+$work-item-overview-right-sidebar-width: px-to-rem(290px);
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
@@ -62,6 +61,16 @@ $work-item-overview-gap-width: 2rem;
 
 .work-item-overview-right-sidebar {
   margin-top: $gl-spacing-scale-5;
+
+  .work-item-attributes-item {
+    @apply gl-mb-4;
+
+    &:not(:first-child) {
+      @apply gl-pt-4;
+      @apply gl-border-t;
+      @apply gl-border-subtle;
+    }
+  }
 }
 
 @include container-and-media("min-width: #{calc($breakpoint-md)}") {
@@ -69,7 +78,7 @@ $work-item-overview-gap-width: 2rem;
     top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
     height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
     margin-bottom: calc(#{$content-wrapper-padding} * -1);
-    padding-inline: 0.5rem;
+    padding-inline: $gl-spacing-scale-3;
     position: sticky;
     overflow-y: auto;
     overflow-x: hidden;
@@ -261,7 +270,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 // stylelint-disable-next-line gitlab/no-gl-class
 .work-item-sidebar-dropdown .gl-new-dropdown-panel {
     width: 100% !important;
-    max-width: 19rem !important;
+    max-width: 17rem !important;
 }
 
 .container-limited {

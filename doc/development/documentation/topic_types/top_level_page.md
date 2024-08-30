@@ -23,8 +23,8 @@ Briefly describe the workflow's key features. Use the active voice, for example,
 
 | | | |
 |--|--|--|
-| [**Getting started**](../../user/get_started/get_started_projects.md) **{chevron-right}**<br><br>Overview of how features fit together. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword.  |
-| [**Page name**](file.md) **{chevron-right}****<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md) **{chevron-right}**<br><br>Keyword, keyword, keyword, keyword. |
+| [**Getting started**](../../user/get_started/get_started_projects.md)<br>Overview of how features fit together. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
+| [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
 
 ```
 

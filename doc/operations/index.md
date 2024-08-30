@@ -11,5 +11,5 @@ Visualize and analyze errors, traces, metrics and logs collected from your appli
 
 | | | |
 |--|--|--|
-| [**Getting started**](../user/get_started/get_started_monitoring.md) **{chevron-right}**<br><br>Overview of how features fit together. | [**Error tracking**](error_tracking.md) **{chevron-right}**<br><br>Error tracking, logging, debugging, data retention. | [**Distributed tracing**](tracing.md) **{chevron-right}**<br><br>Monitoring, troubleshooting, performance analysis, request tracking. |
-| [**Metrics**](metrics.md) **{chevron-right}**<br><br>Monitoring, visualization, aggregation, analysis, retention. | [**Logs**](logs.md) **{chevron-right}**<br><br>Centralized logging, analysis, configuration, viewing, filtering. | [**Incident management**](incident_management/index.md) **{chevron-right}**<br><br>Alert handling, response coordination, escalation procedures. |
+| [**Getting started**](../user/get_started/get_started_monitoring.md)<br>Overview of how features fit together. | [**Error tracking**](error_tracking.md)<br>Error tracking, logging, debugging, data retention. | [**Distributed tracing**](tracing.md)<br>Monitoring, troubleshooting, performance analysis, request tracking. |
+| [**Metrics**](metrics.md)<br>Monitoring, visualization, aggregation, analysis, retention. | [**Logs**](logs.md)<br>Centralized logging, analysis, configuration, viewing, filtering. | [**Incident management**](incident_management/index.md)<br>Alert handling, response coordination, escalation procedures. |

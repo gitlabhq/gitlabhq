@@ -16,8 +16,8 @@ ease of administration (backups, upgrades, and troubleshooting) with the cost of
 
 | | | |
 |--|--|--|
-| [**Installation system requirements**](requirements.md) **{chevron-right}**<br><br> Prerequisites for installation. | [**Installation methods**](install_methods.md) **{chevron-right}**<br><br> Linux, Helm, Docker, Operator, source, or scripts. | [**Install GitLab on a cloud provider**](cloud_providers.md) **{chevron-right}**<br><br> AWS, Google Cloud Platform, Azure. |
-| [**Offline GitLab**](../topics/offline/index.md) **{chevron-right}**<br><br> Isolated installation. | [**Reference architectures**](../administration/reference_architectures/index.md) **{chevron-right}**<br><br> Recommended deployments at scale. | [**Upgrade GitLab**](../update/index.md) **{chevron-right}**<br><br> Latest version instructions. |
-| [**Install GitLab Runner**](https://docs.gitlab.com/runner/install/) **{chevron-right}**<br><br> Software for CI/CD jobs. | [**Configure GitLab Runner**](https://docs.gitlab.com/runner/configuration/) **{chevron-right}**<br><br> Config.toml, certificates, autoscaling, proxy setup. | |
+| [**Installation system requirements**](requirements.md)<br>Prerequisites for installation. | [**Installation methods**](install_methods.md)<br>Linux, Helm, Docker, Operator, source, or scripts. | [**Install GitLab on a cloud provider**](cloud_providers.md)<br>AWS, Google Cloud Platform, Azure. |
+| [**Offline GitLab**](../topics/offline/index.md)<br>Isolated installation. | [**Reference architectures**](../administration/reference_architectures/index.md)<br>Recommended deployments at scale. | [**Upgrade GitLab**](../update/index.md)<br>Latest version instructions. |
+| [**Install GitLab Runner**](https://docs.gitlab.com/runner/install/)<br>Software for CI/CD jobs. | [**Configure GitLab Runner**](https://docs.gitlab.com/runner/configuration/)<br>`Config.toml`, certificates, autoscaling, proxy setup. | |
 
 <!-- markdownlint-enable MD044 -->

@@ -430,6 +430,16 @@ module ApplicationHelper
     end
   end
 
+  def add_work_items_stylesheet
+    add_page_specific_style('page_bundles/work_items')
+    add_page_specific_style('page_bundles/notes_shared')
+  end
+
+  def add_issuable_stylesheet
+    add_page_specific_style('page_bundles/issuable')
+    add_page_specific_style('page_bundles/notes_shared')
+  end
+
   def page_startup_api_calls
     @api_startup_calls
   end

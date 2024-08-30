@@ -170,26 +170,19 @@
 
     .project-page-layout-sidebar {
       order: 2;
-      overflow-x: clip;
-      margin-right: -$gl-padding-8;
     }
 
     .project-page-sidebar {
       position: sticky;
       top: calc(#{$calc-application-header-height} + #{$gl-spacing-scale-4});
-      width: calc(100% + 100px);
+      width: 100%;
       height: calc(
         #{$calc-application-viewport-height} - #{$gl-spacing-scale-4}
       );
-      padding-inline: $gl-padding-4;
+      padding-inline: $gl-spacing-scale-3;
       padding-block-end: $gl-spacing-scale-11;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-
-      .project-page-sidebar-block {
-        width: $right-sidebar-width - 1px;
-      }
+      overflow-y: auto;
+      overscroll-behavior: contain;
 
       .nav {
         > li {
