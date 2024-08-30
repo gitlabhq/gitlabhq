@@ -382,6 +382,7 @@ jest predictive:
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-without-fixtures"; fi
+  parallel: 4
 
 jest-with-fixtures predictive:
   extends:

@@ -701,7 +701,7 @@ export default {
               :class="{ 'is-modal': isModal }"
             >
               <work-item-attributes-wrapper
-                :class="{ 'gl-top-3': isDrawer }"
+                :class="{ 'gl-top-11': isDrawer }"
                 :full-path="workItemFullPath"
                 :work-item="workItem"
                 :group-path="groupPath"

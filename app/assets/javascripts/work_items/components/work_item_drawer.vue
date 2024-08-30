@@ -88,8 +88,9 @@ export default {
   <gl-drawer
     :open="open"
     data-testid="work-item-drawer"
+    header-sticky
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-    class="gl-w-full gl-leading-reset sm:gl-w-4/10"
+    class="gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
     @close="$emit('close')"
   >
     <template #title>
@@ -107,7 +108,7 @@ export default {
         :modal-work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
         is-drawer
-        class="work-item-drawer !gl-pt-0"
+        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
         v-on="$listeners"
       />

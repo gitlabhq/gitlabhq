@@ -20137,16 +20137,16 @@ msgstr ""
 msgid "DuoProTrial|Apply your GitLab Duo Pro trial to an existing group"
 msgstr ""
 
-msgid "DuoProTrial|Chat"
+msgid "DuoProTrial|Chat within the IDE"
+msgstr ""
+
+msgid "DuoProTrial|Code Explanation"
+msgstr ""
+
+msgid "DuoProTrial|Code Refactoring"
 msgstr ""
 
 msgid "DuoProTrial|Code completion and code generation with Code Suggestions"
-msgstr ""
-
-msgid "DuoProTrial|Code explanation"
-msgstr ""
-
-msgid "DuoProTrial|Code refactorization"
 msgstr ""
 
 msgid "DuoProTrial|Congratulations, your free GitLab Duo Pro trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
@@ -20173,7 +20173,7 @@ msgstr ""
 msgid "DuoProTrial|Looking to do more with AI?"
 msgstr ""
 
-msgid "DuoProTrial|Organizational controls"
+msgid "DuoProTrial|Organizational user controls"
 msgstr ""
 
 msgid "DuoProTrial|Purchase now"
@@ -20188,7 +20188,7 @@ msgstr ""
 msgid "DuoProTrial|Start your free GitLab Duo Pro trial"
 msgstr ""
 
-msgid "DuoProTrial|Test generation"
+msgid "DuoProTrial|Test Generation"
 msgstr ""
 
 msgid "DuoProTrial|To regain access to features like Code Suggestions and Chat, purchase the subscription add-on for GitLab Duo Pro."
@@ -55618,6 +55618,9 @@ msgid "This setting is allowed for forked projects only"
 msgstr ""
 
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"
+msgstr ""
+
+msgid "This subscription is for"
 msgstr ""
 
 msgid "This suggestion already matches its content."

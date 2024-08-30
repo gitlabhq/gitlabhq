@@ -237,7 +237,7 @@ considered equivalent to rebasing.
 
 ### Rebase without CI/CD pipeline
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
+> - Changed to [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.

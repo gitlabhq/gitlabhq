@@ -4,8 +4,11 @@ description: >-
   This migration deduplicates lfs_objects_projects by lfs_object_id, project_id and repository_type.
   After the migration is finalized, we need to add a unique index on all three columns to ensure
   data consistency since the unique validation already exists at the model level.
+
+  Originally introduced by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154323
+  Re-enqueued because we found some duplicates were still being introduced
 feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154323
-milestone: '17.3'
-queued_migration_version: 20240808125149
-finalize_after: '2024-08-02' # required upgrade stop due date
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164127
+milestone: '17.4'
+queued_migration_version: 20240827204855
+finalize_after: '2024-10-17' # required upgrade stop due date

@@ -35,7 +35,7 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-@include container-and-media("max-width: #{calc($breakpoint-md - 0.02px)}") {
+@include container-and-media("max-width: #{calc($breakpoint-md - 4rem - 0.02px)}") {
   .work-item-overview {
     display: block !important;
   }
