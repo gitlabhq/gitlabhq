@@ -86,8 +86,8 @@ module QA
             }
           ])
 
+          project.visit!
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
-          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
 
           project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
@@ -101,8 +101,8 @@ module QA
             { action: 'create', file_path: '.gitlab-ci.yml', content: npm_install_yaml }
           ])
 
+          another_project.visit!
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: another_project)
-          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: another_project)
 
           another_project.visit_job('install')
           Page::Project::Job::Show.perform do |job|

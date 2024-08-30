@@ -1,0 +1,21 @@
+---
+description: Work item description was expanded
+internal_events: true
+action: expand_description_on_workitem
+identifiers:
+- namespace
+- project
+- user
+product_group: project_management
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163372
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: "Type of work item, such as issue or epic."

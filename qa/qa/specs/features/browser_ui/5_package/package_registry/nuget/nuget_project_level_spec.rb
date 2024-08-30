@@ -133,8 +133,8 @@ module QA
             }
           ])
 
+          project.visit!
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: 2)
-          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
 
           project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|

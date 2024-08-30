@@ -107,6 +107,8 @@ you can use any configured agent in `top-group` and in any of its subgroups.
 | [`max_resources_per_workspace`](#max_resources_per_workspace)                             | No       | `{}`                                    | Maximum requests and limits for CPU and memory per workspace. |
 | [`workspaces_quota`](#workspaces_quota)                                                   | No       | `-1`                                    | Maximum number of workspaces for the GitLab agent. |
 | [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | No       | `-1`                                    | Maximum number of workspaces per user. |
+| [`default_max_hours_before_termination`](#default_max_hours_before_termination)           | No       | `24`                                    | Default number of hours until a workspace automatically terminates. |
+| [`max_hours_before_termination_limit`](#max_hours_before_termination_limit)               | No       | `120`                                   | Maximum number of hours until a workspace automatically terminates. |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
@@ -324,6 +326,44 @@ Possible values are greater than or equal to `-1`.
 ```yaml
 remote_development:
   workspaces_per_user_quota: 3
+```
+
+### `default_max_hours_before_termination`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11631) in GitLab 17.4.
+
+Use this setting to define the default number of hours until a workspace automatically terminates.
+
+This setting does not affect existing workspaces.
+
+The default value is `24`.
+Possible values are greater than `0` and less than or equal to
+[`max_hours_before_termination_limit`](#max_hours_before_termination_limit).
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  default_max_hours_before_termination: 8
+```
+
+### `max_hours_before_termination_limit`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11631) in GitLab 17.4.
+
+Use this setting to define the maximum number of hours until a workspace automatically terminates.
+
+This setting does not affect existing workspaces.
+
+The default value is `120`.
+Possible values are greater than `0`
+and less than or equal to `8760` (one year).
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  max_hours_before_termination_limit: 60
 ```
 
 ## Configuring user access with remote development

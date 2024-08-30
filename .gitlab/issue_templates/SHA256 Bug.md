@@ -1,15 +1,24 @@
-/title SHA256 Bug <!-- concise title here -->
+<!-- Title suggestion: [Sha 256] <issue description> -->
 
-### SHA256 Bug Summary
+This issue describes an anomaly with the GitLab application with projects that
+use SHA256 as the hashing algorithm in the repository.
 
-<!-- Summarize the bug -->
+## Where in the application are you seeing this issue?
 
-### Steps to reproduce
+### URL of the page
 
-<!-- Describe how one can reproduce the buggy behavior. Please use an ordered
-list -->
+<!-- Provide the URL of the page in question -->
 
-### Example project
+### How did you expect the application to behave?
 
-<!-- If possible, provide a link to the project that is experiencing buggy
-behavior -->
+<!-- Provide a description of how you expected the application to behave, look,
+etc -->
+
+### How did the application behave?
+
+
+<!-- Provide a description of how the application actually behaved -->
+
+/epic https://gitlab.com/groups/gitlab-org/-/epics/10981
+/label ~"group::gitaly" ~"group::gitaly::git" ~"type::bug" ~"SHA256"
+

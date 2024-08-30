@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_expand_description_on_workitem_monthly
+description: Monthly count of work item descriptions being expanded
+product_group: project_management
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163372
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: expand_description_on_workitem

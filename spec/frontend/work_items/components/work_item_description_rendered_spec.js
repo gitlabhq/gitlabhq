@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
@@ -17,6 +18,7 @@ describe('WorkItemDescriptionRendered', () => {
 
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
+  const findReadMore = () => wrapper.findComponent({ ref: 'show-all-btn' });
 
   const defaultWorkItemDescription = {
     description: descriptionTextWithCheckboxes,
@@ -52,7 +54,8 @@ describe('WorkItemDescriptionRendered', () => {
   });
 
   describe('with truncation', () => {
-    it('shows the untruncate action', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+    beforeEach(() => {
       createComponent({
         workItemDescription: {
           description: 'This is a long description',
@@ -64,8 +67,17 @@ describe('WorkItemDescriptionRendered', () => {
           },
         },
       });
+    });
 
-      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(true);
+    it('shows the untruncate action', () => {
+      expect(findReadMore().exists()).toBe(true);
+    });
+    it('tracks untruncate action', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findReadMore().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('expand_description_on_workitem', {}, undefined);
     });
   });
 
@@ -82,8 +94,7 @@ describe('WorkItemDescriptionRendered', () => {
           },
         },
       });
-
-      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+      expect(findReadMore().exists()).toBe(false);
     });
   });
 
@@ -139,7 +150,7 @@ describe('WorkItemDescriptionRendered', () => {
 
       const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
-      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+      expect(findReadMore().exists()).toBe(false);
     });
 
     it('disables checkbox while updating', async () => {
@@ -157,7 +168,7 @@ describe('WorkItemDescriptionRendered', () => {
 
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
-      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+      expect(findReadMore().exists()).toBe(false);
     });
   });
 

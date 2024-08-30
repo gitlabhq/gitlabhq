@@ -92,8 +92,8 @@ module QA
             { action: 'create', file_path: 'settings.xml', content: settings_xml }
           ])
 
+          package_project.visit!
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: package_project)
-          Flow::Pipeline.wait_for_latest_pipeline_to_start(project: package_project)
 
           package_project.visit_job('deploy-and-install')
           Page::Project::Job::Show.perform do |job|

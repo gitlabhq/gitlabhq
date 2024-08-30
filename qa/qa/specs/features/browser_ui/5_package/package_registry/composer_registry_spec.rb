@@ -29,8 +29,8 @@ module QA
           { action: 'create', file_path: 'composer.json', content: composer_json }
         ])
 
+        project.visit!
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
-        Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
       end
 
       after do

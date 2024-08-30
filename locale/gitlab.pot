@@ -5032,6 +5032,12 @@ msgstr ""
 msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr ""
 
+msgid "AiImpactAnalytics|%{codeSuggestionsAcceptedCount} out of %{codeSuggestionsShownCount} code suggestions were accepted in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|%{duoChatContributorsCount} out of %{duoProAssignedUsersCount} GitLab Duo assigned seats used at least one AI feature in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiImpactAnalytics|Code Suggestions acceptance usage"
 msgstr ""
 
@@ -5041,7 +5047,13 @@ msgstr ""
 msgid "AiImpactAnalytics|Duo seats: Assigned and used"
 msgstr ""
 
+msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
+msgstr ""
+
+msgid "AiImpactAnalytics|No usage data for the selected time range."
 msgstr ""
 
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
@@ -5533,8 +5545,8 @@ msgstr ""
 msgid "All projects"
 msgstr ""
 
-msgid "All projects in %{groupsLength} group with exceptions:"
-msgid_plural "All projects in %{groupsLength} groups with exceptions:"
+msgid "All projects in %{groupsLength} group, with exclusions:"
+msgid_plural "All projects in %{groupsLength} groups, with exclusions:"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -48723,10 +48735,10 @@ msgstr ""
 msgid "SecurityOrchestration|Exception branches"
 msgstr ""
 
-msgid "SecurityOrchestration|Exception projects"
+msgid "SecurityOrchestration|Exceptions"
 msgstr ""
 
-msgid "SecurityOrchestration|Exceptions"
+msgid "SecurityOrchestration|Excluded projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to fetch the scope information. Please refresh the page to try again."
@@ -55268,6 +55280,9 @@ msgid "This is an experimental feature developed by GitLab Incubation Engineerin
 msgstr ""
 
 msgid "This is really just a warning"
+msgstr ""
+
+msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."

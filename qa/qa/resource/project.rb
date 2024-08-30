@@ -412,7 +412,21 @@ module QA
       end
 
       def latest_pipeline
-        parse_body(api_get_from(api_latest_pipeline_path))
+        # Observing in https://gitlab.com/gitlab-org/gitlab/-/issues/481642#note_2081214771
+        # Sometimes in either canary or staging-canary,
+        # GET latest pipeline immediately after 1st pipeline was created seems to cause 500 or 502
+        # Adding a retry block with `retry_on_exception: true` to reduce flakiness
+        #
+        retry_until do
+          response = get(request_url(api_latest_pipeline_path))
+          response.code == HTTP_STATUS_OK
+        rescue ResourceQueryError
+          raise(
+            "Could not GET project's latest pipeline. Request returned (#{response.code}): `#{response}`."
+          )
+        end
+
+        parse_body(get(request_url(api_latest_pipeline_path)))
       end
 
       def visit_latest_pipeline

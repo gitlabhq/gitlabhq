@@ -60,7 +60,7 @@ module QA
         end
       end
 
-      def wait_for_latest_pipeline_to_start(project:, wait: 60)
+      def wait_for_latest_pipeline_to_start(project:, wait: 240)
         Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to start...")
         wait_for_latest_pipeline_to_have_status(project: project, status: 'running', wait: wait)
       end

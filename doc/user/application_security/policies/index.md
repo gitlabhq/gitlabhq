@@ -350,21 +350,12 @@ When working with security policies, consider these troubleshooting tips:
   Security Policies are designed to require approval when there are no results (no security report),
   as this ensures that no vulnerabilities are introduced. We cannot know if there are any
   vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
-- For merge request approval policies, we require artifacts for each scanner defined in the policy
-  for both the source and target branch. To ensure merge request approval policies capture the
-  necessary results, confirm your scan execution is properly implemented and enforced. If using scan
-  execution policies, enforcing on `all branches` often addresses this need.
-- Comparison in merge request approval policies depends on a successful and completed merge base
-  pipeline. If the merge base pipeline is [skipped](../../../ci/pipelines/index.md#skip-a-pipeline),
-  merge requests with the merge base pipeline are blocked.
 - When running scan execution policies based on a SAST action, ensure target repositories contain
   proper code files. SAST runs different analyzers
   [based on the types of files in the repository](../sast/index.md#supported-languages-and-frameworks),
   and if no supported files are found it does not run any jobs. See the
   [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
   for more details.
-- Merge request approval policies created at the group or subgroup level can take some time to apply
-  to all the merge requests in the group.
 - Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more
   [about the schedule rule type](../policies/scan_execution_policies.md#schedule-rule-type).
 - When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is
@@ -378,9 +369,6 @@ When working with security policies, consider these troubleshooting tips:
   rules from the merge request approval policies not being applied to merge requests in the development project.
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
-  can be left empty. For a working rule, at least one entry must exist.
-- When merge request approval policies are enforced on projects containing manual jobs in their
-  pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the
-  manual jobs are run, the policy re-evaluates the MR.
+  can be left empty. For a working rule, at least one entry must exist for each array.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

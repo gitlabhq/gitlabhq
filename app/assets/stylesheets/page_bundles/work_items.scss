@@ -270,8 +270,9 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-.work-item-description .truncated {
-  max-height: clamp(16rem, 40vh, 32rem);
+.work-item-description .truncated{
+  min-height: 16rem;
+  max-height: 80vh;
   overflow: hidden;
 }
 

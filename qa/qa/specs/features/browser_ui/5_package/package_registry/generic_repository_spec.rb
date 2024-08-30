@@ -32,8 +32,8 @@ module QA
         ])
 
         Flow::Login.sign_in
+        project.visit!
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
-        Flow::Pipeline.wait_for_latest_pipeline_to_start(project: project)
       end
 
       after do

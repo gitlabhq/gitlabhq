@@ -43,7 +43,7 @@ the following sections and tables provide an alternative.
 | `description` (optional) | `string` | true | Description of the policy. |
 | `enabled` | `boolean` | true | Flag to enable (`true`) or disable (`false`) the policy. |
 | `content` | `object` of [`content`](#content-type) | true | Reference to the CI/CD configuration to inject into project pipelines. |
-| `pipeline_config_strategy` | `string` | false | Can either be `inject_ci` or `override_project_ci`. Defines the method for merging the policy configuration with the project pipeline. `inject_ci` preserves the project CI configuration and injects additional jobs from the policy. Having multiple policies enabled injects all jobs additively. `override_project_ci` replaces the project CI configuration and keeps only the policy jobs in the pipeline. |
+| `pipeline_config_strategy` | `string` | false | Can either be `inject_ci` or `override_project_ci`. See [Pipeline strategies](#pipeline-strategies) for more information. |
 | `policy_scope` | `object` of [`policy_scope`](#policy_scope-scope-type) | false | Scopes the policy based on compliance framework labels or projects you define. |
 
 Note the following:
@@ -55,8 +55,6 @@ Note the following:
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
-- The `override_project_ci` strategy will not override other security policy configurations.
-- The `override_project_ci` strategy takes precedence over other policies using the `inject` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored.
 - You should choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names and it can lead to unwanted results if a job exists multiple times in the same pipeline. The `needs` keyword, for example makes one job dependent on another. In case of multiple jobs with the same name, it will randomly depend on one of them.
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 
@@ -84,9 +82,43 @@ Examples:
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
+## Pipeline strategies
+
+Pipeline configuration strategy defines the method for merging the policy configuration with the project pipeline. Pipeline execution policies execute the jobs defined in the `.gitlab-ci.yml` file in isolated pipelines, which are merged into the pipelines of the target projects.
+
+### `inject_ci`
+
+This strategy adds custom CI/CD configurations into the existing project pipeline without completely replacing the project's original CI/CD configuration. It is suitable when you want to enhance or extend the current pipeline with additional steps, such as adding new security scans, compliance checks, or custom scripts.
+
+Having multiple policies enabled injects all jobs additively.
+
+When using this strategy, a project CI/CD configuration cannot override any behavior defined in the policy pipelines because each pipeline has an isolated YAML configuration.
+
+### `override_project_ci`
+
+This strategy completely replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, such as enforcing organization-wide CI/CD standards or compliance requirements.
+
+The strategy takes precedence over other policies using the `inject_ci` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored. Other security policy configurations will not be overridden.
+
+This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling them to customize the policy jobs. For example, by combining policy and project CI/CD configuration into one YAML file, users can override `before_script` configuration.
+
+### Include a project's CI/CD configuration in the pipeline execution policy configuration
+
+When using `override_project_ci` strategy, the project configuration can be included into the pipeline execution policy configuration:
+
+```yaml
+include:
+  - project: $CI_PROJECT_PATH
+    ref: $CI_COMMIT_SHA
+    file: $CI_CONFIG_PATH
+
+compliance_job:
+ ...
+```
+
 ## CI/CD variables
 
-Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy 
+Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
 and cannot be overwritten from the outside.
 
 Variables can be shared with pipeline execution policies using group or project settings. If a variable is not defined in a pipeline execution policy, the value from group or project settings is applied.
@@ -145,6 +177,48 @@ policy::container-security:
     - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
+
+### Customize security scanner's behavior with `before_script` in project configurations
+
+To customize the behavior of a security job enforced by a policy in the project's `.gitlab-ci.yml`, you can override `before_script`.
+To do so, use the `override_project_ci` strategy in the policy and include the project's CI/CD configuration. Example pipeline execution policy configuration:
+
+```yaml
+# policy.yml
+type: pipeline_execution_policy
+name: Secret detection
+description: >-
+  This policy enforces secret detection and allows projects to override the
+  behavior of the scanner.
+enabled: true
+pipeline_config_strategy: override_project_ci
+content:
+  include:
+    - project: gitlab-org/pipeline-execution-policies/compliance-project
+      file: secret-detection.yml
+```
+
+```yaml
+# secret-detection.yml
+include:
+  - project: $CI_PROJECT_PATH
+    ref: $CI_COMMIT_SHA
+    file: $CI_CONFIG_PATH
+  - template: Security/Secret-Detection.gitlab-ci.yml
+```
+
+In the project's `.gitlab-ci.yml`, you can define `before_script` for the scanner:
+
+```yaml
+include:
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+secret_detection:
+  before_script:
+    - echo "Before secret detection"
+```
+
+By using `override_project_ci` and including the project's configuration, it allows for YAML configurations to be merged.
 
 ### Use group or project variables in a pipeline execution policy
 
