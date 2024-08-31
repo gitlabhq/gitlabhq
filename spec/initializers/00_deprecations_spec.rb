@@ -97,10 +97,7 @@ RSpec.describe '00_deprecations', feature_category: :shared do
       subject { ActiveSupport::Deprecation.warn('ABC will be removed') }
 
       include_examples 'logs to Gitlab::DeprecationJsonLogger', 'DEPRECATION WARNING: ABC will be removed', 'rails'
-
-      context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478094' do
-        include_examples 'logs to stderr', 'DEPRECATION WARNING: ABC will be removed'
-      end
+      include_examples 'logs to stderr', 'DEPRECATION WARNING: ABC will be removed'
 
       context 'when in production environment' do
         let(:rails_env) { 'production' }

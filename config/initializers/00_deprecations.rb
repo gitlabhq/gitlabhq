@@ -44,13 +44,15 @@ else
   deprecators.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings
 
   if ::Gitlab.next_rails?
-    Rails.application.deprecators.behavior = ->(message, callstack, deprecator) do
+    deprecators.behavior = ->(message, callstack, deprecator) do
       if ignored_warnings.none? { |warning| warning.match?(message) }
         ActiveSupport::Deprecation::DEFAULT_BEHAVIORS.slice(:stderr, :notify).each_value do |behavior|
           behavior.call(message, callstack, deprecator)
         end
       end
     end
+  else
+    deprecators.behavior = [:stderr, :notify]
   end
 end
 
