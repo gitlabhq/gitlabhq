@@ -547,7 +547,7 @@ when webhooks are sent synchronously from Rails nodes, including when:
 
 - [Webhook events and webhook JSON payloads](webhook_events.md)
 - [Project hooks API](../../../api/projects.md#hooks)
-- [Group hooks API](../../../api/groups.md#hooks)
+- [Group hooks API](../../../api/group_webhooks.md)
 - [System hooks API](../../../api/system_hooks.md)
 
 ## Troubleshooting
