@@ -950,14 +950,6 @@ Feature.enabled?(:ci_live_trace) # => false
 Feature.enabled?(:ci_live_trace, gate) # => true
 ```
 
-You can also disable a feature flag for a specific actor:
-
-```ruby
-gate = stub_feature_flag_gate('CustomActor')
-
-stub_feature_flags(ci_live_trace: false, thing: gate)
-```
-
 ### Controlling feature flags engine in tests
 
 Our Flipper engine in the test environment works in a memory mode `Flipper::Adapters::Memory`.

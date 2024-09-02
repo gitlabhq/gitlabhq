@@ -166,16 +166,16 @@ RSpec.describe API::Clusters::AgentUrlConfigurations, feature_category: :deploym
 
       context 'when providing client cert and key' do
         let_it_be(:client_cert) do
-          Base64.encode64(File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')))
+          File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
         end
 
-        let_it_be(:client_key) { Base64.encode64(File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key'))) }
+        let_it_be(:client_key) { File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')) }
 
         let_it_be(:params) do
           {
             url: 'grpcs://localhost:4242',
-            client_cert: client_cert,
-            client_key: client_key
+            client_cert: Base64.encode64(client_cert),
+            client_key: Base64.encode64(client_key)
           }
         end
 
@@ -187,17 +187,17 @@ RSpec.describe API::Clusters::AgentUrlConfigurations, feature_category: :deploym
           expect(json_response['agent_id']).to eq(agent.id)
           expect(json_response['url']).to eq(params[:url])
           expect(json_response['public_key']).to be_nil
-          expect(json_response['client_cert']).to eq(client_cert)
+          expect(Base64.decode64(json_response['client_cert'])).to eq(client_cert)
         end
       end
 
       context 'when providing ca cert' do
-        let_it_be(:ca_cert) { Base64.encode64(File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))) }
+        let_it_be(:ca_cert) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
 
         let_it_be(:params) do
           {
             url: 'grpcs://localhost:4242',
-            ca_cert: ca_cert
+            ca_cert: Base64.encode64(ca_cert)
           }
         end
 
@@ -208,7 +208,7 @@ RSpec.describe API::Clusters::AgentUrlConfigurations, feature_category: :deploym
           expect(response).to match_response_schema('public_api/v4/agent_url_configuration')
           expect(json_response['agent_id']).to eq(agent.id)
           expect(json_response['url']).to eq(params[:url])
-          expect(json_response['ca_cert']).to eq(ca_cert)
+          expect(Base64.decode64(json_response['ca_cert'])).to eq(ca_cert)
         end
       end
 

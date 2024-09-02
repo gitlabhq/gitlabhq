@@ -26,7 +26,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 jest.mock('~/ml/model_registry/services/upload_model', () => ({
-  uploadModel: jest.fn(),
+  uploadModel: jest.fn(() => Promise.resolve()),
 }));
 
 describe('ModelCreate', () => {
@@ -229,7 +229,6 @@ describe('ModelCreate', () => {
         expect(findImportArtifactZone().props()).toEqual({
           path: null,
           submitOnSelect: false,
-          value: { file: null, subfolder: '' },
         });
       });
 
@@ -397,9 +396,7 @@ describe('ModelCreate', () => {
       });
     });
 
-    it('Visits the model versions page upon successful create mutation', async () => {
-      createWrapper();
-      await submitForm();
+    it('Visits the model versions page upon successful create mutation', () => {
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
     });
   });
@@ -414,9 +411,7 @@ describe('ModelCreate', () => {
       await submitForm();
     });
 
-    it('Visits the model page upon successful create mutation without a version', async () => {
-      createWrapper();
-      await submitForm();
+    it('Visits the model page upon successful create mutation without a version', () => {
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1');
     });
   });
@@ -489,7 +484,6 @@ describe('ModelCreate', () => {
     });
 
     it('Visits the model versions page upon successful create mutation', async () => {
-      expect(findGlAlert().text()).toBe('Artifact import error.');
       await submitForm(); // retry submit
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
     });

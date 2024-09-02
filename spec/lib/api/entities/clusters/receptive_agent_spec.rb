@@ -14,7 +14,7 @@ RSpec.describe API::Entities::Clusters::ReceptiveAgent, feature_category: :deplo
     it do
       is_expected.to include(
         id: config.agent_id,
-        jwt: { private_key: Base64.encode64(config.private_key) }
+        jwt: { private_key: Base64.strict_encode64(config.private_key) }
       )
     end
   end

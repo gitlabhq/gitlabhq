@@ -4,7 +4,7 @@
 import { MountingPortal } from 'portal-vue';
 import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { n__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
 
 export default {
@@ -52,6 +52,11 @@ export default {
       this.drawerOpen = drawerOpen;
     },
   },
+  i18n: {
+    addEditReviewers: s__('MergeRequest|Add or edit reviewers'),
+    changeReviewer: s__('MergeRequest|Change reviewer'),
+    quickAdd: s__('MergeRequest|Quick add reviewers'),
+  },
 };
 </script>
 <template>
@@ -64,7 +69,9 @@ export default {
       <gl-button
         v-tooltip.hover
         :title="
-          glFeatures.reviewerAssignDrawer ? __('Add or edit reviewers') : __('Change reviewer')
+          glFeatures.reviewerAssignDrawer
+            ? $options.i18n.addEditReviewers
+            : $options.i18n.changeReviewer
         "
         class="hide-collapsed gl-float-right gl-ml-auto"
         :class="{ 'js-sidebar-dropdown-toggle edit-link': !glFeatures.reviewerAssignDrawer }"

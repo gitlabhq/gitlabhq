@@ -15,19 +15,19 @@ module API
         def public_key
           return unless object.public_key
 
-          Base64.encode64(object.public_key)
+          Base64.strict_encode64(object.public_key)
         end
 
         def client_cert
           return unless object.client_cert
 
-          Base64.encode64(object.client_cert)
+          Base64.strict_encode64(object.client_cert)
         end
 
         def ca_cert
           return unless object.ca_cert
 
-          Base64.encode64(object.ca_cert)
+          Base64.strict_encode64(object.ca_cert)
         end
       end
     end

@@ -25,7 +25,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 jest.mock('~/ml/model_registry/services/upload_model', () => ({
-  uploadModel: jest.fn(),
+  uploadModel: jest.fn(() => Promise.resolve()),
 }));
 
 describe('ModelVersionCreate', () => {
@@ -124,7 +124,6 @@ describe('ModelVersionCreate', () => {
         expect(findImportArtifactZone().props()).toEqual({
           path: null,
           submitOnSelect: false,
-          value: { file: null, subfolder: '' },
         });
       });
 
@@ -297,29 +296,12 @@ describe('ModelVersionCreate', () => {
       expect(findGlAlert().text()).toBe('Version is invalid');
     });
 
-    it('Displays an alert upon an exception', async () => {
-      createWrapper();
-      uploadModel.mockRejectedValueOnce('Runtime error');
-
-      await submitForm();
-
-      expect(findGlAlert().text()).toBe('Runtime error');
-    });
-
-    it('Logs to sentry upon an exception', async () => {
-      createWrapper();
-      uploadModel.mockRejectedValueOnce('Runtime error');
-
-      await submitForm();
-
-      expect(Sentry.captureException).toHaveBeenCalledWith('Runtime error');
-    });
-
     describe('Failed flow with file upload retried', () => {
       beforeEach(async () => {
         createWrapper();
         findVersionInput().vm.$emit('input', '1.0.0');
         zone().vm.$emit('change', file);
+        await nextTick();
         uploadModel.mockRejectedValueOnce('Artifact import error.');
 
         await submitForm();

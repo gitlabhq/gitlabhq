@@ -3353,9 +3353,6 @@ msgstr ""
 msgid "Add new webhook"
 msgstr ""
 
-msgid "Add or edit reviewers"
-msgstr ""
-
 msgid "Add or remove a user."
 msgstr ""
 
@@ -10877,9 +10874,6 @@ msgid "Change parent"
 msgstr ""
 
 msgid "Change path"
-msgstr ""
-
-msgid "Change reviewer"
 msgstr ""
 
 msgid "Change reviewers"
@@ -33748,6 +33742,9 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
+msgid "MergeRequest|Add or edit reviewers"
+msgstr ""
+
 msgid "MergeRequest|Awaiting review"
 msgstr ""
 
@@ -33769,6 +33766,9 @@ msgstr ""
 msgid "MergeRequest|Can't show this merge request because the target branch %{branch_badge} is missing from project %{path_badge}. Close this merge request or update the target branch."
 msgstr ""
 
+msgid "MergeRequest|Change reviewer"
+msgstr ""
+
 msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr ""
 
@@ -33782,6 +33782,9 @@ msgid "MergeRequest|Failed to load the page"
 msgstr ""
 
 msgid "MergeRequest|No files found"
+msgstr ""
+
+msgid "MergeRequest|Quick add reviewers"
 msgstr ""
 
 msgid "MergeRequest|Remove reviewer"
@@ -57473,6 +57476,9 @@ msgid "Unarchive project"
 msgstr ""
 
 msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "Unassign"
 msgstr ""
 
 msgid "Unassign from commenting user"

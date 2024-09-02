@@ -284,6 +284,10 @@
   }
 }
 
+.reviewers-dropdown .gl-new-dropdown-panel {
+  min-width: $right-sidebar-width - $gl-padding;
+}
+
 .merge-request-approved-icon {
   animation: approval-animate 350ms ease-in;
 }

@@ -14,7 +14,7 @@ module API
         def jwt
           return unless object.private_key
 
-          { private_key: Base64.encode64(object.private_key) }
+          { private_key: Base64.strict_encode64(object.private_key) }
         end
 
         def mtls

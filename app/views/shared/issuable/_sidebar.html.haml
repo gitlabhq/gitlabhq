@@ -84,4 +84,4 @@
           .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
     -# haml-lint:disable InlineJavaScript
-    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar).to_json.html_safe
+    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar, @project).to_json.html_safe

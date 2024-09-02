@@ -13,7 +13,6 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '../services/upload_model';
-import { emptyArtifactFile } from '../constants';
 
 export default {
   name: 'ImportArtifactZone',
@@ -42,16 +41,11 @@ export default {
       required: false,
       default: true,
     },
-    value: {
-      type: Object,
-      required: false,
-      default: () => emptyArtifactFile,
-    },
   },
   data() {
     return {
-      file: this.value.file,
-      subfolder: this.value.subfolder,
+      file: null,
+      subfolder: '',
       alert: null,
       progressLoaded: null,
       progressTotal: null,
@@ -87,7 +81,7 @@ export default {
       this.progressTotal = progressEvent.total;
       this.progressLoaded = progressEvent.loaded;
     },
-    submitRequest(importPath) {
+    uploadArtifact(importPath) {
       this.progressLoaded = 0;
       this.progressTotal = this.file.size;
       uploadModel({
@@ -107,19 +101,14 @@ export default {
           this.alert = { message: error, variant: 'danger' };
         });
     },
-    emitInput(value) {
-      this.$emit('input', { ...value });
-    },
     changeSubfolder(subfolder) {
       this.subfolder = subfolder;
-      this.emitInput({ file: this.file, subfolder });
     },
-    uploadFile(file) {
+    changeFile(file) {
       this.file = file;
-      this.emitInput({ file, subfolder: this.subfolder });
 
       if (this.submitOnSelect && this.path) {
-        this.submitRequest(this.path);
+        this.uploadArtifact(this.path);
       }
     },
     hideAlert() {
@@ -128,7 +117,6 @@ export default {
     discardFile() {
       this.file = null;
       this.subfolder = '';
-      this.emitInput(emptyArtifactFile);
     },
   },
   i18n: {
@@ -188,7 +176,7 @@ export default {
       :upload-single-message="$options.i18n.uploadSingleMessage"
       :drop-to-start-message="$options.i18n.dropToStartMessage"
       :is-file-valid="() => true"
-      @change="uploadFile"
+      @change="changeFile"
     >
       <gl-alert v-if="file" variant="success" :dismissible="!loading" @dismiss="discardFile">
         <gl-progress-bar v-if="progressLoaded" :value="progressPercentage" />
