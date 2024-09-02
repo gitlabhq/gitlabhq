@@ -2041,21 +2041,20 @@ class User < ApplicationRecord
 
   def assigned_open_merge_requests_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      review_states = if merge_request_dashboard_enabled?
-                        %w[requested_changes reviewed]
-                      end
+      params = { assignee_id: id, state: 'opened', non_archived: true }
+      params[:reviewer_id] = 'none' if merge_request_dashboard_enabled?
 
-      MergeRequestsFinder.new(self, assignee_id: self.id, review_states: review_states, state: 'opened', non_archived: true).execute.count
+      MergeRequestsFinder.new(self, params).execute.count
     end
   end
 
   def review_requested_open_merge_requests_count(force: false)
     Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      review_state = if merge_request_dashboard_enabled?
-                       'unreviewed'
-                     end
-
-      MergeRequestsFinder.new(self, reviewer_id: id, review_state: review_state, state: 'opened', non_archived: true).execute.count
+      if merge_request_dashboard_enabled?
+        MergeRequestsFinder.new(self, assigned_user_id: id, reviewer_review_states: %w[unreviewed unapproved review_started], assigned_review_states: %w[requested_changes reviewed], state: 'opened', non_archived: true).execute.count
+      else
+        MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
+      end
     end
   end
 

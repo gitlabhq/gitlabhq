@@ -1,4 +1,4 @@
-- if show_no_ssh_key_message?
+- if show_no_ssh_key_message?(project)
   = render Pajamas::AlertComponent.new(variant: :warning,
     alert_options: { class: 'js-no-ssh-message' },
     close_button_options: { class: 'js-hide-no-ssh-message'}) do |c|

@@ -6101,17 +6101,15 @@ RSpec.describe User, feature_category: :user_profile do
         stub_feature_flags(merge_request_dashboard: true)
       end
 
-      it 'returns number of open merge requests from non-archived projects where a reviewer has requested changes' do
+      it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
         user    = create(:user)
         project = create(:project, :public)
         archived_project = create(:project, :public, :archived)
 
-        mr = create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
         create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
         create(:merge_request, source_project: archived_project, author: user, assignees: [user])
-
-        mr.merge_request_reviewers.update_all(state: :requested_changes)
 
         expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
       end
@@ -6141,10 +6139,13 @@ RSpec.describe User, feature_category: :user_profile do
         project = create(:project, :public)
         archived_project = create(:project, :public, :archived)
 
-        create(:merge_request, source_project: project, author: user, reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, reviewers: [user])
+        mr = create(:merge_request, source_project: project, author: user, reviewers: [user])
+        mr2 = create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user], reviewers: create_list(:user, 2))
         create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
         create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+
+        mr.merge_request_reviewers.update_all(state: :unreviewed)
+        mr2.merge_request_reviewers.update_all(state: :requested_changes)
 
         expect(user.review_requested_open_merge_requests_count(force: true)).to eq 2
       end

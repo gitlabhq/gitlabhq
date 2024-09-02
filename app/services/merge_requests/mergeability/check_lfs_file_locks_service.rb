@@ -51,7 +51,7 @@ module MergeRequests
       end
 
       def check_inactive?
-        Feature.disabled?(:locked_lfs_files_mergeability_check, project) || !project.lfs_enabled?
+        !project.lfs_enabled?
       end
       strong_memoize_attr :check_inactive?
     end

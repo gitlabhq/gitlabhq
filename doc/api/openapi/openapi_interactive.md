@@ -26,14 +26,14 @@ The [interactive API documentation tool](https://gitlab.com/gitlab-org/gitlab/-/
 allows API testing directly on the GitLab.com website. Only a few of the available endpoints are
 documented with the OpenAPI spec, but the current list demonstrates the functionality of the tool.
 
-![API viewer screenshot](img/apiviewer01-fs8.png)
+![A list of some available GitLab API endpoints.](img/apiviewer01-fs8.png)
 
 ## Endpoint parameters
 
 When you expand an endpoint listing, you see a description, input parameters (if required),
 and example server responses. Some parameters include a default or a list of allowed values.
 
-![API viewer screenshot](img/apiviewer04-fs8.png)
+![An expanded view that displays the endpoint information and the try it out option.](img/apiviewer04-fs8.png)
 
 ## Starting an interactive session
 
@@ -47,7 +47,7 @@ endpoint (no parameters required). The tool shows the `curl` command and URL of 
 by the server responses that are returned. You can create new responses by editing the relevant parameters
 and then select **Execute** once again.
 
-![API viewer screenshot](img/apiviewer03-fs8.png)
+![The endpoint test view that includes the request and response.](img/apiviewer03-fs8.png)
 
 ## Vision
 

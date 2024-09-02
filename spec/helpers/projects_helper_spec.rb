@@ -247,7 +247,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#show_no_ssh_key_message?' do
     context 'user has no keys' do
       it 'returns true' do
-        expect(helper.show_no_ssh_key_message?).to be_truthy
+        expect(helper.show_no_ssh_key_message?(project)).to be_truthy
       end
     end
 
@@ -255,7 +255,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false' do
         create(:personal_key, user: user)
 
-        expect(helper.show_no_ssh_key_message?).to be_falsey
+        expect(helper.show_no_ssh_key_message?(project)).to be_falsey
       end
     end
   end

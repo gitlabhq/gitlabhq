@@ -236,7 +236,7 @@ module ProjectsHelper
     project.last_pipeline
   end
 
-  def show_no_ssh_key_message?
+  def show_no_ssh_key_message?(project)
     Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
       cookies[:hide_no_ssh_message].blank? &&
       !current_user.hide_no_ssh_key &&
