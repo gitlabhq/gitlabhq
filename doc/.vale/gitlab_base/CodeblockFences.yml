@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 scope: raw
 raw:
-  - '\`\`\`(yml|rb|text|md|bash|sh\n|js\n|golang\n|py\n|docker\n|ts)'
+  - '\`\`\`(yml|rb|text|md|bash|sh\n|js\n|golang\n|py\n|docker\n|ts|irb)'

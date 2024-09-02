@@ -541,7 +541,7 @@ You can trigger a cron job from the UI by selecting the "Enqueue Now" button. To
 
 To find the cron job you want to test:
 
-```irb
+```ruby
 job = Sidekiq::Cron::Job.find('job-name')
 
 # get status of job:
@@ -553,7 +553,7 @@ job.enque!
 
 For example, to trigger the `update_all_mirrors_worker` cron job that updates the repository mirrors:
 
-```irb
+```ruby
 irb(main):001:0> job = Sidekiq::Cron::Job.find('update_all_mirrors_worker')
 =>
 #<Sidekiq::Cron::Job:0x00007f147f84a1d0

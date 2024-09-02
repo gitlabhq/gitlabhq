@@ -145,8 +145,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role with proper permissions to link to the security policy project. For
-  more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
 
 The high-level workflow for enforcing policies globally across all subgroups and projects in your GitLab.com namespace:
 
@@ -190,8 +189,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role (with proper permissions) to link to the security policy project. For more information, see
-  [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
 - To support approval groups globally across your instance, enable `security_policy_global_group_approvers_enabled` in your [GitLab instance application settings](../../../api/settings.md).
 
 The high-level workflow for enforcing policies across multiple groups:
@@ -240,8 +238,7 @@ granularly per policy, you can set a "policy scope" in each policy.
 
 Prerequisites:
 
-- You must have the Owner role (with proper permissions) to link to the security policy project.
-  For more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
 
 To link a group, subgroup, or project to a security policy project:
 

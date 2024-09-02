@@ -1174,11 +1174,11 @@ variables:
 
 Maven does not read the `HTTP(S)_PROXY` environment variables.
 
-To make the Maven dependency scanner use a proxy, you can specify the options using the `MAVEN_CLI_OPTS` CI/CD variable:
+To make the Maven dependency scanner use a proxy, you can configure it using a `settings.xml` file (see [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html)) and instruct Maven to use this configuration by using the `MAVEN_CLI_OPTS` CI/CD variable:
 
 ```yaml
 variables:
-  MAVEN_CLI_OPTS: "-DproxySet=true -Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3218"
+  MAVEN_CLI_OPTS: "--settings mysettings.xml"
 ```
 
 ## Specific settings for languages and package managers
