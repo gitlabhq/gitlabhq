@@ -56,39 +56,39 @@ The following are examples of valid sharding keys:
 
 - The table entries belong to a project only:
 
-   ```yaml
-   sharding_key:
-     project_id: projects
-   ```
+  ```yaml
+  sharding_key:
+    project_id: projects
+  ```
 
 - The table entries belong to a project and the foreign key is `target_project_id`:
 
-   ```yaml
-   sharding_key:
-     target_project_id: projects
-   ```
+  ```yaml
+  sharding_key:
+    target_project_id: projects
+  ```
 
 - The table entries belong to a namespace/group only:
 
-   ```yaml
-   sharding_key:
-     namespace_id: namespaces
-   ```
+  ```yaml
+  sharding_key:
+    namespace_id: namespaces
+  ```
 
 - The table entries belong to a namespace/group only and the foreign key is `group_id`:
 
-   ```yaml
-   sharding_key:
-     group_id: namespaces
-   ```
+  ```yaml
+  sharding_key:
+    group_id: namespaces
+  ```
 
 - The table entries belong to a namespace or a project:
 
-   ```yaml
-   sharding_key:
-     project_id: projects
-     namespace_id: namespaces
-   ```
+  ```yaml
+  sharding_key:
+    project_id: projects
+    namespace_id: namespaces
+  ```
 
 ### The sharding key must be immutable
 

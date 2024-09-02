@@ -84,16 +84,16 @@ The following process outlines the steps to get embeddings generated and stored 
 1. [Make sure Elasticsearch is running](../advanced_search.md#setting-up-development-environment).
 1. If you have an existing Elasticsearch setup, make sure the `AddEmbeddingToIssues` migration has been completed by executing the following until it returns:
 
-    ```ruby
-    Elastic::MigrationWorker.new.perform
-    ```
+   ```ruby
+   Elastic::MigrationWorker.new.perform
+   ```
 
 1. Make sure you can run [GitLab Duo features on your local environment](../ai_features/index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
 1. Ensure running the following in a rails console outputs an embedding (a vector of 768 dimensions). If not, there is a problem with the AI setup.
 
-    ```ruby
-    Gitlab::Llm::VertexAi::Embeddings::Text.new('text', user: nil, tracking_context: {}, unit_primitive: 'semantic_search_issue').execute
-    ```
+   ```ruby
+   Gitlab::Llm::VertexAi::Embeddings::Text.new('text', user: nil, tracking_context: {}, unit_primitive: 'semantic_search_issue').execute
+   ```
 
 ### Running the backfill
 

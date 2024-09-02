@@ -124,16 +124,16 @@ correctly reach to AI Gateway:
 1. Login to Rails console with `gdk rails console`.
 1. Talk to a model:
 
-  ```ruby
-  # Talk to Anthropic model
-  Gitlab::Llm::Anthropic::Client.new(User.first, unit_primitive: 'duo_chat').complete(prompt: "\n\nHuman: Hi, How are you?\n\nAssistant:")
+   ```ruby
+   # Talk to Anthropic model
+   Gitlab::Llm::Anthropic::Client.new(User.first, unit_primitive: 'duo_chat').complete(prompt: "\n\nHuman: Hi, How are you?\n\nAssistant:")
 
-  # Talk to Vertex AI model
-  Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'documentation_search').text_embeddings(content: "How can I create an issue?")
+   # Talk to Vertex AI model
+   Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'documentation_search').text_embeddings(content: "How can I create an issue?")
 
-  # Test `/v1/chat/agent` endpoint
-  Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
-  ```
+   # Test `/v1/chat/agent` endpoint
+   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
+   ```
 
 NOTE:
 See [this doc](../cloud_connector/index.md) for registering unit primitives in Cloud Connector.

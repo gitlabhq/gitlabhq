@@ -567,11 +567,11 @@ instead:
 
 - In Ruby/HAML:
 
-   ```ruby
-   safe_format(_('In &lt; 1 hour'))
+  ```ruby
+  safe_format(_('In &lt; 1 hour'))
 
-   # => 'In < 1 hour'
-   ```
+  # => 'In < 1 hour'
+  ```
 
 - In JavaScript:
 

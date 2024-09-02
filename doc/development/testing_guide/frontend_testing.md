@@ -1582,9 +1582,9 @@ Feature tests live in `spec/features` folder. You should look for existing files
 1. Start your `gdk` environment with `gdk start` command.
 1. In your terminal, run:
 
-  ```shell
-   bundle exec rspec path/to/file:line_of_my_test
-  ```
+   ```shell
+    bundle exec rspec path/to/file:line_of_my_test
+   ```
 
 You can also prefix this command with `WEBDRIVER_HEADLESS=0` which will run the test by opening an actual browser on your computer that you can see, which is very useful for debugging.
 
@@ -1596,23 +1596,23 @@ To use Firefox, instead of Chrome, prefix the command with `WEBDRIVER=firefox`.
 
 1. Make all string literals unchangeable
 
-  In all feature tests, the very first line should be:
+   In all feature tests, the very first line should be:
 
-  ```ruby
-  # frozen_string_literal: true
-  ```
+   ```ruby
+   # frozen_string_literal: true
+   ```
 
-  This is in every `Ruby` file and makes all string literals unchangeable. There are also some performance benefits, but this is beyond the scope of this section.
+   This is in every `Ruby` file and makes all string literals unchangeable. There are also some performance benefits, but this is beyond the scope of this section.
 
 1. Import dependencies.
 
-  You should import the modules you need. You will most likely always need to require `spec_helper`:
+   You should import the modules you need. You will most likely always need to require `spec_helper`:
 
-  ```ruby
-  require 'spec_helper'
-  ```
+   ```ruby
+   require 'spec_helper'
+   ```
 
-  Import any other relevant module.
+   Import any other relevant module.
 
 1. Create a global scope for RSpec to define our tests, just like what we do in jest with the initial describe block.
 

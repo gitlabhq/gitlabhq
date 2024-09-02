@@ -363,7 +363,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       }
     end
 
-    it_behaves_like "issuables list meta-data", :merge_request
+    context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450217' do
+      it_behaves_like "issuables list meta-data", :merge_request
+    end
 
     it_behaves_like 'set sort order from user preference' do
       let(:sorting_param) { 'updated_asc' }

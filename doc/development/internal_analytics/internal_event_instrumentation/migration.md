@@ -159,29 +159,29 @@ To start using Internal Events Tracking, follow these steps:
 1. Remove the `instrumentation_class` property. It's not used for Internal Events metrics.
 1. Add an `events` section to both metric definition files.
 
-    ```yaml
-    events:
-      - name: git_write_action
-        unique: user.id
-    ```
+   ```yaml
+   events:
+     - name: git_write_action
+       unique: user.id
+   ```
 
    Use `project.id` or `namespace.id` instead of `user.id` if your metric is counting something other than unique users.
 1. Remove the `options` section from both metric definition files.
 1. Include the `Gitlab::InternalEventsTracking` module and call `track_internal_event` instead of `HLLRedisCounter.track_event`:
 
-    ```diff
-    - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + include Gitlab::InternalEventsTracking
-    + track_internal_event('project_created', user: current_user)
-    ```
+   ```diff
+   - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
+   + include Gitlab::InternalEventsTracking
+   + track_internal_event('project_created', user: current_user)
+   ```
 
 1. Optional. Add additional values to the event. You typically want to add `project` and `namespace` as it is useful information to have in the data warehouse.
 
-    ```diff
-    - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + include Gitlab::InternalEventsTracking
-    + track_internal_event('project_created', user: current_user, project: project, namespace: namespace)
-    ```
+   ```diff
+   - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
+   + include Gitlab::InternalEventsTracking
+   + track_internal_event('project_created', user: current_user, project: project, namespace: namespace)
+   ```
 
 1. Update your test to use the `internal event tracking` shared example.
 

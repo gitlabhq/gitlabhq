@@ -595,27 +595,27 @@ describe('MyComponent', () => {
 
 1. Avoid using `data`, `methods`, or any other mounting option that extends component internals.
 
-  ```javascript
-  import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-  import { SomeComponent } from 'components/some_component.vue';
+   ```javascript
+   import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+   import { SomeComponent } from 'components/some_component.vue';
 
-  let wrapper;
+   let wrapper;
 
-  // bad :( - This circumvents the actual user interaction and couples the test to component internals.
-  const createWrapper = ({ data }) => {
-    wrapper = shallowMountExtended(SomeComponent, {
-      data
-    });
-  };
+   // bad :( - This circumvents the actual user interaction and couples the test to component internals.
+   const createWrapper = ({ data }) => {
+     wrapper = shallowMountExtended(SomeComponent, {
+       data
+     });
+   };
 
-  // good :) - Helpers like `clickShowButton` interact with the actual I/O of the component.
-  const createWrapper = () => {
-    wrapper = shallowMountExtended(SomeComponent);
-  };
-  const clickShowButton = () => {
-    wrapper.findByTestId('show').trigger('click');
-  }
-  ```
+   // good :) - Helpers like `clickShowButton` interact with the actual I/O of the component.
+   const createWrapper = () => {
+     wrapper = shallowMountExtended(SomeComponent);
+   };
+   const clickShowButton = () => {
+     wrapper.findByTestId('show').trigger('click');
+   }
+   ```
 
 ### Setting component state
 

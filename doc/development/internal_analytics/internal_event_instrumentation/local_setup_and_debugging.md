@@ -42,7 +42,7 @@ rails runner scripts/internal_events/monitor.rb i_code_review_user_create_mr
 The monitor can show two tables:
 
 - The `RELEVANT METRICS` table lists all the metrics that are defined on the `i_code_review_user_create_mr` event.
-   The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
+  The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
 
 - The `SNOWPLOW EVENTS` table lists a selection of properties from only Snowplow events fired after the monitor was started and those that match the event name. It is no longer a requirement to set up [Snowplow Micro](#snowplow-micro) for this table to be visible.
 

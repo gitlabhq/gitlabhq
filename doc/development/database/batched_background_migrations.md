@@ -228,9 +228,9 @@ the migration as `failed`) if any of the following is true:
 
 ### Throttling batched migrations
 
-Because batched migrations are update heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
+Because batched migrations are update heavy and there have been incidents due to the heavy load from these migrations while the database was underperforming, a throttling mechanism exists to mitigate future incidents.
 
-These database indicators are checked to throttle a migration. On getting a
+These database indicators are checked to throttle a migration. Upon receiving a
 stop signal, the migration is paused for a set time (10 minutes):
 
 - WAL queue pending archival crossing the threshold.
@@ -238,7 +238,7 @@ stop signal, the migration is paused for a set time (10 minutes):
 - Patroni apdex SLI dropping below the SLO.
 - WAL rate crossing the threshold.
 
-It's an ongoing effort to add more indicators to further enhance the
+There is an ongoing effort to add more indicators to further enhance the
 database health check framework. For more details, see
 [epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
 

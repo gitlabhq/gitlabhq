@@ -72,6 +72,12 @@ To upgrade both the operating system (OS) and GitLab:
 1. Check if it's necessary to [update the GitLab package sources](#update-gitlab-package-sources-after-upgrading-the-os).
 1. [Upgrade GitLab](../../update/index.md).
 
+## Corrupted Postgres indexes after upgrading the OS
+
+As part of upgrading the operating system, if your `glibc` version changes, then you must follow
+[Upgrading operating systems for PostgreSQL](../postgresql/upgrading_os.md) to avoid corrupted
+indexes.
+
 ## Packages for ARM64
 
 GitLab provides arm64/aarch64 packages for some supported operating systems.

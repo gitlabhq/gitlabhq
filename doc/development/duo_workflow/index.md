@@ -49,15 +49,15 @@ info: Any user with at least the Maintainer role can merge updates to this conte
         "project_id": "$PROJECT_ID_FOR_RUNNING_WORKFLOW_AGAINST"
      }' \
      $YOUR_GDK_ROOT_URL/api/v4/ai/duo_workflows/workflows
-    ```
+   ```
 
 ## Set up the Duo Workflow Service
 
 1. Clone the [Duo Workflow Service respository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
 
-  ```shell
-    git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-service.git
-  ```
+   ```shell
+     git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-service.git
+   ```
 
 1. Navigate to the Duo Workflow Service directory
 
@@ -99,9 +99,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 1. Clone the [Duo Workflow Executor repository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor)
 
-  ```shell
-    git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-executor.git
-  ```
+   ```shell
+     git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-executor.git
+   ```
 
 1. Navigate to the Duo Workflow Executor directory
 
@@ -125,24 +125,24 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 1. Run the executor with your GitLab token and workflow ID
 
-  ```shell
-  make && \
-  ./bin/duo-workflow-executor \
-      --goal='Fix the pipeline for the Merge request 62 in the project 19." \
-      --insecure --debug
-      --workflow-id=$WORKFLOW_ID \
-      --token=$YOUR_GITLAB_PAT \
-      --base-url="$GDK_GITLAB_URL" \
-      --user-id="1"
-  ```
+   ```shell
+   make && \
+   ./bin/duo-workflow-executor \
+       --goal='Fix the pipeline for the Merge request 62 in the project 19." \
+       --insecure --debug
+       --workflow-id=$WORKFLOW_ID \
+       --token=$YOUR_GITLAB_PAT \
+       --base-url="$GDK_GITLAB_URL" \
+       --user-id="1"
+   ```
 
 1. Verify that the checkpoints for workflow have been created
 
-  ```shell
-  curl --verbose \
-    --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
-    $GDK_GITLAB_URL/api/v4/ai/duo_workflows/workflows/$WORKFLOW_ID/checkpoints
-  ```
+   ```shell
+   curl --verbose \
+     --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
+     $GDK_GITLAB_URL/api/v4/ai/duo_workflows/workflows/$WORKFLOW_ID/checkpoints
+   ```
 
 ## Configure the GitLab VS Code Extension
 

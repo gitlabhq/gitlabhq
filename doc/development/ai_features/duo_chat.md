@@ -174,10 +174,10 @@ please contact Duo Chat team if you want to add a new tool. We're working on lon
 
 1. Create a new class for a tool in `ai_gateway/chat/tools/gitlab.py`. This class should include next properties:
 
-    - `name` of the tool
-    - GitLab `resource` that tool works with
-    - `description` of what the tool does
-    - `example` of question and desired answer
+   - `name` of the tool
+   - GitLab `resource` that tool works with
+   - `description` of what the tool does
+   - `example` of question and desired answer
 
 1. Add tool to `__all__` list of tools in `ai_gateway/chat/tools/gitlab.py`.
 
@@ -254,16 +254,16 @@ It's not available in Production environment.
 1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
 1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
 
-    ```shell
-    export LANGCHAIN_TRACING_V2=true
-    export LANGCHAIN_API_KEY='<your-api-key>'
-    export LANGCHAIN_PROJECT='<your-project-name>'
-    export LANGCHAIN_ENDPOINT='https://api.smith.langchain.com'
-    export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
-    ```
+   ```shell
+   export LANGCHAIN_TRACING_V2=true
+   export LANGCHAIN_API_KEY='<your-api-key>'
+   export LANGCHAIN_PROJECT='<your-project-name>'
+   export LANGCHAIN_ENDPOINT='https://api.smith.langchain.com'
+   export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
+   ```
 
-  Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
-project will be created during request.
+   Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
+   project will be created during request.
 
 1. Restart GDK.
 1. Ask any question to Chat.

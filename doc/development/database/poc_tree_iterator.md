@@ -108,10 +108,10 @@ number of descendants, thus we might end up with a huge cursor.
    1. Two arrays (tree depth and the collected IDs)
    1. A counter for tracking the number of row reads in the query.
 1. Recursively process the row and do one of the following (whenever the condition matches):
-    - Load the first child namespace and update the currently processed namespace
-      ID if we're not at the leaf node. (Walking down a branch)
-    - Load the next namespace record on the current depth if there are any rows left.
-    - Walk up one node and process rows at one level higher.
+   - Load the first child namespace and update the currently processed namespace
+     ID if we're not at the leaf node. (Walking down a branch)
+   - Load the next namespace record on the current depth if there are any rows left.
+   - Walk up one node and process rows at one level higher.
 1. Continue the processing until the number of reads reaches our `LIMIT` (batch size).
 1. Find the last processed row which contains the data for the cursor, and all the collected record IDs.
 
