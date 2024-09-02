@@ -208,6 +208,10 @@ dast_scanner_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+dast_site_profiles:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_site_profiles_builds:
   - table: ci_builds
     column: ci_build_id
@@ -335,6 +339,10 @@ p_ci_builds_execution_configs:
     column: project_id
     on_delete: async_delete
 p_ci_builds_metadata:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+p_ci_finished_build_ch_sync_events:
   - table: projects
     column: project_id
     on_delete: async_delete

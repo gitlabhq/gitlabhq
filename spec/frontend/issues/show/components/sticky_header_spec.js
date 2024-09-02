@@ -1,4 +1,4 @@
-import { GlBadge, GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
@@ -23,21 +23,32 @@ describe('StickyHeader component', () => {
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findTitle = () => wrapper.findComponent(GlLink);
+  const findClosedStatusLink = () =>
+    wrapper.find('[data-testid="sticky-header-closed-status-link"');
+  const findIssuableHeader = () => wrapper.findComponent(StickyHeader);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(StickyHeader, {
       propsData: {
-        issuableStatus: STATUS_OPEN,
+        issuableState: STATUS_OPEN,
         issuableType: TYPE_ISSUE,
+        movedToIssueUrl: '',
+        promotedToEpicUrl: '',
+        duplicatedToIssueUrl: '',
         show: true,
         title: 'A sticky issue',
         ...props,
+      },
+      stubs: {
+        GlBadge,
+        GlSprintf,
+        GlLink,
       },
     });
   };
 
   it.each`
-    issuableType     | issuableStatus   | statusIcon
+    issuableType     | issuableState    | statusIcon
     ${TYPE_INCIDENT} | ${STATUS_OPEN}   | ${'issue-open-m'}
     ${TYPE_INCIDENT} | ${STATUS_CLOSED} | ${'issue-close'}
     ${TYPE_ISSUE}    | ${STATUS_OPEN}   | ${'issue-open-m'}
@@ -45,23 +56,74 @@ describe('StickyHeader component', () => {
     ${TYPE_EPIC}     | ${STATUS_OPEN}   | ${'issue-open-m'}
     ${TYPE_EPIC}     | ${STATUS_CLOSED} | ${'issue-close'}
   `(
-    'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
-    ({ issuableType, issuableStatus, statusIcon }) => {
-      createComponent({ issuableType, issuableStatus });
+    'shows with state icon "$statusIcon" for $issuableType when status is $issuableState',
+    ({ issuableType, issuableState, statusIcon }) => {
+      createComponent({ issuableType, issuableState });
 
       expect(wrapper.findComponent(GlBadge).props('icon')).toBe(statusIcon);
     },
   );
 
   it.each`
-    title                                        | issuableStatus
+    title                                        | issuableState
     ${'shows with Open when status is opened'}   | ${STATUS_OPEN}
     ${'shows with Closed when status is closed'} | ${STATUS_CLOSED}
     ${'shows with Open when status is reopened'} | ${STATUS_REOPENED}
-  `('$title', ({ issuableStatus }) => {
-    createComponent({ issuableStatus });
+  `('$title', ({ issuableState }) => {
+    createComponent({ issuableState });
 
-    expect(wrapper.text()).toContain(issuableStatusText[issuableStatus]);
+    expect(wrapper.text()).toContain(issuableStatusText[issuableState]);
+  });
+
+  describe('when status is closed', () => {
+    beforeEach(() => {
+      createComponent({ issuableState: STATUS_CLOSED });
+    });
+
+    describe('when issue is marked as duplicate', () => {
+      beforeEach(() => {
+        createComponent({
+          issuableState: STATUS_CLOSED,
+          duplicatedToIssueUrl: 'project/-/issue/5',
+        });
+      });
+
+      it('renders `Closed (duplicated)`', () => {
+        expect(findIssuableHeader().text()).toContain('Closed (duplicated)');
+      });
+
+      it('links to the duplicated issue', () => {
+        expect(findClosedStatusLink().attributes('href')).toBe('project/-/issue/5');
+      });
+    });
+
+    describe('when issue is marked as moved', () => {
+      beforeEach(() => {
+        createComponent({ issuableState: STATUS_CLOSED, movedToIssueUrl: 'project/-/issue/6' });
+      });
+
+      it('renders `Closed (moved)`', () => {
+        expect(findIssuableHeader().text()).toContain('Closed (moved)');
+      });
+
+      it('links to the moved issue', () => {
+        expect(findClosedStatusLink().attributes('href')).toBe('project/-/issue/6');
+      });
+    });
+
+    describe('when issue is marked as promoted', () => {
+      beforeEach(() => {
+        createComponent({ issuableState: STATUS_CLOSED, promotedToEpicUrl: 'group/-/epic/7' });
+      });
+
+      it('renders `Closed (promoted)`', () => {
+        expect(findIssuableHeader().text()).toContain('Closed (promoted)');
+      });
+
+      it('links to the promoted epic', () => {
+        expect(findClosedStatusLink().attributes('href')).toBe('group/-/epic/7');
+      });
+    });
   });
 
   it.each`

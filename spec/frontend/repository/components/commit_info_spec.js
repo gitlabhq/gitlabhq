@@ -53,6 +53,8 @@ describe('Repository last commit component', () => {
     expect(findCommitterWrapper().classes()).toEqual([
       'committer',
       'gl-basis-full',
+      'gl-truncate',
+      'gl-text-sm',
       'gl-inline-flex',
     ]);
     expect(findUserLink().classes()).toEqual([

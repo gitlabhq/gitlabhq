@@ -194,20 +194,21 @@ PATH
       omniauth (~> 2.0)
 
 PATH
-  remote: vendor/gems/sidekiq-7.2.4
-  specs:
-    sidekiq (7.2.4)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      rack (>= 2.2.4)
-      redis-client (>= 0.19.0)
-
-PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
     gitlab-sidekiq-fetcher (0.11.0)
       json (>= 2.5)
       sidekiq (~> 7.0)
+
+PATH
+  remote: vendor/gems/sidekiq
+  specs:
+    sidekiq (7.3.1)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      logger
+      rack (>= 2.2.4)
+      redis-client (>= 0.22.2)
 
 GEM
   remote: https://rubygems.org/
@@ -1644,7 +1645,7 @@ GEM
     ruby-fogbugz (0.3.0)
       crack (~> 0.4)
       multipart-post (~> 2.0)
-    ruby-lsp (0.17.14)
+    ruby-lsp (0.17.15)
       language_server-protocol (~> 3.17.0)
       prism (>= 0.29.0, < 0.31)
       rbs (>= 3, < 4)

@@ -347,7 +347,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
   end
 end
 
-RSpec.describe 'Group.runners' do
+RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

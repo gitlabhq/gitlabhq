@@ -2743,7 +2743,8 @@ CREATE TABLE p_ci_finished_build_ch_sync_events (
     build_id bigint NOT NULL,
     partition bigint DEFAULT 1 NOT NULL,
     build_finished_at timestamp without time zone NOT NULL,
-    processed boolean DEFAULT false NOT NULL
+    processed boolean DEFAULT false NOT NULL,
+    project_id bigint DEFAULT '-1'::integer NOT NULL
 )
 PARTITION BY LIST (partition);
 
@@ -29280,6 +29281,8 @@ CREATE INDEX index_p_ci_builds_execution_configs_on_project_id ON ONLY p_ci_buil
 
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
+CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci_finished_build_ch_sync_events USING btree (project_id);
+
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
@@ -35516,9 +35519,6 @@ ALTER TABLE ONLY cluster_enabled_grants
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT fk_rails_838d054752 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY dast_site_profiles
-    ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_list_export_parts
     ADD CONSTRAINT fk_rails_83f26c0e6f FOREIGN KEY (dependency_list_export_id) REFERENCES dependency_list_exports(id) ON DELETE CASCADE;

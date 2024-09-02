@@ -16,7 +16,7 @@ module Ci
     ignore_columns :partition, remove_never: true
 
     partitioned_by :partition, strategy: :sliding_list,
-      next_partition_if: ->(active_partition) { any_older_exist?(active_partition, PARTITION_DURATION) },
+      next_partition_if: ->(active_partition) { any_older_partitions_exist?(active_partition, PARTITION_DURATION) },
       detach_partition_if: ->(partition) { detach_partition?(partition) }
 
     validates :pipeline_id, presence: true
@@ -48,18 +48,18 @@ module Ci
       return true unless pending.for_partition(partition.value).exists?
 
       # or if there are pending events, they are outside the cleanup threshold
-      return true unless any_newer_exist?(partition, PARTITION_CLEANUP_THRESHOLD)
+      return true unless any_newer_partitions_exist?(partition, PARTITION_CLEANUP_THRESHOLD)
 
       false
     end
 
-    def self.any_older_exist?(partition, duration)
+    def self.any_older_partitions_exist?(partition, duration)
       for_partition(partition.value)
         .where(arel_table[:pipeline_finished_at].lteq(duration.ago))
         .exists?
     end
 
-    def self.any_newer_exist?(partition, duration)
+    def self.any_newer_partitions_exist?(partition, duration)
       for_partition(partition.value)
         .where(arel_table[:pipeline_finished_at].gt(duration.ago))
         .exists?

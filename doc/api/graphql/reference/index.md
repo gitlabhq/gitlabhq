@@ -33957,6 +33957,33 @@ Represents the vulnerability details code field.
 | <a id="vulnerabilitydetailcodename"></a>`name` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailcodevalue"></a>`value` | [`String!`](#string) | Source code. |
 
+### `VulnerabilityDetailCodeFlowNode`
+
+Represents the vulnerability details code flow node item.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydetailcodeflownodedescription"></a>`description` | [`String`](#string) | Description of the field. |
+| <a id="vulnerabilitydetailcodeflownodefieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailcodeflownodefilelocation"></a>`fileLocation` | [`VulnerabilityDetailFileLocation!`](#vulnerabilitydetailfilelocation) | Location of the file. |
+| <a id="vulnerabilitydetailcodeflownodename"></a>`name` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailcodeflownodenodetype"></a>`nodeType` | [`CodeFlowNodeType!`](#codeflownodetype) | Node Type. |
+
+### `VulnerabilityDetailCodeFlows`
+
+Represents the vulnerability details code flows item.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydetailcodeflowsdescription"></a>`description` | [`String`](#string) | Description of the field. |
+| <a id="vulnerabilitydetailcodeflowsfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
+| <a id="vulnerabilitydetailcodeflowsitems"></a>`items` | [`[[VulnerabilityDetailCodeFlowNode!]!]!`](#vulnerabilitydetailcodeflownode) | List of flows represented by list of CodeFlowNodeItem. |
+| <a id="vulnerabilitydetailcodeflowsname"></a>`name` | [`String`](#string) | Name of the field. |
+
 ### `VulnerabilityDetailCommit`
 
 Represents the vulnerability details commit field.
@@ -35689,6 +35716,16 @@ Values for sorting variables.
 | ----- | ----------- |
 | <a id="civariabletypeenv_var"></a>`ENV_VAR` | Env var type. |
 | <a id="civariabletypefile"></a>`FILE` | File type. |
+
+### `CodeFlowNodeType`
+
+The code flow node type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="codeflownodetypepropagation"></a>`PROPAGATION` | Propagation node. |
+| <a id="codeflownodetypesink"></a>`SINK` | Sink node. |
+| <a id="codeflownodetypesource"></a>`SOURCE` | Source node. |
 
 ### `CodeQualityDegradationSeverity`
 
@@ -39648,6 +39685,7 @@ One of:
 - [`VulnerabilityDetailBase`](#vulnerabilitydetailbase)
 - [`VulnerabilityDetailBoolean`](#vulnerabilitydetailboolean)
 - [`VulnerabilityDetailCode`](#vulnerabilitydetailcode)
+- [`VulnerabilityDetailCodeFlows`](#vulnerabilitydetailcodeflows)
 - [`VulnerabilityDetailCommit`](#vulnerabilitydetailcommit)
 - [`VulnerabilityDetailDiff`](#vulnerabilitydetaildiff)
 - [`VulnerabilityDetailFileLocation`](#vulnerabilitydetailfilelocation)

@@ -109,7 +109,7 @@ export default {
           />
         </div>
         <div
-          class="committer gl-basis-full"
+          class="committer gl-basis-full gl-truncate gl-text-sm"
           :class="{ 'gl-inline-flex': truncateAuthorName }"
           data-testid="committer"
         >

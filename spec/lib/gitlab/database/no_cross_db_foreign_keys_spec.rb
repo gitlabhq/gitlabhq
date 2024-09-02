@@ -72,7 +72,8 @@ RSpec.describe 'cross-database foreign keys' do
       'dast_site_profiles.dast_site_id',
       'dast_site_profiles_builds.dast_site_profile_id',
       'dast_site_validations.dast_site_token_id',
-      'dast_sites.dast_site_validation_id'
+      'dast_sites.dast_site_validation_id',
+      'dast_site_profile_secret_variables.dast_site_profile_id'
     ]
   end
 

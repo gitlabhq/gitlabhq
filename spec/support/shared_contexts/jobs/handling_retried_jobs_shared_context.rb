@@ -19,7 +19,7 @@ RSpec.shared_context 'when handling retried jobs' do |url|
 
     begin
       Sidekiq::JobRetry.new(Sidekiq).local(klass, message, klass.queue) { raise 'boom' }
-    rescue Sidekiq::JobRetry::Skip
+    rescue Sidekiq::JobRetry::Handled
       # Sidekiq scheduled the retry
     end
   end

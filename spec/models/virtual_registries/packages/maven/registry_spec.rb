@@ -36,4 +36,21 @@ RSpec.describe VirtualRegistries::Packages::Maven::Registry, type: :model, featu
 
     it { is_expected.to eq([registry]) }
   end
+
+  describe 'callbacks' do
+    describe '.destroy_upstream' do
+      let(:upstream) { build(:virtual_registries_packages_maven_upstream) }
+
+      before do
+        allow(registry).to receive(:upstream).and_return(upstream)
+        allow(upstream).to receive(:destroy!)
+      end
+
+      it 'destroys the upstream' do
+        registry.destroy!
+
+        expect(upstream).to have_received(:destroy!)
+      end
+    end
+  end
 end
