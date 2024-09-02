@@ -330,3 +330,9 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   opacity: 0.3;
   pointer-events: none;
 }
+
+.design-scaler-wrapper {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}

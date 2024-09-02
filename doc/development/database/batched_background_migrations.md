@@ -818,7 +818,7 @@ This command supports the following options:
 
 Output example:
 
-![List command](img/list_v15_4.png)
+![Output of the ChatOps command listing all the active batched background migrations.](img/list_v15_4.png)
 
 NOTE:
 ChatOps returns 20 batched background migrations order by `created_at` (DESC).
@@ -843,7 +843,7 @@ This command supports the following options:
 
 Output example:
 
-![Status command](img/status_v15_4.png)
+![Output of the ChatOps command to know the progress and status of a specific batched background migration using MIGRATION_ID.](img/status_v15_4.png)
 
 `Progress` represents the percentage of the background migration that has been completed.
 
@@ -877,7 +877,7 @@ This command supports the following options:
 
 Output example:
 
-![Pause command](img/pause_v15_4.png)
+![Output of the ChatOps command to pause a specific batched background migration using MIGRATION_ID.](img/pause_v15_4.png)
 
 NOTE:
 You can pause only `active` batched background migrations.
@@ -902,7 +902,7 @@ This command supports the following options:
 
 Output example:
 
-![Resume command](img/resume_v15_4.png)
+![Output of the ChatOps command to resume a specific batched background migration using MIGRATION_ID.](img/resume_v15_4.png)
 
 NOTE:
 You can resume only `active` batched background migrations

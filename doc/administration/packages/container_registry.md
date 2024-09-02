@@ -48,6 +48,11 @@ Otherwise, the container registry is not enabled. To enable it:
 The container registry works under HTTPS by default. You can use HTTP
 but it's not recommended and is beyond the scope of this document.
 
+### Helm Charts installations
+
+For Helm Charts installations, see [Using the Container Registry](https://docs.gitlab.com/charts/charts/registry/).
+in the Helm Charts documentation.
+
 ### Self-compiled installations
 
 If you self-compiled your GitLab installation:
