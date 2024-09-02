@@ -64,6 +64,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
   if (isGroup)
     injectVueAppBreadcrumbs(router, WorkItemBreadcrumb, apolloProvider, {
       workItemType: listWorkItemType,
+      epicsListPath,
     });
 
   apolloProvider.clients.defaultClient.cache.writeQuery({

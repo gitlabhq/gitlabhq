@@ -337,10 +337,10 @@ To resolve this issue, you can update the password expiration by either:
 
 - Using `gitlab-psql`:
 
-   ```sql
-   # gitlab-psql
-   UPDATE users SET password_expires_at = null WHERE username='<USERNAME>';
-   ```
+  ```sql
+  # gitlab-psql
+  UPDATE users SET password_expires_at = null WHERE username='<USERNAME>';
+  ```
 
 The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
 

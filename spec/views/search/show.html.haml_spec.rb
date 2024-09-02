@@ -6,7 +6,11 @@ RSpec.describe 'search/show', feature_category: :global_search do
   let(:search_term) { nil }
   let(:user) { build(:user) }
   let(:search_service_presenter) do
-    instance_double(SearchServicePresenter, without_count?: false, advanced_search_enabled?: false)
+    instance_double(SearchServicePresenter,
+      without_count?: false,
+      advanced_search_enabled?: false,
+      zoekt_enabled?: false
+    )
   end
 
   before do
@@ -58,7 +62,11 @@ RSpec.describe 'search/show', feature_category: :global_search do
 
     context 'search with full count' do
       let(:search_service_presenter) do
-        instance_double(SearchServicePresenter, without_count?: false, advanced_search_enabled?: false)
+        instance_double(SearchServicePresenter,
+          without_count?: false,
+          advanced_search_enabled?: false,
+          zoekt_enabled?: false
+        )
       end
 
       it 'renders meta tags for a group' do
@@ -81,7 +89,11 @@ RSpec.describe 'search/show', feature_category: :global_search do
 
     context 'search without full count' do
       let(:search_service_presenter) do
-        instance_double(SearchServicePresenter, without_count?: true, advanced_search_enabled?: false)
+        instance_double(SearchServicePresenter,
+          without_count?: true,
+          advanced_search_enabled?: false,
+          zoekt_enabled?: false
+        )
       end
 
       it 'renders meta tags for a group' do

@@ -8,7 +8,7 @@ import {
   GlFormCombobox,
   GlFormGroup,
   GlFormInput,
-  GlFormSelect,
+  GlCollapsibleListbox,
   GlFormTextarea,
   GlIcon,
   GlLink,
@@ -120,7 +120,7 @@ export default {
     GlFormCombobox,
     GlFormGroup,
     GlFormInput,
-    GlFormSelect,
+    GlCollapsibleListbox,
     GlFormTextarea,
     GlIcon,
     GlLink,
@@ -467,10 +467,11 @@ export default {
           '-gl-mb-1': hideEnvironmentScope,
         }"
       >
-        <gl-form-select
-          id="ci-variable-type"
+        <gl-collapsible-listbox
           v-model="variable.variableType"
-          :options="$options.variableOptions"
+          :items="$options.variableOptions"
+          block
+          fluid-width
         />
       </gl-form-group>
       <gl-form-group

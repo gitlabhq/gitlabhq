@@ -1,5 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import FlyoutMenu from '~/super_sidebar/components/flyout_menu.vue';
+import FlyoutMenu, { FLYOUT_PADDING } from '~/super_sidebar/components/flyout_menu.vue';
 
 jest.mock('@floating-ui/dom');
 
@@ -31,5 +31,10 @@ describe('FlyoutMenu', () => {
 
   it('renders the component', () => {
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('applies the correct padding', () => {
+    expect(wrapper.element.style.padding).toContain(`${FLYOUT_PADDING}px`);
+    expect(wrapper.element.style.paddingLeft).toContain(`${FLYOUT_PADDING * 2}px`);
   });
 });

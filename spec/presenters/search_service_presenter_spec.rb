@@ -57,4 +57,10 @@ RSpec.describe SearchServicePresenter, feature_category: :global_search do
 
     it { expect(presenter.advanced_search_enabled?).to eq(false) }
   end
+
+  describe '#zoekt_enabled?' do
+    let(:scope) { nil }
+
+    it { expect(presenter.zoekt_enabled?).to eq(false) }
+  end
 end

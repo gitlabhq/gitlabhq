@@ -203,8 +203,8 @@ To use self-managed runners, install [GitLab Runner](https://docs.gitlab.com/run
 To help you migrate your data to GitLab Dedicated, choose from the following options:
 
 1. When migrating from another GitLab instance, you can import groups and projects by either:
-    - Using [direct transfer](../../user/group/import/index.md).
-    - Using the [direct transfer](../../api/bulk_imports.md) API.
+   - Using [direct transfer](../../user/group/import/index.md).
+   - Using the [direct transfer](../../api/bulk_imports.md) API.
 1. When migrating from third-party services, you can use [the GitLab importers](../../user/project/import/index.md#supported-import-sources).
 1. You can also engage [Professional Services](../../user/project/import/index.md#migrate-by-engaging-professional-services).
 

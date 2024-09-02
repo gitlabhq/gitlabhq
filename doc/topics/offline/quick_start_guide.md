@@ -382,9 +382,9 @@ The directory for package metadata changed with the release of 16.2 from `vendor
 1. Update any automation scripts or commands saved to change `vendor/package_metadata_db` to `vendor/package_metadata/licenses`.
 1. Update any cron entries to change `vendor/package_metadata_db` to `vendor/package_metadata/licenses`.
 
-    ```shell
-    sed -i '.bckup' -e 's#vendor/package_metadata_db#vendor/package_metadata/licenses#g' [FILE ...]
-    ```
+   ```shell
+   sed -i '.bckup' -e 's#vendor/package_metadata_db#vendor/package_metadata/licenses#g' [FILE ...]
+   ```
 
 ### Troubleshooting
 

@@ -1,5 +1,6 @@
 import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import syntaxHighlight from '~/syntax_highlight';
 import { initSidebar } from './sidebar';
 import { initSearchSort } from './sort';
@@ -13,8 +14,16 @@ const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
   if (!el) return {};
 
-  const { navigationJson, searchType, searchLevel, groupInitialJson, projectInitialJson, ref } =
-    el.dataset;
+  const {
+    navigationJson,
+    searchType,
+    searchLevel,
+    advancedSearchAvailable,
+    zoektAvailable,
+    groupInitialJson,
+    projectInitialJson,
+    ref,
+  } = el.dataset;
 
   const navigationJsonParsed = JSON.parse(navigationJson);
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);
@@ -24,6 +33,8 @@ const sidebarInitState = () => {
     navigationJsonParsed,
     searchType,
     searchLevel,
+    advancedSearchAvailable: parseBoolean(advancedSearchAvailable),
+    zoektAvailable: parseBoolean(zoektAvailable),
     groupInitialJsonParsed,
     projectInitialJsonParsed,
     ref,
@@ -48,6 +59,8 @@ export const initSearchApp = () => {
     navigationJsonParsed: navigation,
     searchType,
     searchLevel,
+    advancedSearchAvailable,
+    zoektAvailable,
     groupInitialJsonParsed: groupInitialJson,
     projectInitialJsonParsed: projectInitialJson,
     ref,
@@ -60,6 +73,8 @@ export const initSearchApp = () => {
     navigation,
     searchType,
     searchLevel,
+    advancedSearchAvailable,
+    zoektAvailable,
     groupInitialJson,
     projectInitialJson,
     defaultBranchName,

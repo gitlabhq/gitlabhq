@@ -458,6 +458,29 @@ The project page will be removed entirely from the group settings in 18.0.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Rate limits for common User, Project, and Group API endpoints
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480914).
+
+</div>
+
+Rate limits will be enabled by default for commonly used [User](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html),
+[Project](https://docs.gitlab.com/ee/administration/settings/rate_limit_on_projects_api.html), and [Group](https://docs.gitlab.com/ee/administration/settings/rate_limit_on_groups_api.html) endpoints.
+Enabling these rate limits by default can help improve overall system stability,
+by reducing the potential for heavy API usage to negatively impact the broader user experience. Requests made above the rate
+limit will return an [HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) error code and [additional rate limit headers](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html#response-headers).
+
+The default rate limits have been intentionally set fairly high to not disrupt most usage, based on the request rates we see on GitLab.com.
+Instance administrators can set higher or lower limits as needed in the Admin area, similarly to other rate limits already in place.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 <div class="deprecation-notes">

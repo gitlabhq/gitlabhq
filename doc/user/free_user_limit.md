@@ -10,36 +10,45 @@ DETAILS:
 **Tier:** Free
 **Offering:** GitLab.com
 
-A five-user limit applies to newly created top-level namespaces with
-private visibility on GitLab.com. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.
+You can add up to five users to newly created top-level namespaces with
+private visibility on GitLab.com.
 
-When the five-user limit is applied, top-level private namespaces
-exceeding the user limit are placed in a read-only state. These
-namespaces cannot write new data to repositories, Git Large File
-Storage (LFS), packages, or registries. For the full list of restricted
-actions, see [Read-only namespaces](read_only_namespaces.md).
+If the namespace was created before December 28, 2022, this user limit was
+applied on June 13, 2023.
 
-In the Free tier of GitLab.com, user limits do not apply to users in:
+Top-level private namespaces with more than five users are placed in a read-only
+state. These namespaces cannot write new data to any of the following:
 
-- Public top-level groups
-- Paid tiers
-- [Community programs](https://about.gitlab.com/community/):
-  - GitLab for Open Source
-  - GitLab for Education
-  - GitLab for Startups
+- Repositories
+- Git Large File Storage (LFS)
+- Packages
+- Registries.
 
-[Self-managed subscriptions](../subscriptions/self_managed/index.md) do not have user limits on the Free tier. You can also [talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+For the full list of restricted actions, see [read-only namespaces](read_only_namespaces.md).
 
-NOTE:
-Personal namespaces are public by default and are excluded from the user limit.
+User limits do not apply to users in the Free tier of:
 
-## Determining namespace user counts
+- GitLab.com, for:
+  - Public top-level groups
+  - Personal namespaces, because they are public by default
+  - Paid tiers
+  - The following [community programs](https://about.gitlab.com/community/):
+    - GitLab for Open Source
+    - GitLab for Education
+    - GitLab for Startups
+- [Self-managed subscriptions](../subscriptions/self_managed/index.md)
 
-Every unique user of a top-level namespace with private visibility counts towards the five-user limit. This includes every user of a group, subgroup, and project within a namespace.
+For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 
-For example:
+## Determine namespace user counts
 
-The group `example-1` has:
+Every unique user of a top-level namespace with private visibility counts towards
+the five-user limit. This includes every user of a group, subgroup, and project
+within a namespace.
+
+For example, there are two groups, `example-1` and `example-2`.
+
+The `example-1` group has:
 
 - One group owner, `A`.
 - One subgroup called `subgroup-1` with one member, `B`.
@@ -47,9 +56,10 @@ The group `example-1` has:
 - One project in `subgroup-1` called `project-1` with two members, `C` and `D`.
   - `project-1` inherits `A` and `B` as members from `subgroup-1`.
 
-The namespace `example-1` has four unique members: `A`, `B`, `C`, and `D`. Because `example-1` has only four unique members, it is not impacted by the five-user limit.
+The namespace `example-1` has four unique members: `A`, `B`, `C`, and `D`, so
+does not exceed the five-user limit.
 
-The group `example-2` has:
+The `example-2` group has:
 
 - One group owner, `A`.
 - One subgroup called `subgroup-2` with one member, `B`.
@@ -59,7 +69,8 @@ The group `example-2` has:
 - One project in `subgroup-2` called `project-2b` with two members, `E` and `F`.
   - `project-2b` inherits `A` and `B` as members from `subgroup-2`.
 
-The namespace `example-2` has six unique members: `A`, `B`, `C`, `D`, `E`, and `F`. Because `example-2` has six unique users, it is impacted by the five-user limit.
+The namespace `example-2` has six unique members: `A`, `B`, `C`, `D`, `E`, and `F`,
+so it exceeds the five-user limit.
 
 ## Manage members in your group namespace
 

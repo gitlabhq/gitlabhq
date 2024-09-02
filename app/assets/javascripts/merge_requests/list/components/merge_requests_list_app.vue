@@ -17,6 +17,8 @@ import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/l
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
+  TOKEN_TITLE_APPROVED_BY,
+  TOKEN_TYPE_APPROVED_BY,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_DRAFT,
@@ -192,6 +194,19 @@ export default {
     searchTokens() {
       const preloadedUsers = [];
       const tokens = [
+        {
+          type: TOKEN_TYPE_APPROVED_BY,
+          title: TOKEN_TITLE_APPROVED_BY,
+          icon: 'approval',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS_NOT,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-approved_by`,
+          preloadedUsers,
+          multiSelect: false,
+        },
         {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,

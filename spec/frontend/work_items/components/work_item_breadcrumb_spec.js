@@ -8,16 +8,31 @@ describe('WorkItemBreadcrumb', () => {
 
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
 
-  const createComponent = ({ workItemType = null, $route = {} } = {}) => {
+  const createComponent = ({ workItemType = null, workItemEpicsList = true, $route = {} } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
       provide: {
         workItemType,
+        glFeatures: {
+          workItemEpicsList,
+        },
+        epicsListPath: '/epics',
       },
       mocks: {
         $route,
       },
     });
   };
+
+  it('renders a href to the legacy epics page if the workItemEpicsList feature is disabled', () => {
+    createComponent({ workItemType: WORK_ITEM_TYPE_ENUM_EPIC, workItemEpicsList: false });
+
+    expect(findBreadcrumb().props('items')).toEqual([
+      {
+        text: 'Epics',
+        href: '/epics',
+      },
+    ]);
+  });
 
   it('renders root `Work items` breadcrumb on work items list page', () => {
     createComponent();
