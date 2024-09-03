@@ -37,6 +37,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     userSnippets: {
       query: getUserSnippets,
       variables() {

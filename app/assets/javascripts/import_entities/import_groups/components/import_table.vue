@@ -121,12 +121,14 @@ export default {
   },
 
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     bulkImportSourceGroups: {
       query: bulkImportSourceGroupsQuery,
       variables() {
         return { page: this.page, filter: this.filter, perPage: this.perPage };
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     availableNamespaces: {
       query: searchNamespacesWhereUserCanImportProjectsQuery,
       update(data) {

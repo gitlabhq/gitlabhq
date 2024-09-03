@@ -1,4 +1,4 @@
-subscription mergeChecksSubscrption($issuableId: IssuableID!) {
+subscription mergeChecksSubscription($issuableId: IssuableID!) {
   mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
     ... on MergeRequest {
       id

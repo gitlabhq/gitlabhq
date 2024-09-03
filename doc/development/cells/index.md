@@ -164,6 +164,7 @@ desired_sharding_key:
       parent:
         foreign_key: scanner_id
         table: vulnerability_scanners
+        table_primary_key: id # Optional. Defaults to 'id'
         sharding_key: project_id
         belongs_to: scanner
 ```
@@ -192,6 +193,7 @@ desired_sharding_key:
       parent:
         foreign_key: package_file_id
         table: packages_package_files
+        table_primary_key: id # Optional. Defaults to 'id'
         sharding_key: project_id
         belongs_to: package_file
     awaiting_backfill_on_parent: true

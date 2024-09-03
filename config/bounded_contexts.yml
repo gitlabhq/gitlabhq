@@ -277,6 +277,7 @@ domains:
       - security_policy_management
       - software_composition_analysis
       - static_application_security_testing
+      - secret_detection
 
   ServiceDesk:
     description:

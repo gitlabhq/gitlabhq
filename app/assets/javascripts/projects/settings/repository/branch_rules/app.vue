@@ -2,11 +2,16 @@
 import { GlButton, GlModal, GlModalDirective, GlDisclosureDropdown } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import {
+  BRANCH_RULE_DETAILS_LABEL,
+  PROTECTED_BRANCH,
+} from '~/projects/settings/branch_rules/tracking/constants';
 import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRule from './components/branch_rule.vue';
@@ -124,6 +129,9 @@ export default {
       this.$refs[this.$options.modalId].show();
     },
     addBranchRule({ name }) {
+      InternalEvents.trackEvent(PROTECTED_BRANCH, {
+        label: BRANCH_RULE_DETAILS_LABEL,
+      });
       this.$apollo
         .mutate({
           mutation: createBranchRuleMutation,

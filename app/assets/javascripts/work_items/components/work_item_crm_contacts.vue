@@ -105,6 +105,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     searchItems: {
       query: getGroupContactsQuery,
       variables() {
@@ -123,6 +124,7 @@ export default {
         this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {

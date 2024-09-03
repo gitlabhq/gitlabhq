@@ -215,6 +215,20 @@ class WorkItem < Issue
     dates_source&.start_date || read_attribute(:start_date)
   end
 
+  def max_depth_reached?(child_type)
+    restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
+      work_item_type_id,
+      child_type.id
+    )
+    return false unless restriction&.maximum_depth
+
+    if work_item_type_id == child_type.id
+      same_type_base_and_ancestors.count >= restriction.maximum_depth
+    else
+      hierarchy(different_type_id: child_type.id).base_and_ancestors.count >= restriction.maximum_depth
+    end
+  end
+
   private
 
   override :parent_link_confidentiality
@@ -237,6 +251,7 @@ class WorkItem < Issue
   def hierarchy(options = {})
     base = self.class.where(id: id)
     base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
+    base = base.where(work_item_type_id: options[:different_type_id]) if options[:different_type_id]
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end

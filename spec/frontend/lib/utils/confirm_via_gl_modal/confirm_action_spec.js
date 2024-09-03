@@ -1,10 +1,12 @@
 import Vue, { nextTick } from 'vue';
 import { createWrapper } from '@vue/test-utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import ConfirmModal from '~/lib/utils/confirm_via_gl_modal/confirm_modal.vue';
 
 const originalMount = Vue.prototype.$mount;
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 describe('confirmAction', () => {
   let modalWrapper;
@@ -100,5 +102,20 @@ describe('confirmAction', () => {
     modal.vm.$emit('closed');
 
     await expect(confirActionPromise).resolves.toBe(true);
+  });
+
+  it('emits a tracking event when modal emit `confirmed` and event name is provided', async () => {
+    const trackingEvent = {
+      name: 'test_event',
+      label: 'test_label',
+    };
+    await renderRootComponent('', { trackingEvent });
+    const { trackEventSpy } = bindInternalEventDocument(modalWrapper.element);
+
+    modal.vm.$emit('confirmed');
+
+    expect(trackEventSpy).toHaveBeenCalledWith('test_event', {
+      label: 'test_label',
+    });
   });
 });

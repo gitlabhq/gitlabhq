@@ -97,6 +97,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     error: {
       query: errorQuery,
       update: (data) => data.boardsAppError,

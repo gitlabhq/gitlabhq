@@ -89,19 +89,19 @@ You can reference the instructions for running the demo app [here](https://opent
 
    ```yaml
    exporters:
-   otlphttp/gitlab:
-      endpoint: http://gdk.test:3443/api/v4/$PROJECT_ID/observability/ 
-      headers:
-         "private-token": "$TOKEN"
+      otlphttp/gitlab:
+         endpoint: http://gdk.test:3443/api/v4/$PROJECT_ID/observability/ 
+         headers:
+            "private-token": "$TOKEN"
 
    service:
-   pipelines:
-      traces:
-         exporters: [spanmetrics, otlphttp/gitlab]
-      metrics:
-         exporters: [otlphttp/gitlab]
-      logs:
-         exporters: [otlphttp/gitlab]
+      pipelines:
+         traces:
+            exporters: [spanmetrics, otlphttp/gitlab]
+         metrics:
+            exporters: [otlphttp/gitlab]
+         logs:
+            exporters: [otlphttp/gitlab]
    ```
 
 1. Save the config and start the demo app:

@@ -20,8 +20,13 @@ import {
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
 } from '../../constants';
-import { findHierarchyWidgets } from '../../utils';
+import {
+  findHierarchyWidgets,
+  saveShowLabelsToLocalStorage,
+  getShowLabelsFromLocalStorage,
+} from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
@@ -116,9 +121,11 @@ export default {
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: TASKS_ANCHOR,
+      defaultShowLabels: true,
       showLabels: true,
       fetchNextPageInProgress: false,
       disableContent: false,
+      showLabelsLocalStorageKey: WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY,
     };
   },
   computed: {
@@ -178,6 +185,12 @@ export default {
       return this.workItem?.workItemType?.name || '';
     },
   },
+  mounted() {
+    this.showLabels = getShowLabelsFromLocalStorage(
+      this.showLabelsLocalStorageKey,
+      this.defaultShowLabels,
+    );
+  },
   methods: {
     showAddForm(formType) {
       this.$refs.workItemsLinks.showForm();
@@ -222,6 +235,11 @@ export default {
     openReportAbuseModal(reply) {
       this.toggleReportAbuseModal(true, reply);
     },
+    toggleShowLabels() {
+      this.showLabels = !this.showLabels;
+      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
+    },
+    setShowLabelsFromLocalStorage() {},
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
         this.fetchNextPageInProgress = true;
@@ -303,7 +321,7 @@ export default {
         :work-item-type="workItemType"
         :show-labels="showLabels"
         :show-view-roadmap-action="false"
-        @toggle-show-labels="showLabels = !showLabels"
+        @toggle-show-labels="toggleShowLabels"
       />
     </template>
 

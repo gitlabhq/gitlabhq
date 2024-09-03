@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category: :importers do
-  let(:import_source_user) { create(:import_source_user, :awaiting_approval, :with_reassign_to_user) }
+  let(:import_source_user) { create(:import_source_user, :awaiting_approval) }
   let(:current_user) { import_source_user.reassign_to_user }
   let(:service) { described_class.new(import_source_user, current_user: current_user) }
 

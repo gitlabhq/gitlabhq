@@ -158,7 +158,7 @@ RSpec.describe Gitaly::Server do
       before do
         allow_next_instance_of(::Gitlab::GitalyClient::ServerService) do |instance|
           allow(instance).to receive(:server_signature).and_raise(GRPC::Unavailable)
-        end
+        end.once
       end
 
       it 'returns an error and no public_key' do

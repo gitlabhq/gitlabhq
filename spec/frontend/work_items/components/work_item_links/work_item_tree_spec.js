@@ -21,6 +21,8 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '~/work_items/constants';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import * as utils from '~/work_items/utils';
 import {
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
@@ -261,6 +263,18 @@ describe('WorkItemTree', () => {
   });
 
   describe('more actions', () => {
+    useLocalStorageSpy();
+
+    beforeEach(async () => {
+      jest.spyOn(utils, 'getShowLabelsFromLocalStorage');
+      jest.spyOn(utils, 'saveShowLabelsToLocalStorage');
+      await createComponent();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
     it.each`
       visible | workItemType
       ${true} | ${WORK_ITEM_TYPE_VALUE_EPIC}
@@ -293,6 +307,15 @@ describe('WorkItemTree', () => {
       await nextTick();
 
       expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+    });
+
+    it('calls saveShowLabelsToLocalStorage on toggle', () => {
+      findMoreActions().vm.$emit('toggle-show-labels');
+      expect(utils.saveShowLabelsToLocalStorage).toHaveBeenCalled();
+    });
+
+    it('calls getShowLabelsFromLocalStorage on mount', () => {
+      expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
     });
   });
 });

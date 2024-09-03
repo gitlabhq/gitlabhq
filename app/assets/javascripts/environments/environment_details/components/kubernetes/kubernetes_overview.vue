@@ -91,6 +91,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     fluxKustomization: {
       query: fluxKustomizationQuery,
       variables() {
@@ -108,6 +109,7 @@ export default {
         this.fluxApiError = err.message;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     fluxHelmRelease: {
       query: fluxHelmReleaseQueryStatus,
       variables() {

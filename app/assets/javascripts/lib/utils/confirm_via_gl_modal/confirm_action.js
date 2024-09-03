@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { InternalEvents } from '~/tracking';
 
 export function confirmAction(
   message,
@@ -13,6 +14,7 @@ export function confirmAction(
     title,
     hideCancel,
     size,
+    trackingEvent,
   } = {},
 ) {
   return new Promise((resolve) => {
@@ -42,6 +44,13 @@ export function confirmAction(
             on: {
               confirmed() {
                 confirmed = true;
+                if (trackingEvent) {
+                  InternalEvents.trackEvent(trackingEvent.name, {
+                    label: trackingEvent.label,
+                    property: trackingEvent.property,
+                    value: trackingEvent.value,
+                  });
+                }
               },
               closed() {
                 component.$destroy();

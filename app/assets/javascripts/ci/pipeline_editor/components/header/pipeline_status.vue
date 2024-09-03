@@ -47,12 +47,14 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     pipelineEtag: {
       query: getPipelineEtag,
       update(data) {
         return data.etags?.pipeline;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     pipeline: {
       context() {
         return getQueryHeaders(this.pipelineEtag);

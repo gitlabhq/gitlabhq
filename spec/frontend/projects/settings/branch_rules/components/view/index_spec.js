@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlModal, GlCollapsibleListbox, GlToast } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -75,6 +76,7 @@ describe('View branch rules', () => {
     .mockResolvedValue(protectableBranchesMockResponse);
   const errorHandler = jest.fn().mockRejectedValue('error');
   const showToast = jest.fn();
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = async ({
     glFeatures = { editBranchRules: true },
@@ -289,6 +291,16 @@ describe('View branch rules', () => {
       );
     });
 
+    it('emits a tracking event when edit button in modal is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findBranchRuleModal().vm.$emit('primary', '*-test');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('change_branch_rule_target', {
+        label: 'branch_rule_details',
+      });
+    });
+
     it('shows an alert if response contains an error', async () => {
       const mockResponse = { branchRuleUpdate: { errors: ['some error'], branchRule: null } };
       const editMutationHandler = jest
@@ -345,6 +357,17 @@ describe('View branch rules', () => {
       expect(util.visitUrl).toHaveBeenCalledWith('/-/settings/repository#branch_rules');
     });
 
+    it('emits tracking event when branch rule is deleted', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findDeleteRuleModal().vm.$emit('ok');
+      await nextTick();
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('unprotect_branch', {
+        label: 'branch_rule_details',
+      });
+    });
+
     it('if error happens it shows an alert', async () => {
       await createComponent({
         glFeatures: { editBranchRules: true },
@@ -391,7 +414,7 @@ describe('View branch rules', () => {
     drawerType          | title                               | findProtection        | accessLevels
     ${'merge'}          | ${'Edit allowed to merge'}          | ${findAllowedToMerge} | ${{ mergeAccessLevels: [{ accessLevel: 30 }] }}
     ${'push and merge'} | ${'Edit allowed to push and merge'} | ${findAllowedToPush}  | ${{ pushAccessLevels: [{ accessLevel: 30 }] }}
-  `('allowed to $drawerType drawer', ({ title, findProtection, accessLevels }) => {
+  `('allowed to $drawerType drawer', ({ drawerType, title, findProtection, accessLevels }) => {
     const openEditRuleDrawer = () => {
       findProtection().vm.$emit('edit');
       return nextTick();
@@ -435,6 +458,19 @@ describe('View branch rules', () => {
 
       expect(findRuleDrawer().props('isLoading')).toEqual(false);
     });
+
+    it('emits a tracking event when save button is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await openEditRuleDrawer();
+      findRuleDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      await waitForPromises();
+
+      const eventName =
+        drawerType === 'merge' ? 'change_allowed_to_merge' : 'change_allowed_to_push_and_merge';
+      expect(trackEventSpy).toHaveBeenCalledWith(eventName, {
+        label: 'branch_rule_details',
+      });
+    });
   });
 
   describe('Allow force push editing', () => {
@@ -467,6 +503,16 @@ describe('View branch rules', () => {
           },
         }),
       );
+    });
+
+    it('emits a tracking event when a toggle is triggered', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findAllowForcePushToggle().vm.$emit('toggle', false);
+      await nextTick();
+      await waitForPromises();
+      expect(trackEventSpy).toHaveBeenCalledWith('change_allow_force_push', {
+        label: 'branch_rule_details',
+      });
     });
   });
 

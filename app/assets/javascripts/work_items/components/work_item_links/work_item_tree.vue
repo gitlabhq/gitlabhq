@@ -12,8 +12,14 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_EPIC,
   CHILD_ITEMS_ANCHOR,
+  WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
 } from '../../constants';
-import { findHierarchyWidgets, getDefaultHierarchyChildrenCount } from '../../utils';
+import {
+  findHierarchyWidgets,
+  getDefaultHierarchyChildrenCount,
+  saveShowLabelsToLocalStorage,
+  getShowLabelsFromLocalStorage,
+} from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
@@ -93,13 +99,16 @@ export default {
       formType: null,
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
+      defaultShowLabels: true,
       showLabels: true,
       fetchNextPageInProgress: false,
       workItem: {},
       disableContent: false,
+      showLabelsLocalStorageKey: WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     hierarchyWidget: {
       query: getWorkItemTreeQuery,
       variables() {
@@ -181,6 +190,12 @@ export default {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;
     },
   },
+  mounted() {
+    this.showLabels = getShowLabelsFromLocalStorage(
+      this.showLabelsLocalStorageKey,
+      this.defaultShowLabels,
+    );
+  },
   methods: {
     genericActionItems(workItem) {
       const enumType = WORK_ITEM_TYPE_VALUE_MAP[workItem];
@@ -209,6 +224,10 @@ export default {
     },
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
+    },
+    toggleShowLabels() {
+      this.showLabels = !this.showLabels;
+      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -266,7 +285,7 @@ export default {
         :work-item-type="workItemType"
         :show-labels="showLabels"
         show-view-roadmap-action
-        @toggle-show-labels="showLabels = !showLabels"
+        @toggle-show-labels="toggleShowLabels"
       />
     </template>
 

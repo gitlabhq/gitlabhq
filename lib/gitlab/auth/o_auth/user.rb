@@ -45,7 +45,7 @@ module Gitlab
         end
 
         def valid?
-          gl_user.try(:valid?)
+          !any_auth_hash_errors? && gl_user.try(:valid?)
         end
 
         def valid_sign_in?
@@ -53,6 +53,8 @@ module Gitlab
         end
 
         def save(provider = protocol_name)
+          return false if any_auth_hash_errors?
+
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
 
@@ -307,6 +309,19 @@ module Gitlab
 
           auto_link = Array(auto_link)
           auto_link.include?(auth_hash.provider)
+        end
+
+        def any_auth_hash_errors?
+          return false if auth_hash.errors.empty?
+
+          assign_errors_from_auth_hash
+          true
+        end
+
+        def assign_errors_from_auth_hash
+          auth_hash.errors.each do |attr, error|
+            gl_user.errors.add(attr, error)
+          end
         end
       end
     end

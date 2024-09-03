@@ -192,6 +192,12 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     closed
                   }
                 }
+                depthLimitReachedByType {
+                  workItemType {
+                    name
+                  }
+                  depthLimitReached
+                }
               }
             }
           GRAPHQL
@@ -219,6 +225,12 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                       'opened' => 2,
                       'closed' => 0
                     }
+                  )
+                ]),
+                'depthLimitReachedByType' => match_array([
+                  hash_including(
+                    'workItemType' => hash_including('name' => 'Task'),
+                    'depthLimitReached' => false
                   )
                 ])
               )

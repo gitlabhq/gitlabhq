@@ -183,7 +183,7 @@ export default {
 
           <!-- Attributes area: CI, epic count, weight, milestone -->
           <!-- They have a different order on large screen sizes -->
-          <div class="item-attributes-area gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+          <div class="item-attributes-area gl-flex gl-items-center gl-gap-3">
             <span v-if="hasPipeline" class="mr-ci-status order-md-last -gl-mr-2 md:gl-ml-3">
               <ci-icon :status="pipelineStatus" />
             </span>

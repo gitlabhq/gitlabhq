@@ -110,6 +110,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     issuableTimeTracking: {
       query() {
         return timeTrackingQueries[this.issuableType].query;

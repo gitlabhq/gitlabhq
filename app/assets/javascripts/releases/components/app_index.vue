@@ -55,6 +55,7 @@ export default {
      * quickly than `fullGraphqlResponse`, which allows the page to show
      * meaningful content to the user much earlier.
      */
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     singleGraphqlResponse: {
       query: allReleasesQuery,
       // This trick only works when paginating _forward_.
@@ -76,6 +77,7 @@ export default {
         this.singleRequestError = true;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     fullGraphqlResponse: {
       query: allReleasesQuery,
       variables() {
@@ -94,6 +96,7 @@ export default {
         });
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     isCatalogResource: {
       query: getCiCatalogSettingsQuery,
       variables() {

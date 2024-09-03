@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqLogging::StructuredLogger, feature_category: :shared do
+RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
   before do
     # We disable a memory instrumentation feature
     # as this requires a special patched Ruby
@@ -492,13 +492,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger, feature_category: :shar
         'completed_at' => current_utc_time.to_i }
     end
 
-    let(:config) do
-      config = Sidekiq::Config.new
-      config.logger = Sidekiq.logger
-      config
-    end
-
-    subject { described_class.new(config) }
+    subject { described_class.new(Sidekiq.logger) }
 
     it 'update payload correctly' do
       travel_to(current_utc_time) do

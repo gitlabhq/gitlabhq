@@ -128,6 +128,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workspaceWorkItems: {
       query() {
         // TODO: Remove the this.isIssue check once issues are migrated to work items
@@ -155,6 +156,7 @@ export default {
         this.$emit('error', this.$options.i18n.workItemsFetchError);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemsByReference: {
       query: workItemsByReferencesQuery,
       variables() {

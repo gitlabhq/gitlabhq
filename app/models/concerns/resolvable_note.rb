@@ -12,7 +12,7 @@ module ResolvableNote
     validates :resolved_by, presence: true, if: :resolved?
 
     # Keep this scope in sync with `#potentially_resolvable?`
-    scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: Noteable.resolvable_types) }
+    scope :potentially_resolvable, -> { where(type: resolvable_types).where(noteable_type: Noteable.resolvable_types) }
     # Keep this scope in sync with `#resolvable?`
     scope :resolvable, -> { potentially_resolvable.user }
 
@@ -31,11 +31,16 @@ module ResolvableNote
     def unresolve!
       resolved.update_all(updated_at: Time.current, resolved_at: nil, resolved_by_id: nil)
     end
+
+    # overridden on EE
+    def resolvable_types
+      RESOLVABLE_TYPES
+    end
   end
 
   # Keep this method in sync with the `potentially_resolvable` scope
   def potentially_resolvable?
-    RESOLVABLE_TYPES.include?(self.class.name) && noteable&.supports_resolvable_notes?
+    self.class.resolvable_types.include?(self.class.name) && noteable&.supports_resolvable_notes?
   end
 
   # Keep this method in sync with the `resolvable` scope
@@ -88,3 +93,5 @@ module ResolvableNote
     unresolve_without_save && save!
   end
 end
+
+ResolvableNote::ClassMethods.prepend_mod_with('ResolvableNote::ClassMethods')

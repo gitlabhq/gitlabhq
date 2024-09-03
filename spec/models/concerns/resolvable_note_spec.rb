@@ -42,6 +42,15 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
     end
   end
 
+  describe '.resolvable_types' do
+    specify do
+      types = described_class::RESOLVABLE_TYPES
+      types += EE::ResolvableNote::EE_RESOLVABLE_TYPES if Gitlab.ee?
+
+      expect(described_class.resolvable_types).to eq(types)
+    end
+  end
+
   describe ".resolve!" do
     let(:current_user) { create(:user) }
     let!(:commit_note) { create(:diff_note_on_commit, project: project) }

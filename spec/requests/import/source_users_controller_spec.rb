@@ -26,18 +26,29 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
   end
 
   shared_examples 'it requires awaiting approval status' do
-    it 'show error message' do
+    it 'shows error message' do
       source_user.accept!
 
-      subject
+      expect { subject }.not_to change { source_user.reload.status }
 
       expect(response).to redirect_to(dashboard_groups_path)
-      expect(flash[:alert]).to match(/The invitation is no longer valid./)
+      expect(flash[:raw]).to match(/Reassignment not available/)
+    end
+  end
+
+  shared_examples 'it requires the user is the reassign to user' do
+    it 'shows error message' do
+      source_user.update!(reassign_to_user: create(:user))
+
+      expect { subject }.not_to change { source_user.reload.status }
+
+      expect(response).to redirect_to(dashboard_groups_path)
+      expect(flash[:raw]).to match(/Reassignment not available/)
     end
   end
 
   let_it_be_with_reload(:source_user) do
-    create(:import_source_user, :with_reassign_to_user, :with_reassigned_by_user, :awaiting_approval)
+    create(:import_source_user, :with_reassigned_by_user, :awaiting_approval)
   end
 
   describe 'POST /accept' do
@@ -65,15 +76,6 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
         expect(flash[:raw]).to match(/Reassignment approved/)
       end
 
-      it 'can only be accepted by the reassign_to_user' do
-        source_user.update!(reassign_to_user: create(:user))
-
-        expect { accept_invite }.not_to change { source_user.reload.status }
-
-        expect(response).to redirect_to(dashboard_groups_path)
-        expect(flash[:raw]).to match(/Reassignment cancelled/)
-      end
-
       it 'cannot be accepted twice' do
         allow(Import::SourceUser).to receive(:find).and_return(source_user)
         allow(source_user).to receive(:accept).and_return(false)
@@ -85,6 +87,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       end
 
       it_behaves_like 'it requires awaiting approval status'
+      it_behaves_like 'it requires the user is the reassign to user'
     end
 
     it_behaves_like 'it requires feature flag'
@@ -124,6 +127,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       end
 
       it_behaves_like 'it requires awaiting approval status'
+      it_behaves_like 'it requires the user is the reassign to user'
     end
 
     it_behaves_like 'it requires feature flag'
@@ -146,19 +150,8 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:success)
       end
 
-      context 'when the user is not the reassign_to_user' do
-        it 'does not show invite and shows the invalid invite error message' do
-          source_user.update!(reassign_to_user: create(:user))
-          source_user.accept!
-
-          show_invite
-
-          expect(response).to redirect_to(dashboard_groups_path)
-          expect(flash[:raw]).to match(/Reassignment cancelled/)
-        end
-      end
-
       it_behaves_like 'it requires awaiting approval status'
+      it_behaves_like 'it requires the user is the reassign to user'
     end
 
     it_behaves_like 'it requires feature flag'

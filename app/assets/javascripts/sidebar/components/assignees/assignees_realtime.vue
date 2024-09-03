@@ -26,6 +26,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     issuable: {
       query() {
         return assigneesQueries[this.issuableType].query;

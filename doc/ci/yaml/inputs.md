@@ -106,7 +106,7 @@ spec:
   stage: $[[ inputs.job-stage ]]
   script:
     - echo "scanning website -e $[[ inputs.environment ]] -c $[[ inputs.concurrency ]] -v $[[ inputs.version ]]"
-    - if [ $[[ inputs.export_results ]] ]; then echo "export results"; fi
+    - if $[[ inputs.export_results ]]; then echo "export results"; fi
 ```
 
 In this example:

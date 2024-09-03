@@ -27,6 +27,12 @@ module WorkItems
         end
       end
 
+      def depth_limit_reached_by_type
+        work_item.work_item_type.descendant_types.map do |child_type|
+          { work_item_type: child_type, depth_limit_reached: work_item.max_depth_reached?(child_type) }
+        end
+      end
+
       def self.quick_action_commands
         [:set_parent, :add_child, :remove_parent, :remove_child]
       end

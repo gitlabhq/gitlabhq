@@ -31,6 +31,7 @@ export default {
   TYPE_MERGE_REQUEST,
   apollo: {
     $subscribe: {
+      // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
       title: {
         query() {
           return titleSubscription;

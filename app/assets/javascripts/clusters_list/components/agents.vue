@@ -24,6 +24,7 @@ export default {
   AGENT_FEEDBACK_ISSUE,
   AGENT_FEEDBACK_KEY,
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     agents: {
       query: getAgentsQuery,
       variables() {
@@ -41,6 +42,7 @@ export default {
         this.queryErrored = true;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     treeList: {
       query: getTreeList,
       variables() {

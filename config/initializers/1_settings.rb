@@ -933,6 +933,9 @@ Gitlab.ee do
   Settings.cron_jobs['observability_alert_query_worker'] ||= {}
   Settings.cron_jobs['observability_alert_query_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['observability_alert_query_worker']['job_class'] = 'Observability::AlertQueryWorker'
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb'] ||= {}
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb']['job_class'] = 'Security::Policies::ReportSecurityPoliciesMetricsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

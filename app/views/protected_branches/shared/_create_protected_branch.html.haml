@@ -43,6 +43,6 @@
         - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
         = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
   = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity
-  = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { testid: 'protect-button' }, pajamas_button: true
+  = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { testid: 'protect-button', event_tracking: 'protect_branch', event_label: 'repository_settings' }, pajamas_button: true
   = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
     = _('Cancel')

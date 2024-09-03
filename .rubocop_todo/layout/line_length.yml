@@ -3916,8 +3916,6 @@ Layout/LineLength:
     - 'spec/requests/api/commit_statuses_spec.rb'
     - 'spec/requests/api/commits_spec.rb'
     - 'spec/requests/api/composer_packages_spec.rb'
-    - 'spec/requests/api/conan_instance_packages_spec.rb'
-    - 'spec/requests/api/conan_project_packages_spec.rb'
     - 'spec/requests/api/debian_group_packages_spec.rb'
     - 'spec/requests/api/debian_project_packages_spec.rb'
     - 'spec/requests/api/deploy_keys_spec.rb'

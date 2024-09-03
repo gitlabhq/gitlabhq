@@ -14,6 +14,7 @@ export default {
   mixins: [timeagoMixin],
   inject: ['rootUrl', 'userId'],
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     userAchievements: {
       query: getUserAchievements,
       variables() {

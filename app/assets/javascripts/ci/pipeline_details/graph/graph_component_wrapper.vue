@@ -105,6 +105,7 @@ export default {
         );
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     headerPipeline: {
       query: getPipelineQuery,
       // this query is already being called in pipeline_header.vue, which shares the same cache as this component

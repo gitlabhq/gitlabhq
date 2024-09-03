@@ -29163,7 +29163,8 @@ Project-level settings for product analytics provider.
 | <a id="projectsavedreplies"></a>`savedReplies` **{warning-solid}** | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. Saved replies available to the project. Available only when feature flag `project_saved_replies_flag` is enabled. |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
-| <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` | [`NamespaceConnection`](#namespaceconnection) | Namespaces linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
+| <a id="projectsecuritypolicyprojectlinkedgroups"></a>`securityPolicyProjectLinkedGroups` | [`GroupConnection`](#groupconnection) | Groups linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
+| <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` **{warning-solid}** | [`NamespaceConnection`](#namespaceconnection) | **Deprecated** in GitLab 17.4. This was renamed. Use: `security_policy_project_linked_groups`. |
 | <a id="projectsecuritypolicyprojectlinkedprojects"></a>`securityPolicyProjectLinkedProjects` | [`ProjectConnection`](#projectconnection) | Projects linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
 | <a id="projectsentryerrors"></a>`sentryErrors` | [`SentryErrorCollection`](#sentryerrorcollection) | Paginated collection of Sentry errors on the project. |
@@ -34654,6 +34655,17 @@ Represents work item counts for the work item type.
 | <a id="workitemtypecountsbystatecountsbystate"></a>`countsByState` | [`WorkItemStateCountsType!`](#workitemstatecountstype) | Total number of work items for the represented states. |
 | <a id="workitemtypecountsbystateworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Work item type. |
 
+### `WorkItemTypeDepthLimitReachedByType`
+
+Represents Depth limit reached for the allowed work item type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypedepthlimitreachedbytypedepthlimitreached"></a>`depthLimitReached` | [`Boolean!`](#boolean) | Indicates if maximum allowed depth has been reached for the descendant type. |
+| <a id="workitemtypedepthlimitreachedbytypeworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Work item type. |
+
 ### `WorkItemWidgetAssignees`
 
 Represents an assignees widget.
@@ -34874,6 +34886,7 @@ Represents a hierarchy widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgethierarchyancestors"></a>`ancestors` | [`WorkItemConnection`](#workitemconnection) | Ancestors (parents) of the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgethierarchychildren"></a>`children` | [`WorkItemConnection`](#workitemconnection) | Child work items. (see [Connections](#connections)) |
+| <a id="workitemwidgethierarchydepthlimitreachedbytype"></a>`depthLimitReachedByType` **{warning-solid}** | [`[WorkItemTypeDepthLimitReachedByType!]!`](#workitemtypedepthlimitreachedbytype) | **Introduced** in GitLab 17.4. **Status**: Experiment. Depth limit reached by allowed work item type. |
 | <a id="workitemwidgethierarchyhaschildren"></a>`hasChildren` | [`Boolean!`](#boolean) | Indicates if the work item has children. |
 | <a id="workitemwidgethierarchyhasparent"></a>`hasParent` | [`Boolean!`](#boolean) | Indicates if the work item has a parent. |
 | <a id="workitemwidgethierarchyparent"></a>`parent` | [`WorkItem`](#workitem) | Parent work item. |

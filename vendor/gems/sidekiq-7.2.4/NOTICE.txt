@@ -1,0 +1,13 @@
+Copyright (c) Contributed Systems LLC
+
+This product includes software developed at
+Contributed Systems LLC(https://contribsys.com/).
+
+Modifications to the following files were made on 2024-08-22 by GitLab:
+- lib/sidekiq/redis_client_adapter.rb
+- lib/sidekiq/api.rb
+- lib/sidekiq/cli.rb
+- lib/sidekiq/paginator.rb
+- lib/sidekiq/scheduled.rb
+- sidekiq.gemspec
+- test/web_test.rb

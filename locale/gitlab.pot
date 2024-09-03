@@ -865,6 +865,9 @@ msgstr ""
 msgid "%{fork_icon} %{source_project_path}:%{source_branch}"
 msgstr ""
 
+msgid "%{get_started}Get started with Git%{get_started_end} and learn %{git_config}how to configure it%{git_config_end}."
+msgstr ""
+
 msgid "%{global_id} is not a valid ID for %{expected_types}."
 msgstr ""
 
@@ -1044,6 +1047,9 @@ msgid "%{linkStart}Advanced search%{linkEnd} is disabled since %{ref_elem} is no
 msgstr ""
 
 msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
+msgstr ""
+
+msgid "%{link}How to use SSH keys%{link_end}?"
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more"
@@ -3297,6 +3303,9 @@ msgid "Add existing confidential %{issuableType}"
 msgstr ""
 
 msgid "Add existing issue"
+msgstr ""
+
+msgid "Add files"
 msgstr ""
 
 msgid "Add group or project"
@@ -14524,6 +14533,15 @@ msgstr ""
 msgid "Configure with a merge request"
 msgstr ""
 
+msgid "Configure your Git identity"
+msgstr ""
+
+msgid "Configure your Git identity globally to use it for all current and future projects on your machine:"
+msgstr ""
+
+msgid "Configure your Git identity locally to use it only for this project:"
+msgstr ""
+
 msgid "Configure your environments to be deployed to specific geographical regions"
 msgstr ""
 
@@ -24252,6 +24270,9 @@ msgstr ""
 msgid "Git global setup"
 msgstr ""
 
+msgid "Git local setup"
+msgstr ""
+
 msgid "Git repository URL"
 msgstr ""
 
@@ -24802,6 +24823,9 @@ msgid "Given epic is already related to this epic."
 msgstr ""
 
 msgid "Given inputs not defined in the `spec` section of the included configuration file"
+msgstr ""
+
+msgid "Global"
 msgstr ""
 
 msgid "Global SAML group membership lock"
@@ -26712,6 +26736,9 @@ msgid "HTTP Archive (HAR)"
 msgstr ""
 
 msgid "HTTP Basic: Access denied. The provided password or token is incorrect or your account has 2FA enabled and you must use a personal access token instead of a password. See %{help_page_url}"
+msgstr ""
+
+msgid "HTTPS"
 msgstr ""
 
 msgid "Harbor Registry"
@@ -30045,6 +30072,9 @@ msgstr ""
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
+msgid "JWT must be less than 10KB"
+msgstr ""
+
 msgid "Jan"
 msgstr ""
 
@@ -30973,6 +31003,9 @@ msgid "Keep divergent refs"
 msgstr ""
 
 msgid "Keep sidebar visible"
+msgstr ""
+
+msgid "Kerberos"
 msgstr ""
 
 msgid "Kerberos access denied"
@@ -44164,6 +44197,9 @@ msgstr ""
 msgid "Push events"
 msgstr ""
 
+msgid "Push files to this repository using SSH or HTTPS. If you're unsure, we recommend SSH."
+msgstr ""
+
 msgid "Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
 msgstr ""
 
@@ -47236,6 +47272,9 @@ msgid "SOC 2"
 msgstr ""
 
 msgid "SOC2"
+msgstr ""
+
+msgid "SSH"
 msgstr ""
 
 msgid "SSH Key"
@@ -56230,6 +56269,9 @@ msgstr ""
 msgid "To get started, click the link below to confirm your account."
 msgstr ""
 
+msgid "To get started, clone the repository or upload some files."
+msgstr ""
+
 msgid "To get started, please enter your Gitea host URL and a %{link_to_personal_token}."
 msgstr ""
 
@@ -58748,9 +58790,6 @@ msgstr ""
 msgid "UserMapping|Reassignment approved"
 msgstr ""
 
-msgid "UserMapping|Reassignment cancelled"
-msgstr ""
-
 msgid "UserMapping|Reassignment details:"
 msgstr ""
 
@@ -58761,6 +58800,9 @@ msgid "UserMapping|Reassignment has not started."
 msgstr ""
 
 msgid "UserMapping|Reassignment in progress."
+msgstr ""
+
+msgid "UserMapping|Reassignment not available"
 msgstr ""
 
 msgid "UserMapping|Reassignment rejected"
@@ -58808,12 +58850,6 @@ msgstr ""
 msgid "UserMapping|The invitation could not be declined."
 msgstr ""
 
-msgid "UserMapping|The invitation is no longer valid."
-msgstr ""
-
-msgid "UserMapping|The reassignment has been cancelled by the group owner."
-msgstr ""
-
 msgid "UserMapping|There was a problem cancelling placeholder user reassignment."
 msgstr ""
 
@@ -58845,6 +58881,9 @@ msgid "UserMapping|You have approved the reassignment of contributions from %{st
 msgstr ""
 
 msgid "UserMapping|You have rejected the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}."
+msgstr ""
+
+msgid "UserMapping|You might have already accepted or rejected the reassignment, or it might have been canceled by the group owner."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"
@@ -62226,9 +62265,6 @@ msgstr ""
 msgid "You can find more information about GitLab subscriptions in %{subscriptions_doc_link}."
 msgstr ""
 
-msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
-msgstr ""
-
 msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr ""
 
@@ -64763,6 +64799,9 @@ msgid "mrWidget|Your merge request is almost ready!"
 msgstr ""
 
 msgid "mrWidget|Your password"
+msgstr ""
+
+msgid "must be 254 characters or less."
 msgstr ""
 
 msgid "must be a boolean value"

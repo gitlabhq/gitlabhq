@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category: :importers do
-  let(:import_source_user) { create(:import_source_user, :awaiting_approval, :with_reassign_to_user) }
+  let(:import_source_user) { create(:import_source_user, :awaiting_approval) }
   let(:current_user) { import_source_user.reassign_to_user }
   let(:service) { described_class.new(import_source_user, current_user: current_user) }
 
@@ -45,17 +45,22 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
       it_behaves_like 'current user does not have permission to accept reassignment'
     end
 
-    context 'when there is no user to reassign to' do
-      before do
-        import_source_user.update!(reassign_to_user: nil)
-      end
+    context 'when no current user is provided' do
+      let(:current_user) { nil }
 
       it_behaves_like 'current user does not have permission to accept reassignment'
+    end
 
-      context 'and no current user is provided' do
-        let(:current_user) { nil }
+    context 'when the source user is not awaiting approval' do
+      let(:import_source_user) { create(:import_source_user, :reassignment_in_progress) }
 
-        it_behaves_like 'current user does not have permission to accept reassignment'
+      it 'returns transition error' do
+        expect(Import::ReassignPlaceholderUserRecordsWorker).not_to receive(:perform_async)
+
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to include('Status cannot transition via "accept"')
       end
     end
   end

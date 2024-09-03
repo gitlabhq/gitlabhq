@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/alert');
 
@@ -63,6 +64,8 @@ const MERGE_DROPDOWN_TESTID = 'protected-branch-allowed-to-merge';
 const PUSH_DROPDOWN_TESTID = 'protected-branch-allowed-to-push';
 const INIT_MERGE_DATA_TESTID = 'js-allowed-to-merge';
 const INIT_PUSH_DATA_TESTID = 'js-allowed-to-push';
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 describe('ProtectedBranchEdit', () => {
   let mock;
@@ -280,6 +283,32 @@ describe('ProtectedBranchEdit', () => {
           }),
         );
       });
+
+      it('emits a tracking event for Allowed to merge dropdown', async () => {
+        const selectedValue = [{ access_level: 40 }];
+        const ProtectedBranchEditInstance = create();
+        const dropdown = ProtectedBranchEditInstance.merge_access_levels_dropdown;
+        const { trackEventSpy } = bindInternalEventDocument(dropdown.element);
+        dropdown.$emit('select', selectedValue);
+        dropdown.$emit('hidden');
+        await waitForPromises();
+        expect(trackEventSpy).toHaveBeenCalledWith('change_allowed_to_merge', {
+          label: 'repository_settings',
+        });
+      });
+
+      it('emits a tracking event for Allowed to push and merge dropdown', async () => {
+        const selectedValue = [{ access_level: 40 }];
+        const ProtectedBranchEditInstance = create();
+        const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
+        const { trackEventSpy } = bindInternalEventDocument(dropdown.element);
+        dropdown.$emit('select', selectedValue);
+        dropdown.$emit('hidden');
+        await waitForPromises();
+        expect(trackEventSpy).toHaveBeenCalledWith('change_allowed_to_push_and_merge', {
+          label: 'repository_settings',
+        });
+      });
     });
   });
 
@@ -328,65 +357,79 @@ describe('ProtectedBranchEdit', () => {
     });
 
     describe.each`
-      description     | checkedOption               | patchParam                        | finder
-      ${'force push'} | ${'forcePushToggleChecked'} | ${'allow_force_push'}             | ${findForcePushToggle}
-      ${'code owner'} | ${'codeOwnerToggleChecked'} | ${'code_owner_approval_required'} | ${findCodeOwnerToggle}
-    `('when unchecked $description toggle button', ({ checkedOption, patchParam, finder }) => {
-      let toggle;
+      description     | checkedOption               | patchParam                        | finder                 | trackingEvent
+      ${'force push'} | ${'forcePushToggleChecked'} | ${'allow_force_push'}             | ${findForcePushToggle} | ${'change_allow_force_push'}
+      ${'code owner'} | ${'codeOwnerToggleChecked'} | ${'code_owner_approval_required'} | ${findCodeOwnerToggle} | ${'change_require_codeowner_approval'}
+    `(
+      'when unchecked $description toggle button',
+      ({ checkedOption, patchParam, finder, trackingEvent }) => {
+        let toggle;
 
-      beforeEach(() => {
-        create({ [checkedOption]: false });
-
-        toggle = finder();
-      });
-
-      it('is not changed', () => {
-        expect(toggle).not.toHaveClass(IS_CHECKED_CLASS);
-        expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-        expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
-      });
-
-      describe('when clicked', () => {
         beforeEach(() => {
-          mock
-            .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
-            .replyOnce(HTTP_STATUS_OK, {});
+          create({ [checkedOption]: false });
+
+          toggle = finder();
         });
 
-        it('checks and disables button', async () => {
-          await toggle.click();
-
-          expect(toggle).toHaveClass(IS_CHECKED_CLASS);
-          expect(toggle.querySelector(IS_LOADING_SELECTOR)).not.toBe(null);
-          expect(toggle).toHaveClass(IS_DISABLED_CLASS);
-        });
-
-        it('sends update to BE', async () => {
-          await toggle.click();
-
-          await axios.waitForAll();
-
-          // Args are asserted in the `.onPatch` call
-          expect(mock.history.patch).toHaveLength(1);
-
-          expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
+        it('is not changed', () => {
+          expect(toggle).not.toHaveClass(IS_CHECKED_CLASS);
           expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-          expect(createAlert).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('when clicked and BE error', () => {
-        beforeEach(() => {
-          mock.onPatch(TEST_URL).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-          toggle.click();
+          expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
         });
 
-        it('alerts error', async () => {
-          await axios.waitForAll();
+        describe('when clicked', () => {
+          beforeEach(() => {
+            mock
+              .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
+              .replyOnce(HTTP_STATUS_OK, {});
+          });
 
-          expect(createAlert).toHaveBeenCalled();
+          it('checks and disables button', async () => {
+            await toggle.click();
+
+            expect(toggle).toHaveClass(IS_CHECKED_CLASS);
+            expect(toggle.querySelector(IS_LOADING_SELECTOR)).not.toBe(null);
+            expect(toggle).toHaveClass(IS_DISABLED_CLASS);
+          });
+
+          it('sends update to BE', async () => {
+            await toggle.click();
+
+            await axios.waitForAll();
+
+            // Args are asserted in the `.onPatch` call
+            expect(mock.history.patch).toHaveLength(1);
+
+            expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
+            expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
+            expect(createAlert).not.toHaveBeenCalled();
+          });
+
+          it('emits a tracking event when clicked', async () => {
+            const { trackEventSpy } = bindInternalEventDocument(toggle.element);
+
+            await toggle.click();
+            await axios.waitForAll();
+
+            expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {
+              label: 'repository_settings',
+            });
+          });
         });
-      });
-    });
+
+        describe('when clicked and BE error', () => {
+          beforeEach(() => {
+            mock.onPatch(TEST_URL).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            toggle.click();
+          });
+
+          it('alerts error', async () => {
+            await axios.waitForAll();
+
+            expect(createAlert).toHaveBeenCalled();
+          });
+        });
+      },
+    );
   });
 });

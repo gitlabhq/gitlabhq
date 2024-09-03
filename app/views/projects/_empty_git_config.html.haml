@@ -1,0 +1,11 @@
+- if scope == 'local'
+  %h4.gl-text-base= _('Git local setup')
+  %p= _('Configure your Git identity locally to use it only for this project:')
+- if scope == 'global'
+  %h4.gl-text-base= _('Git global setup')
+  %p= _('Configure your Git identity globally to use it for all current and future projects on your machine:')
+
+%pre.code.js-syntax-highlight
+  :preserve
+    git config --#{scope} user.name "#{h git_user_name}"
+    git config --#{scope} user.email "#{h git_user_email}"

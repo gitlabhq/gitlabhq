@@ -77,4 +77,22 @@ describe('confirmViaGlModal', () => {
 
     expect(confirmAction).toHaveBeenCalledWith(message, { modalHtmlMessage: message });
   });
+
+  it('uses data-tracking-event attributes to prepare trackEventConfig', () => {
+    el = createElement(
+      `<a data-tracking-event-name="test_event" data-tracking-event-label="test_label" data-tracking-event-property="test_property" data-tracking-event-value="test_value" href="#"></a>`,
+    );
+    const message = 'Test message';
+
+    confirmViaGlModal(message, el);
+
+    expect(confirmAction).toHaveBeenCalledWith(message, {
+      trackingEvent: {
+        name: 'test_event',
+        label: 'test_label',
+        property: 'test_property',
+        value: 'test_value',
+      },
+    });
+  });
 });

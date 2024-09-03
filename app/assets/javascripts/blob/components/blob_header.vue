@@ -17,6 +17,7 @@ export default {
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentUser: {
       query: userInfoQuery,
       error() {

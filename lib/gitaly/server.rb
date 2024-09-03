@@ -110,9 +110,11 @@ module Gitaly
     end
 
     def server_signature
-      @server_signature ||= Gitlab::GitalyClient::ServerService.new(@storage).server_signature
-    rescue GRPC::Unavailable, GRPC::DeadlineExceeded
-      ServerSignature.new(public_key: nil, error: true)
+      @server_signature ||= begin
+        Gitlab::GitalyClient::ServerService.new(@storage).server_signature
+      rescue GRPC::Unavailable, GRPC::DeadlineExceeded
+        ServerSignature.new(public_key: nil, error: true)
+      end
     end
 
     def info

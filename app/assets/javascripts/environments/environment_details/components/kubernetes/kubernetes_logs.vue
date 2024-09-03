@@ -48,6 +48,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     k8sLogs: {
       query: k8sLogsQuery,
       variables() {
@@ -62,6 +63,7 @@ export default {
         return Boolean(!this.gitlabAgentId);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     environment: {
       query: environmentClusterAgentQuery,
       variables() {

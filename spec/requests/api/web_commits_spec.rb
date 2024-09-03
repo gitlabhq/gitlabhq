@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::WebCommits, feature_category: :source_code_management do
+RSpec.describe API::WebCommits, :clean_gitlab_redis_cache, feature_category: :source_code_management do
   describe 'GET /web_commits/public_key' do
     context 'when Gitaly is available' do
       let(:public_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFcykDaUT7x4oXyUCfgqJhfAXRbhtsLl4fi4142zrPCI' }

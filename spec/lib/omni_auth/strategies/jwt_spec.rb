@@ -7,7 +7,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
   include DeviseHelpers
 
   describe '#decoded' do
-    subject { described_class.new({}) }
+    subject(:jwt_strategy) { described_class.new({}) }
 
     let(:timestamp) { Time.now.to_i }
     let(:jwt_config) { Devise.omniauth_configs[:jwt] }
@@ -125,6 +125,35 @@ RSpec.describe OmniAuth::Strategies::Jwt do
 
       it 'raises error' do
         expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
+      end
+    end
+
+    context 'when the JWT is larger than 10KB' do
+      def email_local_part
+        'really_long_email' * 500
+      end
+
+      let(:claims) do
+        {
+          id: 123,
+          name: "user_example",
+          email: "#{email_local_part}@example.com",
+          iat: timestamp
+        }
+      end
+
+      it 'raises error' do
+        expect { jwt_strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::JwtTooLarge)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_validate_email_length: false)
+        end
+
+        it 'does not raise an error' do
+          expect { jwt_strategy.decoded }.not_to raise_error
+        end
       end
     end
   end

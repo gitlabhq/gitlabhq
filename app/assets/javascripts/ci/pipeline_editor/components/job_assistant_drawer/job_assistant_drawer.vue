@@ -56,6 +56,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     runners: {
       query: getRunnerTags,
       update(data) {

@@ -194,21 +194,20 @@ PATH
       omniauth (~> 2.0)
 
 PATH
+  remote: vendor/gems/sidekiq-7.2.4
+  specs:
+    sidekiq (7.2.4)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.19.0)
+
+PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
     gitlab-sidekiq-fetcher (0.11.0)
       json (>= 2.5)
       sidekiq (~> 7.0)
-
-PATH
-  remote: vendor/gems/sidekiq
-  specs:
-    sidekiq (7.3.1)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      logger
-      rack (>= 2.2.4)
-      redis-client (>= 0.22.2)
 
 GEM
   remote: https://rubygems.org/
@@ -986,7 +985,7 @@ GEM
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
-    icalendar (2.10.1)
+    icalendar (2.10.2)
       ice_cube (~> 0.16)
     ice_cube (0.16.4)
     ice_nine (0.11.2)
@@ -1058,7 +1057,7 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
-    lefthook (1.6.18)
+    lefthook (1.7.14)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     letter_opener_web (3.0.0)
@@ -2132,7 +2131,7 @@ DEPENDENCIES
   knapsack (~> 4.0.0)
   kramdown (~> 2.3.1)
   kubeclient (~> 4.11.0)
-  lefthook (~> 1.6.8)
+  lefthook (~> 1.7.0)
   letter_opener_web (~> 3.0.0)
   license_finder (~> 7.0)
   licensee (~> 9.16)

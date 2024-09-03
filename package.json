@@ -251,7 +251,7 @@
     "yaml": "^2.0.0-10"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "20.0.0",
+    "@gitlab/eslint-plugin": "20.2.0",
     "@gitlab/stylelint-config": "6.2.1",
     "@graphql-eslint/eslint-plugin": "3.20.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",

@@ -227,6 +227,10 @@ module Ci
       .or(with_job_artifacts.where(project_id: project_id, job_artifacts: { file_type: 'dotenv' })).distinct
     end
 
+    scope :with_pipeline_source_type, ->(pipeline_source_type) { joins(:pipeline).where(pipeline: { source: pipeline_source_type }) }
+    scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :updated_after, ->(time) { where(arel_table[:updated_at].gt(time)) }
+
     add_authentication_token_field :token,
       encrypted: :required,
       format_with_prefix: :prefix_and_partition_for_token

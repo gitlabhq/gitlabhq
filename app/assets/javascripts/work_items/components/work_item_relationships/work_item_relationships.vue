@@ -8,8 +8,16 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
-import { findLinkedItemsWidget } from '../../utils';
-import { LINKED_CATEGORIES_MAP, LINKED_ITEMS_ANCHOR } from '../../constants';
+import {
+  findLinkedItemsWidget,
+  saveShowLabelsToLocalStorage,
+  getShowLabelsFromLocalStorage,
+} from '../../utils';
+import {
+  LINKED_CATEGORIES_MAP,
+  LINKED_ITEMS_ANCHOR,
+  WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+} from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
@@ -102,8 +110,10 @@ export default {
       linksIsBlockedBy: [],
       linksBlocks: [],
       widgetName: LINKED_ITEMS_ANCHOR,
+      defaultShowLabels: true,
       showLabels: true,
       linkedWorkItems: [],
+      showLabelsLocalStorageKey: WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
     };
   },
   computed: {
@@ -120,12 +130,22 @@ export default {
       return !this.error && this.linkedWorkItems.length === 0;
     },
   },
+  mounted() {
+    this.showLabels = getShowLabelsFromLocalStorage(
+      this.showLabelsLocalStorageKey,
+      this.defaultShowLabels,
+    );
+  },
   methods: {
     showLinkItemForm() {
       this.$refs.widget.showForm();
     },
     hideLinkItemForm() {
       this.$refs.widget.hideForm();
+    },
+    toggleShowLabels() {
+      this.showLabels = !this.showLabels;
+      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
     },
     async removeLinkedItem(linkedItem) {
       try {
@@ -226,7 +246,7 @@ export default {
         :work-item-type="workItemType"
         :show-labels="showLabels"
         :show-view-roadmap-action="false"
-        @toggle-show-labels="showLabels = !showLabels"
+        @toggle-show-labels="toggleShowLabels"
       />
     </template>
 

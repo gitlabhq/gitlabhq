@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Import::SourceUsersFinder, feature_category: :importers do
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:source_user_1) { create(:import_source_user, namespace: group, status: 0, source_name: 'b') }
-  let_it_be(:source_user_2) { create(:import_source_user, namespace: group, status: 1, source_name: 'c') }
+  let_it_be(:source_user_1) { create(:import_source_user, :pending_reassignment, namespace: group, source_name: 'b') }
+  let_it_be(:source_user_2) { create(:import_source_user, :awaiting_approval, namespace: group, source_name: 'c') }
   let_it_be(:source_user_3) do
-    create(:import_source_user, :with_reassign_to_user, namespace: group, status: 2, source_name: 'a')
+    create(:import_source_user, :reassignment_in_progress, namespace: group, source_name: 'a')
   end
 
   let_it_be(:import_source_users) { [source_user_1, source_user_2, source_user_3] }

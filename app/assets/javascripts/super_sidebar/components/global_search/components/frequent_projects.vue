@@ -11,6 +11,7 @@ export default {
   },
   inject: ['projectsPath'],
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     frecentProjects: {
       query: currentUserFrecentProjectsQuery,
     },

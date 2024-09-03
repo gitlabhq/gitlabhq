@@ -1,5 +1,8 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { queryToObject } from '~/lib/utils/url_utility';
+import AccessorUtilities from '~/lib/utils/accessor';
+import { parseBoolean } from '~/lib/utils/common_utils';
+
 import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
@@ -219,4 +222,17 @@ export const newWorkItemId = (workItemType) => {
 
   const workItemTypeLowercase = workItemType.split(' ').join('-').toLowerCase();
   return `${NEW_WORK_ITEM_GID}-${workItemTypeLowercase}`;
+};
+
+export const saveShowLabelsToLocalStorage = (showLabelsLocalStorageKey, value) => {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    localStorage.setItem(showLabelsLocalStorageKey, value);
+  }
+};
+
+export const getShowLabelsFromLocalStorage = (showLabelsLocalStorageKey, defaultValue = true) => {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    return parseBoolean(localStorage.getItem(showLabelsLocalStorageKey) ?? defaultValue);
+  }
+  return null;
 };

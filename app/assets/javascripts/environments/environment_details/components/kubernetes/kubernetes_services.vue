@@ -18,6 +18,7 @@ export default {
     GlLoadingIcon,
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     k8sServices: {
       query: k8sServicesQuery,
       variables() {

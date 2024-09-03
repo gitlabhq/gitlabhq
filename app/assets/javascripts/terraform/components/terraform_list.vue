@@ -8,6 +8,7 @@ import StatesTable from './states_table.vue';
 
 export default {
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     states: {
       query: getStatesQuery,
       variables() {

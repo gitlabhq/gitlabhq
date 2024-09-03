@@ -146,6 +146,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     ciConfigVariables: {
       fetchPolicy: fetchPolicies.NO_CACHE,
       query: ciConfigVariablesQuery,

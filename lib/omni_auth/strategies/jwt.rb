@@ -7,7 +7,12 @@ require 'jwt'
 module OmniAuth
   module Strategies
     class Jwt
+      # Many web servers limit max header size to 8KB. It's also possible to POST a JWT using GET method
+      # to avoid header limit. Allow up to 10KB for flexibility while still balancing performance.
+      MAX_JWT_BYTESIZE = 10_000
+
       ClaimInvalid = Class.new(StandardError)
+      JwtTooLarge = Class.new(StandardError)
 
       include OmniAuth::Strategy
 
@@ -38,19 +43,13 @@ module OmniAuth
       end
 
       def decoded
-        secret =
-          case options.algorithm
-          when *%w[RS256 RS384 RS512]
-            OpenSSL::PKey::RSA.new(options.secret).public_key
-          when *%w[ES256 ES384 ES512]
-            OpenSSL::PKey::EC.new(options.secret)
-          when *%w[HS256 HS384 HS512]
-            options.secret
-          else
-            raise NotImplementedError, "Unsupported algorithm: #{options.algorithm}"
-          end
+        jwt = request.params['jwt']
 
-        @decoded ||= ::JWT.decode(request.params['jwt'], secret, true, { algorithm: options.algorithm }).first
+        if Feature.enabled?(:omniauth_validate_email_length, :instance) && jwt.bytesize >= MAX_JWT_BYTESIZE
+          raise JwtTooLarge, _('JWT must be less than 10KB')
+        end
+
+        @decoded ||= ::JWT.decode(jwt, secret, true, { algorithm: options.algorithm }).first
 
         (options.required_claims || []).each do |field|
           raise ClaimInvalid, "Missing required '#{field}' claim" unless @decoded.key?(field.to_s)
@@ -69,6 +68,21 @@ module OmniAuth
         super
       rescue ClaimInvalid => e
         fail! :claim_invalid, e
+      rescue JwtTooLarge => e
+        fail! :jwt_too_large, e
+      end
+
+      def secret
+        case options.algorithm
+        when *%w[RS256 RS384 RS512]
+          OpenSSL::PKey::RSA.new(options.secret).public_key
+        when *%w[ES256 ES384 ES512]
+          OpenSSL::PKey::EC.new(options.secret)
+        when *%w[HS256 HS384 HS512]
+          options.secret
+        else
+          raise NotImplementedError, "Unsupported algorithm: #{options.algorithm}"
+        end
       end
     end
   end

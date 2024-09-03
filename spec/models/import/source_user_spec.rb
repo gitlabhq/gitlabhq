@@ -30,6 +30,12 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       it { is_expected.to validate_presence_of(:reassign_to_user_id) }
     end
 
+    context 'when awaiting_approval' do
+      subject { build(:import_source_user, :awaiting_approval) }
+
+      it { is_expected.to validate_presence_of(:reassign_to_user_id) }
+    end
+
     context 'when reassignment_in_progress' do
       subject { build(:import_source_user, :reassignment_in_progress) }
 
@@ -95,12 +101,6 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
   describe 'state machine' do
     it 'begins in pending state' do
       expect(described_class.new.pending_reassignment?).to eq(true)
-    end
-
-    it 'does not transition to reassignment_in_progress without a reassign_to_user' do
-      import_source_user = create(:import_source_user, :awaiting_approval, reassign_to_user: nil)
-
-      expect { import_source_user.accept! }.to raise_error(StateMachines::InvalidTransition)
     end
   end
 
@@ -175,7 +175,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
     let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
-    let_it_be(:source_user_3) { create(:import_source_user, namespace: namespace, status: 1, source_name: 'a') }
+    let_it_be(:source_user_3) do
+      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 1, source_name: 'a')
+    end
+
     let_it_be(:source_user_4) do
       create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b')
     end

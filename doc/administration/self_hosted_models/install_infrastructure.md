@@ -202,6 +202,24 @@ should open the AI Gateway API documentation.
    CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
    ```
 
+1. Where your GitLab instance is installed, [run the following Rake task](../../raketasks/index.md) to activate GitLab Duo features:
+
+   ```shell
+   sudo gitlab-rake gitlab:duo:enable_feature_flags
+   ```
+
+1. [Start a GitLab Rails console](../feature_flags.md#start-the-gitlab-rails-console):
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+   In the console, enable the `ai_custom_model` feature flag:
+
+   ```shell
+   feature.enable(:ai_custom_model)
+   ```
+
 1. After you've set up the environment variables, run the image. For example:
 
    ```shell
@@ -250,6 +268,115 @@ To upgrade the AI Gateway, download the newest Docker image tag.
    ```
 
 1. Ensure that the environment variables are all set correctly
+
+### Install by using the AI Gateway Helm chart
+
+#### Prerequisites
+
+To complete this guide, you must have the following:
+
+- A domain you own, that you can add a DNS record to.
+- A Kubernetes cluster.
+- A working installation of `kubectl`.
+- A working installation of Helm, version v3.11.0 or later.
+
+For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/index.html).
+
+#### Add the AI Gateway Helm repository
+
+Add the AI Gateway Helm repository to Helm’s configuration:
+
+```shell
+helm repo add ai-gateway \
+https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/packages/helm/devel
+```
+
+#### Install the AI Gateway
+
+1. Create the `ai-gateway` namespace:
+
+   ```shell
+   kubectl create namespace ai-gateway
+   ```
+
+1. Generate the certificate for the domain where you plan to expose the AI Gateway.
+1. Create the TLS secret in the previously created namespace:
+
+   ```shell
+   kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
+   ```
+
+1. For the AI Gateway to access the API, it must know where the GitLab instance
+is located. To do this, set the `gitlab.url` and
+`gitlab.apiUrl` together with the `ingress.hosts` and `ingress.tls` values as follows:
+
+   ```shell
+   helm repo add ai-gateway \
+     https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/packages/helm/devel
+   helm repo update
+
+   helm upgrade --install ai-gateway \
+     ai-gateway/ai-gateway \
+     --version 0.1.1 \
+     --namespace=ai-gateway \
+     --set="gitlab.url=https://<your_gitlab_domain>" \
+     --set="gitlab.apiUrl=https://<your_gitlab_domain>/api/v4/" \
+     --set "ingress.enabled=true" \
+     --set "ingress.hosts[0].host=<your_gateway_domain>" \
+     --set "ingress.hosts[0].paths[0].path=/" \
+     --set "ingress.hosts[0].paths[0].pathType=ImplementationSpecific" \
+     --set "ingress.tls[0].secretName=ai-gateway-tls" \
+     --set "ingress.tls[0].hosts[0]=<your_gateway_domain>" \
+     --set="ingress.className=nginx" \
+     --timeout=300s --wait --wait-for-jobs
+   ```
+
+This step can take will take a few seconds in order for all resources to be allocated and the AI Gateway to start.
+
+Wait for your pods to get up and running:
+
+```shell
+kubectl wait pod \
+  --all \
+  --for=condition=Ready \
+  --namespace=ai-gateway \
+  --timeout=300s
+```
+
+When it's done, you can proceed with setting up your IP ingresses and DNS records.
+
+#### Installation steps in the GitLab instance
+
+1. For the GitLab instance to know where AI Gateway is located so it can access
+   the gateway, set the environment variable `AI_GATEWAY_URL` inside your GitLab
+   instance environment variables:
+
+   ```shell
+   AI_GATEWAY_URL=https://<your_ai_gitlab_domain>
+   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
+   ```
+
+1. Where your GitLab instance is installed, [run the following Rake task](../../raketasks/index.md) to activate GitLab Duo features:
+
+   ```shell
+   sudo gitlab-rake gitlab:duo:enable_feature_flags
+   ```
+
+1. [Start a GitLab Rails console](../feature_flags.md#start-the-gitlab-rails-console):
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+   In the console, enable the `ai_custom_model` feature flag:
+
+   ```shell
+   Feature.enable(:ai_custom_model)
+   ```
+
+   Exit your console.
+
+With those steps completed, your Helm chart installation is complete.
 
 ## Alternative installation methods
 

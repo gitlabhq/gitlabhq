@@ -21,7 +21,9 @@ module Import
 
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
     validates :placeholder_user_id, presence: true, unless: :completed?
-    validates :reassign_to_user_id, presence: true, if: -> { reassignment_in_progress? || completed? }
+    validates :reassign_to_user_id, presence: true, if: -> {
+                                                          awaiting_approval? || reassignment_in_progress? || completed?
+                                                        }
     validates :reassign_to_user_id, absence: true, if: -> { pending_reassignment? || keep_as_placeholder? }
     validates :reassign_to_user_id, uniqueness: {
       scope: [:namespace_id, :source_hostname, :import_type],

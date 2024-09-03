@@ -830,4 +830,65 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       specify { expect(work_item.start_date).to eq(work_item.dates_source.start_date) }
     end
   end
+
+  describe '#max_depth_reached?' do
+    let_it_be(:work_item) { create(:work_item) }
+    let_it_be(:child_type) { create(:work_item_type) }
+
+    context 'when there is no hierarchy restriction' do
+      it 'returns false' do
+        expect(work_item.max_depth_reached?(child_type)).to be false
+      end
+    end
+
+    context 'when there is a hierarchy restriction without maximum depth' do
+      before do
+        create(:hierarchy_restriction,
+          parent_type_id: work_item.work_item_type_id,
+          child_type_id: child_type.id,
+          maximum_depth: nil)
+      end
+
+      it 'returns false' do
+        expect(work_item.max_depth_reached?(child_type)).to be false
+      end
+    end
+
+    context 'when there is a hierarchy restriction with maximum depth' do
+      let(:max_depth) { 3 }
+
+      before do
+        create(:hierarchy_restriction,
+          parent_type_id: work_item.work_item_type_id,
+          child_type_id: child_type.id,
+          maximum_depth: max_depth)
+      end
+
+      context 'when work item type is the same as child type' do
+        let(:child_type) { work_item.work_item_type }
+
+        it 'returns true when depth is reached' do
+          allow(work_item).to receive_message_chain(:same_type_base_and_ancestors, :count).and_return(max_depth)
+          expect(work_item.max_depth_reached?(child_type)).to be true
+        end
+
+        it 'returns false when depth is not reached' do
+          allow(work_item).to receive_message_chain(:same_type_base_and_ancestors, :count).and_return(max_depth - 1)
+          expect(work_item.max_depth_reached?(child_type)).to be false
+        end
+      end
+
+      context 'when work item type is different from child type' do
+        it 'returns true when depth is reached' do
+          allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth)
+          expect(work_item.max_depth_reached?(child_type)).to be true
+        end
+
+        it 'returns false when depth is not reached' do
+          allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth - 1)
+          expect(work_item.max_depth_reached?(child_type)).to be false
+        end
+      end
+    end
+  end
 end

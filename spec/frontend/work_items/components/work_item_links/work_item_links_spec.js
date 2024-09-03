@@ -21,6 +21,8 @@ import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_a
 import { FORM_TYPES } from '~/work_items/constants';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import * as utils from '~/work_items/utils';
 import {
   getIssueDetailsResponse,
   workItemHierarchyTreeResponse,
@@ -308,6 +310,18 @@ describe('WorkItemLinks', () => {
   });
 
   describe('more actions', () => {
+    useLocalStorageSpy();
+
+    beforeEach(async () => {
+      jest.spyOn(utils, 'getShowLabelsFromLocalStorage');
+      jest.spyOn(utils, 'saveShowLabelsToLocalStorage');
+      await createComponent();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
     it('renders the `WorkItemMoreActions` component', async () => {
       await createComponent();
 
@@ -336,6 +350,15 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+    });
+
+    it('calls saveShowLabelsToLocalStorage on toggle', () => {
+      findMoreActions().vm.$emit('toggle-show-labels');
+      expect(utils.saveShowLabelsToLocalStorage).toHaveBeenCalled();
+    });
+
+    it('calls getShowLabelsFromLocalStorage on mount', () => {
+      expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
     });
   });
 });

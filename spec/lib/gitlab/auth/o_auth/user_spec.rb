@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
+RSpec.describe Gitlab::Auth::OAuth::User, aggregate_failures: true, feature_category: :system_access do
   include LdapHelpers
 
   let_it_be(:organization) { create(:organization) }
@@ -177,6 +177,28 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
           oauth_user.save # rubocop:disable Rails/SaveBang
 
           expect(gl_user).to be_persisted
+        end
+      end
+
+      context 'when email address is too long' do
+        def long_email_local_part
+          "reallylongemail" * 300
+        end
+
+        let(:info_hash) do
+          {
+            email: "#{long_email_local_part}@example.com"
+          }
+        end
+
+        it 'generates an empty username and produces an error' do
+          oauth_user.save # rubocop:disable Rails/SaveBang -- Not an ActiveRecord object
+
+          expect(gl_user.username).to eq("blank")
+          expect(gl_user.errors.full_messages.to_sentence)
+            .to eq("Identity provider email " + _("must be 254 characters or less."))
+          expect(oauth_user).not_to be_valid
+          expect(oauth_user).not_to be_valid_sign_in
         end
       end
 

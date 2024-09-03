@@ -246,8 +246,8 @@ module API
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ComposerPackages
-        mount ::API::ConanInstancePackages
-        mount ::API::ConanProjectPackages
+        mount ::API::Conan::V1::InstancePackages
+        mount ::API::Conan::V1::ProjectPackages
         mount ::API::ContainerRegistryEvent
         mount ::API::ContainerRepositories
         mount ::API::DebianGroupPackages
