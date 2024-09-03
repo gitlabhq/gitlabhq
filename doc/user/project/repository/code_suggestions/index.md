@@ -119,6 +119,7 @@ For use cases and best practices, follow the [GitLab Duo examples documentation]
 > - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab VS Code Extension 4.20.0.
 > - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 > - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
+> - Feature flags `advanced_context_resolver` and `code_suggestions_context` [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161538) in GitLab 17.4.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

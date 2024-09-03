@@ -837,6 +837,8 @@
   - 1
 - - upload_checksum
   - 1
+- - users_experimental_communication_opt_in
+  - 1
 - - users_record_last_activity
   - 1
 - - users_track_namespace_visits

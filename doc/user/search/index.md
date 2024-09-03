@@ -21,8 +21,18 @@ For code search, GitLab uses these types in this order:
   or when you search against a non-default branch.
   This type does not support group or global search.
 
-When exact code search or advanced search is enabled, you can still use
-basic search by specifying the `basic_search=true` URL parameter.
+## Specify a search type
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161999) in GitLab 17.4.
+
+To specify a search type, set the `search_type` URL parameter as follows:
+
+- `search_type=zoekt` for [exact code search](exact_code_search.md)
+- `search_type=advanced` for [advanced search](advanced_search.md)
+- `search_type=basic` for basic search
+
+`search_type` replaces the deprecated `basic_search` parameter.
+For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/issues/477333).
 
 ## Global search scopes
 

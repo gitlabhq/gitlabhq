@@ -221,6 +221,38 @@ Apply the following feature flags to any AI feature work:
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
+### Push feature flags to AI Gateway
+
+You can push [feature flags](../feature_flags/index.md) to AI Gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI Gateway.
+See the following example:
+
+```ruby
+# Push a feature flag state to AI Gateway.
+Gitlab::AiGateway.push_feature_flag(:new_prompt_template, user)
+```
+
+Later, you can use the feature flag state in AI Gateway in the following way:
+
+```python
+from ai_gateway.feature_flags import is_feature_enabled
+
+# Check if the feature flag "new_prompt_template" is enabled.
+if is_feature_enabled('new_prompt_template'):
+  # Build a prompt from the new prompt template
+else:
+  # Build a prompt from the old prompt template
+```
+
+**IMPORTANT:** At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository **before** removing the flag in GitLab-Rails repository.
+If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI Gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
+
+**IMPORTANT:** Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
+
+Technical details: When `push_feature_flag` runs on an enabled feature flag, the name of flag is cached in the current context,
+which is later attached to `x-gitlab-enabled-feature-flags` HTTP header when GitLab-Sidekiq/Rails requests to AI Gateway.
+
+As a simialr concept, we also have [`push_frontend_feature_flag`](../feature_flags/index.md) to push feature flags to frontend.
+
 ### GraphQL API
 
 To connect to the AI provider API using the Abstraction Layer, use an extendable

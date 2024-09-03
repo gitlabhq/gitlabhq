@@ -6670,10 +6670,10 @@ eslint-plugin-no-jquery@2.7.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.7.0.tgz#855f5631cf5b8e25b930cf6f06e02dd81f132e72"
   integrity sha512-Aeg7dA6GTH1AcWLlBtWNzOU9efK5KpNi7b0EhBO0o0M+awyzguUUo8gF6hXGjQ9n5h8/uRtYv9zOqQkeC5CG0w==
 
-eslint-plugin-no-unsanitized@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-unsanitized/-/eslint-plugin-no-unsanitized-4.0.2.tgz#e872b302cdfb5fe1262db989ba29cfcc334b499b"
-  integrity sha512-Pry0S9YmHoz8NCEMRQh7N0Yexh2MYCNPIlrV52hTmS7qXnTghWsjXouF08bgsrrZqaW9tt1ZiK3j5NEmPE+EjQ==
+eslint-plugin-no-unsanitized@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-unsanitized/-/eslint-plugin-no-unsanitized-4.1.0.tgz#2c914e8ea8048c3afaac8f0c12384747aba6497a"
+  integrity sha512-9A8Yrbkkex8e56ivxJ2f5dXN2Js2BmKC8QgmeYZjadyiGUngo3KLXDlq6ZzalmCHyLwLF5MoQLPR6FWlNc+Qbw==
 
 eslint-plugin-promise@^7.0.0:
   version "7.0.0"

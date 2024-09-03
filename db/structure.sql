@@ -2519,6 +2519,8 @@ CREATE TABLE p_ci_job_annotations (
     job_id bigint NOT NULL,
     name text NOT NULL,
     data jsonb DEFAULT '[]'::jsonb NOT NULL,
+    project_id bigint,
+    CONSTRAINT check_375bb9900a CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_bac9224e45 CHECK ((char_length(name) <= 255)),
     CONSTRAINT data_is_array CHECK ((jsonb_typeof(data) = 'array'::text))
 )
@@ -29282,6 +29284,8 @@ CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_f
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci_finished_build_ch_sync_events USING btree (project_id);
 
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
+
+CREATE INDEX index_p_ci_job_annotations_on_project_id ON ONLY p_ci_job_annotations USING btree (project_id);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
 

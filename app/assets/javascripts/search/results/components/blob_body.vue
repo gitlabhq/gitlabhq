@@ -13,6 +13,10 @@ export default {
       type: Object,
       required: true,
     },
+    position: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -40,6 +44,7 @@ export default {
       if (this.showMore) {
         return file.chunks;
       }
+
       return file.chunks.slice(0, DEFAULT_SHOW_CHUNKS);
     },
   },
@@ -53,7 +58,12 @@ export default {
       :key="`chunk${index}`"
       class="chunks-block gl-border-b gl-border-subtle last:gl-border-0"
     >
-      <blob-chunks :chunk="chunk" :blame-link="file.blameUrl" :file-url="file.fileUrl" />
+      <blob-chunks
+        :chunk="chunk"
+        :blame-link="file.blameUrl"
+        :file-url="file.fileUrl"
+        :position="position"
+      />
     </div>
   </div>
 </template>

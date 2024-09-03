@@ -2,7 +2,11 @@
 import { GlSprintf, GlButton, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { DEFAULT_FETCH_CHUNKS, DEFAULT_SHOW_CHUNKS } from '~/search/results/constants';
+import { EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS } from '~/search/results/tracking';
+import { InternalEvents } from '~/tracking';
 import eventHub from '../event_hub';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'BlobFooter',
@@ -11,6 +15,7 @@ export default {
     GlButton,
     GlLink,
   },
+  mixins: [trackingMixin],
   i18n: {
     showMore: s__('GlobalSearch|Show %{matches} more matches'),
     showLess: s__('GlobalSearch|Show less'),
@@ -21,6 +26,10 @@ export default {
   props: {
     file: {
       type: Object,
+      required: true,
+    },
+    position: {
+      type: Number,
       required: true,
     },
   },
@@ -67,6 +76,10 @@ export default {
       eventHub.$emit('showMore', {
         id: `${this.projectPath}:${this.filePath}`,
         state: (this.showMore = !this.showMore),
+      });
+      this.trackEvent(EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS, {
+        label: `${this.position}`,
+        property: this.showMore ? 'open' : 'close',
       });
     },
   },

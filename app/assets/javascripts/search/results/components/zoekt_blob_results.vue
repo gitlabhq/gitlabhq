@@ -64,6 +64,9 @@ export default {
     projectPathAndFilePath({ projectPath = '', path = '' }) {
       return `${projectPath}:${path}`;
     },
+    position(index) {
+      return index + 1;
+    },
   },
 };
 </script>
@@ -73,7 +76,7 @@ export default {
     <gl-loading-icon v-if="isLoading" :label="__('Loading')" size="md" variant="spinner" />
     <div v-if="hasResults && !isLoading" class="gl-relative">
       <gl-card
-        v-for="file in blobSearch.files"
+        v-for="(file, index) in blobSearch.files"
         :key="projectPathAndFilePath(file)"
         class="file-result-holder file-holder gl-my-5"
         :header-class="{
@@ -88,13 +91,14 @@ export default {
             :file-path="file.path"
             :project-path="file.projectPath"
             :file-url="file.fileUrl"
+            :is-header-only="!hasCode(file)"
           />
         </template>
 
-        <blob-body v-if="hasCode(file)" :file="file" />
+        <blob-body v-if="hasCode(file)" :file="file" :position="position(index)" />
 
         <template v-if="hasMore(file)" #footer>
-          <blob-footer :file="file" />
+          <blob-footer :file="file" :position="position(index)" />
         </template>
       </gl-card>
     </div>

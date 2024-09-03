@@ -42,6 +42,8 @@ Capybara.register_driver :chrome do |app|
   # Chrome won't work properly in a Docker container in sandbox mode
   options.add_argument("no-sandbox")
 
+  options.add_argument("disable-search-engine-choice-screen")
+
   # Run headless by default unless WEBDRIVER_HEADLESS specified
   options.add_argument("headless") unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
 

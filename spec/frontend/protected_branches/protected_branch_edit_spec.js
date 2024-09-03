@@ -143,6 +143,7 @@ describe('ProtectedBranchEdit', () => {
         current_project_id: 1,
         merge_access_levels: { roles: accessLevels },
         push_access_levels: { roles: accessLevels },
+        abilities: { adminProject: true },
       };
 
       jest.spyOn(ProtectedBranchEdit.prototype, 'initToggles').mockImplementation();

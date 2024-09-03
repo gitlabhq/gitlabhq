@@ -120,7 +120,7 @@ export const getTimeago = (formatName) =>
 export const localTimeAgo = (elements, updateTooltip = true) => {
   const { format } = getTimeago();
   elements.forEach((el) => {
-    el.innerText = format(el.dateTime, timeagoLanguageCode);
+    el.innerText = format(newDate(el.dateTime), timeagoLanguageCode);
   });
 
   if (!updateTooltip) {

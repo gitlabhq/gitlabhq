@@ -9,6 +9,8 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:edit_branch_rules, @project)
+        push_frontend_ability(ability: :admin_project, resource: @project, user: current_user)
+        push_frontend_ability(ability: :admin_protected_branch, resource: @project, user: current_user)
       end
 
       feature_category :source_code_management, [:show, :cleanup, :update]

@@ -136,6 +136,38 @@ RSpec.describe Gitaly::Server do
     end
   end
 
+  describe "#server_signature_public_key" do
+    context 'when the server signature returns a public key' do
+      let(:public_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFcykDaUT7x4oXyUCfgqJhfAXRbhtsLl4fi4142zrPCI' }
+
+      before do
+        allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+          allow(instance).to receive_message_chain(:server_signature, :public_key).and_return(public_key)
+        end
+      end
+
+      it 'returns a public key and no errors' do
+        expect(server.server_signature_public_key).to eq(public_key)
+        expect(server.server_signature_error?).to be(false)
+      end
+    end
+  end
+
+  describe "#server_signature_error?" do
+    context 'when the server signature raises a GRPC error' do
+      before do
+        allow_next_instance_of(::Gitlab::GitalyClient::ServerService) do |instance|
+          allow(instance).to receive(:server_signature).and_raise(GRPC::Unavailable)
+        end
+      end
+
+      it 'returns an error and no public_key' do
+        expect(server.server_signature_public_key).to be_nil
+        expect(server.server_signature_error?).to eq(true)
+      end
+    end
+  end
+
   describe 'replication_factor' do
     context 'when examining for a given server' do
       let(:storage_status) { double('storage_status', storage_name: 'default') }

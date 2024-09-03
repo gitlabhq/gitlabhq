@@ -2,6 +2,13 @@
 import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import {
+  EVENT_CLICK_BLOB_RESULT_LINE,
+  EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
+} from '~/search/results/tracking';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'BlobChunks',
@@ -13,6 +20,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [trackingMixin],
   i18n: {
     viewBlame: s__('GlobalSearch|View blame'),
     viewLine: s__('GlobalSearch|View line in repository'),
@@ -32,6 +40,10 @@ export default {
       required: false,
       default: '',
     },
+    position: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     codeTheme() {
@@ -41,6 +53,18 @@ export default {
   methods: {
     highlightedRichText(richText) {
       return richText.replace('<b>', '<b class="hll">');
+    },
+    trackLineClick(lineNumber) {
+      this.trackEvent(EVENT_CLICK_BLOB_RESULT_LINE, {
+        property: lineNumber,
+        value: this.position,
+      });
+    },
+    trackBlameClick(lineNumber) {
+      this.trackEvent(EVENT_CLICK_BLOB_RESULT_BLAME_LINE, {
+        property: lineNumber,
+        value: this.position,
+      });
     },
   },
 };
@@ -63,6 +87,8 @@ export default {
                 :href="`${blameLink}#L${line.lineNumber}`"
                 :title="$options.i18n.viewBlame"
                 class="js-navigation-open"
+                data-testid="search-blob-line-blame-link"
+                @click="trackBlameClick(line.lineNumber)"
                 ><gl-icon name="git"
               /></gl-link>
             </span>
@@ -72,6 +98,8 @@ export default {
                 :href="`${fileUrl}#L${line.lineNumber}`"
                 :title="$options.i18n.viewLine"
                 class="!gl-flex gl-items-center gl-justify-end"
+                data-testid="search-blob-line-link"
+                @click="trackLineClick(line.lineNumber)"
                 >{{ line.lineNumber }}</gl-link
               >
             </span>

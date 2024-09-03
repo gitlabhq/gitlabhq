@@ -1,0 +1,18 @@
+---
+description: Click on copy to clipboard button
+internal_events: true
+action: click_clipboard_button_in_multimatch_file_header
+identifiers:
+- project
+- namespace
+- user
+product_group: global_search
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161308
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -2,12 +2,14 @@
 import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
 
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import EMPTY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-catalog-md.svg';
 import { s__ } from '~/locale';
 import { COMPONENTS_DOCS_URL } from '~/ci/catalog/constants';
 
 export default {
   name: 'CiCatalogEmptyState',
   COMPONENTS_DOCS_URL,
+  EMPTY_SVG_URL,
   components: {
     GlEmptyState,
     GlLink,
@@ -77,6 +79,7 @@ export default {
       v-else
       :title="$options.i18n.default.title"
       :description="$options.i18n.default.description"
+      :svg-path="$options.EMPTY_SVG_URL"
     />
   </div>
 </template>

@@ -443,27 +443,18 @@ class ApplicationController < BaseActionController
   end
 
   def set_current_context(&block)
-    static_context =
-      if Feature.enabled?(:controller_static_context, Feature.current_request)
-        {} # middleware should've included caller_id and feature_category
-      else
-        { caller_id: self.class.endpoint_id_for_action(action_name) }
-      end
-
     # even though feature_category is pre-populated by
     # Gitlab::Middleware::ActionControllerStaticContext
     # using the static annotation on controllers, the
     # controllers can override feature_category conditionally
-    static_context[:feature_category] = feature_category if feature_category.present?
+    Gitlab::ApplicationContext.push(feature_category: feature_category) if feature_category.present?
 
     Gitlab::ApplicationContext.push(
-      static_context.merge({
-        user: -> { context_user },
-        project: -> { @project if @project&.persisted? },
-        namespace: -> { @group if @group&.persisted? },
-        remote_ip: request.ip,
-        **http_router_rule_context
-      })
+      user: -> { context_user },
+      project: -> { @project if @project&.persisted? },
+      namespace: -> { @group if @group&.persisted? },
+      remote_ip: request.ip,
+      **http_router_rule_context
     )
     yield
   ensure

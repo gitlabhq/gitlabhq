@@ -8,9 +8,6 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
   include Sanitizable
 
-  ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
-  ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
   ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
   ignore_columns %i[
     encrypted_openai_api_key

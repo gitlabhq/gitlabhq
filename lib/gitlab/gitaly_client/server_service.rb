@@ -18,6 +18,10 @@ module Gitlab
         GitalyClient.call(@storage, :server_service, :disk_statistics, Gitaly::DiskStatisticsRequest.new, timeout: GitalyClient.fast_timeout)
       end
 
+      def server_signature
+        GitalyClient.call(@storage, :server_service, :server_signature, Gitaly::ServerSignatureRequest.new, timeout: GitalyClient.fast_timeout)
+      end
+
       def storage_info
         storage_specific(info)
       end

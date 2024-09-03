@@ -143,13 +143,26 @@ export default class ProtectedBranchCreate {
     });
   }
 
+  createLimitedSuccessAlert() {
+    this.alert = createAlert({
+      variant: VARIANT_SUCCESS,
+      containerSelector: '.js-alert-protected-branch-created-container',
+      message: s__('ProtectedBranch|Protected branch was sucessfully created'),
+    });
+  }
+
   showSuccessAlertIfNeeded() {
     if (!this.hasProtectedBranchSuccessAlert()) {
       return;
     }
     this.expandAndScroll(PROTECTED_BRANCHES_ANCHOR);
 
-    this.createSuccessAlert();
+    if (gon.abilities.adminProject || gon.abilities.adminGroup) {
+      this.createSuccessAlert();
+    } else {
+      this.createLimitedSuccessAlert();
+    }
+
     localStorage.removeItem(IS_PROTECTED_BRANCH_CREATED);
   }
 

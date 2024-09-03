@@ -11,3 +11,15 @@ export const semverRegex =
   /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
 export const noSpacesRegex = /^\S+$/;
+
+/**
+ * Checks if a string contains potential regular expression elements.
+ *
+ * @param {string} str - The string to check for potential regex elements.
+ * @returns {boolean} - Returns true if the string contains regex elements, otherwise false.
+ */
+
+export const containsPotentialRegex = (str) => {
+  const regexPattern = /[*+?^${}()|[\]\\]/;
+  return regexPattern.test(str);
+};

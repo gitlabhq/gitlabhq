@@ -24870,6 +24870,9 @@ msgstr ""
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
+msgid "GlobalSearch|File name match only"
+msgstr ""
+
 msgid "GlobalSearch|Files"
 msgstr ""
 
@@ -28545,6 +28548,9 @@ msgid "Index root namespaces automatically"
 msgstr ""
 
 msgid "Index the instance"
+msgstr ""
+
+msgid "Indexing CPU to tasks multiplier"
 msgstr ""
 
 msgid "Indexing status"
@@ -43747,6 +43753,9 @@ msgid "ProtectedBranch|Protect"
 msgstr ""
 
 msgid "ProtectedBranch|Protect a branch"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branch was sucessfully created"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"

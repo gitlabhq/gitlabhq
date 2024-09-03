@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Packages::Conan::Metadatum < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_columns %i[os architecture build_type compiler compiler_version compiler_libcxx compiler_cppstd],
+    remove_with: '17.6', remove_after: '2024-10-22'
   NONE_VALUE = '_'
 
   belongs_to :package, class_name: 'Packages::Conan::Package', inverse_of: :conan_metadatum
@@ -13,9 +17,6 @@ class Packages::Conan::Metadatum < ApplicationRecord
     format: { with: Gitlab::Regex.conan_recipe_user_channel_regex }
 
   validate :username_channel_none_values
-
-  validates :os, :architecture, :build_type, :compiler, :compiler_libcxx, :compiler_cppstd, length: { maximum: 32 }
-  validates :compiler_version, length: { maximum: 16 }
 
   def recipe
     "#{package.name}/#{package.version}@#{package_username}/#{package_channel}"

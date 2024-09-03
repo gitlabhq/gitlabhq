@@ -16,6 +16,12 @@ module AntiAbuse
       include ResolvableNote
       include Sortable
 
+      extend ::Gitlab::Utils::Override
+
+      cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
+
+      redact_field :note
+
       self.table_name = 'abuse_report_notes'
 
       belongs_to :abuse_report
@@ -29,6 +35,11 @@ module AntiAbuse
 
       def discussion_class(_noteable = nil)
         AntiAbuse::Reports::IndividualNoteDiscussion
+      end
+
+      override :skip_project_check?
+      def skip_project_check?
+        true
       end
     end
   end

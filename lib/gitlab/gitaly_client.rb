@@ -167,6 +167,7 @@ module Gitlab
                 { service: 'gitaly.ServerService', method: 'DiskStatistics' },
                 { service: 'gitaly.ServerService', method: 'ReadinessCheck' },
                 { service: 'gitaly.ServerService', method: 'ServerInfo' },
+                { service: 'gitaly.ServerService', method: 'ServerSignature' },
                 { service: 'grpc.health.v1.Health', method: 'Check' }
               ],
               retryPolicy: {

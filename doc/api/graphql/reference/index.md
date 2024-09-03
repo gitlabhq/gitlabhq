@@ -34288,6 +34288,7 @@ Represents the location of a vulnerability found by a container security scan.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="vulnerabilitylocationcontainerscanningcontainerrepositoryurl"></a>`containerRepositoryUrl` | [`String`](#string) | URL of scanned image. |
 | <a id="vulnerabilitylocationcontainerscanningdependency"></a>`dependency` | [`VulnerableDependency`](#vulnerabledependency) | Dependency containing the vulnerability. |
 | <a id="vulnerabilitylocationcontainerscanningimage"></a>`image` | [`String`](#string) | Name of the vulnerable container image. |
 | <a id="vulnerabilitylocationcontainerscanningoperatingsystem"></a>`operatingSystem` | [`String`](#string) | Operating system that runs on the vulnerable container image. |
@@ -36899,6 +36900,7 @@ Member role permission.
 | <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. |
 | <a id="memberrolepermissionadmin_integrations"></a>`ADMIN_INTEGRATIONS` | Create, read, update, and delete integrations with external applications. |
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
+| <a id="memberrolepermissionadmin_protected_branch"></a>`ADMIN_PROTECTED_BRANCH` | Create, read, update, and delete protected branches for a project. |
 | <a id="memberrolepermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolepermissionadmin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |

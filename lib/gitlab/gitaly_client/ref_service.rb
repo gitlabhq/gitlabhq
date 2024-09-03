@@ -237,7 +237,7 @@ module Gitlab
       end
 
       # peel_tags slows down the request by a factor of 3-4
-      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false)
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false, dynamic_timeout: nil)
         request = Gitaly::ListRefsRequest.new(
           repository: @gitaly_repo,
           patterns: patterns,
@@ -245,7 +245,9 @@ module Gitlab
           peel_tags: peel_tags
         )
 
-        response = gitaly_client_call(@storage, :ref_service, :list_refs, request, timeout: GitalyClient.fast_timeout)
+        timeout = dynamic_timeout || GitalyClient.fast_timeout
+
+        response = gitaly_client_call(@storage, :ref_service, :list_refs, request, timeout: timeout)
         consume_list_refs_response(response)
       end
 

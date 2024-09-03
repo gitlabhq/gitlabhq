@@ -280,7 +280,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-local-rules": "^3.0.2",
     "eslint-plugin-no-jquery": "2.7.0",
-    "eslint-plugin-no-unsanitized": "^4.0.2",
+    "eslint-plugin-no-unsanitized": "^4.1.0",
     "fake-indexeddb": "^4.0.1",
     "gettext-extractor": "^3.7.0",
     "gettext-extractor-vue": "^5.1.0",

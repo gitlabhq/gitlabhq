@@ -8,8 +8,6 @@ module Gitlab
       end
 
       def call(env)
-        return @app.call(env) unless Feature.enabled?(:controller_static_context, Feature.current_request)
-
         req = ActionDispatch::Request.new(env)
 
         action_name = req.path_parameters[:action]

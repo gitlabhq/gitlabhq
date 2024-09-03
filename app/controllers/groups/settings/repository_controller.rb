@@ -9,6 +9,10 @@ module Groups
       before_action :authorize_access!, only: :show
       before_action :define_deploy_token_variables, if: -> { can?(current_user, :create_deploy_token, @group) }
 
+      before_action do
+        push_frontend_ability(ability: :admin_group, resource: @group, user: current_user)
+      end
+
       feature_category :continuous_delivery
       urgency :low
 

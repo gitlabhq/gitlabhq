@@ -9,6 +9,7 @@ RSpec.describe "cng" do
         .and(match(/cng help \[COMMAND\]/))
         .and(match(/cng log \[SUBCOMMAND\]/))
         .and(match(/cng version/))
+        .and(match(/Options:\s+\[--force-color\], \[--no-force-color\], \[--skip-force-color\]/))
     )
   end
 end

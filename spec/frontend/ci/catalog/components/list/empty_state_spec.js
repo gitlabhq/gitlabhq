@@ -35,6 +35,7 @@ describe('EmptyState', () => {
       expect(emptyState.props().description).toBe(
         'Create a pipeline component repository and make reusing pipeline configurations faster and easier.',
       );
+      expect(emptyState.props().svgPath).toBe('file-mock');
     });
   });
 

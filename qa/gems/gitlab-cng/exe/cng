@@ -13,6 +13,8 @@ end
 
 module Cng
   def self.run
+    Gitlab::Cng::Helpers::Output.force_color! if %w[--force-color --force-color=true].any? { |arg| ARGV.include?(arg) }
+
     Gitlab::Cng::CLI.start
   rescue Gitlab::Cng::CLI::Error => e
     puts "ERROR: #{e.message}"

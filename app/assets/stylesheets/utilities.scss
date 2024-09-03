@@ -4,21 +4,39 @@
   to see the available utility classes. If you cannot find the class you need,
   consider adding it to Gitlab UI before adding it here.
 **/
+
+$type-scale: (
+  1: 12px,
+  2: 14px,
+  4: 20px,
+);
+
 @each $index, $size in $type-scale {
   #{'.text-#{$index}'} {
     font-size: $size;
   }
 }
 
+/*
+ * Why another sizing scale???
+ * Great question, friend!
+ * This size scale is a "backport" of the equivalent set of "named" sizes
+ * (e.g. `xl` versus `70`) that came from the following design document as of 2019-10-23:
+ *
+ * https://gitlab-org.gitlab.io/gitlab-design/hosted/design-gitlab-specs/forms-spec-previews/
+ *
+ * (See `input-` items at the bottom)
+ *
+ * The presumption here is that these sizes will be standardized in GitLab UI and thus will be
+ * broadly useful here in the GitLab product when not using the GitLab UI components.
+ */
+ $size-scale: (
+  's': #{20 * $grid-size},
+);
+
 @each $index, $size in $size-scale {
   #{'.mw-#{$index}'} {
     max-width: $size;
-  }
-}
-
-@each $index, $size in $type-scale {
-  #{'.lh-#{$index}'} {
-    line-height: $size;
   }
 }
 
@@ -30,13 +48,7 @@
   }
 }
 
-.border-width-1px { border-width: 1px; }
-.border-style-dashed { border-style: dashed; }
-.border-style-solid { border-style: solid; }
-.border-color-blue-300 { border-color: $blue-300; }
-.border-color-default { border-color: $border-color; }
 .border-radius-default { border-radius: $gl-border-radius-base; }
-.border-radius-small { border-radius: $border-radius-small; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $t-gray-a-24; }
 
 // Override Bootstrap class with offset for system-header and
@@ -50,34 +62,6 @@
   top: $calc-application-header-height;
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-children-ml-sm-3 > * {
-  @include media-breakpoint-up(sm) {
-    margin-left: $gl-spacing-scale-3;
-  }
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-first-child-ml-sm-0 > a:first-child,
-.gl-first-child-ml-sm-0 > button:first-child {
-  @include media-breakpoint-up(sm) {
-    margin-left: 0;
-  }
-}
-
-.mh-50vh { max-height: 50vh; }
-
-.min-width-0 {
-  // By default flex items don't shrink below their minimum content size. To change this, set the item's min-width
-  min-width: 0;
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-w-16 { width: px-to-rem($grid-size * 2); }
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-w-64 { width: px-to-rem($grid-size * 8); }
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-h-32 { height: px-to-rem($grid-size * 4); }
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
@@ -98,25 +82,6 @@
 .gl-force-block-formatting-context::after {
   content: '';
   display: flex;
-}
-
-/**
-  Note: ::-webkit-scrollbar is a non-standard rule only
-  supported by webkit browsers.
-
-  It is added here to migrate components that use
-  scrolling-links() mixin from `app/assets/stylesheets/framework/mixins.scss`.
-
-  It should not be used elsewhere: it may impact accessibility as well as
-  add browser compatibility issues.
-
-  See: https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
-**/
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-webkit-scrollbar-display-none {
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
@@ -145,13 +110,6 @@
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-last-of-type-border-b-0:last-of-type {
   border-bottom-width: 0;
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-md-h-9 {
-  @include gl-media-breakpoint-up(md) {
-    height: $gl-spacing-scale-9;
-  }
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class

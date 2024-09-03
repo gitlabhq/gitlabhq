@@ -13,7 +13,7 @@ export default {
     timeFormatted(time, format) {
       const timeago = getTimeago(format);
 
-      return timeago.format(time, timeagoLanguageCode);
+      return timeago.format(newDate(time), timeagoLanguageCode);
     },
 
     tooltipTitle(time) {

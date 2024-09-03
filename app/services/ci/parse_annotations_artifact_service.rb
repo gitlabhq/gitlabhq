@@ -36,7 +36,8 @@ module Ci
         raise ParserError, 'Annotations files must be a JSON object' unless blob_json.is_a?(Hash)
 
         blob_json.each do |key, value|
-          annotations.push(Ci::JobAnnotation.new(job: artifact.job, name: key, data: value))
+          annotations.push(Ci::JobAnnotation.new(job: artifact.job, name: key, data: value,
+            project_id: project.id))
 
           if annotations.size > annotations_num_limit
             raise SizeLimitError,

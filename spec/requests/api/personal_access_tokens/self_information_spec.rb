@@ -99,4 +99,51 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       end
     end
   end
+
+  describe 'GET /personal_access_tokens/self/associations' do
+    let(:path) { '/personal_access_tokens/self/associations' }
+
+    context 'when token is invalid' do
+      it 'returns 401' do
+        get api(path, personal_access_token: instance_double(PersonalAccessToken, token: 'invalidtoken'))
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when token is valid' do
+      context 'when token has no associations' do
+        it 'returns empty arrays', :aggregate_failures do
+          get api(path, personal_access_token: token)
+
+          expect(json_response).to eq({ "groups" => [], "projects" => [] })
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+
+      context 'when token has associations' do
+        before do
+          group = create(:group, :private, name: "test_group", developers: current_user)
+          sub_group = create(:group, :private, name: "test_subgroup", developers: current_user, parent: group)
+          create(:project, :private, name: "test_project", maintainers: current_user, group: sub_group)
+        end
+
+        it 'returns associations', :aggregate_failures do
+          get api(path, personal_access_token: token)
+
+          expected_group_names = json_response["groups"].pluck("name")
+          expect(expected_group_names).to match_array(%w[test_group test_subgroup])
+          expect(response).to have_gitlab_http_status(:success)
+        end
+
+        it 'filters associations by min_access_level', :aggregate_failures do
+          get api("#{path}?min_access_level=40", personal_access_token: token)
+
+          expect(json_response["groups"]).to be_empty
+          expect(json_response["projects"][0]["name"]).to eq("test_project")
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+    end
+  end
 end

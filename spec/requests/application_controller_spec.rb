@@ -193,103 +193,60 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
         'meta.caller_id' => 'Dashboard::GroupsController#index' }
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(controller_static_context: false)
-      end
-
-      context 'and action is successfully called' do
-        it 'pushes static context to current context' do
-          controller = nil
-          allow_next_instance_of(Dashboard::GroupsController) do |instance|
-            controller = instance
-          end
-
-          get '/dashboard/groups' # randomly picked route
-
-          expect(response).to have_gitlab_http_status(:found)
-          expect(controller.instance_variable_get(:@current_context)).to include expected_context
+    context 'when action is successfully called' do
+      it 'pushes static context to current context' do
+        context = {}
+        allow_next_instance_of(Dashboard::GroupsController) do |_controller|
+          context.merge!(Gitlab::ApplicationContext.current.to_h)
         end
-      end
 
-      context 'and an exception is thrown before action' do
-        it 'does not pushes static context to current context before controller callbacks' do
-          context = {}
-          unexpected_error = 'boom 💣💥'
+        get '/dashboard/groups' # randomly picked route
 
-          allow_next_instance_of(Dashboard::GroupsController) do |controller|
-            # picking up a random before_action method to raise an "unexpected" exception
-            allow(controller).to receive(:authenticate_user!).and_raise(unexpected_error)
-
-            context.merge!(Gitlab::ApplicationContext.current.to_h)
-          end
-
-          expect { get '/dashboard/groups' }.to raise_error(unexpected_error)
-          expect(context.keys).not_to include(['meta.feature_category', 'meta.caller_id'])
-        end
+        expect(response).to have_gitlab_http_status(:found)
+        expect(context).to include expected_context
       end
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(controller_static_context: true)
-      end
+    context 'when an exception is thrown before action' do
+      it 'pushes static context to current context before controller callbacks' do
+        context = {}
+        unexpected_error = 'boom 💣💥'
 
-      context 'when action is successfully called' do
-        it 'pushes static context to current context' do
-          context = {}
-          allow_next_instance_of(Dashboard::GroupsController) do |_controller|
-            context.merge!(Gitlab::ApplicationContext.current.to_h)
-          end
+        allow_next_instance_of(Dashboard::GroupsController) do |controller|
+          # picking up a random before_action method to raise an "unexpected" exception
+          allow(controller).to receive(:authenticate_user!).and_raise(unexpected_error)
 
-          get '/dashboard/groups' # randomly picked route
-
-          expect(response).to have_gitlab_http_status(:found)
-          expect(context).to include expected_context
+          context.merge!(Gitlab::ApplicationContext.current.to_h)
         end
+
+        expect { get '/dashboard/groups' }.to raise_error(unexpected_error)
+        expect(context).to include expected_context
       end
+    end
 
-      context 'when an exception is thrown before action' do
-        it 'pushes static context to current context before controller callbacks' do
-          context = {}
-          unexpected_error = 'boom 💣💥'
+    context 'when controller overrides feature_category with nil' do
+      it 'ignores nil feature category override' do
+        context = {}
 
-          allow_next_instance_of(Dashboard::GroupsController) do |controller|
-            # picking up a random before_action method to raise an "unexpected" exception
-            allow(controller).to receive(:authenticate_user!).and_raise(unexpected_error)
+        allow_next_instance_of(Projects::NotesController) do |controller|
+          # mimicking a bug overriding feature_category with nil
+          allow(controller).to receive(:feature_category).and_return(nil)
 
-            context.merge!(Gitlab::ApplicationContext.current.to_h)
-          end
-
-          expect { get '/dashboard/groups' }.to raise_error(unexpected_error)
-          expect(context).to include expected_context
+          context.merge!(Gitlab::ApplicationContext.current.to_h)
         end
-      end
 
-      context 'when controller overrides feature_category with nil' do
-        it 'ignores nil feature category override' do
-          context = {}
+        project = create(:project, :public)
+        project_snippet = create(:project_snippet, project: project)
+        create(:note_on_project_snippet, project: project, noteable: project_snippet)
+        # picking a route targeting a controller that overrides feature_category
+        get project_noteable_notes_path(
+          project,
+          target_type: 'project_snippet',
+          target_id: project_snippet.id,
+          html: true
+        )
 
-          allow_next_instance_of(Projects::NotesController) do |controller|
-            # mimicking a bug overriding feature_category with nil
-            allow(controller).to receive(:feature_category).and_return(nil)
-
-            context.merge!(Gitlab::ApplicationContext.current.to_h)
-          end
-
-          project = create(:project, :public)
-          project_snippet = create(:project_snippet, project: project)
-          create(:note_on_project_snippet, project: project, noteable: project_snippet)
-          # picking a route targeting a controller that overrides feature_category
-          get project_noteable_notes_path(
-            project,
-            target_type: 'project_snippet',
-            target_id: project_snippet.id,
-            html: true
-          )
-
-          expect(context).to include({ 'meta.feature_category' => 'team_planning' })
-        end
+        expect(context).to include({ 'meta.feature_category' => 'team_planning' })
       end
     end
   end

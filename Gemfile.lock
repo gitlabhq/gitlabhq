@@ -906,8 +906,9 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.3.5)
+    graphql (2.3.14)
       base64
+      fiber-storage
     graphql-client (0.23.0)
       activesupport (>= 3.0)
       graphql (>= 1.13.0)
@@ -2103,7 +2104,7 @@ DEPENDENCIES
   graphiql-rails (~> 1.10)
   graphlient (~> 0.8.0)
   graphlyte (~> 1.0.0)
-  graphql (~> 2.3.5)
+  graphql (~> 2.3.14)
   graphql-docs (~> 5.0.0)
   grpc (= 1.63.0)
   gssapi (~> 1.3.1)

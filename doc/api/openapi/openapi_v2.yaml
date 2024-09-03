@@ -22,6 +22,8 @@ tags:
   description: Operations about groups
 - name: runners
   description: Operations about runners
+- name: web_commits
+  description: Operations about web commits
 - name: group_avatar
   description: Operations about group_avatars
 - name: invitations
@@ -39492,6 +39494,23 @@ paths:
       tags:
       - metadata
       operationId: getApiV4Version
+  "/api/v4/web_commits/public_key":
+    get:
+      summary: Get the GitLab public key for signing web commits.
+      description: This feature was introduced in GitLab 17.4.
+      tags:
+        - web_commits
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Get the GitLab public key for signing web commits.
+          schema:
+            "$ref": "#/definitions/API_Entities_Web_Commits"
+        '503':
+          description: Service unavailable
+        '404':
+          description: Not found
   "/api/v4/topics":
     get:
       summary: Get topics
@@ -59883,6 +59902,11 @@ definitions:
       avatar_url:
         type: string
     description: API_Entities_Projects_Topic model
+  API_Entities_Web_Commits:
+    type: object
+    properties:
+      public_key:
+        type: string
   postApiV4Topics:
     type: object
     properties:

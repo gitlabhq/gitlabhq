@@ -8,6 +8,8 @@ module Gitlab
       class Command < Thor
         include Helpers::Output
 
+        class_option :force_color, type: :boolean
+
         check_unknown_options!
 
         private

@@ -360,6 +360,7 @@ module API
         mount ::API::UserCounts
         mount ::API::UserRunners
         mount ::API::VirtualRegistries::Packages::Maven
+        mount ::API::WebCommits
         mount ::API::Wikis
 
         add_open_api_documentation!
