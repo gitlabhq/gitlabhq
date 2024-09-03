@@ -17,8 +17,8 @@ module Onboarding
       description: "Groups are the best way to manage projects and members",
       title: "Create a group")
       render Onboarding::ActionCardComponent.new(
-        title,
-        description,
+        title: title,
+        description: description,
         icon: icon,
         href: href,
         variant: variant

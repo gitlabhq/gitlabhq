@@ -61,6 +61,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       lastActivityOn
       pronouns
       ide
+      userPreferences
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -94,7 +95,9 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       GQL
     end
 
-    subject(:user_name) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name') }
+    subject(:user_name) do
+      GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name')
+    end
 
     context 'user requests' do
       let(:current_user) { user }
@@ -384,6 +387,14 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
         expect(current_user).to receive(:can?).with(:access_code_suggestions).and_return(true)
         expect(code_suggestions_enabled).to be true
       end
+    end
+  end
+
+  describe 'userPreferences field' do
+    subject { described_class.fields['userPreferences'] }
+
+    it 'returns userPreferences field' do
+      is_expected.to have_graphql_type(Types::UserPreferencesType)
     end
   end
 end

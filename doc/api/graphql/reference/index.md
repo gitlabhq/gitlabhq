@@ -10030,6 +10030,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
+| <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 #### Fields
@@ -16911,6 +16912,7 @@ A user with add-on data.
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="addonuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="addonuseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="addonuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="addonuserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="addonuserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -17782,6 +17784,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="autocompleteduseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="autocompleteduseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="autocompleteduserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="autocompleteduserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="autocompleteduserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -20109,6 +20112,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="currentuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="currentuseruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="currentuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="currentuserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="currentuserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -25679,6 +25683,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestassigneeuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestassigneewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="mergerequestassigneeweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -26058,6 +26063,7 @@ The author of the merge request.
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestauthoruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestauthorwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="mergerequestauthorweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -26483,6 +26489,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestparticipantuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestparticipantwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="mergerequestparticipantweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -26881,6 +26888,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestrevieweruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestreviewerwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="mergerequestreviewerweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -33261,6 +33269,7 @@ Core representation of a GitLab user.
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="usercoreuserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="usercorewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="usercoreweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
@@ -33634,6 +33643,7 @@ fields relate to interactions between the two entities.
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
 | <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.11. Use `extensions_marketplace_opt_in_status` instead. |
+| <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 ### `UserStatus`
@@ -40234,6 +40244,7 @@ Implementations:
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="useruserpreferences"></a>`userPreferences` | [`UserPreferences`](#userpreferences) | Preferences for the user. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="userwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="userweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |

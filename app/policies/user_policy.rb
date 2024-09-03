@@ -34,6 +34,7 @@ class UserPolicy < BasePolicy
     enable :read_user_email_address
     enable :admin_user_email_address
     enable :make_profile_private
+    enable :read_user_preference
   end
 
   rule { default }.enable :read_user_profile

@@ -8,6 +8,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
   it 'exposes the expected fields' do
     expected_fields = %i[
       issues_sort
+      use_work_items_view
       visibility_pipeline_id_type
       use_web_ide_extension_marketplace
       extensions_marketplace_opt_in_status

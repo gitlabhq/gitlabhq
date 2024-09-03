@@ -162,7 +162,7 @@ Prerequisites:
 Example of using a deploy token to pull images from a container registry:
 
 ```shell
-docker login -u <username> -p <deploy_token> registry.example.com
+echo "$DEPLOY_TOKEN" | docker login -u <username> --password-stdin registry.example.com
 docker pull $CONTAINER_TEST_IMAGE
 ```
 
@@ -177,7 +177,7 @@ Prerequisites:
 Example of using a deploy token to push an image to a container registry:
 
 ```shell
-docker login -u <username> -p <deploy_token> registry.example.com
+echo "$DEPLOY_TOKEN" | docker login -u <username> --password-stdin registry.example.com
 docker push $CONTAINER_TEST_IMAGE
 ```
 

@@ -9,7 +9,8 @@ module Mutations
         :extensions_marketplace_opt_in_status,
         :organization_groups_projects_display,
         :use_web_ide_extension_marketplace,
-        :visibility_pipeline_id_type
+        :visibility_pipeline_id_type,
+        :use_work_items_view
       ].freeze
 
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
@@ -21,6 +22,9 @@ module Mutations
       argument :use_web_ide_extension_marketplace, GraphQL::Types::Boolean,
         required: false,
         description: 'Whether Web IDE Extension Marketplace is enabled for the user.'
+      argument :use_work_items_view, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Use work item view instead of legacy issue view.'
       argument :visibility_pipeline_id_type, Types::VisibilityPipelineIdTypeEnum,
         required: false,
         description: 'Determines whether the pipeline list shows ID or IID.'

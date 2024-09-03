@@ -136,7 +136,7 @@ export default {
         headerClass,
         {
           'gl-rounded-base gl-border-b-0': !isContentVisible,
-          'gl-relative gl-pr-9': isCollapsible,
+          'gl-relative gl-pr-10': isCollapsible,
         },
       ]"
     >
@@ -185,7 +185,10 @@ export default {
           @click="showForm"
           >{{ toggleText }}</gl-button
         >
-        <div v-if="isCollapsible" class="gl-absolute gl-right-5 gl-top-4 gl-h-6">
+        <div
+          v-if="isCollapsible"
+          class="gl-border-l gl-absolute gl-right-5 gl-top-4 gl-h-6 gl-pl-3"
+        >
           <gl-button
             v-gl-tooltip
             :title="toggleLabel"
