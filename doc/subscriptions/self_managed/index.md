@@ -12,6 +12,7 @@ DETAILS:
 **Offering:** Self-managed
 
 After you subscribe to GitLab, you can manage the details of your self-managed subscription.
+If you experience any issues, see the [troubleshooting page](../gitlab_com/gitlab_subscription_troubleshooting.md).
 
 ## Obtain a self-managed subscription
 
@@ -600,43 +601,3 @@ After your license has expired:
 ## Storage
 
 The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).
-
-## Troubleshooting
-
-### Subscription data fails to synchronize
-
-Your subscription data might fail to synchronize.
-
-This issue can occur when network traffic between your GitLab instance and certain
-IP addresses is not allowed.
-
-To resolve this issue, allow network traffic from your GitLab instance to IP
-addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
-
-### Credit card declined
-
-If your credit card is declined when purchasing a GitLab subscription, possible reasons include:
-
-- The credit card details provided are incorrect.
-- The credit card account has insufficient funds.
-- You are using a virtual credit card and it has insufficient funds, or has expired.
-- The transaction exceeds the credit limit.
-- The transaction exceeds the credit card's maximum transaction amount.
-
-Check with your financial institution to confirm if any of these reasons apply. If they do not
-apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
-
-### Error: `Attempt_Exceed_Limitation`
-
-You might get the following error when purchasing a GitLab subscription:
-
-```plaintext
-Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.
-```
-
-This issue occurs when the credit card form is re-submitted either:
-
-- Three times or more in one minute.
-- Six times or more in one hour.
-
-To resolve this issue, wait a few minutes and try the purchase process again.

@@ -419,4 +419,37 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { expect(helper.merge_request_dashboard_enabled?(current_user)).to eq(result) }
     end
   end
+
+  describe '#diffs_stream_url' do
+    let_it_be(:offset) { 5 }
+    let(:merge_request) { create(:merge_request_with_diffs) }
+    let(:id) { merge_request.iid }
+    let(:project_id) { merge_request.project.to_param }
+    let(:namespace_id) { merge_request.project.namespace.to_param }
+    let(:diff_view) { :inline }
+
+    subject { diffs_stream_url(merge_request, offset, diff_view) }
+
+    it 'returns diffs stream url with offset' do
+      url = "/#{namespace_id}/#{project_id}/-/merge_requests/#{id}/diffs_stream?offset=#{offset}&view=inline"
+      expect(subject).to eq(url)
+    end
+
+    context 'when view is set to parallel' do
+      let_it_be(:diff_view) { :parallel }
+
+      it 'returns diffs stream url with parallel view' do
+        url = "/#{namespace_id}/#{project_id}/-/merge_requests/#{id}/diffs_stream?offset=#{offset}&view=parallel"
+        expect(subject).to eq(url)
+      end
+    end
+
+    context 'when offset is greater than the number of diffs' do
+      let_it_be(:offset) { 9999 }
+
+      it 'returns nil' do
+        expect(subject).to eq(nil)
+      end
+    end
+  end
 end

@@ -38,13 +38,11 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     set_resource_fields
 
-    Namespace.with_disabled_organization_validation do
-      super do |new_user|
-        if new_user.persisted?
-          after_successful_create_hook(new_user)
-        else
-          track_error(new_user)
-        end
+    super do |new_user|
+      if new_user.persisted?
+        after_successful_create_hook(new_user)
+      else
+        track_error(new_user)
       end
     end
     # Devise sets a flash message on both successful & failed signups,
@@ -236,7 +234,8 @@ class RegistrationsController < Devise::RegistrationsController
   def resource
     @resource ||= Users::RegistrationsBuildService
                     .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
-                                                              preferred_language: preferred_language }))
+                                                              preferred_language: preferred_language,
+                                                              organization_id: Current.organization_id }))
                     .execute
   end
 

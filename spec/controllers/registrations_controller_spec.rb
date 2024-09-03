@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController, feature_category: :user_profile do
+RSpec.describe RegistrationsController, :with_current_organization, feature_category: :user_profile do
   include TermsHelper
   include FullNameHelper
 

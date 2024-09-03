@@ -42,28 +42,28 @@ There are two kinds of step definitions:
 
 - The `exec` type, which executes a command.
 
-   ```yaml
-   # (spec goes here)
-   ---
-   # Example exec definition
-   exec:
-   command: [ docker, run, -it, ubuntu, uname, -a ]
-   ```
+  ```yaml
+  # (spec goes here)
+  ---
+  # Example exec definition
+  exec:
+  command: [ docker, run, -it, ubuntu, uname, -a ]
+  ```
 
 - The `steps` type, which runs a sequence of other steps.
 
-   ```yaml
-   # (spec goes here)
-   ---
-   # Example steps definition
-   steps:
-     - name: greet_user
-       step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v1
-       inputs:
-         echo: hello ${{ inputs.name }}
-     - name: print_system_information
-       step: ./my-local-steps/uname
-   ```
+  ```yaml
+  # (spec goes here)
+  ---
+  # Example steps definition
+  steps:
+    - name: greet_user
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v1
+      inputs:
+        echo: hello ${{ inputs.name }}
+    - name: print_system_information
+      step: ./my-local-steps/uname
+  ```
 
 So that you can refactor step implementations, you can change steps from `exec` to `steps` type, and from `exec` to `steps` type without an affect on workflows (or calling steps).
 

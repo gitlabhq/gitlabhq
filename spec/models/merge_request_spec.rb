@@ -7101,4 +7101,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#first_diffs_slice' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+    let_it_be(:limit) { 5 }
+
+    subject { merge_request.first_diffs_slice(limit) }
+
+    it 'returns limited diffs' do
+      expect(subject.count).to eq(limit)
+    end
+  end
 end

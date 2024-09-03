@@ -13,11 +13,12 @@ module Projects
         stream_headers
 
         offset = params[:offset].to_i
+        view = helpers.diff_view
 
         @merge_request.diffs_for_streaming(offset_index: offset).diff_files.each do |diff|
           response.stream.write(
             render_to_string(
-              ::RapidDiffs::DiffFileComponent.new(diff_file: diff),
+              ::RapidDiffs::DiffFileComponent.new(diff_file: diff, parallel_view: view == :parallel),
               layout: false
             )
           )

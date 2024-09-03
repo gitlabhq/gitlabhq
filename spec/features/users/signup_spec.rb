@@ -40,7 +40,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
   end
 end
 
-RSpec.describe 'Signup', :js, feature_category: :user_management do
+RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :user_management do
   include TermsHelper
 
   let(:new_user) { build_stubbed(:user) }

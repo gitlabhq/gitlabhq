@@ -261,7 +261,7 @@ export default {
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">
       <div v-if="showEstimateOnlyState" data-testid="estimateOnlyPane">
-        <span>{{ $options.i18n.estimatedOnlyText }} </span>{{ humanTimeEstimate }}
+        {{ $options.i18n.estimatedOnlyText }} {{ humanTimeEstimate }}
       </div>
       <time-tracking-spent-only-pane
         v-if="showSpentOnlyState"

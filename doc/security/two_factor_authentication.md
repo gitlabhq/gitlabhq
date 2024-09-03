@@ -70,9 +70,9 @@ Administrators can enforce 2FA for administrator users in a self-managed instanc
 1. On the left sidebar, at the bottom, select **Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section:
-    - Select **Require administrators to enable 2FA**.
-    - In **Two-factor grace period**, enter a number of hours. If you want to
-      enforce 2FA on the next sign-in attempt, enter `0`.
+   1. Select **Require administrators to enable 2FA**.
+   1. In **Two-factor grace period**, enter a number of hours. If you want to
+     enforce 2FA on the next sign-in attempt, enter `0`.
 1. Select **Save changes**.
 
 NOTE:

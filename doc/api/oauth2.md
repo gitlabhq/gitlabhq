@@ -507,15 +507,15 @@ You must supply the access token, either:
 
 - As a parameter:
 
-   ```plaintext
-   GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
-   ```
+  ```plaintext
+  GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
+  ```
 
 - In the Authorization header:
 
-   ```shell
-   curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
-   ```
+  ```shell
+  curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
+  ```
 
 The following is an example response:
 

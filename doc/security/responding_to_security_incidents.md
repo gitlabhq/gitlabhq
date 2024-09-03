@@ -146,14 +146,14 @@ If you suspect that your GitLab instance has been compromised, you should:
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
 - Update to the latest version of GitLab and adopt a plan to update after every security patch release.
 - In addition, the following suggestions are common steps taken in incident response plans when servers are compromised by malicious actors:
-   1. Save any server state and logs to a write-once location, for later investigation.
-   1. Look for unrecognized background processes.
-   1. Check for open ports on the system. Our [default ports guide](../administration/package_information/defaults.md) can be used as a starting point.
-   1. Rebuild the host from a known-good backup or from scratch, and apply all the latest security patches.
-   1. Review network logs for uncommon traffic.
-   1. Establish network monitoring and network-level controls.
-   1. Restrict inbound and outbound network access to authorized users and servers only.
-   1. Ensure all logs are routed to an independent write-only datastore.
+  1. Save any server state and logs to a write-once location, for later investigation.
+  1. Look for unrecognized background processes.
+  1. Check for open ports on the system. Our [default ports guide](../administration/package_information/defaults.md) can be used as a starting point.
+  1. Rebuild the host from a known-good backup or from scratch, and apply all the latest security patches.
+  1. Review network logs for uncommon traffic.
+  1. Establish network monitoring and network-level controls.
+  1. Restrict inbound and outbound network access to authorized users and servers only.
+  1. Ensure all logs are routed to an independent write-only datastore.
 
 #### Event types
 

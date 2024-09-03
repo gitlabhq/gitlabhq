@@ -10,16 +10,17 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
     end
   end
 
-  let(:start_id) { table(batch_table).minimum(:id) }
-  let(:end_id) { table(batch_table).maximum(:id) }
-  let(:batch_table) { :_test_batch_table }
+  let(:batch_column) { :id }
   let(:backfill_via_table) { :p_ci_builds }
+  let(:start_id) { table(batch_table).minimum(batch_column) }
+  let(:end_id) { table(batch_table).maximum(batch_column) }
+  let(:batch_table) { :_test_batch_table }
   let(:backfill_column) { :project_id }
   let(:backfill_via_column) { :project_id }
   let(:backfill_via_foreign_key) { :build_id }
   let(:partition_column) { :partition_id }
 
-  let(:test_table) { table(:_test_batch_table) }
+  let(:test_table) { table(batch_table) }
   let(:connection) { ::Ci::ApplicationRecord.connection }
 
   let(:migration_attrs) do
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
       start_id: start_id,
       end_id: end_id,
       batch_table: batch_table,
-      batch_column: :id,
+      batch_column: batch_column,
       sub_batch_size: 10,
       pause_ms: 2,
       connection: connection,
@@ -44,7 +45,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
   let(:migration) { example_job_class.new(**migration_attrs) }
 
   before do
-    connection.create_table :_test_batch_table do |t|
+    connection.drop_table(batch_table, if_exists: true)
+    connection.create_table batch_table do |t|
       t.timestamps_with_timezone null: false
       t.integer :build_id, null: false
       t.integer :partition_id, null: false
@@ -53,7 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
   end
 
   after do
-    connection.drop_table(:_test_batch_table)
+    connection.drop_table(batch_table)
   end
 
   describe '#perform' do
@@ -67,25 +69,57 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJ
     let(:test1) { test_table.create!(id: 1, partition_id: 100, build_id: job1.id, project_id: nil) }
     let(:test2) { test_table.create!(id: 2, partition_id: 100, build_id: job2.id, project_id: nil) }
 
-    it 'backfills the missing project_id for the batch' do
-      expect { migration.perform }
-        .to change { test1.reload.project_id }.from(nil).to(job1.project_id)
-        .and change { test2.reload.project_id }.from(nil).to(job2.project_id)
+    shared_examples 'a migration backfilling the missing project_id for the batch' do
+      it 'backfills the missing project_id for the batch' do
+        expect { migration.perform }
+          .to change { test1.reload.project_id }.from(nil).to(job1.project_id)
+          .and change { test2.reload.project_id }.from(nil).to(job2.project_id)
+      end
+    end
+
+    context "when batch_column is id" do
+      let(:batch_column) { :id }
+
+      it_behaves_like 'a migration backfilling the missing project_id for the batch'
+    end
+
+    context "when batch_column is build_id" do
+      let(:batch_column) { :build_id }
+
+      it_behaves_like 'a migration backfilling the missing project_id for the batch'
+    end
+
+    context "when batch_column is invalid" do
+      let(:batch_column) { :project_id }
+
+      it 'does not backfill the missing project_id for the batch' do
+        expect { migration.perform }
+          .to not_change { test1.reload.project_id }.from(nil)
+          .and not_change { test2.reload.project_id }.from(nil)
+      end
     end
   end
 
   describe '#constuct_query' do
-    it 'constructs a query using the supplied job arguments' do
-      sub_batch = table(batch_table).all
+    using RSpec::Parameterized::TableSyntax
 
-      expect(migration.construct_query(sub_batch: sub_batch)).to eq(<<~SQL)
-        UPDATE _test_batch_table
-        SET project_id = p_ci_builds.project_id
-        FROM p_ci_builds
-        WHERE p_ci_builds.id = _test_batch_table.build_id
-        AND p_ci_builds.partition_id = _test_batch_table.partition_id
-        AND _test_batch_table.id IN (#{sub_batch.select(:id).to_sql})
-      SQL
+    where(:batch_column) do
+      [:id, :build_id]
+    end
+
+    with_them do
+      it 'constructs a query using the supplied job arguments' do
+        sub_batch = table(batch_table).all
+
+        expect(migration.construct_query(sub_batch: sub_batch)).to eq(<<~SQL)
+          UPDATE #{batch_table}
+          SET project_id = #{backfill_via_table}.#{backfill_via_column}
+          FROM #{backfill_via_table}
+          WHERE #{backfill_via_table}.id = #{batch_table}.#{backfill_via_foreign_key}
+          AND #{backfill_via_table}.#{partition_column} = #{batch_table}.#{partition_column}
+          AND #{batch_table}.#{batch_column} IN (#{sub_batch.select(batch_column).to_sql})
+        SQL
+      end
     end
   end
 end

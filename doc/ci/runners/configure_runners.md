@@ -657,17 +657,17 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
 
 - To sync and update specific paths:
 
-   ```yaml
-   variables:
-      GIT_SUBMODULE_PATHS: submoduleA submoduleB
-   ```
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: submoduleA submoduleB
+  ```
 
 - To exclude specific paths:
 
-   ```yaml
-   variables:
-      GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
-   ```
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
+  ```
 
 WARNING:
 Git ignores nested paths. To ignore a nested submodule, exclude
@@ -955,10 +955,9 @@ defined in the `.gitlab-ci.yml` file. If the name is not defined, the default fi
 
 ### Provenance metadata format
 
-The provenance metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [0.1](https://github.com/in-toto/attestation/tree/v0.1.0/spec).
-The runner also produces a statement that adheres to SLSA v0.2 by default.
+The provenance metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [1.0](https://github.com/in-toto/attestation/tree/v1.0/spec).
 
-To opt-in to an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file. The v0.2 statement is deprecated and is planned to be removed in the GitLab 17.0 and the v1.0 statement is planned to become the new default format.
+To use an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file. 
 
 The following fields are populated by default:
 

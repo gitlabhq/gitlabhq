@@ -42,8 +42,8 @@ To do this:
 1. Select **GitLab Language Server** to expand the section.
 1. Select **HTTP Agent Options** to expand it.
 1. Either:
-    1. Select an option **Pass CA certificate from Duo to the Language Server**.
-    1. In **Certificate authority (CA)**, specify the path to your `.pem` file with CA certificates.
+   - Select an option **Pass CA certificate from Duo to the Language Server**.
+   - In **Certificate authority (CA)**, specify the path to your `.pem` file with CA certificates.
 1. Restart your IDE.
 
 ### Ignore certificate errors

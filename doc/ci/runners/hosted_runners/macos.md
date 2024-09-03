@@ -39,7 +39,7 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 | `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab-org.gitlab.io/incubation-engineering/mobile-devops/macos-runner-inspector/macos-13-xcode-14/) |
 | `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab-org.gitlab.io/incubation-engineering/mobile-devops/macos-runner-inspector/macos-14-xcode-15/) |
 
-If no image is specified, the macOS runner uses `macos-13-xcode-14`.
+If no image is specified, the macOS runner uses `macos-14-xcode-15`.
 
 ## Image update policy for macOS
 
@@ -49,6 +49,8 @@ Major and minor releases of macOS and Xcode, are made available within two weeks
 
 A new major release image is initially made available as beta, and becomes generally available (GA) with the release of the first minor release.
 Because only two GA images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
+
+When a new major release is GA, it becomes the default image for all macOS jobs.
 
 ## Example `.gitlab-ci.yml` file
 
@@ -130,21 +132,21 @@ To [configure caching](../../../ci/caching/index.md) for your project:
 
 1. Add the `cache` configuration to your `.gitlab-ci.yml` file:
 
-    ```yaml
-    cache:
-      key:
-        files:
-         - Podfile.lock
-    paths:
-      - Pods
-    ```
+   ```yaml
+   cache:
+     key:
+       files:
+        - Podfile.lock
+   paths:
+     - Pods
+   ```
 
 1. Add the [`cocoapods-check`](https://guides.cocoapods.org/plugins/optimising-ci-times.html) plugin to your project.
 1. Update the job script to check for installed dependencies before it calls `pod install`:
 
-    ```shell
-    bundle exec pod check || bundle exec pod install
-    ```
+   ```shell
+   bundle exec pod check || bundle exec pod install
+   ```
 
 **Include pods in source control**
 

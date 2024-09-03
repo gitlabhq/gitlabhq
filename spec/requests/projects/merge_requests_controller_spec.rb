@@ -222,6 +222,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include('data-page="projects:merge_requests:diffs"')
       end
+
+      it 'shows only first 5 files' do
+        get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+        expect(response.body.scan('<diff-file ').size).to eq(5)
+      end
     end
 
     private
