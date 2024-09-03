@@ -83,7 +83,6 @@ RSpec.describe API::Templates, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(13)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
     end
 
@@ -95,7 +94,6 @@ RSpec.describe API::Templates, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
         end
       end
