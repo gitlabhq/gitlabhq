@@ -13,7 +13,7 @@ export default {
     ArchivedFilter,
   },
   computed: {
-    ...mapGetters(['showArchived']),
+    ...mapGetters(['hasProjectContext']),
   },
 };
 </script>
@@ -21,6 +21,6 @@ export default {
 <template>
   <filters-template>
     <status-filter class="gl-mb-5" />
-    <archived-filter v-if="showArchived" class="gl-mb-5" />
+    <archived-filter v-if="hasProjectContext" class="gl-mb-5" />
   </filters-template>
 </template>

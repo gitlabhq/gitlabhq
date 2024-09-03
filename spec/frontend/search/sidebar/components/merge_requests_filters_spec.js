@@ -15,7 +15,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'merge_requests',
-    showArchived: () => true,
+    hasProjectContext: () => true,
   };
 
   const createComponent = (initialState = {}) => {
@@ -64,9 +64,9 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     });
   });
 
-  describe('ShowArchived getter', () => {
+  describe('hasProjectContext getter', () => {
     beforeEach(() => {
-      defaultGetters.showArchived = () => false;
+      defaultGetters.hasProjectContext = () => false;
       createComponent();
     });
 

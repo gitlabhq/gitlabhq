@@ -21,7 +21,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapGetters(['showArchived']),
+    ...mapGetters(['hasProjectContext']),
     ...mapState(['searchType']),
     showLabelFilter() {
       return this.searchType === SEARCH_TYPE_ADVANCED;
@@ -35,6 +35,6 @@ export default {
     <status-filter class="gl-mb-5" />
     <confidentiality-filter class="gl-mb-5" />
     <label-filter v-if="showLabelFilter" class="gl-mb-5" />
-    <archived-filter v-if="showArchived" class="gl-mb-5" />
+    <archived-filter v-if="hasProjectContext" class="gl-mb-5" />
   </filters-template>
 </template>
