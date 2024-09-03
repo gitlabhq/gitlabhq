@@ -664,12 +664,12 @@ The following analyzers are executed, each of which have different behavior when
 
 - [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 
-   Supports multiple lockfiles
+  Supports multiple lockfiles
 
 - [Retire.js](https://retirejs.github.io/retire.js/)
 
-   Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
-   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
+  Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
+  analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
 The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).

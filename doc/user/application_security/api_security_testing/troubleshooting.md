@@ -66,17 +66,17 @@ Before proceeding with a solution, it is important to confirm that the error mes
 
 1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
 
-- In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
+   - In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
 
-  ```log
-  Failed to bind to address http://127.0.0.1:5500: address already in use.
-  ```
+     ```log
+     Failed to bind to address http://127.0.0.1:5500: address already in use.
+     ```
 
-- In GitLab 15.4 and earlier:
+   - In GitLab 15.4 and earlier:
 
-  ```log
-  Failed to bind to address http://[::]:5000: address already in use.
-  ```
+     ```log
+     Failed to bind to address http://[::]:5000: address already in use.
+     ```
 
 The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
 
@@ -283,15 +283,15 @@ The following example uses the [statically defined credentials](../../../ci/dock
 
 1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access private container registry: `registry.example.com` with the credentials `abcdefghijklmn`, the Docker JSON looks like:
 
-    ```json
-    {
-        "auths": {
-            "registry.example.com": {
-                "auth": "abcdefghijklmn"
-            }
-        }
-    }
-    ```
+   ```json
+   {
+       "auths": {
+           "registry.example.com": {
+               "auth": "abcdefghijklmn"
+           }
+       }
+   }
+   ```
 
 1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml`file you should create a project [CI/CD variable](../../../ci/variables/index.md#for-a-project).
 1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
@@ -342,69 +342,71 @@ This issue can be worked around in the following ways:
 
 - Run the container as the `root` user. You should test this configuration as it may not work in all cases. This can be done by modifying the CICD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. After testing has confirmed the change is successful, the `before_script` can be removed.
 
-   ```yaml
-   api_security:
-     image:
-       name: $SECURE_ANALYZERS_PREFIX/$APISEC_IMAGE:$APISEC_VERSION$APISEC_IMAGE_SUFFIX
-       docker:
-         user: root
-    before_script:
-      - whoami
-   ```
+  ```yaml
+  api_security:
+    image:
+      name: $SECURE_ANALYZERS_PREFIX/$APISEC_IMAGE:$APISEC_VERSION$APISEC_IMAGE_SUFFIX
+      docker:
+        user: root
+   before_script:
+     - whoami
+  ```
 
-   _Example job console output:_
+  _Example job console output:_
 
-   ```log
-   Executing "step_script" stage of the job script
-   Using docker image sha256:8b95f188b37d6b342dc740f68557771bb214fe520a5dc78a88c7a9cc6a0f9901 for registry.gitlab.com/security-products/api-security:5 with digest registry.gitlab.com/security-products/api-security@sha256:092909baa2b41db8a7e3584f91b982174772abdfe8ceafc97cf567c3de3179d1 ...
-   $ whoami
-   root
-   $ /peach/analyzer-api-security
-   17:17:14 [INF] API Security: Gitlab API Security
-   17:17:14 [INF] API Security: -------------------
-   17:17:14 [INF] API Security:
-   17:17:14 [INF] API Security: version: 5.7.0
-   ```
+  ```log
+  Executing "step_script" stage of the job script
+  Using docker image sha256:8b95f188b37d6b342dc740f68557771bb214fe520a5dc78a88c7a9cc6a0f9901 for registry.gitlab.com/security-products/api-security:5 with digest registry.gitlab.com/security-products/api-security@sha256:092909baa2b41db8a7e3584f91b982174772abdfe8ceafc97cf567c3de3179d1 ...
+  $ whoami
+  root
+  $ /peach/analyzer-api-security
+  17:17:14 [INF] API Security: Gitlab API Security
+  17:17:14 [INF] API Security: -------------------
+  17:17:14 [INF] API Security:
+  17:17:14 [INF] API Security: version: 5.7.0
+  ```
 
 - Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root which may be a requirement for some customers.
-   1. Create a new `Dockerfile` that wraps the existing image.
 
-      ```yaml
-      ARG SECURE_ANALYZERS_PREFIX
-      ARG APISEC_IMAGE
-      ARG APISEC_VERSION
-      ARG APISEC_IMAGE_SUFFIX
-      FROM $SECURE_ANALYZERS_PREFIX/$APISEC_IMAGE:$APISEC_VERSION$APISEC_IMAGE_SUFFIX
-      USER root
+  1. Create a new `Dockerfile` that wraps the existing image.
 
-      RUN pip install ...
-      RUN apk add ...
+     ```yaml
+     ARG SECURE_ANALYZERS_PREFIX
+     ARG APISEC_IMAGE
+     ARG APISEC_VERSION
+     ARG APISEC_IMAGE_SUFFIX
+     FROM $SECURE_ANALYZERS_PREFIX/$APISEC_IMAGE:$APISEC_VERSION$APISEC_IMAGE_SUFFIX
+     USER root
 
-      USER gitlab
-      ```
+     RUN pip install ...
+     RUN apk add ...
 
-   1. Build the new image and push it to your local container registry before the API Security Testing job starts. The image should be removed after the `api_security` job has been completed.
+     USER gitlab
+     ```
 
-      ```shell
-      TARGET_NAME=apisec-$CI_COMMIT_SHA
-      docker build -t $TARGET_IMAGE \
-        --build-arg "SECURE_ANALYZERS_PREFIX=$SECURE_ANALYZERS_PREFIX" \
-        --build-arg "APISEC_IMAGE=$APISEC_IMAGE" \
-        --build-arg "APISEC_VERSION=$APISEC_VERSION" \
-        --build-arg "APISEC_IMAGE_SUFFIX=$APISEC_IMAGE_SUFFIX" \
-        .
-      docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      docker push $TARGET_IMAGE
-      ```
+  1. Build the new image and push it to your local container registry before the API Security Testing job starts. The image should be removed after the `api_security` job has been completed.
 
-   1. Extend the `api_security` job and use the new image name.
+     ```shell
+     TARGET_NAME=apisec-$CI_COMMIT_SHA
+     docker build -t $TARGET_IMAGE \
+       --build-arg "SECURE_ANALYZERS_PREFIX=$SECURE_ANALYZERS_PREFIX" \
+       --build-arg "APISEC_IMAGE=$APISEC_IMAGE" \
+       --build-arg "APISEC_VERSION=$APISEC_VERSION" \
+       --build-arg "APISEC_IMAGE_SUFFIX=$APISEC_IMAGE_SUFFIX" \
+       .
+     docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+     docker push $TARGET_IMAGE
+     ```
 
-      ```yaml
-      api_security:
-        image: apisec-$CI_COMMIT_SHA
-      ```
+  1. Extend the `api_security` job and use the new image name.
 
-   1. Remove the temporary container from the registry. See [this documentation page for information on removing container images.](../../packages/container_registry/delete_container_registry_images.md)
+     ```yaml
+     api_security:
+       image: apisec-$CI_COMMIT_SHA
+     ```
+
+  1. Remove the temporary container from the registry. See [this documentation page for information on removing container images.](../../packages/container_registry/delete_container_registry_images.md)
+
 - Change the GitLab Runner configuration, disabling the no-new-privileges flag. This could have security implications and should be discussed with your operations and security teams.
 
 ## `Index was outside the bounds of the array.    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`

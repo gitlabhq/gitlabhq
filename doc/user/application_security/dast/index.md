@@ -98,9 +98,9 @@ Detected vulnerabilities appear in [merge requests](../index.md#merge-request), 
 and the [vulnerability report](../index.md#vulnerability-report).
 
 1. To see all vulnerabilities detected, either:
-    - From your project, select **Security & Compliance**, then **Vulnerability report**.
-    - From your pipeline, select the **Security** tab.
-    - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
+   - From your project, select **Security & Compliance**, then **Vulnerability report**.
+   - From your pipeline, select the **Security** tab.
+   - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
 
 1. Select a DAST vulnerability's description. The following fields are examples of what a DAST analyzer may produce to aid investigation and rectification of the underlying cause. Each analyzer may output different fields.
 

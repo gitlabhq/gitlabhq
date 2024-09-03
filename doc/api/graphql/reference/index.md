@@ -33690,6 +33690,19 @@ Returns [`[ValueStreamStage!]`](#valuestreamstage).
 | ---- | ---- | ----------- |
 | <a id="valuestreamanalyticsaggregationstatus"></a>`aggregationStatus` | [`AggregationStatus`](#aggregationstatus) | Shows information about background data collection and aggregation. |
 
+### `ValueStreamAnalyticsDateMetric`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamanalyticsdatemetricdate"></a>`date` | [`Date`](#date) | Date for the metric. |
+| <a id="valuestreamanalyticsdatemetricidentifier"></a>`identifier` | [`String!`](#string) | Identifier for the metric. |
+| <a id="valuestreamanalyticsdatemetriclinks"></a>`links` | [`[ValueStreamMetricLinkType!]!`](#valuestreammetriclinktype) | Optional links for drilling down. |
+| <a id="valuestreamanalyticsdatemetrictitle"></a>`title` | [`String!`](#string) | Title for the metric. |
+| <a id="valuestreamanalyticsdatemetricunit"></a>`unit` | [`String`](#string) | Unit of measurement. |
+| <a id="valuestreamanalyticsdatemetricvalue"></a>`value` | [`Float`](#float) | Value for the metric. |
+
 ### `ValueStreamAnalyticsMetric`
 
 #### Fields
@@ -33785,6 +33798,7 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 | <a id="valuestreamstagemetricsaverage"></a>`average` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Average duration in seconds. |
 | <a id="valuestreamstagemetricscount"></a>`count` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Limited item count. The backend counts maximum 1000 items, for free projects, and maximum 10,000 items for licensed projects or licensed groups. |
 | <a id="valuestreamstagemetricsmedian"></a>`median` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Median duration in seconds. |
+| <a id="valuestreamstagemetricsseries"></a>`series` **{warning-solid}** | [`ValueStreamStageSeries!`](#valuestreamstageseries) | **Introduced** in GitLab 17.4. **Status**: Experiment. Data series in the value stream stage. |
 
 #### Fields with arguments
 
@@ -33807,6 +33821,14 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="valuestreamstagemetricsitemssort"></a>`sort` | [`ValueStreamStageItemSort`](#valuestreamstageitemsort) | Sort stage items by criteria. |
+
+### `ValueStreamStageSeries`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageseriesaveragedurations"></a>`averageDurations` | [`[ValueStreamAnalyticsDateMetric!]`](#valuestreamanalyticsdatemetric) | Average duration for each day within the given date range. |
 
 ### `VulnerabilitiesCountByDay`
 

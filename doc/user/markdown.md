@@ -651,14 +651,14 @@ For example:
 ```markdown
 1. First ordered list item
 
-  Paragraph of first item.
+  (Paragraph of first item.)
 
 1. Another item
 ```
 
 1. First ordered list item
 
-  Paragraph of first item.
+  (Paragraph of first item.)
 
 1. Another item
 

@@ -22,10 +22,10 @@ A user is automatically claimed as an enterprise user of a group when **both** o
 
 1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
 1. The user account meets at least **one** of the following conditions:
-    - It was created February 1, 2021 or later.
-    - It has a SAML or SCIM identity tied to the organization's group.
-    - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
-    - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
+   - It was created February 1, 2021 or later.
+   - It has a SAML or SCIM identity tied to the organization's group.
+   - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
+   - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
 
 After the user is claimed as an enterprise user:
 

@@ -597,9 +597,9 @@ Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Solve problems 
 
 - You can use GitLab Duo Chat to explain CI/CD errors.
 
-   ```markdown
-   Explain this CI/CD error: build.sh: line 14: go command not found
-   ```
+  ```markdown
+  Explain this CI/CD error: build.sh: line 14: go command not found
+  ```
 
 - What happens when you are impatient, and input just one or two words?
 

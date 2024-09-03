@@ -184,15 +184,15 @@ To view the Value Streams Dashboard:
 
 - From Analytics Dashboards:
 
-   1. On the group left sidebar, select **Search or go to** and find your group.
-   1. Select **Analyze > Analytics Dashboards**.
+  1. On the group left sidebar, select **Search or go to** and find your group.
+  1. Select **Analyze > Analytics Dashboards**.
 
 - From Value Stream Analytics:
 
-   1. On the left sidebar, select **Search or go to** and find your project or group.
-   1. Select **Analyze > Value stream analytics**.
-   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
-   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
+  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. Select **Analyze > Value stream analytics**.
+  1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
+  1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ### View the Value Streams Dashboard for a project
 

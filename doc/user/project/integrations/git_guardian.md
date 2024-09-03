@@ -42,11 +42,11 @@ To create an API token:
 1. In the API section sidebar go to **Personal access tokens** page.
 1. Select **Create token**. The token creation dialog opens.
 1. Provide your token information:
-    - Give your API token a meaningful name to identify its purpose.
-      For example, `GitLab integration token`.
-    - Select an appropriate expiration.
-    - Select the **scan scope** checkbox.
-      It is the only one needed for the integration.
+   - Give your API token a meaningful name to identify its purpose.
+     For example, `GitLab integration token`.
+   - Select an appropriate expiration.
+   - Select the **scan scope** checkbox.
+     It is the only one needed for the integration.
 1. Select **Create token**.
 1. After you've generated a token, copy it to your clipboard.
    This token is sensitive information, so keep it secure.

@@ -110,10 +110,10 @@ See [specify a private remote configuration example](#specify-a-private-remote-c
 If remote configuration file doesn't seem to be applying customizations correctly, the causes can be:
 
 1. Your repository has a local `.gitlab/sast-ruleset.toml` file.
-    - By default, a local file is used if it's present, even if a remote configuration is set as a variable.
-    - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/index.md) to `false` to ignore the local configuration file.
+   - By default, a local file is used if it's present, even if a remote configuration is set as a variable.
+   - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/index.md) to `false` to ignore the local configuration file.
 1. There is a problem with authentication.
-    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
+   - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
 
 ## Schema
 

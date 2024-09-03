@@ -109,8 +109,8 @@ accDescr: How a Partner API should receive and respond to leaked token revocatio
 1. The Partner API [verifies the signature](#verifying-the-request) against the actual request body, using the public key (**4**).
 1. The Partner API processes the leaked tokens, which may involve automatic revocation (**5**).
 1. The Partner API responds to the GitLab Token Revocation API (**6**) with the appropriate HTTP status code:
-    - A successful response code (HTTP 200 through 299) acknowledges that the partner has received and processed the request.
-    - An error code (HTTP 400 or higher) causes the GitLab Token Revocation API to retry the request.
+   - A successful response code (HTTP 200 through 299) acknowledges that the partner has received and processed the request.
+   - An error code (HTTP 400 or higher) causes the GitLab Token Revocation API to retry the request.
 
 #### Revocation request
 

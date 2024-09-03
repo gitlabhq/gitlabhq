@@ -250,9 +250,9 @@ You can configure access to a Kubernetes cluster using a long-lived personal acc
 
 1. Check that the configuration works:
 
-    ```shell
-    kubectl get nodes
-    ```
+   ```shell
+   kubectl get nodes
+   ```
 
 The configured user can access your cluster with the Kubernetes API.
 

@@ -228,7 +228,7 @@ You can use command-line tools such as `curl` to verify the connectivity.
     ```
 
 1. [Manually synchronize subscription data](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data).
-    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+   - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
 ### GitLab Duo features not available for users
 
@@ -238,5 +238,5 @@ you can also do the following:
 1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo-seats).
 1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
-    - Verify that the extension is up-to-date.
-    - Run extension setting health checks, and test the authentication.
+   - Verify that the extension is up-to-date.
+   - Run extension setting health checks, and test the authentication.
