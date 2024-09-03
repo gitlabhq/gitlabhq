@@ -35,8 +35,8 @@ To back up Git repositories, the `repositories` sub-task:
 1. Informs `gitaly-backup` which repositories to back up.
 1. Runs `gitaly-backup` to:
 
-    - Call a series of Remote Procedure Calls (RPCs) on Gitaly.
-    - Collect the backup data for each repository.
+   - Call a series of Remote Procedure Calls (RPCs) on Gitaly.
+   - Collect the backup data for each repository.
 
 1. Streams the collected data into a directory structure in the [backup staging directory](#backup-staging-directory).
 

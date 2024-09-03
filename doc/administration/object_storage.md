@@ -1004,36 +1004,36 @@ In some situations, it may be helpful to test object storage settings using the 
 1. Start a [Rails console](operations/rails_console.md).
 1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:
 
-Example connection using access keys:
+   Example connection using access keys:
 
-  ```ruby
-  connection = Fog::Storage.new(
-    {
-      provider: 'AWS',
-      region: `eu-central-1`,
-      aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
-      aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
-    }
-  )
-  ```
+   ```ruby
+   connection = Fog::Storage.new(
+     {
+       provider: 'AWS',
+       region: `eu-central-1`,
+       aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
+       aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
+     }
+   )
+   ```
 
-Example connection using AWS IAM Profiles:
+   Example connection using AWS IAM Profiles:
 
-  ```ruby
-  connection = Fog::Storage.new(
-    {
-      provider: 'AWS',
-      use_iam_profile: true,
-      region: 'us-east-1'
-    }
-  )
-  ```
+   ```ruby
+   connection = Fog::Storage.new(
+     {
+       provider: 'AWS',
+       use_iam_profile: true,
+       region: 'us-east-1'
+     }
+   )
+   ```
 
 1. Specify the bucket name to test against, write, and finally read a test file.
 
-  ```ruby
-  dir = connection.directories.new(key: '<bucket-name-here>')
-  f = dir.files.create(key: 'test.txt', body: 'test')
-  pp f
-  pp dir.files.head('test.txt')
-  ```
+   ```ruby
+   dir = connection.directories.new(key: '<bucket-name-here>')
+   f = dir.files.create(key: 'test.txt', body: 'test')
+   pp f
+   pp dir.files.head('test.txt')
+   ```

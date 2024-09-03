@@ -169,8 +169,8 @@ To enable an Outbound Private Link:
    will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
    [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Make sure you have configured a Network Load Balancer (NLB) for the endpoint service in the AZs to which your Dedicated instance was deployed. If you did not specify these during onboarding to Dedicated, you must either:
-    - Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request the AZ IDs required to enable the connection and ensure the NLB is enabled in those AZs.
-    - Ensure the NLB is enabled in every AZ in the region.
+   - Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request the AZ IDs required to enable the connection and ensure the NLB is enabled in those AZs.
+   - Ensure the NLB is enabled in every AZ in the region.
 1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
    IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
    entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
@@ -275,25 +275,25 @@ To activate SAML for your GitLab Dedicated instance:
 1. Expand **SAML Config**.
 1. Turn on the **Enable** toggle.
 1. Complete the required fields:
-    - SAML label
-    - IdP cert fingerprint
-    - IdP SSO target URL
+   - SAML label
+   - IdP cert fingerprint
+   - IdP SSO target URL
 1. Optional. To configure users based on SAML group membership, complete the following fields:
-    - SAML group attribute
-    - Admin groups
-    - Auditor groups
-    - External groups
-    - Required groups
+   - SAML group attribute
+   - Admin groups
+   - Auditor groups
+   - External groups
+   - Required groups
 1. Optional. To configure SAML request signing, complete the following fields:
-    - Name identifier format
-    - Attribute statements
-    - Security
+   - Name identifier format
+   - Attribute statements
+   - Security
 1. Select **Save**.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
 1. Optional. To use group sync, [configure the SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 1. To verify the SAML configuration is successful:
-    - Check that the SSO button description is displayed on your instance's sign-in page.
-    - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, and manually validate the settings.
+   - Check that the SSO button description is displayed on your instance's sign-in page.
+   - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, and manually validate the settings.
 
 #### Activate SAML with a Support Request
 

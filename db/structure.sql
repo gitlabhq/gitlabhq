@@ -28201,8 +28201,6 @@ CREATE INDEX index_events_on_created_at_and_id ON events USING btree (created_at
 
 CREATE INDEX index_events_on_group_id_and_id ON events USING btree (group_id, id) WHERE (group_id IS NOT NULL);
 
-CREATE INDEX index_events_on_group_id_partial ON events USING btree (group_id) WHERE (group_id IS NOT NULL);
-
 CREATE INDEX index_events_on_project_id_and_created_at ON events USING btree (project_id, created_at);
 
 CREATE INDEX index_events_on_project_id_and_id ON events USING btree (project_id, id);

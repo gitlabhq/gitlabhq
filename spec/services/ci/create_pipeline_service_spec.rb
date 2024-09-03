@@ -1140,7 +1140,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       context 'with valid pipeline variables' do
         let(:variables_attributes) do
           [{ key: 'first', secret_value: 'world' },
-           { key: 'second', secret_value: 'second_world' }]
+            { key: 'second', secret_value: 'second_world' }]
         end
 
         it 'creates a pipeline with specified variables' do
@@ -1152,7 +1152,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       context 'with duplicate pipeline variables' do
         let(:variables_attributes) do
           [{ key: 'hello', secret_value: 'world' },
-           { key: 'hello', secret_value: 'second_world' }]
+            { key: 'hello', secret_value: 'second_world' }]
         end
 
         it 'fails to create the pipeline' do
@@ -1165,10 +1165,10 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       context 'with more than one duplicate pipeline variable' do
         let(:variables_attributes) do
           [{ key: 'hello', secret_value: 'world' },
-           { key: 'hello', secret_value: 'second_world' },
-           { key: 'single', secret_value: 'variable' },
-           { key: 'other', secret_value: 'value' },
-           { key: 'other', secret_value: 'other value' }]
+            { key: 'hello', secret_value: 'second_world' },
+            { key: 'single', secret_value: 'variable' },
+            { key: 'other', secret_value: 'value' },
+            { key: 'other', secret_value: 'other value' }]
         end
 
         it 'fails to create the pipeline' do

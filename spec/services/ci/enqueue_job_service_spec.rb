@@ -38,7 +38,7 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
   context 'when variables are supplied' do
     let(:job_variables) do
       [{ key: 'first', secret_value: 'first' },
-       { key: 'second', secret_value: 'second' }]
+        { key: 'second', secret_value: 'second' }]
     end
 
     let(:service) do
@@ -82,7 +82,7 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
   context 'when the job is manually triggered another user' do
     let(:job_variables) do
       [{ key: 'third', secret_value: 'third' },
-       { key: 'fourth', secret_value: 'fourth' }]
+        { key: 'fourth', secret_value: 'fourth' }]
     end
 
     let(:service) do

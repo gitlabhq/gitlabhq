@@ -60,8 +60,8 @@ RSpec.shared_examples 'label note created from events' do
 
     it 'returns text note for added labels' do
       events = [create_event(created_at: time),
-                create_event(created_at: time, label: label2),
-                create_event(created_at: time, label: nil)]
+        create_event(created_at: time, label: label2),
+        create_event(created_at: time, label: nil)]
 
       note = described_class.from_events(events)
 
@@ -70,8 +70,8 @@ RSpec.shared_examples 'label note created from events' do
 
     it 'returns text note for removed labels' do
       events = [create_event(action: :remove, created_at: time),
-                create_event(action: :remove, created_at: time, label: label2),
-                create_event(action: :remove, created_at: time, label: nil)]
+        create_event(action: :remove, created_at: time, label: label2),
+        create_event(action: :remove, created_at: time, label: nil)]
 
       note = described_class.from_events(events)
 
@@ -80,10 +80,10 @@ RSpec.shared_examples 'label note created from events' do
 
     it 'returns text note for added and removed labels' do
       add_events = [create_event(created_at: time),
-                    create_event(created_at: time, label: nil)]
+        create_event(created_at: time, label: nil)]
 
       remove_events = [create_event(action: :remove, created_at: time),
-                       create_event(action: :remove, created_at: time, label: nil)]
+        create_event(action: :remove, created_at: time, label: nil)]
 
       note = described_class.from_events(add_events + remove_events)
 

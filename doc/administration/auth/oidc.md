@@ -1112,7 +1112,7 @@ response to assign users as administrator based on group membership, configure G
 
 - Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
 - Which group memberships grant the user administrator access, using the
- `admin_groups` setting.
+  `admin_groups` setting.
 
 ::Tabs
 

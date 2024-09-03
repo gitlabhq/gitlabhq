@@ -73,7 +73,7 @@ RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code
         it 'creates a commit with the correct parents' do
           expect(merge_request.source_branch_head.parents.map(&:id))
             .to eq(%w[1450cd639e0bc6721eb02800169e464f212cde06
-                      824be604a34828eb682305f0d963056cfac87b2d])
+              824be604a34828eb682305f0d963056cfac87b2d])
         end
       end
 
@@ -170,7 +170,7 @@ RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code
       it 'creates a commit with the correct parents' do
         expect(merge_request.source_branch_head.parents.map(&:id))
           .to eq(%w[1450cd639e0bc6721eb02800169e464f212cde06
-                    824be604a34828eb682305f0d963056cfac87b2d])
+            824be604a34828eb682305f0d963056cfac87b2d])
       end
 
       it 'sets the content to the content given' do

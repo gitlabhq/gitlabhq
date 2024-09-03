@@ -232,7 +232,7 @@ When accepting data loss, Praefect:
 1. Marks the chosen copy of the repository as the latest version.
 1. Replicates the copy to the other assigned Gitaly nodes.
 
-  This process overwrites any other copy of the repository so care must be taken.
+   This process overwrites any other copy of the repository so care must be taken.
 
 ## Data recovery
 

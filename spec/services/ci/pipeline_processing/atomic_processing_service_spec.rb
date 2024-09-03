@@ -674,7 +674,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           succeed_running_or_pending
 
           expect(builds_names).to eq %w[code:test staging:deploy staging:test
-                                        production:deploy]
+            production:deploy]
           expect(builds_statuses).to eq %w[success success success manual]
 
           expect(pipeline.reload).to be_manual
@@ -690,14 +690,14 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           succeed_running_or_pending
 
           expect(builds_names).to eq %w[code:test staging:deploy staging:test
-                                        production:deploy production:test]
+            production:deploy production:test]
           expect(builds_statuses).to eq %w[success success success success pending]
           expect(pipeline.reload).to be_running
 
           succeed_running_or_pending
 
           expect(builds_names).to eq %w[code:test staging:deploy staging:test
-                                        production:deploy production:test]
+            production:deploy production:test]
           expect(builds_statuses).to eq %w[success success success success success]
           expect(pipeline.reload).to be_success
         end
@@ -749,7 +749,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           Ci::RetryJobService.new(pipeline.project, user).execute(pipeline.builds.find_by(name: 'test:2'))[:job].reset.success!
 
           expect(builds_names).to eq ['build:1', 'build:2', 'test:1', 'test:2',
-                                      'test:2', 'deploy:1', 'deploy:2']
+            'test:2', 'deploy:1', 'deploy:2']
         end
       end
     end

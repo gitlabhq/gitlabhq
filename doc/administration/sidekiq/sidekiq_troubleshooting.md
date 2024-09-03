@@ -601,20 +601,20 @@ but if you want to clear the idempotency key immediately, follow the following s
 
 1. Find the worker class and `args` of the job in the Sidekiq logs:
 
-  ```plaintext
-  { ... "class":"Geo::VerificationBatchWorker","args":["container_repository"] ... }
-  ```
+   ```plaintext
+   { ... "class":"Geo::VerificationBatchWorker","args":["container_repository"] ... }
+   ```
 
 1. Start a [Rails console session](../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following snippet:
 
-  ```ruby
-  worker_class = Geo::VerificationBatchWorker
-  args = ["container_repository"]
-  dj = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new({ 'class' => worker_class.name, 'args' => args }, worker_class.queue)
-  dj.send(:idempotency_key)
-  dj.delete!
-  ```
+   ```ruby
+   worker_class = Geo::VerificationBatchWorker
+   args = ["container_repository"]
+   dj = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new({ 'class' => worker_class.name, 'args' => args }, worker_class.queue)
+   dj.send(:idempotency_key)
+   dj.delete!
+   ```
 
 ## CPU saturation in Redis caused by Sidekiq BRPOP calls
 

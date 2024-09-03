@@ -206,12 +206,12 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     expect(merged_report.findings).to(
       eq([
         finding_cwe_2,
-           finding_wasc_2,
-           finding_cwe_1,
-           finding_id_2_loc_2,
-           finding_id_2_loc_1,
-           finding_wasc_1,
-           finding_id_1
+        finding_wasc_2,
+        finding_cwe_1,
+        finding_id_2_loc_2,
+        finding_id_2_loc_1,
+        finding_wasc_1,
+        finding_id_1
       ])
     )
   end
@@ -220,9 +220,9 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     expect(merged_report.scanned_resources).to(
       eq([
         scanned_resource,
-           scanned_resource_1,
-           scanned_resource_2,
-           scanned_resource_3
+        scanned_resource_1,
+        scanned_resource_2,
+        scanned_resource_3
       ])
     )
   end

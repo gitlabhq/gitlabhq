@@ -286,8 +286,7 @@ You can assign custom roles and permissions to the following:
 You can sync users to custom roles with following authentication providers:
 
 - See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
-- LDAP Group Links are not supported, but [issue 435229](https://gitlab.com/gitlab-org/gitlab/-/issues/435229)
-  proposes to change this.
+- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
 ## Known issues
 

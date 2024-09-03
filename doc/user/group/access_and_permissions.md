@@ -231,6 +231,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
+> - Support for custom roles for users synced in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435229) in GitLab 17.2.
+
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
@@ -265,7 +267,7 @@ To create group links via CN:
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
 1. In the **LDAP Group cn** field, begin typing the CN of the group. There is a dropdown list with matching CNs in the configured `group_base`. Select your CN from this list.
-1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
 <!-- vale gitlab_base.Spelling = YES -->
@@ -281,7 +283,7 @@ To create group links via filter:
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP user filter`.
 1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter).
-1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
+1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
 ### Override user permissions

@@ -57,9 +57,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
 
 1. Restart PostgreSQL to enable the TCP port:
 
-  ```shell
-  sudo gitlab-ctl restart
-  ```
+   ```shell
+   sudo gitlab-ctl restart
+   ```
 
 ## Troubleshooting
 

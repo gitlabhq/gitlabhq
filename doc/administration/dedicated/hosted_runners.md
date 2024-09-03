@@ -176,11 +176,11 @@ To migrate your jobs to use hosted runners:
 1. Use the small Linux x86-64 runner for untagged jobs.
 1. Add the appropriate tags to your job configurations in the `.gitlab-ci.yml` file:
 
-    ```yaml
-    job_name:
-      tags:
-        - linux-medium-amd64  # Use the medium-sized Linux runner
-    ```
+   ```yaml
+   job_name:
+     tags:
+       - linux-medium-amd64  # Use the medium-sized Linux runner
+   ```
 
 1. [Modify the tags](#configure-hosted-runners-in-gitlab) to match your existing job configurations.
 

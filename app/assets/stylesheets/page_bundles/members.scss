@@ -47,12 +47,6 @@
     overflow-wrap: break-word;
     word-break: break-all;
   }
-
-  @include media-breakpoint-down(sm) {
-    .member-access-text {
-      margin: 0 0 $gl-padding-4 ($grid-size * 6);
-    }
-  }
 }
 
 .members-table {
@@ -75,17 +69,6 @@
 
     .col-actions {
       width: px-to-rem(65px);
-    }
-  }
-}
-
-.card-mobile {
-  .content-list.members-list li {
-    display: block;
-
-    .member-controls {
-      float: none;
-      display: block;
     }
   }
 }
