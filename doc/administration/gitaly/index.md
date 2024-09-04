@@ -128,7 +128,7 @@ Accessing Git repositories directly is done at your own risk and is not supporte
 
 The following shows GitLab set up to use direct access to Gitaly:
 
-![Shard example](img/shard_example_v13_3.png)
+![GitLab application interacting with Gitaly storage shards](img/shard_example_v13_3.png)
 
 In this example:
 
@@ -230,7 +230,7 @@ customers.
 The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly
 Cluster:
 
-![Cluster example](img/cluster_example_v13_3.png)
+![GitLab application interacting with virtual Gitaly storage, which interacts with Gitaly physical storage](img/cluster_example_v13_3.png)
 
 In this example:
 
@@ -456,7 +456,7 @@ Gitaly Cluster consists of multiple components:
 Praefect is a router and transaction manager for Gitaly, and a required
 component for running a Gitaly Cluster.
 
-![Architecture diagram](img/praefect_architecture_v12_10.png)
+![Praefect distributing incoming connections to Gitaly cluster nodes](img/praefect_architecture_v12_10.png)
 
 For more information, see [Gitaly High Availability (HA) Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md).
 

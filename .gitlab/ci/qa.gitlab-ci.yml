@@ -239,6 +239,7 @@ e2e:test-product-analytics:
     PIPELINE_NAME: E2E Product Analytics
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+    UPSTREAM_COMMIT_SHA: $CI_COMMIT_SHA
   needs:
     - build-gdk-image
     - build-qa-image

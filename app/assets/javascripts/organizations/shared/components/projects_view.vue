@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import projectsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { deleteProject } from '~/rest_api';
@@ -10,7 +11,6 @@ import { createAlert } from '~/alert';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-  formatProjects,
   timestampType,
 } from 'ee_else_ce/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
@@ -109,7 +109,7 @@ export default {
         },
       }) {
         return {
-          nodes: formatProjects(nodes),
+          nodes: formatGraphQLProjects(nodes),
           pageInfo,
         };
       },

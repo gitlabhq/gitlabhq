@@ -564,7 +564,7 @@ test-job1:
   script:
     - echo "$BUILD_VERSION"  # Output is: 'v1.0.0'
   dependencies:
-    - build
+    - build-job1
 
 test-job2:
   stage: test

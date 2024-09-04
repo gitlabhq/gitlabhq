@@ -7,12 +7,9 @@ import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/const
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-  formatProjects,
-} from 'ee_else_ce/organizations/shared/utils';
+import { renderDeleteSuccessToast, deleteParams } from 'ee_else_ce/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { createAlert } from '~/alert';
@@ -185,7 +182,7 @@ describe('ProjectsView', () => {
         await waitForPromises();
 
         expect(findProjectsList().props()).toMatchObject({
-          projects: formatProjects(nodes),
+          projects: formatGraphQLProjects(nodes),
           showProjectIcon: true,
           listItemClass: defaultPropsData.listItemClass,
           timestampType: TIMESTAMP_TYPE_CREATED_AT,
@@ -330,7 +327,7 @@ describe('ProjectsView', () => {
   });
 
   describe('Deleting project', () => {
-    const MOCK_PROJECT = formatProjects(nodes)[0];
+    const MOCK_PROJECT = formatGraphQLProjects(nodes)[0];
 
     describe('when API call is successful', () => {
       beforeEach(async () => {

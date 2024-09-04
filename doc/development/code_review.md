@@ -83,7 +83,7 @@ We make the following assumption with regards to automatically being considered 
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
 We default to assigning reviews to team members with domain expertise for code reviews. UX reviews default to the recommended reviewer from the Review Roulette. Due to designer capacity limits, areas not supported by a Product Designer will no longer require a UX review unless it is a community contribution.
-When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation (see above for UX reviews).
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation (see above for UX reviews). Double check if the person is OOO before assigning them.
 
 To find a domain expert:
 
@@ -378,7 +378,7 @@ This saves reviewers time and helps authors catch mistakes earlier.
 
 Reviewers are responsible for reviewing the specifics of the chosen solution.
 
-If you are unavailable to review an assigned merge request:
+If you are unavailable to review an assigned merge request within the [Review-response SLO](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo):
 
 1. Inform the author that you're not available.
 1. Use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) to select a new reviewer.

@@ -289,7 +289,6 @@ module Gitlab
     config.assets.precompile << "mailers/notify.css"
     config.assets.precompile << "mailers/notify_enhanced.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
-    config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
     config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"
     config.assets.precompile << "page_bundles/admin/geo_sites.css"
     config.assets.precompile << "page_bundles/admin/geo_replicable.css"

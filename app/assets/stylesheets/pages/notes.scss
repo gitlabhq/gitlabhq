@@ -252,8 +252,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
   }
 
-  .note-created-ago,
-  .note-updated-at {
+  .note-created-ago {
     white-space: normal;
   }
 
@@ -300,11 +299,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
       .timeline-entry-inner {
         opacity: 0.5;
-      }
-
-      .dummy-avatar {
-        background-color: $gray-100;
-        border: 1px solid darken($gray-100, 25%);
       }
     }
 
@@ -949,10 +943,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.note-role {
-  margin: 0 8px;
-}
-
 /**
  * Line note button on the side of diffs
  */
@@ -1031,11 +1021,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   border: 1px solid $border-color;
   color: $note-disabled-comment-color;
   padding: $gl-padding-8 0;
-
-  &.discussion-locked {
-    border: 0;
-    background-color: $white;
-  }
 
   a:not(.learn-more) {
     color: $blue-600;

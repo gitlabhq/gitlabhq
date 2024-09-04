@@ -1,7 +1,6 @@
 import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
 import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
 import {
-  formatProjects,
   formatGroups,
   onPageChange,
   deleteParams,
@@ -11,6 +10,7 @@ import {
 import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -34,47 +34,6 @@ const {
     },
   },
 } = organizationProjectsGraphQlResponse;
-
-describe('formatProjects', () => {
-  it('correctly formats the projects', () => {
-    const [firstMockProject] = organizationProjects;
-    const formattedProjects = formatProjects(organizationProjects);
-    const [firstFormattedProject] = formattedProjects;
-
-    expect(firstFormattedProject).toMatchObject({
-      id: getIdFromGraphQLId(firstMockProject.id),
-      name: firstMockProject.nameWithNamespace,
-      mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
-      issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
-      forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
-      accessLevel: {
-        integerValue: 50,
-      },
-      availableActions: [ACTION_EDIT, ACTION_DELETE],
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
-    });
-
-    expect(formattedProjects.length).toBe(organizationProjects.length);
-  });
-
-  describe('when project does not have delete permissions', () => {
-    const nonDeletableFormattedProject = formatProjects(organizationProjects)[1];
-
-    it('does not include delete action in `availableActions`', () => {
-      expect(nonDeletableFormattedProject.availableActions).toEqual([]);
-    });
-  });
-
-  describe('when project does not have edit permissions', () => {
-    const nonEditableFormattedProject = formatProjects(organizationProjects)[1];
-
-    it('does not include edit action in `availableActions`', () => {
-      expect(nonEditableFormattedProject.availableActions).toEqual([]);
-    });
-  });
-});
 
 describe('formatGroups', () => {
   it('correctly formats the groups with edit and delete permissions', () => {
@@ -150,7 +109,7 @@ describe('onPageChange', () => {
 });
 
 describe('renderDeleteSuccessToast', () => {
-  const [MOCK_PROJECT] = formatProjects(organizationProjects);
+  const [MOCK_PROJECT] = formatGraphQLProjects(organizationProjects);
   const MOCK_TYPE = 'Project';
 
   it('calls toast correctly', () => {

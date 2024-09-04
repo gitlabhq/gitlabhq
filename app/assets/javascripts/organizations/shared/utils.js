@@ -13,20 +13,6 @@ import {
   QUERY_PARAM_START_CURSOR,
 } from './constants';
 
-const availableProjectActions = (userPermissions) => {
-  const baseActions = [];
-
-  if (userPermissions.viewEditPage) {
-    baseActions.push(ACTION_EDIT);
-  }
-
-  if (userPermissions.removeProject) {
-    baseActions.push(ACTION_DELETE);
-  }
-
-  return baseActions;
-};
-
 const availableGroupActions = (userPermissions) => {
   const baseActions = [];
 
@@ -40,37 +26,6 @@ const availableGroupActions = (userPermissions) => {
 
   return baseActions;
 };
-
-export const formatProjects = (projects) =>
-  projects.map(
-    ({
-      id,
-      nameWithNamespace,
-      mergeRequestsAccessLevel,
-      issuesAccessLevel,
-      forkingAccessLevel,
-      webUrl,
-      userPermissions,
-      maxAccessLevel: accessLevel,
-      organizationEditPath: editPath,
-      ...project
-    }) => ({
-      ...project,
-      id: getIdFromGraphQLId(id),
-      name: nameWithNamespace,
-      mergeRequestsAccessLevel: mergeRequestsAccessLevel.stringValue,
-      issuesAccessLevel: issuesAccessLevel.stringValue,
-      forkingAccessLevel: forkingAccessLevel.stringValue,
-      webUrl,
-      isForked: false,
-      accessLevel,
-      editPath,
-      availableActions: availableProjectActions(userPermissions),
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
-    }),
-  );
 
 export const formatGroups = (groups) =>
   groups.map(

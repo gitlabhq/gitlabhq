@@ -34,15 +34,13 @@ describe('WorkItemPrefetch component', () => {
       },
       scopedSlots: {
         default: `
-          <template #default="{ prefetchWorkItem, clearPrefetching }">
-            <span
-              @mouseover="prefetchWorkItem"
-              @mouseleave="clearPrefetching"
-              data-testid="prefetch-trigger"
-            >
-              Hover item
-            </span>
-          </template>
+          <span
+            @mouseover="props.prefetchWorkItem"
+            @mouseleave="props.clearPrefetching"
+            data-testid="prefetch-trigger"
+          >
+            Hover item
+          </span>
         `,
       },
     });

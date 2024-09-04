@@ -3095,9 +3095,6 @@ msgstr ""
 msgid "Active project access tokens"
 msgstr ""
 
-msgid "Active tab: %{tab}"
-msgstr ""
-
 msgid "Activity"
 msgstr ""
 
@@ -5808,6 +5805,9 @@ msgid "An error occurred fetching the project authors."
 msgstr ""
 
 msgid "An error occurred fetching the public deploy keys. Please try again."
+msgstr ""
+
+msgid "An error occurred loading the projects. Please refresh the page to try again."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -28133,10 +28133,16 @@ msgstr ""
 msgid "InProductMarketing|%{upper_start}Free 30-day trial%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
 msgstr ""
 
+msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-powered DevSecOps Platform%{last_end}"
+msgstr ""
+
 msgid "InProductMarketing|Accelerate your digital transformation"
 msgstr ""
 
 msgid "InProductMarketing|Blog"
+msgstr ""
+
+msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
 msgid "InProductMarketing|Build in security"
@@ -28148,6 +28154,9 @@ msgstr ""
 msgid "InProductMarketing|Deliver software faster"
 msgstr ""
 
+msgid "InProductMarketing|End-to-end security and compliance"
+msgstr ""
+
 msgid "InProductMarketing|Ensure compliance"
 msgstr ""
 
@@ -28155,6 +28164,9 @@ msgid "InProductMarketing|Facebook"
 msgstr ""
 
 msgid "InProductMarketing|Free guest users"
+msgstr ""
+
+msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
 msgstr ""
 
 msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
@@ -28173,6 +28185,12 @@ msgid "InProductMarketing|No credit card required"
 msgstr ""
 
 msgid "InProductMarketing|No credit card required."
+msgstr ""
+
+msgid "InProductMarketing|One platform for Dev, Sec, and Ops teams"
+msgstr ""
+
+msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"

@@ -1,23 +1,25 @@
 <script>
-import { GlTabs, GlTab, GlBadge, GlSprintf } from '@gitlab/ui';
+import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import {
-  PROJECT_DASHBOARD_TABS,
   CONTRIBUTED_TAB,
   CUSTOM_DASHBOARD_ROUTE_NAMES,
+  PROJECT_DASHBOARD_TABS,
 } from 'ee_else_ce/projects/your_work/constants';
+import TabView from './tab_view.vue';
 
 export default {
   name: 'YourWorkProjectsApp',
+  TIMESTAMP_TYPE_UPDATED_AT,
   i18n: {
     heading: __('Projects'),
-    activeTab: __('Active tab: %{tab}'),
   },
   components: {
     GlTabs,
     GlTab,
     GlBadge,
-    GlSprintf,
+    TabView,
   },
   data() {
     return {
@@ -54,7 +56,7 @@ export default {
     <h1 class="page-title gl-mt-5 gl-text-size-h-display">{{ $options.i18n.heading }}</h1>
 
     <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
-      <gl-tab v-for="tab in formattedTabs" :key="tab.text">
+      <gl-tab v-for="tab in formattedTabs" :key="tab.text" lazy>
         <template #title>
           <span data-testid="projects-dashboard-tab-title">
             <span>{{ tab.text }}</span>
@@ -62,11 +64,8 @@ export default {
           </span>
         </template>
 
-        <gl-sprintf :message="$options.i18n.activeTab">
-          <template #tab>
-            {{ tab.text }}
-          </template>
-        </gl-sprintf>
+        <tab-view v-if="tab.query" :tab="tab" />
+        <template v-else>{{ tab.text }}</template>
       </gl-tab>
     </gl-tabs>
   </div>
