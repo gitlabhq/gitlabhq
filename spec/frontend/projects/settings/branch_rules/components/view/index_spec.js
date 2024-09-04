@@ -165,7 +165,7 @@ describe('View branch rules', () => {
     jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(ALL_BRANCHES_WILDCARD);
     await createComponent();
 
-    expect(findAllBranches().text()).toBe(I18N.allBranches);
+    expect(findAllBranches().text()).toBe('*');
   });
 
   it('renders matching branches link', () => {

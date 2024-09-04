@@ -43,14 +43,6 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
 
   include_examples 'running builds'
 
-  context 'when new query flag is disabled' do
-    before do
-      stub_feature_flags(ci_new_query_for_running_stuck_jobs: false)
-    end
-
-    include_examples 'running builds'
-  end
-
   %w[success skipped failed canceled scheduled pending].each do |status|
     context "when job is #{status}" do
       let(:status) { status }

@@ -1,0 +1,21 @@
+---
+description: User clicks a project setting in the command palette
+internal_events: true
+action: click_project_setting_in_command_palette
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: text of the result that was selected
+product_group: personal_productivity
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163735
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

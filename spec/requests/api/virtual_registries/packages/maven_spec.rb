@@ -46,6 +46,26 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     it_behaves_like 'returning response status', :unauthorized
   end
 
+  shared_examples 'authenticated endpoint' do |success_shared_example_name:|
+    %i[personal_access_token deploy_token job_token].each do |token_type|
+      context "with a #{token_type}" do
+        let_it_be(:user) { deploy_token } if token_type == :deploy_token
+
+        context 'when sent by headers' do
+          let(:headers) { super().merge(token_header(token_type)) }
+
+          it_behaves_like success_shared_example_name
+        end
+
+        context 'when sent by basic auth' do
+          let(:headers) { super().merge(token_basic_auth(token_type)) }
+
+          it_behaves_like success_shared_example_name
+        end
+      end
+    end
+  end
+
   before do
     stub_config(dependency_proxy: { enabled: true }) # not enabled by default
   end
@@ -1183,8 +1203,10 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}" }
     let(:service_response) do
       ServiceResponse.success(
-        payload: { action: :workhorse_send_url,
-                   action_params: { url: upstream.url_for(path), headers: upstream.headers } }
+        payload: {
+          action: :workhorse_upload_url,
+          action_params: { url: upstream.url_for(path), upstream: upstream }
+        }
       )
     end
 
@@ -1203,12 +1225,12 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
       get api(url), headers: headers
     end
 
-    shared_examples 'returning the workhorse send_url response' do
+    shared_examples 'returning the workhorse send_dependency response' do
       it 'returns a workhorse send_url response' do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('send-url:')
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('send-dependency:')
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['Content-Length'].to_i).to eq(0)
         expect(response.body).to eq('')
@@ -1223,74 +1245,24 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
           [value]
         end
 
-        expect(send_data_type).to eq('send-url')
-        expect(send_data['URL']).to be_present
-        expect(send_data['AllowRedirects']).to be_truthy
-        expect(send_data['DialTimeout']).to eq('10s')
-        expect(send_data['ResponseHeaderTimeout']).to eq('10s')
-        expect(send_data['ErrorResponseStatus']).to eq(502)
-        expect(send_data['TimeoutResponseStatus']).to eq(504)
-        expect(send_data['Header']).to eq(expected_headers)
+        expected_upload_config = {
+          'Headers' => { described_class::UPSTREAM_GID_HEADER => [upstream.to_global_id.to_s] }
+        }
+
+        expect(send_data_type).to eq('send-dependency')
+        expect(send_data['Url']).to be_present
+        expect(send_data['Headers']).to eq(expected_headers)
         expect(send_data['ResponseHeaders']).to eq(expected_resp_headers)
+        expect(send_data['UploadConfig']).to eq(expected_upload_config)
       end
     end
 
-    context 'for authentication' do
-      context 'with a personal access token' do
-        let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-
-        context 'when sent by headers' do
-          let(:headers) { { 'Private-Token' => personal_access_token.token } }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
-
-        context 'when sent by basic auth' do
-          let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
+    it_behaves_like 'authenticated endpoint',
+      success_shared_example_name: 'returning the workhorse send_dependency response' do
+        let(:headers) { {} }
       end
-
-      context 'with a deploy token' do
-        let_it_be(:deploy_token) do
-          create(:deploy_token, :group, groups: [registry.group], read_virtual_registry: true)
-        end
-
-        let_it_be(:user) { deploy_token }
-
-        context 'when sent by headers' do
-          let(:headers) { { 'Deploy-Token' => deploy_token.token } }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
-
-        context 'when sent by basic auth' do
-          let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
-      end
-
-      context 'with ci job token' do
-        let_it_be(:job) { create(:ci_build, user: user, status: :running, project: project) }
-
-        context 'when sent by headers' do
-          let(:headers) { { 'Job-Token' => job.token } }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
-
-        context 'when sent by basic auth' do
-          let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
-
-          it_behaves_like 'returning the workhorse send_url response'
-        end
-      end
-    end
 
     context 'with a valid user' do
-      let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
       let(:headers) { { 'Private-Token' => personal_access_token.token } }
 
       context 'with service response errors' do
@@ -1316,8 +1288,6 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
         end
       end
 
-      it_behaves_like 'disabled feature flag'
-
       context 'with a web browser' do
         described_class::MAJOR_BROWSERS.each do |browser|
           context "when accessing with a #{browser} browser" do
@@ -1337,9 +1307,134 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
         end
       end
 
+      context 'for a invalid registry id' do
+        let(:url) { "/virtual_registries/packages/maven/#{non_existing_record_id}/#{path}" }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      it_behaves_like 'disabled feature flag'
       it_behaves_like 'disabled dependency proxy'
-      it_behaves_like 'not authenticated user'
     end
+
+    it_behaves_like 'not authenticated user'
+  end
+
+  describe 'POST /api/v4/virtual_registries/packages/maven/:id/*path/upload/authorize' do
+    include_context 'workhorse headers'
+
+    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+    let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload/authorize" }
+
+    subject(:request) do
+      post api(url), headers: headers
+    end
+
+    shared_examples 'returning the workhorse authorization response' do
+      it 'authorizes the upload' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).not_to be_nil
+      end
+    end
+
+    it_behaves_like 'authenticated endpoint',
+      success_shared_example_name: 'returning the workhorse authorization response' do
+        let(:headers) { workhorse_headers }
+      end
+
+    context 'with a valid user' do
+      let(:headers) { workhorse_headers.merge(token_header(:personal_access_token)) }
+
+      context 'with no workhorse headers' do
+        let(:headers) { token_header(:personal_access_token) }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      context 'with no permissions on registry' do
+        let_it_be(:user) { create(:user) }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      it_behaves_like 'disabled feature flag'
+      it_behaves_like 'disabled dependency proxy'
+    end
+
+    it_behaves_like 'not authenticated user'
+  end
+
+  describe 'POST /api/v4/virtual_registries/packages/maven/:id/*path/upload' do
+    include_context 'workhorse headers'
+
+    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+    let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
+    let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom') }
+    let(:gid_header) { { described_class::UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } }
+    let(:headers) { workhorse_headers.merge(gid_header) }
+
+    subject(:request) do
+      workhorse_finalize(
+        api(url),
+        file_key: :file,
+        headers: headers,
+        params: { file: file_upload },
+        send_rewritten_field: true
+      )
+    end
+
+    shared_examples 'returning successful response' do
+      it 'accepts the upload', :freeze_time do
+        expect { request }.to change { upstream.cached_responses.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(upstream.cached_responses.last).to have_attributes(
+          relative_path: "/#{path}",
+          downloads_count: 1,
+          upstream_etag: nil,
+          upstream_checked_at: Time.zone.now,
+          downloaded_at: Time.zone.now
+        )
+      end
+    end
+
+    it_behaves_like 'authenticated endpoint', success_shared_example_name: 'returning successful response'
+
+    context 'with a valid user' do
+      let(:headers) { super().merge(token_header(:personal_access_token)) }
+
+      context 'with no workhorse headers' do
+        let(:headers) { token_header(:personal_access_token).merge(gid_header) }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      context 'with no permissions on registry' do
+        let_it_be(:user) { create(:user) }
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      context 'with an invalid upstream gid' do
+        let_it_be(:upstream) { build(:virtual_registries_packages_maven_upstream, id: non_existing_record_id) }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'with an incoherent upstream gid' do
+        let_it_be(:upstream) { create(:virtual_registries_packages_maven_upstream) }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      it_behaves_like 'disabled feature flag'
+      it_behaves_like 'disabled dependency proxy'
+    end
+
+    it_behaves_like 'not authenticated user'
   end
 
   def token_header(token)

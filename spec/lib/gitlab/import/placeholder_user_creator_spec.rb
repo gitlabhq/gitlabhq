@@ -10,16 +10,20 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
     let(:source_hostname) { 'github.com' }
     let(:source_name) { 'Pry Contributor' }
     let(:source_username) { 'a_pry_contributor' }
+    let(:source_user_identifier) { '1' }
 
-    subject(:service) do
-      described_class.new(
+    let(:source_user) do
+      build(:import_source_user,
         import_type: import_type,
         source_hostname: source_hostname,
         source_name: source_name,
         source_username: source_username,
+        source_user_identifier: source_user_identifier,
         namespace: namespace
       )
     end
+
+    subject(:service) { described_class.new(source_user) }
 
     it 'creates one new placeholder user with a unique email and username' do
       expect { service.execute }.to change { User.where(user_type: :placeholder).count }.from(0).to(1)
@@ -28,7 +32,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
 
       expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
       expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
-      expect(new_placeholder_user.email).to match(/^aprycontributor_placeholder_user_\d+@#{Settings.gitlab.host}$/)
+      expect(new_placeholder_user.email).to match(/^#{import_type}_\h+_\d+@#{Settings.gitlab.host}$/)
       expect(new_placeholder_user.namespace.organization).to eq(namespace.organization)
     end
 
@@ -44,12 +48,14 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
 
     context 'when generating a unique email address' do
       it 'validates against all stored email addresses' do
-        existing_user = create(:user, email: 'aprycontributor_placeholder_user_1@localhost')
-        existing_user.emails.create!(email: 'aprycontributor_placeholder_user_2@localhost')
+        allow(Zlib).to receive(:crc32).and_return(123)
+
+        existing_user = create(:user, email: 'github_7b_1@localhost')
+        existing_user.emails.create!(email: 'github_7b_2@localhost')
 
         placeholder_user = service.execute
 
-        expect(placeholder_user.email).to eq('aprycontributor_placeholder_user_3@localhost')
+        expect(placeholder_user.email).to eq('github_7b_3@localhost')
       end
     end
 
@@ -79,7 +85,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         let(:source_username) { nil }
 
         it 'assigns a default username' do
-          expected_match = /^#{namespace.path}_#{import_type}_placeholder_user_\d+$/
+          expected_match = /^#{import_type}_\h+_placeholder_user_\d+$/
 
           placeholder_user = service.execute
 
@@ -93,7 +99,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         where(:input_username, :expected_output) do
           '.asdf'     | /^asdf_placeholder_user_1$/
           'asdf^ghjk' | /^asdfghjk_placeholder_user_1$/
-          '.'         | /^\w+_github_placeholder_user_1$/
+          '.'         | /^#{import_type}_\h+_placeholder_user_1$/
         end
 
         with_them do

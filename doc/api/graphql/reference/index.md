@@ -22174,6 +22174,17 @@ Check permissions for the current user on an epic.
 | <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic_iid` on this resource. |
 | <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_epic` on this resource. |
 
+### `EpssType`
+
+Represents a CVE's EPSS score.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epsstypecve"></a>`cve` | [`String!`](#string) | CVE identifier of relevant vulnerability. |
+| <a id="epsstypescore"></a>`score` | [`Float!`](#float) | EPSS score for the CVE. |
+
 ### `EscalationPolicyType`
 
 Represents an escalation policy.
@@ -25451,6 +25462,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in GitLab 16.5. **Status**: Experiment. Merge requests that block another merge request from merging. |
+| <a id="mergerequestclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the merge request was closed, null if not closed. |
 | <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` | [`CodequalityReportsComparer`](#codequalityreportscomparer) | Code quality reports comparison reported on the merge request. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
@@ -33905,6 +33917,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitydismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
 | <a id="vulnerabilitydismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
 | <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
+| <a id="vulnerabilityepss"></a>`epss` | [`EpssType`](#epsstype) | EPSS score for CVE vulnerabilities. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for this vulnerability. |

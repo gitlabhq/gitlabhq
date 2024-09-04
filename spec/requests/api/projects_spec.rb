@@ -893,6 +893,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'sorting' do
+      context 'by star_count' do
+        let_it_be(:project_most_stars) { create(:project, :public, star_count: 100) }
+        let_it_be(:project_no_stars) { create(:project, :public, star_count: 0) }
+        let_it_be(:project_few_stars) { create(:project, :public, star_count: 10) }
+
+        it 'with order_by=star_count, returns list of projects sorted by star_count descending' do
+          get api(path), params: { order_by: 'star_count' }
+
+          expected_order = [project_most_stars, project_few_stars, project_no_stars, public_project]
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |x| x['id'] }).to eq(expected_order.map(&:id))
+        end
+      end
+
       context 'by project statistics' do
         %w[repository_size storage_size wiki_size packages_size].each do |order_by|
           context "sorting by #{order_by}" do

@@ -35613,6 +35613,60 @@ msgstr ""
 msgid "New! Suggest changes directly"
 msgstr ""
 
+msgid "NewFramework|All todos done."
+msgstr ""
+
+msgid "NewFramework|Apply to projects"
+msgstr ""
+
+msgid "NewFramework|Back to compliance center"
+msgstr ""
+
+msgid "NewFramework|Compliance framework created!"
+msgstr ""
+
+msgid "NewFramework|Feedback?"
+msgstr ""
+
+msgid "NewFramework|Go to the %{linkStart}compliance center%{linkEnd} to apply this framework to projects."
+msgstr ""
+
+msgid "NewFramework|Go to the %{linkStart}policy management page%{linkEnd} to scope a policy for this framework."
+msgstr ""
+
+msgid "NewFramework|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
+msgstr ""
+
+msgid "NewFramework|How do I apply the framework to projects?"
+msgstr ""
+
+msgid "NewFramework|How to scope policies?"
+msgstr ""
+
+msgid "NewFramework|New improvements to creating compliance framework."
+msgstr ""
+
+msgid "NewFramework|Policies scoped to a framework serve as solutions to specific compliance requirements and are applied to projects."
+msgstr ""
+
+msgid "NewFramework|Projects that have this framework applied are automatically checked against requirements and have policies enforced."
+msgstr ""
+
+msgid "NewFramework|Scope policies"
+msgstr ""
+
+msgid "NewFramework|Suggested next steps"
+msgstr ""
+
+msgid "NewFramework|Use the compliance framework to scope policies and include projects to make sure they are compliant."
+msgstr ""
+
+msgid "NewFramework|Why apply the framework to projects?"
+msgstr ""
+
+msgid "NewFramework|Why scope policies?"
+msgstr ""
+
 msgid "Newest first"
 msgstr ""
 
@@ -64144,12 +64198,6 @@ msgstr[1] ""
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""
 
-msgid "for Workspace must have an associated WorkspacesAgentConfig"
-msgstr ""
-
-msgid "for Workspace must match the dns_zone of the associated WorkspacesAgentConfig"
-msgstr ""
-
 msgid "for this project"
 msgstr ""
 
@@ -64416,6 +64464,18 @@ msgid "item"
 msgstr ""
 
 msgid "key result"
+msgstr ""
+
+msgid "key: %{key} is reserved for internal usage"
+msgstr ""
+
+msgid "key: %{key} must be a string"
+msgstr ""
+
+msgid "key: %{key} must have name component with 63 characters or less, and start/end with an alphanumeric character"
+msgstr ""
+
+msgid "key: %{key} must have prefix component with 253 characters or less, and have a valid DNS subdomain as a prefix"
 msgstr ""
 
 msgid "kuromoji custom analyzer"
@@ -64869,6 +64929,9 @@ msgstr ""
 msgid "must be a root namespace"
 msgstr ""
 
+msgid "must be a string"
+msgstr ""
+
 msgid "must be a valid IPv4 or IPv6 address"
 msgstr ""
 
@@ -64897,6 +64960,9 @@ msgid "must be an array of hash containing 'allow' attribute of type string"
 msgstr ""
 
 msgid "must be an email you have verified"
+msgstr ""
+
+msgid "must be an hash"
 msgstr ""
 
 msgid "must be associated with a Group or a Project"
@@ -65528,6 +65594,12 @@ msgid "value for '%{storage}' must be an integer"
 msgstr ""
 
 msgid "value for '%{storage}' must be between 0 and 100"
+msgstr ""
+
+msgid "value: %{value} must be 63 characters or less, and start/end with an alphanumeric character"
+msgstr ""
+
+msgid "value: %{value} must be a string"
 msgstr ""
 
 msgid "verify ownership"

@@ -16,7 +16,7 @@ module Gitlab
         return false if streaming?
         return false if Gitlab::Utils.to_boolean(params[:no_pagination], default: false)
 
-        Feature.enabled?(:blame_page_pagination, project)
+        true
       end
 
       def full?

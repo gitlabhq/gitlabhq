@@ -15,15 +15,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
   describe '#execute' do
     subject(:execute) { service.execute }
 
-    shared_examples 'returning a service response error response with' do |message:, reason:|
-      it 'returns an error' do
-        expect(execute).to be_a(ServiceResponse)
-        expect(execute).to be_error
-        expect(execute.message).to eq(message)
-        expect(execute.reason).to eq(reason)
-      end
-    end
-
     shared_examples 'returning a service response success response' do
       before do
         stub_external_registry_request
@@ -32,8 +23,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
       it 'returns a success service response' do
         expect(execute).to be_success
         expect(execute.payload).to eq(
-          action: :workhorse_send_url,
-          action_params: { url: upstream_resource_url, headers: upstream.headers }
+          action: :workhorse_upload_url,
+          action_params: { url: upstream_resource_url, upstream: upstream }
         )
       end
     end
@@ -46,8 +37,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           stub_external_registry_request(status: 404)
         end
 
-        it_behaves_like 'returning a service response error response with', message: 'File not found on any upstream',
-          reason: :file_not_found_on_upstreams
+        it { is_expected.to eq(described_class::ERRORS[:file_not_found_on_upstreams]) }
       end
 
       context 'with upstream head raising an error' do
@@ -55,8 +45,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           stub_external_registry_request(raise_error: true)
         end
 
-        it_behaves_like 'returning a service response error response with', message: 'Upstream not available',
-          reason: :upstream_not_available
+        it { is_expected.to eq(described_class::ERRORS[:upstream_not_available]) }
       end
     end
 
@@ -69,14 +58,13 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
     context 'with no path' do
       let(:path) { nil }
 
-      it_behaves_like 'returning a service response error response with', message: 'Path not present',
-        reason: :path_not_present
+      it { is_expected.to eq(described_class::ERRORS[:path_not_present]) }
     end
 
     context 'with no user' do
       let(:user) { nil }
 
-      it_behaves_like 'returning a service response error response with', message: 'Unauthorized', reason: :unauthorized
+      it { is_expected.to eq(described_class::ERRORS[:unauthorized]) }
     end
 
     context 'with registry with no upstreams' do
@@ -84,8 +72,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
         registry.upstream = nil
       end
 
-      it_behaves_like 'returning a service response error response with', message: 'No upstreams set',
-        reason: :no_upstreams
+      it { is_expected.to eq(described_class::ERRORS[:no_upstreams]) }
     end
 
     def stub_external_registry_request(status: 200, raise_error: false)

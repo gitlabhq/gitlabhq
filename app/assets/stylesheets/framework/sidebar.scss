@@ -200,7 +200,7 @@
   }
 }
 
-.sidebar-collapsed-icon .sidebar-collapsed-value {
+.sidebar-collapsed-icon {
   font-size: 12px;
 }
 
@@ -277,11 +277,6 @@
 .reviewer-grid {
   grid-template-areas: 'user approval rerequest remove';
   grid-template-columns: 1fr;
-
-  &.attention-requests {
-    grid-template-areas: 'attention user approval remove';
-    grid-template-columns: auto 1fr;
-  }
 }
 
 .reviewers-dropdown .gl-new-dropdown-panel {
@@ -369,10 +364,6 @@
     color: inherit;
   }
 
-  .issuable-header-text {
-    margin-top: 7px;
-  }
-
   .gutter-toggle {
     display: flex;
     align-items: center;
@@ -445,10 +436,6 @@
     &.with-sub-blocks {
       padding-top: $gl-spacing-scale-5;
     }
-  }
-
-  .block-first {
-    padding-top: 0;
   }
 
   .title {
@@ -837,29 +824,6 @@
 
   .compare-display-container {
     font-size: 13px;
-  }
-}
-
-/*
- * Following overrides are done to prevent
- * legacy dropdown styles from influencing
- * GitLab UI components used within GlDropdown
- */
-.right-sidebar-collapsed {
-  .sidebar-grouped-item {
-    .sidebar-collapsed-icon {
-      margin-bottom: 0;
-    }
-
-    .sidebar-collapsed-divider {
-      line-height: 5px;
-      font-size: 12px;
-      color: $gray-500;
-
-      + .sidebar-collapsed-icon {
-        padding-top: 0;
-      }
-    }
   }
 }
 

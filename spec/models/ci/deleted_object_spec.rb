@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::DeletedObject, :aggregate_failures do
+RSpec.describe Ci::DeletedObject, :aggregate_failures, feature_category: :job_artifacts do
   describe 'attributes' do
     it { is_expected.to respond_to(:file) }
     it { is_expected.to respond_to(:store_dir) }
@@ -23,6 +23,7 @@ RSpec.describe Ci::DeletedObject, :aggregate_failures do
         expect(deleted_artifact.store_dir).to eq(artifact.file.store_dir.to_s)
         expect(deleted_artifact.file_identifier).to eq(artifact.file_identifier)
         expect(deleted_artifact.pick_up_at).to be_like_time(artifact.expire_at)
+        expect(deleted_artifact.project_id).to eq(artifact.project_id)
       end
     end
 

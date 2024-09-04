@@ -56,7 +56,7 @@ $diff-file-header: 41px;
     }
 
     &:hover {
-      background-color: var(--gl-background-color-strong);
+      @apply gl-bg-strong;
     }
 
     svg {
@@ -73,8 +73,7 @@ $diff-file-header: 41px;
   }
 
   .diff-content {
-    background: $white;
-    color: $gl-text-color;
+    @apply gl-bg-default gl-text-primary;
 
     .unfold {
       cursor: pointer;
@@ -82,7 +81,7 @@ $diff-file-header: 41px;
 
     .file-mode-changed {
       padding: 10px;
-      color: $gray-500;
+      @apply gl-text-subtle;
     }
 
     .suppressed-container {
@@ -103,7 +102,7 @@ $diff-file-header: 41px;
   }
 
   .image {
-    background: $gray-50;
+    @apply gl-bg-strong;
     text-align: center;
     padding: 30px;
 
@@ -113,7 +112,7 @@ $diff-file-header: 41px;
 
     .frame {
       display: inline-block;
-      background-color: $white;
+      @apply gl-bg-default;
       line-height: 0;
 
       img {
@@ -304,7 +303,7 @@ $diff-file-header: 41px;
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: $gray-50;
+    @apply gl-bg-strong;
 
     ul,
     li {
@@ -330,7 +329,7 @@ $diff-file-header: 41px;
 
       &.active {
         cursor: default;
-        color: $gl-text-color;
+        @apply gl-text-primary;
 
         &:hover {
           text-decoration: none;
@@ -698,8 +697,7 @@ table.code {
 }
 
 .note-container {
-  background-color: $gray-10;
-  border-top: 1px solid $gray-50;
+  @apply gl-bg-subtle gl-border-t gl-border-t-subtle;
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
@@ -709,7 +707,7 @@ table.code {
     display: block;
     width: 100%;
     height: 10px;
-    background-color: $white;
+    @apply gl-bg-default;
     background-image: linear-gradient(45deg,
     transparent,
     transparent 73%,
@@ -760,7 +758,7 @@ table.code {
 .diff-file .note-container > .new-note,
 .note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
-  border-left: 1px solid $gray-50;
+  @apply gl-border-l gl-border-l-subtle;
 }
 
 .notes.active {
@@ -854,7 +852,7 @@ table.code {
   }
 
   &.collapsed {
-    background-color: $white;
+    @apply gl-bg-default;
 
     .diff-notes-expand {
       display: initial;
@@ -871,7 +869,7 @@ table.code {
   ul.notes {
     li.toggle-replies-widget,
     .discussion-reply-holder {
-      margin-left: 2.5rem;
+      margin-left: $note-spacing-left;
 
       &[aria-expanded="false"] {
         @apply gl-border-b;
@@ -892,7 +890,7 @@ table.code {
   margin: 0 $gl-padding $gl-padding;
 
   .notes {
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
   }
 }
 

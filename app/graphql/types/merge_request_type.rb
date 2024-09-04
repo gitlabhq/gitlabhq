@@ -16,6 +16,8 @@ module Types
 
     present_using MergeRequestPresenter
 
+    field :closed_at, Types::TimeType, null: true, complexity: 5,
+      description: 'Timestamp of when the merge request was closed, null if not closed.'
     field :created_at, Types::TimeType, null: false,
       description: 'Timestamp of when the merge request was created.'
     field :description, GraphQL::Types::String, null: true,
@@ -323,6 +325,10 @@ module Types
 
     def available_auto_merge_strategies
       AutoMergeService.new(object.project, current_user).available_strategies(object)
+    end
+
+    def closed_at
+      object.metrics&.latest_closed_at
     end
 
     def commits

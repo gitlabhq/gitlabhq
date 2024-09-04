@@ -403,9 +403,7 @@ export default {
           >
         </template>
 
-        <div v-if="allBranches" class="gl-mt-2" data-testid="all-branches">
-          {{ $options.i18n.allBranches }}
-        </div>
+        <div v-if="allBranches" class="gl-mt-2" data-testid="all-branches">*</div>
         <code v-else class="gl-bg-transparent gl-p-0 gl-text-base" data-testid="branch">{{
           branch
         }}</code>

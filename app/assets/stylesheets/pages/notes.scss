@@ -21,8 +21,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 @mixin outline-comment() {
   margin: $gl-padding $gl-padding 0;
-  border: 1px solid $border-color;
-  border-radius: $gl-border-radius-base;
+  @apply gl-border gl-rounded-base;
 }
 
 .issuable-discussion:not(.incident-timeline-events),
@@ -33,25 +32,20 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .main-notes-list::before {
-    background: var(--gray-50, $gray-50);
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark .modal-body & {
-      background: var(--gray-100, $gray-100);
-    }
+    @apply gl-bg-strong;
   }
 
   .timeline-entry:not(.draft-note):last-child::before {
-    background: var(--white);
+    @apply gl-bg-default;
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
-      background: var(--gray-10);
+      @apply gl-bg-subtle;
     }
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark .modal-body & {
-      background: var(--gray-50, $gray-50);
+      @apply gl-bg-strong;
     }
   }
 }
@@ -86,7 +80,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-avatar {
-      border-color: var(--gray-50, $gray-50);
+      @apply gl-border-subtle;
     }
 
     &.note-comment,
@@ -96,15 +90,13 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       }
 
       .timeline-content {
-        margin-left: 2.5rem;
-        border: 1px solid $border-color;
-        border-radius: $gl-border-radius-base;
+        margin-left: $note-spacing-left;
+        @apply gl-border gl-rounded-base;
         padding: $gl-padding-4 $gl-padding-8;
 
         // stylelint-disable-next-line gitlab/no-gl-class
         .gl-dark & {
-          @apply gl-bg-strong;
-          border-color: var(--gl-background-color-default);
+          @apply gl-bg-strong gl-border-default;
         }
       }
 
@@ -133,26 +125,20 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
             }
 
             .timeline-content {
-              margin-left: 2.5rem;
-              @apply gl-border;
-              @apply gl-border-b-subtle;
-              border-top-left-radius: $gl-border-radius-base;
-              border-top-right-radius: $gl-border-radius-base;
+              margin-left: $note-spacing-left;
+              @apply gl-border gl-border-b-subtle gl-rounded-t-base;
               padding: $gl-padding-4 $gl-padding-8;
 
               // stylelint-disable-next-line gitlab/no-gl-class
               .gl-dark & {
-                @apply gl-bg-strong;
-                border-bottom-color: var(--gl-background-color-default);
+                @apply gl-bg-strong gl-border-default;
               }
             }
           }
 
           &:not(:first-of-type) .timeline-entry-inner {
-            margin-left: 2.5rem;
-            border-left: 1px solid $border-color;
-            border-right: 1px solid $border-color;
-            @apply gl-bg-subtle;
+            margin-left: $note-spacing-left;
+            @apply gl-bg-subtle gl-border-l gl-border-r;
 
             .timeline-content {
               padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
@@ -167,14 +153,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
             }
 
             .timeline-discussion-body {
-              margin-left: 2rem;
+              margin-left: $note-spacing-reply-left;
             }
           }
 
           &:last-of-type .timeline-entry-inner {
-            border-bottom: 1px solid $border-color;
-            border-bottom-left-radius: $gl-border-radius-base;
-            border-bottom-right-radius: $gl-border-radius-base;
+            @apply gl-border-b gl-rounded-b-base;
           }
         }
 
@@ -191,21 +175,16 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
             }
 
             .timeline-entry-inner {
-              margin-left: 2.5rem;
-              border-left: 1px solid $border-color;
-              border-right: 1px solid $border-color;
-              @apply gl-bg-subtle;
+              margin-left: $note-spacing-left;
+              @apply gl-bg-subtle gl-border-l gl-border-r;
 
               .timeline-content {
                 padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
-                @apply gl-bg-default;
-                @apply gl-border-b;
-                @apply gl-border-b-subtle;
+                @apply gl-bg-default gl-border-b gl-border-b-subtle;
 
                 // stylelint-disable-next-line gitlab/no-gl-class
                 .gl-dark & {
-                  @apply gl-bg-strong;
-                  border-bottom-color: var(--gl-background-color-default);
+                  @apply gl-bg-strong gl-border-b-default;
                 }
               }
 
@@ -214,7 +193,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               }
 
               .timeline-discussion-body {
-                margin-left: 2rem;
+                margin-left: $note-spacing-reply-left;
               }
             }
           }
@@ -222,10 +201,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       }
 
       .discussion-reply-holder {
-        @apply gl-border-1;
-        @apply gl-border-solid;
-        @apply gl-border-default;
-        @apply gl-border-t-0;
+        @apply gl-border-1 gl-border-solid gl-border-default gl-border-t-0;
         @apply gl-bg-subtle;
       }
     }
@@ -240,9 +216,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .notes-content {
       border: 0;
-      @apply gl-border-t-1;
-      @apply gl-border-solid;
-      @apply gl-border-default;
+      @apply gl-border-t;
     }
   }
 
@@ -385,7 +359,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
       // stylelint-disable-next-line gitlab/no-gl-class
       a:not(.gl-link) {
-        color: $blue-600;
+        @apply gl-text-link;
       }
 
       p {
@@ -423,13 +397,16 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       }
 
       .system-note-commit-list-toggler {
-        color: $blue-600;
         cursor: pointer;
         position: relative;
         z-index: 2;
 
+        &,
         &:hover {
-          color: $blue-600;
+          @apply gl-text-link;
+        }
+
+        &:hover {
           text-decoration: underline;
         }
       }
@@ -485,10 +462,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     cursor: default;
     border-top: 0;
     border-radius: 0;
-    margin-left: 2.5rem;
+    margin-left: $note-spacing-left;
 
     &:hover {
-      background-color: $gray-10;
+      @apply gl-bg-subtle;
     }
   }
 
@@ -497,7 +474,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .diff-content {
-    margin-left: 2.5rem;
+    margin-left: $note-spacing-left;
 
     .line_holder td:first-of-type {
       @include gl-border-l;
@@ -508,7 +485,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
 
     .discussion-notes {
-      margin-left: -2.5rem;
+      margin-left: -$note-spacing-left;
 
       .notes {
         background-color: transparent;
@@ -587,8 +564,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
         // stylelint-disable-next-line gitlab/no-gl-class
         .gl-dark & {
-          @apply gl-bg-strong;
-          border-bottom-color: var(--gl-background-color-default);
+          @apply gl-bg-strong gl-border-b-default;
         }
 
         .toggle-replies-widget {
@@ -653,8 +629,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .diff-files-holder {
   .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
-    @apply gl-border-b;
-    @apply gl-border-b-subtle;
+    @apply gl-border-b gl-border-b-subtle;
   }
 }
 
@@ -673,12 +648,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   .discussion-reply-holder {
     border-top: 0;
-    border-radius: $gl-border-radius-base $gl-border-radius-base;
+    @apply gl-rounded-t-base;
     position: relative;
 
     .discussion-form {
       width: 100%;
-      background-color: $gray-10;
+      @apply gl-bg-subtle;
       padding: 0;
     }
 
@@ -691,7 +666,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
-  background-color: $white;
+  @apply gl-bg-default;
 
   li.note-comment {
     padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
@@ -702,7 +677,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .note-body {
       padding: $gl-padding-4 0 $gl-padding-8;
-      margin-left: 2.5rem;
+      margin-left: $note-spacing-left;
     }
   }
 }
@@ -718,7 +693,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     &:hover,
     &.hover {
-      color: $blue-600;
+      @apply gl-text-link;
     }
 
     &:focus,
@@ -732,7 +707,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .author-link {
-    color: $gl-text-color;
+    @apply gl-text-primary;
   }
 
   // Prevent flickering of link when hovering between `author-name-link` and `.author-username-link`
@@ -763,15 +738,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .timeline-content {
-    border-radius: $gl-border-radius-base;
     padding: $gl-padding-8 !important;
-    @include gl-border;
+    @apply gl-border gl-rounded-base;
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
-      @apply gl-bg-strong;
-      @apply gl-border-b;
-      border-bottom-color: var(--gl-background-color-default);
+      @apply gl-bg-strong gl-border-b;
     }
 
     &.expanded {
@@ -829,13 +801,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .note-headline-light,
 .discussion-headline-light {
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 }
 
-.discussion-headline-light {
-  a {
-    color: $blue-600;
-  }
+.discussion-headline-light a {
+  @apply gl-text-link;
 }
 
 .note-headline-meta {
@@ -865,7 +835,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .discussion-actions {
   float: right;
-  color: $gray-200;
 
   @include media-breakpoint-down(xs) {
     width: 100%;
@@ -891,7 +860,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   display: inline-flex;
   align-items: center;
   margin-left: $gl-padding-8;
-  color: $gray-400;
+  @apply gl-text-subtle;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     justify-content: flex-start;
@@ -912,13 +881,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.more-actions-toggle {
-  &:hover .icon,
-  &:focus .icon {
-    color: $blue-600;
-  }
-}
-
 .more-actions-dropdown {
   width: 180px;
   min-width: 180px;
@@ -932,14 +894,14 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   font-size: 13px;
   transition: color 0.1s linear;
 
-  &:hover {
-    color: $blue-600;
+  &:hover,
+  &:focus {
+    @apply gl-text-link;
   }
 
   &:focus {
     text-decoration: underline;
     outline: none;
-    color: $blue-600;
   }
 }
 
@@ -971,7 +933,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   background: $white;
   padding: 1px;
   font-size: 12px;
-  color: $blue-500;
+  @apply gl-text-link;
   border: 1px solid $blue-500;
   width: 24px;
   height: 24px;
@@ -990,7 +952,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   &[disabled] {
     background: $white;
     border-color: $gray-200;
-    color: $gray-300;
+    @apply gl-text-disabled;
     cursor: not-allowed;
   }
 }
@@ -1016,14 +978,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .disabled-comment {
-  background-color: $gray-10;
-  border-radius: $border-radius-base;
-  border: 1px solid $border-color;
-  color: $note-disabled-comment-color;
+  @apply gl-text-disabled gl-bg-subtle gl-border-b gl-rounded-base;
   padding: $gl-padding-8 0;
 
   a:not(.learn-more) {
-    color: $blue-600;
+    @apply gl-text-link;
   }
 }
 
@@ -1116,7 +1075,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   &:not(:last-child)::before {
     @include vertical-line(16px, 10px);
     height: 100%;
-    background: var(--gray-50, $gray-50);
+    @apply gl-bg-subtle;
   }
 }
 
@@ -1142,6 +1101,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     // stylelint-disable length-zero-no-unit
     @include vertical-line(0px, 15px);
     top: auto; // Override top to auto align
-    background: var(--gray-50, $gray-50);
+    @apply gl-bg-subtle;
   }
 }

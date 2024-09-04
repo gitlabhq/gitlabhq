@@ -139,6 +139,13 @@ FactoryBot.define do
       deployment_type { 'cloud' }
     end
 
+    trait :jira_cloud do
+      url { 'https://mysite.atlassian.net' }
+      username { 'jira_user' }
+      password { 'my-secret-password' }
+      jira_auth_type { 0 }
+    end
+
     after(:build) do |integration, evaluator|
       integration.instance_variable_set(:@old_data_fields, nil)
 
@@ -248,13 +255,6 @@ FactoryBot.define do
     type { 'Integrations::ExternalWiki' }
     active { true }
     external_wiki_url { 'http://external-wiki-url.com' }
-  end
-
-  trait :jira_cloud_service do
-    url { 'https://mysite.atlassian.net' }
-    username { 'jira_user' }
-    password { 'my-secret-password' }
-    jira_auth_type { 0 }
   end
 
   trait :chat_notification do

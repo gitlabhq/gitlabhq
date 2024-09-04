@@ -399,6 +399,7 @@ jest vue3 predictive:
     - jest vue3 mr
     - .frontend:rules:jest:predictive
   needs:
+    - !reference [jest vue3 mr, needs]
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-without-fixtures"; fi
@@ -408,6 +409,7 @@ jest-with-fixtures vue3 predictive:
     - jest-with-fixtures vue3 mr
     - .frontend:rules:jest:predictive
   needs:
+    - !reference [jest-with-fixtures vue3 mr, needs]
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-with-fixtures"; fi

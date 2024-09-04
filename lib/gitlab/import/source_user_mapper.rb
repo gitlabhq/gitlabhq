@@ -71,22 +71,16 @@ module Gitlab
             source_hostname: source_hostname
           )
 
-          import_source_user.placeholder_user = create_placeholder_user(source_name, source_username)
+          import_source_user.placeholder_user = create_placeholder_user(import_source_user)
           import_source_user.save!
           import_source_user
         end
       end
 
-      def create_placeholder_user(source_name, source_username)
+      def create_placeholder_user(import_source_user)
         return namespace_import_user if placeholder_user_limit_exceeded?
 
-        Gitlab::Import::PlaceholderUserCreator.new(
-          import_type: import_type,
-          source_hostname: source_hostname,
-          source_name: source_name,
-          source_username: source_username,
-          namespace: namespace
-        ).execute
+        Gitlab::Import::PlaceholderUserCreator.new(import_source_user).execute
       end
 
       def namespace_import_user

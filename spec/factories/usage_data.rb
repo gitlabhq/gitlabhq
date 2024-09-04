@@ -10,7 +10,7 @@ FactoryBot.define do
       create(:board, project: projects[0])
       create(:jira_integration, project: projects[0])
       create(:jira_integration, :without_properties_callback, project: projects[1])
-      create(:jira_integration, :jira_cloud_service, project: projects[2])
+      create(:jira_integration, :jira_cloud, project: projects[2])
       create(:jira_integration, :without_properties_callback, project: projects[3], properties: { url: 'https://mysite.atlassian.net' })
       jira_label = create(:label, project: projects[0])
       create(:jira_import_state, :finished, project: projects[0], label: jira_label, failed_to_import_count: 2, imported_issues_count: 7, total_issue_count: 9)

@@ -235,10 +235,6 @@
   .bash {
     display: block;
   }
-
-  &.build-log-rounded {
-    border-radius: $gl-border-radius-base;
-  }
 }
 
 // Used in EE for Web Terminal

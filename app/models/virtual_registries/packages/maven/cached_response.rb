@@ -36,6 +36,12 @@ module VirtualRegistries
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
         end
 
+        def filename
+          return unless relative_path
+
+          File.basename(relative_path)
+        end
+
         private
 
         def set_object_storage_key

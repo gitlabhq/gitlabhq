@@ -195,22 +195,62 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     end
   end
 
-  it 'includes correct mergedAt value when merged' do
-    time = 1.week.ago
-    merge_request.mark_as_merged
-    merge_request.metrics.update!(merged_at: time)
+  describe 'mergedAt' do
+    let(:merged_at) { merge_request_graphql_data['mergedAt'] }
 
-    post_graphql(query, current_user: current_user)
-    retrieved = merge_request_graphql_data['mergedAt']
+    subject(:graphql_query) { post_graphql(query, current_user: current_user) }
 
-    expect(Time.zone.parse(retrieved)).to be_within(1.second).of(time)
+    context 'when the merge request is merged' do
+      let_it_be(:time) { 1.week.ago }
+
+      before do
+        merge_request.mark_as_merged
+        merge_request.metrics.update!(merged_at: time)
+      end
+
+      it 'includes correct mergedAt value' do
+        graphql_query
+
+        expect(Time.zone.parse(merged_at)).to be_within(1.second).of(time)
+      end
+    end
+
+    context 'when the merge request is not merged' do
+      it 'includes nil mergedAt value' do
+        graphql_query
+
+        expect(merged_at).to be_nil
+      end
+    end
   end
 
-  it 'includes nil mergedAt value when not merged' do
-    post_graphql(query, current_user: current_user)
-    retrieved = merge_request_graphql_data['mergedAt']
+  describe 'closedAt' do
+    let(:closed_at) { merge_request_graphql_data['closedAt'] }
 
-    expect(retrieved).to be_nil
+    subject(:graphql_query) { post_graphql(query, current_user: current_user) }
+
+    context 'when the merge request is closed' do
+      let_it_be(:time) { 1.week.ago }
+
+      before do
+        merge_request.close!
+        merge_request.metrics.update!(latest_closed_at: time)
+      end
+
+      it 'includes correct closedAt value' do
+        graphql_query
+
+        expect(Time.zone.parse(closed_at)).to be_within(1.second).of(time)
+      end
+    end
+
+    context 'when the merge request is not closed' do
+      it 'includes nil closedAt value' do
+        graphql_query
+
+        expect(closed_at).to be_nil
+      end
+    end
   end
 
   describe 'permissions on the merge request' do

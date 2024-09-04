@@ -115,22 +115,6 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
         expect(page).to have_text('Loading full blame...')
       end
     end
-
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(blame_page_pagination: false)
-      end
-
-      it 'displays the blame page without pagination' do
-        visit_blob_blame(path)
-
-        within_testid 'blob-content-holder' do
-          expect(page).to have_css('.blame-commit')
-          expect(page).not_to have_css('.gl-pagination')
-          expect(page).not_to have_link _('Show full blame')
-        end
-      end
-    end
   end
 
   context 'when blob length is over global max page limit' do

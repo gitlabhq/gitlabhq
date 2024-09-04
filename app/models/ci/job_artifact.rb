@@ -215,7 +215,8 @@ module Ci
         file_store: file_store,
         store_dir: final_path_store_dir || file.store_dir.to_s,
         file: final_path_filename || file_identifier,
-        pick_up_at: pick_up_at || expire_at || Time.current
+        pick_up_at: pick_up_at || expire_at || Time.current,
+        project_id: project_id
       }
     end
 

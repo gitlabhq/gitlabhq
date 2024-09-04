@@ -7946,6 +7946,7 @@ CREATE TABLE ci_deleted_objects (
     pick_up_at timestamp with time zone DEFAULT now() NOT NULL,
     store_dir text NOT NULL,
     file text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_5e151d6912 CHECK ((char_length(store_dir) <= 1024))
 );
 
@@ -20564,7 +20565,13 @@ CREATE TABLE workspaces_agent_configs (
     network_policy_egress jsonb DEFAULT '[{"allow": "0.0.0.0/0", "except": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}]'::jsonb NOT NULL,
     default_resources_per_workspace_container jsonb DEFAULT '{}'::jsonb NOT NULL,
     max_resources_per_workspace jsonb DEFAULT '{}'::jsonb NOT NULL,
+    allow_privilege_escalation boolean DEFAULT false NOT NULL,
+    use_kubernetes_user_namespaces boolean DEFAULT false NOT NULL,
+    default_runtime_class text DEFAULT ''::text NOT NULL,
+    annotations jsonb DEFAULT '{}'::jsonb NOT NULL,
+    labels jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_58759a890a CHECK ((char_length(dns_zone) <= 256)),
+    CONSTRAINT check_720388a28c CHECK ((char_length(default_runtime_class) <= 253)),
     CONSTRAINT check_dca877fba1 CHECK ((default_max_hours_before_termination <= 8760)),
     CONSTRAINT check_eab6e375ad CHECK ((max_hours_before_termination_limit <= 8760)),
     CONSTRAINT check_ee2464835c CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63))
@@ -23329,6 +23336,9 @@ ALTER TABLE ci_job_variables
 
 ALTER TABLE ci_runners
     ADD CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)) NOT VALID;
+
+ALTER TABLE ci_deleted_objects
+    ADD CONSTRAINT check_98f90d6c53 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
@@ -26887,6 +26897,10 @@ CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON a
 
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_url));
 
+CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_not_null ON subscription_add_on_purchases USING btree (subscription_add_on_id, namespace_id) WHERE (namespace_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_null ON subscription_add_on_purchases USING btree (subscription_add_on_id) WHERE (namespace_id IS NULL);
+
 CREATE INDEX index_add_on_purchases_on_organization_id ON subscription_add_on_purchases USING btree (organization_id);
 
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
@@ -27374,6 +27388,8 @@ CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci
 CREATE INDEX index_ci_daily_build_group_report_results_on_project_and_date ON ci_daily_build_group_report_results USING btree (project_id, date DESC) WHERE ((default_branch = true) AND ((data -> 'coverage'::text) IS NOT NULL));
 
 CREATE INDEX index_ci_deleted_objects_on_pick_up_at ON ci_deleted_objects USING btree (pick_up_at);
+
+CREATE INDEX index_ci_deleted_objects_on_project_id ON ci_deleted_objects USING btree (project_id);
 
 CREATE INDEX index_ci_finished_build_ch_sync_events_for_partitioned_query ON ONLY p_ci_finished_build_ch_sync_events USING btree (((build_id % (100)::bigint)), build_id) WHERE (processed = false);
 
