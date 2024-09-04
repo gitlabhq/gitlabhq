@@ -90,7 +90,7 @@ module Banzai
         avatar = user_avatar_without_link(
           user: user,
           user_email: email,
-          css_class: 'avatar-inline',
+          css_class: 'gl-mr-2',
           has_tooltip: false,
           only_path: false
         )

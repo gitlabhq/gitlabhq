@@ -1,86 +1,8 @@
-$avatar-sizes: (
-  16: (
-    font-size: 10px,
-    line-height: 16px,
-    border-radius: $border-radius-small
-  ),
-  18: (
-    border-radius: $border-radius-small
-  ),
-  20: (
-    border-radius: $border-radius-small
-  ),
-  24: (
-    font-size: 12px,
-    line-height: 24px,
-    border-radius: $gl-border-radius-base
-  ),
-  26: (
-    font-size: 20px,
-    line-height: 1.33,
-    border-radius: $gl-border-radius-base
-  ),
-  32: (
-    font-size: 14px,
-    line-height: 32px,
-    border-radius: $gl-border-radius-base
-  ),
-  40: (
-    font-size: 16px,
-    line-height: 38px,
-    border-radius: $gl-border-radius-base
-  ),
-  48: (
-    font-size: 20px,
-    line-height: 48px,
-    border-radius: $border-radius-large
-  ),
-  60: (
-    font-size: 32px,
-    line-height: 60px,
-    border-radius: $border-radius-large
-  ),
-  64: (
-    font-size: 28px,
-    line-height: 64px,
-    border-radius: $border-radius-large
-  ),
-  90: (
-    font-size: 36px,
-    line-height: 90px,
-    border-radius: $border-radius-large
-  ),
-  96: (
-    font-size: 36px,
-    line-height: 94px,
-    border-radius: $border-radius-large
-  ),
-  100: (
-    font-size: 36px,
-    line-height: 98px,
-    border-radius: $border-radius-large
-  ),
-  160: (
-    font-size: 96px,
-    line-height: 158px,
-    border-radius: $border-radius-large
-  )
-);
-
-.avatar,
-.avatar-container {
+// Left over of avatar. Still used in email templates.
+.avatar {
   float: left;
   margin-right: $gl-padding;
   border-radius: $avatar-radius;
-
-  @each $size, $size-config in $avatar-sizes {
-    &.s#{$size} {
-      @include avatar-size(#{$size}px, if($size < 48, 8px, 16px));
-    }
-  }
-}
-
-.avatar {
   transition-property: none;
   width: 40px;
   height: 40px;
@@ -88,18 +10,6 @@ $avatar-sizes: (
   background: var(--gl-background-color-subtle);
   overflow: hidden;
   box-shadow: inset 0 0 0 1px var(--gl-avatar-border-color-default);
-
-  &.avatar-inline {
-    float: none;
-    display: inline-block;
-    margin-left: 2px;
-    flex-shrink: 0;
-
-    &.s16,
-    &.s24 {
-      margin-right: 4px;
-    }
-  }
 
   &.center {
     font-size: 14px;
@@ -110,80 +20,6 @@ $avatar-sizes: (
   &.avatar-tile {
     border-radius: 0;
     border: 0;
-  }
-}
-
-.identicon {
-  text-align: center;
-  vertical-align: top;
-  color: var(--gl-text-color-strong);
-  background-color: var(--gl-avatar-fallback-background-color-neutral);
-
-  // Sizes
-  @each $size, $size-config in $avatar-sizes {
-    $keys: map-keys($size-config);
-
-    &.s#{$size} {
-      @each $key in $keys {
-        // We don't want `border-radius` to be included here.
-        @if ($key != 'border-radius') {
-          #{$key}: map-get($size-config, #{$key});
-        }
-      }
-    }
-  }
-
-  // Background colors
-  @for $i from 1 through length($gl-avatar-identicon-bgs) {
-    &.bg#{$i} {
-      color: nth($gl-avatar-identicon-texts, $i);
-      background-color: nth($gl-avatar-identicon-bgs, $i);
-    }
-  }
-}
-
-.avatar-container {
-  overflow: hidden;
-  display: flex;
-
-  a {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    text-decoration: none;
-  }
-
-  .avatar {
-    border-radius: 0;
-    border: 0;
-    height: auto;
-    width: 100%;
-    margin: 0;
-    align-self: center;
-  }
-
-  &.s40 {
-    min-width: 40px;
-    min-height: 40px;
-  }
-
-  &.s64 {
-    min-width: 64px;
-    min-height: 64px;
-  }
-}
-
-.rect-avatar {
-  border-radius: $border-radius-small;
-
-  @each $size, $size-config in $avatar-sizes {
-    &.s#{$size} {
-      border-radius: map-get($size-config, 'border-radius');
-
-      .avatar {
-        border-radius: map-get($size-config, 'border-radius');
-      }
-    }
   }
 }
 

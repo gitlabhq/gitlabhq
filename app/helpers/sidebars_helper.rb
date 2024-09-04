@@ -9,7 +9,7 @@ module SidebarsHelper
   end
 
   def scope_avatar_classes(object)
-    %w[avatar-container rect-avatar s32].tap do |klasses|
+    %w[gl-avatar gl-avatar-s32].tap do |klasses|
       klass = sidebar_attributes_for_object(object).fetch(:scope_avatar_class, nil)
       klasses << klass if klass
     end

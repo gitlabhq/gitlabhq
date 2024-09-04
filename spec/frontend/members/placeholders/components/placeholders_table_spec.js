@@ -23,6 +23,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   PLACEHOLDER_STATUS_FAILED,
   PLACEHOLDER_USER_STATUS,
+  PLACEHOLDER_SORT_SOURCE_NAME_ASC,
+  PLACEHOLDER_SORT_SOURCE_NAME_DESC,
 } from '~/import_entities/import_groups/constants';
 
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
@@ -44,12 +46,17 @@ describe('PlaceholdersTable', () => {
   const defaultProps = {
     queryStatuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
     reassigned: false,
+    querySort: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   };
 
   const sourceUsersQueryHandler = jest.fn().mockResolvedValue(mockSourceUsersQueryResponse());
   const $toast = {
     show: jest.fn(),
   };
+
+  const GlTableStub = stubComponent(GlTable, {
+    props: ['fields', 'items', 'busy'],
+  });
 
   const createComponent = ({
     mountFn = shallowMount,
@@ -125,6 +132,7 @@ describe('PlaceholdersTable', () => {
         before: null,
         fullPath: mockGroup.path,
         search: null,
+        sort: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
         first: 20,
         statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
@@ -305,7 +313,6 @@ describe('PlaceholdersTable', () => {
     describe('when search is too short (less than 3 characters)', () => {
       beforeEach(() => {
         createComponent({
-          mountFn: shallowMount,
           queryHandler: sourceUsersSearchQueryHandler,
           props: { querySearch: 'ab' },
         });
@@ -329,7 +336,6 @@ describe('PlaceholdersTable', () => {
           .mockResolvedValue(mockSourceUsersQueryResponse({ nodes: [] }));
 
         createComponent({
-          mountFn: shallowMount,
           queryHandler: sourceUsersNoResultsQueryHandler,
           props: { querySearch: 'nonexistent' },
         });
@@ -343,7 +349,6 @@ describe('PlaceholdersTable', () => {
     describe('when search has results', () => {
       beforeEach(() => {
         createComponent({
-          mountFn: shallowMount,
           queryHandler: sourceUsersSearchQueryHandler,
           props: { querySearch: 'abc' },
         });
@@ -356,9 +361,35 @@ describe('PlaceholdersTable', () => {
           before: null,
           fullPath: mockGroup.path,
           search: 'abc',
+          sort: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
           first: 20,
           statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
         });
+      });
+    });
+  });
+
+  describe('when querySort is passed', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { querySort: PLACEHOLDER_SORT_SOURCE_NAME_DESC },
+        options: {
+          stubs: {
+            GlTable: GlTableStub,
+          },
+        },
+      });
+    });
+
+    it('requests a sorted list of placeholder users', () => {
+      expect(sourceUsersQueryHandler).toHaveBeenCalledWith({
+        after: null,
+        before: null,
+        fullPath: mockGroup.path,
+        search: null,
+        sort: PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+        first: 20,
+        statuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
     });
   });
@@ -370,14 +401,11 @@ describe('PlaceholdersTable', () => {
 
     beforeEach(async () => {
       createComponent({
-        mountFn: shallowMount,
         queryHandler: sourceUsersFailureQueryHandler,
         props: { queryStatuses: [PLACEHOLDER_STATUS_FAILED] },
         options: {
           stubs: {
-            GlTable: stubComponent(GlTable, {
-              props: ['fields', 'items', 'busy'],
-            }),
+            GlTable: GlTableStub,
           },
         },
       });
@@ -393,6 +421,7 @@ describe('PlaceholdersTable', () => {
         before: null,
         fullPath: mockGroup.path,
         search: null,
+        sort: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
         first: 20,
         statuses: [PLACEHOLDER_STATUS_FAILED],
       });
@@ -408,14 +437,11 @@ describe('PlaceholdersTable', () => {
 
     beforeEach(async () => {
       createComponent({
-        mountFn: shallowMount,
         queryHandler: reassignedQueryHandler,
         props: { reassigned: true, queryStatus: PLACEHOLDER_USER_STATUS.REASSIGNED },
         options: {
           stubs: {
-            GlTable: stubComponent(GlTable, {
-              props: ['fields', 'items', 'busy'],
-            }),
+            GlTable: GlTableStub,
           },
         },
       });

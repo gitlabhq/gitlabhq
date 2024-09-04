@@ -1,10 +1,11 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlAvatar, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 
 export default {
   components: {
+    GlAvatar,
     GlIcon,
   },
   props: {
@@ -43,13 +44,12 @@ export default {
 </script>
 
 <template>
-  <span class="position-relative">
-    <img
-      :alt="assigneeAlt"
+  <span class="gl-relative">
+    <gl-avatar
+      :label="user.name"
       :src="avatarUrl"
-      :width="imgSize"
-      :class="`s${imgSize}`"
-      class="avatar avatar-inline m-0"
+      :size="imgSize"
+      :alt="assigneeAlt"
       data-testid="avatar-image"
     />
     <gl-icon v-if="hasMergeIcon" name="warning-solid" aria-hidden="true" class="merge-icon" />

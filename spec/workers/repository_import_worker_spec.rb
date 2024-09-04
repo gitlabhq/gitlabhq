@@ -77,6 +77,7 @@ RSpec.describe RepositoryImportWorker, feature_category: :importers do
 
       it 'marks import_state as failed' do
         expect_next_instance_of(Projects::ImportService) do |instance|
+          expect(project).to receive(:reset_counters_and_iids)
           expect(instance).to receive(:execute).and_return({ status: :error, message: error })
         end
 

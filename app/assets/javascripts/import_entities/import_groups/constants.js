@@ -87,3 +87,8 @@ export const placeholderUserBadges = {
     tooltip: s__('UserMapping|Reassignment succeeded.'),
   },
 };
+
+export const PLACEHOLDER_SORT_STATUS_DESC = 'STATUS_DESC';
+export const PLACEHOLDER_SORT_STATUS_ASC = 'STATUS_ASC';
+export const PLACEHOLDER_SORT_SOURCE_NAME_ASC = 'SOURCE_NAME_ASC';
+export const PLACEHOLDER_SORT_SOURCE_NAME_DESC = 'SOURCE_NAME_DESC';

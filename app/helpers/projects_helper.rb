@@ -29,7 +29,7 @@ module ProjectsHelper
     default_opts = { size: 16 }
     opts = default_opts.merge(opts)
 
-    classes = %W[avatar avatar-inline s#{opts[:size]}]
+    classes = %W[gl-avatar gl-avatar-circle gl-avatar-s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
     avatar = avatar_icon_for_user(author, opts[:size])

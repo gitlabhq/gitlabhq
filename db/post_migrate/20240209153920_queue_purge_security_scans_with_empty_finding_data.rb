@@ -27,36 +27,28 @@ class QueuePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migration[
   end
 
   def up
-    # temporary until security_findings table is migrated
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/477986'
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-      break if Gitlab.com? || !Gitlab.ee?
+    return if Gitlab.com? || !Gitlab.ee?
 
-      first_succeeded_scan = SecurityScan.succeeded.first
+    first_succeeded_scan = SecurityScan.succeeded.first
 
-      break unless first_succeeded_scan
+    return unless first_succeeded_scan
 
-      first_finding = first_succeeded_scan.findings.first
+    first_finding = first_succeeded_scan.findings.first
 
-      break if first_finding&.finding_data.present?
+    return if first_finding&.finding_data.present?
 
-      queue_batched_background_migration(
-        MIGRATION,
-        :security_scans,
-        :id,
-        job_interval: DELAY_INTERVAL,
-        batch_size: BATCH_SIZE,
-        sub_batch_size: SUB_BATCH_SIZE,
-        batch_min_value: first_succeeded_scan.id
-      )
-    end
+    queue_batched_background_migration(
+      MIGRATION,
+      :security_scans,
+      :id,
+      job_interval: DELAY_INTERVAL,
+      batch_size: BATCH_SIZE,
+      sub_batch_size: SUB_BATCH_SIZE,
+      batch_min_value: first_succeeded_scan.id
+    )
   end
 
   def down
-    # temporary until security_findings table is migrated
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/477986'
-    Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-      delete_batched_background_migration(MIGRATION, :security_scans, :id, [])
-    end
+    delete_batched_background_migration(MIGRATION, :security_scans, :id, [])
   end
 end

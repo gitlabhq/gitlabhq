@@ -111,8 +111,6 @@ Custom domains require a:
 
 #### Add a custom hostname
 
-You can add a custom hostname when you [create your tenant](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance).
-
 To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 ### SMTP email service

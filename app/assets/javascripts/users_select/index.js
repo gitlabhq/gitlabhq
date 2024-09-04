@@ -252,12 +252,12 @@ function UsersSelect(currentUser, els, options = {}) {
         });
       };
       collapsedAssigneeTemplate = template(
-        `<% if( avatar ) { %> <a class="author-link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> ${spriteIcon(
+        `<% if( avatar ) { %> <a class="author-link" href="/<%- username %>"> <img width="24" class="gl-avatar gl-avatar-circle gl-avatar-s24" alt="" src="<%- avatar %>"> </a> <% } else { %> ${spriteIcon(
           'user',
         )} <% } %>`,
       );
       assigneeTemplate = template(
-        `<% if (username) { %> <a class="author-link gl-font-bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
+        `<% if (username) { %> <a class="author-link gl-font-bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="gl-avatar gl-avatar-circle gl-avatar-s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
       ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
         openingTag: '<a href="#" class="js-assign-yourself">',
         closingTag: '</a>',
@@ -637,7 +637,7 @@ function UsersSelect(currentUser, els, options = {}) {
             )}</a></li>`;
           } else {
             // 0 margin, because it's now handled by a wrapper
-            img = `<img src='${avatar}' class='avatar avatar-inline !gl-m-0' width='32' />`;
+            img = `<img src='${avatar}' class='gl-avatar gl-avatar-circle gl-avatar-s32 !gl-m-0' width='32' />`;
           }
 
           return userSelect.renderRow(

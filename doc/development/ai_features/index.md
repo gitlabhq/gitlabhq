@@ -549,40 +549,16 @@ For a complete example of the changes needed to migrate an AI action, see the fo
 
 We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
-1. For GitLab Duo Chat feature, `ai_duo_chat_switch` is enabled.
-1. For other general AI features, `ai_global_switch` is enabled.
-1. Feature specific feature flag is enabled.
-1. The namespace has the required license for the feature.
-1. User is a member of the group/project.
-1. `experiment_features_enabled` settings are set on the `Namespace`.
+Some basic authorization is included in the Abstraction Layer classes that are base classes for more specialized classes.
 
-For our example, we need to implement the `allowed?(:rewrite_description)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
+What needs to be included in the code:
 
-```ruby
-# ee/app/policies/ee/issue_policy.rb
-
-module EE
-  module IssuePolicy
-    extend ActiveSupport::Concern
-    prepended do
-      with_scope :global
-      condition(:ai_available) do
-        ::Feature.enabled?(:ai_global_switch, type: :ops)
-      end
-
-      with_scope :subject
-      condition(:rewrite_description_enabled) do
-        ::Feature.enabled?(:rewrite_description, subject_container) &&
-          subject_container.licensed_feature_available?(:rewrite_description)
-      end
-
-      rule do
-        ai_available & rewrite_description_enabled & is_project_member
-      end.enable :rewrite_description
-    end
-  end
-end
-```
+1. Check for feature flag compatibility: `Gitlab::Llm::Utils::FlagChecker.flag_enabled_for_feature?(ai_action)` - included in the `Llm::BaseService` class.
+1. Check if resource is authorized: `Gitlab::Llm::Utils::Authorizer.resource(resource: resource, user: user).allowed?` - also included in the `Llm::BaseService` class.
+1. Both of those checks are included in the `::Gitlab::Llm::FeatureAuthorizer.new(container: subject_container, feature_name: action_name).allowed?`
+1. Access to AI features depend on several factors, such as: their maturity, if they are enabled on self-managed, if they are bundled within an add-on etc.
+   - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/global_policy.rb#L222-222) of policy not connected to the particular resource.
+   - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
 NOTE:
 For more information, see [the GitLab AI Gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI Gateway.
@@ -772,6 +748,9 @@ Gitlab::Llm::Logger.build.info_or_debug(user, message:"User prompt processed: #{
 # Logging application error information
 Gitlab::Llm::Logger.build.error(user, message: "System application error: #{sanitized_error_message}")
 ```
+
+**Important**: Please familiarize yourself with our [Data Retention Policy](../../user/gitlab_duo/data_usage.md#data-retention) and remember
+to make sure we are not logging user input and LLM-generated output.
 
 ## Security
 

@@ -3,11 +3,7 @@
 
 require 'json'
 
-QUARANTINE_TYPES = %w[stale bug investigating flaky broken test_environment waiting_on].freeze
-
 missing_issues = []
-quarantine_type_errors = []
-invalid_type_message = %(\n*** The following quarantined tests have invalid types:\n\n%s\n)
 missing_issue_message = %(\n*** The following quarantined tests are missing issue links:\n\n%s\n)
 
 test_metadata_file = ARGV.shift
@@ -32,29 +28,13 @@ tests = data_hash['examples']
 tests.each do |test|
   next unless test['quarantine']
 
-  unless QUARANTINE_TYPES.include?(test['quarantine']['type'])
-    quarantine_type_errors.push(
-      <<~TYPE_ERRORS
-           ==> #{test['full_description']}
-               in file: #{test['id']}
-               with type: "#{test['quarantine']['type']}"
-      TYPE_ERRORS
-    )
-  end
-
   missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n") unless test['quarantine']['issue']
 end
 
-if quarantine_type_errors.empty? && missing_issues.empty?
+if missing_issues.empty?
   puts "\nNo errors found."
 else
   puts "\n*** Quarantine format violations detected! ***\n"
-
-  unless quarantine_type_errors.empty?
-    puts invalid_type_message % quarantine_type_errors.join("\n")
-    puts "*** Please use one of the following quarantine types for the tests listed above.\n"
-    puts "    #{QUARANTINE_TYPES}\n"
-  end
 
   puts missing_issue_message % missing_issues unless missing_issues.empty?
   puts "See https://about.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#quarantining-tests"

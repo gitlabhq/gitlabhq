@@ -208,7 +208,13 @@ export default {
       await this.$nextTick();
       this.$refs.startDatePicker.show();
     },
-    collapseWidget() {
+    collapseWidget(event = {}) {
+      // This prevents outside directive from treating
+      // a click on a select element within datepicker as an outside click,
+      // therefore allowing user to select a month and a year without
+      // triggering the mutation and immediately closing the dropdown
+      if (event.target?.classList.contains('pika-select', 'pika-select-month', 'pika-select-year'))
+        return;
       this.isEditing = false;
       this.updateDates();
     },

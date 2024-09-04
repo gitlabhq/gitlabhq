@@ -11520,6 +11520,29 @@ CREATE SEQUENCE group_saved_replies_id_seq
 
 ALTER SEQUENCE group_saved_replies_id_seq OWNED BY group_saved_replies.id;
 
+CREATE TABLE group_security_exclusions (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    scanner smallint NOT NULL,
+    type smallint NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    description text,
+    value text NOT NULL,
+    CONSTRAINT check_12e9b59302 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_45d9a8e422 CHECK ((char_length(value) <= 255))
+);
+
+CREATE SEQUENCE group_security_exclusions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_security_exclusions_id_seq OWNED BY group_security_exclusions.id;
+
 CREATE TABLE group_ssh_certificates (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -21708,6 +21731,8 @@ ALTER TABLE ONLY group_repository_storage_moves ALTER COLUMN id SET DEFAULT next
 
 ALTER TABLE ONLY group_saved_replies ALTER COLUMN id SET DEFAULT nextval('group_saved_replies_id_seq'::regclass);
 
+ALTER TABLE ONLY group_security_exclusions ALTER COLUMN id SET DEFAULT nextval('group_security_exclusions_id_seq'::regclass);
+
 ALTER TABLE ONLY group_ssh_certificates ALTER COLUMN id SET DEFAULT nextval('group_ssh_certificates_id_seq'::regclass);
 
 ALTER TABLE ONLY group_wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('group_wiki_repository_states_id_seq'::regclass);
@@ -23939,6 +23964,9 @@ ALTER TABLE ONLY group_repository_storage_moves
 
 ALTER TABLE ONLY group_saved_replies
     ADD CONSTRAINT group_saved_replies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY group_security_exclusions
+    ADD CONSTRAINT group_security_exclusions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY group_ssh_certificates
     ADD CONSTRAINT group_ssh_certificates_pkey PRIMARY KEY (id);
@@ -28404,6 +28432,8 @@ CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING b
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
 
 CREATE INDEX index_group_saved_replies_on_group_id ON group_saved_replies USING btree (group_id);
+
+CREATE INDEX index_group_security_exclusions_on_group_id ON group_security_exclusions USING btree (group_id);
 
 CREATE UNIQUE INDEX index_group_ssh_certificates_on_fingerprint ON group_ssh_certificates USING btree (fingerprint);
 

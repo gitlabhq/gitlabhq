@@ -18,16 +18,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
   end
 
   let(:current_concurrency) { 10 }
+  let(:work) do
+    instance_double(Sidekiq::Work, payload: { 'class' => 'TestConcurrencyLimitWorker' }.to_json, queue: 'default')
+  end
+
   let(:sidekiq_worker) do
     [
       'process_id',
       'thread_id',
-      {
-        'queue' => 'default',
-        'payload' => {
-          'class' => 'TestConcurrencyLimitWorker'
-        }.to_json
-      }
+      work
     ]
   end
 

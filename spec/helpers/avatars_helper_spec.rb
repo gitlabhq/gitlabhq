@@ -290,7 +290,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
         alt: "#{user.name}'s avatar",
         src: avatar_icon_for_user(user, 16),
         data: { container: 'body' },
-        class: 'avatar s16 has-tooltip',
+        class: 'gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip',
         title: user.name
       )
     end
@@ -303,7 +303,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{user.name}'s avatar",
           src: avatar_icon_for_user(user, 16),
           data: { container: 'body' },
-          class: "avatar s16 #{options[:css_class]} has-tooltip",
+          class: "gl-avatar gl-avatar-circle gl-avatar-s16 #{options[:css_class]} has-tooltip",
           title: user.name
         )
       end
@@ -317,7 +317,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{user.name}'s avatar",
           src: avatar_icon_for_user(user, options[:size]),
           data: { container: 'body' },
-          class: "avatar s#{options[:size]} has-tooltip",
+          class: "gl-avatar gl-avatar-circle gl-avatar-s#{options[:size]} has-tooltip",
           title: user.name
         )
       end
@@ -331,7 +331,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{user.name}'s avatar",
           src: options[:url],
           data: { container: 'body' },
-          class: "avatar s16 has-tooltip",
+          class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
           title: user.name
         )
       end
@@ -345,7 +345,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{user.name}'s avatar",
           src: LazyImageTagHelper.placeholder_image,
           data: { container: 'body', src: avatar_icon_for_user(user, 16) },
-          class: "avatar s16 has-tooltip lazy",
+          class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip lazy",
           title: user.name
         )
       end
@@ -360,7 +360,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
             alt: "#{user.name}'s avatar",
             src: avatar_icon_for_user(user, 16),
             data: { container: 'body' },
-            class: "avatar s16 has-tooltip",
+            class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
             title: user.name
           )
         end
@@ -373,7 +373,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           is_expected.to eq tag.img(
             alt: "#{user.name}'s avatar",
             src: avatar_icon_for_user(user, 16),
-            class: "avatar s16",
+            class: "gl-avatar gl-avatar-circle gl-avatar-s16",
             title: user.name
           )
         end
@@ -391,7 +391,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
             alt: "#{user.name}'s avatar",
             src: avatar_icon_for_user(user, 16),
             data: { container: 'body' },
-            class: "avatar s16 has-tooltip",
+            class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
             title: user.name
           )
         end
@@ -402,7 +402,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{options[:user_name]}'s avatar",
           src: helper.avatar_icon_for_email(options[:user_email], 16),
           data: { container: 'body' },
-          class: "avatar s16 has-tooltip",
+          class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
           title: options[:user_name]
         )
       end
@@ -419,7 +419,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
             alt: "#{user_with_avatar.name}'s avatar",
             src: avatar_icon_for_user(user_with_avatar, 16, only_path: false),
             data: { container: 'body' },
-            class: "avatar s16 has-tooltip",
+            class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
             title: user_with_avatar.name
           )
         end
@@ -433,7 +433,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
             alt: "#{user_with_avatar.username}'s avatar",
             src: helper.avatar_icon_for_email(user_with_avatar.email, 16, only_path: false),
             data: { container: 'body' },
-            class: "avatar s16 has-tooltip",
+            class: "gl-avatar gl-avatar-circle gl-avatar-s16 has-tooltip",
             title: user_with_avatar.username
           )
         end
@@ -462,7 +462,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           alt: "#{user.name}'s avatar",
           src: avatar_icon_for_user(user, 32),
           data: { container: 'body' },
-          class: 'avatar s32 has-tooltip',
+          class: 'gl-avatar gl-avatar-circle gl-avatar-s32 has-tooltip',
           title: user.name
         )
       end

@@ -335,13 +335,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'returns image tag for member avatar' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[gl-avatar gl-avatar-circle gl-avatar-s16], alt: "" })
 
       helper.link_to_member_avatar(user)
     end
 
     it 'returns image tag with avatar class' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16 any-avatar-class], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[gl-avatar gl-avatar-circle gl-avatar-s16 any-avatar-class], alt: "" })
 
       helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
     end

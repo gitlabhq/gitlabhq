@@ -326,7 +326,7 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         it 'raises an error' do
           expect do
             subject
-          end.to raise_error(Gitlab::Git::CommandError, /could not find page token/)
+          end.to raise_error(/could not find page token/)
         end
       end
 

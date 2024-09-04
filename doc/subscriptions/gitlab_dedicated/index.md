@@ -140,7 +140,7 @@ When you add a custom hostname:
 - The hostname is included in the external URL used to access your instance.
 - Any connections to your instance using the previous domain names are no longer available.
 
-You can add a custom hostname when you [create your tenant](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance). To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 NOTE:
 Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.

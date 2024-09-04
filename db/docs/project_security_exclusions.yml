@@ -4,7 +4,7 @@ classes:
 - Security::ProjectSecurityExclusion
 feature_categories:
 - secret_detection
-description: Store  project-level exclusions to exclude from security analyzers scanning
+description: Store project-level exclusions to exclude from security analyzers scanning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163732
 milestone: '17.4'
 gitlab_schema: gitlab_sec

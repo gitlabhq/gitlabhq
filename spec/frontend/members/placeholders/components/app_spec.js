@@ -13,10 +13,13 @@ import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_ba
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
+
 import {
   PLACEHOLDER_STATUS_FAILED,
   QUERY_PARAM_FAILED,
   PLACEHOLDER_USER_STATUS,
+  PLACEHOLDER_SORT_STATUS_ASC,
+  PLACEHOLDER_SORT_SOURCE_NAME_DESC,
 } from '~/import_entities/import_groups/constants';
 import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
 
@@ -86,7 +89,7 @@ describe('PlaceholdersTabApp', () => {
   const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
   const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
 
-  describe('filter and search', () => {
+  describe('filter, search and sort', () => {
     const searchTerm = 'source user 1';
     const searchTokens = [
       { type: FILTERED_SEARCH_TERM, value: { data: searchTerm } },
@@ -113,9 +116,9 @@ describe('PlaceholdersTabApp', () => {
       });
     });
 
-    describe('with status and search queries present on load', () => {
+    describe('with status, search and sort queries present on load', () => {
       beforeEach(() => {
-        setWindowLocation('?status=failed&search=foo');
+        setWindowLocation('?status=failed&search=foo&sort=STATUS_ASC');
         createComponent();
       });
 
@@ -123,6 +126,7 @@ describe('PlaceholdersTabApp', () => {
         expect(findUnassignedTable().props()).toMatchObject({
           querySearch: 'foo',
           queryStatuses: [PLACEHOLDER_STATUS_FAILED],
+          querySort: PLACEHOLDER_SORT_STATUS_ASC,
         });
       });
 
@@ -131,7 +135,19 @@ describe('PlaceholdersTabApp', () => {
         await nextTick();
 
         expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
-        expect(window.location.search).toBe(`?tab=placeholders&status=failed&search=source+user+1`);
+        expect(window.location.search).toBe(
+          `?tab=placeholders&status=failed&search=source+user+1&sort=STATUS_ASC`,
+        );
+      });
+
+      it('updates URL on new sort', async () => {
+        findFilteredSearchBar().vm.$emit('onSort', 'SOURCE_NAME_DESC');
+        await nextTick();
+
+        expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_SOURCE_NAME_DESC);
+        expect(window.location.search).toBe(
+          `?tab=placeholders&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
+        );
       });
     });
   });

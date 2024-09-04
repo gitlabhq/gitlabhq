@@ -536,13 +536,13 @@ module Gitlab
         empty_diff_stats
       end
 
-      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil)
+      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false)
         processed_objects = treeish_objects.compact
 
         return [] if processed_objects.empty?
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode)
+          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames)
         end
       rescue CommandError, TypeError, NoRepository
         []
@@ -1259,7 +1259,51 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def diffs_by_changed_paths(diff_refs, offset, batch_size = 30)
+        changed_paths = find_changed_paths(
+          [Gitlab::Git::DiffTree.new(diff_refs.base_sha, diff_refs.head_sha)],
+          find_renames: true
+        )
+
+        changed_paths.drop(offset).each_slice(batch_size) do |batched_changed_paths|
+          blob_pairs = batched_changed_paths.map do |changed_path|
+            Gitaly::DiffBlobsRequest::BlobPair.new(
+              left_blob: changed_path.old_blob_id,
+              right_blob: changed_path.new_blob_id
+            )
+          end
+
+          yield diff_files_by_blob_pairs(blob_pairs, batched_changed_paths, diff_refs)
+        end
+      end
+
       private
+
+      def diff_files_by_blob_pairs(blob_pairs, changed_paths, diff_refs)
+        diff_blobs = diff_blobs(blob_pairs, patch_bytes_limit: Gitlab::Git::Diff.patch_hard_limit_bytes)
+
+        changed_diff_blobs = diff_blobs.zip(changed_paths)
+
+        changed_diff_blobs.map do |diff_blob, changed_path|
+          diff = Gitlab::Git::Diff.new({
+            diff: diff_blob.patch,
+            too_large: diff_blob.over_patch_bytes_limit,
+            new_path: changed_path.path,
+            old_path: changed_path.old_path,
+            a_mode: changed_path.old_mode,
+            b_mode: changed_path.new_mode,
+            new_file: changed_path.status == :ADDED,
+            renamed_file: changed_path.status == :RENAMED,
+            deleted_file: changed_path.status == :DELETED
+          })
+
+          Gitlab::Diff::File.new(
+            diff,
+            repository: container.repository,
+            diff_refs: diff_refs
+          )
+        end
+      end
 
       def check_blobs_generated(base, head, changed_paths)
         wrapped_gitaly_errors do

@@ -181,7 +181,6 @@ information required to create your GitLab Dedicated instance.
 1. Optional. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
    for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated
    for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
-1. Optional. [Bring Your Own Domain](../../administration/dedicated/configure_instance.md#bring-your-own-domain-byod): You can add a custom hostname for your GitLab Dedicated instance, the bundled container registry, and KAS services.
 1. Summary: Confirm that the information you've provided in the previous steps is accurate
    before initiating the creation of your instance.
 

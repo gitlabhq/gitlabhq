@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395008
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484
 rollout_issue_url:
 milestone: '16.10'
-group: group::foundations
+group: group::personal productivity
 type: ops
 default_enabled: false

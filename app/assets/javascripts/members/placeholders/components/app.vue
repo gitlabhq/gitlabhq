@@ -3,7 +3,7 @@
 import { mapState } from 'vuex';
 import { GlBadge, GlTab, GlTabs, GlButton, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ACTIVE_TAB_QUERY_PARAM_NAME, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
@@ -12,6 +12,10 @@ import {
   PLACEHOLDER_STATUS_FAILED,
   QUERY_PARAM_FAILED,
   PLACEHOLDER_USER_STATUS,
+  PLACEHOLDER_SORT_STATUS_DESC,
+  PLACEHOLDER_SORT_STATUS_ASC,
+  PLACEHOLDER_SORT_SOURCE_NAME_ASC,
+  PLACEHOLDER_SORT_SOURCE_NAME_DESC,
 } from '~/import_entities/import_groups/constants';
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -43,6 +47,7 @@ export default {
       unassignedCount: null,
       reassignedCount: null,
       filterParams: {},
+      sort: null,
     };
   },
   computed: {
@@ -70,6 +75,7 @@ export default {
         [ACTIVE_TAB_QUERY_PARAM_NAME]: TAB_QUERY_PARAM_VALUES.placeholder,
         status: this.filterParams.status,
         search: this.filterParams.search,
+        sort: this.sort,
       };
     },
     unassignedUserStatuses() {
@@ -84,6 +90,26 @@ export default {
     },
     isCsvReassignmentEnabled() {
       return this.glFeatures.importerUserMappingReassignmentCsv;
+    },
+    sortOptions() {
+      return [
+        {
+          id: 1,
+          title: __('Status'),
+          sortDirection: {
+            descending: PLACEHOLDER_SORT_STATUS_DESC,
+            ascending: PLACEHOLDER_SORT_STATUS_ASC,
+          },
+        },
+        {
+          id: 2,
+          title: s__('UserMapping|Source name'),
+          sortDirection: {
+            descending: PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+            ascending: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
+          },
+        },
+      ];
     },
   },
   watch: {
@@ -101,14 +127,18 @@ export default {
     },
   },
   created() {
-    this.filterParams = Object.assign(
-      convertObjectPropsToCamelCase(
-        queryToObject(window.location.search.substring(1), { gatherArrays: true }),
-        {
-          dropKeys: ['scope', 'utf8', 'tab', 'sort'], // These keys are unsupported/unnecessary
-        },
-      ),
+    const { sort, ...queryParams } = convertObjectPropsToCamelCase(
+      queryToObject(window.location.search.substring(1), { gatherArrays: true }),
+      {
+        dropKeys: ['scope', 'utf8', 'tab'], // These keys are unsupported/unnecessary
+      },
     );
+
+    this.filterParams = { ...queryParams };
+
+    if (sort) {
+      this.sort = sort;
+    }
   },
   mounted() {
     this.unassignedCount = this.pagination.awaitingReassignmentItems;
@@ -150,8 +180,12 @@ export default {
       this.reassignedCount += 1;
       this.unassignedCount -= 1;
     },
+    onSort(sort) {
+      this.sort = sort;
+    },
   },
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
+  initialSortBy: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
 };
 </script>
 
@@ -171,17 +205,21 @@ export default {
         <filtered-search-bar
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
+          :initial-sort-by="$options.initialSortBy"
           :tokens="filteredSearchTokens"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
+          :sort-options="sortOptions"
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
           @onFilter="onFilter"
+          @onSort="onSort"
         />
         <placeholders-table
           key="unassigned"
           data-testid="placeholders-table-unassigned"
           :query-statuses="unassignedUserStatuses"
           :query-search="filterParams.search"
+          :query-sort="sort"
           @confirm="onConfirm"
         />
       </gl-tab>
@@ -195,17 +233,21 @@ export default {
         <filtered-search-bar
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
+          :initial-sort-by="$options.initialSortBy"
           :tokens="filteredSearchTokens"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+          :sort-options="sortOptions"
           @onFilter="onFilter"
+          @onSort="onSort"
         />
         <placeholders-table
           key="reassigned"
           data-testid="placeholders-table-reassigned"
           :query-statuses="reassignedUserStatuses"
           :query-search="filterParams.search"
+          :query-sort="sort"
           reassigned
         />
       </gl-tab>

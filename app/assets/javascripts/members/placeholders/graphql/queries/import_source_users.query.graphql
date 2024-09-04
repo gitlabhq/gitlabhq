@@ -9,6 +9,7 @@ query importSourceUsers(
   $last: Int
   $statuses: [ImportSourceUserStatus!]
   $search: String
+  $sort: SourceUserSort
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -19,6 +20,7 @@ query importSourceUsers(
       last: $last
       statuses: $statuses
       search: $search
+      sort: $sort
     ) {
       nodes {
         ...ImportSourceUser

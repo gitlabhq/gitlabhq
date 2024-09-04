@@ -105,14 +105,14 @@ Assuming no policies are enforced, consider the following examples:
 
 ### Separation of duties
 
-Separation of duties is vital to successfully implementing policies. Implement
-policies that achieve the necessary compliance and security requirements, while allowing development teams to
-achieve their goals.
+Separation of duties is vital to successfully implementing policies. Implement policies that achieve
+the necessary compliance and security requirements, while allowing development teams to achieve
+their goals.
 
 Security and compliance teams:
 
-- Should be responsible for defining policies and working with development teams to ensure the policies meet
-their needs.
+- Should be responsible for defining policies and working with development teams to ensure the
+  policies meet their needs.
 
 Development teams:
 
@@ -145,7 +145,9 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+  `manage_security_policy_link` permission to link to the security policy project. For more
+  information, see [separation of duties](#separation-of-duties).
 
 The high-level workflow for enforcing policies globally across all subgroups and projects in your GitLab.com namespace:
 
@@ -189,8 +191,12 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
-- To support approval groups globally across your instance, enable `security_policy_global_group_approvers_enabled` in your [GitLab instance application settings](../../../api/settings.md).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+  `manage_security_policy_link` permission to link to the security policy project. For more
+  information, see [separation of duties](#separation-of-duties).
+- To support approval groups globally across your instance, enable
+  `security_policy_global_group_approvers_enabled` in your
+  [GitLab instance application settings](../../../api/settings.md).
 
 The high-level workflow for enforcing policies across multiple groups:
 

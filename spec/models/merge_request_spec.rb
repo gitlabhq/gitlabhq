@@ -6986,6 +6986,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.diffs_for_streaming).to eq(['HEAD diff'])
       end
     end
+
+    context 'when block is given' do
+      let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs) }
+      let(:expected_block) { proc {} }
+      let(:repository) { merge_request.source_project.repository }
+
+      before do
+        allow(base_diff).to receive(:diff_refs).and_return(diff_refs)
+      end
+
+      it 'calls diffs_by_changed_paths with given offset' do
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+          expect(block).to be(expected_block)
+        end
+
+        merge_request.diffs_for_streaming(&expected_block)
+      end
+
+      context 'when offset_index is given' do
+        let(:offset) { 5 }
+
+        it 'calls diffs_by_changed_paths with given offset' do
+          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+            expect(block).to be(expected_block)
+          end
+
+          merge_request.diffs_for_streaming({ offset_index: offset }, &expected_block)
+        end
+      end
+    end
   end
 
   describe '#merge_exclusive_lease' do

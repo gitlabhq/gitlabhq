@@ -57,6 +57,42 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
     end
   end
 
+  context 'when pipeline has duplicate iid' do
+    let_it_be(:old_pipeline) do
+      create(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+    end
+
+    let(:pipeline) do
+      build(:ci_empty_pipeline, project: project, ref: 'master', user: user, iid: old_pipeline.iid)
+    end
+
+    it 'breaks the chain' do
+      step.perform!
+
+      expect(step.break?).to be true
+    end
+
+    it 'appends validation error' do
+      step.perform!
+
+      expect(pipeline.errors.to_a)
+        .to include(/Failed to persist the pipeline/)
+    end
+
+    it 'flushes internal id records for pipelines' do
+      expect { step.perform! }
+        .to change { InternalId.where(project: project, usage: :ci_pipelines).count }.by(-1)
+    end
+
+    it 'propagates different uniqueness errors' do
+      expect(pipeline).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+
+      expect { step.perform! }
+        .to raise_error(ActiveRecord::RecordNotUnique)
+        .and not_change { InternalId.count }
+    end
+  end
+
   context 'tags persistence' do
     let(:stage) do
       build(:ci_stage, pipeline: pipeline, project: project)

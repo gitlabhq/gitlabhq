@@ -40,8 +40,10 @@ describe('GLQL Query Parser', () => {
       description
     }
     pageInfo {
+      startCursor
       endCursor
       hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -79,8 +81,10 @@ describe('GLQL Query Parser', () => {
       description
     }
     pageInfo {
+      startCursor
       endCursor
       hasNextPage
+      hasPreviousPage
     }
   }
 }

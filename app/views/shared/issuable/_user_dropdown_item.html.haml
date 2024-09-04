@@ -4,7 +4,7 @@
 %li.filter-dropdown-item{ class: ('js-current-user' if user == current_user) }
   = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-flex gl-items-center') do
     .gl-shrink-0
-      = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 40, has_tooltip: false)
+      = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 32, has_tooltip: false)
     .gl-flex.gl-flex-col
       %span.gl-font-bold.gl-whitespace-normal.gl-break-words
         = user.name

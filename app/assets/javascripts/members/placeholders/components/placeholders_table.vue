@@ -48,6 +48,11 @@ export default {
       required: false,
       default: null,
     },
+    querySort: {
+      type: String,
+      required: false,
+      default: null,
+    },
     reassigned: {
       type: Boolean,
       required: false,
@@ -73,6 +78,7 @@ export default {
           [this.cursor.before ? 'last' : 'first']: DEFAULT_PAGE_SIZE,
           statuses: this.queryStatuses,
           search: this.querySearch,
+          sort: this.querySort,
         };
       },
       skip() {

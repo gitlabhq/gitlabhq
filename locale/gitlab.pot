@@ -58936,6 +58936,9 @@ msgstr ""
 msgid "UserMapping|Select user"
 msgstr ""
 
+msgid "UserMapping|Source name"
+msgstr ""
+
 msgid "UserMapping|The invitation could not be accepted."
 msgstr ""
 
