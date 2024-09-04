@@ -13,6 +13,7 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../../constants';
 import {
   findHierarchyWidgets,
@@ -189,6 +190,9 @@ export default {
     shouldRolledUpWeightBeVisible() {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;
     },
+    showTaskWeight() {
+      return this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC;
+    },
   },
   mounted() {
     this.showLabels = getShowLabelsFromLocalStorage(
@@ -326,6 +330,7 @@ export default {
         :show-labels="showLabels"
         :disable-content="disableContent"
         :allowed-child-types="allowedChildTypes"
+        :show-task-weight="showTaskWeight"
         @error="error = $event"
         @show-modal="showModal"
       />

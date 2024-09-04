@@ -20,6 +20,7 @@ import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
@@ -105,6 +106,20 @@ describe('WorkItemTree', () => {
     expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
     expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(1);
   });
+
+  it.each`
+    workItemType                      | showTaskWeight
+    ${WORK_ITEM_TYPE_VALUE_EPIC}      | ${false}
+    ${WORK_ITEM_TYPE_VALUE_TASK}      | ${true}
+    ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${true}
+  `(
+    'passes `showTaskWeight` as $showTaskWeight when the type is $workItemType',
+    async ({ workItemType, showTaskWeight }) => {
+      await createComponent({ workItemType });
+
+      expect(findWorkItemLinkChildrenWrapper().props().showTaskWeight).toBe(showTaskWeight);
+    },
+  );
 
   it('does not display form by default', () => {
     createComponent();

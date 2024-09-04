@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['ClusterAgent'], feature_category: :deployment_management do
   let(:fields) do
     %i[created_at created_by_user id name project updated_at tokens web_path connections activity_events
-      user_access_authorizations is_receptive url_configurations]
+      user_access_authorizations]
   end
 
   it { expect(described_class.graphql_name).to eq('ClusterAgent') }

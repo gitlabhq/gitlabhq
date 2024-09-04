@@ -213,6 +213,7 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
     context 'when column types change after the record is loaded' do
       before do
         model.connection.execute(<<~SQL)
+          ALTER TABLE #{model.table_name} ALTER COLUMN id TYPE INTEGER;
           ALTER TABLE #{model.table_name} ADD COLUMN id_bigint BIGINT NOT NULL DEFAULT 0;
         SQL
         model.update_all('id_bigint = id')

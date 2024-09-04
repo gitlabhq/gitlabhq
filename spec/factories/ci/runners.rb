@@ -34,17 +34,21 @@ FactoryBot.define do
       runner.update!(token_expires_at: evaluator.token_expires_at) if evaluator.token_expires_at
     end
 
+    trait :unregistered do
+      contacted_at { nil }
+      creation_state { :started }
+    end
+
     trait :online do
-      contacted_at { Time.now }
+      contacted_at { Time.current }
+    end
+
+    trait :almost_offline do
+      contacted_at { 0.001.seconds.after(Ci::Runner.online_contact_time_deadline) }
     end
 
     trait :offline do
       contacted_at { Ci::Runner.online_contact_time_deadline }
-    end
-
-    trait :unregistered do
-      contacted_at { nil }
-      creation_state { :started }
     end
 
     trait :stale do
@@ -59,11 +63,11 @@ FactoryBot.define do
     end
 
     trait :contacted_within_stale_deadline do
-      contacted_at { 1.second.after(Ci::Runner.stale_deadline) }
+      contacted_at { 0.001.seconds.after(Ci::Runner.stale_deadline) }
     end
 
     trait :created_within_stale_deadline do
-      created_at { 1.second.after(Ci::Runner.stale_deadline) }
+      created_at { 0.001.seconds.after(Ci::Runner.stale_deadline) }
     end
 
     trait :instance do

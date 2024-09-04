@@ -165,7 +165,15 @@ Prerequisites:
 
 The trial automatically syncs to your instance within 24 hours. After the trial has synced, [assign seats](#assign-gitlab-duo-seats) to users that you want to access GitLab Duo.
 
-## Automatic seat removal for seat overages
+## Automatic seat removal 
+
+GitLab Duo add-on seats are removed automatically to ensure only eligible users have access. This
+happens when there are:
+
+- Seat overages
+- Blocked, banned, and deactivated users
+
+### For seat overages
 
 If your quantity of purchased GitLab Duo add-on seats is reduced, seat assignments are automatically removed to match the seat quantity available in the subscription.
 
@@ -179,3 +187,10 @@ Seats are selected for removal based on the following criteria, in this order:
 
 1. Users who have not yet used Code Suggestions, ordered by most recently assigned.
 1. Users who have used Code Suggestions, ordered by least recent usage of Code Suggestions.
+
+### For blocked, banned and deactivated users
+
+Once or twice each day, a CronJob reviews GitLab Duo seat assignments. If a user who is assigned a GitLab Duo seat becomes
+blocked, banned, or deactivated, their access to GitLab Duo features is automatically removed.
+
+After the seat has been removed, it becomes available and can be re-assigned to a new user.

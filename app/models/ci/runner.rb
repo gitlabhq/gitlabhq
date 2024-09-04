@@ -104,7 +104,7 @@ module Ci
     scope :recent, -> do
       timestamp = stale_deadline
 
-      where(arel_table[:created_at].gteq(timestamp).or(arel_table[:contacted_at].gteq(timestamp)))
+      where(arel_table[:created_at].gt(timestamp).or(arel_table[:contacted_at].gt(timestamp)))
     end
     scope :stale, -> do
       stale_timestamp = stale_deadline

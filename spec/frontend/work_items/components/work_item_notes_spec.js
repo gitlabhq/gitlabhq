@@ -153,7 +153,7 @@ describe('WorkItemNotes component', () => {
         after: undefined,
         fullPath: 'test-path',
         iid: '1',
-        pageSize: 30,
+        pageSize: 20,
       });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
     });

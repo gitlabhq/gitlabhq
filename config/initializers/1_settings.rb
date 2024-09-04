@@ -698,9 +698,6 @@ Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_cla
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup'] ||= {}
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'] = 'ServiceDesk::CustomEmailVerificationCleanupWorker'
-Settings.cron_jobs['ensure_merge_requests_prepared_worker'] ||= {}
-Settings.cron_jobs['ensure_merge_requests_prepared_worker']['cron'] ||= '*/30 * * * *'
-Settings.cron_jobs['ensure_merge_requests_prepared_worker']['job_class'] ||= 'MergeRequests::EnsurePreparedWorker'
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker'] ||= {}
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['cron'] ||= '*/10 * * * *'
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_class'] ||= 'Pages::DeactivatedDeploymentsDeleteCronWorker'

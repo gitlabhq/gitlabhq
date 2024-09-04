@@ -227,7 +227,7 @@ export const FORM_TYPES = {
   },
 };
 
-export const DEFAULT_PAGE_SIZE_NOTES = 30;
+export const DEFAULT_PAGE_SIZE_NOTES = 20; // Set to 20 to not exceed query complexity
 export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 50;
 

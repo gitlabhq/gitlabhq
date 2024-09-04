@@ -17,8 +17,6 @@ module Clusters
     has_many :agent_tokens, -> { order_last_used_at_desc }, class_name: 'Clusters::AgentToken', inverse_of: :agent
     has_many :active_agent_tokens, -> { active.order_last_used_at_desc }, class_name: 'Clusters::AgentToken', inverse_of: :agent
 
-    has_one :agent_url_configuration, class_name: 'Clusters::Agents::UrlConfiguration', inverse_of: :agent
-
     has_many :ci_access_group_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::GroupAuthorization'
     has_many :ci_access_authorized_groups, class_name: '::Group', through: :ci_access_group_authorizations, source: :group
 

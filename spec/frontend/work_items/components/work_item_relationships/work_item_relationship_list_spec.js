@@ -37,6 +37,7 @@ describe('WorkItemRelationshipList', () => {
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
       workItemFullPath,
+      showWeight: true,
     });
   });
 });

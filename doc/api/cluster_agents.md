@@ -462,6 +462,10 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 ## Receptive agents
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 
 You must enable the `Receptive Agents` feature in the application settings.
@@ -493,8 +497,8 @@ The response is a list of URL configurations with the following fields:
 | `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
 | `url`                | string         | URL for this URL configuration.                                              |
 | `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
-| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
+| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
 | `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
 
 Example request:
@@ -547,8 +551,8 @@ The response is a single URL configuration with the following fields:
 | `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
 | `url`                | string         | URL for this URL configuration.                                              |
 | `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
-| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
+| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
 | `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
 
 Example request:
@@ -590,9 +594,9 @@ Supported attributes:
 | `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user.      |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                           |
 | `url`         | string            | yes      | URL for this URL configuration.                                                                                            |
-| `client_cert` | string            | no       | Base64-encoded client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`. |
-| `client_key`  | string            | no       | Base64-encoded client key in PEM format if mTLS authentication should be used. Must be provided with `client-cert`.        |
-| `ca_cert`     | string            | no       | Base64-encoded CA certificate to verify the agent endpoint.                                                                |
+| `client_cert` | string            | no       | Client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`.                |
+| `client_key`  | string            | no       | Client key in PEM format if mTLS authentication should be used. Must be provided with `client-cert`.                       |
+| `ca_cert`     | string            | no       | CA certificate to verify the agent endpoint.                                                                               |
 | `tls_host`    | string            | no       | TLS host name to verify the server name in agent endpoint.                                                                 |
 
 Response:
@@ -605,8 +609,8 @@ The response is the new URL configuration with the following fields:
 | `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
 | `url`                | string         | URL for this URL configuration.                                              |
 | `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Base64-encoded client certificate if mTLS authentication is used. |
-| `ca_cert`            | string         | (optional) Base64-encoded CA certificate to verify the agent endpoint.       |
+| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
+| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
 | `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
 
 Example request:

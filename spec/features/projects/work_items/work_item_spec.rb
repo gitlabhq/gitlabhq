@@ -142,6 +142,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
+    it 'renders note' do
+      wait_for_all_requests
+
+      expect(page).to have_content(note.note)
+    end
+
     context 'when work_items_beta is enabled' do
       before do
         stub_feature_flags(work_items_beta: true)

@@ -923,7 +923,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#any_runners_online?' do
+  describe '#any_runners_online?', :freeze_time do
     subject { build.any_runners_online? }
 
     context 'when no runners' do
@@ -932,13 +932,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when there is a runner' do
       before do
-        create(:ci_runner, *runner_traits, :project, projects: [build.project])
+        create(:ci_runner, *Array.wrap(runner_traits), :project, projects: [build.project])
       end
 
       context 'that is online' do
-        let(:runner_traits) { [:online] }
+        let(:runner_traits) { :online }
 
         it { is_expected.to be_truthy }
+
+        context 'and almost offline' do
+          let(:runner_traits) { :almost_offline }
+
+          it { is_expected.to be_truthy }
+        end
       end
 
       context 'that is paused' do
@@ -948,16 +954,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'that is offline' do
-        let(:runner_traits) { [:offline] }
+        let(:runner_traits) { :offline }
 
         it { is_expected.to be_falsey }
       end
 
       context 'that cannot handle build' do
-        let(:runner_traits) { [:online] }
+        let(:runner_traits) { :online }
 
         before do
-          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher).and_return(false)
+          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher)
+            .and_return(false)
         end
 
         it { is_expected.to be_falsey }

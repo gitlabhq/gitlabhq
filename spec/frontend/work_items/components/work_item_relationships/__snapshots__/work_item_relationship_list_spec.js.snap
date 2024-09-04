@@ -23,6 +23,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
           canupdate="true"
           childitem="[object Object]"
           showlabels="true"
+          showweight="true"
           workitemfullpath="test-project-path"
         />
       </li>

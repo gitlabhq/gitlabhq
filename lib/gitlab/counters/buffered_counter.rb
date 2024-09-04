@@ -147,6 +147,9 @@ module Gitlab
           flush_amount = amount_to_be_flushed
           next if flush_amount == 0
 
+          # `update_counters_with_lease` internally uses `detect_race_on_record`
+          # to track potential race conditions when concurrently updating a counter.
+          # We need the transaction so we can rollback the counter update if `remove_flushed_key` fails.
           counter_record.transaction do
             # Exclusive lease is obtained within `counter_record.transaction` which could lead to idle transactions
             # if exclusive lease Redis I/O is slow. We skip the transaction check for now.
@@ -154,6 +157,7 @@ module Gitlab
             Gitlab::ExclusiveLease.skipping_transaction_check do
               counter_record.update_counters_with_lease({ attribute => flush_amount })
             end
+
             remove_flushed_key
           end
 

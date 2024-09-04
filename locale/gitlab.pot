@@ -12757,6 +12757,9 @@ msgstr ""
 msgid "ClusterAgent|Receptive agents are disabled for this GitLab instance"
 msgstr ""
 
+msgid "ClusterAgent|Receptive agents are unavailable for this GitLab instance"
+msgstr ""
+
 msgid "ClusterAgent|URL configuration already exists for this agent"
 msgstr ""
 

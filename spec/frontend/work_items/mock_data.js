@@ -1717,6 +1717,39 @@ export const workItemTask = {
   __typename: 'WorkItem',
 };
 
+export const workItemEpic = {
+  id: 'gid://gitlab/WorkItem/4',
+  iid: '4',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/6',
+    name: 'Epic',
+    iconName: 'issue-type-epic',
+    __typename: 'WorkItemType',
+  },
+  title: 'bar',
+  state: 'OPEN',
+  confidential: false,
+  reference: 'test-project-path#4',
+  namespace: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+    name: 'Project name',
+  },
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
+  widgets: [
+    workItemObjectiveMetadataWidgets.ASSIGNEES,
+    {
+      type: 'HIERARCHY',
+      hasChildren: false,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
+  __typename: 'WorkItem',
+};
+
 export const otherNamespaceChild = {
   id: 'gid://gitlab/WorkItem/24',
   iid: '24',

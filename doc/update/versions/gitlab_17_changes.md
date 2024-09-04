@@ -117,12 +117,23 @@ For more information, see the:
 - [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
+## 17.4.0
+
+- Starting with GitLab 17.4, new GitLab installations have a different database schema regarding ID columns.
+  - All previous integer (32 bits) ID columns (for example columns like `id`, `%_id`, `%_ids`) are now created as `bigint` (64 bits).
+  - Existing installations will migrate from 32 bit to 64 bit integers in later releases when database migrations ship to perform this change.
+  - If you are building a new GitLab environment to test upgrades, install GitLab 17.3 or earlier to get
+    the same integer types as your existing environments. You can then upgrade to later releases to run the same
+    database migrations as your existing environments. This isn't necessary if you're restoring from backup into the
+    new environment as the database restore removes the existing database schema definition and uses the definition
+    that's stored as part of the backup.
+
 ## Issues to be aware of when upgrading from 17.1 and earlier
 
 - If the customer is using GitLab Duo and upgrading to GitLab 17.2.3 or earlier, they must do both of the following:
   - Resynchronize their license.
   - Restart the server after the upgrade.
-- If the customer is using GitLab Duo and upgrading to GitLab 17.2.4 or later, they must do either of the following: 
+- If the customer is using GitLab Duo and upgrading to GitLab 17.2.4 or later, they must do either of the following:
   - Resynchronize their license.
   - Wait until the next scheduled license synchronization, which happens every 24 hours.
 
@@ -138,7 +149,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   ```shell
   main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
-  main: == 20240812040748 AddUniqueConstraintToRemoteDevelopmentAgentConfigs: migrating 
+  main: == 20240812040748 AddUniqueConstraintToRemoteDevelopmentAgentConfigs: migrating
   main: -- transaction_open?(nil)
   main:    -> 0.0000s
   main: -- view_exists?(:postgres_partitions)

@@ -415,10 +415,10 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder,
             sql_type: sql_type.call(Project),
             nullable: :not_nullable
           ),
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: :id,
-                                                    order_expression: Issue.arel_table[:id].asc
-                                                  )
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].asc
+          )
         ])
       end
 
@@ -446,10 +446,10 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder,
             sql_type: sql_type.call(Project),
             nullable: :not_nullable
           ),
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: :id,
-                                                    order_expression: Issue.arel_table[:id].asc
-                                                  )
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].asc
+          )
         ])
       end
 

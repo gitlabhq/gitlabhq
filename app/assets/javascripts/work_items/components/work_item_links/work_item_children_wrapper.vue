@@ -80,6 +80,11 @@ export default {
       type: Object,
       required: true,
     },
+    showTaskWeight: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -511,6 +516,7 @@ export default {
       :has-indirect-children="hasIndirectChildren"
       :show-labels="showLabels"
       :work-item-full-path="fullPath"
+      :show-task-weight="showTaskWeight"
       :allowed-child-types="allowedChildTypes"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"

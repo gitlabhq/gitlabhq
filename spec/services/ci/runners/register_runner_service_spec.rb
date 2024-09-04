@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_category: :runner do
+RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, feature_category: :runner do
   let(:registration_token) { 'abcdefg123456' }
   let(:token) {}
   let(:args) { {} }
@@ -161,7 +161,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, :project, projects: [project], contacted_at: 1.second.ago)
+          create(:ci_runner, :project, :online, projects: [project])
           create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
         end
 
@@ -265,7 +265,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       context 'when abandoned runners cause application limits to not be exceeded' do
         before do
           create(:ci_runner, :group, :stale, groups: [group])
-          create(:ci_runner, :unregistered, :group, groups: [group], created_at: 4.months.ago)
+          create(:ci_runner, :group, :stale, :unregistered, groups: [group])
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 

@@ -69,6 +69,11 @@ export default {
       required: false,
       default: '',
     },
+    showWeight: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     labels() {
@@ -215,6 +220,8 @@ export default {
         :reference="displayReference"
         :iid="childItem.iid"
         :metadata-widgets="metadataWidgets"
+        :show-weight="showWeight"
+        :work-item-type="childItemType"
         class="ml-xl-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">

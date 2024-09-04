@@ -42,20 +42,6 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
       end
     end
 
-    describe '.contains_any_of_namespaces' do
-      let!(:other_group1) { create(:group) }
-      let!(:other_group2) { create(:group, parent: other_group1) }
-      let!(:other_group3) { create(:group, parent: other_group2) }
-
-      subject(:result) { described_class.contains_any_of_namespaces([group2.id, other_group2.id]) }
-
-      it 'returns groups having group2.id in traversal_ids' do
-        expect(result.pluck(:namespace_id)).to contain_exactly(
-          group2.id, group3.id, group4.id, other_group2.id, other_group3.id
-        )
-      end
-    end
-
     describe '.contains_traversal_ids' do
       let!(:other_group1) { create(:group) }
       let!(:other_group2) { create(:group, parent: other_group1) }

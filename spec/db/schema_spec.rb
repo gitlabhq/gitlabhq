@@ -463,6 +463,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     end
   end
 
+  context 'ID columns' do
+    it_behaves_like 'All IDs are bigint'
+  end
+
   private
 
   def retrieve_columns_name_with_jsonb

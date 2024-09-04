@@ -73,6 +73,11 @@ class WorkItem < Issue
       Gitlab::Pagination::Keyset::Order.build(
         [
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'state_id',
+            column_expression: WorkItem.arel_table[:state_id],
+            order_expression: WorkItem.arel_table[:state_id].asc
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'parent_link_relative_position',
             column_expression: WorkItems::ParentLink.arel_table[:relative_position],
             order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
@@ -90,7 +95,7 @@ class WorkItem < Issue
     def work_item_children_keyset_order(_work_item)
       keyset_order = work_item_children_keyset_order_config
 
-      keyset_order.apply_cursor_conditions(includes(:parent_link)).reorder(keyset_order)
+      keyset_order.apply_cursor_conditions(joins(:parent_link)).reorder(keyset_order)
     end
 
     def linked_items_keyset_order

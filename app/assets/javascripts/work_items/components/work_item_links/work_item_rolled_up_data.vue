@@ -1,9 +1,9 @@
 <script>
 import { GlIcon, GlTooltip, GlPopover } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { findWidget } from '~/issues/list/utils';
-import { i18n, WIDGET_TYPE_WEIGHT } from '../../constants';
+import { i18n, WIDGET_TYPE_WEIGHT, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
 
 export default {
   components: {
@@ -78,6 +78,9 @@ export default {
     completedWeightPercentage() {
       return Math.round((this.rolledUpCompletedWeight / this.rolledUpWeight) * 100);
     },
+    weightTooltip() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? __('Issue weight') : __('Weight');
+    },
   },
 };
 </script>
@@ -96,7 +99,7 @@ export default {
       <span data-testid="work-item-weight-value" class="gl-text-sm">{{ rolledUpWeight }}</span>
       <gl-tooltip :target="() => $refs.weightData">
         <span class="gl-font-bold">
-          {{ __('Weight') }}
+          {{ weightTooltip }}
         </span>
       </gl-tooltip>
     </span>

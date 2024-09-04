@@ -3839,7 +3839,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#stuck?' do
+  describe '#stuck?', :freeze_time do
     let(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     before do
