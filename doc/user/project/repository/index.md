@@ -267,7 +267,7 @@ Using the [rails console](../../../administration/operations/rails_console.md#st
 ```ruby
 p = Project.find_by_full_path('project/path')
 p.events.pushed_action.last(100).each do |e|
-  puts "%-20.20s %8s...%8s (%s)", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
+  printf "%-20.20s %8s...%8s (%s)", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
 end ; nil
 ```
 

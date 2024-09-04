@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -39,6 +40,7 @@ import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
+import { createRouter } from '~/work_items/router';
 import {
   groupWorkItemsQueryResponse,
   groupWorkItemStateCountsQueryResponse,
@@ -58,6 +60,7 @@ describeSkipVue3(skipReason, () => {
   let wrapper;
 
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
   const countsQueryHandler = jest.fn().mockResolvedValue(groupWorkItemStateCountsQueryResponse);
@@ -74,6 +77,7 @@ describeSkipVue3(skipReason, () => {
     sortPreferenceMutationResponse = mutationHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemsListApp, {
+      router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
         [getWorkItemsQuery, queryHandler],
         [getWorkItemStateCountsQuery, countsQueryHandler],
@@ -182,7 +186,6 @@ describeSkipVue3(skipReason, () => {
         includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
-        firstPageSize: 20,
         types: type,
       });
     });
@@ -213,7 +216,6 @@ describeSkipVue3(skipReason, () => {
     describe('when eeCreatedWorkItemsCount is updated', () => {
       it('refetches work items', async () => {
         mountComponent();
-        await waitForPromises();
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
@@ -478,17 +480,20 @@ describeSkipVue3(skipReason, () => {
         });
 
         it('refetches and resets when work item is deleted', async () => {
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+
           findDrawer().vm.$emit('workItemDeleted');
 
           await nextTick();
 
           checkThatDrawerPropsAreEmpty();
 
-          // first call when mounted, second call after deletion
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
         });
 
         it('refetches when the selected work item is closed', async () => {
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+
           // component displays open work items by default
           findDrawer().vm.$emit('work-item-updated', {
             state: STATE_CLOSED,
@@ -496,8 +501,7 @@ describeSkipVue3(skipReason, () => {
 
           await nextTick();
 
-          // first call when mounted, second call after update
-          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
         });
       });
     });

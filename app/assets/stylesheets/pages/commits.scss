@@ -162,10 +162,6 @@
 .generic-commit-status {
   a {
     color: $gl-text-color;
-
-    &.autodevops-badge {
-      color: $white;
-    }
   }
 
   .commit-row-description {
@@ -231,30 +227,4 @@
   align-items: center;
   font-weight: $gl-font-weight-normal;
   line-height: 1.5;
-}
-
-.gpg-popover-icon {
-  // same margin as .s32.avatar
-  margin-right: $btn-side-margin;
-
-  &.valid {
-    svg {
-      border: 1px solid $brand-success;
-      fill: $brand-success;
-    }
-  }
-
-  &.invalid {
-    svg {
-      border: 1px solid $gray-200;
-      fill: $gray-200;
-    }
-  }
-
-  svg {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    vertical-align: middle;
-  }
 }

@@ -143,6 +143,8 @@ export default {
     hideText: __('Hide values'),
   },
   formElementClasses: 'md:gl-mr-3 gl-mb-3 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
+  // it's used to prevent the overwrite if 'gl-h-7' or '!gl-h-7' were used
+  textAreaStyle: { height: '32px' },
   computed: {
     dropdownTranslations() {
       return {
@@ -374,7 +376,7 @@ export default {
         <div v-for="(variable, index) in variables" :key="`var-${index}`">
           <div
             v-if="!variable.destroy"
-            class="gl-mb-3 gl-flex gl-flex-col gl-items-stretch gl-pb-2 md:gl-flex-row"
+            class="gl-mb-3 gl-flex gl-flex-col gl-items-stretch gl-pb-2 md:gl-flex-row md:gl-items-start"
             data-testid="ci-variable-row"
           >
             <gl-collapsible-listbox
@@ -399,7 +401,6 @@ export default {
               value="*****************"
               disabled
               class="gl-mb-3 !gl-h-7"
-              :no-resize="false"
               data-testid="pipeline-form-ci-variable-hidden-value"
             />
 
@@ -407,7 +408,8 @@ export default {
               v-else
               v-model="variable.value"
               :placeholder="s__('CiVariables|Input variable value')"
-              class="gl-mb-3 !gl-h-7"
+              class="gl-mb-3 gl-min-h-7"
+              :style="$options.textAreaStyle"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value"
               @change="resetVariable(index)"

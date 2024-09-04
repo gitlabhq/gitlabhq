@@ -11,6 +11,8 @@ import {
   getDefaultWorkItemTypes,
   getInitialPageParams,
   getTypeTokenOptions,
+  getFilterTokens,
+  convertToUrlParams,
 } from 'ee_else_ce/issues/list/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -22,10 +24,20 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
+import {
+  CREATED_DESC,
+  PARAM_FIRST_PAGE_SIZE,
+  PARAM_LAST_PAGE_SIZE,
+  PARAM_PAGE_AFTER,
+  PARAM_PAGE_BEFORE,
+  PARAM_STATE,
+  PARAM_SORT,
+} from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __, s__ } from '~/locale';
 import {
   OPERATORS_IS,
@@ -53,6 +65,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { STATE_CLOSED, STATE_OPEN, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
@@ -114,9 +127,9 @@ export default {
       hasAnyIssues: false,
       isInitialLoadComplete: false,
       pageInfo: {},
-      pageParams: getInitialPageParams(),
+      pageParams: {},
       pageSize: DEFAULT_PAGE_SIZE,
-      sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
+      sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       workItems: [],
       workItemStateCounts: {},
@@ -241,7 +254,6 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_AUTHOR,
@@ -255,7 +267,6 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedUsers,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_GROUP,
@@ -275,7 +286,6 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
-          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
@@ -362,6 +372,20 @@ export default {
         hasQualityManagementFeature: this.hasQualityManagementFeature,
       });
     },
+    urlFilterParams() {
+      return convertToUrlParams(this.filterTokens);
+    },
+    urlParams() {
+      return {
+        sort: urlSortParams[this.sortKey],
+        state: this.state,
+        ...this.urlFilterParams,
+        first_page_size: this.pageParams.firstPageSize,
+        last_page_size: this.pageParams.lastPageSize,
+        page_after: this.pageParams.afterCursor ?? undefined,
+        page_before: this.pageParams.beforeCursor ?? undefined,
+      };
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -371,8 +395,14 @@ export default {
       }
       this.$apollo.queries.workItems.refetch();
     },
+    $route(newValue, oldValue) {
+      if (newValue.fullPath !== oldValue.fullPath) {
+        this.updateData(getParameterByName(PARAM_SORT));
+      }
+    },
   },
   created() {
+    this.updateData(this.initialSort);
     this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
@@ -417,10 +447,14 @@ export default {
 
       this.state = state;
       this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.$router.push({ query: this.urlParams });
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
       this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.$router.push({ query: this.urlParams });
     },
     handleNextPage() {
       this.pageParams = {
@@ -428,11 +462,15 @@ export default {
         firstPageSize: this.pageSize,
       };
       scrollUp();
+
+      this.$router.push({ query: this.urlParams });
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
+
+      this.$router.push({ query: this.urlParams });
     },
     handlePreviousPage() {
       this.pageParams = {
@@ -440,6 +478,8 @@ export default {
         lastPageSize: this.pageSize,
       };
       scrollUp();
+
+      this.$router.push({ query: this.urlParams });
     },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
@@ -452,6 +492,8 @@ export default {
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);
       }
+
+      this.$router.push({ query: this.urlParams });
     },
     saveSortPreference(sortKey) {
       this.$apollo
@@ -485,6 +527,26 @@ export default {
       await this.$apollo.queries.workItems.refetch();
       this.isRefetching = false;
     },
+    updateData(sort) {
+      const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
+      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
+      const state = getParameterByName(PARAM_STATE);
+
+      this.filterTokens = getFilterTokens(window.location.search);
+
+      this.pageParams = getInitialPageParams(
+        this.pageSize,
+        isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
+        isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
+        getParameterByName(PARAM_PAGE_AFTER) ?? undefined,
+        getParameterByName(PARAM_PAGE_BEFORE) ?? undefined,
+      );
+
+      // Trigger pageSize UI component update based on URL changes
+      this.pageSize = this.pageParams.firstPageSize;
+      this.sortKey = deriveSortKey({ sort, sortMap: urlSortParams });
+      this.state = state || STATUS_OPEN;
+    },
   },
 };
 </script>
@@ -508,6 +570,7 @@ export default {
       :error="error"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
+      :initial-filter-value="filterTokens"
       :initial-sort-by="sortKey"
       :issuables="workItems"
       :issuables-loading="isLoading"
@@ -520,6 +583,7 @@ export default {
       :show-pagination-controls="showPaginationControls"
       show-work-item-type-icon
       :sort-options="$options.sortOptions"
+      sync-filter-and-sort
       :tab-counts="tabCounts"
       :tabs="$options.issuableListTabs"
       use-keyset-pagination
