@@ -13,7 +13,7 @@ DETAILS:
 
 This page includes information about the minimum requirements you need to install and use GitLab.
 
-## Hardware requirements
+## Hardware
 
 ### Storage
 
@@ -57,10 +57,10 @@ While not recommended, in certain circumstances GitLab may run in a [memory cons
 
 ## Database
 
-PostgreSQL is the only supported database, which is bundled with the Linux package.
-You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+### PostgreSQL
 
-### PostgreSQL requirements
+PostgreSQL is the only supported database and is bundled with the Linux package.
+You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
 The server running PostgreSQL should have a certain amount of storage available, though the exact amount
 [depends on the number of users](../administration/reference_architectures/index.md). For:
@@ -89,8 +89,8 @@ used for development and testing:
 1. PostgreSQL 14.x [tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624).
 1. [Tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344).
 
-You must also ensure the following extensions are loaded into every
-GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
+You must also ensure the following extensions are loaded into every GitLab database.
+For more information, see [managing PostgreSQL extensions](postgresql_extensions.md).
 
 | Extension    | Minimum GitLab version |
 | ------------ | ---------------------- |
@@ -104,16 +104,16 @@ The following managed PostgreSQL services are known to be incompatible and shoul
 |----------------|-------------------------------------------------------|
 | 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
-#### Additional requirements for GitLab Geo
+#### GitLab Geo
 
 If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
 [validated cloud-managed instances](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services),
 as we actively develop and test based on those.
 We cannot guarantee compatibility with other external databases.
 
-It is recommended to review the [full requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
+For more information, see [requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
 
-#### Operating system locale compatibility and silent index corruption
+#### Locale compatibility
 
 Changes to locale data in `glibc` means that PostgreSQL database files are not fully compatible
 between different OS releases.
@@ -127,13 +127,9 @@ when:
 
 For more information, see how to [upgrade operating systems for PostgreSQL](../administration/postgresql/upgrading_os.md).
 
-#### Gitaly Cluster database requirements
+#### GitLab schemas
 
-[Read more in the Gitaly Cluster documentation](../administration/gitaly/praefect.md).
-
-#### Exclusive use of GitLab databases
-
-Databases created or used for GitLab, Geo, Gitaly Cluster, or other components should be for the
+Databases created or used for GitLab, Geo, [Gitaly Cluster](../administration/gitaly/praefect.md), or other components should be for the
 exclusive use of GitLab. Do not make direct changes to the database, schemas, users, or other
 properties except when following procedures in the GitLab documentation or following the directions
 of GitLab Support or other GitLab engineers.
@@ -156,7 +152,7 @@ of GitLab Support or other GitLab engineers.
   Database migrations are tested against the schema definition in the GitLab codebase. GitLab
   version upgrades may fail if the schema is modified.
 
-## Puma settings
+## Puma
 
 The recommended settings for Puma are determined by the infrastructure on which it's running.
 The Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
@@ -167,12 +163,16 @@ tune the Puma settings:
 - If you're using the GitLab Helm chart, see the
   [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
-### Puma workers
+### Workers
 
 The recommended number of workers is calculated as the highest of the following:
 
 - `2`
 - A combination of CPU and memory resource availability (see how this is configured automatically for the [Linux package](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/ef9facdc927e7389db6a5e0655414ba8318c7b8a/files/gitlab-cookbooks/gitlab/libraries/puma.rb#L31-46)).
+
+By default, each Puma worker is limited to 1.2 GB of memory.
+To increase the number of Puma workers, set
+[`puma['per_worker_max_memory_mb']`](../administration/operations/puma.md#reducing-memory-use) to a higher limit.
 
 Take for example the following scenarios:
 
@@ -228,7 +228,7 @@ A higher number of Puma workers usually helps to reduce the response time of the
 and increase the ability to handle parallel requests. You must perform testing to verify the
 optimal settings for your infrastructure.
 
-### Puma threads
+### Threads
 
 The recommended number of threads is dependent on several factors, including total memory.
 
@@ -237,12 +237,6 @@ The recommended number of threads is dependent on several factors, including tot
 - In all other cases, the recommended number of threads is `4`. We don't recommend setting this
   higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
   works.
-
-### Puma per worker maximum memory
-
-By default, each Puma worker is limited to 1.2 GB of memory.
-You can [adjust this memory setting](../administration/operations/puma.md#reducing-memory-use) and should do so
-if you must increase the number of Puma workers.
 
 ## Redis
 
@@ -262,14 +256,13 @@ Sidekiq processes the background jobs with a multi-threaded process.
 This process starts with the entire Rails stack (200 MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 billable users) the Sidekiq process can use 1 GB+ of memory.
 
-## Prometheus and its exporters
+## Prometheus
 
-[Prometheus](https://prometheus.io) and its related exporters are enabled by
-default to enable in depth monitoring of GitLab. With default settings, these
-processes consume approximately 200 MB of memory.
+By default, [Prometheus](https://prometheus.io) and its related exporters are enabled to monitor GitLab.
+These processes consume approximately 200 MB of memory.
 
-If you would like to disable Prometheus and it's exporters or read more information
-about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
+For more information, see
+[monitoring GitLab with Prometheus](../administration/monitoring/prometheus/index.md).
 
 ## GitLab Runner
 
@@ -286,8 +279,7 @@ It's also not safe to install everything on a single machine, because of the
 [security reasons](https://docs.gitlab.com/runner/security/), especially when you plan to use shell executor with GitLab
 Runner.
 
-We recommend using a separate machine for each GitLab Runner, if you plan to
-use the CI features.
+To use CI/CD features, you should use a separate machine for each GitLab Runner.
 The GitLab Runner server requirements depend on:
 
 - The type of [executor](https://docs.gitlab.com/runner/executors/) you configured on GitLab Runner.
@@ -321,18 +313,6 @@ NOTE:
 We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as issue boards which require JavaScript extensively.
 
-## Security
+## Related topics
 
-After installation, be sure to read and follow guidance on [maintaining a secure GitLab installation](../security/index.md).
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+- [Secure your installation](../security/index.md)

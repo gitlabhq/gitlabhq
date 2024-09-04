@@ -3,16 +3,14 @@
  *
  */
 .file-holder {
-  border: 1px solid $border-color;
-  border-radius: $gl-border-radius-base;
+  @apply gl-border gl-rounded-base;
 
   &.file-holder-top-border {
-    border-top: 1px solid $border-color;
+    @apply gl-border;
 
     .file-title {
       // Prevents the top border getting clipped by the background
-      border-top-left-radius: $gl-border-radius-base;
-      border-top-right-radius: $gl-border-radius-base;
+      @apply gl-rounded-t-base;
     }
   }
 
@@ -22,8 +20,7 @@
 
   .file-title {
     position: relative;
-    background-color: var(--gray-10, $gray-10);
-    border-bottom: 1px solid  var(--gl-border-color-default);
+    @apply gl-bg-subtle gl-border-b;
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;
@@ -38,15 +35,14 @@
     }
 
     a:not(.btn) {
-      color: $gl-text-color;
+      @apply gl-text-primary;
     }
   }
 
   .file-blame-legend {
-    background-color: $gray-10;
     text-align: right;
     padding: 8px $gl-padding;
-    border-bottom: 1px solid $border-color;
+    @apply gl-bg-subtle gl-border-b;
 
     @include media-breakpoint-down(xs) {
       text-align: left;
@@ -84,7 +80,7 @@
     &.image_file,
     &.audio,
     &.video {
-      background: $gray-50;
+      @apply gl-bg-strong;
       text-align: center;
       padding: 30px;
 
@@ -104,22 +100,21 @@
     }
 
     &.blob-no-preview {
-      background: $gray-50;
+      @apply gl-bg-strong;
       text-shadow: 0 1px 2px $white;
       padding: 100px 0;
     }
 
     &.logs {
-      background: $gray-50;
+      @apply gl-bg-strong;
       max-height: 700px;
       overflow-y: auto;
 
       ol {
         margin-left: 40px;
         padding: 10px 0;
-        border-left: 1px solid $border-color;
         margin-bottom: 0;
-        background: $white;
+        @apply gl-bg-default gl-border-l;
 
         li {
           color: $logs-li-color;
@@ -208,8 +203,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--gl-background-color-subtle);
-    border-bottom: 1px solid $border-color;
+    @apply gl-bg-subtle gl-border-b;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);
@@ -225,7 +219,7 @@ span.idiff {
   }
 
   a {
-    color: $gl-text-color;
+    @apply gl-text-primary;
   }
 }
 
@@ -247,8 +241,7 @@ span.idiff {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background-color: $gray-10;
-  border-bottom: 1px solid $border-color;
+  @apply gl-bg-subtle gl-border-b;
   padding: 5px $gl-padding;
 }
 
@@ -260,7 +253,7 @@ span.idiff {
   overflow: auto;
 
   .file-container {
-    background-color: $gray-50;
+    @apply gl-bg-strong;
     display: flex;
     height: 100%;
     align-items: center;
@@ -295,7 +288,7 @@ span.idiff {
     padding-bottom: $gl-padding;
 
     .discussion-reply-holder {
-      border-bottom: 1px solid $gray-50;
+      @apply gl-border-b gl-border-b-subtle;
       border-radius: 0;
     }
   }
@@ -458,7 +451,7 @@ span.idiff {
 
   .tr {
     display: flex;
-    border-bottom: 1px solid $gray-50;
+    @apply gl-border-b gl-border-b-subtle;
 
     &.last-row {
       border-bottom: 0;
@@ -512,7 +505,7 @@ span.idiff {
 
 .blame.file-content .td.line-numbers {
   float: none;
-  border-left: 1px solid $gray-100;
+  @apply gl-border-l;
   border-radius: 0;
 
   .file-line-num {
@@ -522,11 +515,11 @@ span.idiff {
 
 .code {
   padding: 0;
-  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
+  @apply gl-rounded-t-none gl-rounded-b-base;
 }
 
 .blame-stream-container {
-  border-top: 1px solid $border-color;
+  @apply gl-border-t;
 }
 
 .blame-stream-loading {

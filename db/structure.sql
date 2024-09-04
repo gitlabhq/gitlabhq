@@ -13584,7 +13584,7 @@ CREATE TABLE ml_model_versions (
     CONSTRAINT check_246f5048b5 CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255)),
     CONSTRAINT check_4d50116294 CHECK ((char_length(description_html) <= 50000)),
-    CONSTRAINT check_caff7d000b CHECK ((char_length(description) <= 500))
+    CONSTRAINT check_f1545d8a9e CHECK ((char_length(description) <= 10000))
 );
 
 CREATE SEQUENCE ml_model_versions_id_seq
@@ -13608,7 +13608,7 @@ CREATE TABLE ml_models (
     description_html text,
     CONSTRAINT check_1fd2cc7d93 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_51a38acdaa CHECK ((char_length(description_html) <= 50000)),
-    CONSTRAINT check_d0c47d63b5 CHECK ((char_length(description) <= 5000))
+    CONSTRAINT check_f8df2fefc5 CHECK ((char_length(description) <= 10000))
 );
 
 CREATE SEQUENCE ml_models_id_seq

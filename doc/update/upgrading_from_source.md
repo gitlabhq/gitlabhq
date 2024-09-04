@@ -141,7 +141,7 @@ GitLab 17.0 requires at least PostgreSQL 14.
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you are running. You may also have to enable some
 extensions. For more information, see the
-[PostgreSQL requirements](../install/requirements.md#postgresql-requirements)
+[PostgreSQL requirements](../install/requirements.md#postgresql)
 
 To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
 
@@ -283,7 +283,7 @@ sudo systemctl daemon-reload
 ### 10. Install libraries, migrations, etc
 
 Make sure you have the required
-[PostgreSQL extensions](../install/requirements.md#postgresql-requirements),
+[PostgreSQL extensions](../install/requirements.md#postgresql),
 then proceed to install the needed libraries:
 
 ```shell

@@ -89,7 +89,8 @@ export default {
       }
     },
   },
-  TIME_INPUT_CLASS: 'gl-flex gl-items-center gl-justify-center !gl-py-2 gl-min-w-fit gl-w-15',
+  TIME_INPUT_CLASS:
+    'gl-flex gl-items-center gl-justify-center !gl-py-2 gl-min-w-fit gl-w-15 !gl-h-7',
 };
 </script>
 

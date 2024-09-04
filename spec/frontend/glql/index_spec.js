@@ -1,7 +1,7 @@
 import renderGlqlNodes from '~/glql';
 
 jest.mock('~/lib/graphql');
-jest.mock('~/glql/core/executor');
+jest.mock('~/glql/core/parser/query');
 
 describe('renderGlqlNodes', () => {
   it('loops over all glql code blocks and renders them', async () => {

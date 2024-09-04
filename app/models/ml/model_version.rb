@@ -15,7 +15,7 @@ module Ml
       length: { maximum: 255 }
 
     validates :description,
-      length: { maximum: 500 }
+      length: { maximum: 10_000 }
 
     validate :valid_model?, :valid_package?
 

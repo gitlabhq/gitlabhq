@@ -44,8 +44,8 @@ export default {
         :data-testid="`list-item-${itemIndex}`"
       >
         <gl-intersperse separator=" - ">
-          <span v-for="(field, fieldIndex) in fields" :key="fieldIndex">
-            <component :is="presenter.forField(item, field)" />
+          <span v-for="field in fields" :key="field.key">
+            <component :is="presenter.forField(item, field.key)" />
           </span>
         </gl-intersperse>
       </li>

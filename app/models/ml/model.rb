@@ -15,6 +15,8 @@ module Ml
       length: { maximum: 255 }
 
     validate :valid_default_experiment?
+    validates :description,
+      length: { maximum: 10_000 }
 
     has_one :default_experiment, class_name: 'Ml::Experiment'
     belongs_to :project

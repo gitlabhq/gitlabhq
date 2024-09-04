@@ -24,6 +24,15 @@ import TitleComponent from './title.vue';
 
 const STICKY_HEADER_VISIBLE_CLASS = 'issuable-sticky-header-visible';
 
+function stripClientState(html) {
+  // remove all attributes of details tags
+  return html.replace(/<details[^>]*>/g, '<details>');
+}
+
+function hasDescriptionChanged(oldDesc, newDesc) {
+  return stripClientState(oldDesc) !== stripClientState(newDesc);
+}
+
 export default {
   components: {
     HeaderActions,
@@ -356,7 +365,12 @@ export default {
       const details =
         descriptionSection != null && descriptionSection.getElementsByTagName('details');
 
-      this.state.descriptionHtml = updateDescription(sanitize(data.description), details);
+      const newDescriptionHtml = updateDescription(sanitize(data.description), details);
+
+      if (hasDescriptionChanged(this.state.descriptionHtml, newDescriptionHtml)) {
+        this.state.descriptionHtml = newDescriptionHtml;
+      }
+
       this.state.titleHtml = sanitize(data.title);
       this.state.lock_version = data.lock_version;
     },

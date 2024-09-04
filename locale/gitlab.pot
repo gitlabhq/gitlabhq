@@ -31351,7 +31351,9 @@ msgid "LICENSE"
 msgstr ""
 
 msgid "Label"
-msgstr ""
+msgid_plural "Labels"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Label %{labelName} was not found"
 msgstr ""
@@ -39011,6 +39013,12 @@ msgid "Parent removed successfully"
 msgstr ""
 
 msgid "Parent set successfully"
+msgstr ""
+
+msgid "Parse error: Expected `%{expected}`, but got `%{got}`."
+msgstr ""
+
+msgid "Parse error: Unexpected input near `%{input}`."
 msgstr ""
 
 msgid "Part of merge request changes"
@@ -57661,13 +57669,22 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
+msgid "Unknown data source: %{source}"
+msgstr ""
+
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
 msgstr ""
 
 msgid "Unknown format"
 msgstr ""
 
+msgid "Unknown function: %{name}"
+msgstr ""
+
 msgid "Unknown user"
+msgstr ""
+
+msgid "Unknown value type: %{type}"
 msgstr ""
 
 msgid "Unless otherwise agreed to in writing with GitLab, by selecting \"Add License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."
@@ -64116,6 +64133,9 @@ msgstr ""
 msgid "features adopted"
 msgstr ""
 
+msgid "field name"
+msgstr ""
+
 msgid "file"
 msgid_plural "files"
 msgstr[0] ""
@@ -64148,6 +64168,9 @@ msgid "from yourself"
 msgstr ""
 
 msgid "frontmatter"
+msgstr ""
+
+msgid "function name"
 msgstr ""
 
 msgid "group"
@@ -65334,6 +65357,9 @@ msgstr ""
 msgid "snippet"
 msgstr ""
 
+msgid "something to parse"
+msgstr ""
+
 msgid "source"
 msgstr ""
 
@@ -65359,6 +65385,9 @@ msgid "started on %{timebox_start_date}"
 msgstr ""
 
 msgid "starts on %{timebox_start_date}"
+msgstr ""
+
+msgid "string"
 msgstr ""
 
 msgid "structure is too large. Maximum size is %{max_size} characters"

@@ -335,7 +335,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     it { is_expected.to have_graphql_resolver(Resolvers::ProjectMergeRequestsResolver) }
 
     it do
-      is_expected.to have_graphql_arguments(
+      is_expected.to include_graphql_arguments(
         :iids,
         :source_branches,
         :target_branches,

@@ -126,7 +126,7 @@ Set the number of `workers` to `0` to reduce memory usage by hundreds of MB:
    ```
 
 Unlike in a clustered mode, which is set up by default, only a single Puma process would serve the application.
-For details on Puma worker and thread settings, see the [Puma requirements](../../install/requirements.md#puma-settings).
+For details on Puma worker and thread settings, see the [Puma requirements](../../install/requirements.md#puma).
 
 The downside of running Puma in this configuration is the reduced throughput, which can be
 considered a fair tradeoff in a memory-constrained environment.
@@ -268,7 +268,7 @@ automatically, due to differences between the two application servers.
 
 To switch from Unicorn to Puma:
 
-1. Determine suitable Puma [worker and thread settings](../../install/requirements.md#puma-settings).
+1. Determine suitable Puma [worker and thread settings](../../install/requirements.md#puma).
 1. Convert any custom Unicorn settings to Puma in `/etc/gitlab/gitlab.rb`.
 
    The table below summarizes which Unicorn configuration keys correspond to those

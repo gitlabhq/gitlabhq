@@ -34,10 +34,10 @@ Backup and restore recreates the entire database, including the indexes.
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. Backup the PostgreSQL database with `pg_dump` or the
    [GitLab backup tool, with all data types except `db` excluded](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)
@@ -63,10 +63,10 @@ Backup and restore recreates the entire database, including the indexes.
 
 1. Take a scheduled downtime window. In all nodes of all sites, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. In the primary site, backup the PostgreSQL database with `pg_dump` or the
    [GitLab backup tool, with all data types except `db` excluded](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup)
@@ -89,10 +89,10 @@ Backup and restore recreates the entire database, including the indexes.
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
@@ -120,10 +120,10 @@ Backup and restore recreates the entire database, including the indexes.
 
 1. Take a scheduled downtime window. In all nodes of all sites, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
@@ -148,10 +148,10 @@ different types of indexes were handled, see the blog post about
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
@@ -187,10 +187,10 @@ different types of indexes were handled, see the blog post about
 
 1. Take a scheduled downtime window. In all nodes of all sites, stop unnecessary GitLab services:
 
-    ```shell
-    gitlab-ctl stop
-    gitlab-ctl start postgresql
-    ```
+   ```shell
+   gitlab-ctl stop
+   gitlab-ctl start postgresql
+   ```
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
@@ -223,15 +223,15 @@ You can compare the behavior of `glibc` on your servers [using shell commands](.
 
 The following table shows the `glibc` versions shipped for different operating systems:
 
-|Operating system    |`glibc` version|
-|--------------------|-------------|
-|CentOS 7            | 2.17 |
-|RedHat Enterprise 8 | 2.28 |
-|RedHat Enterprise 9 | 2.34 |
-|Ubuntu 18.04        | 2.27 |
-|Ubuntu 20.04        | 2.31 |
-|Ubuntu 22.04        | 2.35 |
-|Ubuntu 24.04        | 2.39 |
+| Operating system    | `glibc` version |
+|---------------------|-----------------|
+| CentOS 7            | 2.17            |
+| RedHat Enterprise 8 | 2.28            |
+| RedHat Enterprise 9 | 2.34            |
+| Ubuntu 18.04        | 2.27            |
+| Ubuntu 20.04        | 2.31            |
+| Ubuntu 22.04        | 2.35            |
+| Ubuntu 24.04        | 2.39            |
 
 For example, suppose you are upgrading from CentOS 7 to RedHat
 Enterprise 8. In this case, using PostgreSQL on this upgraded operating

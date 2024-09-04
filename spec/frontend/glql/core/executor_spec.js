@@ -1,4 +1,3 @@
-import { print } from 'graphql/language/printer';
 import Executor from '~/glql/core/executor';
 import createDefaultClient from '~/lib/graphql';
 import { MOCK_ISSUES } from '../mock_data';
@@ -28,125 +27,16 @@ describe('Executor', () => {
     delete gon.current_username;
   });
 
-  it('executes a query using GLQL compiler', async () => {
-    const { data, config } = await executor.compile('assignee = currentUser()').execute();
-
-    expect(print(queryFn.mock.calls[0][0].query)).toMatchInlineSnapshot(`
-"{
-  issues(assigneeUsernames: "foobar", first: 100) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      type
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-"
-`);
-
-    expect(data).toEqual(MOCK_QUERY_RESPONSE);
-
-    // default config options
-    expect(config).toEqual({ display: 'list', fields: ['title'] });
-  });
-
-  it('includes fields provided in config, each field included just once', async () => {
-    const { data, config } = await executor
-      .compile(
-        `
----
-fields: title, id, title, iid, author, title
----
-assignee = currentUser()
-`,
-      )
-      .execute();
-
-    expect(print(queryFn.mock.calls[0][0].query)).toMatchInlineSnapshot(`
-"{
-  issues(assigneeUsernames: "foobar", first: 100) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      type
-      author {
-        id
-        avatarUrl
-        username
-        name
-        webUrl
+  it('executes a query using a graphql client', async () => {
+    const data = await executor.execute(`
+      {
+        issues(assigneeUsernames: "foobar", first: 100) {
+          nodes { id iid title webUrl reference state type }
+          pageInfo { endCursor hasNextPage }
+        }
       }
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-"
-`);
+      `);
 
     expect(data).toEqual(MOCK_QUERY_RESPONSE);
-    expect(config).toEqual({ display: 'list', fields: ['title', 'id', 'iid', 'author'] });
-  });
-
-  it('correctly reads limit and display options from config', async () => {
-    const { data, config } = await executor
-      .compile(
-        `
----
-limit: 5
-display: list
----
-assignee = currentUser()
-`,
-      )
-      .execute();
-
-    expect(print(queryFn.mock.calls[0][0].query)).toMatchInlineSnapshot(`
-"{
-  issues(assigneeUsernames: "foobar", first: 5) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      type
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-"
-`);
-
-    expect(data).toEqual(MOCK_QUERY_RESPONSE);
-    expect(config).toEqual({
-      display: 'list',
-      fields: ['title'],
-      limit: 5,
-    });
-  });
-
-  it('throws an error if the query compilation returns an error', () => {
-    expect(() => {
-      executor.compile('invalid query');
-    }).toThrow('Unexpected `q`, expected operator (one of IN, =, !=, >, or <)');
   });
 });

@@ -1,6 +1,5 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { toSentenceCase } from '../../utils/common';
 import Sorter from '../../core/sorter';
 
 export default {
@@ -26,10 +25,7 @@ export default {
 
     return {
       items,
-      fields: this.config.fields.map((field) => ({
-        key: field,
-        label: toSentenceCase(field),
-      })),
+      fields: this.config.fields,
       sorter: new Sorter(items),
     };
   },

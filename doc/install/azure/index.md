@@ -66,7 +66,7 @@ The first items you need to configure are the basic settings of the underlying v
 1. In **Availability options**, select **Availability zone** and set it to `1`.
    Read more about the [availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/availability).
 1. Ensure the selected image is set to **GitLab - Gen1**.
-1. Select the VM size based on the [hardware requirements](../requirements.md#hardware-requirements).
+1. Select the VM size based on the [hardware requirements](../requirements.md#hardware).
    Because the minimum system requirements to run a GitLab environment for up to 500 users
    is covered by the `D4s_v3` size, select that option.
 1. Set the authentication type to **SSH public key**.

@@ -28,7 +28,7 @@ Find out [which versions of PostgreSQL (and other components) ship](https://gitl
 with each Linux package release.
 
 The lowest supported PostgreSQL versions are listed in the
-[installation requirements](../../install/requirements.md#postgresql-requirements).
+[installation requirements](../../install/requirements.md#postgresql).
 
 Read more about update policies and warnings in the PostgreSQL
 [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
