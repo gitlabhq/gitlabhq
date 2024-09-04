@@ -16,24 +16,22 @@ class SearchService
 
   # rubocop: disable CodeReuse/ActiveRecord
   def project
-    strong_memoize(:project) do
-      if params[:project_id].present? && valid_request?
-        the_project = Project.find_by(id: params[:project_id])
-        can?(current_user, :read_project, the_project) ? the_project : nil
-      end
-    end
+    return unless params[:project_id].present? && valid_request?
+
+    the_project = Project.find_by(id: params[:project_id])
+    can?(current_user, :read_project, the_project) ? the_project : nil
   end
+  strong_memoize_attr :project
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def group
-    strong_memoize(:group) do
-      if params[:group_id].present? && valid_request?
-        the_group = Group.find_by(id: params[:group_id])
-        can?(current_user, :read_group, the_group) ? the_group : nil
-      end
-    end
+    return unless params[:group_id].present? && valid_request?
+
+    the_group = Group.find_by(id: params[:group_id])
+    can?(current_user, :read_group, the_group) ? the_group : nil
   end
+  strong_memoize_attr :group
   # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
@@ -53,10 +51,9 @@ class SearchService
   end
 
   def show_snippets?
-    strong_memoize(:show_snippets) do
-      params[:snippets] == 'true'
-    end
+    params[:snippets] == 'true'
   end
+  strong_memoize_attr :show_snippets?
 
   delegate :scope, to: :search_service
   delegate :valid_terms_count?, :valid_query_length?, to: :params
@@ -81,10 +78,9 @@ class SearchService
   end
 
   def abuse_detected?
-    strong_memoize(:abuse_detected) do
-      params.abusive?
-    end
+    params.abusive?
   end
+  strong_memoize_attr :abuse_detected?
 
   def abuse_messages
     return [] unless params.abusive?
@@ -93,10 +89,9 @@ class SearchService
   end
 
   def valid_request?
-    strong_memoize(:valid_request) do
-      params.valid?
-    end
+    params.valid?
   end
+  strong_memoize_attr :valid_request?
 
   def level
     @level ||=
@@ -178,7 +173,8 @@ class SearchService
   end
 
   def log_redacted_search_results(filtered_results)
-    logger.error(message: "redacted_search_results", filtered: filtered_results, current_user_id: current_user&.id, query: params[:search])
+    logger.error(message: "redacted_search_results", filtered: filtered_results, current_user_id: current_user&.id,
+      query: params[:search])
   end
 
   def logger

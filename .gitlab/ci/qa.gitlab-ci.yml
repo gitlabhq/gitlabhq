@@ -201,7 +201,7 @@ e2e:test-on-omnibus-ce:
     QA_RUN_TYPE: e2e-test-on-omnibus-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
-e2e:test-on-omnibus-nightly:
+e2e:test-on-omnibus-ee-nightly:
   extends:
     - .e2e-trigger-base
     - .qa:rules:test-on-omnibus-nightly
@@ -210,6 +210,7 @@ e2e:test-on-omnibus-nightly:
     - build-qa-image
     - e2e-test-pipeline-generate
   variables:
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
     GITLAB_SEMVER_VERSION: $GITLAB_SEMVER_VERSION
     QA_RUN_TYPE: nightly
     PIPELINE_NAME: E2E Omnibus GitLab Nightly

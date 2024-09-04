@@ -9578,6 +9578,9 @@ msgstr ""
 msgid "BranchRules|Edit allowed to push and merge"
 msgstr ""
 
+msgid "BranchRules|Edit branch protections, approval rules, and status checks from a single page. %{docs_link_start} How to use branch rules?%{docs_link_end}"
+msgstr ""
+
 msgid "BranchRules|Edit status check"
 msgstr ""
 

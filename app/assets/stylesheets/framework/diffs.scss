@@ -757,8 +757,10 @@ table.code {
 
 .diff-file .note-container > .new-note,
 .note-container .discussion-notes.diff-discussions {
-  margin-left: 100px;
-  @apply gl-border-l gl-border-l-subtle;
+  .discussion-reply-holder {
+    padding-top: $gl-padding-12;
+    margin-bottom: -1px;
+  }
 }
 
 .notes.active {

@@ -10845,7 +10845,6 @@ CREATE TABLE events (
     id bigint NOT NULL,
     target_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
-    personal_namespace_id bigint,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 

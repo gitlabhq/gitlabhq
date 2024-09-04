@@ -6,12 +6,17 @@ import {
   GlSprintf,
   GlTooltipDirective,
   GlModalDirective,
+  GlTruncateText,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
-  components: { GlButton, GlButtonGroup, GlModal, GlSprintf },
+  i18n: {
+    showMore: __('Show more'),
+    showLess: __('Show less'),
+  },
+  components: { GlButton, GlButtonGroup, GlModal, GlSprintf, GlTruncateText },
   directives: { GlTooltip: GlTooltipDirective, GlModal: GlModalDirective },
   mixins: [timeagoMixin],
   props: {
@@ -74,7 +79,7 @@ export default {
       data-testid="ffUserList"
       class="gl-flex gl-w-full gl-justify-between gl-border-b-1 gl-border-gray-100 gl-py-4 gl-border-b-solid"
     >
-      <div class="gl-flex gl-grow gl-flex-col gl-overflow-hidden">
+      <div class="gl-flex gl-grow gl-flex-col">
         <span data-testid="ffUserListName" class="gl-mb-2 gl-font-bold">
           {{ list.name }}
         </span>
@@ -86,7 +91,16 @@ export default {
         >
           {{ createdTimeago(list) }}
         </span>
-        <span data-testid="ffUserListIds" class="gl-str-truncated">{{ displayList(list) }}</span>
+        <gl-truncate-text
+          :lines="2"
+          :mobile-lines="2"
+          :show-more-text="$options.i18n.showMore"
+          :show-less-text="$options.i18n.showLess"
+        >
+          <div data-testid="ffUserListIds">
+            {{ displayList(list) }}
+          </div>
+        </gl-truncate-text>
       </div>
 
       <gl-button-group class="gl-mt-2 gl-self-start">

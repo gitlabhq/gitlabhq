@@ -23286,6 +23286,26 @@ Returns [`GroupDataTransfer`](#groupdatatransfer).
 | <a id="groupdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for one year. Data for the current month will increase dynamically as egress occurs. |
 | <a id="groupdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
 
+##### `Group.dependencies`
+
+Software dependencies used by projects under this group.
+
+Returns [`DependencyConnection`](#dependencyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdependenciescomponentids"></a>`componentIds` | [`[SbomComponentID!]`](#sbomcomponentid) | Filter dependencies by component IDs. |
+| <a id="groupdependenciescomponentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
+| <a id="groupdependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
+| <a id="groupdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
+| <a id="groupdependenciessourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
+
 ##### `Group.descendantGroups`
 
 List of descendant groups of this group.
@@ -35327,14 +35347,14 @@ Action to subscribe to.
 | ----- | ----------- |
 | <a id="aiactionchat"></a>`CHAT` | Chat action. |
 
-### `AiAdditionalContextType`
+### `AiAdditionalContextCategory`
 
-The type of additional context.
+The category of the additional context.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="aiadditionalcontexttypefile"></a>`FILE` | File content type. |
-| <a id="aiadditionalcontexttypesnippet"></a>`SNIPPET` | Snippet content type. |
+| <a id="aiadditionalcontextcategoryfile"></a>`FILE` | File content category. |
+| <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
 
 ### `AiMessageRole`
 
@@ -38126,6 +38146,7 @@ Name of the feature that the callout is for.
 | ----- | ----------- |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
 | <a id="usercalloutfeaturenameenumbranch_rules_info_callout"></a>`BRANCH_RULES_INFO_CALLOUT` | Callout feature name for branch_rules_info_callout. |
+| <a id="usercalloutfeaturenameenumbranch_rules_tip_callout"></a>`BRANCH_RULES_TIP_CALLOUT` | Callout feature name for branch_rules_tip_callout. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
@@ -40671,9 +40692,10 @@ see the associated mutation type above.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiadditionalcontextinputcategory"></a>`category` | [`AiAdditionalContextCategory!`](#aiadditionalcontextcategory) | Category of the additional context. |
 | <a id="aiadditionalcontextinputcontent"></a>`content` | [`String!`](#string) | Content of the additional context. |
-| <a id="aiadditionalcontextinputname"></a>`name` | [`String!`](#string) | Name of the additional context. |
-| <a id="aiadditionalcontextinputtype"></a>`type` | [`AiAdditionalContextType!`](#aiadditionalcontexttype) | Type of the additional context. |
+| <a id="aiadditionalcontextinputid"></a>`id` | [`String!`](#string) | ID of the additional context. |
+| <a id="aiadditionalcontextinputmetadata"></a>`metadata` | [`JSON`](#json) | Metadata of the additional context. |
 
 ### `AiChatInput`
 

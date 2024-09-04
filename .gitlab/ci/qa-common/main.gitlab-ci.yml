@@ -194,6 +194,17 @@ stages:
 # ==========================================
 # Pre stage
 # ==========================================
+.check-release-set:
+  stage: .pre
+  script:
+    - |
+      if [ -z "$RELEASE" ]; then
+        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
+        exit 1
+      else
+        echo "Omnibus installation image is set to '$RELEASE'"
+      fi
+
 dont-interrupt-me:
   stage: .pre
   interruptible: false

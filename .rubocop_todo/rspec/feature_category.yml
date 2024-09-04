@@ -537,7 +537,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/ee/sidebars/projects/menus/issues_menu_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/monitor_menu_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/repository_menu_spec.rb'
-    - 'ee/spec/lib/elastic/latest/config_spec.rb'
     - 'ee/spec/lib/elastic/latest/custom_language_analyzers_spec.rb'
     - 'ee/spec/lib/elastic/latest/merge_request_config_spec.rb'
     - 'ee/spec/lib/elastic/latest/note_config_spec.rb'

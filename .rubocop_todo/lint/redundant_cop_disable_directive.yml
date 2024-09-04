@@ -162,7 +162,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/app/services/ee/boards/issues/list_service.rb'
     - 'ee/app/services/ee/ci/queue/build_queue_service.rb'
     - 'ee/app/services/ee/notification_recipients/builder/base.rb'
-    - 'ee/app/services/ee/search_service.rb'
     - 'ee/app/services/search/zoekt/routing_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerabilities/mark_resolved_as_detected.rb'
     - 'ee/app/services/security/security_orchestration_policies/process_scan_result_policy_service.rb'

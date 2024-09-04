@@ -4,10 +4,10 @@ class AddPersonalNamespaceIdToEvents < Gitlab::Database::Migration[2.2]
   milestone '17.4'
 
   def up
-    add_column :events, :personal_namespace_id, :bigint
+    # no-op due to mitigate https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18501
   end
 
   def down
-    remove_column :events, :personal_namespace_id
+    # no-up due to mitigate https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18501
   end
 end

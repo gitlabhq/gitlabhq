@@ -125,22 +125,24 @@ export default class ProtectedBranchCreate {
   }
 
   createSuccessAlert() {
-    this.alert = createAlert({
-      variant: VARIANT_SUCCESS,
-      containerSelector: '.js-alert-protected-branch-created-container',
-      title: s__('ProtectedBranch|View protected branches as branch rules'),
-      message: s__('ProtectedBranch|Manage branch related settings in one area with branch rules.'),
-      primaryButton: {
-        text: s__('ProtectedBranch|View branch rule'),
-        clickHandler: () => {
-          this.expandAndScroll(BRANCH_RULES_ANCHOR);
+    if (!gon.features.editBranchRules) {
+      this.alert = createAlert({
+        variant: VARIANT_SUCCESS,
+        containerSelector: '.js-alert-protected-branch-created-container',
+        title: s__('ProtectedBranch|View protected branches as branch rules'),
+        message: s__(
+          'ProtectedBranch|Manage branch related settings in one area with branch rules.',
+        ),
+        primaryButton: {
+          text: s__('ProtectedBranch|View branch rule'),
+          clickHandler: () => this.expandAndScroll(BRANCH_RULES_ANCHOR),
         },
-      },
-      secondaryButton: {
-        text: __('Dismiss'),
-        clickHandler: () => this.alert.dismiss(),
-      },
-    });
+        secondaryButton: {
+          text: __('Dismiss'),
+          clickHandler: () => this.alert.dismiss(),
+        },
+      });
+    }
   }
 
   createLimitedSuccessAlert() {

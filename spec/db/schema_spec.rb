@@ -102,7 +102,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     deployments: %w[deployable_id user_id],
     draft_notes: %w[discussion_id commit_id],
     epics: %w[updated_by_id last_edited_by_id state_id],
-    events: %w[target_id personal_namespace_id],
+    events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],
     geo_event_log: %w[hashed_storage_attachments_event_id repositories_changed_event_id],
     geo_node_statuses: %w[last_event_id cursor_last_event_id],

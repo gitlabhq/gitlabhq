@@ -8,17 +8,14 @@ workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == "nightly"'
 
-.ce:
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${RELEASE_IMAGE_TAG}"
-
-.ee:
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
-
 # ==========================================
 # Prepare stage
 # ==========================================
+check-release-set:
+  extends:
+    - .rules:prepare
+    - .check-release-set
+
 download-knapsack-report:
   extends:
     - .download-knapsack-report
@@ -34,7 +31,6 @@ download-knapsack-report:
 airgapped:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     QA_SCENARIO: "Test::Instance::Airgapped"
@@ -43,7 +39,6 @@ airgapped:
 instance-image-slow-network:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     QA_SIMULATE_SLOW_CONNECTION: "true"
@@ -54,7 +49,6 @@ instance-image-slow-network:
 nplus1-instance-image:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     CACHE_NAMESPACE_NAME: "false"
@@ -66,7 +60,6 @@ nplus1-instance-image:
 integration-elasticsearch-compatibility-version-7:
   extends:
     - .qa
-    - .ee
   variables:
     ELASTIC_VERSION: "7.17.0"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
@@ -74,7 +67,6 @@ integration-elasticsearch-compatibility-version-7:
 integration-elasticsearch-compatibility-version-8:
   extends:
     - .qa
-    - .ee
   variables:
     ELASTIC_VERSION: "8.11.4"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
@@ -85,7 +77,6 @@ integration-elasticsearch-compatibility-version-8:
 integration-opensearch-compatibility-version-1:
   extends:
     - .qa
-    - .ee
   variables:
     OPENSEARCH_VERSION: "1.3.3"
     QA_SCENARIO: "Test::Integration::Opensearch"
@@ -93,7 +84,6 @@ integration-opensearch-compatibility-version-1:
 integration-opensearch-compatibility-version-2:
   extends:
     - .qa
-    - .ee
   variables:
     OPENSEARCH_VERSION: "2.0.1"
     QA_SCENARIO: "Test::Integration::Opensearch"
@@ -104,7 +94,6 @@ integration-opensearch-compatibility-version-2:
 relative-url:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::RelativeUrl
@@ -116,7 +105,6 @@ relative-url:
 registry-with-cdn:
   extends:
     - .qa
-    - .ee
   variables:
     QA_SCENARIO: Test::Integration::RegistryWithCDN
     GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
@@ -132,7 +120,6 @@ registry-with-cdn:
 object-storage:
   extends:
     - .qa
-    - .ee
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
@@ -172,7 +159,6 @@ object-storage-gcs:
 decomposition-single-db:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -181,7 +167,6 @@ decomposition-single-db:
 decomposition-multiple-db:
   extends:
     - .qa
-    - .ee
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -191,7 +176,6 @@ decomposition-multiple-db:
 gitlab-pages:
   extends:
     - .qa
-    - .ee
   variables:
     QA_SCENARIO: Test::Integration::GitlabPages
   rules:

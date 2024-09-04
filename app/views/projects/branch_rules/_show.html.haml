@@ -7,6 +7,9 @@
   id: 'branch-rules',
   testid: 'branch-rules-content',
   expanded: expanded) do |c|
+  - c.with_callout do
+    - if Feature.enabled?(:edit_branch_rules, @project)
+      = render 'projects/settings/branch_rules_callout'
   - c.with_description do
     = _('Define rules for who can push, merge, and the required approvals for each branch.')
     = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')

@@ -18,6 +18,7 @@ query assigneeOrReviewer(
       mergedAfter: $mergedAfter
       first: $perPage
       after: $afterCursor
+      sort: UPDATED_DESC
     ) {
       count
       pageInfo {
