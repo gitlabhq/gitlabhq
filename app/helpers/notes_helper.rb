@@ -200,10 +200,6 @@ module NotesHelper
   def rendered_for_merge_request?
     params[:from_merge_request].present?
   end
-
-  def serialize_notes?
-    rendered_for_merge_request? || params['html'].nil?
-  end
 end
 
 NotesHelper.prepend_mod_with('NotesHelper')

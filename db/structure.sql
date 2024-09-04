@@ -35790,9 +35790,6 @@ ALTER TABLE ONLY cluster_projects
 ALTER TABLE ONLY commit_user_mentions
     ADD CONSTRAINT fk_rails_a6760813e0 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_identifiers
-    ADD CONSTRAINT fk_rails_a67a16c885 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY user_preferences
     ADD CONSTRAINT fk_rails_a69bfcfd81 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 

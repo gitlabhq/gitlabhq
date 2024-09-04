@@ -34,19 +34,6 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
       expect(mutation_response['project']).to include('id' => work_item.project.to_global_id.to_s)
     end
 
-    context 'when group owner can delete a work item even if not the author' do
-      let!(:work_item) { create(:work_item, :group_level, namespace: group) }
-
-      it 'deletes the group-level work item' do
-        expect do
-          post_graphql_mutation(mutation, current_user: owner)
-        end.to change(WorkItem, :count).by(-1)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['namespace']).to include('id' => work_item.namespace.to_global_id.to_s)
-      end
-    end
-
     context 'when an error is produced when trying to delete the work item' do
       let(:error_response) { ServiceResponse.error(message: 'Failed to delete') }
 

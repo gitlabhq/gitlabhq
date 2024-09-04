@@ -51,16 +51,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     Notes::ResolveService.new(project, current_user).execute(note)
 
-    discussion = note.discussion
-
-    if serialize_notes?
-      render_json_with_notes_serializer
-    else
-      render json: {
-        resolved_by: note.resolved_by.try(:name),
-        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-      }
-    end
+    render_json_with_notes_serializer
   end
 
   def unresolve
@@ -68,15 +59,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.unresolve!
 
-    discussion = note.discussion
-
-    if serialize_notes?
-      render_json_with_notes_serializer
-    else
-      render json: {
-        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-      }
-    end
+    render_json_with_notes_serializer
   end
 
   def outdated_line_change

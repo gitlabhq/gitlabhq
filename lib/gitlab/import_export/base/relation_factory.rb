@@ -5,6 +5,7 @@ module Gitlab
     module Base
       class RelationFactory
         include Gitlab::Utils::StrongMemoize
+        include Import::UsernameMentionRewriter
 
         IMPORTED_OBJECT_MAX_RETRIES = 5
 
@@ -50,7 +51,7 @@ module Gitlab
         end
 
         # rubocop:disable Metrics/ParameterLists -- Keyword arguments are not adding complexity to initializer
-        def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, import_source:, excluded_keys: [], original_users_map: nil)
+        def initialize(relation_sym:, relation_index:, relation_hash:, members_mapper:, object_builder:, user:, importable:, import_source:, excluded_keys: [], original_users_map: nil, rewrite_mentions: false)
           @relation_sym = relation_sym
           @relation_name = self.class.overrides[relation_sym]&.to_sym || relation_sym
           @relation_index = relation_index
@@ -64,6 +65,7 @@ module Gitlab
           @relation_hash[importable_column_name] = @importable.id
           @original_user = {}
           @original_users_map = original_users_map
+          @rewrite_mentions = rewrite_mentions
 
           # Remove excluded keys from relation_hash
           # We don't do this in the parsed_relation_hash because of the 'transformed attributes'

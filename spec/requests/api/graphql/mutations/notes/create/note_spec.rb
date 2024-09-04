@@ -125,13 +125,6 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
           it_behaves_like 'work item does not support start and due date widget updates via quick actions'
           it_behaves_like 'work item supports type change via quick actions'
         end
-
-        context 'when work item is directly associated with a group' do
-          let_it_be_with_reload(:group_work_item) { create(:work_item, :group_level, :task, namespace: group) }
-          let(:noteable) { group_work_item }
-
-          it_behaves_like 'a Note mutation that creates a Note'
-        end
       end
     end
 

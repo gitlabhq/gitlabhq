@@ -158,52 +158,6 @@ RSpec.describe Issuable::Callbacks::TimeTracking, feature_category: :team_planni
       end
     end
 
-    context 'when at group level' do
-      let(:issuable) { group_work_item }
-
-      context 'and work item is not persisted' do
-        let(:group_work_item) { build(:work_item, :task, :group_level, namespace: group) }
-
-        context 'with non string params' do
-          let(:params) { non_string_params }
-
-          it_behaves_like 'sets work item time tracking data'
-        end
-
-        context 'with string params' do
-          let(:params) { string_params }
-
-          it_behaves_like 'sets work item time tracking data'
-        end
-
-        context 'when time tracking param is not present' do
-          let(:params) { {} }
-
-          it_behaves_like 'does not set work item time tracking data'
-        end
-      end
-
-      context 'and work item is persisted' do
-        let_it_be_with_reload(:group_work_item) do
-          create(:work_item, :task, :group_level, namespace: group, time_estimate: 2.hours.to_i)
-        end
-
-        let_it_be(:timelog) { create(:timelog, issue: group_work_item, time_spent: 3.hours.to_i) }
-
-        context 'with non string params' do
-          let(:params) { non_string_params }
-
-          it_behaves_like 'sets work item time tracking data'
-        end
-
-        context 'with string params' do
-          let(:params) { string_params }
-
-          it_behaves_like 'sets work item time tracking data'
-        end
-      end
-    end
-
     context 'with invalid data' do
       let_it_be(:issuable) { create(:work_item, :task, project: project, time_estimate: 2.hours.to_i) }
 

@@ -18,7 +18,8 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
       user: importer_user,
       importable: group,
       import_source: ::Import::SOURCE_GROUP_EXPORT_IMPORT,
-      excluded_keys: excluded_keys
+      excluded_keys: excluded_keys,
+      rewrite_mentions: true
     )
   end
 
@@ -86,6 +87,15 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
         },
         'events' => []
       }
+    end
+  end
+
+  context 'when relation is a milestone' do
+    let(:relation_sym) { :milestone }
+    let(:relation_hash) { { 'description' => "I said to @sam the code should follow @bob's advice. @alice?" } }
+
+    it 'updates username mentions with backticks' do
+      expect(created_object.description).to eq("I said to `@sam` the code should follow `@bob`'s advice. `@alice`?")
     end
   end
 

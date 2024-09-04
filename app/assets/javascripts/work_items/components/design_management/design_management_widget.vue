@@ -102,6 +102,8 @@ export default {
     anchor-name="designs"
     :title="s__('DesignManagement|Designs')"
     data-testid="designs-root"
+    class="gl-mt-5"
+    is-collapsible
   >
     <template #title>
       <design-version-dropdown :all-versions="allVersions" />
@@ -112,11 +114,11 @@ export default {
         {{ error }}
       </gl-alert>
 
-      <ol class="list-unstyled row gl-px-3">
+      <ol class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5 gl-p-3">
         <li
           v-for="design in designs"
           :key="design.id"
-          class="col-md-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-px-3 gl-shadow-none"
+          class="col-md-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
         >
           <design
             v-bind="design"

@@ -16,12 +16,25 @@ RSpec.describe Notes::ResolveService, feature_category: :team_planning do
       expect(note.resolved_by).to eq(user)
     end
 
-    it "sends notifications if all discussions are resolved" do
-      expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
-        expect(instance).to receive(:execute).with(merge_request)
-      end
+    context "when noteable is not a MergeRequest" do
+      let(:note) { create(:note_on_issue, project: merge_request.project) }
 
-      described_class.new(merge_request.project, user).execute(note)
+      it "sends notifications if all discussions are resolved" do
+        expect(MergeRequests::ResolvedDiscussionNotificationService)
+          .not_to receive(:new)
+
+        described_class.new(merge_request.project, user).execute(note)
+      end
+    end
+
+    context "when noteable is a MergeRequest" do
+      it "sends notifications if all discussions are resolved" do
+        expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
+          expect(instance).to receive(:execute).with(merge_request)
+        end
+
+        described_class.new(merge_request.project, user).execute(note)
+      end
     end
   end
 end

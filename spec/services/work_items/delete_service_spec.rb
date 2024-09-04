@@ -34,23 +34,6 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
             }.tap(&:compact_blank!))
       end
 
-      context 'when work item exists at the group level' do
-        let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
-
-        context 'when the user is owner of the group' do
-          let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
-          let(:user) { owner }
-
-          it { is_expected.to be_success }
-        end
-
-        context 'when the user is a guest of the group but author of the work item' do
-          let_it_be(:work_item) { create(:work_item, :group_level, namespace: group, author: guest) }
-
-          it { is_expected.to be_success }
-        end
-      end
-
       # currently we don't expect destroy to fail. Mocking here for coverage and keeping
       # the service's return type consistent
       context 'when there are errors preventing to delete the work item' do

@@ -20,7 +20,8 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       user: importer_user,
       importable: project,
       import_source: ::Import::SOURCE_PROJECT_EXPORT_IMPORT,
-      excluded_keys: excluded_keys
+      excluded_keys: excluded_keys,
+      rewrite_mentions: true
     )
   end
 
@@ -147,7 +148,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'updated_at' => "2016-06-14T15:02:56.815Z",
         'state' => "opened",
         'merge_status' => "unchecked",
-        'description' => "Description",
+        'description' => "I said to @sam the code should follow @bob's advice. @alice?",
         'position' => 0,
         'source_branch_sha' => "ABCD",
         'target_branch_sha' => "DCBA",
@@ -173,6 +174,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
     it 'has MWPS set to false' do
       expect(created_object.merge_when_pipeline_succeeds).to eq(false)
+    end
+
+    it 'inserts backticks around username mentions' do
+      expect(created_object.description).to eq("I said to `@sam` the code should follow `@bob`'s advice. `@alice`?")
     end
   end
 
@@ -217,7 +222,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'created_at' => "2016-06-14T15:02:36.568Z",
         'updated_at' => "2016-06-14T15:02:56.815Z",
         'state' => "opened",
-        'description' => "Description",
+        'description' => "I said to @sam the code should follow @bob's advice. @alice?",
         "relative_position" => 25111 # just a random position
       }
     end
@@ -278,6 +283,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       it 'makes work_item_type take precedence over issue_type' do
         expect(created_object.work_item_type).to eq(incident_type)
       end
+    end
+
+    it 'inserts backticks around username mentions' do
+      expect(created_object.description).to eq("I said to `@sam` the code should follow `@bob`'s advice. `@alice`?")
     end
   end
 

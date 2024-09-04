@@ -287,6 +287,7 @@ module NotesActions
   def note_serializer
     ProjectNoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
+  strong_memoize_attr :note_serializer
 
   def discussion_serializer
     DiscussionSerializer.new(project: project, noteable: noteable, current_user: current_user, note_entity: ProjectNoteEntity)

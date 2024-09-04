@@ -15,6 +15,10 @@ Steps are reusable and composable pieces of a job.
 Each step defines structured inputs and outputs that can be consumed by other steps.
 Steps can come from local files, GitLab.com repositories, or any other Git source.
 
+Steps is an alternative to shell scripts for running jobs.
+They provide more structure, can be composed, and can be tested and reused.
+A `exec:command` is run by using an Exec system call, not by running a shell.
+
 To get started, see the [Set up steps tutorial](../../tutorials/setup_steps/index.md).
 
 Support for a CI Catalog that publishes steps is proposed in [issue 425891](https://gitlab.com/gitlab-org/gitlab/-/issues/425891).
@@ -224,11 +228,7 @@ STEPS=$(yq '."my-job"'.run .gitlab-ci.yml) dlv debug . ci
 
 ## Scripts
 
-Steps is an alternative to shell scripts for running jobs.
-They provide more structure, can be composed, and can be tested and reused.
-A `exec:command` is run by using an Exec system call, not by running a shell.
-
-However sometimes a shell script is what's needed.
+While steps are usually used instead of shell scripts, sometimes a shell script is still needed.
 The `script` keyword will automatically select the correct shell and runs a script.
 
 ```yaml

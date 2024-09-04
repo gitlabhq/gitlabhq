@@ -65,7 +65,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     expected_url
   end
 
-  subject { described_class.new.perform([object.id], object.class.to_s, tracker.id) }
+  subject(:perform) { described_class.new.perform([object.id], object.class.to_s, tracker.id) }
 
   before do
     allow(Gitlab::Cache::Import::Caching)
@@ -253,5 +253,31 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     let(:expected_body) { '@manuelgrabowski, @boatymcboatface' }
 
     include_examples 'transforms and saves references'
+  end
+
+  context 'when importer_user_mapping is enabled' do
+    let(:object) { merge_request }
+    let(:body) { object.reload.description }
+    let(:expected_body) do
+      "#{expected_url}/-/merge_requests/#{merge_request.iid} @source_username? @bob, @alice!"
+    end
+
+    it 'updates url references but does not map usernames in legacy manner' do
+      ephemeral_data_instance = instance_double(
+        Import::BulkImports::EphemeralData,
+        importer_user_mapping_enabled?: true
+      )
+      allow(Import::BulkImports::EphemeralData)
+        .to receive(:new).with(bulk_import.id)
+        .and_return(ephemeral_data_instance)
+
+      expect_any_instance_of(object.class) do |object|
+        expect(object).to receive(:save!)
+      end
+
+      expect { perform }.not_to change { object.updated_at }
+
+      expect(body).to eq(expected_body)
+    end
   end
 end

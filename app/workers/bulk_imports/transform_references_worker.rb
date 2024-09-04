@@ -34,7 +34,9 @@ module BulkImports
 
       object.refresh_markdown_cache!
 
-      body.gsub!(username_regex(mapped_usernames), mapped_usernames)
+      unless Import::BulkImports::EphemeralData.new(tracker.entity.bulk_import_id).importer_user_mapping_enabled?
+        body.gsub!(username_regex(mapped_usernames), mapped_usernames)
+      end
 
       if object_has_reference?(body)
         matching_urls(object).each do |old_url, new_url|

@@ -963,10 +963,10 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
   describe 'DELETE destroy' do
     let(:request_params) do
       {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: note,
-          format: :js
+        namespace_id: project.namespace,
+        project_id: project,
+        id: note,
+        format: :js
       }
     end
 
@@ -1069,6 +1069,84 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
     end
 
     specify { expect(get(:outdated_line_change, params: request_params)).to have_request_urgency(:low) }
+  end
+
+  describe 'POST resolve' do
+    let(:note) { create(:note, noteable: issue, project: project) }
+
+    before do
+      sign_in(user)
+      project.add_developer(user)
+    end
+
+    subject(:request) { post(:resolve, params: request_params) }
+
+    it 'returns not found when note is not resolvable' do
+      request
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when note is resolvable' do
+      let(:note) { create(:discussion_note, :on_issue, noteable: issue, project: project) }
+
+      it 'resolves the given note' do
+        expect_next_instance_of(ProjectNoteSerializer) do |serializer|
+          expect(serializer)
+            .to receive(:represent)
+              .with(note, render_truncated_diff_lines: true)
+        end
+
+        expect { request }
+          .to change { note.reload.resolved? }
+            .from(false).to(true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'DELETE unresolve' do
+    let(:note) { create(:note, noteable: issue, project: project) }
+
+    before do
+      sign_in(user)
+      project.add_developer(user)
+    end
+
+    subject(:request) { delete(:unresolve, params: request_params) }
+
+    it 'returns not found when note is not resolvable' do
+      request
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when note is resolvable' do
+      let(:note) do
+        create(
+          :discussion_note,
+          :resolved,
+          :on_issue,
+          noteable: issue,
+          project: project
+        )
+      end
+
+      it 'unresolves the given note' do
+        expect_next_instance_of(ProjectNoteSerializer) do |serializer|
+          expect(serializer)
+            .to receive(:represent)
+              .with(note, render_truncated_diff_lines: true)
+        end
+
+        expect { request }
+          .to change { note.reload.resolved? }
+            .from(true).to(false)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   # Convert a time to an integer number of microseconds

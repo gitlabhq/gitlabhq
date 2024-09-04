@@ -20092,19 +20092,19 @@ msgstr ""
 msgid "DuoProDiscover|Chat from any location"
 msgstr ""
 
+msgid "DuoProDiscover|Code Explanation"
+msgstr ""
+
+msgid "DuoProDiscover|Code Refactoring"
+msgstr ""
+
 msgid "DuoProDiscover|Code Suggestions"
 msgstr ""
 
 msgid "DuoProDiscover|Code completion"
 msgstr ""
 
-msgid "DuoProDiscover|Code explanation"
-msgstr ""
-
 msgid "DuoProDiscover|Code generation"
-msgstr ""
-
-msgid "DuoProDiscover|Code refactoring"
 msgstr ""
 
 msgid "DuoProDiscover|Committed to transparent AI"
@@ -20137,7 +20137,7 @@ msgstr ""
 msgid "DuoProDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
 msgstr ""
 
-msgid "DuoProDiscover|Test generation"
+msgid "DuoProDiscover|Test Generation"
 msgstr ""
 
 msgid "DuoProDiscover|What's new in GitLab Duo Chat"

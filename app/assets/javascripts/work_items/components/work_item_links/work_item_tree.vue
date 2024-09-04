@@ -274,11 +274,7 @@ export default {
     </template>
 
     <template #actions>
-      <work-item-actions-split-button
-        v-if="canUpdateChildren"
-        :actions="addItemsActions"
-        class="gl-mr-3"
-      />
+      <work-item-actions-split-button v-if="canUpdateChildren" :actions="addItemsActions" />
       <work-item-more-actions
         :work-item-iid="workItemIid"
         :full-path="fullPath"
