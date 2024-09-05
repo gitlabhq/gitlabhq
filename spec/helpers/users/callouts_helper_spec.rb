@@ -3,6 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
+  include StubVersion
   let_it_be(:user, refind: true) { create(:user) }
 
   before do
@@ -105,6 +106,36 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
         allow(helper).to receive(:current_user).and_return(current_user)
         stub_application_setting(signup_enabled: signup_enabled)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { user_dismissed }
+        allow(helper.controller).to receive(:controller_path).and_return(controller_path)
+      end
+
+      it { is_expected.to be expected_result }
+    end
+  end
+
+  describe '.show_openssl_callout?', :do_not_mock_admin_mode_setting do
+    let_it_be(:admin) { create(:user, :admin) }
+
+    subject { helper.show_openssl_callout? }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:version, :current_user, :user_dismissed, :controller_path, :expected_result) do
+      '17.1.0'  | ref(:admin) | false | 'admin'       | true
+      '17.1.0'  | ref(:admin) | false | 'admin/users' | true
+      '17.4.99' | ref(:admin) | false | 'admin'       | true
+      '17.0.0'  | ref(:admin) | false | 'admin'       | false
+      '17.5.0'  | ref(:admin) | false | 'admin'       | false
+      '17.1.0'  | ref(:user)  | false | 'admin'       | false
+      '17.1.0'  | ref(:admin) | true  | 'admin'       | false
+      '17.1.0'  | ref(:admin) | false | 'admin-'      | false
+    end
+
+    with_them do
+      before do
+        stub_version(version, 'abcdefg')
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive(:user_dismissed?).with(described_class::OPENSSL_CALLOUT) { user_dismissed }
         allow(helper.controller).to receive(:controller_path).and_return(controller_path)
       end
 

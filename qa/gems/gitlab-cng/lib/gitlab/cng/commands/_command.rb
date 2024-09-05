@@ -8,7 +8,9 @@ module Gitlab
       class Command < Thor
         include Helpers::Output
 
-        class_option :force_color, type: :boolean
+        class_option :force_color,
+          desc: "Force color output. Additionally can be set via CNG_FORCE_COLOR environment variable.",
+          type: :boolean
 
         check_unknown_options!
 

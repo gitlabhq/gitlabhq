@@ -404,6 +404,9 @@ export default {
           <template #statistics>
             <slot name="statistics" :issuable="issuable"></slot>
           </template>
+          <template #approval-status>
+            <slot name="approval-status" :issuable="issuable"></slot>
+          </template>
           <template #pipeline-status>
             <slot name="pipeline-status" :issuable="issuable"></slot>
           </template>

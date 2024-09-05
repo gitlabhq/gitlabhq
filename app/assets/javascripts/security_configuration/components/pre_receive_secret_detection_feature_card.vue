@@ -1,8 +1,18 @@
 <script>
-import { GlCard, GlIcon, GlLink, GlPopover, GlToggle, GlAlert } from '@gitlab/ui';
+import {
+  GlCard,
+  GlIcon,
+  GlLink,
+  GlPopover,
+  GlToggle,
+  GlAlert,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PreReceiveSecretDetectionFeatureCard',
@@ -14,12 +24,18 @@ export default {
     GlToggle,
     GlAlert,
     BetaBadge,
+    GlButton,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'preReceiveSecretDetectionAvailable',
     'preReceiveSecretDetectionEnabled',
     'userIsProjectAdmin',
     'projectFullPath',
+    'secretDetectionConfigurationPath',
   ],
   props: {
     feature: {
@@ -76,6 +92,9 @@ export default {
       }
       return '';
     },
+    showSettingsButton() {
+      return this.glFeatures.secretDetectionProjectLevelExclusions;
+    },
   },
   methods: {
     onError(message) {
@@ -129,6 +148,7 @@ export default {
     ),
     toastMessageEnabled: s__('SecretDetection|Secret push protection is enabled'),
     toastMessageDisabled: s__('SecretDetection|Secret push protection is disabled'),
+    settingsButtonTooltip: s__('SecretDetection|Configure Secret Detection'),
   },
 };
 </script>
@@ -184,14 +204,23 @@ export default {
         @dismiss="isAlertDismissed = true"
         >{{ errorMessage }}</gl-alert
       >
-      <gl-toggle
-        class="gl-mt-5"
-        :disabled="isToggleDisabled"
-        :value="toggleValue"
-        :label="s__('SecurityConfiguration|Toggle secret push protection')"
-        label-position="hidden"
-        @change="togglePreReceiveSecretDetection"
-      />
+      <div class="gl-mt-5 gl-flex gl-justify-between">
+        <gl-toggle
+          class="gl-mt-2"
+          :disabled="isToggleDisabled"
+          :value="toggleValue"
+          :label="s__('SecurityConfiguration|Toggle secret push protection')"
+          label-position="hidden"
+          @change="togglePreReceiveSecretDetection"
+        />
+        <gl-button
+          v-if="showSettingsButton"
+          v-gl-tooltip.left.viewport="$options.i18n.settingsButtonTooltip"
+          icon="settings"
+          category="secondary"
+          :href="secretDetectionConfigurationPath"
+        />
+      </div>
     </template>
   </gl-card>
 </template>

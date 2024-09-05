@@ -5,7 +5,11 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { getCountsQueryResponse, getQueryResponse } from 'jest/merge_requests/list/mock_data';
+import {
+  getQueryResponse,
+  getCountsQueryResponse,
+} from 'ee_else_ce_jest/merge_requests/list/mock_data';
+import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -335,6 +339,17 @@ describe('Merge requests list app', () => {
 
         expect(findCannotMergeLink().exists()).toBe(exists);
       },
+    );
+  });
+
+  it('renders approval count component', async () => {
+    createComponent({ mountFn: mountExtended });
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(ApprovalCount).exists()).toBe(true);
+    expect(wrapper.findComponent(ApprovalCount).props('mergeRequest')).toEqual(
+      getQueryResponse.data.project.mergeRequests.nodes[0],
     );
   });
 });

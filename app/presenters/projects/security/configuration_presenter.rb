@@ -24,7 +24,8 @@ module Projects
           pre_receive_secret_detection_available:
             Gitlab::CurrentSettings.current_application_settings.pre_receive_secret_detection_enabled,
           pre_receive_secret_detection_enabled: pre_receive_secret_detection_enabled,
-          user_is_project_admin: user_is_project_admin?
+          user_is_project_admin: user_is_project_admin?,
+          secret_detection_configuration_path: secret_detection_configuration_path
         }
       end
 
@@ -112,6 +113,7 @@ module Projects
 
       def container_scanning_for_registry_enabled; end
       def pre_receive_secret_detection_enabled; end
+      def secret_detection_configuration_path; end
     end
   end
 end

@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate
     data_consistency :always
     include Gitlab::ExclusiveLeaseHelpers
 
-    feature_category :system_access
+    feature_category :permissions
     urgency :high
     queue_namespace :authorized_project_update
 

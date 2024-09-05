@@ -135,7 +135,7 @@ export default {
           </dt>
           <dd data-testid="description-value">
             <template v-if="selectedRole.description">{{ selectedRole.description }}</template>
-            <span v-else class="gl-text-gray-400">{{ s__('MemberRole|No description') }}</span>
+            <span v-else class="gl-text-subtle">{{ s__('MemberRole|No description') }}</span>
           </dd>
 
           <dt class="gl-mb-3 gl-mt-6" data-testid="permissions-header">

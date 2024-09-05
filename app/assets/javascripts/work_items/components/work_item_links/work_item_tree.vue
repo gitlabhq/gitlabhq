@@ -262,8 +262,6 @@ export default {
     ref="workItemTree"
     :title="$options.WORK_ITEMS_TREE_TEXT.title"
     :anchor-id="widgetName"
-    :count="childrenIds.length"
-    icon="issue-type-task"
     :is-loading="isLoadingChildren && !fetchNextPageInProgress"
     is-collapsible
     data-testid="work-item-tree"
@@ -319,28 +317,30 @@ export default {
         {{ error }}
       </gl-alert>
 
-      <work-item-children-wrapper
-        :children="children"
-        :parent="workItem"
-        :can-update="canUpdateChildren"
-        :full-path="fullPath"
-        :work-item-id="workItemId"
-        :work-item-iid="workItemIid"
-        :work-item-type="workItemType"
-        :show-labels="showLabels"
-        :disable-content="disableContent"
-        :allowed-child-types="allowedChildTypes"
-        :show-task-weight="showTaskWeight"
-        @error="error = $event"
-        @show-modal="showModal"
-      />
-      <work-item-children-load-more
-        v-if="hasNextPage"
-        data-testid="work-item-load-more"
-        class="gl-ml-4 gl-pl-1"
-        :fetch-next-page-in-progress="fetchNextPageInProgress"
-        @fetch-next-page="fetchNextPage"
-      />
+      <div class="gl-p-3">
+        <work-item-children-wrapper
+          :children="children"
+          :parent="workItem"
+          :can-update="canUpdateChildren"
+          :full-path="fullPath"
+          :work-item-id="workItemId"
+          :work-item-iid="workItemIid"
+          :work-item-type="workItemType"
+          :show-labels="showLabels"
+          :disable-content="disableContent"
+          :allowed-child-types="allowedChildTypes"
+          :show-task-weight="showTaskWeight"
+          @error="error = $event"
+          @show-modal="showModal"
+        />
+        <work-item-children-load-more
+          v-if="hasNextPage"
+          data-testid="work-item-load-more"
+          class="gl-ml-4 gl-pl-1"
+          :fetch-next-page-in-progress="fetchNextPageInProgress"
+          @fetch-next-page="fetchNextPage"
+        />
+      </div>
     </template>
   </crud-component>
 </template>

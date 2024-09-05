@@ -540,7 +540,7 @@ a firewall or proxy rule may be terminating the connection.
 If connection checks with standard Unix tools or manual Git pushes are successful,
 the rule may be related to the size of the request.
 
-## Error viewing a PDF file
+### Error viewing a PDF file
 
 When LFS has been configured with object storage and `proxy_download` set to
 `false`, [you may see an error when previewing a PDF file from the Web browser](https://gitlab.com/gitlab-org/gitlab/-/issues/248100):
@@ -561,6 +561,48 @@ for more details:
 1. [AWS S3](https://repost.aws/knowledge-center/s3-configure-cors)
 1. [Google Cloud Storage](https://cloud.google.com/storage/docs/using-cors)
 1. [Azure Storage](https://learn.microsoft.com/en-us/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services).
+
+### Fork operation stuck on `Forking in progress` message
+
+If you are forking a project with multiple LFS files, the operation might get stuck with a `Forking in progress` message.
+If you encounter this, follow these steps to diagnose and resolve the issue:
+
+1. Check your [exceptions_json.log](../logs/index.md#exceptions_jsonlog) file for the following error message:
+
+   ```plaintext
+   "error_message": "Unable to fork project 12345 for repository 
+   @hashed/11/22/encoded-path -> @hashed/33/44/encoded-new-path: 
+   Source project has too many LFS objects"
+   ```
+
+   This error indicates that you've reached the default limit of 100,000 LFS files,
+   as described in issue [#476693](https://gitlab.com/gitlab-org/gitlab/-/issues/476693).
+
+1. Increase the value of the `GITLAB_LFS_MAX_OID_TO_FETCH` variable:
+
+   1. Open the configuration file `/etc/gitlab/gitlab.rb`.
+   1. Add or update the variable:
+
+      ```ruby
+      gitlab_rails['env'] = {
+         "GITLAB_LFS_MAX_OID_TO_FETCH" => "NEW_VALUE"
+      }
+      ```
+
+      Replace `NEW_VALUE` with a number based on your requirements.
+
+1. Apply the changes. Run:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+   For additional information, see [Reconfigure a Linux package installation](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+1. Repeat the fork operation.
+
+NOTE:
+If you are using GitLab Helm Chart, use [extraEnv](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
 
 ## Known limitations
 

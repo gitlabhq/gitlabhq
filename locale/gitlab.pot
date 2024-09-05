@@ -24375,6 +24375,9 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
+msgid "GitLab 17.5 and later will require that incoming connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GitLab API"
 msgstr ""
 
@@ -33073,6 +33076,9 @@ msgstr ""
 msgid "MemberRole|Default"
 msgstr ""
 
+msgid "MemberRole|Default roles"
+msgstr ""
+
 msgid "MemberRole|Delete custom role?"
 msgstr ""
 
@@ -33166,13 +33172,13 @@ msgstr ""
 msgid "MemberRole|Save role"
 msgstr ""
 
-msgid "MemberRole|Select a %{linkStart}pre-existing static role%{linkEnd} to predefine a set of permissions."
+msgid "MemberRole|Select a %{linkStart} default role%{linkEnd} to predefine a set of permissions."
+msgstr ""
+
+msgid "MemberRole|Select a role"
 msgstr ""
 
 msgid "MemberRole|Select at least one permission."
-msgstr ""
-
-msgid "MemberRole|Standard roles"
 msgstr ""
 
 msgid "MemberRole|The Developer role strikes a balance between giving users the necessary access to contribute code while restricting sensitive administrative actions."
@@ -37715,6 +37721,9 @@ msgid "OpenAPI Specification file URL"
 msgstr ""
 
 msgid "OpenAPI Specification file path or URL"
+msgstr ""
+
+msgid "OpenSSL version 3"
 msgstr ""
 
 msgid "OpenSearch's region."
@@ -48222,6 +48231,9 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
+msgid "Secret Detection Configuration"
+msgstr ""
+
 msgid "Secret push protection"
 msgstr ""
 
@@ -48232,6 +48244,9 @@ msgid "Secret token"
 msgstr ""
 
 msgid "Secret token."
+msgstr ""
+
+msgid "SecretDetection|Configure Secret Detection"
 msgstr ""
 
 msgid "SecretDetection|Feature not available"
@@ -48548,6 +48563,9 @@ msgid "SecurityConfiguration|Runtime security metrics for application environmen
 msgstr ""
 
 msgid "SecurityConfiguration|SAST configuration"
+msgstr ""
+
+msgid "SecurityConfiguration|Secret detection configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Secure your project"

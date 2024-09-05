@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::TodosController do
+RSpec.describe Dashboard::TodosController, feature_category: :notifications do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:author) { create(:user) }
@@ -154,6 +154,32 @@ RSpec.describe Dashboard::TodosController do
       subject { get :index }
 
       it_behaves_like 'disabled when using an external authorization service'
+    end
+  end
+
+  describe 'GET #vue' do
+    context 'with todos_vue_application on' do
+      before do
+        stub_feature_flags(todos_vue_application: true)
+      end
+
+      it 'renders 200' do
+        get :vue
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'with todos_vue_application off' do
+      before do
+        stub_feature_flags(todos_vue_application: false)
+      end
+
+      it 'redirects to #index' do
+        get :vue
+
+        expect(response).to redirect_to dashboard_todos_path
+      end
     end
   end
 

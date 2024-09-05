@@ -1,7 +1,14 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { GlBadge, GlTab, GlTabs, GlButton, GlModalDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlTab,
+  GlTabs,
+  GlButton,
+  GlModalDirective,
+  GlFilteredSearchToken,
+} from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -9,9 +16,9 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ACTIVE_TAB_QUERY_PARAM_NAME, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
 
 import {
-  PLACEHOLDER_STATUS_FAILED,
-  QUERY_PARAM_FAILED,
   PLACEHOLDER_USER_STATUS,
+  PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS,
+  PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
   PLACEHOLDER_SORT_STATUS_DESC,
   PLACEHOLDER_SORT_STATUS_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
@@ -19,7 +26,12 @@ import {
 } from '~/import_entities/import_groups/constants';
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  OPERATORS_IS,
+  TOKEN_TITLE_STATUS,
+  TOKEN_TYPE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import PlaceholdersTable from './placeholders_table.vue';
 import CsvUploadModal from './csv_upload_modal.vue';
 
@@ -52,12 +64,18 @@ export default {
   },
   computed: {
     ...mapState('placeholder', ['pagination']),
-    filteredSearchTokens() {
-      return [];
-    },
     initialFilterValue() {
-      const { search } = this.filterParams || {};
+      const { status, search } = this.filterParams || {};
       const filteredSearchValue = [];
+
+      if (status) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_STATUS,
+          value: {
+            data: status,
+          },
+        });
+      }
 
       if (search) {
         filteredSearchValue.push({
@@ -79,13 +97,17 @@ export default {
       };
     },
     unassignedUserStatuses() {
-      if (this.filterParams.status === QUERY_PARAM_FAILED) {
-        return [PLACEHOLDER_STATUS_FAILED];
+      if (this.filterParams.status) {
+        return [this.filterParams.status.toUpperCase()];
       }
 
       return PLACEHOLDER_USER_STATUS.UNASSIGNED;
     },
     reassignedUserStatuses() {
+      if (this.filterParams.status) {
+        return [this.filterParams.status.toUpperCase()];
+      }
+
       return PLACEHOLDER_USER_STATUS.REASSIGNED;
     },
     isCsvReassignmentEnabled() {
@@ -113,6 +135,9 @@ export default {
     },
   },
   watch: {
+    selectedTabIndex() {
+      this.filterParams = {};
+    },
     urlParams: {
       deep: true,
       handler(params) {
@@ -145,6 +170,19 @@ export default {
     this.reassignedCount = this.pagination.reassignedItems;
   },
   methods: {
+    filteredSearchTokens(options = PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS) {
+      return [
+        {
+          type: TOKEN_TYPE_STATUS,
+          icon: 'status',
+          title: TOKEN_TITLE_STATUS,
+          unique: true,
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          options,
+        },
+      ];
+    },
     onFilter(filters = []) {
       const filterParams = {};
       const plainText = [];
@@ -153,6 +191,9 @@ export default {
         if (!filter.value.data) return;
 
         switch (filter.type) {
+          case TOKEN_TYPE_STATUS:
+            filterParams.status = filter.value.data;
+            break;
           case FILTERED_SEARCH_TERM:
             plainText.push(filter.value.data);
             break;
@@ -165,10 +206,7 @@ export default {
         filterParams.search = plainText.join(' ');
       }
 
-      this.filterParams = {
-        ...filterParams,
-        status: this.filterParams.status,
-      };
+      this.filterParams = { ...filterParams };
     },
     onConfirm(item) {
       this.$toast.show(
@@ -186,6 +224,7 @@ export default {
   },
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
   initialSortBy: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
+  PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
 };
 </script>
 
@@ -203,13 +242,15 @@ export default {
         </template>
 
         <filtered-search-bar
+          key="filter-unassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
           :initial-sort-by="$options.initialSortBy"
-          :tokens="filteredSearchTokens"
+          :tokens="filteredSearchTokens()"
+          :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
-          :sort-options="sortOptions"
+          sync-filter-and-sort
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
           @onFilter="onFilter"
           @onSort="onSort"
@@ -231,14 +272,16 @@ export default {
         </template>
 
         <filtered-search-bar
+          key="filter-reassigned"
           :namespace="group.path"
           :initial-filter-value="initialFilterValue"
           :initial-sort-by="$options.initialSortBy"
-          :tokens="filteredSearchTokens"
+          :tokens="filteredSearchTokens($options.PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS)"
+          :sort-options="sortOptions"
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
+          sync-filter-and-sort
           class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
-          :sort-options="sortOptions"
           @onFilter="onFilter"
           @onSort="onSort"
         />

@@ -57,6 +57,10 @@ module ContainerRegistry
           return unless config[:path]
 
           Auth::ContainerRegistryAuthenticationService.push_pull_nested_repositories_access_token(config[:path])
+        when :push_pull_move_repositories_access_token
+          return unless config[:path].present? && config[:new_path].present?
+
+          Auth::ContainerRegistryAuthenticationService.push_pull_move_repositories_access_token(config[:path], config[:new_path])
         end
       end
     end

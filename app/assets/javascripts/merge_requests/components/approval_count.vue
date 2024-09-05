@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { __, n__ } from '~/locale';
 
 export default {
   components: {
@@ -15,13 +15,22 @@ export default {
       type: Object,
       required: true,
     },
+    fullText: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     approvalCount() {
+      if (this.fullText && this.mergeRequest.approvedBy.nodes.length) {
+        return __('Approved');
+      }
+
       return this.mergeRequest.approvedBy.nodes.length;
     },
     tooltipTitle() {
-      return n__('%d approval', '%d approvals', this.approvalCount);
+      return n__('%d approval', '%d approvals', this.mergeRequest.approvedBy.nodes.length);
     },
   },
 };
@@ -36,5 +45,5 @@ export default {
   >
     {{ approvalCount }}
   </gl-badge>
-  <gl-icon v-else name="dash" />
+  <gl-icon v-else-if="!fullText" name="dash" />
 </template>

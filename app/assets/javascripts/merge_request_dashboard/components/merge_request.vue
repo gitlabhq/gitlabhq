@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import ApprovalCount from 'ee_else_ce/merge_request_dashboard/components/approval_count.vue';
+import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

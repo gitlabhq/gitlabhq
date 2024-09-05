@@ -1,6 +1,7 @@
 <script>
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -90,6 +91,7 @@ export default {
     CiIcon,
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
+    ApprovalCount,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -575,6 +577,10 @@ export default {
 
     <template #statistics="{ issuable = {} }">
       <merge-request-statistics :merge-request="issuable" />
+    </template>
+
+    <template #approval-status="{ issuable = {} }">
+      <approval-count :merge-request="issuable" full-text />
     </template>
 
     <template #pipeline-status="{ issuable = {} }">

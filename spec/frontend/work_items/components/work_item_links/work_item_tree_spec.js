@@ -49,6 +49,7 @@ describe('WorkItemTree', () => {
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
 
   const createComponent = async ({
     workItemType = 'Objective',
@@ -332,5 +333,11 @@ describe('WorkItemTree', () => {
     it('calls getShowLabelsFromLocalStorage on mount', () => {
       expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
     });
+  });
+
+  it('renders crud component', async () => {
+    await createComponent();
+
+    expect(findCrudComponent().exists()).toBe(true);
   });
 });

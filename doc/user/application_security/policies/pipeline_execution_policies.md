@@ -104,6 +104,26 @@ Example of the resulting jobs:
 - `sast:policy-123456-0`
 - `sast:policy-123456-1`
 
+### Job stage best practice
+
+Jobs defined in a pipeline execution policy can use any [stage](../../../ci/yaml/index.md#stage)
+defined in the project's CI/CD configuration, also the reserved stages `.pipeline-policy-pre` and
+`.pipeline-policy-post`.
+
+NOTE:
+If your policy contains jobs only in the `.pre` and `.post` stages, the policy's pipeline is
+evaluated as "empty" and so is not merged with the project's pipeline. To use `.pre` and `.post`
+stages in a pipeline execution policy, you **must** include another job running in another stage
+which is available on the project, for example `.pipeline-policy-pre`.
+
+When using the `inject_ci` [pipeline strategy](#pipeline-strategies), if a target project does not
+contain its own `.gitlab-ci.yml` file, then the only stages available are the default pipeline
+stages and the reserved stages.
+
+When enforcing pipeline execution policies over projects whose CI/CD configuration you do not
+control, you should define jobs in the `.pipeline-policy-pre` and `.pipeline-policy-post` stages.
+These stages are always available, regardless of any project's CI/CD configuration.
+
 ### `content` type
 
 | Field | Type | Required | Description |
@@ -119,6 +139,35 @@ Example of the resulting jobs:
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
+For example:
+
+Projects with a specific compliance framework:
+
+```yaml
+ policy_scope:
+  compliance_frameworks:
+    - id: 1020076
+```
+
+Only a specific set of projects:
+
+```yaml
+policy_scope:
+  projects:
+    including:
+      - id: 61213118
+      - id: 59560885
+ ```
+
+All projects except one specific project:
+
+```yaml
+policy_scope:
+  projects:
+    excluding:
+      - id: 59560885
+```
+
 ## Pipeline strategies
 
 Pipeline configuration strategy defines the method for merging the policy configuration with the project pipeline. Pipeline execution policies execute the jobs defined in the `.gitlab-ci.yml` file in isolated pipelines, which are merged into the pipelines of the target projects.
@@ -130,6 +179,10 @@ This strategy adds custom CI/CD configurations into the existing project pipelin
 Having multiple policies enabled injects all jobs additively.
 
 When using this strategy, a project CI/CD configuration cannot override any behavior defined in the policy pipelines because each pipeline has an isolated YAML configuration.
+
+For projects without a `.gitlab-ci.yml` file, this strategy will create the `.gitlab-ci.yml` file
+implicitly. That is, a pipeline containing only the jobs defined in the pipeline execution policy is
+executed.
 
 ### `override_project_ci`
 

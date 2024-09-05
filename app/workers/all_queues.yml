@@ -14,7 +14,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -23,7 +23,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate_per_user
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -32,7 +32,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
   :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -41,7 +41,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -50,7 +50,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :worker_name: AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -212,7 +212,7 @@
   :tags: []
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
-  :feature_category: :source_code_management
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

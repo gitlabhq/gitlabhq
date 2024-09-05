@@ -66,11 +66,12 @@ export default {
         {{ item.text }}
       </div>
       <div
-        v-if="item.memberRoleId && item.description"
-        class="gl-mt-1 gl-line-clamp-2 gl-text-sm gl-text-gray-700"
+        v-if="item.memberRoleId"
+        class="gl-mt-1 gl-line-clamp-2 gl-text-sm"
         data-testid="role-description"
       >
-        {{ item.description }}
+        <span v-if="item.description" class="gl-text-gray-700">{{ item.description }}</span>
+        <span v-else class="gl-text-subtle">{{ s__('MemberRole|No description') }}</span>
       </div>
     </template>
   </gl-collapsible-listbox>

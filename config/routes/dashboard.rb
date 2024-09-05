@@ -16,6 +16,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :todos, only: [:index, :destroy] do
       collection do
+        get :vue
         delete :destroy_all
         patch :bulk_restore
       end

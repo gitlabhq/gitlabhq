@@ -37,8 +37,7 @@ workflow:
     QA_CAN_TEST_PRAEFECT: "false"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
-    # Force color output for cng orchestrator
-    CLICOLOR_FORCE: 1
+    CNG_FORCE_COLOR: "true"
     # disable selective test execution until pipeline setup is implemented to support it correctly
     KNAPSACK_TEST_FILE_PATTERN: ""
     QA_TESTS: ""

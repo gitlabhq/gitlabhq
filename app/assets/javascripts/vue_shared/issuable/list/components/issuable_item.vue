@@ -418,6 +418,7 @@ export default {
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
+        <slot name="approval-status"></slot>
         <slot name="pipeline-status"></slot>
         <li v-if="assignees.length" class="!gl-mr-0">
           <issuable-assignees

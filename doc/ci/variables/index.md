@@ -492,6 +492,8 @@ variables:
   SA_PASSWORD_YAML_FILE: $SA_PASSWORD_UI
 ```
 
+The re-assigned variable cannot have the same name as the original variable. Otherwise it does not get expanded.
+
 ### Pass an environment variable to another job
 
 You can create a new environment variable in a job, and pass it to another job

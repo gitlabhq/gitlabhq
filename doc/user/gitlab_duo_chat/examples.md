@@ -96,7 +96,7 @@ You can ask GitLab Duo Chat to explain selected code:
 
    ![Selecting code and asking GitLab Duo Chat to explain using the /explain slash command.](img/code_selection_duo_chat.png)
 
-You can also add additional instructions to be considered, for example:
+You can also add additional instructions to be considered. For example:
 
 - `/explain the performance`
 - `/explain focus on the algorithm`
@@ -177,7 +177,11 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
 
-`/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
+You can ask GitLab Duo Chat to refactor selected code:
+
+1. Select some code in your IDE.
+1. In Duo Chat, type `/refactor`.
+
 You can include additional instructions to be considered. For example:
 
 - Use a specific coding pattern, for example `/refactor with ActiveRecord` or `/refactor into a class providing static functions`.
@@ -197,7 +201,11 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
 
-`/fix` is a special command to generate a fix suggestion for the selected code in your editor.
+You can ask GitLab Duo Chat to fix selected code:
+
+1. Select some code in your IDE.
+1. In Duo Chat, type `/fix`.
+
 You can include additional instructions to be considered. For example:
 
 - Focus on grammar and typos, for example, `/fix grammar mistakes and typos`.
@@ -217,14 +225,19 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
 
-`/tests` is a special command to generate a testing suggestion for the selected code in your editor.
-You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
-See [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code) for more information.
+You can ask GitLab Duo Chat to create tests for the selected code:
+
+1. Select some code in your IDE.
+1. In Duo Chat, type `/tests`.
+
+You can include additional instructions to be considered. For example:
 
 - Use a specific test framework, for example `/tests using the Boost.test framework` (C++) or `/tests using Jest` (JavaScript).
 - Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
 - Focus on performance, for example `/tests focus on performance`.
 - Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
+
+For more information, see [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code).
 
 ## Ask about CI/CD
 
@@ -292,9 +305,9 @@ DETAILS:
 **Editors:** GitLab UI
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 
-`/vulnerability_explain` is a special command you can use when you are viewing a SAST vulnerability report.
+You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SAST vulnerability report.
 
-[Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
+For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
 ## Delete or reset the conversation
 

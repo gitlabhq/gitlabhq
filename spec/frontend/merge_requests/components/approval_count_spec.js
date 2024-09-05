@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBadge } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import ApprovalCount from '~/merge_request_dashboard/components/approval_count.vue';
+import ApprovalCount from '~/merge_requests/components/approval_count.vue';
 
 let wrapper;
 

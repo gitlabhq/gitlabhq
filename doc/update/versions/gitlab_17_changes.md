@@ -190,6 +190,10 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
+## 17.5.0
+
+- OpenSSL version 3 (TLS 1.2) is required for all incoming connections to GitLab, such as from LDAP servers and webhooks.
+
 ## 17.3.0
 
 - Git 2.45.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

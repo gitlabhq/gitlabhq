@@ -63,7 +63,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
     end
 
     let(:pipeline) do
-      build(:ci_empty_pipeline, project: project, ref: 'master', user: user, iid: old_pipeline.iid)
+      build(:ci_empty_pipeline, project: project, ref: 'master', user: user).tap do |pipeline|
+        pipeline.write_attribute(:iid, old_pipeline.iid)
+      end
     end
 
     it 'breaks the chain' do
