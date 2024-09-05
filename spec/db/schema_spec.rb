@@ -45,6 +45,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
   REMOVED_FKS = {
     # example_table: %w[example_column]
+    alert_management_alerts: %w[prometheus_alert_id]
   }.with_indifferent_access.freeze
 
   # List of columns historically missing a FK, don't add more columns

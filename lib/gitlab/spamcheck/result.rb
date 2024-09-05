@@ -4,6 +4,7 @@ module Gitlab
   module Spamcheck
     class Result
       include ::Spam::SpamConstants
+
       attr_reader :response
 
       VERDICT_MAPPING = {

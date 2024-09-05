@@ -64,8 +64,16 @@ export default {
 <template>
   <div v-if="status" v-gl-tooltip :title="status.text" role="note" class="gl-flex gl-items-center">
     <span>{{ __('Terminal') }}:</span>
-    <span class="square s16 d-flex-center ml-1" :aria-label="status.text">
-      <gl-loading-icon v-if="isLoading" inline size="sm" class="d-flex-center" />
+    <span
+      class="square s16 ml-1 gl-flex gl-items-center gl-justify-center"
+      :aria-label="status.text"
+    >
+      <gl-loading-icon
+        v-if="isLoading"
+        inline
+        size="sm"
+        class="gl-flex gl-items-center gl-justify-center"
+      />
       <gl-icon v-else-if="status.icon" :name="status.icon" :size="16" />
     </span>
   </div>

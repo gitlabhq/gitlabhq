@@ -12403,20 +12403,6 @@ CREATE SEQUENCE issues_id_seq
 
 ALTER SEQUENCE issues_id_seq OWNED BY issues.id;
 
-CREATE TABLE issues_prometheus_alert_events (
-    issue_id bigint NOT NULL,
-    prometheus_alert_event_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
-);
-
-CREATE TABLE issues_self_managed_prometheus_alert_events (
-    issue_id bigint NOT NULL,
-    self_managed_prometheus_alert_event_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
-);
-
 CREATE TABLE iterations_cadences (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -16844,73 +16830,6 @@ CREATE SEQUENCE projects_visits_id_seq
 
 ALTER SEQUENCE projects_visits_id_seq OWNED BY projects_visits.id;
 
-CREATE TABLE prometheus_alert_events (
-    id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    prometheus_alert_id bigint NOT NULL,
-    started_at timestamp with time zone NOT NULL,
-    ended_at timestamp with time zone,
-    status smallint,
-    payload_key character varying
-);
-
-CREATE SEQUENCE prometheus_alert_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE prometheus_alert_events_id_seq OWNED BY prometheus_alert_events.id;
-
-CREATE TABLE prometheus_alerts (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    threshold double precision NOT NULL,
-    operator integer NOT NULL,
-    environment_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    prometheus_metric_id bigint NOT NULL,
-    runbook_url text,
-    CONSTRAINT check_cb76d7e629 CHECK ((char_length(runbook_url) <= 255))
-);
-
-CREATE SEQUENCE prometheus_alerts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE prometheus_alerts_id_seq OWNED BY prometheus_alerts.id;
-
-CREATE TABLE prometheus_metrics (
-    id bigint NOT NULL,
-    project_id bigint,
-    title character varying NOT NULL,
-    query character varying NOT NULL,
-    y_label character varying NOT NULL,
-    unit character varying NOT NULL,
-    legend character varying,
-    "group" integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    common boolean DEFAULT false NOT NULL,
-    identifier character varying,
-    dashboard_path text,
-    CONSTRAINT check_0ad9f01463 CHECK ((char_length(dashboard_path) <= 2048))
-);
-
-CREATE SEQUENCE prometheus_metrics_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE prometheus_metrics_id_seq OWNED BY prometheus_metrics.id;
-
 CREATE TABLE protected_branch_merge_access_levels (
     id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
@@ -17699,6 +17618,7 @@ CREATE TABLE sbom_occurrences (
     archived boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     ancestors jsonb DEFAULT '[]'::jsonb NOT NULL,
+    reachability smallint DEFAULT 0,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_e6b8437cfe CHECK ((char_length(input_file_path) <= 1024))
@@ -18107,27 +18027,6 @@ CREATE SEQUENCE security_trainings_id_seq
     CACHE 1;
 
 ALTER SEQUENCE security_trainings_id_seq OWNED BY security_trainings.id;
-
-CREATE TABLE self_managed_prometheus_alert_events (
-    id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    environment_id bigint,
-    started_at timestamp with time zone NOT NULL,
-    ended_at timestamp with time zone,
-    status smallint NOT NULL,
-    title character varying(255) NOT NULL,
-    query_expression character varying(255),
-    payload_key character varying(255) NOT NULL
-);
-
-CREATE SEQUENCE self_managed_prometheus_alert_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE self_managed_prometheus_alert_events_id_seq OWNED BY self_managed_prometheus_alert_events.id;
 
 CREATE TABLE sent_notifications (
     project_id bigint,
@@ -22155,12 +22054,6 @@ ALTER TABLE ONLY projects_sync_events ALTER COLUMN id SET DEFAULT nextval('proje
 
 ALTER TABLE ONLY projects_visits ALTER COLUMN id SET DEFAULT nextval('projects_visits_id_seq'::regclass);
 
-ALTER TABLE ONLY prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('prometheus_alert_events_id_seq'::regclass);
-
-ALTER TABLE ONLY prometheus_alerts ALTER COLUMN id SET DEFAULT nextval('prometheus_alerts_id_seq'::regclass);
-
-ALTER TABLE ONLY prometheus_metrics ALTER COLUMN id SET DEFAULT nextval('prometheus_metrics_id_seq'::regclass);
-
 ALTER TABLE ONLY protected_branch_merge_access_levels ALTER COLUMN id SET DEFAULT nextval('protected_branch_merge_access_levels_id_seq'::regclass);
 
 ALTER TABLE ONLY protected_branch_push_access_levels ALTER COLUMN id SET DEFAULT nextval('protected_branch_push_access_levels_id_seq'::regclass);
@@ -22270,8 +22163,6 @@ ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_sc
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
 
 ALTER TABLE ONLY security_trainings ALTER COLUMN id SET DEFAULT nextval('security_trainings_id_seq'::regclass);
-
-ALTER TABLE ONLY self_managed_prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('self_managed_prometheus_alert_events_id_seq'::regclass);
 
 ALTER TABLE ONLY sent_notifications ALTER COLUMN id SET DEFAULT nextval('sent_notifications_id_seq'::regclass);
 
@@ -24110,12 +24001,6 @@ ALTER TABLE ONLY issue_user_mentions
 ALTER TABLE ONLY issues
     ADD CONSTRAINT issues_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY issues_prometheus_alert_events
-    ADD CONSTRAINT issues_prometheus_alert_events_pkey PRIMARY KEY (issue_id, prometheus_alert_event_id);
-
-ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
-    ADD CONSTRAINT issues_self_managed_prometheus_alert_events_pkey PRIMARY KEY (issue_id, self_managed_prometheus_alert_event_id);
-
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT iteration_start_and_due_date_iterations_cadence_id_constraint EXCLUDE USING gist (iterations_cadence_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((group_id IS NOT NULL)) DEFERRABLE INITIALLY DEFERRED;
 
@@ -24749,15 +24634,6 @@ ALTER TABLE ONLY projects_sync_events
 ALTER TABLE ONLY projects_visits
     ADD CONSTRAINT projects_visits_pkey PRIMARY KEY (id, visited_at);
 
-ALTER TABLE ONLY prometheus_alert_events
-    ADD CONSTRAINT prometheus_alert_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY prometheus_alerts
-    ADD CONSTRAINT prometheus_alerts_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY prometheus_metrics
-    ADD CONSTRAINT prometheus_metrics_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT protected_branch_merge_access_levels_pkey PRIMARY KEY (id);
 
@@ -24934,9 +24810,6 @@ ALTER TABLE ONLY security_training_providers
 
 ALTER TABLE ONLY security_trainings
     ADD CONSTRAINT security_trainings_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY self_managed_prometheus_alert_events
-    ADD CONSTRAINT self_managed_prometheus_alert_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY sent_notifications
     ADD CONSTRAINT sent_notifications_pkey PRIMARY KEY (id);
@@ -26787,8 +26660,6 @@ CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
-
-CREATE UNIQUE INDEX idx_project_id_payload_key_self_managed_prometheus_alert_events ON self_managed_prometheus_alert_events USING btree (project_id, payload_key);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
@@ -29838,26 +29709,6 @@ CREATE INDEX index_projects_visits_on_entity_id ON ONLY projects_visits USING bt
 
 CREATE INDEX index_projects_visits_on_user_id_and_entity_id_and_visited_at ON ONLY projects_visits USING btree (user_id, entity_id, visited_at);
 
-CREATE UNIQUE INDEX index_prometheus_alert_event_scoped_payload_key ON prometheus_alert_events USING btree (prometheus_alert_id, payload_key);
-
-CREATE INDEX index_prometheus_alert_events_on_project_id_and_status ON prometheus_alert_events USING btree (project_id, status);
-
-CREATE UNIQUE INDEX index_prometheus_alerts_metric_environment ON prometheus_alerts USING btree (project_id, prometheus_metric_id, environment_id);
-
-CREATE INDEX index_prometheus_alerts_on_environment_id ON prometheus_alerts USING btree (environment_id);
-
-CREATE INDEX index_prometheus_alerts_on_prometheus_metric_id ON prometheus_alerts USING btree (prometheus_metric_id);
-
-CREATE INDEX index_prometheus_metrics_on_common ON prometheus_metrics USING btree (common);
-
-CREATE INDEX index_prometheus_metrics_on_group ON prometheus_metrics USING btree ("group");
-
-CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_null_project ON prometheus_metrics USING btree (identifier) WHERE (project_id IS NULL);
-
-CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_project_id ON prometheus_metrics USING btree (identifier, project_id);
-
-CREATE INDEX index_prometheus_metrics_on_project_id ON prometheus_metrics USING btree (project_id);
-
 CREATE INDEX index_protected_branch_merge_access ON protected_branch_merge_access_levels USING btree (protected_branch_id);
 
 CREATE INDEX index_protected_branch_merge_access_levels_on_group_id ON protected_branch_merge_access_levels USING btree (group_id);
@@ -30191,8 +30042,6 @@ CREATE INDEX index_security_trainings_on_project_id ON security_trainings USING 
 CREATE INDEX index_security_trainings_on_provider_id ON security_trainings USING btree (provider_id);
 
 CREATE UNIQUE INDEX index_security_trainings_on_unique_project_id ON security_trainings USING btree (project_id) WHERE (is_primary IS TRUE);
-
-CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON self_managed_prometheus_alert_events USING btree (environment_id);
 
 CREATE INDEX index_sent_notifications_on_issue_email_participant_id ON sent_notifications USING btree (issue_email_participant_id);
 
@@ -30957,10 +30806,6 @@ CREATE UNIQUE INDEX index_zoom_meetings_on_issue_id_and_issue_status ON zoom_mee
 CREATE INDEX index_zoom_meetings_on_issue_status ON zoom_meetings USING btree (issue_status);
 
 CREATE INDEX index_zoom_meetings_on_project_id ON zoom_meetings USING btree (project_id);
-
-CREATE INDEX issue_id_issues_prometheus_alert_events_index ON issues_prometheus_alert_events USING btree (prometheus_alert_event_id);
-
-CREATE INDEX issue_id_issues_self_managed_rometheus_alert_events_index ON issues_self_managed_prometheus_alert_events USING btree (self_managed_prometheus_alert_event_id);
 
 CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_and_note_id_index ON issue_user_mentions USING btree (issue_id, note_id);
 
@@ -33547,9 +33392,6 @@ ALTER TABLE ONLY approval_group_rules_groups
 ALTER TABLE ONLY approval_group_rules_protected_branches
     ADD CONSTRAINT fk_514003db08 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY alert_management_alerts
-    ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_51bf7bfb69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -34738,9 +34580,6 @@ ALTER TABLE ONLY issue_email_participants
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT fk_rails_0fe0039f60 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY prometheus_alert_events
-    ADD CONSTRAINT fk_rails_106f901176 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT fk_rails_109fcf96e2 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
 
@@ -35044,17 +34883,11 @@ ALTER TABLE ONLY issue_user_mentions
 ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY self_managed_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_3936dadc62 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_cleanup_policies
     ADD CONSTRAINT fk_rails_393ba98591 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT fk_rails_396841e79e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY self_managed_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_39d83d1b65 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT fk_rails_3b543909cb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -35146,9 +34979,6 @@ ALTER TABLE ONLY merge_requests_closing_issues
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_45cc02a931 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY prometheus_alert_events
-    ADD CONSTRAINT fk_rails_4675865839 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY smartcard_identities
     ADD CONSTRAINT fk_rails_4689f889a9 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -35175,9 +35005,6 @@ ALTER TABLE ONLY issue_metrics
 
 ALTER TABLE ONLY project_metrics_settings
     ADD CONSTRAINT fk_rails_4c6037ee4f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY prometheus_metrics
-    ADD CONSTRAINT fk_rails_4c8957a707 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_blob_states
     ADD CONSTRAINT fk_rails_4cdbb92cbd FOREIGN KEY (dependency_proxy_blob_id) REFERENCES dependency_proxy_blobs(id) ON DELETE CASCADE;
@@ -35433,9 +35260,6 @@ ALTER TABLE ONLY error_tracking_errors
 
 ALTER TABLE ONLY ml_model_version_metadata
     ADD CONSTRAINT fk_rails_6b8fcb2af1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY prometheus_alerts
-    ADD CONSTRAINT fk_rails_6d9b283465 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY term_agreements
     ADD CONSTRAINT fk_rails_6ea6520e4a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -35938,9 +35762,6 @@ ALTER TABLE ONLY merge_trains
 ALTER TABLE ONLY board_project_recent_visits
     ADD CONSTRAINT fk_rails_b315dd0c80 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY issues_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_b32edb790f FOREIGN KEY (prometheus_alert_event_id) REFERENCES prometheus_alert_events(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT fk_rails_b374b5225d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -36133,9 +35954,6 @@ ALTER TABLE ONLY vulnerability_finding_links
 ALTER TABLE ONLY namespace_details
     ADD CONSTRAINT fk_rails_cc11a451f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES operations_user_lists(id) ON DELETE CASCADE;
 
@@ -36225,9 +36043,6 @@ ALTER TABLE ONLY jira_imports
 
 ALTER TABLE ONLY dependency_proxy_blobs
     ADD CONSTRAINT fk_rails_db58bbc5d7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY issues_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_db5b756534 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_user_preferences
     ADD CONSTRAINT fk_rails_dbebdaa8fe FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
@@ -36322,9 +36137,6 @@ ALTER TABLE ONLY software_license_policies
 ALTER TABLE ONLY approval_merge_request_rule_sources
     ADD CONSTRAINT fk_rails_e605a04f76 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY prometheus_alerts
-    ADD CONSTRAINT fk_rails_e6351447ec FOREIGN KEY (prometheus_metric_id) REFERENCES prometheus_metrics(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_rails_e6d7c24d1b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -36415,9 +36227,6 @@ ALTER TABLE ONLY dast_pre_scan_verifications
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_rails_f0e7c640c3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY prometheus_alerts
-    ADD CONSTRAINT fk_rails_f0e8db86aa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY import_export_uploads
     ADD CONSTRAINT fk_rails_f129140f9e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36465,9 +36274,6 @@ ALTER TABLE ONLY design_user_mentions
 
 ALTER TABLE ONLY internal_ids
     ADD CONSTRAINT fk_rails_f7d46b66c6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
-    ADD CONSTRAINT fk_rails_f7db2d72eb FOREIGN KEY (self_managed_prometheus_alert_event_id) REFERENCES self_managed_prometheus_alert_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_trainings
     ADD CONSTRAINT fk_rails_f80240fae0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;

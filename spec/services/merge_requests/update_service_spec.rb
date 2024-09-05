@@ -693,6 +693,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(user3.review_requested_open_merge_requests_count).to eq(0)
         end
 
+        it 'invalidates assignee merge request count cache' do
+          expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
+
+          update_merge_request(reviewer_ids: [user2.id])
+        end
+
         it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
           let(:action) { update_merge_request({ reviewer_ids: [user2.id] }) }
         end

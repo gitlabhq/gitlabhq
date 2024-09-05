@@ -23,6 +23,11 @@ module Enums
       cargo: 14
     }.with_indifferent_access.freeze
 
+    REACHABILITY_TYPES = {
+      unknown: 0,
+      in_use: 1 # In case package imported and being used in code.
+    }.with_indifferent_access.freeze
+
     DEPENDENCY_SCANNING_PURL_TYPES = %w[
       composer
       conan
@@ -118,6 +123,10 @@ module Enums
 
     def self.purl_types_numerical
       purl_types.invert
+    end
+
+    def self.reachability_types
+      REACHABILITY_TYPES
     end
 
     def self.package_manager_from_trivy_pkg_type(pkg_type)

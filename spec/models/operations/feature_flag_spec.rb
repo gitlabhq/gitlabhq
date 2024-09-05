@@ -154,6 +154,16 @@ RSpec.describe Operations::FeatureFlag do
     end
   end
 
+  describe '#path' do
+    let(:namespace) { build(:namespace) }
+    let(:project) { build(:project, namespace: namespace) }
+    let(:feature_flag) { build(:operations_feature_flag, iid: 1, project: project) }
+
+    it 'returns path of the feature flag' do
+      expect(feature_flag.path).to eq "/#{project.full_path}/-/feature_flags/1"
+    end
+  end
+
   describe '#hook_attrs' do
     it 'includes expected attributes' do
       hook_attrs = {

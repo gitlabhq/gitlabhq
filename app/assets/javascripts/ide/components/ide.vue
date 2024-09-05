@@ -143,7 +143,7 @@ export default {
       :action="canPushCodeStatus.action"
     />
     <error-message v-if="errorMessage" :message="errorMessage" />
-    <div class="ide-view flex-grow gl-flex">
+    <div class="ide-view gl-flex gl-grow">
       <template v-if="loadDeferred">
         <find-file
           :files="allBlobs"

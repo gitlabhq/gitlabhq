@@ -211,7 +211,7 @@ export default {
                     :disabled="disableDecrementLineStart"
                     @click="updateLineOffset(-1, 0)"
                   />
-                  <div class="flex monospace gl-items-center gl-justify-center gl-px-3">
+                  <div class="monospace gl-flex gl-items-center gl-justify-center gl-px-3">
                     <strong>{{ absoluteLineOffset[0] }}</strong>
                   </div>
                   <gl-button
@@ -238,7 +238,7 @@ export default {
                     :disabled="disableDecrementLineEnd"
                     @click="updateLineOffset(0, -1)"
                   />
-                  <div class="flex monospace gl-items-center gl-justify-center gl-px-3">
+                  <div class="monospace gl-flex gl-items-center gl-justify-center gl-px-3">
                     <strong>{{ absoluteLineOffset[1] }}</strong>
                   </div>
                   <gl-button

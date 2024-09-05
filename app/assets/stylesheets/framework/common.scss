@@ -364,20 +364,10 @@ li.note {
 .append-bottom-20 { margin-bottom: 20px; }
 .center { text-align: center; }
 .block { display: block; }
-.flex { display: flex; }
 .vertical-align-text-top { vertical-align: text-top; }
 .vertical-align-middle { vertical-align: middle; }
-.flex-align-self-center { align-self: center; }
-.flex-grow { flex-grow: 1; }
-.flex-no-shrink { flex-shrink: 0; }
 .ws-normal { white-space: normal; }
 .overflow-auto { overflow: auto; }
-
-.d-flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 /** COMMON SIZING CLASSES **/
 .w-0 { width: 0; }

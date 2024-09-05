@@ -155,7 +155,6 @@ gitaly-transactions:
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
   rules:
-    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -242,7 +241,6 @@ git-sha256-repositories:
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
     GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
   rules:
-    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:feature-flags-set, rules]
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/

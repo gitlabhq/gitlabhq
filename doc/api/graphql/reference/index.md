@@ -22323,6 +22323,8 @@ Describes an external status check.
 | <a id="featureflagactive"></a>`active` | [`Boolean!`](#boolean) | Whether the feature flag is active. |
 | <a id="featureflagid"></a>`id` | [`OperationsFeatureFlagID!`](#operationsfeatureflagid) | Global ID of the feature flag. |
 | <a id="featureflagname"></a>`name` | [`String!`](#string) | Name of the feature flag. |
+| <a id="featureflagpath"></a>`path` | [`String!`](#string) | Path to feature flag. |
+| <a id="featureflagreference"></a>`reference` | [`String!`](#string) | Reference to feature flag. |
 
 ### `FileUpload`
 

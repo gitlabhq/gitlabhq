@@ -9,3 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17477
 milestone: '12.4'
 gitlab_schema: gitlab_main
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461838 # table is scheduled to be dropped
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164288
+removed_in_milestone: '17.4'

@@ -338,16 +338,6 @@ export default {
           required
         />
       </gl-form-group>
-      <!--Interval Pattern-->
-      <gl-form-group :label="$options.i18n.intervalPattern" label-for="schedule-interval">
-        <interval-pattern-input
-          id="schedule-interval"
-          :initial-cron-interval="cron"
-          :daily-limit="dailyLimit"
-          :send-native-errors="false"
-          @cronValue="setCronValue"
-        />
-      </gl-form-group>
       <!--Timezone-->
       <gl-form-group :label="$options.i18n.cronTimezoneText" label-for="schedule-timezone">
         <timezone-dropdown
@@ -356,6 +346,16 @@ export default {
           :timezone-data="timezoneData"
           name="schedule-timezone"
           @input="setTimezone"
+        />
+      </gl-form-group>
+      <!--Interval Pattern-->
+      <gl-form-group :label="$options.i18n.intervalPattern" label-for="schedule-interval">
+        <interval-pattern-input
+          id="schedule-interval"
+          :initial-cron-interval="cron"
+          :daily-limit="dailyLimit"
+          :send-native-errors="false"
+          @cronValue="setCronValue"
         />
       </gl-form-group>
       <!--Branch/Tag Selector-->

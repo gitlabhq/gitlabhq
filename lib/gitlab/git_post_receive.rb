@@ -3,6 +3,7 @@
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
+
     attr_reader :container, :identifier, :changes, :push_options
 
     def initialize(container, identifier, changes, push_options = {})

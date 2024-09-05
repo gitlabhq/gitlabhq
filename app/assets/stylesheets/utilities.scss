@@ -51,12 +51,6 @@ $type-scale: (
 .border-radius-default { border-radius: $gl-border-radius-base; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $t-gray-a-24; }
 
-// Override Bootstrap class with offset for system-header and
-// performance bar when present
-.fixed-top {
-  top: $calc-system-headers-height;
-}
-
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-top-app-header {
   top: $calc-application-header-height;

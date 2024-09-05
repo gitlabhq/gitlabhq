@@ -107,7 +107,7 @@ $white-gc-bg: #eaf2f5;
   .line-numbers,
   .diff-line-num,
   .code-search-line {
-    background-color: $gray-10;
+    background-color: $white;
 
     &.conflict_marker,
     &.conflict_our {

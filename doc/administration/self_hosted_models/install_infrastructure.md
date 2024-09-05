@@ -108,9 +108,9 @@ model_list:
       api_base: YOUR_HOSTING_SERVER
 ```
 
-## Step 2: Install the GitLab AI Gateway
+## Step 2: Install the GitLab AI Gateway via Docker or Helm chart
 
-### Install by using Docker
+## Install by using Docker
 
 Prerequisites:
 
@@ -130,7 +130,7 @@ permissions, and potentially other unknown issues. If you are trying to run on D
 for Windows, see the [getting help page](https://about.gitlab.com/get-help/) for links
 to community resources (such as IRC or forums) to seek help from other users.
 
-#### Set up the volumes location
+### Set up the volumes location
 
 Create a directory where the logs will reside on the Docker host. It can be under your user's home directory (for example
 `~/gitlab-agw`), or in a directory like `/srv/gitlab-agw`. To create that directory, run:
@@ -239,7 +239,7 @@ should open the AI Gateway API documentation.
 After starting the container, visit `gitlab-aigw.example.com`. It might take
 a while before the Docker container starts to respond to queries.
 
-## Upgrade the AI Gateway
+### Upgrade the AI Gateway Docker image
 
 To upgrade the AI Gateway, download the newest Docker image tag.
 
@@ -269,9 +269,9 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 
 1. Ensure that the environment variables are all set correctly
 
-### Install by using the AI Gateway Helm chart
+## Install by using the AI Gateway Helm chart
 
-#### Prerequisites
+### Prerequisites
 
 To complete this guide, you must have the following:
 

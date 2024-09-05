@@ -8,6 +8,7 @@ module QA
     class Base
       include ApiFabricator
       extend Capybara::DSL
+
       using Rainbow
 
       NoValueError = Class.new(RuntimeError)

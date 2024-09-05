@@ -7,6 +7,7 @@ module QA
         class New < Page::Base
           include Page::Component::NewSnippet
           include Component::LazyLoader
+
           view 'app/views/shared/empty_states/_snippets.html.haml' do
             element 'create-first-snippet-link'
             element 'snippets-empty-state'
