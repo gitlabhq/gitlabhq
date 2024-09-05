@@ -77,6 +77,11 @@ export default {
       required: false,
       default: null,
     },
+    emptyText: {
+      type: String,
+      required: false,
+      default: PROJECT_TOGGLE_TEXT,
+    },
   },
   data() {
     return {
@@ -153,7 +158,6 @@ export default {
     },
   },
   i18n: {
-    searchForProject: PROJECT_TOGGLE_TEXT,
     selectProject: PROJECT_HEADER_TEXT,
   },
 };
@@ -166,7 +170,7 @@ export default {
     :input-id="inputId"
     :initial-selection="initialSelection"
     :header-text="$options.i18n.selectProject"
-    :default-toggle-text="$options.i18n.searchForProject"
+    :default-toggle-text="emptyText"
     :fetch-items="fetchProjects"
     :fetch-initial-selection="fetchInitialProject"
     :block="block"

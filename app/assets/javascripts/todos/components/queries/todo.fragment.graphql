@@ -1,0 +1,45 @@
+fragment Todo on Todo {
+  id
+  state
+  createdAt
+  action
+  targetType
+  targetUrl
+  memberAccessType
+  author {
+    id
+    name
+    webUrl
+    avatarUrl
+  }
+  note {
+    id
+    bodyFirstLineHtml
+  }
+  group {
+    id
+    fullName
+  }
+  project {
+    id
+    nameWithNamespace
+  }
+  target {
+    ... on Issue {
+      issueState: state
+      title
+      reference
+      webPath
+      dueDate
+    }
+    ... on MergeRequest {
+      mergeRequestState: state
+      title
+      reference
+      webPath
+    }
+    ... on AlertManagementAlert {
+      alertState: status
+    }
+  }
+}

@@ -210,6 +210,17 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     end
   end
 
+  # TODO: remove the update operation when all packages dependencies have a `project_id`.
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/481541
+  describe '.without_project' do
+    let_it_be(:dependency_1) { create(:packages_dependency, project: nil) }
+    let_it_be(:dependency_2) { create(:packages_dependency) }
+
+    it 'returns dependency records without project' do
+      expect(described_class.without_project).to contain_exactly(dependency_1)
+    end
+  end
+
   def build_names_and_version_patterns(*package_dependencies)
     result = Hash.new { |h, dependency| h[dependency.name] = dependency.version_pattern }
     package_dependencies.each { |dependency| result[dependency] }

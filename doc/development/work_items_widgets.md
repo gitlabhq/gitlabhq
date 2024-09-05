@@ -365,6 +365,7 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
 1. Assign the widget to the appropriate work item types, by:
    - Adding it to the `WIDGETS_FOR_TYPE` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
    - Creating a migration in `db/migrate/<version>_add_<widget_name>_widget_to_work_item_types.rb`.
+     Refer to `db/migrate/20240812081354_add_email_participants_widget_to_work_item_types.rb` for the latest best practice.
      There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680).
 1. Update the GraphQL docs: `bundle exec rake gitlab:graphql:compile_docs`.
 1. Update translations: `tooling/bin/gettext_extractor locale/gitlab.pot`.

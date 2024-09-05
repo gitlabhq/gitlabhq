@@ -83,52 +83,15 @@ to a branch in the repository. When you use the command line, you can commit mul
 
 ## Clone a repository
 
-You can [clone a repository by using the command line](../../../topics/git/clone.md).
+You can clone a repository using the:
 
-Alternatively, you can clone directly into a code editor.
-
-### Clone and open in Apple Xcode
-
-Projects that contain a `.xcodeproj` or `.xcworkspace` directory can be cloned
-into Xcode on macOS.
-
-1. From the GitLab UI, go to the project's overview page.
-1. In the upper-right corner, select **Code**.
-1. Select **Xcode**.
-
-The project is cloned onto your computer and you are
-prompted to open Xcode.
-
-### Clone and open in Visual Studio Code
-
-All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
-can also install the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md) to clone from
-Visual Studio Code:
-
-- From the GitLab interface:
-  1. Go to the project's overview page.
-  1. In the upper-right corner, select **Code**.
-  1. Under **Open in your IDE**, select **Visual Studio Code (SSH)** or **Visual Studio Code (HTTPS)**.
-  1. Select a folder to clone the project into.
-
-     After Visual Studio Code clones your project, it opens the folder.
-- From Visual Studio Code, with the [extension](../../../editor_extensions/visual_studio_code/index.md) installed, use the
-  extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
-
-### Clone and open in IntelliJ IDEA
-
-All projects can be cloned into [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-from the GitLab user interface.
-
-Prerequisites:
-
-- The [JetBrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
-
-To do this:
-
-1. Go to the project's overview page.
-1. In the upper-right corner, select **Code**.
-1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
+- Command line:
+  - [Clone with SSH](../../../topics/git/clone.md#clone-with-ssh)
+  - [Clone with HTTPS](../../../topics/git/clone.md#clone-with-https)
+- GitLab UI:
+  - [Clone and open in Apple Xcode](../../../topics/git/clone.md#clone-and-open-in-apple-xcode)
+  - [Clone and open in Visual Studio Code](../../../topics/git/clone.md#clone-and-open-in-visual-studio-code)
+  - [Clone and open in IntelliJ IDEA](../../../topics/git/clone.md#clone-and-open-in-intellij-idea)
 
 ## Download the code in a repository
 

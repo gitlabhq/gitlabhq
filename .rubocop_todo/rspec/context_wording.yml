@@ -873,7 +873,6 @@ RSpec/ContextWording:
     - 'spec/components/diffs/overflow_warning_component_spec.rb'
     - 'spec/components/pajamas/alert_component_spec.rb'
     - 'spec/components/pajamas/banner_component_spec.rb'
-    - 'spec/components/pajamas/button_component_spec.rb'
     - 'spec/components/pajamas/spinner_component_spec.rb'
     - 'spec/config/object_store_settings_spec.rb'
     - 'spec/controllers/admin/application_settings_controller_spec.rb'

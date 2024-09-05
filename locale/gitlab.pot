@@ -13231,12 +13231,6 @@ msgstr ""
 msgid "CodeSuggestions|%{linkStart}GitLab Duo%{linkEnd} is only available to instances with a synchronized subscription. Add an activation code to synchronize your subscription."
 msgstr ""
 
-msgid "CodeSuggestions|%{title}"
-msgstr ""
-
-msgid "CodeSuggestions|%{title} seats used"
-msgstr ""
-
 msgid "CodeSuggestions|A code snippet must be passable to the AI-gateway for users to utilize GitLab Duo in their IDE."
 msgstr ""
 
@@ -13291,6 +13285,12 @@ msgstr ""
 msgid "CodeSuggestions|Run health check"
 msgstr ""
 
+msgid "CodeSuggestions|Seats used"
+msgstr ""
+
+msgid "CodeSuggestions|Subscription"
+msgstr ""
+
 msgid "CodeSuggestions|Subscription not synchronized"
 msgstr ""
 
@@ -13301,6 +13301,9 @@ msgid "CodeSuggestions|The active subscription must sync with customers.gitlab.c
 msgstr ""
 
 msgid "CodeSuggestions|To buy GitLab Duo seats and regain access, you'll need a Premium or Ultimate subscription."
+msgstr ""
+
+msgid "CodeSuggestions|Trial"
 msgstr ""
 
 msgid "CodeSuggestions|Updating..."
@@ -20872,6 +20875,9 @@ msgid "Enables a free GitLab Ultimate trial when you create a new project."
 msgstr ""
 
 msgid "End Time"
+msgstr ""
+
+msgid "End date:"
 msgstr ""
 
 msgid "End time"
@@ -52336,6 +52342,9 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+msgid "Start date:"
+msgstr ""
+
 msgid "Start free trial"
 msgstr ""
 
@@ -52774,9 +52783,6 @@ msgstr ""
 msgid "Subscription deletion failed."
 msgstr ""
 
-msgid "Subscription end date"
-msgstr ""
-
 msgid "Subscription for %{subscription} will be removed. Do you want to continue?"
 msgstr ""
 
@@ -52793,9 +52799,6 @@ msgid "Subscription has not yet been synchronized. %{cta}"
 msgstr ""
 
 msgid "Subscription service outage"
-msgstr ""
-
-msgid "Subscription start date"
 msgstr ""
 
 msgid "Subscription successfully applied to \"%{group_name}\""
@@ -56492,10 +56495,22 @@ msgstr ""
 msgid "Todos| What actions create to-do items?"
 msgstr ""
 
+msgid "Todos|(removed)"
+msgstr ""
+
 msgid "Todos|Added"
 msgstr ""
 
+msgid "Todos|Added approver"
+msgstr ""
+
 msgid "Todos|Alert"
+msgstr ""
+
+msgid "Todos|All"
+msgstr ""
+
+msgid "Todos|Any"
 msgstr ""
 
 msgid "Todos|Any Action"
@@ -56504,22 +56519,46 @@ msgstr ""
 msgid "Todos|Any Type"
 msgstr ""
 
+msgid "Todos|Approval required"
+msgstr ""
+
 msgid "Todos|Assigned"
+msgstr ""
+
+msgid "Todos|Build failed"
 msgstr ""
 
 msgid "Todos|Could not merge"
 msgstr ""
 
+msgid "Todos|Created"
+msgstr ""
+
 msgid "Todos|Design"
+msgstr ""
+
+msgid "Todos|Directly addressed"
 msgstr ""
 
 msgid "Todos|Do you want to remove the filters?"
 msgstr ""
 
+msgid "Todos|Done"
+msgstr ""
+
 msgid "Todos|Due %{due_date}"
 msgstr ""
 
+msgid "Todos|Due %{when}"
+msgstr ""
+
+msgid "Todos|Due today"
+msgstr ""
+
 msgid "Todos|Epic"
+msgstr ""
+
+msgid "Todos|Failed adding todo. Try again later."
 msgstr ""
 
 msgid "Todos|Filter by author"
@@ -56549,7 +56588,22 @@ msgstr ""
 msgid "Todos|It's how you always know what to work on next."
 msgstr ""
 
+msgid "Todos|Label priority"
+msgstr ""
+
 msgid "Todos|Mark all as done"
+msgstr ""
+
+msgid "Todos|Mark as done"
+msgstr ""
+
+msgid "Todos|Mark as done failed. Try again later."
+msgstr ""
+
+msgid "Todos|Marked"
+msgstr ""
+
+msgid "Todos|Member access request"
 msgstr ""
 
 msgid "Todos|Member access requested"
@@ -56561,6 +56615,9 @@ msgstr ""
 msgid "Todos|Merge request"
 msgstr ""
 
+msgid "Todos|Merge train removed"
+msgstr ""
+
 msgid "Todos|Not sure where to go next? Take a look at your %{strongStart}%{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd}%{strongEnd} or %{strongStart}%{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}."
 msgstr ""
 
@@ -56568,6 +56625,9 @@ msgid "Todos|Nothing is on your to-do list. Nice work!"
 msgstr ""
 
 msgid "Todos|Nothing left to do. High five!"
+msgstr ""
+
+msgid "Todos|OKR checkin requested"
 msgstr ""
 
 msgid "Todos|Pipelines"
@@ -56579,13 +56639,37 @@ msgstr ""
 msgid "Todos|Review requested"
 msgstr ""
 
+msgid "Todos|Review submitted"
+msgstr ""
+
+msgid "Todos|Something went wrong. Please try again."
+msgstr ""
+
 msgid "Todos|The pipeline failed"
+msgstr ""
+
+msgid "Todos|To Do"
+msgstr ""
+
+msgid "Todos|Undo"
 msgstr ""
 
 msgid "Todos|Undo mark all as done"
 msgstr ""
 
+msgid "Todos|Unmergeable"
+msgstr ""
+
+msgid "Todos|Updated"
+msgstr ""
+
 msgid "Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List."
+msgstr ""
+
+msgid "Todos|Work item"
+msgstr ""
+
+msgid "Todos|You"
 msgstr ""
 
 msgid "Todos|You're all done!"
@@ -56595,6 +56679,12 @@ msgid "Todos|Your To-Do List shows what to work on next"
 msgstr ""
 
 msgid "Todos|added a to-do item"
+msgstr ""
+
+msgid "Todos|assigned to yourself"
+msgstr ""
+
+msgid "Todos|assigned you"
 msgstr ""
 
 msgid "Todos|has added you as an approver"
@@ -56609,6 +56699,9 @@ msgstr ""
 msgid "Todos|requested a review"
 msgstr ""
 
+msgid "Todos|requested a review from yourself"
+msgstr ""
+
 msgid "Todos|requested an OKR update for %{what}"
 msgstr ""
 
@@ -56616,6 +56709,9 @@ msgid "Todos|reviewed your merge request"
 msgstr ""
 
 msgid "Todos|set %{who} as an approver"
+msgstr ""
+
+msgid "Todos|you"
 msgstr ""
 
 msgid "Todos|yourself"
@@ -57065,12 +57161,6 @@ msgid "Trend"
 msgstr ""
 
 msgid "Trending"
-msgstr ""
-
-msgid "Trial end date"
-msgstr ""
-
-msgid "Trial start date"
 msgstr ""
 
 msgid "TrialDiscoverPage|A single application eliminates complex integrations, data checkpoints, and toolchain maintenance, resulting in greater productivity and lower cost."

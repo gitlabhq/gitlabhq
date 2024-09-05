@@ -179,6 +179,9 @@ module CycleAnalyticsHelpers
     }
 
     mr = MergeRequests::CreateService.new(project: project, current_user: user, params: opts).execute
+
+    mr.approval_state.expire_unapproved_key! if Gitlab.ee?
+
     NewMergeRequestWorker.new.perform(mr, user)
     mr
   end

@@ -17,7 +17,12 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       options: {
         instance: 1,
         parallel: { total: 2 },
-        environment: { name: 'test', url: 'http://example.com', kubernetes: { namespace: 'k8s_namespace' } }
+        environment: {
+          name: 'test',
+          url: 'http://example.com',
+          deployment_tier: 'testing',
+          kubernetes: { namespace: 'k8s_namespace' }
+        }
       }
     }
   end
@@ -39,6 +44,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       is_expected.to include('CI_NODE_TOTAL'       => '2')
       is_expected.to include('CI_ENVIRONMENT_NAME' => 'test')
       is_expected.to include('CI_ENVIRONMENT_URL'  => 'http://example.com')
+      is_expected.to include('CI_ENVIRONMENT_TIER' => 'testing')
       is_expected.to include('KUBECONFIG'          => anything)
       is_expected.to include('GITLAB_USER_ID'      => user.id.to_s)
       is_expected.to include('GITLAB_USER_EMAIL'   => user.email)

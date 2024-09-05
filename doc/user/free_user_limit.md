@@ -154,13 +154,14 @@ for GitLab Ultimate.
 
 ## Manage members in personal projects outside a group namespace
 
-Personal projects are not located in top-level group namespaces. You can manage the users in each of your
-personal projects, but you cannot have more than five users in all of your personal projects.
+Personal projects are not located in top-level group namespaces. You can manage
+the users in each of your personal projects, but you cannot have more than five
+users in all of your personal projects.
 
-You should [move your personal project to a group](../tutorials/move_personal_project_to_group/index.md) so that
-you can:
+You should [move your personal project to a group](../tutorials/move_personal_project_to_group/index.md)
+so that you can:
 
 - Increase the amount of users to more than five.
 - Purchase a paid tier subscription, additional compute minutes, or storage.
-- Use GitLab features in the group.
-- Start a trial.
+- Use [GitLab features](https://about.gitlab.com/pricing/feature-comparison/) in the group.
+- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html) for GitLab Ultimate.

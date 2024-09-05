@@ -13,22 +13,23 @@ RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planni
   end
 
   where(:widget_class, :widget_type_name) do
-    WorkItems::Widgets::Description      | Types::WorkItems::Widgets::DescriptionType
-    WorkItems::Widgets::Hierarchy        | Types::WorkItems::Widgets::HierarchyType
-    WorkItems::Widgets::Assignees        | Types::WorkItems::Widgets::AssigneesType
-    WorkItems::Widgets::Labels           | Types::WorkItems::Widgets::LabelsType
-    WorkItems::Widgets::Notes            | Types::WorkItems::Widgets::NotesType
-    WorkItems::Widgets::Notifications    | Types::WorkItems::Widgets::NotificationsType
-    WorkItems::Widgets::CurrentUserTodos | Types::WorkItems::Widgets::CurrentUserTodosType
-    WorkItems::Widgets::AwardEmoji       | Types::WorkItems::Widgets::AwardEmojiType
-    WorkItems::Widgets::LinkedItems      | Types::WorkItems::Widgets::LinkedItemsType
-    WorkItems::Widgets::LinkedItems      | Types::WorkItems::Widgets::LinkedItemsType
-    WorkItems::Widgets::StartAndDueDate  | Types::WorkItems::Widgets::StartAndDueDateType
-    WorkItems::Widgets::Milestone        | Types::WorkItems::Widgets::MilestoneType
-    WorkItems::Widgets::Participants     | Types::WorkItems::Widgets::ParticipantsType
-    WorkItems::Widgets::TimeTracking     | Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
-    WorkItems::Widgets::Designs          | Types::WorkItems::Widgets::DesignsType
-    WorkItems::Widgets::CrmContacts      | Types::WorkItems::Widgets::CrmContactsType
+    WorkItems::Widgets::Description       | Types::WorkItems::Widgets::DescriptionType
+    WorkItems::Widgets::Hierarchy         | Types::WorkItems::Widgets::HierarchyType
+    WorkItems::Widgets::Assignees         | Types::WorkItems::Widgets::AssigneesType
+    WorkItems::Widgets::Labels            | Types::WorkItems::Widgets::LabelsType
+    WorkItems::Widgets::Notes             | Types::WorkItems::Widgets::NotesType
+    WorkItems::Widgets::Notifications     | Types::WorkItems::Widgets::NotificationsType
+    WorkItems::Widgets::CurrentUserTodos  | Types::WorkItems::Widgets::CurrentUserTodosType
+    WorkItems::Widgets::AwardEmoji        | Types::WorkItems::Widgets::AwardEmojiType
+    WorkItems::Widgets::LinkedItems       | Types::WorkItems::Widgets::LinkedItemsType
+    WorkItems::Widgets::LinkedItems       | Types::WorkItems::Widgets::LinkedItemsType
+    WorkItems::Widgets::StartAndDueDate   | Types::WorkItems::Widgets::StartAndDueDateType
+    WorkItems::Widgets::Milestone         | Types::WorkItems::Widgets::MilestoneType
+    WorkItems::Widgets::Participants      | Types::WorkItems::Widgets::ParticipantsType
+    WorkItems::Widgets::TimeTracking      | Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
+    WorkItems::Widgets::Designs           | Types::WorkItems::Widgets::DesignsType
+    WorkItems::Widgets::CrmContacts       | Types::WorkItems::Widgets::CrmContactsType
+    WorkItems::Widgets::EmailParticipants | Types::WorkItems::Widgets::EmailParticipantsType
   end
 
   with_them do

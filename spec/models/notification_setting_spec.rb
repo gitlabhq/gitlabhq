@@ -183,16 +183,6 @@ RSpec.describe NotificationSetting do
     it 'does not replace other emails' do
       expect { subject }.not_to change { notification_setting_2.reload.notification_email }
     end
-
-    context 'with derisk feature flag disabled' do
-      before do
-        stub_feature_flags(reset_notification_email_on_email_destroy: false)
-      end
-
-      it 'does not do anything' do
-        expect { subject }.not_to change { notification_setting_1.reload.notification_email }
-      end
-    end
   end
 
   describe '.email_events' do

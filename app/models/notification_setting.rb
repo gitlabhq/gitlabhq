@@ -86,8 +86,6 @@ class NotificationSetting < ApplicationRecord
   end
 
   def self.reset_email_for_user!(email)
-    return unless Feature.enabled?(:reset_notification_email_on_email_destroy) # rubocop:disable Gitlab/FeatureFlagWithoutActor
-
     where(
       user_id: email.user_id,
       notification_email: email.email

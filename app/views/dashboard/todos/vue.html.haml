@@ -6,11 +6,7 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: todo_groups_requiring_saml_reauth(@todos)
 
-- add_page_specific_style 'page_bundles/todos'
-- add_issuable_stylesheet
-- user_has_todos = current_user.todos.any?
-
-- if user_has_todos
+- if current_user.todos.any?
   = render ::Layouts::PageHeadingComponent.new(_('To-Do List'))
   #js-todos-app-root
 - else

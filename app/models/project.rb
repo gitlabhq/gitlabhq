@@ -3004,6 +3004,17 @@ class Project < ApplicationRecord
     environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
+  def batch_loaded_environment_by_name(name)
+    # This code path has caused N+1s in the past, since environments are only indirectly
+    # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
+    # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
+    BatchLoader.for(name).batch(key: id) do |names, loader, args|
+      Environment.where(name: names, project: id).find_each do |environment|
+        loader.call(environment.name, environment)
+      end
+    end
+  end
+
   def latest_jira_import
     jira_imports.last
   end

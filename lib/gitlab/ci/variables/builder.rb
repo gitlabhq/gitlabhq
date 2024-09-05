@@ -203,9 +203,9 @@ module Gitlab
               variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
 
               if job_attr[:options].present?
-                variables.append(key: 'CI_ENVIRONMENT_ACTION', value: job_attr[:options].fetch(:environment, {}).fetch(:action, 'start'))
-                variables.append(key: 'CI_ENVIRONMENT_TIER', value: job_attr[:options].dig(:environment, :deployment_tier))
-                variables.append(key: 'CI_ENVIRONMENT_URL', value: job_attr[:options].dig(:environment, :url)) if job_attr[:options].dig(:environment, :url)
+                variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action_from_job_options(job_attr[:options]))
+                variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier_from_job_options(job_attr[:options], environment))
+                variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url_from_job_options(job_attr[:options], environment))
               end
             end
           end
@@ -259,6 +259,26 @@ module Gitlab
           return unless @pipeline.tag?
 
           project.releases.find_by_tag(@pipeline.ref)
+        end
+
+        def environment_action_from_job_options(options)
+          options.fetch(:environment, {}).fetch(:action, 'start')
+        end
+
+        # We use the `environment` parameter instead of `options[:environment]` because `environment` is expanded.
+        def environment_tier_from_job_options(options, environment)
+          options.dig(:environment, :deployment_tier) || persisted_environment(environment).try(:tier)
+        end
+
+        # We use the `environment` parameter instead of `options[:environment]` because `environment` is expanded.
+        def environment_url_from_job_options(options, environment)
+          options.dig(:environment, :url) || persisted_environment(environment).try(:external_url)
+        end
+
+        def persisted_environment(environment)
+          strong_memoize_with(:persisted_environment, environment) do
+            project.batch_loaded_environment_by_name(environment)
+          end
         end
       end
     end

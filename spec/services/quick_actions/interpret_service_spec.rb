@@ -2434,6 +2434,48 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    shared_examples 'only available when issue_or_work_item_feature_flag_enabled' do |command|
+      context 'when issue' do
+        it 'is available' do
+          _, explanations = service.explain(command, issue)
+
+          expect(explanations).not_to be_empty
+        end
+      end
+
+      context 'when project work item' do
+        let_it_be(:work_item) { create(:work_item, project: project) }
+
+        it 'is available' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).not_to be_empty
+        end
+
+        context 'when feature flag disabled' do
+          before do
+            stub_feature_flags(work_items_alpha: false)
+          end
+
+          it 'is not available' do
+            _, explanations = service.explain(command, work_item)
+
+            expect(explanations).to be_empty
+          end
+        end
+      end
+
+      context 'when group work item' do
+        let_it_be(:work_item) { create(:work_item, :group_level) }
+
+        it 'is not available' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to be_empty
+        end
+      end
+    end
+
     describe 'add_email command' do
       let_it_be(:issuable) { issue }
 
@@ -2562,6 +2604,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :add_email))
         end
       end
+
+      it_behaves_like 'only available when issue_or_work_item_feature_flag_enabled', '/add_email'
     end
 
     describe 'remove_email command' do

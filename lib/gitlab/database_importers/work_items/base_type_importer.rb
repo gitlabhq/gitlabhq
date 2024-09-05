@@ -29,7 +29,8 @@ module Gitlab
           time_tracking: 'Time tracking',
           designs: 'Designs',
           development: 'Development',
-          crm_contacts: 'CRM contacts'
+          crm_contacts: 'CRM contacts',
+          email_participants: 'Email participants'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -41,6 +42,7 @@ module Gitlab
             :description,
             :designs,
             :development,
+            :email_participants,
             :health_status,
             :hierarchy,
             :iteration,
@@ -61,6 +63,7 @@ module Gitlab
             :current_user_todos,
             :description,
             :development,
+            :email_participants,
             :hierarchy,
             :linked_items,
             :notes,
@@ -166,6 +169,7 @@ module Gitlab
             :crm_contacts,
             :current_user_todos,
             :description,
+            :email_participants,
             :health_status,
             :hierarchy,
             :iteration,

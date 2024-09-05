@@ -100,6 +100,11 @@ module Import
             model_relation = model.where(
               "#{composite_key_columns(composite_keys)} IN #{composite_key_values(composite_keys)}"
             )
+          elsif primary_key.is_a?(Array)
+            composite_keys = placeholder_reference_batch.pluck(:composite_key)
+            key = composite_keys.first.keys
+            values = composite_keys.map(&:values)
+            model_relation = model.where({ key => values })
           else
             model_relation = model.primary_key_in(placeholder_reference_batch.pluck(:numeric_key))
           end

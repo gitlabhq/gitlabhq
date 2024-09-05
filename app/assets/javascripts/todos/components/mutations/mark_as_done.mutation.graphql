@@ -1,0 +1,10 @@
+#import "../queries/todo.fragment.graphql"
+
+mutation markAsDone($todoId: TodoID!) {
+  toggleStatus: todoMarkDone(input: { id: $todoId }) {
+    todo {
+      ...Todo
+    }
+    errors
+  }
+}

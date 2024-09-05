@@ -387,7 +387,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/components/pajamas/alert_component_spec.rb'
     - 'spec/components/pajamas/avatar_component_spec.rb'
     - 'spec/components/pajamas/banner_component_spec.rb'
-    - 'spec/components/pajamas/button_component_spec.rb'
     - 'spec/components/pajamas/checkbox_component_spec.rb'
     - 'spec/components/pajamas/checkbox_tag_component_spec.rb'
     - 'spec/components/pajamas/component_spec.rb'

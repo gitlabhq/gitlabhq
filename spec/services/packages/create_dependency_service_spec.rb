@@ -81,7 +81,7 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
       context 'with existing dependencies' do
         let(:name_and_version_pattern) { dependencies['dependencies'].to_a.flatten }
 
-        before do
+        let!(:dependency) do
           create(
             :packages_dependency,
             name: name_and_version_pattern[0],
@@ -116,10 +116,18 @@ RSpec.describe Packages::CreateDependencyService, feature_category: :package_reg
           end
         end
 
+        # TODO: remove the test when all packages dependencies have a `project_id`.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/481541
         context 'without project' do
           let(:project) { nil }
 
           it_behaves_like 'reuses dependencies'
+
+          it 'updates the project for existing dependency' do
+            subject
+
+            expect(dependency.reload.project_id).to eq(package.project_id)
+          end
         end
       end
 
