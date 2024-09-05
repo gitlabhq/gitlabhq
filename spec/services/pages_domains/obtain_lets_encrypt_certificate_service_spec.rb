@@ -130,6 +130,17 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
 
       service.execute
     end
+
+    describe 'when #request_certificate returns a client error' do
+      before do
+        allow(api_order).to receive(:request_certificate).and_raise(
+          Acme::Client::Error::BadCSR,
+          'Error finalizing order :: CN was longer than 64 bytes'
+        )
+      end
+
+      it_behaves_like 'saves error and sends notification'
+    end
   end
 
   context 'when order is valid' do

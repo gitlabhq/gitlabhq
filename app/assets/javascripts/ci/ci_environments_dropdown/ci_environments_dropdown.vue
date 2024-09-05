@@ -1,6 +1,6 @@
 <script>
 import { debounce, uniq } from 'lodash';
-import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
+import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__, sprintf } from '~/locale';
 import { convertEnvironmentScope } from './utils';
@@ -29,7 +29,6 @@ export default {
     GlCollapsibleListbox,
     GlDropdownDivider,
     GlDropdownItem,
-    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -112,7 +111,8 @@ export default {
       }
 
       return (
-        this.searchTerm && ![...this.environments, this.customEnvScope].includes(this.searchTerm)
+        this.searchTerm?.includes('*') &&
+        ![...this.environments, this.customEnvScope].includes(this.searchTerm)
       );
     },
     shouldRenderDivider() {
@@ -145,8 +145,8 @@ export default {
   },
   ENVIRONMENT_QUERY_LIMIT,
   i18n: {
-    maxEnvsNote: s__(
-      'CiVariable|Maximum of %{limit} environments listed. For more environments, enter a search query.',
+    searchQueryNote: s__(
+      'CiVariable|Enter a search query to find more environments, or use * to create a wildcard.',
     ),
   },
 };
@@ -167,15 +167,9 @@ export default {
   >
     <template #footer>
       <gl-dropdown-divider v-if="shouldRenderDivider" />
-      <div data-testid="max-envs-notice">
-        <gl-dropdown-item class="gl-list-none" disabled>
-          <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-text-sm">
-            <template #limit>
-              {{ $options.ENVIRONMENT_QUERY_LIMIT }}
-            </template>
-          </gl-sprintf>
-        </gl-dropdown-item>
-      </div>
+      <gl-dropdown-item class="gl-list-none" disabled data-testid="search-query-note">
+        {{ $options.i18n.searchQueryNote }}
+      </gl-dropdown-item>
       <div v-if="shouldRenderCreateButton">
         <!-- TODO: Rethink create wildcard button. https://gitlab.com/gitlab-org/gitlab/-/issues/396928 -->
         <gl-dropdown-item

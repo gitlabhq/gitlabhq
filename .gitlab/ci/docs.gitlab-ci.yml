@@ -52,6 +52,7 @@ docs-lint markdown:
   stage: lint
   needs: []
   script:
+    - apk add libuuid
     - source ./scripts/utils.sh
     - yarn_install_script
     - install_gitlab_gem

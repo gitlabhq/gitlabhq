@@ -41,7 +41,6 @@ Style/InlineDisableAnnotation:
     - 'app/controllers/concerns/membership_actions.rb'
     - 'app/controllers/concerns/milestone_actions.rb'
     - 'app/controllers/concerns/notes_actions.rb'
-    - 'app/controllers/concerns/planning_hierarchy.rb'
     - 'app/controllers/concerns/preferred_language_switcher.rb'
     - 'app/controllers/concerns/preview_markdown.rb'
     - 'app/controllers/concerns/registry/connection_errors_handler.rb'

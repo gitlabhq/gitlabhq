@@ -9,7 +9,6 @@ class ProjectsController < Projects::ApplicationController
   include ImportUrlParams
   include FiltersEvents
   include SourcegraphDecorator
-  include PlanningHierarchy
 
   REFS_LIMIT = 100
 
@@ -66,7 +65,6 @@ class ProjectsController < Projects::ApplicationController
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
   feature_category :code_review_workflow, [:unfoldered_environment_names]
-  feature_category :portfolio_management, [:planning_hierarchy]
 
   urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
   urgency :low, [:preview_markdown, :new_issuable_address]

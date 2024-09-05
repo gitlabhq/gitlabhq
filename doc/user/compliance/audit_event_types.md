@@ -379,6 +379,8 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`project_feature_model_experiments_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121027) | Model experiments access level was updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412384) | Project |
+| [`ml_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165011) | ML model is created | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
+| [`ml_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165011) | ML model destroyed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
 | [`project_feature_model_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138399) | Model registry access level was updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) | Project |
 
 ### Not categorized

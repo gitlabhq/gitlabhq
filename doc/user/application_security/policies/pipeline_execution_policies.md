@@ -65,7 +65,11 @@ Note the following:
 
 ### Job naming best practice
 
-> - Naming conflict handling was introduced in GitLab 17.4 with a flag named `pipeline_execution_policy_suffix`. Disabled by default.
+> - Naming conflict handling [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473189) in GitLab 17.4 with a flag named `pipeline_execution_policy_suffix`. Disabled by default.
+
+FLAG:
+The availability of job naming conflict handling is controlled by a feature flag.
+For more information, see the history.
 
 There is no visible indicator for jobs coming from a security policy. Adding a unique prefix or suffix to job names makes it easier to identify them and avoid job name collisions.
 

@@ -506,7 +506,7 @@ about the renewal.
   renew for any other reason, the email tells you to contact our Sales team or
   [manually renew in the Customers Portal](#renew-subscription-manually).
 - If there are no issues, the email specifies the:
-  - Names and quantity of the products being renewed
+  - Names and quantity of the products being renewed.
   - Total amount you owe. If your usage increases before renewal, this amount will change.
 
 #### Enable or disable automatic subscription renewal

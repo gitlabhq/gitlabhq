@@ -1173,7 +1173,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/rubygem_packages_spec.rb'
     - 'spec/requests/api/search_spec.rb'
     - 'spec/requests/api/wikis_spec.rb'
-    - 'spec/requests/concerns/planning_hierarchy_spec.rb'
     - 'spec/requests/groups/deploy_tokens_controller_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/groups/settings/applications_controller_spec.rb'

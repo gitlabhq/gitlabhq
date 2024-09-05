@@ -219,6 +219,7 @@ export default {
       <work-item-link-child-metadata
         :reference="displayReference"
         :iid="childItem.iid"
+        :is-child-item-open="isChildItemOpen"
         :metadata-widgets="metadataWidgets"
         :show-weight="showWeight"
         :work-item-type="childItemType"

@@ -33,16 +33,20 @@ module PagesDomains
 
       api_order = ::Gitlab::LetsEncrypt::Client.new.load_order(acme_order.url)
 
-      # https://www.rfc-editor.org/rfc/rfc8555#section-7.1.6 - statuses diagram
-      case api_order.status
-      when 'ready'
-        api_order.request_certificate(private_key: acme_order.private_key, domain: pages_domain.domain)
-        PagesDomainSslRenewalWorker.perform_in(CERTIFICATE_PROCESSING_DELAY, pages_domain.id)
-      when 'valid'
-        save_certificate(acme_order.private_key, api_order)
-        acme_order.destroy!
-      when 'invalid'
-        save_order_error(acme_order, get_challenge_error(api_order))
+      begin
+        # https://www.rfc-editor.org/rfc/rfc8555#section-7.1.6 - statuses diagram
+        case api_order.status
+        when 'ready'
+          api_order.request_certificate(private_key: acme_order.private_key, domain: pages_domain.domain)
+          PagesDomainSslRenewalWorker.perform_in(CERTIFICATE_PROCESSING_DELAY, pages_domain.id)
+        when 'valid'
+          save_certificate(acme_order.private_key, api_order)
+          acme_order.destroy!
+        when 'invalid'
+          save_order_error(acme_order, get_challenge_error(api_order))
+        end
+      rescue Acme::Client::Error => e
+        save_order_error(acme_order, e.message)
       end
     end
 

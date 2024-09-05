@@ -11408,9 +11408,6 @@ msgstr ""
 msgid "Child"
 msgstr ""
 
-msgid "Child epic"
-msgstr ""
-
 msgid "Child issues and epics"
 msgstr ""
 
@@ -11935,10 +11932,10 @@ msgstr ""
 msgid "CiVariable|Define a CI/CD variable in the UI"
 msgstr ""
 
-msgid "CiVariable|GitLab CI/CD supports OpenID Connect (OIDC) to give your build and deployment jobs access to cloud credentials and services. %{linkStart}How do I configure OIDC for my cloud provider?%{linkEnd}"
+msgid "CiVariable|Enter a search query to find more environments, or use * to create a wildcard."
 msgstr ""
 
-msgid "CiVariable|Maximum of %{limit} environments listed. For more environments, enter a search query."
+msgid "CiVariable|GitLab CI/CD supports OpenID Connect (OIDC) to give your build and deployment jobs access to cloud credentials and services. %{linkStart}How do I configure OIDC for my cloud provider?%{linkEnd}"
 msgstr ""
 
 msgid "CiVariable|New environment"
@@ -20937,6 +20934,9 @@ msgstr ""
 msgid "Enter a number from 0 to 100."
 msgstr ""
 
+msgid "Enter a search query to find more branches, or use * to create a wildcard."
+msgstr ""
+
 msgid "Enter a valid URL"
 msgstr ""
 
@@ -27075,37 +27075,10 @@ msgstr ""
 msgid "Hide values"
 msgstr ""
 
-msgid "Hierarchy|Current structure"
-msgstr ""
-
-msgid "Hierarchy|Deliver value more efficiently by breaking down necessary work into a hierarchical structure. This structure helps teams understand scope, priorities, and how work cascades up toward larger goals."
-msgstr ""
-
-msgid "Hierarchy|Help us improve work items in GitLab!"
-msgstr ""
-
-msgid "Hierarchy|Is there a framework or type of work item you wish you had access to in GitLab? Give us your feedback and help us build the experiences valuable to you."
-msgstr ""
-
-msgid "Hierarchy|Planning hierarchy"
-msgstr ""
-
 msgid "Hierarchy|Something went wrong while fetching ancestors."
 msgstr ""
 
 msgid "Hierarchy|Something went wrong while fetching children."
-msgstr ""
-
-msgid "Hierarchy|Take the work items survey"
-msgstr ""
-
-msgid "Hierarchy|These items are unavailable in the current structure."
-msgstr ""
-
-msgid "Hierarchy|Unavailable structure"
-msgstr ""
-
-msgid "Hierarchy|You can start using these items now."
 msgstr ""
 
 msgid "High - S2"
@@ -32906,9 +32879,6 @@ msgid "Maximum number of value streams per namespace exceeded"
 msgstr ""
 
 msgid "Maximum number of variables loaded (2000)"
-msgstr ""
-
-msgid "Maximum of %{limit} branches listed. For more branches, enter a search query."
 msgstr ""
 
 msgid "Maximum of 255 characters"
@@ -40555,9 +40525,6 @@ msgid "Plan"
 msgstr ""
 
 msgid "Plan:"
-msgstr ""
-
-msgid "Planning hierarchy"
 msgstr ""
 
 msgid "PlantUML"
@@ -49580,6 +49547,9 @@ msgid "SecurityPolicies|Invalid or empty policy"
 msgstr ""
 
 msgid "SecurityReports|%{count} Selected"
+msgstr ""
+
+msgid "SecurityReports|%{count}+"
 msgstr ""
 
 msgid "SecurityReports|%{count}+ projects"

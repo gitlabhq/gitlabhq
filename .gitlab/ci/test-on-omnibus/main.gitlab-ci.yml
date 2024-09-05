@@ -185,6 +185,51 @@ gitaly-transactions-selective-parallel:
       variables:
         QA_TESTS: ""
 
+# ========== gitaly reftables backend ===========
+# Verifies that E2E tests that interact with the gitaly backend work when the reftables backend is in use
+# https://about.gitlab.com/blog/2024/05/30/a-beginners-guide-to-the-git-reftable-format/
+# https://gitlab.com/groups/gitlab-org/-/epics/14946
+gitaly-reftables-backend:
+  extends:
+    - .parallel
+    - .qa
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
+  rules:
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-reftables-backend-selective:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
+  rules:
+    - !reference [.rules:test:qa-selective, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-reftables-enabled-backend-parallel:
+  extends:
+    - .qa
+    - .parallel
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_GIT_DEFAULT_REF_FORMAT: 'reftable'
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
 # ========== git sha256 enabled ===========
 git-sha256-repositories:
   when: manual
