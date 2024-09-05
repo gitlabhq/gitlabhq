@@ -3279,6 +3279,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: import_delete_placeholder_user
+  :worker_name: Import::DeletePlaceholderUserWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
   :feature_category: :team_planning

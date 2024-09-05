@@ -72,8 +72,8 @@ export default {
 };
 </script>
 <template>
-  <div ref="milestoneDetails" class="issue-milestone-details">
-    <gl-icon :size="16" class="flex-shrink-0 gl-mr-2" name="milestone" />
+  <div ref="milestoneDetails" class="issue-milestone-details gl-flex gl-max-w-15 gl-gap-2">
+    <gl-icon :size="16" class="flex-shrink-0" name="milestone" />
     <span class="milestone-title gl-inline-block gl-truncate">{{ milestone.title }}</span>
     <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
       <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />

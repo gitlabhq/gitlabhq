@@ -165,5 +165,25 @@ export const kubernetesQueries = {
         }
       });
   },
+  k8sEvents(_, { configuration, involvedObjectName, namespace }) {
+    const fieldSelector = `involvedObject.name=${involvedObjectName}`;
+    const config = new Configuration(configuration);
+
+    const coreV1Api = new CoreV1Api(config);
+    const eventsApi = coreV1Api.listCoreV1NamespacedEvent({ namespace, fieldSelector });
+    return eventsApi
+      .then((res) => {
+        const data = res?.items || [];
+
+        return data;
+      })
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      });
+  },
   k8sLogs,
 };

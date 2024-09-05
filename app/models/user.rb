@@ -2539,6 +2539,8 @@ class User < ApplicationRecord
   end
 
   def should_delay_delete?(deleted_by)
+    return false if placeholder?
+
     is_deleting_own_record = deleted_by.id == id
 
     is_deleting_own_record &&

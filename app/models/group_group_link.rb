@@ -55,8 +55,8 @@ class GroupGroupLink < ApplicationRecord
 
   alias_method :shared_from, :shared_group
 
-  def self.search(query)
-    joins(:shared_with_group).merge(Group.search(query))
+  def self.search(query, **options)
+    joins(:shared_with_group).merge(Group.search(query, **options))
   end
 
   def self.access_options

@@ -31158,6 +31158,9 @@ msgstr ""
 msgid "KubernetesDashboard|Deployments"
 msgstr ""
 
+msgid "KubernetesDashboard|Events"
+msgstr ""
+
 msgid "KubernetesDashboard|Failed"
 msgstr ""
 
@@ -31191,6 +31194,9 @@ msgstr ""
 msgid "KubernetesDashboard|No agent selected"
 msgstr ""
 
+msgid "KubernetesDashboard|No events available"
+msgstr ""
+
 msgid "KubernetesDashboard|Pending"
 msgstr ""
 
@@ -31216,6 +31222,9 @@ msgid "KubernetesDashboard|Service"
 msgstr ""
 
 msgid "KubernetesDashboard|Services"
+msgstr ""
+
+msgid "KubernetesDashboard|Source: %{source}"
 msgstr ""
 
 msgid "KubernetesDashboard|Spec"

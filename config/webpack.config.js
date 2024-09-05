@@ -302,8 +302,25 @@ module.exports = {
     rules: [
       {
         type: 'javascript/auto',
+        exclude: /pdfjs-dist/,
         test: /\.mjs$/,
         use: [],
+      },
+      {
+        test: /(pdfjs).*\.js?$/,
+        include: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              plugins: [
+                '@babel/plugin-transform-optional-chaining',
+                '@babel/plugin-transform-logical-assignment-operators',
+              ],
+              ...defaultJsOptions,
+            },
+          },
+        ],
       },
       {
         test: /(@gitlab\/web-ide).*\.js?$/,

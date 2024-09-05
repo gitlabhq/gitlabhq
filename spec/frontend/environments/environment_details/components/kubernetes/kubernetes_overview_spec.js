@@ -339,6 +339,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           expect(findWorkloadDetails().props('item')).toEqual(mockPodsTableItems[0]);
         });
 
+        it('provides the agent access configuration to the drawer', () => {
+          expect(findWorkloadDetails().props('configuration')).toEqual(configuration);
+        });
+
         it('renders a title with the selected item name', () => {
           expect(findDrawer().text()).toContain(mockPodsTableItems[0].name);
         });
@@ -383,6 +387,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         it('provides the resource details to the drawer', () => {
           const selectedItem = {
             name: fluxKustomization.metadata.name,
+            namespace: fluxKustomization.metadata.namespace,
             status: 'reconciled',
             labels: fluxKustomization.metadata.labels,
             annotations: fluxKustomization.metadata.annotations,

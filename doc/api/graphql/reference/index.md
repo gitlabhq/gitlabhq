@@ -5427,6 +5427,29 @@ Input type: `GroupMemberBulkUpdateInput`
 | <a id="mutationgroupmemberbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationgroupmemberbulkupdategroupmembers"></a>`groupMembers` | [`[GroupMember!]`](#groupmember) | Group members after mutation. |
 
+### `Mutation.groupMembersExport`
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Input type: `GroupMembersExportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupmembersexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupmembersexportgroupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupmembersexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupmembersexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupmembersexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
+
 ### `Mutation.groupSavedReplyCreate`
 
 DETAILS:

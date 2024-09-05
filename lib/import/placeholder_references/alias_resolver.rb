@@ -151,6 +151,12 @@ module Import
         column
       end
 
+      def self.models_with_columns
+        ALIASES.values
+          .map { |versions| versions[versions.keys.max] }
+          .map { |data| [data[:model], data[:columns].values] }
+      end
+
       private_class_method def self.track_error_for_missing(model:, column: nil, version: nil)
         message = "ALIASES must be extended to include #{model}"
         message += ".#{column}" if column

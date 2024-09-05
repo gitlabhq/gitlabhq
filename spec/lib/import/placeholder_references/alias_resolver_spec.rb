@@ -204,4 +204,38 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
       end
     end
   end
+
+  describe ".models_with_columns" do
+    subject(:models_with_columns) { described_class.models_with_columns }
+
+    it "returns models with all their columns" do
+      expect(models_with_columns).to include([Approval, ["user_id"]])
+    end
+
+    context "when there are multiple versions for a key" do
+      let(:aliases) do
+        {
+          "Note" => {
+            1 => {
+              model: Note,
+              columns: { "author_id" => "author_id" }
+            },
+            2 => {
+              model: Note,
+              columns: { "author_id" => "user_id" }
+            }
+          }
+        }
+      end
+
+      before do
+        stub_const("#{described_class}::ALIASES", aliases)
+      end
+
+      it "only includes the last version" do
+        expect(models_with_columns).to include([Note, ["user_id"]])
+        expect(models_with_columns).not_to include([Note, ["author_id"]])
+      end
+    end
+  end
 end

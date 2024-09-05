@@ -6549,13 +6549,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'with possible spam contribution' do
         context 'with comments' do
-          it_behaves_like 'schedules the record for deletion with the correct delay' do
-            before do
-              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+          before do
+            allow(user).to receive(:has_possible_spam_contributions?).and_call_original
 
-              note = create(:note_on_issue, author: user)
-              create(:event, :commented, target: note, author: user)
-            end
+            note = create(:note_on_issue, author: user)
+            create(:event, :commented, target: note, author: user)
+          end
+
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          context 'when user is a placeholder' do
+            let(:user) { create(:user, :placeholder, note: "existing note") }
+
+            it_behaves_like 'schedules user for deletion without delay'
           end
         end
 

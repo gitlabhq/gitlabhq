@@ -77,7 +77,7 @@ module Groups::GroupMembersHelper
 
   def group_group_links_list_data(group, include_relations, search)
     group_links = group_group_links(group, include_relations)
-    group_links = group_links.search(search) if search
+    group_links = group_links.search(search, include_parents: true) if search
 
     {
       members: group_group_links_serialized(group, group_links),

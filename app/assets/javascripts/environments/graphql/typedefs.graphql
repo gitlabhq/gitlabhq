@@ -118,6 +118,14 @@ type K8sLogsData {
   error: JSON
 }
 
+type K8sEvent {
+  lastTimestamp: String
+  message: String
+  reason: String
+  source: JSON
+  type: String
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -137,6 +145,11 @@ extend type Query {
   fluxHelmRelease(configuration: LocalConfiguration, fluxResourcePath: String): LocalFluxHelmRelease
   k8sDeployments(configuration: LocalConfiguration, namespace: String): [LocalK8sDeployment]
   k8sLogs(configuration: LocalConfiguration, namespace: String, podName: String): [K8sLogsData]
+  k8sEvents(
+    configuration: LocalConfiguration
+    namespace: String
+    involvedObjectName: String
+  ): [K8sEvent]
 }
 
 input ResourceTypeParam {

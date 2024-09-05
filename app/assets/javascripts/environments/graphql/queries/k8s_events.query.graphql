@@ -1,0 +1,17 @@
+query getK8sEvents(
+  $configuration: K8sDashboardConfig
+  $involvedObjectName: String
+  $namespace: String
+) {
+  k8sEvents(
+    configuration: $configuration
+    involvedObjectName: $involvedObjectName
+    namespace: $namespace
+  ) @client {
+    lastTimestamp
+    message
+    reason
+    source
+    type
+  }
+}

@@ -192,7 +192,7 @@
     "orderedmap": "^2.1.1",
     "papaparse": "^5.3.1",
     "patch-package": "6.5.1",
-    "pdfjs-dist": "^2.16.105",
+    "pdfjs-dist": "^3.11.174",
     "pikaday": "^1.8.0",
     "pinia": "^2.2.2",
     "popper.js": "^1.16.1",
