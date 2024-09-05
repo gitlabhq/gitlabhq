@@ -1,4 +1,4 @@
-import { GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
@@ -79,10 +79,8 @@ describe('Assignee component', () => {
       const assignee = collapsedChildren.at(0);
 
       expect(collapsedChildren.length).toBe(1);
-      expect(assignee.findComponent(GlAvatar).attributes('src')).toBe(UsersMock.user.avatar);
-      expect(assignee.findComponent(GlAvatar).attributes('alt')).toBe(
-        `${UsersMock.user.name}'s avatar`,
-      );
+      expect(assignee.find('.avatar').attributes('src')).toBe(UsersMock.user.avatar);
+      expect(assignee.find('.avatar').attributes('alt')).toBe(`${UsersMock.user.name}'s avatar`);
 
       expect(trimText(assignee.find('.author').text())).toBe(UsersMock.user.name);
     });
@@ -102,15 +100,15 @@ describe('Assignee component', () => {
 
       const first = collapsedChildren.at(0);
 
-      expect(first.findComponent(GlAvatar).attributes('src')).toBe(users[0].avatar_url);
-      expect(first.findComponent(GlAvatar).attributes('alt')).toBe(`${users[0].name}'s avatar`);
+      expect(first.find('.avatar').attributes('src')).toBe(users[0].avatar_url);
+      expect(first.find('.avatar').attributes('alt')).toBe(`${users[0].name}'s avatar`);
 
       expect(trimText(first.find('.author').text())).toBe(users[0].name);
 
       const second = collapsedChildren.at(1);
 
-      expect(second.findComponent(GlAvatar).attributes('src')).toBe(users[1].avatar_url);
-      expect(second.findComponent(GlAvatar).attributes('alt')).toBe(`${users[1].name}'s avatar`);
+      expect(second.find('.avatar').attributes('src')).toBe(users[1].avatar_url);
+      expect(second.find('.avatar').attributes('alt')).toBe(`${users[1].name}'s avatar`);
 
       expect(trimText(second.find('.author').text())).toBe(users[1].name);
     });
@@ -128,8 +126,8 @@ describe('Assignee component', () => {
 
       const first = collapsedChildren.at(0);
 
-      expect(first.findComponent(GlAvatar).attributes('src')).toBe(users[0].avatar_url);
-      expect(first.findComponent(GlAvatar).attributes('alt')).toBe(`${users[0].name}'s avatar`);
+      expect(first.find('.avatar').attributes('src')).toBe(users[0].avatar_url);
+      expect(first.find('.avatar').attributes('alt')).toBe(`${users[0].name}'s avatar`);
 
       expect(trimText(first.find('.author').text())).toBe(users[0].name);
 

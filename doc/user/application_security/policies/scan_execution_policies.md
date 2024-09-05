@@ -94,13 +94,18 @@ the following sections and tables provide an alternative.
 
 ## Scan execution policy schema
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
 | `description` (optional) | `string` | true |  | Description of the policy. |
 | `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
+| `actions` | `array` of actions | true |  | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
 
 ## `pipeline` rule type
 

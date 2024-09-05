@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::Backup::Cli::Targets::ObjectStorage::Google do
   let(:gitlab_config) { class_double("GitlabSettings::Settings") }
   let(:supported_object_store) do

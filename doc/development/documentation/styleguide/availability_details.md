@@ -57,22 +57,21 @@ For tier, choose one:
 Document add-ons by using the phrase `with` and the add-on.
 For example, `with GitLab Duo Pro`.
 
+As of August, 2024, all GitLab Duo features except Code Suggestions have
+forward-looking tier statements. Use these type of statements until further notice.
+
 The possibilities are:
 
 ```markdown
-**Tier:** Premium with GitLab Duo Pro
-**Tier:** Premium with GitLab Duo Pro or Ultimate with GitLab Duo Pro or Enterprise
-**Tier:** Ultimate with GitLab Duo Pro
-**Tier:** Ultimate with GitLab Duo Pro or Enterprise
-**Tier:** Ultimate with GitLab Duo Enterprise
+**Tier:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 ```
-
-Do not use a period at the end of the phrase.
 
 You might have to differentiate which add-on applies for each offering (GitLab.com, Dedicated, self-managed). If you have to differentiate, use this format:
 
 ```markdown
-**Tier: GitLab.com and Self-managed:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md) **GitLab Dedicated:** GitLab Duo Pro or Enterprise
+**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 ```
 
 NOTE:

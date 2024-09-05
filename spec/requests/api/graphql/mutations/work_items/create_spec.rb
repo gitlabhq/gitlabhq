@@ -341,7 +341,8 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
     end
 
     context 'with linked items widget input' do
-      let_it_be(:items) { create_list(:work_item, 2, :task, project: project) }
+      let_it_be(:item1_global_id) { create(:work_item, :task, project: project).to_global_id.to_s }
+      let_it_be(:item2_global_id) { create(:work_item, :task, project: project).to_global_id.to_s }
 
       let(:widgets_response) { mutation_response['workItem']['widgets'] }
 
@@ -368,7 +369,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         {
           title: 'item1',
           workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
-          linkedItemsWidget: { 'workItemsIds' => items.map(&:to_gid).map(&:to_s), 'linkType' => 'RELATED' }
+          linkedItemsWidget: { 'workItemsIds' => [item1_global_id, item2_global_id], 'linkType' => 'RELATED' }
         }
       end
 
@@ -382,8 +383,8 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         expect(widgets_response).to include(
           {
             'linkedItems' => { 'nodes' => [
-              { 'linkType' => 'relates_to', "workItem" => { "id" => items[1].to_global_id.to_s } },
-              { 'linkType' => 'relates_to', "workItem" => { "id" => items[0].to_global_id.to_s } }
+              { 'linkType' => 'relates_to', "workItem" => { "id" => item2_global_id } },
+              { 'linkType' => 'relates_to', "workItem" => { "id" => item1_global_id } }
             ] },
             'type' => 'LINKED_ITEMS'
           }
@@ -400,7 +401,9 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
 
       context 'with invalid items' do
-        let_it_be(:items) { create_list(:work_item, 2, :task, project: create(:project, :private)) }
+        let_it_be(:private_project) { create(:project, :private) }
+        let_it_be(:item1_global_id) { create(:work_item, :task, project: private_project).to_global_id.to_s }
+        let_it_be(:item2_global_id) { create(:work_item, :task, project: private_project).to_global_id.to_s }
 
         it 'creates the work item without linking items' do
           expect do

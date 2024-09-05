@@ -118,7 +118,7 @@ module Projects
 
       # overridden in EE
       def permitted_project_params
-        {
+        [
           incident_management_setting_attributes: ::Gitlab::Tracking::IncidentManagement.tracking_keys.keys,
 
           error_tracking_setting_attributes: [
@@ -128,7 +128,7 @@ module Projects
             :token,
             { project: [:slug, :name, :organization_slug, :organization_name, :sentry_project_id] }
           ]
-        }
+        ]
       end
     end
   end

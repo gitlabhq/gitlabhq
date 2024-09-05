@@ -21,6 +21,10 @@
     margin-top: $gl-spacing-scale-2;
   }
 
+  .avatar-inline {
+    margin-bottom: 0;
+  }
+
   .has-warning {
     .description {
       color: $gray-900;

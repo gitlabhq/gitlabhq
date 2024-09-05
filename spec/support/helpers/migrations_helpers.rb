@@ -14,9 +14,7 @@ module MigrationsHelpers
     return true unless milestone
 
     migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
-    min_milestone = Gitlab::VersionInfo.parse_from_milestone(
-      ::Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION
-    )
+    min_milestone = Gitlab::Database.min_schema_gitlab_version
 
     migration_milestone < min_milestone
   end

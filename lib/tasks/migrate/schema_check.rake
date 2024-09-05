@@ -15,7 +15,7 @@ task schema_version_check: :environment do
   # But a database with existing migrations less than our min version is not
   if schema_version > 0 && schema_version < minimum_migration_version
     raise "Your current database version is too old to be migrated. " \
-          "You should upgrade to GitLab #{Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION} before moving to this version. " \
+          "You should upgrade to GitLab #{Gitlab::Database.min_schema_gitlab_version} before moving to this version. " \
           "Please see https://docs.gitlab.com/ee/policy/maintenance.html#upgrade-recommendations"
   end
 end

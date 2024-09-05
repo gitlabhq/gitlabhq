@@ -11,10 +11,6 @@
     }
   }
 
-  .home-panel-metadata {
-    line-height: $gl-btn-line-height;
-  }
-
   .home-panel-description {
     @include media-breakpoint-up(md) {
       font-size: $gl-font-size-large;

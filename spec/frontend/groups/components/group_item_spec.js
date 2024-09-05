@@ -260,8 +260,9 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.folder-toggle-wrap')).toBeDefined();
       expect(vm.$el.querySelector('.folder-toggle-wrap .item-type-icon')).toBeDefined();
 
-      expect(vm.$el.querySelector('.gl-avatar')).toBeDefined();
-      expect(vm.$el.querySelector('.gl-avatar a.no-expand')).toBeDefined();
+      expect(vm.$el.querySelector('.avatar-container')).toBeDefined();
+      expect(vm.$el.querySelector('.avatar-container a.no-expand')).toBeDefined();
+      expect(vm.$el.querySelector('.avatar-container .avatar')).toBeDefined();
 
       expect(vm.$el.querySelector('.title')).toBeDefined();
       expect(vm.$el.querySelector('.title a.no-expand')).toBeDefined();

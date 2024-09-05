@@ -863,6 +863,11 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-context-header {
+  .avatar-container {
+    flex: 0 0 auto;
+    margin-right: 0;
+  }
+
   .ide-sidebar-project-title {
     margin-left: $ide-tree-text-start - $ide-project-avatar-end;
   }

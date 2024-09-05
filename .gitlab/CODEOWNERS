@@ -164,7 +164,7 @@ Dangerfile
 /config/upgrade_path.yml
 
 # Secure & Threat Management ownership delineation
-# https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
+# https://handbook.gitlab.com/handbook/engineering/development/sec/delineate-sec/#technical-boundaries
 ^[Threat Insights backend] @gitlab-org/govern/threat-insights-backend-team
 /development/sec/cyclonedx_property_taxonomy.md
 /app/finders/security/
@@ -180,6 +180,17 @@ Dangerfile
 /ee/lib/api/vulnerabilit*.rb
 /ee/spec/policies/vulnerabilities/
 /ee/spec/policies/vulnerability*.rb
+
+^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
+/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/**
+/ee/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/**
+/ee/app/assets/javascripts/security_dashboard/**
+/ee/spec/frontend/security_dashboard/**
+/ee/app/assets/javascripts/vulnerabilities/**
+/spec/frontend/vue_merge_request_widget/widgets/security_reports/**
+/ee/spec/frontend/vue_merge_request_widget/widgets/security_reports/**
+/ee/app/assets/javascripts/dependencies/**
+/ee/spec/frontend/dependencies/**
 
 ^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
 /app/events/package_metadata/

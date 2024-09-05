@@ -382,7 +382,7 @@ export default {
             :title="collapseButtonLabel"
             :aria-expanded="`${!isCollapsed}`"
             :aria-label="collapseButtonLabel"
-            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            :icon="isCollapsed ? 'chevron-down' : 'chevron-up'"
             category="tertiary"
             data-testid="toggle-button"
             size="small"

@@ -46,15 +46,6 @@
   }
 }
 
-.user-item {
-  padding: 5px;
-  flex-basis: 20%;
-
-  .user-link {
-    display: inline-block;
-  }
-}
-
 .issuable-gutter-toggle {
   @include media-breakpoint-down(sm) {
     margin-left: $btn-side-margin;

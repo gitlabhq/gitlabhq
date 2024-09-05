@@ -376,6 +376,16 @@
       table-layout: fixed;
     }
 
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s48 {
+        font-size: 16px;
+      }
+    }
+
     .updated-note {
       @include media-breakpoint-up(sm) {
         margin-top: $gl-spacing-scale-2;

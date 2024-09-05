@@ -37063,6 +37063,12 @@ msgstr ""
 msgid "Observability|Create issues from this page to view them as related items here."
 msgstr ""
 
+msgid "Observability|Creates alerts automatically for Observability-related errors."
+msgstr ""
+
+msgid "Observability|Enable Observability alerts"
+msgstr ""
+
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
@@ -37129,10 +37135,7 @@ msgstr ""
 msgid "Observability|Usage by day"
 msgstr ""
 
-msgid "Observability|View our %{docsLink} for further instructions on how to use these features."
-msgstr ""
-
-msgid "Observability|documentation"
+msgid "Observability|View our %{documentation} for further instructions on how to use these features."
 msgstr ""
 
 msgid "Oct"
@@ -49103,6 +49106,9 @@ msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy editor"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} actions"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy is invalid"
@@ -64156,6 +64162,9 @@ msgid "design"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "documentation"
 msgstr ""
 
 msgid "does not belong to the top-level group of the namespace."

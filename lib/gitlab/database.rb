@@ -32,9 +32,6 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/61974
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
-    # Migrations before this version may have been removed
-    MIN_SCHEMA_GITLAB_VERSION = '17.3'
-
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
 
@@ -140,6 +137,18 @@ module Gitlab
         (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
 
       Gitlab::Runtime.max_threads + headroom
+    end
+
+    # Expose path information so that we can use it to make sure migrations are
+    # healthy
+    def self.upgrade_path
+      path_data = YAML.safe_load_file(Rails.root.join('config/upgrade_path.yml'))
+      Gitlab::Utils::UpgradePath.new(path_data, Gitlab.version_info)
+    end
+
+    # Migrations before this version may have been removed.
+    def self.min_schema_gitlab_version
+      upgrade_path.last_required_stop
     end
 
     # Database configured. Returns true even if the database is shared

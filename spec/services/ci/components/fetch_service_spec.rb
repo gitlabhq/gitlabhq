@@ -69,7 +69,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
           expect(result.reason).to eq(:not_allowed)
           expect(result.message)
             .to eq(
-              "component '#{address}' - " \
+              "Component '#{address}' - " \
               "project does not exist or you don't have sufficient permissions"
             )
         end
@@ -96,7 +96,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
             expect(result.reason).to eq(:not_allowed)
             expect(result.message)
               .to eq(
-                "component '#{address}' - " \
+                "Component '#{address}' - " \
                 "project is `Internal`, it cannot be accessed by an External User"
               )
           end
@@ -138,8 +138,9 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
           it 'returns an error' do
             expect(result).to be_error
             expect(result.message).to eq(
+              "Component '#{current_host}/#{component_path}@~latest' - " \
               'The ~latest version reference is not supported for non-catalog resources. ' \
-              'Use a tag, branch, or SHA instead'
+              'Use a tag, branch, or commit SHA instead.'
             )
             expect(result.reason).to eq(:invalid_usage)
           end

@@ -1,12 +1,11 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
-import { GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 export default {
   components: {
-    GlAvatar,
     GlIcon,
   },
   props: {
@@ -34,8 +33,14 @@ export default {
 </script>
 
 <template>
-  <span class="gl-relative">
-    <gl-avatar :label="user.name" :src="avatarUrl" :size="imgSize" :alt="reviewerAlt" />
+  <span class="position-relative">
+    <img
+      :alt="reviewerAlt"
+      :src="avatarUrl"
+      :width="imgSize"
+      :class="`s${imgSize}`"
+      class="avatar avatar-inline m-0"
+    />
     <gl-icon
       v-if="hasMergeIcon"
       name="warning-solid"

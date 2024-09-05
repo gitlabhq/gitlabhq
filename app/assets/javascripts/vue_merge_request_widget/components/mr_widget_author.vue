@@ -1,10 +1,9 @@
 <script>
-import { GlAvatar, GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 
 export default {
   name: 'MrWidgetAuthor',
   components: {
-    GlAvatar,
     GlLink,
   },
   directives: {
@@ -38,9 +37,9 @@ export default {
     :title="showAuthorName ? null : author.name"
     class="mr-widget-author"
   >
-    <gl-avatar :src="avatarUrl" :size="16" :alt="author.name" /><span
+    <img :src="avatarUrl" :alt="author.name" class="avatar avatar-inline s16" /><span
       v-if="showAuthorName"
-      class="author gl-ml-2"
+      class="author"
       >{{ author.name }}</span
     >
   </gl-link>

@@ -164,6 +164,10 @@ ul.content-list {
   .badge-secondary {
     color: $gl-text-color-secondary;
   }
+
+  .avatar-cell {
+    align-self: flex-start;
+  }
 }
 
 ul.content-list.content-list-items-padding > li,
@@ -189,6 +193,14 @@ ul.controls {
 
     &:last-child {
       margin-right: 0;
+    }
+
+    .author-link {
+      .avatar-inline {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 0;
+      }
     }
   }
 

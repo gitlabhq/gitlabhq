@@ -82,7 +82,7 @@ export default {
       return !(hasContent && this.isCollapsible && this.collapsed);
     },
     toggleIcon() {
-      return this.collapsed ? 'chevron-lg-down' : 'chevron-lg-up';
+      return this.collapsed ? 'chevron-down' : 'chevron-up';
     },
     toggleLabel() {
       return this.collapsed ? __('Expand') : __('Collapse');

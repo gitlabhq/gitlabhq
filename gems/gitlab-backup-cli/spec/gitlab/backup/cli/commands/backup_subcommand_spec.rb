@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'thor'
-
 RSpec.describe Gitlab::Backup::Cli::Commands::BackupSubcommand do
   describe "#executor_options" do
     it "returns the expected hash" do

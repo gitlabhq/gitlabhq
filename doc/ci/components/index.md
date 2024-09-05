@@ -731,7 +731,7 @@ You might receive an error message similar to the following when using the `~lat
 version qualifier to reference a component hosted by a [catalog project](#set-a-component-project-as-a-catalog-project):
 
 ```plaintext
-This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found
+This GitLab CI configuration is invalid: Component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found
 ```
 
 The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)

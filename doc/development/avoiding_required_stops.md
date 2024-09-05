@@ -176,8 +176,6 @@ is identified after release, the following steps must still be completed:
 
 ### In the release following the required stop
 
-1. Update `Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION` in `lib/gitlab/database.rb` to the
-   new required stop versions. Do not change `Gitlab::Database::MIN_SCHEMA_VERSION`.
 1. In the `charts` project, update the
    [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop.html)
    to the required stop version.

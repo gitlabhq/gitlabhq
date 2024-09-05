@@ -523,6 +523,13 @@ vulnerability_exports:
   - table: users
     column: author_id
     on_delete: async_delete
+vulnerability_external_issue_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_delete
 vulnerability_feedback:
   - table: ci_pipelines
     column: pipeline_id

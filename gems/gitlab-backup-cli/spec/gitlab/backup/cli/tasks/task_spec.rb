@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::Backup::Cli::Tasks::Task do
   let(:options) { nil }
   let(:context) { build_fake_context }

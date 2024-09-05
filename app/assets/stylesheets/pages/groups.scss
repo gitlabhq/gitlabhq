@@ -140,6 +140,15 @@ table.pipeline-project-metrics tr td {
       flex-basis: 100%;
     }
 
+    .avatar-container {
+      flex-shrink: 0;
+
+      > a {
+        width: 100%;
+        text-decoration: none;
+      }
+    }
+
     .title {
       font-size: $gl-font-size;
     }

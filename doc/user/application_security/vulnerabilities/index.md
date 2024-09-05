@@ -131,7 +131,6 @@ then process the merge request according to your standard workflow.
 
 Vulnerability Resolution is enabled for the following list of vulnerability classes. If you see that the button is disabled, that means that the CWE is not part of the supported list at this time. We are actively testing and expanding coverage for Vulnerability Resolution to more classes of vulnerabilities.
 
-<br><br>
 <details><summary style="color:#5943b6"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
 
 <ul>

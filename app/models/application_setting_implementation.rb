@@ -295,7 +295,8 @@ module ApplicationSettingImplementation
         ai_action_api_rate_limit: 160,
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
-        pages_extra_deployments_default_expiry_seconds: 86400
+        pages_extra_deployments_default_expiry_seconds: 86400,
+        scan_execution_policies_action_limit: 10
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

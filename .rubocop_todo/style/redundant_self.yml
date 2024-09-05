@@ -208,7 +208,6 @@ Style/RedundantSelf:
     - 'ee/lib/elastic/instance_proxy_util.rb'
     - 'ee/lib/elastic/latest/commit_config.rb'
     - 'ee/lib/elastic/latest/issue_config.rb'
-    - 'ee/lib/elastic/latest/merge_request_config.rb'
     - 'ee/lib/elastic/latest/note_config.rb'
     - 'ee/lib/elastic/migration.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/indexing/instance_methods.rb'

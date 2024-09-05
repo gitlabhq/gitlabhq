@@ -10,7 +10,6 @@ import {
   GlTooltip,
   GlButton,
   GlSprintf,
-  GlAvatar,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
@@ -44,7 +43,6 @@ export default {
     GlTooltip,
     GlButton,
     GlSprintf,
-    GlAvatar,
     SidebarAssignee,
   },
   props: {
@@ -284,7 +282,7 @@ export default {
     >
       <div v-if="userName" class="gl-mt-2 gl-inline-flex" data-testid="assigned-users">
         <span class="gl-relative gl-mr-4">
-          <gl-avatar :src="userImg" :size="32" :alt="userName" />
+          <img :alt="userName" :src="userImg" :width="32" class="avatar avatar-inline s32 gl-m-0" />
         </span>
         <span class="gl-flex gl-flex-col gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name">

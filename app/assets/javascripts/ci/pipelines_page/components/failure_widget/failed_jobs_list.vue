@@ -154,7 +154,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-mb-4">
     <gl-loading-icon v-if="isInitialLoading" class="gl-p-4" />
     <div v-else-if="!hasFailedJobs" class="gl-p-4">{{ $options.i18n.noFailedJobs }}</div>
     <div v-else class="container-fluid gl-grid-rows-auto">
@@ -162,7 +162,7 @@ export default {
         <div
           v-for="col in $options.columns"
           :key="col.text"
-          class="gl-text-left gl-font-bold"
+          class="gl-flex gl-font-bold"
           :class="col.class"
           data-testid="header"
         >

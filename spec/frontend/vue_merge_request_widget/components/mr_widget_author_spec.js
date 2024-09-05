@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlAvatar } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 
@@ -38,7 +37,7 @@ describe('MrWidgetAuthor', () => {
   });
 
   it('renders image with avatar url', () => {
-    expect(wrapper.findComponent(GlAvatar).attributes('src')).toBe(
+    expect(wrapper.find('img').attributes('src')).toBe(
       'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     );
   });
@@ -53,7 +52,7 @@ describe('MrWidgetAuthor', () => {
 
     await nextTick();
 
-    expect(wrapper.findComponent(GlAvatar).props('src')).toBe('no_avatar.png');
+    expect(wrapper.find('img').attributes('src')).toBe('no_avatar.png');
   });
 
   it('renders author name', () => {
