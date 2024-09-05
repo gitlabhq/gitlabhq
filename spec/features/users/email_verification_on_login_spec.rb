@@ -99,6 +99,33 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
       end
     end
 
+    describe 'resending a new code when an existing code expires' do
+      it 'resends a new code' do
+        perform_enqueued_jobs do
+          # When logging in
+          gitlab_sign_in(user)
+
+          # Expect an instructions email to be sent with a code
+          code = expect_instructions_email_and_extract_code
+
+          token_valid_for = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES + 1
+
+          # Signing in again prompts for the code and sends a new one when the current code is expired
+          travel_to(token_valid_for.minutes.from_now) do
+            gitlab_sign_in(user)
+            expect(page).to have_current_path(new_user_session_path)
+            expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
+
+            # Expect an instructions email to be sent with a new code
+            new_code = expect_instructions_email_and_extract_code
+
+            # Verify the old code is different from the new code
+            expect(code).not_to eq(new_code)
+          end
+        end
+      end
+    end
+
     describe 'updating the email address' do
       it 'offers to update the email address' do
         perform_enqueued_jobs do

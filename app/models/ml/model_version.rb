@@ -5,6 +5,7 @@ module Ml
     include Presentable
     include Sortable
     include SemanticVersionable
+    include CacheMarkdownField
 
     validates :project, :model, presence: true
 
@@ -33,6 +34,8 @@ module Ml
     scope :for_model, ->(model) { where(project: model.project, model: model) }
     scope :including_relations, -> { includes(:project, :model, :candidate) }
     scope :order_by_version, ->(order) { reorder(version: order) }
+
+    cache_markdown_field :description
 
     def add_metadata(metadata_key_value)
       return unless metadata_key_value.present?

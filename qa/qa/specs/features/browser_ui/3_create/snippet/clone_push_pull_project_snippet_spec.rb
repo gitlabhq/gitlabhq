@@ -52,7 +52,7 @@ module QA
           repository.init_repository
           repository.pull(repository_uri_http, branch_name)
 
-          expect(repository.commits.size).to eq 3
+          expect(repository.commits.size).to eq(3), "Expected 3 commits, got: #{repository.commits.size}"
           expect(repository.commits.first).to include 'Update snippet'
           expect(repository.file_content(new_file)).to include "#{added_content}#{changed_content}"
         end

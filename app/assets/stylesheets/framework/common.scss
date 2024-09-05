@@ -365,17 +365,13 @@ li.note {
 .center { text-align: center; }
 .block { display: block; }
 .flex { display: flex; }
-.vertical-align-top { vertical-align: top; }
 .vertical-align-text-top { vertical-align: text-top; }
 .vertical-align-middle { vertical-align: middle; }
-.vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
-.ws-initial { white-space: initial; }
 .ws-normal { white-space: normal; }
 .overflow-auto { overflow: auto; }
-.overflow-visible { overflow: visible; }
 
 .d-flex-center {
   display: flex;
@@ -390,35 +386,14 @@ li.note {
 .w-30p { width: 30%; }
 .w-60p { width: 60%; }
 
-.h-12em { height: 12em; }
 .h-32-px { height: 32px;}
 
-.mw-460 { max-width: 460px; }
 .mw-6em { max-width: 6em; }
 .mw-70p { max-width: 70%; }
 
 // By default flex items don't shrink below their minimum content size.
 // To change this, these clases set a min-width or min-height
-.min-width-0 { min-width: 0; }
 .min-height-0 { min-height: 0; }
-
-.svg-w-100 {
-  svg {
-    width: 100%;
-  }
-}
-
-
-/**
- * Removes browser specific clear icon from input fields in
- * Internet Explorer 10, Internet Explorer 11, and Microsoft Edge.
- * This is intended for elements which add a customized clear icon.
- *
- * see also https://developer.mozilla.org/en-US/docs/Web/CSS/::-ms-clear
- */
-.ms-no-clear ::-ms-clear {
-  display: none;
-}
 
 /** COMMON POSITIONING CLASSES */
 .position-bottom-0 { bottom: 0 !important; }
@@ -442,8 +417,6 @@ li.note {
   cursor: pointer;
 }
 
-.cursor-not-allowed { cursor: not-allowed; }
-
 // this needs to use "!important" due to some very specific styles
 // around buttons
 .cursor-default {
@@ -464,12 +437,6 @@ li.note {
 }
 
 .gl-font-size-0 { font-size: 0; }
-.gl-font-size-28 { font-size: $gl-font-size-28; }
-.gl-font-size-42 { font-size: $gl-font-size-42; }
-
-.gl-icon-button:hover {
-  background-color: $gray-100;
-}
 
 .border-section {
   padding-top: $gl-spacing-scale-6;

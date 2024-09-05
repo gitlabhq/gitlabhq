@@ -40,7 +40,7 @@ module QA
             repository.use_default_credentials
             repository.clone
 
-            expect(repository.commits.size).to eq 3
+            expect(repository.commits.size).to eq(3), "Expected 3 commits, got: #{repository.commits.size}"
           end
         end
       end

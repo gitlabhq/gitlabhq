@@ -31,9 +31,6 @@ module Types
 
       field :_links, ::Types::Ml::ModelVersionLinksType, null: false, method: :itself,
         description: 'Map of links to perform actions on the model version.'
-      def description_html_resolver
-        ::MarkupHelper.markdown(object.description, context.to_h.dup)
-      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

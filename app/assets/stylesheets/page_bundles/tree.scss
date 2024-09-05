@@ -38,10 +38,6 @@
         float: left;
       }
 
-      .tree-ref-target-holder {
-        display: inline-block;
-      }
-
       .repo-breadcrumb {
         li:last-of-type {
           position: relative;
@@ -62,12 +58,6 @@
         left: inherit;
         right: 0;
       }
-    }
-
-    .add-to-tree-dropdown {
-      position: absolute;
-      left: 0;
-      right: 0;
     }
 
     .tree-controls {

@@ -30,7 +30,7 @@ module QA
 
           repository.clone
 
-          expect(repository.commits.size).to eq 2
+          expect(repository.commits.size).to eq(2), "Expected 2 commits, got: #{repository.commits.size}"
         end
       end
 
@@ -41,7 +41,7 @@ module QA
 
           repository.shallow_clone
 
-          expect(repository.commits.size).to eq 1
+          expect(repository.commits.size).to eq(1), "Expected 1 commit, got: #{repository.commits.size}"
           expect(repository.commits.first).to include 'Add Readme'
         end
       end

@@ -3508,12 +3508,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     let(:order_by) { nil }
     let(:sort) { nil }
+    let(:ref) { nil }
 
     before do
-      allow(repository).to receive(:commits).with(nil, limit: 2000, offset: 0, skip_merges: true).and_return(stubbed_commits)
+      allow(repository).to receive(:commits).with(ref, limit: 2000, offset: 0, skip_merges: true).and_return(stubbed_commits)
     end
 
-    subject { repository.contributors(order_by: order_by, sort: sort) }
+    subject { repository.contributors(ref: ref, order_by: order_by, sort: sort) }
 
     def expect_contributors(*contributors)
       expect(subject.map(&:email)).to eq(contributors.map(&:email))
@@ -3597,6 +3598,24 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       it 'returns the contributors unsorted' do
         expect_contributors(author_a, author_b, author_c)
+      end
+    end
+
+    context 'when passing a ref param' do
+      let(:ref) { 'ref' }
+      let(:author_d) { build(:author, email: 'johndoe@gitlab.com', name: 'John Doe') }
+      let(:stubbed_commits) do
+        [build(:commit, author: author_a),
+         build(:commit, author: author_a),
+         build(:commit, author: author_b),
+         build(:commit, author: author_c),
+         build(:commit, author: author_c),
+         build(:commit, author: author_c),
+         build(:commit, author: author_d)]
+      end
+
+      it 'returns the contributors for ref' do
+        expect_contributors(author_a, author_b, author_c, author_d)
       end
     end
   end

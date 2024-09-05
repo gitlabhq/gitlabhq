@@ -44,10 +44,6 @@ module Types
       field :version, ::Types::Ml::ModelVersionType, null: true,
         description: 'Version of the model.',
         resolver: ::Resolvers::Ml::FindModelVersionResolver
-
-      def description_html_resolver
-        ::MarkupHelper.markdown(object.description, context.to_h.dup)
-      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

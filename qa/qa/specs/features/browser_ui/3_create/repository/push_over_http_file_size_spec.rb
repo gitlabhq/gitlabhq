@@ -42,7 +42,7 @@ module QA
         request = Runtime::API::Request.new(Runtime::API::Client.as_admin, '/application/settings')
         response = put request.url, receive_max_input_size: limit
 
-        expect(response.code).to eq(200)
+        expect(response.code).to eq(QA::Support::API::HTTP_STATUS_OK)
         expect(parse_body(response)[:receive_max_input_size]).to eq(limit)
       end
 
