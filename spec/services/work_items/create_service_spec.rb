@@ -144,9 +144,8 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         let(:supported_widgets) do
           [
             {
-              klass: WorkItems::Widgets::HierarchyService::CreateService,
-              callback: :after_create_in_transaction,
-              params: { parent: parent }
+              klass: WorkItems::Callbacks::Hierarchy,
+              callback: :after_create
             }
           ]
         end

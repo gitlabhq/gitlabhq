@@ -64,4 +64,17 @@ describe('uploadModel', () => {
 
     expect(axiosMock).toHaveBeenCalledWith(baseFilePath, file, { onUploadProgress });
   });
+
+  it('accepts cancellation token and passes over to axios', async () => {
+    const cancelToken = jest.fn();
+    await uploadModel({
+      importPath,
+      file,
+      maxAllowedFileSize,
+      onUploadProgress: undefined,
+      cancelToken,
+    });
+
+    expect(axiosMock).toHaveBeenCalledWith(baseFilePath, file, { undefined, cancelToken });
+  });
 });

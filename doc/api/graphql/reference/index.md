@@ -482,8 +482,8 @@ Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
 Check if a feature flag is enabled.
 
 DETAILS:
-**Introduced** in GitLab 17.1.
-**Status**: Experiment.
+**Deprecated** in GitLab 17.4.
+Replaced with metadata.featureFlags.
 
 Returns [`Boolean!`](#boolean).
 
@@ -22713,6 +22713,17 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
+### `GitlabInstanceFeatureFlag`
+
+A feature flag for the GitLab instance.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabinstancefeatureflagenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the GitLab instance feature flag is enabled or not. |
+| <a id="gitlabinstancefeatureflagname"></a>`name` | [`String!`](#string) | Name of the GitLab instance feature flag. |
+
 ### `GitlabSubscriptionHistory`
 
 Describes the subscription history of a given namespace.
@@ -27344,6 +27355,24 @@ MergeTrainCar represents an attempt to merge a merge requestusing merge trains.
 | <a id="metadatakas"></a>`kas` | [`Kas!`](#kas) | Metadata about KAS. |
 | <a id="metadatarevision"></a>`revision` | [`String!`](#string) | Revision. |
 | <a id="metadataversion"></a>`version` | [`String!`](#string) | Version. |
+
+#### Fields with arguments
+
+##### `Metadata.featureFlags`
+
+Feature flags for the GitLab instance.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`[GitlabInstanceFeatureFlag!]!`](#gitlabinstancefeatureflag).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="metadatafeatureflagsnames"></a>`names` | [`[String!]!`](#string) | Names of the feature flags to lookup (maximum of 20). |
 
 ### `MetricImage`
 

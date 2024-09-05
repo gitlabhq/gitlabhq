@@ -737,7 +737,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/verify_pages_domain_service.rb'
     - 'app/services/web_hook_service.rb'
     - 'app/services/wiki_pages/update_service.rb'
-    - 'app/services/work_items/widgets/hierarchy_service/base_service.rb'
     - 'app/uploaders/gitlab_uploader.rb'
     - 'app/uploaders/metric_image_uploader.rb'
     - 'app/uploaders/object_storage.rb'

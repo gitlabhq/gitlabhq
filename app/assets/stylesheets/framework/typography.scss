@@ -107,12 +107,7 @@
   }
 
   mark {
-    background-color: var(--orange-100);
-    box-shadow: 0 0 0 $gl-spacing-scale-1 var(--orange-100);
-    color: var(--gl-text-color-default);
-    padding: 0;
-    position: relative;
-    z-index: -1;
+    @include str-highlighted;
   }
 
   h1 {

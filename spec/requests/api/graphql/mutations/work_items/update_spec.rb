@@ -520,7 +520,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       let(:relative_range) { [valid_child1, valid_child2].map(&:parent_link).map(&:relative_position) }
 
       let(:invalid_relative_position_error) do
-        WorkItems::Widgets::HierarchyService::UpdateService::INVALID_RELATIVE_POSITION_ERROR
+        WorkItems::Callbacks::Hierarchy::INVALID_RELATIVE_POSITION_ERROR
       end
 
       shared_examples 'updates work item parent and sets the relative position' do

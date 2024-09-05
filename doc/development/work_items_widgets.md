@@ -332,9 +332,13 @@ This is typically a trigger to remove associated records which are no longer rel
   within the create database transaction.
 - `before_update` is called before the work item is saved by the `UpdateService`. This callback runs
   within the update database transaction.
-- `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.
+- `after_create` is called after the work item is saved by the `CreateService`. This callback runs
+  within the create database transaction.
+- `after_update` is called after the work item is saved by the `UpdateService`. This callback runs
+  within the update database transaction.
 - `after_save` is called before the creation or DB update transaction is committed by the
   `CreateService` or `UpdateService`.
+- `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.
 - `after_save_commit` is called after the creation or DB update transaction is committed by the
   `CreateService` or `UpdateService`.
 

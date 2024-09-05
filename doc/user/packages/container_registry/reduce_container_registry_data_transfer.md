@@ -11,15 +11,13 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Depending on the frequency with which images or tags are downloaded from the container registry,
-data transfers can exceed the GitLab.com limit. This page offers several recommendations and tips for
+data transfer can be quite high. This page offers several recommendations and tips for
 reducing the amount of data you transfer with the container registry.
 
 ## Check data transfer use
 
 Transfer usage is not available within the GitLab UI. [GitLab-#350905](https://gitlab.com/gitlab-org/gitlab/-/issues/350905)
-is the epic tracking the work to surface this information. In the interim, GitLab team members may reach out to customers that have
-significantly exceeded their transfer limits to better understand their use case and offer ways to reduce data transfer
-usage.
+is the epic tracking the work to surface this information.
 
 ## Determine image size
 
@@ -121,15 +119,6 @@ up your builds and reduce the amount of data transferred. For more information, 
 We often create automation scripts bundled into container images to perform regular tasks on specific intervals.
 You can reduce the frequency of those intervals in cases where the automation is pulling container images from
 the GitLab Registry to a service outside of GitLab.com.
-
-## Move to GitLab Premium or Ultimate
-
-GitLab.com data transfer limits are set at the tier level. If you need a higher limit, consider
-upgrading to [GitLab Premium or Ultimate](https://about.gitlab.com/upgrade/).
-
-## Purchase additional data transfer
-
-Read more about managing your [data transfer limits](../../../subscriptions/gitlab_com/index.md#purchase-more-storage).
 
 ## Related issues
 

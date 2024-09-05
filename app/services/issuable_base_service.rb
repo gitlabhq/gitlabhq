@@ -395,13 +395,19 @@ class IssuableBaseService < ::BaseContainerService
     touch = opts[:save_with_touch] || false
 
     issuable.save(touch: touch).tap do |saved|
-      @callbacks.each(&:after_save) if saved
+      if saved
+        @callbacks.each(&:after_update)
+        @callbacks.each(&:after_save)
+      end
     end
   end
 
   def transaction_create(issuable)
     issuable.save.tap do |saved|
-      @callbacks.each(&:after_save) if saved
+      if saved
+        @callbacks.each(&:after_create)
+        @callbacks.each(&:after_save)
+      end
     end
   end
 

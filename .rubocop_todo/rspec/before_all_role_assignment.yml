@@ -1315,7 +1315,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/work_items/parent_links/create_service_spec.rb'
     - 'spec/services/work_items/parent_links/destroy_service_spec.rb'
     - 'spec/services/work_items/parent_links/reorder_service_spec.rb'
-    - 'spec/services/work_items/widgets/hierarchy_service/update_service_spec.rb'
     - 'spec/support/shared_contexts/changes_access_checks_shared_context.rb'
     - 'spec/support/shared_contexts/design_management_shared_contexts.rb'
     - 'spec/support/shared_contexts/features/integrations/project_integrations_shared_context.rb'

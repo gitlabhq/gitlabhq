@@ -20,4 +20,8 @@
       font-size: $gl-font-size-large;
     }
   }
+
+  mark {
+    @include str-highlighted;
+  }
 }

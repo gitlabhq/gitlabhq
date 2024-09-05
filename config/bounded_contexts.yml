@@ -47,6 +47,11 @@ domains:
       - insider_threat
       - instance_resiliency
 
+  AppConfig:
+    description: Top-level configuration at the GitLab instance level
+    feature_categories:
+      - settings
+
   AuditEvents:
     description:
     feature_categories:

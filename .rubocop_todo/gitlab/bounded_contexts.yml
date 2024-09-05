@@ -544,7 +544,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/types/merge_request_state_event_enum.rb'
     - 'app/graphql/types/merge_request_type.rb'
     - 'app/graphql/types/merge_strategy_enum.rb'
-    - 'app/graphql/types/metadata/kas_type.rb'
     - 'app/graphql/types/metadata_type.rb'
     - 'app/graphql/types/metrics/dashboards/annotation_type.rb'
     - 'app/graphql/types/milestone_sort_enum.rb'

@@ -125,7 +125,6 @@ Style/FormatString:
     - 'app/services/system_notes/design_management_service.rb'
     - 'app/services/timelogs/create_service.rb'
     - 'app/services/users/banned_user_base_service.rb'
-    - 'app/services/work_items/widgets/hierarchy_service/base_service.rb'
     - 'app/validators/addressable_url_validator.rb'
     - 'app/validators/any_field_validator.rb'
     - 'app/validators/array_members_validator.rb'

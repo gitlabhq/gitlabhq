@@ -3343,7 +3343,6 @@ RSpec/NamedSubject:
     - 'spec/services/work_items/parent_links/destroy_service_spec.rb'
     - 'spec/services/work_items/prepare_import_csv_service_spec.rb'
     - 'spec/services/work_items/update_service_spec.rb'
-    - 'spec/services/work_items/widgets/hierarchy_service/update_service_spec.rb'
     - 'spec/spam/concerns/has_spam_action_response_fields_spec.rb'
     - 'spec/support/shared_contexts/lib/gitlab/sidekiq_logging/structured_logger_shared_context.rb'
     - 'spec/support/shared_contexts/lib/gitlab/sidekiq_middleware/server_metrics_shared_context.rb'

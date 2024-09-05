@@ -264,6 +264,7 @@ describe('ModelVersionCreate', () => {
         subfolder: '',
         maxAllowedFileSize: 99999,
         onUploadProgress: expect.any(Function),
+        cancelToken: expect.any(Object),
       });
     });
 
@@ -322,6 +323,7 @@ describe('ModelVersionCreate', () => {
           subfolder: '',
           maxAllowedFileSize: 99999,
           onUploadProgress: expect.any(Function),
+          cancelToken: expect.any(Object),
         });
       });
     });

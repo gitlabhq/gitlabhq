@@ -197,6 +197,10 @@
           }
         }
       }
+
+      mark {
+        @include str-highlighted;
+      }
     }
   }
 }

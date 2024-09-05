@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_category: :portfolio_management do
+RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -11,21 +11,31 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
   let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:existing_link) { create(:parent_link, work_item: child_work_item, work_item_parent: work_item) }
 
-  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Hierarchy) } }
+  let(:callback) { described_class.new(issuable: work_item, current_user: user, params: params) }
   let(:not_found_error) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
 
-  shared_examples 'raises a WidgetError' do |message|
-    it { expect { subject }.to raise_error(described_class::WidgetError, message) }
+  shared_examples 'raises a WidgetError' do |message_arg|
+    it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message_arg || message) }
   end
 
-  shared_examples 'raises a WidgetError with message' do
-    let(:message) { not_found_error }
+  describe '#after_create' do
+    subject { callback.after_create }
 
-    it { expect { subject }.to raise_error(described_class::WidgetError, message) }
+    context 'when invalid params are present' do
+      let(:params) { { other_parent: 'parent_work_item' } }
+
+      it_behaves_like 'raises a WidgetError', 'One or more arguments are invalid: other_parent.'
+    end
   end
 
-  describe '#update' do
-    subject { described_class.new(widget: widget, current_user: user).before_update_in_transaction(params: params) }
+  describe '#after_update' do
+    subject(:after_update_callback) { callback.after_update }
+
+    context 'when invalid params are present' do
+      let(:params) { { other_parent: 'parent_work_item' } }
+
+      it_behaves_like 'raises a WidgetError', 'One or more arguments are invalid: other_parent.'
+    end
 
     context 'when multiple params are present' do
       it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
@@ -39,12 +49,6 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
       it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
         let(:params) { { remove_child: child_work_item, children: [child_work_item] } }
       end
-    end
-
-    context 'when invalid params are present' do
-      let(:params) { { other_parent: parent_work_item } }
-
-      it_behaves_like 'raises a WidgetError', 'One or more arguments are invalid: other_parent.'
     end
 
     context 'when relative position params are incomplete' do
@@ -73,13 +77,13 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
       context 'when user has insufficient permissions to link work items' do
         let(:params) { { children: [child_work_item4] } }
 
-        it_behaves_like 'raises a WidgetError with message' do
+        it_behaves_like 'raises a WidgetError' do
           let(:message) { not_found_error }
         end
       end
 
       context 'when user has sufficient permissions to link work item' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -87,7 +91,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { children: [child_work_item2, child_work_item3] } }
 
           it 'correctly sets work item parent' do
-            subject
+            after_update_callback
 
             expect(work_item.reload.work_item_children)
               .to contain_exactly(child_work_item, child_work_item2, child_work_item3)
@@ -116,7 +120,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { remove_child: [child_work_item] } }
 
           it 'correctly removes the work item child' do
-            expect { subject }.to change { WorkItems::ParentLink.count }.by(-1)
+            expect { after_update_callback }.to change { WorkItems::ParentLink.count }.by(-1)
 
             expect(work_item.reload.work_item_children).to be_empty
           end
@@ -133,7 +137,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
 
           let(:params) { { children: [child_issue] } }
 
-          it_behaves_like 'raises a WidgetError with message' do
+          it_behaves_like 'raises a WidgetError' do
             let(:message) do
               "#{child_issue.to_reference} cannot be added: it's not allowed to add this type of parent item"
             end
@@ -148,18 +152,19 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
       let(:params) { { parent: parent_work_item } }
 
       context 'when user has insufficient permissions to link work items' do
-        it_behaves_like 'raises a WidgetError with message' do
+        it_behaves_like 'raises a WidgetError' do
           let(:message) { not_found_error }
         end
       end
 
       context 'when user has sufficient permissions to link work item' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
         it 'correctly sets new parent' do
-          expect(subject[:status]).to eq(:success)
+          after_update_callback
+
           expect(work_item.work_item_parent).to eq(parent_work_item)
         end
 
@@ -170,15 +175,16 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
             work_item.update!(work_item_parent: parent_work_item)
 
             expect do
-              subject
+              after_update_callback
               work_item.reload
-            end.to change(work_item, :work_item_parent).from(parent_work_item).to(nil)
+            end.to change { work_item.work_item_parent }.from(parent_work_item).to(nil)
           end
 
-          it 'returns success status if parent not present', :aggregate_failures do
+          it 'does not raise an error if parent not present', :aggregate_failures do
             work_item.update!(work_item_parent: nil)
 
-            expect(subject[:status]).to eq(:success)
+            expect { after_update_callback }.not_to raise_error
+
             expect(work_item.reload.work_item_parent).to be_nil
           end
         end
@@ -188,7 +194,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
 
           let(:params) { { parent: parent_task } }
 
-          it_behaves_like 'raises a WidgetError with message' do
+          it_behaves_like 'raises a WidgetError' do
             let(:message) do
               "#{parent_task.to_reference} cannot be added: it's not allowed to add this type of parent item"
             end
@@ -205,7 +211,8 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { parent: parent_work_item, adjacent_work_item: adjacent, relative_position: 'AFTER' } }
 
           it 'correctly sets new parent and position' do
-            expect(subject[:status]).to eq(:success)
+            after_update_callback
+
             expect(work_item.work_item_parent).to eq(parent_work_item)
             expect(work_item.parent_link.relative_position).to be > adjacent_link.relative_position
           end

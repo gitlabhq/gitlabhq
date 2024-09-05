@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Types
-  module Metadata
+  module AppConfig
     class KasType < ::Types::BaseObject
       graphql_name 'Kas'
 
