@@ -88,7 +88,6 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
->>>>>>> a0374c3c6485 (Merge branch '482864-install-setuptools-explicitly' into 'master' )
           Page::Project::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|
