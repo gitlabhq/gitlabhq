@@ -78,9 +78,7 @@ module Ci
             latest_partition.blank? || Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.values.max
           end,
           detach_partition_if: proc { false },
-          # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
-          # Therefore, let's start with 1.week and see how it'd go.
-          analyze_interval: 1.week
+          analyze_interval: 3.days
       end
     end
   end
