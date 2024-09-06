@@ -1953,7 +1953,6 @@ On each node perform the following:
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
    gitaly['enable'] = false
-   nginx['enable'] = true
    sidekiq['enable'] = false
 
    ## PostgreSQL connection details

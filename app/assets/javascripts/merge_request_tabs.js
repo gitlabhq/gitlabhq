@@ -173,7 +173,7 @@ export function toggleLoader(state) {
 }
 
 export function getActionFromHref(pathName) {
-  let action = pathName.match(/\/(\d+)\/(commits|diffs|pipelines).*$/);
+  let action = pathName.match(/\/(\d+)\/(commits|diffs|pipelines|reports).*$/);
 
   if (action) {
     action = action.at(-1).replace(/(^\/|\.html)/g, '');
@@ -187,6 +187,7 @@ export function getActionFromHref(pathName) {
 export const pageBundles = {
   show: () => import(/* webpackPrefetch: true */ '~/mr_notes/mount_app'),
   diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
+  reports: () => import('ee_else_ce/merge_requests/reports'),
 };
 
 export default class MergeRequestTabs {
@@ -209,7 +210,7 @@ export default class MergeRequestTabs {
     this.pageLayout = document.querySelector('.layout-page');
     this.expandSidebar = document.querySelectorAll('.js-expand-sidebar, .js-sidebar-toggle');
     this.paddingTop = 16;
-    this.actionRegex = /\/(commits|diffs|pipelines)(\.html)?\/?$/;
+    this.actionRegex = /\/(commits|diffs|pipelines|reports)(\.html)?\/?$/;
 
     this.scrollPositions = {};
 
@@ -366,6 +367,8 @@ export default class MergeRequestTabs {
         // this.hideSidebar();
         this.resetViewContainer();
         this.mountPipelinesView();
+      } else if (action === 'reports') {
+        this.resetViewContainer();
       } else {
         const notesTab = this.mergeRequestTabs.querySelector('.notes-tab');
         const notesPane = this.mergeRequestTabPanes.querySelector('#notes');

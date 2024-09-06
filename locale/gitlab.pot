@@ -9548,6 +9548,9 @@ msgstr ""
 msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
+msgid "BranchRules|Delete %{statusCheckName}"
+msgstr ""
+
 msgid "BranchRules|Delete branch rule"
 msgstr ""
 
@@ -9555,6 +9558,12 @@ msgid "BranchRules|Delete branch rule?"
 msgstr ""
 
 msgid "BranchRules|Delete rule"
+msgstr ""
+
+msgid "BranchRules|Delete status check"
+msgstr ""
+
+msgid "BranchRules|Delete status check?"
 msgstr ""
 
 msgid "BranchRules|Deploy keys"
@@ -9671,13 +9680,16 @@ msgstr ""
 msgid "BranchRules|Something went wrong while updating branch rule."
 msgstr ""
 
+msgid "BranchRules|Status check created"
+msgstr ""
+
+msgid "BranchRules|Status check deleted"
+msgstr ""
+
+msgid "BranchRules|Status check updated"
+msgstr ""
+
 msgid "BranchRules|Status checks"
-msgstr ""
-
-msgid "BranchRules|Status checks created"
-msgstr ""
-
-msgid "BranchRules|Status checks updated"
 msgstr ""
 
 msgid "BranchRules|Target branch"
@@ -9696,6 +9708,9 @@ msgid "BranchRules|Users & groups"
 msgstr ""
 
 msgid "BranchRules|View details"
+msgstr ""
+
+msgid "BranchRules|You are about to delete the %{name} status check."
 msgstr ""
 
 msgid "BranchRules|default"
@@ -45407,6 +45422,9 @@ msgstr ""
 msgid "Reporting"
 msgstr ""
 
+msgid "Reports"
+msgstr ""
+
 msgid "Reports|%{combinedString} and %{resolvedString}"
 msgstr ""
 
@@ -52472,6 +52490,9 @@ msgid "StatusChecks|Service name"
 msgstr ""
 
 msgid "StatusChecks|Unable to create status check. Please try again."
+msgstr ""
+
+msgid "StatusChecks|Unable to delete status check. Please try again."
 msgstr ""
 
 msgid "StatusChecks|Unable to update status check. Please try again."
@@ -61458,11 +61479,21 @@ msgstr ""
 msgid "WorkItem|%{usersLength} assignees"
 msgstr ""
 
+msgid "WorkItem|%{workItemType} blocks 1 item"
+msgid_plural "WorkItem|%{workItemType} blocks %{itemCount} items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "WorkItem|%{workItemType} created"
 msgstr ""
 
 msgid "WorkItem|%{workItemType} deleted"
 msgstr ""
+
+msgid "WorkItem|%{workItemType} is blocked by 1 item"
+msgid_plural "WorkItem|%{workItemType} is blocked by %{itemCount} items"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""

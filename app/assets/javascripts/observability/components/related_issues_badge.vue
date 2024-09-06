@@ -30,6 +30,11 @@ export default {
       type: String,
       required: true,
     },
+    parentScrollingId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     buttonVariant() {
@@ -42,7 +47,9 @@ export default {
   },
   methods: {
     goToIssues() {
-      scrollToElement(this.anchorId);
+      scrollToElement(`#${this.anchorId}`, {
+        parent: `#${this.parentScrollingId}`,
+      });
     },
   },
 };

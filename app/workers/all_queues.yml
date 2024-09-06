@@ -3279,6 +3279,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: import_bulk_imports_source_users_attributes
+  :worker_name: Import::BulkImports::SourceUsersAttributesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_delete_placeholder_user
   :worker_name: Import::DeletePlaceholderUserWorker
   :feature_category: :importers

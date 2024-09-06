@@ -29,4 +29,12 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
       }
     }
   }
+  ... on WorkItemWidgetLinkedItems {
+    linkedItems {
+      nodes {
+        linkId
+        linkType
+      }
+    }
+  }
 }

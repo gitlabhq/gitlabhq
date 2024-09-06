@@ -3,10 +3,12 @@ import { GlLoadingIcon, GlIntersectionObserver, GlButton, GlLink } from '@gitlab
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
 import WorkItemStateBadge from './work_item_state_badge.vue';
+import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 
 export default {
   components: {
@@ -17,9 +19,11 @@ export default {
     WorkItemTodos,
     ConfidentialityBadge,
     WorkItemStateBadge,
+    WorkItemNotificationsWidget,
     GlButton,
     GlLink,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     workItem: {
       type: Object,
@@ -90,6 +94,9 @@ export default {
     workItemState() {
       return this.workItem.state;
     },
+    newTodoAndNotificationsEnabled() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
   },
   WORKSPACE_PROJECT,
 };
@@ -142,10 +149,19 @@ export default {
             :current-user-todos="currentUserTodos"
             @error="$emit('error')"
           />
+          <work-item-notifications-widget
+            v-if="newTodoAndNotificationsEnabled"
+            :full-path="fullPath"
+            :work-item-id="workItem.id"
+            :subscribed-to-notifications="workItemNotificationsSubscribed"
+            :can-update="canUpdate"
+            @error="$emit('error')"
+          />
           <work-item-actions
             :full-path="fullPath"
             :work-item-id="workItem.id"
             :work-item-iid="workItem.iid"
+            :hide-subscribe="newTodoAndNotificationsEnabled"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"

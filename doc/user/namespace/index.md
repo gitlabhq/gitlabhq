@@ -18,7 +18,7 @@ GitLab has two types of namespaces:
   - Groups in your namespace do not inherit your namespace permissions and group features.
   - All the projects you create are under the scope of this namespace.
   - If you change your username, the project and namespace URLs in your account also change. Before you change your username,
-    read about [repository redirects](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+    read about [repository redirects](../project/repository/index.md#repository-path-changes).
 
 - A *group* or *subgroup* namespace, which is based on the group or subgroup name:
   - You can create multiple subgroups to manage multiple projects.

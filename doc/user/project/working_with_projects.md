@@ -379,7 +379,7 @@ Prerequisites:
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
-[redirects when renaming repositories](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+[redirects when renaming repositories](../project/repository/index.md#repository-path-changes).
 
 To rename a repository:
 

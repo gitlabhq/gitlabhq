@@ -508,6 +508,7 @@ describe('MergeRequestTabs', () => {
       ${'/user/pipelines/-/merge_requests/1/commits'} | ${'commits'}
       ${'/user/pipelines/1/-/merge_requests/1/diffs'} | ${'diffs'}
       ${'/user/pipelines/-/merge_requests/1'}         | ${'show'}
+      ${'/user/pipelines/-/merge_requests/1/reports'} | ${'reports'}
     `('returns $action for $location', ({ pathName, action }) => {
       expect(getActionFromHref(pathName)).toBe(action);
     });

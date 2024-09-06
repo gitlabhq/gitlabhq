@@ -376,6 +376,7 @@ Now you can update tests for existing files and write tests for the new files:
 
 1. `spec/graphql/types/work_items/widget_interface_spec.rb` or `ee/spec/graphql/types/work_items/widget_interface_spec.rb`.
 1. `spec/models/work_items/widget_definition_spec.rb` or `ee/spec/models/ee/work_items/widget_definition_spec.rb`.
+1. `spec/models/work_items/widgets/<widget_name>_spec.rb` or `ee/spec/models/work_items/widgets/<widget_name>_spec.rb`.
 1. Request:
    - CE: `spec/requests/api/graphql/mutations/work_items/update_spec.rb` and/or `spec/requests/api/graphql/mutations/work_items/create_spec.rb`.
    - EE: `ee/spec/requests/api/graphql/mutations/work_items/update_spec.rb` and/or `ee/spec/requests/api/graphql/mutations/work_items/create_spec.rb`.

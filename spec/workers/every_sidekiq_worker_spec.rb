@@ -320,6 +320,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Groups::ScheduleBulkRepositoryShardMovesWorker' => 3,
         'Groups::UpdateRepositoryStorageWorker' => 3,
         'Groups::UpdateStatisticsWorker' => 3,
+        'Import::BulkImports::SourceUsersAttributesWorker' => 6,
         'Import::LoadPlaceholderReferencesWorker' => 6,
         'ImportIssuesCsvWorker' => 3,
         'ImportSoftwareLicensesWorker' => 3,

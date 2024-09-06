@@ -1605,58 +1605,6 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
   },
 };
 
-export const confidentialWorkItemTask = {
-  id: 'gid://gitlab/WorkItem/2',
-  iid: '2',
-  workItemType: {
-    id: 'gid://gitlab/WorkItems::Type/5',
-    name: 'Task',
-    iconName: 'issue-type-task',
-    __typename: 'WorkItemType',
-  },
-  title: 'xyz',
-  state: 'OPEN',
-  confidential: true,
-  reference: 'test-project-path#2',
-  namespace: {
-    __typename: 'Project',
-    id: '1',
-    fullPath: 'test-project-path',
-    name: 'Project name',
-  },
-  createdAt: '2022-08-03T12:41:54Z',
-  closedAt: null,
-  webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
-  widgets: [],
-  __typename: 'WorkItem',
-};
-
-export const closedWorkItemTask = {
-  id: 'gid://gitlab/WorkItem/3',
-  iid: '3',
-  workItemType: {
-    id: 'gid://gitlab/WorkItems::Type/5',
-    name: 'Task',
-    iconName: 'issue-type-task',
-    __typename: 'WorkItemType',
-  },
-  title: 'abc',
-  state: 'CLOSED',
-  confidential: false,
-  reference: 'test-project-path#3',
-  namespace: {
-    __typename: 'Project',
-    id: '1',
-    fullPath: 'test-project-path',
-    name: 'Project name',
-  },
-  createdAt: '2022-08-03T12:41:54Z',
-  closedAt: '2022-08-12T13:07:52Z',
-  webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
-  widgets: [],
-  __typename: 'WorkItem',
-};
-
 export const workItemObjectiveMetadataWidgets = {
   ASSIGNEES: {
     type: 'ASSIGNEES',
@@ -1682,6 +1630,63 @@ export const workItemObjectiveMetadataWidgets = {
     __typename: 'WorkItemWidgetMilestone',
     milestone: mockMilestone,
   },
+  LINKED_ITEMS: {
+    type: WIDGET_TYPE_LINKED_ITEMS,
+    __typename: 'WorkItemWidgetLinkedItems',
+    ...mockLinkedItems,
+  },
+};
+
+export const confidentialWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/2',
+  iid: '2',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
+    __typename: 'WorkItemType',
+  },
+  title: 'xyz',
+  state: 'OPEN',
+  confidential: true,
+  reference: 'test-project-path#2',
+  namespace: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+    name: 'Project name',
+  },
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
+  widgets: [workItemObjectiveMetadataWidgets.LINKED_ITEMS],
+  __typename: 'WorkItem',
+};
+
+export const closedWorkItemTask = {
+  id: 'gid://gitlab/WorkItem/3',
+  iid: '3',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
+    __typename: 'WorkItemType',
+  },
+  title: 'abc',
+  state: 'CLOSED',
+  confidential: false,
+  reference: 'test-project-path#3',
+  namespace: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+    name: 'Project name',
+  },
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: '2022-08-12T13:07:52Z',
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
+  widgets: [workItemObjectiveMetadataWidgets.LINKED_ITEMS],
+  __typename: 'WorkItem',
 };
 
 export const workItemTask = {
@@ -1708,6 +1713,7 @@ export const workItemTask = {
   webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
   widgets: [
     workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
     {
       type: 'HIERARCHY',
       hasChildren: false,
@@ -1769,7 +1775,10 @@ export const otherNamespaceChild = {
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/24',
-  widgets: [workItemObjectiveMetadataWidgets.ASSIGNEES],
+  widgets: [
+    workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+  ],
   __typename: 'WorkItem',
 };
 
@@ -1970,6 +1979,7 @@ export const workItemObjectiveWithChild = {
     workItemObjectiveMetadataWidgets.MILESTONE,
     workItemObjectiveMetadataWidgets.ASSIGNEES,
     workItemObjectiveMetadataWidgets.LABELS,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
   ],
   __typename: 'WorkItem',
 };

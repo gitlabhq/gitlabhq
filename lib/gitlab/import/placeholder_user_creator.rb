@@ -27,10 +27,6 @@ module Gitlab
         user
       end
 
-      private
-
-      attr_reader :source_user
-
       def placeholder_name
         # Some APIs don't expose users' names, so set a default if it's nil
         return "Placeholder #{import_type} Source User" unless source_name
@@ -44,6 +40,10 @@ module Gitlab
 
         uniquify_string(username_pattern, LAMBDA_FOR_UNIQUE_USERNAME)
       end
+
+      private
+
+      attr_reader :source_user
 
       def placeholder_email
         email_pattern = "#{fallback_username_segment}_%s@#{Settings.gitlab.host}"

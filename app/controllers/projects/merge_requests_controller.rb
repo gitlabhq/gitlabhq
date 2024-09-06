@@ -37,7 +37,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
-  before_action only: [:show, :diffs, :rapid_diffs] do
+  before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)

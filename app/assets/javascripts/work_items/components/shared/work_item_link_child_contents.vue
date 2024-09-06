@@ -16,6 +16,7 @@ import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
+import { findLinkedItemsWidget } from '../../utils';
 import {
   STATE_OPEN,
   WIDGET_TYPE_PROGRESS,
@@ -25,6 +26,7 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
 } from '../../constants';
+import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
 
 export default {
   i18n: {
@@ -46,6 +48,7 @@ export default {
     WorkItemLinkChildMetadata,
     WorkItemTypeIcon,
     WorkItemStateBadge,
+    WorkItemRelationshipIcons,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -141,6 +144,9 @@ export default {
       }
       return this.childItem.reference;
     },
+    linkedChildWorkItems() {
+      return findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
+    },
   },
   methods: {
     showScopedLabel(label) {
@@ -185,7 +191,7 @@ export default {
             {{ childItem.title }}
           </gl-link>
         </div>
-        <div class="gl-flex gl-items-center gl-justify-end">
+        <div class="gl-flex gl-shrink-0 gl-items-center gl-justify-end gl-gap-3">
           <gl-avatars-inline
             v-if="assignees.length"
             :avatars="assignees"
@@ -194,7 +200,6 @@ export default {
             :avatar-size="16"
             badge-tooltip-prop="name"
             :badge-sr-only-text="assigneesCollapsedTooltip"
-            class="gl-mr-3 gl-whitespace-nowrap"
           >
             <template #avatar="{ avatar }">
               <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
@@ -202,6 +207,11 @@ export default {
               </gl-avatar-link>
             </template>
           </gl-avatars-inline>
+          <work-item-relationship-icons
+            v-if="isChildItemOpen && linkedChildWorkItems.length"
+            :work-item-type="childItemType"
+            :linked-work-items="linkedChildWorkItems"
+          />
           <span
             :id="`statusIcon-${childItem.id}`"
             class="gl-cursor-help"

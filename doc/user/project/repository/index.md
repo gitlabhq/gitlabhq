@@ -12,73 +12,82 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
-is where you store your code and make changes to it. Your changes are tracked with version control.
-
-Each [project](../index.md) contains a repository.
+is where you store your code, make changes, and track changes using version control.
+Each [project](../index.md) contains a repository and a repository cannot exist without a project.
 
 ## Create a repository
 
-To create a repository, you can:
+To create a repository:
 
 - [Create a project](../../../user/project/index.md) or
 - [Fork an existing project](forking_workflow.md).
-
-A repository cannot exist without a project. A project contains many things,
-one of which is a repository.
 
 ## Add files to a repository
 
 You can add files to a repository:
 
-- When you create a project.
-- After you create a project, by using:
-  - [The web editor](web_editor.md#upload-a-file).
-  - [The UI](#add-a-file-from-the-ui).
-  - [The command line](../../../topics/git/add_files.md).
+- When you [create a project](../../../user/project/index.md), or
+- After you create a project, using the following options:
+  - [Web editor](web_editor.md#upload-a-file).
+  - [User Interface (UI)](#add-a-file-from-the-ui).
+  - [Command line](../../../topics/git/add_files.md).
 
 ### Add a file from the UI
 
-You can upload a file from the GitLab UI.
+To add or upload a file from the GitLab UI:
 
 <!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to the directory where you want to upload the file.
+1. Go to the directory you want to upload the file to.
 1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
-1. Complete the fields.
-   To create a merge request with your changes, enter a branch name
+1. Drop or upload your file.
+1. Enter a commit message.
+1. Optional. To create a merge request with your changes, in **Target branch**, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
 ## Commit changes to a repository
 
-You can [commit your changes](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository),
-to a branch in the repository. When you use the command line, you can commit multiple times before you push.
+You can [commit your changes](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
+to a branch in the repository. When you use the command line, use [`git commit`](../../../topics/git/commands.md#git-commit).
+You can add multiple commits before pushing your changes.
 
 - **Commit message:**
-  A commit message identifies what is being changed and why.
-  In GitLab, you can add keywords to the commit
-  message to perform one of the following actions:
+
+  A commit message identifies what is changed and why. Use descriptive messages to clarify the changes.
+  In GitLab, you can add keywords to the commit message to perform one of the following actions:
+
   - **Trigger a GitLab CI/CD pipeline:**
+
     If the project is configured with [GitLab CI/CD](../../../ci/index.md),
     you trigger a pipeline per push, not per commit.
+
   - **Skip pipelines:**
+
     Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
     your commit message to make GitLab CI/CD skip the pipeline.
+
   - **Cross-link issues and merge requests:**
+
     Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
     to keep track of related parts of your workflow.
     If you mention an issue or a merge request in a commit message, they are displayed
     on their respective thread.
+
 - **Cherry-pick a commit:**
-  In GitLab, you can
-  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
+
+  In GitLab, you can [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
+
 - **Revert a commit:**
+
   [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
+
 - **Sign a commit:**
+
   Add extra security by [signing your commits](signed_commits/index.md).
 
 ## Clone a repository
@@ -93,30 +102,36 @@ You can clone a repository using the:
   - [Clone and open in Visual Studio Code](../../../topics/git/clone.md#clone-and-open-in-visual-studio-code)
   - [Clone and open in IntelliJ IDEA](../../../topics/git/clone.md#clone-and-open-in-intellij-idea)
 
-## Download the code in a repository
+## Download repository source code
 
-You can download the source code that's stored in a repository.
+When you download a repository's source code, it is compressed and saved as an archive file.
+To download the source code stored in a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Above the file list, select **Code**.
-1. From the options, select the files you want to download.
+1. From the options, select the files you want to download:
 
    - **Source code:**
+
      Download the source code from the current branch you're viewing.
      Available extensions: `zip`, `tar`, `tar.gz`, and `tar.bz2`.
+
    - **Directory:**
+
      Download a specific directory. Visible only when you view a subdirectory.
      Available extensions: `zip`, `tar`, `tar.gz`, and `tar.bz2`.
+
    - **Artifacts:**
-     Download the artifacts from the latest CI job.
+
+     Download the artifacts from the latest CI/CD job.
 
 The checksums of generated archives can change even if the repository itself doesn't
 change. For example, this occurs if Git or a third-party library that GitLab uses changes.
 
 ## Repository languages
 
-For the default branch of each repository, GitLab determines which programming languages
-are used. This information is displayed on the **Project overview** page.
+GitLab detects programming languages used in the default branch.
+This information is displayed on the **Project overview** page.
 
 ![Repository Languages bar](img/repository_languages_v15_2.png)
 
@@ -126,22 +141,20 @@ When new files are added, this information can take up to five minutes to update
 
 Not all files are detected and listed on the **Project overview** page. Documentation,
 vendor code, and [most markup languages](files/index.md#supported-markup-languages) are excluded.
+To view a list of supported files and languages, see [supported data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
-You can change this behavior by overriding the default settings.
+To change this behavior and include additional file types in the default settings:
 
 1. In your repository's root directory, create a file named `.gitattributes`.
-1. Add a line that tells GitLab to include files of this type. For example,
-   to enable `.proto` files, add the following code:
+1. Add a line that tells GitLab to include a specific file type. For example,
+   to enable `.proto` files, add the following:
 
    ```plaintext
    *.proto linguist-detectable=true
    ```
 
-View a list of
-[supported data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
-
-This feature can use excessive CPU.
-For more information, see the [troubleshooting section](files/index.md#repository-languages-excessive-cpu-use).
+This feature can use excessive CPU. If you experience an issue, see the
+[Repository Languages: excessive CPU use](files/index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
 ## Repository size
 
@@ -154,27 +167,30 @@ On self-managed GitLab, by default GitLab uses the `du -sk` command to determine
 [enable or disable](../../../administration/feature_flags.md) these feature flags.
 
 The **Project overview** page shows the size of all files in the repository. The size is
-updated, at most, every 15 minutes. The file size includes repository files, artifacts, and LFS.
+updated every 15 minutes. The file size includes repository files, artifacts, and LFS.
 
 The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
+Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
 
-Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md).
-[GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
+GitLab sets the size limits for GitLab.com.
+For more information, see [Account and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Repository contributor analytics
 
-You can view a list and charts of commits made by project members in [Contributor analytics](../../analytics/contributor_analytics.md).
+You can view a line chart with the number of commits to the selected project branch over time,
+and line charts with the number of commits by each project member.
+For more information, see [Contributor analytics](../../analytics/contributor_analytics.md).
 
 ## Repository history graph
 
 A repository graph displays a visual history of the repository network, including branches and merges.
 This graph can help you visualize the Git flow strategy used in the repository.
 
-Go to your project's **Code > Repository graph**.
+To view the repository history graph, go to your project's **Code > Repository graph**.
 
 ![repository Git flow](img/repo_graph.png)
 
-## What happens when a repository path changes
+## Repository path changes
 
 When a repository path changes, GitLab handles the transition from the
 old location to the new one with a redirect.
@@ -193,11 +209,12 @@ When you [rename a user](../../profile/index.md#change-your-username),
   another group, user, or project.
 - [API redirects](../../../api/rest/index.md#redirects) may need to be followed explicitly.
 
-After you change a path, you must update the existing URL in the following resources,
-because they can't follow redirects:
+After you change a path, you must update the existing URL in the following resources:
 
-- [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md), otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
-- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding) instead of the numeric namespace and project IDs.
+- [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md),
+  otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
+- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding)
+  instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/index.md#image).
 - Variables that specify a project or namespace.
 
@@ -218,14 +235,16 @@ because they can't follow redirects:
 
 If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
 [This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
-describes how you can end up in this state without a force push. Another cause can be a misconfigured [server hook](../../../administration/server_hooks.md) that changes a HEAD ref in a `git reset` operation.
+describes how you can end up in this state without a force push. Another cause can be a misconfigured
+[server hook](../../../administration/server_hooks.md) that changes a HEAD ref in a `git reset` operation.
 
 If you look at the output from the sample code below for the target branch, you
 see a discontinuity in the from/to commits as you step through the output.
 The `commit_from` of each new push should equal the `commit_to` of the previous push.
 A break in that sequence indicates one or more commits have been "lost" from the repository history.
 
-Using the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session), the following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
+Using the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
+the following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
 
 ```ruby
 p = Project.find_by_full_path('project/path')

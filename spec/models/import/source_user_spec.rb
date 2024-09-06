@@ -265,6 +265,45 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '.source_users_with_missing_information' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:import_type) { 'github' }
+    let_it_be(:source_hostname) { 'github.com' }
+
+    let_it_be(:source_user_1) do
+      create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
+        import_type: import_type, source_hostname: source_hostname)
+    end
+
+    let_it_be(:source_user_2) do
+      create(:import_source_user, namespace: namespace, source_username: 'a', source_name: nil,
+        import_type: import_type, source_hostname: source_hostname)
+    end
+
+    let_it_be(:source_user_3) do
+      create(:import_source_user, namespace: namespace, source_username: nil, source_name: 'b',
+        import_type: import_type, source_hostname: source_hostname)
+    end
+
+    before_all do
+      create(:import_source_user, namespace: namespace, source_username: 'a', source_name: 'b',
+        import_type: import_type, source_hostname: source_hostname)
+      create(:import_source_user, source_username: nil, source_name: nil, import_type: import_type,
+        source_hostname: source_hostname)
+      create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
+        import_type: 'gitlab_importer', source_hostname: source_hostname)
+      create(:import_source_user, namespace: namespace, source_username: nil, source_name: nil,
+        import_type: import_type, source_hostname: 'source_hostname')
+    end
+
+    it 'returns the count of records with unique placeholder users for the namespace' do
+      results = described_class.source_users_with_missing_information(namespace: namespace, import_type: import_type,
+        source_hostname: source_hostname)
+
+      expect(results).to match_array([source_user_1, source_user_2, source_user_3])
+    end
+  end
+
   describe '#mapped_user' do
     let_it_be(:source_user) { build(:import_source_user, :with_reassign_to_user) }
 

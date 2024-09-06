@@ -103,7 +103,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
         subject.options[:valid_within] = 2.days.to_s
       end
 
-      it 'raises error' do
+      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463693' do
         expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end

@@ -10,6 +10,7 @@ import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
+import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 
 import {
   workItemTask,
@@ -40,6 +41,7 @@ describe('WorkItemLinkChildContents', () => {
   const findRegularLabel = () => findAllLabels().at(0);
   const findScopedLabel = () => findAllLabels().at(1);
   const findRemoveButton = () => wrapper.findComponent(GlButton);
+  const findRelationshipIconsComponent = () => wrapper.findComponent(WorkItemRelationshipIcons);
 
   const createComponent = ({
     canUpdate = true,
@@ -160,6 +162,16 @@ describe('WorkItemLinkChildContents', () => {
 
     it('renders remove button', () => {
       expect(findRemoveButton().exists()).toBe(true);
+    });
+
+    it('renders relationship icons', () => {
+      expect(findRelationshipIconsComponent().exists()).toBe(true);
+    });
+
+    it('does not render relationship icons when item is closed', () => {
+      createComponent({ childItem: closedWorkItemTask });
+
+      expect(findRelationshipIconsComponent().exists()).toBe(false);
     });
 
     it('does not render work-item-links-menu when canUpdate is false', () => {

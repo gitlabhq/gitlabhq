@@ -375,6 +375,12 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(true)
       end
 
+      it 'enqueues SourceUsersAttributesWorker' do
+        expect(Import::BulkImports::SourceUsersAttributesWorker).to receive(:perform_async)
+
+        subject.execute
+      end
+
       context 'when importer_user_mapping feature flag is disable' do
         before do
           stub_feature_flags(importer_user_mapping: false)
@@ -384,6 +390,12 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           subject.execute
 
           expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to eq(false)
+        end
+
+        it 'does not enqueue SourceUsersAttributesWorker' do
+          expect(Import::BulkImports::SourceUsersAttributesWorker).not_to receive(:perform_async)
+
+          subject.execute
         end
       end
 

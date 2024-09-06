@@ -3,28 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :importers do
+  let_it_be(:namespace) { create(:namespace) }
+
+  let(:import_type) { 'github' }
+  let(:source_hostname) { 'github.com' }
+  let(:source_name) { 'Pry Contributor' }
+  let(:source_username) { 'a_pry_contributor' }
+  let(:source_user_identifier) { '1' }
+
+  let(:source_user) do
+    build(:import_source_user,
+      import_type: import_type,
+      source_hostname: source_hostname,
+      source_name: source_name,
+      source_username: source_username,
+      source_user_identifier: source_user_identifier,
+      namespace: namespace
+    )
+  end
+
+  subject(:service) { described_class.new(source_user) }
+
   describe '#execute' do
-    let_it_be(:namespace) { create(:namespace) }
-
-    let(:import_type) { 'github' }
-    let(:source_hostname) { 'github.com' }
-    let(:source_name) { 'Pry Contributor' }
-    let(:source_username) { 'a_pry_contributor' }
-    let(:source_user_identifier) { '1' }
-
-    let(:source_user) do
-      build(:import_source_user,
-        import_type: import_type,
-        source_hostname: source_hostname,
-        source_name: source_name,
-        source_username: source_username,
-        source_user_identifier: source_user_identifier,
-        namespace: namespace
-      )
-    end
-
-    subject(:service) { described_class.new(source_user) }
-
     it 'creates one new placeholder user with a unique email and username' do
       expect { service.execute }.to change { User.where(user_type: :placeholder).count }.from(0).to(1)
 
@@ -121,6 +121,36 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
 
           expect(placeholder_user.username).to match(/^#{'a' * 200}_placeholder_user_\d+$/)
         end
+      end
+    end
+  end
+
+  describe '#placeholder_name' do
+    it 'prepends Placeholder to source_name' do
+      expect(service.placeholder_name).to eq("Placeholder #{source_name}")
+    end
+
+    context 'when source_name is nil' do
+      let(:source_name) { nil }
+
+      it 'assigns a default name' do
+        expect(service.placeholder_name).to eq("Placeholder #{import_type} Source User")
+      end
+    end
+  end
+
+  describe '#placeholder_username' do
+    it 'returns an unique placeholder username' do
+      expect(service.placeholder_username).to match(/^aprycontributor_placeholder_user_\d+$/)
+    end
+
+    context 'when source_username is nil' do
+      let(:source_username) { nil }
+
+      it 'assigns a default username' do
+        expected_match = /^#{import_type}_\h+_placeholder_user_\d+$/
+
+        expect(service.placeholder_username).to match(expected_match)
       end
     end
   end

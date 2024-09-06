@@ -54,7 +54,7 @@ member with the Owner role.
 ## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read how redirects behave
-[on the project-level](../project/repository/index.md#what-happens-when-a-repository-path-changes)
+[on the project-level](../project/repository/index.md#repository-path-changes)
 and [in the API](../../api/rest/index.md#redirects)
 before you proceed.
 
@@ -114,7 +114,7 @@ If you need to copy a group to a different GitLab instance,
 
 When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#repository-path-changes).
 - You must have the Owner role for the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.

@@ -112,6 +112,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
             "If this is a foreign key referencing the specified table #{referenced_table_name} " \
             "then you must remove it from allowed_to_be_missing_foreign_key"
         else
+          next if Gitlab::Database::PostgresPartition.partition_exists?(table_name)
+
           expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to eq(true),
             "Missing a foreign key constraint for `#{table_name}.#{column_name}` " \
             "referencing #{referenced_table_name}. " \
