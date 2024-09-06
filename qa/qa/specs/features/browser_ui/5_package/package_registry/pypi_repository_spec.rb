@@ -76,7 +76,19 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
+        it 'publishes and installs a pypi package', :blocking,
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
+          project.visit_job('run')
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 800)
+          end
+
+          project.visit_job('install')
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 800)
+          end
+
+>>>>>>> a0374c3c6485 (Merge branch '482864-install-setuptools-explicitly' into 'master' )
           Page::Project::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|
