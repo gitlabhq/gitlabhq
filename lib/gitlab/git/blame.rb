@@ -53,7 +53,7 @@ module Gitlab
         output.split("\n").each do |line|
           if line[0, 1] == "\t"
             lines << line[1, line.size]
-          elsif m = /^(\w{40}) (\d+) (\d+)\s?(\d+)?/.match(line)
+          elsif m = /^(\w{40}\w{24}?) (\d+) (\d+)\s?(\d+)?/.match(line)
             # Removed these instantiations for performance but keeping them for reference:
             # commit_id, old_lineno, lineno, span = m[1], m[2].to_i, m[3].to_i, m[4].to_i
             commit_id = m[1]

@@ -3,11 +3,11 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import { parseDataAttributes } from '~/members/utils';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';
 import membersStore from './store';
+import { graphqlClient } from './graphql_client';
 
 /**
  * @param {HTMLElement} el
@@ -63,7 +63,9 @@ export const initMembersApp = (el, context, options) => {
     name: 'MembersRoot',
     components: { MembersTabs },
     store,
-    apolloProvider: new VueApollo({ defaultClient: createDefaultClient() }),
+    apolloProvider: new VueApollo({
+      defaultClient: graphqlClient,
+    }),
     provide: {
       currentUserId: gon.current_user_id || null,
       sourceId,

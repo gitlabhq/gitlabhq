@@ -25,3 +25,9 @@ To get your branch merged into the main branch:
 1. If necessary, have your [merge request reviewed](../../user/project/merge_requests/reviews/index.md#request-a-review).
 1. Have someone [merge your merge request](../../user/project/merge_requests/index.md#merge-a-merge-request), or merge
    the merge request yourself, depending on your process.
+
+## Related topics
+
+- [Merge requests](../../user/project/merge_requests/index.md)
+- [Merge methods](../../user/project/merge_requests/methods/index.md)
+- [Merge conflicts](../../user/project/merge_requests/conflicts.md)

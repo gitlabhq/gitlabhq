@@ -65,7 +65,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 ## Generate a merge commit message
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.
@@ -84,8 +84,6 @@ To generate a commit message with GitLab Duo:
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
 1. Review the commit message provide and choose **Insert** to add it to the commit.
-
-Provide feedback on this experimental feature in [issue 408994](https://gitlab.com/gitlab-org/gitlab/-/issues/408994).
 
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 

@@ -404,6 +404,7 @@ dast:
 - DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.
 - DAST cannot authenticate to applications that do not set an [authentication token](#authentication-tokens) during login.
 - DAST cannot authenticate to applications that require more than two inputs to be filled out. Two inputs must be supplied, username and password.
+- DAST does not carry the content of IndexedDB into the crawl stage. If your application relies on IndexedDB to maintain authenticated state, [DAST will not be able to authenticate](https://gitlab.com/gitlab-org/gitlab/-/issues/481651) to crawl your application.
 
 ## Troubleshooting
 

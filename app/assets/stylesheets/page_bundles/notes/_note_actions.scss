@@ -1,0 +1,75 @@
+/**
+ * Actions for Discussions/Notes
+ */
+
+ .discussion-actions {
+  float: right;
+
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+    margin: 0 0 $gl-padding-8;
+  }
+
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
+  }
+
+  .btn-group > .discussion-create-issue-btn {
+    margin-left: -2px;
+  }
+
+  svg {
+    height: 15px;
+  }
+}
+
+.note-actions {
+  justify-content: flex-end;
+  flex-shrink: 1;
+  display: inline-flex;
+  align-items: center;
+  margin-left: $gl-padding-8;
+  @apply gl-text-subtle;
+
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
+    justify-content: flex-start;
+    float: none;
+
+    .note-actions__mobile-spacer {
+      flex-grow: 1;
+    }
+  }
+}
+
+.more-actions {
+  display: flex;
+  align-items: flex-end;
+
+  .tooltip {
+    white-space: nowrap;
+  }
+}
+
+.more-actions-dropdown {
+  width: 180px;
+  min-width: 180px;
+}
+
+.discussion-toggle-button {
+  padding: 0 $gl-padding-8 0 0;
+  background-color: transparent;
+  border: 0;
+  line-height: 20px;
+  font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    @apply gl-text-link;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+  }
+}

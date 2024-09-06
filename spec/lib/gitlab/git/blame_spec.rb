@@ -82,6 +82,28 @@ RSpec.describe Gitlab::Git::Blame, feature_category: :source_code_management do
       end
     end
 
+    context 'when repository has SHA256 format' do
+      let_it_be(:user) { create(:user, :with_namespace) }
+
+      let(:project) { Projects::CreateService.new(user, opts).execute }
+      let(:opts) do
+        {
+          name: 'SHA256',
+          namespace_id: user.namespace.id,
+          initialize_with_readme: true,
+          repository_object_format: 'sha256'
+        }
+      end
+
+      let(:sha) { project.commit.sha }
+      let(:path) { 'README.md' }
+
+      it 'correctly blames file' do
+        expect(result).to be_present
+        expect(result.first[:commit].sha.size).to eq(64)
+      end
+    end
+
     context "renamed file" do
       let(:commit) { project.commit('blame-on-renamed') }
       let(:sha) { commit.id }

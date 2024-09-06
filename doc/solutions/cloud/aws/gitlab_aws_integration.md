@@ -114,7 +114,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 - [Enterprise DevOps Blueprint: Serverless Framework Apps on AWS](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws) - working example code and tutorials. `[GitLab Solution]` `[CI Solution]`
   - [Tutorial: Serverless Framework Deployment to AWS with GitLab Serverless SAST Scanning](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/master/TUTORIAL.md) `[GitLab Solution]` `[CI Solution]`
-  - [Tutorial: Secure Serverless Framework Development with GitLab Security Policy Approval Rules and Managed DevOps Environments](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/master/TUTORIAL2-SecurityAndManagedEnvs.md) `[GitLab Solution]` `[CI Solution]`
+  - [Tutorial: Secure Serverless Framework Development with GitLab Security Policy Approval Rules and Managed DevOps Environments](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/prod/TUTORIAL2-SecurityAndManagedEnvs.md?ref_type=heads) `[GitLab Solution]` `[CI Solution]`
 
 ### Terraform
 

@@ -16,7 +16,6 @@
     ],
     "port": 3038,
     "publicOutputDir": "vite-dev",
-    "viteBinPath": "scripts/frontend/vite",
     "devServerConnectTimeout": 3
   }
 }

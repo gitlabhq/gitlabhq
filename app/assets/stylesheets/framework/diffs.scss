@@ -1,3 +1,6 @@
+@import './page_bundles/notes/diff_comments';
+@import './page_bundles/notes/image_comments';
+
 $diff-file-header: 41px;
 
 // Common
@@ -777,69 +780,6 @@ table.code {
   cursor: auto;
 }
 
-.frame.click-to-comment,
-.btn-transparent.image-diff-overlay-add-comment {
-  position: relative;
-  cursor: url('illustrations/image_comment_light_cursor.svg') $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
-    auto;
-
-  // Retina cursor
-  cursor: image-set(url('illustrations/image_comment_light_cursor.svg') 1x,
-  url('illustrations/image_comment_light_cursor@2x.svg') 2x) $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
-    auto;
-
-  .comment-indicator {
-    position: absolute;
-    padding: 0;
-    width: (2px * $image-comment-cursor-left-offset);
-    height: (2px * $image-comment-cursor-top-offset);
-    color: $blue-400;
-    // center the indicator to match the top left click region
-    margin-top: (-1px * $image-comment-cursor-top-offset) + 2;
-    margin-left: (-1px * $image-comment-cursor-left-offset) + 1;
-
-    svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    &:focus {
-      outline: none;
-    }
-  }
-}
-
-.frame .image-comment-badge,
-.frame .comment-indicator {
-  // Center align badges on the frame
-  transform: translate(-50%, -50%);
-}
-
-.image-comment-badge {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  background: none;
-  border: 0;
-
-  > svg {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.image-diff-avatar-link,
-.user-avatar-link {
-  position: relative;
-
-  .badge.badge-pill,
-  .image-comment-badge {
-    top: 25px;
-    right: 8px;
-  }
-}
-
 .discussion-notes {
   min-height: 35px;
   background-color: transparent;
@@ -893,17 +833,6 @@ table.code {
 
   .notes {
     @apply gl-rounded-base;
-  }
-}
-
-.image-diff-overlay,
-.image-diff-overlay-add-comment {
-  top: 0;
-  left: 0;
-
-  &:active,
-  &:focus {
-    outline: 0;
   }
 }
 

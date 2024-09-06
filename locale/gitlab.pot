@@ -43565,6 +43565,9 @@ msgstr ""
 msgid "PromotionRequests|An error occurred while processing the request"
 msgstr ""
 
+msgid "PromotionRequests|Error fetching promotion requests count"
+msgstr ""
+
 msgid "PromotionRequests|Highest role requested"
 msgstr ""
 

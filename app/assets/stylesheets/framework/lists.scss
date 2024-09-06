@@ -93,7 +93,7 @@ ul.content-list {
       font-weight: $gl-font-weight-bold;
     }
 
-    a {
+    a:not(.gfm-project_member) {
       color: $gl-text-color;
 
       &.inline-link {
