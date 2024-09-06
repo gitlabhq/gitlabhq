@@ -34,14 +34,14 @@ module Gitlab
       end
 
       def find_sessionless_user(request_format)
-        find_user_from_dependency_proxy_token ||
-          find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
-          find_user_from_feed_token(request_format) ||
-          find_user_from_static_object_token(request_format) ||
-          find_user_from_job_token_basic_auth ||
-          find_user_from_job_token ||
-          find_user_from_personal_access_token_for_api_or_git ||
-          find_user_for_git_or_lfs_request
+        case request_format
+        when :graphql_api
+          find_user_for_graphql_api_request
+        when :api, :git, :rss, :ics, :blob, :download, :archive, nil
+          find_user_from_any_authentication_method(request_format)
+        else
+          raise ArgumentError, "Unknown request format"
+        end
       rescue Gitlab::Auth::AuthenticationError
         nil
       end
@@ -80,6 +80,36 @@ module Gitlab
       end
 
       private
+
+      # Use a minimal subset of find_user_from_any_authentication_method
+      # so only token types allowed for GraphQL can authenticate users.
+      # CI_JOB_TOKENs are not allowed for now, since their access is too broad.
+      #
+      # Overridden in EE
+      def find_user_for_graphql_api_request
+        if Feature.enabled? :graphql_minimal_auth_methods # rubocop:disable Gitlab/FeatureFlagWithoutActor -- reverting MR
+          find_user_from_web_access_token(:api, scopes: graphql_authorization_scopes) ||
+            find_user_from_personal_access_token_for_api_or_git
+        else
+          find_user_from_any_authentication_method(:api)
+        end
+      end
+
+      # Overridden in EE
+      def graphql_authorization_scopes
+        [:api, :read_api]
+      end
+
+      def find_user_from_any_authentication_method(request_format)
+        find_user_from_dependency_proxy_token ||
+          find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
+          find_user_from_feed_token(request_format) ||
+          find_user_from_static_object_token(request_format) ||
+          find_user_from_job_token_basic_auth ||
+          find_user_from_job_token ||
+          find_user_from_personal_access_token_for_api_or_git ||
+          find_user_for_git_or_lfs_request
+      end
 
       def access_token
         strong_memoize(:access_token) do
