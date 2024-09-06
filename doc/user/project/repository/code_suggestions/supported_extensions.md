@@ -105,7 +105,7 @@ Prerequisites:
 - You have installed and enabled the
   [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md).
 - You have completed the [VS Code extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
-    instructions, and authorized the extension to access your GitLab account.
+  instructions, and authorized the extension to access your GitLab account.
 
 To do this:
 
@@ -129,7 +129,7 @@ Prerequisites:
 - You have installed and enabled the
   [GitLab plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/index.md).
 - You have completed the [Jetbrains extension setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup)
-    instructions, and authorized the extension to access your GitLab account.
+  instructions, and authorized the extension to access your GitLab account.
 
 To do this:
 

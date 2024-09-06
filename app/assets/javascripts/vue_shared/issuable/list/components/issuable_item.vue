@@ -245,7 +245,7 @@ export default {
       e.preventDefault();
       this.$emit('select-issuable', {
         iid: this.issuableIid,
-        webUrl: this.issuableLinkHref,
+        webUrl: this.issuable.webUrl,
         fullPath: this.workItemFullPath,
       });
     },

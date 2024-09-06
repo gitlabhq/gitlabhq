@@ -36,7 +36,7 @@ exports[`Merge request dashboard assigned users component renders user avatars 1
       >
         <img
           alt="avatar"
-          class="gl-avatar gl-avatar-circle gl-avatar-s32"
+          class="!gl-bg-white gl-avatar gl-avatar-circle gl-avatar-s32"
           src="/root"
         />
         <span
@@ -67,7 +67,7 @@ exports[`Merge request dashboard assigned users component renders user avatars 1
       >
         <img
           alt="avatar"
-          class="gl-avatar gl-avatar-circle gl-avatar-s32"
+          class="!gl-bg-white gl-avatar gl-avatar-circle gl-avatar-s32"
           src="/root"
         />
         <span

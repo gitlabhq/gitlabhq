@@ -109,12 +109,10 @@ describe('WorkItemDetail component', () => {
     mutationHandler,
     error = undefined,
     workItemsAlphaEnabled = false,
-    workItemsBeta = false,
     namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
     router = true,
     modalIsGroup = null,
-    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -141,14 +139,12 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
-          workItemsBeta,
           namespaceLevelWorkItems,
         },
         hasSubepicsFeature,
         fullPath: 'group/project',
         groupPath: 'group',
         reportAbusePath: '/report/abuse/path',
-        isGroup,
       },
       stubs: {
         WorkItemAncestors: true,

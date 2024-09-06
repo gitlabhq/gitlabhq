@@ -32,7 +32,6 @@ describe('WorkItemCreatedUpdated component', () => {
     confidential = false,
     discussionLocked = false,
     updateInProgress = false,
-    isGroup = false,
   } = {}) => {
     const workItemQueryResponse = workItemByIidResponseFactory({
       author,
@@ -45,9 +44,6 @@ describe('WorkItemCreatedUpdated component', () => {
 
     wrapper = shallowMount(WorkItemCreatedUpdated, {
       apolloProvider: createMockApollo([[workItemByIidQuery, successHandler]]),
-      provide: {
-        isGroup,
-      },
       propsData: {
         fullPath: '/some/project',
         workItemIid,

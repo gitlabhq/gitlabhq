@@ -136,7 +136,7 @@ export default {
           class="gl-relative"
           data-testid="assigned-user"
         >
-          <gl-avatar :src="user.avatarUrl" :size="32" />
+          <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-white" />
           <span
             v-if="isCurrentUser(user)"
             class="gl-absolute -gl-left-2 -gl-top-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-bg-blue-500 gl-p-1 gl-text-white"

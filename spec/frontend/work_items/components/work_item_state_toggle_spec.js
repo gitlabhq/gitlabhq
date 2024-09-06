@@ -49,7 +49,6 @@ describe('Work Item State toggle button component', () => {
     workItemState = STATE_OPEN,
     workItemType = 'Task',
     hasComment = false,
-    isGroup = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemStateToggle, {
       apolloProvider: createMockApollo([
@@ -57,9 +56,6 @@ describe('Work Item State toggle button component', () => {
         [workItemByIidQuery, querySuccessHander],
         [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
       ]),
-      provide: {
-        isGroup,
-      },
       propsData: {
         workItemId: id,
         workItemIid: iid,

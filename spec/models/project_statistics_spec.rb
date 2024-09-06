@@ -13,14 +13,14 @@ RSpec.describe ProjectStatistics do
 
   describe 'scopes' do
     describe '.for_project_ids' do
-      it 'returns only requested projects', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448381' do
+      it 'returns only requested projects' do
         stats = create_list(:project_statistics, 3)
         project_ids = stats[0..1].map(&:project_id)
         expected_ids = stats[0..1].map(&:id)
 
         requested_stats = described_class.for_project_ids(project_ids).pluck(:id)
 
-        expect(requested_stats).to eq(expected_ids)
+        expect(requested_stats).to match_array(expected_ids)
       end
     end
   end

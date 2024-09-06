@@ -452,7 +452,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     it 'skips coercion for not Integer values' do
-      expect { issue.time_estimate = nil }.to change { issue.time_estimate }.to(nil)
+      expect { issue.time_estimate = nil }.to change { issue.read_attribute(:time_estimate) }.to(nil)
       expect { issue.time_estimate = 'invalid time' }.not_to raise_error
       expect { issue.time_estimate = 22.33 }.not_to raise_error
     end

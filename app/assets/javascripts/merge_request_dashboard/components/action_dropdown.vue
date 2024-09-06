@@ -21,7 +21,7 @@ export default {
         { id: 0, href: this.switchDashboardPath, text: this.dashboardLinkText },
         {
           id: 1,
-          href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/460910',
+          href: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478844',
           text: __('Provide feedback'),
           extraAttrs: {
             target: '__blank',

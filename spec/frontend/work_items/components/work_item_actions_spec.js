@@ -148,10 +148,6 @@ describe('WorkItemActions component', () => {
         hideSubscribe,
         hasChildren,
       },
-      provide: {
-        isGroup: false,
-        glFeatures: { workItemsBeta: true, workItemsAlpha: true },
-      },
       mocks: {
         $toast,
       },

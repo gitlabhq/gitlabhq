@@ -12,7 +12,6 @@
 - ee/spec/services/ee/users/create_service_spec.rb
 - ee/spec/services/users/service_accounts/create_service_spec.rb
 - ee/spec/services/epics/update_dates_service_spec.rb
-- ee/spec/services/gitlab_subscriptions/trials/create_service_spec.rb
 - spec/controllers/admin/groups_controller_spec.rb
 - spec/controllers/admin/users_controller_spec.rb
 - spec/controllers/groups_controller_spec.rb

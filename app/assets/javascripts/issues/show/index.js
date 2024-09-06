@@ -5,7 +5,6 @@ import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import initLinkedResources from '~/linked_resources';
 import IssueApp from './components/app.vue';
 import DescriptionComponent from './components/description.vue';
@@ -72,8 +71,6 @@ export function initIssuableApp(store) {
   };
 
   bootstrapApollo({ ...issueState, issueType });
-
-  scrollToTargetOnResize();
 
   if (issueType === TYPE_INCIDENT) {
     initLinkedResources();

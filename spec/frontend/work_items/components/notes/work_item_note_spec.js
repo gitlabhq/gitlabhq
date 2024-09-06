@@ -90,7 +90,6 @@ describe('Work Item Note', () => {
   const createComponent = ({
     note = mockWorkItemCommentNote,
     isFirstNote = false,
-    isGroup = false,
     updateNoteMutationHandler = successHandler,
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
@@ -98,9 +97,6 @@ describe('Work Item Note', () => {
     workItemByIidResponseHandler = workItemResponseHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
-      provide: {
-        isGroup,
-      },
       propsData: {
         fullPath: 'test-project-path',
         workItemId,
@@ -155,7 +151,7 @@ describe('Work Item Note', () => {
     });
 
     it('should show the awards list when in edit mode', async () => {
-      createComponent({ note: mockWorkItemCommentNote, workItemsAlpha: true });
+      createComponent({ note: mockWorkItemCommentNote });
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
       expect(findAwardsList().exists()).toBe(true);
@@ -438,7 +434,7 @@ describe('Work Item Note', () => {
     });
 
     it('passes note props to awards list', () => {
-      createComponent({ note: mockWorkItemCommentNote, workItemsAlpha: true });
+      createComponent({ note: mockWorkItemCommentNote });
 
       expect(findAwardsList().props('note')).toBe(mockWorkItemCommentNote);
       expect(findAwardsList().props('workItemIid')).toBe('1');

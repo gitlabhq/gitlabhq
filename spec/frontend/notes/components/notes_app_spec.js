@@ -15,6 +15,7 @@ import notesEventHub from '~/notes/event_hub';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
+import NotePreview from '~/notes/components/note_preview.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -22,6 +23,9 @@ import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import * as mockData from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/lib/utils/resize_observer', () => ({
+  scrollToTargetOnResize: jest.fn(),
+}));
 
 const TYPE_COMMENT_FORM = 'comment-form';
 const TYPE_NOTES_LIST = 'notes-list';
@@ -316,13 +320,13 @@ describe('note_app', () => {
       return waitForPromises();
     });
 
-    it('should listen hashchange event', () => {
-      const hash = 'some dummy hash';
+    it('should listen hashchange event for notes', () => {
+      const hash = 'note_1234';
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(hash);
       const dispatchMock = jest.spyOn(store, 'dispatch');
       window.dispatchEvent(new Event('hashchange'), hash);
 
-      expect(dispatchMock).toHaveBeenCalledWith('setTargetNoteHash', 'some dummy hash');
+      expect(dispatchMock).toHaveBeenCalledWith('setTargetNoteHash', 'note_1234');
     });
   });
 
@@ -372,6 +376,30 @@ describe('note_app', () => {
 
     it('shows skeleton notes after the loaded discussions', () => {
       expect(wrapper.find('#notes-list').html()).toMatchSnapshot();
+    });
+  });
+
+  describe('preview note shown inside skeleton notes', () => {
+    it.each`
+      urlHash       | exists
+      ${''}         | ${false}
+      ${'note_123'} | ${true}
+    `('url is `$urlHash`', ({ urlHash, exists }) => {
+      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(urlHash);
+
+      store = createStore();
+      store.state.isLoading = true;
+      store.state.targetNoteHash = urlHash;
+
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        store,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+
+      expect(wrapper.findComponent(NotePreview).exists()).toBe(exists);
     });
   });
 

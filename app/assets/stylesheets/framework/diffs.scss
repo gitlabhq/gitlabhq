@@ -107,7 +107,11 @@ $diff-file-header: 41px;
   .image {
     @apply gl-bg-strong;
     text-align: center;
-    padding: 30px;
+    padding: $gl-padding;
+
+    &:has(> .view) {
+      padding-bottom: $gl-padding-32;
+    }
 
     .wrap {
       display: inline-block;

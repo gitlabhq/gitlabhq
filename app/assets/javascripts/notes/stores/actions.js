@@ -13,7 +13,7 @@ import { confidentialWidget } from '~/sidebar/components/confidential/sidebar_co
 import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import loadAwardsHandler from '~/awards_handler';
-import { isInViewport, scrollToElement, isInMRPage } from '~/lib/utils/common_utils';
+import { isInMRPage } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
@@ -630,12 +630,6 @@ export const toggleAwardRequest = ({ dispatch }, data) => {
   return axios.post(endpoint, { name: awardName }).then(() => {
     dispatch('toggleAward', data);
   });
-};
-
-export const scrollToNoteIfNeeded = (context, el) => {
-  if (!isInViewport(el[0])) {
-    scrollToElement(el);
-  }
 };
 
 export const fetchDiscussionDiffLines = ({ commit }, discussion) =>

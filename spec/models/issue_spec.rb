@@ -2060,6 +2060,25 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '#time_estimate' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    context 'when time estimate on the issue record is NULL' do
+      before do
+        issue.update_column(:time_estimate, nil)
+      end
+
+      it 'sets time estimate to zeor on save' do
+        expect(issue.read_attribute(:time_estimate)).to be_nil
+
+        issue.save!
+
+        expect(issue.reload.read_attribute(:time_estimate)).to eq(0)
+      end
+    end
+  end
+
   describe '#supports_move_and_clone?' do
     let_it_be(:project) { create(:project) }
     let_it_be_with_refind(:issue) { create(:incident, project: project) }

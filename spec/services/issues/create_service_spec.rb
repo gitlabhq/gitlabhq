@@ -472,8 +472,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
               iid: { current: kind_of(Integer), previous: nil },
               project_id: { current: project.id, previous: nil },
               title: { current: opts[:title], previous: nil },
-              updated_at: { current: kind_of(Time), previous: nil },
-              time_estimate: { current: 0, previous: nil }
+              updated_at: { current: kind_of(Time), previous: nil }
             },
             object_attributes: include(
               opts.merge(

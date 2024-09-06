@@ -1,0 +1,31 @@
+---
+# Error: gitlab_base.ListIndentation
+#
+# Ensures content nested in lists is spaced correctly.
+#
+extends: existence
+message: "Items nested under an ordered list must be indented three spaces. Items nested under an unordered list must be indented two spaces."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#nesting-inside-a-list-item
+level: error
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  - '^1\. [^\n]*\n\n?( |  |    )[`\w-]'
+  - '^- [^\n]*\n\n?( |   |    )[`\w-]'
+
+# Regex guide:
+#
+# "^1. [^\n]*" - Lines that start with an ordered list.
+# "^- [^\n]*" - Lines that start with an unordered list.
+#
+# "\n\n?" - Then one or two newlines
+#
+# Ordered lists: "( |  |    )" - One, two, or four spaces (three = OK)
+# Unordered lists: "( |   |    )" - One, three, or four spaces (two = OK)
+#
+# "[`\w-]" - Any one of:
+#
+# - A backtick - For code blocks (after a list item).
+# - A letter/number - For alert boxes, sentences, and nested ordered lists (after a list item).
+# - A hyphen - For nested unordered lists (after a list item).

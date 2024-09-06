@@ -116,11 +116,6 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      showForm: this.isFormVisible || this.hasError,
-    };
-  },
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -176,29 +171,25 @@ export default {
         : sprintf(this.$options.i18n.emptyItemsFree, { issuableType: this.issuableType });
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.showForm) {
-        this.$refs.relatedIssuesWidget.showForm();
-      }
-    });
-  },
-  updated() {
-    this.$nextTick(() => {
-      if (this.hasError) {
+  watch: {
+    isFormVisible(newVal) {
+      if (newVal === true) {
         this.$refs.relatedIssuesWidget.showForm();
       } else {
         this.$refs.relatedIssuesWidget.hideForm();
       }
-    });
+    },
+  },
+  mounted() {
+    if (this.isFormVisible) {
+      this.$refs.relatedIssuesWidget.showForm();
+    }
   },
   methods: {
     handleFormSubmit(event) {
-      this.showForm = false;
       this.$emit('addIssuableFormSubmit', event);
     },
     handleFormCancel(event) {
-      this.showForm = false;
       this.$emit('addIssuableFormCancel', event);
       this.$refs.relatedIssuesWidget.hideForm();
     },
@@ -227,6 +218,8 @@ export default {
     :help-link-text="helpLinkText"
     anchor-id="related-issues"
     data-testid="related-issues-block"
+    @showForm="$emit('showForm')"
+    @hideForm="$emit('hideForm')"
   >
     <template #actions>
       <slot name="header-actions"></slot>
@@ -253,7 +246,7 @@ export default {
       />
     </template>
 
-    <template v-if="!shouldShowTokenBody && !isFormVisible" #empty>
+    <template v-if="!shouldShowTokenBody" #empty>
       <slot name="empty-state-message">{{ emptyStateMessage }}</slot>
       <gl-link
         v-if="hasHelpPath"

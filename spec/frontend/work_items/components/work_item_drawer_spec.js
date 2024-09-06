@@ -1,5 +1,4 @@
 import { GlDrawer, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -10,6 +9,7 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 Vue.use(VueApollo);
 
@@ -27,10 +27,10 @@ describe('WorkItemDrawer', () => {
 
   const createComponent = ({
     open = false,
-    activeItem = { iid: '1', webUrl: 'test' },
+    activeItem = { iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
   } = {}) => {
-    wrapper = shallowMount(WorkItemDrawer, {
+    wrapper = shallowMountExtended(WorkItemDrawer, {
       propsData: {
         activeItem,
         open,
@@ -44,7 +44,6 @@ describe('WorkItemDrawer', () => {
         reportAbusePath: '',
         groupPath: '',
         hasSubepicsFeature: false,
-        isGroup: false,
       },
       apolloProvider: createMockApollo([[deleteWorkItemMutation, deleteWorkItemMutationHandler]]),
     });
@@ -56,10 +55,26 @@ describe('WorkItemDrawer', () => {
     expect(findGlDrawer().props('open')).toBe(false);
   });
 
-  it('displays correct URL in link', () => {
+  it('displays correct URL and text in link', () => {
     createComponent();
 
-    expect(wrapper.findComponent(GlLink).attributes('href')).toBe('test');
+    const link = wrapper.findComponent(GlLink);
+    expect(link.attributes('href')).toBe('test');
+    expect(link.text()).toBe('gitlab#1');
+  });
+
+  it('displays the correct URL in the full page button', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('work-item-drawer-link-button').attributes('href')).toBe('test');
+  });
+
+  it('has a copy to clipboard button for the item URL', () => {
+    createComponent();
+
+    expect(
+      wrapper.findByTestId('work-item-drawer-copy-button').attributes('data-clipboard-text'),
+    ).toBe('test');
   });
 
   it('emits `close` event when drawer is closed', () => {

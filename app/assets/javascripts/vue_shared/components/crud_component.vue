@@ -108,9 +108,11 @@ export default {
     showForm() {
       this.isFormVisible = true;
       this.collapsed = false;
+      this.$emit('showForm');
     },
     hideForm() {
       this.isFormVisible = false;
+      this.$emit('hideForm');
     },
     toggleForm() {
       if (this.isFormVisible) {

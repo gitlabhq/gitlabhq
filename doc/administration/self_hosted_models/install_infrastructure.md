@@ -43,17 +43,17 @@ To set up your self-hosted model deployment infrastructure:
 
 Install one of the following GitLab-approved LLM models:
 
-| Model                                                                                                                       | Code Completion | Code Generation | Duo Chat |
-|-----------------------------------------------------------------------------------------------------------------------------|-----------------|-----------------|----------|
-| [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                                                                  | ✅               | -               | -        |
-| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)                                                          | -               | ✅               | -        |
-| [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)                                                        | ✅               | -               | -        |
-| [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)                                                   | ✅               | -               | -        |
-| [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)                                               | -               | ✅               | -        |
-| [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama)) | ✅               | ✅               | -        |
-| [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                                                              | -               | ✅               | ✅       |
-| [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)                                                | -               | ✅               | ✅       |
-| [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)                                                 | -               | ✅               | ✅       |
+| Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
+|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
+| [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) (Instruction)     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) (Code)             | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
+| [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama))                                         | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
+| [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                     | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)       | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{dotted-circle}** No                | **{check-circle}** Yes               | **{check-circle}** Yes        |
 
 ### Recommended serving architectures
 

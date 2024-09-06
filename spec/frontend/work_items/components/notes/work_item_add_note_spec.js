@@ -45,7 +45,6 @@ describe('Work item add note', () => {
     workItemResponse = workItemByIidResponseFactory({ canUpdate, canCreateNote }),
     signedIn = true,
     isEditing = true,
-    isGroup = false,
     workItemType = 'Task',
     isInternalThread = false,
     isNewDiscussion = false,
@@ -66,9 +65,6 @@ describe('Work item add note', () => {
         [workItemByIidQuery, workItemResponseHandler],
         [createNoteMutation, mutationHandler],
       ]),
-      provide: {
-        isGroup,
-      },
       propsData: {
         fullPath: 'test-project-path',
         workItemId: id,

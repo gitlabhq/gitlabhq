@@ -818,7 +818,10 @@ export default {
       this.viewType = ISSUES_LIST_VIEW_KEY;
     },
     handleSelectIssuable(issuable) {
-      this.activeIssuable = issuable;
+      this.activeIssuable = {
+        ...issuable,
+        fullPath: this.fullPath,
+      };
     },
     updateIssuablesCache(workItem) {
       const client = this.$apollo.provider.clients.defaultClient;

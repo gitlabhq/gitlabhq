@@ -29,7 +29,6 @@ describe('WorkItemDescriptionRendered', () => {
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
     mockComputed = {},
-    hasWorkItemsBeta = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
       propsData: {
@@ -40,7 +39,6 @@ describe('WorkItemDescriptionRendered', () => {
       computed: mockComputed,
       provide: {
         fullPath: 'full/path',
-        workItemsBeta: hasWorkItemsBeta,
       },
     });
   };
