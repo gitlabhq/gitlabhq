@@ -4398,6 +4398,8 @@ In this example:
   running the pipeline when using:
   - [Nested includes](includes.md#use-nested-includes).
   - [Compliance pipelines](../../user/group/compliance_pipelines.md).
+- `rules:exists` cannot search for the presence of [artifacts](../jobs/job_artifacts.md),
+  because `rules` evaluation happens before jobs run and artifacts are fetched.
 
 ##### `rules:exists:paths`
 

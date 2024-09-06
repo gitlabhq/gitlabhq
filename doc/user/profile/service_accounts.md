@@ -15,7 +15,7 @@ user.
 
 A service account:
 
-- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html).
+- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) on GitLab.com. It is available on trial versions on GitLab self-managed.
 - Is not a:
   - Billable user.
   - Bot user.

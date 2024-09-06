@@ -26,6 +26,7 @@ export default function mountBranchRules(el, store) {
     showStatusChecks,
     showApprovers,
     showCodeOwners,
+    canAdminProtectedBranches,
   } = el.dataset;
 
   return new Vue({
@@ -43,6 +44,7 @@ export default function mountBranchRules(el, store) {
       showStatusChecks: parseBoolean(showStatusChecks),
       showApprovers: parseBoolean(showApprovers),
       showCodeOwners: parseBoolean(showCodeOwners),
+      canAdminProtectedBranches: parseBoolean(canAdminProtectedBranches),
     },
     render(h) {
       return h(View);

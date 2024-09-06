@@ -525,6 +525,81 @@ To requeue a batched background migration, you must:
 - Update the `db/docs/batched_background_migration/*.yml` file from the original
   migration to include information about the requeue.
 
+#### Example
+
+**Original Migration:**
+
+```ruby
+# frozen_string_literal: true
+
+class QueueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
+  milestone '17.3'
+
+  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
+
+  def up
+    # no-op because there was a bug in the original migration, which has been
+    # fixed by
+  end
+
+  def down
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162527
+  end
+end
+```
+
+**Requeued migration:**
+
+```ruby
+# frozen_string_literal: true
+
+class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
+  milestone '17.4'
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
+  DELAY_INTERVAL = 2.minutes
+  BATCH_SIZE = 10_000
+  SUB_BATCH_SIZE = 100
+
+  def up
+    # Clear previous background migration execution from QueueResolveVulnerabilitiesForRemovedAnalyzers
+    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
+
+    queue_batched_background_migration(
+      MIGRATION,
+      :vulnerability_reads,
+      :id,
+      job_interval: DELAY_INTERVAL,
+      batch_size: BATCH_SIZE,
+      sub_batch_size: SUB_BATCH_SIZE
+    )
+  end
+
+  def down
+    delete_batched_background_migration(MIGRATION, :vulnerability_reads, :id, [])
+  end
+end
+```
+
+**Batched migration dictionary:**
+
+The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this eg: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
+
+```markdown
+---
+migration_job_name: ResolveVulnerabilitiesForRemovedAnalyzers
+description: Resolves all detected vulnerabilities for removed analyzers.
+feature_category: static_application_security_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
+milestone: '17.4'
+queued_migration_version: 20240814085540
+finalize_after: '2024-09-22'
+finalized_by: # version of the migration that finalized this BBM
+```
+
 ### Batch over non-distinct columns
 
 The default batching strategy provides an efficient way to iterate over primary key columns.

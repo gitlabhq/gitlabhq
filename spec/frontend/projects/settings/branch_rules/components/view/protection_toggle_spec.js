@@ -37,7 +37,7 @@ describe('ProtectionToggle', () => {
 
   describe('when user can edit', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ provided: { canAdminProtectedBranches: true } });
     });
 
     it('renders the toggle', () => {
@@ -53,15 +53,44 @@ describe('ProtectionToggle', () => {
     });
 
     it('renders the toggle description, when protection is on', () => {
-      createComponent({ props: { isProtected: true, description: 'Some description' } });
+      createComponent({
+        props: { isProtected: true, description: 'Some description' },
+        provided: { canAdminProtectedBranches: true },
+      });
 
       expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
     });
   });
 
+  describe('when user can not edit', () => {
+    beforeEach(() => {
+      createComponent({ provided: { canAdminProtectedBranches: false } });
+    });
+
+    it('renders the icon instead of the toggle', () => {
+      expect(findIcon().exists()).toBe(true);
+    });
+
+    it('does not render the toggle description when not provided', () => {
+      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
+    });
+
+    it('renders the toggle description, when protection is on', () => {
+      createComponent({
+        props: { isProtected: true, description: 'Some description' },
+        provided: { canAdminProtectedBranches: false },
+      });
+
+      expect(wrapper.text()).toContain('Some description');
+    });
+  });
+
   describe('when glFeatures.editBranchRules is false', () => {
     beforeEach(() => {
-      createComponent({ glFeatures: { editBranchRules: false } });
+      createComponent({
+        glFeatures: { editBranchRules: false },
+        provided: { canAdminProtectedBranches: true },
+      });
     });
 
     it('does not render the toggle even for users with edit privileges', () => {

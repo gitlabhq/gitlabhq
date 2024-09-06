@@ -15,3 +15,4 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Migrating existing tracking to internal event tracking](migration.md)
 - [Event definition guide](event_definition_guide.md)
 - [Metric definition guide](metric_definition_guide.md)
+- [Local setup and debugging](local_setup_and_debugging.md)

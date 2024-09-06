@@ -91,6 +91,7 @@ export default {
     showStatusChecks: { default: false },
     showApprovers: { default: false },
     showCodeOwners: { default: false },
+    canAdminProtectedBranches: { default: false },
   },
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -437,7 +438,7 @@ export default {
           :users="mergeAccessLevels.users"
           :groups="mergeAccessLevels.groups"
           :empty-state-copy="$options.i18n.allowedToMergeEmptyState"
-          is-edit-available
+          :is-edit-available="canAdminProtectedBranches"
           data-testid="allowed-to-merge-content"
           @edit="openAllowedToMergeDrawer"
         />
@@ -468,7 +469,7 @@ export default {
           :deploy-keys="pushAccessLevels.deployKeys"
           :empty-state-copy="$options.i18n.allowedToPushEmptyState"
           :help-text="$options.i18n.allowedToPushDescription"
-          is-edit-available
+          :is-edit-available="canAdminProtectedBranches"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
         />

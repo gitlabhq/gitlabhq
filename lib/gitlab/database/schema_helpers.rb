@@ -16,6 +16,10 @@ module Gitlab
         SQL
       end
 
+      def reset_trigger_function(function_name)
+        execute("ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL")
+      end
+
       def function_exists?(name)
         !!connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
       end

@@ -6,7 +6,7 @@ module Gitlab
     # that have remote development module enabled
     # For more details, check: https://gitlab.com/gitlab-org/gitlab/-/issues/454411
     class BackfillRootNamespaceClusterAgentMappings < BatchedMigrationJob
-      feature_category :remote_development
+      feature_category :workspaces
 
       def perform; end
     end

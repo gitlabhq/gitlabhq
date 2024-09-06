@@ -7,7 +7,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Local setup and debugging
 
 NOTE:
-To track user interactions in the browser, Do-Not-Track (“DNT”) needs to be disabled. DNT is disabled by default for most browsers.
+To track user interactions in the browser, browser settings, such as privacy filters (e.g.
+ AdBlock, uBlock), Do-Not-Track ("DNT"), and third-party cookies might need to be adjusted. [Read more about settings that affects tracking](https://snowplow.io/blog/how-many-visitors-block-your-tracking/).
 
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools to test frontend and backend events:
 

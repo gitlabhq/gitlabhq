@@ -39,7 +39,6 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- custom_models
 - customersdot_and_quote_to_cash_integrations
 - database
 - dataops
@@ -87,6 +86,7 @@
 - metrics
 - mlops
 - mobile_devops
+- model_personalization
 - navigation
 - notifications
 - okr_management
@@ -109,7 +109,6 @@
 - redis
 - release_evidence
 - release_orchestration
-- remote_development
 - requirements_management
 - review_apps
 - runner
@@ -119,6 +118,7 @@
 - secrets_management
 - secure_artifacts
 - security_policy_management
+- self-hosted_models
 - service_desk
 - service_ping
 - settings
@@ -139,3 +139,4 @@
 - web_ide
 - webhooks
 - wiki
+- workspaces

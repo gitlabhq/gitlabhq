@@ -92,16 +92,19 @@ You need at least the Maintainer role to take ownership of a pipeline created by
 
 ## Troubleshooting
 
-### Short refs are expanded to Full refs
+When working with pipeline schedules, you might encounter the following issues.
 
-This behavior is normal and it introduced in order to enforce explicit resources.
-The API still accepts both `short` (e.g. `main`) and `full` (e.g. `refs/heads/main` or `refs/tags/main`) refs and expands any `short`
-ref provided, to a `full` ref.
+### Short refs are expanded to full refs
 
-### Ambiguous Refs
+When you provide a short `ref` to the API, it is automatically expanded to a full `ref`. This behavior is intended and ensures explicit resource identification.
 
-When a ref is being expanded, there can be cases where the full ref can't be automatically inferred.
-Such cases can be:
+The API accepts both short refs (such as `main`) and full refs (such as `refs/heads/main` or `refs/tags/main`).
 
-- A `short` ref is provided (e.g. `main`) but **both** a branch and a tag exist with the provided `short` ref name
-- A `short` ref is provided, but **neither** a branch or tag with the provided `short` ref name exist
+### Ambiguous refs
+
+In some cases, the API can't automatically expand a short `ref` to a full `ref`. This can happen when:
+
+- You provide a short `ref` (such as `main`), but both a branch and a tag exist with that name.
+- You provide a short `ref`, but no branch or tag with that name exists.
+
+To resolve this issue, provide the full `ref` to ensure the correct resource is identified.

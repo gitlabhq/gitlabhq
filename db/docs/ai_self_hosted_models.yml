@@ -3,7 +3,7 @@ table_name: ai_self_hosted_models
 classes:
 - Ai::SelfHostedModel
 feature_categories:
-- custom_models
+- self-hosted_models
 description: An AI Self Hosted Model definition
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151793
 milestone: '17.0'

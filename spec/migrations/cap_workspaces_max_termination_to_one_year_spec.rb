@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CapWorkspacesMaxTerminationToOneYear, feature_category: :remote_development do
+RSpec.describe CapWorkspacesMaxTerminationToOneYear, feature_category: :workspaces do
   let(:user) { table(:users).create!(name: 'test', email: 'test@example.com', projects_limit: 5) }
   let(:namespace) { table(:namespaces).create!(name: 'name', path: 'path') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }

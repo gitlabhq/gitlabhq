@@ -5,7 +5,7 @@ classes:
 - RemoteDevelopment::WorkspacesAgentConfig
 - Workspaces::WorkspacesAgentConfig
 feature_categories:
-- remote_development
+- workspaces
 description: Workspaces Cluster Agent Configs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163846
 milestone: '17.4'

@@ -3,7 +3,7 @@ table_name: remote_development_namespace_cluster_agent_mappings
 classes:
 - RemoteDevelopment::RemoteDevelopmentNamespaceClusterAgentMapping
 feature_categories:
-- remote_development
+- workspaces
 description: >-
   This table records associations between Namespaces and Cluster Agents as a part of supporting group-cluster agent association
   in the context of Remote Development Workspaces

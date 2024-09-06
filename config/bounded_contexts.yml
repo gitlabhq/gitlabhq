@@ -250,7 +250,7 @@ domains:
   RemoteDevelopment:
     description:
     feature_categories:
-      - remote_development
+      - workspaces
 
   Repositories:
     description: Git repositories and workflow including Gitaly client
