@@ -416,7 +416,7 @@ export default {
       },
     },
     showDuoSettings() {
-      return this.licensedAiFeaturesAvailable && this.glFeatures.aiSettingsVueProject;
+      return this.licensedAiFeaturesAvailable;
     },
   },
 

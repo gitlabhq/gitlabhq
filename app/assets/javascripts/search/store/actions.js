@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams, getNormalizedURL, updateHistory } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
-import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
+import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
 import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
@@ -146,10 +146,9 @@ export const resetQuery = ({ state }) => {
   );
 };
 
-export const closeLabel = ({ state, commit }, { key }) => {
-  const labels = state?.query?.labels.filter((labelKey) => labelKey !== key);
-
-  setQuery({ state, commit }, { key: labelFilterData.filterParam, value: labels });
+export const closeLabel = ({ state, commit }, { title }) => {
+  const labels = state?.query?.[LABEL_FILTER_PARAM].filter((labelName) => labelName !== title);
+  setQuery({ state, commit }, { key: LABEL_FILTER_PARAM, value: labels });
 };
 
 export const setLabelFilterSearch = ({ commit }, { value }) => {

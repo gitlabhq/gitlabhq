@@ -443,19 +443,6 @@ export default {
           @edit="openAllowedToMergeDrawer"
         />
 
-        <rule-drawer
-          :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
-          :roles="accessLevelsDrawerData.roles"
-          :users="accessLevelsDrawerData.users"
-          :groups="accessLevelsDrawerData.groups"
-          :deploy-keys="accessLevelsDrawerData.deployKeys"
-          :is-loading="isRuleUpdating"
-          :group-id="groupId"
-          :title="accessLevelsDrawerTitle"
-          @editRule="onEditAccessLevels"
-          @close="closeAccessLevelsDrawer"
-        />
-
         <!-- Allowed to push -->
         <protection
           class="gl-mt-5"
@@ -472,6 +459,20 @@ export default {
           :is-edit-available="canAdminProtectedBranches"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
+        />
+
+        <rule-drawer
+          :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
+          :roles="accessLevelsDrawerData.roles"
+          :users="accessLevelsDrawerData.users"
+          :groups="accessLevelsDrawerData.groups"
+          :deploy-keys="accessLevelsDrawerData.deployKeys"
+          :is-loading="isRuleUpdating"
+          :group-id="groupId"
+          :title="accessLevelsDrawerTitle"
+          :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
+          @editRule="onEditAccessLevels"
+          @close="closeAccessLevelsDrawer"
         />
 
         <!-- Force push -->

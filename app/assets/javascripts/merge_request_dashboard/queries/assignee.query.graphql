@@ -12,7 +12,7 @@ query requestingReview(
 ) {
   currentUser {
     id
-    assignedMergeRequests(
+    mergeRequests: assignedMergeRequests(
       state: $state
       reviewState: $reviewState
       reviewStates: $reviewStates

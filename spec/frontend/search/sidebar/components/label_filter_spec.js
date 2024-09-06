@@ -34,7 +34,7 @@ import {
   TRACKING_ACTION_SHOW,
 } from '~/search/sidebar/components/label_filter/tracking';
 
-import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
+import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
 
 import {
   RECEIVE_AGGREGATIONS_SUCCESS,
@@ -62,6 +62,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
     state = createState({
       query: MOCK_QUERY,
       aggregations: MOCK_LABEL_AGGREGATIONS,
+      navigation: {},
       ...initialState,
     });
 
@@ -343,21 +344,21 @@ describe('GlobalSearchSidebarLabelFilter', () => {
 
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        await findCheckboxGroup().vm.$emit('input', 6);
+        await findCheckboxGroup().vm.$emit('input', [6]);
         await Vue.nextTick();
       });
 
       it('trigger event', () => {
         expect(actionSpies.setQuery).toHaveBeenCalledWith(
           expect.anything(),
-          expect.objectContaining({ key: labelFilterData?.filterParam, value: 6 }),
+          expect.objectContaining({ key: LABEL_FILTER_PARAM, value: ['Cosche'] }),
         );
       });
 
       it('sends tracking information when checkbox is selected', () => {
         expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_SELECT, TRACKING_LABEL_CHECKBOX, {
           label: TRACKING_LABEL_FILTER,
-          property: 6,
+          property: [6],
         });
       });
     });

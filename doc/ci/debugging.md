@@ -73,12 +73,12 @@ latest version of the schema.
 
 #### Verify syntax with CI Lint tool
 
-You can use the [CI Lint tool](lint.md) to verify that the syntax of a CI/CD configuration
+You can use the [CI Lint tool](yaml/lint.md) to verify that the syntax of a CI/CD configuration
 snippet is correct. Paste in full `.gitlab-ci.yml` files or individual job configurations,
 to verify the basic syntax.
 
 When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Lint
-tool to [simulate the creation of a full pipeline](lint.md#simulate-a-pipeline).
+tool to [simulate the creation of a full pipeline](yaml/lint.md#simulate-a-pipeline).
 It does deeper verification of the configuration syntax.
 
 ### Use pipeline names
@@ -339,7 +339,7 @@ configuration into more independent [parent-child pipelines](../ci/pipelines/pip
 
 Pipeline configuration warnings are shown when you:
 
-- [Validate configuration with the CI Lint tool](lint.md).
+- [Validate configuration with the CI Lint tool](yaml/lint.md).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 
 ### `Job may allow multiple pipelines to run for a single action` warning

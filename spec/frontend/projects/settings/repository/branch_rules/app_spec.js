@@ -53,6 +53,7 @@ describe('Branch rules app', () => {
     glFeatures = { editBranchRules: true },
     queryHandler = branchRulesQuerySuccessHandler,
     mutationHandler = addRuleMutationSuccessHandler,
+    provided = appProvideMock,
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, queryHandler],
@@ -63,7 +64,7 @@ describe('Branch rules app', () => {
     wrapper = mountExtended(BranchRules, {
       apolloProvider: fakeApollo,
       provide: {
-        ...appProvideMock,
+        ...provided,
         glFeatures,
       },
       stubs: {
@@ -120,26 +121,10 @@ describe('Branch rules app', () => {
       expect(findAddBranchRuleDropdown().props('toggleText')).toBe('Add branch rule');
     });
 
-    it('renders a dropdown containing predefined branch rules with actions', () => {
+    it('renders a dropdown containing custom rules with actions', () => {
       expect(findAddBranchRuleDropdown().props('items')).toEqual([
         { action: expect.any(Function), text: 'Branch name or pattern' },
-        { action: expect.any(Function), text: 'All branches' },
-        { action: expect.any(Function), text: 'All protected branches' },
       ]);
-    });
-
-    it('does not render predefined branch rules when they are already set', async () => {
-      const { nodes } = predefinedBranchRulesMockResponse.data.project.branchRules;
-
-      await createComponent({
-        queryHandler: jest.fn().mockResolvedValue(predefinedBranchRulesMockResponse),
-      });
-      await findAddBranchRuleDropdown().vm.$emit('shown');
-      await nextTick();
-
-      expect(findAddBranchRuleDropdown().props('items').length).toEqual(
-        addBranchRulesItems.length - nodes.length,
-      );
     });
 
     it('renders a modal with correct props/attributes', () => {
@@ -191,6 +176,48 @@ describe('Branch rules app', () => {
 
       expect(trackEventSpy).toHaveBeenCalledWith('protect_branch', {
         label: 'branch_rule_details',
+      });
+    });
+
+    describe('when status check and merge request approvals features are available', () => {
+      describe.each`
+        showStatusChecks | showApprovers
+        ${true}          | ${false}
+        ${false}         | ${true}
+        ${true}          | ${true}
+      `(
+        'when showStatusChecks is $showStatusChecks and showApprovers is $showApprovers',
+        ({ showStatusChecks, showApprovers }) => {
+          it(`renders a dropdown containing predefined branch rules with actions`, () => {
+            createComponent({
+              provided: {
+                ...appProvideMock,
+                showStatusChecks,
+                showApprovers,
+              },
+            });
+            expect(findAddBranchRuleDropdown().props('items')).toEqual([
+              { action: expect.any(Function), text: 'Branch name or pattern' },
+              { action: expect.any(Function), text: 'All branches' },
+              { action: expect.any(Function), text: 'All protected branches' },
+            ]);
+          });
+        },
+      );
+
+      it('does not render predefined branch rules when they are already set', async () => {
+        const { nodes } = predefinedBranchRulesMockResponse.data.project.branchRules;
+
+        await createComponent({
+          queryHandler: jest.fn().mockResolvedValue(predefinedBranchRulesMockResponse),
+          provided: { ...appProvideMock, showStatusChecks: true, showApprovers: true },
+        });
+        await findAddBranchRuleDropdown().vm.$emit('shown');
+        await nextTick();
+
+        expect(findAddBranchRuleDropdown().props('items').length).toEqual(
+          addBranchRulesItems.length - nodes.length,
+        );
       });
     });
   });

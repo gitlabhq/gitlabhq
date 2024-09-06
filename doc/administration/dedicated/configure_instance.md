@@ -249,6 +249,16 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 
 Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The IP addresses are then added to the IP allowlist for your instance.
 
+#### Enable OpenID Connect for your IP allowlist
+
+Using [GitLab as an OpenID Connect identity provider](../../integration/openid_connect_provider.md) requires internet access to the OpenID Connect verification endpoint.
+
+To enable access to the OpenID Connect endpoint while maintaining your IP allowlist:
+
+- In a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), request to allow access to the OpenID Connect endpoint.
+
+The configuration is applied during the next maintenance window.
+
 ### SAML
 
 You can [configure SAML single sign-on (SSO)](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance.

@@ -22255,6 +22255,9 @@ msgstr ""
 msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
+msgid "Exclusions"
+msgstr ""
+
 msgid "Execution time"
 msgstr ""
 
@@ -48267,9 +48270,6 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
-msgid "Secret Detection Configuration"
-msgstr ""
-
 msgid "Secret push protection"
 msgstr ""
 
@@ -48282,13 +48282,22 @@ msgstr ""
 msgid "Secret token."
 msgstr ""
 
+msgid "SecretDetection|Add exclusion"
+msgstr ""
+
 msgid "SecretDetection|Configure Secret Detection"
 msgstr ""
 
 msgid "SecretDetection|Feature not available"
 msgstr ""
 
+msgid "SecretDetection|No exclusions yet"
+msgstr ""
+
 msgid "SecretDetection|Only a project maintainer or owner can toggle this feature."
+msgstr ""
+
+msgid "SecretDetection|Secret detection configuration"
 msgstr ""
 
 msgid "SecretDetection|Secret push protection is disabled"
@@ -48303,6 +48312,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation."
+msgstr ""
+
+msgid "SecretDetection|Use secret detection exclusions to specify file paths, raw values, and regex that should be excluded by secret detection in this project. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecretDetection|Warning: Potential secret detected"

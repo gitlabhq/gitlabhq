@@ -418,5 +418,29 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         end
       end
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      context 'a post request creates a merge request note' do
+        subject { post api(request_path, oauth_access_token: oauth_token), params: params }
+
+        it 'is successful' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'a get request returns a list of merge request notes' do
+        subject { get api(request_path, oauth_access_token: oauth_token) }
+
+        it 'is successful' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
   end
 end

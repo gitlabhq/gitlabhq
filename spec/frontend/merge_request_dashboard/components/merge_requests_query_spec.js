@@ -22,7 +22,7 @@ describe('Merge requests query component', () => {
       data: {
         currentUser: {
           id: 1,
-          reviewRequestedMergeRequests: {
+          mergeRequests: {
             count: 0,
             pageInfo: {
               __typename: 'PageInfo',
@@ -40,7 +40,7 @@ describe('Merge requests query component', () => {
       data: {
         currentUser: {
           id: 1,
-          assignedMergeRequests: {
+          mergeRequests: {
             count: 0,
             pageInfo: {
               hasNextPage: false,

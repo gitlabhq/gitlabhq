@@ -11,7 +11,7 @@ query reviewRequests(
 ) {
   currentUser {
     id
-    reviewRequestedMergeRequests(
+    mergeRequests: reviewRequestedMergeRequests(
       state: $state
       reviewState: $reviewState
       reviewStates: $reviewStates

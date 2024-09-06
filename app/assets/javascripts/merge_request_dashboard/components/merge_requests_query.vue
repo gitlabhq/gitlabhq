@@ -18,7 +18,7 @@ export default {
         return QUERIES[this.query];
       },
       update(d) {
-        return d.currentUser?.[this.query] || {};
+        return d.currentUser?.mergeRequests || {};
       },
       variables() {
         return {

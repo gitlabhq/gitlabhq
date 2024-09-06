@@ -26,7 +26,7 @@ describe('Merge requests app component', () => {
       data: {
         currentUser: {
           id: 1,
-          assignedMergeRequests: {
+          mergeRequests: {
             count: 1,
             pageInfo: {
               hasNextPage: true,

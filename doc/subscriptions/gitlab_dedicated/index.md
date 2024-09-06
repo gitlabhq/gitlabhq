@@ -198,6 +198,10 @@ As an alternative to using hosted runners, you can use your own runners for your
 
 To use self-managed runners, install [GitLab Runner](https://docs.gitlab.com/runner/install/) on infrastructure that you own or manage.
 
+#### OpenID Connect
+
+You can use [GitLab as an OpenID Connect identity provider](../../integration/openid_connect_provider.md). If you use an IP allowlist to restrict access to your instance, you can [enable OpenID Connect requests](../../administration/dedicated/configure_instance.md#enable-openid-connect-for-your-ip-allowlist) while maintaining your IP restrictions.
+
 #### Migration
 
 To help you migrate your data to GitLab Dedicated, choose from the following options:

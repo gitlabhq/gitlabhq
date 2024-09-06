@@ -186,4 +186,4 @@ DEPENDENCIES
   rubocop-rails (<= 2.20)
 
 BUNDLED WITH
-   2.5.7
+   2.5.18

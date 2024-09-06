@@ -75,7 +75,7 @@ export default {
             @click="toggleOpen"
           />
           {{ title }}
-          <gl-badge v-if="!loading" class="gl-ml-1" variant="neutral" size="sm">{{
+          <gl-badge v-if="!loading || count" class="gl-ml-1" variant="neutral" size="sm">{{
             count
           }}</gl-badge>
         </h5>

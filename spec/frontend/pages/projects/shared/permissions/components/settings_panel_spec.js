@@ -835,19 +835,10 @@ describe('Settings Panel', () => {
     });
   });
   describe('Duo', () => {
-    describe('when the FF is on', () => {
-      it('shows duo toggle', () => {
-        wrapper = mountComponent({ glFeatures: { aiSettingsVueProject: true } });
+    it('shows duo toggle', () => {
+      wrapper = mountComponent();
 
-        expect(findDuoSettings().exists()).toBe(true);
-      });
-    });
-    describe('when the FF is off', () => {
-      it('does not show duo toggle', () => {
-        wrapper = mountComponent();
-
-        expect(findDuoSettings().exists()).toBe(false);
-      });
+      expect(findDuoSettings().exists()).toBe(true);
     });
   });
 });

@@ -653,3 +653,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     @apply gl-bg-subtle;
   }
 }
+
+// Timeline avatars
+
+// stylelint-disable-next-line gitlab/no-gl-class
+.timeline-avatar .gl-avatar-link {
+  @apply gl-bg-default;
+  border-radius: 50%;
+}

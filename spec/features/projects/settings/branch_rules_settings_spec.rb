@@ -49,25 +49,6 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
     end
   end
 
-  context 'Branch rule details for a predefined rule', :js do
-    let(:role) { :maintainer }
-
-    before do
-      visit_branch_rules_settings
-      wait_for_requests
-
-      click_button 'Add branch rule'
-      click_button 'All branches'
-
-      wait_for_requests
-    end
-
-    it 'does not create a rule if a user leaves it empty' do
-      visit_branch_rules_settings
-      expect(page).not_to have_css '[data-testid="branch-content"]', text: 'All branches'
-    end
-  end
-
   context 'Branch rule details for custom rule', :js do
     let(:role) { :maintainer }
 

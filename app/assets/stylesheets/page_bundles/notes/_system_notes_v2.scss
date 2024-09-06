@@ -42,6 +42,8 @@
   }
 }
 
+
+// Vertical line gradient for specific system note icons
 .system-note-icon-v2 {
   &.icon-success{
     --bg-color: var(--green-100, #{$green-100});
@@ -64,6 +66,21 @@
     &::after {
       @include activity-line-gradient(var(--bg-color), transparent);
       top: 100%;
+    }
+  }
+}
+
+// Remove beginning/end of system note gradient activity line
+.system-note-v2 {
+  &:first-of-type {
+    .system-note-icon-v2::before {
+      @include activity-line-gradient(transparent, transparent);
+    }
+  }
+
+  &:last-of-type {
+    .system-note-icon-v2::after {
+      @include activity-line-gradient(transparent, transparent);
     }
   }
 }

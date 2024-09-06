@@ -207,7 +207,7 @@ describe('Global Search Store Actions', () => {
     it('calls visitUrl and setParams with the state.query', async () => {
       await testAction(actions.applyQuery, null, state, [], []);
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&labels%5B%5D=60&labels%5B%5D=37&search=*',
+        'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&label_name%5B%5D=Aftersync&label_name%5B%5D=Brist&search=*',
       );
     });
   });
@@ -408,8 +408,8 @@ describe('Global Search Store Actions', () => {
       const expectedResult = [
         {
           payload: {
-            key: 'labels',
-            value: ['37'],
+            key: 'label_name',
+            value: ['Aftersync', 'Brist'],
           },
           type: 'SET_QUERY',
         },

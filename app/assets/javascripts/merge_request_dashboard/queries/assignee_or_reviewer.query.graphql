@@ -11,7 +11,7 @@ query assigneeOrReviewer(
 ) {
   currentUser {
     id
-    assigneeOrReviewerMergeRequests(
+    mergeRequests: assigneeOrReviewerMergeRequests(
       state: $state
       assignedReviewStates: $assignedReviewStates
       reviewerReviewStates: $reviewerReviewStates

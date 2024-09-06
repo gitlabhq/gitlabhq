@@ -256,7 +256,7 @@ gem 'asciidoctor-kroki', '~> 0.10.0', require: false # rubocop:todo Gemfile/Miss
 gem 'rouge', '~> 4.3.0', feature_category: :shared
 gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-glfm-markdown', '~> 0.0.19', feature_category: :team_planning
+gem 'gitlab-glfm-markdown', '~> 0.0.20', feature_category: :team_planning
 
 # Calendar rendering
 gem 'icalendar', '~> 2.10.1', feature_category: :system_access

@@ -40,6 +40,9 @@ export default {
     ItemsSelector: () =>
       import('ee_component/projects/settings/branch_rules/components/view/items_selector.vue'),
   },
+  inject: {
+    showEnterpriseAccessLevels: { default: false },
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -77,6 +80,11 @@ export default {
     isLoading: {
       type: Boolean,
       required: true,
+    },
+    isPushAccessLevels: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -193,20 +201,23 @@ export default {
           }}
         </gl-form-checkbox>
 
+        <template v-if="showEnterpriseAccessLevels">
+          <items-selector
+            :type="$options.USERS_TYPE"
+            :items="formatItemsIds(users)"
+            :users-options="$options.projectUsersOptions"
+            data-testid="users-selector"
+            @change="handleRuleDataUpdate('updatedUsers', $event)"
+          />
+          <items-selector
+            :type="$options.GROUPS_TYPE"
+            :items="formatItemsIds(groups)"
+            data-testid="groups-selector"
+            @change="handleRuleDataUpdate('updatedGroups', $event)"
+          />
+        </template>
         <items-selector
-          :type="$options.USERS_TYPE"
-          :items="formatItemsIds(users)"
-          :users-options="$options.projectUsersOptions"
-          data-testid="users-selector"
-          @change="handleRuleDataUpdate('updatedUsers', $event)"
-        />
-        <items-selector
-          :type="$options.GROUPS_TYPE"
-          :items="formatItemsIds(groups)"
-          data-testid="groups-selector"
-          @change="handleRuleDataUpdate('updatedGroups', $event)"
-        />
-        <items-selector
+          v-if="isPushAccessLevels"
           :type="$options.DEPLOY_KEYS_TYPE"
           :items="formatItemsIds(deployKeys)"
           data-testid="deploy-keys-selector"

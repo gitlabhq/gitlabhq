@@ -12,7 +12,7 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { uniq } from 'lodash';
+import { difference, uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
 import { slugify } from '~/lib/utils/text_utility';
 
@@ -26,7 +26,8 @@ import {
   SEARCH_BOX_INDEX,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_INPUT_DESCRIPTION,
-  labelFilterData,
+  LABEL_FILTER_PARAM,
+  LABEL_FILTER_HEADER,
 } from './data';
 
 import { trackSelectCheckbox, trackOpenDropdown } from './tracking';
@@ -50,6 +51,7 @@ export default {
     return {
       currentFocusIndex: SEARCH_BOX_INDEX,
       isFocused: false,
+      combinedSelectedLabels: [],
     };
   },
   i18n: I18N,
@@ -83,7 +85,6 @@ export default {
     combinedSelectedFilters() {
       const appliedSelectedLabelKeys = this.appliedSelectedLabels.map((label) => label.key);
       const { labels = [] } = this.query;
-
       return uniq([...appliedSelectedLabelKeys, ...labels]);
     },
     searchLabels: {
@@ -96,16 +97,30 @@ export default {
     },
     selectedLabels: {
       get() {
-        return this.combinedSelectedFilters;
+        return this.combinedSelectedLabels;
       },
       set(value) {
-        this.setQuery({ key: this.$options.labelFilterData?.filterParam, value });
+        const labelName = this.getLabelNameById(value);
+        this.setQuery({ key: this.$options.LABEL_FILTER_PARAM, value: labelName });
         trackSelectCheckbox(value);
       },
     },
   },
+  watch: {
+    combinedSelectedFilters(newLabels, oldLabels) {
+      const hasDifference = difference(newLabels, oldLabels).length > 0;
+      if (hasDifference) {
+        this.combinedSelectedLabels = newLabels;
+      }
+    },
+    filteredAppliedSelectedLabels(newCount, oldCount) {
+      if (newCount.length !== oldCount.length) {
+        this.currentFocusIndex = FIRST_DROPDOWN_INDEX;
+      }
+    },
+  },
   async created() {
-    if (this.urlQuery?.[labelFilterData.filterParam]?.length > 0) {
+    if (this.urlQuery?.[LABEL_FILTER_PARAM]?.length > 0) {
       await this.fetchAllAggregation();
     }
   },
@@ -136,24 +151,34 @@ export default {
         return;
       }
 
-      const { key } = event.target.closest('.gl-label').dataset;
-      this.closeLabel({ key });
+      const { title } = event.target.closest('.gl-label').dataset;
+      this.closeLabel({ title });
     },
     inactiveLabelColor(label) {
       return `rgba(${rgbFromHex(label.color)}, 0.3)`;
+    },
+    getLabelNameById(labelIds) {
+      const labelNames = labelIds.map((id) => {
+        const label = this.filteredLabels.find((filteredLabel) => {
+          return filteredLabel.key === String(id);
+        });
+        return label?.title;
+      });
+      return labelNames;
     },
   },
   FIRST_DROPDOWN_INDEX,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_INPUT_DESCRIPTION,
-  labelFilterData,
+  LABEL_FILTER_PARAM,
+  LABEL_FILTER_HEADER,
 };
 </script>
 
 <template>
   <div class="label-filter gl-relative gl-pb-0 md:gl-pt-0">
     <div class="gl-mb-2 gl-text-sm gl-font-bold" data-testid="label-filter-title">
-      {{ $options.labelFilterData.header }}
+      {{ $options.LABEL_FILTER_HEADER }}
     </div>
     <div>
       <gl-label
@@ -178,9 +203,9 @@ export default {
       />
       <gl-label
         v-for="label in appliedSelectedLabels"
-        :key="label.key"
+        :key="label.title"
         class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
-        :data-key="label.key"
+        :data-title="label.title"
         :background-color="label.color"
         :title="label.title"
         :show-close-button="true"
