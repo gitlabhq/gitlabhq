@@ -6,7 +6,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:user) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer, reporters: reporter) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
@@ -383,11 +384,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
             deployable: job
           )
 
+          environment.update!(cluster_agent: create(:cluster_agent, project: project))
+
           get api("/projects/#{project.id}/environments/#{environment.id}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(json_response['last_deployment']).to be_present
+          expect(json_response['cluster_agent']).to be_present
         end
       end
 
@@ -440,6 +444,18 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(json_response['auto_stop_at']).to be_nil
         end
+      end
+    end
+
+    context 'as a reporter' do
+      it 'does not expose the cluster agent' do
+        environment.update!(cluster_agent: create(:cluster_agent, project: project))
+
+        get api("/projects/#{project.id}/environments/#{environment.id}", reporter)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).not_to be_present
       end
     end
 
@@ -518,12 +534,6 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     end
 
     context "as a reporter" do
-      let(:reporter) { create(:user) }
-
-      before do
-        project.add_reporter(reporter)
-      end
-
       it "rejects the request" do
         delete api("/projects/#{project.id}/environments/review_apps", reporter)
 

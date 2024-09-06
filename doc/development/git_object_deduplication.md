@@ -98,9 +98,6 @@ are as follows:
 
 ### Assumptions
 
-- All repositories in a pool must use [hashed storage](../administration/repository_storage_paths.md).
-  This is so that we don't have to ever worry about updating paths in
-  `object/info/alternates` files.
 - All repositories in a pool must be on the same Gitaly storage shard.
   The Git alternates mechanism relies on direct disk access across
   multiple repositories, and we can only assume direct disk access to

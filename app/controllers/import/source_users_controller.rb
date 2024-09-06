@@ -15,9 +15,9 @@ module Import
 
       if result.success?
         flash[:raw] = banner('accept_invite')
-        redirect_to(dashboard_groups_path)
+        redirect_to(root_path)
       else
-        redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation could not be accepted.'))
+        redirect_to(root_path, alert: s_('UserMapping|The invitation could not be accepted.'))
       end
     end
 
@@ -26,9 +26,9 @@ module Import
 
       if result.success?
         flash[:raw] = banner('reject_invite')
-        redirect_to(dashboard_groups_path)
+        redirect_to(root_path)
       else
-        redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation could not be declined.'))
+        redirect_to(root_path, alert: s_('UserMapping|The invitation could not be declined.'))
       end
     end
 
@@ -40,7 +40,7 @@ module Import
       return if source_user.awaiting_approval? && current_user_matches_invite?
 
       flash[:raw] = banner('invalid_invite')
-      redirect_to(dashboard_groups_path)
+      redirect_to(root_path)
     end
 
     def current_user_matches_invite?

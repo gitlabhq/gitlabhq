@@ -31,7 +31,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
       expect { subject }.not_to change { source_user.reload.status }
 
-      expect(response).to redirect_to(dashboard_groups_path)
+      expect(response).to redirect_to(root_path)
       expect(flash[:raw]).to match(/Reassignment not available/)
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
       expect { subject }.not_to change { source_user.reload.status }
 
-      expect(response).to redirect_to(dashboard_groups_path)
+      expect(response).to redirect_to(root_path)
       expect(flash[:raw]).to match(/Reassignment not available/)
     end
   end
@@ -72,7 +72,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       it 'redirects with a notice when accepted' do
         accept_invite
 
-        expect(response).to redirect_to(dashboard_groups_path)
+        expect(response).to redirect_to(root_path)
         expect(flash[:raw]).to match(/Reassignment approved/)
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
         accept_invite
 
-        expect(response).to redirect_to(dashboard_groups_path)
+        expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to match(/The invitation could not be accepted/)
       end
 
@@ -112,7 +112,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       it 'redirects with a notice' do
         reject_invite
 
-        expect(response).to redirect_to(dashboard_groups_path)
+        expect(response).to redirect_to(root_path)
         expect(flash[:raw]).to match(/Reassignment rejected/)
       end
 
@@ -122,7 +122,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
         reject_invite
 
-        expect(response).to redirect_to(dashboard_groups_path)
+        expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to match(/The invitation could not be declined/)
       end
 

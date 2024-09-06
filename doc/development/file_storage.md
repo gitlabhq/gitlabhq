@@ -45,7 +45,7 @@ they are still not 100% standardized. You can see them below:
 | User snippet attachments              | yes    | `uploads/-/system/personal_snippet/:id/:random_hex/:filename` | `PersonalFileUploader` | Snippet    |
 | Project avatars                       | yes    | `uploads/-/system/project/avatar/:id/:filename`               | `AvatarUploader`       | Project    |
 | Topic avatars                         | yes    | `uploads/-/system/projects/topic/avatar/:id/:filename`        | `AvatarUploader`       | Topic      |
-| Issues/MR/Notes Markdown attachments  | yes    | `uploads/:project_path_with_namespace/:random_hex/:filename`  | `FileUploader`         | Project    |
+| Issues/MR/Notes Markdown attachments  | yes    | `uploads/:hash_project_id/:random_hex/:filename`  | `FileUploader`         | Project    |
 | Issues/MR/Notes Legacy Markdown attachments | no | `uploads/-/system/note/attachment/:id/:filename`            | `AttachmentUploader`   | Note       |
 | Design Management design thumbnails   | yes | `uploads/-/system/design_management/action/image_v432x230/:id/:filename` | `DesignManagement::DesignV432x230Uploader` | DesignManagement::Action |
 | CI Artifacts (CE)                     | yes    | `shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id` (`:disk_hash` is SHA256 digest of `project_id`) | `JobArtifactUploader`  | Ci::JobArtifact  |
@@ -56,9 +56,8 @@ they are still not 100% standardized. You can see them below:
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
 while in EE they inherit the `ObjectStorage` and store files in and S3 API compatible object store.
 
-In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the [Hashed Storage](../administration/repository_storage_paths.md) layout,
-instead of basing the path into a mutable variable `:project_path_with_namespace`, it's possible to use the
-hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).
+Attachments for issues, merge requests (MR), and notes in Markdown use
+[hashed storage](../administration/repository_storage_paths.md) with the hash of the project ID.
 
 We provide an [all-in-one Rake task](../administration/raketasks/uploads/migrate.md)
 to migrate all uploads to object storage in one go. If a new Uploader class or model

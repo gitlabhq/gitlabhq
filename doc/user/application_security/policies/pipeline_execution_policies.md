@@ -192,6 +192,14 @@ The strategy takes precedence over other policies using the `inject_ci` strategy
 
 This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling them to customize the policy jobs. For example, by combining policy and project CI/CD configuration into one YAML file, users can override `before_script` configuration.
 
+NOTE:
+When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the
+project's original CI/CD configuration remains in effect instead of being overridden. You can
+conditionally apply pipeline execution policies to control when the policy impacts the project's
+CI/CD configuration. For example, if you set a workflow rule `if: $CI_PIPELINE_SOURCE ==
+"merge_request_event"`, the project's CI configuration is only overridden when the pipeline source
+is a merge request event.
+
 ### Include a project's CI/CD configuration in the pipeline execution policy configuration
 
 When using `override_project_ci` strategy, the project configuration can be included into the pipeline execution policy configuration:

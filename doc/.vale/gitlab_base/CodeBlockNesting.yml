@@ -4,7 +4,7 @@
 # Ensures content nested in lists are spaced correctly.
 #
 extends: existence
-message: "Use three spaces for lines under ordered lists, and two spaces under unordered lists"
+message: "Items under an ordered list must be indented three spaces. Items under an unordered list must be indented two spaces."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#nesting-inside-a-list-item
 level: error
 nonword: true

@@ -163,6 +163,21 @@ Example of response
       "runner": null,
       "artifacts_expire_at": null
     }
+  },
+  "cluster_agent": {
+    "id": 1,
+    "name": "agent-1",
+    "config_project": {
+      "id": 20,
+      "description": "",
+      "name": "test",
+      "name_with_namespace": "Administrator / test",
+      "path": "test",
+      "path_with_namespace": "root/test",
+      "created_at": "2022-03-20T20:42:40.221Z"
+    },
+    "created_at": "2022-04-20T20:42:40.221Z",
+    "created_by_user_id": 42
   }
 }
 ```
