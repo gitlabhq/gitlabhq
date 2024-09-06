@@ -3,7 +3,11 @@ import { GlDrawer, GlButton, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import { USERS_TYPE, GROUPS_TYPE } from '~/vue_shared/components/list_selector/constants';
+import {
+  USERS_TYPE,
+  GROUPS_TYPE,
+  DEPLOY_KEYS_TYPE,
+} from '~/vue_shared/components/list_selector/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   ACCESS_LEVEL_DEVELOPER_INTEGER,
@@ -23,6 +27,7 @@ export default {
   ACCESS_LEVEL_NO_ACCESS_INTEGER,
   USERS_TYPE,
   GROUPS_TYPE,
+  DEPLOY_KEYS_TYPE,
   i18n: {
     saveChanges: __('Save changes'),
     cancel: __('Cancel'),
@@ -200,6 +205,12 @@ export default {
           :items="formatItemsIds(groups)"
           data-testid="groups-selector"
           @change="handleRuleDataUpdate('updatedGroups', $event)"
+        />
+        <items-selector
+          :type="$options.DEPLOY_KEYS_TYPE"
+          :items="formatItemsIds(deployKeys)"
+          data-testid="deploy-keys-selector"
+          @change="handleRuleDataUpdate('updatedDeployKeys', $event)"
         />
         <div class="gl-mt-5 gl-flex gl-gap-3">
           <gl-button

@@ -1,0 +1,15 @@
+query getAvailableDeployKeys($projectPath: ID!, $titleQuery: String) {
+  project(fullPath: $projectPath) {
+    id
+    availableDeployKeys(titleQuery: $titleQuery) {
+      nodes {
+        id
+        title
+        user {
+          id
+          name
+        }
+      }
+    }
+  }
+}

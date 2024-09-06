@@ -5,7 +5,7 @@ import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item
 describe('DeployKeyItem spec', () => {
   let wrapper;
 
-  const MOCK_DATA = { title: 'Some key', owner: 'root', id: '123' };
+  const MOCK_DATA = { title: 'Some key', user: { name: 'root' }, id: '123' };
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(DeployKeyItem, {
@@ -18,7 +18,6 @@ describe('DeployKeyItem spec', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findDeleteButton = () => wrapper.findComponent(GlButton);
-  const findWrapper = () => wrapper.findByTestId('deploy-key-wrapper');
 
   beforeEach(() => createComponent());
 
@@ -33,12 +32,6 @@ describe('DeployKeyItem spec', () => {
 
   it('does not render a delete button by default', () => {
     expect(findDeleteButton().exists()).toBe(false);
-  });
-
-  it('emits a select event when the wrapper  is clicked', () => {
-    findWrapper().trigger('click');
-
-    expect(wrapper.emitted('select')).toEqual([[MOCK_DATA.id]]);
   });
 
   describe('Delete button', () => {

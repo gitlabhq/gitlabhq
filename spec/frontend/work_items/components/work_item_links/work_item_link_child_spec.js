@@ -46,6 +46,8 @@ describe('WorkItemLinkChild', () => {
     );
   const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
   const findFirstItem = () => getChildrenNodes()[0];
+  const findWorkItemLinkChildContentsContainer = () =>
+    wrapper.findByTestId('child-contents-container');
 
   const mockToggleHierarchyTreeChildResolver = jest.fn();
   const getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
@@ -105,6 +107,13 @@ describe('WorkItemLinkChild', () => {
       expect(mockToggleHierarchyTreeChildResolver).toHaveBeenCalled();
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalled();
     });
+
+    it('does not render border on `WorkItemLinkChildContents` container', async () => {
+      createComponent();
+      await findExpandButton().vm.$emit('click');
+
+      expect(findWorkItemLinkChildContentsContainer().classes()).not.toContain('!gl-border-b-1');
+    });
   });
 
   describe('child is already expanded', () => {
@@ -124,6 +133,18 @@ describe('WorkItemLinkChild', () => {
 
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalledTimes(1); // ensure children were fetched only once.
       expect(findTreeChildren().exists()).toBe(true);
+    });
+
+    it('renders border on `WorkItemLinkChildContents` container', () => {
+      expect(findWorkItemLinkChildContentsContainer().classes()).toEqual([
+        'gl-w-full',
+        '!gl-border-x-0',
+        '!gl-border-b-1',
+        '!gl-border-t-0',
+        '!gl-border-solid',
+        '!gl-border-gray-50',
+        '!gl-pb-2',
+      ]);
     });
   });
 

@@ -276,11 +276,6 @@ export default {
 
       <work-item-relationship-list
         v-if="linksBlocks.length"
-        class="gl-pb-3"
-        :class="{
-          'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid':
-            linksIsBlockedBy.length || linksRelatesTo.length,
-        }"
         :linked-items="linksBlocks"
         :heading="$options.i18n.blockingTitle"
         :can-update="canAdminWorkItemLink"
@@ -297,10 +292,6 @@ export default {
       />
       <work-item-relationship-list
         v-if="linksIsBlockedBy.length"
-        class="gl-pb-3"
-        :class="{
-          'gl-mb-5 gl-border-b-1 gl-border-b-default gl-border-b-solid': linksRelatesTo.length,
-        }"
         :linked-items="linksIsBlockedBy"
         :heading="$options.i18n.blockedByTitle"
         :can-update="canAdminWorkItemLink"
@@ -317,7 +308,6 @@ export default {
       />
       <work-item-relationship-list
         v-if="linksRelatesTo.length"
-        class="gl-pb-3"
         :linked-items="linksRelatesTo"
         :heading="$options.i18n.relatedToTitle"
         :can-update="canAdminWorkItemLink"

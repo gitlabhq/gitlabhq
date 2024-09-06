@@ -11,7 +11,7 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
-import { findHierarchyWidgets, findHierarchyWidgetChildren } from '../../utils';
+import { findHierarchyWidgetChildren } from '../../utils';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -85,6 +85,11 @@ export default {
       required: false,
       default: true,
     },
+    hasIndirectChildren: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -118,11 +123,6 @@ export default {
       };
 
       return this.canReorder ? options : {};
-    },
-    hasIndirectChildren() {
-      return this.children
-        .map((child) => findHierarchyWidgets(child.widgets) || {})
-        .some((hierarchy) => hierarchy.hasChildren);
     },
     disableList() {
       return this.disableContent || this.updateInProgress;
@@ -498,9 +498,12 @@ export default {
   <component
     :is="treeRootWrapper"
     v-bind="treeRootOptions"
-    class="content-list !gl-p-3 !gl-pr-0"
     data-testid="child-items-container"
-    :class="{ 'sortable-container gl-cursor-grab': canReorder, 'disabled-content': disableList }"
+    class="content-list"
+    :class="{
+      'sortable-container gl-cursor-grab': canReorder,
+      'disabled-content': disableList,
+    }"
     :move="onMove"
     @start="handleDragOnStart"
     @end="handleDragOnEnd"
@@ -520,6 +523,7 @@ export default {
       :allowed-child-types="allowedChildTypes"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
+      class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-border-gray-50 !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

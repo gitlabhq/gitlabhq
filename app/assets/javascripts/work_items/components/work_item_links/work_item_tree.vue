@@ -169,6 +169,11 @@ export default {
     children() {
       return this.hierarchyWidget?.nodes || [];
     },
+    hasIndirectChildren() {
+      return this.children
+        .map((child) => findHierarchyWidgets(child.widgets) || {})
+        .some((hierarchy) => hierarchy.hasChildren);
+    },
     isLoadingChildren() {
       return this.$apollo.queries.hierarchyWidget.loading;
     },
@@ -316,8 +321,7 @@ export default {
       <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>
-
-      <div class="gl-p-3">
+      <div class="!gl-px-3 gl-pb-3 gl-pt-2">
         <work-item-children-wrapper
           :children="children"
           :parent="workItem"
@@ -330,13 +334,15 @@ export default {
           :disable-content="disableContent"
           :allowed-child-types="allowedChildTypes"
           :show-task-weight="showTaskWeight"
+          :has-indirect-children="hasIndirectChildren"
           @error="error = $event"
           @show-modal="showModal"
         />
         <work-item-children-load-more
           v-if="hasNextPage"
           data-testid="work-item-load-more"
-          class="gl-ml-4 gl-pl-1"
+          :class="{ '!gl-pl-5': hasIndirectChildren }"
+          :show-task-weight="showTaskWeight"
           :fetch-next-page-in-progress="fetchNextPageInProgress"
           @fetch-next-page="fetchNextPage"
         />

@@ -353,25 +353,27 @@ export default {
       <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>
-
-      <work-item-children-wrapper
-        :children="children"
-        :parent="workItem"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :work-item-id="issuableGid"
-        :work-item-iid="iid"
-        :show-labels="showLabels"
-        :disable-content="disableContent"
-        @error="error = $event"
-        @show-modal="openChild"
-      />
-      <work-item-children-load-more
-        v-if="hasNextPage"
-        data-testid="work-item-load-more"
-        :fetch-next-page-in-progress="fetchNextPageInProgress"
-        @fetch-next-page="fetchNextPage"
-      />
+      <div class="!gl-px-3 gl-pb-3 gl-pt-2">
+        <work-item-children-wrapper
+          :children="children"
+          :parent="workItem"
+          :can-update="canUpdate"
+          :full-path="fullPath"
+          :work-item-id="issuableGid"
+          :work-item-iid="iid"
+          :show-labels="showLabels"
+          :disable-content="disableContent"
+          :has-indirect-children="false"
+          @error="error = $event"
+          @show-modal="openChild"
+        />
+        <work-item-children-load-more
+          v-if="hasNextPage"
+          data-testid="work-item-load-more"
+          :fetch-next-page-in-progress="fetchNextPageInProgress"
+          @fetch-next-page="fetchNextPage"
+        />
+      </div>
       <work-item-detail-modal
         ref="modal"
         :work-item-id="activeChild.id"

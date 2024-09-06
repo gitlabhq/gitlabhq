@@ -33872,9 +33872,6 @@ ALTER TABLE ONLY ssh_signatures
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY dast_profiles
-    ADD CONSTRAINT fk_aa76ef30e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_aad61aedca FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE SET NULL;
 
