@@ -18,6 +18,10 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
+## 17.5.0
+
+- OpenSSL version 3 (TLS 1.2) is required for all incoming connections to GitLab, such as from LDAP servers and webhooks.
+
 ## 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.
