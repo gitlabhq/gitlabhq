@@ -8,6 +8,7 @@ module Users
     TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
+    OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
@@ -51,6 +52,15 @@ module Users
         signup_enabled? &&
         !user_dismissed?(REGISTRATION_ENABLED_CALLOUT) &&
         REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller.controller_path.match?(path) }
+    end
+
+    def show_openssl_callout?
+      return false unless Gitlab.version_info >= Gitlab::VersionInfo.new(17, 1) &&
+        Gitlab.version_info < Gitlab::VersionInfo.new(17, 5)
+
+      current_user&.can_admin_all_resources? &&
+        !user_dismissed?(OPENSSL_CALLOUT) &&
+        controller.controller_path.match?(%r{^admin(/\S*)?$})
     end
 
     def dismiss_two_factor_auth_recovery_settings_check
