@@ -117,6 +117,10 @@ For more information, see the:
 - [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
+## 17.5.0
+
+- OpenSSL version 3 (TLS 1.2) is required for all incoming connections to GitLab, such as from LDAP servers and webhooks.
+
 ## 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.

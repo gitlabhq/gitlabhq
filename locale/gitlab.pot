@@ -23717,6 +23717,9 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
+msgid "GitLab 17.5 and later will require that incoming connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GitLab API"
 msgstr ""
 
@@ -36776,6 +36779,9 @@ msgid "OpenAPI Specification file URL"
 msgstr ""
 
 msgid "OpenAPI Specification file path or URL"
+msgstr ""
+
+msgid "OpenSSL version 3"
 msgstr ""
 
 msgid "OpenSearch's region."
