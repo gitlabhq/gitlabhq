@@ -39,6 +39,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
   end
 
+  before do
+    stub_feature_flags(enforce_check_group_level_work_items_license: true)
+  end
+
   context 'the user is not allowed to update a work item' do
     let(:current_user) { create(:user) }
 
@@ -226,15 +230,41 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           it_behaves_like 'mutation updating work item labels'
         end
 
-        context 'when work item belongs directly to the group' do
+        context 'when work item belongs directly to the group', if: Gitlab.ee? do
           let(:mutation_work_item) { group_work_item }
 
+          before do
+            stub_licensed_features(epics: true)
+          end
+
           it_behaves_like 'mutation updating work item labels'
+
+          context 'without group level work item license' do
+            before do
+              stub_licensed_features(epics: false)
+            end
+
+            it_behaves_like 'a mutation that returns top-level errors', errors: [
+              "The resource that you are attempting to access does not exist or you don't have " \
+                "permission to perform this action"
+            ]
+          end
 
           context 'with quick action' do
             let(:input) { { 'descriptionWidget' => { 'description' => "/remove_label ~\"#{existing_label.name}\"" } } }
 
             it_behaves_like 'mutation updating work item labels'
+
+            context 'without group level work item license' do
+              before do
+                stub_licensed_features(epics: false)
+              end
+
+              it_behaves_like 'a mutation that returns top-level errors', errors: [
+                "The resource that you are attempting to access does not exist or you don't have " \
+                  "permission to perform this action"
+              ]
+            end
           end
         end
       end
@@ -253,10 +283,25 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           it_behaves_like 'mutation updating work item labels'
         end
 
-        context 'when work item belongs directly to the group' do
+        context 'when work item belongs directly to the group', if: Gitlab.ee? do
           let(:mutation_work_item) { group_work_item }
 
+          before do
+            stub_licensed_features(epics: true)
+          end
+
           it_behaves_like 'mutation updating work item labels'
+
+          context 'without group level work item license' do
+            before do
+              stub_licensed_features(epics: false)
+            end
+
+            it_behaves_like 'a mutation that returns top-level errors', errors: [
+              "The resource that you are attempting to access does not exist or you don't have " \
+                "permission to perform this action"
+            ]
+          end
 
           context 'with quick action' do
             let(:input) do
@@ -264,6 +309,17 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             end
 
             it_behaves_like 'mutation updating work item labels'
+
+            context 'without group level work item license' do
+              before do
+                stub_licensed_features(epics: false)
+              end
+
+              it_behaves_like 'a mutation that returns top-level errors', errors: [
+                "The resource that you are attempting to access does not exist or you don't have " \
+                  "permission to perform this action"
+              ]
+            end
           end
         end
       end
@@ -284,10 +340,25 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           it_behaves_like 'mutation updating work item labels'
         end
 
-        context 'when work item belongs directly to the group' do
+        context 'when work item belongs directly to the group', if: Gitlab.ee? do
           let(:mutation_work_item) { group_work_item }
 
+          before do
+            stub_licensed_features(epics: true)
+          end
+
           it_behaves_like 'mutation updating work item labels'
+
+          context 'without group level work item license' do
+            before do
+              stub_licensed_features(epics: false)
+            end
+
+            it_behaves_like 'a mutation that returns top-level errors', errors: [
+              "The resource that you are attempting to access does not exist or you don't have " \
+                "permission to perform this action"
+            ]
+          end
         end
       end
 
@@ -914,6 +985,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           context 'when conversion is not permitted' do
+            let_it_be(:work_item) { create(:work_item, :task, project: project) }
             let_it_be(:issue) { create(:work_item, project: project) }
             let_it_be(:link) { create(:parent_link, work_item_parent: issue, work_item: work_item) }
 
@@ -1693,10 +1765,25 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             it_behaves_like 'mutation updating work item with time tracking data'
           end
 
-          context 'when work item belongs to a group' do
+          context 'when work item belongs to a group', if: Gitlab.ee? do
             let(:mutation_work_item) { group_work_item }
 
+            before do
+              stub_licensed_features(epics: true)
+            end
+
             it_behaves_like 'mutation updating work item with time tracking data'
+
+            context 'without group level work item license' do
+              before do
+                stub_licensed_features(epics: false)
+              end
+
+              it_behaves_like 'a mutation that returns top-level errors', errors: [
+                "The resource that you are attempting to access does not exist or you don't have " \
+                  "permission to perform this action"
+              ]
+            end
           end
 
           context 'when time estimate format is invalid' do
@@ -1729,10 +1816,25 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             it_behaves_like 'mutation updating work item with time tracking data'
           end
 
-          context 'when work item belongs to a group' do
+          context 'when work item belongs to a group', if: Gitlab.ee? do
             let(:mutation_work_item) { group_work_item }
 
+            before do
+              stub_licensed_features(epics: true)
+            end
+
             it_behaves_like 'mutation updating work item with time tracking data'
+
+            context 'without group level work item license' do
+              before do
+                stub_licensed_features(epics: false)
+              end
+
+              it_behaves_like 'a mutation that returns top-level errors', errors: [
+                "The resource that you are attempting to access does not exist or you don't have " \
+                  "permission to perform this action"
+              ]
+            end
           end
         end
       end

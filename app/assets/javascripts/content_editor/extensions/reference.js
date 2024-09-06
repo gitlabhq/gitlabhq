@@ -12,7 +12,8 @@ const findReference = (editor, reference) => {
   let position;
 
   editor.view.state.doc.descendants((descendant, pos) => {
-    if (descendant.isText && descendant.text.includes(reference)) {
+    const containsCodeMarks = descendant.marks.some((mark) => mark.type.spec.code);
+    if (descendant.isText && descendant.text.includes(reference) && !containsCodeMarks) {
       position = pos + descendant.text.indexOf(reference);
       return false;
     }

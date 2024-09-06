@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin, feature_category: :
         expect(receiver).not_to receive(:ddl_transaction)
 
         expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|
-          expect(retries).to receive(:run).with(raise_on_exhaustion: false, &p)
+          expect(retries).to receive(:run).with(raise_on_exhaustion: true, &p)
         end
 
         subject.ddl_transaction(migration, &p)

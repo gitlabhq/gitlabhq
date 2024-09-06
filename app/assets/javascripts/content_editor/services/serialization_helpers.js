@@ -74,9 +74,16 @@ export function closeTag(tagName) {
   return `</${tagName}>`;
 }
 
+const reSpace = /\s$/;
+const reBrackets = /[[\](){}]$/;
+const rePunctuation = /[.,;:'"`]$/;
+const reMarks = /(^|\s)(\*|\*\*|_|__|`|~~)$/;
+
+const regexes = [reSpace, reBrackets, rePunctuation, reMarks];
+
 export function ensureSpace(state) {
   state.flushClose();
-  if (!state.atBlank() && !state.out.endsWith(' ')) state.write(' ');
+  if (!state.atBlank() && !regexes.some((regex) => regex.test(state.out))) state.write(' ');
 }
 
 export function renderTagOpen(state, tagName, attrs) {
@@ -110,6 +117,19 @@ export function renderContent(state, node, forceRenderInline) {
     } else {
       state.renderInline(forceRenderInline ? node : node.child(0));
     }
+  }
+}
+
+export function renderTextInline(text, state, node) {
+  ensureSpace(state);
+
+  const { schema } = node.type;
+  const marks = node.marks.filter((mark) => mark.type.spec.code);
+  if (marks.length) {
+    // ensure text in a code block is properly wrapped in backticks
+    state.renderInline(schema.node('paragraph', {}, [schema.text(text, marks)]));
+  } else {
+    state.write(text);
   }
 }
 

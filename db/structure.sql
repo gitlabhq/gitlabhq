@@ -33520,9 +33520,6 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY remote_development_agent_configs
     ADD CONSTRAINT fk_6a09894a0f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY dast_site_profile_secret_variables
-    ADD CONSTRAINT fk_6a254b170e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -33693,9 +33690,6 @@ ALTER TABLE p_ci_builds
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_findings_remediations
-    ADD CONSTRAINT fk_88a2923914 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_88c725229f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

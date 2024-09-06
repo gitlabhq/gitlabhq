@@ -20484,6 +20484,9 @@ msgstr ""
 msgid "Edit your search and try again"
 msgstr ""
 
+msgid "Edit your search and try again."
+msgstr ""
+
 msgid "Edit your search filter and try again."
 msgstr ""
 
@@ -49319,6 +49322,9 @@ msgid "SecurityOrchestration|This is a group-level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|This is a project-level policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This merge request approval policy targets the default branch, but the default branch is not protected in this project. To set up this policy, the default branch must be protected."
 msgstr ""
 
 msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."

@@ -21,12 +21,17 @@ module BlobViewer
       prepare!
 
       @validation_message = Gitlab::Ci::Lint
-        .new(project: opts[:project], current_user: opts[:user], sha: opts[:sha])
+        .new(project: opts[:project], current_user: opts[:user], sha: opts[:sha], verify_project_sha: false)
         .validate(blob.data).errors.first
     end
 
     def valid?(opts)
       validation_message(opts).blank?
+    end
+
+    def visible_to?(_current_user, ref)
+      # By checking if the ref is a branch or tag, we can avoid verifying the `sha` when calling `Ci::Lint`.
+      project.repository.branch_or_tag?(ref)
     end
   end
 end

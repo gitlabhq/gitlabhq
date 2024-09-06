@@ -50,6 +50,33 @@ RSpec.shared_examples 'rich text editor - common' do
     end
   end
 
+  describe 'automatically resolving references' do
+    before do
+      create(:user, name: 'abc123', username: 'abc123')
+
+      switch_to_content_editor
+      type_in_content_editor :enter
+    end
+
+    it 'resolves a user reference when typing a username' do
+      type_in_content_editor '@abc123 some text'
+
+      expect(page).to have_link('@abc123', href: "/abc123")
+    end
+
+    it 'does not resolve a user reference for a user that does not exist' do
+      type_in_content_editor '@nonexistentuser some text'
+
+      expect(page).not_to have_link('@nonexistentuser')
+    end
+
+    it 'does not resolve a user reference when typing a username in an inline code block' do
+      type_in_content_editor "`@abc123` some text"
+
+      expect(page).not_to have_link('@abc123')
+    end
+  end
+
   describe 'block content is added to a table' do
     it 'converts a markdown table to HTML and shows a warning for it' do
       click_on 'Add a table'

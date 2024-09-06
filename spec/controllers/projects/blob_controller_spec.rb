@@ -169,6 +169,41 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
       end
     end
+
+    context 'when rendering a GitLab CI file' do
+      let_it_be(:files_to_create) do
+        {
+          '.gitlab-ci.yml' => <<~YAML
+            rspec:
+              script: exit 0
+          YAML
+        }
+      end
+
+      let_it_be(:project) { create(:project, :public, :custom_repo, files: files_to_create) }
+
+      let(:id) { "#{project.default_branch}/.gitlab-ci.yml" }
+
+      it 'displays the validation section' do
+        request
+
+        is_expected.to respond_with(:success)
+
+        expect(response.body).to include('Validating GitLab CI configuration')
+      end
+
+      context 'when the blob ref is a commit SHA' do
+        let(:id) { "#{project.repository.commit.id}/.gitlab-ci.yml" }
+
+        it 'does not display the validation section' do
+          request
+
+          is_expected.to respond_with(:success)
+
+          expect(response.body).not_to include('Validating GitLab CI configuration')
+        end
+      end
+    end
   end
 
   describe 'GET diff' do

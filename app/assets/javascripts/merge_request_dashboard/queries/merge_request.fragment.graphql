@@ -5,7 +5,7 @@
 
 fragment MergeRequestDashboardFragment on MergeRequest {
   id
-  reference
+  reference(full: true)
   titleHtml
   webUrl
   author {

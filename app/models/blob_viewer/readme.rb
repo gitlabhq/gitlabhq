@@ -9,7 +9,7 @@ module BlobViewer
     self.file_types = %i[readme]
     self.binary = false
 
-    def visible_to?(current_user)
+    def visible_to?(current_user, _ref)
       can?(current_user, :read_wiki, project)
     end
 

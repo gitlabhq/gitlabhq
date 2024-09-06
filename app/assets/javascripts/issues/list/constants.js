@@ -23,6 +23,7 @@ import {
   TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MERGE_USER,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
@@ -235,6 +236,16 @@ export const filtersMap = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[reviewer_username]',
+      },
+    },
+  },
+  [TOKEN_TYPE_MERGE_USER]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'mergeUser',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'merge_user',
       },
     },
   },

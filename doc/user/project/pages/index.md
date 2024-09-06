@@ -282,6 +282,14 @@ The number of extra deployments is limited by the root-level namespace. For spec
 - Self-managed GitLab instances, see
   [Number of extra Pages deployments when using multiple deployments](../../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
+To immediately reduce the number of active deployments in your namespace,
+delete some deployments. For more information, see
+[Delete a deployment](#delete-a-deployment).
+
+To configure an expiry time to automatically
+delete older deployments, see
+[Expiring deployments](#expiring-deployments).
+
 ### Expiration
 
 By default, extra deployments expire after 24 hours, after which they are deleted.
@@ -377,7 +385,21 @@ listed on the project environment list.
 
 You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
 
-### Deployments deletion
+### Delete a Deployment
+
+To delete a deployment:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Deploy > Pages**.
+1. Under **Deployments**, select any area on the deployment you wish to delete.
+   The deployment details expand.
+1. Select **Delete**.
+
+When you select **Delete**, your deployment is stopped immediately.
+Stopped deployments are deleted by a cron job running every 10 minutes.
+
+To restore a stopped deployment that has not been deleted yet, see
+[Recover a stopped deployment](#recover-a-stopped-deployment).
 
 #### Auto-clean
 

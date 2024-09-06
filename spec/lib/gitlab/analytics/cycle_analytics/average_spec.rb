@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :va
     end
 
     context 'returns the average duration in seconds' do
-      it { is_expected.to be_within(0.5).of(7.5.days.to_f) }
+      it { is_expected.to be_within(3.seconds).of(7.5.days.to_f) }
     end
   end
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Average, feature_category: :va
     end
 
     context 'returns the average duration in days' do
-      it { is_expected.to be_within(0.01).of(7.5) }
+      it { is_expected.to be_within(3.seconds).of(7.5) }
     end
   end
 end

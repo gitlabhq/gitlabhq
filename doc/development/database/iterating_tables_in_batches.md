@@ -424,10 +424,10 @@ When to use `JOINS`:
 Example:
 
 ```ruby
-users = User.joins("LEFT JOIN personal_access_tokens on personal_access_tokens.user_id = users.id")
-
-users.each_batch do |relation|
-  relation.where("personal_access_tokens.name = 'name'")
+User.each_batch do |relation|
+  relation
+    .joins("LEFT JOIN personal_access_tokens on personal_access_tokens.user_id = users.id")
+    .where("personal_access_tokens.name = 'name'")
 end
 ```
 

@@ -212,6 +212,10 @@ dast_scanner_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+dast_site_profile_secret_variables:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_site_profiles:
   - table: projects
     column: project_id
@@ -543,6 +547,10 @@ vulnerability_finding_evidences:
     column: project_id
     on_delete: async_delete
 vulnerability_finding_signatures:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+vulnerability_findings_remediations:
   - table: projects
     column: project_id
     on_delete: async_delete

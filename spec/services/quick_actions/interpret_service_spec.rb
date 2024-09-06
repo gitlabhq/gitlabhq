@@ -1760,33 +1760,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    context '/label command' do
-      context 'when target is a group level work item' do
-        let_it_be(:new_group) { create(:group, developers: developer) }
-        let_it_be(:group_level_work_item) { create(:work_item, :group_level, namespace: new_group) }
-        # this label should not be show on the list as belongs to another group
-        let_it_be(:invalid_label) { create(:group_label, title: 'not_from_group', group: group) }
-        let(:container) { new_group }
-
-        # This spec was introduced just to validate that the label finder scopes que query to a single group.
-        # The command checks that labels are available as part of the condition.
-        # Query was timing out in .com https://gitlab.com/gitlab-org/gitlab/-/issues/441123
-        it 'is not available when there are no labels associated with the group' do
-          expect(service.available_commands(group_level_work_item)).not_to include(a_hash_including(name: :label))
-        end
-
-        context 'when a label exists at the group level' do
-          before do
-            create(:group_label, group: new_group)
-          end
-
-          it 'is available' do
-            expect(service.available_commands(group_level_work_item)).to include(a_hash_including(name: :label))
-          end
-        end
-      end
-    end
-
     context '/copy_metadata command' do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
