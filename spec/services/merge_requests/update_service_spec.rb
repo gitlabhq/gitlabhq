@@ -100,8 +100,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       context 'usage counters' do
-        let(:merge_request2) { create(:merge_request) }
-        let(:draft_merge_request) { create(:merge_request, :draft_merge_request) }
+        let(:merge_request2) { create(:merge_request, source_project: project) }
+        let(:draft_merge_request) { create(:merge_request, :draft_merge_request, source_project: project) }
 
         it 'update as expected' do
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)

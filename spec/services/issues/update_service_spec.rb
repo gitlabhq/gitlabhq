@@ -429,6 +429,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
       context 'when current user cannot admin issues in the project' do
         it 'filters out params that cannot be set without the :admin_issue permission' do
+          issue.update!(author: guest)
+
           described_class.new(
             container: project, current_user: guest, params: opts.merge(
               confidential: true,

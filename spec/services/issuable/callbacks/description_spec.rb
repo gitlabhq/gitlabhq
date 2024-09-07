@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_management do
+RSpec.describe Issuable::Callbacks::Description, feature_category: :portfolio_management do
   let_it_be(:random_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -22,9 +22,9 @@ RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_m
     )
   end
 
-  describe '#after_initialize' do
-    let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
+  let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
 
+  describe '#after_initialize' do
     subject(:after_initialize_callback) { service.after_initialize }
 
     shared_examples 'sets work item description' do
@@ -32,8 +32,6 @@ RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_m
         subject
 
         expect(work_item.description).to eq(params[:description])
-        expect(work_item.last_edited_by).to eq(current_user)
-        expect(work_item.last_edited_at).to be_within(2.seconds).of(Time.current)
       end
     end
 
@@ -121,6 +119,30 @@ RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_m
 
           it_behaves_like 'does not set work item description'
         end
+      end
+    end
+  end
+
+  describe '#before_update', :freeze_time do
+    subject(:before_update_callback) { service.before_update }
+
+    context 'when description was changed' do
+      it 'sets last_edited_by and last_edited_at' do
+        work_item.description = 'new description'
+
+        before_update_callback
+
+        expect(work_item.last_edited_by).to eq(current_user)
+        expect(work_item.last_edited_at).to be_like_time(Time.current)
+      end
+    end
+
+    context 'when description was not changed' do
+      it 'does not change last_edited_by and last_edited_at' do
+        before_update_callback
+
+        expect(work_item.last_edited_by).to eq(random_user)
+        expect(work_item.last_edited_at).to eq(Date.yesterday)
       end
     end
   end

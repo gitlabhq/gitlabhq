@@ -247,6 +247,8 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
       before do
         stub_compare
+
+        project.add_developer(user)
       end
 
       it_behaves_like 'allows the merge request to be created'
@@ -372,6 +374,8 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
       before do
         stub_compare
+
+        project.add_developer(user)
       end
 
       it_behaves_like 'allows the merge request to be created'
@@ -752,6 +756,10 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   end
 
   describe '#replace_variables_in_description' do
+    before do
+      project.add_developer(user)
+    end
+
     context 'when the merge request description is blank' do
       let(:description) { nil }
 

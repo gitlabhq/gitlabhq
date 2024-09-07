@@ -63,7 +63,7 @@ module Issues
         assignee_ids: original_entity.assignee_ids
       }
 
-      new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
+      new_params = original_entity.serializable_hash.symbolize_keys.except(:project_id, :author_id).merge(new_params)
       new_params = new_params.merge(rewritten_old_entity_attributes)
       new_params.delete(:imported_from)
       new_params.delete(:created_at)

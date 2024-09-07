@@ -28,6 +28,8 @@ describe('WorkItemDescriptionRendered', () => {
   const createComponent = ({
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
+    isGroup = false,
+    workItemType = 'ISSUE',
     mockComputed = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
@@ -35,6 +37,8 @@ describe('WorkItemDescriptionRendered', () => {
         workItemId: 'gid://gitlab/WorkItem/818',
         workItemDescription,
         canEdit,
+        isGroup,
+        workItemType,
       },
       computed: mockComputed,
       provide: {
@@ -208,11 +212,11 @@ and even more`,
           hideButton: true,
           isGroup: false,
           parentId: 'gid://gitlab/WorkItem/818',
-          showProjectSelector: true,
+          showProjectSelector: false,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
-          workItemTypeName: 'ISSUE',
+          workItemTypeName: 'TASK',
         });
 
         findCreateWorkItemModal().vm.$emit('workItemCreated');
@@ -223,6 +227,62 @@ and even more`,
         await nextTick();
 
         expect(findCreateWorkItemModal().props('visible')).toBe(false);
+      });
+
+      describe('when work item epic', () => {
+        it('converts task list item to child issue', async () => {
+          const description = '1. [ ] item 1\n1. [ ] item 2';
+          createComponent({
+            isGroup: true,
+            workItemType: 'Epic',
+            workItemDescription: { description },
+          });
+          await waitForPromises();
+
+          eventHub.$emit('convert-task-list-item', {
+            id: 'gid://gitlab/WorkItem/818',
+            sourcepos: '1:1-1:13',
+          });
+          await nextTick();
+
+          expect(findCreateWorkItemModal().props()).toMatchObject({
+            asDropdownItem: false,
+            description: ``,
+            hideButton: true,
+            isGroup: true,
+            parentId: 'gid://gitlab/WorkItem/818',
+            showProjectSelector: true,
+            title: 'item 1',
+            visible: true,
+            workItemTypeName: 'ISSUE',
+          });
+        });
+      });
+
+      describe('when work item issue', () => {
+        it('converts task list item to child task', async () => {
+          const description = '1. [ ] item 1\n1. [ ] item 2';
+          createComponent({ workItemType: 'ISSUE', workItemDescription: { description } });
+          await waitForPromises();
+
+          eventHub.$emit('convert-task-list-item', {
+            id: 'gid://gitlab/WorkItem/818',
+            sourcepos: '1:1-1:13',
+          });
+          await nextTick();
+
+          expect(findCreateWorkItemModal().props()).toMatchObject({
+            asDropdownItem: false,
+            description: ``,
+            hideButton: true,
+            isGroup: false,
+            parentId: 'gid://gitlab/WorkItem/818',
+            showProjectSelector: false,
+            title: 'item 1',
+            visible: true,
+            workItemTypeName: 'TASK',
+          });
+        });
       });
     });
 

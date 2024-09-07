@@ -5,6 +5,7 @@ class IssuableBaseService < ::BaseContainerService
 
   def available_callbacks
     [
+      Issuable::Callbacks::Description,
       Issuable::Callbacks::Milestone,
       Issuable::Callbacks::TimeTracking
     ].freeze
@@ -236,12 +237,14 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def create(issuable, skip_system_notes: false)
+    # Set author early since this is used for ability checks
+    set_issuable_author(issuable)
+
     handle_quick_actions(issuable)
     prepare_create_params(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
-    params[:author] ||= current_user
     params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
@@ -277,6 +280,19 @@ class IssuableBaseService < ::BaseContainerService
     end
 
     issuable
+  end
+
+  def set_issuable_author(issuable)
+    author = params.delete(:author)
+    author_id = params.delete(:author_id)
+
+    if author
+      issuable.author = author
+    elsif author_id
+      issuable.author_id = author_id
+    else
+      issuable.author = current_user
+    end
   end
 
   def set_crm_contacts(issuable, add_crm_contact_emails, remove_crm_contact_emails = [])
@@ -336,8 +352,6 @@ class IssuableBaseService < ::BaseContainerService
 
     if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
-
-      assign_last_edited(issuable)
 
       before_update(issuable)
 
@@ -541,12 +555,6 @@ class IssuableBaseService < ::BaseContainerService
       params[:assignee_ids] = assignee_ids
       issuable.touch
     end
-  end
-
-  def assign_last_edited(issuable)
-    return unless issuable.description_changed?
-
-    issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
   end
 
   # Arrays of ids are used, but we should really use sets of ids, so

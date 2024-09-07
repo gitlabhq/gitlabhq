@@ -56,6 +56,49 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let(:mutation_class) { ::Mutations::WorkItems::Create }
     end
 
+    context 'with description widget input' do
+      let(:input) do
+        {
+          title: 'title',
+          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          descriptionWidget: { description: 'some description' }
+        }
+      end
+
+      let(:widgets_response) { mutation_response['workItem']['widgets'] }
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetDescription {
+              description
+              lastEditedAt
+              lastEditedBy {
+                id
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      it 'sets the description but does not set last_edited_at and last_edited_by' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(widgets_response).to include(
+          {
+            'type' => 'DESCRIPTION',
+            'description' => 'some description',
+            'lastEditedAt' => nil,
+            'lastEditedBy' => nil
+          }
+        )
+      end
+    end
+
     context 'with hierarchy widget input' do
       let(:widgets_response) { mutation_response['workItem']['widgets'] }
       let(:fields) do

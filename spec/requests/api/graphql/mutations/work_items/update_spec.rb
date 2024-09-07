@@ -138,7 +138,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
-    context 'with description widget input' do
+    context 'with description widget input', :freeze_time do
       let(:fields) do
         <<~FIELDS
           workItem {
@@ -148,7 +148,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             widgets {
               type
               ... on WorkItemWidgetDescription {
-                      description
+                description
+                lastEditedAt
+                lastEditedBy {
+                  id
+                }
               }
             }
           }
