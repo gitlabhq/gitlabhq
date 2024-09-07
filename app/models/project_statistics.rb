@@ -56,9 +56,7 @@ class ProjectStatistics < ApplicationRecord
       schedule_namespace_aggregation_worker
     end
 
-    detect_race_on_record(log_fields: { caller: __method__, attributes: columns_to_update }) do
-      save!
-    end
+    save!
   end
 
   def update_commit_count
@@ -107,9 +105,7 @@ class ProjectStatistics < ApplicationRecord
   # Since this incremental update method does not update the storage_size directly,
   # we have to update the storage_size separately in an after_commit action.
   def refresh_storage_size!
-    detect_race_on_record(log_fields: { caller: __method__, attributes: :storage_size }) do
-      self.class.where(id: id).update_all("storage_size = #{storage_size_sum}")
-    end
+    self.class.where(id: id).update_all("storage_size = #{storage_size_sum}")
   end
 
   # For counter attributes, storage_size will be refreshed after the counter is flushed,

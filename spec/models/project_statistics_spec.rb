@@ -290,10 +290,6 @@ RSpec.describe ProjectStatistics do
         refresh_statistics
       end
     end
-
-    it_behaves_like 'obtaining lease to update database' do
-      let(:model) { statistics }
-    end
   end
 
   describe '#update_commit_count' do
@@ -440,10 +436,6 @@ RSpec.describe ProjectStatistics do
       it 'recalculates storage size from its components' do
         expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(2)
       end
-    end
-
-    it_behaves_like 'obtaining lease to update database' do
-      let(:model) { statistics }
     end
   end
 
