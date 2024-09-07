@@ -38,9 +38,9 @@ export default {
 
 <template>
   <span class="gl-flex gl-items-center gl-gap-3" data-testid="deploy-key-wrapper">
-    <gl-icon name="key" />
-    <span class="gl-flex gl-grow gl-flex-col">
-      <span class="gl-font-bold">{{ title }}</span>
+    <gl-icon class="gl-min-w-6" name="key" />
+    <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
+      <span class="gl-truncate gl-font-bold">{{ title }}</span>
       <span class="gl-text-gray-600">@{{ username }}</span>
     </span>
 
