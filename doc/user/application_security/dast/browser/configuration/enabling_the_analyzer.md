@@ -17,6 +17,7 @@ To run a DAST scan:
 
 > - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 > - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
+> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151910) to DAST_VERSION: 5 in GitLab 17.0.
 
 To add DAST scanning to your application, use the DAST job defined
 in the GitLab DAST CI/CD template file. Updates to the template are provided with GitLab
@@ -52,15 +53,10 @@ To create the CI/CD job:
 
      You can see an [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 
-1. Set the `DAST_BROWSER_SCAN` [CI/CD variable](../../../../../ci/yaml/index.md#variables) to `"true"`.
-
 For example:
 
 ```yaml
 stages:
-  - build
-  - test
-  - deploy
   - dast
 
 include:
@@ -69,5 +65,7 @@ include:
 dast:
   variables:
     DAST_TARGET_URL: "https://example.com"
-    DAST_BROWSER_SCAN: "true"
+    DAST_AUTH_USERNAME: "test_user"
+    DAST_AUTH_USERNAME_FIELD: "name:user[login]"
+    DAST_AUTH_PASSWORD_FIELD: "name:user[password]"
 ```
