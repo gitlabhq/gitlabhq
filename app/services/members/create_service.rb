@@ -39,7 +39,7 @@ module Members
 
       result
     rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError, SeatLimitExceededError => e
-      Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user.id)
+      Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user&.id)
 
       error(e.message, pass_back: { reason: e.class.name.demodulize.underscore.to_sym })
     end
@@ -57,7 +57,7 @@ module Members
     end
 
     def cannot_assign_owner_responsibilities_to_member_in_project?
-      source.is_a?(Project) && !current_user.can?(:manage_owners, source)
+      source.is_a?(Project) && !current_user&.can?(:manage_owners, source)
     end
 
     def invites_from_params
