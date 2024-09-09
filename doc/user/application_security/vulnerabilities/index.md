@@ -209,6 +209,11 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Introduced in GitLab 17.3 with a flag. Disabled by default.
+> - Enabled on GitLab.com in GitLab 17.3.
+> - Enabled on self-managed and GitLab Dedicated in GitLab 17.4.
+> - Generally available in GitLab 17.4. Feature flag removed.
+
 For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available. A
 vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable
 line of code (sink), through all assignments, manipulation, and sanitization. This information helps

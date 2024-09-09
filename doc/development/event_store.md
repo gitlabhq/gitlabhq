@@ -125,6 +125,26 @@ back into Sidekiq to be retried.
   This makes it safe for other domains to subscribe to events without affecting the performance of the
   main business transaction.
 
+## EventStore disadvantages
+
+- `EventStore` is built on top of Sidekiq.
+  Although Sidekiq workers support retries and exponential backoff,
+  there are instances when a worker exceeds a retry limit and Sidekiq jobs are
+  lost. Also, as part of incidents, and disaster recovery, Sidekiq jobs may be
+  dropped. Although many important GitLab features rely on the assumption of durability in Sidekiq, this may not be acceptable for some critical data integrity features. If you need to be sure
+  the work is done eventually you may need to implement a queuing mechanism in
+  Postgres where the jobs are picked up by Sidekiq cron workers. You can see
+  examples of this approach in `::LooseForeignKeys::CleanupWorker` and
+  `::BatchedGitRefUpdates::ProjectCleanupWorker`. Typically a partitioned
+  table is created and you insert data which is then processed later by a cron
+  worker and marked as `processed` in the database after doing some work.
+  There are also strategies for implementing reliable queues in Redis such as that used in `::Elastic::ProcessBookkeepingService`. If you are introducing new patterns for queueing in the codebase you will want to seek advice from maintainers early in the process.
+- Alternatively, consider not using `EventStore` if the logic needs to be
+  processed as part of the main business transaction, and is not a
+  side-effect.
+- Sidekiq workers aren't limited by default but you should consider configuring a
+  [concurrency limit](sidekiq/worker_attributes.md#concurrency-limit) if there is a risk of saturating shared resources.
+
 ## Define an event
 
 An `Event` object represents a domain event that occurred in a [bounded context](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).

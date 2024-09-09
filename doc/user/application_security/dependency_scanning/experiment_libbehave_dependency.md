@@ -192,7 +192,7 @@ versions. Version ranges are not supported.
 
 <!-- markdownlint-disable MD003 -->
 <!-- markdownlint-disable MD020 -->
-#### C#
+#### C\#
 <!-- markdownlint-disable MD020 -->
 <!-- markdownlint-enable MD003 -->
 
