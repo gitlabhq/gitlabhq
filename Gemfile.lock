@@ -637,7 +637,8 @@ GEM
       fog-json
       ipaddress (~> 0.8)
       xml-simple (~> 1.1)
-    fog-aws (3.24.0)
+    fog-aws (3.25.0)
+      base64 (~> 0.2.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)

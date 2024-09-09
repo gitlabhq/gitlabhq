@@ -6,11 +6,7 @@
   - title = s_('Milestones|There are no closed milestones')
 
 - if params[:search_title]
-  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
-    title: _("No results found")) do |c|
-
-    - c.with_description do
-      = _("Edit your criteria and try again.")
+  = render ::Layouts::EmptyResultComponent.new(type: :search)
 
 - else
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-milestone-md.svg',
