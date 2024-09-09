@@ -439,6 +439,10 @@ routes:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+sbom_component_versions:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 sbom_components:
   - table: organizations
     column: organization_id

@@ -173,6 +173,7 @@ to match your username.
 
 > - Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
 > - Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
+> - Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../feature_flags.md) named `verify_mastodon_user`. Disabled by default.
 
 You can add links to certain other external accounts you might have, like Skype and X (formerly Twitter).
 They can help other users connect with you on other platforms.
@@ -185,7 +186,7 @@ To add links to other accounts:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
    - LinkedIn profile name.
    - Bluesky [did:plc identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
-   - Mastodon username.
+   - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
    - Skype username.
    - X (formerly Twitter) @username.
 

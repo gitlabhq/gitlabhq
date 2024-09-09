@@ -19,7 +19,6 @@
   %ul.content-list
     = render @groups
 - else
-  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
-      title: _('No groups found'))
+  = render ::Layouts::EmptyResultComponent.new(type: :search)
 
 = paginate @groups, theme: "gitlab"

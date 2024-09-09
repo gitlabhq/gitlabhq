@@ -17,4 +17,19 @@ module TermsHelper
       }
     }.to_json
   end
+
+  def terms_service_notice_link(button_text)
+    terms_link = link_to('', terms_path, target: '_blank', rel: 'noopener noreferrer')
+
+    safe_format(
+      s_(
+        'SignUp|By clicking %{button_text} or registering through a third party you accept the %{link_start}Terms ' \
+          'of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.'
+      ),
+      tag_pair(terms_link, :link_start, :link_end),
+      button_text: button_text
+    )
+  end
 end
+
+TermsHelper.prepend_mod

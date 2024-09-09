@@ -298,7 +298,7 @@ number of upstream pipeline subscriptions is 2 by default, for both the upstream
 downstream projects. On self-managed instances, an administrator can change this
 [limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
 
-### How pipeline duration is calculated
+## How pipeline duration is calculated
 
 The total running time for a given pipeline excludes:
 

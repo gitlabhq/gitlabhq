@@ -3,7 +3,7 @@
 module WorkItems
   module Widgets
     class StartAndDueDate < Base
-      delegate :start_date, :due_date, to: :work_item
+      include ::Gitlab::Utils::StrongMemoize
 
       def self.quick_action_commands
         [:due, :remove_due_date]
@@ -12,6 +12,25 @@ module WorkItems
       def self.quick_action_params
         [:due_date]
       end
+
+      def start_date
+        return dates_source.start_date_fixed if dates_source.present?
+
+        work_item&.start_date
+      end
+
+      def due_date
+        return dates_source.due_date_fixed if dates_source.present?
+
+        work_item&.due_date
+      end
+
+      private
+
+      def dates_source
+        work_item&.dates_source
+      end
+      strong_memoize_attr :dates_source
     end
   end
 end

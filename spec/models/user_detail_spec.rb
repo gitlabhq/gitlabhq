@@ -220,7 +220,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
           expect(user_detail).not_to be_valid
           expect(user_detail.errors.full_messages)
-            .to match_array([_('Mastodon must contain only a mastodon username.')])
+            .to match_array([_('Mastodon must contain only a mastodon handle.')])
         end
       end
     end

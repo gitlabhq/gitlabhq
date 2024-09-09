@@ -691,10 +691,27 @@ RSpec.describe ApplicationHelper do
         expect(mastodon).to eq('')
       end
 
-      it 'returns mastodon url when mastodon username is set' do
-        user.mastodon = '@robin@example.com'
+      context 'when verify_mastodon_user FF is enabled' do
+        before do
+          stub_feature_flags(verify_mastodon_user: true)
+        end
 
-        expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
+        it 'returns mastodon url with relme when user handle is set' do
+          user.mastodon = '@robin@example.com'
+
+          expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin', rel: 'me'))
+        end
+      end
+
+      context 'when verify_mastodon_user FF is disabled' do
+        before do
+          stub_feature_flags(verify_mastodon_user: false)
+        end
+
+        it 'returns mastodon url when user handle is set' do
+          user.mastodon = '@robin@example.com'
+          expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
+        end
       end
     end
   end

@@ -1979,7 +1979,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/stat_anchors_helper_spec.rb'
     - 'spec/helpers/subscribable_banner_helper_spec.rb'
     - 'spec/helpers/tab_helper_spec.rb'
-    - 'spec/helpers/terms_helper_spec.rb'
     - 'spec/helpers/time_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'
     - 'spec/helpers/todos_helper_spec.rb'

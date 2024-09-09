@@ -77,7 +77,7 @@
                 - if @user.mastodon.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('mastodon', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                    = link_to @user.mastodon, mastodon_url(@user), class: 'gl-text-gray-900', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow'
+                    = link_to @user.mastodon, mastodon_url(@user), class: 'gl-text-gray-900', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow me'
                 - if @user.discord.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('discord', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')

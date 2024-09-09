@@ -14,6 +14,7 @@ RSpec.describe Ci::StuckBuilds::DropScheduledService, feature_category: :continu
       let(:scheduled_at) { 2.hours.ago }
 
       it_behaves_like 'job is dropped with failure reason', 'stale_schedule'
+      it_behaves_like 'when invalid dooms the job bypassing validations'
     end
 
     context 'for less than 1 hour ago' do

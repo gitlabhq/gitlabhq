@@ -23,6 +23,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
         let(:updated_at) { outdated_time }
 
         it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
+        it_behaves_like 'when invalid dooms the job bypassing validations'
       end
 
       context 'when job is fresh' do

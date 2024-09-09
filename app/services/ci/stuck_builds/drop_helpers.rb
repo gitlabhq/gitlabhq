@@ -36,7 +36,7 @@ module Ci
       def drop_build(type, build, reason)
         log_dropping_message(type, build, reason)
         Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
-          b.drop(reason)
+          b.drop!(reason)
         end
       rescue StandardError => ex
         build.doom!

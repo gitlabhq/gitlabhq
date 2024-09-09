@@ -4639,9 +4639,6 @@ msgstr ""
 msgid "AdminUsers|New user"
 msgstr ""
 
-msgid "AdminUsers|No users found"
-msgstr ""
-
 msgid "AdminUsers|Owned groups will be left"
 msgstr ""
 
@@ -13264,13 +13261,31 @@ msgstr ""
 msgid "CodeSuggestions|A user can be assigned a %{title} seat only once each billable month."
 msgstr ""
 
+msgid "CodeSuggestions|Automate your repetitive tasks and catch bugs early"
+msgstr ""
+
+msgid "CodeSuggestions|Automatically generate new lines of code, including full functions, from single and multi-line comments as well as comment blocks"
+msgstr ""
+
 msgid "CodeSuggestions|Before you can buy GitLab Duo seats, you'll need a Premium or Ultimate subscription."
 msgstr ""
 
 msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
 msgstr ""
 
+msgid "CodeSuggestions|Code Explanations"
+msgstr ""
+
+msgid "CodeSuggestions|Code Suggestions"
+msgstr ""
+
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo%{linkEnd} offers features that use generative AI to suggest code."
+msgstr ""
+
+msgid "CodeSuggestions|Get started with GitLab Duo Pro today to boost your efficiency and effectiveness by reducing the time required to write and understand code."
+msgstr ""
+
+msgid "CodeSuggestions|Get started with these Duo Pro features:"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo"
@@ -13283,6 +13298,9 @@ msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo should be operational."
+msgstr ""
+
+msgid "CodeSuggestions|Helps you get up to speed quickly by explaining source code"
 msgstr ""
 
 msgid "CodeSuggestions|Introducing GitLab Duo"
@@ -13321,6 +13339,9 @@ msgstr ""
 msgid "CodeSuggestions|Subscription not synchronized"
 msgstr ""
 
+msgid "CodeSuggestions|Test Generation"
+msgstr ""
+
 msgid "CodeSuggestions|Tests are running"
 msgstr ""
 
@@ -13336,7 +13357,16 @@ msgstr ""
 msgid "CodeSuggestions|Updating..."
 msgstr ""
 
+msgid "CodeSuggestions|Welcome to GitLab Duo Pro!"
+msgstr ""
+
 msgid "CodeSuggestions|You have successfully added a license that activates on %{date}."
+msgstr ""
+
+msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features %{code_suggestions_link_start}Code Suggestions%{code_suggestions_link_end} and %{chat_link_start}Chat%{chat_link_end}."
+msgstr ""
+
+msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features Code Suggestions and Chat."
 msgstr ""
 
 msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
@@ -25257,6 +25287,12 @@ msgstr ""
 msgid "Go to %{source_name}"
 msgstr ""
 
+msgid "Go to GitLab"
+msgstr ""
+
+msgid "Go to GitLab, visit %{login_url}."
+msgstr ""
+
 msgid "Go to commits"
 msgstr ""
 
@@ -35896,9 +35932,6 @@ msgid "No forks are available to you."
 msgstr ""
 
 msgid "No group provided"
-msgstr ""
-
-msgid "No groups found"
 msgstr ""
 
 msgid "No groups or projects found"
@@ -65209,7 +65242,7 @@ msgstr ""
 msgid "must contain only a discord user ID."
 msgstr ""
 
-msgid "must contain only a mastodon username."
+msgid "must contain only a mastodon handle."
 msgstr ""
 
 msgid "must have a repository"

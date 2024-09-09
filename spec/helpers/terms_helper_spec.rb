@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TermsHelper do
+RSpec.describe TermsHelper, feature_category: :system_access do
   let_it_be(:current_user) { build(:user) }
   let_it_be(:terms) { build(:term) }
 
@@ -39,6 +39,19 @@ RSpec.describe TermsHelper do
       }.as_json
 
       expect(result).to eq(expected)
+    end
+  end
+
+  describe '#terms_service_notice_link', :aggregate_failures do
+    let(:button_text) { 'terms-text' }
+
+    subject(:result) { helper.terms_service_notice_link(button_text) }
+
+    it 'returns correct html' do
+      expect(result).to have_link('', href: terms_path)
+      expect(result).to have_content(_('By clicking'))
+      expect(result).to have_content(button_text)
+      expect(result).to have_content(_('or registering through a third party you accept the'))
     end
   end
 end

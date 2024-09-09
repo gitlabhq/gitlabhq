@@ -1,0 +1,9 @@
+---
+name: verify_mastodon_user
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433391
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164006
+rollout_issue_url:
+milestone: '17.4'
+group: group::authentication
+type: wip
+default_enabled: false
