@@ -262,3 +262,5 @@ class Projects::CommitController < Projects::ApplicationController
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size
   end
 end
+
+Projects::CommitController.prepend_mod_with('Projects::CommitController')

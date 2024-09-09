@@ -16,13 +16,13 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
   let(:tags) { %w[latest A Ba Bb C D E] }
 
   before do
-    allow(repository).to receive(:migrated?).and_return(true)
-
     project.add_maintainer(user) if user
 
     stub_container_registry_config(enabled: true)
 
     stub_const("#{described_class}::TAGS_PAGE_SIZE", tags_page_size)
+
+    allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
 
     one_hour_ago = 1.hour.ago
     five_days_ago = 5.days.ago

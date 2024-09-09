@@ -1,20 +1,3 @@
-$avatar-icon-size: 2rem;
-$avatar-m-top: 0.5rem;
-$avatar-m-ratio: 2;
-$avatar-m-left: $avatar-m-top * $avatar-m-ratio;
-
-$system-note-icon-size: 1.5rem;
-$system-note-svg-size: 1rem;
-$icon-size-diff: $avatar-icon-size - $system-note-icon-size;
-
-$system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 1.3rem;
-$system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
-
-@mixin outline-comment() {
-  margin: $gl-padding $gl-padding 0;
-  @apply gl-border gl-rounded-base;
-}
-
 .issuable-discussion:not(.incident-timeline-events),
 .limited-width-notes {
   .main-notes-list::before,
@@ -51,16 +34,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   &.timeline > .timeline-entry {
     margin: $gl-padding 0;
 
-    &.system-note {
-      margin-top: $gl-spacing-scale-1;
-      margin-bottom: 0;
-
-      .note-header-info {
-        padding-left: $gl-spacing-scale-4;
-      }
-    }
-
-    &.system-note,
     &.note-form {
       border: 0;
     }
@@ -327,112 +300,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       line-height: 1;
     }
   }
-
-  .system-note {
-    padding: $gl-padding-8 0;
-    margin: $gl-padding 0;
-    background-color: transparent;
-    font-size: $gl-font-size;
-
-    .note-header-info {
-      padding-bottom: 0;
-      padding-top: 0;
-    }
-
-    &.timeline-entry::after {
-      clear: none;
-    }
-
-    .system-note-message {
-      &::first-letter {
-        text-transform: lowercase;
-      }
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      a:not(.gl-link) {
-        @apply gl-text-link;
-      }
-
-      p {
-        display: inline;
-        margin: 0;
-
-        &::first-letter {
-          text-transform: lowercase;
-        }
-      }
-    }
-
-    .timeline-content {
-      margin-left: 30px;
-    }
-
-    .note-header {
-      padding-bottom: 0;
-    }
-
-    .note-body {
-      overflow: hidden;
-      padding: 0;
-
-      ul {
-        margin: 0.5rem 0;
-      }
-
-      p {
-        margin-left: 1rem;
-      }
-
-      .description-version pre {
-        max-height: $dropdown-max-height-lg;
-      }
-
-      .system-note-commit-list-toggler {
-        cursor: pointer;
-        position: relative;
-        z-index: 2;
-
-        &,
-        &:hover {
-          @apply gl-text-link;
-        }
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      .note-text {
-        p:first-child {
-          display: none;
-        }
-
-        &.system-note-commit-list:not(.hide-shade) {
-          max-height: 70px;
-          overflow: hidden;
-          display: block;
-
-          ul {
-            margin: 3px 0 3px 16px !important;
-          }
-
-          p:first-child {
-            display: none;
-          }
-
-          &::after {
-            content: '';
-            height: 70px;
-            position: absolute;
-            left: $gl-padding-24;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba($white, 0.1) -100px, $body-bg 100%);
-          }
-        }
-      }
-    }
-  }
 }
 
 .card .notes {
@@ -553,10 +420,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.system-note .note-header-info {
-  padding-bottom: 0;
-}
-
 .note-headline-light {
   display: inline;
 }
@@ -593,19 +456,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .user-activity-content {
   position: relative;
-
-  .system-note-image {
-    @apply gl-flex;
-    @apply gl-justify-center;
-    @apply gl-items-center;
-    top: 14px;
-    width: 22px;
-    height: 22px;
-
-    svg {
-      fill: $gray-600 !important;
-    }
-  }
 }
 
 //This needs to be deleted when Snippet/Commit comments are convered to Vue

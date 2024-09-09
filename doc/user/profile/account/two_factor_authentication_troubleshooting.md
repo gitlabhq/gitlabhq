@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-## Error: "HTTP Basic: Access denied. The provided password or token ..."
+## Error: `HTTP Basic: Access denied. The provided password or token ...`
 
 When making a request, you can receive the following error:
 

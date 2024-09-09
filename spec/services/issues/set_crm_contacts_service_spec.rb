@@ -264,8 +264,13 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
         end
       end
 
-      context 'when setting contacts for a group level work item' do
+      context 'when setting contacts for a group level work item', if: Gitlab.ee? do
         let(:params) { { add_ids: [contacts[3].id] } }
+
+        before do
+          stub_feature_flags(enforce_check_group_level_work_items_license: true)
+          stub_licensed_features(epics: true)
+        end
 
         it 'sets the contacts' do
           work_item = create(:work_item, :epic, namespace: group)
@@ -274,6 +279,21 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
 
           expect(response).to be_success
           expect(work_item.customer_relations_contacts).to contain_exactly(contacts[3])
+        end
+
+        context 'without group level work item license' do
+          before do
+            stub_licensed_features(epics: false)
+          end
+
+          it 'does not set contacts' do
+            work_item = create(:work_item, :epic, namespace: group)
+
+            response = described_class.new(container: work_item.namespace, current_user: user, params: params).execute(work_item)
+
+            expect(response).to be_error
+            expect(response.message).to eq('You have insufficient permissions to set customer relations contacts for this issue')
+          end
         end
       end
     end

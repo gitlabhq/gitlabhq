@@ -62,8 +62,8 @@ func (r *References) Store(refID ID, references []Item) error {
 	}
 
 	size = len(items)
-	_ = r.Offsets.SetEntry(refID, ReferencesOffset{ID: r.CurrentOffsetID, Len: int32(size)})
-	r.CurrentOffsetID += ID(size)
+	_ = r.Offsets.SetEntry(refID, ReferencesOffset{ID: r.CurrentOffsetID, Len: int32(size)}) //nolint:gosec
+	r.CurrentOffsetID += ID(size)                                                            //nolint:gosec
 
 	return nil
 }

@@ -1,0 +1,9 @@
+name: self_hosted_model_terms_accepted
+description: Terms for usage of self-hosted models were accepted
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/477999
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165480
+feature_category: self-hosted_models
+milestone: '17.4'
+saved_to_database: true
+scope: [Instance, User]
+streamed: true

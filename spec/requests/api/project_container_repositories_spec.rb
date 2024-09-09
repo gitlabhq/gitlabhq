@@ -179,7 +179,7 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
           context 'when pagination is set to keyset' do
             let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset" }
 
-            context 'when repository is migrated', :saas do
+            context 'when the GitLab API is supported' do
               let_it_be(:tags_response) do
                 [
                   {
@@ -285,7 +285,11 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
               end
             end
 
-            context 'when the repository is not migrated' do
+            context 'when the GitLab API is not supported' do
+              before do
+                stub_container_registry_gitlab_api_support(supported: false)
+              end
+
               it 'returns method not allowed' do
                 subject
                 expect(response).to have_gitlab_http_status(:method_not_allowed)
@@ -486,91 +490,81 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
           let(:api_user) { reporter }
 
-          context 'when the repository is migrated', :saas do
-            context 'when the Gitlab API is supported' do
-              before do
-                stub_container_registry_gitlab_api_support(supported: true) do |client|
-                  allow(client).to receive(:tags).and_return(response_body)
-                end
-              end
-
-              let(:response_body) do
-                {
-                  pagination: {},
-                  response_body: ::Gitlab::Json.parse(tags_response.to_json)
-                }
-              end
-
-              context 'when the Gitlab API returns a tag' do
-                let_it_be(:tags_response) do
-                  [
-                    {
-                      name: 'rootA',
-                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
-                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
-                      size_bytes: 2319870,
-                      created_at: 1.minute.ago
-                    }
-                  ]
-                end
-
-                it_behaves_like 'returning the tag'
-              end
-
-              context 'when the Gitlab API returns multiple tags matching the name' do
-                let_it_be(:tags_response) do
-                  [
-                    {
-                      name: 'rootA',
-                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
-                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
-                      size_bytes: 2319870,
-                      created_at: 1.minute.ago
-                    },
-                    {
-                      name: 'rootA-1',
-                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
-                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
-                      size_bytes: 2319870,
-                      created_at: 1.minute.ago
-                    },
-                    {
-                      name: '1-rootA',
-                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
-                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
-                      size_bytes: 2319870,
-                      created_at: 1.minute.ago
-                    }
-                  ]
-                end
-
-                it_behaves_like 'returning the tag'
-              end
-
-              context 'when the Gitlab API does not return a tag' do
-                let_it_be(:tags_response) { {} }
-
-                it 'returns not found' do
-                  subject
-
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(json_response['message']).to include('Tag Not Found')
-                end
+          context 'when the Gitlab API is supported' do
+            before do
+              stub_container_registry_gitlab_api_support(supported: true) do |client|
+                allow(client).to receive(:tags).and_return(response_body)
               end
             end
 
-            context 'when the Gitlab API is not supported' do
-              before do
-                stub_container_registry_gitlab_api_support(supported: false)
-                stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
+            let(:response_body) do
+              {
+                pagination: {},
+                response_body: ::Gitlab::Json.parse(tags_response.to_json)
+              }
+            end
+
+            context 'when the Gitlab API returns a tag' do
+              let_it_be(:tags_response) do
+                [
+                  {
+                    name: 'rootA',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                    size_bytes: 2319870,
+                    created_at: 1.minute.ago
+                  }
+                ]
               end
 
               it_behaves_like 'returning the tag'
             end
+
+            context 'when the Gitlab API returns multiple tags matching the name' do
+              let_it_be(:tags_response) do
+                [
+                  {
+                    name: 'rootA',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                    size_bytes: 2319870,
+                    created_at: 1.minute.ago
+                  },
+                  {
+                    name: 'rootA-1',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                    size_bytes: 2319870,
+                    created_at: 1.minute.ago
+                  },
+                  {
+                    name: '1-rootA',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                    size_bytes: 2319870,
+                    created_at: 1.minute.ago
+                  }
+                ]
+              end
+
+              it_behaves_like 'returning the tag'
+            end
+
+            context 'when the Gitlab API does not return a tag' do
+              let_it_be(:tags_response) { {} }
+
+              it 'returns not found' do
+                subject
+
+                expect(response).to have_gitlab_http_status(:not_found)
+                expect(json_response['message']).to include('Tag Not Found')
+              end
+            end
           end
 
-          context 'when the repository is not migrated' do
+          context 'when the Gitlab API is not supported' do
             before do
+              stub_container_registry_gitlab_api_support(supported: false)
               stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
             end
 

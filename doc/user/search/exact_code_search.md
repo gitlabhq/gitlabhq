@@ -97,3 +97,10 @@ This table shows some example queries for regular expression and exact match mod
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`           | `foo` in files with names that end with `.js` |
 | `foo.*bar`           | `foo.*bar` (regular expression)                         | None                           |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names | `foo` in symbols like class, method, and variable names |
+
+## Known issues
+
+- You can only search files smaller than 1 MB with less than `20_000` trigrams.
+  For more information, see [issue 455073](https://gitlab.com/gitlab-org/gitlab/-/issues/455073).
+- You can use exact code search on the default branch of a project only.
+  For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).

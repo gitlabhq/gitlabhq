@@ -157,13 +157,13 @@ export default {
       'pr-0': shouldShowDescriptionVersion,
       [`system-note-variant-${variant}`]: variant,
     }"
-    class="system-note-v2"
+    class="system-note"
   >
     <div
       :class="[
         iconBgClass,
         {
-          'system-note-icon-v2 -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
+          'system-note-icon -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
           'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-gray-50 gl-bg-gray-900':
             !isAllowedIcon,
         },
@@ -213,14 +213,14 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body-v2 gl-pb-3 gl-pl-3">
+      <div class="note-body gl-pb-3 gl-pl-3">
         <div
           v-safe-html="note.note_html"
           :class="{
             'gl-block gl-overflow-hidden': hasMoreCommits,
-            'system-note-commit-list-v2': hasMoreCommits && !expanded,
+            'system-note-commit-list': hasMoreCommits && !expanded,
           }"
-          class="note-text-v2 md"
+          class="note-text md"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div

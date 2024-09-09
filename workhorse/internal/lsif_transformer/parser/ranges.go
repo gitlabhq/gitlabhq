@@ -32,7 +32,7 @@ type Range struct {
 type RawItem struct {
 	Property string `json:"property"`
 	RefID    ID     `json:"outV"`
-	RangeIds []ID   `json:"inVs"`
+	RangeIDs []ID   `json:"inVs"`
 	DocID    ID     `json:"document"`
 }
 
@@ -95,15 +95,15 @@ func (r *Ranges) Read(label string, line []byte) error {
 }
 
 // Serialize serializes the ranges to the provided writer
-func (r *Ranges) Serialize(f io.Writer, rangeIds []ID, docs map[ID]string) error {
+func (r *Ranges) Serialize(f io.Writer, rangeIDs []ID, docs map[ID]string) error {
 	encoder := json.NewEncoder(f)
-	n := len(rangeIds)
+	n := len(rangeIDs)
 
 	if _, err := f.Write([]byte("[")); err != nil {
 		return err
 	}
 
-	for i, rangeID := range rangeIds {
+	for i, rangeID := range rangeIDs {
 		entry, err := r.getRange(rangeID)
 		if err != nil {
 			continue
@@ -173,7 +173,7 @@ func (r *Ranges) addItem(line []byte) error {
 		return err
 	}
 
-	if len(rawItem.RangeIds) == 0 {
+	if len(rawItem.RangeIDs) == 0 {
 		return errors.New("no range IDs")
 	}
 
@@ -183,7 +183,7 @@ func (r *Ranges) addItem(line []byte) error {
 	}
 
 	var references []Item
-	for _, rangeID := range rawItem.RangeIds {
+	for _, rangeID := range rawItem.RangeIDs {
 		rg, err := r.getRange(rangeID)
 		if err != nil {
 			break

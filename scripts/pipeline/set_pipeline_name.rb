@@ -22,23 +22,10 @@ class SetPipelineName
   CODE                   = ['retrieve-tests-metadata'].freeze
   QA_GDK                 = ['e2e:test-on-gdk'].freeze
   REVIEW_APP             = ['start-review-app-pipeline'].freeze
-  # rubocop:disable Layout/LineLength -- Easier to read if longer
-  #  TODO:
-  #    * Please remove `trigger-omnibus-and-follow-up-e2e` and `follow-up-e2e:test-on-omnibus-ee` after 2025-04-08 in this project
-  #    * Please remove `follow-up:trigger-omnibus` after 2025-06-13 in this project
-  #
-  #  Timeline:
-  #     * `trigger-omnibus-and-follow-up-e2e` was renamed to `follow-up:trigger-omnibus` on 2024-04-08 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_105_104
-  #     * `follow-up-e2e:test-on-omnibus-ee` was renamed to `follow-up:e2e:test-on-omnibus-ee` on 2024-04-08 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_136_137
-  #     * `follow-up:trigger-omnibus` was moved in `follow-up:e2e:test-on-omnibus-ee` on 2024-06-13 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155701
-  # rubocop:enable Layout/LineLength
   QA                     = [
     'e2e:test-on-omnibus-ce',
     'e2e:test-on-omnibus-ee',
-    'follow-up-e2e:test-on-omnibus-ee',
-    'follow-up:e2e:test-on-omnibus-ee',
-    'follow-up:trigger-omnibus',
-    'trigger-omnibus-and-follow-up-e2e'
+    'follow-up:e2e:test-on-omnibus-ee'
   ].freeze
   # Ordered by expected duration, DESC
   PIPELINE_TYPES_ORDERED = %w[qa review-app qa-gdk code rspec-predictive docs].freeze

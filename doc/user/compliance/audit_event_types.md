@@ -449,6 +449,13 @@ Audit event types belong to the following product categories.
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | This event is triggered whenever the security policy project is updated for a project. | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
 
+### Self-hosted models
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
+| [`self_hosted_model_terms_accepted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165480) | Terms for usage of self-hosted models were accepted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
+
 ### Source code management
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

@@ -1,5 +1,8 @@
-// System notes on main activity feed
+/**
+ * System notes on main activity feed
+*/
 
+// Gradient only appears on specific system notes (merge, closed, etc)
 @mixin activity-line-gradient($color-1, $color-2) {
   content: '';
   display: block;
@@ -10,8 +13,9 @@
   background: linear-gradient(to bottom, $color-1, $color-2);
 }
 
-.system-note-v2 {
-  .note-text-v2 {
+.system-note {
+  .note-text {
+    // System notes render the text twice; this hides the secon done. Do not remove!
     p:first-child {
       display: none;
     }
@@ -21,7 +25,7 @@
     }
   }
 
-  .note-body-v2 {
+  .note-body {
     p {
       margin-left: $gl-spacing-scale-5;
     }
@@ -44,7 +48,7 @@
 
 
 // Vertical line gradient for specific system note icons
-.system-note-icon-v2 {
+.system-note-icon {
   &.icon-success{
     --bg-color: var(--green-100, #{$green-100});
   }
@@ -71,25 +75,27 @@
 }
 
 // Remove beginning/end of system note gradient activity line
-.system-note-v2 {
+.system-note {
   &:first-of-type {
-    .system-note-icon-v2::before {
+    .system-note-icon::before {
       @include activity-line-gradient(transparent, transparent);
     }
   }
 
   &:last-of-type {
-    .system-note-icon-v2::after {
+    .system-note-icon::after {
       @include activity-line-gradient(transparent, transparent);
     }
   }
 }
 
-.system-note-v2:first-child :is(.system-note-icon-v2::before, .system-note-icon-v2::after) {
+
+.system-note:first-child :is(.system-note-icon::before, .system-note-icon::after) {
   display: none;
 }
 
-.system-note-commit-list-v2 {
+// Scrim appears when there are many commits
+.system-note-commit-list {
   max-height: 70px;
 
   &::after {
@@ -103,9 +109,7 @@
   }
 }
 
-
 // System notes on diffs
-
 .system-note-variant-diff {
   .system-note-dot {
     top: 0;

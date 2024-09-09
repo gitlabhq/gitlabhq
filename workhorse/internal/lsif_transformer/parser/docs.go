@@ -33,7 +33,7 @@ type Document struct {
 // DocumentRange represents a range within a document
 type DocumentRange struct {
 	OutV     ID   `json:"outV"`
-	RangeIds []ID `json:"inVs"`
+	RangeIDs []ID `json:"inVs"`
 }
 
 // Metadata represents metadata in an LSIF dump
@@ -153,7 +153,7 @@ func (d *Docs) addDocRanges(line []byte) error {
 		return err
 	}
 
-	d.DocRanges[docRange.OutV] = append(d.DocRanges[docRange.OutV], docRange.RangeIds...)
+	d.DocRanges[docRange.OutV] = append(d.DocRanges[docRange.OutV], docRange.RangeIDs...)
 
 	return nil
 }

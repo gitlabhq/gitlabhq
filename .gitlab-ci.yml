@@ -228,7 +228,7 @@ variables:
   DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review.app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
-  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:gcloud-${GCLOUD_VERSION}-kubectl-${KUBECTL_VERSION}-helm-${HELM_VERSION}"
+  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:gcloud-${GCLOUD_VERSION}-kubectl-1.30-helm-${HELM_VERSION}"
   REVIEW_APPS_DOMAIN: "gitlab-review.app"
   REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
   REVIEW_APPS_GCP_REGION: "us-central1"

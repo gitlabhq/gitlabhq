@@ -30,6 +30,23 @@ After an agent is registered and installed, the agent connection to the cluster 
 This approach means you can manage and configure your agent instances from GitLab itself,
 and you can scale a single installation to multiple tenants.
 
+## Receptive agents
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
+to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:
+
+1. GitLab runs in a private network or behind a firewall, and is only accessible only through VPN.
+1. The Kubernetes cluster is hosted by a cloud provider, but is exposed to the internet or is reachable from the private network.
+
+When this feature is enabled, GitLab connects to the agent with the provided URL.
+You can use agents and receptive agents simultaneously.
+
 ## Supported Kubernetes versions for GitLab features
 
 GitLab supports the following Kubernetes versions. If you want to run

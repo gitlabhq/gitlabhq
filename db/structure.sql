@@ -30861,6 +30861,8 @@ CREATE UNIQUE INDEX pm_checkpoints_path_components ON pm_checkpoints USING btree
 
 CREATE INDEX releases_published_at_index ON releases USING btree (release_published_at);
 
+CREATE INDEX revised_idx_for_owasp_top_10_group_level_reports ON vulnerability_reads USING btree (owasp_top_10, state, report_type, resolved_on_default_branch, severity, traversal_ids, vulnerability_id) WHERE (archived = false);
+
 CREATE INDEX scan_finding_approval_mr_rule_index_id ON approval_merge_request_rules USING btree (id) WHERE (report_type = 4);
 
 CREATE INDEX scan_finding_approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id) WHERE (report_type = 4);

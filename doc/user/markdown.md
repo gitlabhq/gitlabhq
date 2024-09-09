@@ -1039,7 +1039,7 @@ $$
 
 When creating tables:
 
-- The first line contains the headers, separated by "pipes" (`|`).
+- The first line contains the headers, separated by pipe characters (`|`).
 - The second line separates the headers from the cells.
   - The cells can contain only empty spaces, hyphens, and (optionally) colons for horizontal alignment.
   - Each cell must contain at least one hyphen, but adding more hyphens to a cell does not change the cell's rendering.

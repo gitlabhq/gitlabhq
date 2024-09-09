@@ -2039,7 +2039,7 @@ DEPENDENCIES
   flipper-active_record (~> 0.26.2)
   flipper-active_support_cache_store (~> 0.26.2)
   fog-aliyun (~> 0.4)
-  fog-aws (~> 3.24)
+  fog-aws (~> 3.25)
   fog-core (= 2.1.0)
   fog-google (~> 1.24.1)
   fog-local (~> 0.8)

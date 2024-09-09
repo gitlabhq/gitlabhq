@@ -464,11 +464,12 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 
-You must enable the `Receptive Agents` feature in the application settings.
+[Receptive agents](../user/clusters/agent/index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
+that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
 ### List URL configurations for a receptive agent
 
@@ -491,15 +492,15 @@ Response:
 
 The response is a list of URL configurations with the following fields:
 
-| Attribute            | Type           | Description                                                                  |
-|----------------------|----------------|------------------------------------------------------------------------------|
-| `id`                 | integer        | ID of the URL configuration.                                                 |
-| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
-| `url`                | string         | URL for this URL configuration.                                              |
-| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
-| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
-| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+| Attribute            | Type           | Description                                                                 |
+|----------------------|----------------|-----------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                           |
+| `url`                | string         | URL for this URL configuration.                                             |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.         |
+| `client_cert`        | string         | (optional) Client certificate in PEM format if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) CA certificate in PEM format to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.       |
 
 Example request:
 
@@ -514,7 +515,7 @@ Example response:
   {
     "id": 1,
     "agent_id": 5,
-    "url": "grpcs://localhost:4242",
+    "url": "grpcs://agent.example.com:4242",
     "public_key": "..."
   }
 ]
@@ -545,15 +546,15 @@ Response:
 
 The response is a single URL configuration with the following fields:
 
-| Attribute            | Type           | Description                                                                  |
-|----------------------|----------------|------------------------------------------------------------------------------|
-| `id`                 | integer        | ID of the URL configuration.                                                 |
-| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
-| `url`                | string         | URL for this URL configuration.                                              |
-| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
-| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
-| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+| Attribute            | Type           | Description                                                                 |
+|----------------------|----------------|-----------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                           |
+| `url`                | string         | Agent URL for this URL configuration.                                             |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.         |
+| `client_cert`        | string         | (optional) Client certificate in PEM format if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) CA certificate in PEM format to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.       |
 
 Example request:
 
@@ -567,7 +568,7 @@ Example response:
 {
 "id": 1,
 "agent_id": 5,
-"url": "grpcs://localhost:4242",
+"url": "grpcs://agent.example.com:4242",
 "public_key": "..."
 }
 ```
@@ -589,46 +590,65 @@ POST /projects/:id/cluster_agents/:agent_id/url_configurations
 
 Supported attributes:
 
-| Attribute     | Type              | Required | Description                                                                                                                |
-|---------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user.      |
-| `agent_id`    | integer           | yes      | ID of the agent.                                                                                                           |
-| `url`         | string            | yes      | URL for this URL configuration.                                                                                            |
-| `client_cert` | string            | no       | Client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`.                |
-| `client_key`  | string            | no       | Client key in PEM format if mTLS authentication should be used. Must be provided with `client-cert`.                       |
-| `ca_cert`     | string            | no       | CA certificate to verify the agent endpoint.                                                                               |
-| `tls_host`    | string            | no       | TLS host name to verify the server name in agent endpoint.                                                                 |
+| Attribute     | Type              | Required | Description                                                                                                           |
+|---------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) maintained by the authenticated user. |
+| `agent_id`    | integer           | yes      | ID of the agent.                                                                                                      |
+| `url`         | string            | yes      | Agent URL for this URL configuration.                                                                                 |
+| `client_cert` | string            | no       | Client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`.           |
+| `client_key`  | string            | no       | Client key in PEM format if mTLS authentication should be used. Must be provided with `client_cert`.                  |
+| `ca_cert`     | string            | no       | CA certificate in PEM format to verify the agent endpoint.                                                            |
+| `tls_host`    | string            | no       | TLS host name to verify the server name in agent endpoint.                                                            |
 
 Response:
 
 The response is the new URL configuration with the following fields:
 
-| Attribute            | Type           | Description                                                                  |
-|----------------------|----------------|------------------------------------------------------------------------------|
-| `id`                 | integer        | ID of the URL configuration.                                                 |
-| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                            |
-| `url`                | string         | URL for this URL configuration.                                              |
-| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.          |
-| `client_cert`        | string         | (optional) Client certificate if mTLS authentication is used.                |
-| `ca_cert`            | string         | (optional) CA certificate to verify the agent endpoint.                      |
-| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.        |
+| Attribute            | Type           | Description                                                                 |
+|----------------------|----------------|-----------------------------------------------------------------------------|
+| `id`                 | integer        | ID of the URL configuration.                                                |
+| `agent_id`           | integer        | ID of the agent the URL configuration belongs to.                           |
+| `url`                | string         | Agent URL for this URL configuration.                                             |
+| `public_key`         | string         | (optional) Base64-encoded public key if JWT authentication is used.         |
+| `client_cert`        | string         | (optional) Client certificate in PEM format if mTLS authentication is used. |
+| `ca_cert`            | string         | (optional) CA certificate in PEM format to verify the agent endpoint.       |
+| `tls_host`           | string         | (optional) TLS host name to verify the server name in agent endpoint.       |
 
-Example request:
+Example request to create a URL configuration with a JWT token:
 
 ```shell
 curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
     -H "Content-Type:application/json" \
-    -X POST --data '{"url":"grpcs://localhost:4242"}'
+    -X POST --data '{"url":"grpcs://agent.example.com:4242"}'
 ```
 
-Example response:
+Example response for JWT authentication:
 
 ```json
 {
 "id": 1,
 "agent_id": 5,
-"url": "grpcs://localhost:4242",
+"url": "grpcs://agent.example.com:4242",
 "public_key": "..."
+}
+```
+
+Example request to create a URL configuration using mTLS with a client certificate and key from the files `client.pem` and `client-key.pem`:
+
+```shell
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects/20/cluster_agents/5/url_configurations" \
+    -H "Content-Type:application/json" \
+    -X POST --data '{"url":"grpcs://agent.example.com:4242", "client_cert":"'"$(awk -v ORS='\\n' '1' client.pem)"'", "client_key": "'"$(awk -v ORS='\\n' '1' client-key.pem)"'"}'
+```
+
+Example response for mTLS:
+
+```json
+{
+"id": 1,
+"agent_id": 5,
+"url": "grpcs://agent.example.com:4242",
+"client_cert": "..."
 }
 ```
 
