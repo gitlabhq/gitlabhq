@@ -28257,6 +28257,8 @@ CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON a
 
 CREATE INDEX index_on_issue_assignment_events_issue_id_action_created_at_id ON issue_assignment_events USING btree (issue_id, action, created_at, id);
 
+CREATE INDEX index_on_job_artifact_id_partition_id_verification_state ON ci_job_artifact_states USING btree (verification_state, job_artifact_id, partition_id);
+
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
 CREATE INDEX index_on_merge_request_diffs_head_commit_sha ON merge_request_diffs USING btree (head_commit_sha);
