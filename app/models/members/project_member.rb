@@ -112,7 +112,8 @@ class ProjectMember < Member
     self.member_namespace_id = project&.project_namespace_id
   end
 
-  def post_destroy_hook
+  override :post_destroy_member_hook
+  def post_destroy_member_hook
     if expired?
       event_service.expired_leave_project(self.project, self.user)
     else

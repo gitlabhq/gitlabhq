@@ -460,6 +460,15 @@
   }
 }
 
+@mixin vertical-line($top, $left) {
+  content: '';
+  position: absolute;
+  width: 2px;
+  left: $left;
+  top: $top;
+  height: calc(100% - #{$top});
+}
+
 /**
 * Style to apply to, for example, search results matches or text wrapped
 * around <mark> (allowed in Markdown).

@@ -27111,9 +27111,6 @@ msgstr ""
 msgid "Hide sidebar"
 msgstr ""
 
-msgid "Hide thread"
-msgstr ""
-
 msgid "Hide tooltips or popovers"
 msgstr ""
 
@@ -35815,6 +35812,9 @@ msgid "No changes between %{source} and %{target}"
 msgstr ""
 
 msgid "No child epics match applied filters"
+msgstr ""
+
+msgid "No child items are currently assigned."
 msgstr ""
 
 msgid "No comment templates found."
@@ -46151,6 +46151,9 @@ msgstr ""
 msgid "Roles and Permissions"
 msgstr ""
 
+msgid "Roll up totals may reflect child items you don’t have access to."
+msgstr ""
+
 msgid "Rollback"
 msgstr ""
 
@@ -51192,9 +51195,6 @@ msgstr ""
 msgid "Show the Open list"
 msgstr ""
 
-msgid "Show thread"
-msgstr ""
-
 msgid "Show whitespace changes"
 msgstr ""
 
@@ -52841,6 +52841,9 @@ msgid "Subscription"
 msgstr ""
 
 msgid "Subscription History"
+msgstr ""
+
+msgid "Subscription can be synchronized."
 msgstr ""
 
 msgid "Subscription deletion failed."
@@ -61501,6 +61504,9 @@ msgid "WorkItems|An error occurred while fetching children"
 msgstr ""
 
 msgid "WorkItems|Ancestors not available"
+msgstr ""
+
+msgid "WorkItem| %{workItemType}s closed"
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

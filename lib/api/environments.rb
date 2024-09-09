@@ -66,12 +66,21 @@ module API
         optional :external_url,   type: String,   desc: 'Place to link to for this environment'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
+        optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
       end
       route_setting :authentication, job_token_allowed: true
       post ':id/environments' do
         authorize! :create_environment, user_project
 
-        environment = user_project.environments.create(declared_params)
+        params = declared_params
+
+        if params[:cluster_agent_id]
+          agent = ::Clusters::AgentsFinder.new(user_project, current_user).execute.find_by_id(params[:cluster_agent_id])
+
+          bad_request!("cluster agent doesn't exist or cannot be associated with this environment") unless agent
+        end
+
+        environment = user_project.environments.create(params)
 
         if environment.persisted?
           present environment, with: Entities::Environment, current_user: current_user
@@ -95,6 +104,7 @@ module API
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
+        optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
       end
       route_setting :authentication, job_token_allowed: true
       put ':id/environments/:environment_id' do
@@ -102,7 +112,13 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        update_params = declared_params(include_missing: false).extract!(:external_url, :tier)
+        update_params = declared_params(include_missing: false).extract!(:external_url, :tier, :cluster_agent_id)
+
+        if update_params[:cluster_agent_id]
+          agent = ::Clusters::AgentsFinder.new(user_project, current_user).execute.find_by_id(params[:cluster_agent_id])
+
+          bad_request!("cluster agent doesn't exist or cannot be associated with this environment") unless agent
+        end
 
         environment.assign_attributes(update_params)
 

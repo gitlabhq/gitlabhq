@@ -117,6 +117,27 @@ RSpec.describe SystemHook, feature_category: :webhooks do
       ).once
     end
 
+    %i[project group].each do |parent|
+      it "#{parent} member access request hook" do
+        create(:"#{parent}_member", requested_at: Time.current.utc)
+
+        expect(WebMock).to have_requested(:post, system_hook.url).with(
+          body: /user_access_request_to_#{parent}/,
+          headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
+        ).once
+      end
+
+      it "#{parent} member access request revoked hook" do
+        member = create(:"#{parent}_member", requested_at: Time.current.utc)
+        member.destroy!
+
+        expect(WebMock).to have_requested(:post, system_hook.url).with(
+          body: /user_access_request_revoked_for_#{parent}/,
+          headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
+        ).once
+      end
+    end
+
     it 'group create hook' do
       create(:group)
 

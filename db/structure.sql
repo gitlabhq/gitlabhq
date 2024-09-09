@@ -18833,7 +18833,8 @@ CREATE TABLE todos (
     commit_id character varying,
     group_id bigint,
     resolved_by_action smallint,
-    note_id bigint
+    note_id bigint,
+    snoozed_until timestamp with time zone
 );
 
 CREATE SEQUENCE todos_id_seq
@@ -23255,7 +23256,7 @@ ALTER TABLE ci_runners
 ALTER TABLE ci_job_variables
     ADD CONSTRAINT check_567d1ccb72 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE ci_pipeline_variables
+ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ci_runners

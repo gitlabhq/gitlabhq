@@ -136,6 +136,33 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['external']).to be nil
       end
 
+      context 'when associating a cluster agent' do
+        let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+        let_it_be(:foreign_cluster_agent) { create(:cluster_agent) }
+
+        it 'creates a environment with associated cluster agent' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: cluster_agent.id }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['cluster_agent']).to be_present
+        end
+
+        it 'fails to create environment with a non existing cluster agent' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: non_existing_record_id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - cluster agent doesn't exist or cannot be associated with this environment")
+        end
+
+        it 'fails to create environment with a foreign cluster agent' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: foreign_cluster_agent.id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - cluster agent doesn't exist or cannot be associated with this environment")
+        end
+      end
+
       it 'returns 200 HTTP status when using JOB-TOKEN auth' do
         job = create(:ci_build, :running, project: project, user: user)
 
@@ -231,8 +258,9 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'PUT /projects/:id/environments/:environment_id' do
+    let_it_be(:url) { 'https://mepmep.whatever.ninja' }
+
     it 'returns a 200 if external_url is changed' do
-      url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
         params: { external_url: url }
 
@@ -257,6 +285,53 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         params: { tier: 'production', job_token: job.token }
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when associating a cluster agent' do
+      let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
+      let_it_be(:foreign_cluster_agent) { create(:cluster_agent) }
+
+      it 'updates an environment with associated cluster agent' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: cluster_agent.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).to be_present
+      end
+
+      it 'updates an environment to remove cluster agent' do
+        environment.update!(cluster_agent_id: cluster_agent.id)
+
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: nil }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).not_to be_present
+      end
+
+      it 'leaves cluster agent unchanged when not specified in update' do
+        environment.update!(cluster_agent_id: cluster_agent.id)
+
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { external_url: url }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).to be_present
+      end
+
+      it 'fails to create environment with a non existing cluster agent' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq("400 Bad request - cluster agent doesn't exist or cannot be associated with this environment")
+      end
+
+      it 'fails to create environment with a foreign cluster agent' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: foreign_cluster_agent.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq("400 Bad request - cluster agent doesn't exist or cannot be associated with this environment")
+      end
     end
 
     it "won't allow slug to be changed" do

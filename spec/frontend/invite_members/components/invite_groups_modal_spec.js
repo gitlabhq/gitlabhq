@@ -146,7 +146,6 @@ describe('InviteGroupsModal', () => {
       group_id: sharedGroup.id,
       group_access: propsData.defaultAccessLevel,
       expires_at: undefined,
-      member_role_id: null,
       format: 'json',
     };
 

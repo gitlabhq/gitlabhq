@@ -459,6 +459,7 @@ export const setNewWorkItemCache = async (
           hasChildren: false,
           hasParent: false,
           parent: null,
+          rolledUpCountsByType: [],
           children: {
             nodes: [],
             __typename: 'WorkItemConnection',

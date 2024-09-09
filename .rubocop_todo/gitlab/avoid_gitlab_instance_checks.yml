@@ -114,5 +114,4 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'lib/gitlab/usage/metrics/instrumentations/count_ci_internal_pipelines_metric.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_issues_created_manually_from_alerts_metric.rb'
     - 'lib/sidebars/admin/menus/admin_settings_menu.rb'
-    - 'lib/tasks/gitlab/db/migration_fix_15_11.rake'
     - 'spec/helpers/sidebars_helper_spec.rb'

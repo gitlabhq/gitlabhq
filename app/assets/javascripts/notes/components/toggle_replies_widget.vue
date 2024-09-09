@@ -66,10 +66,11 @@ export default {
     <gl-button
       ref="toggle"
       class="gl-my-2 gl-mr-3 !gl-p-0"
-      :class="{ '!gl-text-blue-600': !collapsed }"
+      :class="{ '!gl-text-link': !collapsed }"
       category="tertiary"
       :icon="buttonIcon"
       :aria-label="buttonLabel"
+      data-testid="replies-toggle"
       @click="toggle"
     />
     <template v-if="collapsed">
@@ -92,7 +93,12 @@ export default {
           </gl-avatar-link>
         </template>
       </gl-avatars-inline>
-      <gl-button class="gl-mr-2" variant="link" data-testid="expand-replies-button" @click="toggle">
+      <gl-button
+        class="gl-mr-2 gl-self-center"
+        variant="link"
+        data-testid="expand-replies-button"
+        @click="toggle"
+      >
         {{ n__('%d reply', '%d replies', replies.length) }}
       </gl-button>
       <gl-sprintf :message="$options.i18n.lastReplyBy">

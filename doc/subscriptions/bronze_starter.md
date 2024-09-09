@@ -114,7 +114,7 @@ Bronze-level subscribers:
   - LDAP synchronization:
     - Certain fields in the [group details API](../api/groups.md#details-of-a-group)
     - [syncing groups](../api/groups.md#sync-group-with-ldap)
-    - Listing, adding, and deleting [group links](../api/groups.md#list-ldap-group-links)
+    - Listing, adding, and deleting [group links](../api/group_ldap_links.md)
     - [Push rules](../api/group_push_rules.md)
     - [Audit events](../api/audit_events.md), including
       [group audit events](../api/groups.md#group-audit-events) and

@@ -4,10 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: :importers do
   let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:reassigned_by_user) { create(:user, email: "user1@gitlab.com") }
+  let_it_be(:reassign_to_user) { create(:user, email: "user2@gitlab.com") }
+
   let_it_be_with_reload(:source_user) do
     create(:import_source_user,
-      :with_reassign_to_user,
       :reassignment_in_progress,
+      reassigned_by_user: reassigned_by_user,
+      reassign_to_user: reassign_to_user,
       namespace: namespace
     )
   end
@@ -142,6 +146,73 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         expect { service.execute }.to change {
           Import::SourceUserPlaceholderReference.where(source_user: source_user).count
         }.to(0)
+      end
+
+      it_behaves_like 'a successful reassignment'
+    end
+
+    context 'when the destination user is an admin' do
+      before do
+        source_user.reassign_to_user.update!(admin: true)
+      end
+
+      it 'logs a warning' do
+        expect(::Import::Framework::Logger).to receive(:warn).with(
+          hash_including(
+            message: 'Reassigning contributions to user with admin privileges',
+            namespace: namespace.full_path,
+            source_hostname: source_user.source_hostname,
+            source_user_id: source_user.id,
+            reassign_to_user_id: source_user.reassign_to_user_id,
+            reassigned_by_user_id: source_user.reassigned_by_user_id
+          )
+        )
+
+        service.execute
+      end
+
+      it_behaves_like 'a successful reassignment'
+    end
+
+    context 'when the destination user has a different domain from the user who triggered the reassign' do
+      let_it_be(:reassigned_by_user_at_gitlab) { create(:user, email: "123@gitlab.com") }
+      let_it_be(:reassign_to_user_at_example) { create(:user, email: "xyz@example.com") }
+
+      let_it_be_with_reload(:source_user) do
+        create(:import_source_user,
+          :reassignment_in_progress,
+          reassigned_by_user: reassigned_by_user_at_gitlab,
+          reassign_to_user: reassign_to_user_at_example,
+          namespace: namespace
+        )
+      end
+
+      it 'logs a warning' do
+        message =
+          'Reassigning contributions to user with different email host from user who triggered the reassignment'
+
+        expect(::Import::Framework::Logger).to receive(:warn).with(
+          hash_including(
+            message: message,
+            namespace: namespace.full_path,
+            source_hostname: source_user.source_hostname,
+            source_user_id: source_user.id,
+            reassign_to_user_id: reassign_to_user_at_example.id,
+            reassigned_by_user_id: reassigned_by_user_at_gitlab.id
+          )
+        )
+
+        service.execute
+      end
+
+      it_behaves_like 'a successful reassignment'
+    end
+
+    context 'when the contributor user is not an admin and has the same domain as the importer user' do
+      it 'does not log a warning' do
+        expect(::Import::Framework::Logger).not_to receive(:warn)
+
+        service.execute
       end
 
       it_behaves_like 'a successful reassignment'

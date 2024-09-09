@@ -14,9 +14,6 @@ const actions = {
 describe('NoteHeader component', () => {
   let wrapper;
 
-  const findActionsWrapper = () => wrapper.findComponent({ ref: 'discussionActions' });
-  const findToggleThreadButton = () => wrapper.findByTestId('thread-toggle');
-  const findChevronIcon = () => wrapper.findComponent({ ref: 'chevronIcon' });
   const findActionText = () => wrapper.findComponent({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.findComponent({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.findComponent({ ref: 'noteTimestamp' });
@@ -60,65 +57,6 @@ describe('NoteHeader component', () => {
       propsData: { ...props },
     });
   };
-
-  it('does not render discussion actions when includeToggle is false', () => {
-    createComponent({
-      includeToggle: false,
-    });
-
-    expect(findActionsWrapper().exists()).toBe(false);
-  });
-
-  describe('when includes a toggle', () => {
-    it('renders discussion actions', () => {
-      createComponent({
-        includeToggle: true,
-      });
-
-      expect(findActionsWrapper().exists()).toBe(true);
-    });
-
-    it('emits toggleHandler event on button click', () => {
-      createComponent({
-        includeToggle: true,
-      });
-
-      wrapper.find('.note-action-button').trigger('click');
-      expect(wrapper.emitted('toggleHandler')).toBeDefined();
-      expect(wrapper.emitted('toggleHandler')).toHaveLength(1);
-    });
-
-    it('has chevron-up icon if expanded prop is true', () => {
-      createComponent({
-        includeToggle: true,
-        expanded: true,
-      });
-
-      expect(findChevronIcon().props('name')).toBe('chevron-up');
-    });
-
-    it('has chevron-down icon if expanded prop is false', () => {
-      createComponent({
-        includeToggle: true,
-        expanded: false,
-      });
-
-      expect(findChevronIcon().props('name')).toBe('chevron-down');
-    });
-
-    it.each`
-      text                          | expanded
-      ${NoteHeader.i18n.showThread} | ${false}
-      ${NoteHeader.i18n.hideThread} | ${true}
-    `('toggle button has text $text is expanded is $expanded', ({ text, expanded }) => {
-      createComponent({
-        includeToggle: true,
-        expanded,
-      });
-
-      expect(findToggleThreadButton().text()).toBe(text);
-    });
-  });
 
   it('renders an author link if author is passed to props', () => {
     createComponent({ author });

@@ -700,6 +700,24 @@ RSpec.describe Todo, feature_category: :team_planning do
     end
   end
 
+  describe 'snoozed and not_snoozed scopes' do
+    let_it_be(:snoozed_todo) { create(:todo, snoozed_until: 1.day.from_now) }
+    let_it_be(:unsnoozed_todo) { create(:todo, snoozed_until: 1.day.ago) }
+    let_it_be(:never_snoozed_todo) { create(:todo, snoozed_until: nil) }
+
+    describe '.snoozed' do
+      it 'only returns todos that are currently snoozed' do
+        expect(described_class.snoozed).to contain_exactly(snoozed_todo)
+      end
+    end
+
+    describe '.not_snoozed' do
+      it 'returns todos that are not snoozed anymore or never were snoozed' do
+        expect(described_class.not_snoozed).to contain_exactly(unsnoozed_todo, never_snoozed_todo)
+      end
+    end
+  end
+
   describe '#access_request_url' do
     shared_examples 'returns member access requests tab url/path' do
       it 'returns group access requests tab url/path if target is group' do

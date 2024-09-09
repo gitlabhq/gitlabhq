@@ -23,6 +23,17 @@ fragment WorkItemHierarchy on WorkItem {
     ... on WorkItemWidgetHierarchy {
       type
       hasChildren
+      rolledUpCountsByType {
+        countsByState {
+          all
+          closed
+        }
+        workItemType {
+          id
+          name
+          iconName
+        }
+      }
       parent {
         id
       }
@@ -55,6 +66,17 @@ fragment WorkItemHierarchy on WorkItem {
             ... on WorkItemWidgetHierarchy {
               type
               hasChildren
+              rolledUpCountsByType {
+                countsByState {
+                  all
+                  closed
+                }
+                workItemType {
+                  id
+                  name
+                  iconName
+                }
+              }
             }
             ...WorkItemMetadataWidgets
           }

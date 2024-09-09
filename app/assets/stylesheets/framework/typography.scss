@@ -861,3 +861,31 @@ wbr {
 :root {
   --code-editor-font: #{$monospace-font};
 }
+
+/**
+ * FOOTNOTES
+ */
+ section.footnotes {
+  position: relative;
+  padding-top: $gl-spacing-scale-5;
+  margin-top: $gl-spacing-scale-7;
+  font-size: $gl-font-size-12;
+
+  &::before {
+    content: '';
+    width: 16rem;
+    max-width: 100%;
+    border-top: 1px solid $border-color;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  ol > li {
+    margin-inline-start: $gl-spacing-scale-6;
+
+     p {
+      margin-block-end: 0;
+     }
+  }
+}

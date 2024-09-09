@@ -19,6 +19,7 @@ import {
   closedWorkItemTask,
   otherNamespaceChild,
   workItemObjectiveMetadataWidgets,
+  workItemObjectiveWithoutChild,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -133,7 +134,7 @@ describe('WorkItemLinkChildContents', () => {
   describe('item metadata', () => {
     it('renders item metadata component when item has metadata present', () => {
       createComponent({
-        childItem: workItemObjectiveWithChild,
+        childItem: workItemObjectiveWithoutChild,
         workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
       });
 

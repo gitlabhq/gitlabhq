@@ -1,10 +1,10 @@
 <script>
-import { GlIcon, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ACTIVITY, TYPE_COMMENT } from '~/import/constants';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -12,7 +12,6 @@ export default {
   components: {
     ImportedBadge,
     TimeAgoTooltip,
-    GlIcon,
     GlBadge,
     GlLoadingIcon,
   },
@@ -44,16 +43,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    includeToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    expanded: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     showSpinner: {
       type: Boolean,
@@ -98,9 +87,6 @@ export default {
     authorHref() {
       return this.author.path || this.author.webUrl;
     },
-    toggleChevronIconName() {
-      return this.expanded ? 'chevron-up' : 'chevron-down';
-    },
     noteTimestampLink() {
       if (this.noteUrl) return this.noteUrl;
 
@@ -144,9 +130,6 @@ export default {
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
-    handleToggle() {
-      this.$emit('toggleHandler');
-    },
     updateTargetNoteHash() {
       if (this.$store) {
         this.setTargetNoteHash(this.noteTimestampLink);
@@ -161,31 +144,11 @@ export default {
       this.isUsernameLinkHovered = false;
     },
   },
-  i18n: {
-    showThread: __('Show thread'),
-    hideThread: __('Hide thread'),
-  },
 };
 </script>
 
 <template>
   <div class="note-header-info">
-    <div v-if="includeToggle" ref="discussionActions" class="discussion-actions">
-      <button
-        class="note-action-button discussion-toggle-button js-vue-toggle-button"
-        type="button"
-        data-testid="thread-toggle"
-        @click="handleToggle"
-      >
-        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" />
-        <template v-if="expanded">
-          {{ $options.i18n.hideThread }}
-        </template>
-        <template v-else>
-          {{ $options.i18n.showThread }}
-        </template>
-      </button>
-    </div>
     <template v-if="hasAuthor">
       <span
         v-if="emailParticipant"

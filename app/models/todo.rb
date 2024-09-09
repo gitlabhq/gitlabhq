@@ -68,6 +68,8 @@ class Todo < ApplicationRecord
   validates :group, presence: true, unless: :project_id
 
   scope :pending, -> { with_state(:pending) }
+  scope :snoozed, -> { where(arel_table[:snoozed_until].gt(Time.current)) }
+  scope :not_snoozed, -> { where(arel_table[:snoozed_until].lteq(Time.current)).or(where(snoozed_until: nil)) }
   scope :done, -> { with_state(:done) }
   scope :for_action, ->(action) { where(action: action) }
   scope :for_author, ->(author) { where(author: author) }

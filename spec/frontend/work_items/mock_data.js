@@ -1635,6 +1635,12 @@ export const workItemObjectiveMetadataWidgets = {
     __typename: 'WorkItemWidgetLinkedItems',
     ...mockLinkedItems,
   },
+  HIERARCHY: {
+    type: 'HIERARCHY',
+    hasChildren: false,
+    rolledUpCountsByType: [],
+    __typename: 'WorkItemWidgetHierarchy',
+  },
 };
 
 export const confidentialWorkItemTask = {
@@ -1717,6 +1723,7 @@ export const workItemTask = {
     {
       type: 'HIERARCHY',
       hasChildren: false,
+      rolledUpCountsByType: [],
       __typename: 'WorkItemWidgetHierarchy',
     },
   ],
@@ -1835,6 +1842,7 @@ export const childrenWorkItemsObjectives = [
       {
         type: 'HIERARCHY',
         hasChildren: false,
+        rolledUpCountsByType: [],
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -1861,6 +1869,7 @@ export const childrenWorkItemsObjectives = [
       {
         type: 'HIERARCHY',
         hasChildren: false,
+        rolledUpCountsByType: [],
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -1917,6 +1926,7 @@ export const workItemHierarchyResponse = {
             type: 'HIERARCHY',
             parent: null,
             hasChildren: true,
+            rolledUpCountsByType: [],
             children: {
               nodes: childrenWorkItems,
               __typename: 'WorkItemConnection',
@@ -1971,6 +1981,62 @@ export const workItemObjectiveWithChild = {
       type: 'HIERARCHY',
       hasChildren: true,
       parent: null,
+      rolledUpCountsByType: [],
+      children: {
+        nodes: [],
+      },
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+    workItemObjectiveMetadataWidgets.MILESTONE,
+    workItemObjectiveMetadataWidgets.ASSIGNEES,
+    workItemObjectiveMetadataWidgets.LABELS,
+    workItemObjectiveMetadataWidgets.LINKED_ITEMS,
+  ],
+  __typename: 'WorkItem',
+};
+
+export const workItemObjectiveWithoutChild = {
+  id: 'gid://gitlab/WorkItem/12',
+  iid: '12',
+  archived: false,
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  namespace: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+    name: 'Project name',
+  },
+  userPermissions: {
+    deleteWorkItem: true,
+    updateWorkItem: true,
+    setWorkItemMetadata: true,
+    adminParentLink: true,
+    createNote: true,
+    adminWorkItemLink: true,
+    __typename: 'WorkItemPermissions',
+  },
+  author: {
+    ...mockAssignees[0],
+  },
+  title: 'Objective',
+  description: 'Objective description',
+  state: 'OPEN',
+  confidential: false,
+  reference: 'test-project-path#12',
+  createdAt: '2022-08-03T12:41:54Z',
+  updatedAt: null,
+  closedAt: null,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: false,
+      parent: null,
+      rolledUpCountsByType: [],
       children: {
         nodes: [],
       },
@@ -2024,6 +2090,7 @@ export const workItemHierarchyTreeEmptyResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          rolledUpCountsByType: [],
           children: {
             pageInfo: {
               hasNextPage: false,
@@ -2071,6 +2138,7 @@ export const mockHierarchyChildren = [
       {
         type: 'HIERARCHY',
         hasChildren: true,
+        rolledUpCountsByType: [],
         __typename: 'WorkItemWidgetHierarchy',
       },
     ],
@@ -2078,10 +2146,56 @@ export const mockHierarchyChildren = [
   },
 ];
 
+export const mockRolledUpCountsByType = [
+  {
+    countsByState: {
+      all: 3,
+      closed: 0,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/8',
+      name: 'Epic',
+      iconName: 'issue-type-epic',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+  {
+    countsByState: {
+      all: 5,
+      closed: 2,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Issue',
+      iconName: 'issue-type-issue',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+  {
+    countsByState: {
+      all: 2,
+      closed: 1,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+];
+
 export const mockHierarchyWidget = {
   type: 'HIERARCHY',
   parent: null,
   hasChildren: true,
+  rolledUpCountsByType: mockRolledUpCountsByType,
   children: {
     pageInfo: {
       hasNextPage: false,
@@ -2228,6 +2342,7 @@ export const changeWorkItemParentMutationResponse = {
             hasParent: false,
             parent: null,
             hasChildren: false,
+            rolledUpCountsByType: [],
             children: {
               nodes: [],
             },

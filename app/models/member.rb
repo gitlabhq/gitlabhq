@@ -312,13 +312,15 @@ class Member < ApplicationRecord
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
-  after_create :post_create_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_create :post_create_member_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_create :post_create_access_request_hook, if: [:request?, :hook_prerequisites_met?]
   after_create :update_two_factor_requirement, unless: :invite?
   after_create :create_organization_user_record
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_update :create_organization_user_record, if: :saved_change_to_user_id? # only occurs on invite acceptance
   after_destroy :destroy_notification_setting
-  after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_destroy :post_destroy_member_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_destroy :post_destroy_access_request_hook, if: [:request?, :hook_prerequisites_met?]
   after_destroy :update_two_factor_requirement, unless: :invite?
   after_save :log_invitation_token_cleanup
 
@@ -618,7 +620,13 @@ class Member < ApplicationRecord
     todo_service.create_member_access_request_todos(self)
   end
 
-  def post_create_hook
+  def post_create_access_request_hook
+    return if Feature.disabled?(:group_access_request_webhooks, source)
+
+    system_hook_service.execute_hooks_for(self, :request)
+  end
+
+  def post_create_member_hook
     # The creator of a personal project gets added as a `ProjectMember`
     # with `OWNER` access during creation of a personal project,
     # but we do not want to trigger notifications to the same person who created the personal project.
@@ -642,8 +650,14 @@ class Member < ApplicationRecord
     system_hook_service.execute_hooks_for(self, :update)
   end
 
-  def post_destroy_hook
+  def post_destroy_member_hook
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def post_destroy_access_request_hook
+    return if Feature.disabled?(:group_access_request_webhooks, source)
+
+    system_hook_service.execute_hooks_for(self, :revoke)
   end
 
   # Refreshes authorizations of the current member.
@@ -667,7 +681,7 @@ class Member < ApplicationRecord
 
     update_two_factor_requirement
 
-    post_create_hook
+    post_create_member_hook
   end
 
   def after_decline_invite
@@ -675,7 +689,7 @@ class Member < ApplicationRecord
   end
 
   def after_accept_request
-    post_create_hook
+    post_create_member_hook
   end
 
   # rubocop: disable CodeReuse/ServiceClass

@@ -23,7 +23,6 @@ export const BASE_ROLES = [
     value: 'MINIMAL_ACCESS',
     text: ACCESS_LEVEL_MINIMAL_ACCESS,
     accessLevel: ACCESS_LEVEL_MINIMAL_ACCESS_INTEGER,
-    memberRoleId: null,
     occupiesSeat: false,
     description: s__(
       'MemberRole|The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions.',
@@ -33,7 +32,6 @@ export const BASE_ROLES = [
     value: 'GUEST',
     text: ACCESS_LEVEL_GUEST,
     accessLevel: ACCESS_LEVEL_GUEST_INTEGER,
-    memberRoleId: null,
     occupiesSeat: false,
     description: s__(
       'MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.',
@@ -43,7 +41,6 @@ export const BASE_ROLES = [
     value: 'REPORTER',
     text: ACCESS_LEVEL_REPORTER,
     accessLevel: ACCESS_LEVEL_REPORTER_INTEGER,
-    memberRoleId: null,
     occupiesSeat: true,
     description: s__(
       'MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.',
@@ -53,7 +50,6 @@ export const BASE_ROLES = [
     value: 'DEVELOPER',
     text: ACCESS_LEVEL_DEVELOPER,
     accessLevel: ACCESS_LEVEL_DEVELOPER_INTEGER,
-    memberRoleId: null,
     occupiesSeat: true,
     description: s__(
       'MemberRole|The Developer role strikes a balance between giving users the necessary access to contribute code while restricting sensitive administrative actions.',
@@ -63,7 +59,6 @@ export const BASE_ROLES = [
     value: 'MAINTAINER',
     text: ACCESS_LEVEL_MAINTAINER,
     accessLevel: ACCESS_LEVEL_MAINTAINER_INTEGER,
-    memberRoleId: null,
     occupiesSeat: true,
     description: s__(
       'MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.',
@@ -73,7 +68,6 @@ export const BASE_ROLES = [
     value: 'OWNER',
     text: ACCESS_LEVEL_OWNER,
     accessLevel: ACCESS_LEVEL_OWNER_INTEGER,
-    memberRoleId: null,
     occupiesSeat: true,
     description: s__(
       'MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.',

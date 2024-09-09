@@ -40,7 +40,6 @@ export const user6 = {
 export const postData = {
   user_id: `${user1.id},${user2.id}`,
   access_level: propsData.defaultAccessLevel,
-  member_role_id: null,
   expires_at: undefined,
   invite_source: inviteSource,
   format: 'json',
@@ -48,7 +47,6 @@ export const postData = {
 
 export const emailPostData = {
   access_level: propsData.defaultAccessLevel,
-  member_role_id: null,
   expires_at: undefined,
   email: `${user3.name}`,
   invite_source: inviteSource,
@@ -57,7 +55,6 @@ export const emailPostData = {
 
 export const singleUserPostData = {
   access_level: propsData.defaultAccessLevel,
-  member_role_id: null,
   expires_at: undefined,
   user_id: `${user1.id}`,
   email: `${user3.name}`,

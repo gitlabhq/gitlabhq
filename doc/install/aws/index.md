@@ -325,7 +325,7 @@ The steps for doing this vary depending on which registrar you use and is beyond
 ## PostgreSQL with RDS
 
 For our database server we use Amazon RDS for PostgreSQL which offers Multi AZ
-for redundancy ([Aurora is **not** supported](https://gitlab.com/gitlab-com/partners/alliance/aws/public-tracker/-/issues/12)). First we create a security group and subnet group, then we
+for redundancy ([Aurora is **not** supported](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10)). First we create a security group and subnet group, then we
 create the actual RDS instance.
 
 ### RDS Security Group

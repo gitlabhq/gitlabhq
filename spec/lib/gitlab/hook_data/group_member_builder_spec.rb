@@ -58,6 +58,22 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
 
         it_behaves_like 'includes the required attributes'
       end
+
+      context 'on request' do
+        let(:event) { :request }
+
+        it { expect(event_name).to eq('user_access_request_to_group') }
+
+        it_behaves_like 'includes the required attributes'
+      end
+
+      context 'on deny' do
+        let(:event) { :revoke }
+
+        it { expect(event_name).to eq('user_access_request_revoked_for_group') }
+
+        it_behaves_like 'includes the required attributes'
+      end
     end
   end
 end

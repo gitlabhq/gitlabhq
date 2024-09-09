@@ -37,6 +37,8 @@ describe('toggle replies widget for notes', () => {
 
     it('renders collapsed state elements', () => {
       expect(findExpandToggleButton().exists()).toBe(true);
+      expect(findExpandToggleButton().props('icon')).toBe('chevron-right');
+      expect(findExpandToggleButton().attributes('aria-label')).toBe('Expand replies');
       expect(findAvatars().props('avatars')).toHaveLength(3);
       expect(findRepliesButton().exists()).toBe(true);
       expect(wrapper.text()).toContain('Last reply by');
@@ -64,6 +66,8 @@ describe('toggle replies widget for notes', () => {
 
     it('renders expanded state elements', () => {
       expect(findCollapseToggleButton().exists()).toBe(true);
+      expect(findCollapseToggleButton().props('icon')).toBe('chevron-down');
+      expect(findCollapseToggleButton().attributes('aria-label')).toBe('Collapse replies');
     });
 
     it('emits "toggle" event when collapse toggle button is clicked', () => {

@@ -10,15 +10,6 @@ $icon-size-diff: $avatar-icon-size - $system-note-icon-size;
 $system-note-icon-m-top: $avatar-m-top + $icon-size-diff - 1.3rem;
 $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
-@mixin vertical-line($top, $left) {
-  content: '';
-  position: absolute;
-  width: 2px;
-  left: $left;
-  top: $top;
-  height: calc(100% - #{$top});
-}
-
 @mixin outline-comment() {
   margin: $gl-padding $gl-padding 0;
   @apply gl-border gl-rounded-base;
@@ -516,6 +507,8 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
 
     &.expanded {
+      // Render border invisible
+      border-bottom: 1px solid var(--gl-background-color-subtle);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
@@ -598,9 +591,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-
-
-
 .user-activity-content {
   position: relative;
 
@@ -618,16 +608,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.user-profile-activity {
-  position: relative;
-
-  &:not(:last-child)::before {
-    @include vertical-line(16px, 10px);
-    height: 100%;
-    @apply gl-bg-subtle;
-  }
-}
-
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-foss/issues/53918#note_117038785
 .unstyled-comments {
@@ -637,20 +617,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   .discussion-form-container {
     padding: $gl-padding;
-  }
-}
-
-.project-activity-item:not(:last-of-type) {
-  position: relative;
-
-  &::before {
-    // Avatar width is 32px, connecting line width is 2px.
-    // To center the line relatively to the avatar it should be positioned 15px from the left:
-    // (32px (avatar size) - 2px (line thickness)) / 2 = 15px
-    // stylelint-disable length-zero-no-unit
-    @include vertical-line(0px, 15px);
-    top: auto; // Override top to auto align
-    @apply gl-bg-subtle;
   }
 }
 

@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { findWidget } from '~/issues/list/utils';
 import {
   FORM_TYPES,
   WORK_ITEMS_TREE_TEXT,
@@ -14,6 +15,7 @@ import {
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  WIDGET_TYPE_HIERARCHY,
 } from '../../constants';
 import {
   findHierarchyWidgets,
@@ -139,6 +141,12 @@ export default {
     },
   },
   computed: {
+    workItemHierarchy() {
+      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+    },
+    rolledUpCountsByType() {
+      return this.workItemHierarchy?.rolledUpCountsByType || [];
+    },
     childrenIds() {
       return this.children.map((c) => c.id);
     },
@@ -276,6 +284,7 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
+        :rolled-up-counts-by-type="rolledUpCountsByType"
         :full-path="fullPath"
       />
     </template>

@@ -192,12 +192,13 @@ It returns `201` if the environment was successfully created, `400` for wrong pa
 POST /projects/:id/environments
 ```
 
-| Attribute      | Type           | Required | Description                                                                                                         |
-|----------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project.                                |
-| `name`         | string         | yes      | The name of the environment.                                                                                        |
-| `external_url` | string         | no       | Place to link to for this environment.                                                                              |
-| `tier`         | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
+| Attribute          | Type           | Required | Description                                                                                                         |
+|--------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-path-encoding) of the project.                                |
+| `name`             | string         | yes      | The name of the environment.                                                                                        |
+| `external_url`     | string         | no       | Place to link to for this environment.                                                                              |
+| `tier`             | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
+| `cluster_agent_id` | integer        | no       | The cluster agent to associate with this environment.                                                               |
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -231,12 +232,13 @@ It returns `200` if the environment was successfully updated. In case of an erro
 PUT /projects/:id/environments/:environments_id
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                         |
-|------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                |
-| `environment_id` | integer        | yes      | The ID of the environment.                                                                                          |
-| `external_url`   | string         | no       | The new `external_url`.                                                                                             |
-| `tier`           | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
+| Attribute          | Type            | Required | Description                                                                                                         |
+|--------------------|-----------------|----------|---------------------------------------------------------------------------------------------------------------------|
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                |
+| `environment_id`   | integer         | yes      | The ID of the environment.                                                                                          |
+| `external_url`     | string          | no       | The new `external_url`.                                                                                             |
+| `tier`             | string          | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
+| `cluster_agent_id` | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it.                                        |
 
 ```shell
 curl --request PUT --data "external_url=https://staging.gitlab.example.com" \

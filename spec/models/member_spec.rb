@@ -1559,6 +1559,18 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       create_member
     end
 
+    context 'when member is a requested member' do
+      let(:member) { create(:group_member, source: source, requested_at: Time.current.utc) }
+
+      it 'calls the system hook service' do
+        expect_next_instance_of(SystemHooksService) do |instance|
+          expect(instance).to receive(:execute_hooks_for).with(an_instance_of(GroupMember), :request)
+        end
+
+        create_member
+      end
+    end
+
     context 'when source is a group' do
       it_behaves_like 'invokes a notification'
 

@@ -54,6 +54,10 @@ module Gitlab
                         'user_remove_from_group'
                       when :update
                         'user_update_for_group'
+                      when :request
+                        'user_access_request_to_group'
+                      when :revoke
+                        'user_access_request_revoked_for_group'
                       end
 
         { event_name: event_name }
