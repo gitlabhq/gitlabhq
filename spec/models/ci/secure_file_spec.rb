@@ -200,7 +200,8 @@ RSpec.describe Ci::SecureFile, factory_default: :keep, feature_category: :mobile
 
     it 'logs an error when something goes wrong with the file parsing' do
       corrupt_file = create(:ci_secure_file, name: 'file1.cer', file: CarrierWaveStringFile.new('11111111'))
-      message = 'Validation failed: Metadata must be a valid json schema - PEM_read_bio_X509: no start line.'
+      message = 'Validation failed: Metadata must be a valid json schema ' \
+        '- PEM_read_bio_X509: no start line (Expecting: CERTIFICATE).'
       expect(Gitlab::AppLogger).to receive(:error).with("Secure File Parser Failure (#{corrupt_file.id}): #{message}")
       corrupt_file.update_metadata!
     end
