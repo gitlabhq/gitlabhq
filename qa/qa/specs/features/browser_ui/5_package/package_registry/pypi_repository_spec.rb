@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
+    type: :waiting_on,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/469067'
+  } do
     describe 'PyPI Repository', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
