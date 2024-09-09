@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::TopicsFinder do
   let_it_be(:user) { create(:user) }
 
-  let_it_be(:topic1) { create(:topic, name: 'topicB') }
-  let_it_be(:topic2) { create(:topic, name: 'topicC') }
-  let_it_be(:topic3) { create(:topic, name: 'topicA') }
+  let_it_be(:topic1) { create(:topic, name: 'topicB', organization: user.namespace.organization) }
+  let_it_be(:topic2) { create(:topic, name: 'topicC', organization: user.namespace.organization) }
+  let_it_be(:topic3) { create(:topic, name: 'topicA', organization: user.namespace.organization) }
 
   let_it_be(:project1) { create(:project, :public, namespace: user.namespace, topic_list: 'topicC, topicA, topicB') }
   let_it_be(:project2) { create(:project, :public, namespace: user.namespace, topic_list: 'topicC, topicA') }

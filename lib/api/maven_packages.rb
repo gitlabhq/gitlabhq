@@ -157,14 +157,18 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+        action = if ::Feature.enabled?(:allow_anyone_to_pull_public_maven_packages_on_group_level, find_group(params[:id]))
+                   :read_package_within_public_registries
+                 else
+                   :read_group
+                 end
+
         # return a similar failure to group = find_group(params[:id])
-        group = find_authorized_group!
+        group = find_authorized_group!(action: action)
 
         if Feature.disabled?(:maven_central_request_forwarding, group&.root_ancestor)
           not_found!('Group') unless path_exists?(params[:path])
         end
-
-        not_found!('Group') unless can?(current_user, :read_group, group)
 
         file_name, format = extract_format(params[:file_name])
         package = fetch_package(file_name: file_name, group: group)

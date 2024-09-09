@@ -8451,7 +8451,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'assigns slug value for new topics' do
-        topic = create(:topic, name: 'old topic', title: 'old topic', slug: nil)
+        topic = create(:topic, name: 'old topic', title: 'old topic', slug: nil, organization: project.organization)
         project.topic_list = topic.name
         project.save!
 
@@ -8470,9 +8470,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'public topics counter' do
-      let_it_be(:topic_1) { create(:topic, name: 't1') }
-      let_it_be(:topic_2) { create(:topic, name: 't2') }
-      let_it_be(:topic_3) { create(:topic, name: 't3') }
+      let_it_be(:topic_1) { create(:topic, name: 't1', organization: project.organization) }
+      let_it_be(:topic_2) { create(:topic, name: 't2', organization: project.organization) }
+      let_it_be(:topic_3) { create(:topic, name: 't3', organization: project.organization) }
 
       let(:private) { Gitlab::VisibilityLevel::PRIVATE }
       let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
@@ -8522,6 +8522,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             .to change { topic_1.reload.non_private_projects_count }.by(expected_count_changes[0])
             .and change { topic_2.reload.non_private_projects_count }.by(expected_count_changes[1])
             .and change { topic_3.reload.non_private_projects_count }.by(expected_count_changes[2])
+        end
+      end
+    end
+
+    context 'having the same topics for different organizations' do
+      let_it_be(:namespace_one) { create(:namespace, organization: create(:organization)) }
+      let_it_be(:namespace_two) { create(:namespace, organization: create(:organization)) }
+
+      let_it_be(:project_one) do
+        create(:project, name: 'project-1', topic_list: 'topic-1, topic-2', namespace: namespace_one)
+      end
+
+      let_it_be(:project_two) do
+        create(:project, name: 'project-2', topic_list: 'topic-1, topic-2', namespace: namespace_two)
+      end
+
+      let_it_be(:project_three) do
+        create(:project, name: 'project-3', topic_list: 'topic-1, topic-2', namespace: namespace_two)
+      end
+
+      let(:project_list) { [project_one, project_two, project_three] }
+
+      it 'associate topics to the same organization as the project' do
+        project_list.each do |project_from_list|
+          project_from_list.topics.each do |topic|
+            expect(topic.organization_id).to eq(project_from_list.organization_id)
+          end
         end
       end
     end

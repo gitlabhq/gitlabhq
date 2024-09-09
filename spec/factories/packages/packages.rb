@@ -139,20 +139,6 @@ FactoryBot.define do
       end
     end
 
-    # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-    factory :generic_package_legacy do
-      sequence(:name) { |n| "generic-package-#{n}" }
-      version { '1.0.0' }
-      package_type { :generic }
-
-      trait(:with_zip_file) do
-        after :create do |package|
-          create :package_file, :generic_zip, package: package
-        end
-      end
-    end
-
     factory :ml_model_package, class: 'Packages::MlModel::Package' do
       sequence(:name) { |n| "mlmodel-package-#{n}" }
       sequence(:version) { |n| "1.0.#{n}" }

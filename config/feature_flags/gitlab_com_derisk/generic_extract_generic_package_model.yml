@@ -1,9 +1,0 @@
----
-name: generic_extract_generic_package_model
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435829
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163477
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-milestone: '17.4'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

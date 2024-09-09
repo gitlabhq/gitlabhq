@@ -26,6 +26,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :snippets }
+    it { is_expected.to have_many :topics }
   end
 
   describe 'validations' do

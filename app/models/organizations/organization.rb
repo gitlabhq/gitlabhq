@@ -24,6 +24,7 @@ module Organizations
     has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
     has_many :projects
     has_many :snippets
+    has_many :topics, class_name: "Projects::Topic"
 
     has_one :settings, class_name: "OrganizationSetting"
     has_one :organization_detail, inverse_of: :organization, autosave: true

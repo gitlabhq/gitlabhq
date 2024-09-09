@@ -111,6 +111,31 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
         it { expect(subject.last).to eq(package2) }
       end
     end
+
+    context 'with anonymous access to public registry in private group/project' do
+      let(:project_or_group) { group }
+      let(:user) { nil }
+
+      before_all do
+        [group, project].each do |entity|
+          entity.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+        end
+        project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
+        stub_feature_flags(maven_remove_permissions_check_from_finder: false)
+      end
+
+      it_behaves_like 'handling valid and invalid paths'
+
+      context 'when the FF allow_anyone_to_pull_public_maven_packages_on_group_level disabled' do
+        let(:param_path) { package.maven_metadatum.path }
+
+        before do
+          stub_feature_flags(allow_anyone_to_pull_public_maven_packages_on_group_level: false)
+        end
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 
   it 'uses CTE in the query' do

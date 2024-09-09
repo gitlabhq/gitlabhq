@@ -8,4 +8,5 @@ description: Stores topics that can be assigned to projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67574
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463254
+sharding_key:
+  organization_id: organizations

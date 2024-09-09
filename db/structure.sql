@@ -18872,6 +18872,7 @@ CREATE TABLE topics (
     non_private_projects_count bigint DEFAULT 0 NOT NULL,
     title text,
     slug text,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_0eda72aeb0 CHECK ((char_length(slug) <= 255)),
     CONSTRAINT check_223b50f9be CHECK ((char_length(title) <= 255)),
     CONSTRAINT check_26753fb43a CHECK ((char_length(avatar) <= 255)),
@@ -30279,11 +30280,15 @@ CREATE INDEX index_topics_non_private_projects_count ON topics USING btree (non_
 
 CREATE INDEX index_topics_on_lower_name ON topics USING btree (lower(name));
 
-CREATE UNIQUE INDEX index_topics_on_name ON topics USING btree (name);
+CREATE INDEX index_topics_on_name ON topics USING btree (name);
 
 CREATE INDEX index_topics_on_name_trigram ON topics USING gin (name gin_trgm_ops);
 
-CREATE UNIQUE INDEX index_topics_on_slug ON topics USING btree (slug) WHERE (slug IS NOT NULL);
+CREATE UNIQUE INDEX index_topics_on_organization_id_and_name ON topics USING btree (organization_id, name);
+
+CREATE UNIQUE INDEX index_topics_on_organization_id_slug_and ON topics USING btree (organization_id, slug) WHERE (slug IS NOT NULL);
+
+CREATE INDEX index_topics_on_slug ON topics USING btree (slug) WHERE (slug IS NOT NULL);
 
 CREATE INDEX index_topics_total_projects_count ON topics USING btree (total_projects_count DESC, id);
 
@@ -33609,6 +33614,9 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots
     ADD CONSTRAINT fk_78c9eac821 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY topics
+    ADD CONSTRAINT fk_79ae18bd4b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_7a170ee0a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

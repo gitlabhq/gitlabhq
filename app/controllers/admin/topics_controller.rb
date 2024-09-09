@@ -64,7 +64,7 @@ class Admin::TopicsController < Admin::ApplicationController
   end
 
   def topic_params
-    params.require(:projects_topic).permit(allowed_topic_params)
+    params.require(:projects_topic).permit(allowed_topic_params).merge({ organization_id: ::Current.organization_id })
   end
 
   def allowed_topic_params

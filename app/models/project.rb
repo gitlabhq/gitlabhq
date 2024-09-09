@@ -3440,6 +3440,7 @@ class Project < ApplicationRecord
       self.topics.delete_all
       self.topics = @topic_list.map do |topic_name|
         Projects::Topic
+          .for_organization(organization_id)
           .where('lower(name) = ?', topic_name.downcase)
           .order(total_projects_count: :desc)
           .first_or_create(name: topic_name, title: topic_name, slug: Gitlab::Slug::Path.new(topic_name).generate)

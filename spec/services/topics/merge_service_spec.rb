@@ -3,12 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Topics::MergeService, feature_category: :shared do
-  let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
-  let_it_be(:target_topic) { create(:topic, name: 'target_topic') }
-  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name) }
-  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name) }
-  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name) }
-  let_it_be(:project_4) { create(:project, :public, topic_list: [source_topic.name, target_topic.name]) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:source_topic) { create(:topic, name: 'source_topic', organization: organization) }
+  let_it_be(:target_topic) { create(:topic, name: 'target_topic', organization: organization) }
+  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name, organization: organization) }
+  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name, organization: organization) }
+  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name, organization: organization) }
+
+  let_it_be(:project_4) do
+    create(:project, :public, topic_list: [source_topic.name, target_topic.name], organization: organization)
+  end
 
   subject { described_class.new(source_topic, target_topic).execute }
 

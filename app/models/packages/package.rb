@@ -35,10 +35,6 @@ class Packages::Package < ApplicationRecord
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
-  # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-  after_create_commit :publish_creation_event, if: -> { generic? && Feature.disabled?(:generic_extract_generic_package_model, Feature.current_request) }
-
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
@@ -73,10 +69,6 @@ class Packages::Package < ApplicationRecord
 
   validate :npm_package_already_taken, if: :npm?
 
-  # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-  validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
-
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
@@ -85,13 +77,6 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { npm? || terraform_module? }
-
-  # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-  validates :version,
-    presence: true,
-    format: { with: Gitlab::Regex.generic_package_version_regex },
-    if: :generic?
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
@@ -191,7 +176,7 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map
-    hash = {
+    {
       ml_model: 'Packages::MlModel::Package',
       golang: 'Packages::Go::Package',
       rubygems: 'Packages::Rubygems::Package',
@@ -199,14 +184,9 @@ class Packages::Package < ApplicationRecord
       rpm: 'Packages::Rpm::Package',
       debian: 'Packages::Debian::Package',
       composer: 'Packages::Composer::Package',
-      helm: 'Packages::Helm::Package'
-    }
-
-    if Feature.enabled?(:generic_extract_generic_package_model, Feature.current_request)
-      hash[:generic] = 'Packages::Generic::Package'
-    end
-
-    hash
+      helm: 'Packages::Helm::Package',
+      generic: 'Packages::Generic::Package'
+    }.freeze
   end
 
   def self.only_maven_packages_with_path(path, use_cte: false)

@@ -3616,6 +3616,12 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|AI-powered features that can be enabled, disabled, or linked to a cloud-based or self-hosted model."
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Add self-hosted model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Disabled"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Features that can be enabled, disabled, or linked to a cloud-based or self-hosted model."
 msgstr ""
 
@@ -3623,6 +3629,12 @@ msgid "AdminAIPoweredFeatures|Main feature"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Model name"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Select a self-hosted model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Self-hosted models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Sub feature"

@@ -111,22 +111,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
-      # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-      context 'generic package' do
-        subject { build_stubbed(:generic_package) }
-
-        it { is_expected.to allow_value('123').for(:name) }
-        it { is_expected.to allow_value('foo').for(:name) }
-        it { is_expected.to allow_value('foo.bar.baz-2.0-20190901.47283-1').for(:name) }
-        it { is_expected.not_to allow_value('../../foo').for(:name) }
-        it { is_expected.not_to allow_value('..\..\foo').for(:name) }
-        it { is_expected.not_to allow_value('%2f%2e%2e%2f%2essh%2fauthorized_keys').for(:name) }
-        it { is_expected.not_to allow_value('$foo/bar').for(:name) }
-        it { is_expected.not_to allow_value('my file name').for(:name) }
-        it { is_expected.not_to allow_value('!!().for(:name)().for(:name)').for(:name) }
-      end
-
       context 'nuget package' do
         subject { build_stubbed(:nuget_package) }
 
@@ -262,34 +246,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value('1.2.3-4%2e%2e%').for(:version) }
         it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-      end
-
-      # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-      context 'generic package' do
-        subject { build_stubbed(:generic_package) }
-
-        it { is_expected.to validate_presence_of(:version) }
-        it { is_expected.to allow_value('1.2.3').for(:version) }
-        it { is_expected.to allow_value('1.3.350').for(:version) }
-        it { is_expected.to allow_value('1.3.350-20201230123456').for(:version) }
-        it { is_expected.to allow_value('1.2.3-rc1').for(:version) }
-        it { is_expected.to allow_value('1.2.3g').for(:version) }
-        it { is_expected.to allow_value('1.2').for(:version) }
-        it { is_expected.to allow_value('1.2.bananas').for(:version) }
-        it { is_expected.to allow_value('v1.2.4-build').for(:version) }
-        it { is_expected.to allow_value('d50d836eb3de6177ce6c7a5482f27f9c2c84b672').for(:version) }
-        it { is_expected.to allow_value('this_is_a_string_only').for(:version) }
-        it { is_expected.not_to allow_value('..1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('  1.2.3').for(:version) }
-        it { is_expected.not_to allow_value("1.2.3  \r\t").for(:version) }
-        it { is_expected.not_to allow_value("\r\t 1.2.3").for(:version) }
-        it { is_expected.not_to allow_value('1.2.3-4/../../').for(:version) }
-        it { is_expected.not_to allow_value('1.2.3-4%2e%2e%').for(:version) }
-        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('').for(:version) }
-        it { is_expected.not_to allow_value(nil).for(:version) }
       end
 
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
@@ -1193,51 +1149,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
                 package_type: package.package_type
               })
     end
-
-    # TODO: Remove with the rollout of the FF generic_extract_generic_package_model
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/479933
-    context 'with after_create_commit callback' do
-      let(:name) { FFaker::Lorem.word }
-      let(:version) { '1.0.0' }
-
-      subject(:create_package) do
-        described_class.create!(project: project, name: name, version: version, package_type: package_type)
-      end
-
-      context 'when package is generic' do
-        let(:package_type) { 'generic' }
-
-        it 'does not create event' do
-          expect { create_package }.not_to publish_event(::Packages::PackageCreatedEvent)
-        end
-
-        context 'when generic_extract_generic_package_model is disabled' do
-          before do
-            stub_feature_flags(generic_extract_generic_package_model: false)
-          end
-
-          it 'publishes an event' do
-            expect { create_package }
-              .to publish_event(::Packages::PackageCreatedEvent)
-                      .with({
-                        project_id: project.id,
-                        id: kind_of(Numeric),
-                        name: name,
-                        version: version,
-                        package_type: package_type
-                      })
-          end
-        end
-      end
-
-      context 'when package is not generic' do
-        let(:package_type) { 'debian' }
-
-        it 'does not create event' do
-          expect { create_package }.not_to publish_event(::Packages::PackageCreatedEvent)
-        end
-      end
-    end
   end
 
   describe 'inheritance' do
@@ -1269,20 +1180,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           it 'maps to the correct class' do
             is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
           end
-        end
-      end
-    end
-
-    context 'when generic_extract_generic_package_model is disabled' do
-      before do
-        stub_feature_flags(generic_extract_generic_package_model: false)
-      end
-
-      context 'for package format generic' do
-        let(:format) { :generic }
-
-        it 'maps to Packages::Package' do
-          is_expected.to eq(described_class)
         end
       end
     end

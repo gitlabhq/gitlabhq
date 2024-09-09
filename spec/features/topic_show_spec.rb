@@ -31,7 +31,7 @@ RSpec.describe 'Topic show page', feature_category: :groups_and_projects do
     end
 
     context 'with associated projects' do
-      let!(:project) { create(:project, :public, topic_list: topic.name) }
+      let!(:project) { create(:project, :public, topic_list: topic.name, organization: topic.organization) }
 
       it 'shows project list' do
         visit topic_explore_projects_path(topic_name: topic.name)

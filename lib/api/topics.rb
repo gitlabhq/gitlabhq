@@ -46,10 +46,13 @@ module API
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
         documentation: { type: 'file' }
+      optional :organization_id, type: Integer, default: -> { ::Current.organization_id },
+        desc: 'The organization id for the topic'
     end
     post 'topics' do
       authenticated_as_admin!
 
+      find_organization!(params[:organization_id]) if params[:organization_id].present?
       topic = ::Projects::Topic.new(declared_params(include_missing: false))
 
       if topic.save

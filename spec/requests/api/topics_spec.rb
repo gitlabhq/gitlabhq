@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Topics, :aggregate_failures, feature_category: :groups_and_projects do
+RSpec.describe API::Topics, :with_current_organization, :aggregate_failures, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
 
-  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, non_private_projects_count: 1, avatar: file) }
-  let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2, non_private_projects_count: 2) }
-  let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3, non_private_projects_count: 3) }
+  let_it_be(:topic_1) { create(:topic, name: 'Git', total_projects_count: 1, non_private_projects_count: 1, avatar: file, organization: current_organization) }
+  let_it_be(:topic_2) { create(:topic, name: 'GitLab', total_projects_count: 2, non_private_projects_count: 2, organization: current_organization) }
+  let_it_be(:topic_3) { create(:topic, name: 'other-topic', total_projects_count: 3, non_private_projects_count: 3, organization: current_organization) }
 
-  let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin, organization: current_organization) }
+  let_it_be(:user) { create(:user, organization: current_organization) }
 
   let(:path) { '/topics' }
 
