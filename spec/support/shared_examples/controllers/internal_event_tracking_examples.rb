@@ -46,6 +46,7 @@ RSpec.shared_examples 'internal event tracking' do
       namespace: try(:namespace) || try(:project)&.namespace,
       category: try(:category) || 'InternalEventTracking',
       feature_enabled_by_namespace_ids: try(:feature_enabled_by_namespace_ids),
+      **(try(:additional_properties) || {}),
       **{
         label: try(:label),
         property: try(:property),

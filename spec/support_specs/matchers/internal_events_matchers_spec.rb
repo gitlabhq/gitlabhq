@@ -111,19 +111,42 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
             .once
       end
 
+      shared_examples 'raises error for unexpected event args' do
+        specify do
+          expect { assertion }.to raise_error RSpec::Expectations::ExpectationNotMetError,
+            /received :event with unexpected arguments/
+        end
+      end
+
       it 'accepts correct additional properties' do
         assertion
+      end
+
+      context 'with extra attributes' do
+        let(:tracked_params) { super().deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it 'accepts correct extra attributes' do
+          assertion
+        end
       end
 
       context "with wrong label value" do
         let(:expected_params) { tracked_params.deep_merge(additional_properties: { label: 'wrong_label' }) }
 
-        it "doesn't accept incorrect additional_properties" do
-          expect do
-            assertion
-          end.to raise_error RSpec::Expectations::ExpectationNotMetError,
-            /received :event with unexpected arguments/
-        end
+        it_behaves_like 'raises error for unexpected event args'
+      end
+
+      context 'with extra attributes expected but not tracked' do
+        let(:expected_params) { tracked_params.deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it_behaves_like 'raises error for unexpected event args'
+      end
+
+      context 'with extra attributes tracked but not expected' do
+        let(:expected_params) { { user: user_1, namespace: group_1, additional_properties: additional_properties } }
+        let(:tracked_params) { expected_params.deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it_behaves_like 'raises error for unexpected event args'
       end
     end
   end

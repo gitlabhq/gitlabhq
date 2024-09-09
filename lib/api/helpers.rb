@@ -580,10 +580,14 @@ module API
       render_api_error!('202 Accepted', 202)
     end
 
-    def render_validation_error!(model, status = 400)
-      if model.errors.any?
-        render_api_error!(model_errors(model).messages || '400 Bad Request', status)
-      end
+    def render_validation_error!(models, status = 400)
+      models = Array(models)
+
+      errors = models.map { |m| model_errors(m) }.filter(&:present?)
+      messages = errors.map(&:messages)
+      messages = messages.count == 1 ? messages.first : messages.join(" ")
+
+      render_api_error!(messages || '400 Bad Request', status) if errors.any?
     end
 
     def model_errors(model)

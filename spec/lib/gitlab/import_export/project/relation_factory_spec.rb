@@ -30,6 +30,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     stub_const('FooModel', Class.new)
     FooModel.class_eval do
       include ActiveModel::Model
+      include ActiveModel::AttributeMethods
 
       def initialize(params = {})
         params.each { |key, value| send("#{key}=", value) }

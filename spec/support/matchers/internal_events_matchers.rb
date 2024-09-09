@@ -220,7 +220,8 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
           user_id: id_for(:user),
           project_id: id_for(:project),
           namespace_id: id_for(:namespace),
-          feature_enabled_by_namespace_ids: @properties[:feature_enabled_by_namespace_ids]
+          feature_enabled_by_namespace_ids: @properties[:feature_enabled_by_namespace_ids],
+          **{ extra: @additional_properties.except(:label, :property, :value) || {} }
         )
       )
     )

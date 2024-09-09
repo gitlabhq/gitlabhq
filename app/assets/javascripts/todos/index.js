@@ -14,11 +14,17 @@ export default () => {
     return false;
   }
 
+  const { issuesDashboardPath, mergeRequestsDashboardPath } = el.dataset;
+
   return new Vue({
     el,
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
+    provide: {
+      issuesDashboardPath,
+      mergeRequestsDashboardPath,
+    },
     router: new VueRouter({
       base: window.location.pathname,
       mode: 'history',

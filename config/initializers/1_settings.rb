@@ -1030,10 +1030,11 @@ end
 #
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
+  executor_version = File.read('DUO_WORKFLOW_EXECUTOR_VERSION').chomp
   Settings.duo_workflow.reverse_merge!(
     secure: true,
-    executor_binary_url: 'https://gitlab.com/api/v4/projects/58711783/releases/permalink/latest',
-    executor_version: 'latest'
+    executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/#{executor_version}/duo-workflow-executor.tar.gz",
+    executor_version: executor_version
   )
 
   # Default to proxy via Cloud Connector

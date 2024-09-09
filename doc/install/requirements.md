@@ -11,49 +11,42 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page includes information about the minimum requirements you need to install and use GitLab.
+This page contains information about the minimum system requirements to install GitLab.
 
 ## Hardware
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *guideline* you should have at least as much free space as all your repositories combined take up.
+The necessary storage space largely depends on the size of the repositories you want to have in GitLab.
+As a guideline, you should have at least as much free space as all your repositories combined.
 
 The Linux package requires about 2.5 GB of storage space for installation.
+For storage flexibility, consider mounting your hard drive through logical volume management.
+You should have a hard drive with at least 7200 RPM or a solid-state drive to improve the responsiveness of GitLab.
 
-If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
-
-Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
-
-If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) improves the responsiveness of GitLab.
-
-NOTE:
-Because file system performance may affect the overall performance of GitLab,
-[we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
-
-NOTE:
-[NFS for Git repository storage is deprecated](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated). See our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.
+Because file system performance might affect the overall performance of GitLab, you should
+[avoid using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 ### CPU
 
-CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
+CPU requirements depend on the number of users and expected workload.
+The workload includes your users' activity, use of automation and mirroring, and repository size.
 
-Refer below for CPU recommendations depending on user count / load:
-
-- Up to 20 Requests per Second (RPS) or 1000 users - 8 vCPU.
-- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
+For a maximum of 20 requests per second or 1,000 users, you should have 8 vCPUs.
+For more users or higher workload,
+see [reference architectures](../administration/reference_architectures/index.md).
 
 ### Memory
 
-Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
+Memory requirements depend on the number of users and expected workload.
+The workload includes your users' activity, use of automation and mirroring, and repository size.
 
-Refer below for Memory recommendations depending on user count / load:
+For a maximum of 20 requests per second or 1,000 users, you should have 16 GB of memory.
+For more users or higher workload,
+see [reference architectures](../administration/reference_architectures/index.md).
 
-- Up to 20 Requests per Second (RPS) or 1000 users - 8 GB (Minimum), 16 GB (Recommended).
-- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
-
-NOTE:
-While not recommended, in certain circumstances GitLab may run in a [memory constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
+In certain circumstances, GitLab might run in a
+[memory-constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
 
 ## Database
 
@@ -304,14 +297,12 @@ GitLab supports the following web browsers:
 - [Apple Safari](https://www.apple.com/safari/)
 - [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13QK)
 
-For the listed web browsers, GitLab supports:
+GitLab supports the:
 
-- The current and previous major versions of browsers.
-- The current minor version of a supported major version.
+- Current and previous major versions of these browsers
+- Current minor version of a supported major version
 
-NOTE:
-We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
-in the future because we have features such as issue boards which require JavaScript extensively.
+Running GitLab with JavaScript disabled in these browsers is not supported.
 
 ## Related topics
 

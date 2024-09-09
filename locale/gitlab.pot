@@ -56684,6 +56684,9 @@ msgstr ""
 msgid "Todos|Merge train removed"
 msgstr ""
 
+msgid "Todos|Not sure where to go next? Take a look at your %{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd} or %{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}."
+msgstr ""
+
 msgid "Todos|Not sure where to go next? Take a look at your %{strongStart}%{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd}%{strongEnd} or %{strongStart}%{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}."
 msgstr ""
 
@@ -56709,6 +56712,9 @@ msgid "Todos|Review submitted"
 msgstr ""
 
 msgid "Todos|Something went wrong. Please try again."
+msgstr ""
+
+msgid "Todos|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "Todos|The pipeline failed"

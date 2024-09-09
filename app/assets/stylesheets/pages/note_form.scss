@@ -277,7 +277,7 @@ table {
 }
 
 .discussion-body .notes .timeline-entry:first-of-type + .discussion-reply-holder {
-  padding-top: $gl-padding-12;
+  padding-top: $gl-padding !important;
 }
 
 .discussion-body,

@@ -25,7 +25,7 @@ features for _all_ users. On GitLab.com, you can apply a subscription to a top-l
 namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:
-Subscriptions cannot be transferred between GitLab SaaS and GitLab self-managed.
+Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 
 ## Choose a GitLab tier

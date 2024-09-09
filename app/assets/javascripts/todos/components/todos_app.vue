@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getTodosCountQuery from './queries/get_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
+import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 
 const ENTRIES_PER_PAGE = 20;
@@ -19,6 +20,7 @@ export default {
     GlBadge,
     GlTabs,
     GlTab,
+    TodosEmptyState,
     TodosFilterBar,
     TodoItem,
   },
@@ -93,8 +95,16 @@ export default {
     isLoading() {
       return this.$apollo.queries.todos.loading;
     },
+    isFiltered() {
+      // Ignore sort value. It is always present and not really a filter.
+      const { sort: _, ...filters } = this.queryFilterValues;
+      return Object.values(filters).some((value) => value.length > 0);
+    },
     showPagination() {
       return !this.isLoading && (this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
+    },
+    showEmptyState() {
+      return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
       return this.currentTab === 0;
@@ -183,6 +193,9 @@ export default {
             :fade-done-todo="fadeDoneTodo"
           />
         </ul>
+
+        <todos-empty-state v-if="showEmptyState" :is-filtered="isFiltered" />
+
         <gl-keyset-pagination
           v-if="showPagination"
           v-bind="pageInfo"

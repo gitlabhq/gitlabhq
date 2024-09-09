@@ -11,8 +11,11 @@ module Gitlab
       end
 
       class Build < ::Ci::ApplicationRecord
+        include PartitionedTable
+
         self.table_name = 'p_ci_builds'
         self.inheritance_column = :_type_disabled
+        self.primary_key = :id
       end
 
       def perform

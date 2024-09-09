@@ -30,7 +30,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 
 if next?
-  gem 'rails', '~> 7.1.3.4', feature_category: :shared
+  gem 'rails', '~> 7.1.4', feature_category: :shared
 else
   gem 'rails', '~> 7.0.8.4', feature_category: :shared
 end

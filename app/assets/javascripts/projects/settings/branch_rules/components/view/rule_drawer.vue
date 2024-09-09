@@ -103,6 +103,9 @@ export default {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    isSelfHosted() {
+      return !window.gon?.dot_com;
+    },
   },
   watch: {
     isOpen() {
@@ -179,23 +182,37 @@ export default {
 
     <template #default>
       <gl-form-group class="gl-border-none">
-        <gl-form-checkbox v-model="isAdminSelected" @change="handleAccessLevelSelected">
+        <gl-form-checkbox
+          v-if="isSelfHosted"
+          v-model="isAdminSelected"
+          data-testid="admins-role-checkbox"
+          @change="handleAccessLevelSelected"
+        >
           {{ $options.accessLevelsConfig[$options.ACCESS_LEVEL_ADMIN_INTEGER].accessLevelLabel }}
         </gl-form-checkbox>
-        <gl-form-checkbox v-model="isMaintainersSelected" @change="handleAccessLevelSelected">
+        <gl-form-checkbox
+          v-model="isMaintainersSelected"
+          data-testid="maintainers-role-checkbox"
+          @change="handleAccessLevelSelected"
+        >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_MAINTAINER_INTEGER].accessLevelLabel
           }}
         </gl-form-checkbox>
         <gl-form-checkbox
           v-model="isDevelopersAndMaintainersSelected"
+          data-testid="developers-role-checkbox"
           @change="handleAccessLevelSelected"
         >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_DEVELOPER_INTEGER].accessLevelLabel
           }}
         </gl-form-checkbox>
-        <gl-form-checkbox v-model="isNoOneSelected" @change="handleNoOneSelected">
+        <gl-form-checkbox
+          v-model="isNoOneSelected"
+          data-testid="no-one-role-checkbox"
+          @change="handleNoOneSelected"
+        >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_NO_ACCESS_INTEGER].accessLevelLabel
           }}

@@ -3,7 +3,7 @@
 module Gitlab
   module Graphql
     module Authorize
-      class ConnectionFilterExtension < GraphQL::Schema::FieldExtension
+      class FieldExtension < GraphQL::Schema::FieldExtension
         class Redactor
           include ::Gitlab::Graphql::Laziness
 
@@ -45,8 +45,10 @@ module Gitlab
           end
         end
 
-        def after_resolve(value:, context:, **rest)
+        def after_resolve(value:, context:, **_rest)
           return value if value.is_a?(GraphQL::Execution::Skip)
+
+          set_skip_type_authorization(context)
 
           if @field.connection?
             redact_connection(value, context)
@@ -70,6 +72,14 @@ module Gitlab
         def redact_list(list, context)
           redactor = Redactor.new(@field.type.unwrap, context, @field.resolver)
           redactor.redact(list) if redactor.active?
+        end
+
+        def set_skip_type_authorization(context)
+          skip_type_authorization = Array.wrap(
+            [@field.skip_type_authorization, context[:skip_type_authorization]]
+          ).flatten.compact.uniq
+
+          context.scoped_set!(:skip_type_authorization, skip_type_authorization) if skip_type_authorization.any?
         end
       end
     end
