@@ -6,8 +6,6 @@
 - ee/spec/features/groups_spec.rb
 - ee/spec/lib/gitlab/auth/group_saml/user_spec.rb
 - ee/spec/lib/gitlab/auth/saml/user_spec.rb
-- ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb
-- ee/spec/lib/ee/gitlab/scim/group/provisioning_service_spec.rb
 - ee/spec/services/ee/groups/create_service_spec.rb
 - ee/spec/services/ee/users/create_service_spec.rb
 - ee/spec/services/users/service_accounts/create_service_spec.rb

@@ -5,7 +5,7 @@ module Gitaly
     SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/
     DEFAULT_REPLICATION_FACTOR = 1
 
-    ServerSignature = Struct.new(:public_key, :error)
+    ServerSignature = Struct.new(:public_key, :error, keyword_init: true)
 
     class << self
       def all

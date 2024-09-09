@@ -35,6 +35,7 @@ describe('ProjectsListItem', () => {
       accessLevel: {
         integerValue: permissions.projectAccess.accessLevel,
       },
+      avatarUrl: 'avatar.jpg',
     },
   };
 
@@ -78,6 +79,7 @@ describe('ProjectsListItem', () => {
     expect(avatarLabeled.attributes()).toMatchObject({
       'entity-id': project.id.toString(),
       'entity-name': project.name,
+      src: defaultPropsData.project.avatarUrl,
       shape: 'rect',
     });
   });

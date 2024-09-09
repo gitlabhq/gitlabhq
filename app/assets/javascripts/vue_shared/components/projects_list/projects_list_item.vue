@@ -260,6 +260,7 @@ export default {
           :entity-name="project.name"
           :label="project.name"
           :label-link="project.webUrl"
+          :src="project.avatarUrl"
           shape="rect"
           :size="48"
         >

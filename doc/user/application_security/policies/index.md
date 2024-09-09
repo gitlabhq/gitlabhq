@@ -353,20 +353,6 @@ When working with security policies, consider these troubleshooting tips:
   Security Policies are designed to require approval when there are no results (no security report),
   as this ensures that no vulnerabilities are introduced. We cannot know if there are any
   vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
-- When running scan execution policies based on a SAST action, ensure target repositories contain
-  proper code files. SAST runs different analyzers
-  [based on the types of files in the repository](../sast/index.md#supported-languages-and-frameworks),
-  and if no supported files are found it does not run any jobs. See the
-  [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
-  for more details.
-- Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more
-  [about the schedule rule type](../policies/scan_execution_policies.md#schedule-rule-type).
-- When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is
-  based on your server time for self managed instances. When testing new policies, it may appear
-  pipelines are not running properly when in fact they are scheduled in your server's time zone.
-- When enforcing scan execution policies, security policies use a bot in the target project to
-  trigger scheduled pipelines to ensure enforcement. When the bot is missing, it is automatically
-  created, and the following scheduled scan uses it.
 - You should not link a security policy project to both a development project and the group or
   subgroup the development project belongs to. Linking this way results in approval
   rules from the merge request approval policies not being applied to merge requests in the development project.

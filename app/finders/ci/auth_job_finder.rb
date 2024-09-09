@@ -38,6 +38,8 @@ module Ci
       validate_job_not_erased!(job)
       validate_project_presence!(job)
 
+      log_successful_job_auth(job)
+
       true
     end
 
@@ -51,6 +53,16 @@ module Ci
 
     def validate_project_presence!(job)
       raise DeletedProjectError, 'Project has been deleted!' if job.project.nil? || job.project.pending_delete?
+    end
+
+    def log_successful_job_auth(job)
+      Gitlab::AppLogger.info({
+        class: self.class,
+        job_id: job.id,
+        job_user_id: job.user_id,
+        job_project_id: job.project_id,
+        message: "successful job token auth"
+      }.merge(Gitlab::ApplicationContext.current))
     end
   end
 end

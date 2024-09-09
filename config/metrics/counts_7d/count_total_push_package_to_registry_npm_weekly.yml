@@ -1,0 +1,23 @@
+---
+key_path: counts.count_total_push_package_to_registry_npm_weekly
+description: Weekly count of NPM packages pushed to the package registry.
+product_group: package_registry
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165189
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: push_package_to_registry
+  filter:
+    label: npm

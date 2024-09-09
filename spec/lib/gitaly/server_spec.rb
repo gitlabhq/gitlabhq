@@ -156,7 +156,7 @@ RSpec.describe Gitaly::Server do
   describe "#server_signature_error?" do
     context 'when the server signature raises a GRPC error' do
       before do
-        allow_next_instance_of(::Gitlab::GitalyClient::ServerService) do |instance|
+        allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
           allow(instance).to receive(:server_signature).and_raise(GRPC::Unavailable)
         end.once
       end

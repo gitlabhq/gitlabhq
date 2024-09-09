@@ -32671,6 +32671,8 @@ CREATE TRIGGER merge_requests_loose_fk_trigger AFTER DELETE ON merge_requests RE
 
 CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER notes_loose_fk_trigger AFTER DELETE ON notes REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION nullify_merge_request_metrics_build_data();
 
 CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -34161,6 +34163,9 @@ ALTER TABLE ONLY dast_pre_scan_verifications
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_d3130c9a7f_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT fk_d3130c9a7f_p_tmp FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34385,9 +34390,6 @@ ALTER TABLE ONLY design_management_designs_versions
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_f53706dbdd FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_user_mentions
-    ADD CONSTRAINT fk_f5768ba1ec FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_devops_adoption_segments
     ADD CONSTRAINT fk_f5aa768998 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -35633,9 +35635,6 @@ ALTER TABLE ONLY elastic_reindexing_slices
 
 ALTER TABLE ONLY project_aliases
     ADD CONSTRAINT fk_rails_a1804f74a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_user_mentions
-    ADD CONSTRAINT fk_rails_a18600f210 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_packages_settings
     ADD CONSTRAINT fk_rails_a248d0c26f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

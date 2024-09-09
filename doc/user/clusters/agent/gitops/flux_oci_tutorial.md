@@ -83,7 +83,7 @@ and push the artifact to the [GitLab container registry](../../../packages/conta
        - |
          flux push artifact oci://$CI_REGISTRY_IMAGE:latest \
            --path="./manifests" \
-           --source="$CI_REPOSITORY_URL" \
+           --source="${CI_PROJECT_URL}.git" \
            --revision="$CI_COMMIT_SHORT_SHA" \
            --creds="$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD" \
            --annotations="org.opencontainers.image.url=$CI_PROJECT_URL" \

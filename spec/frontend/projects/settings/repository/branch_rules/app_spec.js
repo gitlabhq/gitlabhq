@@ -172,7 +172,7 @@ describe('Branch rules app', () => {
       findCreateBranchRuleListbox().vm.$emit('select', 'main');
       await nextTick();
       findModal().vm.$emit('primary');
-      await nextTick();
+      await waitForPromises();
 
       expect(trackEventSpy).toHaveBeenCalledWith('protect_branch', {
         label: 'branch_rule_details',

@@ -603,3 +603,10 @@ vulnerability_statistics:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_user_mentions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: notes
+    column: note_id
+    on_delete: async_delete
