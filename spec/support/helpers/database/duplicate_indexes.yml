@@ -4,6 +4,9 @@ ci_stages:
   - index_ci_stages_on_pipeline_id
   index_ci_stages_on_pipeline_id_name_partition_id_unique:
   - index_ci_stages_on_pipeline_id
+ci_job_artifact_states:
+  index_on_job_artifact_id_partition_id_verification_state:
+  - index_job_artifact_states_on_verification_state
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
   - index_dast_site_tokens_on_project_id
