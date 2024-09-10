@@ -17,7 +17,7 @@ GitLab Duo features that are generally available are automatically turned on for
   - You must [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
   - [Silent Mode](../../administration/silent_mode/index.md) must not be turned on.
   - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
-  - For the best experience, you should upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
+  - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 - If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
 - For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),
   [you must assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)

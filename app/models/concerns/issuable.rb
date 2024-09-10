@@ -33,7 +33,6 @@ module Issuable
   include Import::HasImportSource
 
   TITLE_LENGTH_MAX = 255
-  TITLE_HTML_LENGTH_MAX = 800
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   SEARCHABLE_FIELDS = %w[title description].freeze
   MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200

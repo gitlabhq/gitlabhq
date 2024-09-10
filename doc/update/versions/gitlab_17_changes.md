@@ -215,6 +215,19 @@ for more details.
 
 - Git 2.45.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 
+### Geo installations
+
+- Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.3                    |  All                    | None     |
+
 ## 17.2.1
 
 - Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue has
@@ -263,6 +276,17 @@ for more details.
   | 17.1                    |  All                    | None     |
   | 17.2                    |  All                    | None     |
 
+- Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.3                    |  All                    | None     |
+
 ## 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.
@@ -289,6 +313,17 @@ for more details.
   | 17.1                    |  All                    | None     |
   | 17.2                    |  All                    | None     |
 
+- Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.3                    |  All                    | None     |
+
 ## 17.0.0
 
 ### Geo installations
@@ -303,3 +338,14 @@ for more details.
   | 17.0                    |  All                    | None     |
   | 17.1                    |  All                    | None     |
   | 17.2                    |  All                    | None     |
+
+- Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.3                    |  All                    | None     |

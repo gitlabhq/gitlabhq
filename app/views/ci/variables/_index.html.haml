@@ -14,9 +14,9 @@
   maskable_raw_regex: ci_variable_maskable_raw_regex,
   maskable_regex: ci_variable_maskable_regex,
   protected_by_default: ci_variable_protected_by_default?.to_s,
-  contains_variable_reference_link: help_page_path('ci/variables/index', anchor: 'prevent-cicd-variable-expansion'),
-  masked_environment_variables_link: help_page_path('ci/variables/index', anchor: 'mask-a-cicd-variable'),
-  environment_scope_link: help_page_path('ci/environments/index', anchor: 'limit-the-environment-scope-of-a-cicd-variable') } }
+  contains_variable_reference_link: help_page_path('ci/variables/index.md', anchor: 'prevent-cicd-variable-expansion'),
+  masked_environment_variables_link: help_page_path('ci/variables/index.md', anchor: 'mask-a-cicd-variable'),
+  environment_scope_link: help_page_path('ci/environments/index.md', anchor: 'limit-the-environment-scope-of-a-cicd-variable') } }
 
 - if !@group && @project.group
   = render 'ci/group_variables/header'

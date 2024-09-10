@@ -1,0 +1,32 @@
+---
+key_path: counts.count_total_resource_kind_from_open_kubernetes_resource_details_weekly
+description: Weekly count of openings of the Kubernetes resource details drawer per resource kind
+product_group: environments
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165366
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: open_kubernetes_resource_details
+  filter:
+    label: Pod
+- name: open_kubernetes_resource_details
+  filter:
+    label: Service
+- name: open_kubernetes_resource_details
+  filter:
+    label: Kustomization
+- name: open_kubernetes_resource_details
+  filter:
+    label: HelmRelease

@@ -18,7 +18,7 @@ DETAILS:
 > - Subscription changed to require GitLab Duo Pro on February 15, 2024.
 
 NOTE:
-GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/releases/2024/01/18/gitlab-16-8-released/) and later. For the best GitLab Duo experience, upgrade to the [latest version](https://about.gitlab.com/releases/categories/releases/) of GitLab.
+GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 

@@ -1,0 +1,21 @@
+---
+description: Opening the kubernetes resource details drawer
+internal_events: true
+action: open_kubernetes_resource_details
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: kind of the Kubernetes resource
+product_group: environments
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165366
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

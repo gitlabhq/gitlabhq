@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { GlLoadingIcon, GlAlert, GlDrawer } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import WorkloadLayout from '~/kubernetes_dashboard/components/workload_layout.vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
-import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
-import eventHub from '~/environments/event_hub';
+import WorkloadDetailsDrawer from '~/kubernetes_dashboard/components/workload_details_drawer.vue';
 import { mockPodStats, mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -15,22 +15,27 @@ const defaultProps = {
   items: mockPodsTableItems,
 };
 
+const toggleDetailsDrawerSpy = jest.fn();
+
 const createWrapper = (propsData = {}) => {
   wrapper = shallowMount(WorkloadLayout, {
     propsData: {
       ...defaultProps,
       ...propsData,
     },
-    stubs: { GlDrawer },
+    stubs: {
+      WorkloadDetailsDrawer: stubComponent(WorkloadDetailsDrawer, {
+        methods: { toggle: toggleDetailsDrawerSpy },
+      }),
+    },
   });
 };
 
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findErrorAlert = () => wrapper.findComponent(GlAlert);
-const findDrawer = () => wrapper.findComponent(GlDrawer);
 const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
 const findWorkloadTable = () => wrapper.findComponent(WorkloadTable);
-const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
+const findWorkloadDetailsDrawer = () => wrapper.findComponent(WorkloadDetailsDrawer);
 
 describe('Workload layout component', () => {
   describe('when loading', () => {
@@ -55,7 +60,7 @@ describe('Workload layout component', () => {
     });
 
     it("doesn't render details drawer", () => {
-      expect(findDrawer().exists()).toBe(false);
+      expect(findWorkloadDetailsDrawer().exists()).toBe(false);
     });
   });
 
@@ -82,7 +87,7 @@ describe('Workload layout component', () => {
     });
 
     it("doesn't render details drawer", () => {
-      expect(findDrawer().exists()).toBe(false);
+      expect(findWorkloadDetailsDrawer().exists()).toBe(false);
     });
   });
 
@@ -103,8 +108,8 @@ describe('Workload layout component', () => {
       expect(findWorkloadTable().props('items')).toBe(mockPodsTableItems);
     });
 
-    it('renders a drawer', () => {
-      expect(findDrawer().exists()).toBe(true);
+    it('renders details drawer', () => {
+      expect(findWorkloadDetailsDrawer().exists()).toBe(true);
     });
 
     describe('stats', () => {
@@ -123,45 +128,10 @@ describe('Workload layout component', () => {
     });
 
     describe('drawer', () => {
-      it('is closed by default', () => {
-        expect(findDrawer().props('open')).toBe(false);
-      });
-
-      it('is opened when an item was selected', async () => {
+      it('toggles the details drawer when an item was selected', async () => {
         await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-        expect(findDrawer().props('open')).toBe(true);
-      });
 
-      it('is closed when clicked on a cross button', async () => {
-        const eventHubSpy = jest.spyOn(eventHub, '$emit');
-
-        await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-        expect(findDrawer().props('open')).toBe(true);
-
-        await findDrawer().vm.$emit('close');
-        expect(findDrawer().props('open')).toBe(false);
-        expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
-      });
-
-      it('is closed on remove-selection event', async () => {
-        const eventHubSpy = jest.spyOn(eventHub, '$emit');
-
-        await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-        expect(findDrawer().props('open')).toBe(true);
-
-        await findWorkloadTable().vm.$emit('remove-selection');
-        expect(findDrawer().props('open')).toBe(false);
-        expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
-      });
-
-      it('renders a title with the selected item name', async () => {
-        await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-        expect(findDrawer().text()).toContain(mockPodsTableItems[0].name);
-      });
-
-      it('renders WorkloadDetails with the correct props', async () => {
-        await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-        expect(findWorkloadDetails().props('item')).toBe(mockPodsTableItems[0]);
+        expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(mockPodsTableItems[0]);
       });
     });
   });

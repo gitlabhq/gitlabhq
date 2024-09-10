@@ -18,7 +18,6 @@ export default {
     GlLoadingIcon,
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     k8sServices: {
       query: k8sServicesQuery,
       variables() {
@@ -44,6 +43,11 @@ export default {
       required: true,
       type: String,
     },
+  },
+  data() {
+    return {
+      k8sServices: [],
+    };
   },
   computed: {
     servicesItems() {
@@ -72,10 +76,7 @@ export default {
   },
   methods: {
     onItemSelect(item) {
-      this.$emit('show-resource-details', item);
-    },
-    onRemoveSelection() {
-      this.$emit('remove-selection');
+      this.$emit('select-item', item);
     },
   },
   i18n: {
@@ -101,7 +102,6 @@ export default {
       :page-size="$options.SERVICES_LIMIT_PER_PAGE"
       class="gl-mt-5"
       @select-item="onItemSelect"
-      @remove-selection="onRemoveSelection"
     />
   </gl-tab>
 </template>

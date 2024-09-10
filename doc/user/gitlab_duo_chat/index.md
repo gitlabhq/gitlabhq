@@ -45,7 +45,7 @@ You can express interest in other IDE extension support
 [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
 NOTE:
-If you have self-managed GitLab: For the best experience, upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
+If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
 ## The context Chat is aware of
 

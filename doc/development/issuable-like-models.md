@@ -17,6 +17,4 @@ This guide accumulates guidelines on working with such Rails models.
 There are maximum length constraints for the most important text fields for issuables:
 
 - `title`: 255 characters
-- `title_html`: 800 characters
 - `description`: 1 megabyte
-- `description_html`: 5 megabytes

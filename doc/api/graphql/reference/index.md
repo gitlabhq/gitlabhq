@@ -80,6 +80,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 Retrieve the active add-on purchase. This query can be used in GitLab SaaS and self-managed environments.
 
+DETAILS:
+**Deprecated** in GitLab 17.4.
+Use add_on_purchases instead.
+
 Returns [`AddOnPurchase`](#addonpurchase).
 
 #### Arguments

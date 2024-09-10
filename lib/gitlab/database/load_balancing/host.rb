@@ -13,6 +13,7 @@ module Gitlab
           ActionView::Template::Error,
           ActiveRecord::StatementInvalid,
           ActiveRecord::ConnectionNotEstablished,
+          ActiveRecord::StatementTimeout,
           PG::Error
         ].freeze
 
@@ -51,6 +52,10 @@ module Gitlab
           ELSE
             pg_current_wal_insert_lsn()
           END
+        SQL
+
+        REPLICATION_LAG_QUERY = <<~SQL.squish.freeze
+          SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag
         SQL
 
         # host - The address of the database.
@@ -210,7 +215,7 @@ module Gitlab
         #
         # This method will return nil if no lag time could be calculated.
         def replication_lag_time
-          row = query_and_release('SELECT EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag')
+          row = query_and_release(REPLICATION_LAG_QUERY)
 
           row['lag'].to_f if row.any?
         end
@@ -254,12 +259,36 @@ module Gitlab
           lag.present? && lag.to_i <= 0
         end
 
-        def query_and_release(sql)
+        def query_and_release(...)
+          if low_timeout_for_host_queries?
+            query_and_release_fast_timeout(...)
+          else
+            query_and_release_old(...)
+          end
+        end
+
+        def query_and_release_old(sql)
           connection.select_all(sql).first || {}
         rescue StandardError
           {}
         ensure
           release_connection
+        end
+
+        def query_and_release_fast_timeout(sql)
+          conn = pool.checkout
+
+          # If we "set local" the timeout in a transaction that was already open we would taint the outer
+          # transaction with that timeout.
+          # So we use a fresh connection from the pool here to make sure this is a new transaction.
+          conn.transaction do
+            conn.exec_query("set local statement_timeout to '100ms';")
+            conn.select_all(sql).first || {}
+          end
+        rescue StandardError
+          {}
+        ensure
+          pool.checkin(conn) if conn # conn will be nil if checkout threw an error
         end
 
         private
@@ -284,6 +313,10 @@ module Gitlab
 
         def double_replication_lag_time?
           Feature.enabled?(:load_balancer_double_replication_lag_time, type: :ops)
+        end
+
+        def low_timeout_for_host_queries?
+          Feature.enabled?(:load_balancer_low_statement_timeout)
         end
       end
     end

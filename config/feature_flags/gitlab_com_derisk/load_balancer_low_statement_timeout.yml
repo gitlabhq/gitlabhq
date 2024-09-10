@@ -1,0 +1,9 @@
+---
+name: load_balancer_low_statement_timeout
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472161
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159633
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473429
+milestone: '17.4'
+group: group::database
+type: gitlab_com_derisk
+default_enabled: false
