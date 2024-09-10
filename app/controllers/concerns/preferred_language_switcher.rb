@@ -38,12 +38,12 @@ module PreferredLanguageSwitcher
   strong_memoize_attr :browser_languages
 
   def marketing_site_language
-    # Our marketing site will be the only thing we are sure of the language placement in the url for.
-    locale = params[:glm_source]&.match(%r{\A#{ApplicationHelper.promo_host}/([a-z]{2})-([a-z]{2})}i)&.captures
+    return [] unless params[:glm_source]
 
-    return [] if locale.blank?
+    locale = params[:glm_source].scan(%r{(\w{2})-(\w{2})}).flatten
 
-    # This is local and then locale_region - the marketing site will always send locale-region pairs like fr-fr.
+    return [] if locale.empty?
+
     [locale[0], "#{locale[0]}_#{locale[1]}"]
   end
 end
