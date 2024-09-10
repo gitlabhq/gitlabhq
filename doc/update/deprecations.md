@@ -950,6 +950,23 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation " data-milestone="17.6">
 
+### Group vulnerability report by OWASP top 10 2017 is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">17.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
+
+</div>
+
+Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
+In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+
+</div>
+
+<div class="deprecation " data-milestone="17.6">
+
 ### Support for Debian 10
 
 <div class="deprecation-notes">
@@ -999,23 +1016,6 @@ See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_
 <div class="milestone-wrapper" data-milestone="17.4">
 
 ## GitLab 17.4
-
-<div class="deprecation " data-milestone="17.4">
-
-### Group vulnerability report by OWASP top 10 2017 is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.0</span>
-- Removal in GitLab <span class="milestone">17.4</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
-
-</div>
-
-Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
-In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
-
-</div>
 
 <div class="deprecation " data-milestone="17.4">
 

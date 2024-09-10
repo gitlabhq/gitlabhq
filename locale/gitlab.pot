@@ -5059,7 +5059,7 @@ msgstr ""
 msgid "AiImpactAnalytics|%{codeSuggestionsAcceptedCount} out of %{codeSuggestionsShownCount} code suggestions were accepted in the last 30 days. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|%{duoChatContributorsCount} out of %{duoProAssignedUsersCount} GitLab Duo assigned seats used at least one AI feature in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgid "AiImpactAnalytics|%{duoChatContributorsCount} out of %{duoProAssignedUsersCount} GitLab Duo users interacted with Duo Chat in the last 30 days. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AiImpactAnalytics|Code Suggestions acceptance usage"
@@ -5068,7 +5068,7 @@ msgstr ""
 msgid "AiImpactAnalytics|Code Suggestions usage"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo seats: Assigned and used"
+msgid "AiImpactAnalytics|Duo Chat: Unique users"
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors in the last 30 days. %{linkStart}Learn more%{linkEnd}."
@@ -16243,10 +16243,10 @@ msgstr ""
 msgid "CreateValueStreamForm|'%{name}' Value Stream saved"
 msgstr ""
 
-msgid "CreateValueStreamForm|Add another stage"
+msgid "CreateValueStreamForm|Add a stage"
 msgstr ""
 
-msgid "CreateValueStreamForm|Add stage"
+msgid "CreateValueStreamForm|Add another stage"
 msgstr ""
 
 msgid "CreateValueStreamForm|All default stages are currently visible"
@@ -59700,9 +59700,6 @@ msgid "ValueStreamAnalytics|Value stream"
 msgstr ""
 
 msgid "ValueStreamAnalytics|View details"
-msgstr ""
-
-msgid "ValueStreamAnalytics|View value stream"
 msgstr ""
 
 msgid "ValueStreamEvent|Items in stage"

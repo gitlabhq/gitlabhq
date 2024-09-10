@@ -2463,10 +2463,57 @@ Get all the issues that would close by merging the provided merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 ```
 
+Supported attributes:
+
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
+| `id`                | integer or string | Yes   | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer        | Yes      | Internal ID of the merge request. |
+
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+response attributes when you use the GitLab issue tracker:
+
+| Attribute                   | Type     | Description                                                                                                                       |
+|-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `[].assignee`               | object   | First assignee of the issue.                                                                                                      |
+| `[].assignees`              | array    | Assignees of the issue.                                                                                                           |
+| `[].author`                 | object   | User who created this issue.                                                                                                      |
+| `[].blocking_issues_count`  | integer  | Count of issues this issue is blocking.                                                                                           |
+| `[].closed_at`              | datetime | Timestamp of when the issue was closed.                                                                                           |
+| `[].closed_by`              | object   | User who closed this issue.                                                                                                       |
+| `[].confidential`           | boolean  | Indicates if the issue is confidential.                                                                                           |
+| `[].created_at`             | datetime | Timestamp of when the issue was created.                                                                                          |
+| `[].description`            | string   | Description of the issue.                                                                                                         |
+| `[].discussion_locked`      | boolean  | Indicates if comments on the issue are locked to members only.                                                                    |
+| `[].downvotes`              | integer  | Number of downvotes the issue has received.                                                                                       |
+| `[].due_date`               | datetime | Due date of the issue.                                                                                                            |
+| `[].id`                     | integer  | ID of the issue.                                                                                                                  |
+| `[].iid`                    | integer  | Internal ID of the issue.                                                                                                         |
+| `[].issue_type`             | string   | Type of the issue. Can be `issue`, `incident`, `test_case`, `requirement`, `task`.                                                |
+| `[].labels`                 | array    | Labels of the issue.                                                                                                              |
+| `[].merge_requests_count`   | integer  | Number of merge requests that close the issue on merge.                                                                           |
+| `[].milestone`              | object   | Milestone of the issue.                                                                                                           |
+| `[].project_id`             | integer  | ID of the issue project.                                                                                                          |
+| `[].state`                  | string   | State of the issue. Can be `opened` or `closed`.                                                                                  |
+| `[].task_completion_status` | object   | Includes `count` and `completed_count`.                                                                                           |
+| `[].time_stats`             | object   | Time statistics for the issue. Includes `time_estimate`, `total_time_spent`, `human_time_estimate`, and `human_total_time_spent`. |
+| `[].title`                  | string   | Title of the issue.                                                                                                               |
+| `[].type`                   | string   | Type of the issue. Same as `issue_type`, but uppercase.                                                                           |
+| `[].updated_at`             | datetime | Timestamp of when the issue was updated.                                                                                          |
+| `[].upvotes`                | integer  | Number of upvotes the issue has received.                                                                                         |
+| `[].user_notes_count`       | integer  | User notes count of the issue.                                                                                                    |
+| `[].web_url`                | string   | Web URL of the issue.                                                                                                             |
+| `[].weight`                 | integer  | Weight of the issue.                                                                                                              |
+
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+response attributes when you use an external issue tracker, like Jira:
+
+| Attribute                   | Type     | Description                                                                                                                       |
+|-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `[].id`                     | integer  | ID of the issue.                                                                                                                  |
+| `[].title`                  | string   | Title of the issue.                                                                                                               |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -2477,46 +2524,83 @@ Example response when you use the GitLab issue tracker:
 
 ```json
 [
-   {
-      "state" : "opened",
-      "description" : "Ratione dolores corrupti mollitia soluta quia.",
-      "author" : {
-         "state" : "active",
-         "id" : 18,
-         "web_url" : "https://gitlab.example.com/eileen.lowe",
-         "name" : "Alexandra Bashirian",
-         "avatar_url" : null,
-         "username" : "eileen.lowe"
-      },
-      "milestone" : {
-         "project_id" : 1,
-         "description" : "Ducimus nam enim ex consequatur cumque ratione.",
-         "state" : "closed",
-         "due_date" : null,
-         "iid" : 2,
-         "created_at" : "2016-01-04T15:31:39.996Z",
-         "title" : "v4.0",
-         "id" : 17,
-         "updated_at" : "2016-01-04T15:31:39.996Z"
-      },
-      "project_id" : 1,
-      "assignee" : {
-         "state" : "active",
-         "id" : 1,
-         "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/root",
-         "avatar_url" : null,
-         "username" : "root"
-      },
-      "updated_at" : "2016-01-04T15:31:51.081Z",
-      "id" : 76,
-      "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
-      "created_at" : "2016-01-04T15:31:51.081Z",
-      "iid" : 6,
-      "labels" : [],
-      "user_notes_count": 1,
-      "changes_count": "1"
-   }
+  {
+    "id": 76,
+    "iid": 6,
+    "project_id": 1,
+    "title": "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
+    "description": "Ratione dolores corrupti mollitia soluta quia.",
+    "state": "opened",
+    "created_at": "2024-09-06T10:58:49.002Z",
+    "updated_at": "2024-09-06T11:01:40.710Z",
+    "closed_at": null,
+    "closed_by": null,
+    "labels": [
+      "label"
+    ],
+    "milestone": {
+      "project_id": 1,
+      "description": "Ducimus nam enim ex consequatur cumque ratione.",
+      "state": "closed",
+      "due_date": null,
+      "iid": 2,
+      "created_at": "2016-01-04T15:31:39.996Z",
+      "title": "v4.0",
+      "id": 17,
+      "updated_at": "2016-01-04T15:31:39.996Z"
+    },
+    "assignees": [
+      {
+        "id": 1,
+        "username": "root",
+        "name": "Administrator",
+        "state": "active",
+        "locked": false,
+        "avatar_url": null,
+        "web_url": "https://gitlab.example.com/root"
+      }
+    ],
+    "author": {
+      "id": 18,
+      "username": "eileen.lowe",
+      "name": "Alexandra Bashirian",
+      "state": "active",
+      "locked": false,
+      "avatar_url": null,
+      "web_url": "https://gitlab.example.com/eileen.lowe"
+    },
+    "type": "ISSUE",
+    "assignee": {
+      "id": 1,
+      "username": "root",
+      "name": "Administrator",
+      "state": "active",
+      "locked": false,
+      "avatar_url": null,
+      "web_url": "https://gitlab.example.com/root"
+    },
+    "user_notes_count": 1,
+    "merge_requests_count": 1,
+    "upvotes": 0,
+    "downvotes": 0,
+    "due_date": null,
+    "confidential": false,
+    "discussion_locked": null,
+    "issue_type": "issue",
+    "web_url": "https://gitlab.example.com/my-group/my-project/-/issues/6",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    },
+    "task_completion_status": {
+      "count": 0,
+      "completed_count": 0
+    },
+    "weight": null,
+    "blocking_issues_count": 0
+ }
 ]
 ```
 

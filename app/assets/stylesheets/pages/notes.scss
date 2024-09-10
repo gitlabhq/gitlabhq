@@ -456,6 +456,19 @@
 
 .user-activity-content {
   position: relative;
+
+  .system-note-image {
+    @apply gl-flex;
+    @apply gl-justify-center;
+    @apply gl-items-center;
+    top: 14px;
+    width: 22px;
+    height: 22px;
+
+    svg {
+      fill: $gray-600 !important;
+    }
+  }
 }
 
 //This needs to be deleted when Snippet/Commit comments are convered to Vue

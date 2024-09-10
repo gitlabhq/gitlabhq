@@ -1732,6 +1732,33 @@ Input type: `AiAgentUpdateInput`
 | <a id="mutationaiagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.aiFeatureSettingUpdate`
+
+Updates or create setting for the AI feature.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Input type: `AiFeatureSettingUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaifeaturesettingupdatefeature"></a>`feature` | [`AiFeatures!`](#aifeatures) | AI feature being configured. |
+| <a id="mutationaifeaturesettingupdateprovider"></a>`provider` | [`AiFeatureProviders!`](#aifeatureproviders) | Provider for AI setting. |
+| <a id="mutationaifeaturesettingupdateselfhostedmodelid"></a>`selfHostedModelId` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of the self-hosted model provide the AI setting. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaifeaturesettingupdateaifeaturesetting"></a>`aiFeatureSetting` | [`AiFeatureSetting`](#aifeaturesetting) | AI feature setting after mutation. |
+| <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaifeaturesettingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.aiSelfHostedModelCreate`
 
 DETAILS:
@@ -17355,6 +17382,18 @@ Version of an AI Agent.
 | <a id="aiagentversionid"></a>`id` | [`ID!`](#id) | ID of the agent version. |
 | <a id="aiagentversionmodel"></a>`model` | [`String!`](#string) | Model of the agent. |
 | <a id="aiagentversionprompt"></a>`prompt` | [`String!`](#string) | Prompt of the agent. |
+
+### `AiFeatureSetting`
+
+Duo Chat feature setting.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aifeaturesettingfeature"></a>`feature` | [`String!`](#string) | AI feature. |
+| <a id="aifeaturesettingprovider"></a>`provider` | [`String!`](#string) | Chosen method to provide the feature. |
+| <a id="aifeaturesettingselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model server which provide the feature. |
 
 ### `AiMessage`
 
@@ -35407,6 +35446,38 @@ The category of the additional context.
 | ----- | ----------- |
 | <a id="aiadditionalcontextcategoryfile"></a>`FILE` | File content category. |
 | <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
+
+### `AiFeatureProviders`
+
+Providers for AI features that can be configured.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aifeatureprovidersdisabled"></a>`DISABLED` | Disabled option. |
+| <a id="aifeatureprovidersself_hosted"></a>`SELF_HOSTED` | Self hosted option. |
+| <a id="aifeatureprovidersvendored"></a>`VENDORED` | Vendored option. |
+
+### `AiFeatures`
+
+AI features that can be configured in the settings.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aifeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
+| <a id="aifeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
+| <a id="aifeaturesduo_chat"></a>`DUO_CHAT` | Duo chat feature setting. |
+| <a id="aifeaturesduo_chat_ci_editor_assistant"></a>`DUO_CHAT_CI_EDITOR_ASSISTANT` | Duo chat ci editor assistant feature setting. |
+| <a id="aifeaturesduo_chat_epic_reader"></a>`DUO_CHAT_EPIC_READER` | Duo chat epic reader feature setting. |
+| <a id="aifeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
+| <a id="aifeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |
+| <a id="aifeaturesduo_chat_fix_code"></a>`DUO_CHAT_FIX_CODE` | Duo chat fix code feature setting. |
+| <a id="aifeaturesduo_chat_gitlab_documentation"></a>`DUO_CHAT_GITLAB_DOCUMENTATION` | Duo chat gitlab documentation feature setting. |
+| <a id="aifeaturesduo_chat_issue_reader"></a>`DUO_CHAT_ISSUE_READER` | Duo chat issue reader feature setting. |
+| <a id="aifeaturesduo_chat_merge_request_reader"></a>`DUO_CHAT_MERGE_REQUEST_READER` | Duo chat merge request reader feature setting. |
+| <a id="aifeaturesduo_chat_refactor_code"></a>`DUO_CHAT_REFACTOR_CODE` | Duo chat refactor code feature setting. |
+| <a id="aifeaturesduo_chat_summarize_comments"></a>`DUO_CHAT_SUMMARIZE_COMMENTS` | Duo chat summarize comment feature setting. |
+| <a id="aifeaturesduo_chat_troubleshoot_job"></a>`DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
+| <a id="aifeaturesduo_chat_write_tests"></a>`DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
 
 ### `AiMessageRole`
 
