@@ -18,18 +18,7 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
-## 17.5.0
-
-- OpenSSL version 3 (TLS 1.2) is required for all incoming connections to GitLab, such as from LDAP servers and webhooks.
-
-## 17.1.0
-
-- Bitbucket identities with untrusted `extern_uid` are deleted.
-  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
-- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
-  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
-
-## 17.0.0
+## Issues to be aware of when upgrading from 16.11
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
@@ -66,6 +55,38 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Project.where(repository_storage: 'duplicate-path').update_all(repository_storage: 'default')
   ```
 
+- Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.0 or 17.1.1.
+
+  Due to a bug in GitLab 17.1.0 and 17.1.1 where a background job completion did not get enforced correctly, there
+  can be failures when upgrading directly to GitLab 17.1.0 and 17.1.1.
+  The error during the migration of the upgrade looks like the following:
+
+  ```shell
+  main: == [advisory_lock_connection] object_id: 55460, pg_backend_pid: 8714
+  main: == 20240531173207 ValidateNotNullCheckConstraintOnEpicsIssueId: migrating =====
+  main: -- execute("SET statement_timeout TO 0")
+  main:    -> 0.0004s
+  main: -- execute("ALTER TABLE epics VALIDATE CONSTRAINT check_450724d1bb;")
+  main: -- execute("RESET statement_timeout")
+  main: == [advisory_lock_connection] object_id: 55460, pg_backend_pid: 8714
+  STDERR:
+  ```
+
+  This issue occurs because the background migration that got introduced in GitLab 17.0 didn't complete.
+  To upgrade, either:
+
+  - Upgrade to GitLab 17.0 and wait until all background migrations are completed.
+  - Upgrade to GitLab 17.1 and then manually execute the background job and the migration by
+    running the following command:
+
+    ```shell
+    sudo gitlab-rake gitlab:background_migrations:finalize[BackfillEpicBasicFieldsToWorkItemRecord,epics,id,'[null]']
+    ```
+
+  Now you should be able to complete the migrations in GitLab 17.1 and finish
+  the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
+  cause these issues.
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:
@@ -74,3 +95,58 @@ Specific information applies to Linux package installations:
 
   Prior to upgrading, you must ensure your installation is using
   [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
+### Non-expiring access tokens
+
+Access tokens that have no expiration date are valid indefinitely, which is a
+security risk if the access token is divulged.
+
+When you upgrade to GitLab 16.0 and later, any [personal](../../user/profile/personal_access_tokens.md),
+[project](../../user/project/settings/project_access_tokens.md), or
+[group](../../user/group/settings/group_access_tokens.md) access
+token that does not have an expiration date automatically has an expiration
+date set at one year from the date of upgrade.
+
+Before this automatic expiry date is applied, you should do the following to minimize disruption:
+
+1. [Identify any access tokens without an expiration date](../../security/token_overview.md#find-tokens-with-no-expiration-date).
+1. [Give those tokens an expiration date](../../security/token_overview.md#extend-token-lifetime).
+
+For more information, see the:
+
+- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
+
+## 17.5.0
+
+With the upgrade to OpenSSL version 3:
+
+- GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
+- TLS/SSL certificates must have at least 112 bits of security. RSA, DSA, and DH keys shorter than 2048 bits, and ECC keys shorter than 224 bits are prohibited.
+
+Older services, such as LDAP and Webhook servers, may still use TLS
+1.1. However, TLS 1.0 and 1.1 have reached end-of-life and are no longer
+considered secure. GitLab will fail to connect to services using TLS
+1.0 or 1.1 with a `no protocols available` error message.
+
+In addition, OpenSSL 3 increased the [default security level from level 1 to 2](https://docs.openssl.org/3.0/man3/SSL_CTX_set_security_level/#default-callback-behaviour),
+raising the number of bits of security from 80 to 112. For example,
+a certificate signed with an RSA key can use RSA-2048 but not RSA-1024. GitLab
+will fail to connect to a service that uses a certificate signed with insufficient
+bits with a `certificate key too weak` error message.
+
+Check the [GitLab documentation on securing your installation](../../security/index.md).
+for more details.
+
+## 17.1.0
+
+- Bitbucket identities with untrusted `extern_uid` are deleted.
+  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
+- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
+  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
+- Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
+  you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Upgrading to GitLab 17.1.0 or 17.1.1 or having unfinished background migrations from GitLab 17.0 can result
+  in a failure when running the migrations.
+  This is due to a bug.
+  [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) has been fixed with GitLab 17.1.2.
