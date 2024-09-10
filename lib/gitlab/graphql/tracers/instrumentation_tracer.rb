@@ -5,8 +5,6 @@ module Gitlab
     module Tracers
       # This tracer writes logs for certain trace events.
       module InstrumentationTracer
-        MUTATION_REGEXP = /^mutation/
-
         # All queries pass through a multiplex, even if only one query is executed
         # https://github.com/rmosolgo/graphql-ruby/blob/43e377b5b743a9102381d6ad3adaaed13ff5b6dd/lib/graphql/schema.rb#L1303
         #
@@ -73,7 +71,7 @@ module Gitlab
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
             variables: clean_variables(query.provided_variables),
-            query_string: clean_query_string(query)
+            query_string: query.query_string
           }
 
           token_info = auth_token_info(query)
@@ -98,20 +96,10 @@ module Gitlab
 
         def clean_variables(variables)
           filtered = ActiveSupport::ParameterFilter
-            .new(::Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::FILTER_PARAMETERS)
+            .new(::Rails.application.config.filter_parameters)
             .filter(variables)
 
           filtered&.to_s
-        end
-
-        def clean_query_string(query)
-          return query.query_string unless mutation?(query)
-
-          query.sanitized_query_string
-        end
-
-        def mutation?(query)
-          query.query_string =~ ::Gitlab::Graphql::Tracers::InstrumentationTracer::MUTATION_REGEXP
         end
       end
     end
