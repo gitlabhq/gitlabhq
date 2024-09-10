@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/middleware/strip_cookies'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -75,4 +77,8 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
 
   config.eager_load = true
+
+  config.middleware.insert_before(
+    ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/v2$}, %r{^/v2/}]
+  )
 end
