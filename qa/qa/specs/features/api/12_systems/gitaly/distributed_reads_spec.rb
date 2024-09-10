@@ -19,7 +19,8 @@ module QA
         praefect_manager.wait_for_replication(project.id)
       end
 
-      it 'reads from each node', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347833' do
+      it 'reads from each node', :blocking,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347833' do
         pre_read_data = praefect_manager.query_read_distribution
 
         wait_for_reads_to_increase(project, number_of_reads_per_loop, pre_read_data)

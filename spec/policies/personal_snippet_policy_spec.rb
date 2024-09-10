@@ -40,6 +40,7 @@ RSpec.describe PersonalSnippetPolicy do
 
       it do
         is_expected.to be_allowed(:read_snippet)
+        is_expected.to be_allowed(:cache_blob)
         is_expected.to be_disallowed(:create_note)
         is_expected.to be_disallowed(:award_emoji)
         is_expected.to be_disallowed(*author_permissions)
@@ -131,6 +132,7 @@ RSpec.describe PersonalSnippetPolicy do
         is_expected.to be_disallowed(:read_snippet)
         is_expected.to be_disallowed(:create_note)
         is_expected.to be_disallowed(:award_emoji)
+        is_expected.to be_disallowed(:cache_blob)
         is_expected.to be_disallowed(*author_permissions)
       end
     end

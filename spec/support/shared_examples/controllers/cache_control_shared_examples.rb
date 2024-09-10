@@ -18,7 +18,7 @@ RSpec.shared_examples 'project cache control headers' do
   context 'when project is private' do
     let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
 
-    it 'returns cache_control public header to true' do
+    it 'returns cache_control public header to false' do
       subject
 
       expect(response.cache_control[:public]).to be_falsey
@@ -28,7 +28,7 @@ RSpec.shared_examples 'project cache control headers' do
   context 'when project is internal' do
     let(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
 
-    it 'returns cache_control public header to true' do
+    it 'returns cache_control public header to false' do
       subject
 
       expect(response.cache_control[:public]).to be_falsey

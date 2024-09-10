@@ -133,6 +133,7 @@ RSpec.describe ProjectSnippetPolicy do
         it do
           expect_allowed(:read_snippet)
           expect_disallowed(*author_permissions)
+          expect_allowed(:cache_blob)
         end
       end
 
@@ -243,6 +244,7 @@ RSpec.describe ProjectSnippetPolicy do
         it do
           expect_disallowed(:read_snippet)
           expect_disallowed(*author_permissions)
+          expect_disallowed(:cache_blob)
         end
       end
 
@@ -326,6 +328,26 @@ RSpec.describe ProjectSnippetPolicy do
       let(:membership_target) { group }
 
       it_behaves_like 'regular user member permissions'
+    end
+
+    context 'no user' do
+      let(:current_user) { nil }
+
+      context 'with public snippet' do
+        let(:snippet_visibility) { :public }
+
+        it do
+          expect_disallowed(:cache_blob)
+        end
+      end
+
+      context 'with private snippet' do
+        let(:snippet_visibility) { :private }
+
+        it do
+          expect_disallowed(:cache_blob)
+        end
+      end
     end
   end
 
