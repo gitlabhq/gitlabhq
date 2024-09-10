@@ -128,6 +128,38 @@ RSpec.describe Oauth::AuthorizationsController do
           expect(response).to render_template('doorkeeper/authorizations/redirect')
         end
 
+        context 'when showing applications as provided' do
+          let!(:application) do
+            create(
+              :oauth_application,
+              owner_id: nil,
+              owner_type: nil,
+              scopes: application_scopes,
+              redirect_uri: 'http://example.com',
+              confidential: confidential
+            )
+          end
+
+          it 'displays the warning message' do
+            subject
+            expect(response.body).to have_css(
+              'p.gl-text-orange-500', text: "Make sure you trust #{application.name} before authorizing.")
+            expect(response.body).to have_css('[data-testid="warning-solid-icon"]')
+          end
+
+          context 'when redirect uri has www pattern' do
+            before do
+              application.redirect_uri = "http://www.examplewww.com"
+              application.save!
+            end
+
+            it 'substitutes pattern correctly on display' do
+              subject
+              expect(response.body).to have_css('p', text: "You will be redirected to examplewww.com")
+            end
+          end
+        end
+
         context 'with gl_auth_type=login' do
           let(:minimal_scope) { Gitlab::Auth::READ_USER_SCOPE.to_s }
 

@@ -30,42 +30,42 @@ module Ci
     end
 
     with_options scope: :user, score: 5
-    condition(:any_developer_maintainer_owned_groups_inheriting_shared_runners) do
-      @user.developer_maintainer_owned_groups.with_shared_runners_enabled.any?
+    condition(:any_maintainer_owned_groups_inheriting_shared_runners) do
+      @user.owned_or_maintainers_groups.with_shared_runners_enabled.any?
     end
 
     with_options scope: :user, score: 5
-    condition(:any_developer_projects_inheriting_shared_runners) do
-      @user.authorized_projects(Gitlab::Access::DEVELOPER).with_shared_runners_enabled.any?
+    condition(:any_maintainer_projects_inheriting_shared_runners) do
+      @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.any?
     end
 
     with_options score: 10
     condition(:any_associated_projects_in_group_runner_inheriting_group_runners) do
-      # Check if any projects where user is a developer+ are inheriting group runners
+      # Check if any projects where user is a maintainer+ are inheriting group runners
       @subject.groups&.any? do |group|
         group.all_projects
              .with_group_runners_enabled
-             .visible_to_user_and_access_level(@user, Gitlab::Access::DEVELOPER)
+             .visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER)
              .exists?
       end
     end
 
     with_options score: 6
-    condition(:developer_in_any_associated_projects) do
-      # Check if runner is associated to any projects where user is a developer+
-      @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::DEVELOPER).exists?
+    condition(:maintainer_in_any_associated_projects) do
+      # Check if runner is associated to any projects where user is a maintainer+
+      @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
     end
 
     with_options score: 8
-    condition(:developer_in_any_associated_groups) do
-      user_group_ids = @user.developer_maintainer_owned_groups.select(:id)
+    condition(:maintainer_in_any_associated_groups) do
+      user_group_ids = @user.owned_or_maintainers_groups.select(:id)
 
       # Check for direct group relationships
       next true if user_group_ids.id_in(@subject.group_ids).any?
 
       # Check for indirect group relationships
       GroupGroupLink
-        .with_developer_maintainer_owner_access
+        .with_owner_or_maintainer_access
         .groups_accessible_via(user_group_ids)
         .id_in(@subject.group_ids)
         .any?
@@ -82,19 +82,19 @@ module Ci
       enable :read_runner
     end
 
-    rule { is_instance_runner & any_developer_maintainer_owned_groups_inheriting_shared_runners }.policy do
+    rule { is_instance_runner & any_maintainer_owned_groups_inheriting_shared_runners }.policy do
       enable :read_runner
     end
 
-    rule { is_instance_runner & any_developer_projects_inheriting_shared_runners }.policy do
+    rule { is_instance_runner & any_maintainer_projects_inheriting_shared_runners }.policy do
       enable :read_runner
     end
 
-    rule { is_project_runner & developer_in_any_associated_projects }.policy do
+    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
       enable :read_runner
     end
 
-    rule { is_group_runner & developer_in_any_associated_groups }.policy do
+    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
       enable :read_runner
     end
 

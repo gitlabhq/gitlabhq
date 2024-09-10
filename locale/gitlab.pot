@@ -20903,6 +20903,9 @@ msgstr ""
 msgid "Error linking identity: %{errors}"
 msgstr ""
 
+msgid "Error linking identity: Provider and Extern UID must be in the session."
+msgstr ""
+
 msgid "Error loading branch data. Please try again."
 msgstr ""
 

@@ -18,7 +18,7 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
   let(:token) { 'token' }
   let(:headers) { { 'Authorization' => "Bearer #{build_jwt(user).encoded}" } }
 
-  subject do
+  subject(:response) do
     HTTParty.get(url, headers: headers)
   end
 
@@ -134,5 +134,13 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
   context 'when the blob must be downloaded' do
     it_behaves_like 'responds with the file'
     it_behaves_like 'caches the file'
+  end
+
+  context 'when calling the authentication endpoint' do
+    let(:url) { capybara_url('/v2') }
+
+    it 'does not set session cookies' do
+      expect(response.headers).not_to include('set-cookie')
+    end
   end
 end
