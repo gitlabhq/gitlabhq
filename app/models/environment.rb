@@ -353,7 +353,7 @@ class Environment < ApplicationRecord
     stop_actions.present?
   end
 
-  def stop_with_actions!
+  def stop_with_actions!(current_user)
     return unless available?
 
     stop!
@@ -365,7 +365,7 @@ class Environment < ApplicationRecord
         stop_action,
         name: 'environment_stop_with_actions'
       ) do |job|
-        actions << job.play(job.user)
+        actions << job.play(current_user)
       rescue StateMachines::InvalidTransition
         # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry. However,
         # Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.

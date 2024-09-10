@@ -12,6 +12,8 @@
     = safe_format(_('To allow %{strongOpen}%{provider}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}.'), tag_pair(tag.strong, :strongOpen, :strongClose), provider: provider, username: current_user.username, email: current_user.email)
 
 = gitlab_ui_form_for(@identity, url: user_settings_identities_path, method: :post) do |f|
+  = f.hidden_field :provider, value: @identity.provider
+  = f.hidden_field :extern_uid, value: @identity.extern_uid
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
     = _("Authorize")
   = render Pajamas::ButtonComponent.new(href: profile_account_path, block: true) do

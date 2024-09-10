@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Login', :clean_gitlab_redis_sessions, :aggregate_failures, feature_category: :system_access do
+RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
   include SessionHelpers

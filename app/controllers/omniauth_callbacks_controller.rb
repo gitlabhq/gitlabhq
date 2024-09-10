@@ -188,10 +188,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def redirect_authorize_identity_link(identity_linker)
     state = SecureRandom.uuid
     session[:identity_link_state] = state
-    session[:identity_link_provider] = identity_linker.provider
-    session[:identity_link_extern_uid] = identity_linker.uid
 
-    redirect_to new_user_settings_identities_path(state: state)
+    redirect_to new_user_settings_identities_path(
+      provider: identity_linker.provider,
+      extern_uid: identity_linker.uid,
+      state: state
+    )
   end
 
   def build_auth_user(auth_user_class)

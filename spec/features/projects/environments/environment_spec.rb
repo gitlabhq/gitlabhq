@@ -294,7 +294,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
     let(:project) { create(:project, :repository) }
 
     let!(:environment) do
-      create(:environment, :with_review_app, project: project, ref: 'feature', user: user)
+      create(:environment, :with_review_app, project: project, ref: 'feature')
     end
 
     it 'user visits environment page', :js do

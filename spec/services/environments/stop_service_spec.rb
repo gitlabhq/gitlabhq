@@ -23,7 +23,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
       let!(:environment) { review_job.persisted_environment }
       let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
-      let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project, user: user) }
+      let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project) }
 
       before do
         review_job.success!
@@ -184,8 +184,8 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
         merge_requests_as_head_pipeline: [merge_request])
     end
 
-    let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, :success, pipeline: pipeline, project: project, user: user) }
-    let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project, user: user) }
+    let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, :success, pipeline: pipeline, project: project) }
+    let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project) }
 
     before do
       review_job.deployment.success!
@@ -244,8 +244,8 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
       context 'with environment related jobs ' do
         let!(:environment) { create(:environment, :available, name: 'staging', project: project) }
         let!(:prepare_staging_job) { create(:ci_build, :prepare_staging, pipeline: pipeline, project: project) }
-        let!(:start_staging_job) { create(:ci_build, :start_staging, :with_deployment, :manual, pipeline: pipeline, project: project, user: user) }
-        let!(:stop_staging_job) { create(:ci_build, :stop_staging, :manual, pipeline: pipeline, project: project, user: user) }
+        let!(:start_staging_job) { create(:ci_build, :start_staging, :with_deployment, :manual, pipeline: pipeline, project: project) }
+        let!(:stop_staging_job) { create(:ci_build, :stop_staging, :manual, pipeline: pipeline, project: project) }
 
         it 'does not stop environments that was not started by the merge request' do
           subject
@@ -308,6 +308,6 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
   end
 
   def feature_environment
-    create(:environment, :with_review_app, project: project, ref: 'feature', user: user)
+    create(:environment, :with_review_app, project: project, ref: 'feature')
   end
 end

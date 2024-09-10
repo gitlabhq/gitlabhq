@@ -15,7 +15,7 @@ module Environments
       if params[:force]
         environment.stop_complete!
       else
-        environment.stop_with_actions!
+        environment.stop_with_actions!(current_user)
       end
 
       unless environment.saved_change_to_attribute?(:state)
