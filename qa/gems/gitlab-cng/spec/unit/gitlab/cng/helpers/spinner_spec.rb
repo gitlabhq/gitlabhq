@@ -42,30 +42,37 @@ RSpec.describe Gitlab::Cng::Helpers::Spinner, :aggregate_failures do
 
   context "with errors" do
     let(:success) { false }
-    let(:error_message) { "failed\nerror" }
+    let(:error_mark) { Rainbow.new.wrap(TTY::Spinner::CROSS).color(error_color) }
+    let(:done_message) { Rainbow.new.wrap('failed').color(error_color) }
+    let(:spinner_line) { "[#{error_mark}] #{spinner_message} ... #{done_message}" }
+    let(:spin_output) do
+      <<~OUTPUT
+        #{Rainbow.new.wrap("=== block '#{spinner_message}' error ===").color(:magenta)}
+        #{Rainbow.new.wrap('error').color(error_color)}
+        #{Rainbow.new.wrap("=== block '#{spinner_message}' error ===").color(:magenta)}
+      OUTPUT
+    end
 
     context "with raise_on_error: true" do
       let(:args) { { raise_on_error: true } }
-      let(:error_mark) { Rainbow.new.wrap(TTY::Spinner::CROSS).color(:red) }
+      let(:error_color) { :red }
 
-      it "raises error and prints red error message" do
-        expect { spin }.to raise_error("error")
+      it "raises error and prints red failed status" do
+        expect { expect { spin }.to raise_error("error") }.to output("\n#{spin_output}").to_stdout
         expect(TTY::Spinner).to have_received(:new).with(
           "[:spinner] #{spinner_message} ...",
           format: :dots,
           success_mark: success_mark,
           error_mark: error_mark
         )
-        expect(spinner).to have_received(:error).with(Rainbow.new.wrap(error_message).color(:red))
+        expect(spinner).to have_received(:error).with(done_message)
       end
 
       context "without tty" do
         let(:tty) { false }
 
         it "raises error and prints plain red error message" do
-          output = "[#{error_mark}] #{spinner_message} ... #{Rainbow.new.wrap(error_message).color(:red)}\n"
-
-          expect { expect { spin }.to raise_error("error") }.to output(output).to_stdout
+          expect { expect { spin }.to raise_error("error") }.to output("#{spinner_line}\n\n#{spin_output}").to_stdout
           expect(spinner).not_to have_received(:auto_spin)
           expect(spinner).not_to have_received(:stop)
         end
@@ -74,10 +81,10 @@ RSpec.describe Gitlab::Cng::Helpers::Spinner, :aggregate_failures do
 
     context "with exit_on_error: false" do
       let(:args) { { raise_on_error: false } }
-      let(:error_mark) { Rainbow.new.wrap(TTY::Spinner::CROSS).color(:yellow) }
+      let(:error_color) { :yellow }
 
       it "does not raise error and prints warning in yellow" do
-        spin
+        expect { spin }.to output("\n#{spin_output}").to_stdout
 
         expect(TTY::Spinner).to have_received(:new).with(
           "[:spinner] #{spinner_message} ...",
@@ -85,16 +92,14 @@ RSpec.describe Gitlab::Cng::Helpers::Spinner, :aggregate_failures do
           success_mark: success_mark,
           error_mark: error_mark
         )
-        expect(spinner).to have_received(:error).with(Rainbow.new.wrap(error_message).color(:yellow))
+        expect(spinner).to have_received(:error).with(done_message)
       end
 
       context "without tty" do
         let(:tty) { false }
 
         it "does not raise error and prints plain warning in yellow" do
-          output = "[#{error_mark}] #{spinner_message} ... #{Rainbow.new.wrap(error_message).color(:yellow)}\n"
-
-          expect { spin }.to output(output).to_stdout
+          expect { spin }.to output("#{spinner_line}\n\n#{spin_output}").to_stdout
           expect(spinner).not_to have_received(:auto_spin)
           expect(spinner).not_to have_received(:stop)
         end

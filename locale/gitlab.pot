@@ -61714,6 +61714,9 @@ msgstr ""
 msgid "WorkItem|Forest green"
 msgstr ""
 
+msgid "WorkItem|Health status"
+msgstr ""
+
 msgid "WorkItem|History only"
 msgstr ""
 
@@ -62044,6 +62047,12 @@ msgstr ""
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
+msgid "WorkItem|at risk"
+msgstr ""
+
+msgid "WorkItem|attention"
+msgstr ""
+
 msgid "WorkItem|blocks"
 msgstr ""
 
@@ -62054,6 +62063,18 @@ msgid "WorkItem|issue weight completed"
 msgstr ""
 
 msgid "WorkItem|item"
+msgstr ""
+
+msgid "WorkItem|items"
+msgstr ""
+
+msgid "WorkItem|need"
+msgstr ""
+
+msgid "WorkItem|needs"
+msgstr ""
+
+msgid "WorkItem|on track"
 msgstr ""
 
 msgid "WorkItem|relates to"

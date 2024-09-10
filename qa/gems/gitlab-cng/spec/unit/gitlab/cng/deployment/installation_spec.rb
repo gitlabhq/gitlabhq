@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     let(:gitlab_domain) { "127.0.0.1.nip.io" }
     let(:chart_sha) { nil }
     let(:chart_reference) { "chart-reference" }
+    let(:ci) { false }
 
     let(:kubeclient) do
       instance_double(Gitlab::Cng::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
@@ -71,9 +72,44 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       ClimateControl.modify({ "QA_EE_LICENSE" => "license" }) { example.run }
     end
 
-    context "without ci" do
-      let(:ci) { false }
+    context "with deployment failure" do
+      let(:warn_event) do
+        {
+          involvedObject: {
+            kind: "HorizontalPodAutoscaler",
+            name: "gitlab-webservice-default"
+          },
+          kind: "Event",
+          message: "failed to get cpu usage",
+          reason: "FailedGetResourceMetric",
+          type: "Warning"
+        }
+      end
 
+      before do
+        allow(helmclient).to receive(:upgrade).and_raise(Gitlab::Cng::Helm::Client::Error, "error")
+        allow(kubeclient).to receive(:events).with(json_format: true).and_return(<<~EVENTS)
+          {
+            "items": [
+              #{JSON.pretty_generate(warn_event)},
+              {
+                "type": "Normal"
+              }
+            ]
+          }
+        EVENTS
+      end
+
+      it "automatically prints warning events" do
+        expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
+          match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}").and(
+            match(warn_event[:message])
+          )
+        ).to_stdout
+      end
+    end
+
+    context "with successful deployment" do
       it "runs setup and helm deployment" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
@@ -96,7 +132,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       end
     end
 
-    context "with ci and specific sha" do
+    context "with successful deployment on CI" do
       let(:ci) { true }
       let(:chart_sha) { "sha" }
       let(:ci_components) { { "gitlab.gitaly.image.repository" => "repo", "gitlab.gitaly.image.tag" => "tag" } }

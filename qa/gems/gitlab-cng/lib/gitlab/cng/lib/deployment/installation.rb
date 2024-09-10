@@ -184,6 +184,16 @@ module Gitlab
 
           Helpers::Spinner.spin("running helm deployment") do
             helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
+          rescue Helm::Client::Error => e
+            log("Helm upgrade failed", :error)
+            events = get_warning_events
+
+            if events
+              log("Following events of Warning type present in cluster:", :warn)
+              log(events)
+            end
+
+            raise e
           end
           log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
@@ -216,6 +226,28 @@ module Gitlab
 
           secret = Kubectl::Resources::Secret.new(LICENSE_SECRET, "license", license)
           puts mask_secrets(kubeclient.create_resource(secret), [license, Base64.encode64(license)])
+        end
+
+        # Get cluster events with warning type
+        #
+        # @return [String]
+        def get_warning_events
+          items = JSON.parse(kubeclient.events(json_format: true), symbolize_names: true)[:items]
+
+          events = items
+            .select { |item| item[:kind] == "Event" && item[:type] == "Warning" }
+            .map do |item|
+              object = item[:involvedObject]
+
+              {
+                **item.slice(:type, :reason),
+                name: "#{object[:kind]}/#{object[:name]}",
+                message: item[:message]
+              }
+            end
+          return if events.empty?
+
+          JSON.pretty_generate(events)
         end
       end
     end

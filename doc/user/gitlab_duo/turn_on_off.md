@@ -15,6 +15,7 @@ GitLab Duo features that are generally available are automatically turned on for
 
 - If you have self-managed GitLab:
   - You must [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
+  - [Silent Mode](../../administration/silent_mode/index.md) must not be turned on.
   - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
   - For the best experience, you should upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
 - If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).

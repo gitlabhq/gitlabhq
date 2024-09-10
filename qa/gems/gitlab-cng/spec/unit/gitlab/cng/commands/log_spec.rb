@@ -91,7 +91,9 @@ RSpec.describe Gitlab::Cng::Commands::Log do
     end
 
     it "prints events" do
-      expect { invoke_command(command_name) }.to output("#{events}\n").to_stdout
+      expect { invoke_command(command_name) }.to output(
+        match(/Fetching events/).and(match(/#{events}\n/))
+      ).to_stdout
     end
 
     it "saves events to file" do

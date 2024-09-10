@@ -30,6 +30,7 @@ import {
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
+  mockRolledUpCountsByType,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -62,6 +63,7 @@ describe('WorkItemTree', () => {
     canUpdateChildren = true,
     hasSubepicsFeature = true,
     workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
+    shouldWaitForPromise = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -80,7 +82,10 @@ describe('WorkItemTree', () => {
       },
       stubs: { CrudComponent },
     });
-    await waitForPromises();
+
+    if (shouldWaitForPromise) {
+      await waitForPromises();
+    }
   };
 
   it('displays Add button', () => {
@@ -343,15 +348,20 @@ describe('WorkItemTree', () => {
     expect(findCrudComponent().exists()).toBe(true);
   });
 
-  it('renders rolled up data', () => {
-    createComponent();
+  it('renders rolled up data only when query is loaded', async () => {
+    createComponent({ shouldWaitForPromise: false });
+
+    expect(findRolledUpData().exists()).toBe(false);
+
+    await waitForPromises();
 
     expect(findRolledUpData().exists()).toBe(true);
+
     expect(findRolledUpData().props()).toEqual({
       workItemId: 'gid://gitlab/WorkItem/2',
       workItemIid: '2',
       workItemType: 'Objective',
-      rolledUpCountsByType: [],
+      rolledUpCountsByType: mockRolledUpCountsByType,
       fullPath: 'test/project',
     });
   });
