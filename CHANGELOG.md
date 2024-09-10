@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.9 (2024-09-10)
+
+### Security (1 change)
+
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/gitlab/-/commit/9bb4b59afe5a2e8a383709a55a139d6875acf911)
+
+### Performance (1 change)
+
+- [Analyze partitioned tables every 3 days](https://gitlab.com/gitlab-org/gitlab/-/commit/e38cca011522a565d582e8760ca958f37d9be299) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163255))
+
 ## 16.11.8 (2024-08-05)
 
 ### Changed (1 change)
