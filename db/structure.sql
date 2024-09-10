@@ -12059,6 +12059,48 @@ CREATE SEQUENCE instance_audit_events_streaming_headers_id_seq
 
 ALTER SEQUENCE instance_audit_events_streaming_headers_id_seq OWNED BY instance_audit_events_streaming_headers.id;
 
+CREATE TABLE instance_integrations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    comment_detail integer,
+    active boolean DEFAULT false NOT NULL,
+    push_events boolean DEFAULT true,
+    issues_events boolean DEFAULT true,
+    merge_requests_events boolean DEFAULT true,
+    tag_push_events boolean DEFAULT true,
+    note_events boolean DEFAULT true NOT NULL,
+    wiki_page_events boolean DEFAULT true,
+    pipeline_events boolean DEFAULT false NOT NULL,
+    confidential_issues_events boolean DEFAULT true NOT NULL,
+    commit_events boolean DEFAULT true NOT NULL,
+    job_events boolean DEFAULT false NOT NULL,
+    confidential_note_events boolean DEFAULT true,
+    deployment_events boolean DEFAULT false NOT NULL,
+    comment_on_event_enabled boolean DEFAULT true NOT NULL,
+    alert_events boolean,
+    vulnerability_events boolean DEFAULT false NOT NULL,
+    archive_trace_events boolean DEFAULT false NOT NULL,
+    incident_events boolean DEFAULT false NOT NULL,
+    group_mention_events boolean DEFAULT false NOT NULL,
+    group_confidential_mention_events boolean DEFAULT false NOT NULL,
+    category text DEFAULT 'common'::text,
+    type text,
+    encrypted_properties bytea,
+    encrypted_properties_iv bytea,
+    CONSTRAINT check_611836812c CHECK ((char_length(category) <= 255)),
+    CONSTRAINT check_69b7b09aa8 CHECK ((char_length(type) <= 255))
+);
+
+CREATE SEQUENCE instance_integrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE instance_integrations_id_seq OWNED BY instance_integrations.id;
+
 CREATE TABLE integrations (
     id bigint NOT NULL,
     project_id bigint,
@@ -16719,6 +16761,7 @@ CREATE TABLE project_settings (
     duo_features_enabled boolean DEFAULT true NOT NULL,
     require_reauthentication_to_approve boolean,
     observability_alerts_enabled boolean DEFAULT true NOT NULL,
+    spp_repository_pipeline_access boolean,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
@@ -21709,6 +21752,8 @@ ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq':
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('instance_audit_events_streaming_headers_id_seq'::regclass);
 
+ALTER TABLE ONLY instance_integrations ALTER COLUMN id SET DEFAULT nextval('instance_integrations_id_seq'::regclass);
+
 ALTER TABLE ONLY integrations ALTER COLUMN id SET DEFAULT nextval('integrations_id_seq'::regclass);
 
 ALTER TABLE ONLY internal_ids ALTER COLUMN id SET DEFAULT nextval('internal_ids_id_seq'::regclass);
@@ -23972,6 +24017,9 @@ ALTER TABLE ONLY instance_audit_events
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers
     ADD CONSTRAINT instance_audit_events_streaming_headers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY instance_integrations
+    ADD CONSTRAINT instance_integrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT integrations_pkey PRIMARY KEY (id);

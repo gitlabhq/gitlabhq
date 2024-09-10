@@ -49,7 +49,7 @@ module Gitlab
         end
       end
 
-      delegate :content, :source, :url, to: :@config, allow_nil: true
+      delegate :content, :source, :url, :pipeline_policy_context, to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?

@@ -14,7 +14,7 @@ module Types
 
       expose_permissions Types::PermissionTypes::Note
 
-      implements Types::ResolvableInterface
+      implements Types::Notes::BaseNoteInterface
 
       present_using NotePresenter
 
@@ -31,10 +31,6 @@ module Types
         null: true,
         description: 'Project associated with the note.'
 
-      field :author, Types::UserType,
-        null: true,
-        description: 'User who wrote the note.'
-
       field :system, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether the note was created by the system or by a user.'
@@ -42,19 +38,6 @@ module Types
         GraphQL::Types::String,
         null: true,
         description: 'Name of the icon corresponding to a system note.'
-
-      field :body, GraphQL::Types::String,
-        null: false,
-        method: :note,
-        description: 'Content of the note.'
-
-      field :body_first_line_html, GraphQL::Types::String,
-        null: false,
-        description: 'First line of the note content.'
-
-      field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
-        null: true,
-        description: 'List of emoji reactions associated with the note.'
 
       field :imported, GraphQL::Types::Boolean,
         null: true,
@@ -65,28 +48,12 @@ module Types
         description: 'Indicates if the note is internal.',
         method: :confidential?
 
-      field :created_at, Types::TimeType,
-        null: false,
-        description: 'Timestamp of the note creation.'
       field :discussion, Types::Notes::DiscussionType,
         null: true,
         description: 'Discussion the note is a part of.'
       field :position, Types::Notes::DiffPositionType,
         null: true,
         description: 'Position of the note on a diff.'
-      field :updated_at, Types::TimeType,
-        null: false,
-        description: "Timestamp of the note's last activity."
-      field :url, GraphQL::Types::String,
-        null: true,
-        description: 'URL to view the note in the Web UI.'
-
-      field :last_edited_at, Types::TimeType,
-        null: true,
-        description: 'Timestamp when note was last edited.'
-      field :last_edited_by, Types::UserType,
-        null: true,
-        description: 'User who last edited the note.'
 
       field :author_is_contributor, GraphQL::Types::Boolean,
         null: true,
@@ -98,25 +65,12 @@ module Types
         null: true,
         description: 'Metadata for the given note if it is a system note.'
 
-      field :body_html, GraphQL::Types::String,
-        method: :note_html,
-        null: true,
-        description: "GitLab Flavored Markdown rendering of the content of the note."
-
-      def url
-        ::Gitlab::UrlBuilder.build(object)
-      end
-
       def system_note_icon_name
         SystemNoteHelper.system_note_icon_name(object) if object.system?
       end
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
-      end
-
-      def author
-        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
       end
 
       # We now support also SyntheticNote notes as a NoteType, but SyntheticNote does not have a real note ID,
@@ -128,8 +82,8 @@ module Types
         ::Gitlab::GlobalId.build(object, model_name: object.object.class.to_s, id: object.discussion_id)
       end
 
-      def body_first_line_html
-        first_line_in_markdown(object, :note, 125, project: object.project)
+      def note_project
+        object.project
       end
     end
   end

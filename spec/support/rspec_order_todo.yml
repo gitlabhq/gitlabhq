@@ -5176,7 +5176,7 @@
 - './spec/lib/gitlab/exclusive_lease_helpers/sleeping_lock_spec.rb'
 - './spec/lib/gitlab/exclusive_lease_helpers_spec.rb'
 - './spec/lib/gitlab/exclusive_lease_spec.rb'
-- './spec/lib/gitlab/experiment/rollout/feature_spec.rb'
+- './spec/lib/gitlab/experiment_feature_rollout_spec.rb'
 - './spec/lib/gitlab/external_authorization/access_spec.rb'
 - './spec/lib/gitlab/external_authorization/cache_spec.rb'
 - './spec/lib/gitlab/external_authorization/client_spec.rb'

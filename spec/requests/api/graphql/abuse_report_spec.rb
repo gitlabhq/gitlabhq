@@ -66,4 +66,33 @@ RSpec.describe 'Querying an Abuse Report', feature_category: :insider_threat do
       )
     end
   end
+
+  describe 'notes' do
+    let_it_be(:abuse_report) { create(:abuse_report) }
+    let_it_be(:note_1) { create(:abuse_report_note, abuse_report: abuse_report) }
+    let_it_be(:note_2) { create(:abuse_report_note, abuse_report: abuse_report) }
+    let_it_be(:reply) { create(:abuse_report_note, in_reply_to: note_1) }
+
+    let(:notes_response) do
+      graphql_data_at(:abuse_report, :notes, :nodes)
+    end
+
+    let(:abuse_report_fields) do
+      <<~GRAPHQL
+        notes {
+          nodes {
+            id
+            body
+            bodyHtml
+          }
+        }
+      GRAPHQL
+    end
+
+    it 'returns notes' do
+      expect(notes_response).to match_array(
+        [a_graphql_entity_for(note_1), a_graphql_entity_for(note_2), a_graphql_entity_for(reply)]
+      )
+    end
+  end
 end

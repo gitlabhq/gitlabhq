@@ -2950,5 +2950,5 @@ index 6a16dd1..99b1df4 100644
 -	const parentOrigin = searchParams.get('parentOrigin') || window.origin;
 +	const parentOrigin = window.origin;
  	const salt = searchParams.get('salt');
-
+ 
  	(async function () {

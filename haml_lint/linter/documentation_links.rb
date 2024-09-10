@@ -60,7 +60,7 @@ module HamlLint
           record_lint(node, "anchor (#{match[:anchor]}) is missing in: #{path_to_file}")
         end
 
-        record_lint(node, "remove .md extension from the link: #{link}") if link.end_with?('.md')
+        record_lint(node, "add .md extension to the link: #{link}") unless link.end_with?('.md')
       end
 
       def extract_link_and_anchor(ast_tree)

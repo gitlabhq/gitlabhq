@@ -1,8 +1,8 @@
 - return unless render_setting_to_allow_project_access_token_creation?(group)
 
 .form-group.gl-mb-3
-  - project_access_tokens_link = help_page_path('user/project/settings/project_access_tokens')
-  - group_access_tokens_link = help_page_path('user/group/settings/group_access_tokens')
+  - project_access_tokens_link = help_page_path('user/project/settings/project_access_tokens.md')
+  - group_access_tokens_link = help_page_path('user/group/settings/group_access_tokens.md')
   - link_start_project = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: project_access_tokens_link }
   - link_start_group = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_access_tokens_link }
   = f.gitlab_ui_checkbox_component :resource_access_token_creation_allowed,

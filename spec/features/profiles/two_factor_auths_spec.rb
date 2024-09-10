@@ -59,7 +59,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           fill_in 'pin_code', with: '123'
           click_button 'Register with two-factor app'
 
-          expect(page).to have_link('Try the troubleshooting steps here.', href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting'))
+          expect(page).to have_link('Try the troubleshooting steps here.', href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'))
         end
       end
 

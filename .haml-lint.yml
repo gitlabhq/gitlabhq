@@ -30,7 +30,9 @@ linters:
     max_consecutive: 2
 
   DocumentationLinks:
-    enabled: true
+    # Will be enabled again after offenses are resolved.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/419673
+    enabled: false
     include:
       - 'app/views/**/*.haml'
       - 'ee/app/views/**/*.haml'

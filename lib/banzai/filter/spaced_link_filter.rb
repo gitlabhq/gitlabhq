@@ -17,8 +17,8 @@ module Banzai
     # This is a small extension to the CommonMark spec.  If they start allowing
     # spaces in urls, we could then remove this filter.
     #
-    # Note: Filter::SanitizationFilter should always be run sometime after this filter
-    # to prevent XSS attacks
+    # Note: Filter::SanitizationFilter/Filter::SanitizeLinkFilter should always be run sometime
+    # after this filter to prevent XSS attacks
     #
     class SpacedLinkFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck

@@ -98,6 +98,7 @@ export default {
         .post(`${this.link}.json`)
         .then(() => {
           this.isLoading = false;
+          this.isDisabled = false;
 
           this.$emit('pipelineActionRequestComplete');
         })

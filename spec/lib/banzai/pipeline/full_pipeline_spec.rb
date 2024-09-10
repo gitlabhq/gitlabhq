@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
+  it_behaves_like 'sanitize pipeline'
+
   describe 'References' do
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }

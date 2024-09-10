@@ -89,6 +89,7 @@ export default {
           :value="commentLineStart"
           :options="commentLineOptions"
           width="sm"
+          class="gl-w-auto"
           @change="updateCommentLineStart"
         />
       </template>

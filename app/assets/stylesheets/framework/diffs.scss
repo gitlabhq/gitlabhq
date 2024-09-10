@@ -82,11 +82,6 @@ $diff-file-header: 41px;
       cursor: pointer;
     }
 
-    .file-mode-changed {
-      padding: 10px;
-      @apply gl-text-subtle;
-    }
-
     .suppressed-container {
       padding: ($padding-base-vertical + 5px) $padding-base-horizontal;
       text-align: center;
@@ -455,12 +450,6 @@ table.code {
     span {
       white-space: break-spaces;
 
-      &.context-cell {
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-      }
-
       &.line {
         word-wrap: break-word;
       }
@@ -819,10 +808,6 @@ table.code {
 
       &[aria-expanded="false"] {
         @apply gl-border-b;
-      }
-
-      .reply-author-avatar {
-        height: 1.5rem;
       }
     }
   }

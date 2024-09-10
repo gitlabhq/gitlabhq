@@ -199,12 +199,6 @@ p.time {
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100%; }
-
-  .note-title {
-    li {
-      border-bottom: 0 !important;
-    }
-  }
 }
 
 .markdown {
@@ -287,6 +281,7 @@ li.note {
   }
 }
 
+// these classes override styles from the dropzone node package
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 
@@ -343,16 +338,6 @@ li.note {
 
 .break-word {
   word-wrap: break-word;
-}
-
-.checkbox-icon-inline-wrapper {
-  .checkbox {
-    display: inline;
-
-    label {
-      display: inline;
-    }
-  }
 }
 
 /** COMMON CLASSES **/

@@ -55,7 +55,7 @@ export default {
       return getIdFromGraphQLId(this.author.id);
     },
     showEditButton() {
-      return this.note.userPermissions.resolveNote;
+      return false;
     },
     editedAtClasses() {
       return this.showReplyButton ? 'gl-text-secondary gl-pl-3' : 'gl-text-secondary gl-pl-8';

@@ -64,6 +64,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :package                             | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
       :user_namespace                      | ->(user_namespace) { "/#{user_namespace.owner.full_path}" }
       :project_namespace                   | ->(project_namespace) { "/#{project_namespace.project.full_path}" }
+      :abuse_report_note                   | ->(note) { "/admin/abuse_reports/#{note.abuse_report_id}#anti_abuse_reports_note_#{note.id}" }
     end
 
     with_them do

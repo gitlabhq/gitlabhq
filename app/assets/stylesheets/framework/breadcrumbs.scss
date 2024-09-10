@@ -32,25 +32,3 @@
     flex-grow: 1;
   }
 }
-
-/*
- * This temporarily restores the legacy breadcrumbs styles on the primary HAML breadcrumbs.
- * Those styles got changed in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3663,
- * causing a regression in this particular instance which does not use a Vue component and is
- * therefore unable to collapse overflowing items within a disclosure dropdown.
- * These temporary overrides will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/358113.
- */
-.tmp-breadcrumbs-fix {
-  .gl-breadcrumb-list {
-    flex-wrap: wrap;
-    max-width: none;
-
-    .gl-breadcrumb-item {
-      > a {
-        @include media-breakpoint-down(xs) {
-          @include str-truncated($breadcrumb-max-width);
-        }
-      }
-    }
-  }
-}

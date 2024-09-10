@@ -9,6 +9,7 @@ module Banzai
         @filters ||= FilterArray[
           Filter::HtmlEntityFilter,
           Filter::SanitizationFilter,
+          Filter::SanitizeLinkFilter,
           Filter::EmojiFilter
         ]
       end

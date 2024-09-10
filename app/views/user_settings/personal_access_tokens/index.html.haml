@@ -31,7 +31,7 @@
         path: user_settings_personal_access_tokens_path,
         token: @personal_access_token,
         scopes: @scopes,
-        help_path: help_page_path('user/profile/personal_access_tokens', anchor: 'personal-access-token-scopes')
+        help_path: help_page_path('user/profile/personal_access_tokens.md', anchor: 'personal-access-token-scopes')
 
     - c.with_body do
       #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json } }

@@ -190,6 +190,7 @@ project_setting:
     - duo_features_enabled
     - require_reauthentication_to_approve
     - observability_alerts_enabled
+    - spp_repository_pipeline_access
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

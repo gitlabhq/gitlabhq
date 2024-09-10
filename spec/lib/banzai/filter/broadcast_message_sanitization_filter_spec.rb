@@ -8,9 +8,6 @@ RSpec.describe Banzai::Filter::BroadcastMessageSanitizationFilter, feature_categ
   it_behaves_like 'default allowlist'
 
   describe 'custom allowlist' do
-    it_behaves_like 'XSS prevention'
-    it_behaves_like 'sanitize link'
-
     subject { filter(exp).to_html }
 
     context 'allows `a` elements' do

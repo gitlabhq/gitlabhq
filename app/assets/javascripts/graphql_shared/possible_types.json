@@ -11,9 +11,17 @@
     "GroupAuditEventStreamingDestination",
     "InstanceAuditEventStreamingDestination"
   ],
+  "BaseDiscussionInterface": [
+    "AbuseReportDiscussion",
+    "Discussion"
+  ],
   "BaseHeaderInterface": [
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
+  ],
+  "BaseNoteInterface": [
+    "AbuseReportNote",
+    "Note"
   ],
   "CiRunnerCloudProvisioning": [
     "CiRunnerGoogleCloudProvisioning"
@@ -85,7 +93,6 @@
     "ProjectMember"
   ],
   "NoteableInterface": [
-    "AbuseReport",
     "AlertManagementAlert",
     "BoardEpic",
     "Design",
@@ -138,6 +145,8 @@
     "UploadRegistry"
   ],
   "ResolvableInterface": [
+    "AbuseReportDiscussion",
+    "AbuseReportNote",
     "Discussion",
     "Note"
   ],

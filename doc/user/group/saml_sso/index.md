@@ -264,7 +264,7 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In GitLab 17.4 and later, **Disable password authentication for enterprise users**.
      For more information, see the [Disable password authentication for enterprise users documentation](#disable-password-authentication-for-enterprise-users).
    - **Enforce SSO-only authentication for web activity for this group**.
-   - **Enforce SSO-only authentication for Git activity for this group**.
+   - **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**.
      For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
 

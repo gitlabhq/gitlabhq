@@ -47,7 +47,7 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
       mrReviews: {},
       latestDiff: true,
       disableVirtualScroller: false,
-      pinnedFileHash: null,
+      linkedFileHash: null,
     };
   },
   actions: {

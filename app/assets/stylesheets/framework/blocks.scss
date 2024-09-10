@@ -42,11 +42,6 @@
     margin-bottom: 0;
   }
 
-  &.clear-block {
-    margin-bottom: $gl-padding - 1px;
-    padding-bottom: $gl-padding;
-  }
-
   &.second-block {
     margin-top: -1px;
     margin-bottom: 0;
@@ -76,10 +71,6 @@
 
   > .controls {
     float: right;
-  }
-
-  .new-branch {
-    margin-top: 3px;
   }
 }
 

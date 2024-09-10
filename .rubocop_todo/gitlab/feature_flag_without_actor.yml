@@ -205,7 +205,7 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch.rb'
     - 'lib/gitlab/database/reindexing.rb'
-    - 'lib/gitlab/experiment/rollout/feature.rb'
+    - 'lib/gitlab/experiment_feature_rollout.rb'
     - 'lib/gitlab/git/diff.rb'
     - 'lib/gitlab/git/repository.rb'
     - 'lib/gitlab/git/user.rb'

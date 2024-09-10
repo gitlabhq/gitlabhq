@@ -17,7 +17,7 @@
         %p
           - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
-          = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'enable-one-time-password'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-one-time-password'), target: '_blank', rel: 'noopener noreferrer'
         .gl-p-2.gl-mb-3{ style: 'background: #fff' }
           = raw @qr_code
         .gl-mb-5
@@ -41,7 +41,7 @@
               alert_options: { class: 'gl-mb-3' },
               dismissible: false) do |c|
               - c.with_body do
-                = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
+                = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
 
           - if current_password_required?
             .form-group
@@ -130,7 +130,7 @@
             alert_options: { class: 'gl-mb-3' },
             dismissible: false) do |c|
             - c.with_body do
-              = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
         .js-manage-two-factor-form{ data: { current_password_required: current_password_required?.to_s, profile_two_factor_auth_path: profile_two_factor_auth_path, profile_two_factor_auth_method: 'delete', codes_profile_two_factor_auth_path: codes_profile_two_factor_auth_path, codes_profile_two_factor_auth_method: 'post' } }
       - else
         %p

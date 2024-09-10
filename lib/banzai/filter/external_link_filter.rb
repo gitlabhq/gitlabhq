@@ -2,10 +2,10 @@
 
 module Banzai
   module Filter
-    # HTML Filter to modify the attributes of external links
+    # HTML Filter to modify the attributes of external links.
+    # This is considered a sanitization filter.
     class ExternalLinkFilter < HTML::Pipeline::Filter
       prepend Concerns::TimeoutFilterHandler
-      prepend Concerns::PipelineTimingCheck
 
       SCHEMES      = ['http', 'https', nil].freeze
       RTLO         = "\u202E"
@@ -46,7 +46,7 @@ module Banzai
       # partial un-sanitized results.
       # It's ok to allow any following filters to run since this is safe HTML.
       def returned_timeout_value
-        HTML::Pipeline.parse(COMPLEX_MARKDOWN_MESSAGE)
+        HTML::Pipeline.parse(Banzai::Filter::SanitizeLinkFilter::TIMEOUT_MARKDOWN_MESSAGE)
       end
 
       # if this is a link to a proxied image, then `src` is already the correct

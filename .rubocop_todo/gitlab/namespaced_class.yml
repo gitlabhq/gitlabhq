@@ -1088,7 +1088,7 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/environment_logger.rb'
     - 'lib/gitlab/exceptions_app.rb'
     - 'lib/gitlab/exclusive_lease.rb'
-    - 'lib/gitlab/experiment/rollout/feature.rb'
+    - 'lib/gitlab/experiment_feature_rollout.rb'
     - 'lib/gitlab/fake_application_settings.rb'
     - 'lib/gitlab/favicon.rb'
     - 'lib/gitlab/feature_categories.rb'

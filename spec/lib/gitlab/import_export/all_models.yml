@@ -1140,7 +1140,7 @@ approval_rules:
   - approval_project_rules_users
   - approval_project_rules_protected_branches
   - scan_result_policy_read
-  - approval_policy_rules
+  - approval_policy_rule
 approval_project_rules_users:
   - user
   - approval_project_rule

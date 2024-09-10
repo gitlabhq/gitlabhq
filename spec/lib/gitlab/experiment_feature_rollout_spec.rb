@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_category: :acquisition do
+RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: :acquisition do
   subject(:experiment_instance) { described_class.new(subject_experiment) }
 
   let(:subject_experiment) { experiment('namespaced/stub') }

@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
@@ -10,7 +10,9 @@ import ActionComponent from '~/ci/common/private/job_action_component.vue';
 describe('pipeline graph action component', () => {
   let wrapper;
   let mock;
+
   const findButton = () => wrapper.findComponent(GlButton);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const defaultProps = {
     tooltipText: 'bar',
@@ -69,11 +71,21 @@ describe('pipeline graph action component', () => {
       expect(wrapper.emitted().pipelineActionRequestComplete).toHaveLength(1);
     });
 
-    it('renders a loading icon while waiting for request', async () => {
+    it('displays a loading icon/disabled button while waiting for request', async () => {
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findButton().props('disabled')).toBe(false);
+
       findButton().trigger('click');
 
       await nextTick();
-      expect(wrapper.find('.js-action-icon-loading').exists()).toBe(true);
+
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findButton().props('disabled')).toBe(true);
+
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findButton().props('disabled')).toBe(false);
     });
   });
 
