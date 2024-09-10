@@ -34,7 +34,7 @@ RSpec.describe Integrations::ExternalWiki do
 
     context 'the URL is not reachable' do
       before do
-        WebMock.stub_request(:head, url).to_return(status: 404)
+        WebMock.stub_request(:get, url).to_return(status: 404, body: 'not a page')
       end
 
       it 'is not successful' do
@@ -44,7 +44,7 @@ RSpec.describe Integrations::ExternalWiki do
 
     context 'the URL is reachable' do
       before do
-        WebMock.stub_request(:head, url).to_return(status: 200)
+        WebMock.stub_request(:get, url).to_return(status: 200, body: 'foo')
       end
 
       it 'is successful' do
