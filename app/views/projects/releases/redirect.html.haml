@@ -1,7 +1,0 @@
-.tree-holder
-  %h2= _("You are being redirected away from GitLab")
-  %p= _("Redirect url is an external url, it may contain user-generated content and malicious code. Do not continue unless you trust the author and source.")
-
-%div
-  - redirect_link_start = '<a href="%{redirect_uri}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: redirect_uri }
-  = html_escape(s_('%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}')) % { redirect_uri_val: redirect_uri, redirect_link_start: redirect_link_start, redirect_link_end: '</a>'.html_safe }

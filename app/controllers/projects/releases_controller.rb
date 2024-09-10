@@ -33,13 +33,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def downloads
-    parsed_redirect_uri = URI.parse(link.url)
-
-    if internal_url?(parsed_redirect_uri)
-      redirect_to link.url
-    else
-      render "projects/releases/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
-    end
+    redirect_to link.url
   end
 
   def latest_permalink
@@ -84,9 +78,5 @@ class Projects::ReleasesController < Projects::ApplicationController
 
   def validate_suffix_path
     Gitlab::PathTraversal.check_path_traversal!(params[:suffix_path]) if params[:suffix_path]
-  end
-
-  def internal_url?(redirect_url)
-    redirect_url.host == Gitlab.config.gitlab.host && redirect_url.port == Gitlab.config.gitlab.port
   end
 end

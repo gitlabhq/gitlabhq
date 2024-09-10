@@ -8,12 +8,6 @@ module Gitlab
     ALLOWED_WEB_SCHEMES = %w[http https].freeze
     SCHEMIFIED_SCHEME = 'glschemelessuri'
     SCHEMIFY_PLACEHOLDER = "#{SCHEMIFIED_SCHEME}://".freeze
-    # SCP style URLs have a format of [userinfo]@[host]:[path] with them not containing
-    # port arguments as that is passed along with a -P argument
-    SCP_REGEX = %r{
-      #{URI::REGEXP::PATTERN::USERINFO}@#{URI::REGEXP::PATTERN::HOST}:
-      (?!\b\d+\b) # use word boundaries to ensure no standalone digits after the colon
-    }x
     # URI::DEFAULT_PARSER.make_regexp will only match URLs with schemes or
     # relative URLs. This section will match schemeless URIs with userinfo
     # e.g. user:pass@gitlab.com but will not match scp-style URIs e.g.
@@ -26,9 +20,9 @@ module Gitlab
     (?:
        #{URI::DEFAULT_PARSER.make_regexp(ALLOWED_SCHEMES)}
      |
-       (?# negative lookahead before the schemeless matcher ensures this isn't an SCP-style URL)
-       (?!#{SCP_REGEX})
        (?:(?:(?!@)[%#{URI::REGEXP::PATTERN::UNRESERVED}#{URI::REGEXP::PATTERN::RESERVED}])+(?:@))
+       (?# negative lookahead ensures this isn't an SCP-style URL: [host]:[rel_path|abs_path] server:path/to/file)
+       (?!#{URI::REGEXP::PATTERN::HOST}:(?:#{URI::REGEXP::PATTERN::REL_PATH}|#{URI::REGEXP::PATTERN::ABS_PATH}))
        #{URI::REGEXP::PATTERN::HOSTPORT}
     )
     }x

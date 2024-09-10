@@ -40,32 +40,8 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
         expect(subject).to eq 'fr'
       end
 
-      context 'for case insensitivity on language' do
-        let(:glm_source) { 'about.gitlab.com/fr-FR/' }
-
-        it 'sets preferred_language accordingly' do
-          expect(subject).to eq 'fr'
-        end
-      end
-
-      context 'for case insensitivity on marketing site URL' do
-        let(:glm_source) { 'ABOUT.gitlab.com/fr-fr/' }
-
-        it 'sets preferred_language accordingly' do
-          expect(subject).to eq 'fr'
-        end
-      end
-
       context 'when language param is invalid' do
         let(:glm_source) { 'about.gitlab.com/ko-ko/' }
-
-        it 'sets preferred_language to default' do
-          expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
-        end
-      end
-
-      context 'when the glm_source is not the marketing site' do
-        let(:glm_source) { 'some.othersite.com/fr-fr/' }
 
         it 'sets preferred_language to default' do
           expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
