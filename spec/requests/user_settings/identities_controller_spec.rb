@@ -6,8 +6,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
   include LoginHelpers
   include SessionHelpers
 
-  let_it_be(:user) { create(:user) }
-
+  let(:user) { create(:user) }
   let(:state) { SecureRandom.uuid }
 
   before do
@@ -15,11 +14,17 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
   end
 
   describe 'GET /-/user_settings/identities/new', :clean_gitlab_redis_sessions do
-    subject(:request) { get new_user_settings_identities_path(provider: 'jwt', extern_uid: 'jwt-uid', state: state) }
+    subject(:request) { get new_user_settings_identities_path(state: state) }
 
     context 'when the state matches' do
       before do
-        stub_session(session_data: { identity_link_state: state })
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid'
+          }
+        )
       end
 
       it 'returns 200 OK' do
@@ -51,10 +56,18 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
   end
 
   describe 'POST /-/user_settings/identities', :clean_gitlab_redis_sessions do
-    subject(:request) { post user_settings_identities_path(identity: params) }
+    subject(:request) { post user_settings_identities_path }
 
     context 'with valid parameters' do
-      let(:params) { { provider: 'jwt', extern_uid: 'jwt-uid' } }
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid'
+          }
+        )
+      end
 
       it 'redirects and notifies the user that authentication method was updated' do
         request
@@ -64,14 +77,46 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
       end
     end
 
-    context 'when saving the identity produces errors' do
-      let(:params) { { extern_uid: 'jwt-uid' } }
+    context 'when required session data is not present' do
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt'
+          }
+        )
+      end
 
       it 'redirects and notifies the user that errors occurred' do
         request
 
         expect(response).to redirect_to profile_account_path
-        expect(flash[:notice]).to eq(format(_('Error linking identity: %{errors}'), errors: "Provider can't be blank"))
+        expect(flash[:notice]).to eq(
+          format(_('Error linking identity: %{errors}'), errors: 'Provider and Extern UID must be in the session.')
+        )
+      end
+    end
+
+    context 'when saving the identity produces errors' do
+      before do
+        create(:identity, provider: 'jwt', extern_uid: 'jwt-uid')
+
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_extern_uid: 'jwt-uid',
+            identity_link_provider: 'jwt'
+          }
+        )
+      end
+
+      it 'redirects and notifies the user that errors occurred' do
+        request
+
+        expect(response).to redirect_to profile_account_path
+        expect(flash[:notice]).to eq(
+          format(_('Error linking identity: %{errors}'), errors: 'Extern uid has already been taken')
+        )
       end
     end
   end
