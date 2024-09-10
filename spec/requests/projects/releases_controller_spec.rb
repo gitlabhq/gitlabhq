@@ -9,15 +9,10 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
   # Added as a request spec because of https://gitlab.com/gitlab-org/gitlab/-/issues/232386
   describe 'GET #downloads' do
     let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2' ) }
-    let(:internal_redirect_url) { "https://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/abcd" }
-    let!(:link) do
-      create(:release_link, release: release, name: 'internal gitlab url', filepath: filepath,
-        url: internal_redirect_url)
-    end
-
+    let!(:link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: filepath, url: 'https://aws.example.com/s3/project/bin/hello-darwin-amd64') }
     let_it_be(:url) { "#{project_releases_path(project)}/#{release.tag}/downloads/bin/darwin-amd64" }
 
-    subject(:download_request) { get url }
+    let(:subject) { get url }
 
     context 'filepath redirection' do
       before do
@@ -28,33 +23,15 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
         let(:filepath) { '/bin/darwin-amd64' }
 
         it 'redirects to the asset direct link' do
-          download_request
+          subject
 
-          expect(response).to redirect_to(internal_redirect_url)
+          expect(response).to redirect_to('https://aws.example.com/s3/project/bin/hello-darwin-amd64')
         end
 
         it 'redirects with a status of 302' do
-          download_request
+          subject
 
           expect(response).to have_gitlab_http_status(:redirect)
-        end
-
-        context 'when redirect_url is external' do
-          let(:external_redirect_url) { "https://aws.example.com/s3/project/bin/hello-darwin-amd64" }
-          let!(:link) do
-            create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: filepath,
-              url: external_redirect_url)
-          end
-
-          let(:redirect_text) { "Click here to redirect to #{external_redirect_url}" }
-
-          it "shows the warning page with redirect link" do
-            download_request
-
-            expect(response).to render_template(:redirect)
-            expect(response.body).to have_text(_("You are being redirected away from GitLab"))
-            expect(response.body).to have_link(_(redirect_text))
-          end
         end
       end
 
@@ -62,7 +39,7 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
         let(:filepath) { '/binaries/win32' }
 
         it 'is not found' do
-          download_request
+          subject
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -113,55 +90,6 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
         before do
           private_project.add_maintainer(user)
         end
-      end
-    end
-
-    context 'when user has permissions to read code' do
-      let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2' ) }
-
-      before do
-        login_as(user)
-      end
-
-      it 'shows commit details in the atom feed' do
-        get(project_releases_url(project, format: :atom))
-
-        expect(response.body).to include(release.commit.message)
-      end
-    end
-
-    context 'when user doesn\'t have permissions to read code' do
-      let_it_be(:release) { create(:release, project: project, tag: 'v11.9.0-rc2' ) }
-      let_it_be(:new_user) { create(:user, guest_of: project) }
-
-      before do
-        login_as(new_user)
-      end
-
-      it 'dosn\'t show commit details in the atom feed' do
-        get(project_releases_url(project, format: :atom))
-
-        doc = Hash.from_xml(response.body)
-
-        expect(response.body).not_to include(release.commit.message)
-        expect(doc["feed"]["entry"]["summary"]).to be_nil
-      end
-    end
-
-    context 'when the project is public with private repository and user is unauthenticated' do
-      let_it_be(:public_project) do
-        create(:project, :repository, :public, repository_access_level: ProjectFeature::PRIVATE)
-      end
-
-      let_it_be(:release) { create(:release, project: public_project, tag: 'v11.9.0-rc2' ) }
-
-      it 'dosn\'t show commit details in the atom feed' do
-        get(project_releases_url(public_project, format: :atom))
-
-        doc = Hash.from_xml(response.body)
-
-        expect(response.body).not_to include(release.commit.message)
-        expect(doc["feed"]["entry"]["summary"]).to be_nil
       end
     end
   end

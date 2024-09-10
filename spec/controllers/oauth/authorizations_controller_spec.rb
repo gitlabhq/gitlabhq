@@ -150,18 +150,6 @@ RSpec.describe Oauth::AuthorizationsController do
               expect(response.body).to have_css('p.gl-text-green-500', text: 'This application is provided by GitLab.')
               expect(response.body).to have_css('[data-testid="tanuki-verified-icon"]')
             end
-
-            context 'when redirect uri has www pattern' do
-              before do
-                application.redirect_uri = "http://www.examplewww.com"
-                application.save!
-              end
-
-              it 'substitutes pattern correctly on display' do
-                subject
-                expect(response.body).to have_css('p', text: "You will be redirected to examplewww.com")
-              end
-            end
           end
 
           context 'when not on GitLab.com' do

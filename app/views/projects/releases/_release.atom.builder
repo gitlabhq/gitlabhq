@@ -9,7 +9,7 @@ xml.entry do
   xml.id        release_url
   xml.link      href: release_url
   xml.title     truncate(release.name, length: 160)
-  xml.summary   strip_signature(release.commit.message) if can?(current_user, :read_code, @project)
+  xml.summary   strip_signature(release.commit.message)
   xml.content   markdown_field(release, :description), type: 'html'
   xml.updated   release.updated_at.xmlschema
   xml.published release.released_at.xmlschema
