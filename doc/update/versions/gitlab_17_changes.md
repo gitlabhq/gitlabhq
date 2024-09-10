@@ -119,7 +119,24 @@ For more information, see the:
 
 ## 17.5.0
 
-- OpenSSL version 3 (TLS 1.2) is required for all incoming connections to GitLab, such as from LDAP servers and webhooks.
+With the upgrade to OpenSSL version 3:
+
+- GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
+- TLS/SSL certificates must have at least 112 bits of security. RSA, DSA, and DH keys shorter than 2048 bits, and ECC keys shorter than 224 bits are prohibited.
+
+Older services, such as LDAP and Webhook servers, may still use TLS
+1.1. However, TLS 1.0 and 1.1 have reached end-of-life and are no longer
+considered secure. GitLab will fail to connect to services using TLS
+1.0 or 1.1 with a `no protocols available` error message.
+
+In addition, OpenSSL 3 increased the [default security level from level 1 to 2](https://docs.openssl.org/3.0/man3/SSL_CTX_set_security_level/#default-callback-behaviour),
+raising the number of bits of security from 80 to 112. For example,
+a certificate signed with an RSA key can use RSA-2048 but not RSA-1024. GitLab
+will fail to connect to a service that uses a certificate signed with insufficient
+bits with a `certificate key too weak` error message.
+
+Check the [GitLab documentation on securing your installation](../../security/index.md).
+for more details.
 
 ## 17.1.0
 
