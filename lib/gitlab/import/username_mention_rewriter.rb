@@ -9,9 +9,10 @@ module Gitlab
       # Handles trailing punctuation. Handles usernames containing -, _, /, or . characters
       # Handles already code-formatted text blocks, e.g. "```Some example @text```"
       # or "`Some example @text`" remain unchanged.
+      # Handles @ instances in email addresses or urls
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/477097
 
-      MENTION_REGEX = Gitlab::UntrustedRegexp.new('(`+[^`]*`+)|(@[\w\-#./]+)')
+      MENTION_REGEX = Gitlab::UntrustedRegexp.new('(`+[^`]*`+)|((?:^|\s|\()@[\w\-#./]+)')
 
       def update_username_mentions(relation_hash)
         relation_hash['description'] = update_text(relation_hash['description']) if relation_hash['description']
@@ -24,8 +25,13 @@ module Gitlab
 
         if MENTION_REGEX.match?(text)
           text = MENTION_REGEX.replace_gsub(text) do |match|
-            if match[0].start_with?('`')
+            case match[0]
+            when /^`/
               match[0]
+            when /^ /
+              " `#{match[0].lstrip}`"
+            when /^\(/
+              "(`#{match[0].sub(/^./, '')}`"
             else
               "`#{match[0]}`"
             end

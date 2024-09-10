@@ -23,6 +23,13 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         .with_message('already assigned to another placeholder')
     end
 
+    it 'validates uniqueness of source_user_identifier' do
+      create(:import_source_user)
+
+      is_expected.to validate_uniqueness_of(:source_user_identifier)
+        .scoped_to(:namespace_id, :source_hostname, :import_type)
+    end
+
     context 'when completed' do
       subject { build(:import_source_user, :completed) }
 

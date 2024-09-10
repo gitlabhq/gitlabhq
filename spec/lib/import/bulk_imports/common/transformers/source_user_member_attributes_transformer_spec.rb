@@ -125,6 +125,18 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
         expect(subject.transform(context, nil)).to eq(nil)
       end
     end
+
+    context 'when ActiveRecord::RecordNotUnique is raised when creating the source user' do
+      before do
+        allow_next_instance_of(Gitlab::Import::SourceUserMapper) do |mapper|
+          allow(mapper).to receive(:find_or_create_source_user).and_raise(ActiveRecord::RecordNotUnique)
+        end
+      end
+
+      it 'raises BulkImports::RetryPipelineError' do
+        expect { subject.transform(context, data) }.to raise_error { BulkImports::RetryPipelineError }
+      end
+    end
   end
 
   context 'with a project' do

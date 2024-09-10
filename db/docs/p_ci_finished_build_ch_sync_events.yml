@@ -8,5 +8,4 @@ description: Holds references to finished CI builds ready to be synced to ClickH
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131902
 milestone: '16.5'
 gitlab_schema: gitlab_ci
-sharding_key:
-  project_id: projects
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459997

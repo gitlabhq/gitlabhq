@@ -80,11 +80,12 @@ module BulkImports
           importer: 'gitlab_migration'
         )
       rescue BulkImports::NetworkError => e
-        raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay) if e.retriable?(context.tracker)
+        raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay), cause: e if e.retriable?(context.tracker)
 
         log_and_fail(e, step, entry)
-      rescue Gitlab::Import::SourceUserMapper::FailedToObtainLockError => e
-        raise BulkImports::RetryPipelineError.new(e.message, nil)
+      rescue Gitlab::Import::SourceUserMapper::FailedToObtainLockError,
+        Gitlab::Import::SourceUserMapper::DuplicatedSourceUserError => e
+        raise BulkImports::RetryPipelineError.new(e.message), cause: e
       rescue BulkImports::RetryPipelineError
         raise
       rescue StandardError => e

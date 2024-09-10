@@ -735,7 +735,7 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glfm-markdown (0.0.19)
+    gitlab-glfm-markdown (0.0.20)
       rb_sys (= 0.9.94)
     gitlab-kas-grpc (17.4.0.pre.rc1)
       grpc (~> 1.0)
@@ -2082,7 +2082,7 @@ DEPENDENCIES
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 2.1.0)
-  gitlab-glfm-markdown (~> 0.0.19)
+  gitlab-glfm-markdown (~> 0.0.20)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 17.4.0.pre.rc1)

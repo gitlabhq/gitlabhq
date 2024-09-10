@@ -1,3 +1,4 @@
+/* eslint-disable @gitlab/require-i18n-strings */
 const sensitiveDataPatterns = () => {
   const patPrefix = window.gon?.pat_prefix || 'glpat-';
 
@@ -7,7 +8,6 @@ const sensitiveDataPatterns = () => {
       regex: `${patPrefix}[0-9a-zA-Z_-]{20}`,
     },
     {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
       name: 'Feed Token',
       regex: 'feed_token=[0-9a-zA-Z_-]{20}|glft-[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_',
     },
@@ -47,6 +47,11 @@ const sensitiveDataPatterns = () => {
       name: 'GitLab Pipeline Trigger Token',
       regex: 'glptt-[0-9a-zA-Z_-]{40}',
     },
+    {
+      name: 'Anthropic key',
+      regex: 'sk-ant-[a-z]{3}\\d{2}-[A-Za-z0-9-_]{86}-[A-Za-z0-9-_]{8}',
+    },
   ];
 };
+
 export default sensitiveDataPatterns;

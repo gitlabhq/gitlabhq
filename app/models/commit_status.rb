@@ -8,18 +8,6 @@ class CommitStatus < Ci::ApplicationRecord
   include Presentable
   include BulkInsertableAssociations
   include TaggableQueries
-  include IgnorableColumns
-
-  ignore_columns %i[
-    auto_canceled_by_id_convert_to_bigint
-    commit_id_convert_to_bigint
-    erased_by_id_convert_to_bigint
-    project_id_convert_to_bigint
-    runner_id_convert_to_bigint
-    trigger_request_id_convert_to_bigint
-    upstream_pipeline_id_convert_to_bigint
-    user_id_convert_to_bigint
-  ], remove_with: '17.4', remove_after: '2024-08-12'
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq

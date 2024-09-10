@@ -2801,6 +2801,13 @@ entry.
 
 - [Update Web IDE dependency to receive duo fixes](gitlab-org/gitlab@47323c05565dd32ea4de9f999adbd9f7aa8748e3) ([merge request](gitlab-org/gitlab!154064))
 
+## 17.0.7 (2024-09-10)
+
+### Fixed (2 changes)
+
+- [Fix Sidekiq crashing when GITLAB_LOG_LEVEL set to debug](https://gitlab.com/gitlab-org/gitlab/-/commit/e77a9cc1c49f801cdb502649a068ef1e37d728e1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164833))
+- [Backport Fixes Geo Replication Details view](https://gitlab.com/gitlab-org/gitlab/-/commit/8d0f0278b759a2246ab187d3ef0ea3edfcd237f1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162944)) **GitLab Enterprise Edition**
+
 ## 17.0.6 (2024-08-06)
 
 ### Changed (1 change)
@@ -3786,6 +3793,16 @@ entry.
 - [Include psudonymised user id into X Ray scan req](gitlab-org/gitlab@7c3553f71da1fa87cd1bfd58cc78449f55f33e60) ([merge request](gitlab-org/gitlab!149124)) **GitLab Enterprise Edition**
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
+
+## 16.11.9 (2024-09-10)
+
+### Security (1 change)
+
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/gitlab/-/commit/9bb4b59afe5a2e8a383709a55a139d6875acf911)
+
+### Performance (1 change)
+
+- [Analyze partitioned tables every 3 days](https://gitlab.com/gitlab-org/gitlab/-/commit/e38cca011522a565d582e8760ca958f37d9be299) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163255))
 
 ## 16.11.8 (2024-08-05)
 

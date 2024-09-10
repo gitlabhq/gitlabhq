@@ -28,6 +28,7 @@ This table lists the secrets detected by [client-side secret detection](index.md
 | GitLab Pipeline Trigger Token     | glptt    |
 | GitLab Runner Token               | glrt     |
 | GitLab SCIM OAuth Access Token    | glsoat   |
+| Anthropic key                     | sk-ant   |
 
 <!-- markdownlint-enable MD037 -->
 <!-- markdownlint-enable MD044 -->

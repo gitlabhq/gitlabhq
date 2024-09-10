@@ -148,6 +148,37 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         expect(new_import_source_user.placeholder_user).to eq(import_user)
       end
     end
+
+    context 'when ActiveRecord::RecordNotUnique exception is raised during the source user creation' do
+      before do
+        allow_next_instance_of(::Import::SourceUser) do |source_user|
+          allow(source_user).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+        end
+      end
+
+      it 'raises DuplicatedSourceUserError' do
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      end
+    end
+
+    context 'when ActiveRecord::RecordInvalid exception because the placeholder user email or username is taken' do
+      it 'rescue the exception and raises DuplicatedSourceUserError' do
+        create(:user, email: 'user@example.com')
+        user = build(:user, email: 'user@example.com').tap(&:valid?)
+        allow(User).to receive(:new).and_return(user)
+
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      end
+    end
+
+    context 'when ActiveRecord::RecordInvalid exception raises for another reason' do
+      it 'bubbles up the ActiveRecord::RecordInvalid exception' do
+        user = build(:user, email: nil)
+        allow(User).to receive(:new).and_return(user)
+
+        expect { find_or_create_source_user }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe '#find_source_user' do

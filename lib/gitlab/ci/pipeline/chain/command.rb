@@ -14,15 +14,10 @@ module Gitlab
           :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :logger, :execution_policy_dry_run,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
-          :pipeline_config, :execution_policy_pipelines, :partition_id
+          :pipeline_config, :execution_policy_pipelines, :partition_id,
+          keyword_init: true
         ) do
           include Gitlab::Utils::StrongMemoize
-
-          def initialize(params = {})
-            params.each do |key, value|
-              self[key] = value
-            end
-          end
 
           def dry_run?
             dry_run || execution_policy_dry_run

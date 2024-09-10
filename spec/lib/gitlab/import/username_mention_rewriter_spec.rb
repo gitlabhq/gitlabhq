@@ -74,5 +74,23 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
         expect(instance.update_text(original_text)).to eq(expected_text)
       end
     end
+
+    context 'when the text contains email addresses or urls' do
+      let(:original_text) do
+        "@rodeo rudolph@xmas.com Signed-off-by: Some Name <somename@gmail.com> " \
+          "Visit https://docs.example.com/en/some-server@3.5/admin/xxx/abcd/xxxx " \
+          "@boulder Sounds good (@knejad what do you think?)"
+      end
+
+      let(:expected_text) do
+        "`@rodeo` rudolph@xmas.com Signed-off-by: Some Name <somename@gmail.com> " \
+          "Visit https://docs.example.com/en/some-server@3.5/admin/xxx/abcd/xxxx " \
+          "`@boulder` Sounds good (`@knejad` what do you think?)"
+      end
+
+      it 'does not insert backticks before @ characters' do
+        expect(instance.update_text(original_text)).to eq(expected_text)
+      end
+    end
   end
 end
