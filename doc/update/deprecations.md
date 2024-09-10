@@ -922,7 +922,7 @@ Debian 11 or Debian 12 for continued support.
 
 <div class="deprecation " data-milestone="17.5">
 
-### Support for OpenSSL version 1
+### TLS 1.0 and 1.1 are deprecated
 
 <div class="deprecation-notes">
 
@@ -932,10 +932,14 @@ Debian 11 or Debian 12 for continued support.
 
 </div>
 
-Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl).
+Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.5.
 
-Therefore, we have deprecated support for incoming OpenSSL version 1 (TLS 1.0 or 1.1) connections to GitLab and will remove support in GitLab 17.5.
-External integrations such as LDAP servers and webhooks must use OpenSSL version 3 (TLS 1.2).
+With the upgrade to OpenSSL 3:
+
+- GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
+- TLS/SSL certificates must have at least 112 bits of security. RSA, DSA, and DH keys shorter than 2048 bits, and ECC keys shorter than 224 bits are prohibited.
+
+See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html#1750) for more details.
 
 </div>
 </div>
