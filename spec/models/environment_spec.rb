@@ -777,7 +777,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '#stop_with_actions!' do
     let(:user) { create(:user) }
 
-    subject { environment.stop_with_actions! }
+    subject { environment.stop_with_actions!(user) }
 
     shared_examples_for 'stop with playing a teardown job' do
       before do
@@ -980,12 +980,12 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     it_behaves_like 'stop with playing a teardown job' do
       let(:factory_type) { :ci_build }
-      let(:factory_options) { { user: user } }
+      let(:factory_options) { {} }
     end
 
     it_behaves_like 'stop with playing a teardown job' do
       let(:factory_type) { :ci_bridge }
-      let(:factory_options) { { user: user, downstream: project } }
+      let(:factory_options) { { downstream: project } }
     end
   end
 

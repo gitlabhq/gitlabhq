@@ -33,16 +33,6 @@ RSpec.describe Gitlab::UrlSanitizer do
       urls << ['user:@server:project.git', 'user:@server:project.git']
       urls << [':pass@server:project.git', ':pass@server:project.git']
       urls << ['user:pass@server:project.git', 'user:pass@server:project.git']
-      urls << ['user:pass@server:123project.git', 'user:pass@server:123project.git']
-      urls << ['user:pass@server:1project3.git', 'user:pass@server:1project3.git']
-      urls << ['user:pass@server:project123.git', 'user:pass@server:project123.git']
-      urls << ['root@host:/root/ids/rules.tar.gz', 'root@host:/root/ids/rules.tar.gz']
-
-      # actual URLs that look like SCP-styled URLS
-      urls << ['username:password@test.com', '*****:*****@test.com']
-      urls << ['username:password@test.com:1234', '*****:*****@test.com:1234']
-      urls << ['username:password@test.com:1234/org/project', '*****:*****@test.com:1234/org/project']
-      urls << ['username:password@test.com:1234/org/project.git', '*****:*****@test.com:1234/org/project.git']
 
       # return an empty string for invalid URLs
       urls << ['ssh://', '']

@@ -48,7 +48,6 @@ FactoryBot.define do
 
       transient do
         ref { 'master' }
-        user { nil }
       end
 
       # At this point `review app` is an ephemeral concept related to
@@ -57,15 +56,9 @@ FactoryBot.define do
       # interconnected objects to simulate a review app.
       #
       after(:create) do |environment, evaluator|
-        pipeline = create(:ci_pipeline, project: environment.project, user: evaluator.user)
+        pipeline = create(:ci_pipeline, project: environment.project)
 
-        deployable = create(
-          :ci_build,
-          :success,
-          name: "#{environment.name}:deploy",
-          pipeline: pipeline,
-          user: evaluator.user
-        )
+        deployable = create(:ci_build, :success, name: "#{environment.name}:deploy", pipeline: pipeline)
 
         deployment = create(
           :deployment,
@@ -73,18 +66,11 @@ FactoryBot.define do
           environment: environment,
           project: environment.project,
           deployable: deployable,
-          user: evaluator.user,
           ref: evaluator.ref,
           sha: environment.project.commit(evaluator.ref).id
         )
 
-        teardown_build = create(
-          :ci_build,
-          :manual,
-          name: "#{environment.name}:teardown",
-          pipeline: pipeline,
-          user: evaluator.user
-        )
+        teardown_build = create(:ci_build, :manual, name: "#{environment.name}:teardown", pipeline: pipeline)
 
         deployment.update_column(:on_stop, teardown_build.name)
         environment.update_attribute(:deployments, [deployment])
