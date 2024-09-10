@@ -317,16 +317,3 @@ func TestHttpClientReuse(t *testing.T) {
 	require.Equal(t, cachedClient(entryParams{}), storedClient)
 	require.NotEqual(t, cachedClient(entryParams{AllowRedirects: true}), storedClient)
 }
-
-func TestSSRFFilter(t *testing.T) {
-	response := testEntryServer(t, "/get/request", nil, false, option{Key: "SSRFFilter", Value: true})
-
-	// Test uses loopback IP like 127.0.0.x and thus fails
-	require.Equal(t, http.StatusInternalServerError, response.Code)
-}
-
-func TestSSRFFilterWithAllowLocalhost(t *testing.T) {
-	response := testEntryServer(t, "/get/request", nil, false, option{Key: "SSRFFilter", Value: true}, option{Key: "AllowLocalhost", Value: true})
-
-	require.Equal(t, http.StatusOK, response.Code)
-}

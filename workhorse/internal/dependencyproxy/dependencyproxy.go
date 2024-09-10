@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
-	"sync"
 	"time"
 
 	"gitlab.com/gitlab-org/labkit/log"
@@ -23,15 +21,10 @@ const dialTimeout = 10 * time.Second
 const responseHeaderTimeout = 10 * time.Second
 const uploadRequestGracePeriod = 60 * time.Second
 
-var defaultTransportOptions = []transport.Option{transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout)}
-
-type cacheKey struct {
-	ssrfFilter     bool
-	allowLocalhost bool
-	allowedURIs    string
+var httpTransport = transport.NewRestrictedTransport(transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout))
+var httpClient = &http.Client{
+	Transport: httpTransport,
 }
-
-var httpClients sync.Map
 
 // Injector provides functionality for injecting dependencies
 type Injector struct {
@@ -44,9 +37,6 @@ type entryParams struct {
 	Headers         http.Header
 	ResponseHeaders http.Header
 	UploadConfig    uploadConfig
-	SSRFFilter      bool
-	AllowLocalhost  bool
-	AllowedURIs     []string
 }
 
 type uploadConfig struct {
@@ -165,7 +155,7 @@ func (p *Injector) fetchURL(ctx context.Context, params *entryParams) (*http.Res
 	}
 	r.Header = params.Headers
 
-	return cachedClient(params).Do(r)
+	return httpClient.Do(r)
 }
 
 func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, originalRequest *http.Request, body io.Reader) (*http.Request, error) {
@@ -241,30 +231,4 @@ func (p *Injector) uploadURLFrom(params *entryParams, originalRequest *http.Requ
 	}
 
 	return originalRequest.URL.String() + "/upload"
-}
-
-func cachedClient(params *entryParams) *http.Client {
-	key := cacheKey{
-		allowLocalhost: params.AllowLocalhost,
-		ssrfFilter:     params.SSRFFilter,
-		allowedURIs:    strings.Join(params.AllowedURIs, ","),
-	}
-	cachedClient, found := httpClients.Load(key)
-	if found {
-		return cachedClient.(*http.Client)
-	}
-
-	options := defaultTransportOptions
-
-	if params.SSRFFilter {
-		options = append(options, transport.WithSSRFFilter(params.AllowLocalhost, params.AllowedURIs))
-	}
-
-	client := &http.Client{
-		Transport: transport.NewRestrictedTransport(options...),
-	}
-
-	httpClients.Store(key, client)
-
-	return client
 }

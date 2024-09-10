@@ -163,26 +163,19 @@ module Gitlab
       # timeouts can be given for the opening the connection and reading the response headers.
       # Their values must be given in seconds.
       # Example: timeouts: { open: 5, read: 5 }
-      # rubocop:disable Metrics/ParameterLists -- all arguments needed
       def send_url(
         url,
-        allow_localhost: true,
         allow_redirects: false,
         method: 'GET',
         body: nil,
-        ssrf_filter: false,
         headers: {},
         timeouts: {},
         response_statuses: {},
-        response_headers: {},
-        allowed_uris: []
+        response_headers: {}
       )
         params = {
           'URL' => url,
           'AllowRedirects' => allow_redirects,
-          'AllowLocalhost' => allow_localhost,
-          'AllowedURIs' => allowed_uris,
-          'SSRFFilter' => ssrf_filter,
           'Body' => body.to_s,
           'Header' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
@@ -209,7 +202,6 @@ module Gitlab
           "send-url:#{encode(params.compact)}"
         ]
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def send_scaled_image(location, width, content_type)
         params = {
@@ -224,20 +216,10 @@ module Gitlab
         ]
       end
 
-      def send_dependency(
-        headers,
-        url,
-        allow_localhost: true,
-        upload_config: {},
-        response_headers: {},
-        ssrf_filter: false,
-        allowed_uris: [])
+      def send_dependency(headers, url, upload_config: {}, response_headers: {})
         params = {
-          'AllowLocalhost' => allow_localhost,
-          'AllowedURIs' => allowed_uris,
           'Headers' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
-          'SSRFFilter' => ssrf_filter,
           'Url' => url,
           'UploadConfig' => {
             'Method' => upload_config[:method],
