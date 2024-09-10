@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe OmniauthCallbacksController, :aggregate_failures, feature_category: :system_access do
+RSpec.describe OmniauthCallbacksController, feature_category: :system_access do
   include LoginHelpers
   include SessionHelpers
 
-  let(:user) { create(:user) }
-  let(:extern_uid) { generate(:username) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:extern_uid) { generate(:username) }
 
   describe 'GET /users/auth/jwt/callback' do
     before do
@@ -42,10 +42,12 @@ RSpec.describe OmniauthCallbacksController, :aggregate_failures, feature_categor
 
           get user_jwt_omniauth_callback_path
 
-          expect(response).to redirect_to new_user_settings_identities_path(state: state)
-          expect(session['identity_link_state']).to eq(state)
-          expect(session['identity_link_extern_uid']).to eq(extern_uid)
-          expect(session['identity_link_provider']).to eq('jwt')
+          expect(response)
+            .to redirect_to new_user_settings_identities_path(
+              provider: 'jwt',
+              extern_uid: extern_uid,
+              state: state
+            )
         end
       end
     end

@@ -29,7 +29,7 @@
           = html_escape(_('Make sure you trust %{client_name} before authorizing.')) % { client_name: "<strong>#{html_escape(@pre_auth.client.name)}</strong>".html_safe }
       %p
         = html_escape(_('%{owner} %{created_date} ago.')) % { owner: auth_app_owner_text(@pre_auth.client.application.owner), created_date: time_ago_in_words(@pre_auth.client.application.created_at.to_date) }
-        - domain = URI.parse(@pre_auth.redirect_uri).host.gsub(/^www\./, '')
+        - domain = URI.parse(@pre_auth.redirect_uri).host.gsub('www.', '')
         - if @pre_auth.redirect_uri.start_with?('http://', 'https://') && domain != 'localhost'
           = html_escape(_('You will be redirected to %{domain} after authorizing.')) % { domain: "<strong>#{domain}</strong>".html_safe }
   %div
