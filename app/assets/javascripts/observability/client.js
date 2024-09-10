@@ -1,4 +1,4 @@
-import { isValidDate } from '~/lib/utils/datetime_utility';
+import { isValidDate, convertMsToNano } from '~/lib/utils/datetime_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
@@ -205,7 +205,7 @@ const TRACING_FILTER_TO_QUERY_PARAM = {
   status: 'status',
   durationMs: (durationMs, operator, params) => {
     const paramName = getFilterParamName('duration_nano', operator);
-    const durationNano = durationMs * 1e6; // converting ms to nano
+    const durationNano = convertMsToNano(durationMs);
     if (paramName && durationNano) {
       params.append(paramName, durationNano);
     }

@@ -60,6 +60,9 @@ When documenting a GitLab Duo experiment:
 - Document the feature on the [GitLab Duo experiments page](../../user/gitlab_duo/experiments.md).
 - Make sure you add history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.
 
 ### Beta
 
@@ -71,6 +74,9 @@ When a GitLab Duo experiment moves to beta:
   move the content somewhere more appropriate (near other related features).
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.
 
 ### Generally available
 
@@ -82,3 +88,6 @@ When a GitLab Duo feature becomes generally available:
   move the content somewhere more appropriate (near other related features).
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.

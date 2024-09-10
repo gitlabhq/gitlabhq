@@ -273,8 +273,9 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can trigger a pipeline in your project whenever a pipeline finishes for a new
-tag in a different project.
+You can set up your project to automatically trigger a pipeline based on tags in a different project.
+When a new tag pipeline in the subscribed project finishes, it triggers a pipeline on your project's default branch,
+regardless of the tag pipeline's success, failure, or cancellation.
 
 Prerequisites:
 
@@ -292,9 +293,7 @@ To trigger the pipeline when the upstream project is rebuilt:
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
 1. Select **Subscribe**.
 
-Any pipelines that complete successfully for new tags in the subscribed project
-now trigger a pipeline on the current project's default branch. The maximum
-number of upstream pipeline subscriptions is 2 by default, for both the upstream and
+The maximum number of upstream pipeline subscriptions is 2 by default, for both the upstream and
 downstream projects. On self-managed instances, an administrator can change this
 [limit](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project).
 

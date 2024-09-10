@@ -16,7 +16,7 @@ import {
  * Return the data range for the given time period
  * Accepted values are numbers followed by the unit 'm', 'h', 'd', e.g. '5m', '3h', '7d'
  *
- *  e.g. timePerdio: '5m'
+ *  e.g. timePeriod: '5m'
  *      returns: { min: Date(_now - 5min_), max: Date(_now_) }
  *
  * @param {String} timePeriod The 'period' string

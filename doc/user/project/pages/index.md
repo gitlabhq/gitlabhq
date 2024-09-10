@@ -164,6 +164,7 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122229) in GitLab 16.3.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163523) unique domain URLs to be shorter in GitLab 17.4.
 
 By default, every new project uses pages unique domain. This is to avoid projects on the same group
 to share cookies.
@@ -172,8 +173,10 @@ The project maintainer can disable this feature on:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Deselect the **Use unique domain** checkbox.
+1. Clear the **Use unique domain** checkbox.
 1. Select **Save changes**.
+
+For example URLs, see [GitLab Pages default domain names](getting_started_part_one.md#gitlab-pages-default-domain-names).
 
 ## Expiring deployments
 
@@ -256,14 +259,14 @@ The value of `pages.path_prefix` is:
 
 Consider a project such as `https://gitlab.example.com/namespace/project`. By default, its main Pages deployment can be accessed through:
 
-- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/`.
+- When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/`.
 - When not using a unique domain: `https://namespace.gitlab.io/project`.
 
 If a `pages.path_prefix` is configured to the project branch names,
 like `path_prefix = $CI_COMMIT_BRANCH`, and there's a
 branch named `username/testing_feature`, this extra Pages deployment would be accessible through:
 
-- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/username-testing-feature`.
+- When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/username-testing-feature`.
 - When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
 
 ### Enable multiple deployments

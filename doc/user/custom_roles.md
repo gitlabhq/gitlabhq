@@ -114,7 +114,7 @@ Prerequisites:
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 
-### GitLab self-managed and GitLab Dedicated
+### GitLab self-managed
 
 Prerequisites:
 
@@ -270,6 +270,38 @@ access to elevated permissions over the base role, and therefore:
 This does not apply when the user's custom role only has the `read_code` permission
 enabled. Guest users with that specific permission only are not considered billable users
 and do not use a seat.
+
+## Assign a custom role to an invited group
+
+> - Support for custom roles for invited groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) in GitLab 17.4 behind a feature flag named `assign_custom_roles_to_group_links_sm`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+When a group is invited to another group with a custom role, the following rules determine each user's custom permissions in the new group:
+
+- When a user has a custom permission in one group with a base access level that is the same or higher than the default role in the other group, the user's maximum role is the default role. That is, the user is granted the lower of the two access levels.
+- When a user is invited with a custom permission with the same base access level as their original group, the user is always granted the custom permission from their original group.
+
+For example, let's say we have 5 users in Group A, and they are assigned the following roles:
+
+- User A: Guest role
+- User B: Guest role + `read_code` custom permission 
+- User C: Guest role + `read_vulnerability` custom permission
+- User D: Developer role
+- User E: Developer + `admin_vulnerability` custom permission
+
+Group B invites Group A. The following table shows the maximum role that each the users in Group A will have in Group B:
+
+| Scenario                                                       | User A | User B              | User C                       | User D    | User E                            |
+|----------------------------------------------------------------|--------|---------------------|------------------------------|-----------|-----------------------------------|
+| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest     | Guest                             |
+| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
+| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
+| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer                         |
+| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer + `admin_vulnerability` |
+
+When User C is invited to Group B with the same default role (Guest), but different custom permissions with the same base access level (`read_code` and `read_vulnerability`), User C retains the custom permission from Group A (`read_vulnerability`).
 
 ## Supported objects
 

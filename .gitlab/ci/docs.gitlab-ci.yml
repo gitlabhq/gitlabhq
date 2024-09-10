@@ -95,15 +95,19 @@ docs-lint links:
   script:
     - lychee --offline --no-progress --include-fragments doc
 
-ui-docs-links lint:
-  extends:
-    - .docs:rules:docs-lint
-    - .static-analysis-base
-    - .ruby-cache
-  stage: lint
-  needs: []
-  script:
-    - bundle exec haml-lint -i DocumentationLinks
+#
+# Disabled while links are being cleaned up.
+# See: https://gitlab.com/gitlab-org/gitlab/-/issues/419673
+#
+# ui-docs-links lint:
+#   extends:
+#     - .docs:rules:docs-lint
+#     - .static-analysis-base
+#     - .ruby-cache
+#   stage: lint
+#   needs: []
+#   script:
+#     - bundle exec haml-lint -i DocumentationLinks
 
 docs-lint deprecations-and-removals:
   variables:

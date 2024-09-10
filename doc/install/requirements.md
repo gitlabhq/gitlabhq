@@ -55,47 +55,30 @@ In certain circumstances, GitLab might run in a
 PostgreSQL is the only supported database and is bundled with the Linux package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
-The server running PostgreSQL should have a certain amount of storage available, though the exact amount
-[depends on the number of users](../administration/reference_architectures/index.md). For:
+Depending on the [number of users](../administration/reference_architectures/index.md),
+the PostgreSQL server should have:
 
-- Most GitLab self-managed instances, at least 5 to 10 GB of storage available.
-- GitLab self-managed instance at the Ultimate tier, at least 12 GB of storage available, because 1 GB of vulnerability
-  data must be imported.
+- For most GitLab instances, at least 5 to 10 GB of storage
+- For GitLab Ultimate, at least 12 GB of storage
+  (1 GB of vulnerability data must be imported)
 
-You should use the versions of PostgreSQL specified in the following table for your version of GitLab because these were
-used for development and testing:
+For the following versions of GitLab, use these PostgreSQL versions:
 
-| GitLab version | Minimum PostgreSQL version<sup>1</sup> | Maximum PostgreSQL version<sup>2</sup> |
-|:---------------|:---------------------------------------|:---------------------------------------|
-| 15.x           | 12.10                                  | 13.x (14.x<sup>3</sup>)                |
-| 16.x           | 13.6                                   | 15.x<sup>4</sup>                       |
-| 17.x           | 14.9                                   | 15.x<sup>4</sup>                       |
+| GitLab version | Minimum PostgreSQL version | Maximum PostgreSQL version |
+| -------------- | -------------------------- | -------------------------- |
+| 17.x           | 14.9                       | 15.x                       |
+| 16.x           | 13.6                       | 15.x ([tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)) |
+| 15.x           | 12.10                      | 14.x ([tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624)), 13.x |
 
-**Footnotes:**
+Minor PostgreSQL releases [include only bug and security fixes](https://www.postgresql.org/support/versioning/).
+Always use the latest minor version to avoid known issues in PostgreSQL.
+For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
-1. PostgreSQL minor release upgrades (for example 14.8 to 14.9) [include only bug and security fixes](https://www.postgresql.org/support/versioning/).
-   Patch levels in this table are not prescriptive. Always deploy the most recent patch level
-   to avoid [known bugs in PostgreSQL that might be triggered by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
-1. If you want to run a later major release of PostgreSQL than the specified minimum
-   [check if a more recent version shipped with Linux package (Omnibus) GitLab](http://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
-   `postgresql-new` is a later version that's definitely supported.
-1. PostgreSQL 14.x [tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624).
-1. [Tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344).
+To use a later major version of PostgreSQL than specified, check if a
+[later version is bundled with the Linux package](http://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
 
-You must also ensure the following extensions are loaded into every GitLab database.
+You must also ensure some extensions are loaded into every GitLab database.
 For more information, see [managing PostgreSQL extensions](postgresql_extensions.md).
-
-| Extension    | Minimum GitLab version |
-| ------------ | ---------------------- |
-| `pg_trgm`    | 8.6                    |
-| `btree_gist` | 13.1                   |
-| `plpgsql`    | 11.7                   |
-
-The following managed PostgreSQL services are known to be incompatible and should not be used:
-
-| GitLab version | Managed service                                       |
-|----------------|-------------------------------------------------------|
-| 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
 #### GitLab Geo
 
@@ -297,10 +280,10 @@ GitLab supports the following web browsers:
 - [Apple Safari](https://www.apple.com/safari/)
 - [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13QK)
 
-GitLab supports the:
+GitLab supports:
 
-- Current and previous major versions of these browsers
-- Current minor version of a supported major version
+- The current and earlier major versions of these browsers
+- The current minor version of a supported major version
 
 Running GitLab with JavaScript disabled in these browsers is not supported.
 

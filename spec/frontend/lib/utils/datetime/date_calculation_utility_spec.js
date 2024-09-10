@@ -9,6 +9,8 @@ import {
   differenceInMinutes,
   getMonthsBetweenDates,
   newDate,
+  convertNanoToMs,
+  convertMsToNano,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -186,5 +188,36 @@ describe('getMonthsBetweenDates', () => {
       { month: 1, year: 2026 },
       { month: 2, year: 2026 },
     ]);
+  });
+});
+
+describe('convertNanoToMs', () => {
+  it('converts nanoseconds to milliseconds correctly', () => {
+    expect(convertNanoToMs(1e6)).toBe(1);
+    expect(convertNanoToMs(5e6)).toBe(5);
+    expect(convertNanoToMs(1e9)).toBe(1000);
+  });
+
+  it('handles zero', () => {
+    expect(convertNanoToMs(0)).toBe(0);
+  });
+
+  it('handles fractional nanoseconds', () => {
+    expect(convertNanoToMs(1567000)).toBe(1.567);
+  });
+});
+
+describe('convertMsToNano', () => {
+  it('converts milliseconds to nanoseconds correctly', () => {
+    expect(convertMsToNano(5)).toBe(5e6);
+    expect(convertMsToNano(1234)).toBe(1234000000);
+  });
+
+  it('handles zero', () => {
+    expect(convertMsToNano(0)).toBe(0);
+  });
+
+  it('handles fractional milliseconds', () => {
+    expect(convertMsToNano(1.5)).toBe(1500000);
   });
 });

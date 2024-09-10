@@ -2228,28 +2228,13 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
-msgid "AIPoweredSM|AI-powered features"
-msgstr ""
-
 msgid "AIPoweredSM|By enabling this feature, you agree to the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "AIPoweredSM|Disable %{link_start}direct connections%{link_end} for this instance."
 msgstr ""
 
-msgid "AIPoweredSM|Disable direct connections for Code Suggestions"
-msgstr ""
-
 msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
-msgstr ""
-
-msgid "AIPoweredSM|Enable GitLab Duo features"
-msgstr ""
-
-msgid "AIPoweredSM|Enable experiment and beta AI-powered features"
-msgstr ""
-
-msgid "AIPoweredSM|Enforce Duo features setting for all subgroups"
 msgstr ""
 
 msgid "AISummary|Generates a summary of all comments"

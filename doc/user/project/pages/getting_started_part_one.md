@@ -15,6 +15,8 @@ according to your intended website's URL.
 
 ## GitLab Pages default domain names
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163523) unique domain URLs to be shorter in GitLab 17.4.
+
 If you use your own GitLab instance to deploy your site with GitLab Pages, verify your Pages
 wildcard domain with your sysadmin. This guide is valid for any GitLab instance, provided that you
 replace the Pages wildcard domain on GitLab.com (`*.gitlab.io`) with your own.
@@ -40,16 +42,17 @@ Pages domains are `*.gitlab.io`.
 When **Use unique domain** setting is enabled, all URLs
 are flattened with the following structure:
 
-| Type of GitLab Pages | Example path of a project in GitLab | Website URL |
-| -------------------- | ------------ | ----------- |
-| User pages  | `username/username.example.io`  | `http(s)://username-example-io-username.example.io`  |
-| Group pages | `acmecorp/acmecorp.example.io` | `http(s)://acmecorp-example-io-acmecorp-uniqueid.example.io` |
-| Project pages owned by a user  | `username/my-website` | `https://my-website-username-uniqueid.gitlab.io/` |
-| Project pages owned by a group | `acmecorp/webshop` | `http(s)://webshop-acmecorp-uniqueid.example.io/`|
-| Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://product-manual-documentation-acmecorp-uniqueid.example.io/`|
+| Type of GitLab Pages              | Example path of a project in GitLab     | Website URL |
+| --------------------------------- | --------------------------------------- | ----------- |
+| User pages                        | `username/username.example.io`          | `http(s)://username-example-io-123456.example.io` |
+| Group pages                       | `acmecorp/acmecorp.example.io`          | `http(s)://acmecorp-example-io-123456.example.io` |
+| Project pages owned by a user     | `username/my-website`                   | `https://my-website-123456.gitlab.io/` |
+| Project pages owned by a group    | `acmecorp/webshop`                      | `http(s)://webshop-123456.example.io/` |
+| Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://product-manual-123456.example.io/` |
 
-The `unique_id` portion of the URL is an alphanumeric string. For example, if the `unique_id` is `30bae2547a50der6ed7d9a08d417a33525a5c4dc6fdd68`, the last example would be
-`http(s)://product-manual-documentation-acmecorp-30bae2547a50der6ed7d9a08d417a33525a5c4dc6fdd68.example.io/`.
+`123456` in the example URLs is a six-character unique ID.
+For example, if the unique ID is `f85695`, the last example is
+`http(s)://product-manual-f85695.example.io/`.
 
 WARNING:
 There are some known [limitations](introduction.md#subdomains-of-subdomains)

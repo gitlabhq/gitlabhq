@@ -5228,7 +5228,7 @@ The keywords available for use in trigger jobs are:
 **Possible inputs**:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
   Alternatively, use [`trigger:project`](#triggerproject).
 - For child pipelines, use [`trigger:include`](#triggerinclude).
 
@@ -5251,7 +5251,7 @@ trigger-multi-project-pipeline:
 - [Pipeline variables](../variables/index.md#cicd-variable-precedence) are not passed
   to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
   these variables to downstream pipelines.
-- [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+- [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
 - Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 - You cannot use [`needs:pipeline:job`](#needspipelinejob) in a trigger job.
@@ -5301,7 +5301,7 @@ to specify a different branch.
 **Possible inputs**:
 
 - The path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
 
 **Example of `trigger:project`**:
 

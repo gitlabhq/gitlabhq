@@ -231,7 +231,10 @@ bin/rspec --tag ~quarantine
 bin/rspec --tag \~quarantine
 ```
 
-Also, please add the ~"quarantine" label on the merge request.
+Also, please ensure that:
+
+1. The ~"quarantine" label is present on the merge request.
+1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).
 
 Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
 

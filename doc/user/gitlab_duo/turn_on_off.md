@@ -87,6 +87,22 @@ To run a health check:
 1. Select **GitLab Duo**.
 1. On the upper-right corner, select **Run health check**.
 
+### Health check probes
+
+The health check executes the following probes to check if your instance meets the requirements
+to use GitLab Duo. If the health check fails any of these probes, users might not be able to use
+GitLab Duo features in your instance.
+
+- **Network:** Checks that your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`. If your
+instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](#configure-gitlab-duo-on-a-self-managed-instance) to these destinations.
+- **Synchronization:** Checks if your subscription:
+  - Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.
+  - Has correct access credentials.
+  - Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can
+[manually synchronize](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data) your subscription data.
+- **System exchange:** Checks if Code Suggestions can be used in your instance. If the system
+exchange probe fails, users might not be able to use GitLab Duo features.
+
 ## Turn off GitLab Duo features
 
 You can turn off GitLab Duo for a group, project, or instance.

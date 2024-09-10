@@ -95,7 +95,7 @@ RSpec.describe Gitlab::RelativePositioning::Range do
     item_c = position_struct.new(150, :z, true)
     item_d = position_struct.new(050, :w, true)
     item_e = position_struct.new(250, :r, true)
-    item_f = position_struct.new(nil, nil, false)
+    item_f = position_struct.new(positioned?: false)
     item_ax = position_struct.new(100, :not_x, true)
     item_bx = position_struct.new(200, :not_y, true)
 
