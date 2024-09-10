@@ -158,15 +158,6 @@
   }
 }
 
-.btn-block {
-  width: 100%;
-  margin: 0;
-
-  &.btn {
-    padding: 6px 0;
-  }
-}
-
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;

@@ -17075,7 +17075,7 @@ CREATE TABLE raw_usage_data (
     sent_at timestamp with time zone,
     payload jsonb NOT NULL,
     version_usage_data_id_value bigint,
-    organization_id bigint DEFAULT 1 NOT NULL
+    organization_id bigint NOT NULL
 );
 
 CREATE SEQUENCE raw_usage_data_id_seq

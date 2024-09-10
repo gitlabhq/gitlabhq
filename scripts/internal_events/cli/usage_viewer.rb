@@ -40,51 +40,55 @@ module InternalEventsCli
       @event = event_details[@selected_event_path]
     end
 
-    def prompt_for_usage_location(default = 'ruby/rails')
+    def prompt_for_usage_location(default = '1. ruby/rails')
       choices = [
-        { name: 'ruby/rails', value: :rails },
-        { name: 'rspec', value: :rspec },
-        { name: 'javascript (vue)', value: :vue },
-        { name: 'javascript (plain)', value: :js },
-        { name: 'vue template', value: :vue_template },
-        { name: 'haml', value: :haml },
-        { name: 'Manual testing in GDK', value: :gdk },
-        { name: 'View examples for a different event', value: :other_event },
-        { name: 'Exit', value: :exit }
+        { name: '1. ruby/rails', value: :rails },
+        { name: '2. rspec', value: :rspec },
+        { name: '3. javascript (vue)', value: :vue },
+        { name: '4. javascript (plain)', value: :js },
+        { name: '5. vue template', value: :vue_template },
+        { name: '6. haml', value: :haml },
+        { name: '7. Manual testing in GDK', value: :gdk },
+        { name: '8. Data verification in Tableau', value: :tableau },
+        { name: '9. View examples for a different event', value: :other_event },
+        { name: '10. Exit', value: :exit }
       ]
 
       usage_location = cli.select(
         'Select a use-case to view examples for:',
         choices,
         **select_opts,
+        **filter_opts,
         per_page: 10
       ) do |menu|
-        menu.enum '.'
         menu.default default
       end
 
       case usage_location
       when :rails
         rails_examples
-        prompt_for_usage_location('ruby/rails')
+        prompt_for_usage_location('1. ruby/rails')
       when :rspec
         rspec_examples
-        prompt_for_usage_location('rspec')
+        prompt_for_usage_location('2. rspec')
       when :haml
         haml_examples
-        prompt_for_usage_location('haml')
+        prompt_for_usage_location('6. haml')
       when :js
         js_examples
-        prompt_for_usage_location('javascript (plain)')
+        prompt_for_usage_location('4. javascript (plain)')
       when :vue
         vue_examples
-        prompt_for_usage_location('javascript (vue)')
+        prompt_for_usage_location('3. javascript (vue)')
       when :vue_template
         vue_template_examples
-        prompt_for_usage_location('vue template')
+        prompt_for_usage_location('5. vue template')
       when :gdk
         gdk_examples
-        prompt_for_usage_location('Manual testing in GDK')
+        prompt_for_usage_location('7. Manual testing in GDK')
+      when :tableau
+        service_ping_dashboard_examples
+        prompt_for_usage_location('8. Data verification in Tableau')
       when :other_event
         self.class.new(cli).run
       when :exit
@@ -329,6 +333,26 @@ module InternalEventsCli
       ].join("\n#{' ' * indent}")
     end
 
+    def service_ping_metrics_info
+      product_group = related_metrics.map(&:product_group).uniq
+
+      <<~TEXT
+        #{product_group.map { |group| "#{group}: #{format_info(metric_exploration_group_path(group, find_stage(group)))}" }.join("\n")}
+
+        #{divider}
+        #{format_help("# METRIC TRENDS -- view data for a service ping metric for #{event.action}")}
+
+        #{related_metrics.map { |metric| "#{metric.key_path}: #{format_info(metric_trend_path(metric.key_path))}" }.join("\n")}
+      TEXT
+    end
+
+    def service_ping_no_metric_info
+      <<~TEXT
+        #{format_help("# Warning: There are no metrics for #{event.action} yet.")}
+        #{event.product_group}: #{format_info(metric_exploration_group_path(event.product_group, find_stage(event.product_group)))}
+      TEXT
+    end
+
     def template_formatted_args(data_attr, indent:)
       return " #{data_attr}=\"#{action}\">" if additional_properties.none?
 
@@ -346,8 +370,27 @@ module InternalEventsCli
       "#{format_warning(args)}\n#{spacer}>"
     end
 
+    def related_metrics
+      cli.global.metrics.select { |metric| metric.actions&.include?(event.action) }
+    end
+
+    def service_ping_dashboard_examples
+      cli.say <<~TEXT
+        #{divider}
+        #{format_help('# GROUP DASHBOARDS -- view all service ping metrics for a specific group')}
+
+        #{related_metrics.any? ? service_ping_metrics_info : service_ping_no_metric_info}
+        #{divider}
+        Note: The metric dashboard links can also be accessed from #{format_info('https://metrics.gitlab.com/')}
+
+        Not what you're looking for? Check this doc:
+          - #{format_info('https://docs.gitlab.com/ee/development/internal_analytics/#data-discovery')}
+
+      TEXT
+    end
+
     def gdk_examples
-      key_paths = cli.global.metrics.select { |metric| metric.actions&.include?(event.action) }.map(&:key_path)
+      key_paths = related_metrics.map(&:key_path)
 
       cli.say <<~TEXT
         #{divider}

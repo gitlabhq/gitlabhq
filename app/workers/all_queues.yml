@@ -876,6 +876,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:resource_access_tokens_inactive_tokens_deletion_cron
+  :worker_name: ResourceAccessTokens::InactiveTokensDeletionCronWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
   :worker_name: ScheduleMergeRequestCleanupRefsWorker
   :feature_category: :code_review_workflow

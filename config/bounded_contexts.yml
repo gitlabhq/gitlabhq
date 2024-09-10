@@ -241,6 +241,11 @@ domains:
     feature_categories:
       - groups_and_projects
 
+  ResourceAccessTokens:
+    description: Managing groups and projects access tokens
+    feature_categories:
+      - system_access
+
   Releases:
     description:
     feature_categories:

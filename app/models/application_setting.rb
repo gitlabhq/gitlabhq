@@ -43,6 +43,8 @@ class ApplicationSetting < ApplicationRecord
 
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
 
+  INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 

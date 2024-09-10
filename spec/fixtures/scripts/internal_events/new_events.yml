@@ -110,7 +110,8 @@
     - "\n" # Create file
     - "\n" # Select: View Usage -- look at code examples
     - "\n" # Select: Ruby/Rails
-    - "9\n" # Exit
+    - "Exit" # Filters to this item
+    - "\n" # select: Exit
   outputs:
     files:
     - path: config/events/random_name.yml
@@ -157,7 +158,8 @@
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "3\n" # Select: View Usage
-    - "9\n" # Exit
+    - "Exit" # Filters to this item
+    - "\n" # select: Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml

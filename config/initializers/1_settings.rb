@@ -524,6 +524,9 @@ Settings.cron_jobs['personal_access_tokens_expiring_worker']['job_class'] = 'Per
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker'] ||= {}
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker']['job_class'] = 'PersonalAccessTokens::ExpiredNotificationWorker'
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker'] ||= {}
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker']['job_class'] = 'ResourceAccessTokens::InactiveTokensDeletionCronWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= {}
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
@@ -1030,7 +1033,7 @@ end
 #
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
-  executor_version = File.read('DUO_WORKFLOW_EXECUTOR_VERSION').chomp
+  executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
   Settings.duo_workflow.reverse_merge!(
     secure: true,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/#{executor_version}/duo-workflow-executor.tar.gz",
