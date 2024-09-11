@@ -172,9 +172,9 @@ module ValueStreamsDashboardHelpers
 
   def create_mock_flow_metrics(project)
     [
-      [n_months_ago(1).beginning_of_month + 2.days, 2, 10],
-      [n_months_ago(2).beginning_of_month + 2.days, 4, 20],
-      [n_months_ago(3).beginning_of_month + 2.days, 3, 15]
+      [n_months_ago(1).beginning_of_month + 2.days, 2, 2],
+      [n_months_ago(2).beginning_of_month + 2.days, 4, 1],
+      [n_months_ago(3).beginning_of_month + 2.days, 3, 3]
     ].each do |created_at, lead_time, count|
       count.times do
         create(
@@ -191,13 +191,14 @@ module ValueStreamsDashboardHelpers
 
   def create_mock_merge_request_metrics(project)
     [
-      [n_months_ago(1), 5],
-      [n_months_ago(2), 7],
-      [n_months_ago(3), 6]
+      [n_months_ago(1), 3],
+      [n_months_ago(2), 1],
+      [n_months_ago(3), 2]
     ].each do |merged_at, count|
       count.times do
         create(
           :merge_request,
+          :skip_diff_creation,
           :merged,
           created_at: 1.year.ago,
           project: project

@@ -8,4 +8,12 @@ description: Dependency list exported data
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104361
 milestone: '15.7'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454947
+desired_sharding_key_migration_job_name: BackfillProjectIdToDependencyListExports
+# When migration is finalized, sharding keys should be defined as:
+#
+# sharding_key:
+#   project_id: projects
+#   group_id: namespaces
+#   organization_id: organizations
+#
+# A multi-column not-null constraint should be added on these columns.

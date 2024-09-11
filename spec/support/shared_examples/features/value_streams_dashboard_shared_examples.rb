@@ -59,23 +59,20 @@ end
 RSpec.shared_examples 'renders metrics comparison table' do
   let(:metric_table) { find_by_testid('panel-dora-chart') }
 
-  it 'renders the metrics comparison visualization' do
-    expect(metric_table).to be_visible
-    expect(metric_table).to have_content format(_("Metrics comparison for %{title}"), title: panel_title)
-  end
-
   it "renders the available metrics" do
     wait_for_all_requests
 
+    expect(metric_table).to be_visible
+    expect(metric_table).to have_content format(_("Metrics comparison for %{title}"), title: panel_title)
     [
       ['lead-time-for-changes', _('Lead time for changes'), '3.0 d 40.0% 1.0 d 66.7% 0.0 d'],
       ['time-to-restore-service', _('Time to restore service'), '3.0 d 57.1% 5.0 d 66.7% 0.0 d'],
       ['lead-time', _('Lead time'), '4.0 d 33.3% 2.0 d 50.0% -'],
       ['cycle-time', _('Cycle time'), '3.0 d 50.0% 1.0 d 66.7% -'],
-      ['issues', _('Issues created'), '20 33.3% 10 50.0% -'],
-      ['issues-completed', _('Issues closed'), '20 33.3% 10 50.0% -'],
+      ['issues', _('Issues created'), '1 66.7% 2 100.0% -'],
+      ['issues-completed', _('Issues closed'), '1 66.7% 2 100.0% -'],
       ['deploys', _('Deploys'), '10 25.0% 5 50.0% -'],
-      ['merge-request-throughput', _('Merge request throughput'), '7 16.7% 5 28.6% -'],
+      ['merge-request-throughput', _('Merge request throughput'), '1 50.0% 3 200.0% -'],
       ['median-time-to-merge', _('Median time to merge'), '- - -'],
       ['vulnerability-critical', _('Critical vulnerabilities over time'), '5 3 -'],
       ['vulnerability-high', _('High vulnerabilities over time'), '4 2 -'],

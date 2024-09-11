@@ -88,7 +88,7 @@ module LooseForeignKeys
     def record_result(cleaner, result)
       if cleaner.async_delete?
         modification_tracker.add_deletions(result[:table], result[:affected_rows])
-      elsif cleaner.async_nullify?
+      elsif cleaner.async_nullify? || (cleaner.update_column_to? && Feature.enabled?(:loose_foreign_keys_update_column_to, Feature.current_request))
         modification_tracker.add_updates(result[:table], result[:affected_rows])
       else
         logger.error("Invalid on_delete argument for definition: #{result[:table]}")

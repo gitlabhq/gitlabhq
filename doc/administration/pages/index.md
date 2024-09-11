@@ -99,17 +99,10 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 
 #### For namespace in URL path, without wildcard DNS
 
-DETAILS:
-**Status:** Beta
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
 Prerequisites:
 
@@ -198,17 +191,10 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 
 ### Pages domain without wildcard DNS
 
-DETAILS:
-**Status:** Beta
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
 This configuration is the minimum setup for GitLab Pages. It is the base for all
 other configurations. In this configuration, NGINX proxies all requests to the daemon,
@@ -289,17 +275,10 @@ then run `gitlab-ctl reconfigure`. For more information, read
 
 ### Pages domain with TLS support, without wildcard DNS
 
-DETAILS:
-**Status:** Beta
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483365) in GitLab 17.4.
 
 Prerequisites:
 

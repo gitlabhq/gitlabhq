@@ -18,6 +18,9 @@ RSpec.shared_examples 'desired sharding key backfill job' do
       vulnerability_merge_request_links: {
         vulnerabilities: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
       },
+      vulnerability_issue_links: {
+        vulnerabilities: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475058'
+      },
       vulnerability_finding_evidences: {
         vulnerability_occurrences: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480354'
       },

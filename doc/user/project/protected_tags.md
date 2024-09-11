@@ -125,6 +125,16 @@ To allow a deploy key to create a protected tag:
 1. From the **Allowed to create** list, select the deploy key.
 1. Select **Protect**.
 
+## Run pipelines on protected tags
+
+The permissions to create protected tags define if a user can:
+
+- Initiate and run CI/CD pipelines.
+- Execute actions on jobs associated with these tags.
+
+These permissions ensure that only authorized users can trigger and manage
+CI/CD processes for protected tags.
+
 ## Delete a protected tag
 
 You can manually delete protected tags with the GitLab API, or the

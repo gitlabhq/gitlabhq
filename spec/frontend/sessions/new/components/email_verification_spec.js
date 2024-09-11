@@ -32,12 +32,12 @@ describe('EmailVerification', () => {
     verifyPath: '/users/sign_in',
     resendPath: '/users/resend_verification_code',
     isOfferEmailReset: true,
-    updateEmailPath: '/users/update_email',
   };
 
   const createComponent = (props = {}) => {
     wrapper = mountExtended(EmailVerification, {
       propsData: { ...defaultPropsData, ...props },
+      provide: { updateEmailPath: '/users/update_email' },
     });
   };
 

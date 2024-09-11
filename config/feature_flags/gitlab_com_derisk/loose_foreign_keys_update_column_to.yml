@@ -1,0 +1,9 @@
+---
+name: loose_foreign_keys_update_column_to
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475204
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164508
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/482775
+milestone: '17.4'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

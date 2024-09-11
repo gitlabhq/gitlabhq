@@ -9,12 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/experiment-beta-support.md).
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
-
-This feature is in [beta](../../../policy/experiment-beta-support.md).
 
 You can use the Google Artifact Management integration to
 configure and connect a [Google Artifact Registry](https://cloud.google.com/artifact-registry) repository to your GitLab project.

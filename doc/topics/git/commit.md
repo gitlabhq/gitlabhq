@@ -114,6 +114,13 @@ see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
 |--------------------------------|-------------|---------|
 | `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |
 | `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
+
+### Push options for Integrations
+
+You can use push options to skip integration CI/CD pipelines.
+
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
 | `integrations.skip_ci`         | Skip push events for CI/CD integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. Introduced in [GitLab 16.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123837). | `git push -o integrations.skip_ci` |
 
 ### Push options for merge requests

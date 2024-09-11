@@ -404,6 +404,31 @@ database (for example, object storage) where you might wish to use `dependent: :
 see alternatives in
 [Avoid `dependent: :nullify` and `dependent: :destroy` across databases](multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
 
+## Update target column to a value
+
+A loose foreign key might be used to update a target column to a value when an
+entry in parent table is deleted.
+
+It's important to add an index (if it doesn't exist yet) on
+(`column`, `target_column`) to avoid any performance issues.
+Any index starting with these two columns will work.
+
+The configuration requires additional information:
+
+- Column to be updated (`target_column`)
+- Value to be set in the target column (`target_value`)
+
+Example definition:
+
+```yaml
+packages:
+  - table: projects
+    column: project_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 4
+```
+
 ## Risks of loose foreign keys and possible mitigations
 
 In general, the loose foreign keys architecture is eventually consistent and

@@ -107,7 +107,7 @@ This script extends the lifetime of all tokens which expire on a specified date,
 - Group access tokens
 - Project access tokens
 
-The lifetimes of tokens intentionally set to expire on the specified date are also extended.
+For group and project access tokens, this script only extends the lifetime of these tokens if they were given an expiration date automatically when upgrading to GitLab 16.0 or later. If a group or project access token was generated with an expiration date, or was rotated, the validity of that token is dependent on a valid membership to a resource, and therefore the token lifetime cannot be extended using this script.
 
 To use the script:
 

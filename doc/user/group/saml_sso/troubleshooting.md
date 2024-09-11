@@ -23,6 +23,8 @@ SAML responses are base64 encoded, so we recommend the following browser plugins
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 - [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
+If you cannot install a browser plugin, you can [manually generate and capture a SAML response](#manually-generate-a-saml-response) instead. 
+
 Pay specific attention to:
 
 - The `NameID`, which we use to identify which user is signing in. If the user has previously signed in, this
@@ -51,6 +53,25 @@ To generate a SAML Response:
 1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
+
+#### Manually generate a SAML response
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see this [video on manually generating a SAML response without using a browser plugin (using Google Chrome)](https://youtu.be/umMPj6ohF_I), uploaded by GitLab Support.
+<!-- Video published on 2024-09-09 -->
+
+Regardless of what browser you use, the process is similar to the following:
+
+1. Right-click on a new browser and click on **Inspect** to open the **DevTools** window.
+1. Select the **Network** tab. Make sure that **Preserve log** is selected.
+1. Switch to the browser page and sign in to GitLab using SAML SSO.
+1. Switch back to the **DevTools** window and filter for the `callback` event.
+1. Select the **Payload** tab for the callback event and right-click to copy the value.
+1. Paste this value into the following command: `echo "<value>" | base64 --decode > saml_response.xml`.
+1. Open `saml_response.xml` in a code editor.
+
+   If you have an XML "prettifier" installed in your code editor, you should be able to automatically
+   format the response to be easier to read.
 
 ## Search Rails logs for a SAML sign-in
 

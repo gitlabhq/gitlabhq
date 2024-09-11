@@ -13964,11 +13964,6 @@ msgstr ""
 msgid "ComplianceFrameworks|\"%{name}\" is a reserved word and cannot be used as a compliance framework name."
 msgstr ""
 
-msgid "ComplianceFrameworks|%{count} linked policy."
-msgid_plural "ComplianceFrameworks|%{count} linked policies."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group \"%{group_name}\" is attached to this email."
 msgstr ""
 
@@ -13976,6 +13971,9 @@ msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group %{g
 msgstr ""
 
 msgid "ComplianceFrameworks|Add framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|All selected projects will be covered by the framework’s selected requirements and the policies."
 msgstr ""
 
 msgid "ComplianceFrameworks|Background color"
@@ -14005,7 +14003,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
-msgid "ComplianceFrameworks|Create a compliance framework"
+msgid "ComplianceFrameworks|Create framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Default framework will be applied automatically to any new project created in the group or sub group."
@@ -14023,13 +14021,19 @@ msgstr ""
 msgid "ComplianceFrameworks|Description is required"
 msgstr ""
 
-msgid "ComplianceFrameworks|Edit a compliance framework"
-msgstr ""
-
 msgid "ComplianceFrameworks|Edit compliance framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Edit compliance framework: %{frameworkName}"
+msgstr ""
+
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|Go to the %{linkStart}policy management page%{linkEnd} to scope policies for this framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
@@ -14050,9 +14054,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Name is required, and must be less than 255 characters"
 msgstr ""
 
-msgid "ComplianceFrameworks|Name, description"
-msgstr ""
-
 msgid "ComplianceFrameworks|New compliance framework"
 msgstr ""
 
@@ -14068,7 +14069,10 @@ msgstr ""
 msgid "ComplianceFrameworks|No frameworks found. Create a framework in top-level group %{linkStart}namespace%{linkEnd} to assign it to a project."
 msgstr ""
 
-msgid "ComplianceFrameworks|Policy"
+msgid "ComplianceFrameworks|Optional"
+msgstr ""
+
+msgid "ComplianceFrameworks|Policies"
 msgstr ""
 
 msgid "ComplianceFrameworks|Policy name"
@@ -14083,6 +14087,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Projects"
 msgstr ""
 
+msgid "ComplianceFrameworks|Required"
+msgstr ""
+
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
 msgstr ""
 
@@ -14092,7 +14099,13 @@ msgstr ""
 msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Select policies to enforce on all projects scoped to this framework."
+msgstr ""
+
 msgid "ComplianceFrameworks|Set as default"
+msgstr ""
+
+msgid "ComplianceFrameworks|Set basic information for the compliance framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
@@ -14114,12 +14127,6 @@ msgid "ComplianceFrameworks|To link this policy and framework,  edit  the policy
 msgstr ""
 
 msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy's scope."
-msgstr ""
-
-msgid "ComplianceFrameworks|Total policies in the group: %{count}"
-msgstr ""
-
-msgid "ComplianceFrameworks|Total projects linked to framework: %{count}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
@@ -58099,6 +58106,9 @@ msgid "Update approvers"
 msgstr ""
 
 msgid "Update failed"
+msgstr ""
+
+msgid "Update framework"
 msgstr ""
 
 msgid "Update it"

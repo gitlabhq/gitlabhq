@@ -78,12 +78,12 @@ Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
-1. [Create a service account](../../api/users.md#create-service-account-user).
+1. [Create a service account](../../api/user_service_accounts.md#create-a-service-account-user).
 
    This service account is associated with the entire instance, not a specific group
    or project in the instance.
 
-1. [List all service account users](../../api/users.md#list-service-account-users).
+1. [List all service account users](../../api/user_service_accounts.md#list-all-service-account-users).
 
 1. [Create a personal access token](../../api/user_tokens.md#create-a-personal-access-token)
    for the service account user.

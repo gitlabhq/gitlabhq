@@ -79,7 +79,7 @@
     "@mattiasbuelens/web-streams-adapter": "^0.1.0",
     "@rails/actioncable": "7.0.8-4",
     "@rails/ujs": "7.0.8-4",
-    "@sentry/browser": "8.27.0",
+    "@sentry/browser": "8.28.0",
     "@snowplow/browser-plugin-client-hints": "^3.24.2",
     "@snowplow/browser-plugin-form-tracking": "^3.24.2",
     "@snowplow/browser-plugin-ga-cookies": "^3.24.2",

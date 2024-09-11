@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-## SAML group links API
+# SAML group links API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -18,7 +18,7 @@ DETAILS:
 List, get, add, and delete [SAML group links](../user/group/saml_sso/group_sync.md#configure-saml-group-links) by using
 the REST API.
 
-### List SAML group links
+## List SAML group links
 
 List SAML group links for a group.
 
@@ -63,7 +63,7 @@ Example response:
 ]
 ```
 
-### Get a SAML group link
+## Get a SAML group link
 
 Get a SAML group link for a group.
 
@@ -102,7 +102,7 @@ Example response:
 }
 ```
 
-### Add a SAML group link
+## Add a SAML group link
 
 Add a SAML group link for a group.
 
@@ -143,7 +143,7 @@ Example response:
 }
 ```
 
-### Delete a SAML group link
+## Delete a SAML group link
 
 Delete a SAML group link for a group.
 
