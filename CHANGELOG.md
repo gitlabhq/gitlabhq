@@ -2,6 +2,40 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.2 (2024-09-11)
+
+### Fixed (3 changes)
+
+- [Update Access data on sync even if data didn’t changed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ef29892400e4cfd9d77ae2ed11d577cf94bf026)
+- [Fix Sidekiq crashing when GITLAB_LOG_LEVEL set to debug](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2eba0a9279b9f92d0adda8653474efb0ca1014a)
+- [Fix issue when resizing images in RTE](https://gitlab.com/gitlab-org/security/gitlab/-/commit/812f117e1fc8260121c1dfbeb5e503552aedca37)
+
+### Changed (1 change)
+
+- [Backport OpenSSL v3 callout to 17.3](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba9718022b12e627375e166a8731e9cb83fd632b)
+
+### Security (19 changes)
+
+- [Revert "Merge branch 'security-psk-fix-external-wiki-integration-dos-17-3' into '17-3-stable-ee'"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4adb684182baacf3d351090265c94899b5db1eb3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4453))
+- [Fix the vulnerability in the glm_source parameter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/878cda6f69865a8a61d0a3e431ed365bb01fd7a0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4436))
+- [Improve GraphQL log security](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ab77ecaffab94c02d4d8054dd900ef853ddb492) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4400))
+- [Add permissions check to project creations from a project template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9aaaaf465c69b9cf80f7b3906338a822f31adadd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4443))
+- [Fix credentials disclosure in mirroring failure](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c2d3c9417a1fccea08bdc817943685f058c7fa5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4446))
+- [Redirect url in the link validated for being external](https://gitlab.com/gitlab-org/security/gitlab/-/commit/219cfd97cc2771266d2e92c9bd2e87bad2cdceb4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4440))
+- [[17.3] Update edit permissions for DAST profiles](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44638f2465398883881de00a84fea1f724bc3456) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4372))
+- [Commit information visible through release atom endpoint for guest users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e4451c5eb6f7ae20ff9400660d9c8072d378522) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4437))
+- [Execute environment stop actions as the owner of the action](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e160b472c887a33122f9ef2894551b167a321377) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4404))
+- [Prevent code injection in Product Analytics funnels YAML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/04ee196cf8dde5621404345a35a85c600e294536) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4431))
+- [Prevent users with admin_group_member custom ab. to manage custom roles](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a5aae28a61f67ccaf5a2c2fe7c24c4cc123d427) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4425))
+- [Fixed frontend regex to parse URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae7d2fddff8fe064bde1bd9ab01bf10e219cbfa8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4419))
+- [Use session instead of params for identity linking](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7ae3008fd84476d8995fe9fa7ec0800219cd1370) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4369))
+- [Fix external wiki integration DoS by changing request to HEAD](https://gitlab.com/gitlab-org/security/gitlab/-/commit/20a6c608712831e7e9b072fbe0de61bb61105cdf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4381))
+- [Restrict IPs for packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b894f3ca69858cceb80362e9f6a8c3d10bafe42a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4391))
+- [Strip out Set-Cookie header from dependencyproxy auth response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cafae257663e5e0e2c410fd642c18c2b549b3451) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4399))
+- [Fix open redirect due to additional slash added](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4fe66b1075a6023fcb2b5ce219b7ce0037a183b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4374))
+- [Group Developers can view group runners](https://gitlab.com/gitlab-org/security/gitlab/-/commit/084025e6a0ee601f4509ab2f9541d5a9a2c91d44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4378))
+- [Enforce Pipeline execution policy variables for template rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5dd7d992fcdcb23dfc32a47977b51303042b1be8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4393))
+
 ## 17.3.1 (2024-08-20)
 
 ### Fixed (3 changes)
