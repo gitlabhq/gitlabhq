@@ -39597,7 +39597,7 @@ msgstr ""
 msgid "Pipeline subscriptions"
 msgstr ""
 
-msgid "Pipeline subscriptions trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
+msgid "Pipeline subscriptions trigger a new pipeline on the default branch of this project when a pipeline completes for a new tag of the subscribed project."
 msgstr ""
 
 msgid "Pipeline trigger tokens"

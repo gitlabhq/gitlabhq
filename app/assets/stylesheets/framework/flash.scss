@@ -54,10 +54,6 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     background-color: $orange-50;
   }
 
-  .flash-text {
-    display: inline-block;
-  }
-
   &.flash-container-no-margin {
     .gl-alert {
       margin-top:0;

@@ -146,31 +146,13 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Configure the GitLab VS Code Extension
 
-The above steps show how to start a workflow directly from the Duo Workflow Exector. If you would like to start it with the VS Code Extension instead, follow these steps:
+The above steps show how to start a workflow directly from the Duo Workflow
+Executor.
 
-1. Update to the latest version.
-1. Pull the executor Docker image:
+If you would like to start Duo Workflow with the VS Code Extension instead,
+follow [these steps](../../user/duo_workflow/index.md#prerequisites).
 
-   ```shell
-   docker pull redhat/ubi8:latest
-   ```
-
-1. Get the Docker socket path:
-
-   ```shell
-   docker context list
-   ```
-
-1. Update VS Code settings (JSON):
-
-   ```json
-   {
-     "gitlab.duoWorkflow.dockerSocket": "<docker_socket_path>",
-     "gitlab.featureFlags.languageServerWebviews": true
-   }
-   ```
-
-   If you are debugging or making changes to the VSCode extension and need to run the extension in development mode, you can do that following [these instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment).
+If you are debugging or making changes to the VSCode extension and need to run the extension in development mode, you can do that following [these instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment).
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CodeNavigationPath do
+RSpec.describe Gitlab::CodeNavigationPath, feature_category: :source_code_management do
   context 'when there is an artifact with code navigation data' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:sha) { project.repository.commits('master', limit: Gitlab::CodeNavigationPath::LATEST_COMMITS_LIMIT).last.id }
@@ -15,6 +15,12 @@ RSpec.describe Gitlab::CodeNavigationPath do
     let(:lsif_path) { "/#{project.full_path}/-/jobs/#{job.id}/artifacts/raw/lsif/#{path}.json?file_type=lsif" }
 
     subject { described_class.new(project, commit_sha).full_json_path_for(path) }
+
+    context 'when project does not have a lsif artifact' do
+      let_it_be(:project) { create(:project, :empty_repo) }
+
+      it { is_expected.to be_nil }
+    end
 
     context 'when a pipeline exist for a sha' do
       it 'returns path to a file in the artifact' do
@@ -36,6 +42,14 @@ RSpec.describe Gitlab::CodeNavigationPath do
       it 'returns path to a file in the artifact' do
         expect(subject).to eq(lsif_path)
       end
+    end
+
+    context 'when artifact loading takes too long' do
+      before do
+        allow(Timeout).to receive(:timeout).with(described_class::ARTIFACT_TIMEOUT).and_raise(Timeout::Error)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

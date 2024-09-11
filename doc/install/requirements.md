@@ -82,51 +82,45 @@ For more information, see [managing PostgreSQL extensions](postgresql_extensions
 
 #### GitLab Geo
 
-If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
-[validated cloud-managed instances](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services),
-as we actively develop and test based on those.
-We cannot guarantee compatibility with other external databases.
+For [GitLab Geo](../administration/geo/index.md), you should use the Linux package or
+[validated cloud providers](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services)
+to install GitLab.
+Compatibility with other external databases is not guaranteed.
 
 For more information, see [requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
 
 #### Locale compatibility
 
-Changes to locale data in `glibc` means that PostgreSQL database files are not fully compatible
-between different OS releases.
+When you change locale data in `glibc`, PostgreSQL database files are
+no longer fully compatible between different operating systems.
+To avoid index corruption,
+[check for locale compatibility](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)
+when you:
 
-To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)
-when:
+- Move binary PostgreSQL data between servers.
+- Upgrade your Linux distribution.
+- Update or change third-party container images.
 
-- Moving binary PostgreSQL data between servers.
-- Upgrading your Linux distribution.
-- Updating or changing third party container images.
-
-For more information, see how to [upgrade operating systems for PostgreSQL](../administration/postgresql/upgrading_os.md).
+For more information, see [upgrading operating systems for PostgreSQL](../administration/postgresql/upgrading_os.md).
 
 #### GitLab schemas
 
-Databases created or used for GitLab, Geo, [Gitaly Cluster](../administration/gitaly/praefect.md), or other components should be for the
-exclusive use of GitLab. Do not make direct changes to the database, schemas, users, or other
-properties except when following procedures in the GitLab documentation or following the directions
-of GitLab Support or other GitLab engineers.
+You should create or use databases exclusively for GitLab, [Geo](../administration/geo/index.md),
+[Gitaly Cluster](../administration/gitaly/praefect.md), or other components.
+Do not create or modify databases, schemas, users, or other properties except when you follow:
 
-- The main GitLab application uses three schemas:
+- Procedures in the GitLab documentation
+- The directions of GitLab Support or engineers
 
-  - The default `public` schema
-  - `gitlab_partitions_static` (automatically created)
-  - `gitlab_partitions_dynamic` (automatically created)
+The main GitLab application uses three schemas:
 
-  No other schemas should be manually created.
+- The default `public` schema
+- `gitlab_partitions_static` (created automatically)
+- `gitlab_partitions_dynamic` (created automatically)
 
-- GitLab may create new schemas as part of Rails database migrations. This happens when performing
-  a GitLab upgrade. The GitLab database account requires access to do this.
-
-- GitLab creates and modifies tables during the upgrade process, and also as part of standard
-  operations to manage partitioned tables.
-
-- You should not modify the GitLab schema (for example, adding triggers or modifying tables).
-  Database migrations are tested against the schema definition in the GitLab codebase. GitLab
-  version upgrades may fail if the schema is modified.
+During Rails database migrations, GitLab might create or modify schemas or tables.
+Database migrations are tested against the schema definition in the GitLab codebase.
+If you modify any schema, [GitLab upgrades](../update/index.md) might fail.
 
 ## Puma
 
@@ -240,36 +234,6 @@ These processes consume approximately 200 MB of memory.
 For more information, see
 [monitoring GitLab with Prometheus](../administration/monitoring/prometheus/index.md).
 
-## GitLab Runner
-
-We strongly advise against installing GitLab Runner on the same machine you plan
-to install GitLab on. Depending on how you decide to configure GitLab Runner and
-what tools you use to exercise your application in the CI environment, GitLab
-Runner can consume significant amount of available memory.
-
-Memory consumption calculations, that are available above, are not valid if
-you decide to run GitLab Runner and the GitLab Rails application on the same
-machine.
-
-It's also not safe to install everything on a single machine, because of the
-[security reasons](https://docs.gitlab.com/runner/security/), especially when you plan to use shell executor with GitLab
-Runner.
-
-To use CI/CD features, you should use a separate machine for each GitLab Runner.
-The GitLab Runner server requirements depend on:
-
-- The type of [executor](https://docs.gitlab.com/runner/executors/) you configured on GitLab Runner.
-- Resources required to run build jobs.
-- Job concurrency settings.
-
-Because the nature of the jobs varies for each use case, you must experiment by adjusting the job concurrency to get the optimum setting.
-
-For reference, the [SaaS runners on Linux](../ci/runners/hosted_runners/linux.md)
-are configured so that a **single job** runs in a **single instance** with:
-
-- 1 vCPU.
-- 3.75 GB of RAM.
-
 ## Supported web browsers
 
 GitLab supports the following web browsers:
@@ -289,4 +253,5 @@ Running GitLab with JavaScript disabled in these browsers is not supported.
 
 ## Related topics
 
+- [Install GitLab Runner](https://docs.gitlab.com/runner/install/)
 - [Secure your installation](../security/index.md)

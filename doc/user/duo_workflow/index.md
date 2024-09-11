@@ -62,10 +62,14 @@ Before you can use GitLab Duo Workflow in VS Code:
    docker context use colima
    ```
 
-1. Manually pull the required Docker image:
+1. [Authenticate with the GitLab container registry](../packages/container_registry/authenticate_with_container_registry.md).
+
+1. Manually pull the
+   [latest version of the Workflow Docker image](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry/6740066)
+   from the container registry:
 
    ```shell
-   docker pull redhat/ubi8
+   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
    ```
 
 1. Access VS Code settings:
@@ -76,6 +80,7 @@ Before you can use GitLab Duo Workflow in VS Code:
 
    ```json
    "gitlab.duoWorkflow.dockerSocket": "/Users/<username>/.colima/default/docker.sock"
+   "gitlab.featureFlags.languageServerWebviews": true
    ```
 
 1. Save the settings file.

@@ -146,6 +146,7 @@ domains:
       - seat_cost_management
       - plan_provisioning
       - subscription_management
+      - add-on_provisioning
 
   Import:
     description:

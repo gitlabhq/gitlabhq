@@ -91,7 +91,7 @@ You can reference the instructions for running the demo app [here](https://opent
    ```yaml
    exporters:
       otlphttp/gitlab:
-         endpoint: http://gdk.test:3443/api/v4/$PROJECT_ID/observability/ 
+         endpoint: http://gdk.test:3443/api/v4/projects/$PROJECT_ID/observability/ 
          headers:
             "private-token": "$TOKEN"
 
