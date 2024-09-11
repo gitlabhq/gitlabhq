@@ -1731,6 +1731,8 @@
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-merge-request
       changes: *qa-patterns
 
