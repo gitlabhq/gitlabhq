@@ -77,7 +77,7 @@ class InvitesController < ApplicationController
   def track_invite_join_click
     return unless member && initial_invite_email?
 
-    Gitlab::Tracking.event(self.class.name, 'join_clicked', label: 'invite_email', property: member.id.to_s)
+    Gitlab::Tracking.event(self.class.name, 'join_clicked', label: 'invite_email')
   end
 
   def authenticate_user!

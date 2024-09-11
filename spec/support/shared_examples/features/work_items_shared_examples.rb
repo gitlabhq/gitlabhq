@@ -102,6 +102,14 @@ RSpec.shared_examples 'work items comments' do |type|
     expect(page).to have_field _('Add a reply'), with: ''
   end
 
+  it 'successfully posts comments using shortcut only once' do
+    expected_matches = find('ul.main-notes-list').all('li').size + 1
+    set_comment
+    send_keys([modifier_key, :enter], [modifier_key, :enter], [modifier_key, :enter])
+    wait_for_requests
+    expect(find('ul.main-notes-list')).to have_selector('li', count: expected_matches)
+  end
+
   context 'when using quick actions' do
     it 'autocompletes quick actions common to all work item types', :aggregate_failures do
       click_reply_and_enter_slash

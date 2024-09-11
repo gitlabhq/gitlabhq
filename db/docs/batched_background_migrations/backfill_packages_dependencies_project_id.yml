@@ -1,9 +1,12 @@
 ---
 migration_job_name: BackfillPackagesDependenciesProjectId
 description: Backfills the `project_id` column for `packages_dependencies` table
+  Originally introduced in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161798
+  Re-queued in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX due to bypass that enabled previously orphaned packages dependencies being linked to new packages dependency links.
+  The bypass addressed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164270.
 feature_category: package_registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161798
 milestone: '17.4'
-queued_migration_version: 20240812175326
-finalize_after: '2024-09-23'
+queued_migration_version: 20240906080833
+finalize_after: '2024-10-17'
 finalized_by: # version of the migration that finalized this BBM

@@ -15,7 +15,7 @@ applicable, security guidance.
 
 ## Personal access tokens
 
-You can create [personal access tokens](../../user/profile/personal_access_tokens.md) 
+You can create [personal access tokens](../../user/profile/personal_access_tokens.md)
 to authenticate with:
 
 - The GitLab API.

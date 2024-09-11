@@ -957,7 +957,7 @@ defined in the `.gitlab-ci.yml` file. If the name is not defined, the default fi
 
 The provenance metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [1.0](https://github.com/in-toto/attestation/tree/v1.0/spec).
 
-To use an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file. 
+To use an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file.
 
 The following fields are populated by default:
 

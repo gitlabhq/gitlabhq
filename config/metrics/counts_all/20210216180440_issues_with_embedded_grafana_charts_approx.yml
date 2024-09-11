@@ -4,7 +4,7 @@ key_path: counts.issues_with_embedded_grafana_charts_approx
 description: Count of issues where a user has embedded a Grafana chart
 product_group: respond
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 distribution:
@@ -17,3 +17,5 @@ tier:
 performance_indicator_type: []
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116849
+milestone_removed: "17.4"

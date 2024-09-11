@@ -286,7 +286,7 @@ When a group is invited to another group with a custom role, the following rules
 For example, let's say we have 5 users in Group A, and they are assigned the following roles:
 
 - User A: Guest role
-- User B: Guest role + `read_code` custom permission 
+- User B: Guest role + `read_code` custom permission
 - User C: Guest role + `read_vulnerability` custom permission
 - User D: Developer role
 - User E: Developer + `admin_vulnerability` custom permission

@@ -217,6 +217,9 @@ export default {
       clearDraft(this.autosaveKey);
     },
     submitForm() {
+      if (this.isSubmitting) {
+        return;
+      }
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
       }

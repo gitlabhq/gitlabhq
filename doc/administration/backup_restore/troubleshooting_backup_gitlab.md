@@ -206,7 +206,7 @@ You should verify that the secrets are the root cause before deleting any data.
 
 ## Container registry is not restored
 
-If you restore a backup from an environment that uses the [container registry](../../user/packages/container_registry/index.md) 
+If you restore a backup from an environment that uses the [container registry](../../user/packages/container_registry/index.md)
 to a newly installed environment where the container registry is not enabled, the container registry is not restored.
 
 To also restore the container registry, you need to [enable it](../packages/container_registry.md#enable-the-container-registry) in the new

@@ -194,7 +194,6 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
               category: 'RegistrationsController',
               action: 'accepted',
               label: 'invite_email',
-              property: group_invite.id.to_s,
               user: group_invite.reload.user
             )
           end

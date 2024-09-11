@@ -2552,9 +2552,6 @@ msgstr ""
 msgid "AbuseReports|Deleted user"
 msgstr ""
 
-msgid "AbuseReports|No reports found"
-msgstr ""
-
 msgid "AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}."
 msgstr ""
 
@@ -37046,6 +37043,9 @@ msgstr ""
 msgid "ObservabilityLogs|value"
 msgstr ""
 
+msgid "ObservabilityMetrics|(Value: %{value})"
+msgstr ""
+
 msgid "ObservabilityMetrics|+%{count} more"
 msgstr ""
 
@@ -37094,6 +37094,15 @@ msgstr ""
 msgid "ObservabilityMetrics|No data found for the selected time range %{time}"
 msgstr ""
 
+msgid "ObservabilityMetrics|No related traces"
+msgstr ""
+
+msgid "ObservabilityMetrics|No related traces for the selected time. Select another data point and try again."
+msgstr ""
+
+msgid "ObservabilityMetrics|Related traces at %{time}"
+msgstr ""
+
 msgid "ObservabilityMetrics|Search"
 msgstr ""
 
@@ -37119,6 +37128,9 @@ msgid "ObservabilityMetrics|Type"
 msgstr ""
 
 msgid "ObservabilityMetrics|Value"
+msgstr ""
+
+msgid "ObservabilityMetrics|View traces"
 msgstr ""
 
 msgid "ObservabilityMetrics|is like"
@@ -38280,9 +38292,6 @@ msgid "PQL|Hello %{userName}. Before putting you in touch with our sales team, w
 msgstr ""
 
 msgid "PQL|Message for the Sales team (optional)"
-msgstr ""
-
-msgid "PQL|Please select a city or state"
 msgstr ""
 
 msgid "PQL|Submit information"
@@ -48804,6 +48813,9 @@ msgstr ""
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
 msgstr ""
 
+msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
+msgstr ""
+
 msgid "SecurityOrchestration|All projects in linked groups"
 msgstr ""
 
@@ -48904,6 +48916,9 @@ msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance framework has no projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Compliance pipeline migration to pipeline execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
@@ -49358,6 +49373,9 @@ msgstr ""
 msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
+msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."
+msgstr ""
+
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
@@ -49389,6 +49407,9 @@ msgid "SecurityOrchestration|This is a project-level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|This merge request approval policy targets the default branch, but the default branch is not protected in this project. To set up this policy, the default branch must be protected."
+msgstr ""
+
+msgid "SecurityOrchestration|This merge request migrates compliance pipeline `%{path}` to a pipeline execution policy scoped to framework [%{framework}](%{link})."
 msgstr ""
 
 msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."
@@ -52506,9 +52527,6 @@ msgid "State"
 msgstr ""
 
 msgid "State your message to activate"
-msgstr ""
-
-msgid "State/Province/City"
 msgstr ""
 
 msgid "Static Application Security Testing (SAST)"

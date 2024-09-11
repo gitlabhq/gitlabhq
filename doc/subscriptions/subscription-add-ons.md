@@ -165,7 +165,7 @@ Prerequisites:
 
 The trial automatically syncs to your instance within 24 hours. After the trial has synced, [assign seats](#assign-gitlab-duo-seats) to users that you want to access GitLab Duo.
 
-## Automatic seat removal 
+## Automatic seat removal
 
 GitLab Duo add-on seats are removed automatically to ensure only eligible users have access. This
 happens when there are:

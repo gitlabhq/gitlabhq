@@ -28,13 +28,13 @@ GitLab is working on an initiative to bypass the monolith when communicating wit
 
 GitLab leverages Cloudflare and *Google Cloud Platform* (GCP) load balancers to route AI
 gateway requests to the nearest available deployment automatically. This routing
-mechanism prioritizes low latency and efficient processing of user requests. 
+mechanism prioritizes low latency and efficient processing of user requests.
 
 You cannot manually control this routing process. The system dynamically selects the optimal region based on factors like network conditions and server load.
 
 ### Tracing requests to specific regions
 
-You cannot directly trace your AI requests to specific regions at this time. 
+You cannot directly trace your AI requests to specific regions at this time.
 
 If you need assistance with tracing a particular request, GitLab Support can access and
 analyze logs that contain Cloudflare headers and instance UUIDs. These logs provide

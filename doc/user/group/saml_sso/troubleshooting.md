@@ -23,7 +23,7 @@ SAML responses are base64 encoded, so we recommend the following browser plugins
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 - [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
-If you cannot install a browser plugin, you can [manually generate and capture a SAML response](#manually-generate-a-saml-response) instead. 
+If you cannot install a browser plugin, you can [manually generate and capture a SAML response](#manually-generate-a-saml-response) instead.
 
 Pay specific attention to:
 
@@ -46,8 +46,8 @@ To generate a SAML Response:
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. For GitLab.com Groups:
    - Go to the GitLab single sign-on URL for the group.
-   - Select **Authorize** or attempt to sign 
-1. For Self Managed Instance: 
+   - Select **Authorize** or attempt to sign
+1. For Self Managed Instance:
    - Go to the instance home page  
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this

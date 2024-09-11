@@ -1,5 +1,5 @@
 <script>
-import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -12,6 +12,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlTableLite,
+    GlTruncate,
   },
   inputHelpLink: helpPagePath('ci/yaml/inputs', {
     anchor: 'define-input-parameters-with-specinputs',
@@ -137,7 +138,9 @@ export default {
               {{ item.type.toLowerCase() }}
             </template>
             <template #cell(default)="{ item }">
-              <code v-if="item.default">{{ item.default }}</code>
+              <code v-if="item.default">
+                <gl-truncate :text="item.default" position="end" class="gl-max-w-34" with-tooltip />
+              </code>
             </template>
           </gl-table-lite>
         </div>

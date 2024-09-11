@@ -64,7 +64,7 @@ When a user signs in, GitLab:
 
 The group link mapping in GitLab is not tied to a specific IdP so you must configure all SAML IdPs to contain group attributes in the SAML response. This means that GitLab is able to match groups in the SAML response, regardless of the IdP that was used to sign in.
 
-As an example, you have 2 IdPs: `SAML1` and `SAML2`. 
+As an example, you have 2 IdPs: `SAML1` and `SAML2`.
 
 In GitLab, on a specific group, you have configured two group links:
 

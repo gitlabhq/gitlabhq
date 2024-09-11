@@ -206,7 +206,7 @@ query allReleases(...) {
 
 ## Skip query with async variables
 
-Whenever a query has one or more variable that requires another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations. 
+Whenever a query has one or more variable that requires another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
 
 Failing to do so will result in the query executing twice: once with the default value (whatever was defined on the `data` property or `undefined`) and once more once the initial query is resolved, triggering a new variable value to be injected in the smart query and then refetched by Apollo.
 

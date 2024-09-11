@@ -19,7 +19,7 @@ module Members
 
       return unless member_exists?
 
-      Gitlab::Tracking.event(self.class.name, 'invite_email_sent', label: 'invite_email', property: member.id.to_s)
+      Gitlab::Tracking.event(self.class.name, 'invite_email_sent', label: 'invite_email')
 
       mail_with_locale(
         to: member.invite_email, subject: EmailsHelper.subject_with_suffix([email_subject_text]), **email_headers

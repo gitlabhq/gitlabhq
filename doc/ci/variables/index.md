@@ -719,7 +719,7 @@ which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Pipeline execution policy variables](../../user/application_security/policies/pipeline_execution_policies.md#cicd-variables). 
+1. [Pipeline execution policy variables](../../user/application_security/policies/pipeline_execution_policies.md#cicd-variables).
 1. [Scan execution policy variables](../../user/application_security/policies/scan_execution_policies.md).
 1. Pipeline variables. These variables all have the same precedence:
    - [Variables passed to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).

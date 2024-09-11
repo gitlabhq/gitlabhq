@@ -295,7 +295,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     return unless member
 
-    Gitlab::Tracking.event(self.class.name, 'accepted', label: 'invite_email', property: member.id.to_s, user: resource)
+    Gitlab::Tracking.event(self.class.name, 'accepted', label: 'invite_email', user: resource)
   end
 
   def context_user

@@ -445,10 +445,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
   describe '.data' do
     let!(:ud) { build(:usage_data) }
 
-    before do
-      allow(described_class).to receive(:grafana_embed_usage_data).and_return(2)
-    end
-
     subject { described_class.data }
 
     it 'gathers usage data' do
@@ -494,7 +490,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)
       expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
-      expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
       expect(count_data[:incident_issues]).to eq(4)
       expect(count_data[:alert_bot_incident_issues]).to eq(4)
       expect(count_data[:clusters_enabled]).to eq(6)
@@ -509,7 +504,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
       expect(count_data[:clusters_integrations_prometheus]).to eq(1)
-      expect(count_data[:grafana_integrated_projects]).to eq(2)
       expect(count_data[:clusters_management_project]).to eq(1)
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)
@@ -658,69 +652,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
             uploads: 'uploads_object_store_config',
             packages: 'packages_object_store_config'
           })
-      end
-    end
-
-    describe '.grafana_embed_usage_data' do
-      subject { described_class.grafana_embed_usage_data }
-
-      let(:project) { create(:project) }
-      let(:description_with_embed) { "Some comment\n\nhttps://grafana.example.com/d/xvAk4q0Wk/go-processes?orgId=1&from=1573238522762&to=1573240322762&var-job=prometheus&var-interval=10m&panelId=1&fullscreen" }
-      let(:description_with_unintegrated_embed) { "Some comment\n\nhttps://grafana.exp.com/d/xvAk4q0Wk/go-processes?orgId=1&from=1573238522762&to=1573240322762&var-job=prometheus&var-interval=10m&panelId=1&fullscreen" }
-
-      shared_examples "zero count" do
-        it "does not count the issue" do
-          expect(subject).to eq(0)
-        end
-      end
-
-      context 'with project grafana integration enabled' do
-        before do
-          create(:grafana_integration, project: project, enabled: true)
-        end
-
-        context 'with valid and invalid embeds' do
-          before do
-            # Valid
-            create(:issue, project: project, description: description_with_embed)
-            create(:issue, project: project, description: description_with_embed)
-            # In-Valid
-            create(:issue, project: project, description: description_with_unintegrated_embed)
-            create(:issue, project: project, description: nil)
-            create(:issue, project: project, description: '')
-            create(:issue, project: project)
-          end
-
-          it 'counts only the issues with embeds' do
-            expect(subject).to eq(2)
-          end
-        end
-      end
-
-      context 'with project grafana integration disabled' do
-        before do
-          create(:grafana_integration, project: project, enabled: false)
-        end
-
-        context 'with one issue having a grafana link in the description and one without' do
-          before do
-            create(:issue, project: project, description: description_with_embed)
-            create(:issue, project: project)
-          end
-
-          it_behaves_like('zero count')
-        end
-      end
-
-      context 'with an un-integrated project' do
-        context 'with one issue having a grafana link in the description and one without' do
-          before do
-            create(:issue, project: project, description: description_with_embed)
-            create(:issue, project: project)
-          end
-
-          it_behaves_like('zero count')
-        end
       end
     end
   end

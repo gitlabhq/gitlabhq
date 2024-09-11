@@ -11,8 +11,6 @@ module Types
 
     authorize :read_todo
 
-    connection_type_class Types::CountableConnectionType
-
     field :id, GraphQL::Types::ID,
       description: 'ID of the to-do item.',
       null: false
@@ -36,7 +34,13 @@ module Types
     field :target, Types::TodoableInterface,
       description: 'Target of the to-do item.',
       calls_gitaly: true,
+      deprecated: { reason: 'Use `target_entity` field', milestone: '17.4' },
       null: false
+
+    field :target_entity, Types::TodoableInterface,
+      description: 'Target of the to-do item',
+      calls_gitaly: true,
+      null: true
 
     field :target_type, Types::TodoTargetEnum,
       description: 'Target type of the to-do item.',
@@ -80,6 +84,10 @@ module Types
     end
 
     def target
+      target_entity
+    end
+
+    def target_entity
       if object.for_commit?
         Gitlab::Graphql::Loaders::BatchCommitLoader.new(
           container_class: Project,

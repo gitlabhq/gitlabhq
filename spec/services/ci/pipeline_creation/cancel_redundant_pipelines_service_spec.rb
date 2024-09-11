@@ -22,7 +22,7 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
   shared_examples 'time limits pipeline cancellation' do
     context 'with old pipelines' do
-      let(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 5.days.ago) }
+      let(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 8.days.ago) }
 
       before do
         create(:ci_build, :interruptible, :pending, pipeline: old_pipeline)

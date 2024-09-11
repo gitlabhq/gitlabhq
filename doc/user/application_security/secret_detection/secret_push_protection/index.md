@@ -13,11 +13,13 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2.
-> - [Removed `pre_receive_secret_detection_beta_release` feature flag] in GitLab 17.4.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
+> - `pre_receive_secret_detection_beta_release` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_push_check`.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
+named `pre_receive_secret_detection_push_check`.
 
 Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
 The content of each commit is checked for secrets when pushed to GitLab. If any secrets are

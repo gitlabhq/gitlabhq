@@ -317,7 +317,7 @@ Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated
 
 The [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) has dedicated [end-to-end tests](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/e2e/frontend) that run against a GitLab instance. These tests are designed to ensure the integration between GitLab and the Observability Backend is functioning correctly.
 
-The GitLab pipeline has dedicated jobs (see [`observability-backend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/observability-backend.gitlab-ci.yml)) that can be executed from GitLab MRs. These jobs will trigger the E2E tests on the GitLab Observability Backend pipeline against a GitLab instance built from the GitLab MR branch. These jobs are useful to make sure that the GitLab changes under review will not break E2E tests on the GitLab Observability Backend pipeline. 
+The GitLab pipeline has dedicated jobs (see [`observability-backend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/observability-backend.gitlab-ci.yml)) that can be executed from GitLab MRs. These jobs will trigger the E2E tests on the GitLab Observability Backend pipeline against a GitLab instance built from the GitLab MR branch. These jobs are useful to make sure that the GitLab changes under review will not break E2E tests on the GitLab Observability Backend pipeline.
 
 There are two Observability end-to-end jobs:
 

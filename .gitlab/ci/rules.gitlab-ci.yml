@@ -195,6 +195,9 @@
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"'
 
+.if-not-dot-com-gitlab-org-default-branch: &if-not-dot-com-gitlab-org-default-branch
+  if: '$CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org" || $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event"'
+
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"'
 
@@ -1302,6 +1305,13 @@
     - !reference [.frontend:rules:default-frontend-jobs, rules]
     - <<: *if-default-refs
       changes: *docs-patterns
+
+
+.frontend:rules:upload-graphql-schema-dump:
+  rules:
+    - <<: *if-not-dot-com-gitlab-org-default-branch
+      when: never
+    - !reference [.frontend:rules:default-frontend-jobs-with-docs-changes, rules]
 
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:frontend_fixture:

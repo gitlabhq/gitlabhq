@@ -212,7 +212,7 @@ module Ci
       end
 
       def pipelines_created_after
-        3.days.ago
+        7.days.ago
       end
 
       # Finding the pipelines to cancel is an expensive task that is not well

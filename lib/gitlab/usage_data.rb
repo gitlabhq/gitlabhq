@@ -87,13 +87,11 @@ module Gitlab
             kubernetes_agents: count(::Clusters::Agent),
             kubernetes_agents_with_token: distinct_count(::Clusters::AgentToken, :agent_id),
             in_review_folder: count(::Environment.in_review_folder),
-            grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
             issues: add_metric('CountIssuesMetric', time_frame: 'all'),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
-            issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             incident_issues: count(::Issue.with_issue_type(:incident), start: minimum_id(Issue), finish: maximum_id(Issue)),
             alert_bot_incident_issues: count(::Issue.authored(::Users::Internal.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
@@ -147,14 +145,6 @@ module Gitlab
           counts_weekly: {}
         }
       end
-
-      # rubocop:disable CodeReuse/ActiveRecord
-      def grafana_embed_usage_data
-        count(Issue.joins('JOIN grafana_integrations USING (project_id)')
-          .where("issues.description LIKE '%' || grafana_integrations.grafana_url || '%'")
-          .where(grafana_integrations: { enabled: true }))
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def features_usage_data = {}
 

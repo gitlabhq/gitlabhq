@@ -2026,7 +2026,6 @@ Layout/LineLength:
     - 'ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb'
     - 'ee/spec/services/security/ingestion/ingest_reports_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/attach_findings_to_vulnerabilities_spec.rb'
-    - 'ee/spec/services/security/ingestion/tasks/ingest_finding_pipelines_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_findings_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_identifiers_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_remediations_spec.rb'

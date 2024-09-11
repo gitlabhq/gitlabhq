@@ -250,7 +250,7 @@ ensure all Git references are present. To profile your repository:
    ```shell
    git clone --mirror <git_repo_url>
    ```
-    
+
    After cloning, the repository will be in the bare Git format that is compatible with `git-sizer`.
 1. Run `git-sizer` with all statistics in the directory of your Git repository:
 

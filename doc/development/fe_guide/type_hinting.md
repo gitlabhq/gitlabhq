@@ -176,7 +176,7 @@ be properly displayed in IDEs and tools.
 
 ### VS Code settings
 
-If you are having trouble getting VS Code IntelliSense working you may need to increase the amount of 
+If you are having trouble getting VS Code IntelliSense working you may need to increase the amount of
 memory the TS server is allowed to use. To do this, add the following to your `settings.json` file:
 
 ```json

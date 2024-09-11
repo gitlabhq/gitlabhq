@@ -16,6 +16,7 @@ RSpec.describe GitlabSchema.types['Todo'], feature_category: :team_planning do
       :author,
       :action,
       :target,
+      :target_entity,
       :target_type,
       :body,
       :state,

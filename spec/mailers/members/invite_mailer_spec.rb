@@ -80,8 +80,7 @@ RSpec.describe Members::InviteMailer, feature_category: :groups_and_projects do
           expect_snowplow_event(
             category: 'Members::InviteMailer',
             action: 'invite_email_sent',
-            label: 'invite_email',
-            property: group_member.id.to_s
+            label: 'invite_email'
           )
         end
       end

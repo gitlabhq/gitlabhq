@@ -209,7 +209,6 @@ RSpec.describe RegistrationsController, :with_current_organization, feature_cate
                   category: 'RegistrationsController',
                   action: 'accepted',
                   label: 'invite_email',
-                  property: member.id.to_s,
                   user: member.reload.user
                 )
               end
