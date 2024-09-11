@@ -652,8 +652,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     let_it_be(:other_user) { create(:user) }
 
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
-    let(:jwt_token) { build_jwt(user) }
-    let(:other_jwt_token) { build_jwt(other_user) }
+    let(:jwt_token) { build_jwt(user, expire_time: period.from_now + 1.minute) }
+    let(:other_jwt_token) { build_jwt(other_user, expire_time: period.from_now + 1.minute) }
     let(:request_args) { [path, { headers: jwt_token_authorization_headers(jwt_token) }] }
     let(:other_user_request_args) { [other_path, { headers: jwt_token_authorization_headers(other_jwt_token) }] }
 

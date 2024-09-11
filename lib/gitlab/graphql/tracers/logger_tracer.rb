@@ -5,6 +5,8 @@ module Gitlab
     module Tracers
       # This tracer writes logs for certain trace events.
       module LoggerTracer
+        MUTATION_REGEXP = /^mutation/
+
         def execute_query(query:)
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
@@ -32,7 +34,7 @@ module Gitlab
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
             variables: clean_variables(query.provided_variables),
-            query_string: query.query_string
+            query_string: clean_query_string(query)
           }
 
           token_info = auth_token_info(query)
@@ -55,10 +57,20 @@ module Gitlab
 
         def clean_variables(variables)
           filtered = ActiveSupport::ParameterFilter
-            .new(::Rails.application.config.filter_parameters)
+            .new(::Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::FILTER_PARAMETERS)
             .filter(variables)
 
           filtered&.to_s
+        end
+
+        def clean_query_string(query)
+          return query.query_string unless mutation?(query)
+
+          query.sanitized_query_string
+        end
+
+        def mutation?(query)
+          query.query_string =~ ::Gitlab::Graphql::Tracers::LoggerTracer::MUTATION_REGEXP
         end
       end
     end
