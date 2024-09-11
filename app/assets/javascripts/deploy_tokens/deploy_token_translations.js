@@ -12,7 +12,9 @@ const translations = {
     'DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}',
   ),
   addTokenNameLabel: s__('DeployTokens|Name'),
-  addTokenNameDescription: s__('DeployTokens|Enter a unique name for your deploy token.'),
+  addTokenNameDescription: s__(
+    'DeployTokens|Enter a unique name for your deploy token. Name the token gitlab-deploy-token to expose it to CI/CD jobs.',
+  ),
   addTokenScopesLabel: s__('DeployTokens|Scopes (select at least one)'),
   addTokenUsernameDescription: s__(
     'DeployTokens|Enter a username for your token. Defaults to %{code_start}gitlab+deploy-token-{n}%{code_end}.',

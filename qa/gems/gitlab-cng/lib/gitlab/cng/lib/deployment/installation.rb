@@ -15,6 +15,7 @@ module Gitlab
         extend Helpers::Shell
 
         LICENSE_SECRET = "gitlab-license"
+        TROUBLESHOOTING_LINK = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-cng?ref_type=heads#troubleshooting"
 
         # Delete installation
         #
@@ -185,15 +186,7 @@ module Gitlab
           Helpers::Spinner.spin("running helm deployment") do
             helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
           rescue Helm::Client::Error => e
-            log("Helm upgrade failed", :error)
-            events = get_warning_events
-
-            if events
-              log("Following events of Warning type present in cluster:", :warn)
-              log(events)
-            end
-
-            raise e
+            handle_deploy_failure(e)
           end
           log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
@@ -226,6 +219,23 @@ module Gitlab
 
           secret = Kubectl::Resources::Secret.new(LICENSE_SECRET, "license", license)
           puts mask_secrets(kubeclient.create_resource(secret), [license, Base64.encode64(license)])
+        end
+
+        # Handle helm upgrade failure
+        #
+        # @param [StandardError] error
+        # @return [void]
+        def handle_deploy_failure(error)
+          log("Helm upgrade failed!", :error)
+          log("For more information on troubleshooting failures, see: '#{TROUBLESHOOTING_LINK}'", :warn)
+
+          events = get_warning_events
+          if events
+            log("Following events of Warning type present in cluster:", :warn)
+            log(events)
+          end
+
+          raise error
         end
 
         # Get cluster events with warning type

@@ -465,22 +465,6 @@ Returns [`EpicList`](#epiclist).
 | <a id="queryepicboardlistepicfilters"></a>`epicFilters` | [`EpicFilters`](#epicfilters) | Filters applied when getting epic metadata in the epic board list. |
 | <a id="queryepicboardlistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the list. |
 
-### `Query.explainVulnerabilityPrompt`
-
-GitLab Duo Vulnerability Explanation prompt for a specified vulnerability.
-
-DETAILS:
-**Introduced** in GitLab 16.2.
-**Status**: Experiment.
-
-Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="queryexplainvulnerabilitypromptvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Vulnerability to generate a prompt for. |
-
 ### `Query.featureFlagEnabled`
 
 Check if a feature flag is enabled.
@@ -15355,6 +15339,29 @@ The edge type for [`ProjectSavedReply`](#projectsavedreply).
 | <a id="projectsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectsavedreplyedgenode"></a>`node` | [`ProjectSavedReply`](#projectsavedreply) | The item at the end of the edge. |
 
+#### `ProjectSecurityExclusionConnection`
+
+The connection type for [`ProjectSecurityExclusion`](#projectsecurityexclusion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecurityexclusionconnectionedges"></a>`edges` | [`[ProjectSecurityExclusionEdge]`](#projectsecurityexclusionedge) | A list of edges. |
+| <a id="projectsecurityexclusionconnectionnodes"></a>`nodes` | [`[ProjectSecurityExclusion]`](#projectsecurityexclusion) | A list of nodes. |
+| <a id="projectsecurityexclusionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectSecurityExclusionEdge`
+
+The edge type for [`ProjectSecurityExclusion`](#projectsecurityexclusion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecurityexclusionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectsecurityexclusionedgenode"></a>`node` | [`ProjectSecurityExclusion`](#projectsecurityexclusion) | The item at the end of the edge. |
+
 #### `ProjectWikiRepositoryRegistryConnection`
 
 The connection type for [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry).
@@ -22372,25 +22379,6 @@ Representing an event.
 | <a id="eventcreatedat"></a>`createdAt` | [`Time!`](#time) | When this event was created. |
 | <a id="eventid"></a>`id` | [`ID!`](#id) | ID of the event. |
 | <a id="eventupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this event was updated. |
-
-### `ExplainVulnerabilityPresubmissionCheckResults`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="explainvulnerabilitypresubmissioncheckresultspotentialsecretsincode"></a>`potentialSecretsInCode` | [`Boolean!`](#boolean) | This flag is true if we think there might be a secret in the code that would be sent in the LLM prompt. |
-| <a id="explainvulnerabilitypresubmissioncheckresultssecretdetectionresult"></a>`secretDetectionResult` | [`Boolean!`](#boolean) | This flag is true if the vulnerability being explained is specifically a secret detection vulnerability. |
-
-### `ExplainVulnerabilityPrompt`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="explainvulnerabilitypromptpresubmissionchecks"></a>`presubmissionChecks` | [`ExplainVulnerabilityPresubmissionCheckResults!`](#explainvulnerabilitypresubmissioncheckresults) | An object containing booleans. Each booolean indicates the result of a presubmission check: `true` for passed, and `false` for failed. |
-| <a id="explainvulnerabilitypromptpromptwithcode"></a>`promptWithCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, including the vulnerable code. |
-| <a id="explainvulnerabilitypromptpromptwithoutcode"></a>`promptWithoutCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, excluding the vulnerable code. |
 
 ### `ExternalAuditEventDestination`
 
@@ -30931,6 +30919,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectscanresultpoliciesincludeunscoped"></a>`includeUnscoped` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.3. **Status**: Experiment. Filter policies that are scoped to the project. |
 | <a id="projectscanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
+##### `Project.securityExclusions`
+
+Security exclusions of the project.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ProjectSecurityExclusionConnection`](#projectsecurityexclusionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecurityexclusionsactive"></a>`active` | [`Boolean`](#boolean) | Filter entries by active status. |
+| <a id="projectsecurityexclusionsscanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Filter entries by scanner. |
+| <a id="projectsecurityexclusionstype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Filter entries by exclusion type. |
+
 ##### `Project.securityPolicyProjectSuggestions`
 
 Security policy project suggestions.
@@ -31447,6 +31457,21 @@ Representation of a project secrets manager.
 | <a id="projectsecretsmanagercisecretsmountpath"></a>`ciSecretsMountPath` | [`String!`](#string) | Mount path of the secrets engine for the project. |
 | <a id="projectsecretsmanagerproject"></a>`project` | [`Project!`](#project) | Project the secrets manager belong to. |
 | <a id="projectsecretsmanagerstatus"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
+
+### `ProjectSecurityExclusion`
+
+Represents a project-level security scanner exclusion.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecurityexclusionactive"></a>`active` | [`Boolean!`](#boolean) | Whether the exclusion is active. |
+| <a id="projectsecurityexclusiondescription"></a>`description` | [`String`](#string) | Optional description for the exclusion. |
+| <a id="projectsecurityexclusionid"></a>`id` | [`ID!`](#id) | ID of the exclusion. |
+| <a id="projectsecurityexclusionscanner"></a>`scanner` | [`ExclusionScannerEnum!`](#exclusionscannerenum) | Security scanner the exclusion will be used for. |
+| <a id="projectsecurityexclusiontype"></a>`type` | [`ExclusionTypeEnum!`](#exclusiontypeenum) | Type of the exclusion. |
+| <a id="projectsecurityexclusionvalue"></a>`value` | [`String!`](#string) | Value of the exclusion. |
 
 ### `ProjectSecurityPolicySource`
 
@@ -36682,6 +36707,25 @@ Event action.
 | <a id="eventactionpushed"></a>`PUSHED` | Pushed action. |
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
+
+### `ExclusionScannerEnum`
+
+Enum for the security scanners used with exclusions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="exclusionscannerenumsecret_push_protection"></a>`SECRET_PUSH_PROTECTION` | Secret Push Protection. |
+
+### `ExclusionTypeEnum`
+
+Enum for types of exclusion for a security scanner.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="exclusiontypeenumpath"></a>`PATH` | File or directory location. |
+| <a id="exclusiontypeenumraw_value"></a>`RAW_VALUE` | Raw value to ignore. |
+| <a id="exclusiontypeenumregex_pattern"></a>`REGEX_PATTERN` | Regex pattern matching rules. |
+| <a id="exclusiontypeenumrule"></a>`RULE` | Scanner rule identifier. |
 
 ### `ExtensionsMarketplaceOptInStatus`
 

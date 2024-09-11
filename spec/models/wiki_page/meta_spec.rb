@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WikiPage::Meta do
+RSpec.describe WikiPage::Meta, feature_category: :wiki do
   let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:other_project) { create(:project) }
 
@@ -24,7 +24,6 @@ RSpec.describe WikiPage::Meta do
       described_class.new(title: 'some title', project: project)
     end
 
-    it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_length_of(:title).is_at_most(255) }
     it { is_expected.not_to allow_value(nil).for(:title) }
 
@@ -33,6 +32,12 @@ RSpec.describe WikiPage::Meta do
       create(:wiki_page_meta, canonical_slug: the_slug, project: project)
 
       in_violation = build(:wiki_page_meta, canonical_slug: the_slug, project: project)
+
+      expect(in_violation).not_to be_valid
+    end
+
+    it 'is forbidden to have both project_id and namespace_id empty' do
+      in_violation = build(:wiki_page_meta, namespace: nil, project: nil)
 
       expect(in_violation).not_to be_valid
     end
@@ -162,32 +167,6 @@ RSpec.describe WikiPage::Meta do
     let(:title)        { wiki_page.title }
     let(:wiki_page) { create(:wiki_page, project: project) }
 
-    def find_record
-      described_class.find_or_create(last_known_slug, wiki_page)
-    end
-
-    def create_previous_version(title: old_title, slug: last_known_slug, date: wiki_page.version.commit.committed_date)
-      create(
-        :wiki_page_meta,
-        title: title, project: project,
-        created_at: date, updated_at: date,
-        canonical_slug: slug
-      )
-    end
-
-    def create_context
-      # Ensure that we behave nicely with respect to other projects
-      # We have:
-      #  - page in other project with same canonical_slug
-      create(:wiki_page_meta, project: other_project, canonical_slug: wiki_page.slug)
-
-      #  - page in same project with different canonical_slug, but with
-      #    an old slug that = canonical_slug
-      different_slug = generate(:sluggified_title)
-      create(:wiki_page_meta, project: project, canonical_slug: different_slug)
-        .slugs.create!(slug: wiki_page.slug)
-    end
-
     shared_examples 'metadata examples' do
       it 'establishes the correct state', :aggregate_failures do
         create_context
@@ -198,7 +177,7 @@ RSpec.describe WikiPage::Meta do
           valid?: true,
           canonical_slug: wiki_page.slug,
           title: wiki_page.title,
-          project: wiki_page.wiki.project
+          container: wiki_page.wiki.container
         )
         expect(meta.updated_at).to eq(wiki_page.version.commit.committed_date)
         expect(meta.created_at).not_to be_after(meta.updated_at)
@@ -207,39 +186,15 @@ RSpec.describe WikiPage::Meta do
       end
 
       it 'makes a reasonable number of DB queries' do
-        expect(project).to eq(wiki_page.wiki.project)
+        expect(container).to eq(wiki_page.wiki.container)
 
         expect { find_record }.not_to exceed_query_limit(query_limit)
       end
     end
 
-    context 'there are problems' do
-      context 'the slug is too long' do
-        let(:last_known_slug) { FFaker::Lorem.characters(2050) }
-
-        it 'raises an error' do
-          expect { find_record }.to raise_error ActiveRecord::ValueTooLong
-        end
-      end
-
-      context 'a conflicting record exists' do
-        before do
-          create(:wiki_page_meta, project: project, canonical_slug: last_known_slug)
-          create(:wiki_page_meta, project: project, canonical_slug: current_slug)
-        end
-
-        it 'raises an error' do
-          expect { find_record }.to raise_error(ActiveRecord::RecordInvalid)
-        end
-      end
-
-      context 'the wiki page is not valid' do
-        let(:wiki_page) { build(:wiki_page, project: project, title: nil) }
-
-        it 'raises an error' do
-          expect { find_record }.to raise_error(described_class::WikiPageInvalid)
-        end
-      end
+    include_examples 'creating wiki page meta record examples' do
+      let(:container) { project }
+      let(:other_container) { other_project }
     end
 
     context 'no existing record exists' do
@@ -269,6 +224,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 5 }
+        let(:container) { project }
       end
     end
 
@@ -280,6 +236,7 @@ RSpec.describe WikiPage::Meta do
       include_examples 'metadata examples' do
         # Identical to the base case.
         let(:query_limit) { 5 }
+        let(:container) { project }
       end
     end
 
@@ -289,6 +246,7 @@ RSpec.describe WikiPage::Meta do
       include_examples 'metadata examples' do
         # Identical to the base case.
         let(:query_limit) { 5 }
+        let(:container) { project }
       end
     end
 
@@ -314,6 +272,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 3 }
+        let(:container) { project }
       end
     end
 
@@ -341,6 +300,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 4 }
+        let(:container) { project }
       end
     end
 
@@ -380,6 +340,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 7 }
+        let(:container) { project }
       end
     end
 
@@ -407,6 +368,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 4 }
+        let(:container) { project }
       end
     end
 
@@ -424,6 +386,7 @@ RSpec.describe WikiPage::Meta do
 
       include_examples 'metadata examples' do
         let(:query_limit) { 7 }
+        let(:container) { project }
       end
     end
 
@@ -437,6 +400,7 @@ RSpec.describe WikiPage::Meta do
 
       include_examples 'metadata examples' do
         let(:query_limit) { 7 }
+        let(:container) { project }
       end
     end
 
@@ -476,6 +440,7 @@ RSpec.describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 8 }
+        let(:container) { project }
       end
     end
   end

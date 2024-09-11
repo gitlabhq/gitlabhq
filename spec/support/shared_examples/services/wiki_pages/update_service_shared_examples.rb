@@ -4,8 +4,9 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
   let(:container) { create(container_type, :wiki_repo) }
 
   let(:user) { create(:user) }
-  let(:page) { create(:wiki_page) }
+  let(:page) { create(:wiki_page, container: container) }
   let(:page_title) { 'New Title' }
+  let(:container_key) { container.is_a?(Group) ? :namespace_id : :project_id }
 
   let(:opts) do
     {
@@ -28,6 +29,27 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
     expect(updated_page.content).to eq(opts[:content])
     expect(updated_page.format).to eq(opts[:format].to_sym)
     expect(updated_page.title).to eq(page_title)
+  end
+
+  it 'creates the WikiPage::Meta record if it does not exist' do
+    expect { service.execute(page) }.to change { WikiPage::Meta.count }.by 1
+
+    expect(WikiPage::Meta.all.last).to have_attributes(
+      title: page_title,
+      container_key => container.id
+    )
+  end
+
+  context 'when WikiPage::Meta record exists' do
+    let!(:wiki_page_meta) { create(:wiki_page_meta, container: container) }
+
+    before do
+      allow(WikiPage::Meta).to receive(:find_by_canonical_slug).and_return(wiki_page_meta)
+    end
+
+    it 'doesn not create a WikiPage::Meta record' do
+      expect { service.execute(page) }.to change { WikiPage::Meta.count }.by 0
+    end
   end
 
   it 'executes webhooks' do

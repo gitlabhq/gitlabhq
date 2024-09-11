@@ -7,11 +7,15 @@ class PersonalAccessToken < ApplicationRecord
   include EachBatch
   include CreatedAtFilterable
   include Gitlab::SQL::Pattern
+  include SafelyChangeColumnDefault
+
   extend ::Gitlab::Utils::Override
 
   add_authentication_token_field :token,
     digest: true,
     format_with_prefix: :prefix_from_application_current_settings
+
+  columns_changing_default :organization_id
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40)

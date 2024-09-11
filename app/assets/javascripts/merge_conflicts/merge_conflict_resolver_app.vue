@@ -123,7 +123,7 @@ export default {
             <div class="js-file-title file-title file-title-flex-parent cursor-default">
               <div class="file-header-content" data-testid="file-name">
                 <file-icon :file-name="file.filePath" :size="16" css-classes="gl-mr-2" />
-                <strong class="file-title-name">{{ file.filePath }}</strong>
+                <strong class="file-title-name gl-break-all">{{ file.filePath }}</strong>
                 <clipboard-button
                   :title="__('Copy file path')"
                   :text="file.filePath"

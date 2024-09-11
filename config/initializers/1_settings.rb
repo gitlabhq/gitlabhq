@@ -1036,7 +1036,7 @@ Gitlab.ee do
   executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
   Settings.duo_workflow.reverse_merge!(
     secure: true,
-    executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/#{executor_version}/duo-workflow-executor.tar.gz",
+    executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_version: executor_version
   )
 

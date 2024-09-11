@@ -4,6 +4,7 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
   let(:container) { create(container_type, :wiki_repo) }
   let(:user) { create(:user) }
   let(:page_title) { 'Title' }
+  let(:container_key) { container.is_a?(Group) ? :namespace_id : :project_id }
 
   let(:opts) do
     {
@@ -25,6 +26,15 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     expect(page.title).to eq(opts[:title])
     expect(page.content).to eq(opts[:content])
     expect(page.format).to eq(opts[:format].to_sym)
+  end
+
+  it 'creates a WikiPage::Meta record' do
+    expect { service.execute }.to change { WikiPage::Meta.count }.by 1
+
+    expect(WikiPage::Meta.all.last).to have_attributes(
+      title: page_title,
+      container_key => container.id
+    )
   end
 
   it 'executes webhooks' do
@@ -57,9 +67,6 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
 
   shared_examples 'correct event created' do
     it 'creates appropriate events' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/216904
-      pending('group wiki support') if container_type == :group
-
       expect { service.execute }.to change { Event.count }.by 1
 
       expect(Event.recent.first).to have_attributes(

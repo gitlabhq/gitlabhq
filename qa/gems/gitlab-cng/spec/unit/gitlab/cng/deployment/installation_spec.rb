@@ -102,9 +102,9 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
 
       it "automatically prints warning events" do
         expect { expect { installation.create }.to raise_error(SystemExit) }.to output(
-          match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}").and(
-            match(warn_event[:message])
-          )
+          match("#{warn_event[:involvedObject][:kind]}/#{warn_event[:involvedObject][:name]}")
+          .and(match(warn_event[:message]))
+          .and(match(/For more information on troubleshooting failures, see: \S+/))
         ).to_stdout
       end
     end

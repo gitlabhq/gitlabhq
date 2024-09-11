@@ -32,6 +32,8 @@ The main feature `cng` is to programmatically manage different deployment type c
 1. Define a cleanup class based on the [`Base`](lib/gitlab/cng/lib/deployment/configurations/cleanup/_base.rb) cleanup class. Implement a single method
    that deletes all objects created by `pre-deployment` and `post-deployment` setup.
 
+All different options for `GitLab` deployment on `Kubernetes` cluster are described in [GitLab Helm chart](https://docs.gitlab.com/charts/) documentation page.
+
 ## Tips
 
 ### kubectl context
@@ -50,3 +52,7 @@ function cng() {
   (cd $PATH_TO_GITLAB_REPO/gems/gitlab-cng && BUNDLE_AUTO_INSTALL=true bundle exec cng "$@")
 }
 ```
+
+## Troubleshooting
+
+Because `cng` tool essentially wraps `helm upgrade --install` command, official [Troubleshooting the GitLab chart](https://docs.gitlab.com/charts/troubleshooting/index.html) guide can be used for troubleshooting deployment failures.

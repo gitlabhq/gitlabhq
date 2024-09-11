@@ -7,7 +7,7 @@
   .form-group
     = f.label :name, class: 'label-bold'
     = f.text_field :name, class: 'form-control gl-form-input', data: { testid: 'deploy-token-name-field' }, required: true
-    .text-secondary= s_('DeployTokens|Enter a unique name for your deploy token.')
+    .text-secondary= s_('DeployTokens|Enter a unique name for your deploy token. Name the token gitlab-deploy-token to expose it to CI/CD jobs.')
 
   .form-group
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
