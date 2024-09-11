@@ -873,6 +873,54 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
   end
 
+  describe '.unwrap_detailed_error' do
+    let(:wrapped_detailed_error) do
+      new_detailed_error(GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+        "error message",
+        Gitaly::UpdateReferencesError.new(invalid_format: Gitaly::InvalidRefFormatError.new(refs: ['\invali.\d/1', '\.invali/d/2'])))
+    end
+
+    let(:detailed_error) do
+      new_detailed_error(GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+        "error message",
+        Gitaly::InvalidRefFormatError.new)
+    end
+
+    let(:error_without_details) do
+      error_code = GRPC::Core::StatusCodes::INVALID_ARGUMENT
+      error_message = "error message"
+
+      status_error = Google::Rpc::Status.new(
+        code: error_code,
+        message: error_message,
+        details: nil
+      )
+
+      GRPC::BadStatus.new(
+        error_code,
+        error_message,
+        { "grpc-status-details-bin" => Google::Rpc::Status.encode(status_error) })
+    end
+
+    context 'unwraps detailed errors' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:error, :result) do
+        wrapped_detailed_error | Gitaly::InvalidRefFormatError.new(refs: ['\invali.\d/1', '\.invali/d/2'])
+        detailed_error | Gitaly::InvalidRefFormatError.new
+        error_without_details | nil
+        StandardError.new | nil
+        nil | nil
+      end
+
+      with_them do
+        it 'returns unwrapped detailed error' do
+          expect(described_class.unwrap_detailed_error(error)).to eq(result)
+        end
+      end
+    end
+  end
+
   describe '.with_feature_flag_actor', :request_store do
     shared_examples 'with_feature_flag_actor' do
       let(:repository_actor) { double(:actor) }

@@ -10872,6 +10872,7 @@ CREATE TABLE events (
     id bigint NOT NULL,
     target_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
+    personal_namespace_id bigint,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
@@ -28244,6 +28245,8 @@ CREATE INDEX index_events_on_created_at_and_id ON events USING btree (created_at
 
 CREATE INDEX index_events_on_group_id_and_id ON events USING btree (group_id, id) WHERE (group_id IS NOT NULL);
 
+CREATE INDEX index_events_on_personal_namespace_id ON events USING btree (personal_namespace_id) WHERE (personal_namespace_id IS NOT NULL);
+
 CREATE INDEX index_events_on_project_id_and_created_at ON events USING btree (project_id, created_at);
 
 CREATE INDEX index_events_on_project_id_and_id ON events USING btree (project_id, id);
@@ -34426,6 +34429,9 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT fk_eea90e3209 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

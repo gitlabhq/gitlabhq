@@ -21,7 +21,8 @@ module QA
         praefect_manager.start_all_nodes
       end
 
-      it 'recovers from dataloss', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347832' do
+      it 'recovers from dataloss', :blocking,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347832' do
         # Create a new project with a commit and wait for it to replicate
         praefect_manager.wait_for_replication(project.id)
 

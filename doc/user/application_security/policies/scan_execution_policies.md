@@ -326,6 +326,7 @@ In GitLab 16.9 and earlier:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+> - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
 
 Security policy enforcement depends first on establishing a link between:
 
@@ -342,6 +343,7 @@ You scope security policies to projects by setting the scopes in the `policy.yml
   the compliance framework's ID. To include projects, use `policy_scope.compliance_frameworks.id` to specify IDs of
   compliance frameworks that are applied to the projects.
 - _Include_ or _exclude_ selected projects from enforcement by using the project's ID.
+- _Include_ selected groups. Optionally use this with the `projects` object to exclude selected projects.
 
 ### Policy scope schema
 
@@ -349,7 +351,7 @@ A policy scope must conform to this schema.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects`, `groups` | Scopes the policy based on compliance framework labels, projects, or groups you define. |
 
 #### `policy_scope` scope type
 
@@ -359,6 +361,7 @@ Policy scopes are one of two types.
 |-------|------|-----------------|-------------|
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+| `groups` | `object` | `including` | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. |
 
 #### Example `policy.yml` with security policy scopes
 
