@@ -491,20 +491,15 @@ Audit event types belong to the following product categories.
 | [`project_blobs_removal`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when removing blobs via the GraphQL API or project settings UI | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
 | [`project_text_replacement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when replacing text via the GraphQL API or project settings UI | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
 
-### Subgroup
-
-| Name | Description | Saved to database | Streamed | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`group_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when a group access token is created | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
-| [`group_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when creating a group access token failed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
-| [`group_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when a group access token is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
-| [`group_access_token_deletion_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when deleting a group access token failed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
-
 ### System access
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`application_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124639) | Triggered when an application setting is updated. | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) | Instance |
+| [`group_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when a group access token is created | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
+| [`group_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when creating a group access token failed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
+| [`group_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when a group access token is deleted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
+| [`group_access_token_deletion_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Triggered when deleting a group access token failed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`ip_restrictions_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86037) | Event triggered on any changes in the IP allowlist | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) | Group |
 | [`login_failed_with_otp_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Triggered when sign-in fails because of an incorrect OTP | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
 | [`login_failed_with_standard_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Triggered when sign-in to GitLab fails with standard authentication, such as password | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | Instance |

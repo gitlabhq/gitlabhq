@@ -189,6 +189,9 @@ dast_pre_scan_verifications:
   - table: ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_profiles:
   - table: projects
     column: project_id

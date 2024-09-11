@@ -50,6 +50,24 @@ To see the help page of `gitaly-debug` for a list of supported sub-commands, run
 gitaly-debug -h
 ```
 
+## Use `gitaly git` when Git is required for troubleshooting
+
+Use `gitaly git` to execute Git commands by using the same Git execution environment as Gitaly for debugging or
+testing purposes. `gitaly git` is the preferred method to ensure version compatibility.
+
+`gitaly git` passes all arguments through to the underlying Git invocation and
+supports all forms of input that Git supports. To use `gitaly git`, run:
+
+```shell
+sudo -u git -- /opt/gitlab/embedded/bin/gitaly git <git-command>
+```
+
+For example, to run `git ls-tree` through Gitaly on a Linux package instance in the working directory of a repository:
+
+```shell
+sudo -u git -- /opt/gitlab/embedded/bin/gitaly git ls-tree --name-status HEAD
+```
+
 ## Commits, pushes, and clones return a 401
 
 ```plaintext

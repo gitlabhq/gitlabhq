@@ -78,7 +78,7 @@ To replace the token:
      to list recently expired tokens.
 1. Create a new access token:
    - For personal access tokens, [use the UI](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
-     or [Users API](../../api/users.md#create-a-personal-access-token).
+     or [User tokens API](../../api/user_tokens.md#create-a-personal-access-token).
    - For a project access token, [use the UI](../../user/project/settings/project_access_tokens.md#create-a-project-access-token)
      or [project access tokens API](../../api/project_access_tokens.md#create-a-project-access-token).
    - For a group access token, [use the UI](../../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui)

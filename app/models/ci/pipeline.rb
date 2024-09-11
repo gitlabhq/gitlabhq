@@ -469,6 +469,7 @@ module Ci
       )
     end
 
+    scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
 
     # Returns the pipelines in descending order (= newest first), optionally

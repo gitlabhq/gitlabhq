@@ -103,10 +103,6 @@ export const I18N_CONTACT_ADMIN_TO_REGISTER = s__(
   'Runners|To register new runners, contact your administrator.',
 );
 
-// No runners found
-export const I18N_NO_RESULTS = s__('Runners|No results found');
-export const I18N_EDIT_YOUR_SEARCH = s__('Runners|Edit your search and try again');
-
 // Runner details
 
 export const JOBS_ROUTE_PATH = '/jobs'; // vue-router route path

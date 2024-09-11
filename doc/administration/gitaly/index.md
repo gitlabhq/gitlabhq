@@ -177,12 +177,15 @@ best suited by using Gitaly Cluster.
 
 ### Gitaly CLI
 
+> - `gitaly git` subcommand [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/7119) in GitLab 17.4.
+
 The `gitaly` command is a command-line interface that provides additional subcommands for Gitaly administrators. For example,
 the Gitaly CLI is used to:
 
 - [Configure custom Git hooks](../server_hooks.md) for a repository.
 - Validate Gitaly configuration files.
 - Verify the internal Gitaly API is accessible.
+- [Run Git commands](troubleshooting.md#use-gitaly-git-when-git-is-required-for-troubleshooting) against a repository on disk.
 
 For more information on the other subcommands, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly --help`.
 

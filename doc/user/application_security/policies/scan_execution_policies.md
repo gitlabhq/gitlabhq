@@ -244,6 +244,7 @@ rule in the defined policy are met.
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `template` | `string` | `default`, `latest` | CI/CD template edition to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) edition may introduce breaking changes. |
+| `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 NOTE:
 If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../../application_security/index.md#use-security-scanning-tools-with-merge-request-pipelines).
@@ -288,6 +289,14 @@ The following requirements apply when enforcing Dynamic Application Security Tes
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.
+
+### Scan settings
+
+The following settings are supported by the `scan_settings` parameter:
+
+| Setting | Type | Required | Possible values | Default | Description |
+|-------|------|----------|-----------------|-------------|-----------|
+| `ignore_default_before_after_script` | `boolean` | false | `true`, `false` | `false` | Specifies whether to exclude any default `before_script` and `after_script` definitions in the pipeline configuration from the scan job. |
 
 ## CI/CD variables
 
@@ -427,6 +436,8 @@ scan_execution_policy:
     scanner_profile: Scanner Profile C
     site_profile: Site Profile D
   - scan: secret_detection
+    scan_settings:
+      ignore_default_before_after_script: true
 - name: Enforce Secret Detection and Container Scanning in every default branch pipeline
   description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
   enabled: true

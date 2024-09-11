@@ -46572,9 +46572,6 @@ msgstr ""
 msgid "Runners|Download latest binary"
 msgstr ""
 
-msgid "Runners|Edit your search and try again"
-msgstr ""
-
 msgid "Runners|Enable stale runner cleanup"
 msgstr ""
 
@@ -46798,9 +46795,6 @@ msgid "Runners|No jobs have been run by group runners assigned to this group in 
 msgstr ""
 
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
-msgstr ""
-
-msgid "Runners|No results found"
 msgstr ""
 
 msgid "Runners|No spot. Default choice for Windows Shell executor."

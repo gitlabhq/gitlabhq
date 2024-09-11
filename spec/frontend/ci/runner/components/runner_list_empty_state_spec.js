@@ -1,6 +1,6 @@
 import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
-import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
@@ -10,8 +10,6 @@ import {
   I18N_CREATE_RUNNER_LINK,
   I18N_STILL_USING_REGISTRATION_TOKENS,
   I18N_CONTACT_ADMIN_TO_REGISTER,
-  I18N_NO_RESULTS,
-  I18N_EDIT_YOUR_SEARCH,
 } from '~/ci/runner/constants';
 
 import {
@@ -25,6 +23,7 @@ describe('RunnerListEmptyState', () => {
   let wrapper;
   let glFeatures;
 
+  const findEmptySearchResult = () => wrapper.findComponent(EmptyResult);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLinks = () => wrapper.findAllComponents(GlLink);
   const findLink = () => wrapper.findComponent(GlLink);
@@ -145,14 +144,8 @@ describe('RunnerListEmptyState', () => {
       createComponent({ props: { isSearchFiltered: true } });
     });
 
-    it('renders a "filtered search" illustration', () => {
-      expect(findEmptyState().props('svgPath')).toBe(FILTERED_SVG_URL);
-    });
-
-    it('displays "no filtered results" text', () => {
-      expectTitleToBe(I18N_NO_RESULTS);
-
-      expectDescriptionToBe([I18N_EDIT_YOUR_SEARCH]);
+    it('renders a EmptyResult component', () => {
+      expect(findEmptySearchResult().exists()).toBe(true);
     });
   });
 });

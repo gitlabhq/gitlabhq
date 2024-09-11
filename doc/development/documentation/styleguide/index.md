@@ -525,10 +525,9 @@ To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
 ### Italics and emphasis
 
-Avoid using [italics for emphasis](../../../user/markdown.md#emphasis).
-Instead, write content that is clear enough that emphasis is not needed.
-in product documentation. GitLab and <https://docs.gitlab.com> use a sans-serif font,
-but italic text [does not stand out in a page using sans-serif](https://practicaltypography.com/bold-or-italic.html).
+Avoid using [italics for emphasis](../../../user/markdown.md#emphasis) in product documentation.
+Instead, write content that is clear enough that emphasis is not needed. GitLab and
+<https://docs.gitlab.com> use a sans-serif font, but italic text [does not stand out in a page using sans-serif](https://practicaltypography.com/bold-or-italic.html).
 
 ## Lists
 

@@ -249,6 +249,22 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
             end
           end
         end
+
+        it 'cancels the parent first' do
+          create(:ci_build, :interruptible, :running, pipeline: child_pipeline)
+
+          expect(Ci::CancelPipelineService)
+            .to receive(:new).with(a_hash_including({ pipeline: prev_pipeline }))
+            .and_call_original
+            .ordered
+
+          expect(Ci::CancelPipelineService)
+            .to receive(:new).with(a_hash_including({ pipeline: child_pipeline }))
+            .and_call_original
+            .ordered
+
+          execute
+        end
       end
 
       context 'when the pipeline is a child pipeline' do

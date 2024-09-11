@@ -216,8 +216,8 @@ Use impersonation tokens as an alternative to:
 - The [Sudo](#sudo) feature. The user's or administrator's password or token
   may not be known, or may change over time.
 
-For more information, see the [users API](../users.md#create-an-impersonation-token)
-documentation.
+For more information, see the
+[User tokens API](../user_tokens.md#create-an-impersonation-token) documentation.
 
 Impersonation tokens are used exactly like regular personal access tokens, and
 can be passed in either the `private_token` parameter or the `PRIVATE-TOKEN`

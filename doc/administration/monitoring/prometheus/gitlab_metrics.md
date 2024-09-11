@@ -240,7 +240,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_concurrency_limit_max_concurrent_jobs` | Gauge     | 17.3 | Max number of concurrent running Sidekiq jobs |   `worker`                                                           |
 | `sidekiq_concurrency_limit_deferred_jobs_total` | Counter     | 17.3 | Total number of deferred Sidekiq jobs |   `worker`                                                           |
 | `geo_db_replication_lag_seconds`               | Gauge   | 10.2  | Database replication lag (seconds) | `url` |
-| `geo_repositories`                             | Gauge   | 10.2  | Total number of repositories available on primary | `url` |
+| `geo_repositories`                             | Gauge   | 10.2  | Deprecated for removal in 18.0. Replaced by `geo_project_repositories`. Total number of repositories available on primary | `url` |
 | `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |
 | `geo_lfs_objects_checksummed`                  | Gauge   | 14.6  | Number of LFS objects checksummed successfully on primary | `url` |
 | `geo_lfs_objects_checksum_failed`              | Gauge   | 14.6  | Number of LFS objects failed to calculate the checksum on primary | `url` |
