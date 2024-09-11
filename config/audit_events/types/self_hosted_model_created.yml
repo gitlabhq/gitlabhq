@@ -1,0 +1,9 @@
+name: self_hosted_model_created
+description: A new self-hosted model configuration was added
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/477999
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303
+feature_category: self-hosted_models
+milestone: '17.4'
+saved_to_database: true
+scope: [Instance, User]
+streamed: true

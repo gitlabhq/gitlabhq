@@ -16,7 +16,7 @@ in the repository. A default branch has special configuration options not shared
 by other branches:
 
 - It cannot be deleted.
-- It's [initially protected](../../protected_branches.md) against
+- It's [initially protected](../../repository/branches/protected.md) against
   forced pushes.
 - When a merge request uses an
   [issue closing pattern](../../issues/managing_issues.md#closing-issues-automatically)
@@ -102,7 +102,7 @@ DETAILS:
 
 > - Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
-GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
+GitLab administrators and group owners can define [branch protections](../../repository/branches/protected.md)
 to apply to every repository's default branch
 at the [instance level](#instance-level-default-branch-protection) and
 [group level](#group-level-default-branch-protection) with one of the following options:
@@ -130,7 +130,7 @@ DETAILS:
 This setting applies only to each repository's default branch. To protect other branches,
 you must either:
 
-- Configure [branch protection in the repository](../../../project/protected_branches.md).
+- Configure [branch protection in the repository](../../repository/branches/protected.md).
 - Configure [branch protection for groups](../../../group/manage.md#change-the-default-branch-protection-of-a-group).
 
 Administrators of self-managed instances can customize the initial default branch protection for projects hosted on that instance. Individual
@@ -227,7 +227,7 @@ renames a Git repository's (`example`) default branch.
    role and follow the instructions to
    [change the default branch for this project](#change-the-default-branch-name-for-a-project).
    Select `main` as your new default branch.
-1. Protect your new `main` branch as described in the [protected branches documentation](../../protected_branches.md).
+1. Protect your new `main` branch as described in the [protected branches documentation](../../repository/branches/protected.md).
 1. Optional. If you want to delete the old default branch:
    1. Verify that nothing is pointing to it.
    1. Delete the branch on the remote:

@@ -27,9 +27,6 @@ describe('formatGraphQLProjects', () => {
         integerValue: 50,
       },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
     });
 
     expect(formattedProjects.length).toBe(projects.length);

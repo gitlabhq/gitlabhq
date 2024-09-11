@@ -420,7 +420,7 @@ consider where that pipeline will run. Connecting to external services
 may violate an established authorization boundary where federal data is
 permitted to be stored and processed. GitLab provides runner container
 images configured to run on FIPS-enabled systems. GitLab provides
-hardening guidance for pipelines, including how to [configure protected branches](../user/project/protected_branches.md)
+hardening guidance for pipelines, including how to [configure protected branches](../user/project/repository/branches/protected.md)
 and [implement pipeline security](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 Additionally, customers may want to consider assigning [required checks](../user/project/merge_requests/status_checks.md)
 before merging code to ensure that all checks have passed prior to

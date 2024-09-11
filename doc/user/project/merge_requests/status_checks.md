@@ -132,7 +132,7 @@ you can use this field to set this limit.
 
 ![Status checks branch selector](img/status_checks_branches_selector_v14_0.png)
 
-The branches list is populated from the projects [protected branches](../protected_branches.md).
+The branches list is populated from the projects [protected branches](../repository/branches/protected.md).
 
 You can scroll through the list of branches or use the search box
 when there are a lot of branches and the branch you are looking

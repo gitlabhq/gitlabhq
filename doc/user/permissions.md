@@ -310,19 +310,19 @@ Project permissions for [repository](project/repository/index.md) features inclu
 | View project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
 | Pull project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View a commit status                                           |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create or update commit status                                 |       |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Create or update commit status                                 |       |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
 | Create and delete [Git tags](project/repository/tags/index.md) |       |          |     ✓     |     ✓      |   ✓   |       |
 | Create new [branches](project/repository/branches/index.md)    |       |          |     ✓     |     ✓      |   ✓   |       |
 | Force push to non-protected branches                           |       |          |     ✓     |     ✓      |   ✓   |       |
 | Push to non-protected branches                                 |       |          |     ✓     |     ✓      |   ✓   |       |
 | Delete non-protected branches                                  |       |          |     ✓     |     ✓      |   ✓   |       |
-| Manage [protected branches](project/protected_branches.md)     |       |          |           |     ✓      |   ✓   |       |
+| Manage [protected branches](project/repository/branches/protected.md)     |       |          |           |     ✓      |   ✓   |       |
 | Delete protected branches                                      |       |          |           |     ✓      |   ✓   |       |
 | Manage [protected tags](project/protected_tags.md)             |       |          |           |     ✓      |   ✓   |       |
 | Manage [push rules](project/repository/push_rules.md)          |       |          |           |     ✓      |   ✓   |       |
-| Push to protected branches                                     |       |          |           |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Push to protected branches                                     |       |          |           |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
 | Remove fork relationship                                       |       |          |           |            |   ✓   |       |
-| Force push to protected branches                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md#allow-force-push-on-a-protected-branch). |
+| Force push to protected branches                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push-on-a-protected-branch). |
 
 Project permissions for [merge requests](project/merge_requests/index.md):
 
@@ -572,7 +572,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Custom roles](custom_roles.md)
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
-- Customize permissions on [protected branches](project/protected_branches.md)
+- Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/working_with_projects.md#project-aliases)

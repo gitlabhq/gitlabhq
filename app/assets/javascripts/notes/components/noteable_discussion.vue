@@ -204,11 +204,17 @@ export default {
       'removeConvertedDiscussion',
       'expandDiscussion',
     ]),
-    showReplyForm() {
+    showReplyForm(text) {
       this.isReplying = true;
 
       if (!this.discussion.expanded) {
         this.expandDiscussion({ discussionId: this.discussion.id });
+      }
+
+      if (typeof text !== 'undefined') {
+        this.$nextTick(() => {
+          this.$refs.noteForm.append(text);
+        });
       }
     },
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm(shouldConfirm, isDirty) {

@@ -8,11 +8,11 @@ import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/const
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { formatGroups } from '~/organizations/shared/utils';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-  formatGroups,
-} from 'ee_else_ce/organizations/shared/utils';
+} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
@@ -46,8 +46,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/organizations/shared/utils', () => ({
-  ...jest.requireActual('ee_else_ce/organizations/shared/utils'),
+jest.mock('ee_else_ce/vue_shared/components/resource_lists/utils', () => ({
+  ...jest.requireActual('ee_else_ce/vue_shared/components/resource_lists/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));

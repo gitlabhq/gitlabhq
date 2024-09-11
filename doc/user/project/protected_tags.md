@@ -21,7 +21,7 @@ Each rule allows you to match either:
 - An individual tag name.
 - Wildcards to control multiple tags at once.
 
-This feature evolved out of [protected branches](protected_branches.md).
+This feature evolved out of [protected branches](repository/branches/protected.md).
 
 ## Who can modify a protected tag
 

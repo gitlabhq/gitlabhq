@@ -482,6 +482,11 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d template found"
+msgid_plural "%d templates found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
 msgstr[0] ""
@@ -2279,9 +2284,6 @@ msgstr ""
 msgid "AI|Give feedback to improve this answer."
 msgstr ""
 
-msgid "AI|Helpful"
-msgstr ""
-
 msgid "AI|How could the content be improved?"
 msgstr ""
 
@@ -2333,13 +2335,7 @@ msgstr ""
 msgid "AI|The existing description will be replaced when you submit."
 msgstr ""
 
-msgid "AI|This is an experiment feature that uses AI to provide recommendations for resolving this vulnerability. Use this feature with caution."
-msgstr ""
-
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
-msgstr ""
-
-msgid "AI|Unhelpful"
 msgstr ""
 
 msgid "AI|Use GitLab Duo to generate a merge request with a suggested solution."
@@ -2355,9 +2351,6 @@ msgid "AI|Write a brief description and have AI fill in the details."
 msgstr ""
 
 msgid "AI|Write a summary to fill out the selected issue template"
-msgstr ""
-
-msgid "AI|Wrong"
 msgstr ""
 
 msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your editor and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
@@ -4033,7 +4026,7 @@ msgstr ""
 msgid "AdminSettings|Cube API URL"
 msgstr ""
 
-msgid "AdminSettings|Default expiration time for extra deployments (in seconds)"
+msgid "AdminSettings|Default expiration time for parallel deployments (in seconds)"
 msgstr ""
 
 msgid "AdminSettings|Delete inactive projects"
@@ -4228,6 +4221,9 @@ msgstr ""
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr ""
 
+msgid "AdminSettings|No required configuration"
+msgstr ""
+
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -4258,6 +4254,9 @@ msgstr ""
 msgid "AdminSettings|Require users to prove ownership of custom domains"
 msgstr ""
 
+msgid "AdminSettings|Required pipeline configuration"
+msgstr ""
+
 msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
@@ -4271,6 +4270,9 @@ msgid "AdminSettings|Search with Elasticsearch enabled"
 msgstr ""
 
 msgid "AdminSettings|Secret Push Protection"
+msgstr ""
+
+msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
 msgid "AdminSettings|Select a group to use as a source of custom templates for new projects. %{link_start}Learn more%{link_end}."
@@ -4294,10 +4296,13 @@ msgstr ""
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
 msgstr ""
 
+msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
+msgstr ""
+
 msgid "AdminSettings|Set options for cost factors of forks"
 msgstr ""
 
-msgid "AdminSettings|Set the default time after which extra deployments expire (0 for unlimited). %{link_start}What are extra deployments%{link_end}?"
+msgid "AdminSettings|Set the default time after which parallel deployments expire (0 for unlimited). %{link_start}What are parallel deployments%{link_end}?"
 msgstr ""
 
 msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered group runners."
@@ -4360,6 +4365,9 @@ msgstr ""
 msgid "AdminSettings|The selected level must be different from the selected default group and project visibility."
 msgstr ""
 
+msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
+msgstr ""
+
 msgid "AdminSettings|There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
 msgstr ""
 
@@ -4403,6 +4411,9 @@ msgid "AdminSettings|You can enable Registration Features because optional data 
 msgstr ""
 
 msgid "AdminSettings|You can't delete projects before the warning email is sent."
+msgstr ""
+
+msgid "AdminSettings|templates found"
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -24628,6 +24639,9 @@ msgstr ""
 msgid "GitLabPages|Edit"
 msgstr ""
 
+msgid "GitLabPages|Enable parallel deployments"
+msgstr ""
+
 msgid "GitLabPages|Expired"
 msgstr ""
 
@@ -24676,9 +24690,6 @@ msgstr ""
 msgid "GitLabPages|Updating your Pages configuration..."
 msgstr ""
 
-msgid "GitLabPages|Use multiple deployments"
-msgstr ""
-
 msgid "GitLabPages|Use unique domain"
 msgstr ""
 
@@ -24694,7 +24705,7 @@ msgstr ""
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|When enabled, you can create multiple deployments of your pages site. %{docs_link_start}Learn More.%{link_end}"
+msgid "GitLabPages|When enabled, you can create parallel deployments of your pages site. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
@@ -38998,10 +39009,10 @@ msgstr ""
 msgid "PagesDomain|Certificate Key is too long. (Max %d bytes)"
 msgstr ""
 
-msgid "PagesUsageQuota|Active extra deployments"
+msgid "PagesUsageQuota|Learn about limits for Pages deployments"
 msgstr ""
 
-msgid "PagesUsageQuota|Learn about Pages deployments limits"
+msgid "PagesUsageQuota|Parallel deployments"
 msgstr ""
 
 msgid "Pages|+ %{n} more deployments"
@@ -39037,19 +39048,10 @@ msgstr ""
 msgid "Pages|Deployments"
 msgstr ""
 
-msgid "Pages|Environment deployments"
-msgstr ""
-
 msgid "Pages|Expires at"
 msgstr ""
 
-msgid "Pages|Extra deployments: %{count}"
-msgstr ""
-
 msgid "Pages|Files"
-msgstr ""
-
-msgid "Pages|Include stopped deployments"
 msgstr ""
 
 msgid "Pages|Last updated"
@@ -39059,6 +39061,12 @@ msgid "Pages|No deployments yet"
 msgstr ""
 
 msgid "Pages|Pages deployments"
+msgstr ""
+
+msgid "Pages|Parallel deployments"
+msgstr ""
+
+msgid "Pages|Parallel deployments: %{count}"
 msgstr ""
 
 msgid "Pages|Path prefix"
@@ -39077,6 +39085,9 @@ msgid "Pages|Root directory"
 msgstr ""
 
 msgid "Pages|Scheduled for deletion at"
+msgstr ""
+
+msgid "Pages|Show stopped deployments"
 msgstr ""
 
 msgid "Pages|Size"
@@ -39100,7 +39111,7 @@ msgstr ""
 msgid "Pages|URL"
 msgstr ""
 
-msgid "Pages|We did not find any Projects with Pages deployments in this namespace."
+msgid "Pages|We did not find any projects with parallel Pages deployments in this namespace."
 msgstr ""
 
 msgid "Pagination|First"
@@ -43561,6 +43572,9 @@ msgid "ProjectsNew|You can always change your URL later"
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
+msgstr ""
+
+msgid "Projects|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
 msgid "Project|already in use"

@@ -11,12 +11,12 @@ export default {
   inject: ['projectFullPath'],
   i18n: {
     title: s__('Pages|Deployments'),
-    environmentDeploymentsTitle: s__('Pages|Environment deployments'),
+    parallelDeploymentsTitle: s__('Pages|Parallel deployments'),
     noDeploymentsMessage: s__('Pages|No deployments yet'),
     loadErrorMessage: s__(
       'Pages|Some Pages deployments could not be loaded. Try reloading the page.',
     ),
-    showInactiveLabel: s__('Pages|Include stopped deployments'),
+    showInactiveLabel: s__('Pages|Show stopped deployments'),
   },
   data() {
     return {
@@ -25,7 +25,7 @@ export default {
       hasError: false,
       alerts: {},
       primaryDeployments: null,
-      environmentDeployments: null,
+      parallelDeployments: null,
     };
   },
   computed: {
@@ -39,22 +39,22 @@ export default {
     hasMultipleDeployments() {
       return (
         this.primaryDeployments?.nodes.length > 1 ||
-        (this.primaryDeployments?.nodes.length && this.environmentDeployments?.nodes.length > 0)
+        (this.primaryDeployments?.nodes.length && this.parallelDeployments?.nodes.length > 0)
       );
     },
     primaryDeploymentsNotLoaded() {
       if (!this.primaryDeployments) return undefined;
       return this.primaryDeployments.count - this.primaryDeployments.nodes.length;
     },
-    environmentDeploymentsNotLoaded() {
-      if (!this.environmentDeployments) return 0;
-      return this.environmentDeployments.count - this.environmentDeployments.nodes.length;
+    parallelDeploymentsNotLoaded() {
+      if (!this.parallelDeployments) return 0;
+      return this.parallelDeployments.count - this.parallelDeployments.nodes.length;
     },
     loadedPrimaryDeploymentsCount() {
       return this.primaryDeployments?.nodes.length || 0;
     },
-    loadedEnvironmentDeploymentsCount() {
-      return this.environmentDeployments?.nodes.length || 0;
+    loadedParallelDeploymentsCount() {
+      return this.parallelDeployments?.nodes.length || 0;
     },
   },
   apollo: {
@@ -73,7 +73,7 @@ export default {
         this.hasError = true;
       },
     },
-    environmentDeployments: {
+    parallelDeployments: {
       query: getProjectPagesDeployments,
       variables() {
         return {
@@ -101,10 +101,10 @@ export default {
         updateQuery: this.fetchMoreUpdateResult,
       });
     },
-    fetchMoreEnvironmentDeployments() {
-      this.$apollo.queries.environmentDeployments.fetchMore({
+    fetchMoreParallelDeployments() {
+      this.$apollo.queries.parallelDeployments.fetchMore({
         variables: {
-          after: this.environmentDeployments.pageInfo.endCursor,
+          after: this.parallelDeployments.pageInfo.endCursor,
         },
         updateQuery: this.fetchMoreUpdateResult,
       });
@@ -194,32 +194,32 @@ export default {
         @load-more="fetchMorePrimaryDeployments"
       />
     </div>
-    <div v-if="loadedEnvironmentDeploymentsCount > 0" data-testid="environment-deployment-list">
-      <h3 class="gl-heading-3">{{ $options.i18n.environmentDeploymentsTitle }}</h3>
+    <div v-if="loadedParallelDeploymentsCount > 0" data-testid="parallel-deployment-list">
+      <h3 class="gl-heading-3">{{ $options.i18n.parallelDeploymentsTitle }}</h3>
       <div class="gl-flex gl-flex-col gl-gap-4">
         <pages-deployment
-          v-for="node in environmentDeployments.nodes"
+          v-for="node in parallelDeployments.nodes"
           :key="node.id"
           :deployment="node"
-          :query="$apollo.queries.environmentDeployments"
-          data-testid="environment-deployment"
+          :query="$apollo.queries.parallelDeployments"
+          data-testid="parallel-deployment"
           @error="onChildError"
         />
       </div>
       <load-more-deployments
-        v-if="environmentDeployments && environmentDeployments.pageInfo.hasNextPage"
-        :total-deployment-count="environmentDeploymentsNotLoaded"
-        :loading="$apollo.queries.environmentDeployments.loading"
+        v-if="parallelDeployments && parallelDeployments.pageInfo.hasNextPage"
+        :total-deployment-count="parallelDeploymentsNotLoaded"
+        :loading="$apollo.queries.parallelDeployments.loading"
         class="gl-mt-3"
-        data-testid="load-more-environment-deployments"
-        @load-more="fetchMoreEnvironmentDeployments"
+        data-testid="load-more-parallel-deployments"
+        @load-more="fetchMoreParallelDeployments"
       />
     </div>
-    <div v-if="!primaryDeployments && !environmentDeployments && $apollo.loading">
+    <div v-if="!primaryDeployments && !parallelDeployments && $apollo.loading">
       <gl-loading-icon size="md" />
     </div>
     <div
-      v-else-if="!loadedPrimaryDeploymentsCount && !loadedEnvironmentDeploymentsCount"
+      v-else-if="!loadedPrimaryDeploymentsCount && !loadedParallelDeploymentsCount"
       class="gl-text-center gl-text-secondary"
     >
       {{ $options.i18n.noDeploymentsMessage }}

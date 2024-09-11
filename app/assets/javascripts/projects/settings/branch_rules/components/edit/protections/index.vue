@@ -21,7 +21,7 @@ export default {
     PushProtections,
     MergeProtections,
   },
-  protectedBranchesHelpPath: helpPagePath('user/project/protected_branches'),
+  protectedBranchesHelpPath: helpPagePath('user/project/repository/branches/protected'),
   props: {
     protections: {
       type: Object,

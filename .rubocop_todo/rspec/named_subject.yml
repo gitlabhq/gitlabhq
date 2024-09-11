@@ -361,6 +361,7 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/auth_spec.rb'
     - 'ee/spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
+    - 'ee/spec/lib/gitlab/ci/config/required/processor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cached_quota_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/consumption_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'

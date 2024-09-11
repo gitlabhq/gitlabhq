@@ -36,6 +36,7 @@ The DDL migrations are all migrations that:
 1. Create or drop trigger functions (for example, `create_trigger_function`).
 1. Attach or detach triggers from tables (for example, `track_record_deletions`, `untrack_record_deletions`).
 1. Prepare or not asynchronous indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
+1. Truncate a table (for example using the `truncate_tables!` helper method).
 
 As such DDL migrations **CANNOT**:
 

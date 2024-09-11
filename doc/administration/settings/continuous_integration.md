@@ -291,6 +291,49 @@ so you can view job artifact pages directly:
 1. Expand **Continuous Integration and Deployment**.
 1. Deselect **Enable the external redirect page for job artifacts**.
 
+## Required pipeline configuration
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
+> - [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) behind the `required_pipelines` feature flag in GitLab 17.4. Disabled by default.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
+and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
+Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead. This change is a breaking change.
+
+You can set a [CI/CD template](../../ci/examples/index.md#cicd-templates)
+as a required pipeline configuration for all projects on a GitLab instance. You can
+use a template from:
+
+- The default CI/CD templates.
+- A custom template stored in an [instance template repository](instance_template_repository.md).
+
+  NOTE:
+  When you use a configuration defined in an instance template repository,
+  nested [`include:`](../../ci/yaml/index.md#include) keywords
+  (including `include:file`, `include:local`, `include:remote`, and `include:template`)
+  [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
+
+The project CI/CD configuration merges into the required pipeline configuration when
+a pipeline runs. The merged configuration is the same as if the required pipeline configuration
+added the project configuration with the [`include` keyword](../../ci/yaml/index.md#include).
+To view a project's full merged configuration, [View full configuration](../../ci/pipeline_editor/index.md#view-full-configuration)
+in the pipeline editor.
+
+To select a CI/CD template for the required pipeline configuration:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Required pipeline configuration** section.
+1. Select a CI/CD template from the dropdown list.
+1. Select **Save changes**.
+
 ## Package registry configuration
 
 ### Maven Forwarding

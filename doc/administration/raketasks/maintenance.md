@@ -452,7 +452,7 @@ To determine if there are any differences:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
 
 This Rake task checks the database schema for any inconsistencies and prints them in the terminal.
-This task is intended as a diagnostic tool to proactively monitor known issues.
+This task is a diagnostic tool to be used under the guidance of GitLab Support.
 You should not use the task for routine checks as database inconsistencies might be expected.
 
 ```shell

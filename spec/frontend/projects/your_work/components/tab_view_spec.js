@@ -29,6 +29,8 @@ describe('TabView', () => {
     });
   };
 
+  const findProjectsList = () => wrapper.findComponent(ProjectsList);
+
   afterEach(() => {
     mockApollo = null;
   });
@@ -54,9 +56,19 @@ describe('TabView', () => {
       });
 
       it('passes projects to `ProjectsList` component', () => {
-        expect(wrapper.findComponent(ProjectsList).props('projects')).toEqual(
+        expect(findProjectsList().props('projects')).toEqual(
           formatGraphQLProjects(expectedProjects),
         );
+      });
+
+      describe('when project delete is complete', () => {
+        beforeEach(() => {
+          findProjectsList().vm.$emit('delete-complete');
+        });
+
+        it('refetches list', () => {
+          expect(handler[1]).toHaveBeenCalledTimes(2);
+        });
       });
     });
 

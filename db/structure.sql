@@ -1113,6 +1113,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "alert_management_alerts"
+  WHERE "alert_management_alerts"."id" = NEW."alert_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3fe922f4db67() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1714,6 +1730,22 @@ IF NEW."namespace_id" IS NULL THEN
   INTO NEW."namespace_id"
   FROM "issues"
   WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_979e7f45114f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ml_candidates"
+  WHERE "ml_candidates"."id" = NEW."candidate_id";
 END IF;
 
 RETURN NEW;
@@ -5139,7 +5171,8 @@ ALTER SEQUENCE ai_vectorizable_files_id_seq OWNED BY ai_vectorizable_files.id;
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
-    alert_id bigint NOT NULL
+    alert_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE alert_management_alert_assignees_id_seq
@@ -6069,6 +6102,7 @@ CREATE TABLE application_settings (
     security_policies jsonb DEFAULT '{}'::jsonb NOT NULL,
     spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
     lock_spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
+    required_instance_ci_template text,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -6128,6 +6162,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT check_application_settings_service_ping_settings_is_hash CHECK ((jsonb_typeof(service_ping_settings) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
+    CONSTRAINT check_bf5157a366 CHECK ((char_length(required_instance_ci_template) <= 1024)),
     CONSTRAINT check_cdfbd99405 CHECK ((char_length(security_txt_content) <= 2048)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
@@ -13498,6 +13533,7 @@ CREATE TABLE ml_candidate_metrics (
     is_nan bytea,
     name text NOT NULL,
     tracked_at bigint,
+    project_id bigint,
     CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250)),
     CONSTRAINT check_d7dfd3de26 CHECK ((candidate_id IS NOT NULL))
 );
@@ -20554,6 +20590,30 @@ CREATE TABLE workspaces (
     CONSTRAINT check_ffa8cad434 CHECK ((char_length(url_prefix) <= 256))
 );
 
+CREATE TABLE workspaces_agent_config_versions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone,
+    project_id bigint NOT NULL,
+    item_id bigint NOT NULL,
+    event text NOT NULL,
+    whodunnit text,
+    item_type text NOT NULL,
+    object jsonb,
+    object_changes jsonb,
+    CONSTRAINT check_1ad0ae8926 CHECK ((char_length(whodunnit) <= 255)),
+    CONSTRAINT check_a7055791ff CHECK ((char_length(event) <= 20)),
+    CONSTRAINT check_ed1b796ddc CHECK ((char_length(item_type) <= 255))
+);
+
+CREATE SEQUENCE workspaces_agent_config_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE workspaces_agent_config_versions_id_seq OWNED BY workspaces_agent_config_versions.id;
+
 CREATE TABLE workspaces_agent_configs (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22453,6 +22513,8 @@ ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY workspace_variables ALTER COLUMN id SET DEFAULT nextval('workspace_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY workspaces ALTER COLUMN id SET DEFAULT nextval('workspaces_id_seq'::regclass);
+
+ALTER TABLE ONLY workspaces_agent_config_versions ALTER COLUMN id SET DEFAULT nextval('workspaces_agent_config_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY workspaces_agent_configs ALTER COLUMN id SET DEFAULT nextval('workspaces_agent_configs_id_seq'::regclass);
 
@@ -25258,6 +25320,9 @@ ALTER TABLE ONLY work_item_widget_definitions
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT workspace_variables_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY workspaces_agent_config_versions
+    ADD CONSTRAINT workspaces_agent_config_versions_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT workspaces_agent_configs_pkey PRIMARY KEY (id);
 
@@ -26956,6 +27021,8 @@ CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
 CREATE UNIQUE INDEX index_alert_assignees_on_user_id_and_alert_id ON alert_management_alert_assignees USING btree (user_id, alert_id);
+
+CREATE INDEX index_alert_management_alert_assignees_on_project_id ON alert_management_alert_assignees USING btree (project_id);
 
 CREATE INDEX index_alert_management_alert_metric_images_on_alert_id ON alert_management_alert_metric_images USING btree (alert_id);
 
@@ -29003,6 +29070,8 @@ CREATE INDEX index_ml_candidate_metadata_on_project_id ON ml_candidate_metadata 
 
 CREATE INDEX index_ml_candidate_metrics_on_candidate_id ON ml_candidate_metrics USING btree (candidate_id);
 
+CREATE INDEX index_ml_candidate_metrics_on_project_id ON ml_candidate_metrics USING btree (project_id);
+
 CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params USING btree (candidate_id);
 
 CREATE UNIQUE INDEX index_ml_candidate_params_on_candidate_id_on_name ON ml_candidate_params USING btree (candidate_id, name);
@@ -30844,6 +30913,10 @@ CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_ite
 CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
 
 CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
+
+CREATE INDEX index_workspaces_agent_config_versions_on_item_id ON workspaces_agent_config_versions USING btree (item_id);
+
+CREATE INDEX index_workspaces_agent_config_versions_on_project_id ON workspaces_agent_config_versions USING btree (project_id);
 
 CREATE INDEX index_workspaces_agent_configs_on_project_id ON workspaces_agent_configs USING btree (project_id);
 
@@ -32845,6 +32918,8 @@ CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_met
 
 CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
 
+CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
+
 CREATE TRIGGER trigger_3fe922f4db67 BEFORE INSERT OR UPDATE ON vulnerability_merge_request_links FOR EACH ROW EXECUTE FUNCTION trigger_3fe922f4db67();
 
 CREATE TRIGGER trigger_41eaf23bf547 BEFORE INSERT OR UPDATE ON release_links FOR EACH ROW EXECUTE FUNCTION trigger_41eaf23bf547();
@@ -32920,6 +32995,8 @@ CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approv
 CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
+
+CREATE TRIGGER trigger_979e7f45114f BEFORE INSERT OR UPDATE ON ml_candidate_metrics FOR EACH ROW EXECUTE FUNCTION trigger_979e7f45114f();
 
 CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
 
@@ -33442,6 +33519,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 
 ALTER TABLE ONLY subscription_add_on_purchases
     ADD CONSTRAINT fk_410004d68b FOREIGN KEY (subscription_add_on_id) REFERENCES subscription_add_ons(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY alert_management_alert_assignees
+    ADD CONSTRAINT fk_419f7a11fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
@@ -34372,6 +34452,9 @@ ALTER TABLE p_ci_builds_metadata
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_e2595d00a1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_candidate_metrics
+    ADD CONSTRAINT fk_e2684c8ffc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_e33a9aaf67 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -35530,6 +35613,9 @@ ALTER TABLE ONLY boards_epic_user_preferences
 
 ALTER TABLE ONLY value_stream_dashboard_aggregations
     ADD CONSTRAINT fk_rails_859b4f86f3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspaces_agent_config_versions
+    ADD CONSTRAINT fk_rails_8698efd89e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deployment_merge_requests
     ADD CONSTRAINT fk_rails_86a6d8bf12 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

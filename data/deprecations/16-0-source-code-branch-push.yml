@@ -6,11 +6,11 @@
   stage: Create
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/12776
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
+    GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/repository/branches/protected.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
 #
 # OPTIONAL FIELDS
 #
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/project/protected_branches.html
+  documentation_url: https://docs.gitlab.com/ee/user/project/repository/branches/protected.html
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature
   video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

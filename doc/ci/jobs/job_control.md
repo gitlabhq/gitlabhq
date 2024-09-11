@@ -24,7 +24,7 @@ in the `.gitlab-ci.yml` file.
 
 By default, manual jobs display as skipped when the pipeline starts.
 
-You can use [protected branches](../../user/project/protected_branches.md) to more strictly
+You can use [protected branches](../../user/project/repository/branches/protected.md) to more strictly
 [protect manual deployments](#protect-manual-jobs) from being run by unauthorized users.
 
 ### Types of manual jobs

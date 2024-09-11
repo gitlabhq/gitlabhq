@@ -67,7 +67,7 @@ Prerequisites:
 1. Define some rules in the file following the [Code Owners syntax reference](reference.md).
    Some suggestions:
    - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
-   - [Require Code Owner approval](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
+   - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 
 ### `CODEOWNERS` file

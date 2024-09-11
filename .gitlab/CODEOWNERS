@@ -1068,7 +1068,7 @@ lib/gitlab/checks/**
 /doc/user/project/organize_work_with_projects.md @lciutacu
 /doc/user/project/pages/ @msedlakjakubowski
 /doc/user/project/project_topics.md @lciutacu
-/doc/user/project/protected_branches.md @brendan777
+/doc/user/project/repository/branches/protected.md @brendan777
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @phillipwells

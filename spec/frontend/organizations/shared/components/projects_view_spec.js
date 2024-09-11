@@ -7,13 +7,10 @@ import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/const
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
-import { renderDeleteSuccessToast, deleteParams } from 'ee_else_ce/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
-import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { createAlert } from '~/alert';
-import { deleteProject } from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -25,21 +22,10 @@ import {
 } from 'jest/organizations/mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/api/projects_api');
 jest.mock(
   '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url',
   () => 'empty-projects-md.svg',
 );
-
-const MOCK_DELETE_PARAMS = {
-  testParam: true,
-};
-
-jest.mock('ee_else_ce/organizations/shared/utils', () => ({
-  ...jest.requireActual('ee_else_ce/organizations/shared/utils'),
-  renderDeleteSuccessToast: jest.fn(),
-  deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
-}));
 
 Vue.use(VueApollo);
 
@@ -98,10 +84,6 @@ describe('ProjectsView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GroupsAndProjectsEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
-  const findProjectsListProjectById = (projectId) =>
-    findProjectsList()
-      .props('projects')
-      .find((project) => project.id === projectId);
   const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
 
   afterEach(() => {
@@ -326,92 +308,15 @@ describe('ProjectsView', () => {
     });
   });
 
-  describe('Deleting project', () => {
-    const MOCK_PROJECT = formatGraphQLProjects(nodes)[0];
-
-    describe('when API call is successful', () => {
-      beforeEach(async () => {
-        deleteProject.mockResolvedValueOnce(Promise.resolve());
-
-        createComponent();
-
-        await waitForPromises();
-      });
-
-      it('calls deleteProject, properly sets loading state, and refetches list when promise resolves', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-
-        expect(deleteParams).toHaveBeenCalledWith(MOCK_PROJECT);
-        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id, MOCK_DELETE_PARAMS);
-        expect(
-          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
-        ).toBe(true);
-
-        await waitForPromises();
-
-        expect(
-          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
-        ).toBe(false);
-        // Refetches list
-        expect(successHandler).toHaveBeenCalledTimes(2);
-      });
-
-      it('does call renderDeleteSuccessToast', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-        await waitForPromises();
-
-        expect(renderDeleteSuccessToast).toHaveBeenCalledWith(MOCK_PROJECT, 'Project');
-      });
-
-      it('does not call createAlert', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-        await waitForPromises();
-
-        expect(createAlert).not.toHaveBeenCalled();
-      });
+  describe('when project delete is complete', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+      findProjectsList().vm.$emit('delete-complete');
     });
 
-    describe('when API call is not successful', () => {
-      const error = new Error();
-
-      beforeEach(async () => {
-        deleteProject.mockRejectedValue(error);
-
-        createComponent();
-
-        await waitForPromises();
-      });
-
-      it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-
-        expect(deleteParams).toHaveBeenCalledWith(MOCK_PROJECT);
-        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id, MOCK_DELETE_PARAMS);
-        expect(
-          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
-        ).toBe(true);
-
-        await waitForPromises();
-
-        expect(
-          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
-        ).toBe(false);
-
-        // Does not refetch list
-        expect(successHandler).toHaveBeenCalledTimes(1);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred deleting the project. Please refresh the page to try again.',
-          error,
-          captureError: true,
-        });
-      });
-
-      it('does not call renderDeleteSuccessToast', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-        await waitForPromises();
-
-        expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
-      });
+    it('refetches list', () => {
+      expect(successHandler).toHaveBeenCalledTimes(2);
     });
   });
 });

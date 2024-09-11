@@ -16,7 +16,7 @@ DETAILS:
 Use license approval policies to specify criteria that determines when approval is required before a merge request can be merged.
 
 NOTE:
-License approval policies are applicable to [protected](../project/protected_branches.md) target branches only.
+License approval policies are applicable to [protected](../project/repository/branches/protected.md) target branches only.
 
 The following video provides an overview of these policies.
 

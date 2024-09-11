@@ -21,18 +21,14 @@ Use repository analytics to view information about a project's Git repository:
 
 Repository analytics is part of [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss). It's available to anyone who has permission to clone the repository.
 
-Repository analytics requires:
-
-- An initialized Git repository.
-- At least one commit in the default branch (`main` by default).
-
-NOTE:
-Without a Git commit in the default branch, the menu item isn't visible.
-Commits in a project's [wiki](../project/wiki/index.md#track-wiki-events) are not included in the analysis.
-
 ## View repository analytics
 
-To review repository analytics for a project:
+Prerequisites:
+
+- You must have an initialized Git repository.
+- There must be at least one commit in the default branch (`main` by default), excluding commits in a project's [wiki](../project/wiki/index.md#track-wiki-events), which are not included in the analysis.
+
+To view repository analytics for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Repository analytics**.

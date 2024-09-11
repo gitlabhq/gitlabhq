@@ -42,7 +42,7 @@ import {
   EDIT_RULE_MODAL_ID,
 } from './constants';
 
-const protectedBranchesHelpDocLink = helpPagePath('user/project/protected_branches');
+const protectedBranchesHelpDocLink = helpPagePath('user/project/repository/branches/protected');
 const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/index');
 const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
 

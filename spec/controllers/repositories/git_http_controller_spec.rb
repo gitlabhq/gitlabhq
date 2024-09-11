@@ -125,17 +125,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
           }.from(0).to(1)
         end
 
-        context "when project_daily_statistic_counter_attribute_fetch features flag is disabled" do
-          it 'updates project statistics sync for projects' do
-            stub_feature_flags(disable_git_http_fetch_writes: false)
-            stub_feature_flags(project_daily_statistic_counter_attribute_fetch: false)
-
-            expect { send_request }.to change {
-              Projects::DailyStatisticsFinder.new(container).total_fetch_count
-            }.from(0).to(1)
-          end
-        end
-
         context 'when disable_git_http_fetch_writes is enabled' do
           before do
             stub_feature_flags(disable_git_http_fetch_writes: true)

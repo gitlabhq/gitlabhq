@@ -149,7 +149,7 @@ To add or update variables in the project settings:
    - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
      or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
-     in pipelines that run on [protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md).
+     in pipelines that run on [protected branches](../../user/project/repository/branches/protected.md) or [protected tags](../../user/project/protected_tags.md).
    - **Visibility**:
       - **Visible**: The variable's **Value** is visible in job logs and shown in variables settings.
       - **Masked**: The variable's **Value** is masked in job logs, but it is still shown in variables settings.
@@ -335,7 +335,7 @@ Different versions of [GitLab Runner](../runners/index.md) have different maskin
 ### Protect a CI/CD variable
 
 You can configure a project, group, or instance CI/CD variable to be available
-only to pipelines that run on [protected branches](../../user/project/protected_branches.md)
+only to pipelines that run on [protected branches](../../user/project/repository/branches/protected.md)
 or [protected tags](../../user/project/protected_tags.md).
 
 [Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md) do not have access to these variables.

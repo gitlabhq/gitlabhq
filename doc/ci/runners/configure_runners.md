@@ -247,7 +247,7 @@ For more information about token rotation, see
 ## Prevent runners from revealing sensitive information
 
 To ensure runners don't reveal sensitive information, you can configure them to only run jobs
-on [protected branches](../../user/project/protected_branches.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
+on [protected branches](../../user/project/repository/branches/protected.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
 
 Runners configured to run jobs on protected branches cannot run jobs in [merge request pipelines](../pipelines/merge_request_pipelines.md).
 

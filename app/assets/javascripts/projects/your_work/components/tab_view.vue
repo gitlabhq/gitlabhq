@@ -56,6 +56,11 @@ export default {
       return this.$apollo.queries.projects.loading;
     },
   },
+  methods: {
+    onDeleteComplete() {
+      this.$apollo.queries.projects.refetch();
+    },
+  },
 };
 </script>
 
@@ -67,5 +72,6 @@ export default {
     show-project-icon
     list-item-class="gl-px-5"
     :timestamp-type="$options.TIMESTAMP_TYPE_UPDATED_AT"
+    @delete-complete="onDeleteComplete"
   />
 </template>

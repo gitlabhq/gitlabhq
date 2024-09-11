@@ -16,6 +16,9 @@ import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue'
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { Mousetrap } from '~/lib/mousetrap';
+import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import CommentForm from './comment_form.vue';
@@ -196,6 +199,7 @@ export default {
     }
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
+    Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
   },
   updated() {
     this.$nextTick(() => {
@@ -207,6 +211,7 @@ export default {
     eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
     eventHub.$off('noteFormStartReview', this.handleReviewTracking);
     eventHub.$off('noteFormAddToReview', this.handleReviewTracking);
+    Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
   },
   methods: {
     ...mapActions([
@@ -220,6 +225,30 @@ export default {
       'setConfidentiality',
       'fetchNotes',
     ]),
+    getDiscussionInSelection() {
+      const selection = window.getSelection();
+      if (selection.rangeCount <= 0) return null;
+
+      const el = selection.getRangeAt(0).startContainer;
+      const node = el.nodeType === Node.TEXT_NODE ? el.parentNode : el;
+      return node.closest('.js-noteable-discussion');
+    },
+    async quoteReply() {
+      const discussionEl = this.getDiscussionInSelection();
+      const text = await CopyAsGFM.selectionToGfm();
+      if (!discussionEl) {
+        this.replyInMainEditor(text);
+      } else {
+        const instance = this.$refs.discussions.find(({ $el }) => $el === discussionEl);
+        // prevent hotkey input from going into the form
+        requestAnimationFrame(() => {
+          instance.showReplyForm(text);
+        });
+      }
+    },
+    replyInMainEditor(text) {
+      this.$refs.commentForm.append(text);
+    },
     discussionIsIndividualNoteAndNotConverted(discussion) {
       return (
         discussion.individual_note &&
@@ -289,6 +318,7 @@ export default {
       <template #form>
         <comment-form
           v-if="!(commentsDisabled || timelineEnabled)"
+          ref="commentForm"
           class="js-comment-form"
           :noteable-type="noteableType"
         />
@@ -335,7 +365,9 @@ export default {
             </template>
             <noteable-discussion
               v-else
+              ref="discussions"
               :key="discussion.id"
+              class="js-noteable-discussion"
               :discussion="discussion"
               :render-diff-file="true"
               is-overview-tab

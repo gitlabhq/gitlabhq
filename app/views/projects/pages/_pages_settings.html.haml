@@ -24,11 +24,11 @@
     .form-group
       = f.fields_for :project_setting do |settings|
         = settings.gitlab_ui_checkbox_component :pages_multiple_versions_enabled,
-          s_('GitLabPages|Use multiple deployments'),
+          s_('GitLabPages|Enable parallel deployments'),
           label_options: { class: 'label-bold' }
         %p.gl-pl-6
-          = safe_format(s_("GitLabPages|When enabled, you can create multiple deployments of your pages site. %{docs_link_start}Learn More.%{link_end}"),
-              tag_pair(tag.a(href: help_page_path('user/project/pages/index', anchor: 'create-multiple-deployments'), target: '_blank'),
+          = safe_format(s_("GitLabPages|When enabled, you can create parallel deployments of your pages site. %{docs_link_start}Learn more.%{link_end}"),
+              tag_pair(tag.a(href: help_page_path('user/project/pages/index', anchor: 'parallel-deployments'), target: '_blank'),
               :docs_link_start, :link_end))
 
   .gl-mt-3

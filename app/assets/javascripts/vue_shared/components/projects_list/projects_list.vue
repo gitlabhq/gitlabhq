@@ -66,7 +66,7 @@ export default {
       :show-project-icon="showProjectIcon"
       :class="listItemClass"
       :timestamp-type="timestampType"
-      @delete="$emit('delete', $event)"
+      @delete-complete="$emit('delete-complete')"
     />
   </ul>
 </template>

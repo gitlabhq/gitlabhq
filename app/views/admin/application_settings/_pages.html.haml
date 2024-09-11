@@ -28,11 +28,11 @@
         - link = link_to('', help_page_path('administration/pages/index', anchor: 'set-maximum-number-of-gitlab-pages-custom-domains-for-a-project'), target: '_blank', rel: 'noopener noreferrer')
         = safe_format(s_('AdminSettings|Set the maximum number of GitLab Pages custom domains per project (0 for unlimited). %{link_start}Learn more%{link_end}.'), tag_pair(link, :link_start, :link_end))
     .form-group
-      = f.label :pages_extra_deployments_default_expiry_seconds, s_('AdminSettings|Default expiration time for extra deployments (in seconds)'), class: 'label-bold'
+      = f.label :pages_extra_deployments_default_expiry_seconds, s_('AdminSettings|Default expiration time for parallel deployments (in seconds)'), class: 'label-bold'
       = f.number_field :pages_extra_deployments_default_expiry_seconds, class: 'form-control gl-form-input'
       .form-text.text-muted
-        - link = link_to('', help_page_path('user/project/pages/index', anchor: 'create-multiple-deployments'), target: '_blank', rel: 'noopener noreferrer')
-        = safe_format(s_('AdminSettings|Set the default time after which extra deployments expire (0 for unlimited). %{link_start}What are extra deployments%{link_end}?'), tag_pair(link, :link_start, :link_end))
+        - link = link_to('', help_page_path('user/project/pages/index', anchor: 'parallel-deployments'), target: '_blank', rel: 'noopener noreferrer')
+        = safe_format(s_('AdminSettings|Set the default time after which parallel deployments expire (0 for unlimited). %{link_start}What are parallel deployments%{link_end}?'), tag_pair(link, :link_start, :link_end))
     %h5
       = s_("AdminSettings|Configure Let's Encrypt")
     %p

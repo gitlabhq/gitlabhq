@@ -11,11 +11,15 @@ import {
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -27,6 +31,8 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { deleteProject } from '~/rest_api';
+import { createAlert } from '~/alert';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -45,6 +51,10 @@ export default {
     actions: __('Actions'),
     showMore: __('Show more'),
     showLess: __('Show less'),
+    project: __('Project'),
+    deleteErrorMessage: s__(
+      'Projects|An error occurred deleting the project. Please refresh the page to try again.',
+    ),
   },
   truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
@@ -116,6 +126,7 @@ export default {
     return {
       topicsPopoverTarget: uniqueId('project-topics-popover-'),
       isDeleteModalVisible: false,
+      isDeleteLoading: false,
     };
   },
   computed: {
@@ -216,9 +227,6 @@ export default {
     hasActionDelete() {
       return this.project.availableActions?.includes(ACTION_DELETE);
     },
-    isActionDeleteLoading() {
-      return this.project.actionLoadingStates[ACTION_DELETE];
-    },
     timestampText() {
       return this.$options.i18n[this.timestampType];
     },
@@ -243,6 +251,19 @@ export default {
     },
     onActionDelete() {
       this.isDeleteModalVisible = true;
+    },
+    async onDeleteModalPrimary() {
+      this.isDeleteLoading = true;
+
+      try {
+        await deleteProject(this.project.id, deleteParams(this.project));
+        this.$emit('delete-complete');
+        renderDeleteSuccessToast(this.project, this.$options.i18n.project);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
+      } finally {
+        this.isDeleteLoading = false;
+      }
     },
   },
 };
@@ -404,12 +425,12 @@ export default {
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"
-      :confirm-loading="isActionDeleteLoading"
+      :confirm-loading="isDeleteLoading"
       :merge-requests-count="openMergeRequestsCount"
       :issues-count="openIssuesCount"
       :forks-count="forksCount"
       :stars-count="starCount"
-      @primary="$emit('delete', project)"
+      @primary="onDeleteModalPrimary"
     >
       <template #modal-footer
         ><project-list-item-delayed-deletion-modal-footer :project="project"

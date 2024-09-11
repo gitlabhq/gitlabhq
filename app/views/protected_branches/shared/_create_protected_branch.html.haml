@@ -13,10 +13,10 @@
       - else
         = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: '!gl-w-full gl-form-input-lg' }
       .form-text.text-muted
-        - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'protect-multiple-branches-with-wildcard-rules')
+        - wildcards_url = help_page_url('user/project/repository/branches/protected', anchor: 'protect-multiple-branches-with-wildcard-rules')
         - wildcards_link_tag_pair = tag_pair(link_to('', wildcards_url, target: '_blank', rel: 'noopener noreferrer'), :wildcards_link_start, :wildcards_link_end)
 
-        - case_sensitive_url = help_page_url('user/project/protected_branches', anchor: 'branch-names-are-case-sensitive')
+        - case_sensitive_url = help_page_url('user/project/repository/branches/protected', anchor: 'branch-names-are-case-sensitive')
         - case_sensitive_link_tag_pair = tag_pair(link_to('', case_sensitive_url, target: '_blank', rel: 'noopener noreferrer'), :case_sensitive_link_start, :case_sensitive_link_end)
 
         - code_tag_pair = tag_pair(tag.code, :code_tag_start, :code_tag_end)

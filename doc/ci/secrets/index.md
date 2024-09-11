@@ -206,7 +206,7 @@ references. You can have as many bounded claims you need, but they must *all* ma
 for authentication to be successful.
 
 Combining bounded claims with GitLab features like [user roles](../../user/permissions.md)
-and [protected branches](../../user/project/protected_branches.md), you can tailor
+and [protected branches](../../user/project/repository/branches/protected.md), you can tailor
 these rules to fit your specific use case. In this example, authentication is allowed
 only for jobs running for protected tags with names matching the pattern used for
 production releases:

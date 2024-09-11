@@ -1026,6 +1026,7 @@
 - './ee/spec/lib/gitlab/ci/config/entry/secret_spec.rb'
 - './ee/spec/lib/gitlab/ci/config/entry/vault/engine_spec.rb'
 - './ee/spec/lib/gitlab/ci/config/entry/vault/secret_spec.rb'
+- './ee/spec/lib/gitlab/ci/config/required/processor_spec.rb'
 - './ee/spec/lib/gitlab/cidr_spec.rb'
 - './ee/spec/lib/gitlab/ci/minutes/cached_quota_spec.rb'
 - './ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'

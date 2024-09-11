@@ -200,7 +200,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     scan_result_policy_violations: %w[approval_policy_rule_id],
     software_license_policies: %w[approval_policy_rule_id],
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
-    namespace_settings: %w[early_access_program_joined_by_id] # isn't used inside product itself. Only through Snowflake
+    namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
+    workspaces_agent_config_versions: %w[item_id] # polymorphic associations
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -365,7 +366,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
     "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
-    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata] # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+    "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes] # Managed by paper_trail gem
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

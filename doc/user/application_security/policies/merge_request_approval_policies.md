@@ -34,7 +34,7 @@ The following video gives you an overview of GitLab merge request approval polic
 
 ## Restrictions
 
-- You can enforce merge request approval policies only on [protected](../../project/protected_branches.md)
+- You can enforce merge request approval policies only on [protected](../../project/repository/branches/protected.md)
   target branches.
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five merge request approval policies to each security policy project.

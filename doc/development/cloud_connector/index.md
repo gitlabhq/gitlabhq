@@ -228,17 +228,21 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
 1. Ensure your request sends the required headers to the [backend service](#implement-authorization-checks-in-backend-service).
 
-   These headers are:
+   Primary header fields that should be sent to any backend service:
 
    - `X-Gitlab-Instance-Id`: A globally unique instance ID string.
    - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
    - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
    - `X-Gitlab-Version`: Version of the GitLab instance.
    - `X-Gitlab-Host-Name`: The hostname of the current GitLab instance.
-   - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
    - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
 
+   AI-specific header fields:
+
+   - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
+
    Some of these headers can be injected by merging the result of the `Gitlab::CloudConnector#headers` method to your payload.
+   For AI uses cases and requests targeting the AI gateway, use `Gitlab::CloudConnector#ai_headers` instead.
 
 ###### Permission checks
 

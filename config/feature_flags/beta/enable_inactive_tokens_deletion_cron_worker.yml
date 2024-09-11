@@ -1,0 +1,9 @@
+---
+name: enable_inactive_tokens_deletion_cron_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471683
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165792
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/486955
+milestone: '17.4'
+group: group::authentication
+type: beta
+default_enabled: false

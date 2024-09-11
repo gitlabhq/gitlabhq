@@ -150,12 +150,7 @@ export default {
     },
   },
   watch: {
-    value(val) {
-      this.markdown = val;
-
-      this.saveDraft();
-      this.autosizeTextarea();
-    },
+    value: 'updateValue',
   },
   mounted() {
     this.autofocusTextarea();
@@ -178,11 +173,24 @@ export default {
       return this.markdown;
     },
     setValue(value) {
-      this.markdown = value;
       this.$emit('input', value);
-
+      this.updateValue(value);
+    },
+    updateValue(value) {
+      this.markdown = value;
       this.saveDraft();
       this.autosizeTextarea();
+    },
+    append(value) {
+      if (!value) {
+        this.focus();
+        return;
+      }
+      const newValue = [this.markdown.trim(), value].filter(Boolean).join('\n\n');
+      this.updateValue(`${newValue}\n\n`);
+      this.$nextTick(() => {
+        this.focus();
+      });
     },
     setTemplate(template, force = false) {
       if (!this.markdown || force) {
@@ -258,6 +266,13 @@ export default {
       if (this.autofocus && this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
         this.$refs.textarea.focus();
         this.setEditorAsAutofocused();
+      }
+    },
+    focus() {
+      if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
+        this.$refs.textarea.focus();
+      } else {
+        this.$refs.contentEditor.focus();
       }
     },
     setEditorAsAutofocused() {

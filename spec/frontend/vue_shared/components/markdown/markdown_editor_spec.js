@@ -20,6 +20,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 
 jest.mock('~/emoji');
 jest.mock('autosize');
@@ -639,6 +640,53 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.findComponent(GlAlert).text()).toContain(
         'Applying a template will replace the existing content. Any changes you have made will be lost.',
       );
+    });
+  });
+
+  describe('append public API', () => {
+    useFakeRequestAnimationFrame();
+
+    it('updates editor value', async () => {
+      buildWrapper({
+        propsData: { value: '' },
+      });
+      const focusSpy = jest.spyOn(findTextarea().element, 'focus');
+      wrapper.vm.append('foo');
+      await nextTick();
+      expect(findTextarea().element.value).toBe('foo\n\n');
+      expect(focusSpy).toHaveBeenCalled();
+    });
+
+    it('updates rich text editor value', async () => {
+      buildWrapper({
+        enableContentEditor: true,
+        propsData: { value: '' },
+      });
+      await enableContentEditor();
+      const focusSpy = jest.spyOn(findContentEditor().vm, 'focus');
+      wrapper.vm.append('foo');
+      await nextTick();
+      expect(findContentEditor().props('markdown')).toBe('foo\n\n');
+      expect(focusSpy).toHaveBeenCalled();
+    });
+
+    it('appends to existing value', async () => {
+      buildWrapper({
+        propsData: { value: 'existing text' },
+      });
+      wrapper.vm.append('foo');
+      await nextTick();
+      expect(findTextarea().element.value).toBe('existing text\n\nfoo\n\n');
+    });
+
+    it('apples focus when no value is given', async () => {
+      buildWrapper({
+        propsData: { value: '' },
+      });
+      const focusSpy = jest.spyOn(findTextarea().element, 'focus');
+      wrapper.vm.append();
+      await nextTick();
+      expect(focusSpy).toHaveBeenCalled();
     });
   });
 });

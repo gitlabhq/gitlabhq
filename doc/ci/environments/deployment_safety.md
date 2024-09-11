@@ -140,7 +140,7 @@ page.
 Production secrets are needed to deploy successfully. For example, when deploying to the cloud,
 cloud providers require these secrets to connect to their services. In the project settings, you can
 define and protect CI/CD variables for these secrets. [Protected variables](../variables/index.md#protect-a-cicd-variable)
-are only passed to pipelines running on [protected branches](../../user/project/protected_branches.md)
+are only passed to pipelines running on [protected branches](../../user/project/repository/branches/protected.md)
 or [protected tags](../../user/project/protected_tags.md).
 The other pipelines don't get the protected variable. You can also
 [scope variables to specific environments](../variables/where_variables_can_be_used.md#variables-with-an-environment-scope).

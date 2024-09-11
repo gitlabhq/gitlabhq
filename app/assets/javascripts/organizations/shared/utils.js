@@ -1,6 +1,4 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import toast from '~/vue_shared/plugins/global_toast';
-import { sprintf, __ } from '~/locale';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -76,15 +74,6 @@ export const onPageChange = ({
   return routeQuery;
 };
 
-export const renderDeleteSuccessToast = (item, type) => {
-  toast(
-    sprintf(__("%{type} '%{name}' is being deleted."), {
-      type,
-      name: item.name,
-    }),
-  );
-};
-
 export const timestampType = (sortName) => {
   const SORT_MAP = {
     [SORT_CREATED_AT]: TIMESTAMP_TYPE_CREATED_AT,
@@ -92,9 +81,4 @@ export const timestampType = (sortName) => {
   };
 
   return SORT_MAP[sortName] || TIMESTAMP_TYPE_CREATED_AT;
-};
-
-export const deleteParams = () => {
-  // Overridden in EE
-  return {};
 };

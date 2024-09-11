@@ -3,9 +3,22 @@ import VueApollo from 'vue-apollo';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
+import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
 import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
+
+const mountSidebarResizer = () => {
+  const resizer = document.querySelector('.js-wiki-sidebar-resizer');
+
+  if (resizer) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: resizer,
+      render: (createElement) => createElement(SidebarResizer),
+    });
+  }
+};
 
 const mountWikiContentApp = () => {
   const el = document.querySelector('#js-vue-wiki-content-app');
@@ -93,6 +106,7 @@ export const mountWikiSidebarEntries = () => {
 
 export const mountApplications = () => {
   mountWikiContentApp();
+  mountSidebarResizer();
 
   new Wikis(); // eslint-disable-line no-new
 };

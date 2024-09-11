@@ -10,6 +10,47 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 
   describe '#perform' do
+    context 'when enable_inactive_tokens_deletion_cron_worker FF is disabled' do
+      before do
+        stub_feature_flags(enable_inactive_tokens_deletion_cron_worker: false)
+      end
+
+      it(
+        'does not do anything',
+        :aggregate_failures,
+        :freeze_time,
+        :sidekiq_inline
+      ) do
+        cut_off = ApplicationSetting::INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS.days.ago
+
+        create(:personal_access_token)
+        create(:personal_access_token, expires_at: cut_off - 1.day)
+        create(:personal_access_token, expires_at: cut_off)
+        create(:personal_access_token, expires_at: cut_off + 1.day)
+        create(:personal_access_token, :revoked, updated_at: cut_off - 1.second)
+        create(:personal_access_token, :revoked, updated_at: cut_off)
+        create(:personal_access_token, :revoked, updated_at: cut_off + 1.second)
+        create(:personal_access_token, updated_at: cut_off - 1.second)
+        create(:personal_access_token, updated_at: cut_off)
+        create(:personal_access_token, updated_at: cut_off + 1.second)
+
+        create(:resource_access_token)
+        create(:resource_access_token, expires_at: cut_off - 1.day)
+        create(:resource_access_token, expires_at: cut_off)
+        create(:resource_access_token, expires_at: cut_off + 1.day)
+        create(:resource_access_token, :revoked, updated_at: cut_off - 1.second)
+        create(:resource_access_token, :revoked, updated_at: cut_off)
+        create(:resource_access_token, :revoked, updated_at: cut_off + 1.second)
+        create(:resource_access_token, updated_at: cut_off - 1.second)
+        create(:resource_access_token, updated_at: cut_off)
+        create(:personal_access_token, updated_at: cut_off + 1.second)
+
+        worker.perform
+
+        expect(Users::GhostUserMigration.none?).to eq(true)
+      end
+    end
+
     it(
       'initiates user deletion for every resource access token that became inactive before the cutoff',
       :aggregate_failures,

@@ -225,11 +225,11 @@ these more destructive changes from happening accidentally.
 Force pushing is not recommended on shared branches, because you risk destroying
 others' changes.
 
-If the branch you want to force push is [protected](../../user/project/protected_branches.md),
+If the branch you want to force push is [protected](../../user/project/repository/branches/protected.md),
 you can't force push to it unless you either:
 
 - Unprotect it.
-- [Allow force pushes](../../user/project/protected_branches.md#allow-force-push-on-a-protected-branch)
+- [Allow force pushes](../../user/project/repository/branches/protected.md#allow-force-push-on-a-protected-branch)
   to it.
 
 Then you can force push and protect it again.

@@ -139,7 +139,7 @@ Project items that are migrated to the destination GitLab instance include:
 
 **Footnotes:**
 
-1. Imported branches respect the [default branch protection settings](../../project/protected_branches.md)
+1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md)
    of the destination group, which could cause an unprotected branch to be imported as protected.
 1. See [User contributions and membership mapping](direct_transfer_migrations.md#user-contributions-and-membership-mapping).
 

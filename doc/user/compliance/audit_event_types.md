@@ -443,6 +443,12 @@ Audit event types belong to the following product categories.
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`skip_secret_push_protection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Triggered when secret push protection is skipped by the user | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
 
+### Secrets management
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`user_authenticated_using_job_token`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164546) | Triggered when a user is authenticated using job token | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
+
 ### Security policy management
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
@@ -453,6 +459,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`self_hosted_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303) | A new self-hosted model configuration was added | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
 | [`self_hosted_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165321) | A new self-hosted model configuration was destroyed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
 | [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
 | [`self_hosted_model_terms_accepted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165480) | Terms for usage of self-hosted models were accepted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |

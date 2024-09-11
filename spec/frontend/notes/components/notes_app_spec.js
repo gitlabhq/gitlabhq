@@ -16,10 +16,15 @@ import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import NotePreview from '~/notes/components/note_preview.vue';
+import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import { Mousetrap } from '~/lib/mousetrap';
+import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import * as mockData from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -518,6 +523,41 @@ describe('note_app', () => {
           expect.any(Object),
         );
       });
+    });
+  });
+
+  describe('reply hotkey', () => {
+    useFakeRequestAnimationFrame();
+
+    const stubSelection = (startContainer) => {
+      window.getSelection = () => ({
+        rangeCount: 1,
+        getRangeAt: () => ({ startContainer }),
+      });
+    };
+
+    it('sends quote to main reply editor', async () => {
+      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
+      wrapper = mountComponent();
+      const replySpy = jest.spyOn(wrapper.findComponent(CommentForm).vm, 'append');
+      const target = wrapper.element.querySelector('p');
+      stubSelection(target);
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      await nextTick();
+      expect(replySpy).toHaveBeenCalledWith('foo');
+    });
+
+    it('sends quote to discussion reply editor', async () => {
+      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
+      axiosMock.onAny().reply(mockData.getDiscussionNoteResponse);
+      wrapper = mountComponent();
+      await waitForPromises();
+      const replySpy = jest.spyOn(wrapper.findComponent(NoteableDiscussion).vm, 'showReplyForm');
+      const target = wrapper.element.querySelector('.js-noteable-discussion p');
+      stubSelection(target);
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      await nextTick();
+      expect(replySpy).toHaveBeenCalledWith('foo');
     });
   });
 });

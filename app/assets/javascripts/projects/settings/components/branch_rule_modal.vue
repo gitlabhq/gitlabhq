@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import getProtectableBranches from '../graphql/queries/protectable_branches.query.graphql';
 
-const wildcardsHelpDocLink = helpPagePath('user/project/protected_branches', {
+const wildcardsHelpDocLink = helpPagePath('user/project/repository/branches/protected', {
   anchor: 'protect-multiple-branches-with-wildcard-rules',
 });
 export default {

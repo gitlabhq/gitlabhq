@@ -211,7 +211,7 @@ EOF
 This example uses [bound claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
 to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
 
-Combined with [protected branches](../../user/project/protected_branches.md),
+Combined with [protected branches](../../user/project/repository/branches/protected.md),
 you can restrict who is able to authenticate and read the secrets.
 
 Any of the claims [included in the JWT](#how-it-works) can be matched against a list of values
@@ -349,7 +349,7 @@ and GitLab features. For example, restrict the token by:
   of specific users.
 - Setting Vault time limits for TTL of the token as specified in [`token_explicit_max_ttl`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#token_explicit_max_ttl),
   where the token expires after authentication.
-- Scoping the JWT to [GitLab protected branches](../../user/project/protected_branches.md)
+- Scoping the JWT to [GitLab protected branches](../../user/project/repository/branches/protected.md)
   that are restricted to a subset of project users.
 - Scoping the JWT to [GitLab protected tags](../../user/project/protected_tags.md),
   that are restricted to a subset of project users.
