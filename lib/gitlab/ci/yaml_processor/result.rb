@@ -8,7 +8,7 @@ module Gitlab
       class Result
         include Gitlab::Utils::StrongMemoize
 
-        attr_reader :errors, :warnings,
+        attr_reader :ci_config, :errors, :warnings,
           :root_variables, :root_variables_with_prefill_data,
           :stages, :jobs,
           :workflow_rules, :workflow_name, :workflow_auto_cancel

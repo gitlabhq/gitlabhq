@@ -111,7 +111,9 @@ Rails.application.configure do
     config.middleware.delete BetterErrors::Middleware
   end
 
-  config.middleware.insert_before(ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}])
+  config.middleware.insert_before(
+    ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}, %r{^/v2$}, %r{^/v2/}]
+  )
 
   config.log_level = Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :debug)
 end
