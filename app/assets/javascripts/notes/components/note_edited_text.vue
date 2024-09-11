@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <div :class="className">
+  <div :class="className" class="gl-text-sm">
     <gl-sprintf v-if="editedBy" :message="$options.i18n.actionWithAuthor">
       <template #actionText>
         {{ actionText }}
