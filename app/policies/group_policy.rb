@@ -162,6 +162,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_issue
     enable :read_work_item
     enable :read_namespace
+    enable :read_upload
   end
 
   rule { ~achievements_enabled }.policy do
@@ -239,7 +240,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_runners
     enable :create_jira_connect_subscription
     enable :maintainer_access
-    enable :read_upload
     enable :admin_upload
     enable :destroy_upload
     enable :admin_push_rules

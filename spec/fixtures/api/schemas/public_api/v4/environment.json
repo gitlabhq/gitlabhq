@@ -70,6 +70,12 @@
           "$ref": "agent.json"
         }
       ]
+    },
+    "kubernetes_namespace": {
+      "$ref": "../../types/nullable_string.json"
+    },
+    "flux_resource_path": {
+      "$ref": "../../types/nullable_string.json"
     }
   },
   "additionalProperties": false

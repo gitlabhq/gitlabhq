@@ -459,7 +459,11 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
             deployable: job
           )
 
-          environment.update!(cluster_agent: create(:cluster_agent, project: project))
+          environment.update!(
+            cluster_agent: create(:cluster_agent, project: project),
+            kubernetes_namespace: 'flux-system',
+            flux_resource_path: 'HelmRelease/flux-system'
+          )
 
           get api("/projects/#{project.id}/environments/#{environment.id}", user)
 
@@ -467,6 +471,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(json_response['last_deployment']).to be_present
           expect(json_response['cluster_agent']).to be_present
+          expect(json_response['kubernetes_namespace']).to eq('flux-system')
+          expect(json_response['flux_resource_path']).to eq('HelmRelease/flux-system')
         end
       end
 
@@ -523,14 +529,20 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     end
 
     context 'as a reporter' do
-      it 'does not expose the cluster agent' do
-        environment.update!(cluster_agent: create(:cluster_agent, project: project))
+      it 'does not expose the cluster agent and related fields' do
+        environment.update!(
+          cluster_agent: create(:cluster_agent, project: project),
+          kubernetes_namespace: 'flux-system',
+          flux_resource_path: 'HelmRelease/flux-system'
+        )
 
         get api("/projects/#{project.id}/environments/#{environment.id}", reporter)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['cluster_agent']).not_to be_present
+        expect(json_response['kubernetes_namespace']).not_to be_present
+        expect(json_response['flux_resource_path']).not_to be_present
       end
     end
 

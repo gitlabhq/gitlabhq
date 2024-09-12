@@ -2729,7 +2729,7 @@ Returned object:
 ]
 ```
 
-### Download an uploaded file
+### Download an uploaded file by ID
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
 
@@ -2739,10 +2739,14 @@ You must have at least the Maintainer role to use this endpoint.
 GET /projects/:id/uploads/:upload_id
 ```
 
+Supported attributes:
+
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
+
+If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
 
 Example request:
 
@@ -2750,7 +2754,33 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
 ```
 
-### Delete an uploaded file
+### Download an uploaded file by secret and filename
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+
+You must have at least the Guest role to use this endpoint.
+
+```plaintext
+GET /projects/:id/uploads/:secret/:filename
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `secret`    | string            | Yes      | The 32-character secret of the upload. |
+| `filename`  | string            | Yes      | The filename of the upload. |
+
+If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
+```
+
+### Delete an uploaded file by ID
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
 
@@ -2760,15 +2790,45 @@ You must have at least the Maintainer role to use this endpoint.
 DELETE /projects/:id/uploads/:upload_id
 ```
 
+Supported attributes:
+
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
 
+If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+
 Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+```
+
+### Delete an uploaded file by secret and filename
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /projects/:id/uploads/:secret/:filename
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `secret`    | string            | Yes      | The 32-character secret of the upload. |
+| `filename`  | string            | Yes      | The filename of the upload. |
+
+If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```
 
 ## Upload a project avatar

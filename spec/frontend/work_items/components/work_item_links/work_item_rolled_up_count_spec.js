@@ -9,15 +9,18 @@ describe('Work Item rolled up count', () => {
   const createComponent = ({
     infoType = 'badge',
     rolledUpCountsByType = mockRolledUpCountsByType,
+    hideCountWhenZero = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemRolledUpCount, {
       propsData: {
         infoType,
         rolledUpCountsByType,
+        hideCountWhenZero,
       },
     });
   };
 
+  const findRolledUpCountWrapper = () => wrapper.findByTestId('work-item-rolled-up-count-wrapper');
   const findRolledUpCountBadgeView = () => wrapper.findByTestId('work-item-rolled-up-badge-count');
   const findRolledUpCountDetailedView = () =>
     wrapper.findByTestId('work-item-rolled-up-detailed-count');
@@ -86,4 +89,34 @@ describe('Work Item rolled up count', () => {
       expect(findDetailedPopoverRolledUpCountInfo().exists()).toBe(true);
     });
   });
+
+  it.each`
+    hideCount | wrapperVisible | shouldRender
+    ${false}  | ${true}        | ${'renders'}
+    ${true}   | ${false}       | ${'does not render'}
+  `(
+    '$shouldRender the wrapper when total count is zero and `hideCountWhenZero` is $hideCount',
+    ({ hideCount, wrapperVisible }) => {
+      createComponent({
+        rolledUpCountsByType: [
+          {
+            countsByState: {
+              all: 0,
+              closed: 0,
+              __typename: 'WorkItemStateCountsType',
+            },
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              iconName: 'issue-type-task',
+              __typename: 'WorkItemType',
+            },
+            __typename: 'WorkItemTypeCountsByState',
+          },
+        ],
+        hideCountWhenZero: hideCount,
+      });
+      expect(findRolledUpCountWrapper().exists()).toBe(wrapperVisible);
+    },
+  );
 });

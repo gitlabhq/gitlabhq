@@ -46,7 +46,9 @@ Example response:
     "updated_at": "2019-05-27T18:55:13.252Z",
     "enable_advanced_logs_querying": false,
     "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo",
-    "auto_stop_at": "2019-06-03T18:55:13.252Z"
+    "auto_stop_at": "2019-06-03T18:55:13.252Z",
+    "kubernetes_namespace": "flux-system",
+    "flux_resource_path": "HelmRelease/flux-system"
   }
 ]
 ```
@@ -178,7 +180,9 @@ Example of response
     },
     "created_at": "2022-04-20T20:42:40.221Z",
     "created_by_user_id": 42
-  }
+  },
+  "kubernetes_namespace": "flux-system",
+  "flux_resource_path": "HelmRelease/flux-system"
 }
 ```
 
@@ -256,7 +260,9 @@ Example response:
   "state": "available",
   "tier": "staging",
   "created_at": "2019-05-25T18:55:13.252Z",
-  "updated_at": "2019-05-27T18:55:13.252Z"
+  "updated_at": "2019-05-27T18:55:13.252Z",
+  "kubernetes_namespace": "flux-system",
+  "flux_resource_path": "HelmRelease/flux-system"
 }
 ```
 
@@ -350,7 +356,9 @@ Example response:
   "external_url": "https://deploy.gitlab.example.com",
   "state": "stopped",
   "created_at": "2019-05-25T18:55:13.252Z",
-  "updated_at": "2019-05-27T18:55:13.252Z"
+  "updated_at": "2019-05-27T18:55:13.252Z",
+  "kubernetes_namespace": "flux-system",
+  "flux_resource_path": "HelmRelease/flux-system"
 }
 ```
 

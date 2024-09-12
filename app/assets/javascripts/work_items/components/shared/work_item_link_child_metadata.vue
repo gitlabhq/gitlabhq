@@ -52,6 +52,7 @@ export default {
       <span>{{ reference }}</span>
       <work-item-rolled-up-count
         v-if="showRolledUpCounts"
+        hide-count-when-zero
         :rolled-up-counts-by-type="rolledUpCountsByType"
         info-type="detailed"
       />
