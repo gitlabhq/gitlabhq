@@ -283,9 +283,9 @@ The following requirements apply when enforcing Dynamic Application Security Tes
   [site profile](../dast/on-demand_scan.md#site-profile) and
   [scanner profile](../dast/on-demand_scan.md#scanner-profile) must exist. If these are not
   available, the policy is not applied and a job with an error message is created instead.
-- After you associate the site profile and scanner profile by name in the policy, it is not possible
-  to modify or delete them. If you want to modify them, you must first disable the policy by setting
-  the `active` flag to `false`.
+- When a site profile or scanner profile is named in an enabled scan execution policy, it cannot be modified or
+  deleted. To modify or delete the policy, you must first set the policy to **Disabled** in the policy
+  editor or set `enabled: false` in the YAML mode.
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.

@@ -210,6 +210,7 @@ for more details.
     database migrations as your existing environments. This isn't necessary if you're restoring from backup into the
     new environment as the database restore removes the existing database schema definition and uses the definition
     that's stored as part of the backup.
+- Git 2.46.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 
 ## 17.3.0
 

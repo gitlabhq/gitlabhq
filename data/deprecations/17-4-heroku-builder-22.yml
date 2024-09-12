@@ -1,0 +1,29 @@
+- title: "The `heroku/builder:22` image is deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.4"
+  breaking_change: true
+  reporter: nagyv-gitlab
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79
+  impact: medium
+  scope: project
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    The cloud native buildpack (CNB) builder image was updated to `heroku/builder:24` in the Auto DevOps Build project. While we don't expect the changes to be disruptive for the most part, this might be a breaking change for some users of Auto DevOps, and especially users of Auto Build. To better understand the impact of you workloads, review the following:
+
+    - [Heroku-24 stack release notes](https://devcenter.heroku.com/articles/heroku-24-stack#what-s-new)
+    - [Heroku-24 stack upgrade notes](https://devcenter.heroku.com/articles/heroku-24-stack#upgrade-notes)
+    - [Heroku stack packages](https://devcenter.heroku.com/articles/stack-packages)
+
+    These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build).
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

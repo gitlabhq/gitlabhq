@@ -367,6 +367,24 @@ Customers should migrate from compliance pipelines to the new [pipeline executio
 Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file (for example, `pipeline-execution.yml`) linked in
 the pipeline execution policy.
 
+During the migration phase, you can migrate compliance pipelines to pipeline execution policies by using the warning banner that appears on the compliance framework page. Access
+the warning banner when either:
+
+- **Creating a new compliance framework.** The warning banner provides a way for you to start using the pipeline execution policy type instead of compliance frameworks.
+- **Editing an existing compliance framework.** The warning banner provides a way for you to migrate your compliance pipelines to the pipeline execution policy type, if you have
+  a compliance pipeline configured.
+
+Select either the **Create policy** or **Migrate pipeline to a policy** button to create a new policy in the security policies section. This page allows your to either:
+
+- Create a new security policy from scratch instead of a compliance pipeline.
+- In the case of an existing compliance pipeline, bring the YAML file from the compliance pipeline over to a pipeline execution policy.
+
+For more information, see [Security policy project](../application_security/policies/index.md#security-policy-project).
+
+If you are migrating a compliance pipeline over to a pipeline execution policy, the compliance pipeline continues to override the new pipeline execution policy until it is
+removed from the compliance framework configuration. After the new pipeline execution policy is created and changes are merged into the `policy.yml`, you must return to the
+compliance framework page and remove the compliance pipeline so that the new pipeline execution policy can take precedence.
+
 ### Troubleshooting
 
 #### Job names must be unique

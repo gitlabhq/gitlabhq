@@ -83,6 +83,7 @@
 - internationalization
 - job_artifacts
 - logging
+- markdown
 - merge_trains
 - metrics
 - mlops
@@ -131,6 +132,7 @@
 - switchboard
 - system_access
 - team_planning
+- text_editors
 - tracing
 - user_management
 - user_profile

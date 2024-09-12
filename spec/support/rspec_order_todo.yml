@@ -1326,7 +1326,6 @@
 - './ee/spec/models/ci/minutes/project_monthly_usage_spec.rb'
 - './ee/spec/models/ci/minutes/usage_spec.rb'
 - './ee/spec/models/ci/pipeline_spec.rb'
-- './ee/spec/models/ci/processable_spec.rb'
 - './ee/spec/models/ci/sources/project_spec.rb'
 - './ee/spec/models/ci/subscriptions/project_spec.rb'
 - './ee/spec/models/commit_spec.rb'

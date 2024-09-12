@@ -119,7 +119,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def stop
     return render_404 unless @environment.available?
 
-    stop_actions = @environment.stop_with_actions!(current_user)
+    stop_actions = @environment.stop_with_actions!
     job = stop_actions.first if stop_actions&.count == 1
 
     action_or_env_url =

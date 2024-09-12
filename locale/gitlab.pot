@@ -1191,6 +1191,9 @@ msgstr ""
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
+msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
+msgstr ""
+
 msgid "%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
 msgstr ""
 
@@ -10777,6 +10780,9 @@ msgid "Cannot make the epic confidential if it contains non-confidential issues"
 msgstr ""
 
 msgid "Cannot merge"
+msgstr ""
+
+msgid "Cannot modify %{profile_name} referenced in scan"
 msgstr ""
 
 msgid "Cannot modify %{profile_name} referenced in security policy"
@@ -21715,6 +21721,9 @@ msgid "Error fetching the dependency list: %{errorDetails}"
 msgstr ""
 
 msgid "Error linking identity: %{errors}"
+msgstr ""
+
+msgid "Error linking identity: Provider and Extern UID must be in the session."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
@@ -44682,6 +44691,9 @@ msgstr ""
 msgid "Redirect to SAML provider to test configuration"
 msgstr ""
 
+msgid "Redirect url is an external url, it may contain user-generated content and malicious code. Do not continue unless you trust the author and source."
+msgstr ""
+
 msgid "Redirecting"
 msgstr ""
 
@@ -59035,6 +59047,9 @@ msgstr ""
 msgid "UserMapping|Approve reassignments only from users that you trust. After approval, contributions will be assigned to you. The assignment is permanent."
 msgstr ""
 
+msgid "UserMapping|As part of the import, placeholder users were created on %{group_names} and these users were assigned group membership and contributions from %{source_hostname}. To reassign contributions from placeholder users to GitLab users, visit the Members page of %{group_links}."
+msgstr ""
+
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
@@ -59084,6 +59099,9 @@ msgid "UserMapping|Placeholder user"
 msgstr ""
 
 msgid "UserMapping|Placeholder user was made permanent."
+msgstr ""
+
+msgid "UserMapping|Placeholder users awaiting reassignment"
 msgstr ""
 
 msgid "UserMapping|Placeholders"
