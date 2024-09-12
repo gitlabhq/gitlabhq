@@ -3,47 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
-  describe '.async' do
-    let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:action) { :git_write }
-
-    subject(:execute_service) { described_class.async(namespace.id).execute(action: action) }
-
-    context 'when not onboarded' do
-      it 'does not schedule a worker' do
-        expect(Onboarding::ProgressWorker).not_to receive(:perform_async)
-
-        execute_service
-      end
-    end
-
-    context 'when onboarded' do
-      before do
-        Onboarding::Progress.onboard(namespace)
-      end
-
-      context 'when action is already completed' do
-        before do
-          Onboarding::Progress.register(namespace, action)
-        end
-
-        it 'does not schedule a worker' do
-          expect(Onboarding::ProgressWorker).not_to receive(:perform_async)
-
-          execute_service
-        end
-      end
-
-      context 'when action is not yet completed' do
-        it 'schedules a worker' do
-          expect(Onboarding::ProgressWorker).to receive(:perform_async)
-
-          execute_service
-        end
-      end
-    end
-  end
-
   describe '#execute' do
     let(:namespace) { create(:namespace) }
     let(:action) { :namespace_action }

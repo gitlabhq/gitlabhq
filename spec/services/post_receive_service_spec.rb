@@ -44,8 +44,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
     it 'does not return error' do
       expect(subject).to be_empty
     end
-
-    it_behaves_like 'does not record an onboarding progress action'
   end
 
   context 'when repository is nil' do
@@ -80,10 +78,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
       expect(reference_counter).to receive(:decrease).and_return(true)
 
       expect(response.reference_counter_decreased).to be(true)
-    end
-
-    it_behaves_like 'records an onboarding progress action', :git_write do
-      let(:namespace) { project.namespace }
     end
   end
 

@@ -58,6 +58,7 @@ const defaultProps = {
   membersPagePath: '/my-fake-project/-/project_members',
   licensedAiFeaturesAvailable: true,
   policySettingsAvailable: false,
+  duoFeaturesLocked: false,
 };
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
@@ -66,7 +67,13 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, glFeatures = {}, stubs = {}, ...customProps } = {},
+    {
+      currentSettings = {},
+      glFeatures = {},
+      cascadingSettingsData = {},
+      stubs = {},
+      ...customProps
+    } = {},
     mountFn = shallowMountExtended,
   ) => {
     const propsData = {
@@ -79,6 +86,7 @@ describe('Settings Panel', () => {
       propsData,
       provide: {
         glFeatures,
+        cascadingSettingsData,
       },
       stubs,
     });
@@ -143,6 +151,7 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'model-experiments-settings' });
   const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
   const findDuoSettings = () => wrapper.findByTestId('duo-settings');
+  const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
   const findPipelineExecutionPolicySettings = () =>
     wrapper.findByTestId('pipeline-execution-policy-settings');
 
@@ -839,9 +848,66 @@ describe('Settings Panel', () => {
   });
   describe('Duo', () => {
     it('shows duo toggle', () => {
-      wrapper = mountComponent();
-
+      wrapper = mountComponent({});
       expect(findDuoSettings().exists()).toBe(true);
+    });
+
+    describe('when areDuoSettingsLocked is false', () => {
+      it('does not show CascadingLockIcon', () => {
+        wrapper = mountComponent({ duoFeaturesLocked: false });
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+      });
+    });
+
+    describe('when areDuoSettingsLocked is true', () => {
+      beforeEach(() => {
+        wrapper = mountComponent(
+          {
+            cascadingSettingsData: {
+              lockedByAncestor: false,
+              lockedByApplicationSetting: false,
+              ancestorNamespace: null,
+            },
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
+      });
+
+      it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
+        expect(findDuoCascadingLockIcon().exists()).toBe(true);
+      });
+
+      it('passes correct props to CascadingLockIcon', () => {
+        expect(findDuoCascadingLockIcon().props()).toMatchObject({
+          isLockedByGroupAncestor: false,
+          isLockedByApplicationSettings: false,
+          ancestorNamespace: null,
+        });
+      });
+
+      it('does not show CascadingLockIcon when cascadingSettingsData is empty', () => {
+        wrapper = mountComponent(
+          {
+            cascadingSettingsData: {},
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+      });
+
+      it('does not show CascadingLockIcon when cascadingSettingsData is null', () => {
+        wrapper = mountComponent(
+          {
+            glFeatures: { aiSettingsVueProject: true },
+            cascadingSettingsData: null,
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+      });
     });
   });
   describe('Pipeline execution policies', () => {

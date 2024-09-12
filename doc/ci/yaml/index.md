@@ -72,6 +72,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
   | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
   | [`script`](#script)                           | Shell script that is executed by a runner.                                                                  |
+  | [`run`](#run)                                 | Run configuration that is executed by a runner.                                                             |
   | [`secrets`](#secrets)                         | The CI/CD secrets the job needs.                                                                            |
   | [`services`](#services)                       | Use Docker services images.                                                                                 |
   | [`stage`](#stage)                             | Defines a job stage.                                                                                        |
@@ -4657,6 +4658,61 @@ job:
 
 - The rule-level `rules:interruptible` overrides the job-level [`interruptible`](#interruptible),
   and only applies when the specific rule triggers the job.
+
+### `run`
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Use `run` to define a series of [steps](../steps/index.md) to be executed in a job. Each step can be either a script or a predefined step.
+
+You can also provide optional environment variables and inputs.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of hashes, where each hash represents a step with the following possible keys:
+  - `name`: A string representing the name of the step.
+  - `script`: A string or array of strings containing shell commands to execute.
+  - `step`: A string identifying a predefined step to run.
+  - `env`: Optional. A hash of environment variables specific to this step.
+  - `inputs`: Optional. A hash of input parameters for predefined steps.
+
+Each array entry must have a `name`, and one `script` or `step` (but not both).
+
+**Example of `run`**:
+
+``` yaml
+job:
+  run:
+    - name: 'hello_steps'
+      script: 'echo "hello from step1"'
+    - name: 'bye_steps'
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
+      inputs:
+        echo: 'bye steps!'
+      env:
+        var1: 'value 1'
+```
+
+In this example, the job has two steps:
+
+- `hello_steps` runs the `echo` shell command.
+- `bye_steps` uses a predefined step with an environment variable and an input parameter.
+
+**Additional details**:
+
+- A step can have either a `script` or a `step` key, but not both.
+- A `run` configuration cannot be used together with existing [`script`](#script) keyword.
+- Multi-line scripts can be defined using [YAML block scalar syntax](script.md#split-long-commands).
 
 ### `script`
 

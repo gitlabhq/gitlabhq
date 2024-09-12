@@ -9,7 +9,8 @@ import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { containsPotentialRegex } from '~/lib/utils/regexp';
 import { EVENT_CLICK_CLIPBOARD_BUTTON, EVENT_CLICK_HEADER_LINK } from '~/search/results/tracking';
-import { DEFAULT_THEME_COLOR, DEFAULT_HEADER_LABEL_COLOR } from '../constants';
+import { GL_LIGHT } from '~/constants';
+import { CODE_THEME_DEFAULT, DEFAULT_HEADER_LABEL_COLOR, CODE_THEME_DARK } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -45,6 +46,10 @@ export default {
       required: false,
       default: false,
     },
+    systemColorScheme: {
+      type: String,
+      required: true,
+    },
   },
   i18n: {
     fileLink: s__('GlobalSearch|Open file in repository'),
@@ -67,11 +72,14 @@ export default {
       const regex = new RegExp(`(${this.query.search})`, 'g');
       return this.filePath.replace(
         regex,
-        (match, p1) => `<span class="highlight_word">${p1}</span>`,
+        (match, p1) => `<span class="highlight_word ${this.systemMatchCodeTheme}">${p1}</span>`,
       );
     },
+    systemMatchCodeTheme() {
+      return this.systemColorScheme === GL_LIGHT ? CODE_THEME_DEFAULT : CODE_THEME_DARK;
+    },
     codeTheme() {
-      return gon.user_color_scheme || DEFAULT_THEME_COLOR;
+      return gon?.user_color_scheme || CODE_THEME_DEFAULT;
     },
   },
   methods: {
@@ -92,7 +100,7 @@ export default {
     <gl-link
       :href="fileUrl"
       :title="$options.i18n.fileLink"
-      :class="`code ${codeTheme}`"
+      :class="codeTheme"
       @click="trackHeaderClick"
     >
       <template v-if="projectPath">

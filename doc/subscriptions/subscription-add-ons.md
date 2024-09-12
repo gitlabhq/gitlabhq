@@ -194,3 +194,26 @@ Once or twice each day, a CronJob reviews GitLab Duo seat assignments. If a user
 blocked, banned, or deactivated, their access to GitLab Duo features is automatically removed.
 
 After the seat has been removed, it becomes available and can be re-assigned to a new user.
+
+## Changes to GitLab Duo Pro and GitLab Duo Enterprise access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+Starting October 17, 2024, customers with a Premium or Ultimate subscription
+must have a GitLab Duo add-on to access AI-powered features.
+
+To [continue using](https://about.gitlab.com/gitlab-duo/) GitLab Duo Pro or GitLab Duo Enterprise features, you can either:
+
+- Start a free trial
+- Purchase GitLab Duo Pro or Duo Enterprise
+
+GitLab Duo Enterprise is available only for Ultimate subscriptions.
+
+If you have already purchased GitLab Duo Pro or Enterprise, to avoid losing access, you must
+assign remaining seats before October 17, 2024.
+
+If you have an Ultimate subscription and purchased GitLab Duo Pro with the option to
+upgrade to Duo Enterprise, you must upgrade before October 17, 2024. If you
+don't upgrade, you will lose access to GitLab Duo Enterprise features.

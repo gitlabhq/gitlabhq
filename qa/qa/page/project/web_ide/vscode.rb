@@ -267,11 +267,10 @@ module QA
             within_vscode_editor do
               within_file_editor do
                 wait_until(reload: false, max_duration: 30, message: 'Waiting for Code Suggestion to start loading') do
-                  has_code_suggestions_status?('loading')
+                  code_suggestion_loading?
                 end
 
-                # Wait for code suggestion to finish loading
-                wait_until_code_suggestions_enabled
+                wait_until_code_suggestion_loaded
               end
             end
           end
@@ -354,6 +353,10 @@ module QA
             page.document.has_css?(code_suggestions_icon_selector(status))
           end
 
+          def code_suggestion_loading?
+            page.document.has_css?('.glyph-margin-widgets .codicon', wait: 0)
+          end
+
           def has_code_suggestions_error?
             !page.document.has_no_css?(code_suggestions_icon_selector('error'))
           end
@@ -372,6 +375,15 @@ module QA
             wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
               message: 'Wait for Code Suggestions extension to be enabled') do
               has_code_suggestions_status_without_error?('enabled')
+            end
+          end
+
+          def wait_until_code_suggestion_loaded
+            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
+              message: 'Wait for Code Suggestion to finish loading') do
+              raise code_suggestions_error if has_code_suggestions_error?
+
+              !code_suggestion_loading?
             end
           end
         end

@@ -242,8 +242,13 @@ initCascadingSettingsLockTooltips();
  1. In the your Ruby helper, you will need to call the following to send do your Vue component. Be sure to switch out `:replace_attribute_here` with your cascading attribute.
 
  ```ruby
- # Example call from your Ruby helper method
+ # Example call from your Ruby helper  method for groups
  cascading_settings_data = cascading_namespace_settings_tooltip_data(:replace_attribute_here, @group, method(:edit_group_path))[:tooltip_data]
+ ```
+
+ ```ruby
+ # Example call from your Ruby helper  method for projects
+cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path))
  ```
 
 1. From your Vue's `index.js` file, be sure to convert the data into JSON and camel case format. This will make it easier to use in Vue.
@@ -290,7 +295,8 @@ export default {
 
 You can look into the following examples of MRs for implementing `cascading_lock_icon.vue` into other Vue components:
 
-- [Add cascading settings in Vue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162101)
+- [Add cascading settings in Groups](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162101)
+- [Add cascading settings in Projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163050)
 
 ### Reasoning for supporing both HAML and Vue
 

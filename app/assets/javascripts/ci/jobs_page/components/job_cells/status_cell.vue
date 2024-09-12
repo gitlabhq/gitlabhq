@@ -39,7 +39,7 @@ export default {
 <template>
   <div>
     <ci-icon :status="job.detailedStatus" show-status-text />
-    <div class="gl-ml-3 gl-mt-2 gl-text-sm gl-text-secondary">
+    <div class="gl-ml-1 gl-mt-2 gl-text-sm gl-text-secondary">
       <div v-if="duration" data-testid="job-duration">
         <gl-icon name="timer" :size="$options.iconSize" data-testid="duration-icon" />
         {{ durationFormatted }}

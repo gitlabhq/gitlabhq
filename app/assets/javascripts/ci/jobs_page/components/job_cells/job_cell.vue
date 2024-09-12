@@ -94,7 +94,7 @@ export default {
     <div
       class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-gray-700 lg:gl-justify-start"
     >
-      <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-gray-50 gl-p-2">
+      <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-gray-50 gl-px-2">
         <gl-icon
           v-if="createdByTag"
           name="label"
@@ -110,7 +110,7 @@ export default {
         >
       </div>
       <span v-else>{{ __('none') }}</span>
-      <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-gray-50 gl-p-2">
+      <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-gray-50 gl-px-2">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
         <gl-link
           class="gl-text-sm gl-text-gray-700 gl-font-monospace hover:gl-text-gray-900"

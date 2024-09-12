@@ -21,3 +21,7 @@ const {
 export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
 
 export { FORUM_URL, DOCS_URL, PROMO_URL };
+
+export const GL_DARK = 'gl-dark';
+export const GL_LIGHT = 'gl-light';
+export const GL_SYSTEM = 'gl-system';

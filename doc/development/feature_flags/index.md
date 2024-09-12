@@ -564,22 +564,10 @@ GitLab currently supports the following feature flag actors:
 - `Group` model
 - Current request
 
-The actor is a second parameter of the `Feature.enabled?` call. The
-same actor type must be used consistently for all invocations of `Feature.enabled?`.
+The actor is a second parameter of the `Feature.enabled?` call. For example:
 
 ```ruby
-# Bad
 Feature.enabled?(:feature_flag, project)
-Feature.enabled?(:feature_flag, group)
-Feature.enabled?(:feature_flag, user)
-
-# Good
-Feature.enabled?(:feature_flag, group_a)
-Feature.enabled?(:feature_flag, group_b)
-
-# Also good - using separate flags for each actor type
-Feature.enabled?(:feature_flag_group, group)
-Feature.enabled?(:feature_flag_user, user)
 ```
 
 Models which `include FeatureGate` have an `.actor_from_id` class method.
@@ -602,6 +590,29 @@ project.update!(column: value)
 
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
+
+#### Mixing actor types
+
+Generally you should use only one type of actor in all invocations of `Feature.enabled?`
+for a particular feature flag, and not mix different actor types.
+
+Mixing actor types can lead to a feature being enabled or disabled inconsistently in ways
+that can cause bugs. For example, if at the controller level a flag is checked using a
+group actor and at the service level it is checked using a user actor, the feature may be
+both enabled, and disabled at different points in the same request.
+
+In some situations it is safe to mix actor types if you know that it won't lead to
+inconsistent results. For example, a webhook can be associated with either a group or a
+project, and so a feature flag for a webhook might leverage this to rollout a feature for
+group and project webhooks using the same feature flag.
+
+If you need to use different actor types and cannot safely mix them in your situation you
+should use separate flags for each actor type instead. For example:
+
+```ruby
+Feature.enabled?(:feature_flag_group, group)
+Feature.enabled?(:feature_flag_user, user)
+```
 
 #### Instance actor
 

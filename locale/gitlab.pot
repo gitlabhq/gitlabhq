@@ -24489,7 +24489,7 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
-msgid "GitLab 17.5 and later will require that incoming connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
+msgid "GitLab 17.5 and later will require that all network connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "GitLab API"
@@ -35549,9 +35549,6 @@ msgid "Nav|Sign In / Register"
 msgstr ""
 
 msgid "Nav|Sign out and sign in with a different account"
-msgstr ""
-
-msgid "Needs"
 msgstr ""
 
 msgid "Needs attention"
@@ -60646,6 +60643,9 @@ msgid "Vulnerability|URL:"
 msgstr ""
 
 msgid "Vulnerability|Unmodified response:"
+msgstr ""
+
+msgid "Vulnerability|Use AI to understand a vulnerability and suggest a fix"
 msgstr ""
 
 msgid "Vulnerability|View code flow"

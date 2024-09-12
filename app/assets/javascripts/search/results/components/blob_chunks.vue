@@ -71,8 +71,12 @@ export default {
 </script>
 
 <template>
-  <div id="search-blob-content" class="file-content code" :class="codeTheme">
-    <div class="blob-content" data-blob-id="" data-path="" data-highlight-line="">
+  <div
+    id="search-blob-content"
+    class="file-content code gl-rounded-none !gl-border-0 !gl-border-transparent"
+    :class="codeTheme"
+  >
+    <div class="blob-content">
       <div
         v-for="line in chunk.lines"
         :key="line.lineNumber"

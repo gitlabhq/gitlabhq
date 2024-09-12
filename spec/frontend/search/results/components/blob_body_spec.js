@@ -13,6 +13,7 @@ describe('BlobChunks', () => {
       propsData: {
         file,
         position: 1,
+        systemColorScheme: 'gl-light',
       },
     });
   };

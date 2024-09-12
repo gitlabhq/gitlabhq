@@ -2154,6 +2154,7 @@ Payload example:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
+> - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4. 
 
 Two access token expiration events are generated:
 
@@ -2212,7 +2213,8 @@ Payload example for group:
   "group": {
     "group_name": "Twitter",
     "group_path": "twitter",
-    "group_id": 35
+    "group_id": 35,
+    "full_path": "twitter"
   },
   "object_attributes": {
     "user_id": 90,

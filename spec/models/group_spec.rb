@@ -3964,4 +3964,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.group_readme).to be(nil)
     end
   end
+
+  describe '#hook_attrs' do
+    it 'returns the hook attributes' do
+      expect(group.hook_attrs).to eq({
+        group_name: group.name,
+        group_path: group.path,
+        group_id: group.id,
+        full_path: group.full_path
+      })
+    end
+  end
 end

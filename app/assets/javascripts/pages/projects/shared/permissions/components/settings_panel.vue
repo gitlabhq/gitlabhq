@@ -9,6 +9,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
+import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import {
   visibilityLevelDescriptions,
   featureAccessLevelMembers,
@@ -110,6 +111,7 @@ export default {
     CiCatalogSettings,
     ProjectFeatureSetting,
     ProjectSettingRow,
+    CascadingLockIcon,
     GlButton,
     GlIcon,
     GlSprintf,
@@ -123,6 +125,7 @@ export default {
       ),
   },
   mixins: [settingsMixin, glFeatureFlagMixin()],
+  inject: ['cascadingSettingsData'],
   props: {
     requestCveAvailable: {
       type: Boolean,
@@ -435,11 +438,14 @@ export default {
         this.showDiffPreviewInEmail = newValue;
       },
     },
-    showDuoSettings() {
-      return this.licensedAiFeaturesAvailable;
+    showCascadingButton() {
+      return (
+        this.duoFeaturesLocked &&
+        this.cascadingSettingsData &&
+        Object.keys(this.cascadingSettingsData).length
+      );
     },
   },
-
   watch: {
     visibilityLevel(value, oldValue) {
       if (value === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
@@ -1070,13 +1076,23 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="showDuoSettings"
+        v-if="licensedAiFeaturesAvailable"
         data-testid="duo-settings"
         :label="$options.i18n.duoLabel"
         :help-text="$options.i18n.duoHelpText"
         :help-path="$options.duoHelpPath"
         :locked="duoFeaturesLocked"
       >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showCascadingButton"
+            data-testid="duo-cascading-lock-icon"
+            :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
+            :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
+            :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
         <gl-toggle
           v-model="duoFeaturesEnabled"
           class="gl-mb-4 gl-mt-2"

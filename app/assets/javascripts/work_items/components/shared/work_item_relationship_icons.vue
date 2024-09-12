@@ -1,11 +1,14 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
 import { LINKED_CATEGORIES_MAP, sprintfWorkItem } from '../../constants';
 
 export default {
   components: {
     GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     linkedWorkItems: {
@@ -28,7 +31,7 @@ export default {
         return item.linkType === LINKED_CATEGORIES_MAP.BLOCKS;
       });
     },
-    blockedByAriaLabel() {
+    blockedByLabel() {
       const message = sprintf(
         n__(
           'WorkItem|%{workItemType} is blocked by 1 item',
@@ -39,7 +42,7 @@ export default {
       );
       return sprintfWorkItem(message, this.workItemType);
     },
-    blocksAriaLabel() {
+    blocksLabel() {
       const message = sprintf(
         n__(
           'WorkItem|%{workItemType} blocks 1 item',
@@ -58,17 +61,20 @@ export default {
   <span class="gl-flex gl-gap-3">
     <span
       v-if="itemsBlockedBy.length"
-      :aria-label="blockedByAriaLabel"
+      v-gl-tooltip
+      :title="blockedByLabel"
+      :aria-label="blockedByLabel"
       class="gl-text-sm gl-text-secondary"
       data-testid="relationship-blocked-by-icon"
     >
       <gl-icon name="entity-blocked" class="gl-text-red-500" />
       {{ itemsBlockedBy.length }}
     </span>
-
     <span
       v-if="itemsBlocks.length"
-      :aria-label="blocksAriaLabel"
+      v-gl-tooltip
+      :title="blocksLabel"
+      :aria-label="blocksLabel"
       class="gl-text-sm gl-text-secondary"
       data-testid="relationship-blocks-icon"
     >

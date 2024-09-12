@@ -1012,6 +1012,15 @@ class Group < Namespace
   end
   strong_memoize_attr :group_readme
 
+  def hook_attrs
+    {
+      group_name: name,
+      group_path: path,
+      group_id: id,
+      full_path: full_path
+    }
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)

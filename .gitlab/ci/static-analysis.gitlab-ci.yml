@@ -48,7 +48,7 @@ static-verification-with-database:
 generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
-    - .frontend:rules:default-frontend-jobs-with-docs-changes
+    - .frontend:rules:default-frontend-jobs
   image:
     name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:apollo
     entrypoint: [""]

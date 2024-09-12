@@ -158,12 +158,16 @@
     color: $gray-700;
     padding-top: $gl-spacing-scale-3;
     padding-bottom: $gl-spacing-scale-3;
-    padding-left: $gl-spacing-scale-6;
+    padding-left: $gl-spacing-scale-5;
     margin-top: $gl-spacing-scale-3;
     margin-bottom: $gl-spacing-scale-3;
     margin-left: 0;
     margin-right: 0;
-    @apply gl-shadow-inner-l-4-gray-100;
+    border-left: 4px solid var(--gl-color-neutral-100);
+
+    .gl-dark & {
+      border-left-color: var(--gl-color-neutral-600);
+    }
 
     &:dir(rtl) {
       border-left: 0;

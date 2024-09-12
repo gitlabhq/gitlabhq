@@ -9,7 +9,6 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   failedJobsTabName,
   jobsTabName,
-  needsTabName,
   pipelineTabName,
   testReportTabName,
   manualVariablesTabName,
@@ -20,7 +19,6 @@ export default {
     tabs: {
       failedJobsTitle: __('Failed Jobs'),
       jobsTitle: __('Jobs'),
-      needsTitle: __('Needs'),
       pipelineTitle: __('Pipeline'),
       testsTitle: __('Tests'),
       manualVariables: __('Manual Variables'),
@@ -28,7 +26,6 @@ export default {
   },
   tabNames: {
     pipeline: pipelineTabName,
-    needs: needsTabName,
     jobs: jobsTabName,
     failures: failedJobsTabName,
     tests: testReportTabName,
@@ -108,16 +105,6 @@ export default {
       data-testid="pipeline-tab"
       lazy
       @click="navigateTo($options.tabNames.pipeline)"
-    >
-      <router-view />
-    </gl-tab>
-    <gl-tab
-      ref="dagTab"
-      :title="$options.i18n.tabs.needsTitle"
-      :active="isActive($options.tabNames.needs)"
-      data-testid="dag-tab"
-      lazy
-      @click="navigateTo($options.tabNames.needs)"
     >
       <router-view />
     </gl-tab>

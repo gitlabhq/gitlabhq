@@ -1,5 +1,8 @@
 @import 'mixins_and_variables_and_functions';
 
+$dark-highlight-bg: #ffe792;
+$dark-highlight-color: $black;
+$white-highlight: #fafe3d;
 $search-dropdown-max-height: 400px;
 $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
@@ -23,6 +26,21 @@ $language-filter-max-height: 20rem;
 
   mark {
     @include str-highlighted;
+  }
+
+}
+
+.results {
+  .file-header-content {
+    .dark.highlight_word {
+      background-color: $dark-highlight-bg !important;
+      color: $dark-highlight-color !important;
+    }
+
+    .white.highlight_word {
+      background-color: $white-highlight !important;
+      color: $dark-highlight-color !important;
+    }
   }
 }
 

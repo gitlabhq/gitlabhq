@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { LINKED_CATEGORIES_MAP } from '~/work_items/constants';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import { mockLinkedItems } from '../../mock_data';
 
@@ -9,6 +10,9 @@ describe('WorkItemRelationshipIcons', () => {
 
   const createComponent = () => {
     wrapper = shallowMountExtended(WorkItemRelationshipIcons, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         linkedWorkItems: mockLinkedItems.linkedItems.nodes,
         workItemType: 'Task',
@@ -18,6 +22,7 @@ describe('WorkItemRelationshipIcons', () => {
 
   const findBlockedIcon = () => wrapper.findByTestId('relationship-blocked-by-icon');
   const findBlockingIcon = () => wrapper.findByTestId('relationship-blocks-icon');
+  const findTooltip = (icon) => getBinding(icon.element, 'gl-tooltip');
 
   const blockedItems = mockLinkedItems.linkedItems.nodes.filter(
     (item) => item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY,
@@ -57,5 +62,14 @@ describe('WorkItemRelationshipIcons', () => {
     expect(findBlockingIcon().exists()).toBe(true);
     expect(findBlockedIcon().exists()).toBe(true);
     expect(findBlockingIcon().text()).toContain(blockedItems.length.toString());
+  });
+
+  it('renders tooltips with correct text', () => {
+    createComponent();
+
+    expect(findTooltip(findBlockingIcon())).toBeDefined();
+    expect(findTooltip(findBlockedIcon())).toBeDefined();
+    expect(findBlockedIcon().attributes('title')).toBe('Task is blocked by 1 item');
+    expect(findBlockingIcon().attributes('title')).toBe('Task blocks 1 item');
   });
 });

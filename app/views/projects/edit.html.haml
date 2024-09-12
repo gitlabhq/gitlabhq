@@ -28,7 +28,7 @@
       = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
-        .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
+        .js-project-permissions-form{ data: project_permissions_data(@project, reduce_visibility_form_id) }
 
   = render ::Layouts::SettingsBlockComponent.new(s_('ProjectSettings|Badges'),
     id: 'js-badges-settings',
