@@ -53,7 +53,7 @@ export default {
       return this.activeItem.referencePath.split(delimiter)[0];
     },
     modalIsGroup() {
-      return this.issuableType === TYPE_EPIC;
+      return this.issuableType.toLowerCase() === TYPE_EPIC;
     },
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);

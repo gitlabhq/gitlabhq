@@ -751,7 +751,11 @@
   - 1
 - - search_zoekt_orphaned_index_event
   - 1
+- - search_zoekt_orphaned_repo_event
+  - 1
 - - search_zoekt_project_transfer
+  - 1
+- - search_zoekt_repo_marked_as_to_delete_event
   - 1
 - - secrets_management_provision_project_secrets_manager
   - 1

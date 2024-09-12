@@ -633,7 +633,7 @@ describe('IssuableItem', () => {
       window.open = jest.fn();
     });
     it('emits an event on row click', async () => {
-      const { iid, webUrl } = mockIssuable;
+      const { iid, webUrl, type: workItemType } = mockIssuable;
 
       wrapper = createComponent({
         preventRedirect: true,
@@ -642,11 +642,11 @@ describe('IssuableItem', () => {
 
       await findIssuableItemWrapper().trigger('click');
 
-      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl }]]);
+      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl, workItemType }]]);
     });
 
     it('includes fullPath in emitted event for work items', async () => {
-      const { iid, webUrl } = mockIssuable;
+      const { iid, webUrl, type: workItemType } = mockIssuable;
       const fullPath = 'gitlab-org/gitlab';
 
       wrapper = createComponent({
@@ -657,7 +657,9 @@ describe('IssuableItem', () => {
 
       await findIssuableItemWrapper().trigger('click');
 
-      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl, fullPath }]]);
+      expect(wrapper.emitted('select-issuable')).toEqual([
+        [{ iid, webUrl, fullPath, workItemType }],
+      ]);
     });
 
     it('does not apply highlighted class when item is not active', () => {

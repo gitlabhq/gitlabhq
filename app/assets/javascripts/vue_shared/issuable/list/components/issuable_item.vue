@@ -253,6 +253,7 @@ export default {
         iid: this.issuableIid,
         webUrl: this.issuable.webUrl,
         fullPath: this.workItemFullPath,
+        workItemType: this.type.toLowerCase(),
       });
     },
     navigateToIssuable() {

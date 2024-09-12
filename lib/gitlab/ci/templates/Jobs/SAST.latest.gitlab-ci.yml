@@ -13,6 +13,10 @@ variables:
   DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
+  GITLAB_ADVANCED_SAST_SCA_FILENAME: "GLAS_SCA.json"
+  GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME: "sca.json"
+  GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v0.0.3"
+  GITLAB_CDX_TO_REACHABILITY_CALCULATOR_VERSION: "v1.1.0"
 
 sast:
   stage: test
@@ -92,6 +96,89 @@ gitlab-advanced-sast:
         - '**/*.cjs'
         - '**/*.mjs'
         - '**/*.cs'
+
+.static-reachability-rules:
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $STATIC_REACHABILITY_ENABLED != 'true'
+      when: never
+      # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+
+gitlab-static-reachability:
+  extends:
+    - gitlab-advanced-sast
+  variables:
+    SAST_SCANNER_ALLOWED_CLI_OPTS: --sca-output-path ${GITLAB_ADVANCED_SAST_SCA_FILENAME}
+  before_script:
+    - |
+      echo keep-builtin-rules: false >> /lightz-aio_default_config.yaml
+  artifacts:
+    paths:
+      - $GITLAB_ADVANCED_SAST_SCA_FILENAME
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $STATIC_REACHABILITY_ENABLED != 'true'
+      when: never
+      # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+
+enrich-cdx-results:
+  stage: .post
+  extends: .static-reachability-rules
+  variables:
+    LIGHTZ_PATH: $GITLAB_ADVANCED_SAST_SCA_FILENAME
+    RESULTS_PATH: $GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME
+    SCA_TO_SARIF_PROJECT_ID: 60962090
+    SBOM_REACHABILITY_CALCULATOR_PROJECT_ID: 60621659
+    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*.cdx.json"
+    GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_TEMP_OUTPUT_FILENAME
+  image:
+    name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    entrypoint: [""]
+  before_script:
+    - |
+        wget "gitlab.com/api/v4/projects/${SCA_TO_SARIF_PROJECT_ID}/packages/generic/sca-to-sarif-matcher/${GLAS_STATIC_REACHABILITY_MATCHER_VERSION}/matcher" \
+          -O /matcher
+    - chmod +x /matcher
+    - |
+        wget "gitlab.com/api/v4/projects/${SBOM_REACHABILITY_CALCULATOR_PROJECT_ID}/packages/generic/sca-to-sarif-reachability_calculator/${GITLAB_CDX_TO_REACHABILITY_CALCULATOR_VERSION}/reachability_calculator" \
+          -O /calculator
+    - chmod +x /calculator
+  script:
+    - /matcher
+    - /calculator process
+  artifacts:
+    paths:
+      - "**/gl-sbom-*.cdx.json"
+    reports:
+      cyclonedx: "**/gl-sbom-*.cdx.json"
 
 bandit-sast:
   extends: .sast-analyzer

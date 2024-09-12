@@ -479,11 +479,11 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`self_hosted_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303) | A new self-hosted model configuration was added | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
-| [`self_hosted_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165321) | A new self-hosted model configuration was destroyed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
-| [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
-| [`self_hosted_model_terms_accepted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165480) | Terms for usage of self-hosted models were accepted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance, User |
-| [`self_hosted_model_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165520) | A self-hosted model configuration was updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/483295) | Instance, User |
+| [`self_hosted_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303) | A new self-hosted model configuration was added | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
+| [`self_hosted_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165321) | A new self-hosted model configuration was destroyed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
+| [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Instance |
+| [`self_hosted_model_terms_accepted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165480) | Terms for usage of self-hosted models were accepted | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
+| [`self_hosted_model_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165520) | A self-hosted model configuration was updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/483295) | Instance |
 
 ### Source code management
 

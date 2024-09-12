@@ -1,0 +1,10 @@
+---
+migration_job_name: PopulateDetumbledEmailInEmails
+description: Populate the detumbled_email column in the emails table
+feature_category: user_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162924
+milestone: '17.4'
+queued_migration_version: 20240813190312
+# Replace with the approximate date you think it's best to ensure the completion of this BBM.
+finalize_after: '2024-09-15'
+finalized_by: # version of the migration that finalized this BBM

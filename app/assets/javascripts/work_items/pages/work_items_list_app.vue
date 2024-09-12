@@ -386,6 +386,9 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
+    activeWorkItemType() {
+      return this.workItemType || this.activeItem?.workItemType;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -559,6 +562,7 @@ export default {
       v-if="workItemDrawerEnabled"
       :active-item="activeItem"
       :open="isItemSelected"
+      :issuable-type="activeWorkItemType"
       @close="activeItem = null"
       @addChild="refetchItems"
       @workItemDeleted="deleteItem"

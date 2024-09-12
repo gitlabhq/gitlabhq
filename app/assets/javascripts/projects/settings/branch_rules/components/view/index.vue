@@ -379,7 +379,7 @@ export default {
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
         <gl-button
-          v-if="glFeatures.editBranchRules && branchRule"
+          v-if="glFeatures.editBranchRules && branchRule && canAdminProtectedBranches"
           v-gl-modal="$options.deleteModalId"
           data-testid="delete-rule-button"
           category="secondary"
@@ -396,7 +396,7 @@ export default {
       <crud-component :title="$options.i18n.ruleTarget" data-testid="rule-target-card">
         <template #actions>
           <gl-button
-            v-if="glFeatures.editBranchRules && !isPredefinedRule"
+            v-if="glFeatures.editBranchRules && !isPredefinedRule && canAdminProtectedBranches"
             v-gl-modal="$options.editModalId"
             data-testid="edit-rule-name-button"
             size="small"

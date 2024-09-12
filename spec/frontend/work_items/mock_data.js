@@ -802,6 +802,54 @@ export const workItemEmptyLinkedItemsResponse = {
   },
 };
 
+export const workItemSingleLinkedItemResponse = {
+  data: {
+    workspace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        widgets: [
+          {
+            type: WIDGET_TYPE_LINKED_ITEMS,
+            linkedItems: {
+              nodes: [
+                {
+                  linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
+                  linkType: 'is_blocked_by',
+                  workItem: {
+                    id: 'gid://gitlab/WorkItem/675',
+                    iid: '83',
+                    confidential: true,
+                    workItemType: {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      iconName: 'issue-type-task',
+                      __typename: 'WorkItemType',
+                    },
+                    reference: 'test-project-path#1',
+                    title: 'Task 1201',
+                    state: 'OPEN',
+                    createdAt: '2023-03-28T10:50:16Z',
+                    closedAt: null,
+                    webUrl: '/gitlab-org/gitlab-test/-/work_items/83',
+                    widgets: [],
+                    __typename: 'WorkItem',
+                  },
+                  __typename: 'LinkedWorkItemType',
+                },
+              ],
+              __typename: 'LinkedWorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetLinkedItems',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+    },
+  },
+};
+
 export const workItemBlockedByLinkedItemsResponse = {
   data: {
     workspace: {

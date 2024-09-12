@@ -20086,7 +20086,16 @@ msgstr ""
 msgid "DuoChat|How to use GitLab"
 msgstr ""
 
+msgid "DuoChat|Included references"
+msgstr ""
+
+msgid "DuoChat|No results found"
+msgstr ""
+
 msgid "DuoChat|Reset conversation and ignore the previous messages."
+msgstr ""
+
+msgid "DuoChat|Search %{categoryLabel}..."
 msgstr ""
 
 msgid "DuoChat|The issue, epic, or code you're viewing"
@@ -24631,6 +24640,36 @@ msgid "GitLab.com (SaaS)"
 msgstr ""
 
 msgid "GitLab.com import"
+msgstr ""
+
+msgid "GitLabDuo|Be specific and include any requirements."
+msgstr ""
+
+msgid "GitLabDuo|Cancel"
+msgstr ""
+
+msgid "GitLabDuo|Collapse"
+msgstr ""
+
+msgid "GitLabDuo|Expand"
+msgstr ""
+
+msgid "GitLabDuo|Generate plan"
+msgstr ""
+
+msgid "GitLabDuo|Goal"
+msgstr ""
+
+msgid "GitLabDuo|Image"
+msgstr ""
+
+msgid "GitLabDuo|It should have any tools necessary for the workflow installed."
+msgstr ""
+
+msgid "GitLabDuo|The container image to run the workflow in."
+msgstr ""
+
+msgid "GitLabDuo|What would you like to do and how."
 msgstr ""
 
 msgid "GitLabPagesDomains|Retry"
@@ -51282,6 +51321,9 @@ msgstr ""
 msgid "Show more"
 msgstr ""
 
+msgid "Show more breadcrumbs"
+msgstr ""
+
 msgid "Show one file at a time"
 msgstr ""
 
@@ -55660,6 +55702,9 @@ msgid "This issue is hidden because its author has been banned."
 msgstr ""
 
 msgid "This issue is in a child epic of the filtered epic"
+msgstr ""
+
+msgid "This item is disabled"
 msgstr ""
 
 msgid "This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}"
@@ -61615,6 +61660,11 @@ msgstr ""
 
 msgid "WorkItem|%{workItemType} deleted"
 msgstr ""
+
+msgid "WorkItem|%{workItemType} has 1 linked item"
+msgid_plural "WorkItem|%{workItemType} has %{itemCount} linked items"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "WorkItem|%{workItemType} is blocked by 1 item"
 msgid_plural "WorkItem|%{workItemType} is blocked by %{itemCount} items"

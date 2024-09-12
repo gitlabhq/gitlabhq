@@ -5,5 +5,5 @@ introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165520
 feature_category: self-hosted_models
 milestone: '17.4'
 saved_to_database: true
-scope: [Instance, User]
+scope: [Instance]
 streamed: true
