@@ -5,5 +5,4 @@ feature_category: remote_development
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140972
 milestone: '16.8'
 queued_migration_version: 20240104085448
-finalize_after: "2024-02-15"
 finalized_by: # version of the migration that finalized this BBM

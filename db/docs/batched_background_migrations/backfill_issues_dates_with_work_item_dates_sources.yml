@@ -5,4 +5,3 @@ feature_category: product_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157993
 milestone: '17.2'
 queued_migration_version: 20240702212015
-finalize_after: '2024-08-05'

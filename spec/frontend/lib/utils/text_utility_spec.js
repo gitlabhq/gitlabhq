@@ -440,4 +440,22 @@ describe('text_utility', () => {
       },
     );
   });
+
+  describe('wildcardMatch', () => {
+    it.each`
+      pattern                  | str                      | result
+      ${'label'}               | ${'label'}               | ${true}
+      ${'label'}               | ${'a-label'}             | ${false}
+      ${'*label'}              | ${'a-label'}             | ${true}
+      ${'label'}               | ${'label-a'}             | ${false}
+      ${'label*'}              | ${'label-a'}             | ${true}
+      ${'label*'}              | ${'a-label-a'}           | ${false}
+      ${'*label'}              | ${'a-label-a'}           | ${false}
+      ${'*label*'}             | ${'a-label-a'}           | ${true}
+      ${'l*l'}                 | ${'label'}               | ${true}
+      ${'!@#$%^&*()-=+/?[]{}'} | ${'!@#$%^&*()-=+/?[]{}'} | ${true}
+    `('returns expected result', ({ pattern, str, result }) => {
+      expect(textUtils.wildcardMatch(str, pattern)).toBe(result);
+    });
+  });
 });

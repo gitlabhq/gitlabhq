@@ -21,6 +21,8 @@ SimpleCovEnv.start!
 require './spec/crystalball_env'
 CrystalballEnv.start!
 
+require_relative 'support/struct_with_kwargs'
+
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'

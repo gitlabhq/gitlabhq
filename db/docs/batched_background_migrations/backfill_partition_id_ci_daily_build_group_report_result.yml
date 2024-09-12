@@ -5,5 +5,4 @@ feature_category: ci_scaling
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153236
 milestone: '17.3'
 queued_migration_version: 20240717093514
-finalize_after: '2024-08-01'
 finalized_by: 20240812010237

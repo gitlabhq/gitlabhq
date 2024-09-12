@@ -52,3 +52,8 @@ export const modelExperimentsHelpPath = helpPagePath(
 export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/index.md');
 
 export const duoHelpPath = helpPagePath('user/ai_features');
+
+export const pipelineExecutionPoliciesHelpPath = helpPagePath(
+  'user/application_security/policies/pipeline_execution_policies',
+  { anchor: 'content-type' },
+);

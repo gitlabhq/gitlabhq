@@ -5,5 +5,4 @@ feature_category: code_review_workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800
 milestone: '16.7'
 queued_migration_version: 20231114043522
-finalize_after: '2024-04-01'
 finalized_by: 20231213080216

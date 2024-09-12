@@ -84,8 +84,6 @@ module RuboCop
 
           return [:invalid_milestone, { key: :milestone }] unless valid_milestone?(bbm_dictionary.milestone)
 
-          return [:missing_key, { key: :finalize_after }] unless bbm_dictionary.finalize_after.present?
-
           return [:missing_key, { key: :introduced_by_url }] unless bbm_dictionary.introduced_by_url.present?
 
           return [:invalid_url, { key: :introduced_by_url }] unless valid_url?(bbm_dictionary.introduced_by_url)

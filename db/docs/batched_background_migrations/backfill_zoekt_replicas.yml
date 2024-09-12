@@ -5,5 +5,4 @@ feature_category: global_search
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157849
 milestone: '17.2'
 queued_migration_version: 20240629011500
-finalize_after: '2024-08-30'
 finalized_by: # version of the migration that finalized this BBM

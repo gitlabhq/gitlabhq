@@ -577,6 +577,8 @@
   - 1
 - - onboarding_progress
   - 1
+- - onboarding_progress_tracking
+  - 1
 - - onboarding_user_added
   - 1
 - - package_cleanup

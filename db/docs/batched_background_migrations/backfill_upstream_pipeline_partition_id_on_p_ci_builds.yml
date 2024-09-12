@@ -6,5 +6,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158622
 milestone: '17.3'
 queued_migration_version: 20240708105034
 # Replace with the approximate date you think it's best to ensure the completion of this BBM.
-finalize_after: '2024-08-22'
 finalized_by: 20240812084505

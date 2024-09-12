@@ -57,6 +57,7 @@ const defaultProps = {
   showVisibilityConfirmModal: false,
   membersPagePath: '/my-fake-project/-/project_members',
   licensedAiFeaturesAvailable: true,
+  policySettingsAvailable: false,
 };
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
@@ -142,6 +143,8 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'model-experiments-settings' });
   const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
   const findDuoSettings = () => wrapper.findByTestId('duo-settings');
+  const findPipelineExecutionPolicySettings = () =>
+    wrapper.findByTestId('pipeline-execution-policy-settings');
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -839,6 +842,60 @@ describe('Settings Panel', () => {
       wrapper = mountComponent();
 
       expect(findDuoSettings().exists()).toBe(true);
+    });
+  });
+  describe('Pipeline execution policies', () => {
+    it('does not show the pipeline execution policy settings by default', () => {
+      wrapper = mountComponent();
+
+      expect(findPipelineExecutionPolicySettings().exists()).toBe(false);
+    });
+
+    it('shows pipeline execution policies toggle when policies are available', () => {
+      wrapper = mountComponent({
+        policySettingsAvailable: true,
+      });
+
+      expect(findPipelineExecutionPolicySettings().exists()).toBe(true);
+    });
+
+    it('disables the checkbox when the setting is locked', () => {
+      wrapper = mountComponent(
+        {
+          policySettingsAvailable: true,
+          sppRepositoryPipelineAccessLocked: true,
+        },
+        mountExtended,
+      );
+
+      expect(
+        findPipelineExecutionPolicySettings()
+          .findComponent(GlFormCheckbox)
+          .find('input')
+          .attributes('disabled'),
+      ).toBe('disabled');
+    });
+
+    it('updates the hidden value when toggled', async () => {
+      wrapper = mountComponent(
+        {
+          policySettingsAvailable: true,
+          currentSettings: { sppRepositoryPipelineAccess: true },
+        },
+        mountExtended,
+      );
+      const originalHiddenInputValue = findPipelineExecutionPolicySettings()
+        .find('input[type="hidden"]')
+        .attributes('value');
+
+      await findPipelineExecutionPolicySettings()
+        .findComponent(GlFormCheckbox)
+        .find('input')
+        .setChecked(false);
+
+      expect(
+        findPipelineExecutionPolicySettings().find('input[type="hidden"]').attributes('value'),
+      ).not.toEqual(originalHiddenInputValue);
     });
   });
 });

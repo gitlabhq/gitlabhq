@@ -871,6 +871,16 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
             end
           end
         end
+
+        context 'when expire_at is far away in the future' do
+          let(:expire_at) { 1.year.from_now }
+
+          it 'sets pick_up_at to 1 hour in the future' do
+            freeze_time do
+              expect(attributes[:pick_up_at]).to eq(1.hour.from_now)
+            end
+          end
+        end
       end
     end
 

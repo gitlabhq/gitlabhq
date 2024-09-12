@@ -23765,6 +23765,9 @@ msgstr ""
 msgid "Full log"
 msgstr ""
 
+msgid "Function `labels` can only take a maximum of 10 parameters."
+msgstr ""
+
 msgid "GCP region configured"
 msgstr ""
 
@@ -42768,6 +42771,9 @@ msgstr ""
 msgid "ProjectSettings|Allow skipping the merge train"
 msgstr ""
 
+msgid "ProjectSettings|Allow users and tokens read-only access to fetch security policy configurations within this project to enforce policies. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets."
 msgstr ""
 
@@ -42930,6 +42936,9 @@ msgstr ""
 msgid "ProjectSettings|Global"
 msgstr ""
 
+msgid "ProjectSettings|Grant access to this repository for projects linked to it as the security policy project source for security policies."
+msgstr ""
+
 msgid "ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits."
 msgstr ""
 
@@ -43048,6 +43057,9 @@ msgid "ProjectSettings|Pages"
 msgstr ""
 
 msgid "ProjectSettings|Pages for project documentation."
+msgstr ""
+
+msgid "ProjectSettings|Pipeline execution policies"
 msgstr ""
 
 msgid "ProjectSettings|Prevents direct linking to potentially sensitive media files"
@@ -65183,6 +65195,9 @@ msgid "mrWidget|Your password"
 msgstr ""
 
 msgid "must be 254 characters or less."
+msgstr ""
+
+msgid "must be 3 months old at the most"
 msgstr ""
 
 msgid "must be a boolean value"

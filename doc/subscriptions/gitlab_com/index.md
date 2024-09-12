@@ -331,7 +331,6 @@ To resume paid feature functionality, purchase a new subscription.
 ## Renew your GitLab.com subscription
 
 30 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
-You also receive [email notifications](../self_managed/index.md#email-notifications) before a subscription automatically renews.
 
 Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
 
@@ -352,6 +351,7 @@ If you want to renew for fewer seats, you can do either of the following:
 ### Automatic subscription renewal
 
 When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
+You receive [email notifications](../self_managed/index.md#email-notifications) before a subscription automatically renews.
 Subscriptions purchased through the Customers Portal or GitLab.com are set to auto-renew by default,
 but you can [disable automatic subscription renewal](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal).
 

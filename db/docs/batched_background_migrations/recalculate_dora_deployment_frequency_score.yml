@@ -5,5 +5,4 @@ feature_category: dora_metrics
 introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160259'
 milestone: '17.3'
 queued_migration_version: 20240722104700
-finalize_after: '2024-08-20'
 finalized_by: 20240806143319

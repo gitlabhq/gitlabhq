@@ -139,28 +139,6 @@ stages:
   script:
     - bundle exec rake "ci:export_code_paths_mapping[$QA_CODE_PATHS_MAPPING_FILE_PATTERN]"
 
-.generate-test-session:
-  extends:
-    - .qa-install
-    - .ruby-image
-  stage: report
-  when: always
-  variables:
-    QA_RSPEC_JSON_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json"
-  script:
-    - |
-      bundle exec generate-test-session \
-        --input-files "${QA_RSPEC_JSON_FILE_PATTERN}" \
-        --project "gitlab-org/quality/testcase-sessions" \
-        --token "${QA_TEST_SESSION_TOKEN}" \
-        --ci-project-token "${GENERATE_TEST_SESSION_READ_API_REPORTER_TOKEN}" \
-        --issue-url-file report_issue_url.txt
-  artifacts:
-    when: always
-    expire_in: 1d
-    paths:
-      - qa/report_issue_url.txt
-
 .notify-slack:
   extends:
     - .notify-slack-qa

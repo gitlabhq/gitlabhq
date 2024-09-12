@@ -596,7 +596,6 @@ feature_category: static_application_security_testing
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
 milestone: '17.4'
 queued_migration_version: 20240814085540
-finalize_after: '2024-09-22'
 finalized_by: # version of the migration that finalized this BBM
 ```
 
@@ -859,14 +858,6 @@ class AddNotNullToRoutesNamespaceId < Gitlab::Database::Migration[2.1]
   end
 end
 ```
-
-#### Notes
-
-- `BackgroundMigration::DictionaryFile` cop ensures the presence of `finalize_after` and `introduced_by_url` keys in the
-  BBM dictionary.
-  - `finalize_after`: Captures the (approximate) date after which the BBM is expected to be finalized.
-  - `introduced_by_url`: After the `finalize_after` date, an issue is created using the labels and author from `introduced_by_url`.
-    - As of writing (2023-08-11), issue [#424886](https://gitlab.com/gitlab-org/gitlab/-/issues/424886) is still open.
 
 ## Managing
 
@@ -1226,7 +1217,6 @@ background migration.
     introduced_by_url: "https://mr_url"
     milestone: 16.6
     queued_migration_version: 20231113120650
-    finalize_after: "2023-11-15"
     finalized_by: # version of the migration that ensured this bbm
    ```
 
@@ -1277,7 +1267,6 @@ background migration.
     introduced_by_url: "https://mr_url"
     milestone: 16.6
     queued_migration_version: 20231113120650
-    finalize_after: "2023-11-15"
     finalized_by: 20231115120912
    ```
 

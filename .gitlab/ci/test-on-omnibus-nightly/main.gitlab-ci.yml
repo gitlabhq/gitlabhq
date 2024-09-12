@@ -213,10 +213,6 @@ export-test-metrics:
   extends:
     - .export-test-metrics
 
-generate-test-session:
-  extends:
-    - .generate-test-session
-
 notify-slack:
   extends:
     - .notify-slack

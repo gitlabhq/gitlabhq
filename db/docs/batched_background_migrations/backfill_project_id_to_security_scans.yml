@@ -7,5 +7,4 @@ feature_category: vulnerability_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164110
 milestone: '17.4'
 queued_migration_version: 20240827165545
-finalize_after: '2024-10-12' # 17.6 milestone start
 finalized_by: # version of the migration that finalized this BBM

@@ -905,6 +905,7 @@ export default {
     <issuable-list
       v-if="hasAnyIssues"
       :namespace="fullPath"
+      :full-path="fullPath"
       recent-searches-storage-key="issues"
       :search-tokens="searchTokens"
       :has-scoped-labels-feature="hasScopedLabelsFeature"

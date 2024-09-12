@@ -10,16 +10,21 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Use repository analytics to view information about a project's Git repository:
+Repository analytics is part of [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
+and is available to users with permission to clone the repository.
+
+Use repository analytics to view information about a project's Git repository, such as:
 
 - Programming languages used in the repository's default branch.
-- Code coverage history from last 3 months.
-- Commit statistics (last month).
-- Commits per day of month.
-- Commits per weekday.
-- Commits per day hour (UTC).
+- Code coverage statistics for the last three months.
+- Commit statistics for the last month.
+- Number of commits per day of month, per weekday, and per hour.
 
-Repository analytics is part of [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss). It's available to anyone who has permission to clone the repository.
+## Chart data processing
+
+Data in the charts is queued.
+Background workers update the charts 10 minutes after each commit to the default branch.
+Depending on the size of GitLab installation and background job queues, it might take longer for data to refresh.
 
 ## View repository analytics
 
@@ -32,8 +37,3 @@ To view repository analytics for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Repository analytics**.
-
-## How repository analytics chart data is updated
-
-Data in the charts are queued. Background workers update the charts 10 minutes after each commit in the default branch.
-Depending on the size of the GitLab installation, it may take longer for data to refresh due to variations in the size of background job queues.

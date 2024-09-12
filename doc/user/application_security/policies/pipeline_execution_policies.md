@@ -128,6 +128,11 @@ These stages are always available, regardless of any project's CI/CD configurati
 | `file` | `string` | true | A full file path relative to the root directory (/). The YAML files must have the `.yml` or `.yaml` extension. |
 | `ref` | `string` | false | The ref to retrieve the file from. Defaults to the HEAD of the project when not specified. |
 
+To run pipelines with injected CI/CD configuration, users must have access to the project with the CI/CD configuration.
+
+Starting in GitLab 17.4, users can store the CI/CD configuration in a security policy project repository and grant pipeline execution access to the repository. Projects linked to the security policy project then have access to the repository as a source for security policies.
+You can configure this in the project's general settings for security policy projects.
+
 ### `policy_scope` scope type
 
 > - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.

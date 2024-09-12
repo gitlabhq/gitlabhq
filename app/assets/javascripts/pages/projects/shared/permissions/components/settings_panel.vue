@@ -19,6 +19,7 @@ import {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   duoHelpPath,
+  pipelineExecutionPoliciesHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -90,6 +91,13 @@ export default {
     showDiffPreviewHelpText: s__(
       'ProjectSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.',
     ),
+    pipelineExecutionPoliciesLabel: s__('ProjectSettings|Pipeline execution policies'),
+    sppRepositoryPipelineAccessLabel: s__(
+      'ProjectSettings|Grant access to this repository for projects linked to it as the security policy project source for security policies.',
+    ),
+    sppRepositoryPipelineAccessHelpText: s__(
+      'ProjectSettings|Allow users and tokens read-only access to fetch security policy configurations within this project to enforce policies. %{linkStart}Learn more%{linkEnd}.',
+    ),
   },
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
@@ -97,6 +105,7 @@ export default {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   duoHelpPath,
+  pipelineExecutionPoliciesHelpPath,
   components: {
     CiCatalogSettings,
     ProjectFeatureSetting,
@@ -276,6 +285,16 @@ export default {
       type: String,
       required: true,
     },
+    sppRepositoryPipelineAccessLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    policySettingsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const defaults = {
@@ -308,6 +327,7 @@ export default {
       showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
       duoFeaturesEnabled: false,
+      sppRepositoryPipelineAccess: false,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
       featureAccessLevel,
@@ -1138,6 +1158,34 @@ export default {
       :full-path="confirmationPhrase"
     />
     <other-project-settings />
+    <project-setting-row
+      v-if="policySettingsAvailable"
+      data-testid="pipeline-execution-policy-settings"
+    >
+      <label>
+        <h5>{{ $options.i18n.pipelineExecutionPoliciesLabel }}</h5>
+        <input
+          :value="sppRepositoryPipelineAccess"
+          type="hidden"
+          name="project[project_setting_attributes][spp_repository_pipeline_access]"
+        />
+        <gl-form-checkbox
+          v-model="sppRepositoryPipelineAccess"
+          :disabled="sppRepositoryPipelineAccessLocked"
+        >
+          {{ $options.i18n.sppRepositoryPipelineAccessLabel }}
+          <template #help>
+            <gl-sprintf :message="$options.i18n.sppRepositoryPipelineAccessHelpText">
+              <template #link="{ content }">
+                <gl-link :href="$options.pipelineExecutionPoliciesHelpPath" target="_blank">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-form-checkbox>
+      </label>
+    </project-setting-row>
     <confirm-danger
       v-if="isVisibilityReduced"
       button-variant="confirm"

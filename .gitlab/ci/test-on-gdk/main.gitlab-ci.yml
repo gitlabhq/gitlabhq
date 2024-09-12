@@ -237,13 +237,6 @@ export-code-paths-mapping:
     QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
     QA_SYSTEM_LOG_FILE_PATTERN: $CI_PROJECT_DIR/test_output/logs
 
-generate-test-session:
-  extends:
-    - .generate-test-session
-    - .rules:report:process-results
-  variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
-
 notify-slack:
   extends:
     - .notify-slack

@@ -5,4 +5,3 @@ feature_category: integrations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148433
 milestone: '17.0'
 queued_migration_version: 20240402143848
-finalize_after: '2024-05-31'

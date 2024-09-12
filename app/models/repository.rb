@@ -457,10 +457,6 @@ class Repository
     expire_status_cache
 
     repository_event(:create_repository)
-
-    return unless project.present?
-
-    project.run_after_commit_or_now { Onboarding::ProgressWorker.perform_async(namespace_id, 'git_write') }
   end
 
   # Runs code just before a repository is deleted.

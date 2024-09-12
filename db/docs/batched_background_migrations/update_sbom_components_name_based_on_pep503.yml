@@ -5,5 +5,4 @@ feature_category: software_composition_analysis
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145700
 milestone: '16.11'
 queued_migration_version: 20240223130548
-finalize_after: '2024-03-24'
 

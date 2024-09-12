@@ -8,5 +8,4 @@ feature_category: software_composition_analysis
 introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152585'
 milestone: '17.2'
 queued_migration_version: 20240507152320
-finalize_after: '2024-05-07'
 finalized_by:

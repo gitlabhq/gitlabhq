@@ -568,11 +568,6 @@ export-test-metrics:
     - .export-test-metrics
     - .rules:report:process-results
 
-generate-test-session:
-  extends:
-    - .generate-test-session
-    - .rules:report:process-results
-
 notify-slack:
   extends:
     - .notify-slack

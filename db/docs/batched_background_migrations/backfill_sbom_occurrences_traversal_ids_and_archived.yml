@@ -8,5 +8,4 @@ feature_category: dependency_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144802
 milestone: '16.10'
 queued_migration_version: 20240214203242
-finalize_after: '2024-04-11'
 finalized_by: '20240626231944'

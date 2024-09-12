@@ -11,4 +11,3 @@ feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164127
 milestone: '17.4'
 queued_migration_version: 20240827204855
-finalize_after: '2024-10-17' # required upgrade stop due date

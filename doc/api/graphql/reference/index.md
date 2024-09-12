@@ -30922,6 +30922,25 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectscanresultpoliciesincludeunscoped"></a>`includeUnscoped` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.3. **Status**: Experiment. Filter policies that are scoped to the project. |
 | <a id="projectscanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
+##### `Project.securityExclusion`
+
+A single security exclusion of a project.
+
+DETAILS:
+**Introduced** in GitLab 17.4.
+**Status**: Experiment.
+
+Returns [`ProjectSecurityExclusion`](#projectsecurityexclusion).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecurityexclusionactive"></a>`active` | [`Boolean`](#boolean) | Filter entries by active status. |
+| <a id="projectsecurityexclusionid"></a>`id` | [`SecurityProjectSecurityExclusionID!`](#securityprojectsecurityexclusionid) | ID of the project security exclusion. |
+| <a id="projectsecurityexclusionscanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Filter entries by scanner. |
+| <a id="projectsecurityexclusiontype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Filter entries by exclusion type. |
+
 ##### `Project.securityExclusions`
 
 Security exclusions of the project.
@@ -31471,7 +31490,7 @@ Represents a project-level security scanner exclusion.
 | ---- | ---- | ----------- |
 | <a id="projectsecurityexclusionactive"></a>`active` | [`Boolean!`](#boolean) | Whether the exclusion is active. |
 | <a id="projectsecurityexclusiondescription"></a>`description` | [`String`](#string) | Optional description for the exclusion. |
-| <a id="projectsecurityexclusionid"></a>`id` | [`ID!`](#id) | ID of the exclusion. |
+| <a id="projectsecurityexclusionid"></a>`id` | [`SecurityProjectSecurityExclusionID!`](#securityprojectsecurityexclusionid) | ID of the exclusion. |
 | <a id="projectsecurityexclusionscanner"></a>`scanner` | [`ExclusionScannerEnum!`](#exclusionscannerenum) | Security scanner the exclusion will be used for. |
 | <a id="projectsecurityexclusiontype"></a>`type` | [`ExclusionTypeEnum!`](#exclusiontypeenum) | Type of the exclusion. |
 | <a id="projectsecurityexclusionvalue"></a>`value` | [`String!`](#string) | Value of the exclusion. |
@@ -34132,6 +34151,7 @@ Represents a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="vulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether this type of vulnerability can be resolved with AI. |
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
@@ -39823,6 +39843,12 @@ An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteD
 A `SbomComponentID` is a global ID. It is encoded as a string.
 
 An example `SbomComponentID` is: `"gid://gitlab/Sbom::Component/1"`.
+
+### `SecurityProjectSecurityExclusionID`
+
+A `SecurityProjectSecurityExclusionID` is a global ID. It is encoded as a string.
+
+An example `SecurityProjectSecurityExclusionID` is: `"gid://gitlab/Security::ProjectSecurityExclusion/1"`.
 
 ### `SecurityTrainingProviderID`
 

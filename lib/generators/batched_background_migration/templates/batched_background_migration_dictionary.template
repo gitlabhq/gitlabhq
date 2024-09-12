@@ -5,6 +5,4 @@ feature_category: <%= feature_category %>
 introduced_by_url: # URL of the MR (or issue/commit) that introduced the migration
 milestone: '<%= current_milestone %>'
 queued_migration_version: <%= migration_number %>
-# Replace with the approximate date you think it's best to ensure the completion of this BBM.
-finalize_after: # yyyy-mm-dd
 finalized_by: # version of the migration that finalized this BBM

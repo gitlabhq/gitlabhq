@@ -6,30 +6,43 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
   using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
-    let_it_be(:admin) { create(:admin) }
-    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:admin) { create(:admin, organizations: [organization]) }
+    let_it_be(:user) { create(:user, organizations: [organization]) }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:first_organization) { create(:organization) }
+    let_it_be(:second_organization) { create(:organization) }
 
     let_it_be(:tokens) do
       {
-        active: create(:personal_access_token, user: user, name: 'my_pat_1'),
-        active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2'),
-        expired: create(:personal_access_token, :expired, user: user),
-        revoked: create(:personal_access_token, :revoked, user: user),
-        active_impersonation: create(:personal_access_token, :impersonation, user: user),
-        expired_impersonation: create(:personal_access_token, :expired, :impersonation, user: user),
-        revoked_impersonation: create(:personal_access_token, :revoked, :impersonation, user: user),
-        bot: create(:personal_access_token, user: project_bot)
+        active: create(:personal_access_token, user: user, name: 'my_pat_1', organization: organization),
+        active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2', organization: organization),
+        expired: create(:personal_access_token, :expired, user: user, organization: organization),
+        revoked: create(:personal_access_token, :revoked, user: user, organization: organization),
+        active_impersonation: create(:personal_access_token, :impersonation, user: user, organization: organization),
+        expired_impersonation: create(:personal_access_token, :expired, :impersonation, user: user, organization: organization),
+        revoked_impersonation: create(:personal_access_token, :revoked, :impersonation, user: user, organization: organization),
+        bot: create(:personal_access_token, user: project_bot, organization: organization)
       }
     end
 
+    let_it_be(:tokens_from_other_organizations) do
+      {
+        with_first_organization: create(:personal_access_token, organization: first_organization),
+        with_second_organization: create(:personal_access_token, organization: second_organization)
+      }
+    end
+
+    let_it_be(:all_tokens) { tokens.merge(tokens_from_other_organizations) }
+
     let(:tokens_keys) { tokens.keys }
 
+    let(:default_params) { { organization: organization } }
     let(:params) { {} }
     let(:current_user) { admin }
 
-    subject { described_class.new(params, current_user).execute }
+    subject { described_class.new(default_params.merge(params), current_user).execute }
 
     describe 'by current user' do
       context 'with no user' do
@@ -283,6 +296,34 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       end
     end
 
+    describe 'by_organization' do
+      let(:params) { { organization: first_organization } }
+
+      it 'returns tokens by organization' do
+        is_expected.to match_array(PersonalAccessToken.where(organization: first_organization))
+      end
+
+      context 'when orgnzation is not specified' do
+        let(:params) { { organization: nil } }
+
+        it 'returns empty when organization is not specified' do
+          is_expected.to match_array(all_tokens.values)
+        end
+      end
+
+      context 'when the feature flag pat_organization_filter is disabled' do
+        before do
+          stub_feature_flags(pat_organization_filter: false)
+        end
+
+        let(:params) { { organization: first_organization } }
+
+        it 'returns tokens by organization' do
+          is_expected.to match_array(all_tokens.values)
+        end
+      end
+    end
+
     describe 'sort' do
       where(:sort, :expected_tokens) do
         nil       | ref(:tokens_keys)
@@ -301,7 +342,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     end
 
     describe 'delegates' do
-      subject { described_class.new(params, current_user) }
+      subject { described_class.new(default_params.merge(params), current_user) }
 
       describe '#find_by_id' do
         it 'returns token by id' do

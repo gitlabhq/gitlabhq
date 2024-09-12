@@ -368,6 +368,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Onboarding::IssueCreatedWorker' => 3,
         'Onboarding::PipelineCreatedWorker' => 3,
         'Onboarding::ProgressWorker' => 3,
+        'Onboarding::ProgressTrackingWorker' => 3,
         'Onboarding::UserAddedWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
