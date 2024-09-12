@@ -24,7 +24,7 @@ When it comes to CSS, we use a utils-based CSS approach. For more information an
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 
-When making API calls, we use [GraphQL](graphql.md) as [the first choice](../api_graphql_styleguide.md#vision).
+When making API calls, we use [GraphQL](graphql.md) as the first choice.
 There are still instances where the GitLab REST API is used, such as when creating new simple HAML pages, or in legacy parts of the codebase, but we should always default to GraphQL when possible.
 
 For [client-side state management](state_management.md) in Vue, depending on the specific needs of the feature,

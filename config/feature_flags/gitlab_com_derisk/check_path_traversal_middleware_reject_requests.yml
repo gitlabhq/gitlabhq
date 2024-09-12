@@ -1,0 +1,9 @@
+---
+name: check_path_traversal_middleware_reject_requests
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483098
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165287
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+milestone: '17.4'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

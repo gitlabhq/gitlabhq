@@ -34,6 +34,8 @@ describe('ModelCreate', () => {
   let apolloProvider;
 
   const file = { name: 'file.txt', size: 1024 };
+  const anotherFile = { name: 'another file.txt', size: 10 };
+  const files = [file, anotherFile];
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -353,7 +355,7 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
@@ -386,7 +388,7 @@ describe('ModelCreate', () => {
       );
     });
 
-    it('Uploads a file mutation upon confirm', () => {
+    it('Uploads a files mutation upon confirm', () => {
       expect(uploadModel).toHaveBeenCalledWith({
         file,
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
@@ -429,7 +431,7 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       await submitForm();
     });
 
@@ -479,7 +481,7 @@ describe('ModelCreate', () => {
       findDescriptionInput().vm.$emit('input', 'My model description');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       uploadModel.mockRejectedValueOnce('Artifact import error.');
       await submitForm();
     });

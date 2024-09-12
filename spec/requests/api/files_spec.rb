@@ -248,6 +248,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
     shared_examples_for 'repository files' do
       it 'returns 400 for invalid file path' do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
         get api(route(invalid_file_path), api_user, **options), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -532,6 +536,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
 
       it 'returns 400 when file path is invalid' do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
         get api(route(invalid_file_path) + '/blame', current_user), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -797,6 +805,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   describe 'GET /projects/:id/repository/files/:file_path/raw' do
     shared_examples_for 'repository raw files' do
       it 'returns 400 when file path is invalid' do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
         get api(route(invalid_file_path) + '/raw', current_user), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -1010,6 +1022,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       context 'when project is private' do
         context 'and user is a developer' do
           it 'returns 400 when file path is invalid' do
+            # TODO: remove spec once the feature flag is removed
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+            stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
             post api(route(invalid_file_path), user), params: params
 
             expect(response).to have_gitlab_http_status(:bad_request)
@@ -1231,6 +1247,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       let(:params_with_correct_id) { params.merge(last_commit_id: last_commit_for_path.id) }
 
       it 'returns a 400 bad request' do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
         put api(route(invalid_file_path), user), params: params_with_correct_id
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -1348,6 +1368,10 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
 
       it 'returns 400 when file path is invalid' do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
         delete api(route(invalid_file_path), user), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)

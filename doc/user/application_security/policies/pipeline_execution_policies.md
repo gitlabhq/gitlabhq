@@ -22,7 +22,7 @@ Use Pipeline execution policies to enforce CI/CD jobs for all applicable project
 
 ## Pipeline execution policies schema
 
-> - The `suffix` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_suffix`. Disabled by default.
+> - The `suffix` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) in GitLab 17.4.
 
 The YAML file with pipeline execution policies consists of an array of objects matching pipeline execution
 policy schema nested under the `pipeline_execution_policy` key. You can configure a maximum of five
@@ -65,11 +65,7 @@ Note the following:
 
 ### Job naming best practice
 
-> - Naming conflict handling [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473189) in GitLab 17.4 with a flag named `pipeline_execution_policy_suffix`. Disabled by default.
-
-FLAG:
-The availability of job naming conflict handling is controlled by a feature flag.
-For more information, see the history.
+> - Naming conflict handling [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473189) in GitLab 17.4.
 
 There is no visible indicator for jobs coming from a security policy. Adding a unique prefix or suffix to job names makes it easier to identify them and avoid job name collisions.
 

@@ -88,10 +88,10 @@
           = render_if_exists 'admin/users/provisioned_by', user: @user
           = render_if_exists 'admin/users/enterprise_group', user: @user
 
-          %li{ class: list_item_classes }
+          %li{ class: list_item_classes, 'data-testid': 'admin-can-create-top-level-groups' }
             %span.gl-text-subtle= _('Can create top level groups:')
             .gl-col-span-2
-              %strong= @user.allow_user_to_create_group_and_project? && @user.can_create_group ? _('Yes') : _('No')
+              %strong= @user.allow_user_to_create_group_and_project? && @user.can_create_group? ? _('Yes') : _('No')
           %li{ class: list_item_classes }
             %span.gl-text-subtle= _('Private profile:')
             .gl-col-span-2

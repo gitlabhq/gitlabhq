@@ -33,6 +33,8 @@ describe('ModelVersionCreate', () => {
   let apolloProvider;
 
   const file = { name: 'file.txt', size: 1024 };
+  const anotherFile = { name: 'another file.txt', size: 10 };
+  const files = [file, anotherFile];
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -237,7 +239,7 @@ describe('ModelVersionCreate', () => {
       createWrapper();
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model version description');
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
@@ -301,7 +303,7 @@ describe('ModelVersionCreate', () => {
       beforeEach(async () => {
         createWrapper();
         findVersionInput().vm.$emit('input', '1.0.0');
-        zone().vm.$emit('change', file);
+        zone().vm.$emit('change', files);
         await nextTick();
         uploadModel.mockRejectedValueOnce('Artifact import error.');
 

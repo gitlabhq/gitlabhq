@@ -1,7 +1,7 @@
 - topic = local_assigns.fetch(:topic)
 - title = topic.title || topic.name
 
-%li.topic-row.gl-py-3.gl-items-center{ class: '!gl-flex' }
+%li.topic-row.gl-py-3.gl-items-center{ class: '!gl-flex !gl-px-5' }
   = render Pajamas::AvatarComponent.new(topic, size: 32, alt: '')
 
   .gl-min-w-0.gl-grow.gl-ml-3

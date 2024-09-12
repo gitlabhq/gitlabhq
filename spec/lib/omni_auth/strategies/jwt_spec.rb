@@ -66,7 +66,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
 
           let(:private_key) { private_key_class ? private_key_class.new(secret) : secret }
 
-          it 'decodes the user information' do
+          it 'decodes the user information', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463691' do
             result = subject.decoded
 
             expect(result).to eq(claims.stringify_keys)

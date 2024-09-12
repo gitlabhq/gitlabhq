@@ -1,6 +1,4 @@
-.page-title-holder.gl-flex.gl-items-center
-  %h1.page-title.gl-text-size-h-display= page_title
+= render ::Layouts::PageHeadingComponent.new(page_title)
 
-.top-area.gl-p-4
-  .nav-controls
-    = render 'shared/topics/search_form'
+.gl-flex.gl-min-w-0.gl-grow.row-content-block
+  = render 'shared/topics/search_form'

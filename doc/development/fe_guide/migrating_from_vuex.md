@@ -10,8 +10,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Why?
 
-We have defined the [GraphQL API](../../api/graphql/index.md) as [the primary API](../api_graphql_styleguide.md#vision) for all user-facing features,
-so we can safely assume that whenever GraphQL is present, so will the Apollo Client.
+We have defined the [GraphQL API](../../api/graphql/index.md) as the primary choice for all user-facing features.
+We can safely assume that whenever GraphQL is present, so will the Apollo Client.
 We [do not want to use Vuex with Apollo](graphql.md#using-with-vuex), so the VueX stores count
 will naturally decline over time as we move from the REST API to GraphQL.
 

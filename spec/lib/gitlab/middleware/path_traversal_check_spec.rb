@@ -31,7 +31,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     subject { middleware.call(env) }
 
     shared_examples 'no issue' do
-      it 'does not log anything' do
+      it 'does not log or reject the request' do
         expect(::Gitlab::PathTraversal)
           .to receive(:path_traversal?)
                 .with(decoded_fullpath, match_new_line: false)
@@ -42,7 +42,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     end
 
     shared_examples 'path traversal' do
-      it 'logs the problem' do
+      it 'logs and rejects the request' do
         expect(::Gitlab::PathTraversal)
           .to receive(:path_traversal?)
                 .with(decoded_fullpath, match_new_line: false)
@@ -54,10 +54,10 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
                   method: method.upcase,
-                  status: fake_response_status
+                  path_traversal_attempt_rejected: true
                 }).and_call_original
 
-        expect(subject).to eq(fake_response)
+        expect(subject).to eq(described_class::REJECT_RESPONSE)
       end
     end
 
@@ -161,6 +161,61 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
               subject
             end
+          end
+        end
+      end
+    end
+
+    context 'with check_path_traversal_middleware_reject_requests disabled' do
+      before do
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+      end
+
+      shared_examples 'path traversal' do
+        it 'logs and accepts the request' do
+          expect(::Gitlab::PathTraversal)
+            .to receive(:path_traversal?)
+                  .with(decoded_fullpath, match_new_line: false)
+                  .and_call_original
+          expect(::Gitlab::AppLogger)
+            .to receive(:warn)
+                  .with({
+                    class_name: described_class.name,
+                    message: described_class::PATH_TRAVERSAL_MESSAGE,
+                    fullpath: fullpath,
+                    method: method.upcase,
+                    status: fake_response_status
+                  }).and_call_original
+
+          expect(subject).to eq(fake_response)
+        end
+      end
+
+      where(:path, :query_params, :shared_example_name) do
+        '/foo/bar'            | {}                          | 'no issue'
+        '/foo/../bar'         | {}                          | 'path traversal'
+        '/foo%2Fbar'          | {}                          | 'no issue'
+        '/foo%2F..%2Fbar'     | {}                          | 'path traversal'
+        '/foo%252F..%252Fbar' | {}                          | 'no issue'
+        '/foo/bar'            | { x: 'foo' }                | 'no issue'
+        '/foo/bar'            | { x: 'foo/../bar' }         | 'path traversal'
+        '/foo/bar'            | { x: 'foo%2Fbar' }          | 'no issue'
+        '/foo/bar'            | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
+        '/foo/bar'            | { x: 'foo%252F..%252Fbar' } | 'no issue'
+        '/search'             | { x: 'foo/../bar' }         | 'path traversal'
+        '/search'             | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
+        '/search'             | { x: 'foo%252F..%252Fbar' } | 'no issue'
+        '%2Fsearch'           | { x: 'foo/../bar' }         | 'path traversal'
+        '%2Fsearch'           | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
+        '%2Fsearch'           | { x: 'foo%252F..%252Fbar' } | 'no issue'
+      end
+
+      with_them do
+        %w[get post put patch delete].each do |http_method|
+          context "when using #{http_method}" do
+            let(:method) { http_method }
+
+            it_behaves_like params[:shared_example_name]
           end
         end
       end

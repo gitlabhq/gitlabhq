@@ -3,9 +3,9 @@
 module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
   module Models
     module Ci
-      class FinishedPipelinesHourly < FinishedPipelinesBase
+      class FinishedPipelinesDaily < FinishedPipelinesBase
         def self.table_name
-          'ci_finished_pipelines_hourly'
+          'ci_finished_pipelines_daily'
         end
       end
     end

@@ -1,7 +1,7 @@
 - max_topic_title_length = 30
 - detail_page_link = topic_explore_projects_cleaned_path(topic_name: topic.name)
 
-.col-lg-3.col-md-4.col-sm-12
+.gl-mt-5.gl-grid{ class: 'sm:gl-grid-cols-2 md:gl-grid-cols-3 ml:gl-grid-cols-3' }
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' },
                                       body_options: { class: 'gl-flex gl-items-center' }) do |c|
     - c.with_body do

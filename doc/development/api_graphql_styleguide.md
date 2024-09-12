@@ -8,19 +8,13 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 This document contains style and technical guidance for engineers implementing the backend of the [GitLab GraphQL API](../api/graphql/index.md).
 
-## Vision
+## Relation to REST API
 
-We want the GraphQL API to be the **primary** means of interacting
-programmatically with GitLab. To achieve this, it needs full coverage - anything
-possible in the REST API should also be possible in the GraphQL API.
+See the [GraphQL and REST APIs section](api_styleguide.md#graphql-and-rest-apis).
 
-To help us meet this vision, the frontend should use GraphQL in preference to
-the REST API for new features.
+## Versioning
+
 The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
-
-There are no plans to deprecate the REST API. To reduce the technical burden of
-supporting two APIs in parallel, they should share implementations as much as
-possible.
 
 ## Learning GraphQL at GitLab
 

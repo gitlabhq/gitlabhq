@@ -8,6 +8,22 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 This style guide recommends best practices for API development.
 
+## GraphQL and REST APIs
+
+We offer two types of API to our customers:
+
+- [REST API](../api/rest/index.md)
+- [GraphQL API](../api/graphql/index.md)
+
+To reduce the technical burden of supporting two APIs in parallel,
+they should share implementations as much as possible.
+For example, they could share the same [services](reusing_abstractions.md#service-classes).
+
+## Frontend
+
+See the [frontend guide](fe_guide/index.md#overview)
+on details on which API to use when developing in the frontend.
+
 ## Instance variables
 
 Don't use instance variables, there is no need for them (we don't need
