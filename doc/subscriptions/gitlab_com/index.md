@@ -225,7 +225,7 @@ The following is emailed to you:
 
 ### Remove users from your subscription
 
-To remove a billable user from your subscription:
+To remove a billable user from your GitLab.com subscription:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
@@ -237,6 +237,8 @@ If you add a member to a group by using the [share a group with another group](.
 
 - Remove the member from the shared group. You must be a group owner to do this.
 - From the group's membership page, remove access from the entire shared group.
+
+To remove a user from your self-managed instance, see [Deactivate a user](../../administration/moderate_users.md#deactivate-a-user).
 
 ## Seat usage alerts
 

@@ -110,9 +110,13 @@
 }
 
 // System notes on diffs
-.system-note-variant-diff {
+.card .notes {
+  .system-note {
+    margin: 0;
+    padding: 0;
+  }
+
   .system-note-dot {
-    top: 0;
     margin-top: $gl-spacing-scale-4;
     margin-left: $gl-spacing-scale-5;
   }

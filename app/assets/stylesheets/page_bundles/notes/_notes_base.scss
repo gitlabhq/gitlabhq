@@ -1,29 +1,3 @@
-.issuable-discussion:not(.incident-timeline-events),
-.limited-width-notes {
-  .main-notes-list::before,
-  .timeline-entry:last-child::before {
-    @include vertical-line(15px, 15px);
-  }
-
-  .main-notes-list::before {
-    @apply gl-bg-strong;
-  }
-
-  .timeline-entry:not(.draft-note):last-child::before {
-    @apply gl-bg-default;
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      @apply gl-bg-subtle;
-    }
-
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark .modal-body & {
-      @apply gl-bg-strong;
-    }
-  }
-}
-
 .notes {
   display: block;
   list-style: none;
@@ -123,43 +97,6 @@
 
           &:last-of-type .timeline-entry-inner {
             @apply gl-border-b gl-rounded-b-base;
-          }
-        }
-
-        .diff-content {
-          ul li:first-of-type {
-            .timeline-avatar {
-              margin-top: 0;
-            }
-
-            .timeline-content {
-              margin-left: 0;
-              border: 0;
-              padding: 0;
-            }
-
-            .timeline-entry-inner {
-              margin-left: $note-spacing-left;
-              @apply gl-bg-subtle gl-border-l gl-border-r;
-
-              .timeline-content {
-                padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
-                @apply gl-bg-default gl-border-b gl-border-b-subtle;
-
-                // stylelint-disable-next-line gitlab/no-gl-class
-                .gl-dark & {
-                  @apply gl-bg-strong gl-border-b-default;
-                }
-              }
-
-              .timeline-avatar {
-                margin: $gl-padding-8 0 0 $gl-padding;
-              }
-
-              .timeline-discussion-body {
-                margin-left: $note-spacing-reply-left;
-              }
-            }
           }
         }
       }
@@ -299,17 +236,6 @@
       position: relative;
       line-height: 1;
     }
-  }
-}
-
-.card .notes {
-  .system-note {
-    margin: 0;
-    padding: 0;
-  }
-
-  .timeline-icon {
-    margin: 20px 0 0 28px;
   }
 }
 
@@ -454,23 +380,6 @@
   }
 }
 
-.user-activity-content {
-  position: relative;
-
-  .system-note-image {
-    @apply gl-flex;
-    @apply gl-justify-center;
-    @apply gl-items-center;
-    top: 14px;
-    width: 22px;
-    height: 22px;
-
-    svg {
-      fill: $gray-600 !important;
-    }
-  }
-}
-
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-foss/issues/53918#note_117038785
 .unstyled-comments {
@@ -481,12 +390,4 @@
   .discussion-form-container {
     padding: $gl-padding;
   }
-}
-
-// Timeline avatars
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.timeline-avatar .gl-avatar-link {
-  @apply gl-bg-default;
-  border-radius: 50%;
 }

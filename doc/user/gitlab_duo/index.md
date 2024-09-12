@@ -135,6 +135,17 @@ DETAILS:
 - Track the progress of AI adoption.
 - [View documentation](../analytics/ai_impact_analytics.md).
 
+### Discussion summary
+
+DETAILS:
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed
+
+- Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+- [View documentation](../discussions/index.md#summarize-issue-discussions-with-duo-chat).
+
 ## Beta features
 
 ### Merge Request Summary
@@ -160,18 +171,6 @@ DETAILS:
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
-
-### Discussion Summary
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Beta
-
-- Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
-- [View documentation](../discussions/index.md#summarize-issue-discussions-with-duo-chat).
 
 ## Experimental features
 

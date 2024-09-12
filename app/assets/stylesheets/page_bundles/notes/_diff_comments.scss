@@ -1,7 +1,6 @@
 /**
 * Line note button on the side of diffs
 */
-
 .diff-grid-left:hover,
 .diff-grid-right:hover,
 .line_holder .is-over:not(.no-comment-btn) {
@@ -145,7 +144,7 @@
   }
 }
 
-// Diff code in discussion view
+// Diff code on overview tab
 .discussion-body .diff-file {
   .file-title {
     cursor: default;
@@ -374,3 +373,36 @@
 .diff-viewer > .image ~ .note-container form.new-note {
   margin-left: 0;
 }
+
+// Diff notes on overview tab
+.notes.timeline > .timeline-entry.note-discussion .timeline-content .diff-content ul li:first-of-type {
+  .timeline-content {
+    margin-left: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .timeline-entry-inner {
+    margin-left: $note-spacing-left;
+    @apply gl-bg-subtle gl-border-l gl-border-r;
+
+    .timeline-content {
+      padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+      @apply gl-bg-default gl-border-b gl-border-b-subtle;
+
+      // stylelint-disable-next-line gitlab/no-gl-class
+      .gl-dark & {
+        @apply gl-bg-strong gl-border-b-default;
+      }
+    }
+
+    .timeline-avatar {
+      margin: $gl-padding-8 0 0 $gl-padding;
+    }
+
+    .timeline-discussion-body {
+      margin-left: $note-spacing-reply-left;
+    }
+  }
+}
+

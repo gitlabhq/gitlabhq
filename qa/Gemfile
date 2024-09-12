@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', '~> 14', '>= 14.14.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 1.38.0', require: false
+gem 'gitlab_quality-test_tooling', '~> 1.38.1', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8.4' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.25.0'

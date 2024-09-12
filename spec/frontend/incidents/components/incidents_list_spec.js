@@ -1,8 +1,10 @@
-import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable, GlAvatar, GlEmptyState } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
+import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import {
   I18N,
   TH_CREATED_AT_TEST_ID,
@@ -40,9 +42,10 @@ describe('Incidents List', () => {
     all: 26,
   };
 
+  const alertMessage = () =>
+    wrapper.findComponent(PaginatedTableWithSearchAndTabs).props('showErrorMsg');
   const findTable = () => wrapper.findComponent(GlTable);
   const findTableRows = () => wrapper.findAll('table tbody tr');
-  const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAll('[data-testid="incident-assignees"]');
@@ -92,6 +95,9 @@ describe('Incidents List', () => {
           GlAvatar: true,
           GlEmptyState: true,
           ServiceLevelAgreementCell: true,
+          PaginatedTableWithSearchAndTabs: stubComponent(PaginatedTableWithSearchAndTabs, {
+            template: RENDER_ALL_SLOTS_TEMPLATE,
+          }),
         },
       }),
     );
@@ -138,7 +144,7 @@ describe('Incidents List', () => {
       loading: false,
     });
     expect(findTable().text()).toContain(I18N.noIncidents);
-    expect(findAlert().exists()).toBe(true);
+    expect(alertMessage()).toBe(true);
   });
 
   describe('Incident Management list', () => {
@@ -304,8 +310,9 @@ describe('Incidents List', () => {
     });
 
     it('should track incident list views', () => {
-      const { category, action } = trackIncidentListViewsOptions;
-      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+      expect(
+        wrapper.findComponent(PaginatedTableWithSearchAndTabs).props('trackViewsOptions'),
+      ).toEqual(trackIncidentListViewsOptions);
     });
 
     it('should track incident creation events', async () => {

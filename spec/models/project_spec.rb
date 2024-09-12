@@ -9655,4 +9655,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.lfs_file_locks_changed_epoch).to eq(refreshed_epoch)
     end
   end
+
+  describe '.by_any_traversal_id_overlap' do
+    let_it_be(:project_1) { create(:project, :in_group) }
+    let_it_be(:sub_group) { create(:group, parent: project_1.namespace) }
+    let_it_be(:project_2) { create(:project, group: sub_group) }
+
+    it 'returns projects that contain any overlap with the provided traversal_ids array' do
+      expect(described_class.by_any_overlap_with_traversal_ids(project_1.namespace_id)).to contain_exactly(project_1, project_2)
+    end
+  end
 end

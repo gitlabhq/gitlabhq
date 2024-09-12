@@ -158,7 +158,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     it('displays version creation button', () => {
       expect(findModelVersionCreate().props()).toEqual({
         modelGid: 'gid://gitlab/Ml::Model/1',
-        disableAttachments: true,
+        disableAttachments: false,
       });
     });
 
@@ -176,7 +176,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     it('displays model edit button', () => {
       expect(findModelEdit().props('model')).toEqual(model);
-      expect(findModelEdit().props('disableAttachments')).toBe(true);
+      expect(findModelEdit().props('disableAttachments')).toBe(false);
     });
 
     describe('when user has no permission to write model registry', () => {

@@ -846,6 +846,9 @@ class Project < ApplicationRecord
 
   scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_project_namespace, ->(project_namespace) { where(project_namespace_id: project_namespace) }
+  scope :by_any_overlap_with_traversal_ids, ->(traversal_ids) {
+    joins_namespace.where('namespaces.traversal_ids::bigint[] && ARRAY[?]::bigint[]', traversal_ids)
+  }
 
   scope :not_a_fork, -> {
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })

@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe PersonalAccessToken, feature_category: :system_access do
   subject { described_class }
 
+  describe 'default values' do
+    subject(:personal_access_token) { described_class.new }
+
+    it { expect(personal_access_token.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID) }
+    it { expect(personal_access_token.organization).to eq(Organizations::Organization.default_organization) }
+  end
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }

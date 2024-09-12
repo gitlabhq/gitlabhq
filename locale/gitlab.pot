@@ -44187,6 +44187,9 @@ msgstr ""
 msgid "ProtectedEnvironments|Set which groups, access levels, or users can deploy to this environment. Groups and users must be members of the project."
 msgstr ""
 
+msgid "ProtectedEnvironments|This rule already exists."
+msgstr ""
+
 msgid "ProtectedEnvironments|To configure unified approval rules, use the %{apiLinkStart}API%{apiLinkEnd}. Consider using %{docsLinkStart}multiple approval rules%{docsLinkEnd} instead."
 msgstr ""
 

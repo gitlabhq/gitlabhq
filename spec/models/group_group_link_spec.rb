@@ -169,6 +169,14 @@ RSpec.describe GroupGroupLink, feature_category: :groups_and_projects do
         expect(distinct_group_group_links).to include(group_group_link_4)
       end
     end
+
+    describe '.for_shared_with_groups' do
+      let_it_be(:link) { create(:group_group_link) }
+
+      it 'returns links shared with the groups passed in' do
+        expect(described_class.for_shared_with_groups(link.shared_with_group)).to contain_exactly(link)
+      end
+    end
   end
 
   describe '#human_access' do

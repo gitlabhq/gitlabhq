@@ -19,26 +19,36 @@ Repository X-Ray gives the code assistant more insight into the project's codeba
 
 By understanding the frameworks, libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code recommendations that integrate more seamlessly and follow best practices for that stack.
 
+## Enable Repository X-Ray
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+The Repository X-Ray service is automatically enabled if:
+
+- You have enabled the `ai_enable_internal_repository_xray_service` feature flag.
+- Your project has access to [GitLab Duo Code Suggestions](index.md).
+
 ## Supported languages and package managers
 
-| Language   | Package Manager | Configuration File   |
-| ---------- |-----------------| -------------------- |
-| Go         | Go Modules      | `go.mod`             |
-| JavaScript | NPM, Yarn       | `package.json`       |
-| Ruby       | RubyGems        | `Gemfile.lock`       |
-| Python     | Poetry          | `pyproject.toml`     |
-| Python     | Pip             | `requirements.txt`   |
-| Python     | Conda           | `environment.yml`    |
-| PHP        | Composer        | `composer.json`      |
-| Java       | Maven           | `pom.xml`            |
-| Java       | Gradle          | `build.gradle`       |
-| Kotlin     | Gradle          | `build.gradle.kts`   |
-| C#         | NuGet           | `*.csproj`           |
-| C/C++      | Conan           | `conanfile.txt`      |
-| C/C++      | Conan           | `conanfile.py`       |
-| C/C++      | vcpkg           | `vcpkg.json`         |
+The Repository X-Ray searches a maximum of two directory levels from the repository's root. For example, it supports `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not `api/v1/client/Gemfile.lock`. For each language, only the first matching configuration file is processed. Where available, lock files take precedence over their non-lock file counterparts.
 
-## Enable Repository X-Ray
+| Language   | Package manager | Configuration file   | GitLab version |
+| ---------- |-----------------| -------------------- | -------------- |
+| C++        | Conan           | `conanfile.txt`      | 17.4 or later  |
+| Go         | Go Modules      | `go.mod`             | 17.4 or later  |
+| Java       | Gradle          | `build.gradle`       | 17.4 or later  |
+| Java       | Maven           | `pom.xml`            | 17.4 or later  |
+| Ruby       | RubyGems        | `Gemfile.lock`       | 17.4 or later  |
+
+## Enable Repository X-Ray in your CI pipeline (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/14100) in GitLab 17.4.
 
 Prerequisites:
 
@@ -74,9 +84,28 @@ The X-Ray data for your project updates each time a CI/CD pipeline containing th
 job is run. To learn more about pipeline configuration and triggers, see the
 [pipelines documentation](../../../../ci/pipelines/merge_request_pipelines.md).
 
-## Troubleshooting
+### Supported languages and package managers
 
-### `401: Unauthorized` when running Repository X-Ray
+| Language   | Package Manager | Configuration File   |
+| ---------- |-----------------| -------------------- |
+| Go         | Go Modules      | `go.mod`             |
+| JavaScript | NPM, Yarn       | `package.json`       |
+| Ruby       | RubyGems        | `Gemfile.lock`       |
+| Python     | Poetry          | `pyproject.toml`     |
+| Python     | Pip             | `requirements.txt`   |
+| Python     | Conda           | `environment.yml`    |
+| PHP        | Composer        | `composer.json`      |
+| Java       | Maven           | `pom.xml`            |
+| Java       | Gradle          | `build.gradle`       |
+| Kotlin     | Gradle          | `build.gradle.kts`   |
+| C#         | NuGet           | `*.csproj`           |
+| C/C++      | Conan           | `conanfile.txt`      |
+| C/C++      | Conan           | `conanfile.py`       |
+| C/C++      | vcpkg           | `vcpkg.json`         |
+
+### Troubleshooting
+
+#### `401: Unauthorized` when running Repository X-Ray
 
 When running Repository X-Ray, you might get an error that states `401: Unauthorized`.
 

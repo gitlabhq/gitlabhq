@@ -282,7 +282,7 @@
 {"name":"graphiql-rails","version":"1.10.0","platform":"ruby","checksum":"b557f989a737c8b9e985142609bec52fb1e9393a701eb50e02a7c14422891040"},
 {"name":"graphlient","version":"0.8.0","platform":"ruby","checksum":"98c408da1d083454e9f5e274f3b0b6261e2a0c2b5f2ed7b3ef9441d46f8e7cb1"},
 {"name":"graphlyte","version":"1.0.0","platform":"ruby","checksum":"b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d"},
-{"name":"graphql","version":"2.3.14","platform":"ruby","checksum":"1781f33ab52f250f7bd6082f40ef15363d6acf98009b7acba70d54bee142f295"},
+{"name":"graphql","version":"2.3.15","platform":"ruby","checksum":"5c171630e11559b425b1215d798b9816b9e20e39bae8a5a367337c2edb8b54aa"},
 {"name":"graphql-client","version":"0.23.0","platform":"ruby","checksum":"f238b8e451676baad06bd15f95396e018192243dcf12c4e6d13fb41d9a2babc1"},
 {"name":"graphql-docs","version":"5.0.0","platform":"ruby","checksum":"76baca6e5a803a4b6a9fbbbfdbf16742b7c4c546c8592b6e1a7aa4e79e562d04"},
 {"name":"grpc","version":"1.63.0","platform":"aarch64-linux","checksum":"dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee"},

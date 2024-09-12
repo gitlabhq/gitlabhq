@@ -193,3 +193,20 @@ $profile-grid-flex: 1fr;
   line-height: 22px;
   background-color: var(--gl-gray-10);
 }
+
+.user-activity-content {
+  position: relative;
+
+  .system-note-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 14px;
+    width: 22px;
+    height: 22px;
+
+    svg {
+      fill: $gray-600 !important;
+    }
+  }
+}

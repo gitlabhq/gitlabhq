@@ -8,6 +8,10 @@ RSpec.shared_context 'with group members shared context' do
   let_it_be(:sub_sub_sub_group_1) { create(:group, parent: sub_sub_group_1) }
   let_it_be(:shared_group) { create(:group) }
 
+  let_it_be(:group_project_1) { create(:project, group: group) }
+  let_it_be(:group_project_2) { create(:project, group: group) }
+  let_it_be(:sub_group_1_project) { create(:project, group: sub_group_1) }
+
   let_it_be(:link) do
     create(:group_group_link, shared_group: sub_group_1, shared_with_group: shared_group)
   end
@@ -22,4 +26,10 @@ RSpec.shared_context 'with group members shared context' do
   let_it_be(:sub_sub_group_owner_5) { create(:group_member, :owner, group: sub_sub_group_1, user: users[4]) }
   let_it_be(:shared_maintainer_5) { create(:group_member, :maintainer, group: shared_group, user: users[4]) }
   let_it_be(:shared_maintainer_6) { create(:group_member, :maintainer, group: shared_group, user: users[5]) }
+
+  let_it_be(:group_project_1_owner_5) { create(:project_member, :owner, project: group_project_1, user: users[4]) }
+  let_it_be(:group_project_2_owner_6) { create(:project_member, :owner, project: group_project_2, user: users[5]) }
+  let_it_be(:sub_group_1_project_maintainer_4) do
+    create(:project_member, :maintainer, project: sub_group_1_project, user: users[3])
+  end
 end

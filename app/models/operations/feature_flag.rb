@@ -105,7 +105,7 @@ module Operations
     end
 
     def path
-      Gitlab::Routing.url_helpers.project_feature_flag_path(project, self)
+      Gitlab::Routing.url_helpers.edit_project_feature_flag_path(project, self)
     end
 
     def hook_attrs

@@ -62,3 +62,36 @@
   border-right: 0;
   border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
 }
+
+.issuable-discussion:not(.incident-timeline-events),
+.limited-width-notes {
+  .main-notes-list::before,
+  .timeline-entry:last-child::before {
+    @include vertical-line(15px, 15px);
+  }
+
+  .main-notes-list::before {
+    @apply gl-bg-strong;
+  }
+
+  .timeline-entry:not(.draft-note):last-child::before {
+    @apply gl-bg-default;
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-dark & {
+      @apply gl-bg-subtle;
+    }
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-dark .modal-body & {
+      @apply gl-bg-strong;
+    }
+  }
+}
+
+// Timeline avatars
+// stylelint-disable-next-line gitlab/no-gl-class
+.timeline-avatar .gl-avatar-link {
+  @apply gl-bg-default;
+  border-radius: 50%;
+}
