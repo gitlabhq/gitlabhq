@@ -106,7 +106,7 @@ Users granted:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
 
-You can use the GitLab API to [list, add, and delete](../../../api/group_saml_group_links.md) SAML group links.
+You can use the GitLab API to [list, add, and delete](../../../api/saml.md#saml-group-links) SAML group links.
 
 ## Configure SAML Group Sync
 

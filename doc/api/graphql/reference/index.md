@@ -23122,6 +23122,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupaddoneligibleusersaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add on to filter the eligible users by. |
 | <a id="groupaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
+| <a id="groupaddoneligibleuserssort"></a>`sort` | [`GitlabSubscriptionsUserSort`](#gitlabsubscriptionsusersort) | Sort the user list. |
 
 ##### `Group.addOnPurchase`
 
@@ -27805,6 +27806,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="namespaceaddoneligibleusersaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add on to filter the eligible users by. |
 | <a id="namespaceaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
+| <a id="namespaceaddoneligibleuserssort"></a>`sort` | [`GitlabSubscriptionsUserSort`](#gitlabsubscriptionsusersort) | Sort the user list. |
 
 ##### `Namespace.addOnPurchase`
 
@@ -36820,6 +36822,19 @@ Role of User.
 | <a id="gitlabsubscriptionsuserrolemaintainer"></a>`MAINTAINER` | Maintainer. |
 | <a id="gitlabsubscriptionsuserroleowner"></a>`OWNER` | Owner. |
 | <a id="gitlabsubscriptionsuserrolereporter"></a>`REPORTER` | Reporter. |
+
+### `GitlabSubscriptionsUserSort`
+
+Values for sorting users.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="gitlabsubscriptionsusersortid_asc"></a>`ID_ASC` | Id by ascending order. |
+| <a id="gitlabsubscriptionsusersortid_desc"></a>`ID_DESC` | Id by descending order. |
+| <a id="gitlabsubscriptionsusersortlast_activity_on_asc"></a>`LAST_ACTIVITY_ON_ASC` | Last activity by ascending order. |
+| <a id="gitlabsubscriptionsusersortlast_activity_on_desc"></a>`LAST_ACTIVITY_ON_DESC` | Last activity by descending order. |
+| <a id="gitlabsubscriptionsusersortname_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="gitlabsubscriptionsusersortname_desc"></a>`NAME_DESC` | Name by descending order. |
 
 ### `GoogleCloudArtifactRegistryArtifactsSort`
 

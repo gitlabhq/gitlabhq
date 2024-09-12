@@ -13,9 +13,9 @@ describe('Signup Form', () => {
     dataTestId: 'test-id',
   };
 
-  const mountComponent = () => {
+  const mountComponent = (additionalProps = {}) => {
     wrapper = shallowMount(SignupCheckbox, {
-      propsData: props,
+      propsData: { ...props, ...additionalProps },
       stubs: {
         GlFormCheckbox,
       },
@@ -56,6 +56,11 @@ describe('Signup Form', () => {
 
       it('gets passed data qa selector', () => {
         expect(findCheckbox().attributes('data-testid')).toBe(props.dataTestId);
+      });
+
+      it('gets passed `disabled` property', () => {
+        mountComponent({ disabled: true });
+        expect(findCheckbox().attributes('disabled')).toBe('true');
       });
     });
   });

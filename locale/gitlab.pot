@@ -6823,6 +6823,9 @@ msgstr ""
 msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
 msgstr ""
 
+msgid "ApplicationSettings|Setting locked. Resolve all %{linkStart}pending approvals%{linkEnd} to unlock."
+msgstr ""
+
 msgid "ApplicationSettings|Sign-up enabled"
 msgstr ""
 

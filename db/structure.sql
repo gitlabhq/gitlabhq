@@ -35719,9 +35719,6 @@ ALTER TABLE p_ci_pipelines_config
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT fk_rails_9071e863d1 FOREIGN KEY (approval_project_rule_id) REFERENCES approval_project_rules(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_occurrences
-    ADD CONSTRAINT fk_rails_90fed4faba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY project_error_tracking_settings
     ADD CONSTRAINT fk_rails_910a2b8bd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

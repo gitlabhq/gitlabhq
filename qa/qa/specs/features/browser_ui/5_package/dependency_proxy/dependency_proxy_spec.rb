@@ -94,7 +94,7 @@ module QA
           end
         end
 
-        it "pulls an image using the dependency proxy", testcase: params[:testcase] do
+        it "pulls an image using the dependency proxy", :blocking, testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
               {

@@ -36,6 +36,7 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       allow(logger).to receive(:info).at_least(:once)
       allow(logger).to receive(:debug).at_least(:once)
+      allow(logger).to receive(:warn).at_least(:once)
 
       stub_env('PROJECT_ID', project_id_env)
       stub_env('PROJECT_PATH', project_path_env)

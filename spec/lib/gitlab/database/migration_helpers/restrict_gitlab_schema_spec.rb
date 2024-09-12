@@ -412,7 +412,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
               ci: :runtime_error
             },
             gitlab_schema_gitlab_main: {
-              main: :success,
+              main: :dml_access_denied,
               ci: :skipped
             }
           }
