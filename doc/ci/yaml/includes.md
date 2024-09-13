@@ -310,66 +310,94 @@ default:
     - echo "Job complete."
 ```
 
-### Use nested includes with duplicate `includes` entries
+### Use nested includes with duplicate `include` entries
 
-Nested includes can include the same configuration file. The duplicate configuration
-file is included multiple times, but the effect is the same as if it was only
-included once.
+You can include the same configuration file multiple times in the main configuration file and
+in nested includes.
 
-For example, with the following nested includes, where `defaults.gitlab-ci.yml`
-is included multiple times:
+If any file changes the included configuration using [overrides](#override-included-configuration-values),
+then the order of the `include` entries might affect the final configuration. The last time
+the configuration is included overrides any previous times the file was included.
+For example:
 
-- Contents of the `.gitlab-ci.yml` file:
-
-  ```yaml
-  include:
-    - template: defaults.gitlab-ci.yml
-    - local: unit-tests.gitlab-ci.yml
-    - local: smoke-tests.gitlab-ci.yml
-  ```
-
-- Contents of the `defaults.gitlab-ci.yml` file:
+- Contents of a `defaults.gitlab-ci.yml` file:
 
   ```yaml
   default:
-    before_script: default-before-script.sh
-    retry: 2
+    before_script: echo "Default before script"
   ```
 
-- Contents of the `unit-tests.gitlab-ci.yml` file:
+- Contents of a `unit-tests.gitlab-ci.yml` file:
 
   ```yaml
   include:
     - template: defaults.gitlab-ci.yml
+
+  default:  # Override the included default
+    before_script: echo "Unit test default override"
 
   unit-test-job:
     script: unit-test.sh
-    retry: 0
   ```
 
-- Contents of the `smoke-tests.gitlab-ci.yml` file:
+- Contents of a `smoke-tests.gitlab-ci.yml` file:
 
   ```yaml
   include:
     - template: defaults.gitlab-ci.yml
+
+  default:  # Override the included default
+    before_script: echo "Smoke test default override"
 
   smoke-test-job:
     script: smoke-test.sh
   ```
 
-The final configuration would be:
+With these three files, the order they are included changes the final configuration.
+With:
 
-```yaml
-unit-test-job:
-  before_script: default-before-script.sh
-  script: unit-test.sh
-  retry: 0
+- `unit-tests` included first, the contents of the `.gitlab-ci.yml` file is:
 
-smoke-test-job:
-  before_script: default-before-script.sh
-  script: smoke-test.sh
-  retry: 2
-```
+  ```yaml
+  include:
+    - local: unit-tests.gitlab-ci.yml
+    - local: smoke-tests.gitlab-ci.yml
+  ```
+
+  The final configuration would be:
+
+  ```yaml
+  unit-test-job:
+   before_script: echo "Smoke test default override"
+   script: unit-test.sh
+
+  smoke-test-job:
+   before_script: echo "Smoke test default override"
+   script: smoke-test.sh
+  ```
+
+- `unit-tests` included last, the contents of the `.gitlab-ci.yml` file is:
+
+  ```yaml
+  include:
+    - local: smoke-tests.gitlab-ci.yml
+    - local: unit-tests.gitlab-ci.yml
+  ```
+
+- The final configuration would be:
+
+  ```yaml
+  unit-test-job:
+   before_script: echo "Unit test default override"
+   script: unit-test.sh
+
+  smoke-test-job:
+   before_script: echo "Unit test default override"
+   script: smoke-test.sh
+  ```
+
+If no file overrides the included configuration, the order of the `include` entries
+does not affect the final configuration
 
 ## Use variables with `include`
 
