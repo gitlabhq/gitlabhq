@@ -25,8 +25,8 @@ describe('DiffViewer', () => {
 
     createComponent({ ...requiredProps, projectPath: '' });
 
-    expect(wrapper.find('.deleted img').attributes('src')).toBe(`//-/raw/DEF/${RED_BOX_IMAGE_URL}`);
-    expect(wrapper.find('.added img').attributes('src')).toBe(`//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`);
+    expect(wrapper.find('.deleted img').element.src).toBe(`//-/raw/DEF/${RED_BOX_IMAGE_URL}`);
+    expect(wrapper.find('.added img').element.src).toBe(`//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`);
   });
 
   it('renders fallback download diff display', () => {

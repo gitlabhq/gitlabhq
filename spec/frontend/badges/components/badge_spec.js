@@ -69,6 +69,6 @@ describe('Badge component', () => {
 
     await reloadButton.trigger('click');
 
-    expect(badgeImage.attributes('src')).toBe(`${dummyProps.imageUrl}#retries=1`);
+    expect(badgeImage.element.src).toBe(`${dummyProps.imageUrl}#retries=1`);
   });
 });

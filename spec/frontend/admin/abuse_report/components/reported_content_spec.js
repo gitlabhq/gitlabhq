@@ -75,7 +75,7 @@ describe('ReportedContent', () => {
       });
 
       it('contains an image with the screenshot', () => {
-        expect(findModal().find('img').attributes('src')).toBe(report.screenshot);
+        expect(findModal().find('img').element.src).toBe(report.screenshot);
         expect(findModal().find('img').attributes('alt')).toBe(
           REPORTED_CONTENT_I18N.screenshotTitle,
         );

@@ -32,7 +32,7 @@ describe('IDE TerminalEmptyState', () => {
     const img = wrapper.find('.svg-content img');
 
     expect(img.exists()).toBe(true);
-    expect(img.attributes('src')).toBe(TEST_PATH);
+    expect(img.element.src).toBe(TEST_PATH);
   });
 
   it('when loading, shows loading icon', () => {

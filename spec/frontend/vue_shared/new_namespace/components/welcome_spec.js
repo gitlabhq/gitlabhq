@@ -48,7 +48,7 @@ describe('Welcome page', () => {
       },
     });
 
-    expect(wrapper.find('img').attributes('src')).toBe(mockImgSrc);
+    expect(wrapper.find('img').element.src).toBe(mockImgSrc);
   });
 
   it('renders footer slot if provided', () => {

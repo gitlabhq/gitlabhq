@@ -58,8 +58,15 @@ describe('Design management list item component', () => {
     it('image is not rendered', () => {
       createComponent();
 
-      const image = wrapper.find('img');
-      expect(image.attributes('src')).toBe('');
+      const imageSrc = wrapper.find('img').element.src;
+
+      /**
+       * Test for <img> tag source handling.
+       * When running this spec in Vue 3 mode, the src attribute
+       * of the image element is null. While in browser `img.src` would
+       * be an empty string, in `jsdom` it can be `null`.
+       */
+      expect(imageSrc === '' || imageSrc === null).toBe(true);
     });
   });
 
@@ -93,7 +100,7 @@ describe('Design management list item component', () => {
       });
 
       it('renders an image', () => {
-        expect(image.attributes('src')).toBe('http://via.placeholder.com/300');
+        expect(image.element.src).toBe('http://via.placeholder.com/300');
         expect(image.isVisible()).toBe(true);
       });
 
@@ -110,7 +117,7 @@ describe('Design management list item component', () => {
           wrapper.setProps({ imageV432x230: mockSrc });
 
           await nextTick();
-          expect(image.attributes('src')).toBe(mockSrc);
+          expect(image.element.src).toBe(mockSrc);
         });
       });
 

@@ -23,7 +23,7 @@ describe('App component', () => {
   });
 
   it('displays the correct svg illustration', () => {
-    expect(wrapper.find('img').attributes('src')).toBe('illustrations/project-create-new-sm.svg');
+    expect(wrapper.find('img').element.src).toBe('illustrations/project-create-new-sm.svg');
   });
 
   it('renders ForkForm component', () => {
