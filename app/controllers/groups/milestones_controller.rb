@@ -35,11 +35,9 @@ class Groups::MilestonesController < Groups::ApplicationController
     end
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     Milestones::UpdateService.new(@milestone.parent, current_user, milestone_params).execute(@milestone)

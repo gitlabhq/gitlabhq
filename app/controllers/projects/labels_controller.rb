@@ -52,8 +52,7 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     @label = Labels::UpdateService.new(label_params).execute(@label)

@@ -13,8 +13,7 @@ module Projects
       feature_category :package_registry
       urgency :low
 
-      def show
-      end
+      def show; end
 
       def cleanup_tags
         registry_settings_enabled!

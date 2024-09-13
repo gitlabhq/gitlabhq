@@ -6,8 +6,7 @@ class Projects::TerraformController < Projects::ApplicationController
   feature_category :infrastructure_as_code
   urgency :low
 
-  def index
-  end
+  def index; end
 
   private
 

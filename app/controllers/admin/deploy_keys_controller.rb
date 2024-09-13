@@ -7,8 +7,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   feature_category :continuous_delivery
   urgency :low
 
-  def index
-  end
+  def index; end
 
   def new
     @deploy_key = deploy_keys.new
@@ -23,8 +22,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if deploy_key.update(update_params)

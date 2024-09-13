@@ -32,8 +32,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
                                 end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @identity.update(identity_params)

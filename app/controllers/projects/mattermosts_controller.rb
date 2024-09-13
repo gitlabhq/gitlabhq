@@ -12,8 +12,7 @@ class Projects::MattermostsController < Projects::ApplicationController
 
   feature_category :integrations
 
-  def new
-  end
+  def new; end
 
   def create
     result, message = integration.configure(current_user, configure_params)

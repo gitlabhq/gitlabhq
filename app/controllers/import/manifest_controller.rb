@@ -7,8 +7,7 @@ class Import::ManifestController < Import::BaseController
   before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
 
-  def new
-  end
+  def new; end
 
   # We need to re-expose controller's internal method 'status' as action.
   # rubocop:disable Lint/UselessMethodDefinition

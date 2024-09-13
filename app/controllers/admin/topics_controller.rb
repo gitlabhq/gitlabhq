@@ -16,8 +16,7 @@ class Admin::TopicsController < Admin::ApplicationController
     @topic = Projects::Topic.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @topic = Projects::Topic.new(topic_params)

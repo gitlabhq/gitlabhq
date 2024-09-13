@@ -19,8 +19,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @application = Doorkeeper::Application.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @application = Applications::CreateService.new(current_user, application_params).execute(request)

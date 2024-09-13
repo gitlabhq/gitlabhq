@@ -178,8 +178,7 @@ class Projects::JobsController < Projects::ApplicationController
     end
   end
 
-  def terminal
-  end
+  def terminal; end
 
   # GET .../terminal.ws : implemented in gitlab-workhorse
   def terminal_websocket_authorize

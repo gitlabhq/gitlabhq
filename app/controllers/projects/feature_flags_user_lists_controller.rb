@@ -7,17 +7,13 @@ class Projects::FeatureFlagsUserListsController < Projects::ApplicationControlle
   feature_category :feature_flags
   urgency :low
 
-  def index
-  end
+  def index; end
 
-  def new
-  end
+  def new; end
 
-  def edit
-  end
+  def edit; end
 
-  def show
-  end
+  def show; end
 
   private
 

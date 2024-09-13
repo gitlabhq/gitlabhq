@@ -174,6 +174,9 @@ When this setting is enabled:
 - It applies to all subgroups, unless overridden by a group Owner.
 - Groups already added to a project lose access to it.
 
+NOTE:
+After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group), you cannot disable this setting.
+
 ## Sharing groups
 
 When you want a group to have access to your group,

@@ -6,8 +6,7 @@ class Projects::AlertManagementController < Projects::ApplicationController
   feature_category :incident_management
   urgency :low
 
-  def index
-  end
+  def index; end
 
   def details
     @alert_id = params[:id]
