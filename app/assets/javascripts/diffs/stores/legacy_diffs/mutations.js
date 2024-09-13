@@ -420,4 +420,12 @@ export default {
   [types.SET_LINKED_FILE_HASH](fileHash) {
     this.linkedFileHash = fileHash;
   },
+  [types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed }) {
+    this.diffFiles.forEach((file) => {
+      const { viewer } = file;
+      if (!viewer) return;
+      viewer.automaticallyCollapsed = false;
+      viewer.manuallyCollapsed = collapsed;
+    });
+  },
 };

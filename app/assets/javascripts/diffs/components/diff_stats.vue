@@ -20,7 +20,7 @@ export default {
       type: Number,
       required: true,
     },
-    diffFilesCountText: {
+    diffsCount: {
       type: String,
       required: false,
       default: null,
@@ -28,13 +28,13 @@ export default {
   },
   computed: {
     diffFilesLength() {
-      return parseInt(this.diffFilesCountText, 10);
+      return parseInt(this.diffsCount, 10);
     },
     filesText() {
       return n__('file', 'files', this.diffFilesLength);
     },
     isCompareVersionsHeader() {
-      return Boolean(this.diffFilesCountText);
+      return Boolean(this.diffsCount);
     },
     hasDiffFiles() {
       return isNumber(this.diffFilesLength) && this.diffFilesLength >= 0;
@@ -63,7 +63,7 @@ export default {
     <div v-else class="diff-stats-contents">
       <div v-if="hasDiffFiles" class="diff-stats-group">
         <gl-icon name="doc-code" class="diff-stats-icon gl-text-gray-500" />
-        <span class="gl-font-bold gl-text-gray-500">{{ diffFilesCountText }} {{ filesText }}</span>
+        <span class="gl-font-bold gl-text-gray-500">{{ diffsCount }} {{ filesText }}</span>
       </div>
       <div
         class="diff-stats-group gl-flex gl-items-center gl-text-green-600"

@@ -130,7 +130,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
 
       context 'when commenting on collapsed line combinations that are not present in the real diff' do
         before do
-          find_all('[data-testid="expand-icon"]').first.click
+          find_all('[aria-label="Expand all lines"]').first.click
 
           click_diff_line(
             find_by_scrolling('div[data-path="files/js/breadcrumbs.js"] .left-side a[data-linenumber="15"]')

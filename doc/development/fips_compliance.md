@@ -406,10 +406,13 @@ needed. There are [specific build tags](https://github.com/golang-fips/go/blob/g
 that disable these crypto hooks.
 
 We can [check whether a given binary is using OpenSSL](https://go.googlesource.com/go/+/dev.boringcrypto/misc/boring/#caveat) via `go tool nm`
-and look for symbols named `Cfunc__goboringcrypto`. For example:
+and look for symbols named `Cfunc__goboringcrypto` or `crypto/internal/boring/sig.BoringCrypto`.
 
-```plaintext
-$ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
+For example:
+
+```console
+$ # Find in a Golang-FIPS 1.17 library
+$ go tool nm nginx-ingress-controller | grep '_Cfunc__goboringcrypto_|\bcrypto/internal/boring/sig\.BoringCrypto' | tail
  2a0b650 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Final
  2a0b658 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Init
  2a0b660 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Update
@@ -420,6 +423,9 @@ $ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
  2a0b688 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ECDSA_verify
  2a0b690 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_error_string_n
  2a0b698 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_get_error
+$ # Find in a Golang-FIPS 1.22 library
+$ go tool nm tenctl | grep '_Cfunc__goboringcrypto_|\bcrypto/internal/boring/sig\.BoringCrypto'
+  4cb840 t crypto/internal/boring/sig.BoringCrypto.abi0
 ```
 
 In addition, LabKit contains routines to [check whether FIPS is enabled](https://gitlab.com/gitlab-org/labkit/-/tree/master/fips).

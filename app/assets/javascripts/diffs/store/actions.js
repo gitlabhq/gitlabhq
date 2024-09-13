@@ -1115,3 +1115,11 @@ export const unlinkFile = ({ getters, commit }) => {
 export const toggleAllDiffDiscussions = ({ commit, getters }) => {
   commit(types.SET_EXPAND_ALL_DIFF_DISCUSSIONS, !getters.allDiffDiscussionsExpanded);
 };
+
+export const expandAllFiles = ({ commit }) => {
+  commit(types.SET_COLLAPSED_STATE_FOR_ALL_FILES, { collapsed: false });
+};
+
+export const collapseAllFiles = ({ commit }) => {
+  commit(types.SET_COLLAPSED_STATE_FOR_ALL_FILES, { collapsed: true });
+};

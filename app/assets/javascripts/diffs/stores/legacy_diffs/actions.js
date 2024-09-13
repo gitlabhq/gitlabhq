@@ -1122,3 +1122,11 @@ export function unlinkFile() {
 export function toggleAllDiffDiscussions() {
   this[types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](!this.allDiffDiscussionsExpanded);
 }
+
+export function expandAllFiles() {
+  this[types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed: false });
+}
+
+export function collapseAllFiles() {
+  this[types.SET_COLLAPSED_STATE_FOR_ALL_FILES]({ collapsed: true });
+}

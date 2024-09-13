@@ -16,7 +16,6 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
-import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -60,6 +59,7 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
+import DiffAppControls from './diff_app_controls.vue';
 import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
 
 export const FINDINGS_STATUS_PARSED = 'PARSED';
@@ -71,6 +71,7 @@ export default {
   FINDINGS_STATUS_PARSED,
   FINDINGS_STATUS_ERROR,
   components: {
+    DiffAppControls,
     DiffsFileTree,
     FindingsDrawer,
     DynamicScroller,
@@ -238,6 +239,8 @@ export default {
       'targetBranchName',
       'branchName',
       'showTreeList',
+      'addedLines',
+      'removedLines',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -316,6 +319,9 @@ export default {
         this.$root.$emit(BV_HIDE_TOOLTIP);
       };
       return throttle(hide, 100);
+    },
+    hasChanges() {
+      return this.diffFiles.length > 0;
     },
   },
   watch: {
@@ -450,6 +456,8 @@ export default {
       'disableVirtualScroller',
       'fetchLinkedFile',
       'toggleTreeList',
+      'expandAllFiles',
+      'collapseAllFiles',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -529,12 +537,6 @@ export default {
     },
     refetchDiffData({ refetchMeta = true } = {}) {
       this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
-    },
-    needsReload() {
-      return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
-    },
-    needsFirstLoad() {
-      return !this.diffFiles.length;
     },
     fetchData({ toggleTree = true, fetchMeta = true } = {}) {
       if (this.linkedFileUrl && this.linkedFileStatus !== 'loaded') {
@@ -749,7 +751,18 @@ export default {
     <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
-      <compare-versions :diff-files-count-text="numTotalFiles" />
+      <div class="gl-flex gl-flex-wrap">
+        <compare-versions :toggle-file-tree-visible="hasChanges" />
+        <diff-app-controls
+          class="gl-ml-auto"
+          :has-changes="hasChanges"
+          :diffs-count="numTotalFiles"
+          :added-lines="addedLines"
+          :removed-lines="removedLines"
+          @expandAllFiles="expandAllFiles"
+          @collapseAllFiles="collapseAllFiles"
+        />
+      </div>
 
       <template v-if="!isBatchLoadingError">
         <collapsed-files-warning v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES" />

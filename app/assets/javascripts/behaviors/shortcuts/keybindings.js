@@ -487,6 +487,19 @@ export const MR_COPY_SOURCE_BRANCH_NAME = {
   defaultKeys: ['b'],
 };
 
+export const MR_EXPAND_ALL_FILES = {
+  id: 'mergeRequests.expandAllFiles',
+  description: __('Expand all files'),
+  defaultKeys: [';'],
+};
+
+export const MR_COLLAPSE_ALL_FILES = {
+  id: 'mergeRequests.collapseAllFiles',
+  description: __('Collapse all files'),
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  defaultKeys: ['shift+;'],
+};
+
 export const MR_COMMITS_NEXT_COMMIT = {
   id: 'mergeRequestCommits.nextCommit',
   description: __('Next commit'),

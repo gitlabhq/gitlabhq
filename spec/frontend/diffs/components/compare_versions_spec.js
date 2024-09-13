@@ -22,19 +22,18 @@ describe('CompareVersions', () => {
   const targetBranchName = 'tmp-wine-dev';
   const { commit } = getDiffWithCommit;
 
-  const createWrapper = (props = {}, commitArgs = {}, createCommit = true) => {
+  const createWrapper = ({ props = {}, commitArgs = {}, createCommit = true } = {}) => {
     if (createCommit) {
       store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
     }
 
     wrapper = mount(CompareVersionsComponent, {
+      propsData: {
+        toggleFileTreeVisible: true,
+        ...props,
+      },
       mocks: {
         $store: store,
-      },
-      propsData: {
-        mergeRequestDiffs: diffsMockData,
-        diffFilesCountText: '1',
-        ...props,
       },
     });
   };
@@ -77,7 +76,7 @@ describe('CompareVersions', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createWrapper({}, {}, false);
+      createWrapper({ createCommit: false });
     });
 
     it('should render Tree List toggle button with correct attribute values', () => {
@@ -99,17 +98,11 @@ describe('CompareVersions', () => {
     });
   });
 
-  describe('noChangedFiles', () => {
-    beforeEach(() => {
-      store.state.diffs.diffFiles = [];
-    });
+  it('should not render Tree List toggle button when a prop is false', () => {
+    createWrapper({ props: { toggleFileTreeVisible: false } });
+    const treeListBtn = wrapper.find('.js-toggle-tree-list');
 
-    it('should not render Tree List toggle button when there are no changes', () => {
-      createWrapper();
-      const treeListBtn = wrapper.find('.js-toggle-tree-list');
-
-      expect(treeListBtn.exists()).toBe(false);
-    });
+    expect(treeListBtn.exists()).toBe(false);
   });
 
   describe('commit', () => {
@@ -147,7 +140,7 @@ describe('CompareVersions', () => {
 
   describe('without neighbor commits', () => {
     beforeEach(() => {
-      createWrapper({ commit: { ...commit, prev_commit_id: null, next_commit_id: null } });
+      createWrapper({ commitArgs: { ...commit, prev_commit_id: null, next_commit_id: null } });
     });
 
     it('does not render any navigation buttons', () => {
@@ -165,20 +158,16 @@ describe('CompareVersions', () => {
         prev_commit_id: 'prev',
       };
 
-      createWrapper({}, mrCommit);
+      createWrapper({ commitArgs: mrCommit });
     });
 
     it('renders the commit navigation buttons', () => {
       expect(getCommitNavButtonsElement().exists()).toEqual(true);
 
-      createWrapper({
-        commit: { ...mrCommit, next_commit_id: null },
-      });
+      createWrapper({ commitArgs: { ...mrCommit, next_commit_id: null } });
       expect(getCommitNavButtonsElement().exists()).toEqual(true);
 
-      createWrapper({
-        commit: { ...mrCommit, prev_commit_id: null },
-      });
+      createWrapper({ commitArgs: { ...mrCommit, prev_commit_id: null } });
       expect(getCommitNavButtonsElement().exists()).toEqual(true);
     });
 
@@ -204,7 +193,7 @@ describe('CompareVersions', () => {
       });
 
       it('renders a disabled button when there is no prev commit', () => {
-        createWrapper({}, { ...mrCommit, prev_commit_id: null });
+        createWrapper({ commitArgs: { ...mrCommit, prev_commit_id: null } });
 
         const button = getPrevCommitNavElement();
 
@@ -234,7 +223,7 @@ describe('CompareVersions', () => {
       });
 
       it('renders a disabled button when there is no next commit', () => {
-        createWrapper({}, { ...mrCommit, next_commit_id: null });
+        createWrapper({ commitArgs: { ...mrCommit, next_commit_id: null } });
 
         const button = getNextCommitNavElement();
 

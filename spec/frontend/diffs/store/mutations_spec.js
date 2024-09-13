@@ -1349,4 +1349,20 @@ describe('DiffsStoreMutations', () => {
       expect(state.linkedFileHash).toBe(file.file_hash);
     });
   });
+
+  describe('SET_COLLAPSED_STATE_FOR_ALL_FILES', () => {
+    it('sets collapsed state for all files', () => {
+      const state = {
+        diffFiles: [getDiffFileMock(), getDiffFileMock()],
+      };
+
+      mutations[types.SET_COLLAPSED_STATE_FOR_ALL_FILES](state, { collapsed: true });
+
+      expect(
+        state.diffFiles.every(
+          ({ viewer }) => viewer.manuallyCollapsed && !viewer.automaticallyCollapsed,
+        ),
+      ).toBe(true);
+    });
+  });
 });

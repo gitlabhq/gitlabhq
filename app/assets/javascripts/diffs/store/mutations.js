@@ -427,4 +427,12 @@ export default {
   [types.SET_LINKED_FILE_HASH](state, fileHash) {
     state.linkedFileHash = fileHash;
   },
+  [types.SET_COLLAPSED_STATE_FOR_ALL_FILES](state, { collapsed }) {
+    state.diffFiles.forEach((file) => {
+      const { viewer } = file;
+      if (!viewer) return;
+      viewer.automaticallyCollapsed = false;
+      viewer.manuallyCollapsed = collapsed;
+    });
+  },
 };
