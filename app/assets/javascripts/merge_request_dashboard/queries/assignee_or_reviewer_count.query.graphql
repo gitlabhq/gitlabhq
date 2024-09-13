@@ -1,13 +1,8 @@
-#import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "./merge_request.fragment.graphql"
-
-query assigneeOrReviewer(
+query assigneeOrReviewerCount(
   $state: MergeRequestState = opened
   $assignedReviewStates: [MergeRequestReviewState!]
   $reviewerReviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
-  $perPage: Int!
-  $afterCursor: String
 ) {
   currentUser {
     id
@@ -16,16 +11,8 @@ query assigneeOrReviewer(
       assignedReviewStates: $assignedReviewStates
       reviewerReviewStates: $reviewerReviewStates
       mergedAfter: $mergedAfter
-      first: $perPage
-      after: $afterCursor
-      sort: UPDATED_DESC
     ) {
-      pageInfo {
-        ...PageInfo
-      }
-      nodes {
-        ...MergeRequestDashboardFragment
-      }
+      count
     }
   }
 }

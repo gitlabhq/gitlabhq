@@ -1,13 +1,8 @@
-#import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "./merge_request.fragment.graphql"
-
-query reviewRequests(
+query reviewRequestsCount(
   $state: MergeRequestState = opened
   $reviewState: MergeRequestReviewState
   $reviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
-  $perPage: Int!
-  $afterCursor: String
 ) {
   currentUser {
     id
@@ -16,16 +11,8 @@ query reviewRequests(
       reviewState: $reviewState
       reviewStates: $reviewStates
       mergedAfter: $mergedAfter
-      first: $perPage
-      after: $afterCursor
-      sort: UPDATED_DESC
     ) {
-      pageInfo {
-        ...PageInfo
-      }
-      nodes {
-        ...MergeRequestDashboardFragment
-      }
+      count
     }
   }
 }
