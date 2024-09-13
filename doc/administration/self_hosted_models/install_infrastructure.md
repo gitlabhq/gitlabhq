@@ -117,7 +117,6 @@ model_list:
 
    ```shell
    AI_GATEWAY_URL=https://<your_ai_gitlab_domain>
-   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
    ```
 
 1. Where your GitLab instance is installed, [run the following Rake task](../../raketasks/index.md) to activate GitLab Duo features:

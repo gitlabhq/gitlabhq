@@ -41,7 +41,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
 
    ```shell
    docker exec -it <ai-gateway-container> sh
-   poetry run python scripts/troubleshoot_selfhosted_installation.py --model-name "codegemma_7b" --model-endpoint 
+   poetry run python scripts/troubleshoot_selfhosted_installation.py --model-name "codegemma_7b" --model-endpoint
    "http://localhost:4000"
    ```
 
@@ -108,7 +108,6 @@ To check if GitLab Duo was configured correctly:
 To check if the GitLab environmental variables are set up correctly, run the following on the GitLab Rails console:
 
 ```ruby
-ENV["CLOUD_CONNECTOR_SELF_SIGN_TOKENS"] == 1
 ENV["AI_GATEWAY_URL"] == "<your-ai-gateway-endpoint>"
 ```
 

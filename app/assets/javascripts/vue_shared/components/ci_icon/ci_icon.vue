@@ -112,7 +112,7 @@ export default {
     <span class="ci-icon-gl-icon-wrapper"><gl-icon :name="icon" /></span
     ><span
       v-if="showStatusText"
-      class="gl-ml-2 gl-mr-3 gl-whitespace-nowrap"
+      class="gl-ml-2 gl-mr-3 gl-self-center gl-whitespace-nowrap gl-leading-1"
       data-testid="ci-icon-text"
       >{{ status.text }}</span
     >

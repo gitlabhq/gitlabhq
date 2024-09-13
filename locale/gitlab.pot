@@ -3909,6 +3909,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Edit self-hosted model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Edit the AI model that can be used for GitLab Duo features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Enable self-hosted models"
 msgstr ""
 
@@ -3960,7 +3963,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
 msgstr ""
 
-msgid "AdminSelfHostedModels|There was an error creating the self-hosted model. Please try again."
+msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
 msgstr ""
 
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
