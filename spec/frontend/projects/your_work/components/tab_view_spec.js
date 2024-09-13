@@ -8,7 +8,7 @@ import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vu
 import contributedProjectsQuery from '~/projects/your_work/graphql/queries/contributed_projects.query.graphql';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
 import { createAlert } from '~/alert';
-import { CONTRIBUTED_TAB } from 'ee_else_ce/projects/your_work/constants';
+import { CONTRIBUTED_TAB } from '~/projects/your_work/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 

@@ -1,4 +1,4 @@
-import { GlForm } from '@gitlab/ui';
+import { GlAlert, GlForm } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -28,12 +28,12 @@ describe('WorkItemDescription', () => {
   Vue.use(VueApollo);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
-  let workItemResponseHandler;
-
   const findForm = () => wrapper.findComponent(GlForm);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findRenderedDescription = () => wrapper.findComponent(WorkItemDescriptionRendered);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
+  const findConflictsAlert = () => wrapper.findComponent(GlAlert);
+  const findConflictedDescription = () => wrapper.find('[data-testid="conflicted-description"]');
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
@@ -45,6 +45,7 @@ describe('WorkItemDescription', () => {
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
     workItemResponse = workItemByIidResponseFactory({ canUpdate }),
+    workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse),
     isEditing = false,
     isGroup = false,
     workItemIid = '1',
@@ -52,8 +53,6 @@ describe('WorkItemDescription', () => {
     editMode = false,
     showButtonsBelowField,
   } = {}) => {
-    workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
-
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
@@ -70,6 +69,9 @@ describe('WorkItemDescription', () => {
       },
       provide: {
         isGroup,
+      },
+      stubs: {
+        GlAlert,
       },
     });
 
@@ -221,7 +223,8 @@ describe('WorkItemDescription', () => {
   });
 
   it('calls the project work item query', () => {
-    createComponent();
+    const workItemResponseHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+    createComponent({ workItemResponseHandler });
 
     expect(workItemResponseHandler).toHaveBeenCalled();
   });
@@ -249,6 +252,46 @@ describe('WorkItemDescription', () => {
       const updatedDesc = 'updated desc with inline editing disabled';
       findMarkdownEditor().vm.$emit('input', updatedDesc);
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
+    });
+
+    describe('when description has conflicts', () => {
+      beforeEach(async () => {
+        const workItemResponseHandler = jest
+          .fn()
+          .mockResolvedValueOnce(workItemByIidResponseFactory())
+          .mockResolvedValueOnce(
+            workItemByIidResponseFactory({
+              descriptionText: 'description updated by someone else',
+            }),
+          );
+        await createComponent({ isEditing: true, workItemResponseHandler });
+
+        editDescription('updated description');
+
+        // Trigger a refetch of the work item data
+        await wrapper.vm.$apollo.queries.workItem.refetch();
+      });
+
+      it('shows conflict warning when description is updated while editing', () => {
+        expect(findConflictsAlert().exists()).toBe(true);
+        expect(findConflictsAlert().text()).toContain(
+          'Someone edited the description at the same time you did',
+        );
+        expect(findConflictedDescription().attributes('value')).toBe(
+          'description updated by someone else',
+        );
+
+        expect(findSubmitButton().text()).toBe('Save and overwrite');
+        expect(findCancelButton().text()).toBe('Discard changes');
+      });
+
+      it('clears conflict warning on save', async () => {
+        findSubmitButton().vm.$emit('click');
+
+        await nextTick();
+
+        expect(findConflictsAlert().exists()).toBe(false);
+      });
     });
   });
 

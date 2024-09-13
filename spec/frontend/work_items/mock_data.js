@@ -1121,6 +1121,8 @@ export const workItemResponseFactory = ({
   rolledUpHealthStatus = [],
   rolledUpWeight = 0,
   rolledUpCompletedWeight = 0,
+  descriptionText = 'some **great** text',
+  descriptionHtml = '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
 } = {}) => ({
   data: {
     workItem: {
@@ -1130,7 +1132,7 @@ export const workItemResponseFactory = ({
       archived: false,
       title: 'Updated title',
       state,
-      description: 'description',
+      description: descriptionText,
       webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
       confidential,
       createdAt,
@@ -1160,10 +1162,8 @@ export const workItemResponseFactory = ({
         {
           __typename: 'WorkItemWidgetDescription',
           type: 'DESCRIPTION',
-          description: withCheckboxes ? descriptionTextWithCheckboxes : 'some **great** text',
-          descriptionHtml: withCheckboxes
-            ? descriptionHtmlWithCheckboxes
-            : '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          description: withCheckboxes ? descriptionTextWithCheckboxes : descriptionText,
+          descriptionHtml: withCheckboxes ? descriptionHtmlWithCheckboxes : descriptionHtml,
           lastEditedAt,
           lastEditedBy,
           taskCompletionStatus,

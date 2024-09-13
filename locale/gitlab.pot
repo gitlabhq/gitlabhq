@@ -5815,6 +5815,9 @@ msgstr ""
 msgid "An error occurred fetching the public deploy keys. Please try again."
 msgstr ""
 
+msgid "An error occurred loading the project counts."
+msgstr ""
+
 msgid "An error occurred loading the projects. Please refresh the page to try again."
 msgstr ""
 
@@ -44051,7 +44054,7 @@ msgstr ""
 msgid "ProtectedBranch|Protect a branch"
 msgstr ""
 
-msgid "ProtectedBranch|Protected branch was sucessfully created"
+msgid "ProtectedBranch|Protected branch was successfully created"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"

@@ -149,7 +149,7 @@ export default class ProtectedBranchCreate {
     this.alert = createAlert({
       variant: VARIANT_SUCCESS,
       containerSelector: '.js-alert-protected-branch-created-container',
-      message: s__('ProtectedBranch|Protected branch was sucessfully created'),
+      message: s__('ProtectedBranch|Protected branch was successfully created'),
     });
   }
 

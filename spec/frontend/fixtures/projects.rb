@@ -182,4 +182,28 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :groups_and_pro
       expect_graphql_errors_to_be_empty
     end
   end
+
+  context 'for your work -> projects -> counts' do
+    before_all do
+      project.add_maintainer(user)
+      project2.add_maintainer(user)
+    end
+
+    before do
+      create(:push_event, project: project, author: user)
+      create(:push_event, project: project2, author: user)
+    end
+
+    base_input_path = 'projects/your_work/graphql/queries/'
+    base_output_path = 'graphql/projects/your_work/'
+    query_name = 'project_counts.query.graphql'
+
+    it "#{base_output_path}#{query_name}.json" do
+      query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+      post_graphql(query, current_user: user)
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
 end
