@@ -47,6 +47,7 @@ default:
   before_script:
     - cd $[[inputs.gem_path_prefix]]$[[inputs.gem_name]]
     - ruby -v                                   # Print out ruby version for debugging
+    - gem update --system
     - bundle_version=$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1 | sed -e 's/[[:space:]]//')
     - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
     - bundle config                             # Show bundler configuration
