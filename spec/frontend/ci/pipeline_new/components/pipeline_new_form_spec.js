@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlForm, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
+import { GlForm, GlSprintf, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import CreditCardValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -164,6 +164,12 @@ describe('Pipeline New Form', () => {
 
     it('does not display remove icon for last row', () => {
       expect(findRemoveIcons()).toHaveLength(2);
+    });
+
+    it('display remove button with specific properties', () => {
+      expect(findRemoveIcons().at(0).props('category')).toBe('tertiary');
+      expect(findRemoveIcons().at(0).props('variant')).toBe('default');
+      expect(findRemoveIcons().at(0).findComponent(GlIcon).props('name')).toBe('remove');
     });
 
     it('removes ci variable row on remove icon button click', async () => {

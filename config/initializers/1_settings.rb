@@ -930,6 +930,9 @@ Gitlab.ee do
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::CleanupWorker'
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker'] ||= {}
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['cron'] ||= '30 0 * * *'
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::OfflineCloudLicenseProvisionWorker'
   Settings.cron_jobs['observability_alert_query_worker'] ||= {}
   Settings.cron_jobs['observability_alert_query_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['observability_alert_query_worker']['job_class'] = 'Observability::AlertQueryWorker'
