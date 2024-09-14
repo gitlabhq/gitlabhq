@@ -121,3 +121,10 @@
     margin-left: $gl-spacing-scale-5;
   }
 }
+
+// Legacy system notes (commits and snippets)
+.system-note-legacy {
+  .note-headline-light p {
+    margin-bottom: 0;
+  }
+}

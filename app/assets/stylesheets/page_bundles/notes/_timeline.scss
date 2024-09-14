@@ -11,7 +11,7 @@
 
   .system-note {
     .note-text {
-      color: $gl-text-color !important;
+      color: var(--gl-text-color-default);
     }
   }
 
