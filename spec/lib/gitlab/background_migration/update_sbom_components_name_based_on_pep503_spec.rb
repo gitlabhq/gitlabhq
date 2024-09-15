@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateSbomComponentsNameBasedOnPep503, feature_category: :software_composition_analysis do
+RSpec.describe Gitlab::BackgroundMigration::UpdateSbomComponentsNameBasedOnPep503, schema: 20240828162042, feature_category: :software_composition_analysis do
   let(:components) { table(:sbom_components) }
 
   before do
