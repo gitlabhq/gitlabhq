@@ -224,10 +224,10 @@ for more details.
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.3                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
+  | 17.3                    |  All                    | 17.3.1   |
 
 ## 17.2.1
 
@@ -273,9 +273,9 @@ for more details.
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 16.11                   |  All                    | None     |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.2                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
 
 - Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
 
@@ -283,10 +283,10 @@ for more details.
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.3                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
+  | 17.3                    |  All                    | 17.3.1   |
 
 ## 17.1.0
 
@@ -310,9 +310,9 @@ for more details.
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 16.11                   |  All                    | None     |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.2                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
 
 - Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
 
@@ -320,10 +320,10 @@ for more details.
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.3                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
+  | 17.3                    |  All                    | 17.3.1   |
 
 ## 17.0.0
 
@@ -336,9 +336,9 @@ for more details.
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 16.11                   |  All                    | None     |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.2                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
 
 - Geo Replication Details pages for a secondary site appear to be empty even if Geo replication is working, see [issue 468509](https://gitlab.com/gitlab-org/gitlab/-/issues/468509). There is no known workaround. The bug is fixed in GitLab 17.4.
 
@@ -346,7 +346,7 @@ for more details.
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
-  | 17.0                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.1                    |  All                    | None     |
-  | 17.3                    |  All                    | None     |
+  | 17.0                    |  All                    | 17.0.7   |
+  | 17.1                    |  All                    | 17.1.7   |
+  | 17.2                    |  All                    | 17.2.5   |
+  | 17.3                    |  All                    | 17.3.1   |

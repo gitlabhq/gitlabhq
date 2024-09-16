@@ -14,6 +14,7 @@ RSpec.describe QueueBackfillProjectIdToDependencyListExports, feature_category: 
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
+          gitlab_schema: :gitlab_sec,
           table_name: :dependency_list_exports,
           column_name: :id,
           interval: described_class::DELAY_INTERVAL,

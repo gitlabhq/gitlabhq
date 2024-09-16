@@ -245,9 +245,25 @@ dast_sites:
   - table: projects
     column: project_id
     on_delete: async_delete
+dependency_list_export_parts:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 dependency_list_exports:
   - table: ci_pipelines
     column: pipeline_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: namespaces
+    column: group_id
+    on_delete: async_delete
+  - table: organizations
+    column: organization_id
     on_delete: async_delete
 deployment_clusters:
   - table: clusters

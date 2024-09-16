@@ -26,10 +26,10 @@
 }
 
 .timeline-entry {
-  color: $gl-text-color;
+  color: var(--gl-text-color-default);
 
   &:not(.note-form).internal-note .timeline-content {
-    background-color: $orange-50 !important;
+    background-color: var(--orange-50) !important;
   }
 
   .timeline-entry-inner {
@@ -39,7 +39,7 @@
   &:target,
   &.target {
     .timeline-content {
-      background-color: $line-target-blue;
+      background-color: var(--blue-50) !important;
     }
 
     + .discussion-reply-holder {
@@ -47,7 +47,7 @@
     }
 
     &.system-note .note-body .note-text.system-note-commit-list::after {
-      background: linear-gradient(rgba($line-target-blue, 0.1) -100px, $line-target-blue 100%);
+      background: linear-gradient(rgba(var(--blue-50), 0.1) -100px, var(--blue-50) 100%);
     }
   }
 

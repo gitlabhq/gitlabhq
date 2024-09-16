@@ -189,10 +189,12 @@ func run(boot bootConfig, cfg config.Config) error {
 	// requests can only reach the profiler if we start a listener. So by
 	// having no profiler HTTP listener by default, the profiler is
 	// effectively disabled by default.
+	var l net.Listener
+
 	if boot.pprofListenAddr != "" {
-		l, tcpErr := net.Listen("tcp", boot.pprofListenAddr)
-		if tcpErr != nil {
-			return fmt.Errorf("pprofListenAddr: %v", tcpErr)
+		l, err = net.Listen("tcp", boot.pprofListenAddr)
+		if err != nil {
+			return fmt.Errorf("pprofListenAddr: %v", err)
 		}
 
 		go func() { finalErrors <- http.Serve(l, nil) }()
@@ -200,12 +202,13 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
 	if cfg.MetricsListener != nil {
-		l, metricErr := newListener("metrics", *cfg.MetricsListener)
-		if metricErr != nil {
-			return metricErr
+		l, err = newListener("metrics", *cfg.MetricsListener)
+		if err != nil {
+			return err
 		}
 		monitoringOpts = append(monitoringOpts, monitoring.WithListener(l))
 	}
+
 	go func() {
 		// Unlike http.Serve, which always returns a non-nil error,
 		// monitoring.Start may return nil in which case we should not shut down.

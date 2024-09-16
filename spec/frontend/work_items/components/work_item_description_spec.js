@@ -12,7 +12,7 @@ import WorkItemDescription from '~/work_items/components/work_item_description.v
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
+import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -48,12 +48,13 @@ describe('WorkItemDescription', () => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse),
     isEditing = false,
     isGroup = false,
+    workItemId = workItemQueryResponse.data.workItem.id,
     workItemIid = '1',
     workItemTypeId = workItemQueryResponse.data.workItem.workItemType.id,
+    workItemTypeName = workItemQueryResponse.data.workItem.workItemType.name,
     editMode = false,
     showButtonsBelowField,
   } = {}) => {
-    const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
@@ -61,9 +62,10 @@ describe('WorkItemDescription', () => {
       ]),
       propsData: {
         fullPath: 'test-project-path',
-        workItemId: id,
+        workItemId,
         workItemIid,
         workItemTypeId,
+        workItemTypeName,
         editMode,
         showButtonsBelowField,
       },
@@ -292,6 +294,29 @@ describe('WorkItemDescription', () => {
 
         expect(findConflictsAlert().exists()).toBe(false);
       });
+    });
+
+    it('does not show conflict warning when in create flow', async () => {
+      const workItemResponseHandler = jest
+        .fn()
+        .mockResolvedValueOnce(workItemByIidResponseFactory())
+        .mockResolvedValueOnce(
+          workItemByIidResponseFactory({
+            descriptionText: 'description updated by someone else',
+          }),
+        );
+      await createComponent({
+        workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
+        isEditing: true,
+        workItemResponseHandler,
+      });
+
+      editDescription('updated description');
+
+      // Trigger a refetch of the work item data
+      await wrapper.vm.$apollo.queries.workItem.refetch();
+
+      expect(findConflictsAlert().exists()).toBe(false);
     });
   });
 

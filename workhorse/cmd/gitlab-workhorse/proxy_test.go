@@ -52,8 +52,8 @@ func TestProxyRequest(t *testing.T) {
 			"expect Gitlab-Workhorse-Proxy-Start to start with 1",
 		)
 
-		body, requestErr := io.ReadAll(r.Body)
-		assert.NoError(t, requestErr, "read body")
+		body, readErr := io.ReadAll(r.Body)
+		assert.NoError(t, readErr, "read body")
 		assert.Equal(t, "REQUEST", string(body), "body contents")
 
 		w.Header().Set("Custom-Response-Header", "test")

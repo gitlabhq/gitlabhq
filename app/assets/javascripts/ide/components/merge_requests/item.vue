@@ -1,10 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlButton } from '@gitlab/ui';
 
 export default {
   components: {
     GlIcon,
+    GlButton,
   },
   props: {
     item: {
@@ -40,13 +41,11 @@ export default {
 </script>
 
 <template>
-  <a :href="mergeRequestHref" class="btn-link gl-button gl-flex gl-items-center">
-    <span class="ide-search-list-current-icon gl-mr-3 gl-flex">
-      <gl-icon v-if="isActive" :size="16" name="mobile-issue-close" />
-    </span>
-    <span>
+  <gl-button variant="link" :href="mergeRequestHref">
+    <span class="gl-inline-block gl-whitespace-normal">
+      <gl-icon v-if="isActive" :size="16" name="mobile-issue-close" class="gl-mr-3" />
       <strong> {{ item.title }} </strong>
       <span class="ide-merge-request-project-path mt-1 gl-block"> {{ pathWithID }} </span>
     </span>
-  </a>
+  </gl-button>
 </template>
