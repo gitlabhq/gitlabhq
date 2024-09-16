@@ -4,17 +4,19 @@ require 'spec_helper'
 
 RSpec.describe Users::CreateService, feature_category: :user_management do
   describe '#execute' do
+    let_it_be(:organization) { create(:organization) }
     let(:password) { User.random_password }
     let(:admin_user) { create(:admin) }
+    let(:email) { 'jd@example.com' }
+    let(:base_params) do
+      { name: 'John Doe', username: 'jduser', email: email, password: password, organization_id: organization.id }
+    end
 
     context 'with an admin user' do
       let(:service) { described_class.new(admin_user, params) }
-      let(:email) { 'jd@example.com' }
 
       context 'when required parameters are provided' do
-        let(:params) do
-          { name: 'John Doe', username: 'jduser', email: email, password: password }
-        end
+        let(:params) { base_params }
 
         it 'returns a persisted user' do
           expect(service.execute).to be_persisted
@@ -88,9 +90,7 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
       end
 
       context 'when force_random_password parameter is true' do
-        let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, force_random_password: true }
-        end
+        let(:params) { base_params.merge(force_random_password: true) }
 
         it 'generates random password' do
           user = service.execute
@@ -101,15 +101,7 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
       end
 
       context 'when password_automatically_set parameter is true' do
-        let(:params) do
-          {
-            name: 'John Doe',
-            username: 'jduser',
-            email: 'jd@example.com',
-            password: password,
-            password_automatically_set: true
-          }
-        end
+        let(:params) { base_params.merge(password_automatically_set: true) }
 
         it 'persists the given attributes' do
           user = service.execute
@@ -127,9 +119,7 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
       end
 
       context 'when skip_confirmation parameter is true' do
-        let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, skip_confirmation: true }
-        end
+        let(:params) { base_params.merge(skip_confirmation: true) }
 
         it 'confirms the user' do
           expect(service.execute).to be_confirmed
@@ -137,9 +127,7 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
       end
 
       context 'when reset_password parameter is true' do
-        let(:params) do
-          { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, reset_password: true }
-        end
+        let(:params) { base_params.merge(reset_password: true) }
 
         it 'resets password even if a password parameter is given' do
           expect(service.execute).to be_recently_sent_password_reset
@@ -158,9 +146,7 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
     end
 
     context 'with nil user' do
-      let(:params) do
-        { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: password, skip_confirmation: true }
-      end
+      let(:params) { base_params.merge(skip_confirmation: true) }
 
       let(:service) { described_class.new(nil, params) }
 

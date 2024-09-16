@@ -130,9 +130,10 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
       it 'preloads related merge requests' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expected_query = "FROM \"merge_requests\" WHERE \"merge_requests\".\"id\" IN (#{merge_request_1.id}, #{merge_request_2.id})"
+        id_pattern = /#{merge_request_1.id}, #{merge_request_2.id}|#{merge_request_2.id}, #{merge_request_1.id}/
+        expected_query = /FROM "merge_requests" WHERE "merge_requests"\."id" IN \(#{id_pattern}\)/
 
-        expect(recorded.log).to include(a_string_including(expected_query))
+        expect(recorded.log).to include(a_string_matching(expected_query))
       end
     end
 

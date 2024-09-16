@@ -84,7 +84,7 @@ module Gitlab
             name: _('Container Scanning For Registry'),
             description: _('Run container scanning job whenever a container image with the latest tag is pushed.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/continuous_vulnerability_scanning/index'),
+              'user/application_security/container_scanning/index', anchor: 'container-scanning-for-registry'),
             type: 'container_scanning_for_registry'
           },
           pre_receive_secret_detection: {

@@ -1,0 +1,32 @@
+- title: 'Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`'
+  removal_milestone: '18.0'
+  announcement_milestone: '17.5'
+  breaking_change: true
+  reporter: lwanko
+  stage:
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/489850
+  impact: low
+  scope: # Can be one or a combination of: [instance, group, project]
+  resolution_role: Developer
+  manual_task: true
+  body: | # (required) Don't change this line.
+    The namespace GraphQL field `add_on_purchase` will be deprecated in GitLab 17.5 and removed in GitLab 18.0. Use the root `add_on_purchases` field instead.
+
+  # ==============================
+  # OPTIONAL END-OF-SUPPORT FIELDS
+  # ==============================
+  #
+  # If an End of Support period applies:
+  # 1) Share this announcement in the `#spt_managers` Support channel in Slack
+  # 2) Mention `@gitlab-com/support` in this merge request.
+  #
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#namespace
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

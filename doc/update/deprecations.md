@@ -638,6 +638,22 @@ A new `maxretries` parameter has been added to control how many times an event w
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/489850).
+
+</div>
+
+The namespace GraphQL field `add_on_purchase` will be deprecated in GitLab 17.5 and removed in GitLab 18.0. Use the root `add_on_purchases` field instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Runner `active` GraphQL fields replaced by `paused`
 
 <div class="deprecation-notes">

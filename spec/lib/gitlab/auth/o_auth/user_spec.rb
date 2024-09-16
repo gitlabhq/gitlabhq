@@ -31,10 +31,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, aggregate_failures: true, feature_cate
   let(:ldap_user) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
   let(:ldap_user_2) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
-  around do |example|
-    Namespace.with_disabled_organization_validation { example.run }
-  end
-
   describe '.find_by_uid_and_provider' do
     let(:provider) { 'provider' }
     let(:uid) { 'uid' }

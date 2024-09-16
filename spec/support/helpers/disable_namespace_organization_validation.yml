@@ -23,6 +23,4 @@
 - spec/lib/gitlab/auth/saml/user_spec.rb
 - spec/models/hooks/system_hook_spec.rb
 - spec/requests/api/groups_spec.rb
-- spec/services/users/create_service_spec.rb
-- spec/services/groups/create_service_spec.rb
 - spec/services/resource_access_tokens/create_service_spec.rb

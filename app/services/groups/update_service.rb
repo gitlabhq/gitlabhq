@@ -39,7 +39,7 @@ module Groups
       group.assign_attributes(params)
 
       begin
-        success = Namespace.with_disabled_organization_validation { group.save }
+        success = group.save
 
         after_update if success
 

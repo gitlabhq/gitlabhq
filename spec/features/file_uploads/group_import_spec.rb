@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a group export archive', :api, :js, feature_category: :groups_and_projects do
+RSpec.describe 'Upload a group export archive', :with_current_organization, :api, :js, feature_category: :groups_and_projects do
   include_context 'file upload requests helpers'
 
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { create(:user, :admin, organizations: [current_organization]) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
   let(:api_path) { '/groups/import' }

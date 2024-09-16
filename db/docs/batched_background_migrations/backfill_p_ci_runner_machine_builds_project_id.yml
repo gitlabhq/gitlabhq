@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillPCiRunnerMachineBuildsProjectId
+description: Backfills sharding key `p_ci_runner_machine_builds.project_id` from `p_ci_builds`.
+feature_category: runner
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164386'
+milestone: '17.4'
+queued_migration_version: 20240829160537
+finalize_after: '2024-10-15'
+finalized_by: # version of the migration that finalized this BBM
