@@ -247,7 +247,7 @@ trigger-depsaster:
     MERGE_REQUEST_PROJECT_ID: $CI_MERGE_REQUEST_PROJECT_ID
     MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
   trigger:
-    project: "gitlab-com/gl-security/appsec/tooling/depsaster"
+    project: "gitlab-com/gl-security/product-security/appsec/tooling/depsaster"
   allow_failure: true
 
 ping-appsec-for-dependency-review:
