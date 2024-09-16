@@ -7774,7 +7774,8 @@ CREATE TABLE ci_build_needs (
     optional boolean DEFAULT false NOT NULL,
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq

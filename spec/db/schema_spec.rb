@@ -13,6 +13,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
     ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_build_needs: %w[project_id], # we will create async index, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163429#note_2065627176
     ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
     ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
@@ -75,6 +76,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
     ci_builds_metadata: %w[partition_id project_id build_id],
+    ci_build_needs: %w[project_id],
     ci_daily_build_group_report_results: %w[partition_id],
     ci_deleted_objects: %w[project_id],
     ci_job_artifacts: %w[partition_id project_id job_id],

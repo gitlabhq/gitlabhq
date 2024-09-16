@@ -59,7 +59,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	writer := multipart.NewWriter(&body)
 	defer func() {
 		if writerErr := writer.Close(); writerErr != nil {
-			fmt.Fprintln(w, writerErr.Error())
+			_, _ = fmt.Fprintln(w, writerErr.Error())
 		}
 	}()
 
@@ -98,7 +98,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 
 	// Close writer
 	if writerErr := writer.Close(); writerErr != nil {
-		fmt.Fprintln(w, writerErr.Error())
+		_, _ = fmt.Fprintln(w, writerErr.Error())
 	}
 
 	// Hijack the request

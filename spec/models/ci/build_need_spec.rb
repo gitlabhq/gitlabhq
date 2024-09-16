@@ -9,6 +9,7 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
 
   it { is_expected.to validate_presence_of(:build) }
   it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:project_id) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
   describe 'scopes' do
@@ -65,7 +66,7 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
     end
 
     context 'without build' do
-      let(:build_need) { FactoryBot.build(:ci_build_need, build: nil) }
+      let(:build_need) { FactoryBot.build(:ci_build_need, build: nil, project_id: nil) }
 
       it { is_expected.to validate_presence_of(:partition_id) }
 

@@ -369,12 +369,12 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 			ws := startWorkhorseServer(t, ts.URL)
 
 			req, err := http.NewRequest("POST", ws.URL+"/something", tc.body)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 
 			req.Header.Set("Content-Type", tc.contentType)
 			req.Header.Set(upload.RewrittenFieldsHeader, canary)
 			resp, err := http.DefaultClient.Do(req)
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			defer resp.Body.Close()
 
 			assert.Equal(t, 200, resp.StatusCode, "status code")

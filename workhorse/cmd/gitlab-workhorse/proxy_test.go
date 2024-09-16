@@ -52,8 +52,8 @@ func TestProxyRequest(t *testing.T) {
 			"expect Gitlab-Workhorse-Proxy-Start to start with 1",
 		)
 
-		body, err := io.ReadAll(r.Body)
-		assert.NoError(t, err, "read body")
+		body, requestErr := io.ReadAll(r.Body)
+		assert.NoError(t, requestErr, "read body")
 		assert.Equal(t, "REQUEST", string(body), "body contents")
 
 		w.Header().Set("Custom-Response-Header", "test")
@@ -74,20 +74,20 @@ func TestProxyRequest(t *testing.T) {
 }
 
 func TestProxyWithForcedTargetHostHeader(t *testing.T) {
-	var tsUrl *url.URL
+	var tsURL *url.URL
 	inboundURL, err := url.Parse("https://explicitly.set.host/url/path")
 	require.NoError(t, err, "parse upstream url")
 
 	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
 	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, tsUrl.Host, r.Host, "upstream host header")
+		assert.Equal(t, tsURL.Host, r.Host, "upstream host header")
 		assert.Equal(t, inboundURL.Host, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
 		assert.Equal(t, fmt.Sprintf("host=%s", inboundURL.Host), r.Header.Get("Forwarded"), "Forwarded header")
 
-		_, err := w.Write([]byte(`ok`))
+		_, err = w.Write([]byte(`ok`))
 		assert.NoError(t, err, "write ok response")
 	})
-	tsUrl, err = url.Parse(ts.URL)
+	tsURL, err = url.Parse(ts.URL)
 	require.NoError(t, err, "parse testserver URL")
 
 	httpRequest, err := http.NewRequest("POST", inboundURL.String(), nil)

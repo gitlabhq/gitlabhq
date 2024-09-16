@@ -117,7 +117,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	}
 	if fset.NArg() > 0 {
 		err := alreadyPrintedError{fmt.Errorf("unexpected arguments: %v", fset.Args())}
-		fmt.Fprintln(fset.Output(), err)
+		_, _ = fmt.Fprintln(fset.Output(), err)
 		fset.Usage()
 		return nil, nil, err
 	}
@@ -170,7 +170,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	if err != nil {
 		return err
 	}
-	defer closer.Close()
+	defer closer.Close() //nolint:errcheck
 
 	tracing.Initialize(tracing.WithServiceName("gitlab-workhorse"))
 	log.WithField("version", Version).WithField("build_time", BuildTime).Print("Starting")
@@ -178,7 +178,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	// Good housekeeping for Unix sockets: unlink before binding
 	if boot.listenNetwork == "unix" {
-		if err := os.Remove(boot.listenAddr); err != nil && !os.IsNotExist(err) {
+		if err = os.Remove(boot.listenAddr); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}
@@ -190,9 +190,9 @@ func run(boot bootConfig, cfg config.Config) error {
 	// having no profiler HTTP listener by default, the profiler is
 	// effectively disabled by default.
 	if boot.pprofListenAddr != "" {
-		l, err := net.Listen("tcp", boot.pprofListenAddr)
-		if err != nil {
-			return fmt.Errorf("pprofListenAddr: %v", err)
+		l, tcpErr := net.Listen("tcp", boot.pprofListenAddr)
+		if tcpErr != nil {
+			return fmt.Errorf("pprofListenAddr: %v", tcpErr)
 		}
 
 		go func() { finalErrors <- http.Serve(l, nil) }()
@@ -200,16 +200,16 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
 	if cfg.MetricsListener != nil {
-		l, err := newListener("metrics", *cfg.MetricsListener)
-		if err != nil {
-			return err
+		l, metricErr := newListener("metrics", *cfg.MetricsListener)
+		if metricErr != nil {
+			return metricErr
 		}
 		monitoringOpts = append(monitoringOpts, monitoring.WithListener(l))
 	}
 	go func() {
 		// Unlike http.Serve, which always returns a non-nil error,
 		// monitoring.Start may return nil in which case we should not shut down.
-		if err := monitoring.Start(monitoringOpts...); err != nil {
+		if err = monitoring.Start(monitoringOpts...); err != nil {
 			finalErrors <- err
 		}
 	}()
@@ -230,7 +230,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	watchKeyFn := redisKeyWatcher.WatchKey
 
-	if err := cfg.RegisterGoCloudURLOpeners(); err != nil {
+	if err = cfg.RegisterGoCloudURLOpeners(); err != nil {
 		return fmt.Errorf("register cloud credentials: %v", err)
 	}
 
@@ -238,7 +238,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	if err != nil {
 		return fmt.Errorf("configure access logger: %v", err)
 	}
-	defer accessCloser.Close()
+	defer accessCloser.Close() //nolint:errcheck
 
 	gitaly.InitializeSidechannelRegistry(accessLogger)
 

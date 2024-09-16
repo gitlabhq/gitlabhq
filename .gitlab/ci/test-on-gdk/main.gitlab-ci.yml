@@ -185,7 +185,6 @@ gdk-qa-non-blocking:
   variables:
     QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
-  parallel: 5
   allow_failure: true
   artifacts:
     paths:
