@@ -125,7 +125,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
   describe 'POST /projects/:id/environments' do
     context 'as a member' do
-      it 'creates a environment with valid params' do
+      it 'creates an environment with valid params' do
         post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'staging' }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -140,12 +140,59 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         let_it_be(:cluster_agent) { create(:cluster_agent, project: project) }
         let_it_be(:foreign_cluster_agent) { create(:cluster_agent) }
 
-        it 'creates a environment with associated cluster agent' do
+        it 'creates an environment with associated cluster agent' do
           post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: cluster_agent.id }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/environment')
           expect(json_response['cluster_agent']).to be_present
+        end
+
+        it 'creates an environment with associated kubernetes namespace' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['cluster_agent']).to be_present
+          expect(json_response['kubernetes_namespace']).to eq('flux-system')
+        end
+
+        it 'creates an environment with associated flux resource path' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['cluster_agent']).to be_present
+          expect(json_response['kubernetes_namespace']).to eq('flux-system')
+          expect(json_response['flux_resource_path']).to eq('HelmRelease/flux-system')
+        end
+
+        it 'fails to create environment with kubernetes namespace but no cluster agent' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", kubernetes_namespace: 'flux-system' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+        end
+
+        it 'fails to create environment with flux resource path but no cluster agent and kubernetes namespace' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", flux_resource_path: 'HelmRelease/flux-system' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
+        end
+
+        it 'fails to create environment with flux resource path but no cluster agent' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+        end
+
+        it 'fails to create environment with cluster agent and flux resource path but no kubernetes namespace' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", cluster_agent: cluster_agent.id, flux_resource_path: 'HelmRelease/flux-system' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
         end
 
         it 'fails to create environment with a non existing cluster agent' do
@@ -307,6 +354,71 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['cluster_agent']).not_to be_present
+      end
+
+      it 'updates an environment with associated kubernetes namespace' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).to be_present
+        expect(json_response['kubernetes_namespace']).to eq('flux-system')
+      end
+
+      it 'updates an environment with associated flux resource path' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['cluster_agent']).to be_present
+        expect(json_response['kubernetes_namespace']).to eq('flux-system')
+        expect(json_response['flux_resource_path']).to eq('HelmRelease/flux-system')
+      end
+
+      it 'fails to update environment with kubernetes namespace but no cluster agent' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { kubernetes_namespace: 'flux-system' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+      end
+
+      it 'fails to update environment with flux resource path but no cluster agent and kubernetes namespace' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { flux_resource_path: 'HelmRelease/flux-system' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
+      end
+
+      it 'fails to update environment with flux resource path but no cluster agent' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+      end
+
+      it 'fails to update environment with cluster agent and flux resource path but no kubernetes namespace' do
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: cluster_agent.id, flux_resource_path: 'HelmRelease/flux-system' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
+      end
+
+      it 'fails to update environment by removing cluster agent when kubernetes namespace is still associated' do
+        environment.update!(cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system')
+
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { cluster_agent_id: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['kubernetes_namespace']).to eq(['cannot be set without a cluster agent'])
+      end
+
+      it 'fails to update environment by removing kubernetes namespace when flux_resource_path is still associated' do
+        environment.update!(cluster_agent_id: cluster_agent.id, kubernetes_namespace: 'flux-system', flux_resource_path: 'HelmRelease/flux-system')
+
+        put api("/projects/#{project.id}/environments/#{environment.id}", user), params: { kubernetes_namespace: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['flux_resource_path']).to eq(['cannot be set without a kubernetes namespace'])
       end
 
       it 'leaves cluster agent unchanged when not specified in update' do

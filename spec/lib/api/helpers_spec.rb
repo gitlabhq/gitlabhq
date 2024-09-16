@@ -175,7 +175,8 @@ RSpec.describe API::Helpers, feature_category: :shared do
         it_behaves_like 'private project without access'
       end
 
-      context 'user authenticated with job token' do
+      # Container repository request is defined with job_token_scope = :project.
+      context 'user authenticated with job token on container repository request' do
         let_it_be(:job) { create(:ci_build, project: project) }
         let_it_be(:outside_project) { create(:project) }
 
@@ -196,6 +197,75 @@ RSpec.describe API::Helpers, feature_category: :shared do
         context "and requested project is equal pipeline's project" do
           it 'finds a project' do
             expect(helper.find_project!(project.id)).to eq(project)
+          end
+        end
+      end
+
+      # All API requests, except for the container repository route_authentication_settings[:job_token_scope], is empty.
+      context 'user authenticated' do
+        let_it_be(:job) { create(:ci_build, project: project) }
+        let_it_be(:outside_project) { create(:project) }
+
+        before do
+          allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: nil)
+          allow(helper).to receive(:initial_current_user).and_return(user)
+          helper.instance_variable_set(:@current_authenticated_job, job)
+        end
+
+        context 'and user does not have permissions to read project' do
+          before do
+            allow(helper).to receive(:can?).with(user, :read_project, outside_project).and_return(false)
+            allow(helper).to receive(:can?).with(user, :build_read_project, outside_project).and_return(false)
+          end
+
+          context 'with job token' do
+            before do
+              allow(user).to receive(:from_ci_job_token?).and_return(true)
+              allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+            end
+
+            it 'returns forbidden' do
+              expect(helper).to receive(:forbidden!).with("Authentication by CI/CD job token not allowed from #{project.path} to #{outside_project.path}.")
+
+              helper.find_project!(outside_project.id)
+            end
+
+            context 'private project without access' do
+              before do
+                allow(helper).to receive(:authenticate_non_public?).and_return(true)
+              end
+
+              it 'returns unauthorized' do
+                expect(helper).to receive(:unauthorized!)
+
+                helper.find_project!(outside_project.id)
+              end
+            end
+          end
+
+          context 'without job token' do
+            before do
+              allow(user).to receive(:from_ci_job_token?).and_return(false)
+            end
+
+            it 'returns not_found' do
+              expect(helper).to receive(:not_found!)
+
+              helper.find_project!(outside_project.id)
+            end
+          end
+
+          context 'without job token scope' do
+            before do
+              allow(user).to receive(:from_ci_job_token?).and_return(true)
+              allow(user).to receive(:ci_job_token_scope).and_return(nil)
+            end
+
+            it 'returns not_found' do
+              expect(helper).to receive(:not_found!)
+
+              helper.find_project!(outside_project.id)
+            end
           end
         end
       end

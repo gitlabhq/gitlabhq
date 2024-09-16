@@ -7,7 +7,7 @@ import { truncateNamespace } from '~/lib/utils/text_utility';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, n__ } from '~/locale';
-import { ANY_OPTION } from '../constants';
+import { ANY_OPTION } from '../../constants';
 
 export default {
   name: 'SearchableDropdown',

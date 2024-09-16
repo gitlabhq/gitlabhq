@@ -76,11 +76,15 @@ class Environment < ApplicationRecord
     format: {
       with: Gitlab::Regex.kubernetes_namespace_regex,
       message: Gitlab::Regex.kubernetes_namespace_regex_message
-    }
+    },
+    absence: { unless: :cluster_agent, message: 'cannot be set without a cluster agent' },
+    if: -> { cluster_agent_changed? || kubernetes_namespace_changed? }
 
   validates :flux_resource_path,
     length: { maximum: 255 },
-    allow_nil: true
+    allow_nil: true,
+    absence: { unless: :kubernetes_namespace, message: 'cannot be set without a kubernetes namespace' },
+    if: -> { kubernetes_namespace_changed? || flux_resource_path_changed? }
 
   validates :tier, presence: true
 

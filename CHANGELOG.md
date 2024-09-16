@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.3.3 (2024-09-16)
+
+No changes.
+
 ## 17.3.2 (2024-09-11)
 
 ### Fixed (3 changes)
@@ -779,6 +783,10 @@ entry.
 - [Protected packages: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/c84c1efb2b0d204765ba121e9ad523d44fdb3712) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146173))
 - [Dynamically gets the column type for assertion](https://gitlab.com/gitlab-org/gitlab/-/commit/1389a3daffd104925cce71776903cbf527723222) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159099))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c94fca35b909440ec66ea35c97ab11aa847dde58) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158180))
+
+## 17.2.7 (2024-09-16)
+
+No changes.
 
 ## 17.2.6 (2024-09-13)
 
@@ -1667,6 +1675,10 @@ No changes.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/121d4e81b497b6795650aef58122a92222d91894) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155349))
 - [Remove "use_remote_mirror_destroy_service" feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/74e1e921d003960afd6f259384aee2dfec18f30e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155852))
 - [Protected containers: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/4606b5ef64f75acdd581258a0b93034195626e83) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146177))
+
+## 17.1.8 (2024-09-16)
+
+No changes.
 
 ## 17.1.7 (2024-09-11)
 
@@ -2905,6 +2917,10 @@ No changes.
 
 - [Update Web IDE dependency to receive duo fixes](gitlab-org/gitlab@47323c05565dd32ea4de9f999adbd9f7aa8748e3) ([merge request](gitlab-org/gitlab!154064))
 
+## 17.0.8 (2024-09-16)
+
+No changes.
+
 ## 17.0.7 (2024-09-10)
 
 ### Fixed (2 changes)
@@ -3897,6 +3913,10 @@ No changes.
 - [Include psudonymised user id into X Ray scan req](gitlab-org/gitlab@7c3553f71da1fa87cd1bfd58cc78449f55f33e60) ([merge request](gitlab-org/gitlab!149124)) **GitLab Enterprise Edition**
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
+
+## 16.11.10 (2024-09-16)
+
+No changes.
 
 ## 16.11.9 (2024-09-10)
 

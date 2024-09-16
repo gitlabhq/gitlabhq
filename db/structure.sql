@@ -5608,7 +5608,6 @@ CREATE TABLE application_settings (
     repository_storages character varying DEFAULT 'default'::character varying,
     enabled_git_access_protocol character varying,
     usage_ping_enabled boolean DEFAULT true NOT NULL,
-    sign_in_text_html text,
     help_page_text_html text,
     shared_runners_text_html text,
     after_sign_up_text_html text,

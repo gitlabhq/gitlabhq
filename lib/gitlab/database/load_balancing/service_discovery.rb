@@ -258,10 +258,12 @@ module Gitlab
 
           hosts_to_disconnect = hosts
 
+          gentle_disconnected_hosts = []
           gentle_disconnect_duration = Benchmark.realtime do
             while ::Gitlab::Metrics::System.monotonic_time < gentle_disconnect_deadline
-              hosts_to_disconnect = hosts_to_disconnect.reject(&:try_disconnect)
-
+              newly_disconnected, still_to_disconnect = hosts_to_disconnect.partition(&:try_disconnect)
+              gentle_disconnected_hosts.concat(newly_disconnected)
+              hosts_to_disconnect = still_to_disconnect
               break if hosts_to_disconnect.empty?
 
               sleep(2)
@@ -273,12 +275,19 @@ module Gitlab
             hosts_to_disconnect.each(&:force_disconnect!)
           end
 
-          formatted_hosts = hosts_to_disconnect.map { |h| "#{h.host}:#{h.port}" }
+          force_disconnected_hosts = hosts_to_disconnect
+
+          formatted_gentle_hosts = gentle_disconnected_hosts.map { |h| "#{h.host}:#{h.port}" }
+          formatted_forced_hosts = force_disconnected_hosts.map { |h| "#{h.host}:#{h.port}" }
           total_disconnect_duration = gentle_disconnect_duration + force_disconnect_duration
+
+          formatted_all_hosts = formatted_gentle_hosts + formatted_forced_hosts
 
           ::Gitlab::Database::LoadBalancing::Logger.info(
             event: :host_list_disconnection,
-            message: "Disconnected #{formatted_hosts} old load balancing hosts after #{total_disconnect_duration}s",
+            message: "Disconnected #{formatted_all_hosts} old load balancing hosts after #{total_disconnect_duration}s",
+            gentle_disconnected_hosts: formatted_gentle_hosts,
+            force_disconnected_hosts: formatted_forced_hosts,
             gentle_disconnect_duration_s: gentle_disconnect_duration,
             force_disconnect_duration_s: force_disconnect_duration,
             total_disconnect_duration_s: total_disconnect_duration

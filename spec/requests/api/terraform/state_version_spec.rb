@@ -141,10 +141,10 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
         let(:current_user) { user_without_access }
         let(:job) { create(:ci_build, status: :running, user: current_user) }
 
-        it 'returns not found status' do
+        it 'returns forbidden status' do
           request
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end

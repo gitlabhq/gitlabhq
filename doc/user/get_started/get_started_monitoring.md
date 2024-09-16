@@ -89,6 +89,9 @@ Choose a guide based on your programming language or framework:
 
 - [Ruby on Rails](../../tutorials/observability/observability_rails_tutorial.md)
 - [Node JS](../../tutorials/observability/observability_nodejs_tutorial.md)
+- [Python Django](../../tutorials/observability/observability_django_tutorial.md)
+- [Java Spring](../../tutorials/observability/observability_java_tutorial.md)
+- [.NET](../../tutorials/observability/observability_dotnet_tutorial.md)
 
 For other languages, use the appropriate [OpenTelemetry API or SDK](https://opentelemetry.io/docs/languages/).
 
@@ -98,15 +101,15 @@ For complex application setups, you should use the OpenTelemetry Collector.
 
 **What is the OpenTelemetry Collector?**
 
-The [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) acts like proxy that receives, processes, and exports telemetry data from your application to your monitoring tools such as GitLab Observability. It is opensource and vendor-neutral, which means you can use with any compatible tools and avoid vendor lock-in.
+The [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) acts like proxy that receives, processes, and exports telemetry data from your application to your monitoring tools such as GitLab Observability. It is open source and vendor-neutral, which means you can use it with any compatible tools and avoid vendor lock-in.
 
 Benefits of using the Collector:
 
-- Simplicity: Application services send data to only one destination (the Collector)
-- Flexibility: Add or change data destinations from a single place (if you use multiple vendors)
-- Advanced features: Sampling, batching and compression of data
-- Consistency: Uniform data processing
-- Governance: Centralized configuration
+- Simplicity: Application services send data to only one destination (the Collector).
+- Flexibility: Add or change data destinations from a single place (if you use multiple vendors).
+- Advanced features: Sampling, batching, and compression of data.
+- Consistency: Uniform data processing.
+- Governance: Centralized configuration.
 
 **Configure the OpenTelemetry Collector**
 
@@ -151,7 +154,7 @@ Benefits of using the Collector:
 ### Test your setup
 
 After setting up data collection, you can visualize the collected data in your project by viewing the **Monitor** navigation menu.
-Use the **Tracing**, **Metrics**, and **Logs** pagesto access this information. These features work together to provide a comprehensive view of your application's health and performance, helping you troubleshoot detected issues.
+Use the **Tracing**, **Metrics**, and **Logs** pages to access this information. These features work together to provide a comprehensive view of your application's health and performance, helping you troubleshoot detected issues.
 
 For more information, see:
 
@@ -161,7 +164,7 @@ For more information, see:
 
 ## Step 4: Monitor infrastructure with metrics and logs
 
-To monitor your applications' infrastructure performance and availability
+To monitor your applications' infrastructure performance and availability,
 first install the OpenTelemetry Collector as described previously. Then,
 based on your setup, you can use various methods to gather metrics and logs data:
 
@@ -173,7 +176,7 @@ based on your setup, you can use various methods to gather metrics and logs data
 - For containerized applications: Use receivers like
   [Docker stats](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/dockerstatsreceiver/) or
   [Kubelet stats](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/kubeletstatsreceiver).
-- For Kubernetes clusters: Follow [this external guide](https://opentelemetry.io/docs/kubernetes/getting-started/).
+- For Kubernetes clusters: Follow the [external Kubernetes guide](https://opentelemetry.io/docs/kubernetes/getting-started/).
 
 ## Step 5: Manage alerts and incidents
 
@@ -190,7 +193,7 @@ Use the data and insights gathered to continuously improve your application and 
 1. Create insight dashboards to analyze issues
    or incidents created and closed, and assess the performance of your incident response.
 1. Create executable runbooks to help engineers on-call remediate incidents autonomously.
-1. Regularly review your monitoring setup and adjust sampling thresholds or add new metrics as your application evolves.
+1. Regularly review your monitoring setup and adjust sampling thresholds, or add new metrics as your application evolves.
 1. Conduct post-incident reviews to identify areas for improvement in both your application and your incident response process.
 1. Use the insights gained from monitoring to inform your development priorities and technical debt reduction efforts.
 

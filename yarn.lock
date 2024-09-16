@@ -1357,15 +1357,15 @@
     stylelint-declaration-strict-value "1.10.4"
     stylelint-scss "6.0.0"
 
-"@gitlab/svgs@3.113.0":
-  version "3.113.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.113.0.tgz#d2ae41a34b027f50941dd2b79746b98616f23a1a"
-  integrity sha512-L+vfr4fW5TgizwxlmQQaoPz2Z/QrYy4EQVs1dPN7zNZ8UF4fgvfk8HVhEC/HUbxygTxwbojnSoHduErXVCHu+Q==
+"@gitlab/svgs@3.116.0":
+  version "3.116.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.116.0.tgz#281b8c4f12843172f460028b6e624e57d65496a2"
+  integrity sha512-mbOu8mI/vDqGbo+HGyZ0a4F1g/TGRbRlxBqAXNtz42KX8P8rrLERxRjjV1P/vrLCIC744hhrZ8zSTCNGGcyQPA==
 
-"@gitlab/ui@91.1.2":
-  version "91.1.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-91.1.2.tgz#ea77f94ac4d18dd21d6661099f4ff5b2bbb9db21"
-  integrity sha512-p/jdTVgcwcmjDYvLAeVSzvvzdQPkrAM1l55LNrzGD1Lv1o1vkH0oBaRlokU8cwhwTHXGY+kMZqM6rnS8u8WxSA==
+"@gitlab/ui@91.13.0":
+  version "91.13.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-91.13.0.tgz#d431f1151913141a9d1d27ecb9905a5f16966f29"
+  integrity sha512-+8g33OSzueqHUFyIrJposcL0JbcvvoYY19Qr5HFrG9Dvm3WBpNduAA4aZGNMPPJLYnR6MA2iMtk+p/svA/j6Rw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -14334,10 +14334,10 @@ vite-plugin-ruby@^5.1.0:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-5.4.4.tgz#3da90314b617047366459443320ea78f39111008"
-  integrity sha512-RHFCkULitycHVTtelJ6jQLd+KSAAzOgEYorV32R2q++M6COBjKJR6BxqClwp5sf0XaBDjVMuJ9wnNfyAJwjMkA==
+vite@^5.4.5:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-5.4.5.tgz#e4ab27709de46ff29bd8db52b0c51606acba893b"
+  integrity sha512-pXqR0qtb2bTwLkev4SE3r4abCNioP3GkjvIDLlzziPpXtHgiJIjuKl+1GN6ESOT3wMjG3JTeARopj2SwYaHTOA==
   dependencies:
     esbuild "^0.21.3"
     postcss "^8.4.43"

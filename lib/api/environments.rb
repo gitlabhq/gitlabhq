@@ -67,6 +67,8 @@ module API
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
         optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
+        optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
+        optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
       end
       route_setting :authentication, job_token_allowed: true
       post ':id/environments' do
@@ -105,6 +107,8 @@ module API
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
         optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
+        optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
+        optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
       end
       route_setting :authentication, job_token_allowed: true
       put ':id/environments/:environment_id' do
@@ -112,7 +116,7 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        update_params = declared_params(include_missing: false).extract!(:external_url, :tier, :cluster_agent_id)
+        update_params = declared_params(include_missing: false).extract!(:external_url, :tier, :cluster_agent_id, :kubernetes_namespace, :flux_resource_path)
 
         if update_params[:cluster_agent_id]
           agent = ::Clusters::AgentsFinder.new(user_project, current_user).execute.find_by_id(params[:cluster_agent_id])

@@ -332,8 +332,10 @@ export default {
         'gl-cursor-grab': userCanDrag,
         'gl-h-full gl-py-3': list.collapsed && !isSwimlanesHeader,
         'gl-border-b-0': list.collapsed || isSwimlanesHeader,
-        'gl-py-2': list.collapsed && isSwimlanesHeader,
+        'gl-pb-0 gl-pt-2': list.collapsed && isSwimlanesHeader,
         'gl-flex-col': list.collapsed,
+        '-gl-mt-2': isLabelList && (!list.collapsed || (list.collapsed && isSwimlanesHeader)),
+        'gl-pt-3': isLabelList && list.collapsed && isSwimlanesHeader,
       }"
       class="board-title gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base"
     >
@@ -343,7 +345,12 @@ export default {
         :title="chevronTooltip"
         :icon="chevronIcon"
         class="board-title-caret no-drag gl-cursor-pointer hover:gl-bg-gray-50"
-        :class="{ 'gl-mt-1': list.collapsed, 'gl-mr-2': !list.collapsed }"
+        :class="{
+          '-gl-mt-1': list.collapsed && isLabelList,
+          'gl-mb-2': list.collapsed && isLabelList && !isSwimlanesHeader,
+          'gl-mt-1': list.collapsed && !isLabelList,
+          'gl-mr-2': !list.collapsed,
+        }"
         category="tertiary"
         size="small"
         data-testid="board-title-caret"
@@ -356,7 +363,7 @@ export default {
         :href="list.assignee.webUrl"
         class="user-avatar-link js-no-trigger"
         :class="{
-          'gl-mt-3 gl-rotate-90': list.collapsed,
+          'gl-mt-5 gl-rotate-90': list.collapsed,
         }"
       >
         <img
@@ -374,9 +381,8 @@ export default {
         class="board-title-text"
         :class="{
           'gl-hidden': list.collapsed && isSwimlanesHeader,
-          'gl-mx-0 gl-my-3 gl-flex-grow-0': list.collapsed,
+          'gl-mx-0 gl-my-3 gl-flex-grow-0 gl-rotate-90 gl-py-0': list.collapsed,
           'gl-grow': !list.collapsed,
-          'gl-rotate-90': list.collapsed,
         }"
       >
         <!-- EE start -->
@@ -384,6 +390,7 @@ export default {
           v-if="listType !== 'label'"
           v-gl-tooltip.hover
           :class="{
+            '!gl-ml-2': list.collapsed && !showAssigneeListDetails,
             'gl-text-gray-500': list.collapsed,
             'gl-block': list.collapsed || listType === 'milestone',
           }"

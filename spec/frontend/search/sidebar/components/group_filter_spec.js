@@ -7,7 +7,7 @@ import { MOCK_GROUP, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { GROUPS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import GroupFilter from '~/search/sidebar/components/group_filter.vue';
-import SearchableDropdown from '~/search/sidebar/components/searchable_dropdown.vue';
+import SearchableDropdown from '~/search/sidebar/components/shared/searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);

@@ -137,6 +137,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         is_expected.to contain_exactly(build)
       end
     end
+
+    describe 'for_project_ids' do
+      subject { described_class.for_project_ids([new_project.id]) }
+
+      it 'returns the builds from given projects' do
+        is_expected.to contain_exactly(new_build)
+      end
+    end
   end
 
   describe 'callbacks' do

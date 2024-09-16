@@ -318,7 +318,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
               it 'does not allow downloading artifacts' do
                 subject
 
-                expect(response).to have_gitlab_http_status(:not_found)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
 
               context 'when project is added to the job token scope' do

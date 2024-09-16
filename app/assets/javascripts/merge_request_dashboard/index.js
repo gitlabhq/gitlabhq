@@ -31,12 +31,15 @@ export function initMergeRequestDashboard(el) {
                 fields: {
                   assignedMergeRequests: {
                     keyArgs,
+                    merge: true,
                   },
                   reviewRequestedMergeRequests: {
                     keyArgs,
+                    merge: true,
                   },
                   assigneeOrReviewerMergeRequests: {
                     keyArgs,
+                    merge: true,
                   },
                 },
               },
