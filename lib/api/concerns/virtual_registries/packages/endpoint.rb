@@ -24,6 +24,12 @@ module API
                 case action
                 when :workhorse_upload_url
                   workhorse_upload_url(**action_params.slice(:url, :upstream))
+                when :download_file
+                  present_carrierwave_file!(
+                    action_params[:file],
+                    content_type: action_params[:content_type],
+                    content_disposition: 'inline'
+                  )
                 end
               end
 

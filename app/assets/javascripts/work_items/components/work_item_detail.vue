@@ -371,7 +371,7 @@ export default {
       return !isEmpty(this.workItem);
     },
     isGroupWorkItem() {
-      return this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP);
+      return Boolean(this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP));
     },
   },
   mounted() {

@@ -684,24 +684,26 @@ module API
       present_carrierwave_file!(file, **args)
     end
 
-    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil)
+    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil)
       return not_found! unless file&.exists?
 
       if file.file_storage?
-        present_disk_file!(file.path, file.filename)
+        file_content_type = content_type || 'application/octet-stream'
+        present_disk_file!(file.path, file.filename, file_content_type)
       elsif supports_direct_download && file.class.direct_download_enabled?
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
         redirect_params = {}
         if content_disposition
           response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: content_disposition, filename: file.filename)
-          redirect_params[:query] = { 'response-content-disposition' => response_disposition, 'response-content-type' => file.content_type }
+          redirect_params[:query] = { 'response-content-disposition' => response_disposition, 'response-content-type' => content_type || file.content_type }
         end
 
         file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address, redirect_params: redirect_params)
         redirect(file_url.url)
       else
-        header(*Gitlab::Workhorse.send_url(file.url))
+        response_headers = { 'Content-Type' => content_type }.compact_blank
+        header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       end

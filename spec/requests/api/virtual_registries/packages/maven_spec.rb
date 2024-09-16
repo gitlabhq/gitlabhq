@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include WorkhorseHelpers
   include HttpBasicAuthHelpers
@@ -1199,7 +1199,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
   end
 
   describe 'GET /api/v4/virtual_registries/packages/maven/:id/*path' do
-    let(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+    let_it_be(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
+
     let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}" }
     let(:service_response) do
       ServiceResponse.success(
@@ -1264,6 +1265,32 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
 
     context 'with a valid user' do
       let(:headers) { { 'Private-Token' => personal_access_token.token } }
+
+      context 'when the handle request service returns download_file' do
+        let_it_be(:cached_response) do
+          create(
+            :virtual_registries_packages_maven_cached_response,
+            content_type: 'text/xml',
+            upstream: upstream,
+            group_id: upstream.group_id,
+            relative_path: "/#{path}"
+          )
+        end
+
+        before do
+          # reset the test stub to use the actual service
+          allow(::VirtualRegistries::Packages::Maven::HandleFileRequestService).to receive(:new).and_call_original
+        end
+
+        it 'returns the workhorse send_url response' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq(cached_response.content_type)
+          # this is a direct download from the file system, workhorse is not involved
+          expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to eq(nil)
+        end
+      end
 
       context 'with service response errors' do
         where(:reason, :expected_status) do
@@ -1374,7 +1401,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven, feature_category: :virtu
     let(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom') }
     let(:gid_header) { { described_class::UPSTREAM_GID_HEADER => upstream.to_global_id.to_s } }
-    let(:headers) { workhorse_headers.merge(gid_header) }
+    let(:additional_headers) do
+      gid_header.merge(::Gitlab::Workhorse::SEND_DEPENDENCY_CONTENT_TYPE_HEADER => 'text/xml')
+    end
+
+    let(:headers) { workhorse_headers.merge(additional_headers) }
 
     subject(:request) do
       workhorse_finalize(

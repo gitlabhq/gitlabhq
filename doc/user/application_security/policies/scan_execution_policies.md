@@ -322,7 +322,7 @@ In GitLab 16.9 and earlier:
 - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
   ignored, regardless of where they were defined: policy, group, or project.
 
-## Scope security policies to projects
+## Scope security policies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
@@ -337,7 +337,7 @@ For example, if you are linking policies to a group, a group owner must create t
 the security policy project. Then, all policies in the security policy project are inherited by all
 projects in the group.
 
-You scope security policies to projects by setting the scopes in the `policy.yml` file to:
+You scope security policies by setting the scopes in the `policy.yml` file to:
 
 - _Include_ only projects with an applied [compliance framework](../../group/compliance_frameworks.md) by using
   the compliance framework's ID. To include projects, use `policy_scope.compliance_frameworks.id` to specify IDs of

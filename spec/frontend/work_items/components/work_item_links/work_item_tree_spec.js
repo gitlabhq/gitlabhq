@@ -230,8 +230,8 @@ describe('WorkItemTree', () => {
       expect(findToggleFormSplitButton().exists()).toBe(false);
     });
 
-    it('does not display link menu on children', () => {
-      expect(findWorkItemLinkChildrenWrapper().exists()).toBe(false);
+    it('passes correct `canUpdate` prop to children wrapper', () => {
+      expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
     });
   });
 

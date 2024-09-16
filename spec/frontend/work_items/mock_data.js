@@ -1603,6 +1603,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         id: '1',
         fullPath: 'test-project-path',
         name: 'Project name',
+        fullName: 'Project name',
       },
       confidential: false,
       reference: 'test-project-path#1',
@@ -1611,6 +1612,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          rolledUpCountsByType: [],
           children: {
             pageInfo: {
               hasNextPage: false,
@@ -1631,9 +1633,17 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                   __typename: 'WorkItemType',
                 },
                 title: 'xyz',
+                reference: 'test-project-path#2',
                 state: 'OPEN',
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
+                namespace: {
+                  __typename: 'Project',
+                  id: '1',
+                  fullPath: 'test-project-path',
+                  name: 'Project name',
+                  fullName: 'Project name',
+                },
                 closedAt: null,
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
                 widgets: [

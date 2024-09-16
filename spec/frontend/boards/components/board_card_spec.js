@@ -198,9 +198,9 @@ describe('Board card', () => {
       });
 
       expect(wrapper.classes()).toEqual(
-        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
+        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-l-4']),
       );
-      expect(wrapper.attributes('style')).toContain(`border-color: ${DEFAULT_COLOR}`);
+      expect(wrapper.attributes('style')).toContain(`border-left-color: ${DEFAULT_COLOR}`);
     });
 
     it('does not render border if color is not present', () => {
@@ -212,7 +212,7 @@ describe('Board card', () => {
       });
 
       expect(wrapper.classes()).not.toEqual(
-        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
+        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-l-4']),
       );
       expect(wrapper.attributes('style')).toBe(undefined);
     });

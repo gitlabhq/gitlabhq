@@ -355,6 +355,7 @@ export default {
       </gl-alert>
       <div class="!gl-px-3 gl-pb-3 gl-pt-2">
         <work-item-children-wrapper
+          v-if="workItem"
           :children="children"
           :parent="workItem"
           :can-update="canUpdate"

@@ -19,5 +19,10 @@ FactoryBot.define do
       entry.upstream.registry_upstream.group = entry.group
       entry.file = fixture_file_upload(evaluator.file_fixture)
     end
+
+    trait :upstream_checked do
+      upstream_checked_at { 30.minutes.ago }
+      upstream_etag { 'test' }
+    end
   end
 end

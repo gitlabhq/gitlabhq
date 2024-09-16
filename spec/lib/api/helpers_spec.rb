@@ -1192,6 +1192,99 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#present_carrierwave_file!' do
+    let(:supports_direct_download) { false }
+    let(:content_type) { nil }
+    let(:content_disposition) { nil }
+
+    subject { helper.present_carrierwave_file!(artifact.file, supports_direct_download: supports_direct_download, content_disposition: content_disposition, content_type: content_type) }
+
+    context 'with file storage' do
+      let_it_be(:artifact) { create(:ci_job_artifact, :zip) }
+
+      it 'calls present_disk_file!' do
+        expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, 'application/octet-stream')
+
+        subject
+      end
+
+      context 'with an overriden content type' do
+        let(:content_type) { 'application/zip' }
+
+        it 'calls present_disk_file! with the correct content type' do
+          expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, content_type)
+
+          subject
+        end
+      end
+    end
+
+    context 'with remote storage' do
+      let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
+
+      before do
+        allow(helper).to receive(:env).and_return({})
+        allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: false))
+        stub_artifacts_object_storage(enabled: true)
+      end
+
+      context 'with direct upload available' do
+        let(:supports_direct_download) { true }
+
+        it 'sends a redirect' do
+          expect(helper).to receive(:redirect).with(an_instance_of(String))
+
+          subject
+        end
+
+        context 'with an overriden content type' do
+          let(:content_type) { 'application/zip' }
+          let(:content_disposition) { :inline }
+
+          it 'sends a redirect with the correct content type' do
+            expect(helper).to receive(:redirect) do |url|
+              expect(url).to include("response-content-type=#{CGI.escape(content_type)}")
+            end
+
+            subject
+          end
+        end
+      end
+
+      context 'with direct upload not available' do
+        let(:supports_direct_download) { false }
+
+        it 'sends a workhorse header' do
+          expect(helper).to receive(:header).with(Gitlab::Workhorse::SEND_DATA_HEADER, an_instance_of(String))
+          expect(helper).to receive(:status).with(:ok)
+          expect(helper).to receive(:body).with('')
+
+          subject
+        end
+
+        context 'with an overriden content type' do
+          let(:content_type) { 'application/zip' }
+          let(:content_disposition) { :inline }
+
+          it 'sends a redirect with the correct content type' do
+            expect(helper).to receive(:status).with(:ok)
+            expect(helper).to receive(:body).with('')
+            expect(helper).to receive(:header) do |name, value|
+              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+              command, encoded_params = value.split(":")
+              params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+
+              expect(command).to eq('send-url')
+              expect(params.dig('ResponseHeaders', 'Content-Type')).to eq([content_type])
+            end
+
+            subject
+          end
+        end
+      end
+    end
+  end
+
   describe '#present_artifacts_file!' do
     context 'with object storage' do
       let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }

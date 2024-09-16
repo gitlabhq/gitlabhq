@@ -76,7 +76,7 @@ export default {
       return this.item.color;
     },
     cardStyle() {
-      return this.itemColor ? { borderColor: this.itemColor } : '';
+      return this.itemColor ? { borderLeftColor: this.itemColor } : '';
     },
     formattedItem() {
       return {
@@ -145,7 +145,7 @@ export default {
         'is-disabled': isDisabled,
         'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
-        'gl-border-4 gl-pl-4 gl-border-l-solid': itemColor,
+        'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
       },
     ]"
     :index="index"
@@ -154,7 +154,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board-card"
-    class="board-card gl-relative gl-mb-3 gl-rounded-base gl-p-4 gl-leading-normal"
+    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-p-4 gl-leading-normal"
     @click="toggleIssue($event)"
   >
     <board-card-inner

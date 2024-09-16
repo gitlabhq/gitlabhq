@@ -4,7 +4,7 @@ module VirtualRegistries
   module Packages
     module Maven
       module CachedResponses
-        class CreateService < ::BaseContainerService
+        class CreateOrUpdateService < ::BaseContainerService
           alias_method :upstream, :container
 
           ERRORS = {
@@ -23,17 +23,22 @@ module VirtualRegistries
             return ERRORS[:unauthorized] unless allowed?
 
             now = Time.zone.now
-            # the uploader's filename function depends on the relative_path.
-            # The relative_path needs to be set before the file value is assigned.
-            cr = upstream.cached_responses.build(
-              group_id: upstream.group_id,
+            updates = {
               upstream_etag: etag,
               upstream_checked_at: now,
+              file: file,
               size: file.size,
+              downloaded_at: now,
+              content_type: content_type
+            }
+
+            cr = ::VirtualRegistries::Packages::Maven::CachedResponse.create_or_update_by!(
+              group_id: upstream.group_id,
+              upstream: upstream,
               relative_path: relative_path,
-              downloaded_at: now
+              updates: updates
             )
-            cr.update!(file: file)
+
             ServiceResponse.success(payload: { cached_response: cr })
           end
 
@@ -57,6 +62,10 @@ module VirtualRegistries
 
           def etag
             params[:etag]
+          end
+
+          def content_type
+            params[:content_type]
           end
         end
       end

@@ -31,13 +31,43 @@ module VirtualRegistries
           return ERRORS[:unauthorized] unless allowed?
           return ERRORS[:no_upstreams] unless registry.upstream.present?
 
-          # TODO check cached responses here
-          # If one exists and can be used, return it.
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/467983
-          check_upstream(registry.upstream)
+          if cache_response_still_valid?
+            download_cached_response
+          else
+            check_upstream(registry.upstream)
+          end
+
+        rescue *::Gitlab::HTTP::HTTP_ERRORS
+          ERRORS[:upstream_not_available]
         end
 
         private
+
+        def cached_response
+          # TODO change this to support multiple upstreams
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
+          registry.upstream.cached_responses.find_by_relative_path(relative_path)
+        end
+        strong_memoize_attr :cached_response
+
+        def cache_response_still_valid?
+          return false unless cached_response.present?
+
+          unless cached_response.stale?(registry: registry)
+            cached_response.bump_statistics
+            return true
+          end
+          # cached response with no etag can't be checked
+          return false if cached_response.upstream_etag.blank?
+
+          upstream = cached_response.upstream
+          response = head_upstream(url: upstream.url_for(path), headers: upstream.headers)
+
+          return false unless cached_response.upstream_etag == response.headers['etag']
+
+          cached_response.bump_statistics(include_upstream_checked_at: true)
+          true
+        end
 
         def check_upstream(upstream)
           url = upstream.url_for(path)
@@ -47,8 +77,6 @@ module VirtualRegistries
           return ERRORS[:file_not_found_on_upstreams] unless response.success?
 
           workhorse_upload_url_response(url: url, upstream: upstream)
-        rescue *::Gitlab::HTTP::HTTP_ERRORS
-          ERRORS[:upstream_not_available]
         end
 
         def head_upstream(url:, headers:)
@@ -61,6 +89,19 @@ module VirtualRegistries
 
         def path
           params[:path]
+        end
+
+        def relative_path
+          "/#{path}"
+        end
+
+        def download_cached_response
+          ServiceResponse.success(
+            payload: {
+              action: :download_file,
+              action_params: { file: cached_response.file, content_type: cached_response.content_type }
+            }
+          )
         end
 
         def workhorse_upload_url_response(url:, upstream:)
