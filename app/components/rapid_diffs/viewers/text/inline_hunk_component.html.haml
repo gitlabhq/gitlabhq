@@ -1,0 +1,13 @@
+- if @diff_hunk[:header]
+  %tr
+    %td{ colspan: '2' }= expand_buttons.html_safe
+    %td= header_text
+
+- @diff_hunk[:lines].each do |line|
+  %tr
+    - legacy_line_id = legacy_id(line)
+    - link, id = line_link(line, :old)
+    %td{ id: id, data: { legacy_id: legacy_line_id } }= link
+    - link, id = line_link(line, :new)
+    %td{ id: id, data: { legacy_id: legacy_line_id } }= link
+    %td= line_text(line)

@@ -1,39 +1,34 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class BackupLogger < Gitlab::JsonLogger
-    exclude_context!
-
-    attr_reader :progress
+  class BackupLogger
+    attr_reader :progress, :json_logger
 
     def initialize(progress)
       @progress = progress
+      @json_logger = ::Gitlab::Backup::JsonLogger.build
     end
 
     def warn(message)
       progress.puts Rainbow("#{Time.zone.now} -- #{message}").yellow
 
-      super
+      json_logger.warn(message: message)
     end
 
     def info(message)
       progress.puts Rainbow("#{Time.zone.now} -- #{message}").cyan
 
-      super
+      json_logger.info(message: message)
     end
 
     def error(message)
       progress.puts Rainbow("#{Time.zone.now} -- #{message}").red
 
-      super
+      json_logger.error(message: message)
     end
 
     def flush
       progress.flush
-    end
-
-    def self.file_name_noext
-      'backup_json'
     end
   end
 end

@@ -9,7 +9,7 @@ import {
 
 describe('ExpirationToggle', () => {
   let wrapper;
-  const value = 'foo';
+  const value = new Date().toISOString();
 
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
@@ -44,7 +44,7 @@ describe('ExpirationToggle', () => {
   describe('formattedValue', () => {
     it.each`
       valueProp    | enabled  | expected
-      ${value}     | ${true}  | ${value}
+      ${value}     | ${true}  | ${'July 6, 2020 at 12:00:00 AM GMT'}
       ${value}     | ${false} | ${NOT_SCHEDULED_POLICY_TEXT}
       ${undefined} | ${false} | ${NOT_SCHEDULED_POLICY_TEXT}
       ${undefined} | ${true}  | ${NOT_SCHEDULED_POLICY_TEXT}

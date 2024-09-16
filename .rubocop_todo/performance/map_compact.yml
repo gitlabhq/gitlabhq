@@ -56,7 +56,6 @@ Performance/MapCompact:
     - 'ee/app/services/members/activate_service.rb'
     - 'ee/app/services/security/override_uuids_service.rb'
     - 'ee/app/services/security/store_scan_service.rb'
-    - 'ee/app/services/upcoming_reconciliations/update_service.rb'
     - 'ee/app/services/vulnerabilities/findings/find_or_create_from_security_finding_service.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'

@@ -329,6 +329,7 @@ You can sort members by **Account**, **Access granted**, **Role**, or **Last sig
 ## Add users to a group
 
 > - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 You can give a user access to all projects in a group.
 

@@ -83,7 +83,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/workers/gitlab_subscriptions/schedule_refresh_seats_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
     - 'ee/lib/api/code_suggestions.rb'
-    - 'ee/lib/api/internal/upcoming_reconciliations.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'ee/lib/ee/api/namespaces.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_storage_size_without_pipeline_artifacts_size_job.rb'

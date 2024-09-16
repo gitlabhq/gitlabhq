@@ -1,6 +1,12 @@
 <script>
-import { GlCollapse, GlBadge, GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
-import { CONTAINING_COMMIT, FETCH_CONTAINING_REFS_EVENT, BRANCHES_REF_TYPE } from '../constants';
+import { GlCollapse, GlBadge, GlButton, GlIcon, GlSkeletonLoader, GlLoadingIcon } from '@gitlab/ui';
+import {
+  CONTAINING_COMMIT,
+  FETCH_CONTAINING_REFS_EVENT,
+  BRANCHES_REF_TYPE,
+  EMPTY_BRANCHES_MESSAGE,
+  EMPTY_TAGS_MESSAGE,
+} from '../constants';
 
 export default {
   name: 'RefsList',
@@ -10,6 +16,7 @@ export default {
     GlBadge,
     GlButton,
     GlIcon,
+    GlLoadingIcon,
   },
   props: {
     urlPart: {
@@ -58,6 +65,15 @@ export default {
     refIcon() {
       return this.refType === BRANCHES_REF_TYPE ? 'branch' : 'tag';
     },
+    showEmptyMessage() {
+      return this.tippingRefs.length === 0 && this.containingRefs.length === 0 && !this.isLoading;
+    },
+    showNameSpace() {
+      return (this.tippingRefs.length !== 0 || this.containingRefs.length !== 0) && !this.isLoading;
+    },
+    emptyMessage() {
+      return this.refType === BRANCHES_REF_TYPE ? EMPTY_BRANCHES_MESSAGE : EMPTY_TAGS_MESSAGE;
+    },
   },
   methods: {
     toggleCollapse() {
@@ -78,9 +94,11 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment">
-    <gl-icon :name="refIcon" class="gl-ml-2 gl-mr-3" />
-    <span data-testid="title" class="gl-mr-2">{{ namespace }}</span>
+  <div>
+    <gl-icon :name="refIcon" :size="16" class="gl-ml-2 gl-mr-3" />
+    <gl-loading-icon v-if="isLoading" size="sm" inline />
+    <span v-if="showEmptyMessage">{{ emptyMessage }}</span>
+    <span v-else-if="showNameSpace" data-testid="title" class="gl-mr-2">{{ namespace }}</span>
     <gl-badge
       v-for="ref in tippingRefs"
       :key="ref"

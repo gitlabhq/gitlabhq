@@ -9,12 +9,13 @@ import {
 const { paragraph, code, italic, bold, strike } = builders;
 
 it.each`
-  input                          | output
-  ${'code'}                      | ${'`code`'}
-  ${'code `with` backticks'}     | ${'``code `with` backticks``'}
-  ${'this is `inline-code`'}     | ${'`` this is `inline-code` ``'}
-  ${'`inline-code` in markdown'} | ${'`` `inline-code` in markdown ``'}
-  ${'```js'}                     | ${'`` ```js ``'}
+  input                            | output
+  ${'code'}                        | ${'`code`'}
+  ${'   code with leading spaces'} | ${'`   code with leading spaces`'}
+  ${'code `with` backticks'}       | ${'``code `with` backticks``'}
+  ${'this is `inline-code`'}       | ${'`` this is `inline-code` ``'}
+  ${'`inline-code` in markdown'}   | ${'`` `inline-code` in markdown ``'}
+  ${'```js'}                       | ${'`` ```js ``'}
 `('correctly serializes inline code ("$input")', ({ input, output }) => {
   expect(serialize(paragraph(code(input)))).toBe(output);
 });

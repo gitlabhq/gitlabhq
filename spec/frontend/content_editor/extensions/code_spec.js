@@ -3,6 +3,8 @@ import Bold from '~/content_editor/extensions/bold';
 import Code from '~/content_editor/extensions/code';
 import { createTestEditor } from '../test_utils';
 
+const CODE_HTML = `<p dir="auto" data-sourcepos="1:1-1:31"><code data-sourcepos="1:2-1:30">     code with leading spaces</code></p>`;
+
 describe('content_editor/extensions/code', () => {
   let tiptapEditor;
   let doc;
@@ -29,6 +31,18 @@ describe('content_editor/extensions/code', () => {
     markOrder.forEach((mark) => tiptapEditor.commands.toggleMark(mark));
 
     expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
+  });
+
+  describe('when parsing HTML', () => {
+    beforeEach(() => {
+      tiptapEditor.commands.setContent(CODE_HTML);
+    });
+
+    it('parses HTML correctly into an inline code block, preserving leading spaces', () => {
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(p(code('     code with leading spaces'))).toJSON(),
+      );
+    });
   });
 
   describe('shortcut: RightArrow', () => {

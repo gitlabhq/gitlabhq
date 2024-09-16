@@ -724,9 +724,11 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
   end
 
   def expect_logger_to_receive_messages(messages)
-    expect_any_instance_of(Gitlab::BackupLogger) do |logger|
-      messages.each do |message|
-        allow(logger).to receive(:info).with(message).ordered
+    [Gitlab::BackupLogger, Gitlab::Backup::JsonLogger].each do |log_class|
+      expect_any_instance_of(log_class) do |logger|
+        messages.each do |message|
+          allow(logger).to receive(:info).with(message).ordered
+        end
       end
     end
   end

@@ -21,3 +21,6 @@ export const FETCH_COMMIT_REFERENCES_ERROR = s__(
 export const BRANCHES_REF_TYPE = 'heads';
 
 export const TAGS_REF_TYPE = 'tags';
+
+export const EMPTY_BRANCHES_MESSAGE = __('No related branches found');
+export const EMPTY_TAGS_MESSAGE = __('No related tags found');

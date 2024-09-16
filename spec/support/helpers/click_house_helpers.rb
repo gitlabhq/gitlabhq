@@ -41,6 +41,18 @@ module ClickHouseHelpers
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
 
+  def insert_ci_pipelines_to_click_house(pipelines)
+    result = clickhouse_fixture(:ci_finished_pipelines, pipelines.map do |pipeline|
+      pipeline.slice(
+        %i[id duration status source ref committed_at created_at started_at finished_at]).symbolize_keys
+           .merge(
+             path: pipeline.project&.project_namespace&.traversal_path || '0/'
+           )
+    end)
+
+    expect(result).to eq(true)
+  end
+
   def self.default_timezone
     ActiveRecord.default_timezone
   end

@@ -1812,7 +1812,6 @@ Layout/LineLength:
     - 'ee/spec/requests/api/internal/app_sec/dast/site_validations_spec.rb'
     - 'ee/spec/requests/api/internal/base_spec.rb'
     - 'ee/spec/requests/api/internal/kubernetes_spec.rb'
-    - 'ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb'
     - 'ee/spec/requests/api/invitations_spec.rb'
     - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/api/iterations_spec.rb'

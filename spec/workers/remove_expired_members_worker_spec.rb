@@ -122,6 +122,26 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
           'meta.user' => expired_group_member.user.username
         )
       end
+
+      context 'when the user has a direct membership in a subproject' do
+        let_it_be(:subproject) { create(:project, group: expired_group_member.group) }
+        let_it_be(:non_expired_project_membership) { create(:project_member, user: expired_group_member.user, access_level: ProjectMember::MAINTAINER, project: subproject) }
+
+        it 'does not expire the membership in the subgroup' do
+          worker.perform
+          expect(non_expired_project_membership.reload).to be_present
+        end
+      end
+
+      context 'when the user has a direct membership in a subgroup' do
+        let_it_be(:subgroup) { create(:group, parent: expired_group_member.group) }
+        let_it_be(:non_expired_group_membership) { create(:group_member, user: expired_group_member.user, access_level: GroupMember::MAINTAINER, group: subgroup) }
+
+        it 'does not expire the membership in the subgroup' do
+          worker.perform
+          expect(non_expired_group_membership.reload).to be_present
+        end
+      end
     end
 
     context 'when the last group owner expires' do

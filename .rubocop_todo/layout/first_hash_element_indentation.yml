@@ -10,7 +10,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/models/concerns/elastic/note_spec.rb'
     - 'ee/spec/requests/api/analytics/project_deployment_frequency_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/create_spec.rb'
-    - 'ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb'
     - 'ee/spec/requests/api/merge_requests_spec.rb'
     - 'ee/spec/requests/ee/projects/deploy_tokens_controller_spec.rb'
     - 'ee/spec/requests/groups/group_members_controller_spec.rb'

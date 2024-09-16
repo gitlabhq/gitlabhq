@@ -38,7 +38,13 @@
     %span.gl-text-primary= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-  #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.id } }
+  #js-commit-branches-and-tags.gl-border-t{ data: { full_path: @project.full_path, commit_sha: @commit.short_id } }
+    .well-segment
+      = sprite_icon('branch', css_class: "gl-ml-2 gl-mr-3")
+      = gl_loading_icon(inline: true, css_class: 'gl-align-middle')
+    .well-segment
+      = sprite_icon('tag', css_class: "gl-ml-2 gl-mr-3")
+      = gl_loading_icon(inline: true, css_class: 'gl-align-middle')
 
   .well-segment.merge-request-info
     .icon-container

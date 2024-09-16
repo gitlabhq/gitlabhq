@@ -3500,7 +3500,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/timebox/report_service.rb'
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/app/services/todos/destroy/confidential_epic_service.rb'
-    - 'ee/app/services/upcoming_reconciliations/update_service.rb'
     - 'ee/app/services/user_permissions/export_service.rb'
     - 'ee/app/services/users_ops_dashboard_projects/base_service.rb'
     - 'ee/app/services/users_ops_dashboard_projects/destroy_service.rb'

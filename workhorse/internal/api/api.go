@@ -143,14 +143,14 @@ type RemoteObject struct {
 type Response struct {
 	// GL_ID is an environment variable used by gitlab-shell hooks during 'git
 	// push' and 'git pull'
-	GL_ID string
+	GL_ID string // nolint:stylecheck,revive // used as env variable
 
 	// GL_USERNAME holds gitlab username of the user who is taking the action causing hooks to be invoked
-	GL_USERNAME string
+	GL_USERNAME string // nolint:stylecheck,revive // used as env variable
 
 	// GL_REPOSITORY is an environment variable used by gitlab-shell hooks during
 	// 'git push' and 'git pull'
-	GL_REPOSITORY string
+	GL_REPOSITORY string // nolint:stylecheck,revive // used as env variable
 
 	// GitConfigOptions holds the custom options that we want to pass to the git command
 	GitConfigOptions []string

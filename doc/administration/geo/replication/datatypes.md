@@ -156,7 +156,6 @@ You can keep track of the progress to implement the missing items in
 these epics/issues:
 
 - [Geo: Improve the self-service Geo replication framework](https://gitlab.com/groups/gitlab-org/-/epics/3761)
-- [Geo: Move existing blobs to framework](https://gitlab.com/groups/gitlab-org/-/epics/3588)
 
 ### Replicated data types behind a feature flag
 

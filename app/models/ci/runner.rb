@@ -601,16 +601,6 @@ module Ci
       end
     end
 
-    # TODO Remove in 16.0 when runners are known to send a system_id
-    # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
-    # This is not a problem since the jobs are deduplicated on the version
-    def schedule_runner_version_update(new_version)
-      return if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
-      return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
-
-      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
-    end
-
     def prefix_for_new_and_legacy_runner
       return if registration_token_registration_type?
 

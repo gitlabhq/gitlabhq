@@ -758,7 +758,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/system_notes/vulnerabilities_service_spec.rb'
     - 'ee/spec/services/timebox_report_service_spec.rb'
     - 'ee/spec/services/todo_service_spec.rb'
-    - 'ee/spec/services/upcoming_reconciliations/update_service_spec.rb'
     - 'ee/spec/services/user_permissions/export_service_spec.rb'
     - 'ee/spec/services/vulnerability_exports/export_service_spec.rb'
     - 'ee/spec/support/features/manual_quarterly_co_term_banner_examples.rb'

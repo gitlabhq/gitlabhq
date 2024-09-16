@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "factory_bot"
-
 module RapidDiffs
   class DiffFileComponentPreview < ViewComponent::Preview
     layout 'lookbook/rapid_diffs'
@@ -9,7 +7,7 @@ module RapidDiffs
     # @!group Code
 
     def added_and_removed_lines
-      diff = "
+      hunk = "
         --- a/app/views/layouts/preview/rapid_diffs.html.haml	(revision eaba934a0bc6eed56cfd1f082e9fa3f5409f2938)
         +++ b/app/views/layouts/preview/rapid_diffs.html.haml	(date 1718119822001)
         @@ -1,7 +1,6 @@
@@ -23,11 +21,11 @@ module RapidDiffs
         +%div{ style: 'padding: 20px', class: 'container-fluid' }
            = yield
       "
-      render(RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff)))
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(hunk)))
     end
 
     def added_lines
-      diff = "
+      hunk = "
         --- a/app/views/layouts/preview/rapid_diffs.html.haml	(revision eaba934a0bc6eed56cfd1f082e9fa3f5409f2938)
         +++ b/app/views/layouts/preview/rapid_diffs.html.haml	(date 1718118441569)
         @@ -2,6 +2,7 @@
@@ -39,11 +37,11 @@ module RapidDiffs
          %div{ style: 'padding: 20px' }
            = yield
       "
-      render(RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff)))
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(hunk)))
     end
 
     def removed_lines
-      diff = "
+      hunk = "
         --- a/app/views/layouts/preview/rapid_diffs.html.haml	(revision eaba934a0bc6eed56cfd1f082e9fa3f5409f2938)
         +++ b/app/views/layouts/preview/rapid_diffs.html.haml	(date 1718119765262)
         @@ -1,7 +1,6 @@
@@ -55,11 +53,11 @@ module RapidDiffs
          %div{ style: 'padding: 20px' }
            = yield
       "
-      render(RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff)))
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(hunk)))
     end
 
     def added_file
-      diff = "
+      hunk = "
         --- /dev/null
         +++ b/app/views/layouts/preview/rapid_diffs.html.haml	(date 1718119765262)
         @@ -0,0 +1,7 @@
@@ -71,11 +69,11 @@ module RapidDiffs
         +%div{ style: 'padding: 20px' }
         +  = yield
       "
-      render(RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff)))
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(hunk)))
     end
 
     def removed_file
-      diff = "
+      hunk = "
         --- a/app/views/layouts/preview/rapid_diffs.html.haml	(revision eaba934a0bc6eed56cfd1f082e9fa3f5409f2938)
         +++ /dev/null
         @@ -1,7 +1,0 @@
@@ -87,29 +85,31 @@ module RapidDiffs
         -%div{ style: 'padding: 20px' }
         -  = yield
       "
-      render(RapidDiffs::DiffFileComponent.new(diff_file: diff_file(diff)))
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: diff_file(hunk)))
     end
 
     # @!endgroup
 
     private
 
-    def diff_content(diff)
-      diff.split("\n").filter_map(&:lstrip).reject(&:empty?).join("\n")
-    end
-
-    def diff_file(diff)
-      ::Gitlab::Diff::File.new(raw_diff(diff_content(diff)), repository: FakeRepository.new).tap do |file|
-        file.instance_variable_set(:@new_blob, Blob.decorate(raw_blob(diff_content(diff))))
+    def diff_file(hunk)
+      diff = raw_diff(diff_content(hunk))
+      diff_refs = ::Gitlab::Diff::DiffRefs.new(base_sha: 'a', head_sha: 'b')
+      ::Gitlab::Diff::File.new(diff, repository: FakeRepository.new, diff_refs: diff_refs).tap do |file|
+        file.instance_variable_set(:@new_blob, Blob.decorate(raw_blob(diff_content(hunk))))
       end
     end
 
-    def raw_diff(diff)
-      Gitlab::Git::Diff.new(
+    def diff_content(hunk)
+      hunk.split("\n").filter_map(&:lstrip).reject(&:empty?).join("\n")
+    end
+
+    def raw_diff(hunk)
+      ::Gitlab::Git::Diff.new(
         {
-          diff: diff,
-          new_path: new_path(diff),
-          old_path: old_path(diff),
+          diff: hunk,
+          new_path: new_path(hunk),
+          old_path: old_path(hunk),
           a_mode: '0',
           b_mode: '100644',
           new_file: true,
@@ -119,24 +119,24 @@ module RapidDiffs
         })
     end
 
-    def raw_blob(diff)
-      Gitlab::Git::Blob.new(
+    def raw_blob(hunk)
+      ::Gitlab::Git::Blob.new(
         id: 'bba46076dd3e6a406b45ad98ef3b8194fde8b568',
         commit_id: 'master',
         size: 264,
-        name: new_path(diff),
-        path: new_path(diff),
+        name: new_path(hunk),
+        path: new_path(hunk),
         data: "",
         mode: '100644'
       )
     end
 
-    def old_path(diff)
-      diff[%r{--- a/([^\s\n]*)}, 1]
+    def old_path(hunk)
+      hunk[%r{--- a/([^\s\n]*)}, 1]
     end
 
-    def new_path(diff)
-      diff[%r{\+\+\+ b/([^\s\n]*)}, 1]
+    def new_path(hunk)
+      hunk[%r{\+\+\+ b/([^\s\n]*)}, 1]
     end
 
     class FakeRepository

@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page contains information about the minimum system requirements to install GitLab.
+This page contains information about the system requirements to install GitLab.
 
 ## Hardware
 
@@ -45,8 +45,9 @@ For a maximum of 20 requests per second or 1,000 users, you should have 16 GB of
 For more users or higher workload,
 see [reference architectures](../administration/reference_architectures/index.md).
 
-In certain circumstances, GitLab might run in a
-[memory-constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
+In some cases, GitLab can run with at least 8 GB of memory.
+For more information, see
+[running GitLab in a memory-constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
 
 ## Database
 

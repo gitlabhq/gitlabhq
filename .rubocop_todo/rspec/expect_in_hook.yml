@@ -64,7 +64,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
     - 'ee/spec/services/projects/mark_for_deletion_service_spec.rb'
     - 'ee/spec/services/projects/update_mirror_service_spec.rb'
-    - 'ee/spec/services/upcoming_reconciliations/update_service_spec.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/graphql/issuables_lazy_links_aggregate_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/elastic/cannot_read_cross_project_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/verifiable_replicator_shared_examples.rb'

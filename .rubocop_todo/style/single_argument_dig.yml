@@ -25,7 +25,6 @@ Style/SingleArgumentDig:
     - 'ee/spec/requests/api/graphql/project/dast_site_profile_spec.rb'
     - 'ee/spec/requests/api/graphql/project/dast_site_profiles_spec.rb'
     - 'ee/spec/requests/api/graphql/project/requirements_management/requirements_spec.rb'
-    - 'ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb'
     - 'ee/spec/services/vulnerabilities/findings/find_or_create_from_security_finding_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'
     - 'lib/gitlab/auth/o_auth/auth_hash.rb'

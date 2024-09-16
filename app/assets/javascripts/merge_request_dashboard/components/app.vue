@@ -42,7 +42,7 @@ export default {
       <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
         <collapsible-section :count="count" :loading="loading || error" :title="list.title">
           <div>
-            <div class="gl-overflow-x-scroll">
+            <div class="gl-overflow-x-auto">
               <table class="gl-w-full">
                 <colgroup>
                   <col style="width: 60px" />

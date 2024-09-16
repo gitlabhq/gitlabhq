@@ -22,6 +22,51 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     end
   end
 
+  describe '#within_dates' do
+    let(:from_time) { 1.hour.ago }
+    let(:to_time) { Time.current }
+
+    subject(:result_sql) { instance.within_dates(from_time, to_time).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE "#{table_name}"."started_at_bucket" >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        AND "#{table_name}"."started_at_bucket" < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+
+    context 'when only from_date is passed' do
+      let(:from_time) { 1.hour.ago }
+      let(:to_time) { nil }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT * FROM "#{table_name}"
+          WHERE "#{table_name}"."started_at_bucket" >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
+    end
+
+    context 'when only to_date is passed' do
+      let(:from_time) { nil }
+      let(:to_time) { Time.current }
+
+      it 'builds the correct SQL' do
+        expected_sql = <<~SQL.lines(chomp: true).join(' ')
+          SELECT * FROM "#{table_name}"
+          WHERE "#{table_name}"."started_at_bucket" < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        SQL
+
+        expect(result_sql.strip).to eq(expected_sql.strip)
+      end
+    end
+  end
+
   describe '#by_status' do
     subject(:result_sql) { instance.by_status(%i[failed success]).to_sql }
 
@@ -98,12 +143,24 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     end
 
     it 'builds the correct SQL with chained methods' do
+      from_time = 1.hour.ago
+      to_time = Time.current
+
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT "#{table_name}"."status" FROM "#{table_name}"
         WHERE "#{table_name}"."path" = '#{path}'
+        AND "#{table_name}"."started_at_bucket" >= toDateTime64('#{from_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+        AND "#{table_name}"."started_at_bucket" < toDateTime64('#{to_time.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
         AND "#{table_name}"."status" IN ('failed', 'success')
         GROUP BY "#{table_name}"."status"
       SQL
+
+      result_sql = instance
+        .for_project(project)
+        .select(:status)
+        .within_dates(from_time, to_time)
+        .by_status(%i[failed success])
+        .group_by_status.to_sql
 
       expect(result_sql.strip).to eq(expected_sql.strip)
     end

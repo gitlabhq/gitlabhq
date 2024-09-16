@@ -16276,6 +16276,9 @@ msgstr ""
 msgid "CreateValueStreamForm|'%{name}' Value Stream has been successfully created."
 msgstr ""
 
+msgid "CreateValueStreamForm|'%{name}' Value Stream has been successfully saved."
+msgstr ""
+
 msgid "CreateValueStreamForm|'%{name}' Value Stream saved"
 msgstr ""
 
@@ -26363,9 +26366,6 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
-msgid "GroupSettings| %{link_start}What do experiment and beta mean?%{link_end}"
-msgstr ""
-
 msgid "GroupSettings|'%{name}' has been scheduled for removal on %{date}."
 msgstr ""
 
@@ -26460,9 +26460,6 @@ msgid "GroupSettings|Enable overview background aggregation for Value Streams Da
 msgstr ""
 
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
-msgstr ""
-
-msgid "GroupSettings|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Enforce SSH Certificates"
@@ -26574,9 +26571,6 @@ msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating the group CI/CD settings: %{error_messages}."
-msgstr ""
-
-msgid "GroupSettings|These features are being developed and might be unstable."
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
@@ -36153,6 +36147,12 @@ msgstr ""
 msgid "No regions configured"
 msgstr ""
 
+msgid "No related branches found"
+msgstr ""
+
+msgid "No related tags found"
+msgstr ""
+
 msgid "No repository"
 msgstr ""
 
@@ -44650,6 +44650,18 @@ msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Random"
+msgstr ""
+
+msgid "RapidDiffs|Diff line"
+msgstr ""
+
+msgid "RapidDiffs|Diff line number"
+msgstr ""
+
+msgid "RapidDiffs|Original line"
+msgstr ""
+
+msgid "RapidDiffs|Original line number"
 msgstr ""
 
 msgid "Rate Limits"
