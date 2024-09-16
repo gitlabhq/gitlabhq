@@ -6,7 +6,7 @@ workflow:
 
 include:
   - local: .gitlab/ci/version.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@9.2.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@9.3.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -16,7 +16,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 9.2.0
+    ref: 9.3.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml

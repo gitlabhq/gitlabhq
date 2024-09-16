@@ -591,6 +591,15 @@ project.update!(column: value)
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
+Flag state is not inherited from a group by its subgroups or projects.
+If you need a flag state to be consistent for an entire group hierarchy,
+consider using the top-level group as the actor.
+This group can be found by calling `#root_ancestor` on any group or project.
+
+```ruby
+Feature.enabled?(:feature_flag, group.root_ancestor)
+```
+
 #### Mixing actor types
 
 Generally you should use only one type of actor in all invocations of `Feature.enabled?`
