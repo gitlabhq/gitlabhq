@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.10 (2024-09-16)
+
+No changes.
+
 ## 16.11.9 (2024-09-10)
 
 ### Security (1 change)
