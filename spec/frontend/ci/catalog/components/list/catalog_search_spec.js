@@ -120,11 +120,11 @@ describe('CatalogSearch', () => {
     });
 
     describe('when changing sort option', () => {
-      it('changes the sort option to `Created at`', async () => {
+      it('changes the sort option to `Created date`', async () => {
         await findSorting().vm.$emit('sortByChange', SORT_OPTION_CREATED);
 
         expect(findSorting().props().sortBy).toBe(SORT_OPTION_CREATED);
-        expect(findSorting().props().text).toBe('Created at');
+        expect(findSorting().props().text).toBe('Created date');
       });
 
       it('changes the sort option to `Star count`', async () => {

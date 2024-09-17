@@ -235,13 +235,14 @@ To view the **Branch rules overview** list:
 1. Expand **Branch rules** to view all branches with protections.
    - To add protections to a new branch:
      1. Select **Add branch rule**.
+     1. Select one of **All branches**, **All protected branches**, or **Branch name or pattern**.
      1. Select **Create protected branch**.
    - To view more information about protections on an existing branch:
      1. Identify the branch you want more information about.
      1. Select **View details** to see information about its:
-        - [Branch protections](../../repository/branches/protected.md).
-        - [Approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
-        - [Status checks](../../merge_requests/status_checks.md).
+        - [Branch protections](../../repository/branches/protected.md): Not available for `all branches`.
+        - [Approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches): Not available for `all branches`.
+        - [Status checks](../../merge_requests/status_checks.md): Not available for `all protected branches`.
 
 ### Create a branch rule
 

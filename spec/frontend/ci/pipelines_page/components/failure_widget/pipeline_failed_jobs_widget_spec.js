@@ -1,4 +1,4 @@
-import { GlButton, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
@@ -37,20 +37,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
   const findFailedJobsButton = () => wrapper.findComponent(GlButton);
   const findFailedJobsList = () => wrapper.findAllComponents(FailedJobsList);
-  const findInfoIcon = () => wrapper.findComponent(GlIcon);
-  const findInfoPopover = () => wrapper.findComponent(GlPopover);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-
-  describe('when there are no failed jobs', () => {
-    beforeEach(() => {
-      createComponent({ props: { failedJobsCount: 0 } });
-    });
-
-    it('renders the show failed jobs button with a count of 0', () => {
-      expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe('Failed jobs (0)');
-    });
-  });
 
   describe('when there are failed jobs', () => {
     beforeEach(() => {
@@ -59,15 +46,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the show failed jobs button with correct count', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe(`Failed jobs (${defaultProps.failedJobsCount})`);
-    });
-
-    it('renders the info icon', () => {
-      expect(findInfoIcon().exists()).toBe(true);
-    });
-
-    it('renders the info popover', () => {
-      expect(findInfoPopover().exists()).toBe(true);
+      expect(findFailedJobsButton().text()).toContain(`${defaultProps.failedJobsCount}`);
     });
 
     it('does not render the failed jobs widget', () => {

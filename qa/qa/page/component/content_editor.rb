@@ -34,7 +34,7 @@ module QA
 
             retry_until(sleep_interval: 1, message: "Text style dropdown item containing #{heading} did not show up") do
               click_element('text-styles')
-              has_element?('.gl-new-dropdown-contents li', text: heading)
+              has_element?('.gl-new-dropdown-contents li', text: heading, visible: true)
             end
 
             find_element('.gl-new-dropdown-contents li', text: heading).click

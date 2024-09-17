@@ -211,7 +211,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
       def check_pipeline(expected_project:)
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 4)
+          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
 
           page.within(first('[data-testid="pipeline-table-row"]')) do
             page.within('.pipeline-tags') do
@@ -242,7 +242,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
       def check_no_new_pipeline_created
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
+          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 1)
         end
       end
     end

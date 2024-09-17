@@ -16450,9 +16450,6 @@ msgstr ""
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
-msgid "Created at"
-msgstr ""
-
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
@@ -22644,7 +22641,7 @@ msgid_plural "Failed jobs"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Failed jobs (%{count})"
+msgid "Failed jobs"
 msgstr ""
 
 msgid "Failed on"
@@ -32180,9 +32177,6 @@ msgstr ""
 msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
-msgid "Limitation on this view"
-msgstr ""
-
 msgid "Limiting mode"
 msgstr ""
 
@@ -40140,6 +40134,9 @@ msgstr ""
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
+msgid "Pipelines| The list can only display 100 jobs. To view all jobs, %{linkStart}go to this pipeline's details page.%{linkEnd}"
+msgstr ""
+
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
@@ -40249,6 +40246,9 @@ msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
 msgid "Pipelines|Loading pipelines"
+msgstr ""
+
+msgid "Pipelines|Maximum list size reached"
 msgstr ""
 
 msgid "Pipelines|Merge train"
@@ -40431,9 +40431,6 @@ msgstr ""
 msgid "Pipelines|You should review the code thoroughly before running this pipeline with the parent project's CI/CD resources."
 msgstr ""
 
-msgid "Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline."
-msgstr ""
-
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
 msgstr ""
 
@@ -40525,9 +40522,6 @@ msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
 msgid "Pipeline|Merged result pipeline runs on the contents of the merge request combined with the contents of the target branch."
-msgstr ""
-
-msgid "Pipeline|No failed jobs in this pipeline 🎉"
 msgstr ""
 
 msgid "Pipeline|Only the first 100 jobs per stage are displayed"
@@ -45014,9 +45008,6 @@ msgid "ReleaseAssetLinkType|Runbooks"
 msgstr ""
 
 msgid "Released"
-msgstr ""
-
-msgid "Released at"
 msgstr ""
 
 msgid "Released date"
@@ -55314,7 +55305,7 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
-msgid "There was an error while retrying this job"
+msgid "There was an error while running this job again"
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."

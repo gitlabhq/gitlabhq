@@ -188,10 +188,12 @@ describe('Pipelines Table', () => {
           createComponent({ provide: provideWithFailedJobsWidget });
         });
 
-        it('renders', () => {
-          // We have 2 rows per pipeline with the widget
-          expect(findTableRows()).toHaveLength(pipelines.length * 2);
+        it('adds extra rows if pipelines have failed jobs', () => {
+          const pipelinesWithFailedJobs = pipelines.filter((p) => p.failed_builds_count > 0).length;
+
           expect(findPipelineFailureWidget().exists()).toBe(true);
+          // We add a row to each pipeline with failed jobs
+          expect(findTableRows()).toHaveLength(pipelines.length + pipelinesWithFailedJobs);
         });
 
         it('passes the expected props', () => {

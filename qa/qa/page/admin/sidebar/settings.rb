@@ -29,6 +29,10 @@ module QA
             open_settings_submenu("Network")
           end
 
+          def go_to_security_and_compliance_settings
+            open_settings_submenu('Security and compliance')
+          end
+
           private
 
           def open_settings_submenu(sub_menu)

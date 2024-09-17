@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import { GlLoadingIcon, GlToast } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlToast } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -25,8 +25,10 @@ describe('FailedJobsList component', () => {
   const defaultProps = {
     failedJobsCount: 0,
     graphqlResourceEtag: 'api/graphql',
+    isMaximumJobLimitReached: false,
     isPipelineActive: false,
     pipelineIid: 1,
+    pipelinePath: 'namespace/project/pipeline',
     projectPath: 'namespace/project/',
   };
 
@@ -59,7 +61,7 @@ describe('FailedJobsList component', () => {
   const findAllHeaders = () => wrapper.findAllByTestId('header');
   const findFailedJobRows = () => wrapper.findAllComponents(FailedJobDetails);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findNoFailedJobsText = () => wrapper.findByText('No failed jobs in this pipeline 🎉');
+  const findMaximumJobLimitAlert = () => wrapper.findComponent(GlAlert);
 
   beforeEach(() => {
     mockFailedJobsResponse = jest.fn();
@@ -115,29 +117,21 @@ describe('FailedJobsList component', () => {
       );
     });
 
-    it('does not renders the empty state', () => {
-      expect(findNoFailedJobsText().exists()).toBe(false);
-    });
-
     it('calls sortJobsByStatus', () => {
       expect(utils.sortJobsByStatus).toHaveBeenCalledWith(
         failedJobsMock.data.project.pipeline.jobs.nodes,
       );
     });
-  });
 
-  describe('when there are no failed jobs', () => {
-    beforeEach(async () => {
-      mockFailedJobsResponse.mockResolvedValue(failedJobsMockEmpty);
-      jest.spyOn(utils, 'sortJobsByStatus');
+    describe('and the maximum failed job limit is reached', () => {
+      beforeEach(async () => {
+        createComponent({ props: { isMaximumJobLimitReached: true } });
+        await waitForPromises();
+      });
 
-      createComponent();
-
-      await waitForPromises();
-    });
-
-    it('renders the empty state', () => {
-      expect(findNoFailedJobsText().exists()).toBe(true);
+      it('displays the alert', () => {
+        expect(findMaximumJobLimitAlert().exists()).toBe(true);
+      });
     });
   });
 

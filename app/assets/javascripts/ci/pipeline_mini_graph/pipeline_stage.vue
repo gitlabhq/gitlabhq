@@ -141,7 +141,7 @@ export default {
 
     <div v-if="isLoading" class="gl-flex gl-gap-3 gl-px-4 gl-py-3">
       <gl-loading-icon size="sm" />
-      <p class="gl-leading-normal">{{ $options.i18n.loadingText }}</p>
+      <span class="gl-leading-normal">{{ $options.i18n.loadingText }}</span>
     </div>
     <ul
       v-else

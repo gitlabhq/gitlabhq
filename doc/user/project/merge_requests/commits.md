@@ -5,11 +5,59 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Understand how to read the display of commits in a merge request."
 ---
 
-# Merge request commits
+# Commits
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+A commit records and sends the source code changes to the [repository](../repository/index.md).
+For more information, see [Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).
+
+## Commit changes using the command line
+
+When you use the command line, use [`git commit`](../../../topics/git/commands.md#git-commit).
+You can add multiple commits before pushing your changes.
+
+- **Commit message:**
+
+  A commit message identifies what is changed and why. Use descriptive messages to clarify the changes.
+  In GitLab, you can add keywords to the commit message to perform one of the following actions:
+
+  - **Trigger a GitLab CI/CD pipeline:**
+
+    If the project is configured with [GitLab CI/CD](../../../ci/index.md),
+    you trigger a pipeline per push, not per commit.
+
+  - **Skip pipelines:**
+
+    Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
+    your commit message to make GitLab CI/CD skip the pipeline.
+
+  - **Cross-link issues and merge requests:**
+
+    Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
+    to keep track of related parts of your workflow.
+    If you mention an issue or a merge request in a commit message, they are displayed
+    on their respective thread.
+
+- **Cherry-pick a commit:**
+
+  In GitLab, you can [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
+  from the UI.
+
+- **Revert a commit:**
+
+  [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
+  from the UI to a selected branch.
+
+- **Sign a commit:**
+
+  Add extra security by [signing your commits](../repository/signed_commits/index.md).
+
+For additional information, see [Stage, commit, and push changes](../../../topics/git/commit.md).
+
+## Merge request commits
 
 Each merge request has a history of the commits made to the source branch
 after the merge request was created.
@@ -18,7 +66,7 @@ These commits are displayed on the merge request's **Commits** tab.
 From this tab, you can review commit messages and copy a commit's SHA when you need to
 [cherry-pick changes](cherry_pick_changes.md).
 
-## View commits in a merge request
+### View commits in a merge request
 
 To see the commits included in a merge request:
 
@@ -59,7 +107,7 @@ To add previously merged commits to a merge request for more context:
 Previously merged commits are referred to as **Context Commits** in
 the [API](../../../api/merge_request_context_commits.md).
 
-## Add a comment to a commit
+### Add a comment to a commit
 
 WARNING:
 Threads created this way are lost if the commit ID changes after a
@@ -74,7 +122,7 @@ To add discussion to a specific commit:
    - To add a comment, select **Comment**.
    - To start a thread, select the down arrow (**{chevron-down}**), then select **Start thread**.
 
-## View diffs between commits
+### View diffs between commits
 
 To view the changes between previously merged commits:
 
@@ -88,7 +136,7 @@ To view the changes between previously merged commits:
 If you selected to add previously merged commits for context, those commits are
 also shown in the list.
 
-## Find the merge request that introduced a change
+### Find the merge request that introduced a change
 
 When you view the commit details page, GitLab links to one or more merge requests
 that contain that commit.

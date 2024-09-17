@@ -197,8 +197,7 @@ a certificate signed with an RSA key can use RSA-2048 but not RSA-1024. GitLab
 will fail to connect to a service that uses a certificate signed with insufficient
 bits with a `certificate key too weak` error message.
 
-Check the [GitLab documentation on securing your installation](../../security/index.md)
-for more details.
+Check the [GitLab documentation for the upgrade to OpenSSL 3](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html) to ensure compatibility with your instance.
 
 ## 17.4.0
 

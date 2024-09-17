@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -16,6 +16,7 @@ export default {
     GlTooltip,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   props: {
@@ -82,15 +83,15 @@ export default {
     cannotRetry: s__('Job|You do not have permission to run this job again.'),
     cannotRetryTrigger: s__('Job|You cannot rerun trigger jobs from this list.'),
     jobActionTooltipText: s__('Pipelines|Retry %{jobName} Job'),
-    retry: __('Retry'),
-    retryError: __('There was an error while retrying this job'),
+    retry: __('Run again'),
+    retryError: __('There was an error while running this job again'),
   },
 };
 </script>
 <template>
   <div class="container-fluid gl-my-1 gl-grid-rows-auto">
-    <div class="row gl-flex gl-items-center" data-testid="widget-row">
-      <div class="align-items-center col-6 gl-flex gl-font-bold gl-text-gray-900">
+    <div class="row gl-my-3 gl-flex gl-items-center" data-testid="widget-row">
+      <div class="align-items-center col-4 gl-flex gl-text-gray-900">
         <ci-icon :status="job.detailedStatus" />
         <gl-link
           class="gl-ml-2 !gl-text-gray-900 !gl-no-underline"
@@ -99,10 +100,10 @@ export default {
           >{{ job.name }}</gl-link
         >
       </div>
-      <div class="col-2 gl-flex gl-items-center" data-testid="job-stage-name">
+      <div class="col-3 gl-flex gl-items-center" data-testid="job-stage-name">
         {{ job.stage.name }}
       </div>
-      <div class="col-2 gl-flex gl-items-center">
+      <div class="col-3 gl-flex gl-items-center">
         <gl-link :href="detailsPath" data-testid="job-id-link">#{{ parsedJobId }}</gl-link>
       </div>
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
@@ -111,9 +112,10 @@ export default {
       <div class="col-2 gl-text-right">
         <span ref="retryBtn">
           <gl-button
+            v-gl-tooltip
             :disabled="!canRetryJob"
             icon="retry"
-            category="tertiary"
+            category="secondary"
             :loading="isLoadingAction"
             :title="$options.i18n.retry"
             :aria-label="$options.i18n.retry"
