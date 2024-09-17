@@ -1424,7 +1424,7 @@ GEM
     ruby-openai (3.7.0)
       httparty (>= 0.18.1)
     ruby-progressbar (1.11.0)
-    ruby-saml (1.15.0)
+    ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.0)
@@ -1986,7 +1986,7 @@ DEPENDENCIES
   ruby-magic (~> 0.6)
   ruby-openai (~> 3.7)
   ruby-progressbar (~> 1.10)
-  ruby-saml (~> 1.15.0)
+  ruby-saml (~> 1.17.0)
   rubyzip (~> 2.3.2)
   rugged (~> 1.6)
   sanitize (~> 6.0.2)
