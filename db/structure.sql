@@ -13199,6 +13199,22 @@ CREATE SEQUENCE merge_request_diffs_id_seq
 
 ALTER SEQUENCE merge_request_diffs_id_seq OWNED BY merge_request_diffs.id;
 
+CREATE TABLE merge_request_merge_schedules (
+    id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    merge_after timestamp with time zone,
+    project_id bigint NOT NULL
+);
+
+CREATE SEQUENCE merge_request_merge_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_merge_schedules_id_seq OWNED BY merge_request_merge_schedules.id;
+
 CREATE TABLE merge_request_metrics (
     merge_request_id bigint NOT NULL,
     latest_build_started_at timestamp without time zone,
@@ -21922,6 +21938,8 @@ ALTER TABLE ONLY merge_request_diff_details ALTER COLUMN merge_request_diff_id S
 
 ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_request_diffs_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_merge_schedules ALTER COLUMN id SET DEFAULT nextval('merge_request_merge_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merge_request_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_predictions_merge_request_id_seq'::regclass);
@@ -24262,6 +24280,9 @@ ALTER TABLE ONLY merge_request_diff_files
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT merge_request_diffs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_merge_schedules
+    ADD CONSTRAINT merge_request_merge_schedules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT merge_request_metrics_pkey PRIMARY KEY (id);
@@ -28944,6 +28965,10 @@ CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id ON merge_reque
 CREATE INDEX index_merge_request_diffs_on_project_id ON merge_request_diffs USING btree (project_id);
 
 CREATE UNIQUE INDEX index_merge_request_diffs_on_unique_merge_request_id ON merge_request_diffs USING btree (merge_request_id) WHERE (diff_type = 2);
+
+CREATE UNIQUE INDEX index_merge_request_merge_schedules_on_merge_request_id ON merge_request_merge_schedules USING btree (merge_request_id);
+
+CREATE INDEX index_merge_request_merge_schedules_on_project_id ON merge_request_merge_schedules USING btree (project_id);
 
 CREATE INDEX index_merge_request_metrics_on_first_deployed_to_production_at ON merge_request_metrics USING btree (first_deployed_to_production_at);
 
@@ -34063,6 +34088,9 @@ ALTER TABLE ONLY operations_strategies
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_a56e02279c FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE RESTRICT NOT VALID;
 
+ALTER TABLE ONLY merge_request_merge_schedules
+    ADD CONSTRAINT fk_a5ff9339a9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_a6963e8447 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -35241,6 +35269,9 @@ ALTER TABLE zoekt_tasks
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_rails_51e87f7c50 FOREIGN KEY (project_id) REFERENCES projects(id);
+
+ALTER TABLE ONLY merge_request_merge_schedules
+    ADD CONSTRAINT fk_rails_5294434bc3 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY elastic_group_index_statuses
     ADD CONSTRAINT fk_rails_52b9969b12 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

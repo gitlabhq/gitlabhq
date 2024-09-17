@@ -4,24 +4,6 @@ module Onboarding
   class Progress < ApplicationRecord
     self.table_name = 'onboarding_progresses'
 
-    include IgnorableColumns
-
-    ignore_columns %i[
-      git_pull_at
-      subscription_created_at
-      scoped_label_created_at
-      security_scan_enabled_at
-      issue_auto_closed_at
-      repository_imported_at
-      repository_mirrored_at
-      secure_container_scanning_run_at
-      secure_secret_detection_run_at
-      secure_coverage_fuzzing_run_at
-      secure_cluster_image_scanning_run_at
-      secure_api_fuzzing_run_at
-    ],
-      remove_with: '17.5', remove_after: '2024-09-14'
-
     belongs_to :namespace, optional: false
 
     validate :namespace_is_root_namespace

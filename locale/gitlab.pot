@@ -15277,6 +15277,9 @@ msgstr ""
 msgid "Continue with overages"
 msgstr ""
 
+msgid "Continue with:"
+msgstr ""
+
 msgid "Continue…"
 msgstr ""
 
@@ -37966,9 +37969,6 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-msgid "Or create your own GitLab account"
-msgstr ""
-
 msgid "Ordered list"
 msgstr ""
 
@@ -44870,9 +44870,6 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
-msgid "Register with:"
-msgstr ""
-
 msgid "RegistrationFeatures|Enable Service Ping and register for this feature."
 msgstr ""
 
@@ -51465,9 +51462,6 @@ msgid "Sign out"
 msgstr ""
 
 msgid "Sign up"
-msgstr ""
-
-msgid "Sign up for your free trial with:"
 msgstr ""
 
 msgid "Sign-in count:"

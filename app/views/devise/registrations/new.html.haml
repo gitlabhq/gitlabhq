@@ -7,16 +7,23 @@
   = render "layouts/bizible"
 = render_if_exists "layouts/google_tag_manager_body"
 
-- content_for :omniauth_providers_bottom do
-  = render 'devise/shared/signup_omniauth_providers',
-    tracking_label: preregistration_tracking_label
-
 .signup-page
-  = render 'devise/shared/signup_box',
-    url: registration_path(resource_name, registration_path_params),
-    button_text: _('Register'),
-    show_omniauth_providers: omniauth_enabled? && button_based_providers_enabled?,
-    tracking_label: preregistration_tracking_label
+  .gl-mb-3.gl-p-4
+    = render 'signup_box_form',
+      url: registration_path(resource_name, registration_path_params),
+      button_text: _('Continue')
+
+    - if omniauth_enabled? && button_based_providers_enabled?
+      .gl-text-center.gl-pt-5
+        %label.gl-font-normal
+          = _('Continue with:')
+        .gl-flex.gl-flex-col.gl-gap-3
+          - enabled_button_based_providers.each do |provider|
+            = render 'devise/shared/omniauth_provider_button',
+              href: omniauth_authorize_path(:user, provider, register_omniauth_params({})),
+              provider: provider,
+              classes: 'js-track-omni-auth',
+              data: { provider: provider, track_action: "#{provider}_sso", track_label: preregistration_tracking_label }
 
   = render 'devise/shared/sign_in_link',
     tracking_action: 'click_sign_in_from_registration_page',

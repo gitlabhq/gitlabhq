@@ -227,6 +227,7 @@ merge_requests:
 - merge_request_context_commits
 - merge_request_context_commit_diff_files
 - merge_request_stage_events
+- merge_schedule
 - events
 - merge_requests_closing_issues
 - cached_closes_issues
@@ -293,6 +294,8 @@ merge_request_diff_files:
 merge_request_context_commits:
 - merge_request
 - diff_files
+merge_schedule:
+- merge_request
 cleanup_schedule:
 - merge_request
 ci_pipelines:

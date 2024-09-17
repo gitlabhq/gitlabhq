@@ -100,6 +100,11 @@ module Types
       method: :public_merge_status, null: true,
       description: 'Merge status of the merge request.'
 
+    field :merge_after, ::Types::TimeType,
+      null: true,
+      description: 'Date after which the merge request can be merged.',
+      alpha: { milestone: '17.4' }
+
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
       calls_gitaly: true,
       description: 'Detailed merge status of the merge request.'
@@ -345,6 +350,10 @@ module Types
 
     def merge_user
       object.metrics&.merged_by || object.merge_user
+    end
+
+    def merge_after
+      object.merge_schedule&.merge_after
     end
 
     def detailed_merge_status

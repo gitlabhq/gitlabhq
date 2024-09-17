@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_trace_chunks do
+RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_trace_chunks, feature_category: :pipeline_execution do
   include ExclusiveLeaseHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }
@@ -142,17 +142,28 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
       it { is_expected.to eq('Sample data in database') }
     end
 
-    context 'when data_store is fog' do
+    context 'when data_store is fog', :request_store do
       let(:data_store) { :fog }
+      let(:sample_data) { +'Sample data in fog' }
 
       before do
-        build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
+        build_trace_chunk.send(:unsafe_set_data!, sample_data)
       end
 
-      it { is_expected.to eq('Sample data in fog') }
+      it { is_expected.to eq(sample_data) }
 
       it 'returns a new Fog store' do
         expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
+      end
+
+      it 'only initializes Fog::Storage once' do
+        RequestStore.clear!
+
+        expect(Fog::Storage).to receive(:new).and_call_original
+
+        2.times do
+          expect(build_trace_chunk.reload.build.trace_chunks.first.data).to eq(sample_data)
+        end
       end
     end
   end

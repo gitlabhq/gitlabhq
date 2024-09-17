@@ -1090,7 +1090,6 @@ RSpec/NamedSubject:
     - 'ee/spec/tasks/gitlab/spdx_rake_spec.rb'
     - 'ee/spec/validators/user_existence_validator_spec.rb'
     - 'ee/spec/validators/user_id_existence_validator_spec.rb'
-    - 'ee/spec/views/devise/registrations/new.html.haml_spec.rb'
     - 'ee/spec/workers/active_user_count_threshold_worker_spec.rb'
     - 'ee/spec/workers/admin_emails_worker_spec.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'

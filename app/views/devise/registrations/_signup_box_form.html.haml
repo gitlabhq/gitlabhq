@@ -2,7 +2,9 @@
 - form_resource_name = "new_#{resource_name}"
 - button_class = local_assigns[:button_class]
 
-= gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }}, data: { testid: 'signup-form' }) do |f|
+= gitlab_ui_form_for(resource, as: form_resource_name, url: url,
+  html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }},
+  data: { testid: 'signup-form' }) do |f|
   .devise-errors
     = render 'devise/shared/error_messages', resource: resource
   - if Gitlab::CurrentSettings.invisible_captcha_enabled
@@ -21,8 +23,9 @@
       = f.text_field :first_name,
         class: 'form-control gl-form-input top js-block-emoji js-validate-length js-track-error',
         data: { max_length: max_first_name_length,
-        max_length_message: s_('SignUp|First name is too long (maximum is %{max_length} characters).') % { max_length: max_first_name_length },
-        track_action_for_errors: tracking_label,
+        max_length_message: safe_format(s_('SignUp|First name is too long (maximum is %{max_length} characters).'),
+                            max_length: max_first_name_length),
+        track_action_for_errors: preregistration_tracking_label,
         testid: 'new-user-first-name-field' },
         required: true,
         title: _('This field is required.')
@@ -31,8 +34,9 @@
       = f.text_field :last_name,
         class: 'form-control gl-form-input top js-block-emoji js-validate-length js-track-error',
         data: { max_length: max_last_name_length,
-        max_length_message: s_('SignUp|Last name is too long (maximum is %{max_length} characters).') % { max_length: max_last_name_length },
-        track_action_for_errors: tracking_label,
+        max_length_message: safe_format(s_('SignUp|Last name is too long (maximum is %{max_length} characters).'),
+                            max_length: max_last_name_length),
+        track_action_for_errors: preregistration_tracking_label,
         testid: 'new-user-last-name-field' },
         required: true,
         title: _('This field is required.')
@@ -40,36 +44,45 @@
     = f.label :username, _('Username')
     = f.text_field :username,
       class: 'form-control gl-form-input middle js-block-emoji js-validate-length js-validate-username js-track-error',
-      data: signup_username_data_attributes.merge(track_action_for_errors: tracking_label),
+      data: signup_username_data_attributes.merge(track_action_for_errors: preregistration_tracking_label),
       pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
       required: true,
       title: _('Please create a username with only alphanumeric characters.')
-    %p.validation-error.gl-text-red-500.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Username is already taken.')
-    %p.validation-success.gl-text-green-600.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Username is available.')
-    %p.validation-pending.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Checking username availability...')
+    %p.validation-error.gl-text-red-500.gl-field-error-ignore.gl-mt-2.field-validation.hide
+      = _('Username is already taken.')
+    %p.validation-success.gl-text-green-600.gl-field-error-ignore.gl-mt-2.field-validation.hide
+      = _('Username is available.')
+    %p.validation-pending.gl-field-error-ignore.gl-mt-2.field-validation.hide
+      = _('Checking username availability...')
   - unless @invite_email.present?
     .form-group
       = f.label :email, _('Email')
       = f.email_field :email,
         class: 'form-control gl-form-input middle js-validate-email js-track-error',
-        data: { testid: 'new-user-email-field', track_action_for_errors: tracking_label },
+        data: { testid: 'new-user-email-field', track_action_for_errors: preregistration_tracking_label },
         required: true,
         title: _('Please provide a valid email address.')
-      %p.validation-hint.gl-field-hint.text-secondary= _('We recommend a work email address.')
-      %p.validation-warning.gl-field-error-ignore.text-secondary.hide= _('This email address does not look right, are you sure you typed it correctly?')
+      %p.validation-hint.gl-field-hint.text-secondary
+        = _('We recommend a work email address.')
+      %p.validation-warning.gl-field-error-ignore.text-secondary.hide
+        = _('This email address does not look right, are you sure you typed it correctly?')
       -# This is used for providing entry to Jihu on email verification
       = render_if_exists 'devise/shared/signup_email_additional_info'
   .form-group.gl-mb-5
     = f.label :password, _('Password')
     %input.form-control.gl-form-input.js-password{ data: { id: "#{form_resource_name}_password",
-      title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length },
+      title: safe_format(s_('SignUp|Minimum length is %{minimum_password_length} characters.'),
+             minimum_password_length: @minimum_password_length),
       minimum_password_length: @minimum_password_length,
       testid: 'new-user-password-field',
-      track_action_for_errors: tracking_label,
+      track_action_for_errors: preregistration_tracking_label,
       autocomplete: 'new-password',
       name: "#{form_resource_name}[password]" } }
-    %p.gl-field-hint-valid.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
+    %p.gl-field-hint-valid.text-secondary
+      = safe_format(s_('SignUp|Minimum length is %{minimum_password_length} characters.'),
+        minimum_password_length: @minimum_password_length)
     = render_if_exists 'shared/password_requirements_list', show_basic_requirements: true
+  -# This is used for providing entry to Jihu phone verification
   = render_if_exists 'devise/shared/phone_verification', form: f
 
   .form-group
@@ -78,11 +91,9 @@
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true,
-    button_options: { class: button_class,
-      data: { testid: 'new-user-register-button', track_action: 'register', track_label: tracking_label }}) do
-    = button_text
-
   = render 'devise/shared/terms_of_service_notice', button_text: button_text
 
-= yield :omniauth_providers_bottom if show_omniauth_providers
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true,
+    button_options: { class: "#{button_class} gl-mt-4",
+      data: { testid: 'new-user-register-button', track_action: 'register', track_label: preregistration_tracking_label }}) do
+    = button_text

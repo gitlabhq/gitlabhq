@@ -47,7 +47,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
 
   let(:terms_text) do
     <<~TEXT.squish
-      By clicking Register or registering through a third party you accept the
+      By clicking Continue or registering through a third party you accept the
       Terms of Use and acknowledge the Privacy Statement and Cookie Policy
     TEXT
   end
@@ -130,7 +130,7 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
       fill_in 'new_user_username', with: 'new$user!username'
       wait_for_requests
 
-      click_button "Register"
+      click_button _('Continue')
 
       expect(page).to have_content("Please create a username with only alphanumeric characters.")
     end

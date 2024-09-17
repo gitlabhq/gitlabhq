@@ -33,6 +33,27 @@ to make the shorter pipeline run, you must follow these guidelines when naming y
 | Starting with `docs-` | `docs-update-api-issues`     |
 | Ending in `-docs`     | `123-update-api-issues-docs` |
 
+### Moving content
+
+When you move content to a new location, and edit the content in the same merge request,
+use separate commits.
+
+Separate commits help the reviewer, because the MR diff for moved content
+does not clearly highlight edits.
+When you use separate commits, the reviewer can verify the location change
+in the first commit diff, then the content changes in subsequent commits.
+
+For example, if you move a page, but also update the content of the page:
+
+1. In the first commit: Move the content to its new location and put [redirects](redirects.md) in place if required.
+   If you can, fix broken links in this commit.
+1. In subsequent commits: Make content changes. Fix broken links if you haven't already.
+1. In the merge request: Explain the commits in the MR description and in a
+   comment to the reviewer.
+
+You can add as many commits as you want, but make sure the first commit only moves the content,
+and does not edit it.
+
 ## Documentation labels
 
 When you author an issue or merge request, choose the

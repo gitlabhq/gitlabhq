@@ -64,6 +64,11 @@ module API
         merge_request.public_merge_status
       end
       expose :detailed_merge_status
+
+      expose :merge_after do |merge_request, _options|
+        merge_request.merge_schedule&.merge_after
+      end
+
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :squash_commit_sha

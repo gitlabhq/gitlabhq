@@ -176,6 +176,5 @@ Layout/LineContinuationSpacing:
     - 'spec/support/shared_examples/requests/api/notes_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/resolvable_discussions_shared_examples.rb'
     - 'spec/uploaders/file_mover_spec.rb'
-    - 'spec/views/devise/shared/_signup_box.html.haml_spec.rb'
     - 'spec/views/projects/issues/show.html.haml_spec.rb'
     - 'spec/views/projects/pages/show.html.haml_spec.rb'

@@ -32,7 +32,7 @@ GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.js
 
 ## Create a database backup
 
-A database backup is required to roll back a GitLab upgrade if you encounter issues.
+Before upgrading GitLab, you should create a database-only backup. If you encounter issues during the GitLab upgrade, you can restore the database backup to roll back the upgrade. To create a database backup, run this command:
 
 ```shell
 docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state
@@ -40,3 +40,5 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 
 The backup is written to `/var/opt/gitlab/backups` which should be on a
 [volume mounted by Docker](installation.md#set-up-the-volumes-location).
+
+For more information on using the backup to roll back an upgrade, see [Downgrade GitLab](upgrade.md#downgrade-gitlab).

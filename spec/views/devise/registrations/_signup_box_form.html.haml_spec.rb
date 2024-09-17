@@ -2,14 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'devise/shared/_signup_box', feature_category: :system_access do
+RSpec.describe 'devise/registrations/_signup_box_form', feature_category: :system_access do
   before do
     stub_devise
     allow(view).to receive(:arkose_labs_enabled?).and_return(false)
-    allow(view).to receive(:show_omniauth_providers).and_return(false)
     allow(view).to receive(:url).and_return('_url_')
     allow(view).to receive(:button_text).and_return('')
-    allow(view).to receive(:tracking_label).and_return('')
+    allow(view).to receive(:preregistration_tracking_label).and_return('')
     stub_template 'devise/shared/_error_messages.html.haml' => ''
   end
 
