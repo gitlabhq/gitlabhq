@@ -16,6 +16,10 @@ module Gitlab
         SQL
       end
 
+      def reset_trigger_function(function_name)
+        execute("ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL")
+      end
+
       def function_exists?(name)
         !!connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
       end
@@ -79,6 +83,30 @@ module Gitlab
         raise "#{scope} operations can not be run inside a transaction block, " \
           "you can disable transaction blocks by calling disable_ddl_transaction! " \
           "in the body of your migration class"
+      end
+
+      def find_all_id_columns_sql
+        <<~SQL.strip
+          SELECT table_name, column_name, data_type, column_default FROM information_schema.columns a
+          WHERE a.table_schema = 'public'
+          AND (
+            -- columns like "id" and "project_id"
+            (a.data_type = 'integer' AND (a.column_name = 'id' OR a.column_name LIKE '%\\_id'))
+            OR
+            -- columns like "traversal_ids"
+            (a.data_type = 'ARRAY' AND a.udt_name = '_int4' AND a.column_name LIKE '%\\_ids')
+          )
+          AND NOT EXISTS (
+            -- skip columns when migration is in progress
+            SELECT 1 FROM information_schema.columns b WHERE b.table_schema = a.table_schema AND b.table_name = a.table_name
+            AND b.data_type = 'bigint' AND b.column_name = (a.column_name || '_convert_to_bigint')
+          )
+          AND NOT EXISTS (
+            -- skip columns from partitioned tables
+            SELECT 1 FROM postgres_partitions c WHERE c.schema = 'public' AND c.name = a.table_name
+          )
+          ORDER BY table_schema, table_name, column_name
+        SQL
       end
 
       private

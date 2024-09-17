@@ -9,12 +9,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobsList from '../jobs/list.vue';
 import EmptyState from './empty_state.vue';
 
-const CLASSES_FLEX_VERTICAL_CENTER = [
-  'gl-h-full',
-  'gl-display-flex',
-  'gl-flex-direction-column',
-  'gl-justify-content-center',
-];
+const CLASSES_FLEX_VERTICAL_CENTER = ['gl-h-full', 'gl-flex', 'gl-flex-col', 'gl-justify-center'];
 
 export default {
   components: {
@@ -85,7 +80,7 @@ export default {
         class="gl-mt-5"
       >
         <p class="gl-mb-0">{{ __('Unable to create pipeline') }}</p>
-        <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
+        <p class="break-word gl-mb-0">{{ latestPipeline.yamlError }}</p>
       </gl-alert>
       <gl-tabs v-else>
         <gl-tab :active="!pipelineFailed">

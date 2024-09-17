@@ -28,11 +28,7 @@ Prerequisites:
   - The GitLab Duo Code Suggestions feature requires GitLab version 16.8 or later.
 - You have [Neovim](https://neovim.io/) version 0.9 or later.
 
-To install the extension:
-
-1. Follow the installation steps for your chosen plugin manager.
-1. Optional. Configure GitLab Duo Code Suggestions as an Omni Completion provider.
-1. Set up helptags using `:helptags ALL` for access to [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
+To install the extension, follow the installation steps for your chosen plugin manager:
 
 ::Tabs
 
@@ -85,25 +81,34 @@ use {
 
 ## Configure the extension
 
-These environment variables are frequently used with the extension. For a full list, see this plugin's help text
-at [`doc/gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
+1. Configure environment variables. While these are the most common, a full list is available in this
+   plugin's help text at [`doc/gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt):
 
-| Environment variable | Default              | Description |
-|----------------------|----------------------|-------------|
-| `GITLAB_TOKEN`.      | n/a                  | The default GitLab personal access token to use for authenticated requests. If provided, skips interactive authentication. |
-| `GITLAB_VIM_URL`.    | `https://gitlab.com` | Override the GitLab instance to connect with. Defaults to `https://gitlab.com`. |
+   | Environment variable | Default              | Description |
+   |----------------------|----------------------|-------------|
+   | `GITLAB_TOKEN`.      | not applicable       | The default GitLab personal access token to use for authenticated requests. If provided, skips interactive authentication. |
+   | `GITLAB_VIM_URL`.    | `https://gitlab.com` | Override the GitLab instance to connect with. Defaults to `https://gitlab.com`. |
 
-This plugin enables `gitlab.statusline` by default, which hooks into the built-in `statusline`
-to show the status of the Code Suggestions integration. To disable `gitlab.statusline`,
-add this to your configuration:
+1. Configure your desired file types. For example, because this plugin supports Ruby, it adds a `FileType ruby` auto-command.
+   To configure this behavior for additional file types, add more file types to the `code_suggestions.auto_filetypes` setup option:
 
-```lua
-require('gitlab').setup({
-  statusline = {
-    enabled = false
-  }
-})
-```
+   ```lua
+   require('gitlab').setup({
+     statusline = {
+       enabled = false
+     },
+     code_suggestions = {
+       # For the full list of default languages, see the 'auto_filetypes' array in
+       # https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua 
+       auto_filetypes = { 'ruby', 'javascript' }, -- Default is { 'ruby' }
+     }
+   })
+   ```
+
+1. Optional. [Configure Omni Completion](#configure-omni-completion).
+1. Optional. [Configure `<Plug>` key mappings](#configure-plug-key-mappings).
+1. Optional. Set up helptags using `:helptags ALL` for access to
+   [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
 
 ### Configure Omni Completion
 
@@ -112,15 +117,14 @@ with Code Suggestions:
 
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with the `api` scope.
 1. Install the Code Suggestions [language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp).
-
 1. Optional. Consider configuring Omni Completion's dialog even for a single suggestion:
 
    ```lua
    vim.o.completeopt = 'menu,menuone'
    ```
 
-When working in a supported file type, press <kbd>Ctrl</kbd>+<kbd>x</kbd>
-then <kbd>Ctrl</kbd>+<kbd>o</kbd> to open the Omni Completion menu.
+When working in a supported file type, open the Omni Completion menu by pressing <kbd>Ctrl</kbd>+<kbd>x</kbd>
+then <kbd>Ctrl</kbd>+<kbd>o</kbd>.
 
 ### Configure `<Plug>` key mappings
 
@@ -130,6 +134,20 @@ you must include your own key mapping that references it:
 ```lua
 -- Toggle Code Suggestions on/off with CTRL-g in normal mode:
 vim.keymap.set('n', '<C-g>', '<Plug>(GitLabToggleCodeSuggestions)')
+```
+
+### Disable `gitlab.statusline`
+
+By default, this plugin enables `gitlab.statusline`, which uses the built-in `statusline`
+to show the status of the Code Suggestions integration. If you want to disable `gitlab.statusline`,
+add this to your configuration:
+
+```lua
+require('gitlab').setup({
+  statusline = {
+    enabled = false
+  }
+})
 ```
 
 ## Report issues with the extension

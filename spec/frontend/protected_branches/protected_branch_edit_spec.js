@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/alert');
 
@@ -64,8 +65,13 @@ const PUSH_DROPDOWN_TESTID = 'protected-branch-allowed-to-push';
 const INIT_MERGE_DATA_TESTID = 'js-allowed-to-merge';
 const INIT_PUSH_DATA_TESTID = 'js-allowed-to-push';
 
+const selectMaintainerAccessLevel = [{ access_level: 40 }];
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
 describe('ProtectedBranchEdit', () => {
   let mock;
+  let ProtectedBranchEditInstance;
 
   const findForcePushToggle = () =>
     document.querySelector(`div[data-testid="${FORCE_PUSH_TOGGLE_TESTID}"] button`);
@@ -75,6 +81,12 @@ describe('ProtectedBranchEdit', () => {
     document.querySelector(`div[data-testid="${MERGE_DROPDOWN_TESTID}"]`);
   const findPushDropdown = () =>
     document.querySelector(`div[data-testid="${PUSH_DROPDOWN_TESTID}"]`);
+
+  const selectDropdownValue = async (dropdown, selectedValue) => {
+    dropdown.$emit('select', selectedValue);
+    dropdown.$emit('hidden');
+    await waitForPromises();
+  };
 
   const create = ({
     forcePushToggleChecked = false,
@@ -143,7 +155,10 @@ describe('ProtectedBranchEdit', () => {
         current_project_id: 1,
         merge_access_levels: { roles: accessLevels },
         push_access_levels: { roles: accessLevels },
+        abilities: { adminProject: true },
       };
+
+      ProtectedBranchEditInstance = create({});
 
       jest.spyOn(ProtectedBranchEdit.prototype, 'initToggles').mockImplementation();
     });
@@ -151,7 +166,6 @@ describe('ProtectedBranchEdit', () => {
     describe('rendering', () => {
       describe('merge dropdown', () => {
         it('builds the merge dropdown when it has the proper class', () => {
-          create();
           expect(findMergeDropdown()).not.toBe(null);
         });
 
@@ -163,7 +177,6 @@ describe('ProtectedBranchEdit', () => {
 
       describe('push dropdown', () => {
         it('builds the push dropdown when it has the proper class', () => {
-          create();
           expect(findPushDropdown()).not.toBe(null);
         });
 
@@ -181,7 +194,7 @@ describe('ProtectedBranchEdit', () => {
 
       it('sets selected item on load', () => {
         const preselected = [{ id: 38, access_level: 40, type: 'role' }];
-        const ProtectedBranchEditInstance = create({
+        ProtectedBranchEditInstance = create({
           pushPreselected: JSON.stringify(preselected),
         });
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
@@ -189,22 +202,15 @@ describe('ProtectedBranchEdit', () => {
       });
 
       it('updates selected item on save for enabled dropdowns', async () => {
-        const selectedValue = [{ access_level: 40 }];
-        const ProtectedBranchEditInstance = create({});
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
-        dropdown.$emit('select', selectedValue);
-        dropdown.$emit('hidden');
-        await waitForPromises();
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
         expect(dropdown.preselected[0].id).toBe(response.push_access_levels[0].id);
       });
 
       it('updates deploy key on save for enabled dropdowns', async () => {
         const selectedValue = [{ deploy_key_id: 45 }];
-        const ProtectedBranchEditInstance = create({});
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
-        dropdown.$emit('select', selectedValue);
-        dropdown.$emit('hidden');
-        await waitForPromises();
+        await selectDropdownValue(dropdown, selectedValue);
         expect(dropdown.preselected[1]).toEqual({
           deploy_key_id: 45,
           id: 39,
@@ -214,12 +220,9 @@ describe('ProtectedBranchEdit', () => {
       });
 
       it('does not update selected item on save for disabled dropdowns', async () => {
-        const selectedValue = [{ access_level: 40 }];
-        const ProtectedBranchEditInstance = create({ pushDisabled: '' });
+        ProtectedBranchEditInstance = create({ pushDisabled: '' });
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
-        dropdown.$emit('select', selectedValue);
-        dropdown.$emit('hidden');
-        await waitForPromises();
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
         expect(dropdown.preselected).toEqual([]);
       });
     });
@@ -230,7 +233,6 @@ describe('ProtectedBranchEdit', () => {
       });
 
       it('does not update permissions on hidden if there are no changes', () => {
-        const ProtectedBranchEditInstance = create();
         const dropdown = ProtectedBranchEditInstance.merge_access_levels_dropdown;
         dropdown.$emit('hidden');
         expect(mock.history.patch).toHaveLength(0);
@@ -239,19 +241,16 @@ describe('ProtectedBranchEdit', () => {
       it('updates permissions on hidden for enabled dropdowns with changes', async () => {
         const preselectedData = { id: 38, access_level: 40 };
         const preselected = [{ ...preselectedData, type: 'role' }];
-        const selectedValue = [{ access_level: 30 }];
-        const ProtectedBranchEditInstance = create({
+        ProtectedBranchEditInstance = create({
           pushPreselected: JSON.stringify(preselected),
         });
         const dropdown = ProtectedBranchEditInstance.merge_access_levels_dropdown;
-        dropdown.$emit('select', selectedValue);
-        dropdown.$emit('hidden');
-        await waitForPromises();
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
         expect(mock.history.patch).toHaveLength(1);
         expect(mock.history.patch[0].data).toEqual(
           JSON.stringify({
             protected_branch: {
-              merge_access_levels_attributes: selectedValue,
+              merge_access_levels_attributes: selectMaintainerAccessLevel,
               push_access_levels_attributes: [preselectedData],
             },
           }),
@@ -260,24 +259,39 @@ describe('ProtectedBranchEdit', () => {
 
       it('does not update permissions on hidden for disabled dropdowns', async () => {
         const preselected = [{ id: 38, access_level: 0, type: 'role' }];
-        const selectedValue = [{ access_level: 30 }];
-        const ProtectedBranchEditInstance = create({
+        ProtectedBranchEditInstance = create({
           mergeDisabled: '',
           mergePreselected: JSON.stringify(preselected),
         });
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
-        dropdown.$emit('select', selectedValue);
-        dropdown.$emit('hidden');
-        await waitForPromises();
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
         expect(mock.history.patch).toHaveLength(1);
         expect(mock.history.patch[0].data).toEqual(
           JSON.stringify({
             protected_branch: {
               merge_access_levels_attributes: [],
-              push_access_levels_attributes: selectedValue,
+              push_access_levels_attributes: selectMaintainerAccessLevel,
             },
           }),
         );
+      });
+
+      it('emits a tracking event for Allowed to merge dropdown', async () => {
+        const dropdown = ProtectedBranchEditInstance.merge_access_levels_dropdown;
+        const { trackEventSpy } = bindInternalEventDocument(dropdown.element);
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
+        expect(trackEventSpy).toHaveBeenCalledWith('change_allowed_to_merge', {
+          label: 'repository_settings',
+        });
+      });
+
+      it('emits a tracking event for Allowed to push and merge dropdown', async () => {
+        const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
+        const { trackEventSpy } = bindInternalEventDocument(dropdown.element);
+        await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
+        expect(trackEventSpy).toHaveBeenCalledWith('change_allowed_to_push_and_merge', {
+          label: 'repository_settings',
+        });
       });
     });
   });
@@ -288,21 +302,15 @@ describe('ProtectedBranchEdit', () => {
     });
 
     describe('when license supports code owner approvals', () => {
-      beforeEach(() => {
-        create();
-      });
-
       it('instantiates the code owner toggle', () => {
+        create();
         expect(findCodeOwnerToggle()).not.toBe(null);
       });
     });
 
     describe('when license does not support code owner approvals', () => {
-      beforeEach(() => {
-        create({ hasLicense: false });
-      });
-
       it('does not instantiate the code owner toggle', () => {
+        create({ hasLicense: false });
         expect(findCodeOwnerToggle()).toBe(null);
       });
     });
@@ -327,65 +335,76 @@ describe('ProtectedBranchEdit', () => {
     });
 
     describe.each`
-      description     | checkedOption               | patchParam                        | finder
-      ${'force push'} | ${'forcePushToggleChecked'} | ${'allow_force_push'}             | ${findForcePushToggle}
-      ${'code owner'} | ${'codeOwnerToggleChecked'} | ${'code_owner_approval_required'} | ${findCodeOwnerToggle}
-    `('when unchecked $description toggle button', ({ checkedOption, patchParam, finder }) => {
-      let toggle;
+      description     | checkedOption               | patchParam                        | finder                 | trackingEvent
+      ${'force push'} | ${'forcePushToggleChecked'} | ${'allow_force_push'}             | ${findForcePushToggle} | ${'change_allow_force_push'}
+      ${'code owner'} | ${'codeOwnerToggleChecked'} | ${'code_owner_approval_required'} | ${findCodeOwnerToggle} | ${'change_require_codeowner_approval'}
+    `(
+      'when unchecked $description toggle button',
+      ({ checkedOption, patchParam, finder, trackingEvent }) => {
+        let toggle;
 
-      beforeEach(() => {
-        create({ [checkedOption]: false });
-
-        toggle = finder();
-      });
-
-      it('is not changed', () => {
-        expect(toggle).not.toHaveClass(IS_CHECKED_CLASS);
-        expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-        expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
-      });
-
-      describe('when clicked', () => {
         beforeEach(() => {
-          mock
-            .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
-            .replyOnce(HTTP_STATUS_OK, {});
+          create({ [checkedOption]: false });
+
+          toggle = finder();
         });
 
-        it('checks and disables button', async () => {
-          await toggle.click();
-
-          expect(toggle).toHaveClass(IS_CHECKED_CLASS);
-          expect(toggle.querySelector(IS_LOADING_SELECTOR)).not.toBe(null);
-          expect(toggle).toHaveClass(IS_DISABLED_CLASS);
-        });
-
-        it('sends update to BE', async () => {
-          await toggle.click();
-
-          await axios.waitForAll();
-
-          // Args are asserted in the `.onPatch` call
-          expect(mock.history.patch).toHaveLength(1);
-
-          expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
+        it('is not changed', () => {
+          expect(toggle).not.toHaveClass(IS_CHECKED_CLASS);
           expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-          expect(createAlert).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('when clicked and BE error', () => {
-        beforeEach(() => {
-          mock.onPatch(TEST_URL).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-          toggle.click();
+          expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
         });
 
-        it('alerts error', async () => {
-          await axios.waitForAll();
+        describe('when clicked', () => {
+          beforeEach(() => {
+            mock
+              .onPatch(TEST_URL, { protected_branch: { [patchParam]: true } })
+              .replyOnce(HTTP_STATUS_OK, {});
+          });
 
-          expect(createAlert).toHaveBeenCalled();
+          it('checks and disables button', async () => {
+            await toggle.click();
+
+            expect(toggle).toHaveClass(IS_CHECKED_CLASS);
+            expect(toggle.querySelector(IS_LOADING_SELECTOR)).not.toBe(null);
+            expect(toggle).toHaveClass(IS_DISABLED_CLASS);
+          });
+
+          it('sends update to BE', async () => {
+            await toggle.click();
+
+            await axios.waitForAll();
+
+            // Args are asserted in the `.onPatch` call
+            expect(mock.history.patch).toHaveLength(1);
+
+            expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
+            expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
+            expect(createAlert).not.toHaveBeenCalled();
+          });
+
+          it('emits a tracking event when clicked', async () => {
+            const { trackEventSpy } = bindInternalEventDocument(toggle.element);
+
+            await toggle.click();
+            await axios.waitForAll();
+
+            expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {
+              label: 'repository_settings',
+            });
+          });
         });
-      });
-    });
+
+        describe('when clicked and BE error', () => {
+          it('alerts error', async () => {
+            mock.onPatch(TEST_URL).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            toggle.click();
+            await axios.waitForAll();
+
+            expect(createAlert).toHaveBeenCalled();
+          });
+        });
+      },
+    );
   });
 });

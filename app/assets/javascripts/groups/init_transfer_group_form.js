@@ -40,7 +40,7 @@ export default () => {
           )}">`,
           projectLinkEnd: '</a>',
           documentationLinkStart: `<a href="${helpPagePath(
-            'user/project/repository/index.html#what-happens-when-a-repository-path-changes',
+            'user/project/repository/index.html#repository-path-changes',
           )}">`,
           documentationLinkEnd: '</a>',
         },

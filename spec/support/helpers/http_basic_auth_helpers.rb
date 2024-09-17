@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module HttpBasicAuthHelpers
-  def user_basic_auth_header(user)
-    access_token = create(:personal_access_token, user: user)
+  def user_basic_auth_header(user, access_token = nil)
+    access_token ||= create(:personal_access_token, user: user)
 
     basic_auth_header(user.username, access_token.token)
   end
 
   def job_basic_auth_header(job)
     basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token)
+  end
+
+  def deploy_token_basic_auth_header(deploy_token)
+    basic_auth_header(deploy_token.username, deploy_token.token)
   end
 
   def client_basic_auth_header(client)

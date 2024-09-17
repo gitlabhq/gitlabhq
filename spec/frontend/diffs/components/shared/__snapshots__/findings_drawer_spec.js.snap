@@ -16,7 +16,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         class="gl-drawer-title"
       >
         <h2
-          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0 gl-w-28"
+          class="drawer-heading gl-mb-0 gl-mt-0 gl-text-base gl-w-28"
         >
           <svg
             aria-hidden="true"
@@ -57,7 +57,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
       class="gl-drawer-body gl-drawer-body-scrim"
     >
       <ul
-        class="gl-border-b-initial gl-list-none gl-mb-0 gl-pb-0!"
+        class="!gl-pb-0 gl-border-b-initial gl-list-none gl-mb-0"
       >
         <li
           class="gl-mb-4"
@@ -240,7 +240,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         class="gl-drawer-title"
       >
         <h2
-          class="drawer-heading gl-font-base gl-mb-0 gl-mt-0 gl-w-28"
+          class="drawer-heading gl-mb-0 gl-mt-0 gl-text-base gl-w-28"
         >
           <svg
             aria-hidden="true"
@@ -281,7 +281,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
       class="gl-drawer-body gl-drawer-body-scrim"
     >
       <ul
-        class="gl-border-b-initial gl-list-none gl-mb-0 gl-pb-0!"
+        class="!gl-pb-0 gl-border-b-initial gl-list-none gl-mb-0"
       >
         <li
           class="gl-mb-4"

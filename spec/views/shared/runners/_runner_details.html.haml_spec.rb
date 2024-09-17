@@ -57,8 +57,8 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
       it { is_expected.to have_content('Paused No') }
     end
 
-    context 'when runner is inactive' do
-      let(:runner) { build_stubbed(:ci_runner, :inactive) }
+    context 'when runner is paused' do
+      let(:runner) { build_stubbed(:ci_runner, :paused) }
 
       it { is_expected.to have_content('Paused Yes') }
     end

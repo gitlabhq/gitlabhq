@@ -7,6 +7,14 @@ module Resolvers
 
       type ::Types::Ci::JobType.connection_type, null: true
 
+      argument :job_kind, ::Types::Ci::JobKindEnum,
+        required: false,
+        description: 'Filter jobs by kind.'
+
+      argument :retried, ::GraphQL::Types::Boolean,
+        required: false,
+        description: 'Filter jobs by retry-status.'
+
       argument :security_report_types, [Types::Security::ReportTypeEnum],
         required: false,
         description: 'Filter jobs by the type of security report they produce.'
@@ -15,25 +23,22 @@ module Resolvers
         required: false,
         description: 'Filter jobs by status.'
 
-      argument :retried, ::GraphQL::Types::Boolean,
-        required: false,
-        description: 'Filter jobs by retry-status.'
-
       argument :when_executed, [::GraphQL::Types::String],
         required: false,
         description: 'Filter jobs by when they are executed.'
 
-      argument :job_kind, ::Types::Ci::JobKindEnum,
-        required: false,
-        description: 'Filter jobs by kind.'
-
-      def resolve(statuses: nil, security_report_types: [], retried: nil, when_executed: nil, job_kind: nil)
+      def resolve(
+        job_kind: nil,
+        retried: nil,
+        security_report_types: [],
+        statuses: nil,
+        when_executed: nil)
         jobs = init_collection(security_report_types)
-        jobs = jobs.with_status(statuses) if statuses.present?
-        jobs = jobs.retried if retried
-        jobs = jobs.with_when_executed(when_executed) if when_executed.present?
         jobs = jobs.latest if retried == false
+        jobs = jobs.retried if retried
+        jobs = jobs.with_status(statuses) if statuses.present?
         jobs = jobs.with_type(job_kind) if job_kind
+        jobs = jobs.with_when_executed(when_executed) if when_executed.present?
 
         jobs
       end

@@ -17,6 +17,8 @@ module BulkImports
 
         return unless relation_hash
 
+        original_users_map = {}.compare_by_identity
+
         relation_object = deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|
           persist_relation(
             relation_index: relation_index,
@@ -27,15 +29,20 @@ module BulkImports
             object_builder: object_builder,
             user: context.current_user,
             excluded_keys: import_export_config.relation_excluded_keys(key),
-            import_source: Import::SOURCE_DIRECT_TRANSFER
+            import_source: Import::SOURCE_DIRECT_TRANSFER,
+            original_users_map: original_users_map,
+            rewrite_mentions: context.importer_user_mapping_enabled?
           )
         end
 
         relation_object.assign_attributes(portable_class_sym => portable)
-        relation_object
+
+        [relation_object, original_users_map]
       end
 
-      def load(_context, object)
+      def load(_context, data)
+        object, original_users_map = data
+
         return unless object
 
         if object.new_record?
@@ -58,6 +65,8 @@ module BulkImports
 
           object.save!
         end
+
+        push_placeholder_references(object, original_users_map) if context.importer_user_mapping_enabled?
       end
 
       def deep_transform_relation!(relation_hash, relation_key, relation_definition, &block)
@@ -84,6 +93,10 @@ module BulkImports
             relation_hash.delete(sub_relation_key)
           end
         end
+
+        # Create Import::SourceUser objects during the transformation
+        # step if they were not created during the MemberPipeline.
+        create_import_source_users(relation_key, relation_hash) if context.importer_user_mapping_enabled?
 
         yield(relation_key, relation_hash)
       end
@@ -119,7 +132,15 @@ module BulkImports
       end
 
       def members_mapper
-        @members_mapper ||= BulkImports::UsersMapper.new(context: context)
+        @members_mapper ||= if context.importer_user_mapping_enabled?
+                              Import::BulkImports::SourceUsersMapper.new(context: context)
+                            else
+                              UsersMapper.new(context: context)
+                            end
+      end
+
+      def source_user_mapper
+        context.source_user_mapper
       end
 
       def portable_class_sym
@@ -140,6 +161,100 @@ module BulkImports
             correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
             subrelation: record.class.to_s
           )
+        end
+      end
+
+      # Creates an Import::SourceUser objects for each source_user_identifier
+      # found in the relation_hash and associate it with the ImportUser.
+      #
+      # For example, if the relation_hash is:
+      #
+      # {
+      #   "title": "Title",
+      #   "author_id": 100,
+      #   "updated_by_id": 101
+      # }
+      #
+      # Import::SourceUser records with source_user_identifier 100 and 101 will be
+      # created if none are found in the database, along with a placeholder user
+      # for each record.
+      def create_import_source_users(_relation_key, relation_hash)
+        relation_factory::USER_REFERENCES.each do |reference|
+          next unless relation_hash[reference]
+
+          source_user_mapper.find_or_create_source_user(
+            source_name: nil,
+            source_username: nil,
+            source_user_identifier: relation_hash[reference]
+          )
+        end
+      end
+
+      # Method recursively scans through the relationships of an object based
+      # on the relation_definition and places all objects into a flattened list
+      # of objects.
+      #
+      # For example, if the relation_definition is: { "notes" => { "events" => {} } }
+      #
+      # and the relation_object a merge_request with the following notes:
+      #
+      # event1 = Event.new
+      # note1 = Note.new(events: [event1])
+      # event2 = Event.new
+      # note2 = Note.new(events: [event2])
+      # merge_request = MergeRequest.new(notes:[note1, note2])
+      #
+      # the flatten_objects list will contain:
+      # [note1, event1, note2, event2]
+      #
+      # rubocop:disable GitlabSecurity/PublicSend -- only methods in the relation_definition are called
+      def scan_objects(relation_definition, relation_object, flatten_objects)
+        relation_definition.each_key do |definition|
+          subrelation = relation_object.public_send(definition)
+          association = relation_object.class.reflect_on_association(definition)
+
+          next if subrelation.nil? || association.nil?
+
+          if association.collection?
+            subrelation.records.each do |record|
+              flatten_objects << record
+
+              scan_objects(relation_definition[definition], record, flatten_objects)
+            end
+          else
+            flatten_objects << subrelation
+          end
+        end
+      end
+      # rubocop:enable GitlabSecurity/PublicSend
+
+      def push_placeholder_references(object, original_users_map)
+        flatten_objects = [object]
+
+        scan_objects(relation_definition, object, flatten_objects)
+
+        flatten_objects.each do |object|
+          next unless object.persisted?
+
+          original_users = original_users_map[object]
+
+          next unless original_users
+
+          original_users.each do |attribute, source_user_identifier|
+            source_user = source_user_mapper.find_source_user(source_user_identifier)
+
+            # Do not create a reference if the object is already associated
+            # with a real user.
+            next if source_user.accepted_status? && object[attribute] == source_user.reassign_to_user_id
+
+            ::Import::PlaceholderReferences::PushService.from_record(
+              import_source: ::Import::SOURCE_DIRECT_TRANSFER,
+              import_uid: context.bulk_import_id,
+              record: object,
+              source_user: source_user,
+              user_reference_column: attribute.to_sym
+            ).execute
+          end
         end
       end
     end

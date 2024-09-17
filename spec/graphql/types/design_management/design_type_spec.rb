@@ -10,7 +10,8 @@ RSpec.describe GitlabSchema.types['Design'], feature_category: :portfolio_manage
   it_behaves_like 'a GraphQL type with design fields' do
     let(:extra_design_fields) do
       %i[notes current_user_todos discussions versions web_url
-        commenters imported imported_from description descriptionHtml]
+        commenters imported imported_from description descriptionHtml
+        name]
     end
 
     let_it_be(:design) { create(:design, :with_versions) }

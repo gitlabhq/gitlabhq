@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.Repetition
+# Error: gitlab_base.Repetition
 #
 # Checks for duplicate words, like `the the` or `and and`.
 #

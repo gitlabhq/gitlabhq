@@ -472,7 +472,7 @@ on the files make them readable to you but not accessible to others.
 ## Configure two-factor authentication (2FA)
 
 You can set up two-factor authentication (2FA) for
-[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). We recommend using
+[Git over SSH](../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations). You should use
 [ED25519_SK](#ed25519_sk-ssh-keys) or [ECDSA_SK](#ecdsa_sk-ssh-keys) SSH keys.
 
 ## Use EGit on Eclipse

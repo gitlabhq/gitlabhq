@@ -18,7 +18,7 @@
         - blob_url = project_blob_path(@project, @id)
         = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
 
-%h1.page-title.gl-font-size-h-display.blob-edit-page-title
+%h1.page-title.gl-text-size-h-display.blob-edit-page-title
   Edit file
 .file-editor
   = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do

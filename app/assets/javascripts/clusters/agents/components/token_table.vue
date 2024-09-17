@@ -96,7 +96,7 @@ export default {
 <template>
   <div>
     <div v-if="tokens.length">
-      <create-token-button class="gl-text-right gl-my-5" />
+      <create-token-button class="gl-my-5 gl-text-right" />
 
       <gl-table
         :items="tokens"

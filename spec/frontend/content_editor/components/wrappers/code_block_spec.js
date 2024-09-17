@@ -98,7 +98,7 @@ describe('content/components/wrappers/code_block', () => {
 
     expect(label.text()).toEqual('frontmatter:yaml');
     expect(label.attributes('contenteditable')).toBe('false');
-    expect(label.classes()).toEqual(['gl-absolute', 'gl-top-0', 'gl-right-3']);
+    expect(label.classes()).toEqual(['gl-absolute', 'gl-right-3', 'gl-top-0']);
   });
 
   it('loads code block’s syntax highlight language', async () => {

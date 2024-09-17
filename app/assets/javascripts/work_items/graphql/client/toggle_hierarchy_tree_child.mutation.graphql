@@ -1,0 +1,3 @@
+mutation toggleHierarchyTreeChild($id: WorkItemID!, $isExpanded: Boolean!) {
+  toggleHierarchyTreeChild(id: $id, isExpanded: $isExpanded) @client
+}

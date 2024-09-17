@@ -70,14 +70,14 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
         project.add_maintainer(current_user)
       end
 
-      it 'is successful', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444864' do
+      it 'is successful' do
         result = execute
 
         expect(result).to be_success
-        expect(result.payload).to eq(
+        expect(result.payload[:destroyed_ids]).to match_array(job_artifact_ids)
+        expect(result.payload.except(:destroyed_ids)).to eq(
           {
             destroyed_count: job_artifact_ids.count,
-            destroyed_ids: job_artifact_ids,
             errors: []
           }
         )

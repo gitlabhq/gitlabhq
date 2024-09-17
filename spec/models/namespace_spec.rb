@@ -253,6 +253,27 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '#parent_organization_match' do
+      let_it_be(:group) { create(:group, :with_organization) }
+
+      subject(:namespace) { build(:group, parent: group, organization: organization) }
+
+      context "when namespace belongs to parent's organization" do
+        let(:organization) { group.organization }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when namespace does not belong to parent's organization" do
+        let(:organization) { build(:organization) }
+
+        it 'is not valid and adds an error message' do
+          expect(namespace).not_to be_valid
+          expect(namespace.errors[:organization_id]).to include("must match the parent organization's ID")
+        end
+      end
+    end
   end
 
   describe "ReferencePatternValidation" do
@@ -313,7 +334,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       ref(:group)             | true  | nil                                       | lazy { group.full_path }
       ref(:group)             | false | ref(:group)                               | nil
       ref(:group)             | true  | ref(:group)                               | lazy { group.full_path }
-      ref(:group)             | false | ref(:parent)                              | lazy { group.path }
+      ref(:group)             | false | ref(:parent)                              | lazy { group.full_path }
       ref(:group)             | true  | ref(:parent)                              | lazy { group.full_path }
       ref(:group)             | false | ref(:project)                             | lazy { group.path }
       ref(:group)             | true  | ref(:project)                             | lazy { group.full_path }
@@ -550,6 +571,28 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         it "does not return a namespace not inheriting shared runners" do
           is_expected.not_to include(namespace_not_inheriting_shared_runners)
         end
+      end
+    end
+
+    describe '#by_contains_all_traversal_ids' do
+      let_it_be(:namespace_1) { create(:group) }
+      let_it_be(:namespace_2) { create(:group, parent: namespace_1) }
+      let_it_be(:namespace_3) { create(:namespace) }
+
+      it 'returns groups that contain all provided traversal_ids' do
+        expect(described_class.by_contains_all_traversal_ids(namespace_1.traversal_ids))
+          .to contain_exactly(namespace_1, namespace_2)
+        expect(described_class.by_contains_all_traversal_ids(namespace_2.traversal_ids)).to contain_exactly(namespace_2)
+        expect(described_class.by_contains_all_traversal_ids(namespace_3.traversal_ids)).to contain_exactly(namespace_3)
+      end
+    end
+
+    describe '#by_traversal_ids' do
+      let_it_be(:namespace_1) { create(:namespace) }
+
+      it 'returns groups for the provided traversal_ids' do
+        expect(described_class.by_traversal_ids(namespace.traversal_ids)).to contain_exactly(namespace)
+        expect(described_class.by_traversal_ids(namespace_1.traversal_ids)).to contain_exactly(namespace_1)
       end
     end
   end
@@ -1477,6 +1520,47 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it "sanitizes the name by replacing all invalid char sequences with a space" do
         expect(described_class.clean_name("Green'! Test~~~")).to eq("Green Test")
       end
+    end
+  end
+
+  describe ".username_reserved?" do
+    subject(:username_reserved) { described_class.username_reserved?(username) }
+
+    let(:username) { 'capyabra' }
+
+    let_it_be(:user) { create(:user, name: 'capybara') }
+    let_it_be(:group) { create(:group, name: 'capybara-group') }
+    let_it_be(:subgroup) { create(:group, parent: group, name: 'capybara-subgroup') }
+    let_it_be(:project) { create(:project, group: group, name: 'capybara-project') }
+
+    context 'when given a project name' do
+      let(:username) { 'capyabra-project' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given a sub-group name' do
+      let(:username) { 'capybara-subgroup' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given a top-level group' do
+      let(:username) { 'capybara-group' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given an existing username' do
+      let(:username) { 'capybara' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given a username with varying capitalization' do
+      let(:username) { 'CaPyBaRa' }
+
+      it { is_expected.to eq(true) }
     end
   end
 
@@ -2554,6 +2638,20 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:organization) }
       let_it_be(:model) { create(:namespace, organization: parent) }
+    end
+  end
+
+  describe '#web_url' do
+    let_it_be(:group) { create(:group) }
+
+    it 'returns the canonical URL' do
+      expect(group.web_url).to include("groups/#{group.name}")
+    end
+
+    context 'nested group' do
+      let(:nested_group) { create(:group, :nested) }
+
+      it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
     end
   end
 end

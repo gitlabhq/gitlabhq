@@ -5,6 +5,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
   get :issues
   get :merge_requests
   get :activity
+  get 'merge_requests/search', to: 'dashboard#merge_requests'
 
   scope module: :dashboard do
     resources :milestones, only: [:index]
@@ -15,6 +16,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :todos, only: [:index, :destroy] do
       collection do
+        get :vue
         delete :destroy_all
         patch :bulk_restore
       end

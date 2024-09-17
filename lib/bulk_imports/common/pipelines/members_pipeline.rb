@@ -10,7 +10,10 @@ module BulkImports
         PROJECT_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
 
         transformer Common::Transformers::ProhibitedAttributesTransformer
+        # The transformer is skipped when bulk_import_importer_user_mapping is enabled
         transformer Common::Transformers::MemberAttributesTransformer
+        # The transformer is skipped when bulk_import_importer_user_mapping is disabled
+        transformer Import::BulkImports::Common::Transformers::SourceUserMemberAttributesTransformer
 
         def extract(context)
           graphql_extractor.extract(context)

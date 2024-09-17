@@ -124,7 +124,7 @@ func TestObjectUploadBrokenConnection(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		hj, ok := w.(http.Hijacker)
 		if !ok {
-			assert.FailNow(t, "webserver doesn't support hijacking")
+			assert.Fail(t, "webserver doesn't support hijacking")
 		}
 		conn, _, err := hj.Hijack()
 		if err != nil {

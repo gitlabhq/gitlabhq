@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'access restricted confidential issues' do
+RSpec.shared_examples 'access restricted confidential issues' do |document_type: :issue|
   let(:query) { 'issue' }
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:project) { create(:project, :internal) }
 
-  let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
-  let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-  let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
+  let!(:issue) {  create(document_type, project: project, title: 'Issue 1') }
+  let!(:security_issue_1) {  create(document_type, :confidential, project: project, title: 'Security issue 1', author: author) }
+  let!(:security_issue_2) {  create(document_type, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
   subject(:objects) do
     described_class.new(user, query, project: project).objects('issues')

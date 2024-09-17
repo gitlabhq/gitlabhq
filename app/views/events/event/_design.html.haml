@@ -4,7 +4,7 @@
 
 .event-title.gl-flex.gl-flex-wrap
   = inline_event_icon(event)
-  .event-title-block.gl-display-inline-block.gl-mr-2
+  .event-title-block.gl-inline-block.gl-mr-2
     %span.event-type{ class: event.action_name + user_profile_activity_classes }
       = event.action_name
     = event_design_title_html(event)

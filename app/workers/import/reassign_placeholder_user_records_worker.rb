@@ -27,6 +27,7 @@ module Import
       return unless import_source_user_valid?
 
       Import::ReassignPlaceholderUserRecordsService.new(import_source_user).execute
+      Import::DeletePlaceholderUserWorker.perform_async(import_source_user.id)
     end
 
     def perform_failure(exception, import_source_user_id)

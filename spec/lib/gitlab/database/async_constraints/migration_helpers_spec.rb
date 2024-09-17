@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
     end
   end
 
-  context 'with partitioned tables' do
+  context 'with async FK validation on partitioned tables' do
     let(:partition_schema) { 'gitlab_partitions_dynamic' }
     let(:partition1_name) { "#{partition_schema}.#{table_name}_202001" }
     let(:partition2_name) { "#{partition_schema}.#{table_name}_202002" }
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
     end
   end
 
-  context 'with async check constraint validations' do
+  context 'with async check constraint validations on regular tables' do
     let(:table_name) { '_test_async_check_constraints' }
     let(:check_name) { 'partitioning_constraint' }
 
@@ -282,6 +282,69 @@ RSpec.describe Gitlab::Database::AsyncConstraints::MigrationHelpers, feature_cat
 
           expect(constraint).to be_present
         end
+      end
+    end
+  end
+
+  context 'with async check constraint validations on partitioned tables' do
+    let(:partition_schema) { 'gitlab_partitions_dynamic' }
+    let(:partition1_name) { "#{partition_schema}.#{table_name}_202001" }
+    let(:partition2_name) { "#{partition_schema}.#{table_name}_202002" }
+    let(:check_name) { 'partitioning_constraint' }
+
+    before do
+      allow(migration).to receive(:puts)
+      allow(migration.connection).to receive(:transaction_open?).and_return(false)
+
+      connection.execute(<<~SQL)
+        CREATE TABLE #{table_name} (
+          id serial NOT NULL,
+          #{column_name} int NOT NULL,
+          created_at timestamptz NOT NULL,
+          PRIMARY KEY (id, created_at)
+        ) PARTITION BY RANGE (created_at);
+
+        CREATE TABLE #{partition1_name} PARTITION OF #{table_name}
+        FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
+
+        CREATE TABLE #{partition2_name} PARTITION OF #{table_name}
+        FOR VALUES FROM ('2020-02-01') TO ('2020-03-01');
+      SQL
+
+      migration.add_check_constraint(
+        partition1_name, "#{column_name} = 1",
+        check_name, validate: false)
+
+      migration.add_check_constraint(
+        partition2_name, "#{column_name} = 1",
+        check_name, validate: false)
+    end
+
+    describe '#prepare_partitioned_async_check_constraint_validation' do
+      it 'delegates to prepare_async_check_constraint_validation for each partition' do
+        expect(migration)
+          .to receive(:prepare_async_check_constraint_validation)
+          .with(partition1_name, name: check_name)
+
+        expect(migration)
+          .to receive(:prepare_async_check_constraint_validation)
+          .with(partition2_name, name: check_name)
+
+        migration.prepare_partitioned_async_check_constraint_validation(table_name, name: check_name)
+      end
+    end
+
+    describe '#unprepare_partitioned_async_check_constraint_validation' do
+      it 'delegates to unprepare_async_check_constraint_validation for each partition' do
+        expect(migration)
+          .to receive(:unprepare_async_check_constraint_validation)
+          .with(partition1_name, name: check_name)
+
+        expect(migration)
+          .to receive(:unprepare_async_check_constraint_validation)
+          .with(partition2_name, name: check_name)
+
+        migration.unprepare_partitioned_async_check_constraint_validation(table_name, name: check_name)
       end
     end
   end

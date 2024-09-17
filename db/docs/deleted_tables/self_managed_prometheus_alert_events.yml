@@ -1,0 +1,16 @@
+---
+table_name: self_managed_prometheus_alert_events
+classes:
+- SelfManagedPrometheusAlertEvent
+feature_categories:
+- metrics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18046
+milestone: '12.4'
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164288
+removed_in_milestone: '17.4'

@@ -1,0 +1,9 @@
+---
+name: post_receive_sync_refresh_cache
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/20891
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160946
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474741
+milestone: '17.3'
+group: group::pipeline execution
+type: beta
+default_enabled: true

@@ -55,44 +55,26 @@ RSpec.describe LfsObjectsProject do
     end
 
     context 'when repository_type is nil' do
-      context 'and ensure_lfs_object_project_uniqueness feature flag is enabled' do
-        before do
-          stub_feature_flags(ensure_lfs_object_project_uniqueness: true)
-          lfs_objects_project.repository_type = nil
-        end
-
-        it 'executes advisory lock' do
-          expect(lfs_objects_project.connection).to receive(:execute).with(/SELECT pg_advisory_xact_lock/)
-          lfs_objects_project.send(:ensure_uniqueness)
-        end
-
-        it 'uses correct lock key' do
-          lock_key = <<~LOCK_KEY.chomp
-            #{lfs_objects_project.project_id}-#{lfs_objects_project.lfs_object_id}-null
-          LOCK_KEY
-
-          expect(lfs_objects_project.connection).to receive(:execute).with(/hashtext\('#{lock_key}'\)/)
-          lfs_objects_project.send(:ensure_uniqueness)
-        end
-      end
-    end
-
-    context 'when ensure_lfs_object_project_uniqueness feature flag is disabled' do
       before do
-        stub_feature_flags(ensure_lfs_object_project_uniqueness: false)
+        lfs_objects_project.repository_type = nil
       end
 
-      it 'does not execute advisory lock' do
-        expect(lfs_objects_project.connection).not_to receive(:execute)
+      it 'executes advisory lock' do
+        expect(lfs_objects_project.connection).to receive(:execute).with(/SELECT pg_advisory_xact_lock/)
+        lfs_objects_project.send(:ensure_uniqueness)
+      end
+
+      it 'uses correct lock key' do
+        lock_key = <<~LOCK_KEY.chomp
+          #{lfs_objects_project.project_id}-#{lfs_objects_project.lfs_object_id}-null
+        LOCK_KEY
+
+        expect(lfs_objects_project.connection).to receive(:execute).with(/hashtext\('#{lock_key}'\)/)
         lfs_objects_project.send(:ensure_uniqueness)
       end
     end
 
     context 'when all conditions are met' do
-      before do
-        stub_feature_flags(ensure_lfs_object_project_uniqueness: true)
-      end
-
       it 'executes advisory lock' do
         expect(lfs_objects_project.connection).to receive(:execute).with(/SELECT pg_advisory_xact_lock/)
         lfs_objects_project.send(:ensure_uniqueness)

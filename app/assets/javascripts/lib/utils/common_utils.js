@@ -28,11 +28,13 @@ export const checkPageAndAction = (page, action) => {
 
 export const isInIncidentPage = () => checkPageAndAction('incidents', 'show');
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+export const isInWorkItemPage = () => checkPageAndAction('work_items', 'show');
 export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
 export const isInMRPage = () =>
   checkPageAndAction('merge_requests', 'show') ||
   checkPageAndAction('merge_requests', 'diffs') ||
-  checkPageAndAction('merge_requests', 'rapid_diffs');
+  checkPageAndAction('merge_requests', 'rapid_diffs') ||
+  checkPageAndAction('merge_requests', 'reports');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 
 export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
@@ -92,6 +94,8 @@ export const handleLocationHash = () => {
   const getFixedIssuableTitle = () => document.querySelector('.issue-sticky-header');
   const getMRStickyHeader = () => document.querySelector('.merge-request-sticky-header');
   const isIssuePage = isInIssuePage();
+  const isEpicPage = isInEpicPage();
+  const isWorkItemPage = isInWorkItemPage();
 
   let adjustment = 0;
   let fixedIssuableTitleOffset = 0;
@@ -122,7 +126,7 @@ export const handleLocationHash = () => {
     window.scrollBy(0, adjustment);
   });
 
-  if (isIssuePage) {
+  if (isIssuePage || isEpicPage || isWorkItemPage) {
     if (fixedIssuableTitleOffset === 0) {
       setTimeout(() => {
         fixedIssuableTitleOffset = -1 * getElementOffsetHeight(getFixedIssuableTitle());
@@ -207,7 +211,18 @@ export const contentTop = () => {
   }, 0);
 };
 
+/**
+ * Scrolls to the top of a particular element.
+ *
+ * @param {jQuery | HTMLElement | String} element The target jQuery element, HTML element, or query selector to scroll to.
+ * @param {Object} [options={}] Object containing additional options.
+ * @param {Number} [options.duration=200] The scroll animation duration.
+ * @param {Number} [options.offset=0] The scroll offset.
+ * @param {String} [options.behavior=smooth|auto] The scroll animation behavior.
+ * @param {HTMLElement | String} [options.parent] The parent HTML element or query selector to scroll.
+ */
 export const scrollToElement = (element, options = {}) => {
+  let scrollingEl = window;
   let el = element;
   if (element instanceof $) {
     // eslint-disable-next-line prefer-destructuring
@@ -220,9 +235,21 @@ export const scrollToElement = (element, options = {}) => {
     // In the previous implementation, jQuery naturally deferred this scrolling.
     // Unfortunately, we're quite coupled to this implementation detail now.
     defer(() => {
-      const { duration = 200, offset = 0, behavior = duration ? 'smooth' : 'auto' } = options;
+      const {
+        duration = 200,
+        offset = 0,
+        behavior = duration ? 'smooth' : 'auto',
+        parent,
+      } = options;
       const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
-      window.scrollTo({ top: y, behavior });
+
+      if (parent && typeof parent === 'string') {
+        scrollingEl = document.querySelector(parent);
+      } else if (parent) {
+        scrollingEl = parent;
+      }
+
+      scrollingEl.scrollTo({ top: y, behavior });
     });
   }
 };

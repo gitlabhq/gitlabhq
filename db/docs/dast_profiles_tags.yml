@@ -7,7 +7,7 @@ feature_categories:
 description: Join Table for Runner tags and DAST Profiles
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108371
 milestone: '15.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:

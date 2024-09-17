@@ -237,7 +237,7 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>N</td>
     </tr>
     <tr>
-      <td>Cocoapods</td>
+      <td>Cocoapods<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup></td>
       <td>All versions</td>
       <td><a href="https://cocoapods.org/">CocoaPods</a></td>
       <td><code>Podfile.lock</code></td>
@@ -296,6 +296,12 @@ The following languages and dependency managers are supported by Dependency Scan
     <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
     <p>
       Excludes both <code>pip</code> and <code>setuptools</code> from the report as they are required by the installer.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
+    <p>
+      Only SBOM, without advisories. See <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/468764">spike on CocoaPods advisories research</a>.
     </p>
   </li>
 </ol>
@@ -658,12 +664,12 @@ The following analyzers are executed, each of which have different behavior when
 
 - [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 
-   Supports multiple lockfiles
+  Supports multiple lockfiles
 
 - [Retire.js](https://retirejs.github.io/retire.js/)
 
-   Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
-   analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
+  Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
+  analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
 The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
@@ -709,7 +715,7 @@ To enable the analyzer, either:
 - Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
-- [Use CI/CD components](#use-cicd-components) (Android projects only)
+- [Use CI/CD components](#use-cicd-components)
 
 #### Use a preconfigured merge request
 
@@ -771,9 +777,9 @@ Pipelines now include a Dependency Scanning job.
 Use [CI/CD components](../../../ci/components/index.md) to perform Dependency Scanning of your
 application. For instructions, see the respective component's README file.
 
-##### Available CI/CD components per language and package manager
+##### Available CI/CD components
 
-- [Android applications](https://gitlab.com/explore/catalog/components/android-dependency-scanning)
+See <https://gitlab.com/explore/catalog/components/dependency-scanning>
 
 ### Running jobs in merge request pipelines
 
@@ -826,7 +832,7 @@ The following variables allow configuration of global dependency scanning settin
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
-| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied _before_ the scan is executed. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
@@ -1168,11 +1174,11 @@ variables:
 
 Maven does not read the `HTTP(S)_PROXY` environment variables.
 
-To make the Maven dependency scanner use a proxy, you can specify the options using the `MAVEN_CLI_OPTS` CI/CD variable:
+To make the Maven dependency scanner use a proxy, you can configure it using a `settings.xml` file (see [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html)) and instruct Maven to use this configuration by using the `MAVEN_CLI_OPTS` CI/CD variable:
 
 ```yaml
 variables:
-  MAVEN_CLI_OPTS: "-DproxySet=true -Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3218"
+  MAVEN_CLI_OPTS: "--settings mysettings.xml"
 ```
 
 ## Specific settings for languages and package managers

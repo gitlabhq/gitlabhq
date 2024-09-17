@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import * as types from './mutation_types';
 import { getFileEditorOrDefault } from './utils';
 
@@ -13,7 +12,10 @@ export default {
   [types.UPDATE_FILE_EDITOR](state, { path, data }) {
     const editor = getFileEditorOrDefault(state.fileEditors, path);
 
-    Vue.set(state.fileEditors, path, Object.assign(editor, data));
+    state.fileEditors = {
+      ...state.fileEditors,
+      [path]: Object.assign(editor, data),
+    };
   },
   [types.REMOVE_FILE_EDITOR](state, path) {
     state.fileEditors = deletePropertyAndReturnNewCopy(state.fileEditors, path);
@@ -27,6 +29,10 @@ export default {
     }
 
     state.fileEditors = deletePropertyAndReturnNewCopy(state.fileEditors, path);
-    Vue.set(state.fileEditors, newPath, existing);
+
+    state.fileEditors = {
+      ...state.fileEditors,
+      [newPath]: existing,
+    };
   },
 };

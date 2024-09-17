@@ -71,6 +71,7 @@ module Gitlab
           type: :boolean,
           default: false
         def events
+          log("Fetching events", :info)
           events = kubeclient.events
 
           if options[:save]

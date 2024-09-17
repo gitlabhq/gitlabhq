@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSecurityOrchestrationPolicyRuleSchedulesNamespaceId
+description: Backfills sharding key `security_orchestration_policy_rule_schedules.namespace_id` from `security_orchestration_policy_configurations`.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163017
+milestone: '17.4'
+queued_migration_version: 20240816130544
+finalized_by: # version of the migration that finalized this BBM

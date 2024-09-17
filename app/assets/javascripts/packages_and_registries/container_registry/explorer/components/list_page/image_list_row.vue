@@ -152,7 +152,7 @@ export default {
       <router-link
         v-else
         ref="imageName"
-        class="gl-text-body gl-font-bold"
+        class="gl-font-bold gl-text-primary"
         data-testid="details-link"
         :to="{ name: 'details', params: { id } }"
       >
@@ -172,7 +172,7 @@ export default {
       <template v-if="!metadataLoading">
         <span v-if="deleting">{{ $options.i18n.ROW_SCHEDULED_FOR_DELETION }}</span>
         <template v-else>
-          <span class="gl-display-flex gl-align-items-center" data-testid="tags-count">
+          <span class="gl-flex gl-items-center" data-testid="tags-count">
             <gl-sprintf :message="tagsCountText">
               <template #count>
                 {{ item.tagsCount }}
@@ -182,7 +182,6 @@ export default {
 
           <cleanup-status
             v-if="item.expirationPolicyCleanupStatus"
-            class="gl-ml-2"
             :status="item.expirationPolicyCleanupStatus"
             :expiration-policy="expirationPolicy"
           />
@@ -191,7 +190,6 @@ export default {
             v-if="showBadgeProtected"
             v-gl-tooltip
             :title="$options.i18n.badgeProtectedTooltipText"
-            class="gl-ml-3"
             size="sm"
             variant="neutral"
           >

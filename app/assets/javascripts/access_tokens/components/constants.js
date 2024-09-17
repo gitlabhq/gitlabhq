@@ -50,7 +50,7 @@ export const FIELDS = [
   {
     key: 'action',
     label: __('Action'),
-    tdClass: 'gl-py-3!',
+    tdClass: '!gl-py-3',
   },
 ];
 

@@ -479,7 +479,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           gl-avatar-s32\s+
           gl-avatar-circle\s+
           gl-mr-3\s+
-          gl-rounded-base!\s+
+          !gl-rounded-base\s+
           gl-avatar-identicon\s+
           gl-avatar-identicon-bg\d+"\s*>
           \s*F\s*

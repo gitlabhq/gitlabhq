@@ -38,7 +38,7 @@ export default {
     class="js-ide-commit-new-mr"
     :class="{ 'is-disabled': shouldDisableNewMrOption }"
   >
-    <hr class="gl-mt-3 gl-mb-4" />
+    <hr class="gl-mb-4 gl-mt-3" />
 
     <gl-form-checkbox
       :disabled="shouldDisableNewMrOption"

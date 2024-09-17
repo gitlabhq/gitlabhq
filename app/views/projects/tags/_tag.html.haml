@@ -36,7 +36,7 @@
         %svg.s24
 
     - if can?(current_user, :admin_tag, @project)
-      = render 'edit_release_button', tag: tag, project: @project, release: release, option_css_classes: 'gl-mr-3!'
+      = render 'edit_release_button', tag: tag, project: @project, release: release, option_css_classes: '!gl-mr-3'
 
     .gl-mr-3
       = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]

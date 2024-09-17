@@ -17,7 +17,7 @@ module Types
     field :name, GraphQL::Types::String, null: false, description: 'Name of the tag.'
     field :path, GraphQL::Types::String, null: false, description: 'Path of the tag.'
     field :published_at, Types::TimeType, null: true, description: 'Timestamp when the tag was published.'
-    field :referrers, [Types::ContainerRepositoryReferrerType], null: true, description: 'Referrers for this tag.'
+    field :referrers, [Types::ContainerRepositoryReferrerType], null: true, description: 'Referrers for the tag.'
     field :revision, GraphQL::Types::String, null: true, description: 'Revision of the tag.'
     field :short_revision, GraphQL::Types::String, null: true, description: 'Short revision of the tag.'
     field :total_size, GraphQL::Types::BigInt, null: true, description: 'Size of the tag.'

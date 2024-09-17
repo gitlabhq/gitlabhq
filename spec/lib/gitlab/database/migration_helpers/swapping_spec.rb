@@ -13,30 +13,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers::Swapping, feature_category: :
 
   let(:service_instance) { instance_double('Gitlab::Database::Migrations::SwapColumns', execute: nil) }
 
-  describe '#reset_trigger_function' do
-    let(:trigger_function_name) { 'existing_trigger_function' }
-
-    before do
-      connection.execute(<<~SQL)
-        CREATE FUNCTION #{trigger_function_name}() RETURNS trigger
-            LANGUAGE plpgsql
-            AS $$
-        BEGIN
-          NEW."bigint_column" := NEW."integer_column";
-          RETURN NEW;
-        END;
-        $$;
-      SQL
-    end
-
-    it 'resets' do
-      recorder = ActiveRecord::QueryRecorder.new do
-        migration_context.reset_trigger_function(trigger_function_name)
-      end
-      expect(recorder.log).to include(/ALTER FUNCTION "existing_trigger_function" RESET ALL/)
-    end
-  end
-
   describe '#swap_columns' do
     let(:table) { :ci_pipeline_variables }
     let(:column1) { :pipeline_id }

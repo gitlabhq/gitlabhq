@@ -5,7 +5,6 @@ import {
   GlForm,
   GlFormGroup,
   GlFormInput,
-  GlFormTextarea,
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
@@ -15,10 +14,9 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { semverRegex, noSpacesRegex } from '~/lib/utils/regexp';
-import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
 import createModelMutation from '../graphql/mutations/create_model.mutation.graphql';
-import { emptyArtifactFile, MODEL_CREATION_MODAL_ID } from '../constants';
+import { MODEL_CREATION_MODAL_ID } from '../constants';
 
 export default {
   name: 'ModelCreate',
@@ -30,7 +28,6 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
-    GlFormTextarea,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
   directives: {
@@ -38,25 +35,19 @@ export default {
   },
   inject: ['projectPath', 'maxAllowedFileSize', 'markdownPreviewPath'],
   props: {
-    initialValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
     disableAttachments: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
   },
   data() {
     return {
       name: null,
       version: null,
-      description: this.initialValue || '',
-      versionDescription: null,
+      description: '',
+      versionDescription: '',
       errorMessage: null,
-      selectedFile: emptyArtifactFile,
       modelData: null,
       versionData: null,
       markdownDocPath: helpPagePath('user/markdown'),
@@ -144,22 +135,14 @@ export default {
             this.versionData = await this.createModelVersion(this.modelData.mlModelCreate.model.id);
           }
           const versionErrors = this.versionData?.mlModelVersionCreate?.errors || [];
-
           if (versionErrors.length) {
             this.errorMessage = versionErrors.join(', ');
             this.versionData = null;
           } else {
             // Attempt importing model artifacts
-            const { importPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
-            await uploadModel({
-              importPath,
-              file: this.selectedFile.file,
-              subfolder: this.selectedFile.subfolder,
-              maxAllowedFileSize: this.maxAllowedFileSize,
-              onUploadProgress: this.$refs.importArtifactZoneRef.onUploadProgress,
-            });
-
-            const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
+            const { showPath, importPath } =
+              this.versionData.mlModelVersionCreate.modelVersion._links;
+            await this.$refs.importArtifactZoneRef.uploadArtifact(importPath);
             visitUrl(showPath);
           }
         } else {
@@ -169,17 +152,15 @@ export default {
       } catch (error) {
         Sentry.captureException(error);
         this.errorMessage = error;
-        this.selectedFile = emptyArtifactFile;
       }
     },
     resetModal() {
       this.name = null;
-      this.modelData = null;
-      this.description = null;
       this.version = null;
-      this.versionDescription = null;
+      this.description = '';
+      this.versionDescription = '';
       this.errorMessage = null;
-      this.selectedFile = emptyArtifactFile;
+      this.modelData = null;
       this.versionData = null;
     },
     hideAlert() {
@@ -188,6 +169,11 @@ export default {
     setDescription(newText) {
       if (!this.isSubmitting) {
         this.description = newText;
+      }
+    },
+    setVersionDescription(newVersionText) {
+      if (!this.isSubmitting) {
+        this.versionDescription = newVersionText;
       }
     },
   },
@@ -271,7 +257,7 @@ export default {
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
-          class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note"
+          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
         >
           <markdown-editor
             ref="markdownEditor"
@@ -316,12 +302,22 @@ export default {
           label-for="versionDescriptionId"
           optional
           :optional-text="$options.modal.optionalText"
+          class="common-note-form gfm-form js-main-target-form new-note gl-grow"
         >
-          <gl-form-textarea
-            id="versionDescriptionId"
-            v-model="versionDescription"
+          <markdown-editor
+            ref="markdownEditor"
             data-testid="versionDescriptionId"
+            :value="versionDescription"
+            enable-autocomplete
+            :autocomplete-data-sources="autocompleteDataSources"
+            :enable-content-editor="true"
+            :form-field-props="$options.descriptionFormFieldProps"
+            :render-markdown-path="markdownPreviewPath"
+            :markdown-docs-path="markdownDocPath"
+            :disable-attachments="disableAttachments"
             :placeholder="$options.modal.versionDescriptionPlaceholder"
+            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
+            @input="setVersionDescription"
           />
         </gl-form-group>
         <gl-form-group
@@ -333,7 +329,6 @@ export default {
           <import-artifact-zone
             id="versionImportArtifactZone"
             ref="importArtifactZoneRef"
-            v-model="selectedFile"
             class="gl-px-3 gl-py-0"
             :submit-on-select="false"
           />

@@ -7,7 +7,15 @@ feature_categories:
 description: Stores a subset of the Finding data which is used to optimize the pipeline security tab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40368
 milestone: '13.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454949
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: scanner_id
+        table: vulnerability_scanners
+        sharding_key: project_id
+        belongs_to: scanner

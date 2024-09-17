@@ -1,0 +1,130 @@
+/**
+ * System notes on main activity feed
+*/
+
+// Gradient only appears on specific system notes (merge, closed, etc)
+@mixin activity-line-gradient($color-1, $color-2) {
+  content: '';
+  display: block;
+  position: absolute;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, $color-1, $color-2);
+}
+
+.system-note {
+  .note-text {
+    // System notes render the text twice; this hides the secon done. Do not remove!
+    p:first-child {
+      display: none;
+    }
+
+    ul {
+      margin: $gl-spacing-scale-2 0;
+    }
+  }
+
+  .note-body {
+    p {
+      margin-left: $gl-spacing-scale-5;
+    }
+  }
+
+  .system-note-message {
+    a {
+      @apply gl-text-link;
+    }
+
+    .gfm-project_member {
+      @apply gl-text-blue-700;
+
+      &.current-user {
+        @apply gl-text-orange-800;
+      }
+    }
+  }
+}
+
+
+// Vertical line gradient for specific system note icons
+.system-note-icon {
+  &.icon-success{
+    --bg-color: var(--green-100, #{$green-100});
+  }
+
+  &.icon-danger {
+    --bg-color: var(--red-100, #{$red-100});
+  }
+
+  &.icon-info {
+    --bg-color: var(--blue-100, #{$blue-100});
+  }
+
+  &:not(.mr-system-note-empty) {
+    &::before {
+      @include activity-line-gradient(transparent, var(--bg-color));
+      bottom: 100%;
+    }
+
+    &::after {
+      @include activity-line-gradient(var(--bg-color), transparent);
+      top: 100%;
+    }
+  }
+}
+
+// Remove beginning/end of system note gradient activity line
+.system-note {
+  &:first-of-type {
+    .system-note-icon::before {
+      @include activity-line-gradient(transparent, transparent);
+    }
+  }
+
+  &:last-of-type {
+    .system-note-icon::after {
+      @include activity-line-gradient(transparent, transparent);
+    }
+  }
+}
+
+
+.system-note:first-child :is(.system-note-icon::before, .system-note-icon::after) {
+  display: none;
+}
+
+// Scrim appears when there are many commits
+.system-note-commit-list {
+  max-height: 70px;
+
+  &::after {
+    content: '';
+    height: 70px;
+    position: absolute;
+    left: $gl-spacing-scale-2;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent -50px, var(--gl-background-color-default) 100%);
+  }
+}
+
+// System notes on diffs
+.card .notes {
+  .system-note {
+    margin: 0;
+    padding: 0;
+  }
+
+  .system-note-dot {
+    margin-top: $gl-spacing-scale-4;
+    margin-left: $gl-spacing-scale-5;
+  }
+}
+
+// Legacy system notes (commits and snippets)
+.system-note-legacy {
+  .note-headline-light p {
+    margin-bottom: 0;
+  }
+}

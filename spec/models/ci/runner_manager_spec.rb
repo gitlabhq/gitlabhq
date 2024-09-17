@@ -41,12 +41,19 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe 'status scopes' do
-    let_it_be(:runner) { create(:ci_runner, :instance) }
+  describe 'status scopes', :freeze_time do
+    before_all do
+      freeze_time # Freeze time before `let_it_be` runs, so that runner statuses are frozen during execution
+    end
 
-    let_it_be(:offline_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 2.hours.ago) }
-    let_it_be(:online_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 1.second.ago) }
+    after :all do
+      unfreeze_time
+    end
+
+    let_it_be(:runner) { create(:ci_runner, :instance) }
     let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, :unregistered, runner: runner) }
+    let_it_be(:offline_runner_manager) { create(:ci_runner_machine, :offline, runner: runner) }
+    let_it_be(:online_runner_manager) { create(:ci_runner_machine, :almost_offline, runner: runner) }
 
     describe '.online' do
       subject(:runner_managers) { described_class.online }
@@ -355,31 +362,37 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     subject { runner_manager.status }
 
     context 'if never connected' do
-      let(:runner_manager) { build(:ci_runner_machine, :unregistered, created_at: 8.days.ago) }
+      let(:runner_manager) { build(:ci_runner_machine, :unregistered, :stale) }
 
       it { is_expected.to eq(:stale) }
 
       context 'if created recently' do
-        let(:runner_manager) { build(:ci_runner_machine, :unregistered, created_at: 1.day.ago) }
+        let(:runner_manager) { build(:ci_runner_machine, :unregistered, :created_within_stale_deadline) }
 
         it { is_expected.to eq(:never_contacted) }
       end
     end
 
-    context 'if contacted 1s ago' do
-      let(:runner_manager) { build(:ci_runner_machine, contacted_at: 1.second.ago) }
+    context 'if contacted just now' do
+      let(:runner_manager) { build(:ci_runner_machine, :online) }
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'if almost offline' do
+      let(:runner_manager) { build(:ci_runner_machine, :almost_offline) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'if contacted recently' do
-      let(:runner_manager) { build(:ci_runner_machine, contacted_at: 2.hours.ago) }
+      let(:runner_manager) { build(:ci_runner_machine, :offline) }
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'if contacted long time ago' do
-      let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago, contacted_at: 7.days.ago) }
+      let(:runner_manager) { build(:ci_runner_machine, :stale) }
 
       it { is_expected.to eq(:stale) }
     end
@@ -567,12 +580,12 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     it { is_expected.to be_empty }
 
     context 'with an existing build' do
-      let!(:build) { create(:ci_build) }
+      let!(:existing_build) { create(:ci_build) }
       let!(:runner_machine_build) do
-        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+        create(:ci_runner_machine_build, runner_manager: runner_manager, build: existing_build)
       end
 
-      it { is_expected.to contain_exactly build }
+      it { is_expected.to contain_exactly existing_build }
     end
   end
 end

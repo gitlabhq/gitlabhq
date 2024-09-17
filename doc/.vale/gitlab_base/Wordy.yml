@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.Wordy
+# Suggestion: gitlab_base.Wordy
 #
 # Suggests shorter versions of wordy phrases.
 #
@@ -17,3 +17,4 @@ swap:
   respectively: "Remove 'respectively' and list each option instead."
   and so on: "Remove 'and so on'. Try to use 'like' and provide examples instead."
   in order to: "Remove 'in order' and leave 'to'."
+  quite: "Remove 'quite', as it's wordy."

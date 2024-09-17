@@ -30,12 +30,6 @@ RSpec.describe Issuable::DiscussionsListService, feature_category: :team_plannin
         expect(discussions_service.execute).to be_empty
       end
     end
-
-    context 'when issue exists at the group level' do
-      let_it_be(:issuable) { create(:issue, :group_level, namespace: group) }
-
-      it_behaves_like 'listing issuable discussions', user_role: :guest, internal_discussions: 1, total_discussions: 7
-    end
   end
 
   describe 'fetching notes for merge requests' do

@@ -184,7 +184,7 @@ describe('search box by type component', () => {
     });
 
     it('renders regular expression button state correctly', () => {
-      expect(findRegulareExpressionToggle().classes('gl-bg-blue-50!')).toBe(true);
+      expect(findRegulareExpressionToggle().classes('!gl-bg-blue-50')).toBe(true);
     });
 
     it('triggers correct action when clicked', () => {

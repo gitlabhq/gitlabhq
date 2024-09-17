@@ -16,6 +16,10 @@ DETAILS:
 
 Import your projects from Gitea to GitLab.
 
+WARNING:
+Importing from Gitea to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
+estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+
 The Gitea importer can import:
 
 - Repository description
@@ -35,8 +39,7 @@ When importing:
 - Because Gitea is not an OAuth provider, the author or assignee cannot be mapped to users on
   your GitLab instance. The project creator (usually the user who started the import process)
   is then set as the author. For issues, you can still see the original Gitea author.
-- Because Gitea cannot get comments from merge requests through the API, these comments are not imported.
-  For more information, see the [Gitea API documentation](https://docs.gitea.com/api/1.20/#tag/repository/operation/repoGetPullRequest).
+- The Gitea importer does not import diff notes from pull requests. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/450973) for more information.
 
 ## Prerequisites
 

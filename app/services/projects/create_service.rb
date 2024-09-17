@@ -35,7 +35,12 @@ module Projects
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
-      @project = Project.new(params.merge(creator: current_user))
+      @project = Project.new.tap do |p|
+        # Explicitly build an association for ci_cd_settings
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/421050
+        p.build_ci_cd_settings
+        p.assign_attributes(params.merge(creator: current_user))
+      end
 
       if @import_export_upload
         @import_export_upload.project = project

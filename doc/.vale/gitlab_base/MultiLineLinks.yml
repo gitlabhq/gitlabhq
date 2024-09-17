@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.MultiLineLinks
+# Error: gitlab_base.MultiLineLinks
 #
 # Checks that links are all on a single line.
 #

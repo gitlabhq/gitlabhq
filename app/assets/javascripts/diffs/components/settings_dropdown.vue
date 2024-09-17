@@ -56,7 +56,7 @@ export default {
       @select="setDiffViewType"
     >
       <template #footer>
-        <div class="gl-pt-4 gl-pb-2 gl-px-4 gl-border-t">
+        <div class="gl-border-t gl-px-4 gl-pb-2 gl-pt-4">
           <gl-form-checkbox
             data-testid="show-whitespace"
             class="gl-mb-2"

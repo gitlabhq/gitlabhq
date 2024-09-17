@@ -19,6 +19,7 @@ export default {
   },
   inject: ['fullPath'],
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     ciCdSettings: {
       query: getCiJobTokenPermissionsQuery,
       variables() {
@@ -91,7 +92,7 @@ export default {
     },
   },
   docsLink: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'push-to-a-project-repository-using-a-job-token',
+    anchor: 'git-push-to-your-project-repository',
   }),
 };
 </script>
@@ -105,7 +106,7 @@ export default {
 
       <gl-form-checkbox :checked="allowPushToRepo" @input="updateAllowPushToRepo">
         {{ s__('CICD|Allow Git push requests to the repository') }}
-        <p class="gl-text-subtle gl-mb-3">
+        <p class="gl-mb-3 gl-text-subtle">
           {{
             s__(
               'CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job.',

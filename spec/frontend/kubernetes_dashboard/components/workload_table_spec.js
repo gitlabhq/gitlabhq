@@ -10,7 +10,6 @@ import {
   PODS_TABLE_FIELDS,
 } from '~/kubernetes_dashboard/constants';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
-import eventHub from '~/environments/event_hub';
 import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -223,49 +222,6 @@ describe('Workload table component', () => {
 
         expect(wrapper.emitted('select-item')[index]).toEqual([data]);
       });
-    });
-
-    it('emits "remove-selection" event on the second click on the pod name', () => {
-      const podNameButtons = findAllPodNameButtons();
-
-      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
-
-      expect(wrapper.emitted('select-item')).toEqual([[mockPodsTableItems[0]]]);
-
-      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
-
-      expect(wrapper.emitted('remove-selection')).toHaveLength(1);
-    });
-  });
-
-  describe('on "closeDetailsDrawer" event', () => {
-    const clearSelectedItemSpy = jest.fn();
-
-    beforeAll(() => {
-      eventHub.$on('closeDetailsDrawer', clearSelectedItemSpy);
-    });
-
-    beforeEach(() => {
-      createWrapper({ items: mockPodsTableItems });
-    });
-
-    afterAll(() => {
-      eventHub.$off('closeDetailsDrawer', clearSelectedItemSpy);
-    });
-
-    it('clears the selected item', () => {
-      const podNameButtons = findAllPodNameButtons();
-
-      expect(wrapper.vm.selectedItem).toBeNull();
-
-      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
-
-      expect(wrapper.vm.selectedItem).toEqual(mockPodsTableItems[0]);
-
-      eventHub.$emit('closeDetailsDrawer');
-
-      expect(wrapper.vm.selectedItem).toBeNull();
-      expect(clearSelectedItemSpy).toHaveBeenCalled();
     });
   });
 });

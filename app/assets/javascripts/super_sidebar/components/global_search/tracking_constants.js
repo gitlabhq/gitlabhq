@@ -38,3 +38,6 @@ export const EVENT_CLICK_FREQUENT_GROUP_IN_COMMAND_PALETTE =
   'click_frequent_group_in_command_palette';
 export const EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE =
   'click_commands_sub_menu_in_command_palette';
+
+export const EVENT_CLICK_PROJECT_SETTING_IN_COMMAND_PALETTE =
+  'click_project_setting_in_command_palette';

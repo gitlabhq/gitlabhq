@@ -81,7 +81,7 @@ export default {
           },
           extraAttrs: {
             'data-testid': 'delete-merged-branches-button',
-            class: 'gl-text-red-500!',
+            class: '!gl-text-red-500',
           },
         },
       ];
@@ -180,9 +180,7 @@ export default {
       </form>
 
       <template #modal-footer>
-        <div
-          class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0 gl-mr-3"
-        >
+        <div class="gl-m-0 gl-mr-3 gl-flex gl-flex-row gl-flex-wrap gl-justify-end">
           <gl-button data-testid="delete-merged-branches-cancel-button" @click="closeModal">
             {{ $options.i18n.cancelButtonText }}
           </gl-button>

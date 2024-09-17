@@ -34,6 +34,8 @@ module VirtualRegistries
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }
         before_save :write_credentials
 
+        prevent_from_serialization(:username, :password) if respond_to?(:prevent_from_serialization)
+
         def url_for(path)
           full_url = File.join(url, path)
           Addressable::URI.parse(full_url).to_s

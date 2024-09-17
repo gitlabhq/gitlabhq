@@ -23,8 +23,10 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
   before do
     project.add_role(user, role)
     sign_in(user)
-    stub_licensed_features(merge_request_approvers: true)
-    stub_licensed_features(external_status_checks: true)
+    stub_licensed_features(
+      merge_request_approvers: true,
+      external_status_checks: true
+    )
   end
 
   context 'When viewed by developer' do
@@ -44,25 +46,6 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
       visit_branch_rules_details
 
       expect(page).to have_gitlab_http_status(:ok)
-    end
-  end
-
-  context 'Branch rule details for a predefined rule', :js do
-    let(:role) { :maintainer }
-
-    before do
-      visit_branch_rules_settings
-      wait_for_requests
-
-      click_button 'Add branch rule'
-      click_button 'All branches'
-
-      wait_for_requests
-    end
-
-    it 'does not create a rule if a user leaves it empty' do
-      visit_branch_rules_settings
-      expect(page).not_to have_css '[data-testid="branch-content"]', text: 'All branches'
     end
   end
 

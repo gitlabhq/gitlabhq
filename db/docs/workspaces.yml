@@ -3,7 +3,7 @@ table_name: workspaces
 classes:
 - RemoteDevelopment::Workspace
 feature_categories:
-- remote_development
+- workspaces
 description: Remote Development Workspaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105783
 milestone: '16.0'

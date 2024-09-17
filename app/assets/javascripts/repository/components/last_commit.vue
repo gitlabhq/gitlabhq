@@ -108,9 +108,7 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto gl-min-h-8 gl-py-6" />
   <commit-info v-else-if="commit" :commit="commit">
-    <div
-      class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
-    >
+    <div class="commit-actions gl-flex-align gl-flex gl-flex-row gl-items-center">
       <signature-badge v-if="commit.signature" :signature="commit.signature" />
       <div v-if="commit.pipeline" class="gl-ml-5">
         <ci-icon
@@ -119,7 +117,7 @@ export default {
           class="js-commit-pipeline"
         />
       </div>
-      <gl-button-group class="gl-ml-4 js-commit-sha-group">
+      <gl-button-group class="js-commit-sha-group gl-ml-4">
         <gl-button label class="gl-font-monospace" data-testid="last-commit-id-label">{{
           showCommitId
         }}</gl-button>

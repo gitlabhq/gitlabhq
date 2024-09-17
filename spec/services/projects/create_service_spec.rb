@@ -1295,6 +1295,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
+  context 'with group_runners_enabled' do
+    subject(:project) { create_project(user, opts) }
+
+    let(:opts) { super().merge(group_runners_enabled: true) }
+
+    it 'creates ci_cd_settings relation' do
+      expect(project.ci_cd_settings).to be_present
+      expect(project.ci_cd_settings.group_runners_enabled).to be_truthy
+    end
+  end
+
   context 'when using access_level params' do
     def expect_not_disabled_features(project, exclude: [])
       ProjectFeature::FEATURES.excluding(exclude)

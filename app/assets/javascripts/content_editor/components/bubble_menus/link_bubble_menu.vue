@@ -208,16 +208,16 @@ export default {
   >
     <bubble-menu
       data-testid="link-bubble-menu"
-      class="gl-shadow gl-rounded-base gl-bg-white"
+      class="gl-rounded-base gl-bg-white gl-shadow"
       plugin-key="bubbleMenuLink"
       :should-show="shouldShow"
       :tippy-options="$options.tippyOptions"
       @show="updateLinkToState"
       @hidden="resetBubbleMenuState"
     >
-      <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
+      <gl-button-group v-if="!isEditing" class="gl-flex gl-items-center">
         <gl-loading-icon v-if="uploading" class="gl-pl-4 gl-pr-3" />
-        <span v-if="uploading" class="gl-text-secondary gl-pr-3">
+        <span v-if="uploading" class="gl-pr-3 gl-text-secondary">
           <gl-sprintf :message="__('Uploading: %{progress}')">
             <template #progress>{{ uploadProgress }}&percnt;</template>
           </gl-sprintf>
@@ -229,7 +229,7 @@ export default {
           :aria-label="linkCanonicalSrc"
           :title="linkCanonicalSrc"
           target="_blank"
-          class="gl-px-3 gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis"
+          class="gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-px-3"
         >
           {{ linkCanonicalSrc }}
         </gl-link>
@@ -267,7 +267,7 @@ export default {
           @click="removeLink"
         />
       </gl-button-group>
-      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-full" @submit.prevent="saveEditedLink">
+      <gl-form v-else class="bubble-menu-form gl-w-full gl-p-4" @submit.prevent="saveEditedLink">
         <gl-form-group :label="__('Text')" label-for="link-text">
           <gl-form-input id="link-text" v-model="linkText" data-testid="link-text" />
         </gl-form-group>
@@ -279,7 +279,7 @@ export default {
             data-testid="link-href"
           />
         </gl-form-group>
-        <div class="gl-display-flex gl-justify-content-end">
+        <div class="gl-flex gl-justify-end">
           <gl-button class="gl-mr-3" data-testid="cancel-link" @click="cancelEditingLink">
             {{ __('Cancel') }}
           </gl-button>

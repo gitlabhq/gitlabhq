@@ -9,22 +9,22 @@
     - full_count_title = "#{@public_forks_count} public, #{@internal_forks_count} internal, and #{@private_forks_count} private"
     #{pluralize(@total_forks_count, 'fork')}: #{full_count_title}
 
-  .gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-md-align-items-center
-    = form_tag request.original_url, method: :get, class: 'project-filter-form gl-display-flex gl-mt-3 gl-md-mt-0', id: 'project-filter-form' do |f|
-      = search_field_tag :filter_projects, nil, placeholder: _('Search forks'), class: 'projects-list-filter project-filter-form-field form-control input-short gl-flex-grow-1',
+  .gl-flex.gl-flex-col.md:gl-flex-row.md:gl-items-center
+    = form_tag request.original_url, method: :get, class: 'project-filter-form gl-flex gl-mt-3 md:gl-mt-0', id: 'project-filter-form' do |f|
+      = search_field_tag :filter_projects, nil, placeholder: _('Search forks'), class: 'projects-list-filter project-filter-form-field form-control input-short gl-grow',
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
-    .dropdown.gl-inline.gl-md-ml-3.issue-sort-dropdown.gl-mt-3.gl-md-mt-0
+    .dropdown.gl-inline.md:gl-ml-3.issue-sort-dropdown.gl-mt-3.md:gl-mt-0
       .btn-group{ role: 'group' }
         = gl_redirect_listbox_tag [created_at, activity], @sort, class: 'btn-group'
         = forks_sort_direction_button(sort_value)
 
     - if current_user && can?(current_user, :fork_project, @project)
       - if current_user.already_forked?(@project) && current_user.forkable_namespaces.size < 2
-        = link_button_to namespace_project_path(current_user, current_user.fork_of(@project)), title: _('Go to your fork'), class: 'gl-md-ml-3', variant: :confirm, icon: 'fork' do
+        = link_button_to namespace_project_path(current_user, current_user.fork_of(@project)), title: _('Go to your fork'), class: 'md:gl-ml-3', variant: :confirm, icon: 'fork' do
           = _('Fork')
       - else
-        = link_button_to new_project_fork_path(@project), title: _("Fork project"), class: 'gl-md-ml-3 gl-mt-3 gl-md-mt-0', variant: :confirm, icon: 'fork' do
+        = link_button_to new_project_fork_path(@project), title: _("Fork project"), class: 'md:gl-ml-3 gl-mt-3 md:gl-mt-0', variant: :confirm, icon: 'fork' do
           = _('Fork')
 
 = render 'projects', projects: @forks

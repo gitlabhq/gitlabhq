@@ -46,30 +46,25 @@ module QA
         end
 
         it "pushes and pulls a helm chart", testcase: params[:testcase] do
-          helm_upload_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_upload_package.yaml.erb')).result(binding)
+          helm_upload_yaml = ERB.new(read_fixture('package_managers/helm',
+            'helm_upload_package.yaml.erb')).result(binding)
           helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: package_project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              { action: 'create', file_path: '.gitlab-ci.yml', content: helm_upload_yaml },
-              { action: 'create', file_path: 'Chart.yaml', content: helm_chart_yaml }
-            ])
-          end
+          create(:commit, project: package_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: helm_upload_yaml },
+            { action: 'create', file_path: 'Chart.yaml', content: helm_chart_yaml }
+          ])
 
+          Flow::Login.sign_in
           package_project.visit!
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: package_project)
 
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy')
-          end
-
+          package_project.visit_job('deploy')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)
           end
 
           Page::Project::Menu.perform(&:go_to_package_registry)
-
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package_name)
 
@@ -80,22 +75,17 @@ module QA
             expect(show).to have_package_info(package_name, package_version)
           end
 
-          helm_install_yaml = ERB.new(read_fixture('package_managers/helm', 'helm_install_package.yaml.erb')).result(binding)
+          helm_install_yaml = ERB.new(read_fixture('package_managers/helm',
+            'helm_install_package.yaml.erb')).result(binding)
 
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: client_project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              { action: 'create', file_path: '.gitlab-ci.yml', content: helm_install_yaml }
-            ])
-          end
+          create(:commit, project: client_project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            { action: 'create', file_path: '.gitlab-ci.yml', content: helm_install_yaml }
+          ])
 
           client_project.visit!
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: client_project)
 
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('pull')
-          end
-
+          client_project.visit_job('pull')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)
           end

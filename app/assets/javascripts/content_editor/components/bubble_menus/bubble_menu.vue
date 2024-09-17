@@ -43,7 +43,9 @@ export default {
             this.$emit('hidden', ...args);
             this.menuVisible = false;
           },
-          strategy: 'fixed',
+          popperOptions: {
+            strategy: 'fixed',
+          },
           maxWidth: '400px',
         },
       }),

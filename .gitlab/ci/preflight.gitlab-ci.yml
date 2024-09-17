@@ -11,6 +11,7 @@
     - .qa-cache
   variables:
     USE_BUNDLE_INSTALL: "false"
+    BUNDLE_GEMFILE: "Gemfile"
     SETUP_DB: "false"
   before_script:
     - !reference [.default-before_script, before_script]
@@ -23,7 +24,7 @@
     - .production
     - .ruby-cache
     - .preflight:rules:rails-production-server-boot
-    - .use-pg13
+    - .use-pg14
   artifacts:
     expire_in: 7d
     when: always
@@ -119,11 +120,13 @@ pipeline-tier-3:
 bundle-size-review:
   extends:
     - .default-retry
-    - .default-utils-before_script
+    - .default-before_script
     - .assets-compile-cache
     - .repo-from-artifacts
     - .frontend:rules:bundle-size-review
   stage: preflight
+  variables:
+    SETUP_DB: "false"
   script:
     - yarn_install_script
     - scripts/bundle_size_review

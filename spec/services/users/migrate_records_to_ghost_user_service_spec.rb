@@ -185,7 +185,11 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
     context 'for batched nullify' do
       # rubocop:disable Layout/LineLength
       def nullify_in_batches_regexp(table, column, user, batch_size: 100)
-        %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE "#{table}"."id" IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+        if ::Gitlab.next_rails?
+          %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE \("#{table}"."id"\) IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+        else
+          %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE "#{table}"."id" IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+        end
       end
       # rubocop:enable Layout/LineLength
 

@@ -2,7 +2,7 @@
 
 exports[`publish_method renders 1`] = `
 <div
-  class="gl-align-items-center gl-display-flex"
+  class="gl-flex gl-items-center"
 >
   <gl-icon-stub
     class="gl-mr-2"

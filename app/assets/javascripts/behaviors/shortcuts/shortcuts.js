@@ -8,7 +8,6 @@ import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import { duoChatGlobalState } from '~/super_sidebar/constants';
 import {
   keysFor,
   TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
@@ -25,7 +24,6 @@ import {
   GO_TO_YOUR_MERGE_REQUESTS,
   GO_TO_YOUR_PROJECTS,
   GO_TO_YOUR_GROUPS,
-  TOGGLE_DUO_CHAT,
   GO_TO_MILESTONE_LIST,
   GO_TO_YOUR_SNIPPETS,
   GO_TO_YOUR_REVIEW_REQUESTS,
@@ -85,7 +83,6 @@ export default class Shortcuts {
       [TOGGLE_PERFORMANCE_BAR, Shortcuts.onTogglePerfBar],
       [HIDE_APPEARING_CONTENT, Shortcuts.hideAppearingContent],
       [TOGGLE_CANARY, Shortcuts.onToggleCanary],
-      [TOGGLE_DUO_CHAT, Shortcuts.onToggleDuoChat],
 
       [GO_TO_YOUR_TODO_LIST, () => findAndFollowLink('.shortcuts-todos')],
       [GO_TO_ACTIVITY_FEED, () => findAndFollowLink('.dashboard-shortcuts-activity')],
@@ -221,11 +218,6 @@ export default class Shortcuts {
         },
       });
     }
-  }
-
-  static onToggleDuoChat(e) {
-    e.preventDefault();
-    duoChatGlobalState.isShown = !duoChatGlobalState.isShown;
   }
 
   static onTogglePerfBar(e) {

@@ -68,7 +68,7 @@ export default {
         v-for="(testSuite, index) in getTestSuites"
         :key="index"
         role="row"
-        class="gl-responsive-table-row gl-rounded-base js-suite-row"
+        class="gl-responsive-table-row js-suite-row gl-rounded-base"
         :class="{
           'gl-responsive-table-row-clickable gl-cursor-pointer': !testSuite.suite_error,
         }"
@@ -78,7 +78,7 @@ export default {
           <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Suite') }}
           </div>
-          <div class="table-mobile-content underline gl-text-gray-900 gl-pl-5">
+          <div class="table-mobile-content underline gl-pl-5 gl-text-gray-900">
             {{ testSuite.name }}
             <gl-icon
               v-if="testSuite.suite_error"
@@ -128,7 +128,7 @@ export default {
           <div class="table-mobile-content">{{ testSuite.success_count }}</div>
         </div>
 
-        <div class="table-section section-10 gl-text-right pr-md-3">
+        <div class="table-section section-10 pr-md-3 gl-text-right">
           <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Total') }}
           </div>

@@ -41,12 +41,12 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
 
 1. In the `.gitlab-ci.yml` file, add your defined variables:
 
-    ```yaml
-      variables:
-        POSTGRES_DB: $POSTGRES_DB
-        POSTGRES_USER: $POSTGRES_USER
-        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-        POSTGRES_HOST_AUTH_METHOD: trust
+   ```yaml
+   variables:
+     POSTGRES_DB: $POSTGRES_DB
+     POSTGRES_USER: $POSTGRES_USER
+     POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+     POSTGRES_HOST_AUTH_METHOD: trust
    ```
 
    For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
@@ -62,13 +62,13 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
 
 Alternatively, you can set variables as a string in the `.gitlab-ci.yml` file:
 
-   ```yaml
-   variables:
-     POSTGRES_DB: DB_name
-     POSTGRES_USER: username
-     POSTGRES_PASSWORD: password
-     POSTGRES_HOST_AUTH_METHOD: trust
-   ```
+```yaml
+variables:
+  POSTGRES_DB: DB_name
+  POSTGRES_USER: username
+  POSTGRES_PASSWORD: password
+  POSTGRES_HOST_AUTH_METHOD: trust
+```
 
 You can use any other Docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
 For example, to use PostgreSQL 14.3, the service becomes `postgres:14.3`.

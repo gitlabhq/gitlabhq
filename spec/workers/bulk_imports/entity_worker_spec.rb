@@ -91,6 +91,26 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
       worker.perform(entity.id)
     end
 
+    context 'when importer_user_mapping_enabled is enabled' do
+      before do
+        allow_next_instance_of(Import::BulkImports::EphemeralData) do |ephemeral_data|
+          allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(true)
+        end
+      end
+
+      it 'enqueues Import::LoadPlaceholderReferencesWorker' do
+        expect(Import::LoadPlaceholderReferencesWorker)
+          .to receive(:perform_async)
+          .with(
+            Import::SOURCE_DIRECT_TRANSFER,
+            entity.bulk_import_id,
+            'current_user_id' => entity.bulk_import.user_id
+          )
+
+        subject
+      end
+    end
+
     context 'when exclusive lease cannot be obtained' do
       it 'does not start next stage and re-enqueue worker' do
         expect_next_instance_of(Gitlab::ExclusiveLease) do |lease|

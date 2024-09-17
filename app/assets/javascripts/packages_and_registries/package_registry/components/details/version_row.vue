@@ -69,7 +69,7 @@ export default {
           text: this.$options.i18n.deletePackage,
           action: () => this.$emit('delete'),
           extraAttrs: {
-            class: 'gl-text-red-500!',
+            class: '!gl-text-red-500',
             'data-testid': 'action-delete',
           },
         },
@@ -96,13 +96,10 @@ export default {
       />
     </template>
     <template #left-primary>
-      <div
-        class="gl-display-flex gl-align-items-center gl-gap-3 gl-mr-5 gl-min-w-0"
-        data-testid="package-name"
-      >
+      <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">
         <gl-link
           v-if="containsWebPathLink"
-          class="gl-text-body gl-min-w-0 gl-break-all"
+          class="gl-min-w-0 gl-break-all gl-text-primary"
           :class="errorPackageStyle"
           :href="packageLink"
         >
@@ -114,7 +111,7 @@ export default {
 
         <div
           v-if="packageEntity.tags.nodes && packageEntity.tags.nodes.length"
-          class="gl-display-flex gl-gap-2"
+          class="gl-flex gl-gap-2"
         >
           <package-tags :tags="packageEntity.tags.nodes" hide-label :tag-display-limit="1" />
         </div>
@@ -131,7 +128,7 @@ export default {
       </div>
       <gl-truncate
         v-else
-        class="gl-max-w-15 gl-md-max-w-26"
+        class="gl-max-w-15 md:gl-max-w-26"
         :text="packageEntity.version"
         :with-tooltip="true"
       />

@@ -17,6 +17,8 @@ module Ml
 
       return error unless @model.destroy
 
+      audit_destroy_event(@model)
+
       success
     end
 
@@ -36,6 +38,18 @@ module Ml
 
     def payload
       { model: @model }
+    end
+
+    def audit_destroy_event(model)
+      audit_context = {
+        name: 'ml_model_destroyed',
+        author: @user,
+        scope: model.project,
+        target: model,
+        message: "MlModel #{model.name} destroyed"
+      }
+
+      ::Gitlab::Audit::Auditor.audit(audit_context)
     end
   end
 end

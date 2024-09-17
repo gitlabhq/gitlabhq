@@ -8,6 +8,8 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
   let(:pages_domain) { create(:pages_domain, :without_certificate, :without_key) }
   let(:service) { described_class.new(pages_domain) }
 
+  subject(:execute_service) { service.execute }
+
   before do
     stub_lets_encrypt_settings
   end
@@ -19,11 +21,11 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
   end
 
   def expect_to_create_acme_challenge
-    expect(::PagesDomains::CreateAcmeOrderService).to receive(:new).with(pages_domain)
-      .and_wrap_original do |m, *args|
+    expect(::PagesDomains::CreateAcmeOrderService).to receive(:new).with(pages_domain).and_wrap_original do |m, *args|
       create_service = m.call(*args)
 
       expect(create_service).to receive(:execute)
+        .and_return(ServiceResponse.success(payload: { acme_order: acme_order_double }))
 
       create_service
     end
@@ -39,15 +41,42 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
     order
   end
 
+  shared_examples 'saves error and sends notification' do
+    it 'saves error to domain' do
+      expect { subject }.to change { pages_domain.reload.auto_ssl_failed }.from(false).to(true)
+    end
+
+    it 'sends notification' do
+      expect_next_instance_of(NotificationService) do |notification_service|
+        expect(notification_service).to receive(:pages_domain_auto_ssl_failed).with(pages_domain)
+      end
+
+      subject
+    end
+  end
+
   context 'when there is no acme order' do
     it 'creates acme order and schedules next step' do
       expect_to_create_acme_challenge
       expect(PagesDomainSslRenewalWorker).to(
-        receive(:perform_in).with(described_class::CHALLENGE_PROCESSING_DELAY, pages_domain.id)
-          .and_return(nil).once
+        receive(:perform_in).with(described_class::CHALLENGE_PROCESSING_DELAY, pages_domain.id).and_return(nil).once
       )
 
       service.execute
+    end
+
+    describe 'when acme order is not created due to client error' do
+      before do
+        allow_next_instance_of(::Gitlab::LetsEncrypt::Client) do |lets_encrypt_client|
+          allow(lets_encrypt_client).to receive(:new_order).with(pages_domain.domain)
+          .and_raise(
+            Acme::Client::Error::RejectedIdentifier,
+            'Invalid identifiers requested :: Cannot issue for "local": Domain name needs at least one dot'
+          )
+        end
+      end
+
+      it_behaves_like 'saves error and sends notification'
     end
   end
 
@@ -100,6 +129,17 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
       )
 
       service.execute
+    end
+
+    describe 'when #request_certificate returns a client error' do
+      before do
+        allow(api_order).to receive(:request_certificate).and_raise(
+          Acme::Client::Error::BadCSR,
+          'Error finalizing order :: CN was longer than 64 bytes'
+        )
+      end
+
+      it_behaves_like 'saves error and sends notification'
     end
   end
 
@@ -172,20 +212,24 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
       stub_lets_encrypt_order(existing_order.url, 'invalid')
     end
 
-    it 'saves error to domain and deletes acme order' do
-      expect do
-        service.execute
-      end.to change { pages_domain.reload.auto_ssl_failed }.from(false).to(true)
+    shared_examples 'saves error, deletes acme order and sends notification' do
+      it_behaves_like 'saves error and sends notification'
 
-      expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
+      it 'deletes acme order' do
+        execute_service
+
+        expect(PagesDomainAcmeOrder.where(id: existing_order.id)).not_to exist
+      end
     end
 
-    it 'sends notification' do
-      expect_next_instance_of(NotificationService) do |notification_service|
-        expect(notification_service).to receive(:pages_domain_auto_ssl_failed).with(pages_domain)
+    it_behaves_like 'saves error, deletes acme order and sends notification'
+
+    context 'when error occurs when retrieving authorizations from error' do
+      before do
+        allow(api_order).to receive(:challenge_error).and_raise(StandardError, 'ACME authorizations error message')
       end
 
-      service.execute
+      it_behaves_like 'saves error, deletes acme order and sends notification'
     end
   end
 end

@@ -6,6 +6,7 @@ exports[`note_app when sort direction is asc shows skeleton notes after the load
   id="reference-0"
 >
   <noteable-discussion-stub
+    class="js-noteable-discussion"
     discussion="[object Object]"
     helppagepath=""
     isoverviewtab="true"
@@ -27,6 +28,7 @@ exports[`note_app when sort direction is desc shows skeleton notes before the lo
     class="note-skeleton"
   />
   <noteable-discussion-stub
+    class="js-noteable-discussion"
     discussion="[object Object]"
     helppagepath=""
     isoverviewtab="true"

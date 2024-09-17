@@ -30,7 +30,7 @@ describe('Brand Logo component', () => {
   it('renders it', () => {
     createWrapper();
     expect(findBrandLogo().exists()).toBe(true);
-    expect(findBrandLogo().attributes('src')).toBe(defaultPropsData.logoUrl);
+    expect(findBrandLogo().element.src).toBe(defaultPropsData.logoUrl);
   });
 
   it('when logoUrl given empty', () => {

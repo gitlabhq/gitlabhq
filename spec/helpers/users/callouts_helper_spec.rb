@@ -196,6 +196,26 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     end
   end
 
+  describe '.show_branch_rules_tip?' do
+    subject { helper.show_branch_rules_tip? }
+
+    before do
+      allow(helper).to receive(:user_dismissed?).with(described_class::BRANCH_RULES_TIP_CALLOUT) { dismissed }
+    end
+
+    context 'when user has dismissed callout' do
+      let(:dismissed) { true }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has not dismissed callout' do
+      let(:dismissed) { false }
+
+      it { is_expected.to be true }
+    end
+  end
+
   describe '#web_hook_disabled_dismissed?', feature_category: :webhooks do
     context 'without a project' do
       it 'is false' do

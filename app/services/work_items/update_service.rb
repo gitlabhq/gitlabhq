@@ -30,15 +30,6 @@ module WorkItems
 
     attr_reader :extra_params
 
-    override :handle_quick_actions
-    def handle_quick_actions(work_item)
-      # Do not handle quick actions unless the work item is the default Issue.
-      # The available quick actions for a work item depend on its type and widgets.
-      return unless work_item.work_item_type.default_issue?
-
-      super
-    end
-
     override :handle_date_changes
     def handle_date_changes(work_item)
       return if work_item.dates_source&.previous_changes.blank? &&

@@ -144,6 +144,8 @@ module Gitlab
           end
         end
 
+        # Prefer `list_all` since it deprecates this RPC and `FindCommits`.
+        #
         # Returns commits collection
         #
         # Ex.
@@ -165,6 +167,15 @@ module Gitlab
         def find_all(repo, options = {})
           wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
+          end
+        end
+
+        # ListCommits lists all commits reachable via a set of references by doing a graph walk.
+        # This deprecates FindAllCommits and FindCommits (except Follow is not yet supported).
+        # Any unknown revisions will cause the RPC to fail.
+        def list_all(repo, options = {})
+          wrapped_gitaly_errors do
+            Gitlab::GitalyClient::CommitService.new(repo).list_commits(options[:revisions], options.except(:revisions))
           end
         end
 

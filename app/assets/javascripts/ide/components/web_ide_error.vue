@@ -32,7 +32,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-max-w-80 m-auto gl-pt-6">
+  <div class="m-auto gl-max-w-80 gl-pt-6">
     <gl-alert variant="danger" :dismissible="false" :title="$options.i18n.title">
       <gl-sprintf :message="$options.i18n.message">
         <template #reportIssue="{ content }">

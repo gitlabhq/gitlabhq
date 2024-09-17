@@ -23,7 +23,7 @@ export default {
 <template>
   <gl-button
     :loading="isResolving"
-    class="gl-w-full gl-sm-w-auto ml-sm-2"
+    class="ml-sm-2 gl-w-full sm:gl-w-auto"
     @click="$emit('onClick')"
   >
     {{ buttonTitle }}

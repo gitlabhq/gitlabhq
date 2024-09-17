@@ -4,7 +4,7 @@ import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
 import { createAlert } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
-import syntaxHighlight from '~/syntax_highlight';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
   EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS,
   EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
@@ -134,8 +134,8 @@ export class EditorMarkdownPreviewExtension {
     fetchPreview(instance.getValue(), this.preview.path)
       .then((data) => {
         previewEl.innerHTML = sanitize(data);
-        syntaxHighlight(previewEl.querySelectorAll('.js-syntax-highlight'));
         previewEl.style.display = 'block';
+        renderGFM(previewEl);
       })
       .catch(() => createAlert(BLOB_PREVIEW_ERROR));
   }

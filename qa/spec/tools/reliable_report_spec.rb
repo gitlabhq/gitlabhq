@@ -36,7 +36,7 @@ describe QA::Tools::ReliableReport do
       "stage" => "create",
       "product_group" => "code_review",
       "testcase" => "https://testcase/url",
-      "run_type" => "e2e-package-and-test",
+      "run_type" => "e2e-test-on-omnibus",
       "_time" => time
     }
   end
@@ -49,7 +49,7 @@ describe QA::Tools::ReliableReport do
       "stage" => "manage",
       "product_group" => "import_and_integrate",
       "testcase" => "https://testcase/url",
-      "run_type" => "e2e-package-and-test",
+      "run_type" => "e2e-test-on-omnibus",
       "_time" => time
     }
   end
@@ -86,7 +86,7 @@ describe QA::Tools::ReliableReport do
       "job_url" => "https://job/url",
       "testcase" => "https://testcase/url",
       "failure_issue" => "https://issues/url",
-      "run_type" => "e2e-package-and-test",
+      "run_type" => "e2e-test-on-omnibus",
       "_time" => time
     }
   end
@@ -102,7 +102,7 @@ describe QA::Tools::ReliableReport do
       "job_url" => "https://job/url",
       "testcase" => "https://testcase/url",
       "failure_issue" => "https://issues/url",
-      "run_type" => "e2e-package-and-test",
+      "run_type" => "e2e-test-on-omnibus",
       "_time" => time
     }
   end
@@ -137,7 +137,7 @@ describe QA::Tools::ReliableReport do
           r.run_type == "staging-sanity" or
           r.run_type == "production-full" or
           r.run_type == "production-sanity" or
-          r.run_type == "e2e-package-and-test" or
+          r.run_type == "e2e-test-on-omnibus" or
           r.run_type == "e2e-test-on-gdk" or
           r.run_type == "nightly"
         )
@@ -315,7 +315,7 @@ describe QA::Tools::ReliableReport do
 
             **Note:**
 
-            * Only failures from the nightly, e2e-package-and-test and e2e-test-on-gdk pipelines are considered
+            * Only failures from the nightly, e2e-test-on-omnibus and e2e-test-on-gdk pipelines are considered
 
             * Only specs that have a failure rate of equal or greater than 1 percent are considered
 
@@ -545,8 +545,8 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 66.67,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                all_run_type: ["e2e-package-and-test"],
-                failed_run_type: ["e2e-package-and-test"] },
+                all_run_type: ["e2e-test-on-omnibus"],
+                failed_run_type: ["e2e-test-on-omnibus"] },
               { stage: "manage",
                 product_group: "import_and_integrate",
                 name: "unstable spec",
@@ -558,8 +558,8 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 66.67,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                all_run_type: ["e2e-package-and-test"],
-                failed_run_type: ["e2e-package-and-test"] }
+                all_run_type: ["e2e-test-on-omnibus"],
+                failed_run_type: ["e2e-test-on-omnibus"] }
             ] }
       end
 
@@ -584,7 +584,7 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 0,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                all_run_type: ["e2e-package-and-test"],
+                all_run_type: ["e2e-test-on-omnibus"],
                 failed_run_type: [] },
               { stage: "create",
                 product_group: "code_review",
@@ -597,7 +597,7 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 0,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                all_run_type: ["e2e-package-and-test"],
+                all_run_type: ["e2e-test-on-omnibus"],
                 failed_run_type: [] }
             ]
         }
@@ -645,7 +645,7 @@ describe QA::Tools::ReliableReport do
                   failure_rate: 0,
                   testcase: "https://testcase/url",
                   file_path: "/qa/qa/specs/features/some/spec.rb",
-                  all_run_type: ["e2e-package-and-test"],
+                  all_run_type: ["e2e-test-on-omnibus"],
                   failed_run_type: [] }
               ]
           }
@@ -662,7 +662,7 @@ describe QA::Tools::ReliableReport do
     using RSpec::Parameterized::TableSyntax
 
     where(:failed_count, :failure_issue, :failed_run_type, :failure_rate, :result) do
-      1 | 'https://failure/issues/url' | ['e2e-package-and-test'] | 2 | false
+      1 | 'https://failure/issues/url' | ['e2e-test-on-omnibus'] | 2 | false
       1 | 'https://failure/issues/url' | ['e2e-test-on-gdk'] | 2 | false
       1 | 'https://failure/issues/url' | ['nightly'] | 2 | false
       0 | 'https://failure/issues/url' | ['e2e-test-on-gdk'] | 2 | true

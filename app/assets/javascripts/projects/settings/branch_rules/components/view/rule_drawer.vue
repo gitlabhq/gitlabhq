@@ -3,7 +3,11 @@ import { GlDrawer, GlButton, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import { USERS_TYPE, GROUPS_TYPE } from '~/vue_shared/components/list_selector/constants';
+import {
+  USERS_TYPE,
+  GROUPS_TYPE,
+  DEPLOY_KEYS_TYPE,
+} from '~/vue_shared/components/list_selector/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   ACCESS_LEVEL_DEVELOPER_INTEGER,
@@ -23,6 +27,7 @@ export default {
   ACCESS_LEVEL_NO_ACCESS_INTEGER,
   USERS_TYPE,
   GROUPS_TYPE,
+  DEPLOY_KEYS_TYPE,
   i18n: {
     saveChanges: __('Save changes'),
     cancel: __('Cancel'),
@@ -34,6 +39,9 @@ export default {
     GlFormCheckbox,
     ItemsSelector: () =>
       import('ee_component/projects/settings/branch_rules/components/view/items_selector.vue'),
+  },
+  inject: {
+    showEnterpriseAccessLevels: { default: false },
   },
   props: {
     isOpen: {
@@ -55,6 +63,11 @@ export default {
       required: false,
       default: () => [],
     },
+    deployKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     title: {
       type: String,
       required: true,
@@ -68,11 +81,17 @@ export default {
       type: Boolean,
       required: true,
     },
+    isPushAccessLevels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       updatedGroups: this.groups,
       updatedUsers: this.users,
+      updatedDeployKeys: this.deployKeys,
       isAdminSelected: null,
       isMaintainersSelected: null,
       isDevelopersAndMaintainersSelected: null,
@@ -84,6 +103,9 @@ export default {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    isSelfHosted() {
+      return !window.gon?.dot_com;
+    },
   },
   watch: {
     isOpen() {
@@ -94,6 +116,7 @@ export default {
 
       this.updatedGroups = this.groups;
       this.updatedUsers = this.users;
+      this.updatedDeployKeys = this.deployKeys;
     },
   },
   methods: {
@@ -118,6 +141,7 @@ export default {
       const ruleEditRoles = [
         ...this.formatItemsData(this.updatedUsers, 'userId', 'User'), // eslint-disable-line @gitlab/require-i18n-strings
         ...this.formatItemsData(this.updatedGroups, 'groupId', 'Group'), // eslint-disable-line @gitlab/require-i18n-strings
+        ...this.formatItemsData(this.updatedDeployKeys, 'deployKeyId', 'DeployKey'),
       ];
       let ruleEditAccessLevels = [];
       if (this.isAdminSelected) {
@@ -153,62 +177,83 @@ export default {
     v-on="$listeners"
   >
     <template #title>
-      <h2 class="gl-mt-0 gl-text-size-h2">{{ title }}</h2>
+      <h2 class="gl-my-0 gl-text-size-h2">{{ title }}</h2>
     </template>
 
-    <template #header>
-      <div class="gl-flex gl-gap-3">
-        <gl-button
-          variant="confirm"
-          :disabled="!isRuleUpdated"
-          :loading="isLoading"
-          data-testid="save-allowed-to-merge"
-          @click="editRule()"
-        >
-          {{ $options.i18n.saveChanges }}
-        </gl-button>
-        <gl-button variant="confirm" category="secondary" @click="$emit('close')">
-          {{ $options.i18n.cancel }}
-        </gl-button>
-      </div>
-    </template>
     <template #default>
       <gl-form-group class="gl-border-none">
-        <gl-form-checkbox v-model="isAdminSelected" @change="handleAccessLevelSelected">
+        <gl-form-checkbox
+          v-if="isSelfHosted"
+          v-model="isAdminSelected"
+          data-testid="admins-role-checkbox"
+          @change="handleAccessLevelSelected"
+        >
           {{ $options.accessLevelsConfig[$options.ACCESS_LEVEL_ADMIN_INTEGER].accessLevelLabel }}
         </gl-form-checkbox>
-        <gl-form-checkbox v-model="isMaintainersSelected" @change="handleAccessLevelSelected">
+        <gl-form-checkbox
+          v-model="isMaintainersSelected"
+          data-testid="maintainers-role-checkbox"
+          @change="handleAccessLevelSelected"
+        >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_MAINTAINER_INTEGER].accessLevelLabel
           }}
         </gl-form-checkbox>
         <gl-form-checkbox
           v-model="isDevelopersAndMaintainersSelected"
+          data-testid="developers-role-checkbox"
           @change="handleAccessLevelSelected"
         >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_DEVELOPER_INTEGER].accessLevelLabel
           }}
         </gl-form-checkbox>
-        <gl-form-checkbox v-model="isNoOneSelected" @change="handleNoOneSelected">
+        <gl-form-checkbox
+          v-model="isNoOneSelected"
+          data-testid="no-one-role-checkbox"
+          @change="handleNoOneSelected"
+        >
           {{
             $options.accessLevelsConfig[$options.ACCESS_LEVEL_NO_ACCESS_INTEGER].accessLevelLabel
           }}
         </gl-form-checkbox>
 
+        <template v-if="showEnterpriseAccessLevels">
+          <items-selector
+            :type="$options.USERS_TYPE"
+            :items="formatItemsIds(users)"
+            :users-options="$options.projectUsersOptions"
+            data-testid="users-selector"
+            @change="handleRuleDataUpdate('updatedUsers', $event)"
+          />
+          <items-selector
+            :type="$options.GROUPS_TYPE"
+            :items="formatItemsIds(groups)"
+            data-testid="groups-selector"
+            @change="handleRuleDataUpdate('updatedGroups', $event)"
+          />
+        </template>
         <items-selector
-          :type="$options.USERS_TYPE"
-          :items="formatItemsIds(users)"
-          :users-options="$options.projectUsersOptions"
-          data-testid="users-selector"
-          @change="handleRuleDataUpdate('updatedUsers', $event)"
+          v-if="isPushAccessLevels"
+          :type="$options.DEPLOY_KEYS_TYPE"
+          :items="formatItemsIds(deployKeys)"
+          data-testid="deploy-keys-selector"
+          @change="handleRuleDataUpdate('updatedDeployKeys', $event)"
         />
-        <items-selector
-          :type="$options.GROUPS_TYPE"
-          :items="formatItemsIds(groups)"
-          data-testid="groups-selector"
-          @change="handleRuleDataUpdate('updatedGroups', $event)"
-        />
+        <div class="gl-mt-5 gl-flex gl-gap-3">
+          <gl-button
+            variant="confirm"
+            :disabled="!isRuleUpdated"
+            :loading="isLoading"
+            data-testid="save-allowed-to-merge"
+            @click="editRule()"
+          >
+            {{ $options.i18n.saveChanges }}
+          </gl-button>
+          <gl-button variant="confirm" category="secondary" @click="$emit('close')">
+            {{ $options.i18n.cancel }}
+          </gl-button>
+        </div>
       </gl-form-group>
     </template>
   </gl-drawer>

@@ -30,8 +30,7 @@ module Projects
       end
 
       def use_gitlab_service?
-        container_repository.migrated? &&
-          container_repository.gitlab_api_client.supports_gitlab_api?
+        container_repository.gitlab_api_client.supports_gitlab_api?
       end
 
       def can_destroy?

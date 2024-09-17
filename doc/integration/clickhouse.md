@@ -18,7 +18,7 @@ Instructions about how to set up integration between GitLab and ClickHouse datab
 To set up ClickHouse as the GitLab data storage:
 
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
-1. [Configure GitLab connection to Clickhouse](#configure-the-gitlab-connection-to-clickhouse).
+1. [Configure GitLab connection to ClickHouse](#configure-the-gitlab-connection-to-clickhouse).
 1. [Run ClickHouse migrations](#run-clickhouse-migrations).
 
 ### Run and configure ClickHouse
@@ -40,14 +40,14 @@ To create necessary user and database objects:
 1. Sign in to the ClickHouse SQL console.
 1. Execute the following command. Replace `PASSWORD_HERE` with the generated password.
 
-    ```sql
-    CREATE DATABASE gitlab_clickhouse_main_production;
-    CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
-    CREATE ROLE gitlab_app;
-    GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
-    GRANT SELECT ON information_schema.* TO gitlab_app;
-    GRANT gitlab_app TO gitlab;
-    ```
+   ```sql
+   CREATE DATABASE gitlab_clickhouse_main_production;
+   CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
+   CREATE ROLE gitlab_app;
+   GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
+   GRANT SELECT ON information_schema.* TO gitlab_app;
+   GRANT gitlab_app TO gitlab;
+   ```
 
 ### Configure the GitLab connection to ClickHouse
 
@@ -60,10 +60,10 @@ To provide GitLab with ClickHouse credentials:
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-    gitlab_rails['clickhouse_databases']['main']['database'] = 'gitlab_clickhouse_main_production'
-    gitlab_rails['clickhouse_databases']['main']['url'] = 'https://example.com/path'
-    gitlab_rails['clickhouse_databases']['main']['username'] = 'gitlab'
-    gitlab_rails['clickhouse_databases']['main']['password'] = 'PASSWORD_HERE' # replace with the actual password
+   gitlab_rails['clickhouse_databases']['main']['database'] = 'gitlab_clickhouse_main_production'
+   gitlab_rails['clickhouse_databases']['main']['url'] = 'https://example.com/path'
+   gitlab_rails['clickhouse_databases']['main']['username'] = 'gitlab'
+   gitlab_rails['clickhouse_databases']['main']['password'] = 'PASSWORD_HERE' # replace with the actual password
    ```
 
 1. Save the file and reconfigure GitLab:
@@ -88,18 +88,18 @@ To provide GitLab with ClickHouse credentials:
 
 1. Edit `gitlab_values.yaml`:
 
-    ```yaml
-    global:
-      clickhouse:
-        enabled: true
-        main:
-          username: default
-          password:
-            secret: gitlab-clickhouse-password
-            key: main_password
-          database: gitlab_clickhouse_main_production
-          url: 'http://example.com'
-    ```
+   ```yaml
+   global:
+     clickhouse:
+       enabled: true
+       main:
+         username: default
+         password:
+           secret: gitlab-clickhouse-password
+           key: main_password
+         database: gitlab_clickhouse_main_production
+         url: 'http://example.com'
+   ```
 
 1. Save the file and apply the new values:
 
@@ -114,9 +114,9 @@ To verify that your connection is set up successfully:
 1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
 1. Execute the following:
 
-    ```ruby
-    ClickHouse::Client.select('SELECT 1', :main)
-    ```
+   ```ruby
+   ClickHouse::Client.select('SELECT 1', :main)
+   ```
 
    If successful, the command returns `[{"1"=>1}]`
 

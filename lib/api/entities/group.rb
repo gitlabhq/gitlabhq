@@ -44,6 +44,15 @@ module API
           expose :uploads_size
         end
       end
+
+      expose :root_storage_statistics, using: Entities::Namespace::RootStorageStatistics,
+        if: ->(group, opts) {
+              expose_root_storage_statistics?(group, opts)
+            }
+
+      def expose_root_storage_statistics?(group, opts)
+        opts[:statistics] && group.root?
+      end
     end
   end
 end

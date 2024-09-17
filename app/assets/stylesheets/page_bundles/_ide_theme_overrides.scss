@@ -29,7 +29,6 @@
   .dropdown-menu li button,
   .dropdown-menu-selectable li a.is-active,
   .dropdown-menu-inner-title,
-  .bs-callout,
   .ide-pipeline .top-bar,
   .ide-pipeline .top-bar .controllers .controllers-buttons,
   .controllers-buttons svg,
@@ -100,18 +99,9 @@
     background-color: var(--ide-background, $gray-100);
   }
 
-  .bs-callout,
   .ide-pipeline .top-bar,
   .ide-terminal .top-bar {
     background-color: var(--ide-background, $gray-10);
-  }
-
-  .bs-callout {
-    border-color: var(--ide-dropdown-background, $border-color);
-
-    code {
-      background-color: var(--ide-dropdown-background, $gray-100);
-    }
   }
 
   .common-note-form .md-area {

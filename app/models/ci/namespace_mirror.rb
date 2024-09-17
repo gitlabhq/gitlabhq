@@ -13,10 +13,6 @@ module Ci
       where("traversal_ids @> '{?}'", id)
     end
 
-    scope :contains_any_of_namespaces, ->(ids) do
-      where("traversal_ids && '{?}'", ids)
-    end
-
     scope :contains_traversal_ids, ->(traversal_ids) do
       mirrors = []
 

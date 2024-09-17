@@ -51,6 +51,9 @@ export default {
     requestReview(data) {
       this.$emit('request-review', data);
     },
+    removeReviewer(data) {
+      this.$emit('remove-reviewer', data);
+    },
   },
 };
 </script>
@@ -60,7 +63,7 @@ export default {
     <div class="value hide-collapsed">
       <span
         v-if="hasNoUsers"
-        class="no-value gl-display-flex gl-font-base gl-leading-normal"
+        class="no-value gl-flex gl-text-base gl-leading-normal"
         data-testid="no-value"
       >
         {{ __('None') }}
@@ -73,7 +76,7 @@ export default {
             data-testid="assign-yourself"
             @click="assignSelf"
           >
-            <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>
+            <span class="gl-text-gray-500 hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
           </gl-button>
         </template>
       </span>
@@ -84,6 +87,7 @@ export default {
         :root-path="rootPath"
         :issuable-type="issuableType"
         @request-review="requestReview"
+        @remove-reviewer="removeReviewer"
       />
     </div>
   </div>

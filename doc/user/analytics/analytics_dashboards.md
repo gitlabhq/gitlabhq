@@ -90,7 +90,7 @@ You can use the visualization designer to:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have at least the Reporter role for the project.
 
 To view a list of dashboards (both built-in and custom) for a project:
 

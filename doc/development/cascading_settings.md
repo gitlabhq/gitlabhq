@@ -165,7 +165,7 @@ Renders the mount element needed to initialize the JavaScript used to display th
 
 ### JavaScript
 
-[`initCascadingSettingsLockTooltips`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
+[`initCascadingSettingsLockTooltips`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
 
 Initializes the JavaScript needed to display the tooltip when hovering over the lock icon (**{lock}**).
 This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).
@@ -226,3 +226,78 @@ import { initCascadingSettingsLockTooltips } from '~/namespaces/cascading_settin
 
 initCascadingSettingsLockTooltips();
 ```
+
+### Vue
+
+[`cascading_lock_icon.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/components/cascading_lock_icon.vue)
+
+| Local                  | Description                                                                                                                                                                                                          | Type                 | Required (default value) |
+|:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------|:-------------------------|
+| `ancestorNamespace`            | The namespace for associated group's ancestor.                                                                                                                                                        | `Object` | `false` (`null`)                  |
+| `isLockedByApplicationSettings`            | Boolean for if the cascading variable `locked_by_application_settings` is set or not on the instance.                                                                                                                                                        | `Boolean` | `true`                   |
+| `isLockedByGroupAncestor`            | Boolean for if the cascading variable `locked_by_ancestor` is set or not for a group.                                                                                                                                                        | `Boolean` | `true`                   |
+
+### Using Vue
+
+ 1. In the your Ruby helper, you will need to call the following to send do your Vue component. Be sure to switch out `:replace_attribute_here` with your cascading attribute.
+
+ ```ruby
+ # Example call from your Ruby helper  method for groups
+ cascading_settings_data = cascading_namespace_settings_tooltip_data(:replace_attribute_here, @group, method(:edit_group_path))[:tooltip_data]
+ ```
+
+ ```ruby
+ # Example call from your Ruby helper  method for projects
+cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path))
+ ```
+
+1. From your Vue's `index.js` file, be sure to convert the data into JSON and camel case format. This will make it easier to use in Vue.
+
+```javascript
+let cascadingSettingsDataParsed;
+try {
+  cascadingSettingsDataParsed = convertObjectPropsToCamelCase(JSON.parse(cascadingSettingsData), {
+    deep: true,
+  });
+} catch {
+  cascadingSettingsDataParsed = null;
+}
+```
+
+1. From your Vue component, either `provide/inject` or pass your `cascadingSettingsDataParsed` variable to the component. You will also want to have a helper method to not show the `cascading-lock-icon` component if the cascading data returned is either null or an empty object.
+
+```vue
+// ./ee/my_component.vue
+
+<script>
+export default {
+  computed: {
+    showCascadingIcon() {
+      return (
+        this.cascadingSettingsData &&
+        Object.keys(this.cascadingSettingsData).length
+      );
+    },
+  },
+}
+</script>
+
+<template>
+  <cascading-lock-icon
+    v-if="showCascadingIcon"
+    :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
+    :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
+    :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
+    class="gl-ml-1"
+  />
+</template>
+```
+
+You can look into the following examples of MRs for implementing `cascading_lock_icon.vue` into other Vue components:
+
+- [Add cascading settings in Groups](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162101)
+- [Add cascading settings in Projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163050)
+
+### Reasoning for supporing both HAML and Vue
+
+It is the goal to build all new frontend features in Vue and to eventually move away from building features in HAML. However there are still HAML frontend features that utilize cascading settings, so support will remain with `initCascadingSettingsLockTooltips` until those components have been migrated into Vue.

@@ -70,7 +70,7 @@ Additionally, use:
   understand the input details or expected values.
 - [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
   for an input.
-- [`spec:inputs:regex`](index.md#specinputsoptions) to specify a regular expression
+- [`spec:inputs:regex`](index.md#specinputsregex) to specify a regular expression
   that the input must match.
 - [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.
@@ -106,7 +106,7 @@ spec:
   stage: $[[ inputs.job-stage ]]
   script:
     - echo "scanning website -e $[[ inputs.environment ]] -c $[[ inputs.concurrency ]] -v $[[ inputs.version ]]"
-    - if [ $[[ inputs.export_results ]] ]; then echo "export results"; fi
+    - if $[[ inputs.export_results ]]; then echo "export results"; fi
 ```
 
 In this example:

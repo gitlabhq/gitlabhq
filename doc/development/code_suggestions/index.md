@@ -24,10 +24,10 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.
       1. Check a "GitLab: Debug" checkbox.
-   1. If you'd like to test code suggestions are working from inside the VS Code Extension, then follow the [steps to set up a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
+   1. If you'd like to test that Code Suggestions is working from inside the VS Code Extension, then follow the [steps to set up a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
       - Once you complete the steps below, to test you are hitting your local `/code_suggestions/completions` endpoint and not production, follow these steps:
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
-        1. Open a new file inside of this VS Code window and begin typing to see code suggestions in action.
+        1. Open a new file inside of this VS Code window and begin typing to see Code Suggestions in action.
         1. You will see completion request URLs being fetched that match the Git remote URL for your GDK.
 
 1. Main Application (GDK):
@@ -35,7 +35,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
    1. Enable Feature Flag ```ai_duo_code_suggestions_switch```:
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
-      1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
+      1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the Code Suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
    1. [Setup AI Gateway](../ai_features/index.md#required-install-ai-gateway).
    1. Run your GDK server with `gdk start` if it's not already running.
 
@@ -45,7 +45,7 @@ When testing interactions with the AI Gateway, you might want to integrate your 
 with the deployed staging AI Gateway. To do this:
 
 1. You need a cloud staging license that has the Code Suggestions add-on,
-   because add-ons are enabled on staging. Drop a note in the `#s_fulfillment` or `s_fulfillment_engineering` internal Slack channel to request an add-on to your license. See this [handbook page](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
+   because add-ons are enabled on staging. Follow [these instructions](#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on) to add the add-on to your license (you can reach out to `#s_fulfillment_engineering` if you have any problems). See this [handbook page](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
 1. Set environment variables to point customers-dot to staging, and the AI Gateway to staging:
 
    ```shell
@@ -81,7 +81,16 @@ with the deployed staging AI Gateway. To do this:
       export GITLAB_SIMULATE_SAAS=0
       ```
 
-   On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file.
+   On a non-GDK instance, you can set the variables using `gitlab_rails['env']` in the `gitlab.rb` file:
+
+      ```shell
+      gitlab_rails['env'] = {
+      'GITLAB_LICENSE_MODE' => 'test',
+      'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
+      'AI_GATEWAY_URL' => 'https://cloud.staging.gitlab.com/ai'
+      }
+      ```
+
    1. Restart your GDK.
    1. Go to `/admin/subscription`.
    1. Optional. Remove any active license.

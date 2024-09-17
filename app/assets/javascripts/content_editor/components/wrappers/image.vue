@@ -104,11 +104,7 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper
-    v-show="!isStaleUploadedImage"
-    as="span"
-    class="gl-relative gl-display-inline-block"
-  >
+  <node-view-wrapper v-show="!isStaleUploadedImage" as="span" class="gl-relative gl-inline-block">
     <span
       v-for="handle in $options.resizeHandles"
       v-show="selected"

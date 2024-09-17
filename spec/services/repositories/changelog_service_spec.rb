@@ -265,6 +265,8 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
   end
 
   def create_commit(project, user, params)
+    RequestStore.clear!
+
     params = { start_branch: 'master', branch_name: 'master' }.merge(params)
     Files::MultiService.new(project, user, params).execute.fetch(:result)
   end

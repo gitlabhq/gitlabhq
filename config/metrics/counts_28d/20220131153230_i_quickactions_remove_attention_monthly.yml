@@ -7,7 +7,7 @@ status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95241/
 milestone_removed: '15.4'
 milestone: '14.8'
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55069
 time_frame: 28d
 data_source: redis_hll
 data_category: optional

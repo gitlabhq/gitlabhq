@@ -82,7 +82,7 @@ export default {
       />{{ $options.AGENT_STATUSES[agentStatus].name }}
     </span>
     <gl-collapse v-model="isVisible" class="gl-ml-5 gl-mt-5">
-      <ul class="gl-list-none gl-pl-2 gl-mb-0">
+      <ul class="gl-mb-0 gl-list-none gl-pl-2">
         <agent-integration-status-row
           v-for="(status, index) in integrationStatuses"
           :key="index"

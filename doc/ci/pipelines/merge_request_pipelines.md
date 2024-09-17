@@ -37,7 +37,7 @@ To use merge request pipelines:
 
 - Your project's `.gitlab-ci.yml` file must be
   [configured with jobs that run in merge request pipelines](#add-jobs-to-merge-request-pipelines).
-- You must have at least the Developer role in the
+- You must have at least the Developer role for the
   source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
 
@@ -118,7 +118,7 @@ Prerequisites:
 
 - The parent project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](#prerequisites).
-- You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#gitlab-cicd-permissions).
+- You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#cicd).
   You might need additional permissions if the branch is protected.
 - The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display

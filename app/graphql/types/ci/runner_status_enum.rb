@@ -5,24 +5,6 @@ module Types
     class RunnerStatusEnum < BaseEnum
       graphql_name 'CiRunnerStatus'
 
-      value 'ACTIVE',
-        description: 'Runner that is not paused.',
-        deprecated: {
-          reason: :renamed,
-          replacement: 'CiRunner.paused',
-          milestone: '14.6'
-        },
-        value: :active
-
-      value 'PAUSED',
-        description: 'Runner that is paused.',
-        deprecated: {
-          reason: :renamed,
-          replacement: 'CiRunner.paused',
-          milestone: '14.6'
-        },
-        value: :paused
-
       value 'ONLINE',
         description: "Runner that contacted this instance within the last #{::Ci::Runner::ONLINE_CONTACT_TIMEOUT.inspect}.",
         value: :online
@@ -38,7 +20,7 @@ module Types
         value: :stale
 
       value 'NEVER_CONTACTED',
-        description: 'Runner that has never contacted this instance.',
+        description: 'Runner that has never contacted the instance.',
         value: :never_contacted
     end
   end

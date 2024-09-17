@@ -1,9 +1,13 @@
 - breadcrumb_title _("Topics")
 - page_title    _("Explore topics")
 - header_title  _("Topics"), topics_explore_projects_path
+- search = params[:search]
+- show_empty_state = @topics.empty? && !search
 
 = render_dashboard_ultimate_trial(current_user)
 
-= render 'explore/topics/head'
-
-= render partial: 'shared/topics/list'
+- if show_empty_state
+  = render 'shared/empty_states/topics'
+- else
+  = render 'explore/topics/head'
+  = render partial: 'shared/topics/list'

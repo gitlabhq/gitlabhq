@@ -1,0 +1,26 @@
+query snakeCaseNote($id: NoteID!) {
+  note(id: $id) {
+    id
+    author {
+      id
+      avatar_url: avatarUrl
+      name
+      username
+      web_url: webUrl
+      web_path: webPath
+    }
+    body_html: bodyHtml
+    created_at: createdAt
+    last_edited_at: lastEditedAt
+    last_edited_by: lastEditedBy {
+      id
+      avatar_url: avatarUrl
+      name
+      username
+      web_url: webUrl
+      web_path: webPath
+    }
+    internal
+    url
+  }
+}

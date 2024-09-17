@@ -64,12 +64,12 @@ response attributes:
 | `force_https`                             | boolean    | `true` if the project is set to force HTTPS.                                                                                      |
 | `deployments[]`                           | array      | List of current active deployments.                                                                                          |
 
-| `deployments[]` attribute                 | Type       | Description                                                                                                                  |
-| ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `created_at`                              | date       | Date deployment was created.                                                                                                 |
-| `url`                                     | string     | URL for this deployment.                                                                                                     |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [multiple deployments](../user/project/pages/index.md#create-multiple-deployments). |
-| `root_directory`                          | string     | Root directory.                                                                                                              |
+| `deployments[]` attribute                 | Type       | Description                                                                                                                   |
+| ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
+| `created_at`                              | date       | Date deployment was created.                                                                                                  |
+| `url`                                     | string     | URL for this deployment.                                                                                                      |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:
 
@@ -133,12 +133,12 @@ response attributes:
 | `force_https`                             | boolean    | `true` if the project is set to force HTTPS.                                                                                      |
 | `deployments[]`                           | array      | List of current active deployments.                                                                                          |
 
-| `deployments[]` attribute                 | Type       | Description                                                                                                                  |
-| ----------------------------------------- | ---------- | -----------------------                                                                                                      |
-| `created_at`                              | date       | Date deployment was created.                                                                                                 |
-| `url`                                     | string     | URL for this deployment.                                                                                                     |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [multiple deployments](../user/project/pages/index.md#create-multiple-deployments). |
-| `root_directory`                          | string     | Root directory.                                                                                                              |
+| `deployments[]` attribute                 | Type       | Description                                                                                                                   |
+| ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
+| `created_at`                              | date       | Date deployment was created.                                                                                                  |
+| `url`                                     | string     | URL for this deployment.                                                                                                      |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:
 

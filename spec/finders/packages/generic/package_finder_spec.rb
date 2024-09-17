@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Generic::PackageFinder do
+RSpec.describe ::Packages::Generic::PackageFinder, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:package) { create(:generic_package, project: project) }
 

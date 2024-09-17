@@ -91,7 +91,7 @@ export default {
       :title="$options.i18n.actionsDisabledHint"
     />
 
-    <gl-button-group ref="actions" class="gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0">
+    <gl-button-group ref="actions" class="gl-mb-3 gl-w-full md:gl-mb-0 md:gl-w-auto">
       <gl-button
         v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
         :href="defaultActionUrl"

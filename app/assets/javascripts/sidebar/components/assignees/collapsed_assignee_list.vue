@@ -126,10 +126,8 @@ export default {
       :user="user"
       :issuable-type="issuableType"
     />
-    <gl-button v-if="hasMoreThanTwoAssignees" variant="link" class="gl-bg-transparent!">
-      <span
-        class="avatar-counter sidebar-avatar-counter gl-display-flex gl-align-items-center gl-pl-3"
-      >
+    <gl-button v-if="hasMoreThanTwoAssignees" variant="link" class="!gl-bg-transparent">
+      <span class="avatar-counter sidebar-avatar-counter gl-flex gl-items-center gl-pl-3">
         {{ sidebarAvatarCounter }}
       </span>
       <gl-icon

@@ -20,6 +20,7 @@ class Namespace < ApplicationRecord
   include CrossDatabaseIgnoredTables
   include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
+  include Todoable
 
   ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
 
@@ -156,6 +157,7 @@ class Namespace < ApplicationRecord
   validate :nesting_level_allowed, unless: -> { project_namespace? }
   validate :changing_shared_runners_enabled_is_allowed, unless: -> { project_namespace? }
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
+  validate :parent_organization_match, if: :require_organization?
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
@@ -244,6 +246,9 @@ class Namespace < ApplicationRecord
   end
 
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+
+  scope :by_contains_all_traversal_ids, ->(traversal_ids) { where('traversal_ids::bigint[] @> ARRAY[?]::bigint[]', traversal_ids) }
+  scope :by_traversal_ids, ->(traversal_ids) { where('traversal_ids::bigint[] = ARRAY[?]::bigint[]', traversal_ids) }
 
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
@@ -360,6 +365,10 @@ class Namespace < ApplicationRecord
       yield
     ensure
       Gitlab::SafeRequestStore[:require_organization] = current_value
+    end
+
+    def username_reserved?(username)
+      without_project_namespaces.where(parent_id: nil).find_by_path_or_name(username).present?
     end
   end
 
@@ -722,7 +731,18 @@ class Namespace < ApplicationRecord
       :active_pages_deployments)
   end
 
+  def web_url(only_path: nil)
+    Gitlab::UrlBuilder.build(self, only_path: only_path)
+  end
+
   private
+
+  def parent_organization_match
+    return unless parent
+    return if parent.organization_id == organization_id
+
+    errors.add(:organization_id, _("must match the parent organization's ID"))
+  end
 
   def cross_namespace_reference?(from)
     return false if from == self
@@ -735,7 +755,7 @@ class Namespace < ApplicationRecord
     when Namespaces::ProjectNamespace
       from.parent_id != comparable_namespace_id
     when Namespace
-      parent != from
+      is_a?(Group) ? from.id != id : parent != from
     when User
       true
     end

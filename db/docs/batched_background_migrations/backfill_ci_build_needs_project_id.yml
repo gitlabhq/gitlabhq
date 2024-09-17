@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillCiBuildNeedsProjectId
+description: Backfills sharding key `ci_build_needs.project_id` from `p_ci_builds`.
+feature_category: continuous_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163429
+milestone: '17.4'
+queued_migration_version: 20240827095907
+# Replace with the approximate date you think it's best to ensure the completion of this BBM.
+finalize_after: '2024-09-25'
+finalized_by: # version of the migration that finalized this BBM

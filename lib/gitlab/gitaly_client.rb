@@ -167,6 +167,7 @@ module Gitlab
                 { service: 'gitaly.ServerService', method: 'DiskStatistics' },
                 { service: 'gitaly.ServerService', method: 'ReadinessCheck' },
                 { service: 'gitaly.ServerService', method: 'ServerInfo' },
+                { service: 'gitaly.ServerService', method: 'ServerSignature' },
                 { service: 'grpc.health.v1.Health', method: 'Check' }
               ],
               retryPolicy: {
@@ -603,6 +604,7 @@ module Gitlab
 
       stack_counter.select { |_, v| v == max }.keys
     end
+    private_class_method :max_stacks
 
     def self.decode_detailed_error(err)
       # details could have more than one in theory, but we only have one to worry about for now.
@@ -619,7 +621,19 @@ module Gitlab
       nil
     end
 
-    private_class_method :max_stacks
+    # This method attempts to unwrap a detailed error from a Gitaly RPC error.
+    # It first decodes the detailed error using decode_detailed_error. If successful,
+    # it tries to extract the unwrapped error by calling the method named by the
+    # error attribute on the decoded error object.
+    def self.unwrap_detailed_error(err)
+      e = decode_detailed_error(err)
+
+      return e if e.nil? || !e.respond_to?(:error) || e.error.nil? || !e.error.respond_to?(:to_s)
+
+      unwrapped_error = e[e.error.to_s]
+
+      unwrapped_error || e
+    end
 
     def self.with_feature_flag_actors(repository: nil, user: nil, project: nil, group: nil, &block)
       feature_flag_actors[:repository] = repository

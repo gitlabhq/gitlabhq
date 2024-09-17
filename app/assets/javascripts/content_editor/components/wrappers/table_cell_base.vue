@@ -35,10 +35,10 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
     },
     {
       items: [
-        { text: __('Insert column before'), value: 'addColumnBefore' },
-        { text: __('Insert column after'), value: 'addColumnAfter' },
-        isTableBodyCell && { text: __('Insert row before'), value: 'addRowBefore' },
-        { text: __('Insert row after'), value: 'addRowAfter' },
+        { text: __('Insert column left'), value: 'addColumnBefore' },
+        { text: __('Insert column right'), value: 'addColumnAfter' },
+        isTableBodyCell && { text: __('Insert row above'), value: 'addRowBefore' },
+        { text: __('Insert row below'), value: 'addRowAfter' },
       ].filter(Boolean),
     },
     {
@@ -158,7 +158,7 @@ export default {
     :colspan="node.attrs.colspan || 1"
     :align="node.attrs.align || 'left'"
     dir="auto"
-    class="gl-m-0! gl-p-0! gl-relative"
+    class="gl-relative !gl-m-0 !gl-p-0"
     @click="hideDropdown"
   >
     <span
@@ -184,7 +184,7 @@ export default {
     </span>
     <node-view-content
       as="div"
-      class="gl-p-5 gl-min-w-10"
+      class="gl-min-w-10 gl-p-5"
       :style="{ 'text-align': node.attrs.align || 'left' }"
     />
   </node-view-wrapper>

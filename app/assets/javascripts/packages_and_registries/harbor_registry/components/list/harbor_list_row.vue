@@ -44,7 +44,7 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <router-link class="gl-text-body gl-font-bold" data-testid="details-link" :to="linkTo">
+      <router-link class="gl-font-bold gl-text-primary" data-testid="details-link" :to="linkTo">
         {{ item.name }}
       </router-link>
       <clipboard-button
@@ -56,7 +56,7 @@ export default {
     </template>
     <template #left-secondary>
       <template v-if="!metadataLoading">
-        <span class="gl-display-flex gl-align-items-center" data-testid="artifacts-count">
+        <span class="gl-flex gl-items-center" data-testid="artifacts-count">
           <gl-icon name="package" class="gl-mr-2" />
           {{ artifactCountText }}
         </span>

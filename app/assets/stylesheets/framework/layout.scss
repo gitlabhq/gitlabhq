@@ -4,21 +4,6 @@ html {
   }
 }
 
-body {
-  &.board-card-content {
-    background-color: $gray-50;
-
-    .content-wrapper {
-      padding: 0;
-
-      .container-fluid,
-      .container-limited {
-        background-color: $gray-50;
-      }
-    }
-  }
-}
-
 .container-fluid {
   &.limit-container-width {
     .flash-container.sticky {
@@ -65,17 +50,8 @@ body {
 }
 
 .alert-wrapper {
-  @include gl-media-breakpoint-up(xl) {
-    --gl-alert-padding-x: #{$gl-spacing-scale-3};
-    --gl-broadcast-message-padding-x: #{$gl-spacing-scale-3};
-  }
-
-  .alert {
-    margin-bottom: 0;
-
-    &:last-child {
-      margin-bottom: $gl-padding;
-    }
+  .gl-alert:first-child {
+    @apply gl-mt-3;
   }
 
   .alert-link-group {
@@ -155,11 +131,6 @@ body {
 
   .flash-container {
     margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .alert-wrapper .flash-container .flash-alert:last-child,
-  .alert-wrapper .flash-container .flash-notice:last-child {
     margin-bottom: 0;
   }
 

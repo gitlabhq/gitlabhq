@@ -15,6 +15,7 @@
 
 %td
   = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
+    data: { event_tracking: 'change_allow_force_push', event_label: 'repository_settings' },
     label: s_("ProtectedBranch|Toggle allowed to force push"),
     is_checked: protected_branch.allow_force_push,
     label_position: :hidden)

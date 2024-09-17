@@ -24,7 +24,7 @@
     .form-group
       = platform_field.label :ca_cert, s_('ClusterIntegration|CA Certificate'), class: 'label-bold'
       .input-group.gl-field-error-anchor.markdown-code-block
-        = platform_field.text_area :ca_cert, class: 'gl-rounded-top-right-base! gl-rounded-bottom-right-base! form-control js-select-on-focus', rows: '10',
+        = platform_field.text_area :ca_cert, class: '!gl-rounded-tr-base !gl-rounded-br-base form-control js-select-on-focus', rows: '10',
           readonly: cluster.read_only_kubernetes_platform_fields?,
           placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)')
         - if cluster.read_only_kubernetes_platform_fields?

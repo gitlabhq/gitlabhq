@@ -12,7 +12,7 @@
     = yield :usage_quotas_subtitle
 
 #js-usage-quotas-view
-  .gl-font-lg.text-center
+  .gl-text-lg.text-center
     %span.gl-mr-1= s_('UsageQuota|Loading Usage Quotas tabs')
     = render Pajamas::SpinnerComponent.new(inline: true, size: :md)
   = yield :usage_quotas_tabs

@@ -44,7 +44,7 @@ export default {
     placement="right"
     @close-button-clicked="dismissPermanently"
   >
-    <div v-outside="dismissPermanently" class="gl-font-base gl-mb-3">
+    <div v-outside="dismissPermanently" class="gl-mb-3 gl-text-base">
       <gl-sprintf :message="$options.i18n.description">
         <template #link="{ content }">
           <gl-link :href="includesHelpPagePath" target="_blank">{{ content }}</gl-link>

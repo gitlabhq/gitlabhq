@@ -15,10 +15,12 @@ import GroupItem from '~/vue_shared/components/list_selector/group_item.vue';
 import ProjectItem from '~/vue_shared/components/list_selector/project_item.vue';
 import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item.vue';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
+import getAvailableDeployKeys from '~/vue_shared/components/list_selector/queries/available_deploy_keys.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
-import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK, DEPLOY_KEYS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/api');
@@ -36,21 +38,22 @@ describe('List Selector spec', () => {
   let wrapper;
   let fakeApollo;
   let axiosMock;
+  const projectPath = 'some/project/path';
 
   const USERS_MOCK_PROPS = {
-    projectPath: 'some/project/path',
+    projectPath,
     groupPath: 'some/group/path',
     usersQueryOptions: { active: true },
     type: 'users',
   };
 
   const GROUPS_MOCK_PROPS = {
-    projectPath: 'some/project/path',
+    projectPath,
     type: 'groups',
   };
 
   const DEPLOY_KEYS_MOCK_PROPS = {
-    projectPath: 'some/project/path',
+    projectPath,
     type: 'deployKeys',
   };
 
@@ -59,9 +62,14 @@ describe('List Selector spec', () => {
   };
 
   const groupsAutocompleteQuerySuccess = jest.fn().mockResolvedValue(GROUPS_RESPONSE_MOCK);
+  const deployKeysQuerySuccess = jest.fn().mockResolvedValue(DEPLOY_KEYS_RESPONSE_MOCK);
 
-  const createComponent = async (props) => {
-    fakeApollo = createMockApollo([[groupsAutocompleteQuery, groupsAutocompleteQuerySuccess]]);
+  const createComponent = async (
+    props,
+    apolloQuery = groupsAutocompleteQuery,
+    apolloResolver = groupsAutocompleteQuerySuccess,
+  ) => {
+    fakeApollo = createMockApollo([[apolloQuery, apolloResolver]]);
 
     wrapper = mountExtended(ListSelector, {
       apolloProvider: fakeApollo,
@@ -262,7 +270,7 @@ describe('List Selector spec', () => {
             isGroupsWithProjectAccess: true,
             projectId: mockProjectId,
           });
-          axiosMock.onGet(mockUrl).replyOnce(200, mockAxiosResponse);
+          axiosMock.onGet(mockUrl).replyOnce(HTTP_STATUS_OK, mockAxiosResponse);
           await emitSearchInput();
         });
 
@@ -357,7 +365,19 @@ describe('List Selector spec', () => {
   });
 
   describe('Deploy keys type', () => {
-    beforeEach(() => createComponent(DEPLOY_KEYS_MOCK_PROPS));
+    const deployKeysItems = DEPLOY_KEYS_RESPONSE_MOCK.data.project.availableDeployKeys.nodes.map(
+      (deployKey) => ({
+        ...deployKey,
+        id: getIdFromGraphQLId(deployKey.id),
+        type: 'deployKeys',
+        text: deployKey.title,
+        value: getIdFromGraphQLId(deployKey.id),
+      }),
+    );
+
+    beforeEach(() =>
+      createComponent(DEPLOY_KEYS_MOCK_PROPS, getAvailableDeployKeys, deployKeysQuerySuccess),
+    );
 
     it('renders a correct title', () => {
       expect(findTitle()).toContain('Deploy keys');
@@ -367,10 +387,65 @@ describe('List Selector spec', () => {
       expect(findIcon().props('name')).toBe('key');
     });
 
+    describe('searching', () => {
+      const search = 'key';
+      const emitSearchInput = async () => {
+        findSearchBox().vm.$emit('input', search);
+        await waitForPromises();
+      };
+
+      beforeEach(() => emitSearchInput());
+
+      it('calls query with correct variables when search box receives an input', () => {
+        expect(deployKeysQuerySuccess).toHaveBeenCalledWith({
+          projectPath,
+          titleQuery: search,
+        });
+      });
+
+      it('renders a dropdown for the search results', () => {
+        expect(findSearchResultsDropdown().props()).toMatchObject({
+          items: deployKeysItems,
+        });
+      });
+
+      it('renders a group component for each search result', () => {
+        expect(findAllDeployKeyComponents().length).toBe(deployKeysItems.length);
+      });
+
+      it('emits a select event when a search result is selected', () => {
+        const firstSearchResult = deployKeysItems[1];
+        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.id);
+
+        expect(wrapper.emitted('select')).toMatchObject([
+          [
+            {
+              id: firstSearchResult.id,
+              title: firstSearchResult.title,
+              user: firstSearchResult.user,
+              type: 'deployKeys',
+              text: firstSearchResult.title,
+              value: firstSearchResult.id,
+            },
+          ],
+        ]);
+      });
+
+      it('renders a deploy key component for each search result', () => {
+        expect(findAllDeployKeyComponents().length).toBe(deployKeysItems.length);
+      });
+    });
+
     describe('selected items', () => {
-      const selectedKey = { title: 'MyKey', owner: 'peter', id: '123' };
+      const selectedKey = deployKeysItems[0];
       const selectedItems = [selectedKey];
-      beforeEach(() => createComponent({ ...DEPLOY_KEYS_MOCK_PROPS, selectedItems }));
+      beforeEach(() =>
+        createComponent(
+          { ...DEPLOY_KEYS_MOCK_PROPS, selectedItems },
+          getAvailableDeployKeys,
+          deployKeysQuerySuccess,
+        ),
+      );
 
       it('renders a heading with the total selected items', () => {
         expect(findTitle()).toContain('Deploy keys');
@@ -391,9 +466,6 @@ describe('List Selector spec', () => {
 
         expect(wrapper.emitted('delete')).toEqual([[id]]);
       });
-
-      // TODO - add a test for the select event once we have API integration
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
     });
   });
 

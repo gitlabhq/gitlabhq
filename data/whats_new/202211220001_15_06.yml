@@ -9,7 +9,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies.html'
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/merge_request_approval_policies.html'
   image_url: 'https://img.youtube.com/vi/jfbNo5IE-2s/hqdefault.jpg'
   published_at: 2022-11-22
   release: 15.6

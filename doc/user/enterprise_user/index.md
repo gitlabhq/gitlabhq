@@ -22,10 +22,10 @@ A user is automatically claimed as an enterprise user of a group when **both** o
 
 1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
 1. The user account meets at least **one** of the following conditions:
-    - It was created February 1, 2021 or later.
-    - It has a SAML or SCIM identity tied to the organization's group.
-    - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
-    - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
+   - It was created February 1, 2021 or later.
+   - It has a SAML or SCIM identity tied to the organization's group.
+   - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
+   - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
 
 After the user is claimed as an enterprise user:
 
@@ -72,7 +72,7 @@ Prerequisites:
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
 - A project in the group. This project will be linked to the verified domains, and should not be deleted.
-- You must have the Owner role in the top-level group.
+- You must have the Owner role for the top-level group.
 
 Domain verification applies at the top-level group and to all subgroups and projects
 nested under that top-level parent group.
@@ -98,7 +98,7 @@ can modify or remove the domain verification.
 
 If needed, you can create a new project to set up domain verification directly
 under your top-level group. This limits the ability to modify the domain verification
-to members with at least the Maintainer role.
+to members with at least the Maintainer role, because these users are able to set up a domain and therefore allow the group's enterprise users to update their email to match that domain.
 
 For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
 
@@ -190,6 +190,25 @@ To disable 2FA:
 1. Select **Manage > Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
+
+### Enable the extension marketplace for the Web IDE and workspaces
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) in GitLab 17.4 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by feature flags.
+For more information, see the history.
+
+If you have the Owner role for a top-level group, you can
+enable the extension marketplace for enterprise users.
+
+To enable the extension marketplace for the Web IDE and workspaces:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.
+1. Select **Save changes**.
 
 ### Prevent enterprise users from creating groups and projects outside the corporate group
 

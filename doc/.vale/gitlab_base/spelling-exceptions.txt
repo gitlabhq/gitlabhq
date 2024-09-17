@@ -152,7 +152,6 @@ ChatOps
 checksummable
 checksummed
 checksumming
-Chemlab
 chipset
 chipsets
 CIDRs
@@ -388,8 +387,8 @@ Gbps
 Gemfile
 Gemnasium
 Gemojione
-Getter
-Getters
+getter
+getters
 gettext
 GIDs
 gists
@@ -457,6 +456,8 @@ hyperparameters
 iCalendar
 iCloud
 idempotence
+IDEs
+IDE's
 idmapper
 Iglu
 IIFEs
@@ -698,6 +699,7 @@ phpenv
 Phorge
 PHPUnit
 PIDs
+Pinia
 pipenv
 Pipfile
 Pipfiles

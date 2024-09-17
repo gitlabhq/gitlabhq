@@ -80,10 +80,10 @@ export default {
 <template>
   <list-item data-testid="package-row" :disabled="disabledRow">
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
+      <div class="gl-mr-3 gl-flex gl-min-w-0 gl-items-center">
         <gl-link
           :href="packageLink"
-          class="gl-text-body gl-min-w-0"
+          class="gl-min-w-0 gl-text-primary"
           data-testid="details-link"
           :disabled="disabledRow"
         >
@@ -93,7 +93,7 @@ export default {
         <gl-button
           v-if="showWarningIcon"
           v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
-          class="gl-hover-bg-transparent!"
+          class="hover:!gl-bg-transparent"
           icon="warning"
           category="tertiary"
           data-testid="warning-icon"
@@ -110,10 +110,10 @@ export default {
       </div>
     </template>
     <template #left-secondary>
-      <div class="gl-display-flex">
+      <div class="gl-flex">
         <span>{{ packageEntity.version }}</span>
 
-        <div v-if="hasPipeline" class="gl-hidden sm:g-flex gl-ml-2">
+        <div v-if="hasPipeline" class="sm:g-flex gl-ml-2 gl-hidden">
           <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">
             <template #author>{{ packageEntity.pipeline.user.name }}</template>
           </gl-sprintf>

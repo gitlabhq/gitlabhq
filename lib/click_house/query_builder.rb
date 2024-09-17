@@ -90,6 +90,14 @@ module ClickHouse
       new_instance
     end
 
+    def group(*columns)
+      new_instance = deep_clone
+
+      new_instance.manager.group(*columns)
+
+      new_instance
+    end
+
     def limit(count)
       manager.take(count)
       self

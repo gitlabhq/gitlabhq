@@ -8,16 +8,17 @@ require_relative '../../../scripts/pipeline/pre_merge_checks'
 RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 UTC'), feature_category: :tooling do
   include StubENV
 
-  let(:instance)            { described_class.new }
-  let(:project_id)          { '42' }
-  let(:merge_request_iid)   { '1' }
-  let(:mr_pipelines_url)    { "https://gitlab.test/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/pipelines" }
+  let(:instance)           { described_class.new }
+  let(:project_id)         { '42' }
+  let(:merge_request_iid)  { '1' }
+  let(:target_branch)      { 'master' }
+  let(:mr_pipelines_url)   { "https://gitlab.test/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/pipelines" }
 
-  let(:latest_mr_pipeline_ref) { "refs/merge-requests/1/merge" }
-  let(:latest_mr_pipeline_status) { "success" }
+  let(:latest_mr_pipeline_ref)        { "refs/merge-requests/1/merge" }
+  let(:latest_mr_pipeline_status)     { "success" }
   let(:latest_mr_pipeline_created_at) { "2024-05-29T07:15:00 UTC" }
-  let(:latest_mr_pipeline_web_url) { "https://gitlab.com/gitlab-org/gitlab/-/pipelines/1310472835" }
-  let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [tier:3, gdk]" }
+  let(:latest_mr_pipeline_web_url)    { "https://gitlab.com/gitlab-org/gitlab/-/pipelines/1310472835" }
+  let(:latest_mr_pipeline_name)       { "Ruby 3.2 MR [tier:3, gdk]" }
   let(:latest_mr_pipeline_short) do
     {
       id: 1309901620,
@@ -78,7 +79,8 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
     stub_env(
       'CI_API_V4_URL' => 'https://gitlab.test/api/v4',
       'CI_PROJECT_ID' => project_id,
-      'CI_MERGE_REQUEST_IID' => merge_request_iid
+      'CI_MERGE_REQUEST_IID' => merge_request_iid,
+      'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => target_branch
     )
   end
 
@@ -100,6 +102,16 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
         expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
         expect(instance.execute).not_to be_success
         expect(instance.execute.message).to include("Missing merge_request_iid")
+      end
+    end
+
+    context 'when target_branch is missing' do
+      let(:target_branch) { nil }
+
+      it 'returns a failed PreMergeChecksStatus' do
+        expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+        expect(instance.execute).not_to be_success
+        expect(instance.execute.message).to include("Missing target_branch")
       end
     end
   end
@@ -136,6 +148,33 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
       context 'when we have a latest pipeline' do
         before do
           allow(api_client).to receive(:pipeline).with(project_id, mr_pipelines[2][:id]).and_return(latest_mr_pipeline)
+        end
+
+        context 'and the target branch is a stable branch' do
+          let(:target_branch) { 'a-stable-branch-stable-ee' }
+
+          context 'and the latest pipeline is not fresh enough' do
+            let(:latest_mr_pipeline_created_at) { "2024-05-26T09:30:00 UTC" }
+
+            it 'returns a failed PreMergeChecksStatus' do
+              expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+              expect(instance.execute).not_to be_success
+              expect(instance.execute.message)
+                .to include(
+                  "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 72 hours " \
+                    "(it was created 72.5 hours ago)!"
+                )
+            end
+          end
+
+          context 'and the latest pipeline is fresh enough' do
+            let(:latest_mr_pipeline_created_at) { "2024-05-26T10:30:00 UTC" }
+
+            it 'returns a successful PreMergeChecksStatus' do
+              expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+              expect(instance.execute).to be_success
+            end
+          end
         end
 
         context 'and it passes all the checks' do

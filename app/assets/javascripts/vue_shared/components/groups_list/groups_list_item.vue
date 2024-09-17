@@ -152,6 +152,7 @@ export default {
           :entity-name="group.fullName"
           :label="group.fullName"
           :label-link="group.webUrl"
+          :src="group.avatarUrl"
           shape="rect"
           :size="48"
         >

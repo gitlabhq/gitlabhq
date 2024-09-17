@@ -92,6 +92,33 @@ To pause indexing for [exact code search](../../user/search/exact_code_search.md
 When you pause indexing for exact code search, all changes in your repository are queued.
 To resume indexing, clear the **Pause indexing for exact code search** checkbox.
 
+## Control indexing concurrency
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of concurrent indexing tasks
+that can be run on a Zoekt node relative to its CPU capacity.
+
+A higher ratio allows more tasks to run concurrently, potentially
+improving indexing throughput at the cost of increased CPU usage.
+The default value is `1.0`, meaning one task per CPU core.
+
+You can adjust this value based on your Zoekt node's performance
+characteristics and workload.
+
+To set the number of concurrent indexing tasks:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Indexing CPU to tasks multiplier** text box, enter a value.
+
+   For example, if a Zoekt node has `4` CPU cores and the ratio is set to `1.5`, the
+   number of concurrent tasks for a node is going to be `4 * 1.5`, which is `6`.
+1. Select **Save changes**.
+
 ## Troubleshooting
 
 When working with Zoekt, you might encounter the following issues.

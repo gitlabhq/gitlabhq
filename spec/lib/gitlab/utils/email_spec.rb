@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'rspec-parameterized'
 
 RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
@@ -74,14 +74,18 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
     using RSpec::Parameterized::TableSyntax
 
     where(:raw_email, :expected_result) do
-      nil                            | nil
-      'notanemail@'                  | nil
-      '@notanemail.com'              | nil
-      'notanemail'                   | nil
-      'user@includeddomain.com'      | 'user@includeddomain.com'
-      'u.s.e.r@includeddomain.com'   | 'user@includeddomain.com'
-      'user+123@includeddomain.com'  | 'user@includeddomain.com'
-      'us.er+123@includeddomain.com' | 'user@includeddomain.com'
+      nil                     | nil
+      'notanemail@'           | 'notanemail@'
+      '@notanemail.com'       | '@notanemail.com'
+      'NotAnEmail'            | 'NotAnEmail'
+      'USER@example.com'      | 'user@example.com'
+      'u.s.e.r@example.com'   | 'u.s.e.r@example.com'
+      'user+123@example.com'  | 'user@example.com'
+      'us.er+123@example.com' | 'us.er@example.com'
+      'u.s.e.r@gmail.com'     | 'user@gmail.com'
+      'user+123@gmail.com'    | 'user@gmail.com'
+      'us.er+123@gmail.com'   | 'user@gmail.com'
+      ' us.er+123@gmail.com ' | 'user@gmail.com'
     end
 
     with_them do

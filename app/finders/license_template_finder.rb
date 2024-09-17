@@ -13,6 +13,8 @@
 class LicenseTemplateFinder
   include Gitlab::Utils::StrongMemoize
 
+  EXCLUDED_LICENSES = %w[wtfpl].freeze
+
   attr_reader :project, :params
 
   def initialize(project, params = {})
@@ -35,7 +37,11 @@ class LicenseTemplateFinder
   private
 
   def available_licenses
-    Licensee::License.all(featured: popular_only?)
+    Licensee::License.all(
+      hidden: true,
+      pseudo: false,
+      featured: popular_only?
+    ).reject { |license| EXCLUDED_LICENSES.include? license.key }
   end
 
   def vendored_licenses

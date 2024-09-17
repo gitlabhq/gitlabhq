@@ -27,7 +27,7 @@ module Gitlab
           @primary_keys = if @model_class.primary_key.nil?
                             @model_class.connection.primary_keys(@model_class.table_name)
                           else
-                            [@model_class.primary_key]
+                            Array.wrap(@model_class.primary_key)
                           end
         end
 

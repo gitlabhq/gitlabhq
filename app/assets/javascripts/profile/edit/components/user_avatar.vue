@@ -86,21 +86,21 @@ export default {
         data-testid="brand-profile-image-guidelines"
       ></div>
     </div>
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <div class="avatar-image">
         <gl-avatar-link :href="avatarUrl" target="blank">
           <gl-avatar class="gl-mr-5" :src="avatarUrl" :size="96" shape="circle" />
         </gl-avatar-link>
       </div>
-      <div class="gl-flex-grow-1">
+      <div class="gl-grow">
         <h5 class="gl-mt-0">
           {{ $options.i18n.uploadNewAvatar }}
         </h5>
-        <div class="gl-display-flex gl-align-items-center gl-my-3">
+        <div class="gl-my-3 gl-flex gl-items-center">
           <gl-button class="js-choose-user-avatar-button">
             {{ $options.i18n.chooseFile }}
           </gl-button>
-          <span class="gl-ml-3 js-avatar-filename">{{ $options.i18n.noFileChosen }}</span>
+          <span class="js-avatar-filename gl-ml-3">{{ $options.i18n.noFileChosen }}</span>
           <input
             id="user_avatar"
             class="js-user-avatar-input hidden"
@@ -148,7 +148,7 @@ export default {
             <div class="profile-crop-image-container">
               <img :alt="$options.i18n.cropAvatarImageAltText" class="modal-profile-crop-image" />
             </div>
-            <div class="gl-text-center gl-mt-4">
+            <div class="gl-mt-4 gl-text-center">
               <div class="btn-group">
                 <gl-button
                   :aria-label="__('Zoom out')"

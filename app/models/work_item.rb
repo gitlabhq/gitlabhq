@@ -73,6 +73,11 @@ class WorkItem < Issue
       Gitlab::Pagination::Keyset::Order.build(
         [
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'state_id',
+            column_expression: WorkItem.arel_table[:state_id],
+            order_expression: WorkItem.arel_table[:state_id].asc
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'parent_link_relative_position',
             column_expression: WorkItems::ParentLink.arel_table[:relative_position],
             order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
@@ -90,7 +95,7 @@ class WorkItem < Issue
     def work_item_children_keyset_order(_work_item)
       keyset_order = work_item_children_keyset_order_config
 
-      keyset_order.apply_cursor_conditions(includes(:parent_link)).reorder(keyset_order)
+      keyset_order.apply_cursor_conditions(joins(:parent_link)).reorder(keyset_order)
     end
 
     def linked_items_keyset_order
@@ -215,6 +220,20 @@ class WorkItem < Issue
     dates_source&.start_date || read_attribute(:start_date)
   end
 
+  def max_depth_reached?(child_type)
+    restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
+      work_item_type_id,
+      child_type.id
+    )
+    return false unless restriction&.maximum_depth
+
+    if work_item_type_id == child_type.id
+      same_type_base_and_ancestors.count >= restriction.maximum_depth
+    else
+      hierarchy(different_type_id: child_type.id).base_and_ancestors.count >= restriction.maximum_depth
+    end
+  end
+
   private
 
   override :parent_link_confidentiality
@@ -237,6 +256,7 @@ class WorkItem < Issue
   def hierarchy(options = {})
     base = self.class.where(id: id)
     base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
+    base = base.where(work_item_type_id: options[:different_type_id]) if options[:different_type_id]
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end

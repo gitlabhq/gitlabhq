@@ -102,7 +102,7 @@ export default {
     <gl-button
       data-testid="accordion-button"
       variant="link"
-      class="gl-text-black-normal!"
+      class="!gl-text-default"
       button-text-classes="gl-heading-5"
       @click="toggleAssetsExpansion"
     >
@@ -112,21 +112,21 @@ export default {
         :class="{ 'gl-rotate-90': isAssetsExpanded }"
       />
       {{ __('Assets') }}
-      <gl-badge variant="neutral" class="gl-display-inline-block">{{ assets.count }}</gl-badge>
+      <gl-badge variant="neutral" class="gl-inline-block">{{ assets.count }}</gl-badge>
     </gl-button>
     <gl-collapse v-model="isAssetsExpanded">
-      <div class="gl-pl-6 gl-pt-3 js-assets-list">
+      <div class="js-assets-list gl-pl-6 gl-pt-3">
         <template v-for="(section, index) in sections">
           <h5 v-if="section.title" :key="`section-header-${index}`" class="gl-mb-2">
             {{ section.title }}
           </h5>
           <ul :key="`section-body-${index}`" class="list-unstyled gl-m-0">
-            <li v-for="link in section.links" :key="link.url" class="gl-display-flex">
+            <li v-for="link in section.links" :key="link.url" class="gl-flex">
               <gl-link
                 :href="link.directAssetUrl || link.url"
-                class="gl-display-flex gl-align-items-center gl-leading-24"
+                class="gl-flex gl-items-center gl-leading-24"
               >
-                <gl-icon :name="section.iconName" class="gl-mr-2 gl-flex-shrink-0 gl-flex-grow-0" />
+                <gl-icon :name="section.iconName" class="gl-mr-2 gl-shrink-0 gl-flex-grow-0" />
                 {{ link.name }}
                 <gl-icon
                   v-gl-tooltip
@@ -134,7 +134,7 @@ export default {
                   :aria-label="getTooltipTitle(section)"
                   :title="getTooltipTitle(section)"
                   data-testid="external-link-indicator"
-                  class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0"
+                  class="gl-ml-2 gl-shrink-0 gl-flex-grow-0"
                 />
               </gl-link>
             </li>

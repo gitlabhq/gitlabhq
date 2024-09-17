@@ -23,6 +23,7 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
         let(:updated_at) { outdated_time }
 
         it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
+        it_behaves_like 'when invalid dooms the job bypassing validations'
       end
 
       context 'when job is fresh' do
@@ -42,14 +43,6 @@ RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :continuou
   end
 
   include_examples 'running builds'
-
-  context 'when new query flag is disabled' do
-    before do
-      stub_feature_flags(ci_new_query_for_running_stuck_jobs: false)
-    end
-
-    include_examples 'running builds'
-  end
 
   %w[success skipped failed canceled scheduled pending].each do |status|
     context "when job is #{status}" do

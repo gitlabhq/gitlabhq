@@ -88,7 +88,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do
-        authorize_admin_project
+        authorize_create_protected_branch!
 
         protected_branch = user_project.protected_branches.find_by(name: params[:name])
 
@@ -127,9 +127,9 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       patch ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
-        authorize_admin_project
-
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
+
+        authorize_update_protected_branch!(protected_branch)
 
         declared_params = declared_params(include_missing: false)
         api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared_params)
@@ -156,9 +156,9 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS, urgency: :low do
-        authorize_admin_project
-
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
+
+        authorize_destroy_protected_branch!(protected_branch)
 
         destroy_conditionally!(protected_branch) do
           destroy_service = ::ProtectedBranches::DestroyService.new(user_project, current_user)

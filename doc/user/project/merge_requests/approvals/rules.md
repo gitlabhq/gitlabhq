@@ -33,7 +33,7 @@ enforce a [minimum number of required approvers](settings.md) in the project's s
 Merge requests that target a different project, such as from a fork to the upstream project,
 use the default approval rules from the target (upstream) project, not the source (fork).
 
-Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/scan-result-policies.md) also provide additional flexibility with more granular configuration options.
+Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md) also provide additional flexibility with more granular configuration options.
 
 ## Add an approval rule
 
@@ -125,7 +125,7 @@ To be eligible as an approver for a project, a user must be a member of at least
 
 - The project.
 - The project's immediate parent [group](#group-approvers).
-- A group that has been [shared](../../members/share_project_with_groups.md) with the project.
+- A group that has been [shared](../../members/sharing_projects_groups.md) with the project.
 - A [group added as approvers](#group-approvers).
 
 Users with the Developer role can approve merge requests if one of the following is true:
@@ -136,7 +136,7 @@ Users with the Developer role can approve merge requests if one of the following
 
 Users with the Reporter role can approve only if both of the following are true:
 
-- The users are part of a group that has been [shared](../../members/share_project_with_groups.md) with the project.
+- The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
   The group must have at least the Reporter role.
 - The group has been added as merge request approvers.
 
@@ -159,7 +159,7 @@ can approve the rule. **Inherited members** cannot approve the rule.
 
 Typically the group is a subgroup in your top-level namespace, unless you are
 collaborating with an external group. If you are collaborating with another group,
-you must [share access to the project](../../members/share_project_with_groups.md)
+you must [share access to the project](../../members/sharing_projects_groups.md)
 before assigning the group as a group approver.
 
 A user's membership in an approver group affects their individual ability to
@@ -187,7 +187,7 @@ become eligible approvers in the project. To enable this merge request approval 
 1. In the **Approvals required** column, enter the number of approvals required.
 
 You can also
-[require code owner approval](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch)
+[require code owner approval](../../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch)
 for protected branches.
 
 ## Enable approval permissions for users with the Reporter role
@@ -204,11 +204,11 @@ Prerequisites:
 
 To enable approval permissions for these users without granting them push access:
 
-1. [Create a protected branch](../../protected_branches.md)
+1. [Create a protected branch](../../repository/branches/protected.md)
 1. [Create a new group](../../../group/index.md#create-a-group).
 1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
    and select the Reporter role for the user.
-1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group),
+1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with at least the Reporter role.
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
@@ -279,7 +279,7 @@ approval rule for certain branches:
    - To apply the rule to all protected branches, select **All protected branches**.
    - To apply the rule to a specific branch, select it from the list.
 1. To enable this configuration, follow
-   [Require Code Owner approval on a protected branch](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).
+   [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch).
 
 ## Security Approvals
 
@@ -291,7 +291,7 @@ DETAILS:
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
 > - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
 
-You can use [merge request approval policies](../../../application_security/policies/scan-result-policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
+You can use [merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
 
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the

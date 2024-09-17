@@ -19,7 +19,6 @@ class Group < Namespace
   include BulkUsersByEmailLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
-  include Todoable
   include Importable
 
   extend ::Gitlab::Utils::Override
@@ -139,7 +138,7 @@ class Group < Namespace
 
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
-  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
+  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, :seat_control, to: :namespace_settings
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
@@ -224,7 +223,9 @@ class Group < Namespace
   scope :excluding_restricted_visibility_levels_for_user, ->(user) do
     return all if user.can_admin_all_resources?
 
-    case Gitlab::CurrentSettings.restricted_visibility_levels.sort
+    levels = Array.wrap(Gitlab::CurrentSettings.restricted_visibility_levels).sort
+
+    case levels
     when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC],
          [Gitlab::VisibilityLevel::PRIVATE]
       where.not(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -455,10 +456,6 @@ class Group < Namespace
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
     notification_settings.find { |n| n.notification_email.present? }&.notification_email
-  end
-
-  def web_url(only_path: nil)
-    Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
   def dependency_proxy_image_prefix
@@ -1014,6 +1011,15 @@ class Group < Namespace
     readme_project&.repository&.readme
   end
   strong_memoize_attr :group_readme
+
+  def hook_attrs
+    {
+      group_name: name,
+      group_path: path,
+      group_id: id,
+      full_path: full_path
+    }
+  end
 
   private
 

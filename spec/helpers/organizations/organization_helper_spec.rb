@@ -121,7 +121,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'id' => organization.id,
             'name' => organization.name,
             'description_html' => organization.description_html,
-            'avatar_url' => 'avatar.jpg'
+            'avatar_url' => 'avatar.jpg',
+            'visibility' => organization.visibility
           },
           'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
           'users_organization_path' => '/-/organizations/default/users',
@@ -226,7 +227,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'name' => organization.name,
             'path' => organization.path,
             'description' => organization.description,
-            'avatar' => 'avatar.jpg'
+            'avatar' => 'avatar.jpg',
+            'visibility_level' => organization.visibility_level
           },
           'organizations_path' => '/-/organizations',
           'root_url' => 'http://test.host/',

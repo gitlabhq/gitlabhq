@@ -53,15 +53,21 @@ export const GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
 export const GROUP_MODAL_TO_GROUP_ALERT_BODY = s__(
   'InviteMembersModal|Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
 );
-export const GROUP_MODAL_TO_GROUP_ALERT_LINK = helpPagePath('user/group/manage', {
-  anchor: 'share-a-group-with-another-group',
-});
+export const GROUP_MODAL_TO_GROUP_ALERT_LINK = helpPagePath(
+  'user/project/members/sharing_projects_groups',
+  {
+    anchor: 'invite-a-group-to-a-group',
+  },
+);
 export const GROUP_MODAL_TO_PROJECT_ALERT_BODY = s__(
   'InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
 );
-export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath('user/project/members/index', {
-  anchor: 'add-groups-to-a-project',
-});
+export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath(
+  'user/project/members/sharing_projects_groups',
+  {
+    anchor: 'invite-a-group-to-a-project',
+  },
+);
 
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');

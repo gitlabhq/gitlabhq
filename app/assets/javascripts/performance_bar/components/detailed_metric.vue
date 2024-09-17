@@ -140,7 +140,7 @@ export default {
   <div
     v-if="currentRequest.details && metricDetails"
     :id="`peek-view-${metric}`"
-    class="gl-display-flex gl-align-items-baseline view"
+    class="view gl-flex gl-items-baseline"
     data-testid="detailed-metric-content"
   >
     <gl-button
@@ -150,17 +150,17 @@ export default {
       :title="header"
       variant="link"
     >
-      <span class="gl-font-sm gl-font-semibold" data-testid="performance-bar-details-label">
+      <span class="gl-text-sm gl-font-semibold" data-testid="performance-bar-details-label">
         {{ metricDetailsLabel }}
       </span>
     </gl-button>
     <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="!gl-hidden" scrollable>
-      <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-        <div class="gl-display-flex gl-align-items-center" data-testid="performance-bar-summary">
+      <div class="gl-flex gl-items-center gl-justify-between">
+        <div class="gl-flex gl-items-center" data-testid="performance-bar-summary">
           <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">
             <div v-if="value" data-testid="performance-bar-summary-item">
               <div>{{ name }}</div>
-              <div class="gl-font-size-h1 gl-font-semibold">{{ value }}</div>
+              <div class="gl-text-size-h1 gl-font-semibold">{{ value }}</div>
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default {
                   {{ item[key] }}
                   <gl-button
                     v-if="keyIndex == 0 && item.backtrace"
-                    class="gl-ml-3 button-ellipsis-horizontal"
+                    class="button-ellipsis-horizontal gl-ml-3"
                     data-testid="backtrace-expand-btn"
                     category="primary"
                     variant="default"

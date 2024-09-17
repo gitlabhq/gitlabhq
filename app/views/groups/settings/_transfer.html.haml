@@ -11,7 +11,7 @@
   - c.with_body do
     = form_for group, url: transfer_group_path(group), method: :put, html: { id: form_id, class: 'js-group-transfer-form' } do |f|
       %ul
-        - learn_more_link = help_page_url('user/project/repository/index', anchor: 'what-happens-when-a-repository-path-changes')
+        - learn_more_link = help_page_url('user/project/repository/index', anchor: 'repository-path-changes')
         - learn_more_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learn_more_link }
         - warning_text = s_("GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}") % { learn_more_link_start: learn_more_link_start, learn_more_link_end: '</a>'.html_safe }
         %li= warning_text.html_safe

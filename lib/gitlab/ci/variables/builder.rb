@@ -15,21 +15,17 @@ module Gitlab
           @release_variables_builder = Builder::Release.new(release)
         end
 
-        # Our goal is that job_attributes will eventually replace all job-related variables.
-        def scoped_variables(job, environment:, dependencies:, job_attributes: {})
+        # When adding new variables, consider either adding or commenting out them in the following methods:
+        # - unprotected_scoped_variables
+        # - scoped_variables_for_pipeline_seed
+        def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables(job, environment, job_attributes: job_attributes))
+            variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
-            variables.concat(kubernetes_variables(environment: environment, job: job))
-
-            if job_attributes.present?
-              variables.concat(job_attributes[:yaml_variables])
-            else
-              variables.concat(job.yaml_variables)
-            end
-
+            variables.concat(kubernetes_variables_from_job(environment: environment, job: job))
+            variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
             variables.concat(secret_instance_variables)
@@ -47,13 +43,32 @@ module Gitlab
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
-            variables.concat(kubernetes_variables(environment: environment, job: job))
+            variables.concat(kubernetes_variables_from_job(environment: environment, job: job))
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
             variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables))
             variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables))
+            variables.concat(pipeline.variables)
+            variables.concat(pipeline_schedule_variables)
+            variables.concat(release_variables)
+          end
+        end
+
+        def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_request:)
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            variables.concat(predefined_variables_from_job_attr(job_attr, environment, trigger_request))
+            variables.concat(project.predefined_variables)
+            variables.concat(pipeline_variables_builder.predefined_variables)
+            # job.runner.predefined_variables: No need because it's not available in the Seed step.
+            variables.concat(kubernetes_variables_from_attr(environment: environment, token: nil, kubernetes_namespace: kubernetes_namespace))
+            variables.concat(job_attr[:yaml_variables])
+            variables.concat(user_variables(user))
+            # job.dependency_variables: No need because dependencies are not in the Seed step.
+            variables.concat(secret_instance_variables)
+            variables.concat(secret_group_variables(environment: environment))
+            variables.concat(secret_project_variables(environment: environment))
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
             variables.concat(release_variables)
@@ -74,13 +89,13 @@ module Gitlab
           end
         end
 
-        def kubernetes_variables(environment:, job:)
+        def kubernetes_variables(environment:, token:, kubernetes_namespace:)
           ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
             # NOTE: deployment_variables will be removed as part of cleanup for
             # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
             # Until then, we need to make both the old and the new KUBECONFIG contexts available
-            collection.concat(deployment_variables(environment: environment, job: job))
-            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.try(:token), environment: environment).execute
+            collection.concat(deployment_variables(environment: environment, kubernetes_namespace: kubernetes_namespace))
+            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: token.call, environment: environment).execute
             kubeconfig_yaml = collection['KUBECONFIG']&.value
             template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 
@@ -90,12 +105,12 @@ module Gitlab
           end
         end
 
-        def deployment_variables(environment:, job:)
+        def deployment_variables(environment:, kubernetes_namespace:)
           return [] unless environment
 
           project.deployment_variables(
             environment: environment,
-            kubernetes_namespace: job.expanded_kubernetes_namespace
+            kubernetes_namespace: kubernetes_namespace.call
           )
         end
 
@@ -152,28 +167,46 @@ module Gitlab
 
         delegate :project, to: :pipeline
 
-        def predefined_variables(job, environment, job_attributes: {})
+        def predefined_variables(job, environment)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
-            variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job))
+            variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job.name))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
             variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job.trigger_short_token) if job.trigger_request
 
-            if job_attributes.present?
-              variables.append(key: 'CI_NODE_INDEX', value: job_attributes[:options][:instance].to_s) if job_attributes[:options]&.include?(:instance)
-              variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attributes[:options]).to_s)
-            else
-              variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
-              variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job.options).to_s)
-            end
+            variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
+            variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job.options).to_s)
 
             if environment.present?
               variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
               variables.append(key: 'CI_ENVIRONMENT_ACTION', value: job.environment_action)
               variables.append(key: 'CI_ENVIRONMENT_TIER', value: job.environment_tier)
               variables.append(key: 'CI_ENVIRONMENT_URL', value: job.environment_url) if job.environment_url
+            end
+          end
+        end
+
+        def predefined_variables_from_job_attr(job_attr, environment, trigger_request)
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            variables.append(key: 'CI_JOB_NAME', value: job_attr[:name])
+            variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job_attr[:name]))
+            variables.append(key: 'CI_JOB_STAGE', value: job_attr[:stage])
+            variables.append(key: 'CI_JOB_MANUAL', value: 'true') if ::Ci::Processable::ACTIONABLE_WHEN.include?(job_attr[:when])
+            variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request
+            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger_request.trigger_short_token) if trigger_request
+            variables.append(key: 'CI_NODE_INDEX', value: job_attr[:options][:instance].to_s) if job_attr[:options]&.include?(:instance)
+            variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attr[:options]).to_s)
+
+            if environment.present?
+              variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
+
+              if job_attr[:options].present?
+                variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action_from_job_options(job_attr[:options]))
+                variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier_from_job_options(job_attr[:options], environment))
+                variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url_from_job_options(job_attr[:options], environment))
+              end
             end
           end
         end
@@ -190,8 +223,24 @@ module Gitlab
           end
         end
 
-        def job_name_slug(job)
-          job.name && Gitlab::Utils.slugify(job.name)
+        def kubernetes_variables_from_attr(environment:, token:, kubernetes_namespace:)
+          kubernetes_variables(
+            environment: environment,
+            token: -> { token },
+            kubernetes_namespace: -> { kubernetes_namespace }
+          )
+        end
+
+        def kubernetes_variables_from_job(environment:, job:)
+          kubernetes_variables(
+            environment: environment,
+            token: -> { job.try(:token) },
+            kubernetes_namespace: -> { job.expanded_kubernetes_namespace }
+          )
+        end
+
+        def job_name_slug(job_name)
+          job_name && Gitlab::Utils.slugify(job_name)
         end
 
         def ci_node_total_value(job_options)
@@ -210,6 +259,26 @@ module Gitlab
           return unless @pipeline.tag?
 
           project.releases.find_by_tag(@pipeline.ref)
+        end
+
+        def environment_action_from_job_options(options)
+          options.fetch(:environment, {}).fetch(:action, 'start')
+        end
+
+        # We use the `environment` parameter instead of `options[:environment]` because `environment` is expanded.
+        def environment_tier_from_job_options(options, environment)
+          options.dig(:environment, :deployment_tier) || persisted_environment(environment).try(:tier)
+        end
+
+        # We use the `environment` parameter instead of `options[:environment]` because `environment` is expanded.
+        def environment_url_from_job_options(options, environment)
+          options.dig(:environment, :url) || persisted_environment(environment).try(:external_url)
+        end
+
+        def persisted_environment(environment)
+          strong_memoize_with(:persisted_environment, environment) do
+            project.batch_loaded_environment_by_name(environment)
+          end
         end
       end
     end

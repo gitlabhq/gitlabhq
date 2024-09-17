@@ -56,6 +56,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     runners: {
       query: getRunnerTags,
       update(data) {
@@ -180,7 +181,7 @@ export default {
     @close="closeDrawer"
   >
     <template #title>
-      <h2 class="gl-m-0 gl-font-lg">{{ $options.i18n.ADD_JOB }}</h2>
+      <h2 class="gl-m-0 gl-text-lg">{{ $options.i18n.ADD_JOB }}</h2>
     </template>
     <gl-accordion :header-level="3">
       <job-setup-item
@@ -197,7 +198,7 @@ export default {
       <rules-item :job="job" :is-start-valid="isStartValid" @update-job="updateJob" />
     </gl-accordion>
     <template #footer>
-      <div class="gl-display-flex gl-justify-content-end">
+      <div class="gl-flex gl-justify-end">
         <gl-button
           category="primary"
           class="gl-mr-3"

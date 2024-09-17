@@ -23,7 +23,7 @@ A DAST job has two executing processes:
 
 Enable the `DAST_DEBUG` CI/CD variable to debug scripts. This can help when troubleshooting the job,
 and outputs statements indicating what percentage of the scan is complete.
-For details on using variables, see [Overriding the DAST template](proxy-based.md#customize-dast-settings).
+For details on using variables, see [Overriding the DAST template](browser/index.md).
 
 Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` variable.
 The following table outlines examples of values that can be set and the effect that they have on the output that is logged.

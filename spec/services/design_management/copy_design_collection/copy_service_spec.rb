@@ -192,6 +192,23 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
 
           it 'links the LfsObjects' do
             expect { subject }.to change { target_issue.project.lfs_objects.count }.by(3)
+            .and change { target_issue.project.lfs_objects_projects.count }.by(3)
+          end
+
+          context 'when some LfsObjects are already linked to the design repository' do
+            let!(:lfs_objects_project) do
+              create(
+                :lfs_objects_project,
+                lfs_object: project.lfs_objects.first,
+                project: target_issue.project,
+                repository_type: :design
+              )
+            end
+
+            it 'links the LfsObjects' do
+              expect { subject }.to change { target_issue.project.lfs_objects.count }.by(2)
+              .and change { target_issue.project.lfs_objects_projects.count }.by(2)
+            end
           end
 
           it 'copies the Git repository data', :aggregate_failures do

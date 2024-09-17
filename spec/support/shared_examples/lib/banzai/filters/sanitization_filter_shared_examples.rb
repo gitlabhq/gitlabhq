@@ -13,18 +13,6 @@ RSpec.shared_examples 'default allowlist' do
     expect(filter(act).to_html).to eq exp
   end
 
-  it 'sanitizes javascript in attributes' do
-    act = %q(<a href="javascript:alert('foo')">Text</a>)
-    exp = '<a>Text</a>'
-    expect(filter(act).to_html).to eq exp
-  end
-
-  it 'sanitizes mixed-cased javascript in attributes' do
-    act = %q(<a href="javaScript:alert('foo')">Text</a>)
-    exp = '<a>Text</a>'
-    expect(filter(act).to_html).to eq exp
-  end
-
   it 'allows allowlisted HTML tags from the user' do
     exp = act = "<dl>\n<dt>Term</dt>\n<dd>Definition</dd>\n</dl>"
     expect(filter(act).to_html).to eq exp
@@ -38,6 +26,13 @@ RSpec.shared_examples 'default allowlist' do
   it 'sanitizes `id` attribute on any element' do
     act = %q(<em id="foo">Emphasis</em>)
     expect(filter(act).to_html).to eq %q(<em>Emphasis</em>)
+  end
+
+  it 'removes `rel` attribute from `a` elements' do
+    act = %q(<a href="#" rel="nofollow">Link</a>)
+    exp = %q(<a href="#">Link</a>)
+
+    expect(filter(act).to_html).to eq exp
   end
 end
 
@@ -133,6 +128,18 @@ RSpec.shared_examples 'XSS prevention' do
     end
   end
 
+  it 'sanitizes javascript in attributes' do
+    act = %q(<a href="javascript:alert('foo')">Text</a>)
+    exp = '<a>Text</a>'
+    expect(filter(act).to_html).to eq exp
+  end
+
+  it 'sanitizes mixed-cased javascript in attributes' do
+    act = %q(<a href="javaScript:alert('foo')">Text</a>)
+    exp = '<a>Text</a>'
+    expect(filter(act).to_html).to eq exp
+  end
+
   it 'disallows data links' do
     input = '<a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">XSS</a>'
     output = filter(input)
@@ -149,13 +156,6 @@ RSpec.shared_examples 'XSS prevention' do
 end
 
 RSpec.shared_examples 'sanitize link' do
-  it 'removes `rel` attribute from `a` elements' do
-    act = %q(<a href="#" rel="nofollow">Link</a>)
-    exp = %q(<a href="#">Link</a>)
-
-    expect(filter(act).to_html).to eq exp
-  end
-
   it 'disallows invalid URIs' do
     expect(Addressable::URI).to receive(:parse).with('foo://example.com')
       .and_raise(Addressable::URI::InvalidURIError)
@@ -178,5 +178,20 @@ RSpec.shared_examples 'sanitize link' do
     act = filter(exp)
 
     expect(act.to_html).to eq exp
+  end
+end
+
+# not meant to be exhaustive, but verify that the pipeline is doing sanitization
+RSpec.shared_examples 'sanitize pipeline' do
+  subject { described_class.to_html(act, project: nil) }
+
+  it 'includes BaseSanitizationFilter' do
+    result = described_class.filters.filter { |filter| filter.ancestors.include? Banzai::Filter::BaseSanitizationFilter }
+
+    expect(result).not_to be_empty
+  end
+
+  it 'includes SanitizeLinkFilter' do
+    expect(described_class.filters).to include(Banzai::Filter::SanitizeLinkFilter)
   end
 end

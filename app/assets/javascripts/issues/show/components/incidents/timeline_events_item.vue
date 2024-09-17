@@ -70,21 +70,21 @@ export default {
 };
 </script>
 <template>
-  <div class="timeline-event gl-display-grid">
+  <div class="timeline-event gl-grid">
     <div
-      class="timeline-event-icon gl-flex gl-justify-center gl-items-center gl-bg-white gl-text-gray-200 gl-border gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-1"
+      class="timeline-event-icon gl-border gl-z-1 gl-mt-2 gl-flex gl-h-8 gl-w-8 gl-items-center gl-justify-center gl-rounded-full gl-bg-white gl-p-3 gl-text-gray-200"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border">
-      <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
+      <div class="gl-mb-2 gl-flex gl-flex-wrap gl-items-center gl-gap-3">
         <h3
-          class="timeline-event-note-date gl-font-bold gl-font-sm gl-my-0"
+          class="timeline-event-note-date gl-my-0 gl-text-sm gl-font-bold"
           data-testid="event-time"
         >
           <gl-sprintf :message="$options.i18n.timeUTC">
             <template #time>
-              <span class="gl-font-lg">{{ time }}</span>
+              <span class="gl-text-lg">{{ time }}</span>
             </template>
           </gl-sprintf>
         </h3>
@@ -97,7 +97,7 @@ export default {
     <gl-disclosure-dropdown
       v-if="canUpdateTimelineEvent"
       placement="bottom-end"
-      class="event-note-actions gl-align-self-start"
+      class="event-note-actions gl-self-start"
       icon="ellipsis_v"
       text-sr-only
       :toggle-text="$options.i18n.moreActions"

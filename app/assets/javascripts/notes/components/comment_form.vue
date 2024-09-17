@@ -339,6 +339,9 @@ export default {
     onInput(value) {
       this.note = value;
     },
+    append(value) {
+      this.$refs.markdownEditor.append(value);
+    },
   },
 };
 </script>
@@ -395,7 +398,7 @@ export default {
               <gl-form-checkbox
                 v-if="canSetInternalNote"
                 v-model="noteIsInternal"
-                class="gl-mb-2 gl-flex-basis-full"
+                class="gl-mb-2 gl-basis-full"
                 data-testid="internal-note-checkbox"
               >
                 {{ $options.i18n.internal }}

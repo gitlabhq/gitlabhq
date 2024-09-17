@@ -14,8 +14,7 @@ class Projects::ImportsController < Projects::ApplicationController
   feature_category :importers
   urgency :low
 
-  def new
-  end
+  def new; end
 
   def create
     @project.import_state.reset.schedule if @project.update(import_params)

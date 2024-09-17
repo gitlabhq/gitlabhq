@@ -9,7 +9,7 @@ module Projects
       feature_category :package_registry
 
       def download
-        package_file = project.package_files.find(params[:id])
+        package_file = project.package_files.find(params.permit(:id)[:id])
 
         package_file.package.touch_last_downloaded_at
 

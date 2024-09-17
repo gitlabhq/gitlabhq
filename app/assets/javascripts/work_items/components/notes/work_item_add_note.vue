@@ -166,12 +166,12 @@ export default {
     timelineContentClass() {
       return {
         'timeline-content': true,
-        'gl-border-0! gl-pl-0!': !this.addPadding,
+        '!gl-border-0 !gl-pl-0': !this.addPadding,
       };
     },
     parentClass() {
       return {
-        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-nowrap': !this.isEditing,
+        'gl-relative gl-flex gl-items-start gl-flex-nowrap': !this.isEditing,
       };
     },
     isProjectArchived() {
@@ -190,9 +190,9 @@ export default {
       return {
         'timeline-entry note-form': this.isNewDiscussion,
         // eslint-disable-next-line @gitlab/require-i18n-strings
-        'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix':
+        '!gl-pb-5 note note-wrapper note-comment discussion-reply-holder clearfix':
           !this.isNewDiscussion,
-        'gl-pt-0! is-replying': this.isEditing,
+        'is-replying': this.isEditing,
         'internal-note': this.isInternalThread,
       };
     },

@@ -49,7 +49,7 @@ function parseDatasetToProps(data) {
     ...booleanAttributes
   } = data;
   const {
-    showActive,
+    manualActivation,
     activated,
     operating,
     activateDisabled,
@@ -68,7 +68,7 @@ function parseDatasetToProps(data) {
   return {
     initialActivated: activated,
     operating,
-    showActive,
+    manualActivation,
     activateDisabled,
     type,
     cancelPath,

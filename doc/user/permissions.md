@@ -92,13 +92,13 @@ The following table lists project permissions available for each role:
 | [Project operations](../operations/index.md):<br>Manage [Error Tracking](../operations/error_tracking.md)                                                                                    |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Reposition comments on images (posted by any user)                                                                                                          | ✓     | ✓        | ✓         | ✓          | ✓     | Applies only to comments on [Design Management](project/issues/design_management.md) designs. |
 | [Projects](project/index.md):<br>View [Insights](project/insights/index.md)                                                                                                                  | ✓     | ✓        | ✓         | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>View [releases](project/releases/index.md)                                                                                                                  | ✓     | ✓        | ✓         | ✓          | ✓     | Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets). |
 | [Projects](project/index.md):<br>View [Requirements](project/requirements/index.md)                                                                                                          | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>View [time tracking](project/time_tracking.md) reports                                                                                                      | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| [Projects](project/index.md):<br>View [snippets](snippets.md)                                                                                                                                | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Create [snippets](snippets.md)                                                                                                                              |       | ✓        | ✓         | ✓          | ✓     |       |
+| [Projects](project/index.md):<br>Globally delete [snippets](snippets.md)                                                                                                                     |       |          |           |  ✓         | ✓     |       |
+| [Projects](project/index.md):<br>Globally edit [snippets](snippets.md)                                                                                                                       |       |          |           |  ✓         | ✓     |       |
 | [Projects](project/index.md):<br>View [project traffic statistics](../api/project_statistics.md)                                                                                             |       | ✓        | ✓         | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Create, edit, delete [releases](project/releases/index.md)                                                                                                  |       |          | ✓         | ✓          | ✓     | If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers. |
-| [Projects](project/index.md):<br>Enable [review apps](../ci/review_apps/index.md)                                                                                                            |       |          | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Add [deploy keys](project/deploy_keys/index.md)                                                                                                             |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                         |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md): View [Usage Quotas](usage_quotas.md) page                                                                                                                      |       |          |           | ✓          | ✓     |       |
@@ -131,6 +131,67 @@ Project permissions for [application security](application_security/secure_your_
 | Create or assign [security policy project](application_security/policies/index.md)                                                 |       |          |           |            |   ✓   |       |
 | Manage [security configurations](application_security/configuration/index.md)                                                      |       |          |           |            |   ✓   |       |
 
+### CI/CD
+
+[GitLab CI/CD](../ci/index.md) permissions for some roles can be modified by these settings:
+
+- [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
+  When set to public, gives access to certain CI/CD features to *Guest* project members.
+- [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
+  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to *non-project* members.
+
+Project Owners can do any listed action, and also can delete pipelines:
+
+| Action                                                                                                                         | Non-member | Guest | Reporter | Developer | Maintainer | Notes |
+|--------------------------------------------------------------------------------------------------------------------------------|:----------:|:-----:|:--------:|:---------:|:----------:|-------|
+| See that artifacts exist                                                                                                       |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
+| View a list of jobs                                                                                                            |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
+| View and download artifacts                                                                                                    |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public, **Public pipelines** is enabled in **Project Settings > CI/CD**, and [`artifacts:public: false`](../ci/yaml/index.md#artifactspublic) is not set on the job.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD** and `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false` is not set on the job. |
+| View [environments](../ci/environments/index.md)                                                                               |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
+| View job logs and job details page                                                                                             |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
+| View pipelines and pipeline details pages                                                                                      |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
+| View pipelines tab in MR                                                                                                       |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
+| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |            |   ✓   |    ✓     |     ✓     |     ✓      | Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
+| Run deployment job for a protected environment                                                                                 |            |       |    ✓     |     ✓     |     ✓      | Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).<br>Developers and maintainers: Only if the user is [allowed to deploy to the protected branch](../ci/environments/protected_environments.md#protecting-environments). |
+| View and download project [Secure Files](../api/secure_files.md)                                                               |            |       |          |     ✓     |     ✓      |       |
+| Retry jobs                                                                                                                     |            |       |          |     ✓     |     ✓      |       |
+| Cancel jobs                                                                                                                    |            |       |          |     ✓     |     ✓      | Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). |
+| Create new [environments](../ci/environments/index.md)                                                                         |            |       |          |     ✓     |     ✓      |       |
+| Enable [review apps](../ci/review_apps/index.md)                                                                                                            |       |          |          | ✓          | ✓     |       |
+| Delete job logs or job artifacts                                                                                               |            |       |          |     ✓     |     ✓      | Developers: Only if the job was triggered by the user and runs for a non-protected branch. |
+| Run CI/CD pipeline                                                                                                             |            |       |          |     ✓     |     ✓      |       |
+| Run CI/CD job                                                                                                                  |            |       |          |     ✓     |     ✓      |       |
+| Run CI/CD pipeline for a protected branch                                                                                      |            |       |          |     ✓     |     ✓      | Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches). |
+| Stop [environments](../ci/environments/index.md)                                                                               |            |       |          |     ✓     |     ✓      |       |
+| Delete [environments](../ci/environments/index.md)                                                                             |            |       |          |     ✓     |     ✓      |       |
+| View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                                 |            |       |          |     ✓     |     ✓      |       |
+| Use pipeline editor                                                                                                            |            |       |          |     ✓     |     ✓      |       |
+| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |          |     ✓     |     ✓      |       |
+| Add project runners to project                                                                                                 |            |       |          |           |     ✓      |       |
+| Clear runner caches manually                                                                                                   |            |       |          |           |     ✓      |       |
+| Enable instance runners in project                                                                                             |            |       |          |           |     ✓      |       |
+| Manage CI/CD settings                                                                                                          |            |       |          |           |     ✓      |       |
+| Manage job triggers                                                                                                            |            |       |          |           |     ✓      |       |
+| Manage project CI/CD variables                                                                                                 |            |       |          |           |     ✓      |       |
+| Manage project [Secure Files](../api/secure_files.md)                                                                          |            |       |          |           |     ✓      |       |
+
+This table shows granted privileges for jobs triggered by specific roles.
+
+Project Owners can do any listed action, but no users can push source and LFS together.
+Guest users and members with the Reporter role cannot do any of these actions.
+
+| Action                                       | Developer | Maintainer | Notes |
+|----------------------------------------------|:---------:|:----------:|-------|
+| Clone source and LFS from current project    |     ✓     |     ✓      |       |
+| Clone source and LFS from public projects    |     ✓     |     ✓      |       |
+| Clone source and LFS from internal projects  |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
+| Clone source and LFS from private projects   |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
+| Pull container images from current project   |     ✓     |     ✓      |       |
+| Pull container images from public projects   |     ✓     |     ✓      |       |
+| Pull container images from internal projects |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
+| Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
+| Push container images to current project     |     ✓     |     ✓      | You cannot push container images to other projects. |
+
 ### Compliance
 
 Project permissions for [compliance](compliance/index.md) features including compliance center, audit events, compliance frameworks, and licenses.
@@ -140,7 +201,6 @@ Project permissions for [compliance](compliance/index.md) features including com
 | View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/index.md) |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be have at least the Reporter role, even if the project is internal. Users with the Guest role on GitLab.com are able to perform this action only on public projects because internal visibility is not available. |
 | View [audit events](../administration/audit_event_reports.md)                                     |       |          |     ✓     |     ✓      |   ✓   | Users can only view events based on their individual actions. |
 | View licenses in [dependency list](application_security/dependency_list/index.md)                 |       |          |     ✓     |     ✓      |   ✓   |       |
-| Create, edit, and delete license approval policies                                                |       |          |     ✓     |     ✓      |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                       |       |          |           |            |   ✓   |       |
 
 ### Machine learning model registry and experiments
@@ -228,6 +288,8 @@ Project permissions for [project features](project/organize_work_with_projects.m
 |---------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
 | Download project                                                          |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | Leave comments                                                            |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [releases](project/releases/index.md)                                |       |          |     ✓     |     ✓      |   ✓   | Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets). |
+| Manage [releases](project/releases/index.md)                              |       |          |           |     ✓      |   ✓   | If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers. |
 | Configure [webhooks](project/integrations/webhooks.md)                    |       |          |           |     ✓      |   ✓   |       |
 | Manage [project access tokens](project/settings/project_access_tokens.md) |       |          |           |     ✓      |   ✓   | For self-managed GitLab, project access tokens are available in all tiers. For GitLab.com, project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
 | [Export project](project/settings/import_export.md)                       |       |          |           |     ✓      |   ✓   |       |
@@ -251,19 +313,19 @@ Project permissions for [repository](project/repository/index.md) features inclu
 | View project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
 | Pull project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View a commit status                                           |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create or update commit status                                 |       |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Create or update commit status                                 |       |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
 | Create and delete [Git tags](project/repository/tags/index.md) |       |          |     ✓     |     ✓      |   ✓   |       |
 | Create new [branches](project/repository/branches/index.md)    |       |          |     ✓     |     ✓      |   ✓   |       |
 | Force push to non-protected branches                           |       |          |     ✓     |     ✓      |   ✓   |       |
 | Push to non-protected branches                                 |       |          |     ✓     |     ✓      |   ✓   |       |
 | Delete non-protected branches                                  |       |          |     ✓     |     ✓      |   ✓   |       |
-| Manage [protected branches](project/protected_branches.md)     |       |          |           |     ✓      |   ✓   |       |
+| Manage [protected branches](project/repository/branches/protected.md)     |       |          |           |     ✓      |   ✓   |       |
 | Delete protected branches                                      |       |          |           |     ✓      |   ✓   |       |
 | Manage [protected tags](project/protected_tags.md)             |       |          |           |     ✓      |   ✓   |       |
 | Manage [push rules](project/repository/push_rules.md)          |       |          |           |     ✓      |   ✓   |       |
-| Push to protected branches                                     |       |          |           |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Push to protected branches                                     |       |          |           |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
 | Remove fork relationship                                       |       |          |           |            |   ✓   |       |
-| Force push to protected branches                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md#allow-force-push-on-a-protected-branch). |
+| Force push to protected branches                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push-on-a-protected-branch). |
 
 Project permissions for [merge requests](project/merge_requests/index.md):
 
@@ -271,7 +333,7 @@ Project permissions for [merge requests](project/merge_requests/index.md):
 |--------------------------------------------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
 | [View](project/merge_requests/index.md#view-merge-requests) a merge request                                  |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | [Create](project/merge_requests/creating_merge_requests.md) a merge request                                  |       |          |     ✓     |     ✓      |   ✓   | In projects that accept contributions from external members, users can create, edit, and close their own merge requests. For **private** projects, this excludes the Guest role as those users [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal** projects, includes users with read-only access to the project, as [they can clone internal projects](public_access.md#internal-projects-and-groups). |
-| Update a merge request including assign, review, code suggestions, approve, labels, lock and resolve threads |       |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
+| Update a merge request including assign, review, Code Suggestions, approve, labels, lock and resolve threads |       |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)                                |       |          |           |     ✓      |   ✓   |       |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)                             |       |          |           |     ✓      |   ✓   |       |
 | Delete merge request                                                                                         |       |          |           |            |   ✓   |       |
@@ -283,70 +345,8 @@ Project permissions for [user management](project/members/index.md).
 | Action                                          | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
 | Manage [team members](project/members/index.md) |       |          |           |     ✓      |   ✓   | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
-| Share (invite) projects with groups             |       |          |           |     ✓      |   ✓   | When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
+| Share (invite) projects with groups             |       |          |           |     ✓      |   ✓   | When [Share Group Lock](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
 | View 2FA status of members                      |       |          |           |     ✓      |   ✓   |       |
-
-### GitLab CI/CD permissions
-
-[GitLab CI/CD](../ci/index.md) permissions for some roles can be modified by these settings:
-
-- [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
-  When set to public, gives access to certain CI/CD features to *Guest* project members.
-- [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
-  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to *non-project* members.
-
-Project Owners can do any listed action, and also can delete pipelines:
-
-| Action                                                                                                                         | Non-member | Guest | Reporter | Developer | Maintainer | Notes |
-|--------------------------------------------------------------------------------------------------------------------------------|:----------:|:-----:|:--------:|:---------:|:----------:|-------|
-| See that artifacts exist                                                                                                       |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
-| View a list of jobs                                                                                                            |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
-| View and download artifacts                                                                                                    |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public, **Public pipelines** is enabled in **Project Settings > CI/CD**, and [`artifacts:public: false`](../ci/yaml/index.md#artifactspublic) is not set on the job.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD** and `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false` is not set on the job. |
-| View [environments](../ci/environments/index.md)                                                                               |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
-| View job logs and job details page                                                                                             |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
-| View pipelines and pipeline details pages                                                                                      |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members: Only if the project is public and **Public pipelines** is enabled in **Project Settings > CI/CD**.<br>Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
-| View pipelines tab in MR                                                                                                       |     ✓      |   ✓   |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
-| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |            |   ✓   |    ✓     |     ✓     |     ✓      | Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
-| Run deployment job for a protected environment                                                                                 |            |       |    ✓     |     ✓     |     ✓      | Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).<br>Developers and maintainers: Only if the user is [allowed to deploy to the protected branch](../ci/environments/protected_environments.md#protecting-environments). |
-| View and download project [Secure Files](../api/secure_files.md)                                                               |            |       |          |     ✓     |     ✓      |       |
-| Retry jobs                                                                                                                     |            |       |          |     ✓     |     ✓      |       |
-| Cancel jobs                                                                                                                    |            |       |          |     ✓     |     ✓      | Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). |
-| Create new [environments](../ci/environments/index.md)                                                                         |            |       |          |     ✓     |     ✓      |       |
-| Delete job logs or job artifacts                                                                                               |            |       |          |     ✓     |     ✓      | Developers: Only if the job was triggered by the user and runs for a non-protected branch. |
-| Run CI/CD pipeline                                                                                                             |            |       |          |     ✓     |     ✓      |       |
-| Run CI/CD job                                                                                                                  |            |       |          |     ✓     |     ✓      |       |
-| Run CI/CD pipeline for a protected branch                                                                                      |            |       |          |     ✓     |     ✓      | Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches). |
-| Stop [environments](../ci/environments/index.md)                                                                               |            |       |          |     ✓     |     ✓      |       |
-| View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                                 |            |       |          |     ✓     |     ✓      |       |
-| Use pipeline editor                                                                                                            |            |       |          |     ✓     |     ✓      |       |
-| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |          |     ✓     |     ✓      |       |
-| Add project runners to project                                                                                                 |            |       |          |           |     ✓      |       |
-| Clear runner caches manually                                                                                                   |            |       |          |           |     ✓      |       |
-| Enable instance runners in project                                                                                             |            |       |          |           |     ✓      |       |
-| Manage CI/CD settings                                                                                                          |            |       |          |           |     ✓      |       |
-| Manage job triggers                                                                                                            |            |       |          |           |     ✓      |       |
-| Manage project CI/CD variables                                                                                                 |            |       |          |           |     ✓      |       |
-| Manage project [Secure Files](../api/secure_files.md)                                                                          |            |       |          |           |     ✓      |       |
-| Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated)                                              |            |       |          |           |     ✓      |       |
-
-#### Job permissions
-
-This table shows granted privileges for jobs triggered by specific roles.
-
-Project Owners can do any listed action, but no users can push source and LFS together.
-Guest users and members with the Reporter role cannot do any of these actions.
-
-| Action                                       | Developer | Maintainer | Notes |
-|----------------------------------------------|:---------:|:----------:|-------|
-| Clone source and LFS from current project    |     ✓     |     ✓      |       |
-| Clone source and LFS from public projects    |     ✓     |     ✓      |       |
-| Clone source and LFS from internal projects  |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
-| Clone source and LFS from private projects   |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
-| Pull container images from current project   |     ✓     |     ✓      |       |
-| Pull container images from public projects   |     ✓     |     ✓      |       |
-| Pull container images from internal projects |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
-| Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
-| Push container images to current project     |     ✓     |     ✓      | You cannot push container images to other projects. |
 
 ### GitLab Duo
 
@@ -355,7 +355,7 @@ Project permissions for [GitLab Duo](gitlab_duo/index.md):
 | Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
 | <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-project)                        |            |       |          |           | ✓           | ✓     |      |
-| <br>Use Duo features                                                                                        |            | ✓     | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
+| <br>Use Duo features                                                                                        |            | ✓     | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).     |
 
 ## Group members permissions
 
@@ -378,10 +378,6 @@ The following table lists group permissions available for each role:
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |       |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |       |
 | View group audit events                                                                 |       |          | ✓         | ✓          | ✓     | Developers and Maintainers can only view events based on their individual actions. |
-| View group runners                                                                      |       |          |           | ✓          | ✓     |       |
-| View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |       |
-| Manage group level CI/CD variables                                                      |       |          |           |            | ✓     |       |
-| Manage group runners                                                                    |       |          |           |            | ✓     |       |
 | Map or unmap workspace cluster agents to and from a group                               |       |          |           |            | ✓     |       |
 | View workspace cluster agents mapped to a group                                         |       |          |           | ✓          | ✓     |       |
 
@@ -395,6 +391,18 @@ Group permissions for [Application Security](application_security/secure_your_ap
 | View [vulnerability report](application_security/vulnerability_report/index.md)    |       |          |     ✓     |     ✓      |   ✓   |       |
 | View [security dashboard](application_security/security_dashboard/index.md)        |       |          |     ✓     |     ✓      |   ✓   |       |
 | Create or assign [security policy project](application_security/policies/index.md) |       |          |           |            |   ✓   |       |
+
+### CI/CD
+
+Group permissions for [CI/CD](../ci/index.md):
+
+| Action                                | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|---------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Manage group-level Kubernetes cluster |       |          |           |     ✓      |   ✓   |       |
+| View group runners                    |       |          |           |     ✓      |   ✓   |       |
+| Manage group runners                  |       |          |           |            |   ✓   |       |
+| Manage group level CI/CD variables    |       |          |           |            |   ✓   |       |
+| Manage group protected environments   |       |          |           |            |   ✓   |       |
 
 ### Compliance
 
@@ -495,7 +503,7 @@ Group permissions for [repository](project/repository/index.md) features includi
 | Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |          |           |            |   ✓   |       |
 | Manage [deploy tokens](project/deploy_tokens/index.md)                                 |       |          |           |            |   ✓   |       |
 
-### User Managment
+### User Management
 
 Group permissions for user management:
 
@@ -522,11 +530,11 @@ Group permissions for [GitLab Duo](../user/gitlab_duo/index.md):
 
 | Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
-| <br>Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-pro-seats) |            |       |          |           |            | ✓     |       |
+| <br>Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |          |           |            | ✓     |       |
 | <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group)                          |            |       |          |           | ✓         | ✓     |       |
 | <br>Configure [self-hosted models](../administration/self_hosted_models/configure_duo_features.md)          |            |       |          |           |            | ✓     |       |
 | <br>Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)   |            |       |          |           |            | ✓     |       |
-| <br>Use Duo features                                                                                        |            |       | ✓        | ✓         | ✓          | ✓     | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
+| <br>Use Duo features                                                                                        |            |       | ✓        | ✓         | ✓          | ✓     | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).     |
 
 ## Users with Minimal Access
 
@@ -545,7 +553,7 @@ Owners must explicitly add these users to the specific subgroups and
 projects.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/index.md)
-to control access to groups and projects in the group hierarchy. You can set the default role to 
+to control access to groups and projects in the group hierarchy. You can set the default role to
 Minimal Access for members automatically added to the root group through SSO.
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -567,7 +575,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Custom roles](custom_roles.md)
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
-- Customize permissions on [protected branches](project/protected_branches.md)
+- Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/working_with_projects.md#project-aliases)

@@ -57,7 +57,7 @@ module Snippets
     end
 
     def organization_id
-      Current.organization_id || Organizations::Organization::DEFAULT_ORGANIZATION_ID
+      params[:organization_id].presence || Organizations::Organization::DEFAULT_ORGANIZATION_ID
     end
 
     # If the snippet_actions param is present
@@ -123,6 +123,10 @@ module Snippets
 
     def restricted_files_actions
       :create
+    end
+
+    def commit_attrs(snippet, msg)
+      super.merge(skip_target_sha: true)
     end
   end
 end

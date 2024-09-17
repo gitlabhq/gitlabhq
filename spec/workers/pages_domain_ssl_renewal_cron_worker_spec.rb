@@ -35,14 +35,14 @@ RSpec.describe PagesDomainSslRenewalCronWorker, feature_category: :pages do
 
     it 'enqueues a PagesDomainSslRenewalWorker for domains needing renewal' do
       [domain_without_auto_certificate,
-       domain_with_enabled_auto_ssl,
-       domain_with_expired_auto_ssl].each do |domain|
+        domain_with_enabled_auto_ssl,
+        domain_with_expired_auto_ssl].each do |domain|
         expect(PagesDomainSslRenewalWorker).to receive(:perform_async).with(domain.id)
       end
 
       [domain,
-       domain_with_obtained_letsencrypt,
-       domain_with_failed_auto_ssl].each do |domain|
+        domain_with_obtained_letsencrypt,
+        domain_with_failed_auto_ssl].each do |domain|
         expect(PagesDomainSslRenewalWorker).not_to receive(:perform_async).with(domain.id)
       end
 

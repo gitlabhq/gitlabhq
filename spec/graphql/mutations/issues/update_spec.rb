@@ -6,7 +6,7 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:project_label) { create(:label, project: project) }
   let_it_be(:issue) { create(:issue, project: project, labels: [project_label]) }
   let_it_be(:milestone) { create(:milestone, project: project) }
@@ -22,9 +22,7 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
     }
   end
 
-  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
-  let(:mutation) { described_class.new(object: nil, context: context, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
   let(:mutated_issue) { subject[:issue] }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
@@ -43,7 +41,7 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
 
     context 'when the user can update the issue' do
       before do
-        project.add_developer(user)
+        project.add_developer(current_user)
       end
 
       context 'when all attributes except timeEstimate are provided' do
@@ -209,7 +207,7 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
 
           context 'when user is a guest' do
             let_it_be(:guest) { create(:user) }
-            let(:user) { guest }
+            let(:current_user) { guest }
 
             before do
               issue.update!(author: guest)

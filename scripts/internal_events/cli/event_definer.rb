@@ -74,7 +74,7 @@ module InternalEventsCli
 
       event.action = cli.ask("Define the event name: #{input_required_text}", **input_opts) do |q|
         q.required true
-        q.validate ->(input) { input =~ /\A[a-z1-9_]+\z/ && cli.global.events.map(&:action).none?(input) }
+        q.validate ->(input) { input =~ NAME_REGEX && cli.global.events.map(&:action).none?(input) }
         q.modify :trim
         q.messages[:valid?] = format_warning("Invalid event name. Only lowercase/numbers/underscores allowed. " \
                                              "Ensure %{value} is not an existing event.")

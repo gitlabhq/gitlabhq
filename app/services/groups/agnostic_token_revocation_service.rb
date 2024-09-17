@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# This Service takes an authentication token of multiple types, and will
-# call a RevokeService for it if the token has access to the group or
-# any of the group's descendants.
+# This Service takes authentication tokens of multiple types, and will
+# call a revocation for it if the token has access to the
+# group or any of the group's descendants. If revocation is not
+# possible, the token will be rotated or otherwise made unusable.
 #
 # If the token provided has access to the group and is revoked, it will
 # be returned by the service with a :success status.
@@ -11,16 +12,14 @@
 # returned.
 #
 # This Service does not create logs or Audit events. Those can be found
-# at the API layer or in specific RevokeServices.
+# at the API layer or in specific revocation services.
 #
-# This Service returns a ServiceResponse and will:
-#   - include the token object at payload[:token]
-#   - the token's class at payload[:type]
+# This Service returns a ServiceResponse object.
 module Groups # rubocop:disable Gitlab/BoundedContexts -- This service is strictly related to groups
   class AgnosticTokenRevocationService < Groups::BaseService
     AUDIT_SOURCE = :group_token_revocation_service
 
-    attr_reader :token
+    attr_reader :revocable
 
     def initialize(group, current_user, plaintext)
       @group = group
@@ -35,16 +34,21 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- This service is strict
 
       # Determine the type of token
       if plaintext.start_with?(Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix,
-        'glpat-')
-        @token = PersonalAccessToken.find_by_token(plaintext)
-        return error('PAT not found') unless token
+        ApplicationSetting.defaults[:personal_access_token_prefix])
+        @revocable = PersonalAccessToken.find_by_token(plaintext)
+        return error('PAT not found') unless revocable
 
         handle_personal_access_token
       elsif plaintext.start_with?(DeployToken::DEPLOY_TOKEN_PREFIX)
-        @token = DeployToken.find_by_token(plaintext)
-        return error('DeployToken not found') unless token && token.group_type?
+        @revocable = DeployToken.find_by_token(plaintext)
+        return error('DeployToken not found') unless revocable && revocable.group_type?
 
         handle_deploy_token
+      elsif plaintext.start_with?(User::FEED_TOKEN_PREFIX)
+        @revocable = User.find_by_feed_token(plaintext)
+        return error('Feed Token not found') unless revocable
+
+        handle_feed_token
       else
         error('Unsupported token type')
       end
@@ -54,12 +58,14 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- This service is strict
 
     attr_reader :plaintext, :group, :current_user
 
-    def success(token, type)
+    def success(revocable, type, api_entity: nil)
+      api_entity ||= type
       ServiceResponse.success(
         message: "#{type} is revoked",
         payload: {
-          token: token,
-          type: type
+          revocable: revocable,
+          type: type,
+          api_entity: api_entity
         }
       )
     end
@@ -69,19 +75,19 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- This service is strict
     end
 
     def handle_personal_access_token
-      if user_has_group_membership?
+      if user_has_group_membership?(revocable.user)
         # Only revoke active tokens. (Ignore expired tokens)
-        if token.active?
+        if revocable.active?
           ::PersonalAccessTokens::RevokeService.new(
             current_user,
-            token: token,
+            token: revocable,
             source: AUDIT_SOURCE
           ).execute
         end
 
         # Always validate that, if we're returning token info, it
         # has been successfully revoked
-        return success(token, 'PersonalAccessToken') if token.reset.revoked?
+        return success(revocable, 'PersonalAccessToken') if revocable.reset.revoked?
       end
 
       # If we get here the token exists but either:
@@ -95,34 +101,58 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- This service is strict
     # descendants. Includes membership that might not be active, but
     # could be later, e.g. bans. Includes membership of non-human
     # users.
-    def user_has_group_membership?
+    def user_has_group_membership?(user)
       ::GroupMember
-        .with_user(token.user)
+        .with_user(user)
         .with_source_id(group.self_and_descendants)
         .any? ||
         ::ProjectMember
-        .with_user(token.user)
+        .with_user(user)
         .in_namespaces(group.self_and_descendants)
         .any?
     end
 
     def handle_deploy_token
-      if group.self_and_descendants.include?(token.group)
-        if token.active?
+      if group.self_and_descendants.include?(revocable.group)
+        if revocable.active?
           service = ::Groups::DeployTokens::RevokeService.new(
-            token.group,
+            revocable.group,
             current_user,
-            { id: token.id }
+            { id: revocable.id }
           )
 
           service.source = AUDIT_SOURCE
           service.execute
         end
 
-        return success(token, 'DeployToken') if token.reset.revoked?
+        return success(revocable, 'DeployToken') if revocable.reset.revoked?
       end
 
       error('DeployToken revocation failed')
+    end
+
+    def handle_feed_token
+      if user_has_group_membership?(revocable)
+        current_token = revocable.feed_token
+
+        response = Users::ResetFeedTokenService.new(
+          current_user,
+          user: revocable,
+          source: AUDIT_SOURCE
+        ).execute
+
+        # Always validate that, if we're returning token info, it
+        # has been successfully revoked. Feed tokens can only be rotated
+        # so we also check that the old and new value are different.
+        if response.success? && !ActiveSupport::SecurityUtils.secure_compare(current_token, revocable.reset.feed_token)
+          return success(revocable, 'FeedToken', api_entity: 'UserSafe')
+        end
+      end
+
+      # If we get here the feed token exists but either:
+      #  - the user didn't belong to the group or descendants
+      #  - rotation failed for some reason
+      error('Feed token revocation failed')
     end
   end
 end

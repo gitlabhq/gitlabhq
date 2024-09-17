@@ -658,11 +658,23 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/trace' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+      end
     end
 
     context 'authorized user' do
+      context 'with oauth token that has ai_workflows scope', :skip_before_request do
+        let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it "allows access" do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", oauth_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context 'when log is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
         let(:url) { 'http://object-storage/trace' }
@@ -820,54 +832,124 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
-    let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, :repository, namespace: namespace, public_builds: false) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
 
-    before do
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+    let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+    def call_retry_job
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
     end
 
-    context 'authorized user with :update_build permission' do
-      context 'when the job is a build' do
-        it 'retries non-running job' do
-          expect(response).to have_gitlab_http_status(:created)
-          expect(project.builds.first.status).to eq('canceled')
-          expect(json_response['status']).to eq('pending')
+    before do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+      call_retry_job
+    end
+
+    shared_examples 'job retry API call handler' do
+      context 'authorized user with :update_build permission' do
+        context 'when the job is a build' do
+          it 'retries non-running job' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(project.builds.first.status).to eq('canceled')
+            expect(json_response['status']).to eq('pending')
+          end
+        end
+
+        context 'when the job is a bridge' do
+          let_it_be(:job) { create(:ci_bridge, :canceled, pipeline: pipeline, downstream: project) }
+
+          it 'retries the bridge' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['status']).to eq('pending')
+          end
+        end
+
+        context 'when a build is not retryable' do
+          let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+          it 'responds with unprocessable entity' do
+            expect(json_response['message']).to eq('403 Forbidden - Job is not retryable')
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
       end
 
-      context 'when the job is a bridge' do
-        let_it_be(:job) { create(:ci_bridge, :canceled, pipeline: pipeline, downstream: project) }
+      context 'user without :update_build permission' do
+        let(:api_user) { reporter }
 
-        it 'retries the bridge' do
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['status']).to eq('pending')
-        end
-      end
-
-      context 'when a build is not retryable' do
-        let(:job) { create(:ci_build, :created, pipeline: pipeline) }
-
-        it 'responds with unprocessable entity' do
-          expect(json_response['message']).to eq('403 Forbidden - Job is not retryable')
+        it 'does not retry job' do
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
-    end
 
-    context 'user without :update_build permission' do
-      let(:api_user) { reporter }
+      context 'authorized user' do
+        context 'user with :update_build permission' do
+          it 'retries non-running job' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(project.builds.first.status).to eq('canceled')
+            expect(json_response['status']).to eq('pending')
+          end
+        end
 
-      it 'does not retry job' do
-        expect(response).to have_gitlab_http_status(:forbidden)
+        context 'when a build is not retryable' do
+          let(:job) { create(:ci_build, :created, pipeline: pipeline) }
+
+          it 'responds with unprocessable entity' do
+            call_retry_job
+
+            expect(json_response['message']).to eq('403 Forbidden - Job is not retryable')
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'user without :update_build permission' do
+          let(:api_user) { reporter }
+
+          it 'does not retry job' do
+            call_retry_job
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+
+      context 'unauthorized user' do
+        let(:api_user) { nil }
+
+        it 'does not retry job' do
+          call_retry_job
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
     end
 
-    context 'unauthorized user' do
-      let(:api_user) { nil }
+    it_behaves_like 'job retry API call handler'
 
-      it 'does not retry job' do
-        expect(response).to have_gitlab_http_status(:unauthorized)
+    context "when executed on SaaS", :saas, if: Gitlab.ee? do
+      let_it_be(:free_plan) { create(:free_plan) }
+      let_it_be(:ultimate_plan) { create(:ultimate_plan) }
+
+      context "when credit card validation is not needed" do
+        let_it_be(:subscription) { create(:gitlab_subscription, namespace: namespace, hosted_plan: ultimate_plan) }
+
+        it_behaves_like 'job retry API call handler'
+      end
+
+      context "when credit card validation is needed" do
+        let_it_be(:subscription) { create(:gitlab_subscription, namespace: namespace, hosted_plan: free_plan) }
+
+        context 'user with :update_build permission' do
+          it "can't retry non-running job" do
+            call_retry_job
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(project.builds.first.status).to eq('canceled')
+            expect(json_response['status']).to be_nil
+          end
+        end
       end
     end
   end

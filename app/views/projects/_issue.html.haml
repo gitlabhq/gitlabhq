@@ -27,7 +27,7 @@
           %span.issuable-milestone.gl-hidden.sm:gl-inline-block
             &nbsp;
             = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
-              = sprite_icon('milestone', css_class: 'gl-vertical-align-text-bottom')
+              = sprite_icon('milestone', css_class: 'gl-align-text-bottom')
               = issue.milestone.title
         - if issue.due_date
           %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'gl-text-danger' if issue.overdue? && !issue.closed?}", title: _('Due date') }
@@ -54,7 +54,7 @@
           %li
             = render Pajamas::BadgeComponent.new(_('Closed'), variant: 'info')
         - if issue.assignees.any?
-          %li.gl-display-flex
+          %li.gl-flex
             = render 'shared/issuable/assignees', project: @project, issuable: issue
 
         = render 'shared/issuable_meta_data', issuable: issue

@@ -44,12 +44,12 @@ export default {
     {
       key: 'fingerprint_sha256',
       label: __('Fingerprint (SHA256)'),
-      tdClass: 'gl-md-max-w-26',
+      tdClass: 'md:gl-max-w-26',
     },
     {
       key: 'fingerprint',
       label: __('Fingerprint (MD5)'),
-      tdClass: 'gl-md-max-w-26',
+      tdClass: 'md:gl-max-w-26',
     },
     {
       key: 'projects',
@@ -62,8 +62,8 @@ export default {
     {
       key: 'actions',
       label: __('Actions'),
-      tdClass: 'gl-lg-w-1px gl-whitespace-nowrap',
-      thClass: 'gl-lg-w-1px gl-whitespace-nowrap',
+      tdClass: 'lg:gl-w-px gl-whitespace-nowrap',
+      thClass: 'lg:gl-w-px gl-whitespace-nowrap',
     },
   ],
   modal: {
@@ -211,7 +211,7 @@ export default {
       :fields="$options.fields"
       stacked="md"
       data-testid="deploy-keys-list"
-      class="-gl-mt-1 -gl-mb-2"
+      class="-gl-mb-2 -gl-mt-1"
     >
       <template #table-busy>
         <gl-loading-icon size="sm" class="gl-my-5" />
@@ -229,7 +229,7 @@ export default {
       <template #cell(fingerprint_sha256)="{ item: { fingerprint_sha256 } }">
         <div
           v-if="fingerprint_sha256"
-          class="gl-font-monospace gl-text-truncate"
+          class="gl-truncate gl-font-monospace"
           :title="fingerprint_sha256"
         >
           {{ fingerprint_sha256 }}
@@ -237,7 +237,7 @@ export default {
       </template>
 
       <template #cell(fingerprint)="{ item: { fingerprint } }">
-        <div v-if="fingerprint" class="gl-font-monospace gl-text-truncate" :title="fingerprint">
+        <div v-if="fingerprint" class="gl-truncate gl-font-monospace" :title="fingerprint">
           {{ fingerprint }}
         </div>
       </template>
@@ -251,7 +251,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item: { id } }">
-        <div class="gl-flex gl-gap-2 -gl-my-3">
+        <div class="-gl-my-3 gl-flex gl-gap-2">
           <gl-button
             v-gl-tooltip
             :title="$options.i18n.edit"

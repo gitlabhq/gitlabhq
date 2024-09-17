@@ -146,7 +146,7 @@ export default {
         @select="select"
       >
         <template #toggle>
-          <gl-button class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!">
+          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none">
             <gl-sprintf :message="selectedFilterText">
               <template #strong="{ content }">
                 <strong>{{ content }}</strong>

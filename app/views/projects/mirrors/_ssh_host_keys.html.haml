@@ -22,7 +22,7 @@
           = _('a deleted user')
         #{time_ago_in_words(verified_at)} ago
 
-  .js-ssh-hosts-advanced.inline
+  .js-ssh-hosts-advanced.gl-inline-block
     = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-show-advanced show-advanced' }) do
       %span.label-show
         = _('Input host keys manually')

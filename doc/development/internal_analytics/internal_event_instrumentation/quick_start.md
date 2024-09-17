@@ -168,11 +168,11 @@ you can use the `internal_event_tracking` shared example.
 
 ```ruby
 it_behaves_like 'internal event tracking' do
-  let(:event) { 'create_new_issue' }
+  let(:event) { 'update_issue_severity' }
   let(:project) { issue.project }
   let(:user) { issue.author }
-  let(:namespace) { group }
-  subject(:service_action) { described_class.new(issue).save }
+  let(:additional_properties) { { label: issue.issueable_severity } }
+  subject(:service_action) { described_class.new(issue).execute }
 end
 ```
 
@@ -187,9 +187,7 @@ Optionally, the context can contain:
 - `project`
 - `namespace`. If not provided, `project.namespace` will be used (if `project` is available).
 - `category`
-- `label`
-- `property`
-- `value`
+- `additional_properties`
 - `event_attribute_overrides` - is used when its necessary to override the attributes available in parent context. For example:
 
 ```ruby
@@ -201,6 +199,14 @@ it_behaves_like 'internal event tracking' do
   subject(:service_action) { described_class.new(issue).save }
 end
 ```
+
+These legacy options are now deprecated:
+
+- `label`
+- `property`
+- `value`
+
+Prefer using `additional_properties` instead.
 
 #### Composable matchers
 
@@ -384,6 +390,7 @@ For data-event attributes:
     data-event-tracking="click_view_runners_button"
     data-event-label="group_runner_form"
     :data-event-property=dynamicPropertyVar
+    data-event-additional='{"key1": "value1", "key2": "value2"}'
   >
    Click Me
   </gl-button>
@@ -392,7 +399,7 @@ For data-event attributes:
 For Haml:
 
 ```haml
-= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2 }}) do
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2, event_additional: '{"key1": "value1", "key2": "value2"}' }}) do
 ```
 
 #### Frontend testing
@@ -539,3 +546,9 @@ describe('DeleteApplication', () => {
   });
 });
 ```
+
+### Internal Events on other systems
+
+Apart from the GitLab codebase, we are using Internal Events for the systems listed below.
+
+1. [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)

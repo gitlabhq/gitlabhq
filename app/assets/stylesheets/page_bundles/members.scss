@@ -47,12 +47,6 @@
     overflow-wrap: break-word;
     word-break: break-all;
   }
-
-  @include media-breakpoint-down(sm) {
-    .member-access-text {
-      margin: 0 0 $gl-padding-4 ($grid-size * 6);
-    }
-  }
 }
 
 .members-table {
@@ -75,23 +69,6 @@
 
     .col-actions {
       width: px-to-rem(65px);
-    }
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-datepicker-input {
-    width: px-to-rem(165px);
-    max-width: 100%;
-  }
-}
-
-.card-mobile {
-  .content-list.members-list li {
-    display: block;
-
-    .member-controls {
-      float: none;
-      display: block;
     }
   }
 }

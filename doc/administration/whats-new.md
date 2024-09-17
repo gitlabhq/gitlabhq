@@ -19,9 +19,9 @@ All users can see the feature list, but the entries might differ depending on th
 - Features only available on GitLab.com are not shown to self-managed installations.
 - Features only available to self-managed installations are not shown on GitLab.com.
 
-   NOTE:
-   For self-managed installations, the updated **What's new** is included
-   in the first patch release after a new version, such as `13.10.1`.
+  NOTE:
+  For self-managed installations, the updated **What's new** is included
+  in the first patch release after a new version, such as `13.10.1`.
 
 ## Access What's new
 

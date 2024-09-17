@@ -42,18 +42,18 @@ module Tooling
       MSG
 
       PIPELINE_EXPEDITED_ERROR_MESSAGE = <<~MSG
-      ~"pipeline::expedited" is not allowed on stable branches because it causes the `e2e:package-and-test-ee` job to be skipped.
+      ~"pipeline::expedited" is not allowed on stable branches because it causes the `e2e:test-on-omnibus-ee` job to be skipped.
       MSG
 
       NEEDS_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      The `e2e:package-and-test-ee` job is not present, has been canceled, or needs to be automatically triggered.
+      The `e2e:test-on-omnibus-ee` job is not present, has been canceled, or needs to be automatically triggered.
       Please ensure the job is present in the latest pipeline, if necessary, retry the `danger-review` job.
-      Read the "QA e2e:package-and-test-ee" section for more details.
+      Read the "QA e2e:test-on-omnibus-ee" section for more details.
       MSG
 
       WARN_PACKAGE_AND_TEST_MESSAGE = <<~MSG
-      **The `e2e:package-and-test-ee` job needs to succeed or have approval from a Software Engineer in Test.**
-      Read the "QA e2e:package-and-test-ee" section for more details.
+      **The `e2e:test-on-omnibus-ee` job needs to succeed or have approval from a Software Engineer in Test.**
+      Read the "QA e2e:test-on-omnibus-ee" section for more details.
       MSG
 
       def check!
@@ -108,7 +108,7 @@ module Tooling
         gitlab
           .api
           .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-          &.find { |bridge| bridge['name'] == 'e2e:package-and-test-ee' }
+          &.find { |bridge| bridge['name'] == 'e2e:test-on-omnibus-ee' }
       end
 
       def stable_target_branch

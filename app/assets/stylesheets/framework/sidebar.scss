@@ -200,7 +200,7 @@
   }
 }
 
-.sidebar-collapsed-icon .sidebar-collapsed-value {
+.sidebar-collapsed-icon {
   font-size: 12px;
 }
 
@@ -235,7 +235,7 @@
       z-index: 1;
       position: relative;
       padding: $gl-padding-4 0;
-      
+
       &.opened {
         color: $green-500;
       }
@@ -243,7 +243,7 @@
       &.closed {
         color: $blue-500;
       }
-      
+
       svg {
         vertical-align: baseline;
       }
@@ -270,18 +270,17 @@
 }
 
 .assignee-grid {
-  grid-template-areas: ' attention   user';
+  grid-template-areas: 'attention user';
   grid-template-columns: min-content 1fr;
 }
 
 .reviewer-grid {
-  grid-template-areas: ' user approval    rerequest';
-  grid-template-columns: 1fr  min-content min-content;
+  grid-template-areas: 'user approval rerequest remove';
+  grid-template-columns: 1fr;
+}
 
-  &.attention-requests {
-    grid-template-areas: ' attention   user approval';
-    grid-template-columns: min-content 1fr  min-content;
-  }
+.reviewers-dropdown .gl-new-dropdown-panel {
+  min-width: $right-sidebar-width - $gl-padding;
 }
 
 .merge-request-approved-icon {
@@ -365,10 +364,6 @@
     color: inherit;
   }
 
-  .issuable-header-text {
-    margin-top: 7px;
-  }
-
   .gutter-toggle {
     display: flex;
     align-items: center;
@@ -411,7 +406,8 @@
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
-    border-bottom: 1px solid $border-color;
+    @apply gl-border-b;
+    @apply gl-border-subtle;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $right-sidebar-inner-width;
@@ -440,10 +436,6 @@
     &.with-sub-blocks {
       padding-top: $gl-spacing-scale-5;
     }
-  }
-
-  .block-first {
-    padding-top: 0;
   }
 
   .title {
@@ -506,7 +498,7 @@
             top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
             height: calc(#{$calc-application-viewport-height} - #{$mr-sticky-header-height} - var(--mr-review-bar-height));
             position: sticky;
-            padding: 0 15px;
+            padding: 0 $gl-spacing-scale-3;
             margin-bottom: calc((#{$content-wrapper-padding} * -1) + var(--mr-review-bar-height));
             overflow-y: auto;
             overscroll-behavior: contain;
@@ -832,29 +824,6 @@
 
   .compare-display-container {
     font-size: 13px;
-  }
-}
-
-/*
- * Following overrides are done to prevent
- * legacy dropdown styles from influencing
- * GitLab UI components used within GlDropdown
- */
-.right-sidebar-collapsed {
-  .sidebar-grouped-item {
-    .sidebar-collapsed-icon {
-      margin-bottom: 0;
-    }
-
-    .sidebar-collapsed-divider {
-      line-height: 5px;
-      font-size: 12px;
-      color: $gray-500;
-
-      + .sidebar-collapsed-icon {
-        padding-top: 0;
-      }
-    }
   }
 }
 

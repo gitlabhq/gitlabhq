@@ -1,6 +1,7 @@
-import { mount } from '@vue/test-utils';
 import enabledKeys from 'test_fixtures/deploy_keys/enabled_keys.json';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import deployKeysPanel from '~/deploy_keys/components/keys_panel.vue';
+import DeployKey from '~/deploy_keys/components/key.vue';
 import { mapDeployKey } from '~/deploy_keys/graphql/resolvers';
 
 const keys = enabledKeys.keys.map(mapDeployKey);
@@ -9,9 +10,10 @@ describe('Deploy keys panel', () => {
   let wrapper;
 
   const findTableRowHeader = () => wrapper.find('.table-row-header');
+  const findEmptyState = () => wrapper.findByTestId('empty-state');
 
   const mountComponent = (props) => {
-    wrapper = mount(deployKeysPanel, {
+    wrapper = shallowMountExtended(deployKeysPanel, {
       propsData: {
         title: 'test',
         keys,
@@ -24,7 +26,7 @@ describe('Deploy keys panel', () => {
 
   it('renders list of keys', () => {
     mountComponent();
-    expect(wrapper.findAll('.deploy-key').length).toBe(keys.length);
+    expect(wrapper.findAllComponents(DeployKey)).toHaveLength(keys.length);
   });
 
   it('renders table header', () => {
@@ -39,12 +41,8 @@ describe('Deploy keys panel', () => {
 
   it('renders help box if keys are empty', () => {
     mountComponent({ keys: [] });
-
-    expect(wrapper.find('.gl-new-card-empty').exists()).toBe(true);
-
-    expect(wrapper.find('.gl-new-card-empty').text().trim()).toBe(
-      'No deploy keys found, start by adding a new one above.',
-    );
+    expect(findEmptyState().exists()).toBe(true);
+    expect(findEmptyState().text()).toBe('No deploy keys found, start by adding a new one above.');
   });
 
   it('renders no table header if keys are empty', () => {

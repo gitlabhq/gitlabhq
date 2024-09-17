@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillAlertManagementAlertAssigneesProjectId
+description: Backfills sharding key `alert_management_alert_assignees.project_id` from `alert_management_alerts`.
+feature_category: incident_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165673
+milestone: '17.4'
+queued_migration_version: 20240910151508
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

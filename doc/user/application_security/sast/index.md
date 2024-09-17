@@ -106,7 +106,7 @@ The following GitLab analyzers have reached [End of Support](../../../update/ter
 status and do not receive updates. They were replaced by the Semgrep-based analyzer with
 [GitLab-managed rules](rules.md).
 
-After you upgrade to GitLab 17.3, a one-time data migration [automatically resolves](#automatic-vulnerability-resolution) findings from the analyzers that reached End of Support.
+After you upgrade to GitLab 17.3.1, a one-time data migration [automatically resolves](#automatic-vulnerability-resolution) findings from the analyzers that reached End of Support.
 This includes all of the analyzers listed below except for SpotBugs, because SpotBugs still scans Groovy code.
 The migration only resolves vulnerabilities that you haven't confirmed or dismissed, and it doesn't affect vulnerabilities that were [automatically translated to Semgrep-based scanning](analyzers.md#transition-to-semgrep-based-scanning).
 For details, see [issue 444926](https://gitlab.com/gitlab-org/gitlab/-/issues/444926).
@@ -331,8 +331,9 @@ To enable and configure SAST with customizations:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
-1. If the project does not have a `.gitlab-ci.yml` file, select **Enable SAST** in the Static
-   Application Security Testing (SAST) row, otherwise select **Configure SAST**.
+1. If the latest pipeline for the default branch of the project has completed
+   and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
+   select **Enable SAST** in the Static Application Security Testing (SAST) row.
 1. Enter the custom SAST values.
 
    Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
@@ -583,8 +584,6 @@ The following are Docker image-related CI/CD variables.
 
 #### Vulnerability filters
 
-Some analyzers make it possible to filter out vulnerabilities under a given threshold.
-
 | CI/CD variable               | Default value            | Description                                                                                                                                                                                                                 |
 |------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you override the defaults and _only_ paths you specify are excluded from the SAST scans. |
@@ -663,7 +662,7 @@ When using the Semgrep-based analyzer, the following options are also available:
 
 - Ignore a line of code for specific rule - add `// nosemgrep: RULE_ID` comment at the end of the line (the prefix is according to the development language).
 
-- Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there. 
+- Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there.
 
 For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-files-folders-code).
 

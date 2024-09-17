@@ -1,8 +1,8 @@
 %ul.bordered-list
   - users.each do |user|
     %li
-      = link_to user, title: user.name, class: "gl-display-flex" do
+      = link_to user, title: user.name, class: "gl-flex" do
         = render Pajamas::AvatarComponent.new(user, size: 32, class: "gl-mr-3")
-        .gl-display-flex.gl-flex-direction-column
+        .gl-flex.gl-flex-col
           %strong= truncate(user.name, length: 40)
           %small.gl-text-primary= user.username

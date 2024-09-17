@@ -55,8 +55,6 @@ module API
 
         authorize_upload!(subject)
 
-        Gitlab::Workhorse.verify_api_request!(headers)
-
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 

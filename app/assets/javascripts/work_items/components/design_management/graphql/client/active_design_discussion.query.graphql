@@ -1,0 +1,6 @@
+query activeDesignDiscussion {
+  activeDesignDiscussion @client {
+    id
+    source
+  }
+}

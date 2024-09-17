@@ -1,16 +1,10 @@
 /* eslint-disable import/extensions */
-import { exec as execCB } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import util from 'node:util';
 import { createProcessor } from 'tailwindcss/lib/cli/build/plugin.js';
-
-const exec = util.promisify(execCB);
 
 // Note, in node > 21.2 we could replace the below with import.meta.dirname
 const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../');
-
-const cssInJsPath = path.join(ROOT_PATH, 'config/helpers/tailwind/css_in_js.js');
 
 export async function build({ shouldWatch = false, content = false } = {}) {
   const processorOptions = {
@@ -47,21 +41,6 @@ function wasScriptCalledDirectly() {
   return process.argv[1] === fileURLToPath(import.meta.url);
 }
 
-async function ensureCSSinJS() {
-  console.log(`Ensuring ${cssInJsPath} exists`);
-  const cmd = 'yarn run tailwindcss:build';
-
-  const { stdout, error } = await exec(cmd, {
-    env: { ...process.env, REDIRECT_TO_STDOUT: 'true' },
-  });
-  if (error) {
-    throw error;
-  }
-
-  console.log(`'${cmd}' printed:`);
-  console.log(`${stdout}`);
-}
-
 export function viteTailwindCompilerPlugin({ shouldWatch = true }) {
   return {
     name: 'gitlab-tailwind-compiler',
@@ -74,12 +53,17 @@ export function viteTailwindCompilerPlugin({ shouldWatch = true }) {
 export function webpackTailwindCompilerPlugin({ shouldWatch = true }) {
   return {
     async start() {
-      await ensureCSSinJS();
       return build({ shouldWatch });
     },
   };
 }
 
 if (wasScriptCalledDirectly()) {
-  build();
+  build().then(() => {
+    console.log('Tailwind utils built successfully')
+  }).catch(e => {
+    console.warn('Building Tailwind utils produced an error')
+    console.error(e);
+    process.exitCode = 1;
+  });
 }

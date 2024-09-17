@@ -654,7 +654,7 @@ export default {
 
       <span
         v-if="!isFolder && deploymentHasUser"
-        class="text-break-word gl-inline-flex gl-align-items-center"
+        class="text-break-word gl-inline-flex gl-items-center"
       >
         <gl-sprintf :message="s__('Environments|by %{avatar}')">
           <template #avatar>
@@ -740,10 +740,10 @@ export default {
       </div>
       <div
         v-if="upcomingDeployment"
-        class="gl-w-full gl-display-flex gl-flex-direction-row gl-md-flex-direction-column! gl-justify-content-end"
+        class="gl-flex gl-w-full gl-flex-row gl-justify-end md:!gl-flex-col"
         data-testid="upcoming-deployment-content"
       >
-        <div class="gl-display-flex gl-align-items-center">
+        <div class="gl-flex gl-items-center">
           <span class="gl-mr-2">{{ upcomingDeploymentInternalId }}</span>
           <gl-link
             v-if="upcomingDeployment.deployable"
@@ -757,7 +757,7 @@ export default {
         </div>
         <span
           v-if="upcomingDeployment.user"
-          class="text-break-word gl-inline-flex gl-align-items-center gl-mt-2"
+          class="text-break-word gl-mt-2 gl-inline-flex gl-items-center"
         >
           <gl-sprintf :message="s__('Environments|by %{avatar}')">
             <template #avatar>

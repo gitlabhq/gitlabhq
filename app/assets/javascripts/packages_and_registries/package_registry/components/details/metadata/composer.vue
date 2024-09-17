@@ -37,7 +37,7 @@ export default {
             :title="$options.i18n.targetShaCopyButton"
             :text="packageMetadata.targetSha"
             category="tertiary"
-            css-class="gl-p-0!"
+            css-class="!gl-p-0"
           />
         </template>
       </gl-sprintf>

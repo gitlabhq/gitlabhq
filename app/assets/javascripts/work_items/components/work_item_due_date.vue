@@ -208,7 +208,13 @@ export default {
       await this.$nextTick();
       this.$refs.startDatePicker.show();
     },
-    collapseWidget() {
+    collapseWidget(event = {}) {
+      // This prevents outside directive from treating
+      // a click on a select element within datepicker as an outside click,
+      // therefore allowing user to select a month and a year without
+      // triggering the mutation and immediately closing the dropdown
+      if (event.target?.classList.contains('pika-select', 'pika-select-month', 'pika-select-year'))
+        return;
       this.isEditing = false;
       this.updateDates();
     },
@@ -217,9 +223,9 @@ export default {
 </script>
 
 <template>
-  <section class="gl-pb-4" data-testid="work-item-start-due-dates">
-    <div class="gl-display-flex gl-align-items-center gl-gap-3">
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-5">
+  <section data-testid="work-item-start-due-dates">
+    <div class="gl-flex gl-items-center gl-gap-3">
+      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-heading-5 !gl-mb-0">
         {{ $options.i18n.dates }}
       </h3>
       <gl-button
@@ -234,8 +240,8 @@ export default {
       >
     </div>
     <fieldset v-if="isEditing" data-testid="datepicker-wrapper">
-      <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <legend class="gl-mb-0 gl-border-b-0 gl-font-bold gl-font-base">
+      <div class="gl-flex gl-items-center gl-justify-between">
+        <legend class="gl-mb-0 gl-border-b-0 gl-text-base gl-font-bold">
           {{ $options.i18n.dates }}
         </legend>
         <gl-button
@@ -247,12 +253,15 @@ export default {
           >{{ __('Apply') }}</gl-button
         >
       </div>
-      <div v-outside="collapseWidget" class="gl-display-flex gl-pt-2">
+      <div
+        v-outside="collapseWidget"
+        class="gl-flex gl-flex-wrap gl-gap-2 gl-pt-2 md:gl-flex-nowrap"
+      >
         <gl-form-group
           class="gl-m-0"
           :label="$options.i18n.startDate"
           :label-for="$options.startDateInputId"
-          label-class="!gl-font-normal gl-pb-2!"
+          label-class="!gl-font-normal !gl-pb-2"
         >
           <gl-datepicker
             ref="startDatePicker"
@@ -269,10 +278,10 @@ export default {
           />
         </gl-form-group>
         <gl-form-group
-          class="gl-m-0 gl-pl-3 gl-pr-2"
+          class="gl-m-0"
           :label="$options.i18n.dueDate"
           :label-for="$options.dueDateInputId"
-          label-class="!gl-font-normal gl-pb-2!"
+          label-class="!gl-font-normal !gl-pb-2"
         >
           <gl-datepicker
             v-model="dirtyDueDate"
@@ -297,7 +306,7 @@ export default {
           {{ startDateValue }}
         </span>
       </p>
-      <p class="gl-m-0 gl-pt-1 gl-pb-3">
+      <p class="gl-m-0 gl-pb-3 gl-pt-1">
         {{ $options.i18n.dueDate }}:
         <span data-testid="due-date-value" :class="{ 'gl-text-secondary': !dueDate }">
           {{ dueDateValue }}

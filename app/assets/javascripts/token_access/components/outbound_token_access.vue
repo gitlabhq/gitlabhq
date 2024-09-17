@@ -212,7 +212,7 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="md" class="gl-mt-5" />
     <template v-else>
       <gl-alert
-        class="gl-mt-5 gl-mb-3"
+        class="gl-mb-3 gl-mt-5"
         variant="warning"
         :dismissible="false"
         :show-icon="false"
@@ -266,7 +266,7 @@ export default {
       <div>
         <crud-component :title="$options.i18n.cardHeaderTitle" class="gl-mt-5">
           <template #count>
-            <span v-gl-tooltip :title="projectCountTooltip" class="gl-new-card-count">
+            <span v-gl-tooltip :title="projectCountTooltip">
               <gl-icon name="project" class="gl-mr-2" />
               {{ projects.length }}
             </span>

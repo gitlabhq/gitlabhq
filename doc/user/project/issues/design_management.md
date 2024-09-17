@@ -36,8 +36,6 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
   Image thumbnails are stored as other uploads, and are not associated with a project but rather
   with a specific design model.
 
-  Newly created projects use hashed storage by default.
-
   A GitLab administrator can verify the relative path of a hashed-stored project by going to **Admin area > Projects**
   and then selecting the project in question. The **Relative path** field contains `@hashed` in its value.
 

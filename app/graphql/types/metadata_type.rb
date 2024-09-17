@@ -8,7 +8,11 @@ module Types
 
     field :enterprise, GraphQL::Types::Boolean, null: false,
       description: 'Enterprise edition.'
-    field :kas, ::Types::Metadata::KasType, null: false,
+    field :feature_flags, [::Types::AppConfig::GitlabInstanceFeatureFlagType], null: false,
+      description: 'Feature flags for the GitLab instance.',
+      alpha: { milestone: '17.4' },
+      resolver: ::Resolvers::AppConfig::GitlabInstanceFeatureFlagsResolver
+    field :kas, ::Types::AppConfig::KasType, null: false,
       description: 'Metadata about KAS.'
     field :revision, GraphQL::Types::String, null: false,
       description: 'Revision.'

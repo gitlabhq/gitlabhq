@@ -88,7 +88,7 @@ mutation{
 
 Project members that do not have the Owner or Maintainer role cannot access this GraphQL endpoint.
 
-You can also use the REST API for [projects](../api/projects.md#delete-an-uploaded-file) or [groups](../api/groups.md#delete-an-uploaded-file) to delete an uploaded file.
+You can also use the REST API for [projects](../api/project_markdown_uploads.md#delete-an-uploaded-file-by-secret-and-filename) or [groups](../api/groups.md#delete-an-uploaded-file-by-secret-and-filename) to delete an uploaded file.
 
 <!-- ## Troubleshooting
 

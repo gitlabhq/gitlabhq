@@ -15,6 +15,10 @@ RSpec.describe Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBl
 
   let(:changes) { [{ newrev: 'master' }] }
 
+  before do
+    stub_feature_flags(dont_ignore_alternate_directories: false)
+  end
+
   describe '#find' do
     subject { any_quarantined_blobs.find }
 

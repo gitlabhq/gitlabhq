@@ -31,6 +31,7 @@
   reporter: exampleuser
   stage: stage
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   impact:  # Can be one of: [critical, high, medium, low]
   scope:  # Can be one or a combination of: [instance, group, project]
   resolution_role:  # Can be one of: [Admin, Owner, Maintainer, Developer]

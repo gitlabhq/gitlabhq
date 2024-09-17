@@ -77,12 +77,10 @@ module HasWikiPageMetaAttributes
       }
     end
 
-    def container_key
-      raise NotImplementedError
-    end
-
     def container_attrs(container)
-      { container_key => container.id }
+      return { project_id: container.id } if container.is_a?(Project)
+
+      { namespace_id: container.id } if container.is_a?(Group)
     end
   end
 
@@ -150,11 +148,11 @@ module HasWikiPageMetaAttributes
   end
 
   def no_two_metarecords_in_same_container_can_have_same_canonical_slug
-    container_id = attributes[self.class.container_key.to_s]
+    container_id = attributes[container_key.to_s]
 
     return unless container_id.present? && canonical_slug.present?
 
-    offending = self.class.with_canonical_slug(canonical_slug).where(self.class.container_key => container_id)
+    offending = self.class.with_canonical_slug(canonical_slug).where(container_key => container_id)
     offending = offending.where.not(id: id) if persisted?
 
     if offending.exists?

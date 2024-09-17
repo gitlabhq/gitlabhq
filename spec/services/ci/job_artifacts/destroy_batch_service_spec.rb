@@ -71,7 +71,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
 
       let(:artifacts) do
         Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_under_refresh_1.id, artifact_under_refresh_2.id,
-                                   artifact_under_refresh_3.id])
+          artifact_under_refresh_3.id])
       end
 
       before do

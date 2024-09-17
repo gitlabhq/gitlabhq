@@ -34,8 +34,8 @@ To configure GitLab SCIM:
 1. Select **Settings > General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
-    - Token from the **Your SCIM token** field.
-    - URL from the **SCIM API endpoint URL** field.
+   - Token from the **Your SCIM token** field.
+   - URL from the **SCIM API endpoint URL** field.
 
 ## Configure an identity provider
 

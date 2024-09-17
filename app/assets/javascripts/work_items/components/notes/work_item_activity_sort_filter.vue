@@ -85,7 +85,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-inline-block gl-align-bottom">
+  <div class="gl-inline-block gl-align-bottom">
     <local-storage-sync
       :value="sortFilterProp"
       :storage-key="storageKey"

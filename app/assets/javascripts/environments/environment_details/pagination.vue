@@ -59,7 +59,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="isPaginationVisible" class="gl-flex gl-justify-center gl-items-center">
+  <div v-if="isPaginationVisible" class="gl-flex gl-items-center gl-justify-center">
     <gl-keyset-pagination
       v-bind="pageInfo"
       :prev-button-link="previousLink"

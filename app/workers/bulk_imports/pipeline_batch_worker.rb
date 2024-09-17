@@ -109,6 +109,10 @@ module BulkImports
     def retry_batch(exception)
       batch.retry!
 
+      logger.error(log_attributes(
+        message: "Retrying pipeline", exception: { message: exception.message, class: exception.class.name }
+      ))
+
       re_enqueue(exception.retry_delay)
     end
 

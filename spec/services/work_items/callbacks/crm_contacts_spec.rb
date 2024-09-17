@@ -43,18 +43,6 @@ RSpec.describe WorkItems::Callbacks::CrmContacts, feature_category: :service_des
     end
   end
 
-  context 'when work item belongs to a group' do
-    let(:work_item) { create(:work_item, :group_level, namespace: group) }
-
-    it 'updates the contacts' do
-      allow(::Issues::SetCrmContactsService).to receive(:new).and_call_original
-
-      callback
-
-      expect(work_item.customer_relations_contacts).to contain_exactly(contact)
-    end
-  end
-
   context 'when contact_ids param is missing' do
     let(:params) { { operation_mode: 'APPEND' } }
 

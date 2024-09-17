@@ -6,7 +6,7 @@ module Gitlab
       module Sbom
         module Validators
           class CyclonedxSchemaValidator
-            SUPPORTED_SPEC_VERSIONS = %w[1.4 1.5].freeze
+            SUPPORTED_SPEC_VERSIONS = %w[1.4 1.5 1.6].freeze
 
             SCHEMA_BASE_PATH = Rails.root.join('app', 'validators', 'json_schemas', 'cyclonedx').freeze
 

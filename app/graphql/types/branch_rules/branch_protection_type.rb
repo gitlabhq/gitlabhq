@@ -11,12 +11,12 @@ module Types
       field :merge_access_levels,
         type: Types::BranchProtections::MergeAccessLevelType.connection_type,
         null: true,
-        description: 'Details about who can merge when this branch is the source branch.'
+        description: 'Details about who can merge when the branch is the source branch.'
 
       field :push_access_levels,
         type: Types::BranchProtections::PushAccessLevelType.connection_type,
         null: true,
-        description: 'Details about who can push when this branch is the source branch.'
+        description: 'Details about who can push when the branch is the source branch.'
 
       field :allow_force_push,
         type: GraphQL::Types::Boolean,

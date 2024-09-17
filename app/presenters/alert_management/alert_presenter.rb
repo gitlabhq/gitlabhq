@@ -49,7 +49,7 @@ module AlertManagement
     end
 
     def email_title
-      [environment&.name, query_title].compact.join(': ')
+      [environment&.name, title].compact.join(': ')
     end
 
     private
@@ -89,12 +89,6 @@ module AlertManagement
 
     def host_links
       hosts.join(' ')
-    end
-
-    def query_title
-      return title unless prometheus_alert
-
-      "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold} for 5 minutes"
     end
   end
 end

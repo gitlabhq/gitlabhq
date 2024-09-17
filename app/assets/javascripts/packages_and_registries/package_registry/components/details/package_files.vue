@@ -364,8 +364,8 @@ export default {
 
 <template>
   <div class="gl-pt-6">
-    <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-      <h3 class="gl-font-lg gl-mt-5">{{ __('Assets') }}</h3>
+    <div class="gl-flex gl-items-center gl-justify-between">
+      <h3 class="gl-mt-5 gl-text-lg">{{ __('Assets') }}</h3>
       <gl-button
         v-if="!fetchPackageFilesError && canDelete"
         :disabled="isLoading || !areFilesSelected"
@@ -444,7 +444,7 @@ export default {
             <file-icon
               :file-name="item.fileName"
               css-classes="gl-relative file-icon"
-              class="gl-mr-1 gl-relative"
+              class="gl-relative gl-mr-1"
             />
             <span>{{ item.fileName }}</span>
           </gl-link>
@@ -477,7 +477,7 @@ export default {
 
         <template #row-details="{ item }">
           <div
-            class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-shadow-inner-1-gray-100"
+            class="gl-flex gl-grow gl-flex-col gl-rounded-base gl-bg-gray-10 gl-shadow-inner-1-gray-100"
           >
             <file-sha
               v-if="item.fileSha256"
@@ -490,7 +490,7 @@ export default {
           </div>
         </template>
       </gl-table>
-      <div class="gl-display-flex gl-justify-content-center">
+      <div class="gl-flex gl-justify-center">
         <gl-keyset-pagination
           :disabled="isLoading"
           v-bind="pageInfo"

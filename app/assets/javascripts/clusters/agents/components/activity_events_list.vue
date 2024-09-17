@@ -42,6 +42,7 @@ export default {
   }),
   borderClasses: 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100',
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     agentEvents: {
       query: getAgentActivityEventsQuery,
       variables() {

@@ -82,7 +82,7 @@ describe('MRWidgetSuggestPipeline', () => {
         const image = wrapper.find('[data-testid="pipeline-image"]');
 
         expect(image.exists()).toBe(true);
-        expect(image.attributes().src).toBe(suggestProps.pipelineSvgPath);
+        expect(image.element.src).toBe(suggestProps.pipelineSvgPath);
       });
 
       describe('tracking', () => {

@@ -76,16 +76,13 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-if="isPlayable"
-    class="gl-border gl-rounded-base gl-p-5 gl-display-flex gl-align-items-center"
-  >
+  <div v-if="isPlayable" class="gl-border gl-flex gl-items-center gl-rounded-base gl-p-5">
     <gl-alert v-if="hasError" variant="danger" class="gl-w-full" @dismiss="errorMessage = ''">
       {{ errorMessage }}
     </gl-alert>
     <template v-else>
       <gl-icon v-bind="icon" />
-      <span class="gl-ml-4 gl-font-bold gl-flex-grow-1">{{ text }}</span>
+      <span class="gl-ml-4 gl-grow gl-font-bold">{{ text }}</span>
       <gl-button v-if="canPlay" :loading="loading" variant="confirm" @click="playJob">
         {{ $options.i18n.deploy }}
       </gl-button>

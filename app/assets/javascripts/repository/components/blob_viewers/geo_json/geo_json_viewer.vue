@@ -28,5 +28,5 @@ export default {
 </script>
 
 <template>
-  <div v-if="!hasError" ref="map" class="gl-h-screen gl-z-0" data-testid="map"></div>
+  <div v-if="!hasError" ref="map" class="gl-z-0 gl-h-screen" data-testid="map"></div>
 </template>

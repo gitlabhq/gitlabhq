@@ -1,22 +1,33 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import Draggable from 'vuedraggable';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { ESC_KEY } from '~/lib/utils/keys';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
+import moveWorkItemMutation from '~/work_items/graphql/move_work_item.mutation.graphql';
+import * as cacheUtils from '~/work_items/graphql/cache_utils';
 
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 import {
   changeWorkItemParentMutationResponse,
   childrenWorkItems,
+  childrenWorkItemsObjectives,
   updateWorkItemMutationErrorResponse,
   workItemByIidResponseFactory,
+  workItemHierarchyTreeResponse,
+  mockMoveWorkItemMutationResponse,
 } from '../../mock_data';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('WorkItemChildrenWrapper', () => {
   let wrapper;
@@ -28,8 +39,19 @@ describe('WorkItemChildrenWrapper', () => {
   const updateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(changeWorkItemParentMutationResponse);
+  const getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
+  const moveWorkItemMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(mockMoveWorkItemMutationResponse);
+  const moveWorkItemMutationFailureHandler = jest
+    .fn()
+    .mockResolvedValue(mockMoveWorkItemMutationResponse({ error: 'Error' }));
+  const mockToggleHierarchyTreeChildResolver = jest.fn();
 
   const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
+  const findFirstWorkItemLinkChildItem = () => findWorkItemLinkChildItems().at(0);
+  const findDraggable = () => wrapper.findComponent(Draggable);
+  const findChildItemsContainer = () => wrapper.findByTestId('child-items-container');
 
   Vue.use(VueApollo);
 
@@ -37,12 +59,25 @@ describe('WorkItemChildrenWrapper', () => {
     workItemType = 'Objective',
     confidential = false,
     children = childrenWorkItems,
+    isTopLevel = true,
     mutationHandler = updateWorkItemMutationHandler,
+    disableContent = false,
+    canUpdate = false,
+    moveWorkItemMutationHandler = moveWorkItemMutationSuccessHandler,
   } = {}) => {
-    const mockApollo = createMockApollo([
-      [workItemByIidQuery, getWorkItemQueryHandler],
-      [updateWorkItemMutation, mutationHandler],
-    ]);
+    const mockApollo = createMockApollo(
+      [
+        [workItemByIidQuery, getWorkItemQueryHandler],
+        [updateWorkItemMutation, mutationHandler],
+        [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
+        [moveWorkItemMutation, moveWorkItemMutationHandler],
+      ],
+      {
+        Mutation: {
+          toggleHierarchyTreeChild: mockToggleHierarchyTreeChildResolver,
+        },
+      },
+    );
 
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: workItemByIidQuery,
@@ -52,9 +87,6 @@ describe('WorkItemChildrenWrapper', () => {
 
     wrapper = shallowMountExtended(WorkItemChildrenWrapper, {
       apolloProvider: mockApollo,
-      provide: {
-        isGroup: false,
-      },
       propsData: {
         fullPath: 'test/project',
         workItemType,
@@ -62,6 +94,10 @@ describe('WorkItemChildrenWrapper', () => {
         workItemIid: '1',
         confidential,
         children,
+        isTopLevel,
+        disableContent,
+        canUpdate,
+        parent: workItemByIidResponseFactory().data.workspace.workItem,
       },
       mocks: {
         $toast,
@@ -81,14 +117,22 @@ describe('WorkItemChildrenWrapper', () => {
 
   it('emits `show-modal` on `click` event', () => {
     createComponent();
-    const firstChild = findWorkItemLinkChildItems().at(0);
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',
     };
 
-    firstChild.vm.$emit('click', event);
+    findFirstWorkItemLinkChildItem().vm.$emit('click', event);
 
     expect(wrapper.emitted('show-modal')).toEqual([[{ event, child: event.childItem }]]);
+  });
+
+  it('emits `click` event when clicking on nested child', () => {
+    createComponent({ isTopLevel: false });
+    const event = expect.anything();
+
+    findFirstWorkItemLinkChildItem().vm.$emit('click', event);
+
+    expect(wrapper.emitted('click')).toEqual([[{ event, childItem: 'gid://gitlab/WorkItem/2' }]]);
   });
 
   it.each`
@@ -99,8 +143,7 @@ describe('WorkItemChildrenWrapper', () => {
     '$description work-item-link-child on mouseover when workItemType is "$workItemType"',
     async ({ workItemType, prefetch }) => {
       createComponent({ workItemType });
-      const firstChild = findWorkItemLinkChildItems().at(0);
-      firstChild.vm.$emit('mouseover', childrenWorkItems[0]);
+      findFirstWorkItemLinkChildItem().vm.$emit('mouseover', childrenWorkItems[0]);
       await nextTick();
       await waitForPromises();
 
@@ -114,13 +157,214 @@ describe('WorkItemChildrenWrapper', () => {
     },
   );
 
+  it('does not render draggable component when user is not logged in', () => {
+    createComponent({ canUpdate: true });
+
+    expect(findDraggable().exists()).toBe(false);
+  });
+
+  it('disables list when `disableContent` is true', () => {
+    createComponent({ disableContent: true });
+
+    expect(findChildItemsContainer().classes('disabled-content')).toBe(true);
+  });
+
+  describe('drag & drop', () => {
+    let dragParams;
+
+    beforeEach(() => {
+      isLoggedIn.mockReturnValue(true);
+      createComponent({ canUpdate: true, children: childrenWorkItemsObjectives });
+
+      dragParams = {
+        oldIndex: 1,
+        newIndex: 0,
+        from: wrapper.element,
+        to: wrapper.element,
+      };
+    });
+
+    it('adds a class `is-dragging` to document body when dragging', async () => {
+      expect(document.body.classList.contains('is-dragging')).toBe(false);
+
+      wrapper.findComponent(Draggable).vm.$emit('start');
+
+      expect(document.body.classList.contains('is-dragging')).toBe(true);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
+      await nextTick();
+
+      expect(document.body.classList.contains('is-dragging')).toBe(false);
+    });
+
+    it('dispatches `mouseup` event and cancels drag when Escape key is pressed', async () => {
+      jest.spyOn(document, 'dispatchEvent');
+      wrapper.findComponent(Draggable).vm.$emit('start');
+
+      const event = new Event('keyup');
+      event.code = ESC_KEY;
+      document.dispatchEvent(event);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
+      await nextTick();
+
+      expect(document.dispatchEvent).toHaveBeenCalledWith(new Event('mouseup'));
+      expect(moveWorkItemMutationSuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('does not fetch nested children when reordering within the same work item', async () => {
+      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
+      await nextTick();
+
+      expect(getWorkItemTreeQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('fetches nested children when moving item to another child', async () => {
+      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', {
+        ...dragParams,
+        to: { dataset: { parentId: 'gid://gitlab/WorkItem/5', parentTitle: 'Objective 19' } },
+      });
+      await nextTick();
+
+      expect(getWorkItemTreeQueryHandler).toHaveBeenCalled();
+    });
+
+    it('calls move mutation with reorder params when reordering within the same work item', async () => {
+      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
+      await waitForPromises();
+
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/6',
+          adjacentWorkItemId: 'gid://gitlab/WorkItem/5',
+          relativePosition: 'BEFORE',
+        },
+        endCursor: '',
+        pageSize: 2, // number of children
+      });
+    });
+
+    it('calls move mutation with hierarchy params when changing parent', async () => {
+      expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+
+      wrapper.findComponent(Draggable).vm.$emit('end', {
+        ...dragParams,
+        to: { dataset: { parentId: 'gid://gitlab/WorkItem/5', parentTitle: 'Objective 19' } },
+      });
+      await waitForPromises();
+
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/6',
+          parentId: 'gid://gitlab/WorkItem/5',
+        },
+        endCursor: '',
+        pageSize: 1, // number of children
+      });
+    });
+
+    it('emits error and updates cache when change parent mutation fails', async () => {
+      const mockCacheUpdate = jest.spyOn(cacheUtils, 'addHierarchyChild');
+
+      createComponent({
+        canUpdate: true,
+        moveWorkItemMutationHandler: moveWorkItemMutationFailureHandler,
+      });
+
+      wrapper.findComponent(Draggable).vm.$emit('end', {
+        ...dragParams,
+        to: { dataset: { parentId: 'gid://gitlab/WorkItem/5', parentTitle: 'Objective 19' } },
+      });
+      await waitForPromises();
+
+      expect(moveWorkItemMutationFailureHandler).toHaveBeenCalled();
+      expect(wrapper.emitted('error')).toEqual([['Error']]);
+      expect(mockCacheUpdate).toHaveBeenCalled();
+    });
+
+    it('emits error when reorder mutation fails', async () => {
+      const mockCacheUpdate = jest.spyOn(cacheUtils, 'addHierarchyChild');
+
+      createComponent({
+        canUpdate: true,
+        moveWorkItemMutationHandler: moveWorkItemMutationFailureHandler,
+      });
+
+      wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
+      await waitForPromises();
+
+      expect(moveWorkItemMutationFailureHandler).toHaveBeenCalled();
+      expect(wrapper.emitted('error')).toEqual([['Error']]);
+      expect(mockCacheUpdate).not.toHaveBeenCalled();
+    });
+
+    it('opens nested child on move', async () => {
+      const mockEvt = {
+        relatedContext: {
+          element: childrenWorkItemsObjectives[0],
+        },
+      };
+      const mockOriginalEvt = {
+        clientX: 10,
+        clientY: 10,
+        target: {
+          getBoundingClientRect() {
+            return {
+              top: 5,
+              left: 5,
+            };
+          },
+        },
+      };
+
+      wrapper.findComponent(Draggable).vm.move(mockEvt, mockOriginalEvt);
+
+      jest.runAllTimers();
+      await nextTick();
+
+      expect(mockToggleHierarchyTreeChildResolver).toHaveBeenCalled();
+    });
+  });
+
+  describe('when user is logged in', () => {
+    beforeEach(() => {
+      isLoggedIn.mockReturnValue(true);
+    });
+
+    it('renders draggable component without disabling the list', () => {
+      createComponent({ canUpdate: true });
+
+      expect(findDraggable().exists()).toBe(true);
+      expect(findDraggable().classes('disabled-content')).toBe(false);
+    });
+
+    it('does not render draggable component when user has no permission', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findDraggable().exists()).toBe(false);
+    });
+
+    it('disables the list when `disableContent` is true', () => {
+      createComponent({ disableContent: true, canUpdate: true });
+
+      expect(findDraggable().exists()).toBe(true);
+      expect(findDraggable().classes('disabled-content')).toBe(true);
+    });
+  });
+
   describe('when removing child work item', () => {
     const workItem = { id: 'gid://gitlab/WorkItem/2' };
 
     describe('when successful', () => {
       beforeEach(async () => {
         createComponent();
-        findWorkItemLinkChildItems().at(0).vm.$emit('removeChild', workItem);
+        findFirstWorkItemLinkChildItem().vm.$emit('removeChild', workItem);
         await waitForPromises();
       });
 
@@ -147,7 +391,7 @@ describe('WorkItemChildrenWrapper', () => {
         createComponent({
           mutationHandler: jest.fn().mockResolvedValue(updateWorkItemMutationErrorResponse),
         });
-        findWorkItemLinkChildItems().at(0).vm.$emit('removeChild', workItem);
+        findFirstWorkItemLinkChildItem().vm.$emit('removeChild', workItem);
         await waitForPromises();
       });
 

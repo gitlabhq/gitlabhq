@@ -51,7 +51,7 @@ class BaseDiscussionEntity < Grape::Entity
   end
 
   expose :truncated_diff_lines_path, if: ->(d, _) { !d.expanded? && !render_truncated_diff_lines? } do |discussion|
-    project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion)
+    truncated_discussion_path_for(discussion)
   end
 
   private
@@ -59,4 +59,11 @@ class BaseDiscussionEntity < Grape::Entity
   def render_truncated_diff_lines?
     options.fetch(:render_truncated_diff_lines, false)
   end
+
+  # overridden on EE
+  def truncated_discussion_path_for(discussion)
+    project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion)
+  end
 end
+
+BaseDiscussionEntity.prepend_mod

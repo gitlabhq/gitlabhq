@@ -5,7 +5,7 @@ exports[`Design management design presentation component currentCommentForm is e
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
@@ -27,7 +27,7 @@ exports[`Design management design presentation component currentCommentForm is n
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
@@ -48,7 +48,7 @@ exports[`Design management design presentation component currentCommentForm is n
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
@@ -69,7 +69,7 @@ exports[`Design management design presentation component renders empty state whe
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
   />
 </div>
 `;
@@ -79,7 +79,7 @@ exports[`Design management design presentation component renders image and overl
   class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"

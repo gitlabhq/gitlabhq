@@ -47,7 +47,7 @@ module Packages
             yield unless entry_path.is_a?(String)
 
             tar_reader.rewind
-            entry = tar_reader.find { |e| e.full_name == entry_path }
+            entry = tar_reader.find { |e| path_for(e) == entry_path }
 
             yield entry
           end
@@ -60,8 +60,15 @@ module Packages
         # We cannot get the entry directly when using #reverse_each because
         # TarReader closes the stream after iterating over all entries
         tar_reader.reverse_each do |entry|
-          break entry.full_name if entry.full_name.match?(PACKAGE_JSON_ENTRY_REGEX)
+          entry_path = path_for(entry)
+          break entry_path if entry_path.match?(PACKAGE_JSON_ENTRY_REGEX)
         end
+      end
+
+      def path_for(entry)
+        entry.full_name
+      rescue ::Gem::Package::TarInvalidError
+        entry.header.name
       end
     end
   end

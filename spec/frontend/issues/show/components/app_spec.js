@@ -37,6 +37,7 @@ const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 describe('Issuable output', () => {
   let axiosMock;
   let wrapper;
+  const endpoint = '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes';
 
   const findStickyHeader = () => wrapper.findComponent(StickyHeader);
   const findTitle = () => wrapper.findComponent(TitleComponent);
@@ -86,7 +87,6 @@ describe('Issuable output', () => {
     jest.spyOn(eventHub, '$emit');
 
     axiosMock = new MockAdapter(axios);
-    const endpoint = '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes/realtime_changes';
 
     axiosMock.onGet(endpoint).replyOnce(HTTP_STATUS_OK, REALTIME_REQUEST_STACK[0], {
       'POLL-INTERVAL': '1',
@@ -102,11 +102,9 @@ describe('Issuable output', () => {
   });
 
   describe('update', () => {
-    beforeEach(async () => {
-      await createComponent();
-    });
-
     it('should render a title/description/edited and update title/description/edited on update', async () => {
+      await createComponent();
+
       expect(findTitle().props('titleText')).toContain(initialRequest.title_text);
       expect(findDescription().props('descriptionText')).toContain('this is a description');
 
@@ -124,6 +122,36 @@ describe('Issuable output', () => {
       expect(findEdited().props('updatedByName')).toBe('Other User');
       expect(findEdited().props('updatedByPath')).toMatch(/\/other_user$/);
       expect(findEdited().props('updatedAt')).toBe(secondRequest.updated_at);
+    });
+
+    it('does not update description if only a details tag is opened/closed', async () => {
+      axiosMock.reset();
+      axiosMock.onGet(endpoint).replyOnce(
+        HTTP_STATUS_OK,
+        {
+          ...initialRequest,
+          description: '<details><summary>Details</summary>Some details</details>',
+          description_text: 'Some details',
+        },
+        { 'POLL-INTERVAL': '1' },
+      );
+
+      axiosMock.onGet(endpoint).replyOnce(
+        HTTP_STATUS_OK,
+        {
+          ...secondRequest,
+          description: '<details open><summary>Details</summary>Some details</details>',
+          description_text: 'Some details',
+        },
+        { 'POLL-INTERVAL': '-1' },
+      );
+
+      await createComponent();
+      await advanceToNextPoll();
+
+      expect(findDescription().props('descriptionHtml')).toBe(
+        '<details><summary>Details</summary>Some details</details>',
+      );
     });
   });
 

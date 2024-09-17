@@ -4,7 +4,7 @@ module AuthorizedProjectUpdate
   class ProjectRecalculatePerUserWorker < ProjectRecalculateWorker
     data_consistency :always
 
-    feature_category :system_access
+    feature_category :permissions
     urgency :high
     queue_namespace :authorized_project_update
 

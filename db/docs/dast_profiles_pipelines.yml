@@ -7,7 +7,7 @@ feature_categories:
 description: Join table between DAST Profiles and CI Pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56821
 milestone: '13.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:

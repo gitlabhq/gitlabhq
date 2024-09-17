@@ -30,7 +30,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-justify-content-space-between gl-p-4 gl-py-3 gl-pl-7 gl-border-b gl-align-items-center gl-gap-3"
+    class="gl-border-b gl-flex gl-items-center gl-justify-between gl-gap-3 gl-p-4 gl-py-3 gl-pl-7"
   >
     <gl-icon :name="exclusion.icon" class="gl-text-secondary" />
     <gl-avatar
@@ -41,7 +41,7 @@ export default {
       shape="rect"
       fallback-on-error
     />
-    <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
+    <span class="gl-flex gl-grow gl-flex-col">
       <span class="gl-font-bold">{{ exclusion.name }}</span>
     </span>
 

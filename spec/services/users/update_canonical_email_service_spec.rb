@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Users::UpdateCanonicalEmailService, feature_category: :user_profile do
-  let(:other_email) { "differentaddress@includeddomain.com" }
+  let(:other_email) { "differentaddress@gmail.com" }
 
   before do
-    stub_const("Users::UpdateCanonicalEmailService::INCLUDED_DOMAINS_PATTERN", [/includeddomain/])
+    stub_const("Users::UpdateCanonicalEmailService::INCLUDED_DOMAINS_PATTERN", [/gmail/])
   end
 
   describe '#initialize' do
@@ -21,8 +21,8 @@ RSpec.describe Users::UpdateCanonicalEmailService, feature_category: :user_profi
     end
 
     context 'when a user is provided' do
-      let(:user) { build(:user, email: 'user+123@includeddomain.com') }
-      let(:expected_canonical_email) { 'user@includeddomain.com' }
+      let(:user) { build(:user, email: 'user+123@gmail.com') }
+      let(:expected_canonical_email) { 'user@gmail.com' }
 
       subject(:service) { described_class.new(user: user) }
 
@@ -40,11 +40,11 @@ RSpec.describe Users::UpdateCanonicalEmailService, feature_category: :user_profi
       context 'when the user has an existing canonical email' do
         it 'updates the user canonical email record' do
           user.user_canonical_email = build(:user_canonical_email, canonical_email: other_email)
-          user.email = "us.er+123@includeddomain.com"
+          user.email = "us.er+123@gmail.com"
 
           subject.execute
 
-          expect(user.user_canonical_email.canonical_email).to eq "user@includeddomain.com"
+          expect(user.user_canonical_email.canonical_email).to eq "user@gmail.com"
         end
       end
 

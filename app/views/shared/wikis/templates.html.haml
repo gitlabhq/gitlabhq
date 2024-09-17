@@ -5,7 +5,7 @@
 
 = render ::Layouts::PageHeadingComponent.new(s_("Wiki|Wiki templates")) do |c|
   - c.with_actions do
-    .dropdown.inline.wiki-sort-dropdown
+    .dropdown.gl-inline-block.wiki-sort-dropdown
       .btn-group{ role: 'group' }
         = wiki_sort_controls(@wiki, params[:direction], action: :templates)
 

@@ -19,6 +19,7 @@ import LoadingIndicator from '~/content_editor/components/loading_indicator.vue'
 import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { mockChainedCommands } from '../test_utils';
 
 describe('ContentEditor', () => {
@@ -56,7 +57,7 @@ describe('ContentEditor', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     // ignore /-/emojis requests
-    mock.onGet().reply(200, []);
+    mock.onGet().reply(HTTP_STATUS_OK, []);
 
     renderMarkdown = jest.fn();
   });

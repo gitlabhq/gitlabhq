@@ -14,7 +14,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -23,7 +23,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate_per_user
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -32,7 +32,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
   :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -41,7 +41,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -50,7 +50,7 @@
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :worker_name: AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -212,7 +212,7 @@
   :tags: []
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
-  :feature_category: :source_code_management
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -696,6 +696,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:pages_deactivate_expired_deployments_cron
+  :worker_name: Pages::DeactivateExpiredDeploymentsCronWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:pages_deactivated_deployments_delete_cron
   :worker_name: Pages::DeactivatedDeploymentsDeleteCronWorker
   :feature_category: :pages
@@ -866,6 +875,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:resource_access_tokens_inactive_tokens_deletion_cron
+  :worker_name: ResourceAccessTokens::InactiveTokensDeletionCronWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
   :worker_name: ScheduleMergeRequestCleanupRefsWorker
@@ -2415,6 +2433,33 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: anti_abuse_spam_abuse_events
+  :worker_name: AntiAbuse::SpamAbuseEventsWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: anti_abuse_trust_score
+  :worker_name: AntiAbuse::TrustScoreWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: anti_abuse_trust_score_cleanup
+  :worker_name: AntiAbuse::TrustScoreCleanupWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :user_profile
@@ -2435,7 +2480,7 @@
   :tags: []
 - :name: authorized_projects
   :worker_name: AuthorizedProjectsWorker
-  :feature_category: :system_access
+  :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -3237,6 +3282,24 @@
 - :name: groups_update_two_factor_requirement_for_members
   :worker_name: Groups::UpdateTwoFactorRequirementForMembersWorker
   :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: import_bulk_imports_source_users_attributes
+  :worker_name: Import::BulkImports::SourceUsersAttributesWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: import_delete_placeholder_user
+  :worker_name: Import::DeletePlaceholderUserWorker
+  :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

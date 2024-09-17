@@ -10,7 +10,7 @@ module Import
     belongs_to :source_user, class_name: 'Import::SourceUser'
     belongs_to :namespace
 
-    validates :model, :namespace_id, :source_user_id, :user_reference_column, presence: true
+    validates :model, :namespace_id, :source_user_id, :user_reference_column, :alias_version, presence: true
     validates :numeric_key, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
     validates :composite_key,
       json_schema: { filename: 'import_source_user_placeholder_reference_composite_key' },
@@ -37,21 +37,22 @@ module Import
       numeric_key
       source_user_id
       user_reference_column
+      alias_version
     ].freeze
 
     SerializationError = Class.new(StandardError)
 
     def aliased_model
-      Import::PlaceholderReferenceAliasResolver.aliased_model(model)
+      PlaceholderReferences::AliasResolver.aliased_model(model, version: alias_version)
     end
 
     def aliased_user_reference_column
-      Import::PlaceholderReferenceAliasResolver.aliased_column(model, user_reference_column)
+      PlaceholderReferences::AliasResolver.aliased_column(model, user_reference_column, version: alias_version)
     end
 
     def aliased_composite_key
       composite_key.transform_keys do |key|
-        Import::PlaceholderReferenceAliasResolver.aliased_column(model, key)
+        PlaceholderReferences::AliasResolver.aliased_column(model, key, version: alias_version)
       end
     end
 
@@ -99,6 +100,11 @@ module Import
             model_relation = model.where(
               "#{composite_key_columns(composite_keys)} IN #{composite_key_values(composite_keys)}"
             )
+          elsif primary_key.is_a?(Array)
+            composite_keys = placeholder_reference_batch.pluck(:composite_key)
+            key = composite_keys.first.keys
+            values = composite_keys.map(&:values)
+            model_relation = model.where({ key => values })
           else
             model_relation = model.primary_key_in(placeholder_reference_batch.pluck(:numeric_key))
           end

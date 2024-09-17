@@ -1,9 +1,13 @@
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlTabs } from '@gitlab/ui';
+import { GlBadge, GlTabs } from '@gitlab/ui';
+import projectCountsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/project_counts.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
+import TabView from '~/projects/your_work/components/tab_view.vue';
 import { createRouter } from '~/projects/your_work';
+import { stubComponent } from 'helpers/stub_component';
 import {
   ROOT_ROUTE_NAME,
   DASHBOARD_ROUTE_NAME,
@@ -13,9 +17,17 @@ import {
   STARRED_TAB,
   PERSONAL_TAB,
   MEMBER_TAB,
-} from 'ee_else_ce/projects/your_work/constants';
+  INACTIVE_TAB,
+} from '~/projects/your_work/constants';
+import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
+import { createAlert } from '~/alert';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/alert');
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 const defaultRoute = {
   name: ROOT_ROUTE_NAME,
@@ -24,39 +36,83 @@ const defaultRoute = {
 describe('YourWorkProjectsApp', () => {
   let wrapper;
   let router;
+  let mockApollo;
 
-  const createComponent = ({ route = defaultRoute } = {}) => {
+  const successHandler = jest.fn().mockResolvedValue(projectCountsGraphQlResponse);
+
+  const createComponent = ({ handler = successHandler, route = defaultRoute } = {}) => {
+    mockApollo = createMockApollo([[projectCountsQuery, handler]]);
     router = createRouter();
     router.push(route);
 
     wrapper = mountExtended(YourWorkProjectsApp, {
+      apolloProvider: mockApollo,
       router,
+      stubs: {
+        TabView: stubComponent(TabView),
+      },
     });
   };
 
   const findPageTitle = () => wrapper.find('h1');
   const findGlTabs = () => wrapper.findComponent(GlTabs);
-  const findAllTabTitles = () => wrapper.findAllByTestId('projects-dashboard-tab-title');
-  const findActiveTab = () => wrapper.find('.tab-pane.active');
+  const findActiveTab = () => wrapper.findByRole('tab', { selected: true });
+  const findTabByName = (name) =>
+    wrapper.findAllByRole('tab').wrappers.find((tab) => tab.text().includes(name));
+  const getTabCount = (tabName) => findTabByName(tabName).findComponent(GlBadge).text();
 
   afterEach(() => {
     router = null;
+    mockApollo = null;
   });
 
   describe('template', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders Vue app with Projects h1 tag', () => {
+      createComponent();
+
       expect(findPageTitle().text()).toBe('Projects');
     });
 
-    it('renders all expected tabs with counts', () => {
-      const wrapperTabTitles = findAllTabTitles().wrappers.map((w) => w.text().replace(/ /g, ''));
-      const expectedTabTitles = PROJECT_DASHBOARD_TABS.map(({ text }) => `${text}0`);
+    describe('when project counts are loading', () => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-      expect(wrapperTabTitles).toStrictEqual(expectedTabTitles);
+      it('does not count badges', () => {
+        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+      });
+    });
+
+    describe('when project counts are successfully retrieved', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('shows count badges', () => {
+        expect(getTabCount('Contributed')).toBe('2');
+        expect(getTabCount('Starred')).toBe('0');
+        expect(getTabCount('Personal')).toBe('0');
+        expect(getTabCount('Member')).toBe('2');
+        expect(getTabCount('Inactive')).toBe('0');
+      });
+    });
+
+    describe('when project counts are not successfully retrieved', () => {
+      const error = new Error();
+
+      beforeEach(async () => {
+        createComponent({ handler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+      });
+
+      it('displays error alert', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred loading the project counts.',
+          error,
+          captureError: true,
+        });
+      });
     });
 
     it('defaults to Contributed tab as active', () => {
@@ -73,6 +129,7 @@ describe('YourWorkProjectsApp', () => {
     ${STARRED_TAB.value}             | ${STARRED_TAB}
     ${PERSONAL_TAB.value}            | ${PERSONAL_TAB}
     ${MEMBER_TAB.value}              | ${MEMBER_TAB}
+    ${INACTIVE_TAB.value}            | ${INACTIVE_TAB}
   `('onMount when route name is $name', ({ name, expectedTab }) => {
     beforeEach(() => {
       createComponent({ route: { name } });
@@ -81,6 +138,12 @@ describe('YourWorkProjectsApp', () => {
     it('initializes to the correct tab', () => {
       expect(findActiveTab().text()).toContain(expectedTab.text);
     });
+
+    if (expectedTab.query) {
+      it('renders `TabView` component and passes `tab` prop', () => {
+        expect(wrapper.findComponent(TabView).props('tab')).toMatchObject(expectedTab);
+      });
+    }
   });
 
   describe('onTabUpdate', () => {

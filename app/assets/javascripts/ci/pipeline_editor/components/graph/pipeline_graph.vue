@@ -25,7 +25,7 @@ export default {
   // The max width and the width make sure the ellipsis to work and the min width
   // is for when there is less text than the stage column width (which the width 100% does not fix)
   jobWrapperClasses:
-    'gl-display-flex gl-flex-direction-column gl-align-items-stretch gl-w-full gl-px-8 gl-min-w-full gl-max-w-15',
+    'gl-flex gl-flex-col gl-items-stretch gl-w-full gl-px-8 gl-min-w-full gl-max-w-15',
   props: {
     pipelineData: {
       required: true,
@@ -130,7 +130,7 @@ export default {
     <div
       :id="containerId"
       :ref="$options.CONTAINER_REF"
-      class="gl-bg-gray-10 gl-overflow-auto"
+      class="gl-overflow-auto gl-bg-gray-10"
       data-testid="graph-container"
     >
       <links-layer
@@ -145,9 +145,9 @@ export default {
         <div
           v-for="(stage, index) in pipelineStages"
           :key="`${stage.name}-${index}`"
-          class="gl-flex-direction-column"
+          class="gl-flex-col"
         >
-          <div class="gl-display-flex gl-align-items-center gl-w-full gl-px-9 gl-py-4 gl-mb-5">
+          <div class="gl-mb-5 gl-flex gl-w-full gl-items-center gl-px-9 gl-py-4">
             <stage-name :stage-name="stage.name" />
           </div>
           <div :class="$options.jobWrapperClasses">

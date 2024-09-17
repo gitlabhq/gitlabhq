@@ -38,7 +38,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-gap-2 view">
+  <div class="view gl-flex gl-gap-2">
     <gl-button
       icon="information-o"
       variant="link"
@@ -55,7 +55,7 @@ export default {
     >
       <div class="gl-pb-6">
         <div class="gl-flex gl-flex-col gl-text-lg">
-          <strong class="gl-font-bold gl-border-b gl-w-full gl-mb-4">
+          <strong class="gl-border-b gl-mb-4 gl-w-full gl-font-bold">
             {{ s__('PerformanceBar|Host') }}</strong
           >
           <div>

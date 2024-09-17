@@ -108,6 +108,12 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
     it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:dpop_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:dpop_enabled=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:use_work_items_view).to(:user_preference) }
+    it { is_expected.to delegate_method(:use_work_items_view=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -247,7 +253,6 @@ RSpec.describe User, feature_category: :user_profile do
     describe 'organizations association' do
       it 'does not create a cross-database query' do
         user = create(:user)
-        create(:organization_user, user: user)
 
         with_cross_joins_prevented do
           expect(user.organizations.count).to eq(1)
@@ -767,9 +772,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to define_enum_for(:project_view).with_values(%i[readme activity files wiki]) }
-    it { is_expected.to validate_inclusion_of(:hide_no_ssh_key).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:hide_no_password).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:notified_of_own_activity).in_array([true, false]) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
@@ -1809,53 +1811,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'synchronizes the gpg keys when the email is updated' do
         expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
         user.update!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-  end
-
-  context 'when after_update_commit :update_default_organization_user on default organization' do
-    let_it_be(:default_organization) { create(:organization, :default) }
-
-    context 'when user is changed to an instance admin' do
-      let_it_be(:user) { create(:user) }
-
-      it 'changes user to owner in the organization' do
-        expect(default_organization.owner?(user)).to be(false)
-
-        expect { user.update!(admin: true) }.not_to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(true)
-      end
-
-      context 'when non admin attribute is updated' do
-        it 'does not change the organization_user' do
-          expect(default_organization.owner?(user)).to be(false)
-
-          expect { user.update!(name: 'Bob') }.not_to change { Organizations::OrganizationUser.count }
-          expect(default_organization.owner?(user)).to be(false)
-        end
-      end
-    end
-
-    context 'when user is changed from admin to regular user' do
-      let_it_be(:user) { create(:admin) }
-
-      it 'changes user to default access_level in organization' do
-        expect(default_organization.owner?(user)).to be(true)
-
-        expect { user.update!(admin: false) }.not_to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(false)
-        expect(default_organization.user?(user)).to be(true)
-      end
-    end
-
-    context 'when user did not already exist in the default organization' do
-      let_it_be(:user) { create(:user, :without_default_org) }
-
-      it 'changes user to owner in the organization' do
-        expect(default_organization.user?(user)).to be(false)
-
-        expect { user.update!(admin: true) }.to change { Organizations::OrganizationUser.count }
-        expect(default_organization.owner?(user)).to be(true)
       end
     end
   end
@@ -6149,17 +6104,15 @@ RSpec.describe User, feature_category: :user_profile do
         stub_feature_flags(merge_request_dashboard: true)
       end
 
-      it 'returns number of open merge requests from non-archived projects where a reviewer has requested changes' do
+      it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
         user    = create(:user)
         project = create(:project, :public)
         archived_project = create(:project, :public, :archived)
 
-        mr = create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
         create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
         create(:merge_request, source_project: archived_project, author: user, assignees: [user])
-
-        mr.merge_request_reviewers.update_all(state: :requested_changes)
 
         expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
       end
@@ -6189,10 +6142,13 @@ RSpec.describe User, feature_category: :user_profile do
         project = create(:project, :public)
         archived_project = create(:project, :public, :archived)
 
-        create(:merge_request, source_project: project, author: user, reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, reviewers: [user])
+        mr = create(:merge_request, source_project: project, author: user, reviewers: [user])
+        mr2 = create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user], reviewers: create_list(:user, 2))
         create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
         create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+
+        mr.merge_request_reviewers.update_all(state: :unreviewed)
+        mr2.merge_request_reviewers.update_all(state: :requested_changes)
 
         expect(user.review_requested_open_merge_requests_count(force: true)).to eq 2
       end
@@ -6593,13 +6549,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'with possible spam contribution' do
         context 'with comments' do
-          it_behaves_like 'schedules the record for deletion with the correct delay' do
-            before do
-              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+          before do
+            allow(user).to receive(:has_possible_spam_contributions?).and_call_original
 
-              note = create(:note_on_issue, author: user)
-              create(:event, :commented, target: note, author: user)
-            end
+            note = create(:note_on_issue, author: user)
+            create(:event, :commented, target: note, author: user)
+          end
+
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          context 'when user is a placeholder' do
+            let(:user) { create(:user, :placeholder, note: "existing note") }
+
+            it_behaves_like 'schedules user for deletion without delay'
           end
         end
 

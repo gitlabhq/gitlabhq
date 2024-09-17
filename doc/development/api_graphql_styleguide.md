@@ -4,23 +4,37 @@ group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# GraphQL API style guide
+# Backend GraphQL API guide
 
-This document outlines the style guide for the GitLab [GraphQL API](../api/graphql/index.md).
+This document contains style and technical guidance for engineers implementing the backend of the [GitLab GraphQL API](../api/graphql/index.md).
 
-## Vision
+## Relation to REST API
 
-We want the GraphQL API to be the **primary** means of interacting
-programmatically with GitLab. To achieve this, it needs full coverage - anything
-possible in the REST API should also be possible in the GraphQL API.
+See the [GraphQL and REST APIs section](api_styleguide.md#graphql-and-rest-apis).
 
-To help us meet this vision, the frontend should use GraphQL in preference to
-the REST API for new features.
+## Versioning
+
 The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
 
-There are no plans to deprecate the REST API. To reduce the technical burden of
-supporting two APIs in parallel, they should share implementations as much as
-possible.
+## Learning GraphQL at GitLab
+
+Backend engineers who wish to learn GraphQL at GitLab should read this guide in conjunction with the
+[guides for the GraphQL Ruby gem](https://graphql-ruby.org/guides).
+Those guides teach you the features of the gem, and the information in it is generally not reproduced here.
+
+To learn about the design and features of GraphQL itself read [the guide on `graphql.org`](https://graphql.org/learn)
+which is an accessible but shortened version of information in the [GraphQL spec](https://spec.graphql.org).
+
+### Deep Dive
+
+In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
+on the GitLab [GraphQL API](../api/graphql/index.md) to share domain-specific knowledge
+with anyone who may work in this part of the codebase in the future. You can find the
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
+[Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
+and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf).
+Specific details have changed since then, but it should still serve as a good introduction.
 
 ## How GitLab implements GraphQL
 
@@ -35,17 +49,6 @@ details see [GraphQL Pro subscription](graphql_guide/graphql_pro.md).
 All GraphQL queries are directed to a single endpoint
 ([`app/controllers/graphql_controller.rb#execute`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app%2Fcontrollers%2Fgraphql_controller.rb)),
 which is exposed as an API endpoint at `/api/graphql`.
-
-## Deep Dive
-
-In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on the GitLab [GraphQL API](../api/graphql/index.md) to share domain-specific knowledge
-with anyone who may work in this part of the codebase in the future. You can find the
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
-[Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
-and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf).
-Specific details may have changed since then, but it should still serve as a good introduction.
 
 ## GraphiQL
 

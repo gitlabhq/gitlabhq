@@ -25,7 +25,7 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 > - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
 
-Gets a list of [protected branches](../user/project/protected_branches.md) from a project
+Gets a list of [protected branches](../user/project/repository/branches/protected.md) from a project
 as they are defined in the UI. If a wildcard is set, it is returned instead of the exact name
 of the branches that match that wildcard.
 
@@ -321,7 +321,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
-form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md). These access levels allow [more granular control over protected branch access](../user/project/protected_branches.md).
+form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md). These access levels allow [more granular control over protected branch access](../user/project/repository/branches/protected.md).
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=1"
@@ -485,7 +485,7 @@ To update:
 
 - `user_id`: Ensure the updated user has access to the project. You must also pass the
   `id` of the `access_level` in the respective hash.
-- `group_id`: Ensure the updated group [has this project shared](../user/project/members/share_project_with_groups.md).
+- `group_id`: Ensure the updated group [has this project shared](../user/project/members/sharing_projects_groups.md).
   You must also pass the `id` of the `access_level` in the respective hash.
 
 To delete:
@@ -562,6 +562,6 @@ Example response:
 
 ## Related topics
 
-- [Protected branches](../user/project/protected_branches.md)
+- [Protected branches](../user/project/repository/branches/protected.md)
 - [Branches](../user/project/repository/branches/index.md)
 - [Branches API](branches.md)

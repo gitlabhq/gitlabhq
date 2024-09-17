@@ -95,12 +95,12 @@ export default {
     searchable
     is-check-centered
     :searching="loading"
-    :toggle-class="{ 'gl-border-1! gl-border-red-500!': !isValid, 'gl-text-gray-500!': !value }"
+    :toggle-class="{ '!gl-border-1 !gl-border-red-500': !isValid, '!gl-text-gray-500': !value }"
     @select="onSelect"
     @search="onSearch"
   >
     <template #list-item="{ item: { id, name, avatarUrl, fullPath } }">
-      <div class="gl-display-inline-flex gl-align-items-center">
+      <div class="gl-inline-flex gl-items-center">
         <project-avatar
           :alt="name"
           :project-avatar-url="avatarUrl"

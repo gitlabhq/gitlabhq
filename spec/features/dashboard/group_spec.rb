@@ -2,9 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
+
+  before do
+    current_organization.users << user
+  end
 
   context 'when user has no groups' do
     before do

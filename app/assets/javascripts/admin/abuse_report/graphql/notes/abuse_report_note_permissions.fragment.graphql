@@ -1,3 +1,0 @@
-fragment AbuseReportNotePermissions on NotePermissions {
-  resolveNote
-}

@@ -132,24 +132,14 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       ]);
     });
 
-    it('emits show-resource-details event on item select', async () => {
+    it('emits select-item event on item select', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(wrapper.emitted('show-resource-details')).toBeUndefined();
+      expect(wrapper.emitted('select-item')).toBeUndefined();
 
       findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
-      expect(wrapper.emitted('show-resource-details')).toEqual([[mockPodsTableItems[0]]]);
-    });
-
-    it('emits remove-selection event when receives it from the WorkloadTable component', async () => {
-      createWrapper();
-      await waitForPromises();
-
-      expect(wrapper.emitted('remove-selection')).toBeUndefined();
-
-      findWorkloadTable().vm.$emit('remove-selection');
-      expect(wrapper.emitted('remove-selection')).toHaveLength(1);
+      expect(wrapper.emitted('select-item')).toEqual([[mockPodsTableItems[0]]]);
     });
 
     it('emits delete-pod event when receives it from the WorkloadTable component', async () => {

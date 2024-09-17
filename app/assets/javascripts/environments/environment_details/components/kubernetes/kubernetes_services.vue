@@ -44,6 +44,11 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      k8sServices: [],
+    };
+  },
   computed: {
     servicesItems() {
       if (!this.k8sServices?.length) return [];
@@ -71,10 +76,7 @@ export default {
   },
   methods: {
     onItemSelect(item) {
-      this.$emit('show-resource-details', item);
-    },
-    onRemoveSelection() {
-      this.$emit('remove-selection');
+      this.$emit('select-item', item);
     },
   },
   i18n: {
@@ -100,7 +102,6 @@ export default {
       :page-size="$options.SERVICES_LIMIT_PER_PAGE"
       class="gl-mt-5"
       @select-item="onItemSelect"
-      @remove-selection="onRemoveSelection"
     />
   </gl-tab>
 </template>

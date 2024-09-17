@@ -16,6 +16,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
 
   describe "token creation" do
     it "allows creation of a token" do
+      create(:organization, :default)
       name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)

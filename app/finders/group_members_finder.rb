@@ -56,7 +56,7 @@ class GroupMembersFinder < UnionFinder
 
     if include_relations.include?(:shared_from_groups)
       related_groups[:shared_from_groups] =
-        if group.member?(user) && Feature.enabled?(:webui_members_inherited_users, user)
+        if group.member?(user)
           Group.shared_into_ancestors(group)
         else
           Group.shared_into_ancestors(group).public_or_visible_to_user(user)
@@ -107,7 +107,10 @@ class GroupMembersFinder < UnionFinder
     # with the group or its ancestors because the shared members cannot have access greater than the `group_group_links`
     # with itself or its ancestors.
     shared_members = GroupMember.non_request.of_groups(shared_from_groups)
-                                .with_group_group_sharing_access(group.self_and_ancestors)
+                                .with_group_group_sharing_access(
+                                  group.self_and_ancestors,
+                                  custom_role_for_group_link_enabled?(group)
+                                )
     # `members` and `shared_members` should have even select values
     find_union([members.select(Member.column_names), shared_members], GroupMember)
   end
@@ -138,6 +141,11 @@ class GroupMembersFinder < UnionFinder
 
   def static_roles_only?
     true
+  end
+
+  # overridden in EE
+  def custom_role_for_group_link_enabled?(_group)
+    false
   end
 end
 

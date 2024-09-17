@@ -234,11 +234,14 @@ module API
       end
       params do
         use :pagination
+        optional :ref, type: String,
+          desc: 'The name of a repository branch or tag, if not given the default branch is used',
+          documentation: { example: 'main' }
         optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Return contributors ordered by `name` or `email` or `commits`'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get ':id/repository/contributors' do
-        contributors = ::Kaminari.paginate_array(user_project.repository.contributors(order_by: params[:order_by], sort: params[:sort]))
+        contributors = ::Kaminari.paginate_array(user_project.repository.contributors(ref: params[:ref], order_by: params[:order_by], sort: params[:sort]))
         present paginate(contributors), with: Entities::Contributor
       rescue StandardError
         not_found!

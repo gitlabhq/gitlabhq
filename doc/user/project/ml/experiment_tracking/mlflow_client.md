@@ -65,20 +65,20 @@ If your training code is being run from a CI/CD job, GitLab can use that informa
 candidate metadata. To associate a candidate to a CI/CD job:
 
 1. In the [Project CI variables](../../../../ci/variables/index.md), include the following variables:
-    - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
-    - `MLFLOW_TRACKING_TOKEN`: `<your_access_token>`
+   - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
+   - `MLFLOW_TRACKING_TOKEN`: `<your_access_token>`
 
 1. In your training code within the run execution context, add the following code snippet:
 
-    ```python
-    with mlflow.start_run(run_name=f"Candidate {index}"):
-      # Your training code
+   ```python
+   with mlflow.start_run(run_name=f"Candidate {index}"):
+     # Your training code
 
-      # Start of snippet to be included
-      if os.getenv('GITLAB_CI'):
-        mlflow.set_tag('gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
-      # End of snippet to be included
-    ```
+     # Start of snippet to be included
+     if os.getenv('GITLAB_CI'):
+       mlflow.set_tag('gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
+     # End of snippet to be included
+   ```
 
 ## Model registry
 

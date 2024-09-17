@@ -247,7 +247,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#show_no_ssh_key_message?' do
     context 'user has no keys' do
       it 'returns true' do
-        expect(helper.show_no_ssh_key_message?).to be_truthy
+        expect(helper.show_no_ssh_key_message?(project)).to be_truthy
       end
     end
 
@@ -255,7 +255,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns false' do
         create(:personal_key, user: user)
 
-        expect(helper.show_no_ssh_key_message?).to be_falsey
+        expect(helper.show_no_ssh_key_message?(project)).to be_falsey
       end
     end
   end
@@ -300,7 +300,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns message prompting user to set password or set up a PAT' do
         stub_application_setting(password_authentication_enabled_for_git?: true)
 
-        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To <a href="/help/topics/git/terminology#pull-and-push" target="_blank" rel="noopener noreferrer">push and pull</a> over HTTP with Git using this account, you must <a href="/-/user_settings/password/edit">set a password</a> or <a href="/-/user_settings/personal_access_tokens">set up a personal access token</a> to use instead of a password. For more information, see <a href="/help/gitlab-basics/start-using-git#clone-with-https" target="_blank" rel="noopener noreferrer">Clone with HTTPS</a>.')
+        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must <a href="/-/user_settings/password/edit">set a password</a> or <a href="/-/user_settings/personal_access_tokens">set up a personal access token</a> to use instead of a password.')
       end
     end
 
@@ -308,7 +308,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns message prompting user to set up a PAT' do
         stub_application_setting(password_authentication_enabled_for_git?: false)
 
-        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To <a href="/help/topics/git/terminology#pull-and-push" target="_blank" rel="noopener noreferrer">push and pull</a> over HTTP with Git using this account, you must <a href="/-/user_settings/personal_access_tokens">set up a personal access token</a> to use instead of a password. For more information, see <a href="/help/gitlab-basics/start-using-git#clone-with-https" target="_blank" rel="noopener noreferrer">Clone with HTTPS</a>.')
+        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must <a href="/-/user_settings/personal_access_tokens">set up a personal access token</a> to use instead of a password.')
       end
     end
   end
@@ -868,6 +868,54 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       context 'the :show_terraform_banner feature flag is disabled' do
         before do
           stub_feature_flags(show_terraform_banner: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#show_lfs_misconfiguration_banner?' do
+    before do
+      allow(project).to receive(:lfs_enabled?).and_return(true)
+    end
+
+    subject { helper.show_lfs_misconfiguration_banner?(project) }
+
+    it { is_expected.to be_falsey }
+
+    context 'when the project contains an lfs_object' do
+      before do
+        create(:lfs_objects_project, project: project)
+      end
+
+      context 'when it does not have a .gitattributes file' do
+        before do
+          allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+        end
+
+        it { is_expected.to be_truthy }
+
+        context 'when lfs is not enabled' do
+          before do
+            allow(project).to receive(:lfs_enabled?).and_return(false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when lfs_misconfiguration_banner feature flag is disabled' do
+          before do
+            stub_feature_flags(lfs_misconfiguration_banner: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'when it does have a .gitattributes file' do
+        before do
+          allow(project.repository).to receive(:has_gitattributes?).and_return(true)
         end
 
         it { is_expected.to be_falsey }

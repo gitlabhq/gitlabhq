@@ -285,7 +285,8 @@ module Gitlab
           read_repository: %i[download_code],
           write_repository: %i[download_code push_code],
           create_runner: %i[create_instance_runner create_runner],
-          manage_runner: %i[assign_runner update_runner delete_runner]
+          manage_runner: %i[assign_runner update_runner delete_runner],
+          ai_workflows: %i[push_code download_code]
         }
 
         scopes.flat_map do |scope|

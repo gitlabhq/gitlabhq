@@ -133,7 +133,7 @@ export default {
     </div>
     <ul
       v-else
-      class="gl-list-none gl-pl-0 gl-border-t-1 gl-border-t-solid gl-border-t-gray-100"
+      class="gl-list-none gl-border-t-1 gl-border-t-gray-100 gl-pl-0 gl-border-t-solid"
       :class="{ 'gl-opacity-5': isLoadingMore }"
       data-testid="groups-list"
     >
@@ -146,7 +146,7 @@ export default {
       />
     </ul>
 
-    <div class="gl-flex gl-justify-center gl-mt-5">
+    <div class="gl-mt-5 gl-flex gl-justify-center">
       <gl-pagination
         v-if="showPagination"
         v-model="page"

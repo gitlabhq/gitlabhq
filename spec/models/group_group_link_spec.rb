@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupGroupLink do
+RSpec.describe GroupGroupLink, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
+  let_it_be(:nested_group) { create(:group, parent: group) }
   let_it_be(:shared_group) { create(:group) }
 
   describe 'validation' do
@@ -168,6 +169,14 @@ RSpec.describe GroupGroupLink do
         expect(distinct_group_group_links).to include(group_group_link_4)
       end
     end
+
+    describe '.for_shared_with_groups' do
+      let_it_be(:link) { create(:group_group_link) }
+
+      it 'returns links shared with the groups passed in' do
+        expect(described_class.for_shared_with_groups(link.shared_with_group)).to contain_exactly(link)
+      end
+    end
   end
 
   describe '#human_access' do
@@ -183,6 +192,20 @@ RSpec.describe GroupGroupLink do
     let_it_be(:group_group_link) { create(:group_group_link, :reporter, shared_with_group: group) }
 
     it { expect(described_class.search(group.name)).to eq([group_group_link]) }
+    it { expect(described_class.search('not-a-group-name')).to be_empty }
+  end
+
+  describe 'search by parent group name without `include_parents` option' do
+    let_it_be(:group_group_link) { create(:group_group_link, :reporter, shared_with_group: nested_group) }
+
+    it { expect(described_class.search(group.name)).to be_empty }
+    it { expect(described_class.search('not-a-group-name')).to be_empty }
+  end
+
+  describe 'search by parent group name with `include_parents` option' do
+    let_it_be(:group_group_link) { create(:group_group_link, :reporter, shared_with_group: nested_group) }
+
+    it { expect(described_class.search(group.name, include_parents: true)).to eq([group_group_link]) }
     it { expect(described_class.search('not-a-group-name')).to be_empty }
   end
 end

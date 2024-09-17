@@ -192,7 +192,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role in the group.
+- You must have the Owner role for the group.
 
 Use this API to manage group specific member roles. You can only create member roles at the root level of the group.
 

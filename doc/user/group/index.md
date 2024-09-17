@@ -261,7 +261,7 @@ If you change your mind before your request is approved, select
 
 ## View group members
 
-To view the direct and inherited members of a group:
+To view members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -275,7 +275,7 @@ A table displays the member's:
   For example, if a member has been added to the group both directly and through inheritance,
   the member is displayed twice in the **Members** table, with different sources,
   and is counted as two individual members of the group.
-- [**Max role**](../project/members/index.md#which-roles-you-can-assign) in the group.
+- [**Role**](../project/members/index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
 
@@ -302,7 +302,7 @@ In lists of group members, entries can display the following badges:
 1. Select **Manage > Members**.
 1. Above the list of members, in the **Filter members** text box, enter your search criteria. To view:
    - Direct members of the group, select **Membership = Direct**.
-   - Members of the group and its subgroups, select **Membership = Inherited**.
+   - Inherited, shared, and inherited shared members of the group, select **Membership = Indirect**.
    - Members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **2FA = Disabled**.
    - Members of the top-level group who are [enterprise users](../enterprise_user/index.md), select **Enterprise = true**.
 
@@ -317,7 +317,7 @@ You can search for members by name, username, or [public email](../profile/index
 
 ### Sort members in a group
 
-You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
+You can sort members by **Account**, **Access granted**, **Role**, or **Last sign-in**.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -329,6 +329,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 ## Add users to a group
 
 > - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 You can give a user access to all projects in a group.
 

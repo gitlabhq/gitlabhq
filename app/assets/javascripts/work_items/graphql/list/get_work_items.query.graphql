@@ -1,0 +1,88 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/list/work_item_widgets.fragment.graphql"
+
+query getWorkItems(
+  $fullPath: ID!
+  $search: String
+  $sort: WorkItemSort
+  $state: IssuableState
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $confidential: Boolean
+  $labelName: [String!]
+  $milestoneTitle: [String!]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $types: [IssueType!]
+  $in: [IssuableSearchableField!]
+  $not: NegatedWorkItemFilterInput
+  $or: UnionedWorkItemFilterInput
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    workItems(
+      includeDescendants: true
+      search: $search
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      in: $in
+      not: $not
+      or: $or
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        author {
+          id
+          avatarUrl
+          name
+          username
+          webUrl
+          webPath
+        }
+        closedAt
+        confidential
+        createdAt
+        iid
+        namespace {
+          id
+          fullPath
+        }
+        reference(full: true)
+        state
+        title
+        updatedAt
+        webUrl
+        widgets {
+          type
+          ...WorkItemWidgets
+        }
+        workItemType {
+          id
+          name
+        }
+      }
+    }
+  }
+}

@@ -10,15 +10,13 @@ import { frecentGroupsMock } from '../../../mock_data';
 
 Vue.use(VueApollo);
 
-describe('FrequentlyVisitedGroups', () => {
-  let wrapper;
+const TEST_GROUPS_PATH = '/mock/group/path';
 
-  const groupsPath = '/mock/group/path';
-  const currentUserFrecentGroupsQueryHandler = jest.fn().mockResolvedValue({
-    data: {
-      frecentGroups: frecentGroupsMock,
-    },
-  });
+describe('FrequentlyVisitedGroups', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
+  let wrapper;
+  /** @type {jest.Mock} */
+  let currentUserFrecentGroupsQueryHandler;
 
   const createComponent = (options) => {
     const mockApollo = createMockApollo([
@@ -28,7 +26,7 @@ describe('FrequentlyVisitedGroups', () => {
     wrapper = shallowMount(FrequentGroups, {
       apolloProvider: mockApollo,
       provide: {
-        groupsPath,
+        groupsPath: TEST_GROUPS_PATH,
       },
       ...options,
     });
@@ -40,6 +38,14 @@ describe('FrequentlyVisitedGroups', () => {
     ...wrapperInstance.vm.$attrs,
   });
 
+  beforeEach(() => {
+    currentUserFrecentGroupsQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        frecentGroups: frecentGroupsMock,
+      },
+    });
+  });
+
   it('passes group-specific props', () => {
     createComponent();
 
@@ -48,7 +54,7 @@ describe('FrequentlyVisitedGroups', () => {
       groupName: 'Frequently visited groups',
       viewAllItemsIcon: 'group',
       viewAllItemsText: 'View all my groups',
-      viewAllItemsPath: groupsPath,
+      viewAllItemsPath: TEST_GROUPS_PATH,
     });
   });
 
@@ -93,6 +99,24 @@ describe('FrequentlyVisitedGroups', () => {
     it('emits action on click', () => {
       findFrequentItems().vm.$emit('action');
       expect(wrapper.emitted('action')).toStrictEqual([['FREQUENTLY_VISITED_GROUPS_HANDLE']]);
+    });
+  });
+
+  describe('when query returns null', () => {
+    beforeEach(async () => {
+      currentUserFrecentGroupsQueryHandler = jest.fn().mockResolvedValue({
+        data: {
+          frecentGroups: null,
+        },
+      });
+
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    it('renders with empty array', () => {
+      expect(findFrequentItems().props('items')).toEqual([]);
     });
   });
 });

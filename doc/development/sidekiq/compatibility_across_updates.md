@@ -223,12 +223,12 @@ schedule these jobs have stopped running. See also [other examples](../database/
 
 We should treat this similar to adding a new worker. That means we only start scheduling the newly-named worker after the Sidekiq deployment finishes.
 
-   To ensure backward and forward compatibility between consecutive versions
+To ensure backward and forward compatibility between consecutive versions
 of the application, follow these steps over three minor releases:
 
 1. Create the newly named worker, and have the old worker call the new worker's `#perform` method. Introduce a feature flag to control when we start scheduling the new worker. (Release M)
 
-    Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it, an old-Sidekiq will use the old worker's full implementation, a new-Sidekiq will delegate to the new worker.
+   Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it, an old-Sidekiq will use the old worker's full implementation, a new-Sidekiq will delegate to the new worker.
 
 1. Enable the feature flag for GitLab.com, and after that prepare an MR to enable it by default. (Release M+1)
 1. Remove the old worker class and the feature flag. (Release M+2)

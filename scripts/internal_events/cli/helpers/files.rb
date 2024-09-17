@@ -26,28 +26,45 @@ module InternalEventsCli
 
       def file_saved_message(verb, filepath)
         attributes = YAML.safe_load(File.read(filepath))
-        errors = self.class::SCHEMA.validate(attributes)
 
-        return "    #{format_selection(verb)} #{filepath}" if errors.none?
-
-        format_prefix "    ", <<~TEXT
-          #{format_selection(verb)} #{filepath}
-
-          #{errors.map { |e| [format_warning('!! WARNING: '), JSONSchemer::Errors.pretty(e)].join }.join("\n")}
-
-            These errors will cause one of the following specs to fail and should be resolved before merging your changes:
-              - spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb
-              - spec/support/shared_examples/config/metrics/every_metric_definition_shared_examples.rb
-        TEXT
+        format_prefix "    ", [
+          file_saved_success_message(verb, filepath),
+          file_saved_context_message(attributes),
+          file_saved_validations_message(attributes)
+        ].compact.join("\n")
       end
 
       def write_to_file(filepath, content, verb)
         File.write(filepath, content)
 
-        file_saved_message(verb, filepath).tap do |message|
-          cli.say message
+        file_saved_message(verb, filepath).tap do |_message|
           cli.global.reload_definitions
         end
+      end
+
+      private
+
+      def file_saved_success_message(verb, filepath)
+        "#{format_selection(verb)} #{filepath}"
+      end
+
+      def file_saved_context_message(_attributes)
+        # Override in definition class
+      end
+
+      def file_saved_validations_message(attributes)
+        errors = self.class::SCHEMA.validate(attributes)
+
+        return '' unless errors.any?
+
+        <<~TEXT
+
+          #{errors.map { |e| [format_warning('!! WARNING: '), JSONSchemer::Errors.pretty(e)].join }.join("\n")}
+
+          These errors will cause one of the following specs to fail and should be resolved before merging your changes:
+            - spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb
+            - spec/support/shared_examples/config/metrics/every_metric_definition_shared_examples.rb
+        TEXT
       end
     end
   end

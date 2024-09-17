@@ -22,6 +22,7 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
+- Enforce consistent secret detection rules across projects using [security policies](../../policies/index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this pipeline secret detection documentation see:
 
@@ -155,6 +156,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Manage vulnerabilities](../../vulnerability_report/index.md)                                        | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Access the Security Dashboard](../../security_dashboard/index.md)                                   | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Customize analyzer rulesets](#customize-analyzer-rulesets)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Enable security policies](../../policies/index.md)                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ### Enable the analyzer
 
@@ -295,9 +297,8 @@ DETAILS:
 **Tier:** Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
->   Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
->   GitLab 14.8.
+> - Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/336395) support for passthrough chains and included additional passthrough types of `git` and `url` in GitLab 17.2.
 
 You can customize the behavior of pipeline secret detection by [creating a ruleset configuration file](#create-a-ruleset-configuration-file),
@@ -429,6 +430,8 @@ include:
 variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/remote-ruleset-project"
 ```
+
+The group access token must have the `read_repository` scope and at least the Reporter role. For details, see [Repository permissions](../../../../user/permissions.md#repository).
 
 See [bot users for groups](../../../../user/group/settings/group_access_tokens.md#bot-users-for-groups) to learn how to find the username associated with a group access token.
 
@@ -713,6 +716,78 @@ For example:
 ```ruby
  "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
 ```
+
+#### Detecting complex strings
+
+The [default ruleset](#detected-secrets) provides patterns to detect structured strings with a low rate of false positives.
+However, you might want to detect more complex strings like passwords. Because [Gitleaks doesn't support lookahead or lookbehind](https://github.com/google/re2/issues/411),
+writing a high-confidence, general rule to detect unstructured strings is not possible.
+
+Although you can't detect every complex string, you can extend your ruleset to meet specific use cases.
+
+For example, this rule modifies the [`generic-api-key` rule](https://github.com/gitleaks/gitleaks/blob/4e43d1109303568509596ef5ef576fbdc0509891/config/gitleaks.toml#L507-L514) from the Gitleaks default ruleset:
+
+```regex
+(?i)(?:pwd|passwd|password)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}(?:=|>|=:|:{1,3}=|\|\|:|<=|=>|:|\?=)(?:'|\"|\s|=|\x60){0,5}([0-9a-z\-_.=\S_]{3,50})(?:['|\"|\n|\r|\s|\x60|;]|$)
+```
+
+This regular expression matches:
+
+1. A case-insensitive identifier that starts with `pwd`, or `passwd` or `password`. You can adjust this with other variations like `secret` or `key`.
+1. A suffix that follows the identifier. The suffix is a combination of digits, letters, and symbols, and is between zero and 23 characters long.
+1. Commonly used assignment operators, like `=`, `:=`, `:`, or `=>`.
+1. A secret prefix, often used as a boundary to help with detecting the secret.
+1. A string of digits, letters, and symbols, which is between three and 50 characters long. This is the secret itself. If you expect longer strings, you can adjust the length.
+1. A secret suffix, often used as a boundary. This matches common endings like ticks, line breaks, and new lines.
+
+Here are example strings which are matched by this regular expression:
+
+```plaintext
+pwd = password1234
+passwd = 'p@ssW0rd1234'
+password = thisismyverylongpassword
+password => mypassword
+password := mypassword
+password: password1234
+"password" = "p%ssward1234"
+'password': 'p@ssW0rd1234'
+```
+
+To use this regex, extend your ruleset with one of the methods documented on this page.
+
+For example, imagine you wish to extend the default ruleset [with a local ruleset](#with-a-local-ruleset-1) that includes this rule.
+
+Add the following to a `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository. Adjust the `value` to point to the path of the extended configuration file:
+
+```toml
+# .gitlab/secret-detection-ruleset.toml
+[secrets]
+  [[secrets.passthrough]]
+    type   = "file"
+    target = "gitleaks.toml"
+    value  = "extended-gitleaks-config.toml"
+```
+
+In `extended-gitleaks-config.toml` file, add a new `[[rules]]` section with the regular expression you want to use:
+
+```toml
+# extended-gitleaks-config.toml
+[extend]
+# Extends default packaged ruleset, NOTE: do not change the path.
+path = "/gitleaks.toml"
+
+[[rules]]
+  description = "Generic Password Rule"
+  id = "generic-password"
+  regex = '''(?i)(?:pwd|passwd|password)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}(?:=|>|=:|:{1,3}=|\|\|:|<=|=>|:|\?=)(?:'|\"|\s|=|\x60){0,5}([0-9a-z\-_.=\S_]{3,50})(?:['|\"|\n|\r|\s|\x60|;]|$)'''
+  entropy = 3.5
+  keywords = ["pwd", "passwd", "password"]
+```
+
+NOTE:
+This example configuration is provided only for convenience, and might not work
+for all use cases. If you configure your ruleset to detect complex strings, you might
+create a large number of false positives, or fail to capture certain patterns.
 
 ### Available CI/CD variables
 

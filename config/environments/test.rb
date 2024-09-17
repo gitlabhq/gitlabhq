@@ -14,7 +14,6 @@ Rails.application.configure do
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RobotsBlockerMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestInspectorMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::ClearProcessMemoryCacheMiddleware)
-
   config.middleware.insert_before(
     ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}, %r{^/v2$}, %r{^/v2/}]
   )

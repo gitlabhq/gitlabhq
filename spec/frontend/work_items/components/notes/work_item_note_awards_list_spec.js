@@ -19,7 +19,7 @@ Vue.use(VueApollo);
 
 describe('Work Item Note Awards List', () => {
   let wrapper;
-  const { workItem } = mockWorkItemNotesResponseWithComments.data.workspace;
+  const { workItem } = mockWorkItemNotesResponseWithComments().data.workspace;
   const firstNote = workItem.widgets.find((w) => w.type === 'NOTES').discussions.nodes[0].notes
     .nodes[0];
   const fullPath = 'test-project-path';
@@ -57,7 +57,7 @@ describe('Work Item Note Awards List', () => {
     apolloProvider.clients.defaultClient.writeQuery({
       query,
       variables: { fullPath, iid: workItemIid },
-      ...mockWorkItemNotesResponseWithComments,
+      ...mockWorkItemNotesResponseWithComments(),
     });
 
     wrapper = shallowMount(WorkItemNoteAwardsList, {

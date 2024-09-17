@@ -1,0 +1,13 @@
+<%= @email_instance.salutation %>
+
+<% options = {
+    inviter: sanitize_name(@member.created_by.name),
+    strong_start: '',
+    strong_end: ''
+  }.merge(reminder_common_body_options(@member))
+%>
+
+<%= format(@email_instance.body_text, options.merge(@email_instance.extra_body_options(@member.created_at.to_date))) %>
+
+<%= s_('InviteReminderEmail|Accept invitation: %{invite_url}') % { invite_url: invite_url(@token) } %>
+<%= s_('InviteReminderEmail|Decline invitation: %{decline_url}') % { decline_url: decline_invite_url(@token) } %>

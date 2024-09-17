@@ -219,6 +219,13 @@ module InternalEventsCli
       end
     end
 
+    def file_saved_context_message(attributes)
+      format_prefix "  ", <<~TEXT.chomp
+        - Visit #{format_info('https://metrics.gitlab.com')} to find dashboard links for this metric
+        - Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}
+      TEXT
+    end
+
     # Check existing event files for attributes to copy over
     def prompt_for_copying_event_properties
       shared_values = collect_values_for_shared_event_properties
@@ -297,16 +304,20 @@ module InternalEventsCli
       new_page!
 
       outcome = outcomes.any? ? outcomes.compact.join("\n") : '  No files saved.'
+      metric = @metrics.first
 
       cli.say <<~TEXT
         #{divider}
         #{format_info('Done with metric definitions!')}
 
         #{outcome}
-
         #{divider}
 
           Have you instrumented the application code to trigger the event yet? View usage examples to easily copy/paste implementation!
+
+          Want to verify the metrics? Check out the group::#{metric[:product_group]} Metrics Exploration Dashboard in Tableau
+            Note: The Metrics Exploration Dashboard data would be available ~1 week after deploy for Gitlab.com, ~1 week after next release for self-managed
+            Link: #{format_info(metric_exploration_group_path(metric[:product_group], find_stage(metric.product_group)))}
 
           Typical flow: Define event > Define metric > Instrument app code > Merge/Deploy MR > Verify data in Tableau/Snowflake
 

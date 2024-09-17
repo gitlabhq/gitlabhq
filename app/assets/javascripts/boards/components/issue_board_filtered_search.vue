@@ -34,17 +34,21 @@ import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   types: {
     ISSUE: 'ISSUE',
     INCIDENT: 'INCIDENT',
+    TASK: 'TASK',
   },
   i18n: {
     incident: __('Incident'),
     issue: __('Issue'),
+    task: __('Task'),
   },
   components: { BoardFilteredSearch },
+  mixins: [glFeatureFlagMixin()],
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
   props: {
     board: {
@@ -64,9 +68,18 @@ export default {
   },
   computed: {
     tokensCE() {
-      const { issue, incident } = this.$options.i18n;
+      const { issue, incident, task } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
+
+      const typeOptions = [
+        { icon: 'issue-type-issue', value: types.ISSUE, title: issue },
+        { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
+      ];
+
+      if (this.glFeatures.workItemsBeta) {
+        typeOptions.push({ icon: 'issue-type-task', value: types.TASK, title: task });
+      }
 
       const tokens = [
         {
@@ -160,10 +173,7 @@ export default {
           type: TOKEN_TYPE_TYPE,
           token: GlFilteredSearchToken,
           unique: true,
-          options: [
-            { icon: 'issue-type-issue', value: types.ISSUE, title: issue },
-            { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
-          ],
+          options: typeOptions,
         },
         {
           type: TOKEN_TYPE_RELEASE,

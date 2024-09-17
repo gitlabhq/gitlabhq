@@ -1,6 +1,7 @@
 <script>
 import {
   GlAlert,
+  GlButton,
   GlFormGroup,
   GlFormInput,
   GlFormInputGroup,
@@ -8,17 +9,19 @@ import {
   GlProgressBar,
   GlTooltip,
 } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '../services/upload_model';
-import { emptyArtifactFile } from '../constants';
+import { UPLOAD_STATUS as STATUS } from '../constants';
 
 export default {
   name: 'ImportArtifactZone',
   components: {
     GlAlert,
+    GlButton,
     GlIcon,
     GlTooltip,
     GlFormGroup,
@@ -42,108 +45,175 @@ export default {
       required: false,
       default: true,
     },
-    value: {
-      type: Object,
-      required: false,
-      default: () => emptyArtifactFile,
-    },
   },
   data() {
     return {
-      file: this.value.file,
-      subfolder: this.value.subfolder,
-      alert: null,
-      progressLoaded: null,
-      progressTotal: null,
+      uploads: [],
+      states: [],
+      loads: [],
+      errors: [],
+      subfolder: '',
     };
   },
   computed: {
-    formattedFileSize() {
-      return numberToHumanSize(this.file.size);
-    },
-    formattedProgressLoaded() {
-      return `${numberToHumanSize(this.progressLoaded)} / ${numberToHumanSize(this.progressTotal)}`;
-    },
-    fileFullpath() {
-      return joinPaths(encodeURIComponent(this.subfolder), encodeURIComponent(this.file.name));
-    },
-    progressPercentage() {
-      return Math.round((this.progressLoaded * 100) / this.progressTotal);
-    },
-    loading() {
-      return this.progressLoaded !== null;
-    },
     subfolderValid() {
       return !(this.subfolder && !/^\S+$/.test(this.subfolder));
     },
+    allCompleted() {
+      return this.states.every(
+        (s) => s === STATUS.FAILED || s === STATUS.CANCELED || s === STATUS.SUCCEEDED,
+      );
+    },
+    alert() {
+      if (!this.states.length) {
+        return null;
+      }
+      const someRunning = this.states.some((s) => s === STATUS.CREATING);
+
+      if (someRunning) {
+        return null;
+      }
+
+      const allSucceeded = this.states.every((s) => s === STATUS.SUCCEEDED);
+      if (allSucceeded) {
+        return {
+          message: this.$options.i18n.allSucceeded,
+          variant: 'success',
+        };
+      }
+
+      const allFailedOrCanceled = this.states.every(
+        (s) => s === STATUS.FAILED || s === STATUS.CANCELED,
+      );
+      if (allFailedOrCanceled) {
+        return {
+          message: this.$options.i18n.allFailedOrCanceled,
+          variant: 'danger',
+        };
+      }
+      return {
+        message: this.$options.i18n.someFailed,
+        variant: 'warning',
+      };
+    },
   },
   methods: {
-    resetFile() {
-      this.progressTotal = null;
-      this.progressLoaded = null;
-      this.discardFile();
+    buildUploads(files) {
+      this.states = new Array(files.length).fill(STATUS.CREATING);
+      this.loads = new Array(files.length).fill(0);
+      this.errors = new Array(files.length).fill(null);
+
+      this.uploads = Array.from(files).map((file, index) => {
+        const upload = {
+          file,
+          total: file.size,
+          axiosSource: axios.CancelToken.source(),
+          formattedFileSize: numberToHumanSize(file.size),
+          fullPath: joinPaths(encodeURIComponent(this.subfolder), encodeURIComponent(file.name)),
+        };
+        upload.cancelUpload = () => {
+          if (this.states[index] === STATUS.PROCESSING) {
+            upload.axiosSource.cancel();
+          } else if (this.states[index] === STATUS.CREATING) {
+            this.states.splice(index, 1, STATUS.CANCELED);
+            this.errors.splice(index, 1, this.$options.i18n.cancelMessage);
+          }
+        };
+        upload.onUploadProgress = (event) => {
+          this.loads.splice(index, 1, event.loaded);
+        };
+        upload.progressPercentage = () => {
+          return Math.round((this.loads[index] * 100) / upload.total);
+        };
+        upload.formattedProgressLoaded = () => {
+          return `${numberToHumanSize(this.loads[index])} / ${numberToHumanSize(upload.total)}`;
+        };
+        upload.isCancelable = () => {
+          return (
+            (this.states[index] === STATUS.CREATING || this.states[index] === STATUS.PROCESSING) &&
+            upload.progressPercentage() < 100
+          );
+        };
+        upload.loading = () => this.states[index] === STATUS.PROCESSING;
+        upload.succeeded = () => this.states[index] === STATUS.SUCCEEDED;
+        upload.failed = () => this.states[index] === STATUS.FAILED;
+        upload.canceled = () => this.states[index] === STATUS.CANCELED;
+
+        return upload;
+      });
+      this.files = [];
     },
-    onUploadProgress(progressEvent) {
-      this.progressTotal = progressEvent.total;
-      this.progressLoaded = progressEvent.loaded;
+    uploadArtifact(importPath) {
+      this.states = this.states.map((state) => {
+        if (state === STATUS.CREATING) {
+          return STATUS.PROCESSING;
+        }
+
+        return state;
+      });
+      return Promise.allSettled(
+        this.uploads.map((upload, index) => this.uploadSingle(importPath, upload, index)),
+      ).then(() => this.$emit('change'));
     },
-    submitRequest(importPath) {
-      this.progressLoaded = 0;
-      this.progressTotal = this.file.size;
-      uploadModel({
+    uploadSingle(importPath, upload, index) {
+      if (this.states[index] !== STATUS.PROCESSING) {
+        return Promise.resolve();
+      }
+      return uploadModel({
         importPath,
-        file: this.file,
+        file: upload.file,
         subfolder: this.subfolder,
         maxAllowedFileSize: this.maxAllowedFileSize,
-        onUploadProgress: this.onUploadProgress,
+        onUploadProgress: upload.onUploadProgress,
+        cancelToken: upload.axiosSource.token,
       })
         .then(() => {
-          this.resetFile();
-          this.alert = { message: this.$options.i18n.successfulUpload, variant: 'success' };
-          this.$emit('change');
+          this.states.splice(index, 1, STATUS.SUCCEEDED);
         })
         .catch((error) => {
-          this.resetFile();
-          this.alert = { message: error, variant: 'danger' };
+          if (axios.isCancel(error)) {
+            this.states.splice(index, 1, STATUS.CANCELED);
+            this.errors.splice(index, 1, this.$options.i18n.cancelMessage);
+          } else {
+            this.states.splice(index, 1, STATUS.FAILED);
+            this.errors.splice(index, 1, error);
+          }
         });
-    },
-    emitInput(value) {
-      this.$emit('input', { ...value });
     },
     changeSubfolder(subfolder) {
       this.subfolder = subfolder;
-      this.emitInput({ file: this.file, subfolder });
     },
-    uploadFile(file) {
-      this.file = file;
-      this.emitInput({ file, subfolder: this.subfolder });
-
+    changeFile(files) {
+      this.buildUploads(files);
       if (this.submitOnSelect && this.path) {
-        this.submitRequest(this.path);
+        this.uploadArtifact(this.path);
       }
     },
-    hideAlert() {
-      this.alert = null;
-    },
-    discardFile() {
-      this.file = null;
+    reset() {
+      this.uploads = [];
+      this.states = [];
+      this.loads = [];
+      this.errors = [];
       this.subfolder = '';
-      this.emitInput(emptyArtifactFile);
     },
   },
   i18n: {
     dropToStartMessage: s__('MlModelRegistry|Drop to start upload'),
-    uploadSingleMessage: s__(
-      'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
-    ),
-    subfolderLabel: s__('MlModelRegistry|Subfolder (optional)'),
-    successfulUpload: s__('MlModelRegistry|Uploaded files successfully'),
+    cancelMessage: s__('MlModelRegistry|User canceled upload.'),
+    cancelButtonText: __('Cancel'),
+    clearButtonText: __('Clear uploads'),
+    uploadMessage: s__('MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifacts to attach'),
+    subfolderLabel: s__('MlModelRegistry|Subfolder'),
+    allSucceeded: s__('MlModelRegistry|Artifact uploaded successfully.'),
+    allFailedOrCanceled: s__('MlModelRegistry|All artifact uploads failed or were canceled.'),
+    someFailed: s__('MlModelRegistry|Artifact uploads completed with errors.'),
     subfolderPlaceholder: s__('MlModelRegistry|folder name'),
     subfolderTooltip: s__(
       "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder",
     ),
     subfolderInvalid: s__('MlModelRegistry|Subfolder cannot contain spaces'),
     subfolderDescription: s__('MlModelRegistry|Enter a subfolder name to organize your artifacts.'),
+    optionalText: s__('MlModelRegistry|(Optional)'),
   },
   validFileMimetypes: [],
 };
@@ -158,8 +228,11 @@ export default {
       :description="subfolderValid ? $options.i18n.subfolderDescription : ''"
     >
       <div>
-        <label for="subfolderId" class="gl-font-weight-bold" data-testid="subfolderLabel">{{
+        <label for="subfolderId" class="gl-font-bold" data-testid="subfolderLabel">{{
           $options.i18n.subfolderLabel
+        }}</label>
+        <label class="gl-font-normal" data-testid="subfolderLabelOptional">{{
+          $options.i18n.optionalText
         }}</label>
         <gl-icon id="toolTipSubfolderId" v-gl-tooltip name="information-o" tabindex="0" />
         <gl-tooltip target="toolTipSubfolderId">
@@ -179,24 +252,62 @@ export default {
       </div>
     </gl-form-group>
     <upload-dropzone
-      single-file-selection
       :valid-file-mimetypes="$options.validFileMimetypes"
-      :upload-single-message="$options.i18n.uploadSingleMessage"
+      :upload-multiple-message="$options.i18n.uploadMessage"
       :drop-to-start-message="$options.i18n.dropToStartMessage"
       :is-file-valid="() => true"
-      @change="uploadFile"
+      @change="changeFile"
     >
-      <gl-alert v-if="file" variant="success" :dismissible="!loading" @dismiss="discardFile">
-        <gl-progress-bar v-if="progressLoaded" :value="progressPercentage" />
-        <div v-if="progressLoaded" data-testid="formatted-progress">
-          {{ formattedProgressLoaded }}
+      <div v-if="uploads.length">
+        <div v-for="(upload, index) in uploads" :key="index" class="py-3 gl-border-b">
+          <div class="row">
+            <div :data-testid="`file-name-${index}`" class="col-md-4">{{ upload.fullPath }}</div>
+            <gl-progress-bar
+              :data-testid="`progress-${index}`"
+              :value="upload.progressPercentage()"
+              class="col-md-4 mt-3 px-0"
+            />
+            <div
+              v-if="upload.loading()"
+              :data-testid="`formatted-progress-${index}`"
+              class="col-md-2 text-right"
+            >
+              {{ upload.formattedProgressLoaded() }}
+            </div>
+            <div v-else :data-testid="`formatted-file-size-${index}`" class="col-md-2 text-right">
+              {{ upload.formattedFileSize }}
+            </div>
+            <div class="col-md-2 text-right">
+              <gl-button
+                v-if="upload.isCancelable()"
+                :data-testid="`cancel-button-${index}`"
+                category="secondary"
+                variant="danger"
+                class="mb-2"
+                @click="upload.cancelUpload"
+                >{{ $options.i18n.cancelButtonText }}
+              </gl-button>
+              <gl-icon v-if="upload.succeeded()" name="status_success" variant="success" />
+              <gl-icon v-if="upload.failed()" name="status_failed" variant="danger" />
+              <gl-icon v-if="upload.canceled()" name="status_canceled" variant="warning" />
+            </div>
+          </div>
+          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 text-secondary">
+            {{ errors[index] }}
+          </p>
         </div>
-        <div v-else data-testid="formatted-file-size">{{ formattedFileSize }}</div>
-        <div data-testid="file-name">{{ fileFullpath }}</div>
-      </gl-alert>
-      <gl-alert v-if="alert" :variant="alert.variant" :dismissible="true" @dismiss="hideAlert">
-        {{ alert.message }}
-      </gl-alert>
+        <gl-button
+          v-if="allCompleted"
+          data-testid="clear-button"
+          category="secondary"
+          @click="reset"
+        >
+          {{ $options.i18n.clearButtonText }}
+        </gl-button>
+      </div>
     </upload-dropzone>
+    <gl-alert v-if="alert" data-testid="alert" :variant="alert.variant" @dismiss="reset">
+      {{ alert.message }}
+    </gl-alert>
   </div>
 </template>

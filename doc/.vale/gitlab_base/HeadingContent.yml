@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.HeadingContent
+# Warning: gitlab_base.HeadingContent
 #
 # Checks for generic, unhelpful subheadings.
 #

@@ -1,0 +1,11 @@
+@@ -2,9 +2,7 @@ require 'sinatra'
+ 
+ get '/file/:filename' do
+   filename = params['filename']
+-  # Sanitize the filename to prevent path traversal
+-  safe_filename = File.basename(filename)
+-  file_path = File.join(\"./files\", safe_filename)
++  file_path = File.join(\"./files\", filename)
+ 
+   if File.exist?(file_path) && file_path.start_with?(\"./files/\")
+     send_file(file_path)

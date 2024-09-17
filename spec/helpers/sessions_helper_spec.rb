@@ -69,6 +69,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
 
     it 'returns the expected data' do
       expect(helper.verification_data(user)).to eq({
+        username: user.username,
         obfuscated_email: obfuscated_email(user.email),
         verify_path: helper.session_path(:user),
         resend_path: users_resend_verification_code_path,

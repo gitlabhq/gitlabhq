@@ -5,7 +5,7 @@ class QueuePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migration[
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
 
   MIGRATION = "PurgeSecurityScansWithEmptyFindingData"
   DELAY_INTERVAL = 2.minutes

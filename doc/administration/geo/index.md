@@ -36,7 +36,7 @@ Implementing Geo provides the following benefits:
 
 - Reduce from minutes to seconds the time taken for your distributed developers to clone and fetch large repositories and projects.
 - Enable all of your developers to contribute ideas and work in parallel, no matter where they are.
-- Balance the read-only load between your **primary** and **secondary** sites.
+- Balance the read load between your **primary** and **secondary** sites.
 
 In addition, it:
 
@@ -74,9 +74,9 @@ Keep in mind that:
 - **Secondary** sites talk to the **primary** site to:
   - Get user data for logins (API).
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
-- The **primary** site doesn't talk to **secondary** sites to notify for changes (API).
+- The **primary** site talks to the **secondary** sites for viewing replication details. The **primary** does a GraphQL query against the **secondary** site for sync and verification data (API).
 - You can push directly to a **secondary** site (for both HTTP and SSH,
-  including Git LFS).
+  including Git LFS), and it will proxy the requests to the **primary** site.
 - There are [limitations](#limitations) when using Geo.
 
 ### Architecture
@@ -99,12 +99,16 @@ In this diagram:
 From the perspective of a user performing Git operations:
 
 - The **primary** site behaves as a full read-write GitLab instance.
-- **Secondary** sites are read-only but proxy Git push operations to the **primary** site. This makes **secondary** sites appear to support push operations themselves.
-- **Secondary** sites proxy web UI requests to the primary. This makes the **secondary** sites appear to support full UI read/write operations.
+- **Secondary** sites behave as full read-write GitLab instances. **Secondary** sites transparently proxy all operations to the **primary** site, with [some notable exceptions](secondary_proxy/index.md#features-accelerated-by-secondary-geo-sites). In particular, Git fetches are served by the **secondary** site when it is up-to-date.
+
+From the perspective of a user browsing the GitLab UI, or using the API:
+
+- The **primary** site behaves as a full read-write GitLab instance.
+- **Secondary** sites behave as full read-write GitLab instances. **Secondary** sites transparently proxy all operations to the **primary** site, with [some notable exceptions](secondary_proxy/index.md#features-accelerated-by-secondary-geo-sites). In particular, web UI assets are served by the **secondary** site.
 
 To simplify the diagram, some necessary components are omitted.
 
-- Git over SSH requires [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell) and OpenSSH.
+- Git over SSH requires [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell).
 - Git over HTTPS required [`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
 A **secondary** site needs two different PostgreSQL databases:
@@ -208,16 +212,23 @@ This list of limitations only reflects the latest version of GitLab. If you are 
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
   GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks.
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
-- Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
+- Real-time updates of issues/merge requests (for example, via long polling) doesn't work on **secondary** sites where [http proxying is disabled](secondary_proxy/index.md#disable-secondary-site-http-proxying).
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
-- [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to perform complete re-synchronization and re-configuration of all non-promoted secondaries to follow the new primary site.
+- [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
-- Backups [cannot be run on secondaries](replication/troubleshooting/replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
-- Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980).
+- Backups [cannot be run on Geo secondary sites](replication/troubleshooting/replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).
 - The Geo secondary site does not accelerate (serve) the clone request for the first stage of the pipeline in most cases. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In general, it does serve the clone request for subsequent stages. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) discusses the reasons for this and proposes an enhancement to increase the chance that Runner clone requests are served from the secondary site.
+- When a single Git repository receives pushes at a high-enough rate, the secondary site's local copy can be perpetually out-of-date. This causes all Git fetches of that repository to be forwarded to the primary site. See [GitLab issue #455870](https://gitlab.com/gitlab-org/gitlab/-/issues/455870).
+- [Proxying](secondary_proxy/index.md) is implemented only in the GitLab application in the Puma service or Web service, so other services do not benefit from this behavior. You should use a [separate URL](secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) to ensure requests are always sent to the primary. These services include:
+  - GitLab container registry - [can be configured to use a separate domain](../packages/container_registry.md#configure-container-registry-under-its-own-domain), such as `registry.example.com`. Secondary site container registries are intended only for disaster recovery. Users should not be routed to them, especially not for pushes, because the data is not propagated to the primary site.
+  - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../pages/index.md#prerequisites).
+- With a [unified URL](secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
+- When a [secondary site uses a separate URL](secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
+- Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
+- Some customers have reported that `git fetch` over SSH when the secondary site is out of date hangs and/or times out and fails. `git clone` requests over SSH are not impacted. For more information, see [issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707). A fix available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 
 ### Limitations on replication/verification
 
@@ -292,9 +303,9 @@ For information on using Geo in disaster recovery situations to mitigate data-lo
 
 For more information on how to replicate the container registry, see [Container registry for a **secondary** site](replication/container_registry.md).
 
-### Geo secondary proxy
+### Set up a unified URL for Geo sites
 
-For more information on using Geo proxying on secondary sites, see [Geo proxying for secondary sites](secondary_proxy/index.md).
+For an example of how to set up a single, location-aware URL with AWS Route53 or Google Cloud DNS, see [Set up a unified URL for Geo sites](secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites).
 
 ### Single Sign On (SSO)
 
@@ -311,10 +322,6 @@ For more information on Geo security, see [Geo security review](replication/secu
 ### Tuning Geo
 
 For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
-
-### Set up a location-aware Git URL
-
-For an example of how to set up a location-aware Git remote URL with AWS Route53, see [Location-aware Git remote URL with AWS Route53](replication/location_aware_git_url.md).
 
 ### Backfill
 

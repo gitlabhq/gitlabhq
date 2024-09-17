@@ -18,7 +18,7 @@ module TimeboxesHelper
 
   def milestone_badge_variant(milestone)
     if milestone.closed?
-      :danger
+      :info
     elsif milestone.expired?
       :warning
     elsif milestone.upcoming?
@@ -91,7 +91,7 @@ module TimeboxesHelper
   def milestone_progress_bar(milestone)
     render Pajamas::ProgressComponent.new(
       value: milestone.percent_complete,
-      variant: :success
+      variant: :primary
     )
   end
 
@@ -168,6 +168,12 @@ module TimeboxesHelper
     recent_releases = milestone.releases.recent.filter { |release| Ability.allowed?(user, :read_release, release) }
     more_count = total_count - recent_releases.size
     [recent_releases, total_count, more_count]
+  end
+
+  def milestone_releases_tooltip_list(releases, more_count = 0)
+    list = releases.map(&:name).join(", ")
+    list += format(_(", and %{number} more"), number: more_count) if more_count > 0
+    list
   end
 
   def milestone_tooltip_due_date(milestone)

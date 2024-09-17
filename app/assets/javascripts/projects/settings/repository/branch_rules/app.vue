@@ -2,11 +2,16 @@
 import { GlButton, GlModal, GlModalDirective, GlDisclosureDropdown } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import {
+  BRANCH_RULE_DETAILS_LABEL,
+  PROTECTED_BRANCH,
+} from '~/projects/settings/branch_rules/tracking/constants';
 import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRule from './components/branch_rule.vue';
@@ -46,6 +51,8 @@ export default {
   inject: {
     projectPath: { default: '' },
     branchRulesPath: { default: '' },
+    showStatusChecks: { default: false },
+    showApprovers: { default: false },
   },
   data() {
     return {
@@ -58,13 +65,15 @@ export default {
         { text: this.$options.i18n.branchName, action: () => this.openCreateRuleModal() },
       ];
 
-      [this.$options.i18n.allBranches, this.$options.i18n.allProtectedBranches].forEach(
-        (branch) => {
-          if (!this.hasPredefinedBranchRule(branch)) {
-            items.push(this.createPredefinedBrachRulesItem(branch));
-          }
-        },
-      );
+      if (this.showApprovers || this.showStatusChecks) {
+        [this.$options.i18n.allBranches, this.$options.i18n.allProtectedBranches].forEach(
+          (branch) => {
+            if (!this.hasPredefinedBranchRule(branch)) {
+              items.push(this.createPredefinedBrachRulesItem(branch));
+            }
+          },
+        );
+      }
 
       return items;
     },
@@ -133,6 +142,9 @@ export default {
           },
         })
         .then(() => {
+          InternalEvents.trackEvent(PROTECTED_BRANCH, {
+            label: BRANCH_RULE_DETAILS_LABEL,
+          });
           visitUrl(this.getBranchRuleEditPath(name));
         })
         .catch(() => {

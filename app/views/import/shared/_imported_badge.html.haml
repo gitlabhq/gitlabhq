@@ -2,6 +2,6 @@
 - text_only = local_assigns.fetch(:text_only, false)
 
 - if text_only
-  %span.has-tooltip.gl-leading-normal.gl-font-sm{ title: tooltip_title }= _('Imported')
+  %span.has-tooltip.gl-leading-normal.gl-text-sm{ title: tooltip_title }= _('Imported')
 - else
   = render Pajamas::BadgeComponent.new(_('Imported'), title: tooltip_title, class: 'has-tooltip')

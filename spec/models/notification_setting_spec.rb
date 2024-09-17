@@ -167,6 +167,24 @@ RSpec.describe NotificationSetting do
     end
   end
 
+  describe '.reset_email_for_user!' do
+    subject { described_class.reset_email_for_user!(email_1) }
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:email_1) { create(:email, :confirmed, user: user) }
+    let_it_be(:email_2) { create(:email, :confirmed, user: user) }
+    let(:notification_setting_1) { create(:notification_setting, notification_email: email_1.email, user: user) }
+    let(:notification_setting_2) { create(:notification_setting, notification_email: email_2.email, user: user) }
+
+    it 'replaces given email with nil' do
+      expect { subject }.to change { notification_setting_1.reload.notification_email }.from(email_1.email).to(nil)
+    end
+
+    it 'does not replace other emails' do
+      expect { subject }.not_to change { notification_setting_2.reload.notification_email }
+    end
+  end
+
   describe '.email_events' do
     subject { described_class.email_events }
 

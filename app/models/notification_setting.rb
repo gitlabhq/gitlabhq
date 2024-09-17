@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class NotificationSetting < ApplicationRecord
+  include EachBatch
   include FromUnion
 
   enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }, _default: :global
@@ -84,6 +85,15 @@ class NotificationSetting < ApplicationRecord
     setting
   end
 
+  def self.reset_email_for_user!(email)
+    where(
+      user_id: email.user_id,
+      notification_email: email.email
+    ).each_batch(of: 500) do |relation|
+      relation.update_all(notification_email: nil)
+    end
+  end
+
   # Allow people to receive both failed pipeline/fixed pipeline notifications
   # if they already have custom notifications enabled,
   # as these are more like mentions than the other custom settings.
@@ -111,7 +121,7 @@ class NotificationSetting < ApplicationRecord
 
   def notification_email_verified
     return if user.temp_oauth_email?
-    return if notification_email.empty?
+    return if notification_email.blank?
 
     errors.add(:notification_email, _("must be an email you have verified")) unless user.verified_emails.include?(notification_email)
   end

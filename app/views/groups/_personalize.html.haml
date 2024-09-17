@@ -13,10 +13,10 @@
 .row
   .form-group.col-sm-4
     = f.label :setup_for_company, _('Who will be using this group?')
-    .gl-display-flex.gl-flex-direction-column.gl-lg-flex-direction-row
-      .gl-flex-grow-1.gl-display-flex.gl-align-items-center
+    .gl-flex.gl-flex-col.lg:gl-flex-row
+      .gl-grow.gl-flex.gl-items-center
         = f.gitlab_ui_radio_component :setup_for_company, true, _('My company or team')
-      .gl-flex-grow-1.gl-display-flex.gl-align-items-center
+      .gl-grow.gl-flex.gl-items-center
         = f.gitlab_ui_radio_component :setup_for_company, false, _('Just me')
 
 .row

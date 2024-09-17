@@ -31,7 +31,7 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
 
       find('div#notes li.note div.note-text a').click
 
-      page.within('div#notes li.note .system-note-message') do
+      page.within('div#notes li.system-note .system-note-message') do
         expect(page).to have_content('mentioned in issue')
         expect(page.find('a')).to have_content(issue.to_reference)
       end
@@ -120,7 +120,7 @@ RSpec.describe 'Create notes on issues', :js, feature_category: :team_planning d
       it 'shows the user the reference' do
         visit project_issue_path(project, issue)
 
-        page.within('div#notes li.note .system-note-message') do
+        page.within('div#notes li.system-note .system-note-message') do
           expect(page).to have_content('closed with')
           expect(page.find('a')).to have_content(reference_content)
         end

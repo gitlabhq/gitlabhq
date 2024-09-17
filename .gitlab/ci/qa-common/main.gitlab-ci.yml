@@ -6,7 +6,7 @@ workflow:
 
 include:
   - local: .gitlab/ci/version.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.19.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@9.3.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -16,7 +16,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 8.19.0
+    ref: 9.3.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
@@ -139,28 +139,6 @@ stages:
   script:
     - bundle exec rake "ci:export_code_paths_mapping[$QA_CODE_PATHS_MAPPING_FILE_PATTERN]"
 
-.generate-test-session:
-  extends:
-    - .qa-install
-    - .ruby-image
-  stage: report
-  when: always
-  variables:
-    QA_RSPEC_JSON_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json"
-  script:
-    - |
-      bundle exec generate-test-session \
-        --input-files "${QA_RSPEC_JSON_FILE_PATTERN}" \
-        --project "gitlab-org/quality/testcase-sessions" \
-        --token "${QA_TEST_SESSION_TOKEN}" \
-        --ci-project-token "${GENERATE_TEST_SESSION_READ_API_REPORTER_TOKEN}" \
-        --issue-url-file report_issue_url.txt
-  artifacts:
-    when: always
-    expire_in: 1d
-    paths:
-      - qa/report_issue_url.txt
-
 .notify-slack:
   extends:
     - .notify-slack-qa
@@ -194,6 +172,17 @@ stages:
 # ==========================================
 # Pre stage
 # ==========================================
+.check-release-set:
+  stage: .pre
+  script:
+    - |
+      if [ -z "$RELEASE" ]; then
+        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
+        exit 1
+      else
+        echo "Omnibus installation image is set to '$RELEASE'"
+      fi
+
 dont-interrupt-me:
   stage: .pre
   interruptible: false

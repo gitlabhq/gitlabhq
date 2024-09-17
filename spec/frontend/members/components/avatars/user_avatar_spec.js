@@ -1,4 +1,4 @@
-import { GlAvatarLink, GlBadge } from '@gitlab/ui';
+import { GlAvatarLink, GlAvatarLabeled, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserAvatar from '~/members/components/avatars/user_avatar.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
@@ -7,6 +7,8 @@ import { member as memberMock, member2faEnabled, orphanedMember } from '../../mo
 
 describe('UserAvatar', () => {
   let wrapper;
+
+  const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
 
   const { user } = memberMock;
 
@@ -55,7 +57,7 @@ describe('UserAvatar', () => {
   it("renders user's avatar", () => {
     createComponent();
 
-    expect(wrapper.find('img').attributes('src')).toBe(
+    expect(findAvatarLabeled().attributes('src')).toBe(
       'https://www.gravatar.com/avatar/4816142ef496f956a277bedf1a40607b?s=80&d=identicon&width=96',
     );
   });

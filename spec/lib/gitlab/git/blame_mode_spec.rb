@@ -36,27 +36,11 @@ RSpec.describe Gitlab::Git::BlameMode, feature_category: :source_code_management
 
       it { is_expected.to be_falsey }
     end
-
-    context 'when `blame_page_pagination` is disabled' do
-      before do
-        stub_feature_flags(blame_page_pagination: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
   end
 
   describe '#full?' do
     subject { blame_mode.full? }
 
     it { is_expected.to be_falsey }
-
-    context 'when `blame_page_pagination` is disabled' do
-      before do
-        stub_feature_flags(blame_page_pagination: false)
-      end
-
-      it { is_expected.to be_truthy }
-    end
   end
 end

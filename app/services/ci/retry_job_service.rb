@@ -26,6 +26,7 @@ module Ci
       raise TypeError unless job.instance_of?(Ci::Build) || job.instance_of?(Ci::Bridge)
 
       check_access!(job)
+      variables = ensure_project_id!(variables)
 
       new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
       if enqueue_if_actionable && new_job.action?
@@ -63,6 +64,12 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def ensure_project_id!(variables)
+      variables.map do |variables|
+        variables.merge(project_id: project.id)
+      end
+    end
 
     def check_assignable_runners!(job); end
 

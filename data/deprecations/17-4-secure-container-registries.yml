@@ -1,0 +1,28 @@
+- title: "Public use of Secure container registries is deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.4"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470641
+  impact: low
+  scope: instance
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    Container registries under `registry.gitlab.com/gitlab-org/security-products/`
+    are no longer accessible in GitLab 18.0. [Since GitLab 14.8](https://docs.gitlab.com/ee/update/deprecations.html#secure-and-protect-analyzer-images-published-in-new-location)
+    the correct location is under `registry.gitlab.com/security-products` (note the absence of
+    `gitlab-org` in the address).
+
+    This change improves the security of the release process for GitLab [vulnerability scanners](https://docs.gitlab.com/ee/user/application_security/#vulnerability-scanner-maintenance).
+
+    Users are advised to use the equivalent registry under `registry.gitlab.com/security-products/`,
+    which is the canonical location for GitLab security scanner images. The relevant GitLab CI
+    templates already use this location, so no changes should be necessary for users that use the
+    unmodified templates.
+
+    Offline deployments should review the [specific scanner instructions](https://docs.gitlab.com/ee/user/application_security/offline_deployments/#specific-scanner-instructions)
+    to ensure the correct locations are being used to mirror the required scanner images.
+  tiers: [Free, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/index.html#vulnerability-scanner-maintenance

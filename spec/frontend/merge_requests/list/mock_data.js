@@ -58,6 +58,18 @@ export const getQueryResponse = {
             },
             milestone: null,
             headPipeline: null,
+            commitCount: 1,
+            conflicts: false,
+            sourceBranchExists: true,
+            targetBranchExists: true,
+            approved: false,
+            approvedBy: {
+              nodes: [
+                {
+                  id: 1,
+                },
+              ],
+            },
           },
         ],
       },

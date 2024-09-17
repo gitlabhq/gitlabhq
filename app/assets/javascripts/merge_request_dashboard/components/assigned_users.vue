@@ -91,7 +91,7 @@ export default {
       const currentUser = this.isCurrentUser(user);
       const thisIsYouText = currentUser ? __('This is you.') : '';
 
-      let titleType = 'default';
+      let titleType;
 
       if (this.type === 'ASSIGNEES') {
         titleType = this.type;
@@ -100,7 +100,7 @@ export default {
       }
 
       return sprintf(
-        USER_TOOLTIP_TITLES[titleType],
+        USER_TOOLTIP_TITLES[titleType] || USER_TOOLTIP_TITLES.default,
         {
           name: user.name,
           you: thisIsYouText,
@@ -118,7 +118,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-justify-center mr-users-list">
+  <div class="mr-users-list gl-flex gl-justify-center">
     <gl-avatars-inline
       v-if="sortedUsers.length"
       :avatars="sortedUsers"
@@ -136,17 +136,17 @@ export default {
           class="gl-relative"
           data-testid="assigned-user"
         >
-          <gl-avatar :src="user.avatarUrl" :size="32" />
+          <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-white" />
           <span
             v-if="isCurrentUser(user)"
-            class="gl-absolute -gl-top-2 -gl-left-2 gl-rounded-full gl-p-1 gl-w-5 gl-h-5 gl-flex gl-justify-center gl-items-center gl-bg-blue-500 gl-text-white"
+            class="gl-absolute -gl-left-2 -gl-top-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-bg-blue-500 gl-p-1 gl-text-white"
             data-testid="current-user"
           >
             <gl-icon name="user" class="gl-block" :size="12" />
           </span>
           <span
             v-if="reviewStateIcon(user)"
-            class="gl-absolute -gl-bottom-2 -gl-right-2 gl-rounded-full gl-p-1 gl-w-5 gl-h-5 gl-flex gl-justify-center gl-items-center"
+            class="gl-absolute -gl-bottom-2 -gl-right-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
             :class="reviewStateIcon(user).class"
             data-testid="review-state-icon"
           >

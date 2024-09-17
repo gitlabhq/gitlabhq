@@ -23,10 +23,6 @@ The check is always on; you don't have to set it up.
 
 Your text is checked for the following secret types:
 
-- GitLab [personal access tokens](../../../../security/token_overview.md#personal-access-tokens)
+- GitLab [personal access tokens](../../../../security/tokens/index.md#personal-access-tokens)
   - If a [personal access token prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
-- GitLab [feed tokens](../../../../security/token_overview.md#feed-token)
-
-## Related topics
-
-- [Push rules](../../../project/repository/push_rules.md)
+- GitLab [feed tokens](../../../../security/tokens/index.md#feed-token)

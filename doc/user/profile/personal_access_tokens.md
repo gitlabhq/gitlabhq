@@ -43,7 +43,7 @@ Use impersonation tokens to automate authentication as a specific user.
 > - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
 WARNING:
-The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information, see the documentation on [when personal access tokens expire](#when-personal-access-tokens-expire).
+The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
 
 You can create as many personal access tokens as you like.
 
@@ -52,7 +52,7 @@ You can create as many personal access tokens as you like.
 1. On the left sidebar, select **Access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
-   - The token expires on that date at midnight UTC.
+   - The token expires on that date at midnight UTC.A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date.
 1. Select the [desired scopes](#personal-access-token-scopes).
@@ -72,7 +72,7 @@ https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+A
 ```
 
 WARNING:
-Personal access tokens must be treated carefully. Read our [token security considerations](../../security/token_overview.md#security-considerations)
+Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ## Revoke a personal access token
@@ -127,7 +127,7 @@ In GitLab 17.3 and later, you can use the Admin UI to disable personal access to
 
 Prerequisites:
 
-- You must have the Owner role in the group that the enterprise user belongs to.
+- You must have the Owner role for the group that the enterprise user belongs to.
 
 Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/index.md):
 
@@ -194,9 +194,9 @@ A personal access token can perform actions based on the assigned scopes.
 WARNING:
 If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
-## When personal access tokens expire
+## Access token expiration
 
-Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
+Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
@@ -245,7 +245,7 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 ### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
+You can [create a personal access token for a service account](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
 NOTE:
 Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
@@ -254,7 +254,7 @@ Allowing personal access tokens for service accounts to be created with no expir
 
 Prerequisites:
 
-- You must have the Owner role in the top-level group.
+- You must have the Owner role for the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General > Permissions and group features**.

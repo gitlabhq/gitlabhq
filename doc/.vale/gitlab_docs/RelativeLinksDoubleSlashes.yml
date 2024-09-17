@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.RelativeLinksDoubleSlashes
+# Error: gitlab_docs.RelativeLinksDoubleSlashes
 #
 # Checks for the presence of double slashes in relative URLs.
 #

@@ -97,7 +97,7 @@ export default {
       v-gl-tooltip="{ title: pipelineTooltipText(pipeline) }"
       :status="pipelineStatus(pipeline)"
       :show-tooltip="false"
-      class="linked-pipeline-mini-item gl-mb-0!"
+      class="linked-pipeline-mini-item !gl-mb-0"
       data-testid="linked-pipeline-mini-item"
     />
 
@@ -106,7 +106,7 @@ export default {
       v-gl-tooltip="{ title: counterTooltipText }"
       :title="counterTooltipText"
       :href="pipelinePath"
-      class="gl-align-items-center gl-bg-gray-50 gl-inline-flex gl-font-sm gl-h-6 gl-justify-content-center gl-rounded-pill gl-text-decoration-none gl-text-gray-500 gl-w-7 linked-pipelines-counter linked-pipeline-mini-item"
+      class="linked-pipelines-counter linked-pipeline-mini-item gl-inline-flex gl-h-6 gl-w-7 gl-items-center gl-justify-center gl-rounded-pill gl-bg-gray-50 gl-text-sm gl-text-gray-500 gl-no-underline"
       data-testid="linked-pipeline-counter"
     >
       {{ counterLabel }}

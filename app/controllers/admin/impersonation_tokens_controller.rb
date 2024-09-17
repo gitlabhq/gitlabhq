@@ -14,6 +14,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   def create
     @impersonation_token = finder.build(impersonation_token_params)
+    @impersonation_token.organization = Current.organization
 
     if @impersonation_token.save
       render json: { new_token: @impersonation_token.token,

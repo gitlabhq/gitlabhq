@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-flex gl-flex-col gl-mt-5 gl-pb-5 gl-border-b gl-relative">
+  <li class="gl-border-b gl-relative gl-mt-5 gl-flex gl-flex-col gl-pb-5">
     <div class="gl-flex gl-items-center">
       <gl-avatar-link :href="author.web_url" class="gl-grow">
         <gl-avatar-labeled
@@ -52,10 +52,10 @@ export default {
           :size="24"
         />
       </gl-avatar-link>
-      <time-ago-tooltip :time="event.created_at" class="gl-text-sm gl-text-secondary gl-mt-2" />
+      <time-ago-tooltip :time="event.created_at" class="gl-mt-2 gl-text-sm gl-text-secondary" />
     </div>
     <div class="gl-pl-7" data-testid="event-body">
-      <div class="gl-text-gray-500 gl-text-sm">
+      <div class="gl-text-sm gl-text-gray-500">
         <gl-icon :name="iconName" />
         <gl-sprintf v-if="message" :message="message">
           <template #targetLink>

@@ -155,6 +155,14 @@ RSpec.describe Feature::Definition do
         .to raise_error(/Feature flag is missing name/)
     end
 
+    it "when one flag has an invalid milestone it does raise exception" do
+      attributes['milestone'] = 17.1
+      write_feature_flag(store1, path, yaml_content)
+
+      expect { subject }
+        .to raise_error(/Feature flag 'feature_flag' milestone must be a string/)
+    end
+
     def write_feature_flag(store, path, content)
       path = File.join(store, path)
       dir = File.dirname(path)

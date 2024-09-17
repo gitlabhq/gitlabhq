@@ -153,7 +153,7 @@ export default {
 <template>
   <li>
     <div
-      class="gl-display-flex gl-justify-content-space-between"
+      class="gl-flex gl-justify-between"
       data-testid="branch-content"
       :data-qa-branch-name="name"
     >
@@ -168,12 +168,12 @@ export default {
           $options.i18n.protectedLabel
         }}</gl-badge>
 
-        <ul v-if="hasApprovalDetails" class="gl-pl-6 gl-mt-2 gl-mb-0 gl-text-gray-500">
+        <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-gray-500">
           <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
         </ul>
       </div>
       <gl-button
-        class="gl-align-self-start"
+        class="gl-self-start"
         category="tertiary"
         size="small"
         data-testid="details-button"

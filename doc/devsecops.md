@@ -42,6 +42,8 @@ For details, see [this article about DevSecOps](https://about.gitlab.com/topics/
 
 If your organization is facing any of the following challenges, a DevSecOps approach might be for you.
 
+<!-- Do not delete the double spaces at the end of these lines. They improve the rendered view. -->
+
 - **Development, security, and operations teams are siloed.**  
   If development and operations are isolated from security issues,
   they can't build secure software. And if security teams aren't part of the development process,

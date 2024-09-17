@@ -56,7 +56,7 @@ export default {
         text: this.$options.i18n.leaveBtnTitle,
         action: this.onLeaveGroup,
         extraAttrs: {
-          class: 'gl-text-red-500!',
+          class: '!gl-text-red-500',
           'data-testid': `leave-group-${this.group.id}-btn`,
         },
       };
@@ -66,7 +66,7 @@ export default {
         text: this.$options.i18n.removeBtnTitle,
         href: this.removeButtonHref,
         extraAttrs: {
-          class: 'gl-text-red-500!',
+          class: '!gl-text-red-500',
           'data-testid': `remove-group-${this.group.id}-btn`,
         },
       };
@@ -87,7 +87,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end gl-ml-5" @click.stop>
+  <div class="gl-ml-5 gl-flex gl-justify-end" @click.stop>
     <gl-disclosure-dropdown
       v-gl-tooltip.hover.focus="$options.i18n.optionsDropdownTitle"
       icon="ellipsis_v"

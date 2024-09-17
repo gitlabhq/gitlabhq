@@ -267,7 +267,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
   end
 
-  describe '#projects_visible_to_user' do
+  context 'for projecs visibile to user' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user) }
@@ -275,8 +275,6 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be_with_reload(:project1) { create(:project, namespace: group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
-
-    subject { finder.projects_visible_to_user(user, within_group: group) }
 
     shared_examples 'returning both projects' do
       it { is_expected.to contain_exactly(project1, project2) }
@@ -286,70 +284,103 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it { is_expected.to eq [project1] }
     end
 
+    shared_examples 'returning project2' do
+      it { is_expected.to eq [project2] }
+    end
+
     shared_examples 'returning no project' do
       it { is_expected.to be_empty }
     end
 
-    context 'with a user' do
-      let_it_be(:user) { create(:user) }
+    describe '#projects_visible_to_user' do
+      subject { finder.projects_visible_to_user(user, within_group: group) }
 
-      where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :maintainer | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :developer  | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :guest      | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning project1'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning project1'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning project1'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning project1'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no project'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no project'
-      end
-
-      with_them do
-        before do
-          unless user_role == :anonymous
-            group.send("add_#{user_role}", user)
-            subgroup.send("add_#{user_role}", user)
-            project1.send("add_#{user_role}", user)
-            project2.send("add_#{user_role}", user)
-          end
-
-          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+      context 'with a user' do
+        where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :maintainer | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :developer  | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :guest      | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning project1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning project1'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no project'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no project'
         end
 
-        it_behaves_like params[:shared_example_name]
+        with_them do
+          before do
+            unless user_role == :anonymous
+              group.send("add_#{user_role}", user)
+              subgroup.send("add_#{user_role}", user)
+              project1.send("add_#{user_role}", user)
+              project2.send("add_#{user_role}", user)
+            end
+
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          end
+
+          it_behaves_like params[:shared_example_name]
+        end
+      end
+
+      context 'with a group deploy token' do
+        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
+        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
+        end
+
+        with_them do
+          before do
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          end
+
+          it_behaves_like params[:shared_example_name]
+        end
       end
     end
 
-    context 'with a group deploy token' do
-      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+    describe '#projects_visible_to_user_including_public_registries' do
+      subject { finder.projects_visible_to_user_including_public_registries(user, within_group: group) }
 
-      where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
+      before do
+        [subgroup, group, project1, project2].each do |entity|
+          entity.update!(visibility_level: Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+        end
+        project1.project_feature.update!(package_registry_access_level: project1_package_registry_access_level)
+        project2.project_feature.update!(package_registry_access_level: project2_package_registry_access_level)
+      end
+
+      where(:project1_package_registry_access_level, :project2_package_registry_access_level, :shared_example_name) do
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::PUBLIC   | 'returning both projects'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::PRIVATE  | 'returning project1'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::DISABLED | 'returning project1'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::ENABLED  | 'returning project1'
+        ::ProjectFeature::PRIVATE  | ::ProjectFeature::PUBLIC   | 'returning project2'
+        ::ProjectFeature::DISABLED | ::ProjectFeature::PUBLIC   | 'returning project2'
+        ::ProjectFeature::ENABLED  | ::ProjectFeature::PUBLIC   | 'returning project2'
+        ::ProjectFeature::PRIVATE  | ::ProjectFeature::PRIVATE  | 'returning no project'
       end
 
       with_them do
-        before do
-          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-        end
-
         it_behaves_like params[:shared_example_name]
       end
     end

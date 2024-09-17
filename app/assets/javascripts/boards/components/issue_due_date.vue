@@ -91,7 +91,7 @@ export default {
     <span
       ref="issueDueDate"
       :class="cssClass"
-      class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help"
+      class="board-card-info gl-mr-3 gl-cursor-help gl-text-secondary"
     >
       <gl-icon
         :class="{ 'gl-text-danger': isPastDue }"
@@ -101,7 +101,7 @@ export default {
       <time
         :class="{ 'gl-text-danger': isPastDue }"
         datetime="date"
-        class="gl-font-sm board-card-info-text"
+        class="board-card-info-text gl-text-sm"
         >{{ body }}</time
       >
     </span>

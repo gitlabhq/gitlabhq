@@ -42,12 +42,14 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
+  include WorkItems::Parent
   include UpdatedAtFilterable
   include IgnorableColumns
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
   include SafelyChangeColumnDefault
+  include Todoable
 
   columns_changing_default :organization_id
 
@@ -420,10 +422,6 @@ class Project < ApplicationRecord
   has_many :cluster_agents, class_name: 'Clusters::Agent'
   has_many :ci_access_project_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization'
 
-  has_many :prometheus_metrics
-  has_many :prometheus_alerts, inverse_of: :project
-  has_many :prometheus_alert_events, inverse_of: :project
-
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project
 
@@ -632,9 +630,8 @@ class Project < ApplicationRecord
   validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validate :changing_shared_runners_enabled_is_allowed
-  validates :repository_storage,
-    presence: true,
-    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+  validate :parent_organization_match, if: :require_organization?
+  validates :repository_storage, presence: true, inclusion: { in: ->(_) { Gitlab.config.repositories.storages.keys } }
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
@@ -849,6 +846,9 @@ class Project < ApplicationRecord
 
   scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_project_namespace, ->(project_namespace) { where(project_namespace_id: project_namespace) }
+  scope :by_any_overlap_with_traversal_ids, ->(traversal_ids) {
+    joins_namespace.where('namespaces.traversal_ids::bigint[] && ARRAY[?]::bigint[]', traversal_ids)
+  }
 
   scope :not_a_fork, -> {
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
@@ -1699,6 +1699,13 @@ class Project < ApplicationRecord
     end
   end
 
+  def parent_organization_match
+    return unless parent
+    return if parent.organization_id == organization_id
+
+    errors.add(:organization_id, _("must match the parent organization's ID"))
+  end
+
   def shared_runners_setting_conflicting_with_group?
     shared_runners_enabled && group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE
   end
@@ -2400,13 +2407,8 @@ class Project < ApplicationRecord
 
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
-    job_id = if Feature.enabled?(:parallel_project_export, current_user)
-               Projects::ImportExport::CreateRelationExportsWorker
+    job_id = Projects::ImportExport::CreateRelationExportsWorker
                  .perform_async(current_user.id, self.id, after_export_strategy, params)
-             else
-               ProjectExportWorker
-                 .perform_async(current_user.id, self.id, after_export_strategy, params)
-             end
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -3005,6 +3007,17 @@ class Project < ApplicationRecord
     environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
+  def batch_loaded_environment_by_name(name)
+    # This code path has caused N+1s in the past, since environments are only indirectly
+    # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
+    # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
+    BatchLoader.for(name).batch(key: id) do |names, loader, args|
+      Environment.where(name: names, project: args[:key]).find_each do |environment|
+        loader.call(environment.name, environment)
+      end
+    end
+  end
+
   def latest_jira_import
     jira_imports.last
   end
@@ -3430,6 +3443,7 @@ class Project < ApplicationRecord
       self.topics.delete_all
       self.topics = @topic_list.map do |topic_name|
         Projects::Topic
+          .for_organization(organization_id)
           .where('lower(name) = ?', topic_name.downcase)
           .order(total_projects_count: :desc)
           .first_or_create(name: topic_name, title: topic_name, slug: Gitlab::Slug::Path.new(topic_name).generate)

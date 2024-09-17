@@ -301,7 +301,6 @@ Layout/ClassStructure:
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/time_to_merge.rb'
     - 'ee/lib/gitlab/auth/group_saml/response_check.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/license.rb'
-    - 'ee/lib/gitlab/ci/runners_availability_builder.rb'
     - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/expiring_subscription_message.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'

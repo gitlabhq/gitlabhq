@@ -133,6 +133,7 @@ module Support
         [:vulnerability, :with_cluster_image_scanning_finding],
         [:vulnerability, :with_findings],
         [:vulnerability_export, :finished],
+        [:vulnerabilities_finding_signature, :finding], # https://gitlab.com/gitlab-org/gitlab/-/issues/473014
         [:member_role, :instance] # this trait is not available for saas
       ].freeze
     end
@@ -167,9 +168,6 @@ module Support
         project_namespace
         project_repository
         project_security_setting
-        prometheus_alert
-        prometheus_alert_event
-        prometheus_metric
         protected_branch
         protected_branch_merge_access_level
         protected_branch_push_access_level

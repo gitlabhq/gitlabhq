@@ -2,12 +2,13 @@
 
 module PersonalAccessTokens
   class CreateService < BaseService
-    def initialize(current_user:, target_user:, params: {}, concatenate_errors: true)
+    def initialize(current_user:, target_user:, organization_id:, params: {}, concatenate_errors: true)
       @current_user = current_user
       @target_user = target_user
       @params = params.dup
       @ip_address = @params.delete(:ip_address)
       @concatenate_errors = concatenate_errors
+      @organization_id = organization_id
     end
 
     def execute
@@ -29,14 +30,15 @@ module PersonalAccessTokens
 
     private
 
-    attr_reader :target_user, :ip_address
+    attr_reader :target_user, :ip_address, :organization_id
 
     def personal_access_token_params
       {
         name: params[:name],
         impersonation: params[:impersonation] || false,
         scopes: params[:scopes],
-        expires_at: pat_expiration
+        expires_at: pat_expiration,
+        organization_id: organization_id
       }
     end
 

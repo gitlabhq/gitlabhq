@@ -261,7 +261,7 @@ You can now make requests to the API with the access token returned.
 
 ### Device authorization grant flow
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`. 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/468479) by default in 17.3.
 
 FLAG:
@@ -487,7 +487,7 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 A token with [scope](../integration/oauth_provider.md#view-all-authorized-applications)
 `read_repository` or `write_repository` can access Git over HTTPS. Use the token as the password.
-The username must be `oauth2`. The username must not be your username:
+You can set the username to any string value. You should use `oauth2`:
 
 ```plaintext
 https://oauth2:<your_access_token>@gitlab.example.com/project_path/project_name.git
@@ -507,15 +507,15 @@ You must supply the access token, either:
 
 - As a parameter:
 
-   ```plaintext
-   GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
-   ```
+  ```plaintext
+  GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
+  ```
 
 - In the Authorization header:
 
-   ```shell
-   curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
-   ```
+  ```shell
+  curl --header "Authorization: Bearer <OAUTH-TOKEN>" "https://gitlab.example.com/oauth/token/info"
+  ```
 
 The following is an example response:
 

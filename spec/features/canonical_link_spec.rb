@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Canonical link', feature_category: :remote_development do
+RSpec.describe 'Canonical link', feature_category: :workspaces do
   include Features::CanonicalLinkHelpers
 
   let_it_be(:user) { create(:user) }

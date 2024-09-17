@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-bg-subtle gl-py-3 gl-px-5 gl-border-b">
+  <div class="gl-border-b gl-flex gl-items-center gl-bg-subtle gl-px-5 gl-py-3">
     <gl-avatars-inline :avatars="avatars" :avatar-size="24" :max-visible="5" badge-sr-only-text="">
       <template #avatar="{ avatar }">
         <gl-avatar-link
@@ -62,7 +62,7 @@ export default {
           <template #author>
             <gl-link
               :href="lastNote.author.path"
-              class="gl-text-body author-link js-user-link"
+              class="author-link js-user-link gl-text-primary"
               :data-user-id="lastNote.author.id"
               :data-username="lastNote.author.username"
             >

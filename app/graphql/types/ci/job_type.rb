@@ -278,5 +278,3 @@ module Types
     end
   end
 end
-
-Types::Ci::JobType.prepend_mod_with('Types::Ci::JobType')

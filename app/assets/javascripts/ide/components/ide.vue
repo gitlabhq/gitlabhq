@@ -134,7 +134,7 @@ export default {
 
 <template>
   <article
-    class="ide position-relative gl-flex flex-column align-items-stretch"
+    class="ide position-relative flex-column align-items-stretch gl-flex"
     :class="{ [`theme-${themeName}`]: themeName }"
   >
     <cannot-push-code-alert
@@ -143,7 +143,7 @@ export default {
       :action="canPushCodeStatus.action"
     />
     <error-message v-if="errorMessage" :message="errorMessage" />
-    <div class="ide-view flex-grow gl-flex">
+    <div class="ide-view gl-flex gl-grow">
       <template v-if="loadDeferred">
         <find-file
           :files="allBlobs"

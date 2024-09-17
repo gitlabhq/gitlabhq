@@ -1,0 +1,13 @@
+---
+table_name: issues_self_managed_prometheus_alert_events
+classes: []
+feature_categories:
+- incident_management
+description: Adds associations between Issues table and Prometheus alerts from self-managed
+  Prometheus instances
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18046
+milestone: '12.4'
+gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461838 # table is scheduled to be dropped
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164288
+removed_in_milestone: '17.4'

@@ -191,7 +191,7 @@ export default {
         <issuable-type-field ref="issue-type" />
       </div>
 
-      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 gl-md-pl-0 gl-md-pr-0">
+      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 md:gl-pl-0 md:gl-pr-0">
         <description-template-field
           v-model="formData.description"
           :issuable-templates="issuableTemplates"

@@ -14,7 +14,7 @@
           %li
             = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
           %li
-            %span.gl-text-secondary= _('Profile page:')
+            %span.gl-text-subtle= _('Profile page:')
             %strong
               = link_to user_path(@user) do
                 = @user.username
@@ -24,42 +24,52 @@
       = render 'admin/users/user_detail_note'
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
       - c.with_header do
-        = _('Account:')
+        = _('Account')
       - c.with_body do
         %ul.content-list
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Name:')
+            %span.gl-text-subtle= _('Name:')
             .gl-col-span-2
               %strong= @user.name
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Username:')
+            %span.gl-text-subtle= _('Username:')
             .gl-col-span-2
               %strong= @user.username
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Email:')
+            %span.gl-text-subtle= _('Email:')
             .gl-col-span-2
               %strong= render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
-          %li{ class: list_item_classes, data: { testid: 'email-verification-last-sent-at' } }
-            %span.gl-text-secondary= s_('UserProfile|Email verification last sent at:')
+
+          %li{ class: list_item_classes, data: { testid: 'email-confirmation-code-last-sent-at' } }
+            %span.gl-text-subtle= s_('UserProfile|Email confirmation code last sent at:')
             .gl-col-span-2
               %strong= @user.confirmation_sent_at&.to_fs(:medium) || _('never')
+              - if email_verification_token_expired?(email_sent_at: @user.confirmation_sent_at )
+                %span= _('(code expired)')
+          %li{ class: list_item_classes, data: { testid: 'email-verification-code-last-sent-at' } }
+            %span.gl-text-subtle= s_('UserProfile|Locked account email verification code last sent at:')
+            .gl-col-span-2
+              %strong= @user.locked_at&.to_fs(:medium) || _('never')
+              - if email_verification_token_expired?(email_sent_at: @user.locked_at)
+                %span= _('(code expired)')
+
           - @user.emails.reject(&:user_primary_email?).each do |email|
             %li{ class: list_item_classes }
-              %span.gl-text-secondary= _('Secondary email:')
+              %span.gl-text-subtle= _('Secondary email:')
               .gl-col-span-2
                 %strong= render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-                = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right', title: _('Remove secondary email'), id: "remove_email_#{email.id}", variant: :danger, size: :small, icon: 'close'
+                = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right has-tooltip', title: _('Remove secondary email'), id: "remove_email_#{email.id}", category: :tertiary, size: :small, icon: 'remove'
           %li{ class: list_item_classes }
-            %span.gl-text-secondary ID:
+            %span.gl-text-subtle ID:
             .gl-col-span-2
               %strong{ data: { testid: 'user-id-content' } }= @user.id
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Namespace ID:')
+            %span.gl-text-subtle= _('Namespace ID:')
             .gl-col-span-2
               %strong= @user.namespace_id
 
           %li.two-factor-status{ class: list_item_classes }
-            %span.gl-text-secondary= _('Two-factor Authentication:')
+            %span.gl-text-subtle= _('Two-factor Authentication:')
             .gl-col-span-2
               %strong{ class: @user.two_factor_enabled? ? 'gl-text-success' : 'gl-text-danger' }
                 - if @user.two_factor_enabled?
@@ -71,72 +81,72 @@
           = render_if_exists 'admin/namespace_plan_info', namespace: @user.namespace
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('External User:')
+            %span.gl-text-subtle= _('External User:')
             .gl-col-span-2
               %strong= @user.external? ? _('Yes') : _('No')
 
           = render_if_exists 'admin/users/provisioned_by', user: @user
           = render_if_exists 'admin/users/enterprise_group', user: @user
 
-          %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Can create top level groups:')
+          %li{ class: list_item_classes, 'data-testid': 'admin-can-create-top-level-groups' }
+            %span.gl-text-subtle= _('Can create top level groups:')
             .gl-col-span-2
-              %strong= @user.allow_user_to_create_group_and_project? && @user.can_create_group ? _('Yes') : _('No')
+              %strong= @user.allow_user_to_create_group_and_project? && @user.can_create_group? ? _('Yes') : _('No')
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Private profile:')
+            %span.gl-text-subtle= _('Private profile:')
             .gl-col-span-2
               %strong= @user.private_profile ? _('Yes') : _('No')
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Personal projects limit:')
+            %span.gl-text-subtle= _('Personal projects limit:')
             .gl-col-span-2
               %strong= @user.projects_limit
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Member since:')
+            %span.gl-text-subtle= _('Member since:')
             .gl-col-span-2
               %strong= @user.created_at.to_fs(:medium)
           - if @user.confirmed_at
             %li{ class: list_item_classes }
-              %span.gl-text-secondary= _('Confirmed at:')
+              %span.gl-text-subtle= _('Confirmed at:')
               .gl-col-span-2
                 %strong= @user.confirmed_at.to_fs(:medium)
           - else
             %li{ class: list_item_classes }
-              %span.gl-text-secondary= _('Confirmed:')
+              %span.gl-text-subtle= _('Confirmed:')
               .gl-col-span-2
                 %strong.gl-text-danger= _('No')
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Current sign-in IP:')
+            %span.gl-text-subtle= _('Current sign-in IP:')
             .gl-col-span-2
               %strong= @user.current_sign_in_ip || _('never')
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Current sign-in at:')
+            %span.gl-text-subtle= _('Current sign-in at:')
             .gl-col-span-2
               %strong= @user.current_sign_in_at&.to_fs(:medium) || _('never')
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Last sign-in IP:')
+            %span.gl-text-subtle= _('Last sign-in IP:')
             .gl-col-span-2
               %strong= @user.last_sign_in_ip || _('never')
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Last sign-in at:')
+            %span.gl-text-subtle= _('Last sign-in at:')
             .gl-col-span-2
               %strong= @user.last_sign_in_at&.to_fs(:medium) || _('never')
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _('Sign-in count:')
+            %span.gl-text-subtle= _('Sign-in count:')
             .gl-col-span-2
               %strong= @user.sign_in_count
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _("Highest role:")
+            %span.gl-text-subtle= _("Highest role:")
             .gl-col-span-2
               %strong= Gitlab::Access.human_access_with_none(@user.highest_role)
 
           %li{ class: list_item_classes }
-            %span.gl-text-secondary= _("Email reset removed at:")
+            %span.gl-text-subtle= _("Email reset removed at:")
             .gl-col-span-2
               %strong= @user.email_reset_offered_at || _('never')
 
@@ -144,13 +154,13 @@
 
           - if @user.ldap_user?
             %li{ class: list_item_classes }
-              %span.gl-text-secondary= _('LDAP uid:')
+              %span.gl-text-subtle= _('LDAP uid:')
               .gl-col-span-2
                 %strong= @user.ldap_identity.extern_uid
 
           - if @user.created_by
             %li{ class: list_item_classes }
-              %span.gl-text-secondary= _('Created by:')
+              %span.gl-text-subtle= _('Created by:')
               .gl-col-span-2
                 %strong= link_to @user.created_by.name, [:admin, @user.created_by]
 

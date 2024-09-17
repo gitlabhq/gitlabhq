@@ -22,8 +22,8 @@ export default {
 </script>
 <template>
   <div>
-    <p class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-gap-2 gl-mb-0">
-      <span class="gl-display-flex gl-font-bold">{{ __('Commit') }}</span>
+    <p class="gl-mb-0 gl-flex gl-flex-wrap gl-items-baseline gl-gap-2">
+      <span class="gl-flex gl-font-bold">{{ __('Commit') }}</span>
 
       <gl-link :href="commit.commit_path" class="commit-sha-container" data-testid="commit-sha">
         {{ commit.short_id }}
@@ -34,12 +34,12 @@ export default {
         :title="__('Copy commit SHA')"
         category="tertiary"
         size="small"
-        class="gl-align-self-center"
+        class="gl-self-center"
       />
 
       <span v-if="mergeRequest">
         {{ __('in') }}
-        <gl-link :href="mergeRequest.path" class="gl-text-blue-500!" data-testid="link-commit"
+        <gl-link :href="mergeRequest.path" class="!gl-text-blue-500" data-testid="link-commit"
           >!{{ mergeRequest.iid }}</gl-link
         >
       </span>

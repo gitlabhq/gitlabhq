@@ -5,6 +5,7 @@ class IssuableBaseService < ::BaseContainerService
 
   def available_callbacks
     [
+      Issuable::Callbacks::Description,
       Issuable::Callbacks::Milestone,
       Issuable::Callbacks::TimeTracking
     ].freeze
@@ -217,51 +218,33 @@ class IssuableBaseService < ::BaseContainerService
   # If the description has not been edited, then just remove any quick actions
   # in the current description.
   def merge_quick_actions_into_params!(issuable, params:, only: nil)
-    interpret_params = quick_action_options
-    unedited_description = issuable.description
-    edited_description = params.fetch(:description, issuable.description)
+    target_description = params.fetch(:description, issuable.description)
 
-    target_text = issuable.new_record? || params[:description] ? edited_description : unedited_description
-
-    # only set the original_text if we're editing the issuable
-    original_text = params[:description] && !issuable.new_record? ? unedited_description : nil
-
-    sanitized_description, sanitized_command_params = interpret_quick_actions(target_text, issuable, params: interpret_params, only: only, original_text: original_text)
-
-    unless issuable.new_record? || params[:description]
-      edited_description = unedited_description
-      sanitized_command_params = nil
-    end
+    description, command_params = QuickActions::InterpretService.new(
+      container: container,
+      current_user: current_user,
+      params: quick_action_options
+    ).execute_with_original_text(target_description, issuable, only: only, original_text: issuable.description_was)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
-    params[:description] = sanitized_description if sanitized_description && sanitized_description != edited_description
+    params[:description] = description if description && description != target_description
 
-    params.merge!(sanitized_command_params) if sanitized_command_params
+    params.merge!(command_params)
   end
 
   def quick_action_options
     {}
   end
 
-  def interpret_quick_actions(new_text, issuable, params:, only:, original_text: nil)
-    sanitized_new_text, new_command_params = QuickActions::InterpretService.new(
-      container: container,
-      current_user: current_user,
-      params: params
-    ).execute_with_original_text(new_text, issuable, only: only, original_text: original_text)
-
-    [sanitized_new_text, new_command_params]
-  end
-
   def create(issuable, skip_system_notes: false)
-    initialize_callbacks!(issuable)
+    # Set author early since this is used for ability checks
+    set_issuable_author(issuable)
 
-    prepare_create_params(issuable)
     handle_quick_actions(issuable)
+    prepare_create_params(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
-    params[:author] ||= current_user
     params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
@@ -271,6 +254,7 @@ class IssuableBaseService < ::BaseContainerService
     params.delete(:remove_contacts)
     add_crm_contact_emails = params.delete(:add_contacts)
 
+    initialize_callbacks!(issuable)
     issuable.assign_attributes(allowed_create_params(params))
 
     before_create(issuable)
@@ -296,6 +280,19 @@ class IssuableBaseService < ::BaseContainerService
     end
 
     issuable
+  end
+
+  def set_issuable_author(issuable)
+    author = params.delete(:author)
+    author_id = params.delete(:author_id)
+
+    if author
+      issuable.author = author
+    elsif author_id
+      issuable.author_id = author_id
+    else
+      issuable.author = current_user
+    end
   end
 
   def set_crm_contacts(issuable, add_crm_contact_emails, remove_crm_contact_emails = [])
@@ -335,15 +332,14 @@ class IssuableBaseService < ::BaseContainerService
     GraphqlTriggers.issuable_description_updated(issuable)
   end
 
+  # rubocop:disable Metrics/AbcSize -- Method is only slightly over the limit due to decomposition method
   def update(issuable)
     ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
 
     old_associations = associations_before_update(issuable)
 
-    initialize_callbacks!(issuable)
-
-    prepare_update_params(issuable)
     handle_quick_actions(issuable)
+    prepare_update_params(issuable)
     filter_params(issuable)
 
     change_additional_attributes(issuable)
@@ -353,10 +349,10 @@ class IssuableBaseService < ::BaseContainerService
     assign_requested_crm_contacts(issuable)
     widget_params = filter_widget_params
 
+    initialize_callbacks!(issuable)
+
     if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
-
-      assign_last_edited(issuable)
 
       before_update(issuable)
 
@@ -392,30 +388,54 @@ class IssuableBaseService < ::BaseContainerService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable, old_associations)
         issuable.create_new_cross_references!(current_user)
-        execute_hooks(
-          issuable,
-          'update',
-          old_associations: old_associations
-        )
+        Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+          %w[
+            internal_ids
+            issues
+            issue_user_mentions
+            issue_metrics
+            notes
+            system_note_metadata
+            vulnerability_issue_links
+          ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480369'
+        ) do
+          execute_hooks(
+            issuable,
+            'update',
+            old_associations: old_associations
+          )
+        end
 
         issuable.update_project_counter_caches if update_project_counters
       end
     end
 
+    trigger_update_subscriptions(issuable, old_associations)
+
     issuable
   end
+  # rubocop:enable Metrics/AbcSize
+
+  # Overriden in child class
+  def trigger_update_subscriptions(issuable, old_associations); end
 
   def transaction_update(issuable, opts = {})
     touch = opts[:save_with_touch] || false
 
     issuable.save(touch: touch).tap do |saved|
-      @callbacks.each(&:after_save) if saved
+      if saved
+        @callbacks.each(&:after_update)
+        @callbacks.each(&:after_save)
+      end
     end
   end
 
   def transaction_create(issuable)
     issuable.save.tap do |saved|
-      @callbacks.each(&:after_save) if saved
+      if saved
+        @callbacks.each(&:after_create)
+        @callbacks.each(&:after_save)
+      end
     end
   end
 
@@ -551,12 +571,6 @@ class IssuableBaseService < ::BaseContainerService
     end
   end
 
-  def assign_last_edited(issuable)
-    return unless issuable.description_changed?
-
-    issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
-  end
-
   # Arrays of ids are used, but we should really use sets of ids, so
   # let's have an helper to properly check if some ids are changing
   def ids_changing?(old_array, new_array)
@@ -675,7 +689,7 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def allowed_create_params(params)
-    params
+    params.except(:observability_links)
   end
 
   def allowed_update_params(params)

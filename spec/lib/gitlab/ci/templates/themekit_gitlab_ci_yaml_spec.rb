@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'ThemeKit.gitlab-ci.yml', feature_category: :continuous_integration do
+  include Ci::PipelineMessageHelpers
+
   before do
     allow(Gitlab::Template::GitlabCiYmlTemplate).to receive(:excluded_patterns).and_return([])
   end
@@ -52,7 +54,7 @@ RSpec.describe 'ThemeKit.gitlab-ci.yml', feature_category: :continuous_integrati
 
       it 'has no jobs' do
         expect(build_names).to be_empty
-        expect(pipeline.errors.full_messages).to match_array([Ci::Pipeline.rules_failure_message])
+        expect(pipeline.errors.full_messages).to match_array([sanitize_message(Ci::Pipeline.rules_failure_message)])
       end
     end
   end

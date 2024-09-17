@@ -1,0 +1,19 @@
+---
+description: Toggled between old and new merge request dashboard
+internal_events: true
+action: toggle_merge_request_redesign
+identifiers:
+- user
+product_group: code_review
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475243
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  value:
+    description: indicator for if new dashboard is enabled or disabled

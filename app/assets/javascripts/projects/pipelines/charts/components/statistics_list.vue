@@ -59,7 +59,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-gap-6 gl-mb-6">
+  <div class="gl-mb-6 gl-flex gl-flex-wrap gl-gap-6">
     <div v-for="statistic in statistics" :key="statistic.label">
       <gl-single-stat
         :id="statistic.identifier"

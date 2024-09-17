@@ -136,4 +136,19 @@ describe('AdminUserAvatar component', () => {
       expect(avatar.props('subLabelLink')).toBe('');
     });
   });
+
+  describe('when user id is a graphql id', () => {
+    const id = '123';
+
+    beforeEach(() => {
+      initComponent({ user: { ...user, id: `gid://gitlab/User/${id}` } });
+    });
+
+    it('converts the gid to normal id and renders the popover', () => {
+      expect(findUserLink().attributes()).toMatchObject({
+        'data-user-id': id,
+        'data-username': user.username,
+      });
+    });
+  });
 });

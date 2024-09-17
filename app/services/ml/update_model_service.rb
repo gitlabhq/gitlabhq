@@ -8,9 +8,18 @@ module Ml
     end
 
     def execute
-      @model.update!(description: @description)
+      return error('Model not found') unless @model
 
-      @model
+      @model.update!(description: @description)
+      success(@model)
+    end
+
+    def success(model)
+      ServiceResponse.success(payload: model)
+    end
+
+    def error(reason)
+      ServiceResponse.error(message: reason)
     end
   end
 end

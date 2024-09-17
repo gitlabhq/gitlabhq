@@ -15,7 +15,7 @@ module WorkItems
       end
 
       def self.can_invite_members?(user, resource_parent)
-        user.can?("admin_#{resource_parent.to_ability_name}_member".to_sym, resource_parent)
+        Ability.allowed?(user, "admin_#{resource_parent.to_ability_name}_member".to_sym, resource_parent)
       end
     end
   end

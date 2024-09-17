@@ -92,7 +92,7 @@ export default {
         <label> {{ instruction.label }}</label>
 
         <pre
-          class="code highlight gl-flex gl-border-none gl-text-left gl-p-2 gl-font-monospace"
+          class="code highlight gl-flex gl-border-none gl-p-2 gl-text-left gl-font-monospace"
           data-testid="preview-code"
         >
           <code class="gl-grow">{{ instruction.cmd }}</code>

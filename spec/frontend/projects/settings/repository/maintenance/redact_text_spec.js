@@ -122,7 +122,7 @@ describe('Redact text', () => {
           });
 
           it('disables user input while loading', () => {
-            expect(findTextarea().attributes('disabled')).toBe('true');
+            expect(findTextarea().attributes().disabled).toBe('true');
             expect(redactTextButton().props('loading')).toBe(true);
           });
 

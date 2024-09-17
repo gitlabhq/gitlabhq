@@ -227,7 +227,7 @@ func serveImage(r io.Reader, w io.Writer, resizeCmd *exec.Cmd) (int64, error) {
 			// err will be an ExitError; this is not useful beyond knowing the exit code since anything
 			// interesting has been written to stderr, so we turn that into an error we can return.
 			stdErr := resizeCmd.Stderr.(*strings.Builder)
-			return bytesWritten, fmt.Errorf(stdErr.String())
+			return bytesWritten, fmt.Errorf("%s", stdErr.String())
 		}
 	}
 

@@ -162,7 +162,7 @@ export default {
                 <gl-skeleton-loader :lines="1" />
               </td>
               <td>
-                <div class="gl-display-flex gl-lg-justify-content-end">
+                <div class="gl-flex lg:gl-justify-end">
                   <gl-skeleton-loader :equal-width-lines="true" :lines="1" />
                 </div>
               </td>
@@ -170,10 +170,10 @@ export default {
           </template>
           <template v-if="hasMore">
             <tr>
-              <td align="center" colspan="3" class="gl-p-0!">
+              <td align="center" colspan="3" class="!gl-p-0">
                 <gl-button
                   variant="link"
-                  class="gl-display-flex gl-w-full gl-py-4!"
+                  class="gl-flex gl-w-full !gl-py-4"
                   :loading="isLoading"
                   @click="showMore"
                 >

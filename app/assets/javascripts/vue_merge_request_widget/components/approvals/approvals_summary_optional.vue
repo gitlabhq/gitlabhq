@@ -32,7 +32,7 @@ export default {
       :href="helpPath"
       :title="__('About this feature')"
       target="_blank"
-      class="d-flex-center"
+      class="gl-flex gl-items-center gl-justify-center"
     >
       <gl-icon name="question-o" class="gl-ml-3" />
     </gl-link>

@@ -15,6 +15,8 @@ module Ci
         .lock('FOR UPDATE SKIP LOCKED')
     end
 
+    validates :project_id, presence: true, on: :create
+
     def self.bulk_import(artifacts, pick_up_at = nil)
       attributes = artifacts.each.with_object([]) do |artifact, accumulator|
         record = artifact.to_deleted_object_attrs(pick_up_at)

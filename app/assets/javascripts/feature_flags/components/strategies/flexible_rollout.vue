@@ -76,7 +76,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-flex">
     <div class="gl-mr-7" data-testid="strategy-flexible-rollout-percentage">
       <parameter-form-group
         :label="$options.i18n.percentageLabel"
@@ -85,7 +85,7 @@ export default {
         :state="isValid"
       >
         <template #default="{ inputId }">
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-flex gl-items-center">
             <gl-form-input
               :id="inputId"
               :value="percentage"

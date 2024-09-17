@@ -4850,7 +4850,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     end
   end
 
-  describe 'POST /users/:user_id/personal_access_tokens' do
+  describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
     let(:name) { 'new pat' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }
     let(:scopes) { %w[api read_user] }
@@ -4923,7 +4923,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     end
   end
 
-  describe 'POST /user/personal_access_tokens' do
+  describe 'POST /user/personal_access_tokens', :with_current_organization do
     using RSpec::Parameterized::TableSyntax
 
     let(:name) { 'new pat' }
@@ -5113,7 +5113,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     end
   end
 
-  describe 'POST /users/:user_id/impersonation_tokens' do
+  describe 'POST /users/:user_id/impersonation_tokens', :with_current_organization do
     let(:name) { 'my new pat' }
     let(:expires_at) { '2016-12-28' }
     let(:scopes) { %w[api read_user] }

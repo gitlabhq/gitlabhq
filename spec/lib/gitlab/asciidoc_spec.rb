@@ -99,7 +99,7 @@ module Gitlab
             <div>
             <div class="gl-relative markdown-code-block js-markdown-code">
             <pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre>
-            <copy-code></copy-code>
+            <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
             </div>
             </div>
             </div>
@@ -370,7 +370,7 @@ module Gitlab
             <div>
             <div class="gl-relative markdown-code-block js-markdown-code">
             <pre data-canonical-lang="js" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
-            <copy-code></copy-code>
+            <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
             </div>
             </div>
             </div>
@@ -404,7 +404,7 @@ module Gitlab
             <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
             <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
             <span id="LC5" class="line" lang="cpp"><span class="p">}</span></span></code></pre>
-            <copy-code></copy-code>
+            <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
             </div>
             </div>
             </div>

@@ -9,6 +9,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
+import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import {
   visibilityLevelDescriptions,
   featureAccessLevelMembers,
@@ -19,6 +20,7 @@ import {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   duoHelpPath,
+  pipelineExecutionPoliciesHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -90,6 +92,13 @@ export default {
     showDiffPreviewHelpText: s__(
       'ProjectSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.',
     ),
+    pipelineExecutionPoliciesLabel: s__('ProjectSettings|Pipeline execution policies'),
+    sppRepositoryPipelineAccessLabel: s__(
+      'ProjectSettings|Grant access to this repository for projects linked to it as the security policy project source for security policies.',
+    ),
+    sppRepositoryPipelineAccessHelpText: s__(
+      'ProjectSettings|Allow users and tokens read-only access to fetch security policy configurations within this project to enforce policies. %{linkStart}Learn more%{linkEnd}.',
+    ),
   },
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
@@ -97,10 +106,12 @@ export default {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   duoHelpPath,
+  pipelineExecutionPoliciesHelpPath,
   components: {
     CiCatalogSettings,
     ProjectFeatureSetting,
     ProjectSettingRow,
+    CascadingLockIcon,
     GlButton,
     GlIcon,
     GlSprintf,
@@ -114,6 +125,7 @@ export default {
       ),
   },
   mixins: [settingsMixin, glFeatureFlagMixin()],
+  inject: ['cascadingSettingsData'],
   props: {
     requestCveAvailable: {
       type: Boolean,
@@ -276,6 +288,16 @@ export default {
       type: String,
       required: true,
     },
+    sppRepositoryPipelineAccessLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    policySettingsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const defaults = {
@@ -308,6 +330,7 @@ export default {
       showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
       duoFeaturesEnabled: false,
+      sppRepositoryPipelineAccess: false,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
       featureAccessLevel,
@@ -415,11 +438,14 @@ export default {
         this.showDiffPreviewInEmail = newValue;
       },
     },
-    showDuoSettings() {
-      return this.licensedAiFeaturesAvailable && this.glFeatures.aiSettingsVueProject;
+    showCascadingButton() {
+      return (
+        this.duoFeaturesLocked &&
+        this.cascadingSettingsData &&
+        Object.keys(this.cascadingSettingsData).length
+      );
     },
   },
-
   watch: {
     visibilityLevel(value, oldValue) {
       if (value === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
@@ -590,7 +616,7 @@ export default {
 <template>
   <div>
     <div
-      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-5"
+      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="project-visibility-settings"
@@ -600,8 +626,8 @@ export default {
           s__('ProjectSettings|Manage who can see the project in the public access directory.')
         "
       >
-        <div class="project-feature-controls gl-flex gl-items-center gl-my-3 gl-mx-0">
-          <div class="select-wrapper gl-flex-grow-1">
+        <div class="project-feature-controls gl-mx-0 gl-my-3 gl-flex gl-items-center">
+          <div class="select-wrapper gl-grow">
             <select
               v-model="visibilityLevel"
               :disabled="!canChangeVisibilityLevel"
@@ -631,20 +657,20 @@ export default {
             <gl-icon
               name="chevron-down"
               data-hidden="true"
-              class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
+              class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500"
             />
           </div>
         </div>
         <span
           v-if="!visibilityAllowed(visibilityLevel)"
-          class="gl-block gl-text-gray-500 gl-mt-2"
+          class="gl-mt-2 gl-block gl-text-gray-500"
           >{{
             s__(
               'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
             )
           }}</span
         >
-        <span class="gl-block gl-text-gray-500 gl-mt-2">
+        <span class="gl-mt-2 gl-block gl-text-gray-500">
           <gl-sprintf :message="visibilityLevelDescription">
             <template #membersPageLink="{ content }">
               <gl-link class="gl-link" :href="membersPagePath">{{ content }}</gl-link>
@@ -655,7 +681,7 @@ export default {
           <strong class="gl-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
-            class="gl-leading-28 gl-font-normal gl-mb-0"
+            class="gl-mb-0 gl-font-normal gl-leading-28"
           >
             <input
               :value="requestAccessEnabled"
@@ -667,7 +693,7 @@ export default {
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
-            class="gl-leading-28 gl-font-normal gl-block gl-mb-0"
+            class="gl-mb-0 gl-block gl-font-normal gl-leading-28"
           >
             <input
               :value="enforceAuthChecksOnUploads"
@@ -676,7 +702,7 @@ export default {
             />
             <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
             {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="gl-text-gray-500 gl-block gl-ml-5 -gl-mt-3">{{
+            <span class="-gl-mt-3 gl-ml-5 gl-block gl-text-gray-500">{{
               s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
             }}</span>
           </label>
@@ -684,7 +710,7 @@ export default {
       </project-setting-row>
     </div>
     <div
-      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-5 gl-bg-gray-10"
+      class="gl-mb-5 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="issues-settings"
@@ -730,7 +756,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-5 gl-md-pl-7">
+      <div class="project-feature-setting-group gl-pl-5 md:gl-pl-7">
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
@@ -783,7 +809,7 @@ export default {
               "
             >
               <template #link="{ content }">
-                <span class="gl-display-block">
+                <span class="gl-block">
                   <gl-link :href="lfsObjectsRemovalHelpPath" target="_blank">
                     {{ content }}
                   </gl-link>
@@ -916,7 +942,7 @@ export default {
         />
         <div
           v-if="packageRegistryApiForEveryoneEnabledShown"
-          class="project-feature-setting-group gl-pl-5 gl-md-pl-7 gl-my-3"
+          class="project-feature-setting-group gl-my-3 gl-pl-5 md:gl-pl-7"
         >
           <project-setting-row
             :label="$options.i18n.packageRegistryForEveryoneLabel"
@@ -1050,16 +1076,26 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="showDuoSettings"
+        v-if="licensedAiFeaturesAvailable"
         data-testid="duo-settings"
         :label="$options.i18n.duoLabel"
         :help-text="$options.i18n.duoHelpText"
         :help-path="$options.duoHelpPath"
         :locked="duoFeaturesLocked"
       >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showCascadingButton"
+            data-testid="duo-cascading-lock-icon"
+            :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
+            :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
+            :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
         <gl-toggle
           v-model="duoFeaturesEnabled"
-          class="gl-mt-2 gl-mb-4"
+          class="gl-mb-4 gl-mt-2"
           :disabled="duoFeaturesLocked"
           :label="$options.i18n.duoLabel"
           label-position="hidden"
@@ -1138,6 +1174,34 @@ export default {
       :full-path="confirmationPhrase"
     />
     <other-project-settings />
+    <project-setting-row
+      v-if="policySettingsAvailable"
+      data-testid="pipeline-execution-policy-settings"
+    >
+      <label>
+        <h5>{{ $options.i18n.pipelineExecutionPoliciesLabel }}</h5>
+        <input
+          :value="sppRepositoryPipelineAccess"
+          type="hidden"
+          name="project[project_setting_attributes][spp_repository_pipeline_access]"
+        />
+        <gl-form-checkbox
+          v-model="sppRepositoryPipelineAccess"
+          :disabled="sppRepositoryPipelineAccessLocked"
+        >
+          {{ $options.i18n.sppRepositoryPipelineAccessLabel }}
+          <template #help>
+            <gl-sprintf :message="$options.i18n.sppRepositoryPipelineAccessHelpText">
+              <template #link="{ content }">
+                <gl-link :href="$options.pipelineExecutionPoliciesHelpPath" target="_blank">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-form-checkbox>
+      </label>
+    </project-setting-row>
     <confirm-danger
       v-if="isVisibilityReduced"
       button-variant="confirm"

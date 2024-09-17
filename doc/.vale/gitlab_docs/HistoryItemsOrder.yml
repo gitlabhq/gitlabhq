@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.HistoryItemsOrder
+# Warning: gitlab_docs.HistoryItemsOrder
 #
 # Ensures history items come before the Details block.
 #

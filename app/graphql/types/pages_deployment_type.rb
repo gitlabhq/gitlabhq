@@ -16,6 +16,8 @@ module Types
       description: 'Time the deployment was created.'
     field :deleted_at, GraphQL::Types::ISO8601DateTime, null: true,
       description: 'Time the deployment was deleted.'
+    field :expires_at, GraphQL::Types::ISO8601DateTime, null: true,
+      description: 'Time the deployment will expire.'
     field :file_count, GraphQL::Types::Int, null: true,
       description: 'Number of files that were published with the deployment.'
     field :id, GraphQL::Types::ID, null: false,

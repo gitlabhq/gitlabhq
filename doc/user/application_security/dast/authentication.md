@@ -270,10 +270,10 @@ Chrome DevTools element selector tool is an effective way to find a selector.
 1. Open Chrome and go to the page where you would like to find a selector, for example, the login page for your site.
 1. Open the `Elements` tab in Chrome DevTools with the keyboard shortcut `Command + Shift + c` in macOS or `Ctrl + Shift + c` in Windows.
 1. Select the `Select an element in the page to select it` tool.
-   ![search-elements](img/dast_auth_browser_scan_search_elements.png)
+   ![The element select tool in the upper-left corner of Chrome DevTools.](img/dast_auth_browser_scan_search_elements.png)
 1. Select the field on your page that you would like to know the selector for.
 1. After the tool is active, highlight a field you wish to view the details of.
-   ![highlight](img/dast_auth_browser_scan_highlight.png)
+   ![Select a text input field to highlight its code in the Chrome DevTools pane.](img/dast_auth_browser_scan_highlight.png)
 1. Once highlighted, you can see the element's details, including attributes that would make a good candidate for a selector.
 
 In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting
@@ -404,6 +404,7 @@ dast:
 - DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.
 - DAST cannot authenticate to applications that do not set an [authentication token](#authentication-tokens) during login.
 - DAST cannot authenticate to applications that require more than two inputs to be filled out. Two inputs must be supplied, username and password.
+- DAST does not carry the content of IndexedDB into the crawl stage. If your application relies on IndexedDB to maintain authenticated state, [DAST will not be able to authenticate](https://gitlab.com/gitlab-org/gitlab/-/issues/481651) to crawl your application.
 
 ## Troubleshooting
 

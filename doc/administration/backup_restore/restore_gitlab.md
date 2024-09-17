@@ -187,7 +187,7 @@ The GitLab Helm chart uses the process documented in
 
 ### Restore for Docker image installations
 
-If you're using [Docker Swarm](../../install/docker.md#install-gitlab-using-docker-swarm-mode),
+If you're using [Docker Swarm](../../install/docker/installation.md#install-gitlab-using-docker-swarm-mode),
 the container might restart during the restore process because Puma is shut down,
 and so the container health check fails. To work around this problem,
 temporarily disable the health check mechanism.
@@ -318,7 +318,7 @@ options.
 
 ### Specify backup to restore when there are more than one
 
-Backup files use a naming scheme [starting with a backup ID](index.md#backup-id). When more than one backup exists, you must specify which
+Backup files use a naming scheme [starting with a backup ID](backup_archive_process.md#backup-id). When more than one backup exists, you must specify which
 `<backup-id>_gitlab_backup.tar` file to restore by setting the environment variable `BACKUP=<backup-id>`.
 
 ### Disable prompts during restore

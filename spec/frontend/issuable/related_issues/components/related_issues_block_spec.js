@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
-import { GlIcon, GlCard } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   issuable1,
@@ -19,11 +20,13 @@ import RelatedIssuesList from '~/related_issues/components/related_issues_list.v
 describe('RelatedIssuesBlock', () => {
   let wrapper;
 
-  const findToggleButton = () => wrapper.findByTestId('toggle-links');
-  const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
-  const findIssueCountBadgeAddButton = () => wrapper.findByTestId('related-issues-plus-button');
+  const findToggleButton = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findRelatedIssuesBody = () => wrapper.findByTestId('crud-body');
+  const findIssueCountBadgeAddButton = () => wrapper.findByTestId('crud-form-toggle');
+  const findAddForm = () => wrapper.findByTestId('crud-form');
   const findAllRelatedIssuesList = () => wrapper.findAllComponents(RelatedIssuesList);
   const findRelatedIssuesList = (index) => findAllRelatedIssuesList().at(index);
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
 
   const createComponent = ({
     pathIdSeparator = PathIdSeparator.Issue,
@@ -36,6 +39,8 @@ describe('RelatedIssuesBlock', () => {
     showCategorizedIssues = false,
     autoCompleteEpics = true,
     slots = '',
+    headerText = '',
+    addButtonText = '',
   } = {}) => {
     wrapper = shallowMountExtended(RelatedIssuesBlock, {
       propsData: {
@@ -48,12 +53,14 @@ describe('RelatedIssuesBlock', () => {
         relatedIssues,
         showCategorizedIssues,
         autoCompleteEpics,
+        headerText,
+        addButtonText,
       },
       provide: {
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {
-        GlCard,
+        CrudComponent,
       },
       slots,
     });
@@ -78,7 +85,7 @@ describe('RelatedIssuesBlock', () => {
           helpPath: '/help/user/project/issues/related_issues',
         });
 
-        expect(wrapper.findByTestId('card-title').text()).toContain(titleText);
+        expect(wrapper.findByTestId('crud-title').text()).toContain(titleText);
         expect(findIssueCountBadgeAddButton().attributes('aria-label')).toBe(addButtonText);
       },
     );
@@ -88,17 +95,7 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it('add related issues form is hidden', () => {
-      expect(wrapper.find('.js-add-related-issues-form-area').exists()).toBe(false);
-    });
-  });
-
-  describe('with headerText slot', () => {
-    it('displays header text slot data', () => {
-      const headerText = '<div>custom header text</div>';
-
-      createComponent({ slots: { 'header-text': headerText } });
-
-      expect(wrapper.findByTestId('card-title').html()).toContain(headerText);
+      expect(findAddForm().exists()).toBe(false);
     });
   });
 
@@ -109,6 +106,16 @@ describe('RelatedIssuesBlock', () => {
       createComponent({ slots: { 'header-actions': headerActions } });
 
       expect(wrapper.findByTestId('custom-button').html()).toBe(headerActions);
+    });
+  });
+
+  describe('with emptyStateMessage slot', () => {
+    it('displays empty state message slot data', () => {
+      const emptyStateMessage = '<div>empty state message</div>';
+
+      createComponent({ slots: { 'empty-state-message': emptyStateMessage } });
+
+      expect(wrapper.findByTestId('crud-empty').html()).toContain(emptyStateMessage);
     });
   });
 
@@ -140,7 +147,7 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it('shows add related issues form', () => {
-      expect(wrapper.find('.js-add-related-issues-form-area').exists()).toBe(true);
+      expect(findAddForm().exists()).toBe(true);
     });
 
     it('sets `autoCompleteEpics` to false for add-issuable-form', () => {
@@ -181,6 +188,15 @@ describe('RelatedIssuesBlock', () => {
     });
 
     describe('when showCategorizedIssues=false', () => {
+      it('renders no issues if relatedIssues is empty', () => {
+        createComponent({
+          showCategorizedIssues: false,
+          relatedIssues: [],
+        });
+
+        expect(findAllRelatedIssuesList()).toHaveLength(0);
+      });
+
       it('should render issues as a flat list with no header', () => {
         createComponent({
           showCategorizedIssues: false,
@@ -226,10 +242,9 @@ describe('RelatedIssuesBlock', () => {
     it('is expanded by default', () => {
       const toggleButton = findToggleButton();
 
-      expect(toggleButton.props('icon')).toBe('chevron-lg-up');
+      expect(toggleButton.props('icon')).toBe('chevron-up');
       expect(toggleButton.props('disabled')).toBe(false);
       expect(toggleButton.attributes('aria-expanded')).toBe('true');
-      expect(wrapper.findComponent(GlCard).classes()).not.toContain('is-collapsed');
       expect(findRelatedIssuesBody().exists()).toBe(true);
     });
 
@@ -239,9 +254,8 @@ describe('RelatedIssuesBlock', () => {
 
       const toggleButton = findToggleButton();
 
-      expect(toggleButton.props('icon')).toBe('chevron-lg-down');
+      expect(toggleButton.props('icon')).toBe('chevron-down');
       expect(toggleButton.attributes('aria-expanded')).toBe('false');
-      expect(wrapper.findComponent(GlCard).classes()).toContain('is-collapsed');
       expect(findRelatedIssuesBody().exists()).toBe(false);
     });
   });
@@ -250,8 +264,8 @@ describe('RelatedIssuesBlock', () => {
     it('is set and identifies the correct element', () => {
       createComponent();
 
-      expect(findToggleButton().attributes('aria-controls')).toBe('related-issues-card');
-      expect(wrapper.findComponent(GlCard).attributes('id')).toBe('related-issues-card');
+      expect(findToggleButton().attributes('aria-controls')).toBe('related-issues');
+      expect(wrapper.findComponent(CrudComponent).attributes('id')).toBe('related-issues');
     });
   });
 
@@ -274,9 +288,37 @@ describe('RelatedIssuesBlock', () => {
           showCategorizedIssues,
         });
 
-        expect(wrapper.findByTestId('related-issues-body').text()).toContain(emptyText);
+        expect(wrapper.findByTestId('crud-empty').text()).toContain(emptyText);
         expect(wrapper.findByTestId('help-link').attributes('aria-label')).toBe(helpLinkText);
       },
     );
+  });
+
+  describe('headerText prop', () => {
+    it('renders the title with headerText when set', () => {
+      createComponent({ headerText: 'foo bar' });
+
+      expect(wrapper.findByTestId('crud-title').text()).toContain('foo bar');
+    });
+
+    it('renders the issuable type title when headerText is empty', () => {
+      createComponent({ headerText: '' });
+
+      expect(wrapper.findByTestId('crud-title').text()).toContain('Linked items');
+    });
+  });
+
+  describe('canAdmin=true and addButtonText prop', () => {
+    it('sets the button text to addButtonText when set', () => {
+      createComponent({ canAdmin: true, addButtonText: 'do foo' });
+
+      expect(findCrudComponent().props('toggleText')).toBe('do foo');
+    });
+
+    it('uses the default button text when addButtonText is empty', () => {
+      createComponent({ canAdmin: true, addButtonText: '' });
+
+      expect(findCrudComponent().props('toggleText')).toBe('Add');
+    });
   });
 });

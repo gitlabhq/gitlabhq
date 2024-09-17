@@ -61,7 +61,7 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
 
       context "with multiple runners" do
         before do
-          create(:ci_runner, :instance, :online)
+          create(:ci_runner, :instance, :almost_offline)
           create(:ci_runner, :instance, :offline)
           create(:ci_runner, :instance, :stale)
 
@@ -156,7 +156,7 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
       describe 'filter by paused' do
         before_all do
           create(:ci_runner, :instance, description: 'runner-active')
-          create(:ci_runner, :instance, description: 'runner-paused', active: false)
+          create(:ci_runner, :instance, :paused, description: 'runner-paused')
         end
 
         before do
@@ -255,14 +255,20 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
       end
 
       describe 'filter by status' do
-        let_it_be(:never_contacted) do
-          create(:ci_runner, :instance, :unregistered, description: 'runner-never-contacted')
+        before_all do
+          freeze_time # Freeze time before `let_it_be` runs, so that runner statuses are frozen during execution
+
+          create(:ci_runner, :instance, :online, description: 'runner-1')
+          create(:ci_runner, :instance, :almost_offline, description: 'runner-2')
+          create(:ci_runner, :instance, :contacted_within_stale_deadline, description: 'runner-offline')
         end
 
-        before_all do
-          create(:ci_runner, :instance, :online, description: 'runner-1')
-          create(:ci_runner, :instance, :online, description: 'runner-2')
-          create(:ci_runner, :instance, :contacted_within_stale_deadline, description: 'runner-offline')
+        after :all do
+          unfreeze_time
+        end
+
+        let_it_be(:never_contacted) do
+          create(:ci_runner, :instance, :unregistered, description: 'runner-never-contacted')
         end
 
         before do
@@ -397,7 +403,7 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
         end
 
         it 'maintains the same filter when switching between runner types' do
-          create(:ci_runner, :project, description: 'runner-paused-project', active: false, projects: [project])
+          create(:ci_runner, :project, :paused, description: 'runner-paused-project', projects: [project])
 
           visit admin_runners_path
 

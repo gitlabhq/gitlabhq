@@ -8,7 +8,7 @@ class NamespaceSetting < ApplicationRecord
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.0', remove_after: '2024-05-16'
-  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.5', remove_after: '2024-08-15'
+  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
 
   cascading_attr :math_rendering_limits_enabled
 
@@ -18,7 +18,7 @@ class NamespaceSetting < ApplicationRecord
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
   enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
-  enum seat_control: { off: 0, user_cap: 1 }, _prefix: true
+  enum seat_control: { off: 0, user_cap: 1, block_overages: 2 }, _prefix: true
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 
@@ -47,6 +47,7 @@ class NamespaceSetting < ApplicationRecord
     prevent_sharing_groups_outside_hierarchy
     new_user_signups_cap
     setup_for_company
+    seat_control
     jobs_to_be_done
     runner_token_expiration_interval
     enabled_git_access_protocol

@@ -1,4 +1,5 @@
 import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UsersTable from '~/vue_shared/components/users_table/users_table.vue';
 import UserAvatar from '~/vue_shared/components/users_table/user_avatar.vue';
@@ -56,8 +57,8 @@ describe('UsersTable component', () => {
       initComponent({ users: [] });
     });
 
-    it('renders a "No users found" message', () => {
-      expect(wrapper.text()).toContain('No users found');
+    it('renders EmptyResult component', () => {
+      expect(wrapper.findComponent(EmptyResult).exists()).toBe(true);
     });
   });
 

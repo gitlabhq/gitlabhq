@@ -94,7 +94,7 @@ end
 def mastodon_format
   return if mastodon.blank? || mastodon =~ UserDetail::MASTODON_VALIDATION_REGEX
 
-  errors.add(:mastodon, _('must contain only a mastodon username.'))
+  errors.add(:mastodon, _('must contain only a mastodon handle.'))
 end
 
 UserDetail.prepend_mod_with('UserDetail')

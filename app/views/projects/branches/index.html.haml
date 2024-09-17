@@ -7,7 +7,7 @@
 -#   @sort   - name_asc|updated_asc|updated_desc
 
 .top-area
-  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-b-0' }) do
+  = gl_tabs_nav({ class: 'gl-grow gl-border-b-0' }) do
     = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
     = gl_tab_link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), { title: s_('Branches|Show active branches') }
     = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { title: s_('Branches|Show stale branches') }

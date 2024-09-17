@@ -26,7 +26,7 @@ RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
 
     # assert default sorting
     within '.milestones' do
-      expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(['v2.0', 'v2.0', 'v3.0', 'v1.0', 'v1.0'])
+      expect(page.all('[data-testid="milestone-link"]').map(&:text)).to eq(['v2.0', 'v2.0', 'v3.0', 'v1.0', 'v1.0'])
     end
 
     click_button 'Due soon'
@@ -39,7 +39,7 @@ RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
 
     # assert descending sorting
     within '.milestones' do
-      expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(['v1.0', 'v1.0', 'v3.0', 'v2.0', 'v2.0'])
+      expect(page.all('[data-testid="milestone-link"]').map(&:text)).to eq(['v1.0', 'v1.0', 'v3.0', 'v2.0', 'v2.0'])
     end
   end
 end

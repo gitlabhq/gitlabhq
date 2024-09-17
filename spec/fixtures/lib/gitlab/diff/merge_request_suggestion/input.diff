@@ -1,0 +1,18 @@
+diff --git a/cwe-23.rb b/cwe-23.rb
+--- a/cwe-23.rb
++++ b/cwe-23.rb
+@@ -2,9 +2,10 @@
+ 
+ get '/file/:filename' do
+-  filename = params['filename']
+-  file_path = File.join("./files", filename)
++  sanitized_filename = File.basename(params['filename'].to_s)
++  file_path = File.expand_path(File.join("./files", sanitized_filename))
++  base_path = File.expand_path("./files")
+ 
+-  if File.exist?(file_path) && file_path.start_with?("./files/")
+-    send_file(file_path)
++  if File.exist?(file_path) && file_path.start_with?(base_path)
++    send_file(file_path, disposition: 'attachment', filename: sanitized_filename)
+   else
+     halt 404, "File not found"

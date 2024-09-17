@@ -388,7 +388,8 @@ WARNING:
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
 the workload drops under the limit.
 
-You should use a lambda to define the limit. If it returns `nil`, `0`, or a negative value, the limit won't be applied.
+You should use a lambda to define the limit. If it returns `nil` or `0`, the limit won't be applied.
+Negative numbers pause the execution.
 
 ```ruby
 class LimitedWorker

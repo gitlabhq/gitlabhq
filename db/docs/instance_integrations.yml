@@ -1,0 +1,10 @@
+---
+table_name: instance_integrations
+classes:
+- Integrations::InstanceIntegration
+feature_categories:
+- integrations
+description: Support 3rd party instance-wide integrations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164503
+milestone: '17.4'
+gitlab_schema: gitlab_main_clusterwide

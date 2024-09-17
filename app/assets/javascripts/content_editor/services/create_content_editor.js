@@ -73,5 +73,6 @@ export const createContentEditor = ({
     assetResolver,
     drawioEnabled,
     codeSuggestionsConfig,
+    autocompleteHelper,
   });
 };

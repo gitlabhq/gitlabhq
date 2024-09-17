@@ -10,6 +10,7 @@ class PersonalSnippetPolicy < BasePolicy
     enable :read_snippet
     enable :read_note
     enable :create_note
+    enable :cache_blob
   end
 
   rule { is_author | admin }.policy do

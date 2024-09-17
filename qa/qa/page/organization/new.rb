@@ -5,6 +5,7 @@ module QA
     module Organization
       class New < QA::Page::Base
         include QA::Page::Component::Dropdown
+
         view 'app/assets/javascripts/organizations/shared/components/new_edit_form.vue' do
           element 'organization-name'
           element 'submit-button'

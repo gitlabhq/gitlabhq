@@ -19,8 +19,8 @@ The GitLab Workflow extension streamlines your VS Code workflow with AI-assisted
 
 ## Code Suggestions features
 
-GitLab Duo provides AI-powered code suggestions as you type in VS Code, helping you write code more efficiently.
-To interact with a [code suggestion](../../user/project/repository/code_suggestions/index.md) on the current line:
+GitLab Duo Code Suggestions provides AI-powered suggestions as you type in VS Code, helping you write code more efficiently.
+To interact with a [suggestion](../../user/project/repository/code_suggestions/index.md) on the current line:
 
 - To accept the entire suggestion, press <kbd>Tab</kbd>.
 - To accept the suggestion word-by-word, press <kbd>Command</kbd> + <kbd>→</kbd> (right arrow).
@@ -40,7 +40,7 @@ This extension requires you to create a GitLab personal access token, and assign
 1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) from the Visual Studio Marketplace and enable it. If you use an unofficial version of VS Code, install the extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
 1. To sign in to your GitLab instance, run the command **GitLab: Authenticate** in VS Code.
    1. Open the command palette by pressing <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
-   1. In the command palette, search for **GitLab: Authenticate** and press <kbd>Enter<kbd>.
+   1. In the command palette, search for **GitLab: Authenticate** and press <kbd>Enter</kbd>.
    1. Select your GitLab instance URL from the offered options, or enter one manually.
       - When manually adding an instance to **URL to GitLab instance**, paste the full URL to your
         GitLab instance, including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
@@ -92,7 +92,7 @@ To add more languages to Code Suggestions:
    1. On the top bar, go to **Code > Settings > Extensions**.
    1. Search for **GitLab Workflow** in the list, then select **Manage** (**{settings}**) **> Extension Settings**.
    1. In your **User** settings, find
-      **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
+      **GitLab › Duo Code Suggestions: Additional Languages** and select **Add Item**.
 1. In **Item**, add the language identifier, and select **OK**.
 
 ## Integrate with GitLab

@@ -10,6 +10,7 @@ module Analytics
 
       alias_attribute :state, :state_id
       enum state: Issue.available_states, _suffix: true
+      belongs_to :issuable, class_name: 'Issue', foreign_key: 'issue_id', inverse_of: :issue_stage_events
 
       scope :assigned_to, ->(user) do
         assignees_class = IssueAssignee
@@ -52,6 +53,10 @@ module Analytics
             :weight,
             :sprint_id
           ]
+        end
+
+        def assignees_model
+          IssueAssignee
         end
       end
     end

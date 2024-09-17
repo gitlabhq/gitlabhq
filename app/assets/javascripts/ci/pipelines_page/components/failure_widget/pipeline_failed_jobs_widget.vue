@@ -88,8 +88,9 @@ export default {
   <crud-component
     :id="$options.ariaControlsId"
     class="expandable-card"
-    :class="{ 'gl-border-white hover:gl-border-gray-100 is-collapsed': !isExpanded }"
+    :class="{ 'is-collapsed gl-border-white hover:gl-border-gray-100': !isExpanded }"
     data-testid="failed-jobs-card"
+    @click="toggleWidget"
   >
     <template #title>
       <gl-button
@@ -106,7 +107,7 @@ export default {
           <slot>
             <gl-sprintf :message="$options.i18n.additionalInfoPopover">
               <template #link="{ content }">
-                <gl-link class="gl-font-sm" :href="pipelinePath">{{ content }}</gl-link>
+                <gl-link class="gl-text-sm" :href="pipelinePath">{{ content }}</gl-link>
               </template>
             </gl-sprintf>
           </slot>

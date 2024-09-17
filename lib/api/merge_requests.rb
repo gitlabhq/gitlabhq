@@ -2,12 +2,17 @@
 
 module API
   class MergeRequests < ::API::Base
+    include APIGuard
     include PaginationParams
     include Helpers::Unidiff
 
     CONTEXT_COMMITS_POST_LIMIT = 20
 
     before { authenticate_non_get! }
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head?
+    end
 
     rescue_from ActiveRecord::QueryCanceled do |_e|
       render_api_error!({ error: 'Request timed out' }, 408)
@@ -219,6 +224,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project.'
     end
+
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include TimeTrackingEndpoints
 

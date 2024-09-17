@@ -27,7 +27,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
-  mapWorkItemWidgetsToIssueFields,
+  mapWorkItemWidgetsToIssuableFields,
   updateUpvotesCount,
 } from 'ee_else_ce/issues/list/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -42,6 +42,7 @@ import {
   STATUS_OPEN,
   WORKSPACE_GROUP,
   WORKSPACE_PROJECT,
+  TYPE_ISSUE,
 } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
@@ -131,6 +132,7 @@ export default {
   name: 'IssuesListAppCE',
   i18n,
   issuableListTabs,
+  issuableType: TYPE_ISSUE.toUpperCase(),
   ISSUES_VIEW_TYPE_KEY,
   ISSUES_GRID_VIEW_KEY,
   ISSUES_LIST_VIEW_KEY,
@@ -816,7 +818,10 @@ export default {
       this.viewType = ISSUES_LIST_VIEW_KEY;
     },
     handleSelectIssuable(issuable) {
-      this.activeIssuable = issuable;
+      this.activeIssuable = {
+        ...issuable,
+        fullPath: this.fullPath,
+      };
     },
     updateIssuablesCache(workItem) {
       const client = this.$apollo.provider.clients.defaultClient;
@@ -825,7 +830,7 @@ export default {
         variables: this.queryVariables,
       });
 
-      const activeIssuable = issuesList.project.issues.nodes.find(
+      const activeIssuable = issuesList[this.namespace].issues.nodes.find(
         (issue) => issue.iid === workItem.iid,
       );
 
@@ -837,7 +842,12 @@ export default {
       }
 
       // handle all other widgets
-      const data = mapWorkItemWidgetsToIssueFields(issuesList, workItem);
+      const data = mapWorkItemWidgetsToIssuableFields({
+        list: issuesList,
+        workItem,
+        namespace: this.namespace,
+        type: 'issue',
+      });
 
       client.writeQuery({ query: getIssuesQuery, variables: this.queryVariables, data });
     },
@@ -846,7 +856,7 @@ export default {
 
       cache.updateQuery({ query: getIssuesQuery, variables: this.queryVariables }, (issuesList) =>
         produce(issuesList, (draftData) => {
-          const activeItem = draftData.project.issues.nodes.find(
+          const activeItem = draftData[this.namespace].issues.nodes.find(
             (issue) => issue.iid === workItemIid,
           );
 
@@ -869,7 +879,7 @@ export default {
         variables: this.queryVariables,
       });
 
-      const data = updateUpvotesCount(issuesList, workItem);
+      const data = updateUpvotesCount({ list: issuesList, workItem, namespace: this.namespace });
 
       client.writeQuery({ query: getIssuesQuery, variables: this.queryVariables, data });
     },
@@ -883,6 +893,7 @@ export default {
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       :active-item="activeIssuable"
+      :issuable-type="$options.issuableType"
       @close="activeIssuable = null"
       @work-item-updated="updateIssuablesCache"
       @work-item-emoji-updated="updateIssuableEmojis"
@@ -894,6 +905,7 @@ export default {
     <issuable-list
       v-if="hasAnyIssues"
       :namespace="fullPath"
+      :full-path="fullPath"
       recent-searches-storage-key="issues"
       :search-tokens="searchTokens"
       :has-scoped-labels-feature="hasScopedLabelsFeature"
@@ -934,7 +946,7 @@ export default {
       @select-issuable="handleSelectIssuable"
     >
       <template #nav-actions>
-        <div class="gl-display-flex gl-gap-3">
+        <div class="gl-flex gl-gap-3">
           <local-storage-sync
             v-if="gridViewFeatureEnabled"
             :value="viewType"
@@ -962,7 +974,7 @@ export default {
           <gl-button
             v-if="canBulkUpdate"
             :disabled="isBulkEditButtonDisabled"
-            class="gl-flex-grow-1"
+            class="gl-grow"
             @click="handleBulkUpdateClick"
           >
             {{ __('Bulk edit') }}
@@ -972,7 +984,7 @@ export default {
               v-if="showNewIssueLink"
               :href="newIssuePath"
               variant="confirm"
-              class="gl-flex-grow-1"
+              class="gl-grow"
             >
               {{ __('New issue') }}
             </gl-button>
@@ -1043,7 +1055,7 @@ export default {
 
     <issuable-by-email
       v-if="showIssuableByEmail"
-      class="gl-text-center gl-pt-5 gl-pb-7"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
       data-track-action="click_email_issue_project_issues_empty_list_page"
       data-track-label="email_issue_project_issues_empty_list"
     />

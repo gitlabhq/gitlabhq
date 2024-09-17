@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, feature_category: :vulnerability_management do
   let_it_be(:project) { create(:project) }
 
-  let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }
+  let(:supported_dast_versions) { described_class.supported_versions.join(', ') }
 
   let(:scanner) do
     {
@@ -81,47 +81,23 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
   end
 
-  describe 'SUPPORTED_VERSIONS' do
-    schema_path = Rails.root.join("lib", "gitlab", "ci", "parsers", "security", "validators", "schemas")
+  describe '.supported_versions' do
+    subject(:supported_versions) { described_class.supported_versions }
 
-    it 'matches DEPRECATED_VERSIONS keys' do
-      expect(described_class::SUPPORTED_VERSIONS.keys).to eq(described_class::DEPRECATED_VERSIONS.keys)
+    specify do
+      expect(Gitlab::SecurityReportSchemas).to receive(:supported_versions).and_call_original
+
+      supported_versions
     end
+  end
 
-    context 'when all files under schema path are explicitly listed' do
-      # We only care about the part that comes before report-format.json
-      # https://rubular.com/r/N8Juz7r8hYDYgD
-      filename_regex = /(?<report_type>[-\w]*)-report-format.json/
+  describe '.deprecated_versions' do
+    subject(:deprecated_versions) { described_class.deprecated_versions }
 
-      versions = Dir.glob(File.join(schema_path, "*", File::SEPARATOR)).map { |path| path.split("/").last }
+    specify do
+      expect(Gitlab::SecurityReportSchemas).to receive(:deprecated_versions).and_call_original
 
-      versions.each do |version|
-        files = Dir[schema_path.join(version, "*.json")]
-
-        files.each do |file|
-          matches = filename_regex.match(file)
-          report_type = matches[:report_type].tr("-", "_").to_sym
-
-          it "#{report_type} #{version}" do
-            expect(described_class::SUPPORTED_VERSIONS[report_type]).to include(version)
-          end
-        end
-      end
-    end
-
-    context 'when every SUPPORTED_VERSION has a corresponding JSON file' do
-      described_class::SUPPORTED_VERSIONS.each_key do |report_type|
-        # api_fuzzing is covered by DAST schema
-        next if report_type == :api_fuzzing
-
-        described_class::SUPPORTED_VERSIONS[report_type].each do |version|
-          it "#{report_type} #{version} schema file is present" do
-            filename = "#{report_type.to_s.tr("_", "-")}-report-format.json"
-            full_path = schema_path.join(version, filename)
-            expect(File.file?(full_path)).to be true
-          end
-        end
-      end
+      deprecated_versions
     end
   end
 
@@ -130,7 +106,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
     context 'when given a supported MAJOR.MINOR schema version' do
       let(:report_version) do
-        latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
+        latest_vendored_version = described_class.supported_versions.last.split(".")
         (latest_vendored_version[0...2] << "34").join(".")
       end
 
@@ -139,7 +115,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a supported schema version' do
-      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.supported_versions.last }
 
       it_behaves_like 'report is valid'
       it_behaves_like 'report is invalid'
@@ -152,10 +128,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         }
       end
 
-      let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.deprecated_versions.last }
 
       before do
-        stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
+        deprecated_versions = deprecations_hash.values.flatten.map do |ver|
+          Gitlab::SecurityReportSchemas::SchemaVer.new(ver)
+        end
+
+        allow(Gitlab::SecurityReportSchemas).to receive(:deprecated_versions).and_return(deprecated_versions)
       end
 
       context 'and the report passes schema validation' do
@@ -229,7 +209,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     context 'when given a malformed schema version' do
       let(:security_report_failure) { 'using_unsupported_schema_version' }
 
-      [
+      [ # rubocop: disable Performance/CollectionLiteralInLoop -- test case
         '../../../../../../../../../spec/fixtures/security_reports/master/gl-secret-detection-report.json',
         './fixtures/gl-secret-detection.json',
         '%2e%2e%2f1.2.3'
@@ -277,7 +257,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.errors }
 
     context 'when given a supported schema version' do
-      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.supported_versions.last }
 
       it_behaves_like 'report is valid with no error'
 
@@ -304,10 +284,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         }
       end
 
-      let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.deprecated_versions.last }
 
       before do
-        stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
+        deprecated_versions = deprecations_hash.values.flatten.map do |ver|
+          Gitlab::SecurityReportSchemas::SchemaVer.new(ver)
+        end
+
+        allow(Gitlab::SecurityReportSchemas).to receive(:deprecated_versions).and_return(deprecated_versions)
       end
 
       it_behaves_like 'report is valid with no error'
@@ -332,9 +316,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     context 'when given an unsupported schema version' do
       let(:report_version) { "12.37.0" }
       let(:expected_unsupported_message) do
-        "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: "\
-        "#{supported_dast_versions}. GitLab will attempt to validate this report against the earliest supported "\
-        "versions of this report type, to show all the errors but will not ingest the report"
+        "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: " \
+          "#{supported_dast_versions}. GitLab will attempt to validate this report against the earliest supported " \
+          "versions of this report type, to show all the errors but will not ingest the report"
       end
 
       context 'and the report is valid' do
@@ -367,9 +351,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     context 'when not given a schema version' do
       let(:report_version) { nil }
       let(:expected_missing_version_message) do
-        "Report version not provided, #{report_type} report type supports versions: #{supported_dast_versions}. GitLab "\
-        "will attempt to validate this report against the earliest supported versions of this report type, to show all "\
-        "the errors but will not ingest the report"
+        "Report version not provided, #{report_type} report type supports versions: #{supported_dast_versions}. GitLab " \
+          "will attempt to validate this report against the earliest supported versions of this report type, to show all " \
+          "the errors but will not ingest the report"
       end
 
       let(:report_data) do
@@ -401,7 +385,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.deprecation_warnings }
 
     context 'when given a supported schema version' do
-      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.supported_versions.last }
 
       context 'and the report is valid' do
         it { is_expected.to be_empty }
@@ -424,12 +408,12 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         }
       end
 
-      let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
-      let(:current_dast_versions) { described_class::CURRENT_VERSIONS[:dast].join(', ') }
+      let(:report_version) { described_class.deprecated_versions.last }
+      let(:current_dast_versions) { described_class.supported_versions.join(', ') }
       let(:expected_deprecation_message) do
-        "version #{report_version} for report type #{report_type} is deprecated. "\
-        "However, GitLab will still attempt to parse and ingest this report. "\
-        "Upgrade the security report to one of the following versions: #{current_dast_versions}."
+        "version #{report_version} for report type #{report_type} is deprecated. " \
+          "However, GitLab will still attempt to parse and ingest this report. " \
+          "Upgrade the security report to one of the following versions: #{current_dast_versions}."
       end
 
       let(:expected_deprecation_warnings) do
@@ -439,7 +423,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       before do
-        stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
+        deprecated_versions = deprecations_hash.values.flatten.map do |ver|
+          Gitlab::SecurityReportSchemas::SchemaVer.new(ver)
+        end
+
+        allow(Gitlab::SecurityReportSchemas).to receive(:deprecated_versions).and_return(deprecated_versions)
       end
 
       context 'and the report passes schema validation' do
@@ -470,28 +458,30 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
     context 'when given a supported MAJOR.MINOR schema version' do
       let(:report_version) do
-        latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
+        latest_vendored_version = described_class.supported_versions.last.split(".")
         (latest_vendored_version[0...2] << "34").join(".")
       end
 
       let(:latest_patch_version) do
         ::Security::ReportSchemaVersionMatcher.new(
           report_declared_version: report_version,
-          supported_versions: described_class::SUPPORTED_VERSIONS[report_type]
+          supported_versions: described_class.supported_versions
         ).call
       end
 
       let(:message) do
-        "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match "\
-        "any vendored schema version. Validation will be attempted against version "\
-        "#{latest_patch_version}"
+        "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match " \
+          "any vendored schema version. Validation will be attempted against version " \
+          "#{latest_patch_version}"
       end
 
       context 'and the report is valid' do
         it { is_expected.to match_array([message]) }
 
         context 'without license', unless: Gitlab.ee? do
-          let(:schema_path) { Rails.root.join(*%w[lib gitlab ci parsers security validators schemas]) }
+          let(:schema_path) do
+            Gitlab::SecurityReportSchemas.schemas_path
+          end
 
           it 'tries to validate against the latest patch version available' do
             expect(File).to receive(:file?).with("#{schema_path}/#{report_version}/#{report_type}-report-format.json")
@@ -529,7 +519,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a supported schema version' do
-      let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
+      let(:report_version) { described_class.supported_versions.last }
 
       it_behaves_like 'report is valid with no warning'
 
@@ -554,7 +544,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       before do
-        stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
+        deprecated_versions = deprecations_hash.values.flatten.map do |ver|
+          Gitlab::SecurityReportSchemas::SchemaVer.new(ver)
+        end
+
+        allow(Gitlab::SecurityReportSchemas).to receive(:deprecated_versions).and_return(deprecated_versions)
       end
 
       context 'and the report passes schema validation' do

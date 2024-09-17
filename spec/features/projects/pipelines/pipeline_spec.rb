@@ -467,10 +467,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         visit_pipeline
       end
 
-      it 'shows Pipeline, Jobs, DAG and Failed Jobs tabs with link' do
+      it 'shows Pipeline, Jobs, and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('Needs')
         expect(page).to have_link('Failed Jobs')
       end
 
@@ -1034,10 +1033,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline, Jobs and DAG tabs with link' do
+      it 'shows Pipeline and Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('Needs')
       end
 
       it 'shows counter in Jobs tab' do
@@ -1234,10 +1232,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline, Jobs and DAG tabs with link' do
+      it 'shows Pipeline and Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('Needs')
       end
     end
   end

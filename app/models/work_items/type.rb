@@ -7,6 +7,7 @@
 module WorkItems
   class Type < ApplicationRecord
     include IgnorableColumns
+    include Gitlab::Utils::StrongMemoize
 
     DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
 
@@ -91,23 +92,16 @@ module WorkItems
       found_type = find_by(base_type: type)
       return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
 
-      if Feature.enabled?(:rely_on_work_item_type_seeder, type: :beta) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Default types exist instance wide
-        error_message = <<~STRING
-          Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-          See related documentation in
-          https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
+      error_message = <<~STRING
+        Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+        See related documentation in
+        https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
 
-          If you have additional questions, you can ask in
-          https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-        STRING
+        If you have additional questions, you can ask in
+        https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+      STRING
 
-        raise DEFAULT_TYPES_NOT_SEEDED, error_message
-      end
-
-      Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
-      Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
-      Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
-      find_by(base_type: type)
+      raise DEFAULT_TYPES_NOT_SEEDED, error_message
     end
 
     def self.default_issue_type
@@ -166,6 +160,25 @@ module WorkItems
 
       cached_data || allowed_parent_types_by_name
     end
+
+    def descendant_types
+      descendant_types = []
+      next_level_child_types = allowed_child_types(cache: true)
+
+      loop do
+        descendant_types += next_level_child_types
+
+        # We remove types that we've already seen to avoid circular dependencies
+        next_level_child_types = next_level_child_types.flat_map do |type|
+          type.allowed_child_types(cache: true)
+        end - descendant_types
+
+        break if next_level_child_types.empty?
+      end
+
+      descendant_types
+    end
+    strong_memoize_attr :descendant_types
 
     private
 

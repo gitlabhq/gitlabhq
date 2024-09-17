@@ -198,26 +198,26 @@ export default {
     <expiration-toggle
       :value="prefilledForm.enabled"
       :disabled="showLoadingIcon"
-      class="gl-mb-0!"
+      class="!gl-mb-0"
       data-testid="enable-toggle"
       @input="onModelChange($event, 'enabled')"
     />
 
-    <div class="gl-flex gl-mt-5">
+    <div class="gl-mt-5 gl-flex">
       <expiration-dropdown
         :value="prefilledForm.cadence"
         :disabled="isFieldDisabled"
         :form-options="$options.formOptions.cadence"
         :label="$options.i18n.CADENCE_LABEL"
         name="cadence"
-        class="gl-mr-7 gl-mb-0!"
+        class="!gl-mb-0 gl-mr-7"
         data-testid="cadence-dropdown"
         @input="onModelChange($event, 'cadence')"
       />
       <expiration-run-text
         :value="prefilledForm.nextRunAt"
         :enabled="prefilledForm.enabled"
-        class="gl-mb-0!"
+        class="!gl-mb-0"
       />
     </div>
     <gl-alert class="gl-mt-5" :dismissible="false">

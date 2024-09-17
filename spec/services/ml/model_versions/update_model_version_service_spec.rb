@@ -24,7 +24,7 @@ RSpec.describe Ml::ModelVersions::UpdateModelVersionService, feature_category: :
     end
 
     context 'when description is invalid' do
-      let(:description) { 'a' * 501 }
+      let(:description) { 'a' * 10001 }
 
       it { is_expected.to be_error }
     end

@@ -34,7 +34,7 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
     end
 
     context 'without creating a new merge request' do
-      it 'reverts a commit', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446062' do
+      it 'reverts a commit' do
         revert_commit
 
         expect(page).to have_content('The commit has been successfully reverted.')

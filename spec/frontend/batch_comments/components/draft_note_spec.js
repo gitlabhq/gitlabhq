@@ -103,7 +103,7 @@ describe('Batch comments draft note component', () => {
       });
 
       await nextTick();
-      const referencedCommands = wrapper.find('.referenced-commands');
+      const referencedCommands = wrapper.find('.draft-note-referenced-commands');
 
       expect(referencedCommands.exists()).toBe(true);
       expect(referencedCommands.text()).toContain('test command');

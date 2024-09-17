@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineChatData,
   feature_category: :continuous_integration do
-  let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
+  let(:ci_pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }
   let(:ci_pipeline_chat_data_table) { table(:ci_pipeline_chat_data, database: :ci) }
   let!(:pipeline1) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
   let!(:pipeline2) { ci_pipelines_table.create!(id: 2, partition_id: 101, project_id: 1) }

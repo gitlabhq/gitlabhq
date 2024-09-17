@@ -45,7 +45,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         <input type="text" id="expires_at" value="2022-01-01"/>
         <input type="text" value='1'/>
         <input type="checkbox" checked/>
-        <button type="submit" value="Create" class="disabled" disabled="disabled"/>
+        <button type="submit" data-testid="create-token-button" value="Create" class="disabled" disabled="disabled"/>
       </form>`,
     );
 
@@ -90,6 +90,17 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         }),
         variant: VARIANT_INFO,
       });
+    });
+
+    it('should enable the submit button', async () => {
+      const button = findButtonEl();
+      expect(button).toBeDisabled();
+      expect(button.className).toBe('disabled');
+
+      await triggerSuccess();
+
+      expect(button).not.toBeDisabled();
+      expect(button.className).toBe('');
     });
 
     describe('when resetting the form', () => {

@@ -48,7 +48,6 @@ Style/ArgumentsForwarding:
     - 'config/initializers/6_labkit_middleware.rb'
     - 'config/initializers/mail_starttls_patch.rb'
     - 'ee/app/controllers/ee/application_controller.rb'
-    - 'ee/app/models/ai/job_failure_analysis.rb'
     - 'ee/app/models/ci/instance_runner_failed_jobs.rb'
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/ee/group.rb'

@@ -165,7 +165,11 @@ RSpec.describe ApplicationSetting, 'TokenAuthenticatable' do
   end
 end
 
-RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
+RSpec.describe PersonalAccessToken, 'TokenAuthenticatable', feature_category: :system_access do
+  before do
+    allow(Devise).to receive(:friendly_token).and_return(token_value)
+  end
+
   shared_examples 'changes personal access token' do
     it 'sets new token' do
       subject
@@ -188,11 +192,7 @@ RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
   let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
   let(:user) { create(:user) }
   let(:personal_access_token) do
-    described_class.new(name: 'test-pat-01', user_id: user.id, scopes: [:api], token_digest: token_digest, expires_at: 30.days.from_now)
-  end
-
-  before do
-    allow(Devise).to receive(:friendly_token).and_return(token_value)
+    build(:personal_access_token, name: 'test-pat-01', user_id: user.id, scopes: [:api], token_digest: token_digest, expires_at: 30.days.from_now)
   end
 
   describe '.find_by_token' do

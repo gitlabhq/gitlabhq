@@ -57,6 +57,8 @@ const defaultProps = {
   showVisibilityConfirmModal: false,
   membersPagePath: '/my-fake-project/-/project_members',
   licensedAiFeaturesAvailable: true,
+  policySettingsAvailable: false,
+  duoFeaturesLocked: false,
 };
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
@@ -65,7 +67,13 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, glFeatures = {}, stubs = {}, ...customProps } = {},
+    {
+      currentSettings = {},
+      glFeatures = {},
+      cascadingSettingsData = {},
+      stubs = {},
+      ...customProps
+    } = {},
     mountFn = shallowMountExtended,
   ) => {
     const propsData = {
@@ -78,6 +86,7 @@ describe('Settings Panel', () => {
       propsData,
       provide: {
         glFeatures,
+        cascadingSettingsData,
       },
       stubs,
     });
@@ -142,6 +151,9 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'model-experiments-settings' });
   const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
   const findDuoSettings = () => wrapper.findByTestId('duo-settings');
+  const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
+  const findPipelineExecutionPolicySettings = () =>
+    wrapper.findByTestId('pipeline-execution-policy-settings');
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -835,19 +847,121 @@ describe('Settings Panel', () => {
     });
   });
   describe('Duo', () => {
-    describe('when the FF is on', () => {
-      it('shows duo toggle', () => {
-        wrapper = mountComponent({ glFeatures: { aiSettingsVueProject: true } });
+    it('shows duo toggle', () => {
+      wrapper = mountComponent({});
+      expect(findDuoSettings().exists()).toBe(true);
+    });
 
-        expect(findDuoSettings().exists()).toBe(true);
+    describe('when areDuoSettingsLocked is false', () => {
+      it('does not show CascadingLockIcon', () => {
+        wrapper = mountComponent({ duoFeaturesLocked: false });
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
       });
     });
-    describe('when the FF is off', () => {
-      it('does not show duo toggle', () => {
-        wrapper = mountComponent();
 
-        expect(findDuoSettings().exists()).toBe(false);
+    describe('when areDuoSettingsLocked is true', () => {
+      beforeEach(() => {
+        wrapper = mountComponent(
+          {
+            cascadingSettingsData: {
+              lockedByAncestor: false,
+              lockedByApplicationSetting: false,
+              ancestorNamespace: null,
+            },
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
       });
+
+      it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
+        expect(findDuoCascadingLockIcon().exists()).toBe(true);
+      });
+
+      it('passes correct props to CascadingLockIcon', () => {
+        expect(findDuoCascadingLockIcon().props()).toMatchObject({
+          isLockedByGroupAncestor: false,
+          isLockedByApplicationSettings: false,
+          ancestorNamespace: null,
+        });
+      });
+
+      it('does not show CascadingLockIcon when cascadingSettingsData is empty', () => {
+        wrapper = mountComponent(
+          {
+            cascadingSettingsData: {},
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+      });
+
+      it('does not show CascadingLockIcon when cascadingSettingsData is null', () => {
+        wrapper = mountComponent(
+          {
+            glFeatures: { aiSettingsVueProject: true },
+            cascadingSettingsData: null,
+            duoFeaturesLocked: true,
+          },
+          mountExtended,
+        );
+        expect(findDuoCascadingLockIcon().exists()).toBe(false);
+      });
+    });
+  });
+  describe('Pipeline execution policies', () => {
+    it('does not show the pipeline execution policy settings by default', () => {
+      wrapper = mountComponent();
+
+      expect(findPipelineExecutionPolicySettings().exists()).toBe(false);
+    });
+
+    it('shows pipeline execution policies toggle when policies are available', () => {
+      wrapper = mountComponent({
+        policySettingsAvailable: true,
+      });
+
+      expect(findPipelineExecutionPolicySettings().exists()).toBe(true);
+    });
+
+    it('disables the checkbox when the setting is locked', () => {
+      wrapper = mountComponent(
+        {
+          policySettingsAvailable: true,
+          sppRepositoryPipelineAccessLocked: true,
+        },
+        mountExtended,
+      );
+
+      expect(
+        findPipelineExecutionPolicySettings()
+          .findComponent(GlFormCheckbox)
+          .find('input')
+          .attributes('disabled'),
+      ).toBe('disabled');
+    });
+
+    it('updates the hidden value when toggled', async () => {
+      wrapper = mountComponent(
+        {
+          policySettingsAvailable: true,
+          currentSettings: { sppRepositoryPipelineAccess: true },
+        },
+        mountExtended,
+      );
+      const originalHiddenInputValue = findPipelineExecutionPolicySettings()
+        .find('input[type="hidden"]')
+        .attributes('value');
+
+      await findPipelineExecutionPolicySettings()
+        .findComponent(GlFormCheckbox)
+        .find('input')
+        .setChecked(false);
+
+      expect(
+        findPipelineExecutionPolicySettings().find('input[type="hidden"]').attributes('value'),
+      ).not.toEqual(originalHiddenInputValue);
     });
   });
 });

@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
 import DesignItem from '~/work_items/components/design_management/design_item.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
@@ -36,7 +36,7 @@ describe('DesignWidget', () => {
     .fn()
     .mockResolvedValue(designCollectionResponse([mockDesign, mockDesign2]));
 
-  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
+  const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
   const findAllDesignItems = () => wrapper.findAllComponents(DesignItem);
 
   function createComponent({

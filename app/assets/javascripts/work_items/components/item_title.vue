@@ -27,7 +27,7 @@ export default {
   computed: {
     headerClasses() {
       return this.useH1
-        ? 'gl-w-full gl-font-size-h-display gl-m-0!'
+        ? 'gl-w-full gl-text-size-h-display !gl-m-0'
         : 'gl-font-normal sm:gl-font-bold gl-mb-1 gl-mt-0 gl-w-full';
     },
   },
@@ -65,8 +65,8 @@ export default {
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
       :contenteditable="!disabled"
-      class="hide-unfocused-input-decoration gl-px-4 gl-py-3 -gl-ml-4 gl-border gl-rounded-base gl-block"
-      :class="{ 'gl-hover-border-gray-200 gl-pseudo-placeholder': !disabled }"
+      class="hide-unfocused-input-decoration gl-border -gl-ml-4 gl-block gl-rounded-base gl-px-4 gl-py-3"
+      :class="{ 'gl-pseudo-placeholder hover:gl-border-gray-200': !disabled }"
       @paste="handlePaste"
       @blur="handleBlur"
       @keyup="handleInput"

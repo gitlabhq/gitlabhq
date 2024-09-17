@@ -246,7 +246,7 @@ Merge train pipelines run a single `pre-merge-checks` job which ensures the late
 
 1. A [Merged Results pipeline](../../ci/pipelines/merged_results_pipelines.md)
 1. A [`tier-3` pipeline](#pipeline-tiers) (i.e. full pipeline, not predictive one)
-1. Created at most 8 hours ago
+1. Created at most 8 hours ago (72 hours for stable branches)
 
 We opened [a feedback issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/513)
 to iterate on this solution.
@@ -282,7 +282,7 @@ To make your Revert MRs faster, use the [revert MR template](https://gitlab.com/
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
-- The `e2e:package-and-test` job.
+- The `e2e:test-on-omnibus` job.
 - The `rspec:undercoverage` job.
 - The entire [review apps process](../testing_guide/review_apps.md).
 
@@ -299,19 +299,47 @@ Forcing all jobs on docs only related MRs would not have the prerequisite jobs a
 
 ### End-to-end jobs
 
-The [`e2e:package-and-test`](../testing_guide/end_to_end/index.md#using-the-package-and-test-job) child pipeline
+The [`e2e:test-on-omnibus`](../testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) child pipeline
 runs end-to-end jobs automatically depending on changes, and is manual in other cases.
-See `.qa:rules:package-and-test` in
+See `.qa:rules:test-on-omnibus` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
 the specific list of rules.
 
-If you want to force `e2e:package-and-test` to run regardless of your changes, you can add the
+If you want to force `e2e:test-on-omnibus` to run regardless of your changes, you can add the
 `pipeline:run-all-e2e` label to the merge request.
 
 The [`e2e:test-on-gdk`](../testing_guide/end_to_end/index.md#using-the-test-on-gdk-job) child pipeline runs `:blocking`
 E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking-gdk` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
 
 Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
+
+### Observability end-to-end jobs
+
+The [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace) has dedicated [end-to-end tests](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/e2e/frontend) that run against a GitLab instance. These tests are designed to ensure the integration between GitLab and the Observability Backend is functioning correctly.
+
+The GitLab pipeline has dedicated jobs (see [`observability-backend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/observability-backend.gitlab-ci.yml)) that can be executed from GitLab MRs. These jobs will trigger the E2E tests on the GitLab Observability Backend pipeline against a GitLab instance built from the GitLab MR branch. These jobs are useful to make sure that the GitLab changes under review will not break E2E tests on the GitLab Observability Backend pipeline.
+
+There are two Observability end-to-end jobs:
+
+- `e2e:observability-backend-main-branch`: executes the tests against the main branch of the GitLab Observability Backend.
+- `e2e:observability-backend`: executes the tests against a branch of the GitLab Observability Backend with the same name as the MR branch.
+
+The Observability E2E jobs are triggered automatically for merge requests that touch relevant files, such as those in the `lib/gitlab/observability/` directory or specific configuration files related to observability features.
+
+To run these jobs manually, you can add the `pipeline:run-observability-e2e-tests-main-branch` or `pipeline:run-observability-e2e-tests-current-branch` label to your merge request.
+
+In the following example workflow, a developer creates an MR that touches Observability code and uses Observability end-to-end jobs:
+
+1. A developer creates a GitLab MR that touches observability code. The MR automatically executes the `e2e:observability-backend-main-branch` job.
+1. If `e2e:observability-backend-main-branch` fails, it means that either the MR broke something (and needs fixing), or the MR made changes that requires the e2e tests to be updated.
+1. To update the e2e tests, the developer should:
+   1. Create a branch in the GitLab Observability Backend [repository](https://gitlab.com/gitlab-org/opstrace/opstrace), with the same name as the GitLab branch containing the breaking changes.
+   1. Fix the [e2e tests](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/e2e/frontend).
+   1. Create a merge request with the changes.
+1. The developer should add the `pipeline:run-observability-e2e-tests-current-branch` label on the GitLab MR and wait for the `e2e:observability-backend` job to succeed.
+1. If `e2e:observability-backend` succeeds, the developer can merge both MRs.
+
++In addition, the developer can manually add `pipeline:run-observability-e2e-tests-main-branch` to force the MR to run the `e2e:observability-backend-main-branch` job. This could be useful in case of changes to files that are not being tracked as related to observability.
 
 ### Review app jobs
 
@@ -614,11 +642,11 @@ fail.
 #### Troubleshooting `rspec:undercoverage` failures
 
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
-that can cause false positive failures. You can test coverage locally to determine if it's
-safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
+that can cause false positive failures. Such false positive falures may also happen if you are updating database migration that is too old.
+You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the
 test causing the failure:
 
-1. Run `SIMPLECOV=1 bundle exec rspec <spec>`.
+1. Run `RUN_ALL_MIGRATION_TESTS=1 SIMPLECOV=1 bundle exec rspec <spec>`.
 1. Run `scripts/undercoverage`.
 
 If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.
@@ -707,19 +735,17 @@ Ruby version only:
 Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We run our test suite against PostgreSQL 13, 14, 15 and 16 on nightly scheduled pipelines.
-
-We also run our test suite against PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg13` job).
+We run our test suite against PostgreSQL 14, 15 and 16 on nightly scheduled pipelines.
 
 #### Current versions testing
 
-| Where?                                                                                           | PostgreSQL version                              | Ruby version          |
-|--------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)    | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10)    | 14 (default version), 13 for DB library changes | 3.2                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15, 16                | 3.1 (default version) |
+| Where?                                                                                        | PostgreSQL version           | Ruby version          |
+|-----------------------------------------------------------------------------------------------|------------------------------|-----------------------|
+| Merge requests                                                                                | 14 (default version)         | 3.1 (default version) |
+| `master` branch commits                                                                       | 14 (default version)         | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05) | 14 (default version)         | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10) | 14 (default version)         | 3.2                   |
+| `nightly` scheduled pipelines for the `master` branch                                         | 14 (default version), 15, 16 | 3.1 (default version) |
 
 For each current Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on their respective `ruby\d_\d`
@@ -897,7 +923,7 @@ graph RL;
   class 2_3-1 criticalPath;
   2_3-1 --> 1-5
 
-  2_4-1["e2e:package-and-test-ee (103 minutes)"];
+  2_4-1["e2e:test-on-omnibus-ee (103 minutes)"];
   class 2_4-1 criticalPath;
   click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   2_4-1 --> 1-2 & 2_3-1 & 1-15;

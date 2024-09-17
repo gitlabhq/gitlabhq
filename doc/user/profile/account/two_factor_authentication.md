@@ -335,8 +335,8 @@ Each code can be used only once to sign in to your account.
 You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
 
-NOTE:
-Recovery codes are not generated for WebAuthn devices.
+> - Recovery codes are not generated for WebAuthn devices.
+> - `gitlab-sshd` is not suitable for regenerating recovery codes.
 
 If you lose the recovery codes, or want to generate new ones, you can use either:
 

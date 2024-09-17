@@ -117,7 +117,7 @@ POST /groups/:id/access_tokens
 | `name` | String | yes | Name of the group access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
 | `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
-| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

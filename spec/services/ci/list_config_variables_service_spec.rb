@@ -284,7 +284,7 @@ RSpec.describe Ci::ListConfigVariablesService,
   end
 
   context 'when reading from cache' do
-    let(:reactive_cache_params) { [sha] }
+    let(:reactive_cache_params) { [sha, ref] }
     let(:return_value) { { 'KEY1' => { value: 'val 1', description: 'description 1' } } }
 
     before do
@@ -297,7 +297,7 @@ RSpec.describe Ci::ListConfigVariablesService,
   end
 
   context 'when the cache is empty' do
-    let(:reactive_cache_params) { [sha] }
+    let(:reactive_cache_params) { [sha, ref] }
 
     it 'returns nil and enquques the worker to fill cache' do
       expect(ExternalServiceReactiveCachingWorker)
@@ -305,6 +305,69 @@ RSpec.describe Ci::ListConfigVariablesService,
         .with(service.class, service.id, *reactive_cache_params)
 
       expect(result).to be_nil
+    end
+  end
+
+  describe '#calculate_reactive_cache (LEGACY)' do
+    subject(:result) { service.calculate_reactive_cache(sha) }
+
+    context 'when sending a valid ref' do
+      let(:ci_config) do
+        {
+          variables: {
+            KEY1: { value: 'val 1', description: 'description 1' },
+            KEY2: { value: 'val 2', description: '' },
+            KEY3: { value: 'val 3' },
+            KEY4: 'val 4'
+          },
+          test: {
+            stage: 'test',
+            script: 'echo'
+          }
+        }
+      end
+
+      let(:expected_result) do
+        {
+          'KEY1' => { value: 'val 1', description: 'description 1' },
+          'KEY2' => { value: 'val 2', description: '' },
+          'KEY3' => { value: 'val 3' },
+          'KEY4' => { value: 'val 4' }
+        }
+      end
+
+      it 'returns variables list' do
+        expect(result).to eq(expected_result)
+      end
+
+      context 'when the ref is a sha from a fork' do
+        include_context 'when a project repository contains a forked commit'
+
+        before do
+          allow_next_instance_of(Gitlab::Ci::ProjectConfig) do |instance|
+            allow(instance).to receive(:exists?).and_return(true)
+            allow(instance).to receive(:content).and_return(YAML.dump(ci_config))
+          end
+        end
+
+        let(:sha) { forked_commit_sha }
+
+        context 'when a project ref contains the sha' do
+          before do
+            mock_branch_contains_forked_commit_sha
+          end
+
+          it 'returns variables list' do
+            expect(result).to eq(expected_result)
+          end
+        end
+
+        context 'when a project ref does not contain the sha' do
+          it 'returns empty response' do
+            expect(result).to eq({})
+          end
+        end
+      end
     end
   end
 end

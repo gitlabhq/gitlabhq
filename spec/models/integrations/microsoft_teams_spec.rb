@@ -9,7 +9,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
 
     let(:payload) do
       {
-        summary: be_present
+        attachments: be_present
       }
     end
   end
@@ -224,11 +224,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
 
         chat_integration.execute(data)
 
-        message = Integrations::ChatMessage::PipelineMessage.new(data)
-
-        expect(WebMock).to have_requested(:post, webhook_url)
-          .with(body: hash_including({ summary: message.summary }))
-          .once
+        expect(WebMock).to have_requested(:post, webhook_url).once
       end
     end
 

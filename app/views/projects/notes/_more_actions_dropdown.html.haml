@@ -1,7 +1,7 @@
 - is_current_user = current_user == note.author
 
 - if note_editable || !is_current_user
-  .dropdown{ class: "more-actions gl-ml-0!" }
+  .dropdown{ class: "more-actions !gl-ml-0" }
     = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle', data: { title: 'More actions', toggle: 'dropdown', container: 'body', testid: 'more-actions-dropdown' }})
     %ul.dropdown-menu.more-actions-dropdown.dropdown-menu-right
       - if note_editable
@@ -9,7 +9,7 @@
           = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: 'menu-item note-action-button js-note-edit', data: { container: 'body', testid: 'edit-comment-button' } }) do
             = _("Edit comment")
       %li
-        = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'gl-rounded-0!', size: :medium, hide_tooltip: true, hide_button_icon: true)
+        = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: '!gl-rounded-none', size: :medium, hide_tooltip: true, hide_button_icon: true)
       - unless is_current_user
         .-gl-ml-2
           .js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: note.author.id, reported_from_url: noteable_note_url(note) } }

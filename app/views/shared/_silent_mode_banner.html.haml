@@ -1,7 +1,7 @@
 - return unless ::Gitlab::SilentMode.enabled?
 
 = content_for :page_level_alert do
-  %div{ class: [container_class, @content_class, 'gl-pt-5!'] }
+  %div{ class: [container_class, @content_class, '!gl-pt-5'] }
     = render Pajamas::AlertComponent.new(title: s_('SilentMode|Silent mode is enabled'),
       dismissible: false,
       variant: :warning) do |c|

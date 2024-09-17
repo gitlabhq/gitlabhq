@@ -5,6 +5,8 @@ module BulkImports
     module Transformers
       class MemberAttributesTransformer
         def transform(context, data)
+          return data if context.importer_user_mapping_enabled?
+
           user = find_user(data&.dig('user', 'public_email'))
           access_level = data&.dig('access_level', 'integer_value')
 

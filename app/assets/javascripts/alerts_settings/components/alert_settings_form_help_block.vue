@@ -23,9 +23,7 @@ export default {
   <span>
     <gl-sprintf :message="message">
       <template #link="{ content }">
-        <gl-link class="gl-display-inline-block" :href="link" target="_blank">{{
-          content
-        }}</gl-link>
+        <gl-link class="gl-inline-block" :href="link" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </span>

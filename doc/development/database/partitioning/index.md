@@ -63,8 +63,7 @@ is a good fit for your particular problem:
   clause on almost all queries accessing that table.
 
 - **How the data is split**. What strategy does the database use
-  to split the data across the partitions? The available choices are `range`,
-  `hash`, and `list`.
+  to split the data across the partitions?
 
 ## Determine the appropriate partitioning strategy
 

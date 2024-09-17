@@ -13,19 +13,19 @@ To choose the right GitLab subscription, select an offering and a tier.
 
 Choose which GitLab subscription suits your needs:
 
-- [GitLab SaaS](gitlab_com/index.md): The GitLab software-as-a-service offering.
-  You don't need to install anything to use GitLab SaaS, you only need to
+- [GitLab.com](gitlab_com/index.md): The GitLab software-as-a-service offering.
+  You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab Dedicated](gitlab_dedicated/index.md): A single-tenant SaaS service for highly regulated and large enterprises.
 - [GitLab self-managed](self_managed/index.md): Install, administer, and maintain
   your own GitLab instance.
 
 On a GitLab self-managed instance, a GitLab subscription provides the same set of
-features for _all_ users. On GitLab SaaS, you can apply a subscription to a group
+features for _all_ users. On GitLab.com, you can apply a subscription to a top-level group
 namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:
-Subscriptions cannot be transferred between GitLab SaaS and GitLab self-managed.
+Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 
 ## Choose a GitLab tier
@@ -33,8 +33,7 @@ A new subscription must be purchased and applied as needed.
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
 the features that fit your budget.
 
-For more details, see
-[a comparison of self-managed features available in each tier](https://about.gitlab.com/pricing/feature-comparison/).
+For more details, see [a comparison of features available in each tier](https://about.gitlab.com/pricing/feature-comparison/).
 
 ## Find your subscription
 

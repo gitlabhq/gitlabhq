@@ -2,7 +2,7 @@
 - new_custom_emoji_path = local_assigns.fetch(:new_custom_emoji_path, nil)
 
 - if api_awards_path
-  .gl-display-flex.gl-flex-wrap.gl-justify-content-space-between.gl-pt-3
+  .gl-flex.gl-flex-wrap.gl-justify-between.gl-pt-3
     #js-vue-awards-block{ data: { path: api_awards_path, can_award_emoji: can?(current_user, :award_emoji, awardable).to_s, new_custom_emoji_path: new_custom_emoji_path, show_default_award_emojis: @project&.show_default_award_emojis?.to_s } }
     = yield
 - else

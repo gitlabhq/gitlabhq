@@ -90,8 +90,9 @@ module ResourceAccessTokens
     end
 
     def create_personal_access_token(user)
+      organization_id = resource.organization_id || params[:organization_id]
       PersonalAccessTokens::CreateService.new(
-        current_user: user, target_user: user, params: personal_access_token_params
+        current_user: user, target_user: user, organization_id: organization_id, params: personal_access_token_params
       ).execute
     end
 

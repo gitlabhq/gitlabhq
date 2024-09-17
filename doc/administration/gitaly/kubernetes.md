@@ -35,13 +35,25 @@ because of [existing issues and design constraints](index.md#known-issues) that 
 To support a Cloud Native deployment, Gitaly (non-Cluster) is the only option.
 By leveraging the right Kubernetes and Gitaly features and configuration, you can minimize service disruption and provide a good user experience.
 
+## Requirements
+
+The information on this page assumes:
+
+- Kubernetes version equal to or greater than `1.29`.
+- Kubernetes node `runc` version equal to or greater than `1.1.9`.
+- Kubernetes node cgroup v2. Native, hybrid v1 mode is not supported. Only
+  [`systemd`-style cgroup structure](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#systemd-cgroup-driver) is supported (Kubernetes default).
+- Pod access to node mountpoint `/sys/fs/cgroup`.
+- Pod init container (`init-cgroups`) access to `root` user filesystem permissions on `/sys/fs/cgroup`. Used to delegate the pod cgroup to the Gitaly container
+  (user `git`, UID `1000`).
+
 ## Guidance
 
 When running Gitaly in Kubernetes, you must:
 
 - [Address pod disruption](#address-pod-disruption).
 - [Address resource contention and saturation](#address-resource-contention-and-saturation).
-- [Optimize pod start time](#optimize-pod-start-time).
+- [Optimize pod rotation time](#optimize-pod-rotation-time).
 
 ### Address pod disruption
 
@@ -194,7 +206,7 @@ gitlab:
     antiAffinity: hard
 ```
 
-### Optimize pod start time
+### Optimize pod rotation time
 
 This section covers areas of optimization to reduce downtime during maintenance events or unplanned infrastructure events by reducing the time it takes the pod to start serving traffic.
 
@@ -231,4 +243,21 @@ gitlab:
         timeoutSeconds: 3
         successThreshold: 1
         failureThreshold: 3
+```
+
+#### Gitaly graceful shutdown timeout
+
+By default, when terminating, Gitaly grants a 1 minute timeout for in-flight requests to complete.
+While beneficial at first glance, this timeout:
+
+- Slows down pod rotation.
+- Reduces availability by rejecting requests during the shutdown process.
+
+A better approach in a container-based deployment is to rely on client-side retry logic. You can reconfigure the timeout by using the `gracefulRestartTimeout` field.
+For example, to grant a 1 second graceful timeout:
+
+```yaml
+gitlab:
+  gitaly:
+    gracefulRestartTimeout: 1
 ```

@@ -5,6 +5,6 @@
       = link_to _('Learn more'), help_page_path('user/project/integrations/gitlab_slack_application')
     %p
       = s_("SlackIntegration|See the list of available commands in Slack after setting up this integration by entering")
-      %kbd.inline /gitlab help
+      %kbd.gl-inline-block /gitlab help
 - if integration.project_level? || Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
   = render "shared/integrations/#{integration.to_param}/slack_integration_form", integration: integration

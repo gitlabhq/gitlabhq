@@ -17,8 +17,10 @@ DETAILS:
 
 Import your projects from Bitbucket Server to GitLab.
 
-NOTE:
-This process is different than [importing from Bitbucket Cloud](bitbucket.md).
+WARNING:
+Importing from Bitbucket Server to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
+estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+This unavailability doesn't affect [importing from Bitbucket Cloud](bitbucket.md).
 
 ## Prerequisites
 

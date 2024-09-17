@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.AlertBoxStyle
+# Error: gitlab_docs.AlertBoxStyle
 #
 # Makes sure alert boxes are used with block quotes. Checks for 3 formatting issues:
 #

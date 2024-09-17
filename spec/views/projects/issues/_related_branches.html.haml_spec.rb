@@ -26,6 +26,6 @@ RSpec.describe 'projects/issues/_related_branches' do
     expect(rendered).to have_link(href: 'link-to-feature')
     expect(rendered).to have_link(href: 'link-to-other')
     expect(rendered).to have_css('[data-testid="ci-icon"]')
-    expect(rendered).to have_css('.related-branch-info')
+    expect(rendered).to have_css('.ref-name')
   end
 end

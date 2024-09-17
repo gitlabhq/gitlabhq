@@ -59,7 +59,7 @@ export default {
     <template v-else-if="hasUserList">
       <h3
         data-testid="user-list-title"
-        class="gl-font-bold gl-pb-5 gl-border-b-solid gl-border-gray-100 gl-border-1"
+        class="gl-border-1 gl-border-gray-100 gl-pb-5 gl-font-bold gl-border-b-solid"
       >
         {{ title }}
       </h3>

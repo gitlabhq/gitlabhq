@@ -4,7 +4,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
-import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
+import RadioFilter from '~/search/sidebar/components/shared/radio_filter.vue';
 import { confidentialFilterData } from '~/search/sidebar/components/confidentiality_filter/data';
 import { statusFilterData } from '~/search/sidebar/components/status_filter/data';
 

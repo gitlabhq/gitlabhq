@@ -269,11 +269,11 @@ linters:
   disable-all: true
   enable:
     - bodyclose
+    - copyloopvar
     - depguard
     - dogsled
     - dupl
     - errcheck
-    - exportloopref
     - funlen
     - gocognit
     - goconst

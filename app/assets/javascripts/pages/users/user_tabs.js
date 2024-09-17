@@ -14,7 +14,7 @@ import UserOverviewBlock from './user_overview_block';
 const CALENDAR_TEMPLATE = `
   <div class="calendar">
     <div class="js-contrib-calendar gl-overflow-x-auto"></div>
-    <div class="calendar-help gl-display-flex gl-justify-content-space-between gl-ml-auto gl-mr-auto">
+    <div class="calendar-help gl-flex gl-justify-between gl-ml-auto gl-mr-auto">
       <div class="calendar-legend">
         <svg width="80px" height="20px">
           <g>
@@ -36,7 +36,7 @@ const CALENDAR_TEMPLATE = `
           </g>
         </svg>
       </div>
-      <div class="calendar-hint gl-font-sm gl-text-secondary"></div>
+      <div class="calendar-hint gl-text-sm gl-text-secondary"></div>
     </div>
   </div>
 `;

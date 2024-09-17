@@ -62,7 +62,7 @@ export default {
       :aria-label="__('Decrease')"
       @click="decrementScale"
     />
-    <span data-testid="scale-value" class="gl-p-3 gl-bg-white gl-font-sm gl-border-t gl-border-b">{{
+    <span data-testid="scale-value" class="gl-border-t gl-border-b gl-bg-white gl-p-3 gl-text-sm">{{
       scaleLabel
     }}</span>
     <gl-button

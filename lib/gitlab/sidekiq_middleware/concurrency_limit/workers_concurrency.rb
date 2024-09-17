@@ -27,7 +27,7 @@ module Gitlab
           def workers_uncached
             Gitlab::Redis::Queues.instances.values.flat_map do |instance| # rubocop:disable Cop/RedisQueueUsage -- iterating over instances is allowed as we pass the pool to Sidekiq
               Sidekiq::Client.via(instance.sidekiq_redis) do
-                sidekiq_workers.map { |_process_id, _thread_id, work| ::Gitlab::Json.parse(work['payload'])['class'] }
+                sidekiq_workers.map { |_process_id, _thread_id, work| ::Gitlab::Json.parse(work.payload)['class'] }
               end
             end.tally
           end

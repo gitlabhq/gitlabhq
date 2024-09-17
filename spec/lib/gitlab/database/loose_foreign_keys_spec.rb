@@ -11,7 +11,9 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
         options: a_hash_including(
           column: be_a(String),
           gitlab_schema: be_in(Gitlab::Database.schemas_to_base_models.symbolize_keys.keys),
-          on_delete: be_in([:async_delete, :async_nullify])
+          on_delete: be_in([:async_delete, :async_nullify, :update_column_to]),
+          target_column: be_a(String).or(be_a(NilClass)),
+          target_value: be_a(String).or(be_a(Integer)).or(be_a(NilClass))
         ),
         from_table: be_a(String),
         to_table: be_a(String)
@@ -49,7 +51,13 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
       it 'does not have duplicate column definitions' do
         # ignore other modifiers
         all_definitions = definitions.map do |definition|
-          { from_table: definition.from_table, to_table: definition.to_table, column: definition.column }
+          {
+            from_table: definition.from_table,
+            to_table: definition.to_table,
+            column: definition.column,
+            target_column: definition.options[:target_column],
+            target_value: definition.options[:target_value]
+          }
         end
 
         # expect to not have duplicates
@@ -79,6 +87,11 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
               "Table #{definition.from_table} does not exist"
             expect(model.connection).to be_column_exist(definition.from_table, definition.column),
               "Column #{definition.column} in #{definition.from_table} does not exist"
+
+            if definition.options[:target_column]
+              expect(model.connection).to be_column_exist(definition.from_table, definition.options[:target_column]),
+                "Column #{definition.options[:target_column]} in #{definition.from_table} does not exist"
+            end
           end
         end
       end

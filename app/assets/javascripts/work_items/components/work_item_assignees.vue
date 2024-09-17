@@ -23,10 +23,13 @@ export default {
     UncollapsedAssigneeList,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
+      required: true,
+    },
+    isGroup: {
+      type: Boolean,
       required: true,
     },
     workItemId: {
@@ -338,23 +341,23 @@ export default {
       <sidebar-participant v-if="item" :user="item" />
     </template>
     <template v-if="canInviteMembers" #footer>
-      <gl-button category="tertiary" block class="gl-justify-content-start!">
+      <gl-button category="tertiary" block class="!gl-justify-start">
         <invite-members-trigger
           :display-text="__('Invite members')"
           trigger-element="side-nav"
           icon="plus"
           trigger-source="work-item-assignees"
-          classes="gl-hover-text-decoration-none! gl-pb-2"
+          classes="hover:!gl-no-underline gl-pb-2"
         />
       </gl-button>
     </template>
     <template #none>
-      <div class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-gap-2">
+      <div class="gl-flex gl-items-center gl-gap-2 gl-text-gray-500">
         <span>{{ __('None') }}</span>
         <template v-if="currentUser && canUpdate">
           <span>-</span>
           <gl-button variant="link" data-testid="assign-self" @click.stop="assignToCurrentUser"
-            ><span class="gl-text-gray-500 gl-hover-text-blue-800">{{
+            ><span class="gl-text-gray-500 hover:gl-text-blue-800">{{
               __('assign yourself')
             }}</span></gl-button
           >
@@ -364,7 +367,7 @@ export default {
     <template #readonly>
       <uncollapsed-assignee-list
         :users="localAssignees"
-        show-less-assignees-class="gl-hover-bg-transparent!"
+        show-less-assignees-class="hover:!gl-bg-transparent"
       />
     </template>
   </work-item-sidebar-dropdown-widget>

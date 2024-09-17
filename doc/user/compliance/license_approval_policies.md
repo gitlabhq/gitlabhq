@@ -16,7 +16,7 @@ DETAILS:
 Use license approval policies to specify criteria that determines when approval is required before a merge request can be merged.
 
 NOTE:
-License approval policies are applicable to [protected](../project/protected_branches.md) target branches only.
+License approval policies are applicable to [protected](../project/repository/branches/protected.md) target branches only.
 
 The following video provides an overview of these policies.
 
@@ -48,7 +48,7 @@ To create a license approval policy:
 1. [Link a security policy project](../application_security/policies/index.md#policy-implementation) to your development group, subgroup, or project (the Owner role is required).
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
-1. Create a new [Scan Result Policy](../application_security/policies/scan-result-policies.md).
+1. Create a new [Merge request approval Policy](../application_security/policies/merge_request_approval_policies.md).
 1. In your policy rule, select **License scanning**.
 
 ## Criteria defining which licenses require approval

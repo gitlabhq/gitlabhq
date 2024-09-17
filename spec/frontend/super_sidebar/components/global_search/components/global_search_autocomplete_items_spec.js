@@ -192,7 +192,7 @@ describe('GlobalSearchAutocompleteItems', () => {
           action                     | event
           ${'Projects'}              | ${EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE}
           ${'Groups'}                | ${EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE}
-          ${'Merge Requests'}        | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${'Merge requests'}        | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
           ${'Issues'}                | ${EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE}
           ${'Recent issues'}         | ${EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE}
           ${'Recent epics'}          | ${EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE}

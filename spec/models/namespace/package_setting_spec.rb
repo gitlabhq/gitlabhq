@@ -11,16 +11,12 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
     it { is_expected.to validate_presence_of(:namespace) }
 
     describe '#maven_duplicates_allowed' do
-      it { is_expected.to validate_inclusion_of(:maven_duplicates_allowed).in_array([true, false]) }
       it { is_expected.to validate_length_of(:maven_duplicate_exception_regex).is_at_most(255) }
     end
 
-    it { is_expected.to allow_value(true, false).for(:nuget_symbol_server_enabled) }
     it { is_expected.not_to allow_value(nil).for(:nuget_symbol_server_enabled) }
 
-    it { is_expected.to validate_inclusion_of(:generic_duplicates_allowed).in_array([true, false]) }
     it { is_expected.to validate_length_of(:generic_duplicate_exception_regex).is_at_most(255) }
-    it { is_expected.to validate_inclusion_of(:nuget_duplicates_allowed).in_array([true, false]) }
     it { is_expected.to validate_length_of(:nuget_duplicate_exception_regex).is_at_most(255) }
 
     it { is_expected.to allow_value(true, false).for(:terraform_module_duplicates_allowed) }

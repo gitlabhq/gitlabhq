@@ -249,7 +249,7 @@ separating words.
 .with_login:
   before_script:
     # SECRET_TOKEN should be provided via the project settings
-    - docker login -u my-user -p "$SECRET_TOKEN my-registry
+    - echo "$SECRET_TOKEN" | docker login -u my-user --password-stdin my-registry
 ```
 
 Lower-case naming can optionally be used for variables which are defined locally in

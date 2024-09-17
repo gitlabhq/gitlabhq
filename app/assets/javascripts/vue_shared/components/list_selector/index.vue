@@ -10,6 +10,7 @@ import {
   fetchGroupsWithProjectAccess,
   fetchProjects,
   fetchUsers,
+  fetchAvailableDeployKeys,
 } from '~/vue_shared/components/list_selector/api';
 import { CONFIG } from './constants';
 
@@ -133,7 +134,10 @@ export default {
     filteredItems() {
       // Filter out selected items
       return this.items.filter(
-        (item) => !this.selectedItems.some((selectedItem) => selectedItem.id === item.id),
+        (item) =>
+          !this.selectedItems.some((selectedItem) => {
+            return selectedItem.id === item.id;
+          }),
       );
     },
   },
@@ -175,15 +179,16 @@ export default {
 
       return groups;
     },
-    fetchDeployKeysBySearchTerm() {
-      // TODO - implement API request (follow-up)
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
+    fetchDeployKeysBySearchTerm(search) {
+      return fetchAvailableDeployKeys(this.$apollo, this.projectPath, search);
     },
     fetchProjectsBySearchTerm(search) {
       return fetchProjects(search);
     },
     getItemByKey(key) {
-      return this.items.find((item) => item[this.config.filterKey] === key);
+      return this.items.find((item) => {
+        return item[this.config.filterKey] === key;
+      });
     },
     handleSelectItem(key) {
       this.$emit('select', this.getItemByKey(key));

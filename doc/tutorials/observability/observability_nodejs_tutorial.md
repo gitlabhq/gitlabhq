@@ -6,14 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use GitLab Observability with a NodeJS application
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
+<!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to configure, instrument, and monitor a NodeJS application using GitLab Observability features.
 
@@ -21,7 +17,7 @@ In this tutorial, you'll learn how to configure, instrument, and monitor a NodeJ
 
 Take a moment and make sure you have the following:
 
-- A GitLab Ultimate subscription for GitLab.com
+- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
 - A local installation of NodeJS
 - Basic knowledge of Git, NodeJS, JavaScript, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -37,7 +33,7 @@ This tutorial uses the project name `nodejs-O11y-tutorial`.
    - In the **Project name** field, enter `nodejs-O11y-tutorial`.
 1. Select **Create project**.
 1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create a new access token with the Owner role and the `read_api` and `write_observability` scopes. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe—you'll need it later.
 
 ## Instrument your NodeJS application
 
@@ -70,10 +66,6 @@ Next, we need to instrument the NodeJS application.
      @opentelemetry/auto-instrumentations-node
    ```
 
-1. Find your group ID:
-   1. On the left sidebar, select **Search or go to** and find the top-level group with the `nodejs-O11y-tutorial` project. For example, if your project URL is `https://gitlab.com/tankui/observability/nodejs-O11y-tutorial`, the top-level group is `tanuki`.
-   1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
-   1. Select **Copy group ID**. Save the copied ID for later.
 1. Find your project ID:
    1. On the `nodejs-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
    1. Select **Copy project ID**. Save the copied ID for later.
@@ -81,8 +73,8 @@ Next, we need to instrument the NodeJS application.
 1. Configure and run your project with instrumentation:
 
    ```shell
-   env OTEL_TRACES_EXPORTER="otlp" \
-   OTEL_EXPORTER_OTLP_ENDPOINT="https://observe.gitlab.com/v3/{{GROUP_ID}}/{{PROJECT_ID}}/ingest" \
+   env OTEL_TRACES_EXPORTER="otlphttp" \
+   OTEL_EXPORTER_OTLP_ENDPOINT="https://gitlab.com/api/v4/projects/{{PROJECT_ID}}/observability" \
    OTEL_EXPORTER_OTLP_HEADERS="PRIVATE-TOKEN={{ACCESS_TOKEN}}" \
    OTEL_SERVICE_NAME="nodejs-O11y-tutorial" \
    OTEL_LOG_LEVEL="debug" \
@@ -90,7 +82,8 @@ Next, we need to instrument the NodeJS application.
    PORT=8080 node server.js
    ```
 
-   Be sure to replace the `GROUP_ID`, `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
+   Be sure to replace the `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
+   If using a self-managed GitLab instance, replace `gitlab.com` with your self-managed instance hostname.
 
 ## View traces
 

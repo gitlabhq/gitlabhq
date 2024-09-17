@@ -4,7 +4,9 @@ classes:
 - Packages::Composer::Package
 - Packages::Conan::Package
 - Packages::Debian::Package
+- Packages::Generic::Package
 - Packages::Go::Package
+- Packages::Helm::Package
 - Packages::MlModel::Package
 - Packages::Package
 - Packages::Rpm::Package

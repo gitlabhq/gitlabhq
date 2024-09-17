@@ -82,7 +82,7 @@ For more information about slash commands, refer to the documentation:
 - [/tests](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)
 - [/refactor](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
 - [/fix](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)
-- [/explain](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)
+- [/explain](../gitlab_duo_chat/examples.md#explain-selected-code)
 
 ## `Error M4001`
 
@@ -117,7 +117,20 @@ This error occurs when there is a timeout during processing. Please try your req
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: A1001`.
 
-This error occurs when there is a connection error during processing. Please try your request again.
+This error means there was a problem encountered by the AI service that processed your request.
+
+Some possible reasons:
+
+- A client-side error caused by a bug in the GitLab code.
+- A server-side error caused by a bug in the Anthropic code.
+- An HTTP request that didn't reach the AI Gateway.
+
+[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/479465) to more clearly specify the reason for the error.
+
+To resolve the issue, try your request again.
+
+If the error persists, use the `/clear` command to reset the chat.
+If problem continues, please report the issue to the GitLab support team.
 
 ## `Error A6000`
 

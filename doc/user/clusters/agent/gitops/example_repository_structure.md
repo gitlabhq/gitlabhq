@@ -83,7 +83,7 @@ To create a deployment branch:
 1. Create a [CI/CD variable](../../../../ci/variables/index.md) with a token value named `DEPLOYMENT_TOKEN`.
    Remember to [mask](../../../../ci/variables/index.md#mask-a-cicd-variable) the value so that it won't show in
    job logs.
-1. Add a rule to [protect](../../../../user/project/protected_branches.md)
+1. Add a rule to [protect](../../../../user/project/repository/branches/protected.md)
    your deployment branch with the following values:
 
    - Allowed to merge: No one.

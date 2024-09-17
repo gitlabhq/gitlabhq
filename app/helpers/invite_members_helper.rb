@@ -44,6 +44,11 @@ module InviteMembersHelper
     }
   end
 
+  # Overridden in EE
+  def invite_group_dataset(source)
+    {}
+  end
+
   private
 
   def group_select_data(source)

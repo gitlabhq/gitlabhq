@@ -36,8 +36,8 @@ export default {
 <template>
   <list-item v-bind="$attrs">
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center">
-        <gl-link class="gl-text-body" :href="model._links.showPath">
+      <div class="gl-flex gl-items-center">
+        <gl-link class="gl-text-primary" :href="model._links.showPath">
           <gl-truncate :text="model.name" />
         </gl-link>
       </div>

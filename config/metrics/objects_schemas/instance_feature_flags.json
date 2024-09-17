@@ -1,0 +1,37 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "name",
+      "status",
+      "type",
+      "actor_counts"
+    ],
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "actor_counts": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "number"
+          },
+          "users": {
+            "type": "number"
+          },
+          "projects": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

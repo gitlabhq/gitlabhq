@@ -44,6 +44,7 @@ issues:
 - issuable_severity
 - issuable_sla
 - issue_assignees
+- issue_stage_events
 - search_data
 - closed_by
 - epic_issue
@@ -53,9 +54,6 @@ issues:
 - designs
 - design_versions
 - description_versions
-- prometheus_alerts
-- prometheus_alert_events
-- self_managed_prometheus_alert_events
 - zoom_meetings
 - vulnerability_links
 - related_vulnerabilities
@@ -81,6 +79,8 @@ issues:
 - issuable_resource_links
 - synced_epic
 - observability_metrics
+- observability_logs
+- observability_traces
 work_item_type:
 - issues
 - namespace
@@ -226,6 +226,7 @@ merge_requests:
 - merge_head_diff
 - merge_request_context_commits
 - merge_request_context_commit_diff_files
+- merge_request_stage_events
 - events
 - merge_requests_closing_issues
 - cached_closes_issues
@@ -455,6 +456,7 @@ builds:
 - terraform_state_versions
 - taggings
 - base_tags
+- tag_links
 - tag_taggings
 - tags
 - security_scans
@@ -760,7 +762,6 @@ project:
 - wiki_repository_state
 - source_pipelines
 - sourced_pipelines
-- prometheus_metrics
 - vulnerabilities
 - vulnerability_exports
 - vulnerability_findings
@@ -776,9 +777,6 @@ project:
 - operations_feature_flags
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
-- prometheus_alerts
-- prometheus_alert_events
-- self_managed_prometheus_alert_events
 - software_license_policies
 - software_licenses
 - custom_software_licenses
@@ -820,7 +818,6 @@ project:
 - jira_imports
 - compliance_framework_settings
 - compliance_management_frameworks
-- metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
 - freeze_periods
@@ -830,6 +827,7 @@ project:
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
+- vulnerability_namespace_historical_statistics
 - vulnerability_remediations
 - product_analytics_events
 - pipeline_artifacts
@@ -884,20 +882,23 @@ project:
 - security_policy_management_project_linked_configurations
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces
+- security_policy_project_linked_groups
 - relation_import_trackers
 - saved_replies
 - security_policy_project_links
 - security_policies
 - approval_policy_rule_project_links
 - approval_policy_rules
+- secrets_manager
+- observability_metrics
+- observability_traces
+- observability_logs
+- security_exclusions
 award_emoji:
 - awardable
 - user
 priorities:
 - label
-prometheus_metrics:
-- project
-- prometheus_alerts
 timelogs:
 - issue
 - merge_request
@@ -953,13 +954,6 @@ unprotect_access_levels:
 - user
 - protected_branch
 - group
-prometheus_alerts:
-- project
-- prometheus_alert_events
-prometheus_alert_events:
-- project
-self_managed_prometheus_alert_events:
-- project
 epic_issues:
 - issue
 - epic
@@ -1146,7 +1140,7 @@ approval_rules:
   - approval_project_rules_users
   - approval_project_rules_protected_branches
   - scan_result_policy_read
-  - approval_policy_rules
+  - approval_policy_rule
 approval_project_rules_users:
   - user
   - approval_project_rule

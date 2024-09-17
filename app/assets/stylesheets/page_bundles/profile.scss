@@ -1,6 +1,9 @@
 @import 'mixins_and_variables_and_functions';
 @import 'framework/mixins';
 
+$profile-grid-gap: 2rem;
+$profile-grid-flex: 1fr;
+
 .edit-user {
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
@@ -34,6 +37,14 @@
   max-width: 864px;
 }
 
+.user-profile-activity {
+  &:not(:last-child)::before {
+    @include vertical-line(16px, 10px);
+    height: 100%;
+    @apply gl-bg-strong;
+  }
+}
+
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   @include middle-dot-divider;
@@ -43,11 +54,6 @@
   @include media-breakpoint-up(sm) {
     @include middle-dot-divider;
   }
-}
-
-// Limits the width of the user bio for readability.
-.profile-user-bio {
-  max-width: 600px;
 }
 
 .profile-readme-wrapper .read-more-trigger {
@@ -70,7 +76,25 @@
 }
 
 .user-profile {
+  position: relative;
+
+  // Home panel show profile sidebar
+  // information on top
+  @include media-breakpoint-down(md) {
+    display: flex;
+    flex-direction: column;
+
+    .user-profile-sidebar {
+      order: -1;
+      flex-basis: 100%;
+    }
+  }
+
   @include media-breakpoint-up(lg) {
+    display: grid;
+    grid-template-columns: $profile-grid-flex;
+    gap: $profile-grid-gap;
+
     .profile-header {
       position: sticky;
       top: $calc-application-header-height;
@@ -79,40 +103,10 @@
     }
   }
 
-  .user-profile-nav {
-    font-size: 0;
-  }
-
-  .fade-right {
-    right: 0;
-  }
-
-  .fade-left {
-    left: 0;
-  }
-
   .activities-block {
-    .event-item {
-      padding-left: 40px;
-    }
-
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-label-scoped {
       --label-inset-border: inset 0 0 0 1px currentColor;
-    }
-  }
-
-  @include media-breakpoint-down(xs) {
-    .user-profile-nav {
-      a {
-        margin-right: 0;
-      }
-    }
-
-    .activities-block {
-      .event-item {
-        padding-left: 0;
-      }
     }
   }
 }
@@ -146,54 +140,20 @@
   }
 }
 
-.user-profile {
-  position: relative;
-
-  @include media-breakpoint-up(lg) {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-}
-
 .user-profile-with-sidebar {
+  z-index: 2;
+
   @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: 1fr $right-sidebar-width;
-    gap: 2rem;
+    grid-template-columns: $profile-grid-flex $right-sidebar-width;
+    gap: $profile-grid-gap;
   }
 }
 
-.user-profile-sidebar {
-  z-index: 2;
-}
 
 .user-profile-sidebar,
 .user-profile-content {
   min-width: 1px; // grid overflow fix
-}
-
-// Home panel show profile sidebar
-// information on top
-.user-profile {
-  @include media-breakpoint-down(md) {
-    display: flex;
-    flex-direction: column;
-
-    .user-overview-page.active {
-      display: flex;
-      flex-wrap: wrap;
-
-      .user-profile-content {
-        flex-basis: 100%;
-      }
-    }
-
-    .user-profile-sidebar {
-      order: -1;
-      flex-basis: 100%;
-    }
-  }
 }
 
 .provider-btn-group {
@@ -232,4 +192,21 @@
   margin-left: -3px;
   line-height: 22px;
   background-color: var(--gl-gray-10);
+}
+
+.user-activity-content {
+  position: relative;
+
+  .system-note-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 14px;
+    width: 22px;
+    height: 22px;
+
+    svg {
+      fill: $gray-600 !important;
+    }
+  }
 }

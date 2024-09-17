@@ -66,7 +66,9 @@ DeployKeysType.args = {
     {
       id: 1,
       title: 'Deploy key 1',
-      owner: 'Project1',
+      user: {
+        name: 'Jane Smith',
+      },
     },
   ],
 };

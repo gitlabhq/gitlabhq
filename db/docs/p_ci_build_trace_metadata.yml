@@ -1,0 +1,11 @@
+---
+table_name: p_ci_build_trace_metadata
+classes:
+- Ci::BuildTraceMetadata
+feature_categories:
+- continuous_integration
+description: Routing table for ci_build_trace_metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162310
+milestone: '14.2'
+gitlab_schema: gitlab_ci
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458479

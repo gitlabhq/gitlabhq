@@ -772,6 +772,10 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         end
 
         it 'returns error when there is path traversal in suffix path' do
+          # TODO: remove spec once the feature flag is removed
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+          stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+
           get api("/projects/#{project.id}/releases/permalink/latest/downloads/bin/../../../../../../../password.txt", maintainer)
 
           expect(response).to have_gitlab_http_status(:bad_request)

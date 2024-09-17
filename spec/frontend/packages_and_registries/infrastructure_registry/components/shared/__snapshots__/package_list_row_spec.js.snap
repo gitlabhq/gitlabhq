@@ -18,10 +18,10 @@ exports[`packages_list_row renders 1`] = `
           class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-primary"
         >
           <div
-            class="gl-align-items-center gl-display-flex gl-min-w-0 gl-mr-3"
+            class="gl-flex gl-items-center gl-min-w-0 gl-mr-3"
           >
             <gl-link-stub
-              class="gl-min-w-0 gl-text-body"
+              class="gl-min-w-0 gl-text-primary"
               data-testid="details-link"
               href="foo"
             >
@@ -33,10 +33,10 @@ exports[`packages_list_row renders 1`] = `
           </div>
         </div>
         <div
-          class="gl-flex gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-secondary gl-text-sm"
+          class="gl-flex gl-gap-3 gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-sm gl-text-subtle"
         >
           <div
-            class="gl-display-flex"
+            class="gl-flex"
           >
             <span>
               1.0.0

@@ -44,7 +44,7 @@ describe('SubgroupsAndProjectsEmptyState', () => {
       createComponent();
 
       expect(findNewSubgroupLink().attributes('href')).toBe(defaultProvide.newSubgroupPath);
-      expect(findNewSubgroupIllustration().attributes('src')).toBe(
+      expect(findNewSubgroupIllustration().element.src).toBe(
         defaultProvide.newSubgroupIllustration,
       );
     });
@@ -55,9 +55,7 @@ describe('SubgroupsAndProjectsEmptyState', () => {
       createComponent();
 
       expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
-      expect(findNewProjectIllustration().attributes('src')).toBe(
-        defaultProvide.newProjectIllustration,
-      );
+      expect(findNewProjectIllustration().element.src).toBe(defaultProvide.newProjectIllustration);
     });
   });
 

@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-flex gl-items-center">
     <gl-icon name="infrastructure-registry" class="gl-ml-3 gl-mr-2" />
     <span>{{ s__('InfrastructureRegistry|Terraform') }}</span>
   </div>

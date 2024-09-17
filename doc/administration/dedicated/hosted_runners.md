@@ -1,6 +1,6 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
+stage: Verify
+group: Hosted Runners
 description: Use hosted runners to run your CI/CD jobs on GitLab Dedicated.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -144,7 +144,7 @@ Available configuration options include:
 
 - [Change the maximum job timeout](../../ci/runners/configure_runners.md#for-an-instance-runner).
 - [Set the runner to run tagged or untagged jobs](../../ci/runners/configure_runners.md#for-an-instance-runner-2).
- 
+
 NOTE:
 Any changes to the runner description and the runner tags are not controlled by GitLab.
 
@@ -176,11 +176,11 @@ To migrate your jobs to use hosted runners:
 1. Use the small Linux x86-64 runner for untagged jobs.
 1. Add the appropriate tags to your job configurations in the `.gitlab-ci.yml` file:
 
-    ```yaml
-    job_name:
-      tags:
-        - linux-medium-amd64  # Use the medium-sized Linux runner
-    ```
+   ```yaml
+   job_name:
+     tags:
+       - linux-medium-amd64  # Use the medium-sized Linux runner
+   ```
 
 1. [Modify the tags](#configure-hosted-runners-in-gitlab) to match your existing job configurations.
 

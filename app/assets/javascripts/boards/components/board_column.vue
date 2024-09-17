@@ -69,11 +69,11 @@ export default {
       'board-type-assignee': list.listType === 'assignee',
     }"
     :data-list-id="list.id"
-    class="board gl-display-inline-block gl-h-full gl-px-3 gl-align-top gl-whitespace-normal is-expandable"
+    class="board is-expandable gl-inline-block gl-h-full gl-whitespace-normal gl-px-3 gl-align-top"
     data-testid="board-list"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
+      class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
       <board-list-header

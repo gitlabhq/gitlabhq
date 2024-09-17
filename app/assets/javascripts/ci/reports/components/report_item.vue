@@ -53,7 +53,7 @@ export default {
 };
 </script>
 <template>
-  <li class="report-block-list-issue gl-p-3!" data-testid="report-item-row">
+  <li class="report-block-list-issue !gl-p-3" data-testid="report-item-row">
     <component
       :is="iconComponent"
       v-if="showReportSectionStatusIcon"

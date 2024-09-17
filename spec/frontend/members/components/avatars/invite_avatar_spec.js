@@ -1,10 +1,13 @@
 import { getByText as getByTextHelper } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
+import { GlAvatarLabeled } from '@gitlab/ui';
 import InviteAvatar from '~/members/components/avatars/invite_avatar.vue';
 import { invite as member } from '../../mock_data';
 
 describe('MemberList', () => {
   let wrapper;
+
+  const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
 
   const { invite } = member;
 
@@ -29,6 +32,6 @@ describe('MemberList', () => {
   });
 
   it('renders avatar', () => {
-    expect(wrapper.find('img').attributes('src')).toBe(invite.avatarUrl);
+    expect(findAvatarLabeled().attributes('src')).toBe(invite.avatarUrl);
   });
 });

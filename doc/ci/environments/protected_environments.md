@@ -47,7 +47,7 @@ To protect an environment:
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
-   - You can also select groups that are already [invited](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project. Invited groups added to the project with the Reporter role appear in the dropdown list for [deployment-only access](#deployment-only-access-to-protected-environments).
+   - You can also select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project. Invited groups added to the project with the Reporter role appear in the dropdown list for [deployment-only access](#deployment-only-access-to-protected-environments).
    - You can also select specific users. The users must have at least the Developer role to appear in
      the **Allowed to deploy** list.
 1. In the **Approvers** list, select the role, users, or groups you
@@ -56,7 +56,7 @@ To protect an environment:
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
-   - You can only select groups that are already [invited](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project.
+   - You can only select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project.
    - Users must have at least the Developer role to appear in
      the **Approvers** list.
 
@@ -153,13 +153,13 @@ they have the following privileges:
 
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment.
-[Invited groups](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) added
+[Invited groups](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) added
 to the project with [Reporter role](../../user/permissions.md#project-members-permissions), appear in the dropdown list for deployment-only access.
 
 To add deployment-only access:
 
 1. Create a group with members who are granted to access to the protected environment, if it doesn't exist yet.
-1. [Invite the group](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group) to the project with the Reporter role.
+1. [Invite the group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project with the Reporter role.
 1. Follow the steps in [Protecting Environments](#protecting-environments).
 
 ## Modifying and unprotecting environments
@@ -278,6 +278,6 @@ Protected environments can also be used to require manual approvals before deplo
 
 ### Reporter can't run a trigger job that deploys to a protected environment in downstream pipeline
 
-A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might **not** be able to run a job if it's with a [`trigger`](../yaml/index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#gitlab-cicd-permissions).
+A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might **not** be able to run a job if it's with a [`trigger`](../yaml/index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#cicd).
 
 See [this issue](https://gitlab.com/groups/gitlab-org/-/epics/8483) for more information about supporting `environment` keyword with `trigger` keyword.

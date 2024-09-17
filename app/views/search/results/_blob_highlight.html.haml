@@ -7,9 +7,9 @@
       - blob_highlight = blob.present.highlight_and_trim(trim_length: 1024, ellipsis_svg: sprite_icon('ellipsis_h', size: 12, css_class: "gl-text-gray-700"))
       - blob_highlight.lines.each_with_index do |line, index|
         - i = index + offset
-        .line_holder.code-search-line.gl-display-flex
+        .line_holder.code-search-line.gl-flex
           .line-numbers
-            .gl-display-flex
+            .gl-flex
               %span.diff-line-num.gl-pl-3
                 %a.has-tooltip{ href: "#{blame_link}#L#{i}",
                                 id: "blame-L#{i}",
@@ -20,7 +20,7 @@
                                 title: _('View blame') }
                   = sprite_icon('git')
               %span.diff-line-num.flex-grow-1.gl-pr-3
-                %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: 'gl-display-flex! gl-align-items-center gl-justify-content-end' }
+                %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: '!gl-flex gl-items-center gl-justify-end' }
                   = i
           %pre.code.highlight.flex-grow-1
             %code

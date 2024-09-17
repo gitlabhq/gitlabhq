@@ -52,6 +52,10 @@ class SearchServicePresenter < Gitlab::View::Presenter::Delegated
   def advanced_search_enabled?
     false
   end
+
+  def zoekt_enabled?
+    false
+  end
 end
 
 SearchServicePresenter.prepend_mod_with('SearchServicePresenter')

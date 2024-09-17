@@ -21,6 +21,8 @@ SimpleCovEnv.start!
 require './spec/crystalball_env'
 CrystalballEnv.start!
 
+require_relative 'support/struct_with_kwargs'
+
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'
@@ -151,7 +153,7 @@ RSpec.configure do |config|
     metadata[:type] = :feature
   end
 
-  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/job_dependency_spec.rb}) do |metadata|
+  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/ci_configuration_validation/}) do |metadata|
     metadata[:ci_config_validation] = true
   end
 
@@ -274,6 +276,8 @@ RSpec.configure do |config|
   end
 
   config.before do |example|
+    stub_feature_flags(log_sql_function_namespace_lookups: false)
+
     if example.metadata.fetch(:stub_feature_flags, true)
       # The following can be removed when we remove the staged rollout strategy
       # and we can just enable it using instance wide settings
@@ -294,6 +298,7 @@ RSpec.configure do |config|
       # These feature flag are by default disabled and used in disaster recovery mode
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
+      stub_feature_flags(ci_queuing_disaster_recovery_disable_allowed_plans: false)
 
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
@@ -344,12 +349,20 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/457283
       stub_feature_flags(duo_chat_requires_licensed_seat_sm: false)
 
+      # This flag is for [Selectively disable by actor](https://docs.gitlab.com/ee/development/feature_flags/controls.html#selectively-disable-by-actor).
+      # Hence, it should not enable by default in test.
+      stub_feature_flags(v2_chat_agent_integration_override: false) if Gitlab.ee?
+
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
 
       # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
       stub_feature_flags(your_work_projects_vue: false)
+
+      # disable license check by default, while migrating code to account for license. We still want out specs to be
+      # able to check functionality when license is enabled or disabled.
+      stub_feature_flags(enforce_check_group_level_work_items_license: false)
     else
       unstub_all_feature_flags
     end

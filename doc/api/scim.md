@@ -148,8 +148,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/scim/yrnZW46BrtBFqM7xDzE7dddd"
-
+curl --location --request DELETE "https://gitlab.example.com/api/v4/groups/33/scim/yrnZW46BrtBFqM7xDzE7dddd" --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
 Example response:

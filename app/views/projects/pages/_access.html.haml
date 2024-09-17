@@ -1,8 +1,6 @@
 - if @project.pages_deployed?
   - pages_url = build_pages_url(@project, with_unique_domain: true)
   - pages_url_text = pages_url
-  - if Gitlab.config.pages.namespace_in_path
-    - pages_url_text = "#{pages_url} (Beta)"
 
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Access pages'),
     icon: 'doc-text',

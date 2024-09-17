@@ -15,7 +15,7 @@ DETAILS:
 When you transfer a project to another namespace, you move the project to a different group.
 All of the project's components (such as issues, merge requests, pipelines, and dashboards)
 move with the transferred project.
-The project's [path also changes](../repository/index.md#what-happens-when-a-repository-path-changes), so make sure to update the URLs to the project components where necessary.
+The project's [path also changes](../repository/index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
 
 New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
 
@@ -46,15 +46,15 @@ To transfer a project:
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#what-happens-when-a-repository-path-changes).
+You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#repository-path-changes).
 
 NOTE:
 If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)
 to move any project to any namespace.
 
-## Transferring a GitLab SaaS project to a different subscription tier
+## Transferring a GitLab.com project to a different subscription tier
 
-When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free:
+When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)

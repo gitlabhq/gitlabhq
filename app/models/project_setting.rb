@@ -54,6 +54,11 @@ class ProjectSetting < ApplicationRecord
     Feature.enabled?(:legacy_open_source_license_available, type: :ops)
   end
 
+  # Checks if a given domain is already assigned to any existing project
+  def self.unique_domain_exists?(domain)
+    where(pages_unique_domain: domain).exists?
+  end
+
   def squash_enabled_by_default?
     %w[always default_on].include?(squash_option)
   end

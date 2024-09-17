@@ -283,23 +283,6 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       expect(subject).not_to receive(:post)
     end
 
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(enable_jira_connect_configuration: false)
-      end
-
-      it 'does not call the API if no issue keys are found, but there are service IDs' do
-        allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
-          allow(entity).to receive(:issue_keys).and_return([])
-          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([{ associationType: 'serviceIdOrKeys', values: ['foo'] }])
-        end
-
-        expect(subject).not_to receive(:post)
-
-        subject.send(:store_deploy_info, project: project, deployments: deployments)
-      end
-    end
-
     context 'when there are errors' do
       let(:rejections) do
         [{ errors: [{ message: 'X' }, { message: 'Y' }] }, { errors: [{ message: 'Z' }] }]

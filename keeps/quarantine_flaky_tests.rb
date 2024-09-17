@@ -33,7 +33,7 @@ module Keeps
     QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
     # https://rubular.com/r/OoeQIEwPkL1m7E
     EXAMPLE_LINE_REGEX = /\bit (?<description_and_metadata>[\w'",: \#\{\}]*(?:,\n)?[\w\'",: ]+?) do$/m
-    FLAKINESS_LABELS = %w[flakiness::1 flakiness::2].freeze
+    FLAKINESS_LABELS = %w[flakiness::1 flakiness::2 severity::1].freeze
 
     def each_change
       FLAKINESS_LABELS.each do |flakiness_label|
@@ -181,8 +181,12 @@ module Keeps
         change.changed_files = [filename]
         change.description = <<~MARKDOWN
         The #{description}
-        test has either ~"flakiness::1" or ~"flakiness::2" label set, which means the number of reported failures
+        test matches one of the following conditions:
+        1. has either ~"flakiness::1" or ~"flakiness::2" label set, which means the number of reported failures
         is at or above 95 percentile, indicating unusually high failure count.
+
+        2. has ~"severity::1" label set, which means the number of reported failures
+        [spiked and exceeded its daily threshold](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling/-/blob/c9bc10536b1f8d2d4a03c3e0b6099a40fe67ad26/lib/gitlab_quality/test_tooling/report/concerns/issue_reports.rb#L51).
 
         This MR quarantines the test. This is a discussion starting point to let the
         responsible group know about the flakiness so that they can take action:

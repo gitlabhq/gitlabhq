@@ -155,6 +155,24 @@ session ID, like the [`_gitlab_session` cookie](../../user/profile/index.md#cook
 The `_gitlab_kas` cookie must be sent to the KAS proxy endpoint with every request
 to authenticate and authorize the user.
 
+## Enable receptive agents
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+[Receptive agents](../../user/clusters/agent/index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
+that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
+
+To enable receptive agents:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **GitLab Agent for Kubernetes**.
+1. Turn on the **Enable receptive mode** toggle.
+
 ## Troubleshooting
 
 If you have issues while using the agent server for Kubernetes, view the

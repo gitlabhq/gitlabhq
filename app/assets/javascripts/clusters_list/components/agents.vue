@@ -5,8 +5,8 @@ import feedbackBannerIllustration from '@gitlab/svgs/dist/illustrations/chat-sm.
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
 import { AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
-import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import getTreeList from '../graphql/queries/get_tree_list.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
@@ -24,6 +24,7 @@ export default {
   AGENT_FEEDBACK_ISSUE,
   AGENT_FEEDBACK_KEY,
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     agents: {
       query: getAgentsQuery,
       variables() {
@@ -41,6 +42,7 @@ export default {
         this.queryErrored = true;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     treeList: {
       query: getTreeList,
       variables() {

@@ -10,9 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Four types of pipelines exist:
+Multiple types of pipelines can run in a project, including:
 
 - Branch pipelines
+- Tag pipelines
 - Merge request pipelines
 - Merge result pipelines
 - Merge trains
@@ -32,7 +33,24 @@ Branch pipelines:
 - Run when you push a new commit to a branch.
 - Have access to [some predefined variables](../variables/predefined_variables.md).
 - Have access to [protected variables](../variables/index.md#protect-a-cicd-variable)
-  and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
+  and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information)
+  when the branch is a [protected branch](../../user/project/protected_branches.md).
+
+## Tag pipeline
+
+A pipeline can run every time you create or push a new [tag](../../user/project/repository/tags/index.md).
+
+This type of pipeline is called a *tag pipeline*.
+
+This pipeline runs by default. No configuration is required.
+
+Tag pipelines:
+
+- Run when you create/push a new tag to your repository.
+- Have access to [some predefined variables](../variables/predefined_variables.md).
+- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable)
+  and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information)
+  when the tag is a [protected tag](../../user/project/protected_tags.md).
 
 ## Merge request pipeline
 

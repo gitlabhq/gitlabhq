@@ -157,13 +157,13 @@ export default {
   <editor-state-observer :debounce="0" @transaction="updateReferenceInfoToState">
     <bubble-menu
       v-show="isExpandable"
-      class="gl-shadow gl-rounded-base gl-bg-white"
+      class="gl-rounded-base gl-bg-white gl-shadow"
       plugin-key="bubbleMenuReference"
       :should-show="shouldShow"
       :tippy-options="$options.tippyOptions"
     >
-      <gl-button-group class="gl-display-flex gl-align-items-center">
-        <span class="gl-py-2 gl-px-3 gl-text-secondary gl-whitespace-nowrap">
+      <gl-button-group class="gl-flex gl-items-center">
+        <span class="gl-whitespace-nowrap gl-px-3 gl-py-2 gl-text-secondary">
           {{ __('Display as:') }}
         </span>
         <gl-collapsible-listbox
@@ -174,7 +174,7 @@ export default {
           :items="textFormats"
           :loading="loading"
           :toggle-text="selectedTextFormat.text"
-          toggle-class="gl-rounded-0!"
+          toggle-class="!gl-rounded-none"
           @select="applyFormat"
         />
         <gl-button

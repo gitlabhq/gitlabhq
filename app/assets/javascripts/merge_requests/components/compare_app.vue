@@ -133,14 +133,14 @@ export default {
     </div>
     <div
       v-if="showCommitBox"
-      class="gl-bg-gray-50 gl-rounded-base gl-my-4"
+      class="gl-my-4 gl-rounded-base gl-bg-gray-50"
       data-testid="commit-box"
     >
       <gl-loading-icon v-if="loading" class="gl-py-3" />
       <template v-else>
         <div
           v-if="!selectedBranch.value"
-          class="compare-commit-empty gl-display-flex gl-align-items-center gl-p-5"
+          class="compare-commit-empty gl-flex gl-items-center gl-p-5"
         >
           <gl-icon name="branch" class="gl-mr-3" />
           {{ __('Select a branch to compare') }}

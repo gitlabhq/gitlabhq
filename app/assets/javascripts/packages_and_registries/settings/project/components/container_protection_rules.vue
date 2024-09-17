@@ -82,7 +82,6 @@ export default {
   data() {
     return {
       protectionRules: [],
-      protectionRuleFormVisibility: false,
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       protectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
       protectionRuleMutationInProgress: false,
@@ -116,9 +115,6 @@ export default {
         this.protectionRulesQueryPageInfo.hasNextPage
       );
     },
-    isAddProtectionRuleButtonDisabled() {
-      return this.protectionRuleFormVisibility;
-    },
     modalActionPrimary() {
       return {
         text: s__('ContainerRegistry|Delete container protection rule'),
@@ -143,12 +139,10 @@ export default {
   },
   methods: {
     showProtectionRuleForm() {
-      this.protectionRuleFormVisibility = true;
-      this.$refs.containerCrud.showForm();
+      this.$refs.containerProtectionCrud.showForm();
     },
     hideProtectionRuleForm() {
-      this.protectionRuleFormVisibility = false;
-      this.$refs.containerCrud.hideForm();
+      this.$refs.containerProtectionCrud.hideForm();
     },
     refetchProtectionRules() {
       this.$apollo.queries.protectionRulesQueryPayload.refetch();
@@ -287,18 +281,12 @@ export default {
     :description="$options.i18n.settingBlockDescription"
   >
     <template #default>
-      <crud-component ref="containerCrud" :title="$options.i18n.settingBlockTitle">
-        <template #actions>
-          <gl-button
-            size="small"
-            :disabled="isAddProtectionRuleButtonDisabled"
-            @click="showProtectionRuleForm"
-          >
-            {{ s__('ContainerRegistry|Add protection rule') }}
-          </gl-button>
-        </template>
-
-        <template v-if="protectionRuleFormVisibility" #form>
+      <crud-component
+        ref="containerProtectionCrud"
+        :title="$options.i18n.settingBlockTitle"
+        :toggle-text="s__('ContainerRegistry|Add protection rule')"
+      >
+        <template #form>
           <container-protection-rule-form
             @cancel="hideProtectionRuleForm"
             @submit="refetchProtectionRules"

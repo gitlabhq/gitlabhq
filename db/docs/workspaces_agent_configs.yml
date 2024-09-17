@@ -1,0 +1,16 @@
+---
+table_name: workspaces_agent_configs
+classes:
+- RemoteDevelopment::RemoteDevelopmentAgentConfig
+- RemoteDevelopment::WorkspacesAgentConfig
+- Workspaces::WorkspacesAgentConfig
+feature_categories:
+- workspaces
+description: Workspaces Cluster Agent Configs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163846
+milestone: '17.4'
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

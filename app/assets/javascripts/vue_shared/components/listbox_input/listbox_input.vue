@@ -1,6 +1,7 @@
 <script>
 import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { searchInItemsProperties } from '~/lib/utils/search_utils';
 
 const MIN_ITEMS_COUNT_FOR_SEARCHING = 10;
 
@@ -112,7 +113,11 @@ export default {
           .map(({ text, options }) => {
             return {
               text,
-              options: options.filter((option) => option.text.toLowerCase().includes(searchString)),
+              options: searchInItemsProperties({
+                items: options,
+                properties: ['text'],
+                searchQuery: searchString,
+              }),
             };
           })
           .filter(({ options }) => options.length);

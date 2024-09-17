@@ -24,7 +24,7 @@ export default {
 
 <template>
   <div>
-    <div ref="addToken" class="gl-display-inline-block">
+    <div ref="addToken" class="gl-inline-block">
       <gl-button
         v-gl-modal-directive="$options.modalId"
         :disabled="!canAdminCluster"

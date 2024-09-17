@@ -128,6 +128,7 @@ describe('Ci variable table', () => {
         ${0}     | ${1}           | ${'Expanded'}
         ${1}     | ${0}           | ${'File'}
         ${1}     | ${1}           | ${'Masked'}
+        ${2}     | ${2}           | ${'Hidden'}
       `(
         'displays variable attribute $text for row $rowIndex',
         ({ rowIndex, attributeIndex, text }) => {
@@ -184,7 +185,7 @@ describe('Ci variable table', () => {
         ${0}     | ${1}           | ${'Masked'}
         ${0}     | ${2}           | ${'Expanded'}
         ${2}     | ${0}           | ${'File'}
-        ${2}     | ${1}           | ${'Protected'}
+        ${3}     | ${2}           | ${'Hidden'}
       `(
         'displays variable attribute $text for row $rowIndex',
         ({ rowIndex, attributeIndex, text }) => {
@@ -264,13 +265,17 @@ describe('Ci variable table', () => {
       });
 
       it('reveals secret values when button is clicked', async () => {
-        expect(findHiddenValues()).toHaveLength(defaultProps.variables.length);
+        expect(findHiddenValues()).toHaveLength(
+          defaultProps.variables.filter((variable) => !variable.hidden).length,
+        );
         expect(findRevealedValues()).toHaveLength(0);
 
         await findRevealButton().trigger('click');
 
         expect(findHiddenValues()).toHaveLength(0);
-        expect(findRevealedValues()).toHaveLength(defaultProps.variables.length);
+        expect(findRevealedValues()).toHaveLength(
+          defaultProps.variables.filter((variable) => !variable.hidden).length,
+        );
       });
 
       it('dispatches `setSelectedVariable` with correct variable to edit', async () => {

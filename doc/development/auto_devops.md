@@ -53,6 +53,6 @@ issue for discussion around setting up Auto DevOps development environments.
 ## Monitoring on GitLab.com
 
 The metric
-[`auto_devops_completed_pipelines_total`](https://thanos.gitlab.net/graph?g0.range_input=72h&g0.max_source_resolution=0s&g0.expr=sum(increase(auto_devops_pipelines_completed_total%7Benvironment%3D%22gprd%22%7D%5B60m%5D))%20by%20(status)&g0.tab=0)
+[`auto_devops_completed_pipelines_total`](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22m95%22:%7B%22datasource%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22sum%28increase%28auto_devops_pipelines_completed_total%7Benvironment%3D%5C%22gprd%5C%22%7D%5B60m%5D%29%29%20by%20%28status%29%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%7D,%22editorMode%22:%22code%22,%22legendFormat%22:%22__auto%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1)
 (only available to GitLab team members) counts completed Auto DevOps
 pipelines, labeled by status.

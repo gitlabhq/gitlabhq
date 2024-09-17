@@ -35,7 +35,7 @@ Parameters:
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
+| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* For top-level groups, the response returns the full `root_storage_statistics` data displayed in the UI. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469254) in GitLab 17.4. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
@@ -95,7 +95,7 @@ GET /groups
 ]
 ```
 
-When adding the parameter `statistics=true` and the authenticated user is an administrator, additional group statistics are returned.
+When adding the parameter `statistics=true` and the authenticated user is an administrator, additional group statistics are returned. For top-level groups, `root_storage_statistics` are added as well.
 
 ```plaintext
 GET /groups?statistics=true
@@ -154,6 +154,20 @@ GET /groups?statistics=true
       "snippets_size": 50,
       "uploads_size": 0
     },
+    "root_storage_statistics": {
+      "build_artifacts_size": 0,
+      "container_registry_size": 0,
+      "container_registry_size_is_estimated": false,
+      "dependency_proxy_size": 0,
+      "lfs_objects_size": 0,
+      "packages_size": 0,
+      "pipeline_artifacts_size": 0,
+      "repository_size": 0,
+      "snippets_size": 0,
+      "storage_size": 0,
+      "uploads_size": 0,
+      "wiki_size": 0
+  },
     "wiki_access_level": "private",
     "duo_features_enabled": true,
     "lock_duo_features_enabled": false,
@@ -533,6 +547,7 @@ Example response:
 ## List a group's invited groups
 
 Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
@@ -543,6 +558,7 @@ Parameters:
 | `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited) |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
 ```plaintext
@@ -1220,7 +1236,7 @@ PUT /groups/:id
 | `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
-| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy). This attribute is only available on top-level groups. |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to set up two-factor authentication. |
@@ -1240,6 +1256,7 @@ PUT /groups/:id
 | `unique_project_download_limit_alertlist`               | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. Ultimate only.|
 | `auto_ban_user_on_excessive_projects_download`          | boolean | no       | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. Ultimate only.|
 | `ip_restriction_ranges`                                 | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. Premium and Ultimate only.|
+| `allowed_email_domains_list`                            | string  | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only.|
 | `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.|
 | `math_rendering_limits_enabled`                         | boolean | no       | Indicates if math rendering limits are used for this group.|
 | `lock_math_rendering_limits_enabled`                    | boolean | no       | Indicates if math rendering limits are locked for all descendent groups.|
@@ -1525,7 +1542,7 @@ by the group or subgroups.
 
 This endpoint is an [experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
 
-Requires Owner role in the group.
+Requires Owner role for the group.
 
 ```plaintext
 GET /groups/:id/users
@@ -1596,186 +1613,6 @@ Example response:
 ]
 ```
 
-## Service Accounts
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-### List Service Account Users
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
-
-Prerequisites:
-
-- You must be an administrator of the self-managed instance, or have the Owner role for the group.
-
-Lists all service account users that are provisioned by group.
-
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
-
-```plaintext
-GET /groups/:id/service_accounts
-```
-
-Example request:
-
-```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
-```
-
-Supported attributes:
-
-| Attribute    | Type     | Required   | Description                                                     |
-|:-------------|:---------|:-----------|:----------------------------------------------------------------|
-| `order_by`   | string   | no         | Orders list of users by `username` or `id`. Default is `id`.    |
-| `sort`       | string   | no         | Specifies sorting by `asc` or `desc`. Default is `desc`.        |
-
-Example response:
-
-```json
-[
-
-  {
-    "id": 57,
-    "username": "service_account_group_345_<random_hash>",
-    "name": "Service account user"
-  },
-  {
-  "id": 58,
-  "username": "service_account_group_345_<random_hash>",
-  "name": "Service account user"
-  }
-]
-```
-
-### Create Service Account User
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-> - Ability to specify a username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
-
-Creates a service account user. You can specify username and name. If you do not specify these attributes, the default name is `Service account user` and the username is automatically generated.
-
-This API endpoint works on top-level groups only. It does not work on subgroups.
-
-```plaintext
-POST /groups/:id/service_accounts
-```
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
-```
-
-Supported attributes:
-
-| Attribute                  | Type           | Required                  | Description                                                                    |
-|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `name`       | string | no | Name of the user |
-| `username`   | string | no | Username of the user |
-
-Example response:
-
-```json
-{
-  "id": 57,
-  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
-  "name": "Service account user"
-}
-```
-
-### Delete Service Account User
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
-
-Deletes a service account user. You specify the ID of the service account user to be deleted.
-
-This API endpoint works on top-level groups only. It does not work on subgroups.
-
-```plaintext
-DELETE /groups/:id/service_accounts/:user_id
-```
-
-Example request:
-
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
-```
-
-Supported attributes:
-
-| Attribute                  | Type           | Required                  | Description                                                                    |
-|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `id`          | integer | yes      | ID of a service account user.                            |
-| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this service account user. |
-
-### Create personal access token for Service Account User
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
-
-```plaintext
-POST /groups/:id/service_accounts/:user_id/personal_access_tokens
-```
-
-This API endpoint works on top-level groups only. It does not work on subgroups.
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api,read_user,read_repository" --data "name=service_accounts_token"
-```
-
-Example response:
-
-```json
-{
-  "id":6,
-  "name":"service_accounts_token",
-  "revoked":false,
-  "created_at":"2023-06-13T07:47:13.900Z",
-  "scopes":["api"],
-  "user_id":71,
-  "last_used_at":null,
-  "active":true,
-  "expires_at":"2024-06-12",
-  "token":"<token_value>"
-}
-```
-
-| Attribute | Type            | Required | Description |
-| --------- | --------------- | -------- | ----------- |
-| `name`    | string          | yes      | Name of the personal access token |
-| `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
-| `expires_at`      | date | no      | Personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
-
-### Rotate a personal access token for Service Account User
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
-
-```plaintext
-POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
-```
-
-This API endpoint works on top-level groups only. It does not work on subgroups.
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
-```
-
-Example response:
-
-```json
-{
-  "id":7,
-  "name":"service_accounts_token",
-  "revoked":false,
-  "created_at":"2023-06-13T07:54:49.962Z",
-  "scopes":["api"],
-  "user_id":71,
-  "last_used_at":null,
-  "active":true,
-  "expires_at":"2023-06-20",
-  "token":"<token_value>"
-}
-```
-
 ## Markdown uploads
 
 Markdown uploads are files uploaded to a group that can be referenced in Markdown text in an epic or wiki page.
@@ -1827,7 +1664,7 @@ Returned object:
 ]
 ```
 
-### Download an uploaded file
+### Download an uploaded file by ID
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
 
@@ -1837,10 +1674,14 @@ You must have at least the Maintainer role to use this endpoint.
 GET /groups/:id/uploads/:upload_id
 ```
 
+Supported attributes:
+
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
+
+If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
 
 Example request:
 
@@ -1848,7 +1689,33 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
 ```
 
-### Delete an uploaded file
+### Download an uploaded file by secret and filename
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+
+You must have at least the Guest role to use this endpoint.
+
+```plaintext
+GET /groups/:id/uploads/:secret/:filename
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `secret`    | string            | Yes      | The 32-character secret of the upload. |
+| `filename`  | string            | Yes      | The filename of the upload. |
+
+If successful, returns [`200`](rest/index.md#status-codes) and the uploaded file in the response body.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
+```
+
+### Delete an uploaded file by ID
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
 
@@ -1858,10 +1725,14 @@ You must have at least the Maintainer role to use this endpoint.
 DELETE /groups/:id/uploads/:upload_id
 ```
 
+Supported attributes:
+
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
+
+If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
 
 Example request:
 
@@ -1869,493 +1740,31 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
 ```
 
-## Hooks
+### Delete an uploaded file by secret and filename
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
 
-Also called Group hooks and Webhooks.
-These are different from [system hooks](system_hooks.md) that are system wide and [project hooks](projects.md#hooks) that are limited to one project.
-
-Prerequisites:
-
-- You must be an Administrator or have the Owner role for the group.
-
-### List group hooks
-
-Get a list of group hooks
+You must have at least the Maintainer role to use this endpoint.
 
 ```plaintext
-GET /groups/:id/hooks
+DELETE /groups/:id/uploads/:secret/:filename
 ```
 
-| Attribute | Type            | Required | Description |
-| --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+Supported attributes:
 
-### Get group hook
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `secret`    | string            | Yes      | The 32-character secret of the upload. |
+| `filename`  | string            | Yes      | The filename of the upload. |
 
-Get a specific hook for a group.
+If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `hook_id` | integer        | yes      | The ID of a group hook |
+Example request:
 
-```plaintext
-GET /groups/:id/hooks/:hook_id
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/648d97c6eef5fc5df8d1004565b3ee5a/sample.jpg"
 ```
-
-```json
-{
-  "id": 1,
-  "url": "http://example.com/hook",
-  "name": "Hook name",
-  "description": "Hook description",
-  "group_id": 3,
-  "push_events": true,
-  "push_events_branch_filter": "",
-  "branch_filter_strategy": "wildcard",
-  "issues_events": true,
-  "confidential_issues_events": true,
-  "merge_requests_events": true,
-  "tag_push_events": true,
-  "note_events": true,
-  "confidential_note_events": true,
-  "job_events": true,
-  "pipeline_events": true,
-  "wiki_page_events": true,
-  "deployment_events": true,
-  "releases_events": true,
-  "subgroup_events": true,
-  "member_events": true,
-  "enable_ssl_verification": true,
-  "repository_update_events": false,
-  "alert_status": "executable",
-  "disabled_until": null,
-  "url_variables": [ ],
-  "created_at": "2012-10-12T17:04:47Z",
-  "resource_access_token_events": true,
-  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
-  "custom_headers": [
-    {
-      "key": "Authorization"
-    }
-  ]
-}
-```
-
-### Get group hook events
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
-
-Get a list of events for a specific group hook in the past 7 days from start date.
-
-```plaintext
-GET /groups/:id/hooks/:hook_id/events
-```
-
-| Attribute | Type              | Required | Description                                                                                                                                                                                 |
-|-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                                                                                                          |
-| `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
-| `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
-| `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
-| `per_page`         | integer | No | Number of records to return per page. Defaults to `20`.                                                                                                                                     |
-
-```json
-[
-  {
-    "id": 1,
-    "url": "https://example.net/",
-    "trigger": "push_hooks",
-    "request_headers": {
-      "Content-Type": "application/json",
-      "User-Agent": "GitLab/17.1.0-pre",
-      "X-Gitlab-Event": "Push Hook",
-      "X-Gitlab-Webhook-UUID": "3c5c0404-c866-44bc-a5f6-452bb1bfc76e",
-      "X-Gitlab-Instance": "https://gitlab.example.com",
-      "X-Gitlab-Event-UUID": "9cebe914-4827-408f-b014-cfa23a47a35f",
-      "X-Gitlab-Token": "[REDACTED]"
-    },
-    "request_data": {
-      "object_kind": "push",
-      "event_name": "push"
-    }
-      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
-      "ref": "refs/heads/master",
-      "ref_protected": true,
-      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
-      "message": null,
-      "user_id": 1,
-      "user_name": "Administrator",
-      "user_username": "root",
-      "user_email": null,
-      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
-      "project_id": 7,
-      "project": {
-        "id": 7,
-        "name": "Flight",
-        "description": "Incidunt ea ab officia a veniam.",
-        "web_url": "https://gitlab.example.com/flightjs/Flight",
-        "avatar_url": null,
-        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
-        "namespace": "Flightjs",
-        "visibility_level": 10,
-        "path_with_namespace": "flightjs/Flight",
-        "default_branch": "master",
-        "ci_config_path": null,
-        "homepage": "https://gitlab.example.com/flightjs/Flight",
-        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
-      },
-      "commits": [
-        {
-          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
-          "message": "v1.5.2\n",
-          "title": "v1.5.2",
-          "timestamp": "2017-06-19T14:39:53-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
-          "author": {
-            "name": "Andrew Lunny",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        },
-        {
-          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
-          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
-          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
-          "timestamp": "2017-06-16T10:26:39-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
-          "author": {
-            "name": "angus croll",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        },
-        {
-          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
-          "message": "publish lib and index to npm\n",
-          "title": "publish lib and index to npm",
-          "timestamp": "2017-06-16T10:23:04-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
-          "author": {
-            "name": "Andrew Lunny",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        }
-      ],
-      "total_commits_count": 3,
-      "push_options": {},
-      "repository": {
-        "name": "Flight",
-        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "description": "Incidunt ea ab officia a veniam.",
-        "homepage": "https://gitlab.example.com/flightjs/Flight",
-        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
-        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "visibility_level": 10
-      }
-    },
-    "response_headers": {
-      "Date": "Sun, 26 May 2024 03:03:17 GMT",
-      "Content-Type": "application/json; charset=utf-8",
-      "Content-Length": "16",
-      "Connection": "close",
-      "X-Powered-By": "Express",
-      "Access-Control-Allow-Origin": "*",
-      "X-Pd-Status": "sent to primary"
-    },
-    "response_body": "{\"success\":true}",
-    "execution_duration": 1.0906479999999874,
-    "response_status": "200"
-  },
-  {
-    "id": 2,
-    "url": "https://example.net/",
-    "trigger": "push_hooks",
-    "request_headers": {
-      "Content-Type": "application/json",
-      "User-Agent": "GitLab/17.1.0-pre",
-      "X-Gitlab-Event": "Push Hook",
-      "X-Gitlab-Webhook-UUID": "a753eedb-1d72-4549-9ca7-eac8ea8e50dd",
-      "X-Gitlab-Instance": "https://gitlab.example.com:3000",
-      "X-Gitlab-Event-UUID": "842d7c3e-3114-4396-8a95-66c084d53cb1",
-      "X-Gitlab-Token": "[REDACTED]"
-    },
-    "request_data": {
-      "object_kind": "push",
-      "event_name": "push",
-      "before": "468abc807a2b2572f43e72c743b76cee6db24025",
-      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
-      "ref": "refs/heads/master",
-      "ref_protected": true,
-      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
-      "message": null,
-      "user_id": 1,
-      "user_name": "Administrator",
-      "user_username": "root",
-      "user_email": null,
-      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
-      "project_id": 7,
-      "project": {
-        "id": 7,
-        "name": "Flight",
-        "description": "Incidunt ea ab officia a veniam.",
-        "web_url": "https://gitlab.example.com/flightjs/Flight",
-        "avatar_url": null,
-        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
-        "namespace": "Flightjs",
-        "visibility_level": 10,
-        "path_with_namespace": "flightjs/Flight",
-        "default_branch": "master",
-        "ci_config_path": null,
-        "homepage": "https://gitlab.example.com/flightjs/Flight",
-        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
-      },
-      "commits": [
-        {
-          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
-          "message": "v1.5.2\n",
-          "title": "v1.5.2",
-          "timestamp": "2017-06-19T14:39:53-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
-          "author": {
-            "name": "Andrew Lunny",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        },
-        {
-          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
-          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
-          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
-          "timestamp": "2017-06-16T10:26:39-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
-          "author": {
-            "name": "angus croll",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        },
-        {
-          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
-          "message": "publish lib and index to npm\n",
-          "title": "publish lib and index to npm",
-          "timestamp": "2017-06-16T10:23:04-07:00",
-          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
-          "author": {
-            "name": "Andrew Lunny",
-            "email": "[REDACTED]"
-          },
-          "added": [],
-          "modified": [
-            "package.json"
-          ],
-          "removed": []
-        }
-      ],
-      "total_commits_count": 3,
-      "push_options": {},
-      "repository": {
-        "name": "Flight",
-        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "description": "Incidunt ea ab officia a veniam.",
-        "homepage": "https://gitlab.example.com/flightjs/Flight",
-        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
-        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
-        "visibility_level": 10
-      }
-    },
-    "response_headers": {
-      "Date": "Sun, 26 May 2024 03:03:19 GMT",
-      "Content-Type": "application/json; charset=utf-8",
-      "Content-Length": "16",
-      "Connection": "close",
-      "X-Powered-By": "Express",
-      "Access-Control-Allow-Origin": "*",
-      "X-Pd-Status": "sent to primary"
-    },
-    "response_body": "{\"success\":true}",
-    "execution_duration": 1.0716120000000728,
-    "response_status": "200"
-  }
-]
-```
-
-### Add group hook
-
-Adds a hook to a specified group.
-
-```plaintext
-POST /groups/:id/hooks
-```
-
-| Attribute                    | Type           | Required | Description |
-| -----------------------------| -------------- |----------| ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `url`                        | string         | yes      | The hook URL |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
-| `push_events`                | boolean        | no       | Trigger hook on push events |
-| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only |
-| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches` |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
-| `note_events`                | boolean        | no       | Trigger hook on note events |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
-| `job_events`                 | boolean        | no       | Trigger hook on job events |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
-| `releases_events`            | boolean        | no       | Trigger hook on release events |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
-| `member_events`              | boolean        | no       | Trigger hook on member events |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
-| `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
-| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events |
-| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook |
-| `custom_headers`             | array             | No       | Custom headers for the hook. |
-
-### Edit group hook
-
-Edits a hook for a specified group.
-
-```plaintext
-PUT /groups/:id/hooks/:hook_id
-```
-
-| Attribute                    | Type           | Required | Description |
-| ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `hook_id`                    | integer        | yes      | The ID of the group hook. |
-| `url`                        | string         | yes      | The hook URL. |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `push_events`                | boolean        | no       | Trigger hook on push events. |
-| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
-| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
-| `note_events`                | boolean        | no       | Trigger hook on note events. |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
-| `job_events`                 | boolean        | no       | Trigger hook on job events. |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
-| `releases_events`            | boolean        | no       | Trigger hook on release events. |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
-| `member_events`              | boolean        | no       | Trigger hook on member events. |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
-| `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
-| `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
-| `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
-| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
-| `custom_headers`             | array             | no       | Custom headers for the hook. |
-
-### Delete group hook
-
-Deletes a hook from a group. This is an idempotent method and can be called multiple times.
-Either the hook is available or not.
-
-```plaintext
-DELETE /groups/:id/hooks/:hook_id
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `hook_id` | integer        | yes      | The ID of the group hook. |
-
-### Trigger a test group hook
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
-> - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
-
-Trigger a test hook for a specified group.
-
-This endpoint has a rate limit of five requests per minute for each group and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
-
-```plaintext
-POST /groups/:id/hooks/:hook_id/test/:trigger
-```
-
-| Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
-|-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                                                                                                                                                                           |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
-
-```json
-{"message":"201 Created"}
-```
-
-### Set a custom header
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
-
-```plaintext
-PUT /groups/:id/hooks/:hook_id/custom_headers/:key
-```
-
-| Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the custom header. |
-| `value`   | string            | Yes      | The value of the custom header. |
-
-On success, this endpoint returns the response code `204 No Content`.
-
-### Delete a custom header
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
-
-```plaintext
-DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
-```
-
-| Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the custom header. |
-
-On success, this endpoint returns the response code `204 No Content`.
 
 ## Group audit events
 
@@ -2385,261 +1794,6 @@ Parameters:
 
 See the [Group Members](members.md) documentation.
 
-## LDAP Group Links
-
-List, add, and delete LDAP group links.
-
-### List LDAP group links
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-Lists LDAP group links.
-
-```plaintext
-GET /groups/:id/ldap_group_links
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-
-### Add LDAP group link with CN or filter
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium and Ultimate tier.
-
-```plaintext
-POST /groups/:id/ldap_group_links
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `cn`      | string         | no       | The CN of an LDAP group |
-| `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | [Role (`access_level`)](members.md#roles) for members of the LDAP group |
-| `provider` | string        | yes      | LDAP provider for the LDAP group link |
-
-NOTE:
-To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
-
-### Delete LDAP group link
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
-
-```plaintext
-DELETE /groups/:id/ldap_group_links/:cn
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `cn`      | string         | yes      | The CN of an LDAP group |
-
-Deletes an LDAP group link for a specific LDAP provider. Deprecated. Scheduled for removal in a future release.
-
-```plaintext
-DELETE /groups/:id/ldap_group_links/:provider/:cn
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `cn`      | string         | yes      | The CN of an LDAP group |
-| `provider` | string        | yes      | LDAP provider for the LDAP group link |
-
-### Delete LDAP group link with CN or filter
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium and Ultimate tier.
-
-```plaintext
-DELETE /groups/:id/ldap_group_links
-```
-
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `cn`      | string         | no       | The CN of an LDAP group |
-| `filter`  | string         | no       | The LDAP filter for the group |
-| `provider` | string        | yes       | LDAP provider for the LDAP group link |
-
-NOTE:
-To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
-
-## SAML Group Links
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
-> - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
-> - `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `custom_roles_for_saml_group_links`. Disabled by default.
-> - `member_role_id` type [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.8. Feature flag `custom_roles_for_saml_group_links` removed.
-
-List, get, add, and delete SAML group links.
-
-### List SAML group links
-
-Lists SAML group links.
-
-```plaintext
-GET /groups/:id/saml_group_links
-```
-
-Supported attributes:
-
-| Attribute | Type           | Required | Description                                                              |
-|:----------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
-
-| Attribute          | Type    | Description                                                                  |
-|:-------------------|:--------|:-----------------------------------------------------------------------------|
-| `[].name`          | string  | Name of the SAML group                                                       |
-| `[].access_level`  | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
-| `[].member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
-
-Example request:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
-```
-
-Example response:
-
-```json
-[
-  {
-    "name": "saml-group-1",
-    "access_level": 10,
-    "member_role_id": 12
-  },
-  {
-    "name": "saml-group-2",
-    "access_level": 40,
-    "member_role_id": 99
-  }
-]
-```
-
-### Get SAML group link
-
-Get a SAML group link for the group.
-
-```plaintext
-GET /groups/:id/saml_group_links/:saml_group_name
-```
-
-Supported attributes:
-
-| Attribute          | Type           | Required | Description                                                              |
-|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
-
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
-
-| Attribute      | Type    | Description                                                                  |
-|:---------------|:--------|:-----------------------------------------------------------------------------|
-| `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
-| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
-
-Example request:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
-```
-
-Example response:
-
-```json
-{
-"name": "saml-group-1",
-"access_level": 10,
-"member_role_id": 12
-}
-```
-
-### Add SAML group link
-
-Adds a SAML group link for a group.
-
-```plaintext
-POST /groups/:id/saml_group_links
-```
-
-Supported attributes:
-
-| Attribute          | Type           | Required | Description                                                                  |
-|:-------------------|:---------------|:---------|:-----------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)     |
-| `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
-| `access_level`     | integer        | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group |
-| `member_role_id`   | integer        | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
-
-If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
-
-| Attribute      | Type    | Description                                                                  |
-|:---------------|:--------|:-----------------------------------------------------------------------------|
-| `name`         | string  | Name of the SAML group                                                       |
-| `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
-| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
-
-Example request:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level>, "member_role_id": <chosen_member_role_id> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
-```
-
-Example response:
-
-```json
-{
-"name": "saml-group-1",
-"access_level": 10,
-"member_role_id": 12
-}
-```
-
-### Delete SAML group link
-
-Deletes a SAML group link for the group.
-
-```plaintext
-DELETE /groups/:id/saml_group_links/:saml_group_name
-```
-
-Supported attributes:
-
-| Attribute          | Type           | Required | Description                                                              |
-|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
-| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `saml_group_name`  | string         | yes      | Name of a SAML group                                                     |
-
-If successful, returns [`204`](rest/index.md#status-codes) status code without any response body.
-
-Example request:
-
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
-```
-
 ## Namespaces in groups
 
 By default, groups only get 20 namespaces at a time because the API results are paginated.
@@ -2668,7 +1822,7 @@ documentation.
 
 ## Share Groups with Groups
 
-These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/group/manage.md#share-a-group-with-another-group) page.
+These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) page.
 
 ### Create a link to share a group with another group
 
@@ -2698,176 +1852,10 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push rules
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-### Get group push rules
-
-Get the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
-
-Only available to group owners and administrators.
-
-```plaintext
-GET /groups/:id/push_rule
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-
-```json
-{
-  "id": 2,
-  "created_at": "2020-08-17T19:09:19.580Z",
-  "commit_committer_check": true,
-  "commit_committer_name_check": true,
-  "reject_unsigned_commits": false,
-  "reject_non_dco_commits": false,
-  "commit_message_regex": "[a-zA-Z]",
-  "commit_message_negative_regex": "[x+]",
-  "branch_name_regex": "[a-z]",
-  "deny_delete_tag": true,
-  "member_check": true,
-  "prevent_secrets": true,
-  "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
-  "file_name_regex": "(exe)$",
-  "max_file_size": 100
-}
-```
-
-### Add group push rule
-
-Adds [push rules](../user/group/access_and_permissions.md#group-push-rules) to the specified group.
-
-Only available to group owners and administrators.
-
-```plaintext
-POST /groups/:id/push_rule
-```
-
-<!-- markdownlint-disable MD056 -->
-
-| Attribute                                     | Type           | Required | Description |
-| --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
-| `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
-| `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
-| `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
-| `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
-| `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
-| `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check`                      | boolean        | no       | Users can only push commits to this repository if the committer email is one of their own verified emails |
-| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
-| `reject_unsigned_commits`                     | boolean        | no       | Reject commit when it’s not signed |
-| `reject_non_dco_commits`                      | boolean        | no       | Reject commit when it’s not DCO certified |
-
-<!-- markdownlint-enable MD056 -->
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
-```
-
-Response:
-
-```json
-{
-    "id": 19,
-    "created_at": "2020-08-31T15:53:00.073Z",
-    "commit_committer_check": false,
-    "commit_committer_name_check": false,
-    "reject_unsigned_commits": false,
-    "reject_non_dco_commits": false,
-    "commit_message_regex": "[a-zA-Z]",
-    "commit_message_negative_regex": "[x+]",
-    "branch_name_regex": null,
-    "deny_delete_tag": false,
-    "member_check": false,
-    "prevent_secrets": false,
-    "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
-    "file_name_regex": null,
-    "max_file_size": 100
-}
-```
-
-### Edit group push rule
-
-Edit push rules for a specified group.
-
-Only available to group owners and administrators.
-
-```plaintext
-PUT /groups/:id/push_rule
-```
-
-<!-- markdownlint-disable MD056 -->
-
-| Attribute                                     | Type           | Required | Description |
-| --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
-| `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
-| `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
-| `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
-| `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
-| `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
-| `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check`                      | boolean        | no       | Users can only push commits to this repository if the committer email is one of their own verified emails |
-| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
-| `reject_unsigned_commits`                     | boolean        | no       | Reject commit when it’s not signed |
-| `reject_non_dco_commits`                      | boolean        | no       | Reject commit when it’s not DCO certified |
-<!-- markdownlint-enable MD056 -->
-
-```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
-```
-
-Response:
-
-```json
-{
-    "id": 19,
-    "created_at": "2020-08-31T15:53:00.073Z",
-     "commit_committer_check": false,
-    "commit_committer_name_check": false,
-    "reject_unsigned_commits": false,
-    "reject_non_dco_commits": false,
-    "commit_message_regex": "[a-zA-Z]",
-    "commit_message_negative_regex": "[x+]",
-    "branch_name_regex": null,
-    "deny_delete_tag": false,
-    "member_check": false,
-    "prevent_secrets": false,
-    "author_email_regex": "^[A-Za-z0-9.]+@staging.gitlab.com$",
-    "file_name_regex": null,
-    "max_file_size": 100
-}
-```
-
-### Delete group push rule
-
-Deletes the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
-
-Only available to group owners and administrators.
-
-```plaintext
-DELETE /groups/:id/push_rule
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-
 ## Revoke Token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+> - Revocation of user feed tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468599) in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -2880,12 +1868,13 @@ details are returned in the response.
 The following criteria must be met:
 
 - The group must be a top-level group.
-- You must have the Owner role in the group.
+- You must have the Owner role for the group.
 - The token type is one of:
   - Personal access token
   - Group access token
   - Project access token
   - Group Deploy Token
+  - User Feed Tokens
 
 Additional token types may be supported at a later date.
 

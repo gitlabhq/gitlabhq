@@ -9,9 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
-**Status:** Beta
-
-This feature is in [beta](../../policy/experiment-beta-support.md).
 
 Use the Google Cloud integration to use Google Cloud resources in GitLab projects.
 

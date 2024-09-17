@@ -36,7 +36,6 @@ class LfsObjectsProject < ApplicationRecord
 
   def ensure_uniqueness
     return if project_id.nil? || lfs_object_id.nil?
-    return unless Feature.enabled?(:ensure_lfs_object_project_uniqueness, project, type: :beta)
 
     lock_key = [project_id, lfs_object_id, repository_type.presence || 'null'].join('-')
 

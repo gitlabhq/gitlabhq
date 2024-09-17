@@ -297,7 +297,7 @@ export default {
           :issuable-type="issuableType"
           :is-editing="edit"
           :issuable-author="issuableAuthor"
-          class="gl-w-full dropdown-menu-user -gl-mt-3"
+          class="dropdown-menu-user -gl-mt-3 gl-w-full"
           @toggle="collapseWidget"
           @error="showError"
           @input="setDirtyState"

@@ -81,8 +81,14 @@ describe('CreateMenu component', () => {
       expect(findInviteMembersTrigger().exists()).toBe(true);
     });
 
-    it('renders the create new work item modal', () => {
-      expect(findCreateWorkItemModal().exists()).toBe(true);
+    describe('create new work item modal', () => {
+      it('renders the modal', () => {
+        expect(findCreateWorkItemModal().exists()).toBe(true);
+      });
+
+      it('sets `isGroup` to `true`', () => {
+        expect(findCreateWorkItemModal().props('isGroup')).toBe(true);
+      });
     });
 
     it('hides the tooltip when the dropdown is opened', async () => {

@@ -102,7 +102,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex flex-column release-assets-links-form">
+  <div class="flex-column release-assets-links-form gl-flex">
     <h2 class="gl-heading-2 gl-mb-3">{{ __('Release assets') }}</h2>
     <p class="gl-text-subtle">
       <gl-sprintf
@@ -149,7 +149,7 @@ export default {
         <div
           v-for="(link, index) in release.assets.links"
           :key="link.id"
-          class="sm:gl-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
+          class="flex-column flex-sm-row align-items-stretch align-items-sm-start no-gutters gl-gap-5 sm:gl-flex"
         >
           <gl-form-group
             class="url-field form-group col"
@@ -239,7 +239,7 @@ export default {
             class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto"
           >
             <gl-button
-              class="remove-button gl-w-full form-control"
+              class="remove-button form-control gl-w-full"
               :aria-label="__('Remove asset link')"
               :title="__('Remove asset link')"
               category="tertiary"

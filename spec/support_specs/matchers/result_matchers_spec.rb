@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 require_relative '../../../spec/support/matchers/result_matchers'
 
-RSpec.describe 'result matchers', feature_category: :remote_development do
+RSpec.describe 'result matchers', feature_category: :workspaces do
   include ResultMatchers
 
   it 'works with value asserted via argument' do

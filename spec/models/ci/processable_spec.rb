@@ -89,7 +89,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let(:ignore_accessors) do
         %i[type namespace lock_version target_url base_tags trace_sections
            commit_id deployment erased_by_id project_id project_mirror
-           runner_id tag_taggings taggings tags trigger_request_id
+           runner_id tag_taggings taggings tags tag_links trigger_request_id
            user_id auto_canceled_by_id retried failure_reason
            sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
            metadata runner_manager_build runner_manager runner_session trace_chunks
@@ -441,8 +441,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       it 'returns all needs attributes' do
         is_expected.to contain_exactly(
-          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id },
-          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id }
+          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id, 'project_id' => build.project_id },
+          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id, 'project_id' => build.project_id }
         )
       end
     end

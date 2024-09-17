@@ -53,7 +53,13 @@ RSpec.describe Deployments::HooksWorker, feature_category: :continuous_delivery 
 
       status_changed_at = Time.current
 
-      expect_next_instance_of(WebHookService, web_hook, hash_including(status_changed_at: status_changed_at), "deployment_hooks") do |service|
+      expect_next_instance_of(
+        WebHookService,
+        web_hook,
+        hash_including(status_changed_at: status_changed_at),
+        "deployment_hooks",
+        idempotency_key: anything
+      ) do |service|
         expect(service).to receive(:async_execute)
       end
 

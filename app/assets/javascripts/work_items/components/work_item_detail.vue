@@ -6,11 +6,13 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_GROUP, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
@@ -30,6 +32,7 @@ import {
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -89,6 +92,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemIid: {
       type: String,
       required: false,
@@ -99,6 +107,11 @@ export default {
       required: false,
       default: '',
     },
+    modalIsGroup: {
+      type: Boolean,
+      required: false,
+      default: null,
+    },
     isDrawer: {
       type: Boolean,
       required: false,
@@ -106,12 +119,18 @@ export default {
     },
   },
   data() {
+    let modalWorkItemId = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+    if (modalWorkItemId) {
+      modalWorkItemId = convertToGraphQLId(TYPENAME_WORK_ITEM, modalWorkItemId);
+    }
+
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemId: undefined,
+      modalWorkItemId,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       modalWorkItemNamespaceFullPath: '',
       isReportModalOpen: false,
@@ -125,17 +144,30 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemByIidQuery,
+      query() {
+        if (this.workItemId) {
+          return workItemByIdQuery;
+        }
+        return workItemByIidQuery;
+      },
       variables() {
+        if (this.workItemId) {
+          return {
+            id: this.workItemId,
+          };
+        }
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
       skip() {
-        return !this.workItemIid;
+        return !this.workItemIid && !this.workItemId;
       },
       update(data) {
+        if (this.workItemId) {
+          return data.workItem ?? {};
+        }
         return data.workspace.workItem ?? {};
       },
       error() {
@@ -150,7 +182,7 @@ export default {
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
-        if (!this.isModal && this.workItem.namespace) {
+        if (!(this.isModal || this.isDrawer) && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';
@@ -170,6 +202,7 @@ export default {
         },
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     allowedChildTypes: {
       query: getAllowedWorkItemChildTypes,
       variables() {
@@ -216,6 +249,9 @@ export default {
     canSetWorkItemMetadata() {
       return this.workItem.userPermissions?.setWorkItemMetadata;
     },
+    canAdminWorkItemLink() {
+      return this.workItem.userPermissions?.adminWorkItemLink;
+    },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
@@ -232,13 +268,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
     hasParent() {
-      // TODO: This is a temporary check till the issue work item migration is completed
-      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
-      const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
-
-      if (workItemType === WORK_ITEM_TYPE_VALUE_TASK) {
-        return glFeatures.namespaceLevelWorkItems && parentWorkItem;
-      }
+      const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
       if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
         return hasSubepicsFeature && parentWorkItem;
@@ -247,6 +277,15 @@ export default {
       return Boolean(parentWorkItem);
     },
     shouldShowAncestors() {
+      // TODO: This is a temporary check till the issue work item migration is completed
+      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
+      if (
+        this.workItemType === WORK_ITEM_TYPE_VALUE_TASK &&
+        !this.glFeatures.namespaceLevelWorkItems
+      ) {
+        return false;
+      }
+
       // Checks whether current work item has parent
       // or it is in hierarchy but there is no permission to view the parent
       return this.hasParent || this.workItemHierarchy?.hasParent;
@@ -290,12 +329,6 @@ export default {
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
-    showRolledUpWeight() {
-      return this.workItemWeight?.widgetDefinition?.rollUp;
-    },
-    rolledUpWeight() {
-      return this.workItemWeight?.rolledUpWeight;
-    },
     workItemBodyClass() {
       return {
         'gl-pt-5': !this.updateError && !this.isModal,
@@ -337,12 +370,15 @@ export default {
     workItemPresent() {
       return !isEmpty(this.workItem);
     },
+    isGroupWorkItem() {
+      return Boolean(this.modalIsGroup ?? this.workItem.namespace?.id.includes(TYPENAME_GROUP));
+    },
   },
   mounted() {
-    if (this.modalWorkItemIid) {
+    if (this.modalWorkItemId) {
       this.openInModal({
         event: undefined,
-        modalWorkItem: { iid: this.modalWorkItemIid },
+        modalWorkItem: { id: this.modalWorkItemId },
       });
     }
   },
@@ -397,7 +433,9 @@ export default {
     },
     updateUrl(modalWorkItem) {
       updateHistory({
-        url: setUrlParams({ work_item_iid: modalWorkItem?.iid }),
+        url: setUrlParams({
+          [DETAIL_VIEW_QUERY_PARAM_NAME]: getIdFromGraphQLId(modalWorkItem?.id),
+        }),
         replace: true,
       });
     },
@@ -539,7 +577,7 @@ export default {
           :svg-path="$options.noAccessSvg"
         />
         <div v-else data-testid="detail-wrapper">
-          <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
+          <div class="gl-block gl-flex-row gl-items-start gl-gap-3 sm:!gl-flex">
             <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
@@ -552,7 +590,7 @@ export default {
                 @error="updateError = $event"
               />
             </div>
-            <div class="gl-flex gl-self-start gl-ml-auto gl-gap-3 gl-mt-1">
+            <div class="gl-ml-auto gl-mt-1 gl-flex gl-gap-3 gl-self-start">
               <gl-button
                 v-if="shouldShowEditButton"
                 category="secondary"
@@ -664,10 +702,11 @@ export default {
               :class="{ 'is-modal': isModal }"
             >
               <work-item-attributes-wrapper
-                :class="{ 'gl-top-3': isDrawer }"
+                :class="{ 'gl-top-11': isDrawer }"
                 :full-path="workItemFullPath"
                 :work-item="workItem"
                 :group-path="groupPath"
+                :is-group="isGroupWorkItem"
                 @error="updateError = $event"
                 @attributesUpdated="$emit('attributesUpdated', $event)"
               />
@@ -683,14 +722,13 @@ export default {
             <work-item-tree
               v-if="showWorkItemTree"
               :full-path="workItemFullPath"
+              :is-group="isGroupWorkItem"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
-              :rolled-up-weight="rolledUpWeight"
-              :show-rolled-up-weight="showRolledUpWeight"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"
@@ -699,10 +737,12 @@ export default {
             />
             <work-item-relationships
               v-if="workItemLinkedItems"
+              :is-group="isGroupWorkItem"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
               :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
+              :can-admin-work-item-link="canAdminWorkItemLink"
               @showModal="openInModal"
             />
             <work-item-notes
@@ -730,6 +770,7 @@ export default {
     <work-item-detail-modal
       v-if="!isModal"
       ref="modal"
+      :parent-id="workItem.id"
       :work-item-id="modalWorkItemId"
       :work-item-iid="modalWorkItemIid"
       :work-item-full-path="modalWorkItemNamespaceFullPath"

@@ -10,36 +10,45 @@ DETAILS:
 **Tier:** Free
 **Offering:** GitLab.com
 
-A five-user limit applies to newly created top-level namespaces with
-private visibility on GitLab.com. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.
+You can add up to five users to newly created top-level namespaces with
+private visibility on GitLab.com.
 
-When the five-user limit is applied, top-level private namespaces
-exceeding the user limit are placed in a read-only state. These
-namespaces cannot write new data to repositories, Git Large File
-Storage (LFS), packages, or registries. For the full list of restricted
-actions, see [Read-only namespaces](read_only_namespaces.md).
+If the namespace was created before December 28, 2022, this user limit was
+applied on June 13, 2023.
 
-In the Free tier of GitLab.com, user limits do not apply to users in:
+Top-level private namespaces with more than five users are placed in a read-only
+state. These namespaces cannot write new data to any of the following:
 
-- Public top-level groups
-- Paid tiers
-- [Community programs](https://about.gitlab.com/community/):
-  - GitLab for Open Source
-  - GitLab for Education
-  - GitLab for Startups
+- Repositories
+- Git Large File Storage (LFS)
+- Packages
+- Registries.
 
-[Self-managed subscriptions](../subscriptions/self_managed/index.md) do not have user limits on the Free tier. You can also [talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+For the full list of restricted actions, see [read-only namespaces](read_only_namespaces.md).
 
-NOTE:
-Personal namespaces are public by default and are excluded from the user limit.
+User limits do not apply to users in the Free tier of:
 
-## Determining namespace user counts
+- GitLab.com, for:
+  - Public top-level groups
+  - Personal namespaces, because they are public by default
+  - Paid tiers
+  - The following [community programs](https://about.gitlab.com/community/):
+    - GitLab for Open Source
+    - GitLab for Education
+    - GitLab for Startups
+- [Self-managed subscriptions](../subscriptions/self_managed/index.md)
 
-Every unique user of a top-level namespace with private visibility counts towards the five-user limit. This includes every user of a group, subgroup, and project within a namespace.
+For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 
-For example:
+## Determine namespace user counts
 
-The group `example-1` has:
+Every unique user of a top-level namespace with private visibility counts towards
+the five-user limit. This includes every user of a group, subgroup, and project
+within a namespace.
+
+For example, there are two groups, `example-1` and `example-2`.
+
+The `example-1` group has:
 
 - One group owner, `A`.
 - One subgroup called `subgroup-1` with one member, `B`.
@@ -47,9 +56,10 @@ The group `example-1` has:
 - One project in `subgroup-1` called `project-1` with two members, `C` and `D`.
   - `project-1` inherits `A` and `B` as members from `subgroup-1`.
 
-The namespace `example-1` has four unique members: `A`, `B`, `C`, and `D`. Because `example-1` has only four unique members, it is not impacted by the five-user limit.
+The namespace `example-1` has four unique members: `A`, `B`, `C`, and `D`, so
+does not exceed the five-user limit.
 
-The group `example-2` has:
+The `example-2` group has:
 
 - One group owner, `A`.
 - One subgroup called `subgroup-2` with one member, `B`.
@@ -59,7 +69,8 @@ The group `example-2` has:
 - One project in `subgroup-2` called `project-2b` with two members, `E` and `F`.
   - `project-2b` inherits `A` and `B` as members from `subgroup-2`.
 
-The namespace `example-2` has six unique members: `A`, `B`, `C`, `D`, `E`, and `F`. Because `example-2` has six unique users, it is impacted by the five-user limit.
+The namespace `example-2` has six unique members: `A`, `B`, `C`, `D`, `E`, and `F`,
+so it exceeds the five-user limit.
 
 ## Manage members in your group namespace
 
@@ -74,65 +85,83 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. To view all members, select the **Seats** tab.
-1. To remove a member, select **Remove user**.
 
-If you need more time to manage your members, or to try GitLab features
-with a team of more than five members, you can [start a trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html).
-A trial lasts for 30 days and includes an unlimited number of members.
+On this page, you can view and manage all members in your namespace. For example,
+to remove a member, select **Remove user**.
 
 ## Include a group in an organization's subscription
 
-If there are multiple groups in your organization, they might have a
-combination of Paid and Free subscriptions. When a group
-with a Free subscription exceeds the user limit, their namespace becomes [read-only](../user/read_only_namespaces.md).
+If you have multiple groups in your organization, they might have a
+combination of paid (Premium or Ultimate tier) and Free tier subscriptions.
+When a group with a Free tier subscription exceeds the user limit, their
+namespace becomes [read-only](../user/read_only_namespaces.md).
 
-To avoid user limits on groups with Free subscriptions, you can
-include them in your organization's subscription. To check if a group is included in the subscription,
-[view the group's subscription details](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription).
-If the group is on the Free tier, it is not included in your organization's subscription.
+To remove user limits on groups with Free tier subscriptions, include those groups
+in your organization's subscription:
 
-To include the group in your Paid subscription, [transfer the group](../user/group/manage.md#transfer-a-group) to your organization's
-top-level namespace.
+1. To check if a group is included in the subscription,
+   [view that group's subscription details](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription).
 
-NOTE:
-If you previously purchased a subscription and the 5-user limit was applied to a group,
-ensure that [your subscription is linked](../subscriptions/gitlab_com/index.md#change-the-linked-group)
-to the correct top-level namespace, or that it has been
-linked to your Customers Portal account.
+   If the group has a Free tier subscription, it is not included in your organization's
+   subscription.
 
-### Impact on seat count by transferred groups
+1. To include a group in your paid Premium or Ultimate tier subscription,
+   [transfer that group](../user/group/manage.md#transfer-a-group) to your
+   organization's top-level namespace.
 
-When you transfer a group, there might be an increase in your seat count,
-which could incur additional costs for your subscription.
+If the five-user limit has been applied to your group even though you have
+a paid subscription in the Premium or Ultimate tier, make sure that
+[your subscription is linked](../subscriptions/gitlab_com/index.md#change-the-linked-group)
+to either of the following:
 
-For example, a company has Group A and Group B:
+- The correct top-level namespace.
+- Your [Customers Portal](../subscriptions/customers_portal.md) account.
 
-- Group A is on a Paid tier and has five users.
-- Group B is on the Free tier and has eight users, four of which are members of Group A.
-- Group B is placed in a read-only state when it exceeds the user limit.
-- Group B is transferred to the company's subscription to remove the read-only state.
-- The company incurs an additional cost of four seats for the
+### Impact of transferred groups on subscription costs
+
+When you transfer a group to your organization's subscription, this might
+increase your seat count. This could incur additional costs for your subscription.
+
+For example, your company has Group A and Group B:
+
+- Group A has a paid Premium or Ultimate tier subscription and has five users.
+- Group B has a Free tier subscription and has eight users, four of which are
+  members of Group A.
+- Group B is a read-only state because it exceeds the five-user limit.
+- You transfer Group B to your company's subscription to remove the read-only state.
+- Your company incurs an additional cost of four seats for the
   four members of Group B that are not members of Group A.
 
-Users that are not part of the top-level namespace require additional seats to remain active. For more information, see [Add seats to your subscription](../subscriptions/gitlab_com/index.md#add-seats-to-your-subscription).
+Users that are not part of the top-level namespace require additional seats to
+remain active. For more information, see
+[add seats to your subscription](../subscriptions/gitlab_com/index.md#add-seats-to-your-subscription).
 
 ## Increase the five-user limit
 
-On the Free tier on GitLab.com, you cannot increase the limit of five users on top-level groups with private visibility.
+On the Free subscription tier on GitLab.com, you cannot increase the limit of five users on
+top-level groups with private visibility.
 
-For larger teams, you should upgrade to the Premium or Ultimate tier, which
-has no user limits and offers more features to increase team productivity. To experience the
-value of Paid features and unlimited users, you should start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html) for GitLab Ultimate.
+For larger teams, you should upgrade to the paid Premium or Ultimate tiers. These tiers
+do not limit users and have more features to increase team productivity. For more
+information, see:
+
+- [Upgrade your subscription tier on GitLab self-managed](../subscriptions/self_managed/index.md#upgrade-your-subscription-tier).
+- [Upgrade your subscription tier on GitLab.com](../subscriptions/gitlab_com/index.md#upgrade-your-gitlabcom-subscription-tier).
+
+To try the paid tiers before deciding to upgrade, start a
+[free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html)
+for GitLab Ultimate.
 
 ## Manage members in personal projects outside a group namespace
 
-Personal projects are not located in top-level group namespaces. You can manage the users in each of your
-personal projects, but you cannot have more than five users in all of your personal projects.
+Personal projects are not located in top-level group namespaces. You can manage
+the users in each of your personal projects, but you cannot have more than five
+users in all of your personal projects.
 
-You should [move your personal project to a group](../tutorials/move_personal_project_to_group/index.md) so that
-you can:
+You should [move your personal project to a group](../tutorials/move_personal_project_to_group/index.md)
+so that you can:
 
 - Increase the amount of users to more than five.
 - Purchase a paid tier subscription, additional compute minutes, or storage.
-- Use GitLab features in the group.
-- Start a trial.
+- Use [GitLab features](https://about.gitlab.com/pricing/feature-comparison/) in the group.
+- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html) for GitLab Ultimate.

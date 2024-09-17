@@ -4,5 +4,6 @@
 - content_for :usage_quotas_tabs do
   = render_if_exists 'shared/usage_quotas/tabs_content/pipelines'
   #js-storage-usage-app{ data: storage_usage_app_data(@namespace) }
+  = render_if_exists 'shared/usage_quotas/tabs_content/pages'
 
 = render 'shared/usage_quotas/index'

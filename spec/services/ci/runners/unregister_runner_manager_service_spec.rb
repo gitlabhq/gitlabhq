@@ -49,7 +49,9 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freez
 
           expect do
             expect(execute).to be_success
-          end.to change { runner.reload.read_attribute(:contacted_at) }.from(Time.current).to(nil)
+          end.to change { runner.reload.read_attribute(:contacted_at) }
+            .from(a_kind_of(ActiveSupport::TimeWithZone))
+            .to(nil)
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ProjectMembersHelper do
+RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_projects do
   include MembersPresentation
 
   let_it_be(:current_user) { create(:user) }

@@ -162,7 +162,7 @@ module Types
     field :timelogs, Types::TimelogType.connection_type, null: false,
       description: 'Timelogs on the issue.'
 
-    field :project_id, GraphQL::Types::Int, null: true, method: :project_id,
+    field :project_id, GraphQL::Types::Int, null: true,
       description: 'ID of the issue project.'
 
     field :customer_relations_contacts, Types::CustomerRelations::ContactType.connection_type, null: true,

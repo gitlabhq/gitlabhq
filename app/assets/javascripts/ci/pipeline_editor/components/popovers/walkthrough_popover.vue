@@ -49,7 +49,7 @@ export default {
     placement="right"
     triggers="focus"
   >
-    <div v-outside="close" class="gl-display-flex gl-flex-direction-column">
+    <div v-outside="close" class="gl-flex gl-flex-col">
       <p>
         <gl-sprintf :message="$options.i18n.description">
           <template #code="{ content }">
@@ -69,7 +69,7 @@ export default {
       </p>
 
       <gl-button
-        class="gl-align-self-end"
+        class="gl-self-end"
         category="tertiary"
         data-testid="ctaBtn"
         variant="confirm"

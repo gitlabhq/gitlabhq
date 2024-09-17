@@ -8,9 +8,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
   let(:user_preference) { create(:user_preference, user: user) }
 
   describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:time_display_relative).in_array([true, false]) }
-    it { is_expected.to validate_inclusion_of(:render_whitespace_in_code).in_array([true, false]) }
-
     it do
       is_expected.to validate_numericality_of(:tab_width)
                        .only_integer
@@ -59,7 +56,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
 
     describe 'pass_user_identities_to_ci_jwt' do
-      it { is_expected.to validate_inclusion_of(:pass_user_identities_to_ci_jwt).in_array([true, false]) }
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 
@@ -202,69 +198,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
-  describe '#tab_width' do
-    it 'is set to 8 by default' do
-      # Intentionally not using factory here to test the constructor.
-      pref = described_class.new
-
-      expect(pref.tab_width).to eq(8)
-    end
-
-    it 'returns default value when assigning nil' do
-      pref = described_class.new(tab_width: nil)
-
-      expect(pref.tab_width).to eq(8)
-    end
-  end
-
-  describe '#tab_width=' do
-    it 'sets to default value when nil' do
-      pref = described_class.new(tab_width: nil)
-
-      expect(pref.read_attribute(:tab_width)).to eq(8)
-    end
-
-    it 'sets user values' do
-      pref = described_class.new(tab_width: 12)
-
-      expect(pref.read_attribute(:tab_width)).to eq(12)
-    end
-  end
-
-  describe '#time_display_relative' do
-    it 'is set to true by default' do
-      pref = described_class.new
-
-      expect(pref.time_display_relative).to eq(true)
-    end
-
-    it 'returns default value when assigning nil' do
-      pref = described_class.new(time_display_relative: nil)
-
-      expect(pref.time_display_relative).to eq(true)
-    end
-
-    it 'returns assigned value' do
-      pref = described_class.new(time_display_relative: false)
-
-      expect(pref.time_display_relative).to eq(false)
-    end
-  end
-
-  describe '#time_display_relative=' do
-    it 'sets to default value when nil' do
-      pref = described_class.new(time_display_relative: nil)
-
-      expect(pref.read_attribute(:time_display_relative)).to eq(true)
-    end
-
-    it 'sets user values' do
-      pref = described_class.new(time_display_relative: false)
-
-      expect(pref.read_attribute(:time_display_relative)).to eq(false)
-    end
-  end
-
   describe '#project_shortcut_buttons' do
     it 'is set to true by default' do
       pref = described_class.new
@@ -290,40 +223,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(keyboard_shortcuts_enabled: false)
 
       expect(pref.keyboard_shortcuts_enabled).to eq(false)
-    end
-  end
-
-  describe '#render_whitespace_in_code' do
-    it 'is set to false by default' do
-      pref = described_class.new
-
-      expect(pref.render_whitespace_in_code).to eq(false)
-    end
-
-    it 'returns default value when assigning nil' do
-      pref = described_class.new(render_whitespace_in_code: nil)
-
-      expect(pref.render_whitespace_in_code).to eq(false)
-    end
-
-    it 'returns assigned value' do
-      pref = described_class.new(render_whitespace_in_code: true)
-
-      expect(pref.render_whitespace_in_code).to eq(true)
-    end
-  end
-
-  describe '#render_whitespace_in_code=' do
-    it 'sets to default value when nil' do
-      pref = described_class.new(render_whitespace_in_code: nil)
-
-      expect(pref.read_attribute(:render_whitespace_in_code)).to eq(false)
-    end
-
-    it 'sets user values' do
-      pref = described_class.new(render_whitespace_in_code: true)
-
-      expect(pref.read_attribute(:render_whitespace_in_code)).to eq(true)
     end
   end
 
@@ -386,6 +285,34 @@ RSpec.describe UserPreference, feature_category: :user_profile do
         user_preference.extensions_marketplace_enabled = value
 
         expect(user_preference.extensions_marketplace_opt_in_status).to be expected_opt_in_status
+      end
+    end
+  end
+
+  describe '#dpop_enabled' do
+    let(:pref) { described_class.new(args) }
+
+    context 'when no arguments are provided' do
+      let(:args) { {} }
+
+      it 'is set to false by default' do
+        expect(pref.dpop_enabled).to eq(false)
+      end
+    end
+
+    context 'when dpop_enabled is set to nil' do
+      let(:args) { { dpop_enabled: nil } }
+
+      it 'returns default value' do
+        expect(pref.dpop_enabled).to eq(false)
+      end
+    end
+
+    context 'when dpop_enabled is set to true' do
+      let(:args) { { dpop_enabled: true } }
+
+      it 'returns assigned value' do
+        expect(pref.dpop_enabled).to eq(true)
       end
     end
   end

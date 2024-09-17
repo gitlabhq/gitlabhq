@@ -1,0 +1,18 @@
+query reviewRequestsCount(
+  $state: MergeRequestState = opened
+  $reviewState: MergeRequestReviewState
+  $reviewStates: [MergeRequestReviewState!]
+  $mergedAfter: Time
+) {
+  currentUser {
+    id
+    mergeRequests: reviewRequestedMergeRequests(
+      state: $state
+      reviewState: $reviewState
+      reviewStates: $reviewStates
+      mergedAfter: $mergedAfter
+    ) {
+      count
+    }
+  }
+}

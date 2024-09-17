@@ -6,6 +6,7 @@ FactoryBot.define do
     namespace
     model { 'Note' }
     user_reference_column { 'author_id' }
+    alias_version { 1 }
     numeric_key { 1 }
   end
 end

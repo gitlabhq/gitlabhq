@@ -743,13 +743,6 @@ to limit the modes where tests can run, and skip them on any other modes.
 | `skip_if_multiple_databases_are_setup(:ci)` | Only on **single-db**   |
 | `skip_if_multiple_databases_not_setup(:ci)` | On **single-db-ci-connection** and **multiple databases** |
 
-## Testing for multiple databases, including `main_clusterwide`
-
-By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
-
-NOTE:
-This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by **group::tenant scale** to test out changes while building [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
-
 ## Locking writes on the tables that don't belong to the database schemas
 
 When the CI database is promoted and the two databases are fully split,

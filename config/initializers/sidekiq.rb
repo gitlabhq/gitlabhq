@@ -6,7 +6,9 @@ module SidekiqLogArguments
 end
 
 def load_cron_jobs!
-  Sidekiq::Cron::Job.load_from_hash! Gitlab::SidekiqConfig.cron_jobs
+  # Set source to schedule to clear any missing jobs
+  # See https://github.com/sidekiq-cron/sidekiq-cron/pull/431
+  Sidekiq::Cron::Job.load_from_hash! Gitlab::SidekiqConfig.cron_jobs, source: 'schedule'
 
   Gitlab.ee do
     Gitlab::Mirror.configure_cron_job!
@@ -38,7 +40,7 @@ strict_args_mode = Gitlab.dev_or_test_env? ? :warn : false
 Sidekiq.strict_args!(strict_args_mode)
 
 # Perform version check before configuring server with the custome scheduled job enqueue class
-unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.1.6')
+unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.2.4')
   raise 'New version of Sidekiq detected, please either update the version for this check ' \
         'and update Gitlab::SidekiqSharding::ScheduledEnq is compatible.'
 end

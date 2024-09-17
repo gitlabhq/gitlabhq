@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormSelect, GlFormText, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormSelect, GlSprintf, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -30,7 +30,6 @@ export default {
   components: {
     GlFormGroup,
     GlFormSelect,
-    GlFormText,
     GlSprintf,
     GlLink,
   },
@@ -76,7 +75,7 @@ export default {
       </template>
     </gl-form-select>
 
-    <gl-form-text v-if="isK8sOptionSelected">
+    <template v-if="isK8sOptionSelected" #description>
       <gl-sprintf :message="$options.i18n.k8sEducationText">
         <template #link="{ content }">
           <gl-link
@@ -87,6 +86,6 @@ export default {
           >
         </template>
       </gl-sprintf>
-    </gl-form-text>
+    </template>
   </gl-form-group>
 </template>

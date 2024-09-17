@@ -72,6 +72,8 @@ module QA
             # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
             chrome_options[:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
 
+            chrome_options[:args] << 'disable-search-engine-choice-screen'
+
             # Allows chrome to consider all actions as secure when no ssl is used
             Runtime::Scenario.attributes[:gitlab_address].tap do |address|
               next unless address.start_with?('http://')
@@ -219,12 +221,6 @@ module QA
           # Cabybara 3 does not normalize text by default, so older tests
           # fail because of unexpected line breaks and other white space
           config.default_normalize_ws = true
-        end
-
-        Chemlab.configure do |config|
-          config.browser = Capybara.current_session.driver.browser # reuse Capybara session
-          config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
-          config.hide_banner = true
         end
 
         @configured = true

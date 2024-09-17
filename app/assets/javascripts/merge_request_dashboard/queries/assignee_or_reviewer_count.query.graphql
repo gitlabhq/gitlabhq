@@ -1,0 +1,18 @@
+query assigneeOrReviewerCount(
+  $state: MergeRequestState = opened
+  $assignedReviewStates: [MergeRequestReviewState!]
+  $reviewerReviewStates: [MergeRequestReviewState!]
+  $mergedAfter: Time
+) {
+  currentUser {
+    id
+    mergeRequests: assigneeOrReviewerMergeRequests(
+      state: $state
+      assignedReviewStates: $assignedReviewStates
+      reviewerReviewStates: $reviewerReviewStates
+      mergedAfter: $mergedAfter
+    ) {
+      count
+    }
+  }
+}

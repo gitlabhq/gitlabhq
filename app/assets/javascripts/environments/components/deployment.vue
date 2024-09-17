@@ -116,6 +116,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     tags: {
       query: deploymentDetails,
       variables() {
@@ -152,28 +153,28 @@ export default {
     tags: __('Tags'),
   },
   headerClasses: [
-    'gl-display-flex',
-    'gl-align-items-flex-start',
-    'gl-md-align-items-center',
-    'gl-justify-content-space-between',
+    'gl-flex',
+    'gl-items-start',
+    'md:gl-items-center',
+    'gl-justify-between',
     'gl-pr-6',
   ],
   headerDetailsClasses: [
-    'gl-display-flex',
-    'gl-flex-direction-column',
-    'gl-md-flex-direction-row',
-    'gl-align-items-flex-start',
-    'gl-md-align-items-center',
-    'gl-font-sm',
+    'gl-flex',
+    'gl-flex-col',
+    'md:gl-flex-row',
+    'gl-items-start',
+    'md:gl-items-center',
+    'gl-text-sm',
     'gl-text-gray-700',
   ],
   deploymentStatusClasses: [
-    'gl-display-flex',
+    'gl-flex',
     'gl-gap-x-3',
     'gl-mr-0',
-    'gl-md-mr-5',
+    'md:gl-mr-5',
     'gl-mb-3',
-    'gl-md-mb-0',
+    'md:gl-mb-0',
   ],
 };
 </script>
@@ -193,11 +194,11 @@ export default {
           </gl-badge>
           <gl-badge v-if="latest" variant="info">{{ $options.i18n.latestBadge }}</gl-badge>
         </div>
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-5">
+        <div class="gl-flex gl-items-center gl-gap-x-5">
           <div
             v-if="iid"
             v-gl-tooltip
-            class="gl-display-flex"
+            class="gl-flex"
             :title="$options.i18n.deploymentId"
             :aria-label="$options.i18n.deploymentId"
           >
@@ -207,7 +208,7 @@ export default {
           <div
             v-if="shortSha"
             data-testid="deployment-commit-sha"
-            class="gl-font-monospace gl-display-flex gl-align-items-center"
+            class="gl-flex gl-items-center gl-font-monospace"
           >
             <gl-icon ref="deployment-commit-icon" name="commit" class="gl-mr-2" />
             <gl-link v-gl-tooltip :title="$options.i18n.commitSha" :href="commitPath">
@@ -223,7 +224,7 @@ export default {
           <time-ago-tooltip
             v-if="displayTimeAgo"
             :time="displayTimeAgo"
-            class="gl-display-flex"
+            class="gl-flex"
             data-testid="deployment-timestamp"
           >
             <template #default="{ timeAgo }">
@@ -240,61 +241,57 @@ export default {
     </div>
     <commit v-if="commit" :commit="commit" class="gl-mt-3" />
     <div class="gl-mt-3"><slot name="approval"></slot></div>
-    <div
-      class="gl-display-flex gl-md-align-items-center gl-mt-5 gl-flex-direction-column gl-md-flex-direction-row gl-pr-4 gl-md-pr-0"
-    >
-      <div v-if="user" class="gl-display-flex gl-flex-direction-column gl-md-max-w-15p">
+    <div class="gl-mt-5 gl-flex gl-flex-col gl-pr-4 md:gl-flex-row md:gl-items-center md:gl-pr-0">
+      <div v-if="user" class="gl-flex gl-flex-col md:gl-max-w-3/20">
         <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
-        <gl-link :href="userPath" class="gl-font-monospace gl-mt-3">
+        <gl-link :href="userPath" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="username" with-tooltip />
         </gl-link>
       </div>
-      <div
-        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
-      >
+      <div class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7">
         <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
           {{ $options.i18n.job }}
         </span>
-        <gl-link v-if="jobPath" :href="jobPath" class="gl-font-monospace gl-mt-3">
+        <gl-link v-if="jobPath" :href="jobPath" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="jobName" with-tooltip position="middle" />
         </gl-link>
-        <span v-else-if="jobName" class="gl-font-monospace gl-mt-3">
+        <span v-else-if="jobName" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="jobName" with-tooltip position="middle" />
         </span>
-        <gl-badge v-else class="gl-font-monospace gl-mt-3" variant="info">
+        <gl-badge v-else class="gl-mt-3 gl-font-monospace" variant="info">
           {{ $options.i18n.api }}
         </gl-badge>
       </div>
       <div
         v-if="ref && !isTag"
-        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+        class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7"
       >
         <span class="gl-text-gray-500">{{ $options.i18n.branch }}</span>
-        <gl-link :href="refPath" class="gl-font-monospace gl-mt-3">
+        <gl-link :href="refPath" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="refName" with-tooltip />
         </gl-link>
       </div>
       <div
         v-if="hasTags || $apollo.queries.tags.loading"
-        class="gl-display-flex gl-flex-direction-column gl-md-pl-7 gl-md-max-w-15p gl-mt-4 gl-md-mt-0"
+        class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7"
       >
         <span class="gl-text-gray-500">{{ $options.i18n.tags }}</span>
         <gl-loading-icon
           v-if="$apollo.queries.tags.loading"
-          class="gl-font-monospace gl-mt-3"
+          class="gl-mt-3 gl-font-monospace"
           size="sm"
           inline
         />
-        <div v-if="hasTags" class="gl-display-flex gl-flex-direction-row">
+        <div v-if="hasTags" class="gl-flex gl-flex-row">
           <gl-link
             v-for="(tag, ndx) in displayTags"
             :key="tag.name"
             :href="tag.path"
-            class="gl-font-monospace gl-mt-3 gl-mr-3"
+            class="gl-mr-3 gl-mt-3 gl-font-monospace"
           >
             {{ tag.name }}<span v-if="ndx + 1 < tags.length">, </span>
           </gl-link>
-          <div v-if="tags.length > 5" class="gl-font-monospace gl-mt-3 gl-mr-3">...</div>
+          <div v-if="tags.length > 5" class="gl-mr-3 gl-mt-3 gl-font-monospace">...</div>
         </div>
       </div>
     </div>

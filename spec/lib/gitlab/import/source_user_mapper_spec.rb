@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
+RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_category: :importers do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:import_type) { 'github' }
   let_it_be(:source_hostname) { 'github.com' }
@@ -19,6 +19,8 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
   let_it_be(:import_source_user_from_another_import) { create(:import_source_user) }
 
   describe '#find_or_create_source_user' do
+    let_it_be(:import_user) { create(:namespace_import_user, namespace: namespace).import_user }
+
     let(:source_name) { 'Pry Contributor' }
     let(:source_username) { 'a_pry_contributor' }
     let(:source_user_identifier) { '123456' }
@@ -59,7 +61,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
 
         expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
         expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
-        expect(new_placeholder_user.email).to match(/^aprycontributor_placeholder_user_\d+@#{Settings.gitlab.host}$/)
+        expect(new_placeholder_user.email).to match(/^#{import_type}_\h+_\d+@#{Settings.gitlab.host}$/)
       end
     end
 
@@ -75,6 +77,22 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
 
     context 'when the placeholder user limit has not been reached' do
       it_behaves_like 'creates an import_source_user and a unique placeholder user'
+
+      it 'caches the created object and does not query the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).once.and_call_original
+
+        2.times do
+          expect(described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_or_create_source_user(
+            source_name: source_name,
+            source_username: source_username,
+            source_user_identifier: source_user_identifier
+          ).source_user_identifier).to eq(source_user_identifier)
+        end
+      end
 
       context 'when retried and another source user is not created while waiting' do
         before do
@@ -112,6 +130,55 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
         it_behaves_like 'it does not create an import_source_user or placeholder user'
       end
     end
+
+    context 'when the placeholder user limit has been reached' do
+      before do
+        allow_next_instance_of(Import::PlaceholderUserLimit) do |limit|
+          allow(limit).to receive(:exceeded?).and_return(true)
+        end
+      end
+
+      it 'does not create any placeholder users and assigns the import user' do
+        expect { find_or_create_source_user }
+          .to change { Import::SourceUser.count }.by(1)
+          .and not_change { User.count }
+
+        new_import_source_user = Import::SourceUser.last
+
+        expect(new_import_source_user.placeholder_user).to eq(import_user)
+      end
+    end
+
+    context 'when ActiveRecord::RecordNotUnique exception is raised during the source user creation' do
+      before do
+        allow_next_instance_of(::Import::SourceUser) do |source_user|
+          allow(source_user).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+        end
+      end
+
+      it 'raises DuplicatedSourceUserError' do
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      end
+    end
+
+    context 'when ActiveRecord::RecordInvalid exception because the placeholder user email or username is taken' do
+      it 'rescue the exception and raises DuplicatedSourceUserError' do
+        create(:user, email: 'user@example.com')
+        user = build(:user, email: 'user@example.com').tap(&:valid?)
+        allow(User).to receive(:new).and_return(user)
+
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      end
+    end
+
+    context 'when ActiveRecord::RecordInvalid exception raises for another reason' do
+      it 'bubbles up the ActiveRecord::RecordInvalid exception' do
+        user = build(:user, email: nil)
+        allow(User).to receive(:new).and_return(user)
+
+        expect { find_or_create_source_user }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe '#find_source_user' do
@@ -133,6 +200,42 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
       let(:source_user_identifier) { '999999' }
 
       it { is_expected.to be_nil }
+
+      it 'does not cache the result and queries the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).twice.and_call_original
+
+        2.times do
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        end
+      end
+    end
+
+    context 'when called multiple times' do
+      it 'returns the same result' do
+        expect(find_source_user).to eq(
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        )
+      end
+
+      it 'caches the result and does not query the database multiple times' do
+        expect(::Import::SourceUser).to receive(:find_source_user).once.and_call_original
+
+        2.times do
+          described_class.new(
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          ).find_source_user(source_user_identifier)
+        end
+      end
     end
   end
 end

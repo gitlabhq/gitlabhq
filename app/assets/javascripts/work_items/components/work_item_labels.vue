@@ -33,10 +33,14 @@ export default {
     WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canAdminLabel', 'isGroup', 'issuesListPath', 'labelsManagePath'],
+  inject: ['canAdminLabel', 'issuesListPath', 'labelsManagePath'],
   props: {
     fullPath: {
       type: String,
+      required: true,
+    },
+    isGroup: {
+      type: Boolean,
       required: true,
     },
     workItemId: {
@@ -166,6 +170,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {
@@ -189,6 +194,7 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     searchLabels: {
       query() {
         return this.isGroup ? groupLabelsQuery : projectLabelsQuery;
@@ -250,7 +256,7 @@ export default {
             input: {
               workItemType: this.workItemType,
               fullPath: this.fullPath,
-              labels: this.visibleLabels.filter(({ id }) => selectedIds.includes(id)),
+              labels: this.labelsCache.filter(({ id }) => selectedIds.includes(id)),
             },
           },
         });
@@ -338,12 +344,12 @@ export default {
       <span
         :style="{ background: item.color }"
         :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
-        class="gl-inline-block gl-rounded gl-mr-1 gl-w-5 gl-h-3 gl-align-middle -gl-mt-1"
+        class="gl-rounded -gl-mt-1 gl-mr-1 gl-inline-block gl-h-3 gl-w-5 gl-align-middle"
       ></span>
       {{ item.text }}
     </template>
     <template #readonly>
-      <div class="gl-flex gl-gap-2 gl-flex-wrap gl-mt-1">
+      <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-2">
         <gl-label
           v-for="label in localLabels"
           :key="label.id"
@@ -369,7 +375,7 @@ export default {
         {{ createLabelText }}
       </gl-button>
       <gl-button
-        class="!gl-justify-start !gl-mt-2"
+        class="!gl-mt-2 !gl-justify-start"
         block
         category="tertiary"
         :href="labelsManagePath"
@@ -386,7 +392,7 @@ export default {
         :toggle-text="dropdownText"
       >
         <div
-          class="gl-text-sm gl-font-bold gl-leading-24 gl-border-b gl-pt-2 gl-pb-3 gl-pl-4 gl-mb-4"
+          class="gl-border-b gl-mb-4 gl-pb-3 gl-pl-4 gl-pt-2 gl-text-sm gl-font-bold gl-leading-24"
         >
           {{ __('Create label') }}
         </div>

@@ -68,7 +68,7 @@ export default {
     <local-storage-sync v-model="isCollapsed" :storage-key="`wiki:${page.path}:collapsed`" />
     <span
       ref="entry"
-      class="gl-relative gl-flex gl-items-center wiki-list gl-px-3 gl-rounded-base gl-cursor-pointer"
+      class="wiki-list gl-relative gl-flex gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
       data-testid="wiki-list"
       :class="{ active: page.path === currentPath }"
       @click="toggleCollapsed"
@@ -88,7 +88,7 @@ export default {
         category="tertiary"
         data-testid="wiki-list-create-child-button"
         :href="`${page.path}/{new_page_title}`"
-        class="wiki-list-create-child-button gl-ml-2 has-tooltip"
+        class="wiki-list-create-child-button has-tooltip gl-ml-2"
         :title="plusButtonTooltip"
         :aria-label="plusButtonTooltip"
         @click.stop
@@ -96,7 +96,7 @@ export default {
       <gl-icon
         v-if="page.children.length"
         :name="isCollapsed ? 'chevron-right' : 'chevron-down'"
-        class="gl-ml-2 gl-absolute gl-right-2 gl-text-secondary"
+        class="gl-absolute gl-right-2 gl-ml-2 gl-text-secondary"
       />
     </span>
     <ul v-if="page.children.length && !isCollapsed" dir="auto" class="!gl-pl-5">

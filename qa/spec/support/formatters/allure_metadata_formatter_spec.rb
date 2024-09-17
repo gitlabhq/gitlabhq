@@ -68,7 +68,7 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
     end
 
     before do
-      stub_env('QA_RUN_TYPE', 'package-and-test')
+      stub_env('QA_RUN_TYPE', 'test-on-omnibus')
       stub_env('QA_INFLUXDB_URL', 'url')
       stub_env('QA_INFLUXDB_TOKEN', 'token')
 

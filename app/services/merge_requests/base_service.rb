@@ -81,6 +81,7 @@ module MergeRequests
       notification_service.async.changed_reviewer_of_merge_request(merge_request, current_user, old_reviewers)
       todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
       invalidate_cache_counts(merge_request, users: affected_reviewers.compact)
+      invalidate_cache_counts(merge_request, users: merge_request.assignees)
 
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)

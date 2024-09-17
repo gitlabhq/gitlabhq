@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-## Error: "HTTP Basic: Access denied. The provided password or token ..."
+## Error: `HTTP Basic: Access denied. The provided password or token ...`
 
 When making a request, you can receive the following error:
 
@@ -124,7 +124,7 @@ If you forget to save your recovery codes when enabling 2FA, and you added an SS
    ```
 
 1. Go to the GitLab sign-in page and enter your username or email, and password. When prompted for a
-  two-factor code, enter one of the recovery codes obtained from the command-line output.
+   two-factor code, enter one of the recovery codes obtained from the command-line output.
 
 After signing in, immediately set up 2FA with a new device.
 

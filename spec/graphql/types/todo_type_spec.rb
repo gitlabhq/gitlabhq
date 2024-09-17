@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Todo'] do
+RSpec.describe GitlabSchema.types['Todo'], feature_category: :team_planning do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
 
@@ -16,11 +16,14 @@ RSpec.describe GitlabSchema.types['Todo'] do
       :author,
       :action,
       :target,
+      :target_entity,
       :target_type,
       :body,
       :state,
       :created_at,
-      :note
+      :note,
+      :member_access_type,
+      :target_url
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

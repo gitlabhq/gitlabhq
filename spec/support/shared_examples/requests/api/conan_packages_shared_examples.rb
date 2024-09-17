@@ -788,7 +788,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
 end
 
 RSpec.shared_examples 'creates build_info when there is a job' do
-  context 'with job token', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/294047' do
+  context 'with job token' do
     let(:jwt) { build_jwt_from_job(job) }
 
     it 'creates a build_info record' do

@@ -8,11 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [experiment](../policy/experiment-beta-support.md#experiment).
 > - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158786) in GitLab 17.3 to the `observability_features` [feature flag](../administration/feature_flags.md), disabled by default. The previous feature flag (`observability_metrics`) was removed.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/100) for self-managed in GitLab 17.3.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -37,22 +38,22 @@ Prerequisites:
 
 You must have at least the Maintainer role for the project.
 
-1. Create an access token and enable metrics:
+1. Create an access token:
    1. On the left sidebar, select **Search or go to** and find your project.
    1. Select **Settings > Access tokens**.
-   1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`. Be sure to save the access token value for later.
-   1. Select **Monitor > Metrics**, and then select **Enable**.
+   1. Create an access token with the `api` scope and **Developer** role or greater.
+      Save the access token value for later.
 1. To configure your application to send GitLab metrics, set the following environment variables:
 
    ```shell
    OTEL_EXPORTER = "otlphttp"
-   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/metrics"
-   OTEL_EXPORTER_OTLP_METRICS_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
+   OTEL_EXPORTER_OTLP_ENDPOINT = "https://gitlab.example.com/api/v4/projects/<gitlab-project-id>/observability/"
+   OTEL_EXPORTER_OTLP_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
    ```
 
    Use the following values:
 
-   - `namespace-id` - The top-level group ID that contains the project
+   - `gitlab.example.com` - The hostname for your self-managed instance, or `gitlab.com`
    - `gitlab-project-id` - The project ID
    - `gitlab-access-token` - The access token you created
 
@@ -102,3 +103,23 @@ The following table shows what type of aggregation is used for each search perio
 ### Data retention
 
 GitLab has a retention limit of 30 days for all ingested metrics.
+
+### Create an issue for a metric
+
+You can create an issue to track any action taken to resolve or investigate a metric. To create an issue for a metric:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Metrics**.
+1. From the list of metrics, select a metric.
+1. Select **Create issue**.
+
+The issue is created in the selected project and pre-filled with information from the metric.
+You can edit the issue title and description.
+
+### View issues related to a metric
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Metrics**.
+1. From the list of metrics, select a metric.
+1. Scroll to **Related issues**.
+1. Optional. To view the issue details, select an issue.

@@ -109,7 +109,7 @@ export default {
     @close="$emit('close')"
   >
     <template #title>
-      <h2 class="drawer-heading gl-font-base gl-mt-0 gl-mb-0 gl-w-28">
+      <h2 class="drawer-heading gl-mb-0 gl-mt-0 gl-w-28 gl-text-base">
         <gl-icon
           :size="12"
           :name="getSeverity(activeElement).name"
@@ -131,7 +131,7 @@ export default {
           >
             <gl-icon
               :size="14"
-              class="gl-relative findings-drawer-nav-button"
+              class="findings-drawer-nav-button gl-relative"
               name="chevron-lg-left"
             />
           </gl-button>
@@ -141,7 +141,7 @@ export default {
               data-testid="findings-drawer-next-button"
               :title="$options.i18n.nextButton"
               :aria-label="$options.i18n.nextButton"
-              class="gl-relative findings-drawer-nav-button"
+              class="findings-drawer-nav-button gl-relative"
               :size="14"
               name="chevron-lg-right"
             />
@@ -151,7 +151,7 @@ export default {
     </template>
 
     <template #default>
-      <ul class="gl-list-none gl-border-b-initial gl-mb-0 gl-pb-0!">
+      <ul class="gl-mb-0 gl-list-none !gl-pb-0 gl-border-b-initial">
         <drawer-item
           v-if="activeElement.title"
           :description="$options.i18n.name"

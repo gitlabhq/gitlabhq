@@ -12,8 +12,7 @@ RSpec.describe 'gitlab:shell rake tasks', :silence_stdout do
   describe 'install task' do
     it 'installs and compiles gitlab-shell' do
       expect_any_instance_of(Gitlab::TaskHelpers).to receive(:checkout_or_clone_version)
-      allow(Kernel).to receive(:system).with('bin/install').and_return(true)
-      allow(Kernel).to receive(:system).with('make', 'build').and_return(true)
+      allow(Kernel).to receive(:system).with('make', 'make_necessary_dirs', 'build').and_return(true)
 
       run_rake_task('gitlab:shell:install')
     end

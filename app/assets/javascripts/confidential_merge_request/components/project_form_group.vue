@@ -116,7 +116,7 @@ export default {
         :selected-project="selectedProject"
         @select="selectProject"
       />
-      <p class="gl-text-gray-600 gl-mt-1 gl-mb-0">
+      <p class="gl-mb-0 gl-mt-1 gl-text-gray-600">
         <template v-if="projects.length">
           {{ $options.i18n.privateForkSelected }}
         </template>
@@ -130,7 +130,7 @@ export default {
         </template>
         <gl-link
           :href="helpPagePath"
-          class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
+          class="gl-inline-block gl-w-auto gl-bg-transparent gl-p-0"
           target="_blank"
         >
           <span class="sr-only">{{ $options.i18n.readMore }}</span>

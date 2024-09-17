@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.InternalLinkCase
+# Error: gitlab_docs.InternalLinkCase
 #
 # Checks that anchor fragments on internal links are in lower-case.
 #

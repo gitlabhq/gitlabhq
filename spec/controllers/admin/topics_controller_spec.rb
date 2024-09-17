@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::TopicsController do
-  let_it_be(:topic) { create(:topic, name: 'topic') }
+RSpec.describe Admin::TopicsController, :with_current_organization do
+  let_it_be(:topic) { create(:topic, name: 'topic', organization: current_organization) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 
@@ -137,7 +137,7 @@ RSpec.describe Admin::TopicsController do
     end
 
     it 'shows error message if topic not unique (case insensitive)' do
-      other_topic = create(:topic, name: 'other-topic')
+      other_topic = create(:topic, name: 'other-topic', organization: current_organization)
 
       put :update, params: { id: topic.id, projects_topic: { name: other_topic.name.upcase } }
 
@@ -181,8 +181,8 @@ RSpec.describe Admin::TopicsController do
   end
 
   describe 'POST #merge' do
-    let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
-    let_it_be(:project) { create(:project, topic_list: source_topic.name) }
+    let_it_be(:source_topic) { create(:topic, name: 'source_topic', organization: current_organization) }
+    let_it_be(:project) { create(:project, topic_list: source_topic.name, organization: current_organization) }
 
     it 'merges source topic into target topic' do
       post :merge, params: { source_topic_id: source_topic.id, target_topic_id: topic.id }

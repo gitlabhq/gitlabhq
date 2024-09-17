@@ -36,7 +36,7 @@ RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
 
     # assert default sorting order
     within '.milestones' do
-      expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(%w[a c b])
+      expect(page.all('[data-testid="milestone-link"]').map(&:text)).to eq(%w[a c b])
     end
 
     # assert milestones listed for given sort order
@@ -51,7 +51,7 @@ RSpec.describe 'Milestones sorting', :js, feature_category: :team_planning do
       expect(page).to have_button(sort_by)
 
       within '.milestones' do
-        expect(page.all('ul.content-list > li strong > a').map(&:text)).to eq(expected_milestones)
+        expect(page.all('[data-testid="milestone-link"]').map(&:text)).to eq(expected_milestones)
       end
 
       selected_sort_order = sort_by

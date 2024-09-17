@@ -345,7 +345,7 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-To restrict access to the agent to only jobs run on [protected branches](../../project/protected_branches.md):
+To restrict access to the agent to only jobs run on [protected branches](../../project/repository/branches/protected.md):
 
 - Add `protected_branches_only: true` to `ci_access.projects` or `ci_access.groups`.
   For example:

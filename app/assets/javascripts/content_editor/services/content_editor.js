@@ -1,3 +1,5 @@
+import { DocAttrStep } from '@tiptap/pm/transform';
+
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
   constructor({
@@ -8,6 +10,7 @@ export class ContentEditor {
     eventHub,
     drawioEnabled,
     codeSuggestionsConfig,
+    autocompleteHelper,
   }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
@@ -15,6 +18,7 @@ export class ContentEditor {
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
     this._pristineDoc = null;
+    this._autocompleteHelper = autocompleteHelper;
 
     this.codeSuggestionsConfig = codeSuggestionsConfig;
     this.drawioEnabled = drawioEnabled;
@@ -90,16 +94,23 @@ export class ContentEditor {
     });
   }
 
+  updateAutocompleteDataSources(dataSources) {
+    this._autocompleteHelper.updateDataSources(dataSources);
+  }
+
   async setSerializedContent(serializedContent) {
     const { _tiptapEditor: editor } = this;
 
     const { document } = await this.deserialize(serializedContent);
-    const { doc, tr } = editor.state;
+    const { doc } = editor.state;
 
     if (document) {
       this._pristineDoc = document;
-      tr.replaceWith(0, doc.content.size, document).setMeta('preventUpdate', true);
-      editor.view.dispatch(tr);
+      let tr = editor.state.tr.replaceWith(0, doc.content.size, document);
+      for (const [key, value] of Object.entries(document.attrs)) {
+        tr = tr.step(new DocAttrStep(key, value));
+      }
+      editor.view.dispatch(tr.setMeta('preventUpdate', true));
     }
   }
 

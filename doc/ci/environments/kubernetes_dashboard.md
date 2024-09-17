@@ -16,7 +16,7 @@ DETAILS:
 > - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
 
-Use the Dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
+Use the dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
@@ -35,7 +35,7 @@ add one when you create an environment.
 
 Prerequisites:
 
-- A GitLab agent for Kubernetes is [configured](../../user/clusters/agent/install/index.md) and shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
+- A GitLab agent for Kubernetes is [installed](../../user/clusters/agent/install/index.md) and [`user_access`](../../user/clusters/agent/user_access.md) is configured for the environment's project or its parent group.
 
 ::Tabs
 
@@ -69,7 +69,7 @@ Prerequisites:
 > - Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427762) in GitLab 17.1. Feature flag `k8s_watch_api` removed.
 
-View a dashboard to see the status of any connected clusters.
+View a dashboard to see the status of connected clusters.
 If the `k8s_watch_api` feature flag is enabled, the status of your
 Kubernetes resources and Flux reconciliation updates in real time.
 
@@ -79,6 +79,8 @@ To view a configured dashboard:
 1. Select **Operate > Environments**.
 1. Select the environment associated with the agent for Kubernetes.
 1. Select the **Kubernetes overview** tab.
+
+A list of pods is displayed. Select a pod to view its details.
 
 ### Flux sync status
 
@@ -103,58 +105,39 @@ A dashboard displays one of the following status badges:
 | **Unknown** | The sync status of the deployment couldn't be retrieved. |
 | **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
 
-## Trigger Flux reconciliation
+### Trigger Flux reconciliation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434248) in GitLab 17.3.
 
-You can trigger the reconciliation of a Flux recourse (`Kustomization` or `HelmRelease`) manually from the Kubernetes dashboard.
+You can manually reconcile your deployment with its Flux resources.
 
-To trigger reconciliation:
+To trigger a reconciliation:
 
-1. From a dashboard, select the sync status badge of a Flux deployment.
-1. Select  **Actions > Trigger reconciliation** (**{retry}**).
+1. On a dashboard, select the sync status badge of a Flux deployment.
+1. Select **Actions** (**{ellipsis_v}**) **> Trigger reconciliation** (**{retry}**).
 
-## Delete a pod
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.
-
-You can delete a pod from the Kubernetes dashboard to restart a failed pod.
-
-To delete a pod:
-
-::Tabs
-
-:::TabTitle From the pods list
-
-- Select **Actions** (**{ellipsis_v}**), then **Delete pod**.
-
-:::TabTitle From the pods details view
-
-1. Select a pod from the pod list to view its details.
-1. Select **Actions > Delete pod** (**{remove}**).
-
-::EndTabs
-
-## View pod logs
+### View pod logs
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.
 
 View pod logs when you want to quickly understand and troubleshoot issues across your environments from a configured dashboard. You can view logs for each container in a pod.
 
-To view your pod logs:
-
-::Tabs
-
-:::TabTitle From the pods list
-
 - Select **View logs**, then select the container you want to view logs for.
 
-:::TabTitle From the pods details view
+You can also view pod logs from the pod details.
 
-1. Select a pod from the pod list to view its details.
-1. Select the container you want to view logs for, then select **View logs**.
+### Delete a pod
 
-::EndTabs
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.
+
+To restart a failed pod, delete it from the Kubernetes dashboard.
+
+To delete a pod:
+
+1. On the **Kubernetes overview** tab, find the pod you want to delete.
+1. Select **Actions** (**{ellipsis_v}**) **> Delete pod** (**{remove}**).
+
+You can also delete a pod from the pod details.
 
 ## Detailed dashboard
 
@@ -213,11 +196,9 @@ To view a detailed dashboard:
    | Jobs | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/jobs` |
    | CronJobs | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/cronJobs` |
 
-The detailed dashboard is displayed.
-
 ## Troubleshooting
 
-When working with the Dashboard for Kubernetes, you might encounter the following issues.
+When working with the dashboard for Kubernetes, you might encounter the following issues.
 
 ### User cannot list resource in API group
 

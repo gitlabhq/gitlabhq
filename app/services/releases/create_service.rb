@@ -51,7 +51,7 @@ module Releases
       release = build_release(tag)
 
       if publish_catalog?(release)
-        response = Ci::Catalog::Resources::ReleaseService.new(release).execute
+        response = Ci::Catalog::Resources::ReleaseService.new(release, current_user, nil).execute
 
         return error(response.message, 422) if response.error?
       end

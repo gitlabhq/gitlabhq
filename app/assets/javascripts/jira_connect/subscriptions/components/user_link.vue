@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-font-base">
+  <div class="gl-text-base">
     <gl-sprintf :message="signedInText">
       <template #user_link>
         <gl-link data-testid="gitlab-user-link" :href="gitlabUserLink" target="_blank">

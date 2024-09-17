@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ClusterAgent'] do
+RSpec.describe GitlabSchema.types['ClusterAgent'], feature_category: :deployment_management do
   let(:fields) do
     %i[created_at created_by_user id name project updated_at tokens web_path connections activity_events
       user_access_authorizations]

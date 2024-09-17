@@ -1,8 +1,18 @@
 <script>
-import { GlCard, GlIcon, GlLink, GlPopover, GlToggle, GlAlert } from '@gitlab/ui';
+import {
+  GlCard,
+  GlIcon,
+  GlLink,
+  GlPopover,
+  GlToggle,
+  GlAlert,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PreReceiveSecretDetectionFeatureCard',
@@ -14,12 +24,18 @@ export default {
     GlToggle,
     GlAlert,
     BetaBadge,
+    GlButton,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'preReceiveSecretDetectionAvailable',
     'preReceiveSecretDetectionEnabled',
     'userIsProjectAdmin',
     'projectFullPath',
+    'secretDetectionConfigurationPath',
   ],
   props: {
     feature: {
@@ -52,12 +68,12 @@ export default {
 
       return {
         'gl-ml-auto': true,
-        'gl-flex-shrink-0': true,
+        'gl-shrink-0': true,
         'gl-text-gray-500': !enabled,
         'gl-text-green-500': enabled,
         'gl-w-full': true,
-        'gl-justify-content-space-between': true,
-        'gl-display-flex': true,
+        'gl-justify-between': true,
+        'gl-flex': true,
         'gl-mb-4': true,
       };
     },
@@ -75,6 +91,9 @@ export default {
         return this.$options.i18n.accessLevelTooltipDescription;
       }
       return '';
+    },
+    showSettingsButton() {
+      return this.glFeatures.secretDetectionProjectLevelExclusions;
     },
   },
   methods: {
@@ -129,14 +148,15 @@ export default {
     ),
     toastMessageEnabled: s__('SecretDetection|Secret push protection is enabled'),
     toastMessageDisabled: s__('SecretDetection|Secret push protection is disabled'),
+    settingsButtonTooltip: s__('SecretDetection|Configure Secret Detection'),
   },
 };
 </script>
 
 <template>
   <gl-card :class="cardClasses">
-    <div class="gl-display-flex gl-align-items-baseline gl-flex-direction-column-reverse">
-      <h3 class="gl-font-lg gl-m-0 gl-mr-3">
+    <div class="gl-flex gl-flex-col-reverse gl-items-baseline">
+      <h3 class="gl-m-0 gl-mr-3 gl-text-lg">
         {{ feature.name }}
         <gl-icon v-if="showLock" id="lockIcon" name="lock" class="gl-mb-1" />
       </h3>
@@ -184,14 +204,23 @@ export default {
         @dismiss="isAlertDismissed = true"
         >{{ errorMessage }}</gl-alert
       >
-      <gl-toggle
-        class="gl-mt-5"
-        :disabled="isToggleDisabled"
-        :value="toggleValue"
-        :label="s__('SecurityConfiguration|Toggle secret push protection')"
-        label-position="hidden"
-        @change="togglePreReceiveSecretDetection"
-      />
+      <div class="gl-mt-5 gl-flex gl-justify-between">
+        <gl-toggle
+          class="gl-mt-2"
+          :disabled="isToggleDisabled"
+          :value="toggleValue"
+          :label="s__('SecurityConfiguration|Toggle secret push protection')"
+          label-position="hidden"
+          @change="togglePreReceiveSecretDetection"
+        />
+        <gl-button
+          v-if="showSettingsButton"
+          v-gl-tooltip.left.viewport="$options.i18n.settingsButtonTooltip"
+          icon="settings"
+          category="secondary"
+          :href="secretDetectionConfigurationPath"
+        />
+      </div>
     </template>
   </gl-card>
 </template>

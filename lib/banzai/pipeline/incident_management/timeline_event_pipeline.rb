@@ -12,6 +12,7 @@ module Banzai
           @filters ||= FilterArray[
             *super,
             Filter::SanitizationFilter,
+            Filter::SanitizeLinkFilter,
             *Banzai::Pipeline::GfmPipeline.reference_filters,
             Filter::EmojiFilter,
             Filter::ExternalLinkFilter,

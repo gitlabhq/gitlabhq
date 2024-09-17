@@ -165,9 +165,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_identity_exists
       end
     else
-      Namespace.with_disabled_organization_validation do
-        sign_in_user_flow(auth_module::User)
-      end
+      sign_in_user_flow(auth_module::User)
     end
   end
 
@@ -198,7 +196,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def build_auth_user(auth_user_class)
     strong_memoize_with(:build_auth_user, auth_user_class) do
-      auth_user_class.new(oauth)
+      auth_user_class.new(oauth, { organization_id: Current.organization_id })
     end
   end
 

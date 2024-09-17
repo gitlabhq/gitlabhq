@@ -8,14 +8,16 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   describe '#work_items_show_data' do
     describe 'with project context' do
       let_it_be(:project) { build(:project) }
+      let_it_be(:current_user) { build(:user, owner_of: project) }
 
       before do
         allow(helper).to receive(:can?).and_return(true)
       end
 
       it 'returns the expected data properties' do
-        expect(helper.work_items_show_data(project)).to include(
+        expect(helper.work_items_show_data(project, current_user)).to include(
           {
+            autocomplete_award_emojis_path: autocomplete_award_emojis_path,
             can_admin_label: 'true',
             full_path: project.full_path,
             group_path: nil,
@@ -26,18 +28,22 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             new_comment_template_paths:
               [{ text: "Your comment templates", href: profile_comment_templates_path }].to_json,
             report_abuse_path: add_category_abuse_reports_path,
-            default_branch: project.default_branch_or_main
+            default_branch: project.default_branch_or_main,
+            initial_sort: current_user&.user_preference&.issues_sort,
+            is_signed_in: current_user.present?.to_s
           }
         )
       end
 
       describe 'when project has parent group' do
         let_it_be(:group_project) { build(:project, group: build(:group)) }
+        let_it_be(:current_user) { build(:user, owner_of: group_project) }
 
         it 'returns the expected data properties' do
-          expect(helper.work_items_show_data(group_project)).to include(
+          expect(helper.work_items_show_data(group_project, current_user)).to include(
             {
-              group_path: group_project.group.full_path
+              group_path: group_project.group.full_path,
+              show_new_issue_link: 'true'
             }
           )
         end
@@ -46,9 +52,10 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
 
     context 'with group context' do
       let_it_be(:group) { build(:group) }
+      let_it_be(:current_user) { build(:user, owner_of: group) }
 
       it 'returns the expected group_path' do
-        expect(helper.work_items_show_data(group)).to include(
+        expect(helper.work_items_show_data(group, current_user)).to include(
           {
             issues_list_path: issues_group_path(group),
             labels_manage_path: group_labels_path(group),
@@ -108,6 +115,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           is_signed_in: current_user.present?.to_s,
           show_new_issue_link: 'true',
           issues_list_path: issues_group_path(group),
+          report_abuse_path: add_category_abuse_reports_path,
           labels_manage_path: group_labels_path(group),
           can_admin_label: 'true'
         }

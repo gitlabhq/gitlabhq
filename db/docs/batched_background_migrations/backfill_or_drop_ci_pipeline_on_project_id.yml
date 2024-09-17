@@ -5,5 +5,4 @@ feature_category: continuous_integration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155137
 milestone: '17.1'
 queued_migration_version: 20240531202753
-finalize_after: '2024-06-30'
 finalized_by: 20240704155541

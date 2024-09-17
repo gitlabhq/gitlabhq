@@ -1,0 +1,18 @@
+---
+description: Clicks on 'Print as PDF' in Wiki page dropdown
+internal_events: true
+action: click_print_as_pdf_in_wiki_page
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161978
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

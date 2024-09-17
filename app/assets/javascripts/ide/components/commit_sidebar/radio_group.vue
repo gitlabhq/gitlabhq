@@ -89,7 +89,7 @@ export default {
       v-if="commitAction === value && showInput"
       :label="placeholderBranchName"
       :label-sr-only="true"
-      class="gl-ml-6 gl-mb-0"
+      class="gl-mb-0 gl-ml-6"
     >
       <gl-form-input
         :placeholder="placeholderBranchName"

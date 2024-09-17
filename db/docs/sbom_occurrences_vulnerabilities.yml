@@ -5,7 +5,7 @@ classes:
 feature_categories:
 - dependency_management
 milestone: '16.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 desired_sharding_key:
   project_id:
     references: projects

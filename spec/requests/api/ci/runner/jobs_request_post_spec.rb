@@ -123,7 +123,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       context 'when valid token is provided' do
-        context 'when Runner is not active' do
+        context 'when runner is paused' do
           let(:runner) { create(:ci_runner, :inactive) }
           let(:update_value) { runner.ensure_runner_queue_value }
 

@@ -140,6 +140,16 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
         end
       end
     end
+
+    context 'when importer_user_mapping is enabled' do
+      before do
+        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
+      end
+
+      it 'does not transform the data' do
+        expect(subject.transform(context, { 'id' => 1 })).to eq({ 'id' => 1 })
+      end
+    end
   end
 
   context 'with a project' do

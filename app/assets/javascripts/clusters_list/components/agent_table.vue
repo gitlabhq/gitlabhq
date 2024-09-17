@@ -32,6 +32,9 @@ export default {
     connectActionText: s__('ClusterAgents|Connect to %{agentName}'),
     deleteActionText: s__('ClusterAgents|Delete agent'),
     actions: __('Actions'),
+    receptiveAgentTooltip: s__(
+      'ClusterAgents|GitLab will establish the connection to this agent. A URL configuration is required.',
+    ),
   },
   components: {
     GlLink,
@@ -87,7 +90,7 @@ export default {
   },
   computed: {
     fields() {
-      const tdClass = 'gl-pt-3! gl-pb-4! !gl-align-middle';
+      const tdClass = '!gl-pt-3 !gl-pb-4 !gl-align-middle';
       return [
         {
           key: 'name',
@@ -253,20 +256,30 @@ export default {
       :per-page="limit"
       :current-page="currentPage"
       stacked="md"
-      class="gl-mb-4!"
+      class="!gl-mb-4"
       data-testid="cluster-agent-list-table"
     >
       <template #cell(name)="{ item }">
-        <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{ item.name }}</gl-link
-        ><gl-badge v-if="item.isShared" class="gl-ml-3">{{
-          $options.i18n.sharedBadgeText
-        }}</gl-badge>
+        <div class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 md:gl-justify-start">
+          <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{
+            item.name
+          }}</gl-link
+          ><gl-badge v-if="item.isShared">{{ $options.i18n.sharedBadgeText }}</gl-badge>
+          <gl-badge
+            v-if="item.isReceptive"
+            v-gl-tooltip
+            :title="$options.i18n.receptiveAgentTooltip"
+            :aria-label="$options.i18n.receptiveAgentTooltip"
+            data-testid="cluster-agent-is-receptive"
+            >{{ $options.i18n.receptiveBadgeText }}</gl-badge
+          >
+        </div>
       </template>
 
       <template #cell(status)="{ item }">
         <span
           :id="getStatusCellId(item)"
-          class="gl-md-pr-5"
+          class="md:gl-pr-5"
           data-testid="cluster-agent-connection-status"
         >
           <span :class="$options.AGENT_STATUSES[item.status].class" class="gl-mr-3">
@@ -295,7 +308,7 @@ export default {
             >
           </p>
           <p class="gl-mb-0">
-            <gl-link :href="$options.troubleshootingLink" target="_blank" class="gl-font-sm">
+            <gl-link :href="$options.troubleshootingLink" target="_blank" class="gl-text-sm">
               {{ $options.i18n.troubleshootingText }}</gl-link
             >
           </p>
@@ -316,7 +329,7 @@ export default {
           <gl-icon
             v-if="isVersionMismatch(item) || isVersionOutdated(item)"
             name="warning"
-            class="gl-text-orange-500 gl-ml-2"
+            class="gl-ml-2 gl-text-orange-500"
           />
         </span>
 
@@ -335,7 +348,7 @@ export default {
               <gl-sprintf :message="$options.i18n.versionOutdatedText">
                 <template #version>{{ kasCheckVersion }}</template>
               </gl-sprintf>
-              <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
+              <gl-link :href="$options.versionUpdateLink" class="gl-text-sm">
                 {{ $options.i18n.viewDocsText }}</gl-link
               >
             </p>
@@ -348,7 +361,7 @@ export default {
             <gl-sprintf :message="$options.i18n.versionOutdatedText">
               <template #version>{{ kasCheckVersion }}</template>
             </gl-sprintf>
-            <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
+            <gl-link :href="$options.versionUpdateLink" class="gl-text-sm">
               {{ $options.i18n.viewDocsText }}</gl-link
             >
           </p>

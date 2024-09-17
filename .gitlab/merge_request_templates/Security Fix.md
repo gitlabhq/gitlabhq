@@ -22,7 +22,7 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
     - Please see the security [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
-    - Trigger the [`e2e:package-and-test` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
+    - Trigger the [`e2e:test-on-omnibus` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label
@@ -42,5 +42,5 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 [Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#code-reviews-and-approvals)
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
-[`e2e:package-and-test` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-test-job
+[`e2e:test-on-omnibus` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-test-on-omnibus-job
 [Release Manager]: https://about.gitlab.com/community/release-managers/

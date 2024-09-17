@@ -5,7 +5,7 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
   class="file-title-flex-parent js-file-title"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-w-full"
+    class="gl-flex gl-items-center gl-w-full"
   >
     <gl-form-input-stub
       class="form-control js-snippet-file-name"

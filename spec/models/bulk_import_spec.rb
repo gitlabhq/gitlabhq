@@ -210,8 +210,29 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
     let_it_be(:root_node) { create(:bulk_import_entity) }
 
-    it 'returns the topmost group note of the import entity tree' do
+    it 'returns the topmost node of the first tree of the import entity structure' do
       expect(import.parent_group_entity).to eq(root_node)
+    end
+  end
+
+  describe '#destination_group_roots' do
+    subject(:import) do
+      create(:bulk_import, :started, entities: [
+        root_project_entity,
+        root_group_entity,
+        create(:bulk_import_entity, parent: root_group_entity)
+      ])
+    end
+
+    let_it_be(:project_namespace) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: project_namespace) }
+    let_it_be(:root_project_entity) { create(:bulk_import_entity, :project_entity, project: project) }
+
+    let_it_be(:top_level_group) { create(:group) }
+    let_it_be(:root_group_entity) { create(:bulk_import_entity, :group_entity, group: top_level_group) }
+
+    it 'returns the topmost group nodes of the import entity tree' do
+      expect(import.destination_group_roots).to match_array([project_namespace, top_level_group])
     end
   end
 
@@ -228,6 +249,29 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
         expect(import.source_url).to be_nil
       end
+    end
+  end
+
+  describe '#namespaces_with_unassigned_placeholders' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:entity) do
+      create(:bulk_import_entity, :group_entity, bulk_import: finished_bulk_import, group: group)
+    end
+
+    before do
+      create_list(:import_source_user, 5, :completed, namespace: group)
+    end
+
+    context 'when all placeholders have been assigned' do
+      it { expect(finished_bulk_import.namespaces_with_unassigned_placeholders).to be_empty }
+    end
+
+    context 'when some placeholders have not been assigned' do
+      before do
+        create(:import_source_user, :pending_reassignment, namespace: group)
+      end
+
+      it { expect(finished_bulk_import.namespaces_with_unassigned_placeholders).to include(group) }
     end
   end
 end

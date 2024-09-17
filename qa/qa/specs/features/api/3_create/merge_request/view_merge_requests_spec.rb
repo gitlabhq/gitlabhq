@@ -6,10 +6,10 @@ module QA
   RSpec.describe 'Create' do
     describe 'Merge Requests', product_group: :code_review,
       quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/426722',
-        type: :stale
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/483173',
+        type: :investigating
       } do
-      let(:address) { Runtime::Address.new(:gitlab, path) }
+      let(:address) { Runtime::Address.new(:gitlab, '') }
 
       context 'with a malformed URL' do
         let(:path) { %(/-/merge_requests?sort=created_date&state=<th:t=\"%24{dfb}%23foreach) }
@@ -22,7 +22,7 @@ module QA
           # have to construct a malformed URL by building the request ourselves.
           uri = URI.parse(address.address)
 
-          http = Net::HTTP.new(uri.host, uri.port)
+          http = Net::HTTP.new(uri.host + uri.path, uri.port)
           http.use_ssl = (uri.scheme == 'https')
 
           request = Net::HTTP::Get.new(path)

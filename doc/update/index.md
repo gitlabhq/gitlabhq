@@ -62,7 +62,7 @@ for production. However, instructions on how to upgrade such an environment are 
 
 GitLab provides official Docker images for both Community and Enterprise
 editions, and they are based on the Omnibus package. See how to
-[install GitLab using Docker](../install/docker.md).
+[install GitLab using Docker](../install/docker/index.md).
 
 :::TabTitle Self-compiled (source)
 
@@ -214,15 +214,17 @@ To determine your upgrade path:
      - [`15.4.6`](versions/gitlab_15_changes.md#1540).
      - [`15.11.13`](versions/gitlab_15_changes.md#15110). The latest GitLab 15.11 release.
    - GitLab 16 includes the following required upgrade stops:
-     - [`16.0.8`](versions/gitlab_16_changes.md#1600). Instances with
+     - [`16.0.9`](versions/gitlab_16_changes.md#1600). Instances with
        [lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change) or
        [large pipeline variables history](versions/gitlab_16_changes.md#1610).
-     - [`16.1.6`](versions/gitlab_16_changes.md#1610). Instances with NPM packages in their package registry.
-     - [`16.2.9`](versions/gitlab_16_changes.md#1620). Instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630).
-     - [`16.3.7`](versions/gitlab_16_changes.md#1630).
+     - [`16.1.7`](versions/gitlab_16_changes.md#1610). Instances with NPM packages in their package registry.
+     - [`16.2.10`](versions/gitlab_16_changes.md#1620). Instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630).
+     - [`16.3.8`](versions/gitlab_16_changes.md#1630).
      - [`16.7.z`](versions/gitlab_16_changes.md#1670). The latest GitLab 16.7 release.
      - [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases). The latest GitLab 16.11 release.
-   - GitLab 17: [`17.y.z`](versions/gitlab_17_changes.md). The latest GitLab 17 release.
+   - GitLab 17 includes the following required upgrade stops:
+     - [`17.3.z`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
+     - [`17.y.z`](versions/gitlab_17_changes.md). The latest GitLab 17 release.
 
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).
 
@@ -273,7 +275,7 @@ Edition, follow the guides below based on the installation method:
   script, start the application and check its status.
 - [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to upgrade your Omnibus
   GitLab Community Edition to the Enterprise Edition.
-- [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
+- [Docker CE to EE](../install/docker/upgrade.md#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition container to an Enterprise Edition container.
 - [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition Helm deployment to Enterprise Edition.

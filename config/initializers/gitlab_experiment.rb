@@ -13,7 +13,7 @@ Gitlab::Experiment.configure do |config|
   # Customize the logic of our default rollout, which shouldn't include
   # assigning the control yet -- we specifically set it to false for now.
   #
-  config.default_rollout = Gitlab::Experiment::Rollout.resolve(:feature)
+  config.default_rollout = Gitlab::Experiment::Rollout.resolve('Gitlab::ExperimentFeatureRollout')
 
   # Mount the engine and middleware at a gitlab friendly style path.
   #

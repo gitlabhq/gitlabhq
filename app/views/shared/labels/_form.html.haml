@@ -19,7 +19,7 @@
       = f.label :color, _("Background color")
       .input-group
         .input-group-prepend
-          %input.label-color-preview.gl-w-7.gl-h-full.gl-border-1.gl-border-solid.gl-border-gray-500.gl-border-r-0.gl-rounded-top-right-none.gl-rounded-bottom-right-none{ type: "color", placeholder: _('Select color') }
+          %input.label-color-preview.gl-w-7.gl-h-full.gl-border-1.gl-border-solid.gl-border-gray-500.gl-border-r-0.gl-rounded-tr-none.gl-rounded-br-none{ type: "color", placeholder: _('Select color') }
         = f.text_field :color, class: "gl-form-input form-control", data: { testid: 'label-color-field' }
       .form-text.text-muted
         = _('Select a color from the color picker or from the presets below.')
@@ -31,7 +31,7 @@
           _('Lock label after a merge request is merged'),
           help_text: label_lock_on_merge_help_text,
           checkbox_options: { disabled: @label.lock_on_merge }
-  .gl-display-flex.gl-justify-content-space-between
+  .gl-flex.gl-justify-between
     %div
       - if @label.persisted?
         = f.submit _('Save changes'), class: 'js-save-button gl-mr-2', pajamas_button: true

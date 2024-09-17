@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlEmptyState, GlPagination } from '@gitlab/ui';
+import { GlPagination } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import AbuseReportsApp from '~/admin/abuse_reports/components/app.vue';
@@ -11,7 +12,7 @@ describe('AbuseReportsApp', () => {
   let wrapper;
 
   const findFilteredSearchBar = () => wrapper.findComponent(AbuseReportsFilteredSearchBar);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyState = () => wrapper.findComponent(EmptyResult);
   const findAbuseReportRows = () => wrapper.findAllComponents(AbuseReportRow);
   const findPagination = () => wrapper.findComponent(GlPagination);
 

@@ -32,12 +32,16 @@ module Gitlab
           end
 
           def top_level_worktree_paths
+            return pipeline.top_level_worktree_paths if reduce_gitaly_calls?
+
             strong_memoize(:top_level_worktree_paths) do
               project.repository.tree(sha).blobs.map(&:path)
             end
           end
 
           def all_worktree_paths
+            return pipeline.all_worktree_paths if reduce_gitaly_calls?
+
             strong_memoize(:all_worktree_paths) do
               project.repository.ls_files(sha)
             end
@@ -55,6 +59,10 @@ module Gitlab
               trigger_request: pipeline.legacy_trigger,
               protected: pipeline.protected_ref?
             }
+          end
+
+          def reduce_gitaly_calls?
+            Feature.enabled?(:ci_conditionals_reduce_gitaly_calls, project)
           end
         end
       end

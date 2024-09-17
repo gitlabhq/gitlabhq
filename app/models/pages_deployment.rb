@@ -4,6 +4,7 @@
 class PagesDeployment < ApplicationRecord
   include GlobalID::Identification
   include EachBatch
+  include FromUnion
   include Sortable
   include FileStoreMounter
   include Gitlab::Utils::StrongMemoize
@@ -27,6 +28,7 @@ class PagesDeployment < ApplicationRecord
   scope :upload_ready, -> { where(upload_ready: true) }
 
   scope :active, -> { upload_ready.where(deleted_at: nil) }
+  scope :expired, -> { where('expires_at < ?', Time.now.utc).order(:expires_at, :id) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
   scope :versioned, -> { where.not(path_prefix: [nil, '']) }
   scope :unversioned, -> { where(path_prefix: [nil, '']) }
@@ -72,8 +74,10 @@ class PagesDeployment < ApplicationRecord
     update(deleted_at: Time.now.utc)
   end
 
-  def self.count_versioned_deployments_for(project, limit)
-    project_id_in(project.root_ancestor.all_projects)
+  def self.count_versioned_deployments_for(project_or_namespace, limit)
+    namespace = project_or_namespace.try(:root_ancestor) || project_or_namespace
+
+    project_id_in(namespace.all_projects)
       .active
       .versioned
       .limit(limit)

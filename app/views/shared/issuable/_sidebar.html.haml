@@ -9,12 +9,12 @@
 - in_group_context_with_iterations = @project.group.present? && issuable_sidebar[:supports_iterations]
 - is_merge_request = issuable_type === 'merge_request'
 - add_page_specific_style 'page_bundles/labels'
-- sidebar_header_classes = 'md:gl-flex lg:!gl-hidden gl-justify-content-end' if is_merge_request
+- sidebar_header_classes = 'md:gl-flex lg:!gl-hidden gl-justify-end' if is_merge_request
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { auto_collapse: true, always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request)} #{'right-sidebar-merge-requests' if is_merge_request}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request}" }
     .issuable-sidebar-header{ class: sidebar_header_classes }
-      = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle gl-float-right js-sidebar-toggle has-tooltip !gl-shadow-none gl-display-block #{'gl-mt-2' if notifications_todos_buttons_enabled?}" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
+      = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle gl-float-right js-sidebar-toggle has-tooltip !gl-shadow-none gl-block #{'gl-mt-2' if notifications_todos_buttons_enabled?}" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
         = sidebar_gutter_toggle_icon
       - if signed_in
         - if !is_merge_request
@@ -22,7 +22,7 @@
         - if notifications_todos_buttons_enabled?
           .js-sidebar-subscriptions-widget-root
 
-    = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: "issuable-context-form inline-update js-issuable-update #{'gl-pr-2!' if is_merge_request}" } do |f|
+    = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: "issuable-context-form inline-update js-issuable-update #{'!gl-pr-2' if is_merge_request}" } do |f|
       .block.assignee{ class: "#{'gl-mt-3' if !signed_in}", data: { testid: 'assignee-block-container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
@@ -63,7 +63,7 @@
       - if issuable_sidebar[:supports_time_tracking]
         .js-sidebar-time-tracking-root.block
           // Fallback while content is loading
-          .title.hide-collapsed.gl-display-flex.gl-justify-content-space-between.gl-align-items-center{ class: 'gl-mb-0!' }
+          .title.hide-collapsed.gl-flex.gl-justify-between.gl-items-center{ class: '!gl-mb-0' }
             %span.gl-font-bold= _('Time tracking')
             = gl_loading_icon(inline: true)
 
@@ -84,4 +84,4 @@
           .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
     -# haml-lint:disable InlineJavaScript
-    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar).to_json.html_safe
+    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar, @project).to_json.html_safe

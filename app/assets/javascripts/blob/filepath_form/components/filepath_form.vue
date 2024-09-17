@@ -42,9 +42,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-w-full gl-lg-w-auto gl-gap-3 gl-mr-3"
-  >
+  <div class="gl-mr-3 gl-flex gl-w-full gl-flex-col gl-gap-3 lg:gl-w-auto lg:gl-flex-row">
     <gl-form-input v-model="filename" v-bind="inputOptions" />
     <template-selector
       v-if="showTemplateSelector"

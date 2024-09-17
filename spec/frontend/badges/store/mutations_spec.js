@@ -75,7 +75,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_LOAD_BADGES, badges);
 
       expect(store.state.isLoading).toBe(false);
-      expect(store.state.badges).toBe(badges);
+      expect(store.state.badges).toStrictEqual(badges);
     });
   });
 
@@ -114,7 +114,7 @@ describe('Badges store mutations', () => {
     it('resets the add form', () => {
       store.commit(types.RECEIVE_NEW_BADGE, dummyBadge);
 
-      expect(store.state.badgeInAddForm).toBe(null);
+      expect(store.state.badgeInAddForm).toEqual({});
       expect(store.state.isSaving).toBe(false);
       expect(store.state.renderedBadge).toBe(null);
     });
@@ -168,7 +168,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_RENDERED_BADGE, dummyBadge);
 
       expect(store.state.isRendering).toBe(false);
-      expect(store.state.renderedBadge).toBe(dummyBadge);
+      expect(store.state.renderedBadge).toStrictEqual(dummyBadge);
     });
   });
 
@@ -207,7 +207,7 @@ describe('Badges store mutations', () => {
     it('resets the edit form', () => {
       store.commit(types.RECEIVE_UPDATED_BADGE, dummyBadge);
 
-      expect(store.state.badgeInAddForm).toBe(null);
+      expect(store.state.badgeInAddForm).toEqual({});
       expect(store.state.isSaving).toBe(false);
       expect(store.state.renderedBadge).toBe(null);
     });
@@ -220,7 +220,7 @@ describe('Badges store mutations', () => {
       store.commit(types.RECEIVE_UPDATED_BADGE, newBadge);
 
       expect(store.state.badges.length).toBe(badgeCount);
-      expect(store.state.badges[badgeIndex]).toBe(newBadge);
+      expect(store.state.badges[badgeIndex]).toStrictEqual(newBadge);
     });
   });
 
@@ -270,7 +270,6 @@ describe('Badges store mutations', () => {
       store.replaceState({
         ...store.state,
         apiEndpointUrl: 'some endpoint',
-        docsUrl: 'some url',
         isLoading: 'dummy value',
         kind: 'some kind',
       });
@@ -279,7 +278,6 @@ describe('Badges store mutations', () => {
     it('sets isLoading to true and initializes the store', () => {
       const dummyData = {
         apiEndpointUrl: 'dummy endpoint',
-        docsUrl: 'dummy url',
         kind: 'dummy kind',
       };
 
@@ -287,7 +285,6 @@ describe('Badges store mutations', () => {
 
       expect(store.state.isLoading).toBe(true);
       expect(store.state.apiEndpointUrl).toBe(dummyData.apiEndpointUrl);
-      expect(store.state.docsUrl).toBe(dummyData.docsUrl);
       expect(store.state.kind).toBe(dummyData.kind);
     });
   });
@@ -370,7 +367,7 @@ describe('Badges store mutations', () => {
       store.commit(types.STOP_EDITING);
 
       expect(store.state.isEditing).toBe(false);
-      expect(store.state.badgeInEditForm).toBe(null);
+      expect(store.state.badgeInEditForm).toEqual({});
       expect(store.state.renderedBadge).toBe(null);
     });
   });
@@ -389,7 +386,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.UPDATE_BADGE_IN_FORM, dummyBadge);
 
-      expect(store.state.badgeInEditForm).toBe(dummyBadge);
+      expect(store.state.badgeInEditForm).toStrictEqual(dummyBadge);
     });
 
     it('sets badgeInAddForm if isEditing is false', () => {
@@ -397,7 +394,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.UPDATE_BADGE_IN_FORM, dummyBadge);
 
-      expect(store.state.badgeInAddForm).toBe(dummyBadge);
+      expect(store.state.badgeInAddForm).toStrictEqual(dummyBadge);
     });
   });
 
@@ -412,7 +409,7 @@ describe('Badges store mutations', () => {
     it('sets badgeInModal', () => {
       store.commit(types.UPDATE_BADGE_IN_MODAL, dummyBadge);
 
-      expect(store.state.badgeInModal).toBe(dummyBadge);
+      expect(store.state.badgeInModal).toStrictEqual(dummyBadge);
     });
   });
 });

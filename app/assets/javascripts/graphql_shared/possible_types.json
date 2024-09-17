@@ -11,9 +11,17 @@
     "GroupAuditEventStreamingDestination",
     "InstanceAuditEventStreamingDestination"
   ],
+  "BaseDiscussionInterface": [
+    "AbuseReportDiscussion",
+    "Discussion"
+  ],
   "BaseHeaderInterface": [
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
+  ],
+  "BaseNoteInterface": [
+    "AbuseReportNote",
+    "Note"
   ],
   "CiRunnerCloudProvisioning": [
     "CiRunnerGoogleCloudProvisioning"
@@ -85,7 +93,6 @@
     "ProjectMember"
   ],
   "NoteableInterface": [
-    "AbuseReport",
     "AlertManagementAlert",
     "BoardEpic",
     "Design",
@@ -138,6 +145,8 @@
     "UploadRegistry"
   ],
   "ResolvableInterface": [
+    "AbuseReportDiscussion",
+    "AbuseReportNote",
     "Discussion",
     "Note"
   ],
@@ -165,8 +174,11 @@
     "Design",
     "Epic",
     "EpicIssue",
+    "Group",
     "Issue",
     "MergeRequest",
+    "Namespace",
+    "Project",
     "WorkItem"
   ],
   "User": [
@@ -183,6 +195,7 @@
     "VulnerabilityDetailBase",
     "VulnerabilityDetailBoolean",
     "VulnerabilityDetailCode",
+    "VulnerabilityDetailCodeFlows",
     "VulnerabilityDetailCommit",
     "VulnerabilityDetailDiff",
     "VulnerabilityDetailFileLocation",
@@ -214,6 +227,7 @@
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
+    "WorkItemWidgetEmailParticipants",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
@@ -235,7 +249,6 @@
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionGeneric",
-    "WorkItemWidgetDefinitionHealthStatus",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
     "WorkItemWidgetDefinitionWeight"

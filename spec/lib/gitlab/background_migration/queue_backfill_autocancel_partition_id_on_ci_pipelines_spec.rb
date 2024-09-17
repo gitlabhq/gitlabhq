@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BackgroundMigration::QueueBackfillAutocancelPartitionIdOn
   feature_category: :ci_scaling,
   migration: :gitlab_ci,
   schema: 20240704155541 do
-  let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
+  let(:ci_pipelines_table) { table(:ci_pipelines, primary_key: :id, database: :ci) }
 
   let!(:pipeline_1) { ci_pipelines_table.create!(partition_id: 100) }
   let!(:pipeline_3) { ci_pipelines_table.create!(partition_id: 101) }

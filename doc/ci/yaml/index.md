@@ -72,6 +72,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
   | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
   | [`script`](#script)                           | Shell script that is executed by a runner.                                                                  |
+  | [`run`](#run)                                 | Run configuration that is executed by a runner.                                                             |
   | [`secrets`](#secrets)                         | The CI/CD secrets the job needs.                                                                            |
   | [`services`](#services)                       | Use Docker services images.                                                                                 |
   | [`stage`](#stage)                             | Defines a job stage.                                                                                        |
@@ -314,7 +315,7 @@ include:
   - Using a specific SHA hash, which should be the most stable option. Use the
     full 40-character SHA hash to ensure the desired commit is referenced, because
     using a short SHA hash for the `ref` might be ambiguous.
-  - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
+  - Applying both [protected branch](../../user/project/repository/branches/protected.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
     the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 #### `include:remote`
@@ -345,7 +346,7 @@ include:
 - Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger
   when the other project's files change. From a security perspective, this is similar to
   pulling a third-party dependency. If you link to another GitLab project you own, consider the use of both
-  [protected branches](../../user/project/protected_branches.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
+  [protected branches](../../user/project/repository/branches/protected.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
   to enforce change management rules.
 
 #### `include:template`
@@ -481,7 +482,9 @@ The order of the items in `stages` defines the execution order for jobs:
 - Jobs in the next stage run after the jobs from the previous stage complete successfully.
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
-There must be at least one other job in a different stage.
+There must be at least one other job in a different stage. `.pre` and `.post` stages
+can be used in [required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration)
+to define compliance jobs that must run before or after project pipeline jobs.
 
 **Keyword type**: Global keyword.
 
@@ -1022,6 +1025,7 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
   not `number` or `boolean`.
 - Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
   not `/regex.*/`.
+- `inputs:regex` uses [RE2](https://github.com/google/re2/wiki/Syntax) to parse regular expressions.
 
 ##### `spec:inputs:type`
 
@@ -1652,7 +1656,7 @@ cache between jobs. You can only use paths that are in the local working copy.
 Caches are:
 
 - Shared between pipelines and jobs.
-- By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
+- By default, not shared between [protected](../../user/project/repository/branches/protected.md) and unprotected branches.
 - Restored before [artifacts](#artifacts).
 - Limited to a maximum of four [different caches](../caching/index.md#use-multiple-caches).
 
@@ -1888,7 +1892,7 @@ rspec:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362114) in GitLab 15.8.
 
-Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/protected_branches.md)
+Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/repository/branches/protected.md)
 and unprotected branches.
 
 WARNING:
@@ -3460,7 +3464,7 @@ as an artifact and published with GitLab Pages.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -3470,7 +3474,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 an administrator can [enable the feature flag](../../administration/feature_flags.md) named
 `pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
-Use `pages.path_prefix` to configure a path prefix for [multiple deployments](../../user/project/pages/index.md#create-multiple-deployments) of GitLab Pages.
+Use `pages.path_prefix` to configure a path prefix for [parallel deployments](../../user/project/pages/index.md#parallel-deployments) of GitLab Pages.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
@@ -3491,6 +3495,50 @@ pages:
 ```
 
 In this example, a different pages deployment is created for each branch.
+
+### `pages:pages.expire_in`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4
+
+Use `expire_in` to specify how long a deployment should be available before
+it expires. After the deployment is expired, it's deactivated by a cron
+job running every 10 minutes.
+
+Extra deployments expire by default. To prevent them from expiring, set the
+value to `never`.
+
+**Keyword type**: Job keyword. You can use it only as part of a `pages` job.
+
+**Possible inputs**: The expiry time. If no unit is provided, the time is in seconds.
+Valid values include:
+
+- `'42'`
+- `42 seconds`
+- `3 mins 4 sec`
+- `2 hrs 20 min`
+- `2h20min`
+- `6 mos 1 day`
+- `47 yrs 6 mos and 4d`
+- `3 weeks and 2 days`
+- `never`
+
+**Example of `pages:pages.expire_in`**:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - echo "Pages accessible through ${CI_PAGES_URL}"
+  pages:
+    expire_in: 1 week
+  artifacts:
+    paths:
+      - public
+```
 
 ### `parallel`
 
@@ -4111,6 +4159,8 @@ job:
 
 **Additional details**:
 
+- You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
+  with `if`. See [issue 327780](https://gitlab.com/gitlab-org/gitlab/-/issues/327780) for more details.
 - If a rule matches and has no `when` defined, the rule uses the `when`
   defined for the job, which defaults to `on_success` if not defined.
 - You can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
@@ -4201,6 +4251,8 @@ In this example:
 - You can use the `$` character for both variables and paths. For example, if the
   `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
   as being part of a path.
+- You cannot use [nested variables](../variables/where_variables_can_be_used.md#nested-variable-expansion)
+  with `changes`. See [issue 425803](hhttps://gitlab.com/gitlab-org/gitlab/-/issues/425803) for more details.
 
 **Related topics**:
 
@@ -4349,6 +4401,8 @@ In this example:
   running the pipeline when using:
   - [Nested includes](includes.md#use-nested-includes).
   - [Compliance pipelines](../../user/group/compliance_pipelines.md).
+- `rules:exists` cannot search for the presence of [artifacts](../jobs/job_artifacts.md),
+  because `rules` evaluation happens before jobs run and artifacts are fetched.
 
 ##### `rules:exists:paths`
 
@@ -4604,6 +4658,61 @@ job:
 
 - The rule-level `rules:interruptible` overrides the job-level [`interruptible`](#interruptible),
   and only applies when the specific rule triggers the job.
+
+### `run`
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Use `run` to define a series of [steps](../steps/index.md) to be executed in a job. Each step can be either a script or a predefined step.
+
+You can also provide optional environment variables and inputs.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of hashes, where each hash represents a step with the following possible keys:
+  - `name`: A string representing the name of the step.
+  - `script`: A string or array of strings containing shell commands to execute.
+  - `step`: A string identifying a predefined step to run.
+  - `env`: Optional. A hash of environment variables specific to this step.
+  - `inputs`: Optional. A hash of input parameters for predefined steps.
+
+Each array entry must have a `name`, and one `script` or `step` (but not both).
+
+**Example of `run`**:
+
+``` yaml
+job:
+  run:
+    - name: 'hello_steps'
+      script: 'echo "hello from step1"'
+    - name: 'bye_steps'
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
+      inputs:
+        echo: 'bye steps!'
+      env:
+        var1: 'value 1'
+```
+
+In this example, the job has two steps:
+
+- `hello_steps` runs the `echo` shell command.
+- `bye_steps` uses a predefined step with an environment variable and an input parameter.
+
+**Additional details**:
+
+- A step can have either a `script` or a `step` key, but not both.
+- A `run` configuration cannot be used together with existing [`script`](#script) keyword.
+- Multi-line scripts can be defined using [YAML block scalar syntax](script.md#split-long-commands).
 
 ### `script`
 
@@ -5177,7 +5286,7 @@ The keywords available for use in trigger jobs are:
 **Possible inputs**:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
   Alternatively, use [`trigger:project`](#triggerproject).
 - For child pipelines, use [`trigger:include`](#triggerinclude).
 
@@ -5200,7 +5309,7 @@ trigger-multi-project-pipeline:
 - [Pipeline variables](../variables/index.md#cicd-variable-precedence) are not passed
   to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
   these variables to downstream pipelines.
-- [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+- [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
 - Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 - You cannot use [`needs:pipeline:job`](#needspipelinejob) in a trigger job.
@@ -5250,7 +5359,7 @@ to specify a different branch.
 **Possible inputs**:
 
 - The path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-  in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
+  in GitLab 15.3 and later, but not [job-only variables](../variables/predefined_variables.md#variable-availability).
 
 **Example of `trigger:project`**:
 

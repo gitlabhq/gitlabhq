@@ -185,7 +185,6 @@ gdk-qa-non-blocking:
   variables:
     QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
-  parallel: 5
   allow_failure: true
   artifacts:
     paths:
@@ -236,13 +235,6 @@ export-code-paths-mapping:
   variables:
     QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
     QA_SYSTEM_LOG_FILE_PATTERN: $CI_PROJECT_DIR/test_output/logs
-
-generate-test-session:
-  extends:
-    - .generate-test-session
-    - .rules:report:process-results
-  variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
 
 notify-slack:
   extends:

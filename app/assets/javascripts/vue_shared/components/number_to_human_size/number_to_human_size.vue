@@ -51,7 +51,8 @@ export default {
 };
 </script>
 <template>
-  <span
-    >{{ number }}<span v-if="label" :class="labelClass"> {{ label }}</span></span
-  >
+  <span>
+    <span>{{ number }}</span>
+    <span v-if="label" :class="labelClass">{{ label }}</span>
+  </span>
 </template>

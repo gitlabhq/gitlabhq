@@ -165,9 +165,9 @@ When using default setup, minimum configuration requires:
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair. It can be generated with:
 
-   ```shell
-   sudo gitlab-ctl pg-password-md5 CONSUL_USERNAME
-   ```
+  ```shell
+  sudo gitlab-ctl pg-password-md5 CONSUL_USERNAME
+  ```
 
 - `CONSUL_SERVER_NODES`. The IP addresses or DNS records of the Consul server nodes.
 

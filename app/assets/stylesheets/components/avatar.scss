@@ -136,6 +136,7 @@ $avatar-sizes: (
   // Background colors
   @for $i from 1 through length($gl-avatar-identicon-bgs) {
     &.bg#{$i} {
+      color: nth($gl-avatar-identicon-texts, $i);
       background-color: nth($gl-avatar-identicon-bgs, $i);
     }
   }

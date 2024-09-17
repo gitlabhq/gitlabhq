@@ -2,30 +2,30 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-bg-white gl-border-b gl-display-flex gl-flex-direction-column gl-justify-content-space-between gl-max-w-full gl-md-align-items-center gl-md-flex-direction-row gl-pl-5 gl-py-4 js-design-header"
+  class="gl-bg-white gl-border-b gl-flex gl-flex-col gl-justify-between gl-max-w-full gl-pl-5 gl-py-4 js-design-header md:gl-flex-row md:gl-items-center"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-flex-direction-row gl-mb-3 gl-md-mb-0 gl-overflow-hidden"
+    class="gl-flex gl-flex-row gl-items-center gl-mb-3 gl-overflow-hidden md:gl-mb-0"
   >
     <div
-      class="gl-display-flex gl-mr-3 gl-overflow-hidden"
+      class="gl-flex gl-mr-3 gl-overflow-hidden"
     >
       <h2
-        class="gl-align-items-center gl-display-flex gl-font-base gl-m-0 gl-overflow-hidden"
+        class="gl-flex gl-items-center gl-m-0 gl-overflow-hidden gl-text-base"
       >
         <span
-          class="gl-text-decoration-none gl-text-gray-900 gl-text-truncate"
+          class="gl-no-underline gl-text-gray-900 gl-truncate"
         >
           My precious issue
         </span>
         <gl-icon-stub
-          class="gl-flex-shrink-0 gl-text-gray-200"
+          class="gl-shrink-0 gl-text-gray-200"
           name="chevron-right"
           size="16"
           variant="current"
         />
         <span
-          class="gl-font-normal gl-text-truncate"
+          class="gl-font-normal gl-truncate"
         >
           test.jpg
         </span>
@@ -45,10 +45,10 @@ exports[`Design management toolbar component renders design and updated data 1`]
     />
   </div>
   <div
-    class="gl-display-flex gl-flex-shrink-0 gl-md-flex-direction-row gl-md-ml-auto gl-mr-5"
+    class="gl-flex gl-mr-5 gl-shrink-0 md:gl-flex-row md:gl-ml-auto"
   >
     <design-todo-button-stub
-      class="gl-md-ml-3 gl-ml-0"
+      class="gl-ml-0 md:gl-ml-3"
       design="[object Object]"
     />
     <gl-button-stub

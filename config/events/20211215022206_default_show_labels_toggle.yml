@@ -5,7 +5,7 @@ extra_properties:
 identifiers:
 product_group: project_management
 milestone:
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73809
 distributions:
 - ce
 - ee

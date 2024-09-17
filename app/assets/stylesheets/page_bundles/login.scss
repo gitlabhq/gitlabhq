@@ -4,12 +4,12 @@
   margin: 0;
   padding: 0;
   height: 100%;
-  
+
   body {
     &.with-system-header {
       padding-top: $system-header-height;
     }
-    
+
     &.with-system-footer {
       .footer-container {
         padding-bottom: $system-footer-height;
@@ -40,6 +40,7 @@
   .sm-bg-gray {
     background-color: $gray-10;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-dark & {
       background-color: var(--gray-100);
     }

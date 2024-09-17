@@ -61,4 +61,20 @@ RSpec.describe Plan do
       expect(plan.actual_limits.update!(ci_instance_level_variables: 100)).to be_truthy
     end
   end
+
+  describe '#ids_for_names' do
+    let_it_be(:default_plan) { create(:default_plan) }
+
+    subject(:plan) { described_class.ids_for_names([default_plan.name]) }
+
+    it { is_expected.to eq([default_plan.id]) }
+  end
+
+  describe '#names_for_ids' do
+    let_it_be(:default_plan) { create(:default_plan) }
+
+    subject(:plan) { described_class.names_for_ids([default_plan.id]) }
+
+    it { is_expected.to eq([default_plan.name]) }
+  end
 end

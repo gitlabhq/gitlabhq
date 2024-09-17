@@ -238,34 +238,21 @@ export default {
       </template>
     </runner-list-header>
 
-    <div
-      class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
-    >
-      <runner-type-tabs
-        ref="runner-type-tabs"
-        v-model="search"
-        :count-scope="$options.GROUP_TYPE"
-        :count-variables="countVariables"
-        :runner-types="$options.TABS_RUNNER_TYPES"
-        class="gl-w-full"
-        content-class="gl-hidden"
-        nav-class="gl-border-none!"
-      />
-    </div>
-    <div
-      class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"
-      :class="$options.FILTER_CSS_CLASSES"
-    >
+    <runner-type-tabs
+      v-model="search"
+      :count-scope="$options.GROUP_TYPE"
+      :count-variables="countVariables"
+      :runner-types="$options.TABS_RUNNER_TYPES"
+    />
+
+    <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row" :class="$options.FILTER_CSS_CLASSES">
       <runner-filtered-search-bar
         v-model="search"
         :tokens="searchTokens"
         :namespace="filteredSearchNamespace"
-        class="gl-flex-grow-1 gl-align-self-stretch"
+        class="gl-flex-grow gl-self-stretch"
       />
-      <runner-membership-toggle
-        v-model="search.membership"
-        class="gl-align-self-end gl-md-align-self-center"
-      />
+      <runner-membership-toggle v-model="search.membership" class="gl-self-end md:gl-self-center" />
     </div>
 
     <runner-stats :scope="$options.GROUP_TYPE" :variables="countVariables" />

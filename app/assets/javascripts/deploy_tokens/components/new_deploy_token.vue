@@ -181,7 +181,7 @@ export default {
         class="gl-mb-4"
         @dismiss="newTokenDetails = null"
       >
-        <h5 class="gl-mt-0!">{{ $options.translations.newTokenMessage }}</h5>
+        <h5 class="!gl-mt-0">{{ $options.translations.newTokenMessage }}</h5>
         <gl-form-group>
           <template #description>
             <div class="gl-mt-2">
@@ -309,7 +309,7 @@ export default {
       <gl-button variant="confirm" @click="createDeployToken">
         {{ $options.translations.addTokenButton }}
       </gl-button>
-      <gl-button class="gl-ml-3 js-toggle-button">
+      <gl-button class="js-toggle-button gl-ml-3">
         {{ $options.translations.cancelTokenCreation }}
       </gl-button>
     </div>

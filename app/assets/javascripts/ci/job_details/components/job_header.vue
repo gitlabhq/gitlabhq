@@ -89,30 +89,27 @@ export default {
 
 <template>
   <header
-    class="page-content-header md:gl-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
+    class="page-content-header gl-min-h-7 gl-w-full gl-flex-wrap !gl-pb-2 md:gl-flex"
     data-testid="job-header-content"
   >
-    <div
-      v-if="name"
-      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full"
-    >
-      <h1 class="gl-font-size-h-display gl-my-0 gl-display-inline-block" data-testid="job-name">
+    <div v-if="name" class="gl-flex gl-w-full gl-items-center gl-justify-between">
+      <h1 class="gl-my-0 gl-inline-block gl-text-size-h-display" data-testid="job-name">
         {{ name }}
       </h1>
 
-      <div class="gl-display-flex gl-align-self-start -gl-mt-2">
-        <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
+      <div class="-gl-mt-2 gl-flex gl-self-start">
+        <div class="gl-shrink-0 gl-grow gl-text-right">
           <gl-button
             :aria-label="__('Toggle sidebar')"
             category="secondary"
-            class="lg:gl-hidden gl-ml-2"
+            class="gl-ml-2 lg:gl-hidden"
             icon="chevron-double-lg-left"
             @click="onClickSidebarButton"
           />
         </div>
       </div>
     </div>
-    <section class="header-main-content gl-display-flex gl-align-items-center gl-mr-3">
+    <section class="header-main-content gl-mr-3 gl-flex gl-items-center">
       <ci-icon class="gl-mr-3" :status="status" show-status-text />
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
@@ -129,13 +126,13 @@ export default {
           :data-name="user.name"
           :href="webUrl"
           target="_blank"
-          class="js-user-link gl-align-middle gl-mx-2 gl-align-items-center"
+          class="js-user-link gl-mx-2 gl-items-center gl-align-middle"
         >
           <gl-avatar-labeled
             :size="24"
             :src="avatarUrl"
             :label="user.name"
-            class="gl-hidden sm:gl-inline-flex gl-mx-1"
+            class="gl-mx-1 gl-hidden sm:gl-inline-flex"
           />
           <strong class="author gl-inline sm:gl-hidden">@{{ user.username }}</strong>
           <gl-tooltip v-if="message" :target="() => $refs[$options.EMOJI_REF]">

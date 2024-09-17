@@ -212,8 +212,8 @@ Currently, there are two ways to ensure compliance- or security-related jobs are
 - [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html).
 - [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/).
 
-To provide a single place for ensuing required jobs are run in all pipelines for a project, we have deprecated
-compliance pipelines GitLab 17.3 and will remove the feature in GitLab 18.0.
+To provide a single place for ensuring required jobs are run in all pipelines for a project, we have deprecated
+compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 18.0.
 
 Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
@@ -458,6 +458,58 @@ The project page will be removed entirely from the group settings in 18.0.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Public use of Secure container registries is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470641).
+
+</div>
+
+Container registries under `registry.gitlab.com/gitlab-org/security-products/`
+are no longer accessible in GitLab 18.0. [Since GitLab 14.8](https://docs.gitlab.com/ee/update/deprecations.html#secure-and-protect-analyzer-images-published-in-new-location)
+the correct location is under `registry.gitlab.com/security-products` (note the absence of
+`gitlab-org` in the address).
+
+This change improves the security of the release process for GitLab [vulnerability scanners](https://docs.gitlab.com/ee/user/application_security/#vulnerability-scanner-maintenance).
+
+Users are advised to use the equivalent registry under `registry.gitlab.com/security-products/`,
+which is the canonical location for GitLab security scanner images. The relevant GitLab CI
+templates already use this location, so no changes should be necessary for users that use the
+unmodified templates.
+
+Offline deployments should review the [specific scanner instructions](https://docs.gitlab.com/ee/user/application_security/offline_deployments/#specific-scanner-instructions)
+to ensure the correct locations are being used to mirror the required scanner images.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Rate limits for common User, Project, and Group API endpoints
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480914).
+
+</div>
+
+Rate limits will be enabled by default for commonly used [User](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html),
+[Project](https://docs.gitlab.com/ee/administration/settings/rate_limit_on_projects_api.html), and [Group](https://docs.gitlab.com/ee/administration/settings/rate_limit_on_groups_api.html) endpoints.
+Enabling these rate limits by default can help improve overall system stability,
+by reducing the potential for heavy API usage to negatively impact the broader user experience. Requests made above the rate
+limit will return an [HTTP 429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) error code and [additional rate limit headers](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html#response-headers).
+
+The default rate limits have been intentionally set fairly high to not disrupt most usage, based on the request rates we see on GitLab.com.
+Instance administrators can set higher or lower limits as needed in the Admin area, similarly to other rate limits already in place.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 <div class="deprecation-notes">
@@ -550,6 +602,22 @@ The options to skip GitGuardian secret detection, `[skip secret detection]` and 
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Replace `add_on_purchase` GraphQL field with `add_on_purchases`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476858).
+
+</div>
+
+The GraphQL field `add_on_purchase` will be deprecated in GitLab 17.4 and removed in GitLab 18.0. Use the `add_on_purchases` field instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Replace `threshold` with `maxretries` for container registry notifications
 
 <div class="deprecation-notes">
@@ -565,6 +633,22 @@ You can configure the container registry to send [webhook notifications](https:/
 The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
 
 A new `maxretries` parameter has been added to control how many times an event will be retried before dropping the event. As such, we have deprecated the `threshold` parameter in favor of `maxretries` so that events are not held in memory forever.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/489850).
+
+</div>
+
+The namespace GraphQL field `add_on_purchase` will be deprecated in GitLab 17.5 and removed in GitLab 18.0. Use the root `add_on_purchases` field instead.
 
 </div>
 
@@ -728,6 +812,28 @@ GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.co
 The `direction` GraphQL argument for the `ciJobTokenScopeRemoveProject` mutation is deprecated. Following the [default CI/CD job token scope change](https://docs.gitlab.com/ee/update/deprecations.html#default-cicd-job-token-ci_job_token-scope-changed) announced in GitLab 15.9, the `direction` argument will default to `INBOUND` and `OUTBOUND` will no longer be valid in GitLab 17.0. We will remove the `direction` argument in GitLab 18.0.
 
 If you are using `OUTBOUND` with the `direction` argument to control the direction of your project's token access, your pipeline that use job tokens risk failing authentication. To ensure pipelines continue to run as expected, you will need to explicitly [add the other projects to your project's allowlist](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### The `heroku/builder:22` image is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79).
+
+</div>
+
+The cloud native buildpack (CNB) builder image was updated to `heroku/builder:24` in the Auto DevOps Build project. While we don't expect the changes to be disruptive for the most part, this might be a breaking change for some users of Auto DevOps, and especially users of Auto Build. To better understand the impact of you workloads, review the following:
+
+- [Heroku-24 stack release notes](https://devcenter.heroku.com/articles/heroku-24-stack#what-s-new)
+- [Heroku-24 stack upgrade notes](https://devcenter.heroku.com/articles/heroku-24-stack#upgrade-notes)
+- [Heroku stack packages](https://devcenter.heroku.com/articles/stack-packages)
+
+These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build).
 
 </div>
 
@@ -898,6 +1004,23 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation " data-milestone="17.6">
 
+### Group vulnerability report by OWASP top 10 2017 is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">17.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
+
+</div>
+
+Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
+In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+
+</div>
+
+<div class="deprecation " data-milestone="17.6">
+
 ### Support for Debian 10
 
 <div class="deprecation-notes">
@@ -947,23 +1070,6 @@ See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_
 <div class="milestone-wrapper" data-milestone="17.4">
 
 ## GitLab 17.4
-
-<div class="deprecation " data-milestone="17.4">
-
-### Group vulnerability report by OWASP top 10 2017 is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.0</span>
-- Removal in GitLab <span class="milestone">17.4</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
-
-</div>
-
-Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
-In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
-
-</div>
 
 <div class="deprecation " data-milestone="17.4">
 
@@ -2547,22 +2653,6 @@ If you use the agent for pull-based deployments, you should [migrate to Flux](ht
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Trigger jobs can mirror downstream pipeline status exactly
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285493).
-
-</div>
-
-In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 17.0 trigger jobs will show the exact same status as the the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Twitter OmniAuth login option is deprecated from self-managed GitLab
 
 <div class="deprecation-notes">
@@ -3685,7 +3775,7 @@ GitLab 16.0.
 
 </div>
 
-GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
+GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/repository/branches/protected.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
 
 </div>
 

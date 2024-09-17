@@ -33,7 +33,7 @@ module Types
       field :unicode_version,
         GraphQL::Types::String,
         null: false,
-        description: 'Unicode version for this emoji.'
+        description: 'Unicode version for the emoji.'
 
       field :user,
         Types::UserType,

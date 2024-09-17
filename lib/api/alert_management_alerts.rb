@@ -25,7 +25,6 @@ module API
           authorize!(:upload_alert_management_metric_image, find_project_alert(request.params[:alert_iid]))
 
           require_gitlab_workhorse!
-          ::Gitlab::Workhorse.verify_api_request!(request.headers)
           status 200
           content_type ::Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 

@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe PersonalAccessToken, feature_category: :system_access do
   subject { described_class }
 
+  describe 'default values' do
+    subject(:personal_access_token) { described_class.new }
+
+    it { expect(personal_access_token.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID) }
+    it { expect(personal_access_token.organization).to eq(Organizations::Organization.default_organization) }
+  end
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }
@@ -25,6 +32,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     subject(:project_access_token) { create(:personal_access_token) }
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
+    it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
   end
 
   describe 'scopes' do
@@ -170,6 +178,16 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it { is_expected.to contain_exactly(old_unused_token, old_formerly_used_token) }
     end
+
+    describe ".for_organization" do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:personal_access_token) { create(:personal_access_token, organization: organization) }
+      let_it_be(:personal_access_token_2) { create(:personal_access_token) }
+
+      it "returns personal access tokens for the specified organization only" do
+        expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
+      end
+    end
   end
 
   describe ".active?" do
@@ -197,6 +215,20 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       active_personal_access_token.revoke!
 
       expect(active_personal_access_token).to be_revoked
+    end
+
+    it 'updates updated_at timestamp', :aggregate_failures do
+      previous_updated_at = active_personal_access_token.updated_at
+
+      timestamp_of_token_revocation = 3.days.from_now.change(usec: 0)
+
+      travel_to(timestamp_of_token_revocation) do
+        active_personal_access_token.revoke!
+      end
+
+      expect(active_personal_access_token.updated_at).not_to eq(previous_updated_at)
+
+      expect(active_personal_access_token.updated_at).to eq(timestamp_of_token_revocation)
     end
   end
 
@@ -373,6 +405,20 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
+    describe '.expired_before' do
+      let_it_be(:cut_off) { 3.days.ago }
+
+      let_it_be(:active_token) { create(:personal_access_token) }
+
+      let_it_be(:token_expired_before_cut_off) { create(:personal_access_token, expires_at: cut_off - 1.day) }
+      let_it_be(:token_expired_at_cut_off) { create(:personal_access_token, expires_at: cut_off) }
+      let_it_be(:token_expired_after_cut_off) { create(:personal_access_token, expires_at: cut_off + 1.day) }
+
+      it 'returns tokens that are expired before date passed in' do
+        expect(described_class.expired_before(cut_off)).to contain_exactly(token_expired_before_cut_off)
+      end
+    end
+
     describe '.without_impersonation' do
       let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
       let_it_be(:personal_access_token) { create(:personal_access_token) }
@@ -393,6 +439,22 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       describe '.not_revoked' do
         it { expect(described_class.not_revoked).to contain_exactly(non_revoked_token, non_revoked_token2) }
+      end
+
+      describe '.revoked_before' do
+        let_it_be(:cut_off) { 3.days.ago }
+
+        let_it_be(:token_revoked_before_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off - 1.second) }
+        let_it_be(:token_revoked_at_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off) }
+        let_it_be(:token_revoked_after_cut_off) { create(:personal_access_token, :revoked, updated_at: cut_off + 1.second) }
+
+        let_it_be(:non_revoked_token_updated_before_cut_off) { create(:personal_access_token, updated_at: cut_off - 1.second) }
+        let_it_be(:non_revoked_token_updated_at_cut_off) { create(:personal_access_token, updated_at: cut_off) }
+        let_it_be(:non_revoked_token_updated_after_cut_off) { create(:personal_access_token, updated_at: cut_off + 1.second) }
+
+        it 'returns tokens that are revoked before date passed in' do
+          expect(described_class.revoked_before(cut_off)).to contain_exactly(token_revoked_before_cut_off)
+        end
       end
     end
   end

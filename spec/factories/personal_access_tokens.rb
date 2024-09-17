@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :personal_access_token do
     user
+    organization
     sequence(:name) { |n| "PAT #{n}" }
     revoked { false }
     expires_at { 30.days.from_now }
@@ -42,5 +43,9 @@ FactoryBot.define do
         personal_access_token.scopes = (personal_access_token.scopes + Gitlab::Auth::REPOSITORY_SCOPES).uniq
       end
     end
+  end
+
+  factory :resource_access_token, parent: :personal_access_token do
+    user { association :user, :project_bot }
   end
 end

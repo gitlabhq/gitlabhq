@@ -156,7 +156,7 @@ export default {
 
 <template>
   <div>
-    <div ref="revokeToken" class="gl-display-inline-block">
+    <div ref="revokeToken" class="gl-inline-block">
       <gl-button
         v-gl-modal-directive="modalId"
         icon="remove"

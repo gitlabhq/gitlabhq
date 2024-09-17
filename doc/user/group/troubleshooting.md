@@ -93,7 +93,7 @@ Administrators can find a user's maximum permissions for a group or project.
 Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member.
 ```
 
-This error typically occurs when the user you're trying to remove is part of an external group that has been [shared with one or more of your projects](../project/members/share_project_with_groups.md) or [groups](manage.md#share-a-group-with-another-group). To remove the user as a billable member, follow one of the options:
+This error typically occurs when the user you're trying to remove is part of an external group that has been [shared with one or more of your projects](../project/members/sharing_projects_groups.md) or [groups](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group). To remove the user as a billable member, follow one of the options:
 
 - Remove the invited group membership from your project or group members page.
 - Recommended. Remove the user directly from the invited group, if you have access to the group.

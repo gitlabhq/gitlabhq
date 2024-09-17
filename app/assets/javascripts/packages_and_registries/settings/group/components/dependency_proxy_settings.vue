@@ -141,7 +141,7 @@ export default {
       data-testid="dependency-proxy-setting-toggle"
     >
       <template v-if="enabled" #help>
-        <span class="gl-break-words gl-hyphens-auto gl-max-w-screen gl-inline-block">
+        <span class="gl-inline-block gl-max-w-screen gl-hyphens-auto gl-break-words">
           <gl-sprintf :message="$options.i18n.enabledProxyHelpText">
             <template #link="{ content }">
               <gl-link data-testid="toggle-help-link" :href="groupDependencyProxyPath">{{

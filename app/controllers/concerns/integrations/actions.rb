@@ -54,11 +54,15 @@ module Integrations::Actions
   end
 
   def reset
-    integration.destroy!
+    if integration.manual_activation?
+      integration.destroy!
 
-    flash[:notice] = s_('Integrations|This integration, and inheriting projects were reset.')
+      flash[:notice] = s_('Integrations|This integration, and inheriting projects were reset.')
 
-    render json: {}, status: :ok
+      render json: {}, status: :ok
+    else
+      render json: { message: s_('Integrations|Integration cannot be reset.') }, status: :unprocessable_entity
+    end
   end
 
   private

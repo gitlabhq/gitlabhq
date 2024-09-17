@@ -24,12 +24,11 @@ module Types
       field :admin_url, GraphQL::Types::String, null: true,
         description: 'Admin URL of the runner. Only available for administrators.'
       field :contacted_at, Types::TimeType, null: true,
-        description: 'Timestamp of last contact from this runner.',
-        method: :contacted_at
+        description: 'Timestamp of last contact from the runner.'
       field :created_at, Types::TimeType, null: true,
-        description: 'Timestamp of creation of this runner.'
+        description: 'Timestamp of creation of the runner.'
       field :created_by, Types::UserType, null: true,
-        description: 'User that created this runner.',
+        description: 'User that created the runner.',
         method: :creator
       field :creation_method, Types::Ci::RunnerCreationMethodEnum, null: true,
         method: :registration_type,
@@ -100,8 +99,7 @@ module Types
       field :tag_list, [GraphQL::Types::String], null: true,
         description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,
-        description: 'Runner token expiration time.',
-        method: :token_expires_at
+        description: 'Runner token expiration time.'
 
       markdown_field :maintenance_note_html, null: true
 

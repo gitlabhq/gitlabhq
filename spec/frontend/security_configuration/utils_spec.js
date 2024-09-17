@@ -1,5 +1,5 @@
 import { augmentFeatures, translateScannerNames } from '~/security_configuration/utils';
-import { SCANNER_NAMES_MAP, securityFeatures } from '~/security_configuration/constants';
+import { SCANNER_NAMES_MAP } from '~/security_configuration/constants';
 
 describe('augmentFeatures', () => {
   const mockSecurityFeatures = [
@@ -12,32 +12,12 @@ describe('augmentFeatures', () => {
     },
   ];
 
-  const mockSecurityFeaturesWithSlot = [
-    {
-      name: 'CONTAINER_REGISTRY',
-      type: 'CONTAINER_REGISTRY',
-      security_features: {
-        type: 'CONTAINER_REGISTRY',
-      },
-    },
-  ];
-
   const expectedMockSecurityFeatures = [
     {
       name: 'SAST',
       type: 'SAST',
       securityFeatures: {
         type: 'SAST',
-      },
-    },
-  ];
-
-  const expectedMockSecurityWithSlotFeatures = [
-    {
-      name: 'CONTAINER_REGISTRY',
-      type: 'CONTAINER_REGISTRY',
-      securityFeatures: {
-        type: 'CONTAINER_REGISTRY',
       },
     },
   ];
@@ -149,10 +129,6 @@ describe('augmentFeatures', () => {
     augmentedSecurityFeatures: expectedMockSecurityFeatures,
   };
 
-  const expectedOutputWithSlot = {
-    augmentedSecurityFeatures: expectedMockSecurityWithSlotFeatures,
-  };
-
   const expectedInvalidOutputDefault = {
     augmentedSecurityFeatures: expectedInvalidMockSecurityFeatures,
   };
@@ -196,48 +172,32 @@ describe('augmentFeatures', () => {
 
   describe('returns an object with augmentedSecurityFeatures  when', () => {
     it('given an properly formatted array', () => {
-      expect(augmentFeatures(securityFeatures, mockSecurityFeatures)).toEqual(
-        expectedOutputDefault,
-      );
+      expect(augmentFeatures(mockSecurityFeatures)).toEqual(expectedOutputDefault);
     });
 
     it('given an invalid populated array', () => {
       expect(
-        augmentFeatures(securityFeatures, [
-          { ...mockSecurityFeatures[0], ...mockInvalidCustomFeature[0] },
-        ]),
+        augmentFeatures([{ ...mockSecurityFeatures[0], ...mockInvalidCustomFeature[0] }]),
       ).toEqual(expectedInvalidOutputDefault);
     });
 
     it('features have secondary key', () => {
       expect(
-        augmentFeatures(securityFeatures, [
-          { ...mockSecurityFeatures[0], ...mockFeaturesWithSecondary[0] },
-        ]),
+        augmentFeatures([{ ...mockSecurityFeatures[0], ...mockFeaturesWithSecondary[0] }]),
       ).toEqual(expectedOutputSecondary);
     });
 
     it('given a valid populated array', () => {
       expect(
-        augmentFeatures(securityFeatures, [
-          { ...mockSecurityFeatures[0], ...mockValidCustomFeature[0] },
-        ]),
+        augmentFeatures([{ ...mockSecurityFeatures[0], ...mockValidCustomFeature[0] }]),
       ).toEqual(expectedOutputCustomFeature);
-    });
-
-    it('when a custom vue slot is defined', () => {
-      expect(augmentFeatures(securityFeatures, mockSecurityFeaturesWithSlot)).toEqual(
-        expectedOutputWithSlot,
-      );
     });
   });
 
   describe('returns an object with camelcased keys', () => {
     it('given a customfeature in snakecase', () => {
       expect(
-        augmentFeatures(securityFeatures, [
-          { ...mockSecurityFeatures[0], ...mockValidCustomFeatureSnakeCase[0] },
-        ]),
+        augmentFeatures([{ ...mockSecurityFeatures[0], ...mockValidCustomFeatureSnakeCase[0] }]),
       ).toEqual(expectedOutputCustomFeature);
     });
   });
@@ -245,7 +205,7 @@ describe('augmentFeatures', () => {
   describe('follows onDemandAvailable', () => {
     it('deletes badge when false', () => {
       expect(
-        augmentFeatures(securityFeatures, [
+        augmentFeatures([
           {
             ...mockSecurityFeaturesDast[0],
             ...mockValidCustomFeatureWithOnDemandAvailableFalse[0],
@@ -256,7 +216,7 @@ describe('augmentFeatures', () => {
 
     it('keeps badge when true', () => {
       expect(
-        augmentFeatures(securityFeatures, [
+        augmentFeatures([
           { ...mockSecurityFeaturesDast[0], ...mockValidCustomFeatureWithOnDemandAvailableTrue[0] },
         ]),
       ).toEqual(expectedOutputCustomFeatureWithOnDemandAvailableTrue);

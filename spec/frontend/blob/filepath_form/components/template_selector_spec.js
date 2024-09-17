@@ -93,7 +93,7 @@ describe('Template Selector component', () => {
         };
 
         const { template, type } = wrapper.emitted('selected')[0][0];
-        expect(template).toBe(templates[0]);
+        expect(template).toStrictEqual(templates[0]);
         expect(type).toMatchObject(licenseSelectorType);
       });
 

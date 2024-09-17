@@ -1,6 +1,14 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
+import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import {
+  EVENT_CLICK_BLOB_RESULT_LINE,
+  EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
+} from '~/search/results/tracking';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'BlobChunks',
@@ -11,6 +19,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
+  },
+  mixins: [trackingMixin],
+  i18n: {
+    viewBlame: s__('GlobalSearch|View blame'),
+    viewLine: s__('GlobalSearch|View line in repository'),
   },
   props: {
     chunk: {
@@ -27,6 +40,10 @@ export default {
       required: false,
       default: '',
     },
+    position: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     codeTheme() {
@@ -37,43 +54,65 @@ export default {
     highlightedRichText(richText) {
       return richText.replace('<b>', '<b class="hll">');
     },
+    trackLineClick(lineNumber) {
+      this.trackEvent(EVENT_CLICK_BLOB_RESULT_LINE, {
+        property: lineNumber,
+        value: this.position,
+      });
+    },
+    trackBlameClick(lineNumber) {
+      this.trackEvent(EVENT_CLICK_BLOB_RESULT_BLAME_LINE, {
+        property: lineNumber,
+        value: this.position,
+      });
+    },
   },
 };
 </script>
 
 <template>
-  <div id="search-blob-content" class="file-content code" :class="codeTheme">
-    <div class="blob-content" data-blob-id="" data-path="" data-highlight-line="">
+  <div
+    id="search-blob-content"
+    class="file-content code gl-rounded-none !gl-border-0 !gl-border-transparent"
+    :class="codeTheme"
+  >
+    <div class="blob-content">
       <div
         v-for="line in chunk.lines"
         :key="line.lineNumber"
-        class="line_holder code-search-line gl-display-flex"
+        class="line_holder code-search-line gl-flex"
         data-testid="search-blob-line"
       >
         <div class="line-numbers" data-testid="search-blob-line-numbers">
-          <div class="gl-display-flex">
+          <div class="gl-flex">
             <span class="diff-line-num gl-pl-3">
               <gl-link
                 v-gl-tooltip
                 :href="`${blameLink}#L${line.lineNumber}`"
-                :title="__('View blame')"
+                :title="$options.i18n.viewBlame"
                 class="js-navigation-open"
+                data-testid="search-blob-line-blame-link"
+                @click="trackBlameClick(line.lineNumber)"
                 ><gl-icon name="git"
               /></gl-link>
             </span>
-            <span class="diff-line-num flex-grow-1 gl-pr-3">
+            <span class="diff-line-num gl-grow gl-pr-3">
               <gl-link
                 v-gl-tooltip
                 :href="`${fileUrl}#L${line.lineNumber}`"
-                :title="__('View Line in repository')"
-                class="gl-display-flex! gl-align-items-center gl-justify-content-end"
+                :title="$options.i18n.viewLine"
+                class="!gl-flex gl-items-center gl-justify-end"
+                data-testid="search-blob-line-link"
+                @click="trackLineClick(line.lineNumber)"
                 >{{ line.lineNumber }}</gl-link
               >
             </span>
           </div>
         </div>
-        <pre class="code highlight flex-grow-1" data-testid="search-blob-line-code">
-          <span v-safe-html="highlightedRichText(line.richText)"></span>
+        <pre class="code highlight gl-grow" data-testid="search-blob-line-code">
+          <code class="!gl-inline">
+            <span v-safe-html="highlightedRichText(line.richText)" class="line"></span>
+          </code>
         </pre>
       </div>
     </div>

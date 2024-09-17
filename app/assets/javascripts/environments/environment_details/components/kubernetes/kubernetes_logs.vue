@@ -48,6 +48,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     k8sLogs: {
       query: k8sLogsQuery,
       variables() {
@@ -62,6 +63,7 @@ export default {
         return Boolean(!this.gitlabAgentId);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     environment: {
       query: environmentClusterAgentQuery,
       variables() {
@@ -152,7 +154,7 @@ export default {
 
     <logs-viewer v-else-if="logLines" :log-lines="logLines" :highlighted-line="highlightedLineHash"
       ><template #header-details
-        ><div class="gl-p-3 gl-ml-auto">
+        ><div class="gl-ml-auto gl-p-3">
           <span v-for="(item, index) of headerData" :key="index" class="gl-mr-4">
             <gl-icon :name="item.icon" class="gl-mr-2" />{{ item.label }}: {{ item.value }}</span
           >

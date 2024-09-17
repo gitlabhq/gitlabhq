@@ -6,6 +6,7 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
+import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -36,6 +37,10 @@ export default {
       import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
     TrainingProviderList,
+    ContainerScanningForRegistryFeatureCard: () =>
+      import(
+        'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
+      ),
   },
   directives: { SafeHtml },
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
@@ -102,6 +107,9 @@ export default {
       if (feature.type === PRE_RECEIVE_SECRET_DETECTION) {
         return 'pre-receive-secret-detection-feature-card';
       }
+      if (feature.type === REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY) {
+        return 'container-scanning-for-registry-feature-card';
+      }
       return 'feature-card';
     },
     dismissAutoDevopsEnabledAlert() {
@@ -151,7 +159,7 @@ export default {
       </template>
     </user-callout-dismisser>
     <header>
-      <h1 class="gl-font-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
+      <h1 class="gl-text-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
     </header>
     <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
       <template #default="{ dismiss, shouldShowCallout }">

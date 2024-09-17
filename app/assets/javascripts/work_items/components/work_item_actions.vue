@@ -180,6 +180,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemTypes: {
       query: namespaceWorkItemTypesQuery,
       variables() {
@@ -217,7 +218,7 @@ export default {
         : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
     },
     canLockWorkItem() {
-      return this.canUpdate && this.glFeatures.workItemsBeta;
+      return this.canUpdate;
     },
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
@@ -393,15 +394,15 @@ export default {
     >
       <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
-          class="gl-display-flex gl-justify-content-end gl-w-full"
+          class="gl-flex gl-w-full gl-justify-end"
           :data-testid="$options.notificationsToggleFormTestId"
         >
           <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
-              class="work-item-notification-toggle"
               label-position="left"
+              class="work-item-dropdown-toggle gl-justify-between"
               @change="toggleNotifications($event)"
             />
           </template>
@@ -483,7 +484,7 @@ export default {
           @action="handleDelete"
         >
           <template #list-item>
-            <span class="gl-text-danger gl-font-bold">{{ i18n.deleteWorkItem }}</span>
+            <span class="gl-text-danger">{{ i18n.deleteWorkItem }}</span>
           </template>
         </gl-disclosure-dropdown-item>
       </template>

@@ -71,6 +71,7 @@ export default {
       :reviewers="reviewers"
       :loading-reviewers="loadingReviewers"
       @request-review="(params) => $emit('request-review', params)"
+      @remove-reviewer="(params) => $emit('remove-reviewer', params)"
     />
     <approval-rules-wrapper :reviewers="reviewers" />
   </gl-drawer>

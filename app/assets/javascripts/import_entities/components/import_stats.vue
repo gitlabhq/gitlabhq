@@ -70,10 +70,10 @@ export default {
 <template>
   <gl-accordion :header-level="3">
     <gl-accordion-item :title="__('View details')">
-      <ul class="gl-p-0 gl-mb-3 gl-list-none gl-font-sm">
+      <ul class="gl-mb-3 gl-list-none gl-p-0 gl-text-sm">
         <li v-for="key in Object.keys(stats)" :key="key" data-testid="import-stat-item">
-          <div class="gl-display-flex gl-w-28 gl-align-items-center">
-            <gl-icon :size="12" class="gl-mr-2 gl-flex-shrink-0" v-bind="statsIconProps(key)" />
+          <div class="gl-flex gl-w-28 gl-items-center">
+            <gl-icon :size="12" class="gl-mr-2 gl-shrink-0" v-bind="statsIconProps(key)" />
             <span>{{ statsMapping[key] || key }}</span>
             <span class="gl-ml-auto"> {{ importedByType(key) }}/{{ fetchedByType(key) }} </span>
           </div>

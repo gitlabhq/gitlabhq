@@ -1,0 +1,20 @@
+query getProjectCounts {
+  currentUser {
+    id
+    contributed: contributedProjects {
+      count
+    }
+    starred: starredProjects {
+      count
+    }
+  }
+  personal: projects(personal: true) {
+    count
+  }
+  member: projects(membership: true) {
+    count
+  }
+  inactive: projects(archived: ONLY) {
+    count
+  }
+}

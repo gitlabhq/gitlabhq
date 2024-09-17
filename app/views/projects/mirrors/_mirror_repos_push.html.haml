@@ -11,7 +11,7 @@
   .form-group
     = render Pajamas::CheckboxTagComponent.new(name: :keep_divergent_refs,
       checkbox_options: { class: 'js-mirror-keep-divergent-refs' },
-      label_options: { class: 'gl-mb-0!' }) do |c|
+      label_options: { class: '!gl-mb-0' }) do |c|
       - c.with_label do
         = _('Keep divergent refs')
       - c.with_help_text do

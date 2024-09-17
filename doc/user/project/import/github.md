@@ -17,6 +17,10 @@ DETAILS:
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
 
+WARNING:
+Importing from GitHub to GitLab.com is [currently unavailable](https://status.gitlab.com). We don't have an
+estimated time for resolution. For more information, please [contact support](https://about.gitlab.com/support/).
+
 Imported issues, merge requests, comments, and events have an **Imported** badge in GitLab.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
@@ -91,6 +95,13 @@ If the above requirements are not met, the importer can't map the particular use
 - GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that
   were uploaded to private repositories before 2023-05-09. If you encounter this problem, would like to help us resolve the problem, and are willing to provide a sample repository
   for us, please add a comment to [issue 424046](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) and we'll contact you.
+- For [GitLab-specific references](../../markdown.md#gitlab-specific-references), GitLab uses a `#` character for issues and a `!` character for merge requests.
+  However, GitHub uses only a `#` character for both issues and pull requests.
+
+  When importing:
+
+  - Comment notes, GitLab only matches references to issues because GitLab doesn't know whether a references points to an issue or a merge request.
+  - Issues or merge request descriptions, GitLab ignores all references because their imported counterparts might not have been created on the destination yet.
 
 ## Import your GitHub repository into GitLab
 
@@ -357,11 +368,11 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | GitHub rule                                                                                         | GitLab rule                                                                                                                                                                                                                                                          | Introduced in |
 |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
 | **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#add-protection-to-existing-branches)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
-| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
-| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch)                                                                                                                        | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push-on-a-protected-branch)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
+| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch)                                                                                                                        | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#add-protection-to-existing-branches). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue

@@ -23,7 +23,7 @@ exports[`Confidential merge request project form group component renders empty s
       </a>
       and set the fork's visibility to private.
       <gl-link-stub
-        class="gl-bg-transparent gl-display-inline-block gl-p-0 gl-w-auto"
+        class="gl-bg-transparent gl-inline-block gl-p-0 gl-w-auto"
         href="/help"
         target="_blank"
       >
@@ -60,7 +60,7 @@ exports[`Confidential merge request project form group component renders fork dr
     >
       To protect this issue's confidentiality, a private fork of this project was selected.
       <gl-link-stub
-        class="gl-bg-transparent gl-display-inline-block gl-p-0 gl-w-auto"
+        class="gl-bg-transparent gl-inline-block gl-p-0 gl-w-auto"
         href="/help"
         target="_blank"
       >

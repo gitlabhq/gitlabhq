@@ -216,8 +216,8 @@ Use impersonation tokens as an alternative to:
 - The [Sudo](#sudo) feature. The user's or administrator's password or token
   may not be known, or may change over time.
 
-For more information, see the [users API](../users.md#create-an-impersonation-token)
-documentation.
+For more information, see the
+[User tokens API](../user_tokens.md#create-an-impersonation-token) documentation.
 
 Impersonation tokens are used exactly like regular personal access tokens, and
 can be passed in either the `private_token` parameter or the `PRIVATE-TOKEN`
@@ -362,7 +362,7 @@ The following table shows the possible return codes for API requests.
 > - Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
 
-After [path changes](../../user/project/repository/index.md#what-happens-when-a-repository-path-changes) the
+After [path changes](../../user/project/repository/index.md#repository-path-changes) the
 REST API can respond with a redirect and users should be able to handle such responses.
 The users should follow the redirect and repeat the request to the URI specified in the `Location` header.
 

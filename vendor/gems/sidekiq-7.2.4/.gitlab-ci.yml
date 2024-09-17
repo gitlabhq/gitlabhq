@@ -1,0 +1,21 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "sidekiq-7.2.4"
+      gem_path_prefix: "vendor/gems/"
+
+rspec:
+  script:
+    - bundle exec rake test
+  extends:
+    - .with_redis
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
+        REDIS_VERSION: ["6.0", "6.2", "7.0"]
+
+.with_redis:
+  services:
+    - redis:${REDIS_VERSION}-alpine
+  variables:
+    REDIS_URL: "redis://redis"

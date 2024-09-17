@@ -2,6 +2,7 @@
 import { GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncate } from '~/lib/utils/text_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from './constants';
 
 export default {
@@ -43,6 +44,9 @@ export default {
     userNoteShort() {
       return truncate(this.user.note, LENGTH_OF_USER_NOTE_TOOLTIP);
     },
+    userId() {
+      return getIdFromGraphQLId(this.user.id);
+    },
   },
   USER_AVATAR_SIZE,
 };
@@ -52,7 +56,7 @@ export default {
   <div
     v-if="user"
     class="js-user-popover gl-inline-block"
-    :data-user-id="user.id"
+    :data-user-id="userId"
     :data-username="user.username"
   >
     <gl-avatar-labeled

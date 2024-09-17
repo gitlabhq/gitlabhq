@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Topic do
-  let_it_be(:topic, reload: true) { create(:topic, name: 'topic') }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:topic, reload: true) { create(:topic, name: 'topic', organization: organization) }
 
   subject { topic }
 
@@ -18,13 +19,14 @@ RSpec.describe Projects::Topic do
   describe 'associations' do
     it { is_expected.to have_many(:project_topics) }
     it { is_expected.to have_many(:projects) }
+    it { is_expected.to belong_to(:organization) }
   end
 
   describe 'validations' do
     let(:name_format_message) { 'has characters that are not allowed' }
 
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:organization_id).case_insensitive }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { expect(described_class.new).to validate_presence_of(:title) }
@@ -37,7 +39,7 @@ RSpec.describe Projects::Topic do
       let(:slug_format_message) { "can contain only letters, digits, '_', '-', '.'" }
 
       it { is_expected.to validate_length_of(:slug).is_at_most(255) }
-      it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
+      it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:organization_id).case_insensitive }
 
       it { is_expected.not_to allow_value("new\nline").for(:slug).with_message(slug_format_message) }
       it { is_expected.not_to allow_value("space value").for(:slug).with_message(slug_format_message) }
@@ -51,8 +53,8 @@ RSpec.describe Projects::Topic do
 
   describe 'scopes' do
     describe 'without_assigned_projects' do
-      let_it_be(:unassigned_topic) { create(:topic, name: 'unassigned topic') }
-      let_it_be(:project) { create(:project, :public, topic_list: 'topic') }
+      let_it_be(:unassigned_topic) { create(:topic, name: 'unassigned topic', organization: organization) }
+      let_it_be(:project) { create(:project, :public, topic_list: 'topic', organization: organization) }
 
       it 'returns topics without assigned projects' do
         topics = described_class.without_assigned_projects
@@ -62,12 +64,12 @@ RSpec.describe Projects::Topic do
     end
 
     describe 'order_by_non_private_projects_count' do
-      let!(:topic1) { create(:topic, name: 'topicB') }
-      let!(:topic2) { create(:topic, name: 'topicC') }
-      let!(:topic3) { create(:topic, name: 'topicA') }
-      let!(:project1) { create(:project, :public, topic_list: 'topicC, topicA, topicB') }
-      let!(:project2) { create(:project, :public, topic_list: 'topicC, topicA') }
-      let!(:project3) { create(:project, :public, topic_list: 'topicC') }
+      let!(:topic1) { create(:topic, name: 'topicB', organization: organization) }
+      let!(:topic2) { create(:topic, name: 'topicC', organization: organization) }
+      let!(:topic3) { create(:topic, name: 'topicA', organization: organization) }
+      let!(:project1) { create(:project, :public, topic_list: 'topicC, topicA, topicB', organization: organization) }
+      let!(:project2) { create(:project, :public, topic_list: 'topicC, topicA', organization: organization) }
+      let!(:project3) { create(:project, :public, topic_list: 'topicC', organization: organization) }
 
       it 'sorts topics by non_private_projects_count' do
         topics = described_class.order_by_non_private_projects_count

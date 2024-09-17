@@ -45,18 +45,18 @@ Examples of queries with comments:
 
 - Rails:
 
-   ```sql
-   /*application:web,controller:blob,action:show,correlation_id:01EZVMR923313VV44ZJDJ7PMEZ,endpoint_id:Projects::BlobController#show*/ SELECT "routes".* FROM "routes" WHERE "routes"."source_id" = 75 AND "routes"."source_type" = 'Namespace' LIMIT 1
-   ```
+  ```sql
+  /*application:web,controller:blob,action:show,correlation_id:01EZVMR923313VV44ZJDJ7PMEZ,endpoint_id:Projects::BlobController#show*/ SELECT "routes".* FROM "routes" WHERE "routes"."source_id" = 75 AND "routes"."source_type" = 'Namespace' LIMIT 1
+  ```
 
 - Grape:
 
-   ```sql
-   /*application:web,correlation_id:01EZVN0DAYGJF5XHG9N4VX8FAH,endpoint_id:/api/:version/users/:id*/ SELECT COUNT(*) FROM "users" INNER JOIN "user_follow_users" ON "users"."id" = "user_follow_users"."followee_id" WHERE "user_follow_users"."follower_id" = 1
-   ```
+  ```sql
+  /*application:web,correlation_id:01EZVN0DAYGJF5XHG9N4VX8FAH,endpoint_id:/api/:version/users/:id*/ SELECT COUNT(*) FROM "users" INNER JOIN "user_follow_users" ON "users"."id" = "user_follow_users"."followee_id" WHERE "user_follow_users"."follower_id" = 1
+  ```
 
 - Sidekiq:
 
-   ```sql
-   /*application:sidekiq,correlation_id:df643992563683313bc0a0288fb55e23,jid:15fbc506590c625d7664b074,endpoint_id:UserStatusCleanup::BatchWorker,line:/app/workers/user_status_cleanup/batch_worker.rb:19:in `perform'*/ SELECT $1 AS one FROM "user_statuses" WHERE "user_statuses"."clear_status_at" <= $2 LIMIT $3
-   ```
+  ```sql
+  /*application:sidekiq,correlation_id:df643992563683313bc0a0288fb55e23,jid:15fbc506590c625d7664b074,endpoint_id:UserStatusCleanup::BatchWorker,line:/app/workers/user_status_cleanup/batch_worker.rb:19:in `perform'*/ SELECT $1 AS one FROM "user_statuses" WHERE "user_statuses"."clear_status_at" <= $2 LIMIT $3
+  ```

@@ -567,7 +567,7 @@ To monitor the health of the database, use these additional metrics:
 
 Number of [metrics](https://gitlab.com/gitlab-org/gitlab/-/blob/294a92484ce4611f660439aa48eee4dfec2230b5/lib/gitlab/database/background_migration/batched_migration_wrapper.rb#L90-128)
 for each batched background migration are published to Prometheus. These metrics can be searched for and
-visualized in Thanos ([see an example](https://thanos-query.ops.gitlab.net/graph?g0.expr=sum%20(rate(batched_migration_job_updated_tuples_total%7Benv%3D%22gprd%22%7D%5B5m%5D))%20by%20(migration_id)%20&g0.tab=0&g0.stacked=0&g0.range_input=3d&g0.max_source_resolution=0s&g0.deduplicate=1&g0.partial_response=0&g0.store_matches=%5B%5D&g0.end_input=2021-06-13%2012%3A18%3A24&g0.moment_input=2021-06-13%2012%3A18%3A24)).
+visualized in Grafana ([see an example](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22m95%22:%7B%22datasource%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22sum%20%28rate%28batched_migration_job_updated_tuples_total%7Benv%3D%5C%22gprd%5C%22%7D%5B5m%5D%29%29%20by%20%28migration_id%29%20%22,%22range%22:true,%22instant%22:true,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22e58c2f51-20f8-4f4b-ad48-2968782ca7d6%22%7D,%22editorMode%22:%22code%22,%22legendFormat%22:%22__auto%22%7D%5D,%22range%22:%7B%22from%22:%22now-3d%22,%22to%22:%22now%22%7D%7D%7D&orgId=1)).
 
 ### Swap the columns (release N + 1)
 

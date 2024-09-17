@@ -48,7 +48,7 @@ func (id *ID) unmarshalString(b []byte) error {
 		return err
 	}
 
-	*id = ID(i)
+	*id = ID(i) //nolint:gosec
 
 	return nil
 }

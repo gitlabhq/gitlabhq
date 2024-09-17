@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Auth::Saml::User do
   include LdapHelpers
   include LoginHelpers
 
-  let(:saml_user) { described_class.new(auth_hash) }
+  let_it_be(:organization) { create(:organization) }
+  let(:saml_user) { described_class.new(auth_hash, organization_id: organization.id) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:dn) { 'uid=user1,ou=people,dc=example' }

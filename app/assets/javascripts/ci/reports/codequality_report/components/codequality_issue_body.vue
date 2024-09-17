@@ -60,11 +60,11 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-mt-2 gl-mb-2 gl-w-full">
+  <div class="gl-mb-2 gl-mt-2 gl-flex gl-w-full">
     <span :class="severityClass" class="gl-mr-5" data-testid="codequality-severity-icon">
       <gl-icon v-tooltip="severityLabel" :name="severityIcon" :size="12" />
     </span>
-    <div class="gl-flex-grow-1">
+    <div class="gl-grow">
       <div>
         <strong v-if="isStatusSuccess">{{ s__('ciReport|Fixed:') }}</strong>
         {{ issueName }}

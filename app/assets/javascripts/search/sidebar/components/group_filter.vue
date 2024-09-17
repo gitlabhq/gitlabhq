@@ -5,7 +5,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
-import SearchableDropdown from './searchable_dropdown.vue';
+import SearchableDropdown from './shared/searchable_dropdown.vue';
 
 export default {
   name: 'GroupFilter',
@@ -67,7 +67,7 @@ export default {
 
 <template>
   <div>
-    <h5 :id="labelId" class="gl-mt-0 gl-mb-2 gl-font-sm">
+    <h5 :id="labelId" class="gl-mb-2 gl-mt-0 gl-text-sm">
       {{ $options.i18n.groupFieldLabel }}
     </h5>
     <searchable-dropdown

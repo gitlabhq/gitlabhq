@@ -1,7 +1,7 @@
 .gl-text-center.gl-pt-5
   %label.gl-font-normal
     = _("Register with:")
-  .gl-display-flex.gl-flex-direction-column.gl-gap-3
+  .gl-flex.gl-flex-col.gl-gap-3
     - providers.each do |provider|
       = render 'devise/shared/signup_omniauth_provider_button',
         href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),

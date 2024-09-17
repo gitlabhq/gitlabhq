@@ -33,6 +33,7 @@ query GetProjectPagesDeployments(
         ciBuildId
         createdAt
         deletedAt
+        expiresAt
         fileCount
         pathPrefix
         size

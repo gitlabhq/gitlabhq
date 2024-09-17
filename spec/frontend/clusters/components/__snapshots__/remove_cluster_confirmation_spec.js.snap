@@ -2,7 +2,7 @@
 
 exports[`Remove cluster confirmation modal renders buttons with modal included 1`] = `
 <div
-  class="gl-display-flex"
+  class="gl-flex"
 >
   <button
     class="btn btn-danger btn-md gl-button gl-mr-3"
@@ -31,7 +31,7 @@ exports[`Remove cluster confirmation modal renders buttons with modal included 1
 
 exports[`Remove cluster confirmation modal two buttons open modal with "cleanup" option 1`] = `
 <div
-  class="gl-display-flex"
+  class="gl-flex"
 >
   <button
     class="btn btn-danger btn-md gl-button gl-mr-3"
@@ -122,7 +122,7 @@ exports[`Remove cluster confirmation modal two buttons open modal with "cleanup"
 
 exports[`Remove cluster confirmation modal two buttons open modal without "cleanup" option 1`] = `
 <div
-  class="gl-display-flex"
+  class="gl-flex"
 >
   <button
     class="btn btn-danger btn-md gl-button gl-mr-3"

@@ -627,11 +627,11 @@ Prerequisites:
 1. Edit your merge request.
 1. In the **Description** box, find and add the task.
    - Use the [closing pattern](project/issues/managing_issues.md#closing-issues-automatically) that you would for adding a merge request to an issue.
-   - If your task is in the same project as your merge request, you can search for your task by typing <kbd>#</kbd> followed by the task's ID or title. 
+   - If your task is in the same project as your merge request, you can search for your task by typing <kbd>#</kbd> followed by the task's ID or title.
    - If your task is in a different project, with a task open, copy the URL from the browser or
-     copy the task's reference by selecting the vertical ellipsis (**{ellipsis_v}**) in the upper-right corner, then **Copy Reference**. 
+     copy the task's reference by selecting the vertical ellipsis (**{ellipsis_v}**) in the upper-right corner, then **Copy Reference**.
 
-The merge requests are now visible on the right sidebar, in the **Development** section. 
+The merge requests are now visible on the right sidebar, in the **Development** section.
 
 You must use the exact closing pattern to add the merge request to the task. Other text will not work.
 

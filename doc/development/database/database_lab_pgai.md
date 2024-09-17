@@ -55,11 +55,11 @@ you can follow the steps below to configure the `pgai` Gem:
 
    # Grab an access token: https://console.postgres.ai/gitlab/tokens
    # GITLAB_USER is your GitLab handle
-   pgai config --dbname=gitlabhq_dblab --prefix=$GITLAB_USER --proxy=pgai-proxy
+   pgai config --prefix=$GITLAB_USER
 
    # Grab the respective port values from https://console.postgres.ai/gitlab/instances
    # for the instances you'll be using (in this case, for the `main` database instance)
-   pgai env add --alias main --id <environment-id> --port <environment-port>
+   pgai env add --alias main --id <environment-id> --port <environment-port> -n <database_name>
    ```
 
 1. Once this one-time configuration is done, you can use `pgai connect` to connect to a particular database. For

@@ -46,7 +46,7 @@ func validateMetadata(r io.Reader) error {
 	paths := []string{"file1", "some/", "some/file/", "some/file/dir/", "some/file/dir/file2"}
 	for _, path := range paths {
 		if !bytes.Contains(meta, []byte(path+"\x00")) {
-			return fmt.Errorf(fmt.Sprintf("zipartifacts: metadata for path %q not found", path))
+			return fmt.Errorf("zipartifacts: metadata for path %q not found", path)
 		}
 	}
 

@@ -92,7 +92,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
     end
   end
 
-  describe 'omniauth' do
+  describe 'omniauth', :with_current_organization do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
     let(:omniauth_email) { user.email }
     let(:additional_info) { {} }
@@ -467,19 +467,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             expect(request.env['warden']).to be_authenticated
           end
 
-          it 'sets the username and caller_id in the context' do
-            expect(controller).to receive(:atlassian_oauth2).and_wrap_original do |m, *args|
-              m.call(*args)
-
-              expect(Gitlab::ApplicationContext.current).to include(
-                'meta.user' => user.username,
-                'meta.caller_id' => 'OmniauthCallbacksController#atlassian_oauth2'
-              )
-            end
-
-            post :atlassian_oauth2
-          end
-
           context 'when a user has 2FA enabled' do
             let(:user) { create(:atlassian_user, :two_factor, extern_uid: extern_uid) }
 
@@ -661,7 +648,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
     end
 
-    context 'for sign up' do
+    context 'for sign up', :with_current_organization do
       before do
         user.destroy!
       end
@@ -740,19 +727,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it 'doesn\'t link a new identity to the user' do
         expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
-      end
-
-      it 'sets the username and caller_id in the context' do
-        expect(controller).to receive(:saml).and_wrap_original do |m, *args|
-          m.call(*args)
-
-          expect(Gitlab::ApplicationContext.current).to include(
-            'meta.user' => user.username,
-            'meta.caller_id' => 'OmniauthCallbacksController#saml'
-          )
-        end
-
-        post :saml, params: { SAMLResponse: mock_saml_response }
       end
 
       context 'with IDP bypass two factor request' do

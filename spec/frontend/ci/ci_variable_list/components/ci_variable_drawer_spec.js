@@ -4,7 +4,7 @@ import {
   GlFormCombobox,
   GlFormGroup,
   GlFormInput,
-  GlFormSelect,
+  GlCollapsibleListbox,
   GlLink,
   GlModal,
   GlSprintf,
@@ -22,6 +22,9 @@ import {
   EDIT_VARIABLE_ACTION,
   EVENT_ACTION,
   variableOptions,
+  VISIBILITY_HIDDEN,
+  VISIBILITY_MASKED,
+  VISIBILITY_VISIBLE,
   projectString,
   variableTypes,
 } from '~/ci/ci_variable_list/constants';
@@ -48,6 +51,7 @@ describe('CI Variable Drawer', () => {
 
   const defaultProps = {
     areEnvironmentsLoading: false,
+    areHiddenVariablesAvailable: true,
     areScopedVariablesAvailable: true,
     environments: mockEnvironments,
     hideEnvironmentScope: false,
@@ -91,13 +95,14 @@ describe('CI Variable Drawer', () => {
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
   const findFlagsDocsLink = () => wrapper.findByTestId('ci-variable-flags-docs-link');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
-  const findMaskedRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
-  const findMaskedRadioGroup = () => wrapper.findByTestId('ci-variable-masked');
+  const findVisibilityRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
+  const findVisibilityRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
   const findValueField = () => wrapper.findByTestId('ci-variable-value');
   const findValueLabel = () => wrapper.findByTestId('ci-variable-value-label');
+  const findHiddenVariableTip = () => wrapper.findByTestId('hidden-variable-tip');
   const findTitle = () => findDrawer().find('h2');
-  const findTypeDropdown = () => wrapper.findComponent(GlFormSelect);
+  const findTypeDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findVariablesPrecedenceDocsLink = () =>
     wrapper.findByTestId('ci-variable-precedence-docs-link');
 
@@ -130,7 +135,7 @@ describe('CI Variable Drawer', () => {
       });
 
       it('adds each type option as a dropdown item', () => {
-        expect(findTypeDropdown().findAll('option')).toHaveLength(variableOptions.length);
+        expect(findTypeDropdown().props('items')).toHaveLength(variableOptions.length);
 
         variableOptions.forEach((v) => {
           expect(findTypeDropdown().text()).toContain(v.text);
@@ -138,21 +143,19 @@ describe('CI Variable Drawer', () => {
       });
 
       it('is set to environment variable by default', () => {
-        expect(findTypeDropdown().findAll('option').at(0).attributes('value')).toBe(
-          variableTypes.envType,
-        );
+        expect(findTypeDropdown().props('items')[0].value).toBe(variableTypes.envType);
       });
 
       it('renders the selected variable type', () => {
         createComponent({
-          mountFn: mountExtended,
+          mountFn: shallowMountExtended,
           props: {
             areEnvironmentsLoading: true,
             selectedVariable: mockProjectVariableFileType,
           },
         });
 
-        expect(findTypeDropdown().element.value).toBe(variableTypes.fileType);
+        expect(findTypeDropdown().props('selected')).toBe(variableTypes.fileType);
       });
     });
 
@@ -189,36 +192,69 @@ describe('CI Variable Drawer', () => {
         });
 
         expect(findEnvironmentScopeDropdown().exists()).toBe(false);
-        expect(findDisabledEnvironmentScopeDropdown().attributes('readonly')).toBe('readonly');
+        expect(findDisabledEnvironmentScopeDropdown().attributes('readonly')).toBeDefined();
       });
     });
 
     describe('visibility section', () => {
-      it('renders radio buttons for Variable masking', () => {
-        createComponent({ stubs: { GlFormRadioGroup, GlFormRadio } });
+      it('renders two radio buttons when areHiddenVariablesAvailable is false', () => {
+        createComponent({
+          props: { areHiddenVariablesAvailable: false },
+        });
 
-        expect(findMaskedRadioButtons()).toHaveLength(2);
+        expect(findVisibilityRadioButtons()).toHaveLength(2);
       });
 
-      describe('masked radio', () => {
+      it('renders three radio buttons when areHiddenVariablesAvailable is true', () => {
+        createComponent({
+          props: { areHiddenVariablesAvailable: true },
+        });
+
+        expect(findVisibilityRadioButtons()).toHaveLength(3);
+      });
+
+      describe('radio button behavior', () => {
         beforeEach(() => {
-          createComponent();
+          createComponent({ props: { areHiddenVariablesAvailable: true } });
         });
 
-        it('is false by default', () => {
-          expect(findMaskedRadioGroup().attributes('checked')).toBeUndefined();
+        it('is set to visible by default', () => {
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
         });
 
-        it('inherits value of selected variable when editing', () => {
-          createComponent({
-            props: {
-              selectedVariable: mockProjectVariableFileType,
-              mode: EDIT_VARIABLE_ACTION,
-            },
-          });
+        it.each`
+          description            | masked   | hidden   | expectedVisibility
+          ${'visible'}           | ${false} | ${false} | ${VISIBILITY_VISIBLE}
+          ${'masked'}            | ${true}  | ${false} | ${VISIBILITY_MASKED}
+          ${'masked and hidden'} | ${true}  | ${true}  | ${VISIBILITY_HIDDEN}
+        `(
+          'selects $description visibility when masked is $masked and hidden is $hidden',
+          async ({ masked, hidden, expectedVisibility }) => {
+            await createComponent({
+              props: {
+                selectedVariable: {
+                  ...mockProjectVariableFileType,
+                  ...{ masked, hidden },
+                },
+                mode: EDIT_VARIABLE_ACTION,
+              },
+            });
 
-          expect(findMaskedRadioGroup().attributes('checked')).toBe('true');
+            expect(findVisibilityRadioGroup().attributes('checked')).toBe(expectedVisibility);
+          },
+        );
+      });
+
+      it('is disabled when editing a hidden variable', () => {
+        createComponent({
+          props: {
+            areHiddenVariablesAvailable: true,
+            selectedVariable: { ...mockProjectVariable, hidden: true },
+            mode: EDIT_VARIABLE_ACTION,
+          },
         });
+
+        expect(findVisibilityRadioGroup().attributes('disabled')).toBe('true');
       });
     });
 
@@ -270,9 +306,11 @@ describe('CI Variable Drawer', () => {
       });
 
       it("sets the variable's raw value", async () => {
-        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        await findExpandedCheckbox().vm.$emit('change');
-        await findConfirmBtn().vm.$emit('click');
+        findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        findExpandedCheckbox().vm.$emit('change');
+        findConfirmBtn().vm.$emit('click');
+
+        await nextTick();
 
         const sentRawValue = wrapper.emitted('add-variable')[0][0].raw;
         expect(sentRawValue).toBe(!defaultProps.raw);
@@ -284,7 +322,9 @@ describe('CI Variable Drawer', () => {
           'Variable value will be evaluated as raw string.',
         );
 
-        await findExpandedCheckbox().vm.$emit('change');
+        findExpandedCheckbox().vm.$emit('change');
+
+        await nextTick();
 
         expect(findExpandedCheckbox().attributes('checked')).toBeUndefined();
         expect(findDrawer().text()).toContain('Variable value will be evaluated as raw string.');
@@ -295,7 +335,9 @@ describe('CI Variable Drawer', () => {
           'Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
         );
 
-        await findValueField().vm.$emit('input', '$NEW_VALUE');
+        findValueField().vm.$emit('input', '$NEW_VALUE');
+
+        await nextTick();
 
         expect(findDrawer().text()).toContain(
           'Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
@@ -323,9 +365,11 @@ describe('CI Variable Drawer', () => {
         ${'multiline\nkey'}      | ${keyFeedbackMessage} | ${'true'}
       `('key validation', ({ key, feedbackMessage, submitButtonDisabledState }) => {
         it(`validates key ${key} correctly`, async () => {
-          await findKeyField().vm.$emit('input', key);
+          findKeyField().vm.$emit('input', key);
 
-          expect(findConfirmBtn().attributes('disabled')).toBe(submitButtonDisabledState);
+          await nextTick();
+
+          expect(findConfirmBtn().attributes().disabled).toBe(submitButtonDisabledState);
           expect(wrapper.text()).toContain(feedbackMessage);
         });
       });
@@ -337,7 +381,9 @@ describe('CI Variable Drawer', () => {
       });
 
       it('can submit empty value', async () => {
-        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+
+        await nextTick();
 
         // value is empty by default
         expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
@@ -399,7 +445,7 @@ describe('CI Variable Drawer', () => {
             trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
             findKeyField().vm.$emit('input', 'NEW_VARIABLE');
             findValueField().vm.$emit('input', value);
-            findMaskedRadioGroup().vm.$emit('input', true);
+            findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
           });
 
           itif(canSubmit)(`can submit when value is ${value}`, () => {
@@ -446,18 +492,58 @@ describe('CI Variable Drawer', () => {
 
       it('only sends the tracking event once', async () => {
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        await findMaskedRadioGroup().vm.$emit('input', true);
+        findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
+
+        await nextTick();
 
         expect(trackingSpy).toHaveBeenCalledTimes(0);
 
-        await findValueField().vm.$emit('input', 'unsupported|char');
+        findValueField().vm.$emit('input', 'unsupported|char');
+
+        await nextTick();
 
         expect(trackingSpy).toHaveBeenCalledTimes(1);
 
-        await findValueField().vm.$emit('input', 'dollar$ign');
+        findValueField().vm.$emit('input', 'dollar$ign');
+
+        await nextTick();
 
         expect(trackingSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('when creating a hidden variable, value field behaves like a masked variable', async () => {
+        createComponent();
+
+        findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        findValueField().vm.$emit('input', '~v@lid:symbols.');
+        findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_HIDDEN);
+
+        await nextTick();
+
+        expect(findHiddenVariableTip().exists()).toBe(false);
+        expect(findValueLabel().attributes('invalid-feedback')).toBe('');
+        expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
+
+        findValueField().vm.$emit('input', 'dollar$ign');
+
+        await nextTick();
+
+        expect(findHiddenVariableTip().exists()).toBe(false);
+        expect(findValueLabel().attributes('invalid-feedback')).not.toBe('');
+        expect(findConfirmBtn().attributes('disabled')).toBeDefined();
+      });
+
+      it('when editing a hidden variable, value field is replaced with a hint', () => {
+        createComponent({
+          props: {
+            mode: EDIT_VARIABLE_ACTION,
+            selectedVariable: { ...mockProjectVariable, hidden: true },
+          },
+        });
+
+        expect(findValueField().exists()).toBe(false);
+        expect(findHiddenVariableTip().text()).toBe('The value is masked and hidden permanently.');
       });
     });
   });
@@ -475,7 +561,9 @@ describe('CI Variable Drawer', () => {
 
       expect(wrapper.emitted('close-form')).toBeUndefined();
 
-      await findDrawer().vm.$emit('close');
+      findDrawer().vm.$emit('close');
+
+      await nextTick();
 
       expect(wrapper.emitted('close-form')).toHaveLength(1);
     });
@@ -495,22 +583,24 @@ describe('CI Variable Drawer', () => {
       });
 
       it('dispatches the add-variable event without closing the form', async () => {
-        await findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
-        await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        await findProtectedCheckbox().vm.$emit('input', false);
-        await findExpandedCheckbox().vm.$emit('input', true);
-        await findMaskedRadioGroup().vm.$emit('input', true);
-        await findValueField().vm.$emit('input', 'NEW_VALUE');
-
+        findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
+        findKeyField().vm.$emit('input', 'NEW_VARIABLE');
+        findProtectedCheckbox().vm.$emit('input', false);
+        findExpandedCheckbox().vm.$emit('input', true);
+        findVisibilityRadioGroup().vm.$emit('change', VISIBILITY_MASKED);
+        findValueField().vm.$emit('input', 'NEW_VALUE');
         findConfirmBtn().vm.$emit('click');
 
-        expect(wrapper.emitted('add-variable')).toEqual([
+        await nextTick();
+
+        expect(wrapper.emitted('add-variable')).toMatchObject([
           [
             {
               environmentScope: '*',
               description: 'NEW_DESCRIPTION',
               key: 'NEW_VARIABLE',
               masked: true,
+              hidden: false,
               protected: false,
               raw: false, // opposite of expanded
               value: 'NEW_VALUE',
@@ -536,8 +626,10 @@ describe('CI Variable Drawer', () => {
       });
 
       it('dispatches the edit-variable event', async () => {
-        await findValueField().vm.$emit('input', 'EDITED_VALUE');
-        await findDescriptionField().vm.$emit('input', 'EDITED_DESCRIPTION');
+        findValueField().vm.$emit('input', 'EDITED_VALUE');
+        findDescriptionField().vm.$emit('input', 'EDITED_DESCRIPTION');
+
+        await nextTick();
 
         findConfirmBtn().vm.$emit('click');
 
@@ -588,8 +680,10 @@ describe('CI Variable Drawer', () => {
       });
 
       it('sets the environment scope', async () => {
-        await findEnvironmentScopeDropdown().vm.$emit('select-environment', 'staging');
-        await findConfirmBtn().vm.$emit('click');
+        findEnvironmentScopeDropdown().vm.$emit('select-environment', 'staging');
+        findConfirmBtn().vm.$emit('click');
+
+        await nextTick();
 
         expect(wrapper.emitted('update-variable')).toEqual([
           [
@@ -602,7 +696,9 @@ describe('CI Variable Drawer', () => {
       });
 
       it('bubbles up the search event', async () => {
-        await findEnvironmentScopeDropdown().vm.$emit('search-environment-scope', 'staging');
+        findEnvironmentScopeDropdown().vm.$emit('search-environment-scope', 'staging');
+
+        await nextTick();
 
         expect(wrapper.emitted('search-environment-scope')[1]).toEqual(['staging']);
       });

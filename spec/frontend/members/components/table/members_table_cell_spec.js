@@ -26,10 +26,6 @@ describe('MembersTableCell', () => {
         type: String,
         required: true,
       },
-      isDirectMember: {
-        type: Boolean,
-        required: true,
-      },
       isCurrentUser: {
         type: Boolean,
         required: true,
@@ -68,7 +64,6 @@ describe('MembersTableCell', () => {
         default: `
           <wrapped-component
             :member-type="props.memberType"
-            :is-direct-member="props.isDirectMember"
             :is-current-user="props.isCurrentUser"
             :permissions="props.permissions"
           />
@@ -112,28 +107,6 @@ describe('MembersTableCell', () => {
       expect(findWrappedComponent().props('memberType')).toBe(expectedMemberType);
     },
   );
-
-  describe('isDirectMember', () => {
-    it('returns `true` when member source has same ID as `sourceId`', () => {
-      createComponentWithDirectMember();
-
-      expect(findWrappedComponent().props('isDirectMember')).toBe(true);
-    });
-
-    it('returns `false` when member is inherited', () => {
-      createComponentWithInheritedMember();
-
-      expect(findWrappedComponent().props('isDirectMember')).toBe(false);
-    });
-
-    it('returns `true` for linked groups', () => {
-      createComponent({
-        member: group,
-      });
-
-      expect(findWrappedComponent().props('isDirectMember')).toBe(true);
-    });
-  });
 
   describe('isCurrentUser', () => {
     it('returns `true` when `member.user` has the same ID as `currentUserId`', () => {

@@ -43,7 +43,7 @@ To complete this tutorial:
 
 - **Name**: Human-friendly name for the Workload Identity Pool, such as `GitLab`.
 - **Pool ID**: Unique ID in the Google Cloud project for the Workload Identity Pool,
-  such as `gitlab`. This value is used to refer to the pool. and appears in URLs.
+  such as `gitlab`. This value is used to refer to the pool and appears in URLs.
 - **Description**: Optional. A description of the pool.
 - **Enabled Pool**: Ensure this option is `true`.
 

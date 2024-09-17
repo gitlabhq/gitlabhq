@@ -28,7 +28,7 @@ module QA
           expect(mr_page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
 
           expect(mr_page).not_to have_merge_button
-          expect(merge_request.project.commits.size).to eq(2)
+          expect(merge_request.project.commits.size).to eq(2), "Expected 2 commits, got: #{merge_request.project.commits.size}"
 
           mr_page.rebase!
 
@@ -36,7 +36,7 @@ module QA
 
           mr_page.merge!
 
-          expect(merge_request.project.commits.size).to eq(3)
+          expect(merge_request.project.commits.size).to eq(3), "Expected 3 commits, got: #{merge_request.project.commits.size}"
         end
       end
     end

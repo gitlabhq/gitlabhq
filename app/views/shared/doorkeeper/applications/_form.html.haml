@@ -1,6 +1,6 @@
 - show_cancel_button = local_assigns.fetch(:cancel, false)
 
-= gitlab_ui_form_for @application, url: url, html: { role: 'form', class: 'doorkeeper-app-form gl-max-w-80 gl-display-inline-block' } do |f|
+= gitlab_ui_form_for @application, url: url, html: { role: 'form', class: 'doorkeeper-app-form gl-max-w-80 gl-inline-block' } do |f|
   = form_errors(@application)
 
   .form-group

@@ -143,6 +143,14 @@ RSpec.describe Onboarding::Progress, feature_category: :onboarding do
       end
 
       it { is_expected.to eq true }
+
+      context 'when onboarding has ended' do
+        before do
+          described_class.last.update!(ended_at: Time.current)
+        end
+
+        it { is_expected.to eq false }
+      end
     end
 
     context 'when not onboarding' do

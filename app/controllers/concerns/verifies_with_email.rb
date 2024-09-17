@@ -11,7 +11,6 @@ module VerifiesWithEmail
     prepend_before_action :verify_with_email, only: :create, unless: -> { skip_verify_with_email? }
   end
 
-  # rubocop:disable Metrics/PerceivedComplexity
   def verify_with_email
     return unless user = find_user || find_verification_user
 
@@ -23,24 +22,10 @@ module VerifiesWithEmail
       # when the password is correct, which could be a giveaway when brute-forced.
       return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: user) { true }
 
-      if user.valid_password?(user_params[:password])
-        # The user has logged in successfully.
-
-        if user.unlock_token
-          # Prompt for the token if it already has been set
-          prompt_for_email_verification(user)
-        elsif user.access_locked? || !trusted_ip_address?(user)
-          # require email verification if:
-          # - their account has been locked because of too many failed login attempts, or
-          # - they have logged in before, but never from the current ip address
-          reason = 'sign in from untrusted IP address' unless user.access_locked?
-          send_verification_instructions(user, reason: reason) unless send_rate_limited?(user)
-          prompt_for_email_verification(user)
-        end
-      end
+      # Verify the email if the user has logged in successfully.
+      verify_email(user) if user.valid_password?(user_params[:password])
     end
   end
-  # rubocop:enable Metrics/PerceivedComplexity
 
   def resend_verification_code
     return unless user = find_verification_user
@@ -106,6 +91,21 @@ module VerifiesWithEmail
     Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
+  end
+
+  def verify_email(user)
+    if user.unlock_token
+      # Prompt for the token if it already has been set. If the token has expired, send a new one.
+      send_verification_instructions(user) if unlock_token_expired?(user)
+      prompt_for_email_verification(user)
+    elsif user.access_locked? || !trusted_ip_address?(user)
+      # require email verification if:
+      # - their account has been locked because of too many failed login attempts, or
+      # - they have logged in before, but never from the current ip address
+      reason = 'sign in from untrusted IP address' unless user.access_locked?
+      send_verification_instructions(user, reason: reason) unless send_rate_limited?(user)
+      prompt_for_email_verification(user)
+    end
   end
 
   def verify_token(user, token)
@@ -191,5 +191,11 @@ module VerifiesWithEmail
   def require_email_verification_enabled?(user)
     Feature.enabled?(:require_email_verification, user) &&
       Feature.disabled?(:skip_require_email_verification, user, type: :ops)
+  end
+
+  def unlock_token_expired?(user)
+    return false unless user.locked_at
+
+    user.locked_at < Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes.ago
   end
 end

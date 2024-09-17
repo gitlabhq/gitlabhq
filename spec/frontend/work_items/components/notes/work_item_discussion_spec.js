@@ -16,7 +16,7 @@ import {
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
 const mockWorkItemNotesWidgetResponseWithComments =
-  mockWorkItemNotesResponseWithComments.data.workspace.workItem.widgets.find(
+  mockWorkItemNotesResponseWithComments().data.workspace.workItem.widgets.find(
     (widget) => widget.type === WIDGET_TYPE_NOTES,
   );
 
@@ -195,6 +195,39 @@ describe('Work Item Discussion', () => {
       });
 
       expect(findToggleRepliesWidget().props('collapsed')).toBe(true);
+    });
+
+    it('should pass `isDiscussionResolvable` prop as true when user has resolveNote permission', () => {
+      createComponent({
+        discussion: resolvedDiscussionList,
+        isExpandedOnLoad: false,
+      });
+
+      expect(findThreadAtIndex(0).props('isDiscussionResolvable')).toBe(true);
+    });
+
+    it('should pass `isDiscussionResolvable` prop as false when user does not have resolveNote permission', () => {
+      const resolvedDiscussionListWithoutPermissions = resolvedDiscussionList.map((note) => {
+        return {
+          ...note,
+          userPermissions: {
+            adminNote: true,
+            awardEmoji: true,
+            readNote: true,
+            createNote: true,
+            resolveNote: false,
+            repositionNote: true,
+            __typename: 'NotePermissions',
+          },
+        };
+      });
+
+      createComponent({
+        discussion: resolvedDiscussionListWithoutPermissions,
+        isExpandedOnLoad: false,
+      });
+
+      expect(findThreadAtIndex(0).props('isDiscussionResolvable')).toBe(false);
     });
 
     it('toggles resolved status when toggle icon is clicked from note header', async () => {

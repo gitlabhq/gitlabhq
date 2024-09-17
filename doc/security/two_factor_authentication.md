@@ -70,9 +70,9 @@ Administrators can enforce 2FA for administrator users in a self-managed instanc
 1. On the left sidebar, at the bottom, select **Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section:
-    - Select **Require administrators to enable 2FA**.
-    - In **Two-factor grace period**, enter a number of hours. If you want to
-      enforce 2FA on the next sign-in attempt, enter `0`.
+   1. Select **Require administrators to enable 2FA**.
+   1. In **Two-factor grace period**, enter a number of hours. If you want to
+     enforce 2FA on the next sign-in attempt, enter `0`.
 1. Select **Save changes**.
 
 NOTE:
@@ -123,7 +123,7 @@ their members.
 
 ### 2FA in projects
 
-If a project belonging to a group that enables or enforces 2FA is [shared](../user/project/members/share_project_with_groups.md)
+If a project belonging to a group that enables or enforces 2FA is [shared](../user/project/members/sharing_projects_groups.md)
 with a group that does not enable or enforce 2FA, members of the non-2FA group can access that project
 without using 2FA. For example:
 
@@ -131,7 +131,7 @@ without using 2FA. For example:
 - If a project, *P*, that belongs to group *A* is shared with group *B*, members
   of group *B* can access project *P* without 2FA.
 
-To ensure this does not occur, [prevent sharing of projects](../user/group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups)
+To ensure this does not occur, [prevent sharing of projects](../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
 for the 2FA group.
 
 If you add members to a project in a group or subgroup that has 2FA

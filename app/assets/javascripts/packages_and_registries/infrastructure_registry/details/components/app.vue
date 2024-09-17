@@ -189,7 +189,7 @@ export default {
 
         <template v-else-if="hasVersions">
           <ul class="gl-pl-0">
-            <li v-for="v in packageEntity.versions" :key="v.id" class="gl-list-style-none">
+            <li v-for="v in packageEntity.versions" :key="v.id" class="gl-list-none">
               <package-list-row
                 :package-entity="packageEntityWithName(v)"
                 :package-link="v.id.toString()"

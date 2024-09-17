@@ -27,7 +27,7 @@
 .admin-dashboard.gl-mt-3{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_dashboard_pageload' } }
   .h3.gl-mb-5.gl-mt-0= _('Instance overview')
   .row
-    - component_params = { body_options: { class: 'gl-display-flex gl-justify-content-space-between gl-align-items-flex-start' } }
+    - component_params = { body_options: { class: 'gl-flex gl-justify-between gl-items-start' } }
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do
@@ -37,7 +37,7 @@
           = render Pajamas::ButtonComponent.new(href: new_project_path) do
             = s_('AdminArea|New project')
         - c.with_footer do
-          .gl-display-flex.gl-align-items-center
+          .gl-flex.gl-items-center
             = link_to(s_('AdminArea|View latest projects'), admin_projects_path(sort: 'created_desc'))
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
@@ -45,9 +45,9 @@
           %div
             = render Pajamas::SingleStatComponent.new(title_icon: 'users', title: s_('AdminArea|Users')) do |c|
               - c.with_stat_value do
-                .gl-display-flex.gl-align-items-center.gl-gap-3
+                .gl-flex.gl-items-center.gl-gap-3
                   %span= approximate_count_with_delimiters(@counts, User)
-                  %a.gl-display-flex.gl-cursor-pointer{ tabindex: "0", data: { container: "body",
+                  %a.gl-flex.gl-cursor-pointer{ tabindex: "0", data: { container: "body",
                     toggle: "popover",
                     placement: "top",
                     html: "true",
@@ -59,10 +59,10 @@
           = render Pajamas::ButtonComponent.new(href: new_admin_user_path) do
             = s_('AdminArea|New user')
         - c.with_footer do
-          .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-2
+          .gl-flex.gl-flex-wrap.gl-items-center.gl-gap-2
             = link_to(s_('AdminArea|View latest users'), admin_users_path({ sort: 'created_desc' }))
             %span.gl-text-secondary= "/"
-            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-normal gl-text-capitalize")
+            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-text-base gl-font-normal gl-text-capitalize")
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do
@@ -72,7 +72,7 @@
           = render Pajamas::ButtonComponent.new(href: new_admin_group_path) do
             = s_('AdminArea|New group')
         - c.with_footer do
-          .gl-display-flex.gl-align-items-center
+          .gl-flex.gl-items-center
             = link_to(s_('AdminArea|View latest groups'), admin_groups_path(sort: 'created_desc'))
   .row
     .col-md-4.gl-mb-6
@@ -179,8 +179,8 @@
         - c.with_body do
           %h4.gl-heading-4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
-            .gl-display-flex.gl-py-3
-              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+            .gl-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
                 = link_to project.full_name, admin_project_path(project)
               %span.gl-whitespace-nowrap.gl-text-right
                 #{time_ago_with_tooltip(project.created_at)}
@@ -189,8 +189,8 @@
         - c.with_body do
           %h4.gl-heading-4= s_('AdminArea|Latest users')
           - @users.each do |user|
-            .gl-display-flex.gl-py-3
-              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+            .gl-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
                 = link_to [:admin, user] do
                   = user.name
               %span.gl-whitespace-nowrap.gl-text-right
@@ -200,8 +200,8 @@
         - c.with_body do
           %h4.gl-heading-4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
-            .gl-display-flex.gl-py-3
-              .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
+            .gl-flex.gl-py-3
+              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
                 = link_to [:admin, group] do
                   = group.full_name
               %span.gl-whitespace-nowrap.gl-text-right

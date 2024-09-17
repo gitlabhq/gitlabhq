@@ -14,8 +14,14 @@ RSpec.describe Mutations::Todos::Create do
         target = create(:milestone)
         input = { target_id: global_id_of(target).to_s }
         mutation = graphql_mutation(described_class, input)
+        headers = { "Referer" => "foobar", "User-Agent" => "user-agent" }
+        request = instance_double(ActionDispatch::Request, headers: headers, env: nil)
 
-        response = GitlabSchema.execute(mutation.query, context: query_context, variables: mutation.variables).to_h
+        response = GitlabSchema.execute(
+          mutation.query,
+          context: query_context(request: request),
+          variables: mutation.variables
+        ).to_h
 
         expect(response).to include(
           'errors' => contain_exactly(

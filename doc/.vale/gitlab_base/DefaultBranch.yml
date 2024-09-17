@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.DefaultBranch
+# Warning: gitlab_base.DefaultBranch
 #
 # Do not refer to the default branch as the 'master' branch, if possible.
 #

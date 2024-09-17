@@ -1133,4 +1133,22 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
       it { expect(subject.match(markdown)[:html_comment_block]).to eq expected }
     end
   end
+
+  describe '.ml_model_file_name_regex' do
+    subject { described_class.ml_model_file_name_regex }
+
+    it { is_expected.to match('123') }
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo+bar-2_0.pom') }
+    it { is_expected.to match('foo.bar.baz-2.0-20190901.47283-1.jar') }
+    it { is_expected.to match('maven-metadata.xml') }
+    it { is_expected.to match('1.0-SNAPSHOT') }
+    it { is_expected.not_to match('../../foo') }
+    it { is_expected.not_to match('..\..\foo') }
+    it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
+    it { is_expected.not_to match('$foo/bar') }
+    it { is_expected.to match('my file name') }
+    it { is_expected.to match('1.0-SNAPSHOT_v1_snapshot edited') }
+    it { is_expected.not_to match('!!()()') }
+  end
 end

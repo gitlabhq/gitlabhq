@@ -16,8 +16,7 @@ class Admin::TopicsController < Admin::ApplicationController
     @topic = Projects::Topic.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @topic = Projects::Topic.new(topic_params)
@@ -64,7 +63,7 @@ class Admin::TopicsController < Admin::ApplicationController
   end
 
   def topic_params
-    params.require(:projects_topic).permit(allowed_topic_params)
+    params.require(:projects_topic).permit(allowed_topic_params).merge({ organization_id: ::Current.organization_id })
   end
 
   def allowed_topic_params

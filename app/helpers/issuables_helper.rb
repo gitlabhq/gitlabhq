@@ -277,7 +277,7 @@ module IssuablesHelper
     end
   end
 
-  def issuable_sidebar_options(issuable)
+  def issuable_sidebar_options(issuable, project)
     {
       endpoint: "#{issuable[:issuable_json_path]}?serializer=sidebar_extras",
       toggleSubscriptionEndpoint: issuable[:toggle_subscription_path],
@@ -293,7 +293,8 @@ module IssuablesHelper
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
       canCreateTimelogs: issuable.dig(:current_user, :can_create_timelogs),
       createNoteEmail: issuable[:create_note_email],
-      issuableType: issuable[:type]
+      issuableType: issuable[:type],
+      directlyInviteMembers: can_admin_project_member?(project).to_s
     }
   end
 

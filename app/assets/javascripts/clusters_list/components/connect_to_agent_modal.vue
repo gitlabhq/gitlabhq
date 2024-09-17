@@ -113,7 +113,7 @@ export default {
     <p class="gl-flex gl-items-start">
       <code-block-highlighted
         :language="commandLanguage"
-        class="gl-border gl-px-3 gl-py-2 gl-w-full gl-mb-0 gl-mr-3"
+        class="gl-border gl-mb-0 gl-mr-3 gl-w-full gl-px-3 gl-py-2"
         :code="command"
       />
       <modal-copy-button :text="command" :modal-id="$options.modalId" category="tertiary" />

@@ -285,7 +285,7 @@ Registration is required.
 
 After the virtual machine is set up, you can follow the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
 installation instructions, including the [advanced instructions for RHEL](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#red-hat-enterprise-linux).
-Note that `asdf` is not used for dependency management because it's essential to
+The `asdf` tool is not used for dependency management because it's essential to
 use the RedHat-provided Go compiler and other system dependencies.
 
 ### Enable FIPS mode
@@ -406,10 +406,13 @@ needed. There are [specific build tags](https://github.com/golang-fips/go/blob/g
 that disable these crypto hooks.
 
 We can [check whether a given binary is using OpenSSL](https://go.googlesource.com/go/+/dev.boringcrypto/misc/boring/#caveat) via `go tool nm`
-and look for symbols named `Cfunc__goboringcrypto`. For example:
+and look for symbols named `Cfunc__goboringcrypto` or `crypto/internal/boring/sig.BoringCrypto`.
 
-```plaintext
-$ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
+For example:
+
+```console
+$ # Find in a Golang-FIPS 1.17 library
+$ go tool nm nginx-ingress-controller | grep '_Cfunc__goboringcrypto_|\bcrypto/internal/boring/sig\.BoringCrypto' | tail
  2a0b650 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Final
  2a0b658 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Init
  2a0b660 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_SHA384_Update
@@ -420,6 +423,9 @@ $ go tool nm nginx-ingress-controller  | grep Cfunc__goboringcrypto | tail
  2a0b688 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ECDSA_verify
  2a0b690 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_error_string_n
  2a0b698 D crypto/internal/boring._cgo_71ae3cd1ca33_Cfunc__goboringcrypto_internal_ERR_get_error
+$ # Find in a Golang-FIPS 1.22 library
+$ go tool nm tenctl | grep '_Cfunc__goboringcrypto_|\bcrypto/internal/boring/sig\.BoringCrypto'
+  4cb840 t crypto/internal/boring/sig.BoringCrypto.abi0
 ```
 
 In addition, LabKit contains routines to [check whether FIPS is enabled](https://gitlab.com/gitlab-org/labkit/-/tree/master/fips).
@@ -465,7 +471,7 @@ The Cloud Native GitLab CI pipeline generates images using several base images:
 
 UBI images ship with the same OpenSSL package as those used by
 RHEL. This makes it possible to build FIPS-compliant binaries without
-needing RHEL. Note that RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/compliance_activities_and_gov_standards), but 8.5 is in
+needing RHEL. RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/compliance_activities_and_gov_standards), but 8.5 is in
 review for FIPS validation.
 
 [This merge request](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)
@@ -487,6 +493,6 @@ Merge requests that can trigger Package and QA, can trigger a FIPS package and a
 Reference Architecture test pipeline. The base image used for the trigger is
 Ubuntu 20.04 FIPS:
 
-1. Trigger `e2e:package-and-test` job, if not already triggered.
+1. Trigger `e2e:test-on-omnibus` job, if not already triggered.
 1. On the `gitlab-omnibus-mirror` child pipeline, manually trigger `Trigger:package:fips`.
 1. When the package job is complete, manually trigger the `RAT:FIPS` job.

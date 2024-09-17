@@ -12,7 +12,7 @@
   We have already sent the re-verification email with a subject line of 'Confirmation instructions' from #{@verification_from_mail}. Please feel free to contribute any questions or comments to #{link_to('this issue', 'https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7942', target: '_blank')}.
 
 %p
-  If you are not "#{@user.username}", please report abuse from the user's #{link_to('profile page', user_url(@user.id), target: '_blank', rel: 'noopener noreferrer')}. #{link_to('Learn more.', help_page_url('user/report_abuse', anchor: 'report-abuse-from-the-users-profile-page', target: '_blank', rel: 'noopener noreferrer'))}
+  If you are not "#{@user.username}", please report abuse from the user's #{link_to('profile page', user_url(@user.id), target: '_blank', rel: 'noopener noreferrer')}. #{link_to('Learn more.', help_page_url('user/report_abuse.md', anchor: 'report-abuse-from-the-users-profile-page', target: '_blank', rel: 'noopener noreferrer'))}
 
 %p
   Thank you for being a GitLab user!

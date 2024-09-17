@@ -313,14 +313,14 @@ module EventsHelper
     base_class = 'system-note-image'
 
     classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-gray-50 gl-leading-0" : "user-avatar"
-    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block', project: event.project)
+    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-inline-block', project: event.project)
 
     tag.div(class: "#{base_class} #{classes}") { content }
   end
 
   def inline_event_icon(event)
     unless current_path?('users#activity')
-      content_tag :span, class: "system-note-image-inline gl-display-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
+      content_tag :span, class: "system-note-image-inline gl-flex gl-mr-2 #{event.action_name.parameterize}-icon align-self-center" do
         next design_event_icon(event.action, size: 14) if event.design?
 
         icon_for_event(event.action_name, size: 14)
@@ -339,7 +339,7 @@ module EventsHelper
   end
 
   def user_profile_activity_classes
-    current_path?('users#activity') ? ' gl-font-semibold gl-text-black-normal' : ''
+    current_path?('users#activity') ? ' gl-font-semibold gl-text-default' : ''
   end
 
   private

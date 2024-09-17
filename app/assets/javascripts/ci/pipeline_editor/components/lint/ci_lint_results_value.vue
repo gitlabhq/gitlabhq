@@ -60,7 +60,7 @@ export default {
       >{{ scripts.afterScript.content }}</pre
     >
 
-    <ul class="gl-list-none gl-pl-0 gl-mb-0">
+    <ul class="gl-mb-0 gl-list-none gl-pl-0">
       <li v-if="tagList">
         <b>{{ __('Tag list:') }}</b>
         {{ tagList }}

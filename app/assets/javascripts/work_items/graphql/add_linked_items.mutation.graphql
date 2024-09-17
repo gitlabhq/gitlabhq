@@ -1,9 +1,11 @@
 #import "./work_item.fragment.graphql"
+#import "./work_item_linked_items.fragment.graphql"
 
 mutation addLinkedItems($input: WorkItemAddLinkedItemsInput!) {
   workItemAddLinkedItems(input: $input) {
     workItem {
       ...WorkItem
+      ...WorkItemLinkedItemsFragment
     }
     errors
   }

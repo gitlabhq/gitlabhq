@@ -447,6 +447,14 @@ RSpec.describe TodosHelper do
     end
 
     context 'when todo resource parent is not a group' do
+      context 'when todo belongs to no project either' do
+        let(:todo) { build(:todo, group: nil, project: nil, user: user) }
+
+        subject(:result) { helper.todo_parent_path(todo) }
+
+        it { expect(result).to eq(nil) }
+      end
+
       it 'returns project title with namespace' do
         result = helper.todo_parent_path(project_access_request_todo)
 

@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.Dropdown
+# Suggestion: gitlab_base.Dropdown
 #
 # Catches many ways the phrase 'dropdown list' can be fumbled.
 #

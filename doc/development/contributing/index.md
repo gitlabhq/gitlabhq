@@ -17,6 +17,7 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 ## How to contribute
 
 1. Read the [Code of Conduct](https://about.gitlab.com/community/contribute/code-of-conduct/).
+1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
 1. [Choose or create an issue to work on](#choose-or-create-an-issue).
 1. [Choose a development environment](#choose-a-development-environment).
 1. Make changes and open a merge request.
@@ -33,6 +34,7 @@ For example:
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner)
 - [Gitaly](https://gitlab.com/gitlab-org/gitaly)
 - [GLab](https://gitlab.com/gitlab-org/cli)
+- [GitLab Terraform Provider](https://gitlab.com/gitlab-org/terraform-provider-gitlab)
 
 We have [development style guides for each technology](style_guides.md) to help you align with our coding standards.
 
@@ -47,7 +49,10 @@ Select the appropriate template and add all the necessary information about the 
 That way you can get more guidance and support.
 
 If you're not sure what to work on, you can
-[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?label_name%5B%5D=quick%20win).
+[view issues with the `~quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&first_page_size=100),
+and filter specifically for [documentation `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=documentation&first_page_size=100),
+[backend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=backend&first_page_size=100),
+or [frontend `~quick win`](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=frontend&first_page_size=100).
 
 When you find an issue you want to work on, leave a comment on it.
 This helps the GitLab team and members of the wider GitLab community know that you will be working on that issue.
@@ -55,6 +60,7 @@ This helps the GitLab team and members of the wider GitLab community know that y
 This is a good opportunity to [validate the issue](issue_workflow.md#clarifyingvalidating-an-issue).
 Confirm that the issue is still valid, clarify your intended approach, and ask if a feature or change is likely to be accepted.
 You do not need to be assigned to the issue to get started.
+If the issue already has an assignee, ask if they are still working on the issue or if they would like to collaborate.
 
 For details, see [the issues workflow](issue_workflow.md).
 
@@ -62,6 +68,8 @@ For details, see [the issues workflow](issue_workflow.md).
 
 [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access),
 a set of forks mirrored from GitLab repositories in order to improve the contributor experience.
+When you request access to the community forks you will receive an onboarding issue in the
+[community onboarding project](https://gitlab.com/gitlab-community/community-members/onboarding/-/issues).
 For more information, read about the community forks in the [Meta repository README](https://gitlab.com/gitlab-community/meta#why).
 
 Additionally, we recommend you join the [GitLab Discord server](https://discord.com/invite/gitlab),
@@ -154,16 +162,8 @@ Request an Enterprise Edition Developers License according to the [documented pr
 
 ## Get help
 
-If you need any help while contributing to GitLab:
+How to find help contributing to GitLab:
 
-- If you need help with a merge request or need help finding a reviewer:
-  - Don't hesitate to ask for help by typing `@gitlab-bot help` in a comment.
-  - Find reviewers and maintainers of GitLab projects in our
-    [handbook](https://handbook.gitlab.com/handbook/engineering/projects/) and
-    [mention](../../user/group/subgroups/index.md#mention-subgroups) them in a comment.
-- Join the community on the [GitLab Community Discord](https://discord.com/invite/gitlab) and find other
-  contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/).
-- For any other questions or feedback on contributing:
-  - Ping `@gitlab-org/developer-relations/contributor-success` in a comment on your merge request or issue.
-  - Feel free to [make a new issue with the Contributor Success team](https://gitlab.com/gitlab-org/community-relations/contributor-success/team-task/-/issues/) sharing your experience.
-- Did you run out of compute minutes for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.
+- Type `@gitlab-bot help` in a comment on a merge request or issue.
+- Join the [GitLab Community Discord](https://discord.gg/gitlab) and ask for help in the `#contribute` channel.
+- Email the Contributor Success team at `contributors@gitlab.com`.

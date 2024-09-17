@@ -12,8 +12,10 @@ class GroupGroupLink < ApplicationRecord
   validates :shared_with_group, presence: true
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }, presence: true
 
-  scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
+  scope :guests, -> { where(group_access: Gitlab::Access::GUEST) }
+  scope :non_guests, -> { where('group_group_links.group_access > ?', Gitlab::Access::GUEST) }
   scope :for_shared_groups, ->(group_ids) { where(shared_group_id: group_ids) }
+  scope :for_shared_with_groups, ->(group_ids) { where(shared_with_group_id: group_ids) }
 
   scope :with_owner_or_maintainer_access, -> do
     where(group_access: [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER])
@@ -54,8 +56,8 @@ class GroupGroupLink < ApplicationRecord
 
   alias_method :shared_from, :shared_group
 
-  def self.search(query)
-    joins(:shared_with_group).merge(Group.search(query))
+  def self.search(query, **options)
+    joins(:shared_with_group).merge(Group.search(query, **options))
   end
 
   def self.access_options

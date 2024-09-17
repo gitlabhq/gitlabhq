@@ -121,6 +121,17 @@ set the `http.emptyAuth` Git option to `true` to fix this:
 git config --global http.emptyAuth true
 ```
 
+## Git cloning with Kerberos over proxied HTTPS
+
+You must comment the following if:
+
+- You see `http://` URLs in the **Clone with KRB5 Git Cloning** options, when `https://` URLs are expected.
+- HTTPS is not terminated at your GitLab instance, but is instead proxied by your load balancer or local traffic manager.
+
+```shell
+# gitlab_rails['kerberos_https'] = false
+```
+
 See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Documentation/RelNotes/2.11.0.txt#L482-L486)
 
 ## Helpful links

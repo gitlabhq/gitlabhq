@@ -18,7 +18,7 @@ module VirtualRegistries
           prevent(*create_read_update_admin_destroy(:virtual_registry))
         end
 
-        rule { can?(:read_group) }.policy do
+        rule { group.guest | admin | group.has_projects }.policy do
           enable :read_virtual_registry
         end
 

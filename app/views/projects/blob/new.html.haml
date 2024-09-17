@@ -2,7 +2,7 @@
 - page_title _("New File"), @path.presence, @ref
 - add_page_specific_style 'page_bundles/editor'
 
-%h1.page-title.blob-new-page-title.gl-font-size-h-display
+%h1.page-title.blob-new-page-title.gl-text-size-h-display
   = _('New file')
 .file-editor
   = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit', data: blob_editor_paths(@project, 'post')) do

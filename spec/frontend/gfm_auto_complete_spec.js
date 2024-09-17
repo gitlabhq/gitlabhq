@@ -1170,4 +1170,49 @@ describe('GfmAutoComplete', () => {
       ).toStrictEqual([]);
     });
   });
+
+  describe('updateDataSources', () => {
+    const dataSources = {
+      labels: `${TEST_HOST}/autocomplete_sources/labels`,
+      members: `${TEST_HOST}/autocomplete_sources/members`,
+      commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      issues: `${TEST_HOST}/autocomplete_sources/issues`,
+      mergeRequests: `${TEST_HOST}/autocomplete_sources/merge_requests`,
+      epics: `${TEST_HOST}/autocomplete_sources/epics`,
+    };
+
+    let autocomplete;
+    let $textarea;
+
+    beforeEach(() => {
+      setHTMLFixture('<textarea></textarea>');
+      autocomplete = new GfmAutoComplete(dataSources);
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, {
+        labels: true,
+        members: true,
+        commands: true,
+        issues: true,
+        mergeRequests: true,
+        epics: true,
+      });
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    it('should update dataSources correctly', () => {
+      const newDataSources = {
+        ...dataSources,
+        labels: `${TEST_HOST}/autocomplete_sources/labels?type=WorkItem&work_item_type_id=6`,
+        members: `${TEST_HOST}/autocomplete_sources/members?type=WorkItem&work_item_type_id=6`,
+      };
+
+      autocomplete.updateDataSources(newDataSources);
+
+      expect(autocomplete.dataSources).toEqual(newDataSources);
+    });
+  });
 });

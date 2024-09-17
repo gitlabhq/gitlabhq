@@ -4,5 +4,4 @@ feature_category: remote_development
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131402
 milestone: '16.5'
 queued_migration_version: 20230910120000
-finalize_after: "2023-11-15"
 finalized_by: 20231215151348

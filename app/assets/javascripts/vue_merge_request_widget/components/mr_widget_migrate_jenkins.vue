@@ -48,7 +48,7 @@ export default {
     <div class="gl-flex gl-items-center gl-justify-between">
       <gl-badge
         v-gl-tooltip.viewport.left
-        class="ci-icon gl-p-2 ci-icon-variant-info gl-pl-2 gl-mr-3 gl-self-start"
+        class="ci-icon ci-icon-variant-info gl-mr-3 gl-self-start gl-p-2 gl-pl-2"
         variant="info"
         :title="$options.i18n.information"
         :href="$options.MIGRATION_LINK"
@@ -60,7 +60,7 @@ export default {
       </gl-badge>
       <div class="gl-flex gl-items-center gl-justify-between">
         <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
-          <div class="gl-flex gl-flex-wrap gl-w-full">
+          <div class="gl-flex gl-w-full gl-flex-wrap">
             <strong class="gl-flex gl-grow">{{ $options.i18n.title }}</strong>
             <div class="gl-flex">
               <gl-link
@@ -71,7 +71,7 @@ export default {
               >
               <button
                 :aria-label="__('Close')"
-                class="gl-p-0 gl-bg-transparent gl-border-0 gl-ml-4 gl-pl-2 gl-border-l-2 gl-border-solid gl-border-gray-100"
+                class="gl-ml-4 gl-border-0 gl-border-l-2 gl-border-solid gl-border-gray-100 gl-bg-transparent gl-p-0 gl-pl-2"
                 type="button"
                 data-testid="close"
                 @click="dismiss"

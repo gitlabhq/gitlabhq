@@ -5,12 +5,15 @@
 - if closed_tab_selected
   - title = s_('Milestones|There are no closed milestones')
 
+- if params[:search_title]
+  = render ::Layouts::EmptyResultComponent.new(type: :search)
 
-= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-milestone-md.svg',
-  title: title) do |c|
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-milestone-md.svg',
+    title: title) do |c|
 
-  - c.with_description do
-    = s_('Milestones|Create a milestone to better track your issues and merge requests. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
-    - if yield.present?
-      .gl-flex.gl-flex-wrap.gl-mt-5.gl-justify-center
-        = yield
+    - c.with_description do
+      = s_('Milestones|Create a milestone to better track your issues and merge requests. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
+      - if yield.present?
+        .gl-flex.gl-flex-wrap.gl-mt-5.gl-justify-center
+          = yield

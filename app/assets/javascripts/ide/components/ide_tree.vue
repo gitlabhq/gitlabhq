@@ -55,24 +55,24 @@ export default {
   <ide-tree-list @tree-ready="$emit('tree-ready')">
     <template #header>
       {{ __('Edit') }}
-      <div class="ide-tree-actions gl-ml-auto gl-display-flex" data-testid="ide-root-actions">
+      <div class="ide-tree-actions gl-ml-auto gl-flex" data-testid="ide-root-actions">
         <new-entry-button
           :label="__('New file')"
           :show-label="false"
-          class="gl-display-flex gl-border-0 gl-p-0 gl-mr-5"
+          class="gl-mr-5 gl-flex gl-border-0 gl-p-0"
           icon="doc-new"
           @click="createNewFile()"
         />
         <upload
           :show-label="false"
-          class="gl-display-flex gl-mr-5"
+          class="gl-mr-5 gl-flex"
           button-css-classes="gl-border-0 gl-p-0"
           @create="createTempEntry"
         />
         <new-entry-button
           :label="__('New directory')"
           :show-label="false"
-          class="gl-display-flex gl-border-0 gl-p-0"
+          class="gl-flex gl-border-0 gl-p-0"
           icon="folder-new"
           @click="createNewFolder()"
         />

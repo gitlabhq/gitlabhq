@@ -110,10 +110,10 @@ export default {
         ><gl-icon name="question-o" class="gl-text-blue-600"
       /></gl-link>
     </div>
-    <div class="hide-collapsed gl-leading-20 gl-font-bold">
+    <div class="hide-collapsed gl-font-bold gl-leading-20">
       {{ contactsLabel }}
     </div>
-    <div v-if="shouldShowContacts" class="hide-collapsed gl-display-flex gl-flex-wrap gl-mt-2">
+    <div v-if="shouldShowContacts" class="hide-collapsed gl-mt-2 gl-flex gl-flex-wrap">
       <div
         v-for="(contact, index) in contacts"
         :id="`contact_container_${index}`"
@@ -137,7 +137,7 @@ export default {
     <div
       v-else
       data-testid="crm-empty-message"
-      class="gl-display-flex gl-align-items-center hide-collapsed gl-text-gray-500"
+      class="hide-collapsed gl-flex gl-items-center gl-text-gray-500"
     >
       {{ __('To add active contacts, use /add_contacts.') }}
     </div>

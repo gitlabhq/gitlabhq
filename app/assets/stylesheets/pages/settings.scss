@@ -29,16 +29,9 @@
   }
 }
 
+// doorkeeper-authorize refers to an element rendered by 'doorkeeper' gem, do not remove unless removing doorkeeper gem
 .doorkeeper-authorize {
   max-width: px-to-rem(500px);
-}
-
-.deploy-freeze-table {
-  @media(max-width: map-get($grid-breakpoints, lg)-1) {
-    .truncated-container {
-      justify-content: flex-end;
-    }
-  }
 }
 
 .settings-section::after {

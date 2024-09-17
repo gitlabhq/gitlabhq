@@ -1,0 +1,13 @@
+- if @diff_hunk[:header]
+  %tr
+    - 2.times do
+      %td= expand_buttons.html_safe
+      %td= header_text
+
+- @diff_hunk[:lines].each do |pair|
+  %tr
+    - [pair[:left], pair[:right]].each_with_index do |line, index|
+      - position = index == 0 ? :old : :new
+      - link, id = line_link(line, position)
+      %td{ id: id, data: { legacy_id: legacy_id(line) } }= link
+      %td= line_text(line)

@@ -10,7 +10,7 @@ describe('Image Viewer', () => {
       propsData: { path: GREEN_BOX_IMAGE_URL, fileSize: 1024 },
     });
 
-    expect(wrapper.find('img').element).toHaveAttr('src', GREEN_BOX_IMAGE_URL);
+    expect(wrapper.find('img').element.src).toBe(GREEN_BOX_IMAGE_URL);
   });
 
   describe('file sizes', () => {
@@ -29,7 +29,9 @@ describe('Image Viewer', () => {
         const imageInfo = wrapper.find('.image-info');
 
         expect(imageInfo.exists()).toBe(elementExists);
-        expect(imageInfo.element?.textContent.trim()).toBe(humanizedFileSize);
+        if (imageInfo.exists()) {
+          expect(imageInfo.element.textContent.trim()).toBe(humanizedFileSize);
+        }
       },
     );
   });
@@ -40,7 +42,7 @@ describe('Image Viewer', () => {
         propsData: { path: '/url/hello#1.jpg' },
       });
 
-      expect(wrapper.find('img').attributes('src')).toBe('/url/hello%231.jpg');
+      expect(wrapper.find('img').element.src).toBe('/url/hello%231.jpg');
     });
     it('outputs path without transformations when outputting a Blob', () => {
       const file = new File([], DUMMY_IMAGE_BLOB_PATH);
@@ -48,7 +50,7 @@ describe('Image Viewer', () => {
       wrapper = shallowMount(ImageViewer, {
         propsData: { path },
       });
-      expect(wrapper.find('img').attributes('src')).toBe(path);
+      expect(wrapper.find('img').element.src).toBe(path);
     });
   });
 });

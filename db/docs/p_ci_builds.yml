@@ -12,4 +12,5 @@ description: Routing table for ci_builds
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120873
 milestone: '16.1'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458488
+sharding_key:
+  project_id: projects

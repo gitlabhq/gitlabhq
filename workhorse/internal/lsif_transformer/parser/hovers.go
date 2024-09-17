@@ -125,7 +125,7 @@ func (h *Hovers) addData(line []byte) error {
 		return err
 	}
 
-	offset := Offset{At: int32(h.CurrentOffset), Len: int32(n)}
+	offset := Offset{At: int32(h.CurrentOffset), Len: int32(n)} //nolint:gosec
 	h.CurrentOffset += n
 
 	return h.Offsets.SetEntry(rawData.ID, &offset)

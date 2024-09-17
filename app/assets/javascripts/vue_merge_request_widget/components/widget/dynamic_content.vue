@@ -73,15 +73,15 @@ export default {
     :header="data.header"
     :help-popover="data.helpPopover"
     :class="{
-      'gl-border-top-0': rowIndex === 0,
-      'gl-align-items-start': data.supportingText,
-      'gl-align-items-baseline': !data.supportingText,
+      'gl-border-t-0': rowIndex === 0,
+      'gl-items-start': data.supportingText,
+      'gl-items-baseline': !data.supportingText,
     }"
   >
     <template #body>
-      <div class="gl-w-full gl-display-flex gl-flex-direction-column">
-        <div class="gl-display-flex gl-flex-grow-1">
-          <div class="gl-display-flex gl-flex-grow-1 gl-align-items-baseline">
+      <div class="gl-flex gl-w-full gl-flex-col">
+        <div class="gl-flex gl-grow">
+          <div class="gl-flex gl-grow gl-items-baseline">
             <div>
               <p
                 v-gl-tooltip="{ title: data.tooltipText, boundary: 'viewport' }"
@@ -105,9 +105,9 @@ export default {
             class="gl-ml-auto gl-pl-3"
             @clickedAction="onClickedAction"
           />
-          <p v-if="data.subtext" v-safe-html="generatedSubtext" class="gl-m-0 gl-font-sm"></p>
+          <p v-if="data.subtext" v-safe-html="generatedSubtext" class="gl-m-0 gl-text-sm"></p>
         </div>
-        <ul v-if="shouldShowThirdLevel" class="gl-m-0 gl-p-0 gl-list-none">
+        <ul v-if="shouldShowThirdLevel" class="gl-m-0 gl-list-none gl-p-0">
           <li v-for="(childData, index) in data.children" :key="childData.id || index">
             <dynamic-content
               :data="childData"

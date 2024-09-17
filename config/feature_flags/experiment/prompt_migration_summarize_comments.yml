@@ -1,0 +1,9 @@
+---
+name: prompt_migration_summarize_comments
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475044
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163772
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480550
+milestone: '17.4'
+group: group::custom models
+type: experiment
+default_enabled: false

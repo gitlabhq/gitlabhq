@@ -14,7 +14,7 @@ RSpec.shared_examples 'throttled touch' do
       second_updated_at = Time.zone.now - (ThrottledTouch::TOUCH_INTERVAL * 1.5)
 
       travel_to(first_updated_at) { subject.touch }
-      travel_to(second_updated_at) { subject.touch }
+      travel_to(second_updated_at) { subject.reload.touch }
 
       expect(subject.updated_at).to be_like_time(first_updated_at)
     end

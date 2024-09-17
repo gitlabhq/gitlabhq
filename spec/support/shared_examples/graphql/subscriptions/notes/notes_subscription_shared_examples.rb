@@ -12,7 +12,7 @@ RSpec.shared_examples 'graphql notes subscriptions' do
 
     context 'on initial subscription' do
       let(:resolver) do
-        resolver_instance(described_class, ctx: { current_user: current_user }, subscription_update: false)
+        resolver_instance(described_class, ctx: query_context, subscription_update: false)
       end
 
       it 'returns nil' do
@@ -38,7 +38,7 @@ RSpec.shared_examples 'graphql notes subscriptions' do
 
     context 'on subscription updates' do
       let(:resolver) do
-        resolver_instance(described_class, obj: note, ctx: { current_user: current_user }, subscription_update: true)
+        resolver_instance(described_class, obj: note, ctx: query_context, subscription_update: true)
       end
 
       it 'returns the resolved object' do

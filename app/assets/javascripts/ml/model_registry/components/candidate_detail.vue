@@ -24,7 +24,7 @@ import {
 import DetailRow from './candidate_detail_row.vue';
 
 export default {
-  HEADER_CLASSES: ['gl-font-lg', 'gl-mt-5'],
+  HEADER_CLASSES: ['gl-text-lg', 'gl-mt-5'],
   name: 'MlCandidateDetail',
   components: {
     DetailRow,
@@ -80,7 +80,7 @@ export default {
     },
     metricsTableFields() {
       const maxStep = maxBy(this.candidate.metrics, 'step').step;
-      const rowClass = 'gl-p-3!';
+      const rowClass = '!gl-p-3';
 
       const cssClasses = { thClass: rowClass, tdClass: rowClass };
 

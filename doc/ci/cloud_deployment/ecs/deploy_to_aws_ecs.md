@@ -85,7 +85,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
 Now you have a containerized application image that can be pulled from AWS. Next, you define the
 spec of how this application image is used in AWS.
 
-Note that the `production_ecs` job fails because ECS Cluster is not connected yet. You'll fix this
+The `production_ecs` job fails because ECS Cluster is not connected yet. You can fix this
 later.
 
 ### Create an ECS task definition
@@ -164,7 +164,7 @@ is a daemon to create an application container based on the [ECS task definition
 
    ![An active service running.](img/service-running.png)
 
-Note that AWS's console UI changes from time to time. If you can't find a relevant component in the
+The AWS's console UI changes from time to time. If you can't find a relevant component in the
 instructions, select the closest one.
 
 ### View the demo application

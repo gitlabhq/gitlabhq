@@ -4,6 +4,8 @@ require 'gon'
 require 'fogbugz'
 
 class ApplicationController < BaseActionController
+  use Gitlab::Middleware::ActionControllerStaticContext
+
   include Gitlab::GonHelper
   include Gitlab::NoCacheHeaders
   include GitlabRoutingHelper
@@ -26,6 +28,8 @@ class ApplicationController < BaseActionController
   include CheckRateLimit
   include RequestPayloadLogger
   include StrongPaginationParams
+  include Gitlab::HttpRouter::RuleContext
+  include Gitlab::HttpRouter::RuleMetrics
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization
@@ -39,6 +43,7 @@ class ApplicationController < BaseActionController
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
+  before_action :increment_http_router_metrics
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
@@ -391,11 +396,11 @@ class ApplicationController < BaseActionController
   end
 
   def bitbucket_server_import_enabled?
-    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server')
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server') || Feature.enabled?(:override_bitbucket_server_disabled, current_user, type: :ops)
   end
 
   def github_import_enabled?
-    Gitlab::CurrentSettings.import_sources.include?('github')
+    Gitlab::CurrentSettings.import_sources.include?('github') || Feature.enabled?(:override_github_disabled, current_user, type: :ops)
   end
 
   def gitea_import_enabled?
@@ -438,13 +443,18 @@ class ApplicationController < BaseActionController
   end
 
   def set_current_context(&block)
+    # even though feature_category is pre-populated by
+    # Gitlab::Middleware::ActionControllerStaticContext
+    # using the static annotation on controllers, the
+    # controllers can override feature_category conditionally
+    Gitlab::ApplicationContext.push(feature_category: feature_category) if feature_category.present?
+
     Gitlab::ApplicationContext.push(
       user: -> { context_user },
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
-      caller_id: self.class.endpoint_id_for_action(action_name),
       remote_ip: request.ip,
-      feature_category: feature_category
+      **http_router_rule_context
     )
     yield
   ensure

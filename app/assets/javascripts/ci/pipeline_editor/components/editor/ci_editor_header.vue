@@ -61,7 +61,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-p-3 gl-gap-3 gl-border-solid gl-border-gray-100 gl-border-1 gl-flex-direction-column gl-md-flex-direction-row"
+    class="gl-flex gl-flex-col gl-gap-3 gl-border-1 gl-border-solid gl-border-gray-100 gl-p-3 md:gl-flex-row"
   >
     <slot></slot>
     <gl-button

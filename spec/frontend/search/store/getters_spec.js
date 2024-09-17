@@ -143,7 +143,7 @@ describe('Global Search Store Getters', () => {
 
   describe('unselectedLabels', () => {
     it('returns all labels that are not selected', () => {
-      state.query.labels = ['60'];
+      state.query.label_name = ['Brist'];
       expect(getters.unselectedLabels(state)).toStrictEqual([MOCK_LABEL_SEARCH_RESULT]);
     });
   });
@@ -151,9 +151,9 @@ describe('Global Search Store Getters', () => {
   describe('unappliedNewLabels', () => {
     it('returns all labels that are selected but not applied', () => {
       // Applied labels
-      state.urlQuery.labels = ['37', '60'];
+      state.urlQuery.label_name = ['Aftersync', 'Brist'];
       // Applied and selected labels
-      state.query.labels = ['37', '6', '73', '60'];
+      state.query.label_name = ['Aftersync', 'Cosche', 'Accent', 'Brist'];
       // Selected but unapplied labels
       // expect(getters.unappliedNewLabels(state)).toStrictEqual(MOCK_FILTERED_UNSELECTED_LABELS);
       expect(getters.unappliedNewLabels(state).map(({ key }) => key)).toStrictEqual(['6', '73']);

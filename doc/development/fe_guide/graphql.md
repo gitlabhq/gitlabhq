@@ -204,6 +204,45 @@ query allReleases(...) {
 }
 ```
 
+## Skip query with async variables
+
+Whenever a query has one or more variable that requires another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
+
+Failing to do so will result in the query executing twice: once with the default value (whatever was defined on the `data` property or `undefined`) and once more once the initial query is resolved, triggering a new variable value to be injected in the smart query and then refetched by Apollo.
+
+```javascript
+data() {
+  return {
+    // Define data properties for all apollo queries
+    project: null,
+    issues: null
+  }
+},
+apollo: {
+  project: {
+    query: getProject,
+    variables() {
+      return {
+        projectId: this.projectId
+      }
+    }
+  },
+  releaseName: {
+    query: getReleaseName,
+    // Without this skip, the query would run initially with `projectName: null`
+    // Then when `getProject` resolves, it will run again.
+    skip() {
+      return !this.project?.name
+    },
+    variables() {
+      return {
+        projectName: this.project?.name
+      }
+    }
+  }
+}
+```
+
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
@@ -413,13 +452,16 @@ For each attempt to fetch a version, our client fetches `id` and `sha` from the 
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/local-state.html#local-state).
 
+### Using with Pinia
+
+Combining [Pinia](pinia.md) and Apollo in a single Vue application is generally discouraged.
+[Learn about the restrictions and circumstances around combining Apollo and Pinia](state_management.md#combining-pinia-and-apollo).
+
 ### Using with Vuex
 
-We do not recommend creating new applications with Vuex and Apollo Client combined. There are a few reasons:
-
-- VueX and Apollo are both **global stores**, which means sharing responsibilities and having two sources of truth.
-- Keeping VueX and Apollo in sync can be high maintenance.
-- Bugs that would come from the communication between Apollo and VueX would be subtle and hard to debug.
+We do not recommend combining Vuex and Apollo Client. [Vuex is deprecated in GitLab](vuex.md#deprecated).
+If you have an existing Vuex store that's used alongside Apollo we strongly recommend [migrating away from Vuex entirely](migrating_from_vuex.md).
+[Learn more about state management in GitLab](state_management.md).
 
 ### Working on GraphQL-based features when frontend and backend are not in sync
 

@@ -76,7 +76,7 @@ export default {
     @close="closeDrawer"
   >
     <template #title>
-      <h2 class="gl-font-size-h2 gl-mt-0 gl-mb-0 gl-leading-24" data-testid="category-drawer-title">
+      <h2 class="gl-mb-0 gl-mt-0 gl-text-size-h2 gl-leading-24" data-testid="category-drawer-title">
         {{ $options.i18n.title }}
       </h2>
     </template>
@@ -92,7 +92,7 @@ export default {
           data-testid="input-referer"
         />
 
-        <gl-form-group :label="$options.i18n.label" label-class="gl-text-black-normal">
+        <gl-form-group :label="$options.i18n.label" label-class="gl-text-default">
           <gl-form-radio-group
             v-model="selected"
             :options="$options.CATEGORY_OPTIONS"

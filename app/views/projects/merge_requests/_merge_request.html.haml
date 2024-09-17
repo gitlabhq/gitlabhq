@@ -8,14 +8,14 @@
           %span.gl-sr-only
             = merge_request.title
 
-  .issuable-info-container.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-3
-    .issuable-main-info{ class: 'gl-mr-0!' }
+  .issuable-info-container.gl-flex-col.md:gl-flex-row.gl-gap-3
+    .issuable-main-info{ class: '!gl-mr-0' }
       .merge-request-title.title
         %span.merge-request-title-text.js-onboarding-mr-item
           = hidden_merge_request_icon(merge_request)
           = link_to merge_request.title, merge_request_path(merge_request), class: 'js-prefetch-document'
         - if merge_request.tasks?
-          %span.task-status.gl-inline-block.gl-font-sm
+          %span.task-status.gl-inline-block.gl-text-sm
             &nbsp;
             = merge_request.task_status
 
@@ -23,19 +23,19 @@
         %span.issuable-reference.gl-inline-block
           #{issuable_reference(merge_request)}
         %span.gl-hidden.sm:gl-inline
-          %span.issuable-authored.gl-inline-block.gl-text-gray-500!
+          %span.issuable-authored.gl-inline-block{ class: '!gl-text-gray-500' }
             &middot;
-            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: '!gl-text-gray-500') }}
           - if merge_request.milestone
             %span.issuable-milestone.gl-inline-block
               &nbsp;
-              = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: 'gl-text-gray-500!', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
-                = sprite_icon('milestone', size: 12, css_class: 'gl-vertical-align-text-bottom')
+              = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: '!gl-text-gray-500', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
+                = sprite_icon('milestone', size: 12, css_class: 'gl-align-text-bottom')
                 = merge_request.milestone.title
           - if merge_request.target_project.default_branch != merge_request.target_branch
-            %span.project-ref-path.has-tooltip.gl-inline-block.gl-text-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
+            %span.project-ref-path.has-tooltip.gl-inline-block.gl-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
               &nbsp;
-              = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name gl-text-gray-500!' do
+              = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name !gl-text-gray-500' do
                 = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
                 = merge_request.target_branch
           - if merge_request.labels.any?
@@ -43,31 +43,31 @@
               - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
                 = link_to_label(label, type: :merge_request)
 
-    .gl-font-sm.gl-flex.gl-flex-shrink-0.gl-align-self-start.gl-gap-1.gl-flex-direction-row.gl-justify-content-space-between.gl-w-full.gl-md-w-auto{ class: 'gl-md-flex-direction-column!' }
-      %ul.controls.gl-gap-3.gl-pl-0.gl-align-self-end
+    .gl-text-sm.gl-flex.gl-shrink-0.gl-self-start.gl-gap-1.gl-flex-row.gl-justify-between.gl-w-full.md:gl-w-auto{ class: 'md:!gl-flex-col' }
+      %ul.controls.gl-gap-3.gl-pl-0.gl-self-end
         - if merge_request.merged?
           - merged_at = merge_request.merged_at ? l(merge_request.merged_at.to_time) : _("Merge date & time could not be determined")
-          %li.gl-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: '!gl-mr-0' }
             %a.has-tooltip{ href: "#{merge_request_path(merge_request)}#widget-state", title: merged_at }
               = render Pajamas::BadgeComponent.new(_('Merged'), variant: 'info')
         - elsif merge_request.closed?
-          %li.gl-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: '!gl-mr-0' }
             = render Pajamas::BadgeComponent.new(_('Closed'), variant: 'danger')
         - if merge_request.open? && merge_request.broken?
-          %li.issuable-pipeline-broken.gl-flex{ class: 'gl-mr-0!' }
+          %li.issuable-pipeline-broken.gl-flex{ class: '!gl-mr-0' }
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
               = sprite_icon('warning-solid')
         - if merge_request.assignees.any?
-          %li.gl-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: '!gl-mr-0' }
             = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request
         - if merge_request.reviewers.any?
-          %li.gl-flex.issuable-reviewers{ class: 'gl-mr-0!' }
+          %li.gl-flex.issuable-reviewers{ class: '!gl-mr-0' }
             = render 'shared/issuable/reviewers', project: merge_request.project, issuable: merge_request
         = render 'shared/issuable_meta_data', issuable: merge_request
         = render 'projects/merge_requests/approvals_count', merge_request: merge_request
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
 
       - if merge_request.updated_at != merge_request.created_at
-        .issuable-updated-at.gl-align-self-end.gl-hidden.sm:gl-inline-block.gl-text-gray-500
+        .issuable-updated-at.gl-self-end.gl-hidden.sm:gl-inline-block.gl-text-gray-500
           %span
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

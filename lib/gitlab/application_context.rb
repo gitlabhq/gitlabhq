@@ -30,13 +30,17 @@ module Gitlab
       :bulk_import_entity_id,
       :sidekiq_destination_shard_redis,
       :auth_fail_reason,
-      :auth_fail_token_id
+      :auth_fail_token_id,
+      :http_router_rule_action,
+      :http_router_rule_type
     ].freeze
     private_constant :KNOWN_KEYS
 
     WEB_ONLY_KEYS = [
       :auth_fail_reason,
-      :auth_fail_token_id
+      :auth_fail_token_id,
+      :http_router_rule_action,
+      :http_router_rule_type
     ].freeze
     private_constant :WEB_ONLY_KEYS
 
@@ -59,7 +63,9 @@ module Gitlab
       Attribute.new(:bulk_import_entity_id, Integer),
       Attribute.new(:sidekiq_destination_shard_redis, String),
       Attribute.new(:auth_fail_reason, String),
-      Attribute.new(:auth_fail_token_id, String)
+      Attribute.new(:auth_fail_token_id, String),
+      Attribute.new(:http_router_rule_action, String),
+      Attribute.new(:http_router_rule_type, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -131,6 +137,8 @@ module Gitlab
         assign_hash_if_value(hash, :sidekiq_destination_shard_redis)
         assign_hash_if_value(hash, :auth_fail_reason)
         assign_hash_if_value(hash, :auth_fail_token_id)
+        assign_hash_if_value(hash, :http_router_rule_action)
+        assign_hash_if_value(hash, :http_router_rule_type)
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?

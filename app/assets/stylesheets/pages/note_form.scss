@@ -32,7 +32,7 @@
 .note-textarea {
   display: block;
   padding: 10px 16px;
-  color: $gl-text-color;
+  @apply gl-text-primary;
   font-family: $regular-font;
   border: 0;
 
@@ -49,10 +49,9 @@
 .common-note-form {
   .md-area {
     border: 1px solid $gray-400;
-    border-radius: $border-radius-large;
+    @apply gl-bg-default gl-rounded-lg;
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
-    background-color: $white;
 
     &.is-dropzone-hover {
       border-color: $green-500;
@@ -84,6 +83,7 @@
       margin: 2px;
       padding-left: calc(#{$gl-spacing-scale-5} - 2px);
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       .gl-dark & {
         width: calc(100% - 6px);
         margin: 2px 3px;
@@ -92,8 +92,7 @@
         // cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147476
         &.note-textarea-rounded-bottom {
           margin-bottom: 3px;
-          border-bottom-left-radius: $gl-border-radius-base;
-          border-bottom-right-radius: $gl-border-radius-base;
+          @apply gl-rounded-b-base;
         }
       }
 
@@ -139,7 +138,8 @@
 .issuable-note-warning {
   color: $orange-600;
   background-color: $orange-50;
-  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
+  @apply gl-rounded-t-base gl-rounded-b-none;
+
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -156,8 +156,7 @@
   }
 
   + .md-area {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    @apply gl-border-t-0;
   }
 
   .disabled-comment {
@@ -169,7 +168,7 @@
 }
 
 .sidebar-item-icon {
-  border-radius: $gl-border-radius-base;
+  @apply gl-rounded-base;
   margin: 0 5px 0 0;
   vertical-align: text-bottom;
 
@@ -191,7 +190,7 @@
   padding: 16px;
 
   .text {
-    color: $text-color;
+    @apply gl-text-primary;
   }
 
   .sidebar-item-warning-message-actions {
@@ -204,7 +203,7 @@
 }
 
 .discussion-form {
-  background-color: $white;
+  @apply gl-bg-default;
 
   @include media-breakpoint-down(xs) {
     .user-avatar-link {
@@ -252,8 +251,7 @@ table {
   font-size: 14px;
 
   .md-area {
-    background-color: $white;
-    border-radius: $gl-border-radius-base;
+    @apply gl-bg-default gl-rounded-base;
   }
 }
 
@@ -278,20 +276,19 @@ table {
   }
 }
 
+.discussion-body .notes .timeline-entry:first-of-type + .discussion-reply-holder {
+  padding-top: $gl-padding !important;
+}
+
 .discussion-body,
 .diff-file,
 .commit-diff {
   .discussion-reply-holder {
-    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     padding: 0 $gl-padding $gl-padding-12 $gl-padding;
-    border-top: 1px solid $gray-50;
+    @apply gl-rounded-t-none gl-rounded-b-base;
 
     + .new-note {
-      border-top: 1px solid $gray-50;
-    }
-
-    &.is-replying {
-      padding-top: $gl-padding-12;
+      @apply gl-border-t gl-border-t-subtle;
     }
 
     &.internal-note,
@@ -307,9 +304,29 @@ table {
   }
 }
 
+.code-commit .discussion-notes .notes .note-comment:first-child {
+  @apply gl-bg-default gl-border-b gl-border-b-subtle;
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-dark & {
+    @apply gl-bg-strong gl-border-b-default;
+  }
+}
+
+.code-commit .discussion-notes .notes .note-comment:first-child {
+  + .discussion-reply-holder {
+    &,
+    + .discussion-reply-holder {
+      margin-top: $gl-padding;
+    }
+  }
+}
+
+
+.code-commit .discussion-reply-holder,
 .diff-td > .content > .discussion-reply-holder {
   padding-top: $gl-padding-12;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
 }
 
 .discussion-with-resolve-btn {
@@ -336,13 +353,12 @@ table {
 
 .discussion-reply-holder {
   .reply-placeholder-text-field {
-    border-radius: $gl-border-radius-base;
+    @apply gl-bg-default gl-rounded-base;
     width: 100%;
     resize: none;
     padding: $gl-padding-8 $gl-padding-12;
     line-height: 1;
     border: 1px solid $gray-200;
-    background-color: $white;
     overflow: hidden;
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
@@ -364,7 +380,7 @@ table {
 }
 
 .comment-toolbar {
-  color: $gl-text-color-secondary;
+  @apply gl-text-subtle;
 }
 
 .toolbar-button {
@@ -376,7 +392,7 @@ table {
 
   &:hover,
   &:focus {
-    color: $blue-600;
+    @apply gl-text-link;
     outline: 0;
   }
 
@@ -397,7 +413,7 @@ table {
 }
 
 .note-form-actions {
-  color: $gl-text-color;
+  @apply gl-text-primary;
 
   @include media-breakpoint-down(xs) {
     .btn {
@@ -468,7 +484,7 @@ table {
 }
 
 .markdown-selector {
-  color: $blue-600;
+  @apply gl-text-link;
 }
 
 .comment-warning-wrapper {

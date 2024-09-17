@@ -27,8 +27,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
-    it { is_expected.to have_and_belong_to_many(:prometheus_alert_events) }
-    it { is_expected.to have_many(:prometheus_alerts) }
     it { is_expected.to have_many(:issue_email_participants) }
     it { is_expected.to have_one(:email) }
     it { is_expected.to have_many(:timelogs).autosave(true) }
@@ -66,10 +64,6 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:scope_attrs) { { namespace: instance.project.project_namespace } }
       let(:usage) { :issues }
     end
-  end
-
-  describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:confidential).in_array([true, false]) }
   end
 
   describe 'custom validations' do
@@ -817,7 +811,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       ref(:group_issue) | true  | ref(:user_namespace)                        | ref(:group_issue_full_reference)
       ref(:group_issue) | false | ref(:group)                                 | lazy { "##{issue.iid}" }
       ref(:group_issue) | true  | ref(:group)                                 | ref(:group_issue_full_reference)
-      ref(:group_issue) | false | ref(:parent)                                | lazy { "#{group.path}##{issue.iid}" }
+      ref(:group_issue) | false | ref(:parent)                                | ref(:group_issue_full_reference)
       ref(:group_issue) | true  | ref(:parent)                                | ref(:group_issue_full_reference)
       ref(:group_issue) | false | ref(:project)                               | lazy { "#{group.path}##{issue.iid}" }
       ref(:group_issue) | true  | ref(:project)                               | ref(:group_issue_full_reference)
@@ -2062,6 +2056,25 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       specify do
         expect(issue.supports_time_tracking?).to eq(supports_time_tracking)
+      end
+    end
+  end
+
+  describe '#time_estimate' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    context 'when time estimate on the issue record is NULL' do
+      before do
+        issue.update_column(:time_estimate, nil)
+      end
+
+      it 'sets time estimate to zeor on save' do
+        expect(issue.read_attribute(:time_estimate)).to be_nil
+
+        issue.save!
+
+        expect(issue.reload.read_attribute(:time_estimate)).to eq(0)
       end
     end
   end

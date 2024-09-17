@@ -83,9 +83,9 @@ export default {
 <template>
   <div
     class="gl-py-4"
-    :class="{ 'gl-border-b-solid gl-border-b-1 gl-border-gray-100': !isLastRow }"
+    :class="{ 'gl-border-b-1 gl-border-gray-100 gl-border-b-solid': !isLastRow }"
   >
-    <div class="gl-inline-flex gl-align-items-center gl-w-full">
+    <div class="gl-inline-flex gl-w-full gl-items-center">
       <span v-if="canBulkDestroyArtifacts" class="gl-pl-5">
         <gl-form-checkbox
           v-gl-tooltip.right
@@ -95,10 +95,7 @@ export default {
           @input="handleInput"
         />
       </span>
-      <span
-        class="gl-w-1/2 gl-pl-8 gl-display-flex gl-align-items-center"
-        data-testid="job-artifact-row-name"
-      >
+      <span class="gl-flex gl-w-1/2 gl-items-center gl-pl-8" data-testid="job-artifact-row-name">
         <gl-friendly-wrap :text="artifact.name" />
         <gl-badge variant="neutral" class="gl-ml-2">
           {{ artifact.fileType.toLowerCase() }}
@@ -108,11 +105,11 @@ export default {
         </gl-badge>
       </span>
 
-      <span class="gl-w-1/4 gl-text-right gl-pr-5" data-testid="job-artifact-row-size">
+      <span class="gl-w-1/4 gl-pr-5 gl-text-right" data-testid="job-artifact-row-size">
         {{ artifactSize }}
       </span>
 
-      <span class="gl-w-1/4 gl-text-right gl-pr-5">
+      <span class="gl-w-1/4 gl-pr-5 gl-text-right">
         <gl-button-group>
           <gl-button
             category="tertiary"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Todo do
+RSpec.describe Todo, feature_category: :team_planning do
   let(:issue) { create(:issue) }
 
   describe 'relationships' do
@@ -205,6 +205,129 @@ RSpec.describe Todo do
       %i[project group].each do |target_type|
         it_behaves_like 'returns full_path' do
           let(:target) { create(target_type, :public) }
+        end
+      end
+    end
+  end
+
+  describe '#target_url' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, developers: current_user) }
+
+    subject { todo.target_url }
+
+    context 'when the todo is coming from a commit' do
+      let_it_be(:todo) { create(:on_commit_todo, user: current_user, project: project) }
+
+      it 'returns the commit web path' do
+        is_expected.to eq("http://localhost/#{project.full_path}/-/commit/#{todo.target.sha}")
+      end
+    end
+
+    context 'when the todo is coming from an issue' do
+      let_it_be(:issue) { create(:issue, project: project) }
+
+      context 'when coming from the issue itself' do
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: issue) }
+
+        it 'returns the issue web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}")
+        end
+      end
+
+      context 'when coming from a note on the issue' do
+        let_it_be(:note) { create(:note, project: project, noteable: issue) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: issue) }
+
+        it 'returns the issue web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}#note_#{note.id}")
+        end
+      end
+
+      context 'when coming from a design on the issue' do
+        let_it_be(:design) { create(:design, project: project, issue: issue) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: design) }
+
+        it 'returns the design web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}/designs/#{design.filename}")
+        end
+      end
+    end
+
+    context 'when the todo is coming from a work item' do
+      let_it_be(:work_item) { create(:work_item, :test_case, project: project) }
+
+      context 'when coming from the work item itself' do
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: work_item, target_type: WorkItem.name) }
+
+        it 'returns the work item web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/work_items/#{work_item.iid}")
+        end
+      end
+
+      context 'when coming from a note on the work item' do
+        let_it_be(:note) { create(:note, project: project, noteable: work_item) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: work_item, target_type: WorkItem.name) }
+
+        it 'returns the work item web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/work_items/#{work_item.iid}#note_#{note.id}")
+        end
+      end
+    end
+
+    context 'when the todo is coming from a merge request' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+      context 'when coming from the merge request itself' do
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: merge_request) }
+
+        it 'returns the merge request web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}")
+        end
+      end
+
+      context 'when coming from a note on the merge request' do
+        let_it_be(:note) { create(:note, project: project, noteable: merge_request) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: merge_request) }
+
+        it 'returns the issue web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}")
+        end
+      end
+
+      context 'when coming from a failed pipeline on the merge request' do
+        let_it_be(:todo) { create(:todo, :build_failed, project: project, user: current_user, target: merge_request) }
+
+        it 'returns the issue web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines")
+        end
+      end
+    end
+
+    context 'when the todo is coming from an alert' do
+      let_it_be(:alert) { create(:alert_management_alert, project: project) }
+      let_it_be(:todo) { create(:todo, project: project, user: current_user, target: alert) }
+
+      it 'returns the merge request web path' do
+        is_expected.to eq("http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details")
+      end
+    end
+
+    context 'when the todo is for an access request' do
+      context 'when it is a project access request' do
+        let_it_be(:todo) { create(:todo, :member_access_requested, project: project, user: current_user, target: project) }
+
+        it 'returns project access requests web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/project_members?tab=access_requests")
+        end
+      end
+
+      context 'when it is a group access request' do
+        let_it_be(:group) { create(:group, developers: current_user) }
+        let_it_be(:todo) { create(:todo, :member_access_requested, project: nil, group: group, user: current_user, target: group) }
+
+        it 'returns project access requests web path' do
+          is_expected.to eq("http://localhost/groups/#{group.full_path}/-/group_members?tab=access_requests")
         end
       end
     end
@@ -574,6 +697,24 @@ RSpec.describe Todo do
 
     it 'only returns todos that are not pending and authored by a banned user' do
       expect(described_class.all_without_hidden).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo, banned_author_done_todo)
+    end
+  end
+
+  describe 'snoozed and not_snoozed scopes' do
+    let_it_be(:snoozed_todo) { create(:todo, snoozed_until: 1.day.from_now) }
+    let_it_be(:unsnoozed_todo) { create(:todo, snoozed_until: 1.day.ago) }
+    let_it_be(:never_snoozed_todo) { create(:todo, snoozed_until: nil) }
+
+    describe '.snoozed' do
+      it 'only returns todos that are currently snoozed' do
+        expect(described_class.snoozed).to contain_exactly(snoozed_todo)
+      end
+    end
+
+    describe '.not_snoozed' do
+      it 'returns todos that are not snoozed anymore or never were snoozed' do
+        expect(described_class.not_snoozed).to contain_exactly(unsnoozed_todo, never_snoozed_todo)
+      end
     end
   end
 

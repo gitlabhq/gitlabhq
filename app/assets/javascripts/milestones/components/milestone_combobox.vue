@@ -171,7 +171,7 @@ export default {
     </template>
     <template #footer>
       <div
-        class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-flex-direction-column gl-p-2! gl-pt-0!"
+        class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-gray-200 !gl-p-2 !gl-pt-0 gl-border-t-solid"
       >
         <gl-button
           v-for="(item, idx) in extraLinks"
@@ -181,7 +181,7 @@ export default {
           data-testid="milestone-combobox-extra-links"
           category="tertiary"
           block
-          class="gl-justify-content-start! gl-mt-2!"
+          class="!gl-mt-2 !gl-justify-start"
         >
           {{ item.text }}
         </gl-button>

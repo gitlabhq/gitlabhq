@@ -18,7 +18,7 @@ GitLab has two types of namespaces:
   - Groups in your namespace do not inherit your namespace permissions and group features.
   - All the projects you create are under the scope of this namespace.
   - If you change your username, the project and namespace URLs in your account also change. Before you change your username,
-    read about [repository redirects](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+    read about [repository redirects](../project/repository/index.md#repository-path-changes).
 
 - A *group* or *subgroup* namespace, which is based on the group or subgroup name:
   - You can create multiple subgroups to manage multiple projects.
@@ -38,7 +38,7 @@ To determine whether you're viewing a group or personal namespace, you can view 
 
 ## Naming limitations for namespaces
 
-When choosing a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-usernames-project-and-group-names) and [reserved group names](../reserved_names.md#reserved-group-names).
+When choosing a name for your namespace, keep in mind the [character limitations](../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and [reserved group names](../reserved_names.md#reserved-group-names).
 
 NOTE:
 If your namespace contains a `.`, you will encounter issues with the validation of your SSL certificates and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).

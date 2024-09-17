@@ -1,7 +1,6 @@
 import { GlLink, GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
-import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mockJobLog } from 'jest/ci/jobs_mock_data';
@@ -56,7 +55,6 @@ describe('JobLogTopBar', () => {
   const findScrollTop = () => wrapper.find('[data-testid="job-top-bar-scroll-top"]');
   const findScrollBottom = () => wrapper.find('[data-testid="job-top-bar-scroll-bottom"]');
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
-  const findSearchHelp = () => wrapper.findComponent(HelpPopover);
   const findScrollFailure = () => wrapper.find('[data-testid="job-top-bar-scroll-to-failure"]');
   const findShowFullScreenButton = () =>
     wrapper.find('[data-testid="job-top-bar-enter-fullscreen"]');
@@ -310,7 +308,6 @@ describe('JobLogTopBar', () => {
 
     it('displays job log search', () => {
       expect(findJobLogSearch().exists()).toBe(true);
-      expect(findSearchHelp().exists()).toBe(true);
     });
 
     it('emits search results', () => {

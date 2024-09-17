@@ -39,7 +39,7 @@ export default {
     <div v-if="pushEventsData" class="gl-pl-6">
       <gl-form-radio-group v-model="branchFilterStrategyData" name="hook[branch_filter_strategy]">
         <gl-form-radio
-          class="gl-mt-2 branch-filter-strategy-radio"
+          class="branch-filter-strategy-radio gl-mt-2"
           value="all_branches"
           data-testid="rule_all_branches"
         >
@@ -48,7 +48,7 @@ export default {
 
         <!-- wildcard -->
         <gl-form-radio
-          class="gl-mt-2 branch-filter-strategy-radio"
+          class="branch-filter-strategy-radio gl-mt-2"
           value="wildcard"
           data-testid="rule_wildcard"
         >
@@ -80,7 +80,7 @@ export default {
 
         <!-- regex -->
         <gl-form-radio
-          class="gl-mt-2 branch-filter-strategy-radio"
+          class="branch-filter-strategy-radio gl-mt-2"
           value="regex"
           data-testid="rule_regex"
         >

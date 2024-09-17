@@ -319,21 +319,21 @@ export default {
 
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
 
-    <div v-else class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
+    <div v-else class="gl-flex gl-flex-wrap gl-justify-between">
       <div>
-        <h3 v-if="pipelineName" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">
+        <h3 v-if="pipelineName" class="gl-mb-3 gl-mt-0" data-testid="pipeline-name">
           {{ pipelineName }}
         </h3>
-        <h3 v-else class="gl-mt-0 gl-mb-3" data-testid="pipeline-commit-title">
+        <h3 v-else class="gl-mb-3 gl-mt-0" data-testid="pipeline-commit-title">
           {{ commitTitle }}
         </h3>
         <div>
           <ci-icon :status="detailedStatus" show-status-text :show-link="false" class="gl-mb-3" />
-          <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
+          <div class="gl-mb-3 gl-ml-2 gl-inline-block gl-h-6">
             <gl-link
               v-if="user"
               :href="user.webUrl"
-              class="gl-display-inline-block gl-text-gray-900 gl-font-bold js-user-link"
+              class="js-user-link gl-inline-block gl-font-bold gl-text-gray-900"
               :data-user-id="userId"
               :data-username="user.username"
               data-testid="pipeline-user-link"
@@ -353,7 +353,7 @@ export default {
               </template>
             </gl-sprintf>
           </div>
-          <div class="gl-display-inline-block gl-mb-3">
+          <div class="gl-mb-3 gl-inline-block">
             <clipboard-button
               :text="commitSha"
               category="tertiary"
@@ -382,7 +382,7 @@ export default {
         <div>
           <header-badges :pipeline="pipeline" />
 
-          <div class="gl-display-inline-block">
+          <div class="gl-inline-block">
             <span
               v-gl-tooltip
               :title="s__('Pipelines|Total number of jobs for the pipeline')"

@@ -40,7 +40,7 @@ export default {
 <template>
   <span
     v-if="statusConfig && typeConfig"
-    class="gl-display-flex gl-align-items-center gl-hover-cursor-pointer gl-ml-2"
+    class="gl-ml-2 gl-flex gl-items-center hover:gl-cursor-pointer"
   >
     <button
       id="signature"
@@ -48,7 +48,7 @@ export default {
       data-testid="signature-badge"
       role="button"
       variant="link"
-      class="gl-border-0 gl-outline-none gl-p-0 gl-bg-transparent"
+      class="gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none"
       :aria-label="statusConfig.label"
     >
       <gl-badge :variant="statusConfig.variant">

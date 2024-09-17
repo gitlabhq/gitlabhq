@@ -139,12 +139,6 @@ function rspec_simple_job_with_retry () {
   handle_retry_rspec_in_new_process $rspec_run_status
 }
 
-function rspec_db_library_code() {
-  local db_files="spec/lib/gitlab/database/"
-
-  rspec_simple_job_with_retry "--tag ~click_house -- ${db_files}"
-}
-
 # Below is the list of options (https://linuxcommand.org/lc3_man_pages/seth.html)
 #
 #   allexport    same as -a
@@ -244,7 +238,7 @@ function rspec_parallelized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  # e.g. 'rspec unit pg13 1/24 278964' would become 'rspec_unit_pg13_1_24_278964'
+  # e.g. 'rspec unit pg14 1/24 278964' would become 'rspec_unit_pg14_1_24_278964'
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="${1:-}"
   local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"

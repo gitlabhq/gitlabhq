@@ -48,7 +48,7 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 1. On the left sidebar, select **Access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
-   - The token expires on that date at midnight UTC.
+   - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date.
 1. In the **Select scopes** section, select the **create_runner** checkbox.
@@ -69,7 +69,7 @@ To create a project access token:
 1. Enter a name. The token name is visible to any user with permissions to view
    the group or project.
 1. Enter an expiry date for the token.
-   - The token expires on that date at midnight UTC.
+   - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set
      to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date.

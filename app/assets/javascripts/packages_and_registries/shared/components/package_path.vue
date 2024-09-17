@@ -47,12 +47,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-flex gl-items-center">
     <gl-icon data-testid="base-icon" name="project" class="gl-mx-3 gl-min-w-0" />
 
     <gl-link
       data-testid="root-link"
-      class="gl-text-gray-500 gl-min-w-0"
+      class="gl-min-w-0 gl-text-gray-500"
       :href="`/${rootLink}`"
       :disabled="disabled"
     >
@@ -66,7 +66,7 @@ export default {
         <span
           v-gl-tooltip="{ title: path }"
           data-testid="ellipsis-icon"
-          class="gl-shadow-inner-1-gray-200 gl-rounded-base gl-px-2 gl-min-w-0"
+          class="gl-min-w-0 gl-rounded-base gl-px-2 gl-shadow-inner-1-gray-200"
         >
           <gl-icon name="ellipsis_h" />
         </span>
@@ -75,7 +75,7 @@ export default {
 
       <gl-link
         data-testid="leaf-link"
-        class="gl-text-gray-500 gl-min-w-0"
+        class="gl-min-w-0 gl-text-gray-500"
         :href="`/${path}`"
         :disabled="disabled"
       >

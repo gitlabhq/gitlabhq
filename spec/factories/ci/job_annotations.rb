@@ -8,5 +8,7 @@ FactoryBot.define do
     trait :external_link do
       data { [{ external_link: { label: 'Example URL', url: 'https://example.com/' } }] }
     end
+
+    project_id { job.project.id }
   end
 end

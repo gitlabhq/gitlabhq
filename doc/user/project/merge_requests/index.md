@@ -153,7 +153,7 @@ change, and whether you need access to a development environment:
   need a fully-featured environment to both edit files, and run tests afterward. Gitpod
   supports running the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
   To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-preferences).
-- [Push changes from the command line](../../../gitlab-basics/start-using-git.md), if you are
+- [Push changes from the command line](../../../topics/git/commands.md), if you are
   familiar with Git and the command line.
 
 ## Assign a user to a merge request
@@ -172,6 +172,13 @@ a merge request, or:
    ![Two assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
 
 GitLab adds the merge request to the user's **Assigned merge requests** page.
+
+## Merge a merge request
+
+During the merge request [review process](reviews/index.md), reviewers provide feedback on your merge request.
+When a reviewer decides that the contents of your merge request are acceptable, the reviewer can set
+[auto-merge](auto_merge.md) on it, even if some merge checks are failing. When a merge request is set to auto-merge,
+it merges after all merge checks pass, without more action from you.
 
 ## Close a merge request
 

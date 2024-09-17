@@ -62,10 +62,6 @@ class ContainerRepository < ApplicationRecord
     ).exists?
   end
 
-  def self.all_migrated?
-    Gitlab.com_except_jh?
-  end
-
   def self.with_enabled_policy
     joins('INNER JOIN container_expiration_policies ON container_repositories.project_id = container_expiration_policies.project_id')
       .where(container_expiration_policies: { enabled: true })
@@ -88,10 +84,6 @@ class ContainerRepository < ApplicationRecord
 
   class << self
     alias_method :pending_destruction, :delete_scheduled # needed by Packages::Destructible
-  end
-
-  def migrated?
-    Gitlab.com_except_jh?
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -120,7 +112,7 @@ class ContainerRepository < ApplicationRecord
   # does a search of tags containing the name and we filter them
   # to find the exact match. Otherwise, we instantiate a tag.
   def tag(tag)
-    if migrated_and_can_access_the_gitlab_api?
+    if gitlab_api_client.supports_gitlab_api?
       page = tags_page(name: tag)
       return if page[:tags].blank?
 
@@ -140,7 +132,7 @@ class ContainerRepository < ApplicationRecord
 
   def tags
     strong_memoize(:tags) do
-      if migrated_and_can_access_the_gitlab_api?
+      if gitlab_api_client.supports_gitlab_api?
         result = []
         each_tags_page do |array_of_tags|
           result << array_of_tags
@@ -158,7 +150,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def each_tags_page(page_size: 100, &block)
-    raise ArgumentError, 'not a migrated repository' unless migrated?
+    raise ArgumentError, _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
     raise ArgumentError, 'block not given' unless block
 
     # dummy uri to initialize the loop
@@ -184,7 +176,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil, referrer_type: nil)
-    raise ArgumentError,  _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
+    raise ArgumentError, _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
 
     page = gitlab_api_client.tags(
       self.path,
@@ -302,10 +294,6 @@ class ContainerRepository < ApplicationRecord
   end
 
   private
-
-  def migrated_and_can_access_the_gitlab_api?
-    migrated? && gitlab_api_client.supports_gitlab_api?
-  end
 
   def transform_tags_page(tags_response_body)
     return [] unless tags_response_body

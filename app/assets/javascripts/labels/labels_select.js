@@ -440,7 +440,7 @@ export default class LabelsSelect {
     const tooltipTitleTemplate = template(
       [
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
-        "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span>",
+        "<span class='font-weight-bold'>Scoped label</span>",
         '<br>',
         '<%= escapeStr(label.description) %>',
         '<% } else { %>',

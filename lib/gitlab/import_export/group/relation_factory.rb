@@ -23,6 +23,17 @@ module Gitlab
           group_labels
         ].freeze
 
+        RELATIONS_WITH_REWRITABLE_USERNAMES = %i[
+          milestone
+          milestones
+          epic
+          epics
+          release
+          releases
+          note
+          notes
+        ].freeze
+
         private
 
         def setup_models
@@ -32,6 +43,10 @@ module Gitlab
           end
 
           update_group_references
+
+          return unless RELATIONS_WITH_REWRITABLE_USERNAMES.include?(@relation_name) && @rewrite_mentions
+
+          update_username_mentions(@relation_hash)
         end
 
         def invalid_relation?

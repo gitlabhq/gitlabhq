@@ -7,6 +7,7 @@ module Analytics
 
       included do
         include FromUnion
+        include Awardable
 
         scope :by_stage_event_hash_id, ->(id) { where(stage_event_hash_id: id) }
         scope :by_project_id, ->(id) { where(project_id: id) }
@@ -62,6 +63,15 @@ module Analytics
             :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction) },
             :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction) }
           )
+        end
+
+        scope :not_authored, ->(user_id) { where(author_id: nil).or(where.not(author_id: user_id)) }
+        scope :not_assigned_to, ->(user) do
+          condition = assignees_model
+            .where(user_id: user)
+            .where(arel_table[issuable_id_column].eq(assignees_model.arel_table[issuable_id_column]))
+
+          where(condition.arel.exists.not)
         end
       end
 

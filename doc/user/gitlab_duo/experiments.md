@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The following GitLab Duo features are
 [experiments](../../policy/experiment-beta-support.md#experiment).
 
-## Forecast deployment frequency with Value stream forecasting
+## Forecast deployment frequency with Value Stream Forecasting
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
+**Tier: GitLab.com and Self-managed:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
@@ -44,7 +44,7 @@ is displayed.
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-## Summarize an issue with Issue description generation
+## Populate an issue with Issue Description Generation
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
@@ -59,6 +59,7 @@ Prerequisites:
 
 - You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have permission to view the issue.
+- Only available for the plain text editor.
 
 To generate an issue description:
 

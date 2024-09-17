@@ -17,6 +17,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import DeleteDisclosureDropdownItem from '../components/delete_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
+import ModelEdit from '../components/model_edit.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
@@ -60,6 +61,7 @@ export default {
     LoadOrErrorOrShow,
     DeleteModel,
     ModelVersionCreate,
+    ModelEdit,
   },
   router: new VueRouter({
     routes,
@@ -71,6 +73,7 @@ export default {
       canWriteModelRegistry: this.canWriteModelRegistry,
       maxAllowedFileSize: this.maxAllowedFileSize,
       latestVersion: this.latestVersion,
+      markdownPreviewPath: this.markdownPreviewPath,
     };
   },
   props: {
@@ -106,6 +109,10 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
     },
   },
   apollo: {
@@ -192,8 +199,8 @@ export default {
           </template>
 
           <template #right-actions>
+            <model-edit v-if="canWriteModelRegistry" :model="model" />
             <model-version-create v-if="canWriteModelRegistry" :model-gid="modelGid" />
-
             <actions-dropdown>
               <delete-disclosure-dropdown-item
                 v-if="canWriteModelRegistry"

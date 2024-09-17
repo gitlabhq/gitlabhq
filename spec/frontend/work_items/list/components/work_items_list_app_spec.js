@@ -3,10 +3,12 @@ import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   setSortPreferenceMutationResponse,
@@ -32,34 +34,53 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import WorkItemsListApp from '~/work_items/list/components/work_items_list_app.vue';
-import { sortOptions, urlSortParams } from '~/work_items/list/constants';
-import getWorkItemsQuery from '~/work_items/list/queries/get_work_items.query.graphql';
-import { groupWorkItemsQueryResponse } from '../../mock_data';
+import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
+import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item_state_counts.query.graphql';
+import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import { STATE_CLOSED } from '~/work_items/constants';
+import { createRouter } from '~/work_items/router';
+import {
+  groupWorkItemsQueryResponse,
+  groupWorkItemStateCountsQueryResponse,
+} from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 
-describe('WorkItemsListApp component', () => {
+const skipReason = new SkipReason({
+  name: 'WorkItemsListApp component',
+  reason: 'Caught error after test environment was torn down',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478775',
+});
+
+describeSkipVue3(skipReason, () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
+  const countsQueryHandler = jest.fn().mockResolvedValue(groupWorkItemStateCountsQueryResponse);
+  const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
+  const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
-    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
+    sortPreferenceMutationResponse = mutationHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemsListApp, {
+      router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
         [getWorkItemsQuery, queryHandler],
+        [getWorkItemStateCountsQuery, countsQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
       ]),
       provide: {
@@ -103,7 +124,7 @@ describe('WorkItemsListApp component', () => {
     });
 
     it('renders tab counts', () => {
-      expect(cloneDeep(findIssuableList().props('tabCounts'))).toEqual({
+      expect(findIssuableList().props('tabCounts')).toEqual({
         all: 3,
         closed: 1,
         opened: 2,
@@ -165,7 +186,6 @@ describe('WorkItemsListApp component', () => {
         includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
-        firstPageSize: 20,
         types: type,
       });
     });
@@ -196,7 +216,6 @@ describe('WorkItemsListApp component', () => {
     describe('when eeCreatedWorkItemsCount is updated', () => {
       it('refetches work items', async () => {
         mountComponent();
-        await waitForPromises();
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
@@ -361,13 +380,12 @@ describe('WorkItemsListApp component', () => {
 
       describe('when user is signed in', () => {
         it('calls mutation to save sort preference', async () => {
-          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          mountComponent();
           await waitForPromises();
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
-          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
+          expect(mutationHandler).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
         });
 
         it('captures error when mutation response has errors', async () => {
@@ -386,16 +404,104 @@ describe('WorkItemsListApp component', () => {
 
       describe('when user is signed out', () => {
         it('does not call mutation to save sort preference', async () => {
-          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-          mountComponent({
-            provide: { isSignedIn: false },
-            sortPreferenceMutationResponse: mutationMock,
-          });
+          mountComponent({ provide: { isSignedIn: false } });
           await waitForPromises();
 
           findIssuableList().vm.$emit('sort', CREATED_DESC);
 
-          expect(mutationMock).not.toHaveBeenCalled();
+          expect(mutationHandler).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe('work item drawer', () => {
+    describe('when issues_list_drawer feature is disabled', () => {
+      it('is not rendered when feature is disabled', async () => {
+        mountComponent({
+          provide: {
+            glFeatures: {
+              issuesListDrawer: false,
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findDrawer().exists()).toBe(false);
+      });
+    });
+
+    describe('when issues_list_drawer feature is enabled', () => {
+      beforeEach(async () => {
+        mountComponent({
+          provide: {
+            glFeatures: {
+              issuesListDrawer: true,
+            },
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('is rendered when feature is enabled', () => {
+        expect(findDrawer().exists()).toBe(true);
+      });
+
+      describe('selecting issues', () => {
+        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        const payload = {
+          iid: issue.iid,
+          webUrl: issue.webUrl,
+          fullPath: issue.namespace.fullPath,
+        };
+
+        beforeEach(async () => {
+          findIssuableList().vm.$emit('select-issuable', payload);
+
+          await nextTick();
+        });
+
+        it('opens drawer when work item is selected', () => {
+          expect(findDrawer().props('open')).toBe(true);
+          expect(findDrawer().props('activeItem')).toEqual(payload);
+        });
+
+        const checkThatDrawerPropsAreEmpty = () => {
+          expect(findDrawer().props('activeItem')).toBeNull();
+          expect(findDrawer().props('open')).toBe(false);
+        };
+
+        it('resets the selected item when the drawer is closed', async () => {
+          findDrawer().vm.$emit('close');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+        });
+
+        it('refetches and resets when work item is deleted', async () => {
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+
+          findDrawer().vm.$emit('workItemDeleted');
+
+          await nextTick();
+
+          checkThatDrawerPropsAreEmpty();
+
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
+        });
+
+        it('refetches when the selected work item is closed', async () => {
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+
+          // component displays open work items by default
+          findDrawer().vm.$emit('work-item-updated', {
+            state: STATE_CLOSED,
+          });
+
+          await nextTick();
+
+          expect(defaultQueryHandler).toHaveBeenCalledTimes(3);
         });
       });
     });

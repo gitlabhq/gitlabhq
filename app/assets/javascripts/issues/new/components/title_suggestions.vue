@@ -77,7 +77,7 @@ export default {
         class="text-secondary gl-cursor-help"
       />
     </div>
-    <ul class="gl-list-none gl-m-0 gl-p-0">
+    <ul class="gl-m-0 gl-list-none gl-p-0">
       <li
         v-for="(suggestion, index) in issues"
         :key="suggestion.id"

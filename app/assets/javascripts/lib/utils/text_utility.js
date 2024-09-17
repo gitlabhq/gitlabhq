@@ -559,3 +559,36 @@ export const convertEachWordToTitleCase = (str) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
+/**
+ * Creates a unique string in the context of an array of other strings.
+ *
+ * @param {String} originalStr String to make unique
+ * @param {Array} otherStrings to compare to
+ * @param {String} modifier to recursively apply to make the string unique
+ *
+ * @returns {String} Unique string in the context of the array.
+ */
+export const uniquifyString = (originalStr, otherStrings, modifier) =>
+  otherStrings.reduce((acc, uniqueString) => {
+    return uniqueString === acc ? acc + modifier : acc;
+  }, originalStr);
+
+/**
+ * Checks if a string contains a search string (with optional wildcards)
+ *
+ * @param {String} str String to search within
+ * @param {String} pattern String to look for (with * representing wildcards)
+ *
+ * @returns {Boolean} Whether the string matches the search pattern
+ */
+export const wildcardMatch = (str, pattern) => {
+  const lowerPattern = pattern.toLowerCase();
+  const lowerStr = str.toLowerCase();
+
+  if (!pattern.includes('*')) return lowerPattern === lowerStr;
+
+  const escapedPattern = lowerPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`^${escapedPattern.replace(/\\\*/g, '.*')}$`);
+  return regex.test(lowerStr);
+};

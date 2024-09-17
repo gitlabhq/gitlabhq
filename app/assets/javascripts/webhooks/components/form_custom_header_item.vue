@@ -67,12 +67,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-flex-start gl-gap-3">
+  <div class="gl-flex gl-items-start gl-gap-3">
     <gl-form-group
       :label="s__('Webhooks|Header name')"
       :label-for="keyInputId"
       :invalid-feedback="invalidKeyFeedback"
-      class="gl-flex-basis-half gl-mb-0"
+      class="gl-mb-0 gl-basis-1/2"
       :label-class="{ 'gl-sr-only': index > 0 }"
       data-testid="custom-header-item-key"
     >
@@ -89,7 +89,7 @@ export default {
       :label="s__('Webhooks|Header value')"
       :label-for="valueInputId"
       :invalid-feedback="invalidValueFeedback"
-      class="gl-flex-basis-half gl-mb-0"
+      class="gl-mb-0 gl-basis-1/2"
       :label-class="{ 'gl-sr-only': index > 0 }"
       data-testid="custom-header-item-value"
     >

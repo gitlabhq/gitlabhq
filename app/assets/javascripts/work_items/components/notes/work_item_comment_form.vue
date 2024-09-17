@@ -217,6 +217,9 @@ export default {
       clearDraft(this.autosaveKey);
     },
     submitForm() {
+      if (this.isSubmitting) {
+        return;
+      }
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
       }
@@ -230,9 +233,9 @@ export default {
 </script>
 
 <template>
-  <div class="timeline-discussion-body gl-overflow-visible!">
-    <div class="note-body gl-p-0! gl-overflow-visible!">
-      <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note">
+  <div class="timeline-discussion-body !gl-overflow-visible">
+    <div class="note-body !gl-overflow-visible !gl-p-0">
+      <form class="common-note-form gfm-form js-main-target-form new-note gl-grow">
         <comment-field-layout
           :with-alert-container="isWorkItemConfidential"
           :noteable-data="getWorkItemData"
@@ -280,37 +283,37 @@ export default {
               class="gl-text-blue-500"
             />
           </gl-form-checkbox>
-          <gl-button
-            category="primary"
-            variant="confirm"
-            data-testid="confirm-button"
-            :disabled="!commentText.length"
-            :loading="isSubmitting"
-            @click="submitForm"
-            >{{ commentButtonTextComputed }}
-          </gl-button>
-          <work-item-state-toggle
-            v-if="isNewDiscussion"
-            class="gl-ml-3"
-            :work-item-id="workItemId"
-            :work-item-iid="workItemIid"
-            :work-item-state="workItemState"
-            :work-item-type="workItemType"
-            :full-path="fullPath"
-            :has-comment="Boolean(commentText.length)"
-            can-update
-            @submit-comment="submitForm"
-            @error="$emit('error', $event)"
-          />
-          <gl-button
-            v-else
-            data-testid="cancel-button"
-            category="primary"
-            class="gl-ml-3"
-            :loading="updateInProgress"
-            @click="cancelEditing"
-            >{{ $options.i18n.cancelButtonText }}
-          </gl-button>
+          <div class="gl-flex gl-gap-3">
+            <gl-button
+              category="primary"
+              variant="confirm"
+              data-testid="confirm-button"
+              :disabled="!commentText.length"
+              :loading="isSubmitting"
+              @click="submitForm"
+              >{{ commentButtonTextComputed }}
+            </gl-button>
+            <work-item-state-toggle
+              v-if="isNewDiscussion"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-state="workItemState"
+              :work-item-type="workItemType"
+              :full-path="fullPath"
+              :has-comment="Boolean(commentText.length)"
+              can-update
+              @submit-comment="submitForm"
+              @error="$emit('error', $event)"
+            />
+            <gl-button
+              v-else
+              data-testid="cancel-button"
+              category="primary"
+              :loading="updateInProgress"
+              @click="cancelEditing"
+              >{{ $options.i18n.cancelButtonText }}
+            </gl-button>
+          </div>
         </div>
       </form>
     </div>

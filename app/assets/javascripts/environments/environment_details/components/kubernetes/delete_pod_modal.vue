@@ -67,6 +67,7 @@ export default {
             });
           } else {
             this.$toast.show(this.$options.i18n.success);
+            this.$emit('pod-deleted');
           }
         })
         .catch((error) => {

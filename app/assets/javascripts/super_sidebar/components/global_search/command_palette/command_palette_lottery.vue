@@ -16,7 +16,7 @@ export default {
     s__('GlobalSearch|Type %{linkStart}@%{linkEnd} to search for users'),
     s__('GlobalSearch|Type %{linkStart}&gt;%{linkEnd} to search for pages or actions'),
     s__('GlobalSearch|Type %{linkStart}:%{linkEnd} to search for projects'),
-    s__('GlobalSearch|Type %{linkStart}~%{linkEnd} to search for files'),
+    s__('GlobalSearch|Type %{linkStart}t%{linkEnd} to search for files'),
   ],
   computed: {
     getTipNum() {

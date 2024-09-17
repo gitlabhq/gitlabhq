@@ -105,8 +105,8 @@ export default {
       data-testid="manual-action-link"
     >
       <template #list-item>
-        <span class="gl-flex-grow-1">{{ item.text }}</span>
-        <span v-if="item.scheduledAt" class="gl-text-gray-500 gl-float-right">
+        <span class="gl-grow">{{ item.text }}</span>
+        <span v-if="item.scheduledAt" class="gl-float-right gl-text-gray-500">
           <gl-icon name="clock" />
           {{ remainingTime(item) }}
         </span>

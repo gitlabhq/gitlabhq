@@ -3,7 +3,7 @@
 - if any_form_based_providers_enabled? || password_authentication_enabled_for_web?
   = render 'shared/divider', text: _("or sign in with")
 
-.gl-mt-5.gl-text-center.gl-display-flex.gl-flex-direction-column.gl-gap-3.js-oauth-login
+.gl-mt-5.gl-text-center.gl-flex.gl-flex-col.gl-gap-3.js-oauth-login
   - enabled_button_based_providers.each do |provider|
     = render 'devise/shared/omniauth_provider_button',
       href: omniauth_authorize_path(:user, provider),

@@ -56,7 +56,7 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0 gl-font-lg">
+    <h5 class="gl-mt-0 gl-text-lg">
       {{ __('Edit comment template') }}
     </h5>
     <gl-loading-icon v-if="$apollo.queries.savedReply.loading" size="lg" />

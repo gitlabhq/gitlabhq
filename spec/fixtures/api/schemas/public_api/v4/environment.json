@@ -60,6 +60,22 @@
     },
     "project": {
       "$ref": "project.json"
+    },
+    "cluster_agent": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "agent.json"
+        }
+      ]
+    },
+    "kubernetes_namespace": {
+      "$ref": "../../types/nullable_string.json"
+    },
+    "flux_resource_path": {
+      "$ref": "../../types/nullable_string.json"
     }
   },
   "additionalProperties": false

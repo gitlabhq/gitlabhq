@@ -416,6 +416,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
             expect(new_job.job_variables.count).to be(1)
             expect(new_job.job_variables.first.key).to eq('MANUAL_VAR')
             expect(new_job.job_variables.first.value).to eq('manual test var')
+            expect(new_job.job_variables.first.project_id).to eq(job.project_id)
           end
         end
 

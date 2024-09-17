@@ -143,7 +143,7 @@ export default {
           v-gl-tooltip
           :title="$options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
-          class="gl-relative gl-h-full add-reaction-button btn-icon"
+          class="add-reaction-button btn-icon gl-relative gl-h-full"
           data-testid="add-reaction-button"
         >
           <slot name="button-content">
@@ -170,7 +170,7 @@ export default {
         <gl-search-box-by-type
           ref="searchValue"
           v-model="searchValue"
-          class="add-reaction-search gl-border-b-1 gl-border-b-solid gl-border-b-gray-200"
+          class="add-reaction-search gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid"
           borderless
           autofocus
           debounce="500"
@@ -181,14 +181,14 @@ export default {
 
       <div
         v-show="!searchValue"
-        class="award-list gl-display-flex gl-border-b-solid gl-border-gray-100 gl-border-b-1"
+        class="award-list gl-flex gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
       >
         <gl-button
           v-for="(category, index) in categoryNames"
           :key="category.name"
           category="tertiary"
           :class="{ 'emoji-picker-category-active': index === currentCategory }"
-          class="gl-px-3! gl-rounded-0! gl-border-b-2! gl-border-b-solid! gl-flex-grow-1 emoji-picker-category-tab"
+          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid"
           :icon="category.icon"
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"
@@ -218,14 +218,14 @@ export default {
 
       <template v-if="newCustomEmojiPath" #footer>
         <div
-          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-flex-direction-column gl-p-2! gl-pt-0!"
+          class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-gray-200 !gl-p-2 !gl-pt-0 gl-border-t-solid"
         >
           <gl-button
             :href="newCustomEmojiPath"
             category="tertiary"
             block
             data-testid="create-new-emoji"
-            class="gl-justify-content-start! gl-mt-2!"
+            class="!gl-mt-2 !gl-justify-start"
           >
             {{ $options.i18n.createEmoji }}
           </gl-button>

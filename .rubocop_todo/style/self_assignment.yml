@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/SelfAssignment:
-  Exclude:
-    - 'app/serializers/entity_date_helper.rb'

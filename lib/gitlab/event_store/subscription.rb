@@ -20,9 +20,9 @@ module Gitlab
         return unless condition_met?(event)
 
         if delay
-          worker.perform_in(delay, event.class.name, event.data.deep_stringify_keys)
+          worker.perform_in(delay, event.class.name, event.data.deep_stringify_keys.to_h)
         else
-          worker.perform_async(event.class.name, event.data.deep_stringify_keys)
+          worker.perform_async(event.class.name, event.data.deep_stringify_keys.to_h)
         end
 
         # We rescue and track any exceptions here because we don't want to

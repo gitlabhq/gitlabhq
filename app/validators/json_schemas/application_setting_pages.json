@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Pages settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pages_extra_deployments_default_expiry_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Default expiration for extra deployments in seconds."
+    }
+  }
+}

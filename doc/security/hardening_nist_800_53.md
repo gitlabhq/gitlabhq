@@ -127,18 +127,18 @@ GitLab also supports the following user types for unique use cases:
 - [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
 
 - [External Users](../administration/external_users.md) -
-    External users can be set to provide limited access for users that
-    may not be part of the organization. Typically, this can be used to
-    satisfy managing access for contractors or other third parties.
-    Controls such as IA-4(4) require non-organizational users to be
-    identified and managed in accordance with company policy. Setting
-    external users can reduce risk to an organization by limiting access
-    to projects by default and assisting administrators in identifying
-    which users are not employed by the organization.
+  External users can be set to provide limited access for users that
+  may not be part of the organization. Typically, this can be used to
+  satisfy managing access for contractors or other third parties.
+  Controls such as IA-4(4) require non-organizational users to be
+  identified and managed in accordance with company policy. Setting
+  external users can reduce risk to an organization by limiting access
+  to projects by default and assisting administrators in identifying
+  which users are not employed by the organization.
 
 - [Service Accounts](../user/profile/service_accounts.md#self-managed-gitlab) -
-    Service accounts may be added to accommodate automated tasks.
-    Service accounts do not use a seat under the license.
+  Service accounts may be added to accommodate automated tasks.
+  Service accounts do not use a seat under the license.
 
 **Admin** area - In the **Admin** area, administrators can [export permissions](../administration/admin_area.md#user-permission-export),
 [review user identities](../administration/admin_area.md#user-identities), [administer groups](../administration/admin_area.md#administering-groups),
@@ -148,60 +148,60 @@ requirements:
 - [Reset user password](reset_user_password.md) when suspected of compromise.
 
 - [Unlock users](unlock_user.md).
-    By default, GitLab locks users after 10 failed sign-in attempts.
-    Users remain locked for 10 minutes or until an administrator unlocks
-    the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
-    to configure max login attempts and time period for remaining locked
-    out. Per guidance in AC-7, FedRAMP defers to NIST 800-63B for
-    defining parameters for account lockouts, which the default setting
-    satisfies.
+  By default, GitLab locks users after 10 failed sign-in attempts.
+  Users remain locked for 10 minutes or until an administrator unlocks
+  the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
+  to configure max login attempts and time period for remaining locked
+  out. Per guidance in AC-7, FedRAMP defers to NIST 800-63B for
+  defining parameters for account lockouts, which the default setting
+  satisfies.
 
 - Review [abuse reports](../administration/review_abuse_reports.md)
-    or [spam logs](../administration/review_spam_logs.md).
-    FedRAMP requires organizations to monitor accounts for atypical use
-    (AC-2(12)). GitLab empowers users to flag abuse in abuse reports,
-    where administrators can remove access pending investigation. Spam
-    logs are consolidated in the **Spam logs** section of the **Admin** area.
-    Administrators can remove, block, or trust users flagged in that
-    area.
+  or [spam logs](../administration/review_spam_logs.md).
+  FedRAMP requires organizations to monitor accounts for atypical use
+  (AC-2(12)). GitLab empowers users to flag abuse in abuse reports,
+  where administrators can remove access pending investigation. Spam
+  logs are consolidated in the **Spam logs** section of the **Admin** area.
+  Administrators can remove, block, or trust users flagged in that
+  area.
 
 - [Set password storage parameters](password_storage.md).
-    Stored secrets must satisfy FIPS 140-2 or 140-3 as outlined in
-    SC-13. PBKDF2+SHA512 is supported with FIPS compliant ciphers when
-    FIPS mode is enabled.
+  Stored secrets must satisfy FIPS 140-2 or 140-3 as outlined in
+  SC-13. PBKDF2+SHA512 is supported with FIPS compliant ciphers when
+  FIPS mode is enabled.
 
 - [Credentials inventory](../administration/credentials_inventory.md)
-    enables administrators to review all secrets used in a GitLab
-    self-managed instance in one place. A consolidated view of
-    credentials, tokens, and keys may assist with satisfying
-    requirements such as reviewing passwords or rotating credentials.
+  enables administrators to review all secrets used in a GitLab
+  self-managed instance in one place. A consolidated view of
+  credentials, tokens, and keys may assist with satisfying
+  requirements such as reviewing passwords or rotating credentials.
 
 - [Set customer password length limits](password_length_limits.md).
-    FedRAMP defers to NIST 800-63B in IA-5 for establishing password
-    length requirements. GitLab supports 8-128 character passwords, with
-    8 characters set as the default. GitLab provides [instructions for updating the minimum password length](password_length_limits.md#modify-minimum-password-length)
-    with the GitLab UI, which organizations interested
-    in enforcing longer passwords can use. Additionally, self-managed customers
-    may [configure complexity requirements](../administration/settings/sign_up_restrictions.md#password-complexity-requirements)
-    through the **Admin** area UI.
+  FedRAMP defers to NIST 800-63B in IA-5 for establishing password
+  length requirements. GitLab supports 8-128 character passwords, with
+  8 characters set as the default. GitLab provides [instructions for updating the minimum password length](password_length_limits.md#modify-minimum-password-length)
+  with the GitLab UI, which organizations interested
+  in enforcing longer passwords can use. Additionally, self-managed customers
+  may [configure complexity requirements](../administration/settings/sign_up_restrictions.md#password-complexity-requirements)
+  through the **Admin** area UI.
 
 - [Default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration) -
-    FedRAMP establishes that users that have been inactive for a set
-    time period should be logged out. FedRAMP does not specify the time
-    period, however, clarifies that for privileged users they should be
-    logged out at the end of the standard work period. Administrators
-    can establish [default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
+  FedRAMP establishes that users that have been inactive for a set
+  time period should be logged out. FedRAMP does not specify the time
+  period, however, clarifies that for privileged users they should be
+  logged out at the end of the standard work period. Administrators
+  can establish [default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
 - [Provisioning New Users](../user/profile/account/create_accounts.md) -
-    Administrators can create new users for their GitLab account with the
-    **Admin** area UI. In compliance with IA-5, GitLab requires new users to
-    change their passwords on first login.
+  Administrators can create new users for their GitLab account with the
+  **Admin** area UI. In compliance with IA-5, GitLab requires new users to
+  change their passwords on first login.
 
 - Deprovisioning Users - Administrators are able to [remove users with the **Admin** area UI](../user/profile/account/delete_account.md#delete-users-and-user-contributions).
-    An alternative to deleting users is to [block a user](../administration/moderate_users.md#block-a-user)
-    and remove all access. Blocking a user maintains their data in
-    repositories while removing all access. Blocked users do not impact
-    seat counts.
+  An alternative to deleting users is to [block a user](../administration/moderate_users.md#block-a-user)
+  and remove all access. Blocking a user maintains their data in
+  repositories while removing all access. Blocked users do not impact
+  seat counts.
 
 - Deactivate Users - Inactive users that have been identified during account reviews [may be temporarily deactivated](../administration/moderate_users.md#deactivate-a-user). Deactivation is similar to blocking, but there are a few important differences. Deactivating a user does not prohibit the user from signing into the GitLab UI. A deactivated user can become active again by signing in. A deactivated user:
   - Cannot access repositories or the API.
@@ -396,19 +396,19 @@ roles after the necessary reviews have been completed. Additional merge
 settings to consider:
 
 - Remove all approvals when a commit is added - Ensures that approvals
-    are not carried over when new commits are made to a merge request.
+  are not carried over when new commits are made to a merge request.
 
 - Restrict individuals who can dismiss code change reviews.
 
 - Assign [code owners](../user/project/codeowners/index.md#codeowners-file)
-    to be notified when sensitive code or configurations are changed through
-    merge requests.
+  to be notified when sensitive code or configurations are changed through
+  merge requests.
 
 - [Ensure all open comments are resolved before allowing code change merging](../user/project/merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
 
 - [Configure push rules](../user/project/repository/push_rules.md) -
-    Push rules can be configured to meet requirements such as reviewing
-    signed code, verifying users, and more.
+  Push rules can be configured to meet requirements such as reviewing
+  signed code, verifying users, and more.
 
 **Testing and Validation of Changes**
 
@@ -420,7 +420,7 @@ consider where that pipeline will run. Connecting to external services
 may violate an established authorization boundary where federal data is
 permitted to be stored and processed. GitLab provides runner container
 images configured to run on FIPS-enabled systems. GitLab provides
-hardening guidance for pipelines, including how to [configure protected branches](../user/project/protected_branches.md)
+hardening guidance for pipelines, including how to [configure protected branches](../user/project/repository/branches/protected.md)
 and [implement pipeline security](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 Additionally, customers may want to consider assigning [required checks](../user/project/merge_requests/status_checks.md)
 before merging code to ensure that all checks have passed prior to
@@ -509,41 +509,41 @@ to ensure that Geo is configured appropriately for each use case.
 Implementing Geo provides the following benefits:
 
 - Reduce from minutes to seconds the time taken for distributed
-    developers to clone and fetch large repositories and projects.
+  developers to clone and fetch large repositories and projects.
 
 - Enable developers to contribute ideas and work in parallel, across
-    regions..
+  regions.
 
 - Balance the read-only load between primary and secondary sites.
 
 - Can be used for cloning and fetching projects, in addition to
-    reading any data available in the GitLab web interface (see
-    limitations).
+  reading any data available in the GitLab web interface (see
+  limitations).
 
 - Overcomes slow connections between distant offices, saving time by
-    improving speed for distributed teams.
+  improving speed for distributed teams.
 
 - Helps reduce the loading time for automated tasks, custom
-    integrations, and internal workflows.
+  integrations, and internal workflows.
 
 - Can quickly fail over to a secondary site in a disaster recovery
-    scenario.
+  scenario.
 
 - Allows planned failover to a secondary site.
 
 Geo provides the following core features:
 
 - Read-only secondary sites: Maintain one primary GitLab site while
-    still enabling read-only secondary sites for distributed teams.
+  still enabling read-only secondary sites for distributed teams.
 
 - Authentication system hooks: Secondary sites receive all
-    authentication data (like user accounts and logins) from the primary
-    instance.
+  authentication data (like user accounts and logins) from the primary
+  instance.
 
 - An intuitive UI: Secondary sites use the same web interface as the
-    primary site. In addition, there are visual notifications that block
-    write operations and make it clear that a user is in a secondary
-    site.
+  primary site. In addition, there are visual notifications that block
+  write operations and make it clear that a user is in a secondary
+  site.
 
 Additional Geo Resources:
 

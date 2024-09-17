@@ -3,55 +3,62 @@
 module Notes
   class UpdateService < BaseService
     def execute(note)
-      return note unless note.editable? && params.present?
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[
+          notes
+          vulnerability_user_mentions
+        ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482742'
+      ) do
+        return note unless note.editable? && params.present? # rubocop:disable Cop/AvoidReturnFromBlocks -- Temp for decomp exemption
 
-      old_mentioned_users = note.mentioned_users(current_user).to_a
+        old_mentioned_users = note.mentioned_users(current_user).to_a
 
-      note.assign_attributes(params)
+        note.assign_attributes(params)
 
-      return note unless note.valid?
+        return note unless note.valid? # rubocop:disable Cop/AvoidReturnFromBlocks -- Temp for decomp exemption
 
-      track_note_edit_usage_for_issues(note) if note.for_issue?
-      track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
+        track_note_edit_usage_for_issues(note) if note.for_issue?
+        track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
 
-      only_commands = false
+        only_commands = false
 
-      quick_actions_service = QuickActionsService.new(project, current_user)
-      if quick_actions_service.supported?(note)
-        content, update_params, message = quick_actions_service.execute(note, {})
+        quick_actions_service = QuickActionsService.new(project, current_user)
+        if quick_actions_service.supported?(note)
+          content, update_params, message = quick_actions_service.execute(note, {})
 
-        only_commands = content.empty?
+          only_commands = content.empty?
 
-        note.note = content
-      end
-
-      update_note(note, only_commands)
-      note.save
-
-      unless only_commands || note.for_personal_snippet?
-        note.create_new_cross_references!(current_user)
-
-        update_todos(note, old_mentioned_users)
-
-        update_suggestions(note)
-
-        execute_note_webhook(note)
-      end
-
-      if quick_actions_service.commands_executed_count.to_i > 0
-        if update_params.present?
-          quick_actions_service.apply_updates(update_params, note)
-          note.commands_changes = update_params
+          note.note = content
         end
 
-        if only_commands
-          delete_note(note, message)
-        else
-          note.save
-        end
-      end
+        update_note(note, only_commands)
+        note.save
 
-      note
+        unless only_commands || note.for_personal_snippet?
+          note.create_new_cross_references!(current_user)
+
+          update_todos(note, old_mentioned_users)
+
+          update_suggestions(note)
+
+          execute_note_webhook(note)
+        end
+
+        if quick_actions_service.commands_executed_count.to_i > 0
+          if update_params.present?
+            quick_actions_service.apply_updates(update_params, note)
+            note.commands_changes = update_params
+          end
+
+          if only_commands
+            delete_note(note, message)
+          else
+            note.save
+          end
+        end
+
+        note
+      end
     end
 
     private

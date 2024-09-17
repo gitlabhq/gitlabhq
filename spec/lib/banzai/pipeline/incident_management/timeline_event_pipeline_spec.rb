@@ -5,12 +5,15 @@ require 'spec_helper'
 RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
   let_it_be(:project) { create(:project) }
 
+  it_behaves_like 'sanitize pipeline'
+
   describe '.filters' do
     it 'contains required filters' do
       expect(described_class.filters).to eq(
         [
           *Banzai::Pipeline::PlainMarkdownPipeline.filters,
           Banzai::Filter::SanitizationFilter,
+          Banzai::Filter::SanitizeLinkFilter,
           *Banzai::Pipeline::GfmPipeline.reference_filters,
           Banzai::Filter::EmojiFilter,
           Banzai::Filter::ExternalLinkFilter,

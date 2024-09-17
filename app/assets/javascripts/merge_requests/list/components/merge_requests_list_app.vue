@@ -1,10 +1,12 @@
 <script>
-import { GlFilteredSearchToken, GlButton } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
+import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -16,6 +18,8 @@ import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/l
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
+  TOKEN_TITLE_APPROVED_BY,
+  TOKEN_TYPE_APPROVED_BY,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_DRAFT,
@@ -28,10 +32,16 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TITLE_REVIEWER,
   TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_MERGE_USER,
+  TOKEN_TITLE_MERGE_USER,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TITLE_LABEL,
   TOKEN_TYPE_LABEL,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TYPE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -67,18 +77,29 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 
 export default {
+  name: 'MergeRequestsListApp',
   i18n,
   mergeRequestListTabs,
   components: {
     GlButton,
+    GlLink,
+    GlIcon,
     IssuableList,
     CiIcon,
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
+    ApprovalCount,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: [
+    'autocompleteAwardEmojisPath',
     'fullPath',
     'hasAnyMergeRequests',
     'hasScopedLabelsFeature',
@@ -86,6 +107,7 @@ export default {
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'newMergeRequestPath',
+    'releasesEndpoint',
   ],
   data() {
     return {
@@ -175,17 +197,20 @@ export default {
     },
     searchTokens() {
       const preloadedUsers = [];
-
-      if (gon.current_user_id) {
-        preloadedUsers.push({
-          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
-          name: gon.current_user_fullname,
-          username: gon.current_username,
-          avatar_url: gon.current_user_avatar_url,
-        });
-      }
-
-      return [
+      const tokens = [
+        {
+          type: TOKEN_TYPE_APPROVED_BY,
+          title: TOKEN_TITLE_APPROVED_BY,
+          icon: 'approval',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS_NOT,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-approved_by`,
+          preloadedUsers,
+          multiSelect: false,
+        },
         {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
@@ -244,6 +269,21 @@ export default {
           unique: true,
         },
         {
+          type: TOKEN_TYPE_MERGE_USER,
+          title: TOKEN_TITLE_MERGE_USER,
+          icon: 'merge',
+          token: UserToken,
+          dataType: 'user',
+          defaultUsers: [],
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-merged_by`,
+          preloadedUsers,
+          multiselect: false,
+          unique: true,
+        },
+        {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
           icon: 'milestone',
@@ -285,7 +325,39 @@ export default {
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-label`,
         },
+        {
+          type: TOKEN_TYPE_RELEASE,
+          title: TOKEN_TITLE_RELEASE,
+          icon: 'rocket',
+          token: ReleaseToken,
+          operators: OPERATORS_IS_NOT,
+          releasesEndpoint: this.releasesEndpoint,
+        },
       ];
+
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          operators: OPERATORS_IS_NOT,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-my_reaction`,
+        });
+      }
+
+      return tokens;
     },
     showPaginationControls() {
       return (
@@ -341,6 +413,9 @@ export default {
             message: this.$options.i18n.errorFetchingBranches,
           });
         });
+    },
+    fetchEmojis() {
+      return axios.get(this.autocompleteAwardEmojisPath);
     },
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
@@ -447,7 +522,16 @@ export default {
       this.sortKey = deriveSortKey({ sort, state });
       this.state = state || STATUS_OPEN;
     },
+    isMergeRequestBroken(mergeRequest) {
+      return (
+        mergeRequest.commitCount === 0 ||
+        !mergeRequest.sourceBranchExists ||
+        !mergeRequest.targetBranchExists ||
+        mergeRequest.conflicts
+      );
+    },
   },
+  STATUS_OPEN,
 };
 </script>
 
@@ -480,7 +564,7 @@ export default {
     @filter="handleFilter"
   >
     <template #nav-actions>
-      <div class="gl-display-flex gl-gap-3">
+      <div class="gl-flex gl-gap-3">
         <gl-button
           v-if="newMergeRequestPath"
           variant="confirm"
@@ -497,10 +581,23 @@ export default {
 
     <template #status="{ issuable = {} }">
       {{ getStatus(issuable) }}
+      <gl-link
+        v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
+        v-gl-tooltip
+        :href="issuable.webUrl"
+        :title="__('Cannot be merged automatically')"
+        data-testid="merge-request-cannot-merge"
+      >
+        <gl-icon name="warning-solid" class="gl-text-gray-900" />
+      </gl-link>
     </template>
 
     <template #statistics="{ issuable = {} }">
       <merge-request-statistics :merge-request="issuable" />
+    </template>
+
+    <template #approval-status="{ issuable = {} }">
+      <approval-count :merge-request="issuable" full-text />
     </template>
 
     <template #pipeline-status="{ issuable = {} }">

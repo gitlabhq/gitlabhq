@@ -86,7 +86,7 @@ export default {
       default: null,
     },
   },
-  clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0 gl-m-0! gl-ml-3!'],
+  clearBtnSharedClasses: ['gl-flex-grow-0 gl-basis-0 !gl-m-0 !gl-ml-3'],
   inputTypes: {
     key: 'key',
     value: 'value',
@@ -228,17 +228,17 @@ export default {
 </script>
 <template>
   <gl-loading-icon v-if="$apollo.queries.variables.loading" class="gl-mt-9" size="lg" />
-  <div v-else class="row gl-justify-content-center">
+  <div v-else class="row gl-justify-center">
     <div class="col-10">
       <label>{{ $options.i18n.header }}</label>
 
       <div
         v-for="(variable, index) in variables"
         :key="variable.id"
-        class="gl-display-flex gl-align-items-center gl-mb-5"
+        class="gl-mb-5 gl-flex gl-items-center"
         data-testid="ci-variable-row"
       >
-        <gl-form-input-group class="gl-mr-4 gl-flex-grow-1">
+        <gl-form-input-group class="gl-mr-4 gl-grow">
           <template #prepend>
             <gl-input-group-text>
               {{ $options.i18n.keyLabel }}
@@ -253,7 +253,7 @@ export default {
           />
         </gl-form-input-group>
 
-        <gl-form-input-group class="gl-flex-grow-2">
+        <gl-form-input-group class="gl-grow-2">
           <template #prepend>
             <gl-input-group-text>
               {{ $options.i18n.valueLabel }}
@@ -281,7 +281,7 @@ export default {
         <!-- Placeholder button to keep the layout fixed -->
         <gl-button
           v-else
-          class="gl-opacity-0 gl-pointer-events-none"
+          class="gl-pointer-events-none gl-opacity-0"
           :class="$options.clearBtnSharedClasses"
           data-testid="delete-variable-btn-placeholder"
           category="tertiary"
@@ -289,7 +289,7 @@ export default {
         />
       </div>
 
-      <div class="gl-text-center gl-mt-5">
+      <div class="gl-mt-5 gl-text-center">
         <gl-sprintf :message="$options.i18n.formHelpText">
           <template #link="{ content }">
             <gl-link :href="variableSettings" target="_blank">
@@ -298,7 +298,7 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="gl-text-center gl-mt-3">
+      <div class="gl-mt-3 gl-text-center">
         <gl-sprintf :message="$options.i18n.overrideNoteText">
           <template #bold="{ content }">
             <strong>
@@ -307,7 +307,7 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+      <div class="gl-mt-5 gl-flex gl-justify-center">
         <gl-button
           v-if="isRetryable"
           data-testid="cancel-btn"

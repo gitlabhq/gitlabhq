@@ -10,6 +10,7 @@ module Types
     DEFAULT_COMPLEXITY = 1
 
     attr_reader :doc_reference
+    attr_accessor :skip_type_authorization
 
     def initialize(**kwargs, &block)
       @requires_argument = kwargs.delete(:requires_argument)
@@ -21,6 +22,7 @@ module Types
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], given_complexity)
 
       @authorize = Array.wrap(kwargs.delete(:authorize))
+      @skip_type_authorization = Array.wrap(kwargs.delete(:skip_type_authorization))
       @scopes = Array.wrap(kwargs.delete(:scopes) || %i[api read_api])
       after_connection_extensions = kwargs.delete(:late_extensions) || []
 
@@ -29,7 +31,7 @@ module Types
       # We want to avoid the overhead of this in prod
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
       extension ::Gitlab::Graphql::Present::FieldExtension
-      extension ::Gitlab::Graphql::Authorize::ConnectionFilterExtension
+      extension ::Gitlab::Graphql::Authorize::FieldExtension
 
       after_connection_extensions.each { extension _1 } if after_connection_extensions.any?
     end

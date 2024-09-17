@@ -48,6 +48,7 @@ db:rollback single-db:
 # https://docs.gitlab.com/ee/development/database/dbmigrate_multi_version_upgrade_job.html
 db:migrate:multi-version-upgrade:
   extends:
+    - .single-db
     - .db-job-base
     - .rails:rules:db:migrate:multi-version-upgrade
   script:

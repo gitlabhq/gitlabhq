@@ -64,7 +64,7 @@ would be helpful if one can have a shell to aid debugging. When a job is
 running, on the right panel you can see a button `debug` that opens the terminal
 for the current job. Only the person who started a job can debug it.
 
-![Example of job running with terminal available](img/interactive_web_terminal_running_job.png)
+![Example of job running with terminal available](img/interactive_web_terminal_running_job_v17_3.png)
 
 When selected, a new tab opens to the terminal page where you can access
 the terminal and type commands like in a standard shell.

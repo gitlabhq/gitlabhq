@@ -3,3 +3,16 @@ export const PROJECT_GRAPHQL_ID_TYPE = 'Project';
 export const GROUP_GRAPHQL_ID_TYPE = 'Group';
 export const SEARCH_RESULTS_DEBOUNCE = 500;
 export const DEFAULT_SHOW_CHUNKS = 3;
+
+export const REF_FIELD_NAME = 'repository_ref';
+
+export const DEFAULT_HEADER_LABEL_COLOR = '#D9C2EE';
+
+export const CODE_THEME_DARK = 'dark';
+export const CODE_THEME_DEFAULT = 'white';
+export const CODE_THEME_MONOKAI = 'monokai';
+export const CODE_THEME_SOLARIZED_DARK = 'solarized-dark';
+export const CODE_THEME_SOLARIZED_LIGHT = 'solarized-light';
+
+export const BORDER_DARK = '!gl-border-b-gray-100';
+export const BORDER_LIGHT = '!gl-border-b-gray-700';

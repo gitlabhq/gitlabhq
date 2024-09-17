@@ -169,12 +169,14 @@ export default {
         }
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     appStatus: {
       query: getAppStatus,
       update(data) {
         return data.app.status;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     commitSha: {
       query: getLatestCommitShaQuery,
       skip({ currentBranch }) {
@@ -202,6 +204,7 @@ export default {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentBranch: {
       query: getCurrentBranch,
       update(data) {
@@ -394,7 +397,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4 gl-relative">
+  <div class="gl-relative gl-mt-4">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
       v-else-if="showStartScreen || usesExternalConfig"

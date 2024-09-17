@@ -1,5 +1,6 @@
 - blob = local_assigns.fetch(:blob)
+- ref = local_assigns.fetch(:ref)
 - auxiliary_viewer = blob.auxiliary_viewer
-- if auxiliary_viewer && auxiliary_viewer.render_error.nil? && auxiliary_viewer.visible_to?(current_user)
+- if auxiliary_viewer && auxiliary_viewer.render_error.nil? && auxiliary_viewer.visible_to?(current_user, ref)
   .well-segment.blob-auxiliary-viewer
     = render 'projects/blob/viewer', viewer: auxiliary_viewer

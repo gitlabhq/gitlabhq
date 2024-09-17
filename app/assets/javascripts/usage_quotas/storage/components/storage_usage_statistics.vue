@@ -22,11 +22,11 @@ export default {
 <template>
   <div>
     <h3 data-testid="overview-subtitle">{{ s__('UsageQuota|Namespace overview') }}</h3>
-    <div class="gl-display-grid gl-md-grid-template-columns-2 gl-gap-5 gl-py-4">
+    <div class="gl-grid gl-gap-5 gl-py-4 md:gl-grid-cols-2">
       <storage-usage-overview-card
         :used-storage="usedStorage"
         :loading="loading"
-        data-testid="namespace-usage-total"
+        data-testid="namespace-usage-total-content"
       />
     </div>
   </div>

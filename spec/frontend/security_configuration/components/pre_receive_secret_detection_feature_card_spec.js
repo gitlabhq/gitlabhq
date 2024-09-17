@@ -1,4 +1,4 @@
-import { GlToggle, GlLink, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlToggle, GlLink, GlIcon, GlPopover, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
@@ -26,6 +26,10 @@ const defaultProvide = {
   preReceiveSecretDetectionEnabled: false,
   userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
+  secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
+  glFeatures: {
+    secretDetectionProjectLevelExclusions: true,
+  },
 };
 
 describe('PreReceiveSecretDetectionFeatureCard component', () => {
@@ -72,6 +76,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findLockIcon = () => wrapper.findComponent(GlIcon);
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findSettingsButton = () => wrapper.findComponent(GlButton);
 
   it('renders correct name and description', () => {
     expect(wrapper.text()).toContain(feature.name);
@@ -82,6 +87,15 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
     const link = findLink();
     expect(link.text()).toBe('Learn more');
     expect(link.attributes('href')).toBe(feature.helpPath);
+  });
+
+  it('shows the settings button with correct icon and link', () => {
+    const { secretDetectionConfigurationPath } = defaultProvide;
+    const button = findSettingsButton();
+
+    expect(button.exists()).toBe(true);
+    expect(button.props('icon')).toBe('settings');
+    expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
   });
 
   describe('when feature is available', () => {
@@ -194,6 +208,21 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       it('should not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when FF `secretDetectionProjectLevelExclusions` is disabled', () => {
+    it('do not show the settings button', () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            secretDetectionProjectLevelExclusions: false,
+          },
+        },
+      });
+
+      const button = findSettingsButton();
+      expect(button.exists()).toBe(false);
     });
   });
 });

@@ -257,12 +257,12 @@ export default {
           data-testid="extension-list-item"
         >
           <template #header>
-            <div class="gl-flex-direction-column">
+            <div class="gl-flex-col">
               <div>{{ suite.text }}</div>
               <div
                 v-for="(subtext, i) in suite.subtext"
                 :key="`${suite.id}-subtext-${i}`"
-                class="gl-font-sm gl-text-gray-700"
+                class="gl-text-sm gl-text-gray-700"
               >
                 {{ subtext }}
               </div>
@@ -282,7 +282,7 @@ export default {
                     <strong
                       v-for="(headerText, i) in item.header"
                       :key="`${item.id}-headerText-${i}`"
-                      class="gl-block gl-mt-2"
+                      class="gl-mt-2 gl-block"
                     >
                       {{ headerText }}
                     </strong>

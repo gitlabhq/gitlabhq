@@ -39,6 +39,8 @@ module Gitlab
         end
 
         def ignore_alternate_directories?
+          return false if Feature.enabled?(:dont_ignore_alternate_directories, project)
+
           git_env = ::Gitlab::Git::HookEnv.all(repository.gl_repository)
 
           git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?

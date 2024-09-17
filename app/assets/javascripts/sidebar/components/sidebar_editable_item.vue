@@ -154,7 +154,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-center gl-leading-20 gl-text-gray-900 gl-font-bold"
+      class="gl-flex gl-items-center gl-font-bold gl-leading-20 gl-text-gray-900"
       @click.self="collapse"
     >
       <span class="hide-collapsed" data-testid="title" @click="collapse">
@@ -165,13 +165,13 @@ export default {
         v-if="loading || initialLoading"
         size="sm"
         inline
-        class="gl-ml-2 hide-collapsed"
+        class="hide-collapsed gl-ml-2"
       />
       <gl-loading-icon
         v-if="loading && isClassicSidebar"
         size="sm"
         inline
-        class="gl-mx-auto gl-my-0 hide-expanded"
+        class="hide-expanded gl-mx-auto gl-my-0"
       />
       <slot name="collapsed-right"></slot>
       <gl-button
@@ -180,7 +180,7 @@ export default {
         v-gl-tooltip.viewport.html
         category="tertiary"
         size="small"
-        class="gl-ml-auto hide-collapsed -gl-mr-2 shortcut-sidebar-dropdown-toggle"
+        class="hide-collapsed shortcut-sidebar-dropdown-toggle -gl-mr-2 gl-ml-auto"
         :title="editTooltipText"
         :aria-label="editAriaLabelText"
         :aria-keyshortcuts="editKeyshortcutsText"

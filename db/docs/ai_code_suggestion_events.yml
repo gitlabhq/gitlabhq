@@ -1,0 +1,12 @@
+---
+table_name: ai_code_suggestion_events
+classes:
+- Ai::CodeSuggestionEvent
+feature_categories:
+  - code_suggestions
+description: Database storage for raw code suggestion usage events. Partitioned by month.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163514
+milestone: '17.4'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

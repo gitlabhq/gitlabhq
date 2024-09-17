@@ -1,7 +1,7 @@
 import { s__, __ } from '~/locale';
 
 export const I18N_EXPLANATION = s__(
-  "IdentityVerification|For added security, you'll need to verify your identity. We've sent a verification code to %{email}",
+  "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity. We've sent a verification code to %{email}",
 );
 export const I18N_INPUT_LABEL = s__('IdentityVerification|Verification code');
 export const I18N_EMAIL_EMPTY_CODE = s__('IdentityVerification|Enter a code.');

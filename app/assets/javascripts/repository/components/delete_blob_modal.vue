@@ -217,8 +217,9 @@ export default {
       this.$refs.form.$el.submit();
     },
   },
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
-  deleteLfsHelpPath: helpPagePath('topics/git/lfs/index', { anchor: 'removing-objects-from-lfs' }),
+  deleteLfsHelpPath: helpPagePath('topics/git/lfs', {
+    anchor: 'delete-a-git-lfs-file-from-repository-history',
+  }),
 };
 </script>
 

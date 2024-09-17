@@ -694,7 +694,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
           it 'copies as inline code' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]',
-              '`raise RuntimeError, "System commands must be given as an array of strings"`',
+              '`      raise RuntimeError, "System commands must be given as an array of strings"`',
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
             )
           end
@@ -773,11 +773,11 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         wait_for_requests
       end
 
-      context 'selecting one word of text' do
+      context 'selecting one line of text with a single word in it' do
         it 'copies as inline code' do
           verify(
             '.line[id="LC10"]',
-            '`end`'
+            '`    end`'
           )
         end
       end
@@ -786,7 +786,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         it 'copies as inline code' do
           verify(
             '.line[id="LC9"]',
-            '`raise RuntimeError, "System commands must be given as an array of strings"`'
+            '`      raise RuntimeError, "System commands must be given as an array of strings"`'
           )
         end
       end
@@ -825,7 +825,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         it 'copies as inline code' do
           verify(
             '.line[id="LC27"]',
-            '`"bio": null,`'
+            '`    "bio": null,`'
           )
         end
       end

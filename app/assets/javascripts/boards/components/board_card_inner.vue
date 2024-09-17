@@ -79,6 +79,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     isShowingLabels: {
       query: isShowingLabelsQuery,
       update: (data) => data.isShowingLabels,
@@ -230,7 +231,7 @@ export default {
   <div>
     <div class="gl-flex" dir="auto">
       <h4
-        class="board-card-title gl-min-w-0 gl-mb-0 gl-mt-0 gl-text-base gl-break-words gl-hyphens-auto"
+        class="board-card-title gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
         :class="{ 'gl-mr-6': hasActions }"
       >
         <issuable-blocked-icon
@@ -245,7 +246,7 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon gl-mr-2 gl-text-orange-500 gl-cursor-help"
+          class="confidential-icon gl-mr-2 gl-cursor-help gl-text-orange-500"
           :aria-label="__('Confidential')"
         />
         <gl-icon
@@ -253,14 +254,14 @@ export default {
           v-gl-tooltip
           name="spam"
           :title="__('This issue is hidden because its author has been banned.')"
-          class="gl-mr-2 hidden-icon gl-text-orange-500 gl-cursor-help"
+          class="hidden-icon gl-mr-2 gl-cursor-help gl-text-orange-500"
           data-testid="hidden-icon"
         />
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"
-          :class="{ 'gl-text-gray-400!': isLoading }"
-          class="js-no-trigger gl-text-body gl-hover-text-gray-900"
+          :class="{ '!gl-text-gray-400': isLoading }"
+          class="js-no-trigger gl-text-primary hover:gl-text-gray-900"
           @mousemove.stop
           >{{ item.title }}</a
         >
@@ -271,7 +272,7 @@ export default {
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
-          class="js-no-trigger gl-mt-2 gl-mr-2"
+          class="js-no-trigger gl-mr-2 gl-mt-2"
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
@@ -281,15 +282,15 @@ export default {
         />
       </template>
     </div>
-    <div class="board-card-footer gl-flex gl-justify-between gl-items-end gl-mt-3">
+    <div class="board-card-footer gl-mt-3 gl-flex gl-items-end gl-justify-between">
       <div
-        class="gl-flex align-items-start gl-flex-wrap-reverse board-card-number-container gl-overflow-hidden"
+        class="align-items-start board-card-number-container gl-flex gl-flex-wrap-reverse gl-overflow-hidden"
       >
-        <span class="board-info-items gl-leading-20 gl-inline-block">
+        <span class="board-info-items gl-inline-block gl-leading-20">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-overflow-hidden gl-gap-2 gl-mr-3 gl-mt-3 gl-text-sm gl-text-secondary"
+            class="board-card-number gl-mr-3 gl-mt-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-secondary"
             :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
@@ -302,7 +303,7 @@ export default {
               v-gl-tooltip
               :title="itemReferencePath"
               data-placement="bottom"
-              class="board-item-path gl-text-truncate gl-font-bold gl-cursor-help"
+              class="board-item-path gl-cursor-help gl-truncate gl-font-bold"
             >
               {{ directNamespaceReference }}
             </span>
@@ -324,7 +325,7 @@ export default {
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-inline-flex gl-items-center gl-max-w-15 gl-text-sm gl-text-gray-500 gl-cursor-help gl-align-bottom gl-mr-3"
+              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-gray-500"
             />
             <issue-iteration
               v-if="item.iteration"
@@ -354,7 +355,7 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="gl-font-bold gl-block">{{ __('Assignee') }}</span>
+            <span class="gl-block gl-font-bold">{{ __('Assignee') }}</span>
             {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>
@@ -363,7 +364,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-bold gl-border-0 gl-leading-24 -gl-ml-3"
+          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-gray-900"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

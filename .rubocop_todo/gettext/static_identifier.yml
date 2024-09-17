@@ -11,7 +11,6 @@ Gettext/StaticIdentifier:
     - 'app/services/projects/create_from_template_service.rb'
     - 'app/services/security/ci_configuration/base_create_service.rb'
     - 'app/services/users/banned_user_base_service.rb'
-    - 'app/services/work_items/widgets/hierarchy_service/base_service.rb'
     - 'ee/app/controllers/admin/licenses_controller.rb'
     - 'ee/app/mailers/ee/emails/admin_notification.rb'
     - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'

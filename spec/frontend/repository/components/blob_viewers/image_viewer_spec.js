@@ -24,7 +24,7 @@ describe('Image Viewer', () => {
       createComponent(blobData);
 
       expect(findImage().exists()).toBe(true);
-      expect(findImage().attributes('src')).toBe(externalStorageUrl);
+      expect(findImage().element.src).toBe(externalStorageUrl);
       expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
     });
   });
@@ -34,7 +34,7 @@ describe('Image Viewer', () => {
       createComponent(DEFAULT_BLOB_DATA);
 
       expect(findImage().exists()).toBe(true);
-      expect(findImage().attributes('src')).toBe(DEFAULT_BLOB_DATA.rawPath);
+      expect(findImage().element.src).toBe(DEFAULT_BLOB_DATA.rawPath);
       expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
     });
   });

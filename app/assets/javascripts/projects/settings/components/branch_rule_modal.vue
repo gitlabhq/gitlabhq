@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import getProtectableBranches from '../graphql/queries/protectable_branches.query.graphql';
 
-const wildcardsHelpDocLink = helpPagePath('user/project/protected_branches', {
+const wildcardsHelpDocLink = helpPagePath('user/project/repository/branches/protected', {
   anchor: 'protect-multiple-branches-with-wildcard-rules',
 });
 export default {
@@ -37,6 +37,7 @@ export default {
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     project: {
       query: getProtectableBranches,
       variables() {
@@ -136,7 +137,7 @@ export default {
           <code>{{ searchQuery }}</code>
         </template>
       </gl-collapsible-listbox>
-      <div data-testid="help-text" class="gl-text-subtle gl-mt-2">
+      <div data-testid="help-text" class="gl-mt-2 gl-text-subtle">
         <gl-sprintf :message="formDescriptionText">
           <template #link="{ content }">
             <gl-link :href="$options.wildcardsHelpDocLink">

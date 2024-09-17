@@ -141,7 +141,7 @@ GitLab 17.0 requires at least PostgreSQL 14.
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you are running. You may also have to enable some
 extensions. For more information, see the
-[PostgreSQL requirements](../install/requirements.md#postgresql-requirements)
+[PostgreSQL requirements](../install/requirements.md#postgresql)
 
 To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
 
@@ -283,7 +283,7 @@ sudo systemctl daemon-reload
 ### 10. Install libraries, migrations, etc
 
 Make sure you have the required
-[PostgreSQL extensions](../install/requirements.md#postgresql-requirements),
+[PostgreSQL extensions](../install/requirements.md#postgresql),
 then proceed to install the needed libraries:
 
 ```shell
@@ -335,7 +335,12 @@ If Gitaly is located on its own server, or you use Gitaly Cluster, see [Zero-dow
 
 #### Compile Gitaly
 
+During the build process, Gitaly [compiles and embeds Git binaries](https://gitlab.com/gitlab-org/gitaly/-/issues/6089), which requires additional dependencies.
+
 ```shell
+# Install dependencies
+sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev libpcre2-dev build-essential
+
 # Fetch Gitaly source with Git and compile with Go
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production

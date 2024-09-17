@@ -237,14 +237,31 @@ module Gitlab
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
-      rescue GRPC::FailedPrecondition => e
-        raise Gitlab::Git::CommitError, e
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :reference_update
+          # Historically UserFFBranch returned a successful response with a missing BranchUpdate if
+          # updating the reference failed. The RPC has been updated to return a bad status when the
+          # reference update fails. Match the previous behavior until call sites have been adapted.
+          nil
+        else
+          if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
+            raise Gitlab::Git::CommitError, e
+          end
+
+          raise
+        end
       end
 
       # rubocop:disable Metrics/ParameterLists
       def user_cherry_pick(
         user:, commit:, branch_name:, message:,
-        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false)
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false, target_sha: nil)
 
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
@@ -257,7 +274,8 @@ module Gitlab
           commit_author_name: encode_binary(author_name),
           commit_author_email: encode_binary(author_email),
           dry_run: dry_run,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: target_sha
         )
 
         response = gitaly_client_call(
@@ -270,6 +288,8 @@ module Gitlab
         )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      rescue GRPC::InvalidArgument => ex
+        raise Gitlab::Git::CommandError, ex
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
@@ -487,12 +507,12 @@ module Gitlab
 
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files(
-        user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository, force = false, start_sha = nil, sign = true)
+        user, branch_name, commit_message, actions, author_email, author_name, start_branch_name,
+        start_repository, force = false, start_sha = nil, sign = true, target_sha = nil)
         req_enum = Enumerator.new do |y|
           header = user_commit_files_request_header(user, branch_name,
-            commit_message, actions, author_email, author_name,
-            start_branch_name, start_repository, force, start_sha, sign)
+            commit_message, actions, author_email, author_name, start_branch_name,
+            start_repository, force, start_sha, sign, target_sha)
 
           y.yield Gitaly::UserCommitFilesRequest.new(header: header)
 
@@ -541,13 +561,7 @@ module Gitlab
         when :index_update
           raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
         else
-          # Some invalid path errors are caught by Gitaly directly and returned
-          # as an :index_update error, while others are found by libgit2 and
-          # come as generic errors. We need to convert the latter as IndexErrors
-          # as well.
-          if e.to_status.details.start_with?('invalid path')
-            raise Gitlab::Git::Index::IndexError, e.to_status.details
-          end
+          handle_undetailed_bad_status_errors(e)
 
           raise e
         end
@@ -594,7 +608,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository, force, start_sha, sign)
+        start_branch_name, start_repository, force, start_sha, sign, target_sha)
 
         Gitaly::UserCommitFilesRequestHeader.new(
           repository: @gitaly_repo,
@@ -608,6 +622,7 @@ module Gitlab
           force: force,
           start_sha: encode_binary(start_sha),
           sign: sign,
+          expected_old_oid: target_sha,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
       end
@@ -651,6 +666,18 @@ module Gitlab
           "A file with this name doesn't exist"
         else
           "Unknown error performing git operation"
+        end
+      end
+
+      def handle_undetailed_bad_status_errors(error)
+        # Some invalid path errors are caught by Gitaly directly and returned
+        # as an :index_update error, while others are found by libgit2 and
+        # come as generic errors. We need to convert the latter as IndexErrors
+        # as well.
+        if error.to_status.details.start_with?('invalid path')
+          raise Gitlab::Git::Index::IndexError, error.to_status.details
+        elsif error.is_a?(GRPC::InvalidArgument) && error.to_status.details.include?('expected old object ID')
+          raise Gitlab::Git::CommandError, error
         end
       end
     end

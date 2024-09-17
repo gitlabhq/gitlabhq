@@ -37,8 +37,8 @@ export default {
 };
 </script>
 <template>
-  <div id="peek-view-add-request" class="view gl-display-flex">
-    <gl-form class="gl-display-flex gl-align-items-center" @submit.prevent>
+  <div id="peek-view-add-request" class="view gl-flex">
+    <gl-form class="gl-flex gl-items-center" @submit.prevent>
       <gl-button
         v-gl-tooltip.viewport
         class="gl-mr-2"
@@ -56,7 +56,7 @@ export default {
         type="text"
         :placeholder="$options.i18n.inputLabel"
         :aria-label="$options.i18n.inputLabel"
-        class="gl-ml-2 gl-px-3! gl-py-2!"
+        class="gl-ml-2 !gl-px-3 !gl-py-2"
         @keyup.enter="addRequest"
         @keyup.esc="clearForm"
       />

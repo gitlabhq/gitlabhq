@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlToggle } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 
@@ -8,18 +8,21 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
+import { stubComponent } from 'helpers/stub_component';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 
 import { resolvers } from '~/graphql_shared/issuable_client';
-import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
+import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import * as utils from '~/work_items/utils';
 import {
   getIssueDetailsResponse,
   workItemHierarchyTreeResponse,
@@ -75,26 +78,24 @@ describe('WorkItemLinks', () => {
             show: showModal,
           },
         }),
-        WidgetWrapper: stubComponent(WidgetWrapper, {
-          template: RENDER_ALL_SLOTS_TEMPLATE,
-        }),
+        CrudComponent,
       },
     });
 
     await waitForPromises();
   };
 
-  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
-  const findEmptyState = () => wrapper.findByTestId('links-empty');
+  const findErrorMessage = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findByTestId('crud-empty');
   const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findToggleCreateFormButton = () => wrapper.findByTestId('toggle-create-form');
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
-  const findChildrenCount = () => wrapper.findByTestId('children-count');
+  const findChildrenCount = () => wrapper.findByTestId('crud-count');
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategoryModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
-  const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
+  const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
 
   afterEach(() => {
     mockApollo = null;
@@ -171,7 +172,7 @@ describe('WorkItemLinks', () => {
       fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
     });
 
-    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
+    expect(findErrorMessage().text()).toBe(errorMessage);
   });
 
   it('displays number of children', async () => {
@@ -225,6 +226,15 @@ describe('WorkItemLinks', () => {
     await createComponent();
 
     expect(showModal).toHaveBeenCalled();
+    expect(findWorkItemDetailModal().props('workItemIid')).toBe('37');
+  });
+
+  it('opens the modal if work item id URL parameter is found in child items', async () => {
+    setWindowLocation('?show=31');
+    await createComponent();
+
+    expect(showModal).toHaveBeenCalled();
+    expect(findWorkItemDetailModal().props('workItemId')).toBe('gid://gitlab/WorkItem/31');
     expect(findWorkItemDetailModal().props('workItemIid')).toBe('37');
   });
 
@@ -299,20 +309,56 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  it.each`
-    toggleValue
-    ${true}
-    ${false}
-  `(
-    'passes showLabels as $toggleValue to child items when toggle is $toggleValue',
-    async ({ toggleValue }) => {
+  describe('more actions', () => {
+    useLocalStorageSpy();
+
+    beforeEach(async () => {
+      jest.spyOn(utils, 'getShowLabelsFromLocalStorage');
+      jest.spyOn(utils, 'saveShowLabelsToLocalStorage');
+      await createComponent();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('renders the `WorkItemMoreActions` component', async () => {
       await createComponent();
 
-      findShowLabelsToggle().vm.$emit('change', toggleValue);
+      expect(findMoreActions().exists()).toBe(true);
+    });
+
+    it('does not render `View on a roadmap` action', async () => {
+      await createComponent();
+
+      expect(findMoreActions().props('showViewRoadmapAction')).toBe(false);
+    });
+
+    it('toggles `showLabels` when `toggle-show-labels` is emitted', async () => {
+      await createComponent();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
 
       await nextTick();
 
-      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
-    },
-  );
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(false);
+
+      findMoreActions().vm.$emit('toggle-show-labels');
+
+      await nextTick();
+
+      expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(true);
+    });
+
+    it('calls saveShowLabelsToLocalStorage on toggle', () => {
+      findMoreActions().vm.$emit('toggle-show-labels');
+      expect(utils.saveShowLabelsToLocalStorage).toHaveBeenCalled();
+    });
+
+    it('calls getShowLabelsFromLocalStorage on mount', () => {
+      expect(utils.getShowLabelsFromLocalStorage).toHaveBeenCalled();
+    });
+  });
 });

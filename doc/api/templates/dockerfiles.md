@@ -15,6 +15,8 @@ Default templates are defined at
 [`vendor/Dockerfile`](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/vendor/Dockerfile)
 in the GitLab repository.
 
+Users with the Guest role can't access the Dockerfiles templates. For more information, see [Project and group visibility](../../user/public_access.md).
+
 ## Override Dockerfile API templates
 
 DETAILS:

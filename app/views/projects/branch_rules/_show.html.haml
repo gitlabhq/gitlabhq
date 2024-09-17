@@ -2,13 +2,17 @@
 - show_code_owners = @project.licensed_feature_available?(:code_owner_approval_required)
 - show_status_checks = @project.licensed_feature_available?(:external_status_checks)
 - show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
+- show_enterprise_access_levels = @project.licensed_feature_available?(:protected_refs_for_users)
 
 = render ::Layouts::SettingsBlockComponent.new(_('Branch rules'),
   id: 'branch-rules',
   testid: 'branch-rules-content',
   expanded: expanded) do |c|
+  - c.with_callout do
+    - if Feature.enabled?(:edit_branch_rules, @project)
+      = render 'projects/settings/branch_rules_callout'
   - c.with_description do
     = _('Define rules for who can push, merge, and the required approvals for each branch.')
     = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
   - c.with_body do
-    #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s } }
+    #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s } }

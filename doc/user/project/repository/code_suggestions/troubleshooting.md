@@ -13,55 +13,39 @@ DETAILS:
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
-## Verify Code Suggestions status in Admin area
+You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your instance meets the requirements to run Code Suggestions.
 
-Prerequisites:
+## Suggestions are not displayed
 
-- You must be an administrator of the instance.
-
-You can verify that Code Suggestions is set up correctly on the server. Because you are checking this on the server side and not for a specific user, it does not guarantee that Code Suggestions will work for a specific user on client side.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo Pro**.
-
-A flash message with Code Suggestions check status is displayed at the top of the page.
-
-## Code Suggestions are not displayed
-
-If Code Suggestions are not displayed, follow these steps:
+If suggestions are not displayed, follow these steps:
 
 1. Ensure you have [installed a supported IDE extension](supported_extensions.md#supported-editor-extensions)
-1. Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+1. Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 
-If Code Suggestions are still not displayed, try the following troubleshooting steps.
+If suggestions are still not displayed, try the following troubleshooting steps.
 
-### Code Suggestions not displayed in VS Code or GitLab Web IDE
+### Suggestions not displayed in VS Code or GitLab Web IDE
 
-If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web IDE](../../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
+If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web IDE](../../../project/web_ide/index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
-1. In **GitLab > AI Assisted Code Suggestions**, select the **GitLab Duo Code Suggestions**
+1. In **GitLab > Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 
 ### View Code Suggestions logs
 
-If the settings are enabled, but Code Suggestions are still not displayed, try the following steps:
+If the settings are enabled, but suggestions are still not displayed, try the following steps:
 
 1. In the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
-1. Open the extension log in **View > Output** and change the dropdown list to **GitLab Workflow** as the log filter. The command palette command is `GitLab: Show Extension Logs`.
-1. Disable and re-enable the **Enable code completion** checkbox.
-1. Verify that the debug log contains similar output:
-
-```shell
-2023-07-14T17:29:00:763 [debug]: Disabling code completion
-2023-07-14T17:29:01:802 [debug]: Enabling code completion
-2023-07-14T17:29:01:802 [debug]: AI Assist: Using server: https://cloud.gitlab.com/ai/v2/code/completions
-```
+1. On the top menu, select **View > Output** to open the bottom panel, then either:
+   - In the command palette, select `GitLab: Show Extension Logs`.
+   - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
+1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
 
 To enable debug logging for the Language Server (LS), enable **GitLab › Ls: Debug**.
 
-### Code Suggestions not displayed in JetBrains IDEs
+### Suggestions not displayed in JetBrains IDEs
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-intellij-plugin#setup).
 1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
@@ -69,7 +53,7 @@ To enable debug logging for the Language Server (LS), enable **GitLab › Ls: De
    working on. Go to **Settings** > **Languages & Frameworks** to see the full list of
    languages and frameworks supported by your JetBrains IDE.
 
-### Code Suggestions not displayed in Microsoft Visual Studio
+### Suggestions not displayed in Microsoft Visual Studio
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
 1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
@@ -82,12 +66,12 @@ To enable debug logging for the Language Server (LS), enable **GitLab › Ls: De
 14:48:21:346 LS(55096): time="2023-07-17T14:48:21-05:00" level=info msg="update context"
 ```
 
-## Code Suggestions return a 401 error
+## Code Suggestions returns a 401 error
 
-Code Suggestions [depend on a license token](../../../ai_features.md) that
+Code Suggestions [depends on a license token](../../../ai_features.md) that
 [synchronizes your subscription](../../../../administration/license.md) with GitLab.
 
-If the token expires, GitLab Duo code suggestions returns the following error
+If the token expires, GitLab Duo Code Suggestions returns the following error
 with status `401` when the token has expired:
 
 ```plaintext

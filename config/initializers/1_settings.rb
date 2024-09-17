@@ -524,6 +524,9 @@ Settings.cron_jobs['personal_access_tokens_expiring_worker']['job_class'] = 'Per
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker'] ||= {}
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['personal_access_tokens_expired_notification_worker']['job_class'] = 'PersonalAccessTokens::ExpiredNotificationWorker'
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker'] ||= {}
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['resource_access_tokens_inactive_tokens_deletion_cron_worker']['job_class'] = 'ResourceAccessTokens::InactiveTokensDeletionCronWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= {}
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
@@ -626,9 +629,6 @@ Settings.cron_jobs['postgres_dynamic_partitions_manager']['job_class'] ||= 'Data
 Settings.cron_jobs['postgres_dynamic_partitions_dropper'] ||= {}
 Settings.cron_jobs['postgres_dynamic_partitions_dropper']['cron'] ||= '45 12 * * *'
 Settings.cron_jobs['postgres_dynamic_partitions_dropper']['job_class'] ||= 'Database::DropDetachedPartitionsWorker'
-Settings.cron_jobs['ci_platform_metrics_update_cron_worker'] ||= {}
-Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['cron'] ||= '47 9 * * *'
-Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['job_class'] = 'CiPlatformMetricsUpdateCronWorker'
 Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker'] ||= {}
 Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker']['cron'] ||= '50 23 */1 * *'
 Settings.cron_jobs['analytics_usage_trends_count_job_trigger_worker']['job_class'] ||= 'Analytics::UsageTrends::CountJobTriggerWorker'
@@ -701,9 +701,6 @@ Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_cla
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup'] ||= {}
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'] = 'ServiceDesk::CustomEmailVerificationCleanupWorker'
-Settings.cron_jobs['ensure_merge_requests_prepared_worker'] ||= {}
-Settings.cron_jobs['ensure_merge_requests_prepared_worker']['cron'] ||= '*/30 * * * *'
-Settings.cron_jobs['ensure_merge_requests_prepared_worker']['job_class'] ||= 'MergeRequests::EnsurePreparedWorker'
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker'] ||= {}
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['cron'] ||= '*/10 * * * *'
 Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_class'] ||= 'Pages::DeactivatedDeploymentsDeleteCronWorker'
@@ -726,6 +723,9 @@ Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker'] ||= {}
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['cron'] ||= '*/4 * * * *'
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['args'] ||= [1]
 Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['job_class'] = 'Ci::ClickHouse::FinishedPipelinesSyncCronWorker'
+Settings.cron_jobs['deactivate_expired_deployments_cron_worker'] ||= {}
+Settings.cron_jobs['deactivate_expired_deployments_cron_worker']['cron'] ||= '*/10 * * * *'
+Settings.cron_jobs['deactivate_expired_deployments_cron_worker']['job_class'] ||= 'Pages::DeactivateExpiredDeploymentsCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -930,6 +930,15 @@ Gitlab.ee do
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::CleanupWorker'
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker'] ||= {}
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['cron'] ||= '30 0 * * *'
+  Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::OfflineCloudLicenseProvisionWorker'
+  Settings.cron_jobs['observability_alert_query_worker'] ||= {}
+  Settings.cron_jobs['observability_alert_query_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['observability_alert_query_worker']['job_class'] = 'Observability::AlertQueryWorker'
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb'] ||= {}
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['report_security_policies_metrics_worker.rb']['job_class'] = 'Security::Policies::ReportSecurityPoliciesMetricsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1020,6 +1029,26 @@ end
 Gitlab.ee do
   Settings['cloud_connector'] = {}
   Settings.cloud_connector['base_url'] ||= ENV['CLOUD_CONNECTOR_BASE_URL'] || 'https://cloud.gitlab.com'
+end
+
+#
+# Duo Workflow
+#
+Gitlab.ee do
+  Settings['duo_workflow'] ||= {}
+  executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
+  Settings.duo_workflow.reverse_merge!(
+    secure: true,
+    executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
+    executor_version: executor_version
+  )
+
+  # Default to proxy via Cloud Connector
+  unless Settings.duo_workflow['service_url'].present?
+    cloud_connector_uri = URI.parse(Settings.cloud_connector.base_url)
+    Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
+    Settings.duo_workflow['secure'] = cloud_connector_uri.scheme == 'https'
+  end
 end
 
 #
@@ -1144,7 +1173,7 @@ Settings['extra'] ||= {}
 Settings.extra['matomo_site_id'] ||= Settings.extra['piwik_site_id'] if Settings.extra['piwik_site_id'].present?
 Settings.extra['matomo_url'] ||= Settings.extra['piwik_url'] if Settings.extra['piwik_url'].present?
 Settings.extra['matomo_disable_cookies'] = false if Settings.extra['matomo_disable_cookies'].nil?
-Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('maximum_text_highlight_size_kilobytes', 512).kilobytes
+Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('maximum_text_highlight_size_kilobytes', 512)
 
 #
 # Rack::Attack settings

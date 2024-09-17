@@ -31,7 +31,7 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-      .gl-display-flex.gl-align-items-center.gl-my-3
+      .gl-flex.gl-items-center.gl-my-3
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do
           = s_("Profiles|Choose file...")
         %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
@@ -129,7 +129,7 @@
         = f.text_field :bluesky, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "did:plc:ewvi7nxzyoun6zhxrhs64oiz"
       .form-group.gl-form-group
         = f.label :mastodon
-        = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@robin@example.com"
+        = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@username@server_name"
 
       .form-group.gl-form-group
         = f.label :website_url, s_('Profiles|Website URL')

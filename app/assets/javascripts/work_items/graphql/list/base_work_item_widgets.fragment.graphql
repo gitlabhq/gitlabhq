@@ -1,0 +1,47 @@
+fragment BaseWorkItemWidgets on WorkItemWidget {
+  ... on WorkItemWidgetAssignees {
+    type
+    assignees {
+      nodes {
+        id
+        avatarUrl
+        name
+        username
+        webUrl
+        webPath
+      }
+    }
+  }
+  ... on WorkItemWidgetLabels {
+    type
+    allowsScopedLabels
+    labels {
+      nodes {
+        id
+        color
+        description
+        title
+      }
+    }
+  }
+  ... on WorkItemWidgetMilestone {
+    type
+    milestone {
+      id
+      dueDate
+      startDate
+      title
+      webPath
+    }
+  }
+  ... on WorkItemWidgetStartAndDueDate {
+    type
+    dueDate
+    startDate
+  }
+  ... on WorkItemWidgetAwardEmoji {
+    type
+    upvotes
+    downvotes
+  }
+}

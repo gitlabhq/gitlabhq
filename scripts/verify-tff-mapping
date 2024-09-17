@@ -98,22 +98,6 @@ tests = [
   },
 
   {
-    explanation: 'FOSS Snowplow definitions map to event validation spec',
-    changed_file: 'config/events/status_page_incident_unpublished.yml',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
-  },
-  {
-    explanation: 'EE Snowplow definitions map to event validation spec',
-    changed_file: 'ee/config/events/licenses_list_viewed.yml',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
-  },
-  {
-    explanation: 'Snowplow schema maps to event validation spec',
-    changed_file: 'config/events/schema.json',
-    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
-  },
-
-  {
     explanation: 'DB structure should map to schema spec',
     changed_file: 'db/structure.sql',
     expected: ['spec/db/schema_spec.rb']
@@ -251,20 +235,105 @@ tests = [
   },
 
   {
-    explanation: 'GLFM spec and config files for CE and EE should map to respective markdown snapshot specs',
-    changed_file: 'glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md',
-    expected: %w[
-      spec/requests/api/markdown_snapshot_spec.rb
-      ee/spec/requests/api/markdown_snapshot_spec.rb
-    ]
-  },
-
-  {
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962',
     # Note: The metrics seem to be changed every year or so, so this test will fail once a year or so.
     #       You will need to change the metric below for another metric present in the project.
     changed_file: 'ee/config/metrics/counts_all/20221114065035_delete_merge_request.yml',
-    expected: ['ee/spec/config/metrics/every_metric_definition_spec.rb']
+    expected: %w[
+      spec/config/metrics/every_metric_definition_spec.rb
+      ee/spec/config/metrics/every_metric_definition_spec.rb
+      spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb
+    ]
+  },
+  {
+    explanation: 'FOSS metric defintions map to metric validation specs',
+    changed_file: 'config/metrics/counts_28d/count_total_merge_request_click_start_review_on_overview_tab_monthly.yml',
+    expected: %w[
+      spec/config/metrics/every_metric_definition_spec.rb
+      ee/spec/config/metrics/every_metric_definition_spec.rb
+      spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb
+    ]
+  },
+  {
+    explanation: 'Metric schema maps to metric validation spec',
+    changed_file: 'config/metrics/schema/base.json',
+    expected: %w[
+      spec/config/metrics/every_metric_definition_spec.rb
+      ee/spec/config/metrics/every_metric_definition_spec.rb
+      spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+
+  {
+    explanation: 'FOSS Snowplow definitions map to event validation spec',
+    changed_file: 'config/events/status_page_incident_unpublished.yml',
+    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
+  },
+  {
+    explanation: 'EE Snowplow definitions map to event validation spec',
+    changed_file: 'ee/config/events/licenses_list_viewed.yml',
+    expected: ['spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb']
+  },
+  {
+    explanation: 'Snowplow schema maps to event validation spec',
+    changed_file: 'config/events/schema.json',
+    expected: %w[
+      spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+
+  {
+    explanation: 'Internal Events application logic maps to internal events tooling',
+    changed_file: 'lib/gitlab/internal_events.rb',
+    expected: %w[
+      spec/lib/gitlab/internal_events_spec.rb
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+  {
+    explanation: 'Internal Events CLI entrypoint maps to internal events tooling',
+    changed_file: 'scripts/internal_events/cli.rb',
+    expected: %w[
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+  {
+    explanation: 'Internal Events CLI logic maps to internal events tooling',
+    changed_file: 'scripts/internal_events/cli/global_state.rb',
+    expected: %w[
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+  {
+    explanation: 'Internal Events default test setup maps to internal events tooling',
+    changed_file: 'spec/support/shared_examples/controllers/internal_event_tracking_examples.rb',
+    expected: %w[
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+  {
+    explanation: 'Internal Events custom test setup maps to internal events tooling',
+    changed_file: 'spec/support/matchers/internal_events_matchers.rb',
+    expected: %w[
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
+  },
+  {
+    explanation: 'Internal Events test cases map to internal events tooling',
+    changed_file: 'spec/fixtures/scripts/internal_events/new_events.yml',
+    expected: %w[
+      spec/scripts/internal_events/cli_spec.rb
+      spec/support_specs/matchers/internal_events_matchers_spec.rb
+    ]
   },
 
   {
@@ -347,9 +416,9 @@ tests = [
   },
   {
     explanation: 'Map Remote Development GraphQL mutations to request specs',
-    changed_file: 'ee/app/graphql/mutations/remote_development/workspaces/create.rb',
+    changed_file: 'ee/app/graphql/mutations/remote_development/workspace_operations/create.rb',
     expected: %w[
-      ee/spec/requests/api/graphql/mutations/remote_development/workspaces/create_spec.rb
+      ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb
     ]
   },
   {
@@ -400,7 +469,6 @@ tests = [
       spec/db/docs_spec.rb
       spec/lib/gitlab/database/dictionary_spec.rb
       spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
-      spec/lib/gitlab/database/no_new_tables_with_gitlab_pm_schema_spec.rb
       spec/lib/gitlab/database/sharding_key_spec.rb
     ]
   }

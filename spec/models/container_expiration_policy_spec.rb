@@ -10,10 +10,6 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
 
-    describe '#enabled' do
-      it { is_expected.to validate_inclusion_of(:enabled).in_array([true, false]) }
-    end
-
     describe '#cadence' do
       it { is_expected.to validate_presence_of(:cadence) }
 

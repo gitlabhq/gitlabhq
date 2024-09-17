@@ -89,7 +89,7 @@ To insert a table:
 1. Select **Insert table** **{table}**.
 1. From the dropdown list, select the dimensions of the new table.
 
-![Alt text](img/rich_text_editor_02_v16_2.png)
+![A table size selector with 3 rows and 3 columns.](img/rich_text_editor_02_v16_2.png)
 
 ### Edit a table
 
@@ -97,7 +97,7 @@ Inside a table cell, you can use a menu to insert or delete rows or columns.
 
 To open the menu: In the upper-right corner of a cell, select the chevron **{chevron-down}**.
 
-![Alt text](img/rich_text_editor_03_v16_2.png)
+![An active chevron menu showing table actions.](img/rich_text_editor_03_v16_2.png)
 
 ### Operations on multiple cells
 

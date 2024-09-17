@@ -29,8 +29,6 @@ export const TARGET_NAMESPACE_FIELD = 'targetNamespace';
 
 export const ROOT_NAMESPACE = { fullPath: '', id: null };
 
-export const QUERY_PARAM_FAILED = 'failed';
-
 const PLACEHOLDER_STATUS_PENDING_REASSIGNMENT = 'PENDING_REASSIGNMENT';
 export const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'AWAITING_APPROVAL';
 const PLACEHOLDER_STATUS_REJECTED = 'REJECTED';
@@ -49,6 +47,40 @@ export const PLACEHOLDER_USER_STATUS = {
   ],
   REASSIGNED: [PLACEHOLDER_STATUS_COMPLETED, PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER],
 };
+
+export const PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS = [
+  {
+    value: PLACEHOLDER_STATUS_PENDING_REASSIGNMENT.toLowerCase(),
+    title: __('Not started'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_AWAITING_APPROVAL.toLowerCase(),
+    title: s__('UserMapping|Pending approval'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_REJECTED.toLowerCase(),
+    title: s__('UserMapping|Rejected'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_REASSIGNING.toLowerCase(),
+    title: s__('UserMapping|Reassigning'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_FAILED.toLowerCase(),
+    title: __('Failed'),
+  },
+];
+
+export const PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS = [
+  {
+    value: PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER.toLowerCase(),
+    title: s__('UserMapping|Kept as placeholder'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_COMPLETED.toLowerCase(),
+    title: __('Success'),
+  },
+];
 
 export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_PENDING_REASSIGNMENT]: {
@@ -87,3 +119,8 @@ export const placeholderUserBadges = {
     tooltip: s__('UserMapping|Reassignment succeeded.'),
   },
 };
+
+export const PLACEHOLDER_SORT_STATUS_DESC = 'STATUS_DESC';
+export const PLACEHOLDER_SORT_STATUS_ASC = 'STATUS_ASC';
+export const PLACEHOLDER_SORT_SOURCE_NAME_ASC = 'SOURCE_NAME_ASC';
+export const PLACEHOLDER_SORT_SOURCE_NAME_DESC = 'SOURCE_NAME_DESC';

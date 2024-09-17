@@ -12,10 +12,27 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     subject { described_class.observability_url }
 
     before do
+      stub_rails_env('production')
       stub_config_setting(url: gitlab_url)
     end
 
     it { is_expected.to eq('https://observe.gitlab.com') }
+
+    context 'when in dev environment' do
+      before do
+        stub_rails_env('development')
+      end
+
+      it { is_expected.to eq('https://observe.staging.gitlab.com') }
+    end
+
+    context 'when in test environment' do
+      before do
+        stub_rails_env('test')
+      end
+
+      it { is_expected.to eq('https://observe.staging.gitlab.com') }
+    end
 
     context 'when on staging.gitlab.com' do
       let(:gitlab_url) { Gitlab::Saas.staging_com_url }
@@ -32,18 +49,6 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
 
       it { is_expected.to eq(observe_url) }
     end
-  end
-
-  describe '.oauth_url' do
-    subject { described_class.oauth_url }
-
-    it { is_expected.to eq("#{described_class.observability_url}/v1/auth/start") }
-  end
-
-  describe '.provisioning_url' do
-    subject { described_class.provisioning_url(project) }
-
-    it { is_expected.to eq("#{described_class.observability_url}/v3/tenant/#{project.id}") }
   end
 
   describe '.should_enable_observability_auth_scopes?' do

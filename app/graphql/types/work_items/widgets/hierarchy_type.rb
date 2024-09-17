@@ -36,6 +36,10 @@ module Types
           null: false, description: 'Counts of descendant work items by work item type and state.',
           alpha: { milestone: '17.3' }
 
+        field :depth_limit_reached_by_type, [Types::WorkItems::WorkItemTypeDepthLimitReachedByType],
+          null: false, description: 'Depth limit reached by allowed work item type.',
+          alpha: { milestone: '17.4' }
+
         # rubocop: disable CodeReuse/ActiveRecord
         def has_children?
           BatchLoader::GraphQL.for(object.work_item.id).batch(default_value: false) do |ids, loader|

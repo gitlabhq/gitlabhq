@@ -608,3 +608,39 @@ create the following empty file:
 ```shell
 sudo touch /etc/gitlab/skip-auto-backup
 ```
+
+### High CPU usage on primary during object verification
+
+From GitLab 16.11 to GitLab 17.2, a missing PostgreSQL index causes high CPU
+usage and slow artifact verification progress. Additionally, the Geo secondary
+sites might report as unhealthy. [Issue 471727](https://gitlab.com/gitlab-org/gitlab/-/issues/471727) describes the behavior in detail.
+
+To determine if you might be experiencing this issue, follow the steps to
+[confirm if you are affected](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#to-confirm-if-you-are-affected).
+
+If you are affected, follow the steps in the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#workaround)
+to manually create the index. Creating the index causes PostgreSQL to
+consume slightly more resources until it finishes. Afterward, CPU usage might
+remain high while verification continues, but queries should complete
+significantly faster, and secondary site status should update correctly.
+
+### Error `end of file reached` when running Geo Rake check task on secondary
+
+You may face the following error when running the [health check Rake task](common.md#health-check-rake-task) on the secondary site:
+
+```plaintext
+Can connect to the primary node ... no
+Reason:
+end of file reached
+
+It might happen if the incorrect URL to the primary site was specified in the setting. To troubleshoot it, 
+run the following commands in [the Rails Console](../../../operations/rails_console.md):
+
+```ruby
+primary = Gitlab::Geo.primary_node
+primary.internal_uri
+Gitlab::HTTP.get(primary.internal_uri, allow_local_requests: true, limit: 10)
+```
+
+Make sure that the value of `internal_uri` is correct in the output above.
+If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin > Geo > Sites**.

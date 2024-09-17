@@ -46,7 +46,7 @@ permissions only applies for the current project.
 
 GitLab authorizes the creator of the deploy key if the Git-command triggers additional processes. For example:
 
-- When a deploy key is used to push a commit to a [protected branch](../protected_branches.md),
+- When a deploy key is used to push a commit to a [protected branch](../repository/branches/protected.md),
   the _creator_ of the deploy key must have access to the branch.
 - When a deploy key is used to push a commit that triggers a CI/CD pipeline, the _creator_ of the
   deploy key must have access to the CI/CD resources, including protected environments and secret
@@ -188,13 +188,13 @@ What happens to the deploy key when it is disabled depends on the following:
 ### Deploy key cannot push to a protected branch
 
 There are a few scenarios where a deploy key fails to push to a
-[protected branch](../protected_branches.md).
+[protected branch](../repository/branches/protected.md).
 
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
 - The owner associated to a deploy key has [project membership permissions](../../../user/permissions.md#project-members-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
-- **No one** is selected in [the **Allowed to push and merge** section](../protected_branches.md#add-protection-to-existing-branches) of the protected branch.
+- **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#add-protection-to-existing-branches) of the protected branch.
 
 All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 

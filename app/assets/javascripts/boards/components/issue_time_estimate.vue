@@ -36,16 +36,16 @@ export default {
 
 <template>
   <span>
-    <span ref="issueTimeEstimate" class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help">
+    <span ref="issueTimeEstimate" class="board-card-info gl-mr-3 gl-cursor-help gl-text-secondary">
       <gl-icon name="hourglass" class="board-card-info-icon gl-mr-2" />
-      <time class="gl-font-sm board-card-info-text">{{ timeEstimate }}</time>
+      <time class="board-card-info-text gl-text-sm">{{ timeEstimate }}</time>
     </span>
     <gl-tooltip
       :target="() => $refs.issueTimeEstimate"
       placement="bottom"
       data-testid="issue-time-estimate"
     >
-      <span class="gl-font-bold gl-block">{{ $options.i18n.timeEstimate }}</span>
+      <span class="gl-block gl-font-bold">{{ $options.i18n.timeEstimate }}</span>
       {{ title }}
     </gl-tooltip>
   </span>

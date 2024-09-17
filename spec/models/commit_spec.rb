@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Commit do
+RSpec.describe Commit, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository) }
@@ -17,6 +17,7 @@ RSpec.describe Commit do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(StaticModel) }
     it { is_expected.to include_module(Presentable) }
+    it { is_expected.to include_module(GlobalID::Identification) }
   end
 
   describe '.lazy' do
@@ -596,6 +597,25 @@ EOS
         it 'does not include details of the merged commits' do
           expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
         end
+      end
+    end
+  end
+
+  describe '#parents' do
+    subject(:parents) { commit.parents }
+
+    it 'loads commits for parents' do
+      expect(parents).to all be_kind_of(described_class)
+      expect(parents.map(&:id)).to match_array(commit.parent_ids)
+    end
+
+    context 'when parent id cannot be loaded' do
+      before do
+        allow(commit).to receive(:parent_ids).and_return(["invalid"])
+      end
+
+      it 'returns an empty array' do
+        expect(parents).to eq([])
       end
     end
   end

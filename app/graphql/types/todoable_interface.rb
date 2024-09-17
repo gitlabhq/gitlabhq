@@ -6,7 +6,15 @@ module Types
 
     graphql_name 'Todoable'
 
-    field :web_url, GraphQL::Types::String, null: true, description: 'URL of this object.'
+    field :web_url,
+      GraphQL::Types::String,
+      null: true,
+      description: 'URL of this object.'
+
+    field :name,
+      GraphQL::Types::String,
+      null: true,
+      description: 'Name or title of this object.'
 
     def self.resolve_type(object, context)
       case object
@@ -22,9 +30,17 @@ module Types
         Types::AlertManagement::AlertType
       when Commit
         Types::CommitType
+      when Project
+        Types::ProjectType
+      when Group
+        Types::GroupType
       else
         raise "Unknown GraphQL type for #{object}"
       end
+    end
+
+    def name
+      object.try(:name) || object.try(:title)
     end
   end
 end

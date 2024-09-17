@@ -3,7 +3,7 @@
 = content_for :flash_message do
   = render partial: 'deletion_failed', locals: { project: project }
   - if current_user && can?(current_user, :read_code, project)
-    = render 'shared/no_ssh'
+    = render 'shared/no_ssh', project: project
     = render 'shared/invalid_gpg_key', project: project
     = render 'shared/no_password'
     - unless project.empty_repo?
@@ -12,4 +12,5 @@
       = render 'shared/auto_devops_callout'
     = render_if_exists 'projects/above_size_limit_warning', project: project
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project
-    = render_if_exists 'projects/terraform_banner', project: project
+    = render 'projects/terraform_banner', project: project
+    = render 'projects/lfs_misconfiguration_banner', project: project

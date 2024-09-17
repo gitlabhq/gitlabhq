@@ -5,7 +5,7 @@
 - else
   - preview_url = preview_markdown_path(@project)
 
-= form_for form_resources, url: new_form_url, remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form discussion-reply-holder gl-border-top-0!", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
+= form_for form_resources, url: new_form_url, remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form discussion-reply-holder !gl-border-t-0", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
@@ -35,7 +35,7 @@
       = render 'shared/notes/hints'
       .error-alert
 
-    .note-form-actions.clearfix.gl-display-flex.gl-flex-wrap
+    .note-form-actions.clearfix.gl-flex.gl-flex-wrap
       = render partial: 'shared/notes/comment_button'
 
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close-discussion-note-form hide' }) do

@@ -6,7 +6,7 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
-  let_it_be(:environment) { create(:environment, project: project) }
+  let_it_be_with_reload(:environment) { create(:environment, project: project) }
 
   let(:service) { described_class.new(project, current_user, params) }
   let(:current_user) { developer }
@@ -28,48 +28,26 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
       expect(response.payload[:environment]).to eq(environment)
     end
 
-    context 'when setting a kubernetes namespace to the environment' do
-      let(:params) { { kubernetes_namespace: 'default' } }
-
-      it 'updates the kubernetes namespace' do
-        expect { subject }.to change { environment.reload.kubernetes_namespace }.to('default')
-      end
-
-      it 'returns successful response' do
-        response = subject
-
-        expect(response).to be_success
-        expect(response.payload[:environment]).to eq(environment)
-      end
-    end
-
-    context 'when setting a flux resource path to the environment' do
-      let(:params) { { flux_resource_path: 'path/to/flux/resource' } }
-
-      it 'updates the flux resource path' do
-        expect { subject }.to change { environment.reload.flux_resource_path }.to('path/to/flux/resource')
-      end
-
-      it 'returns successful response' do
-        response = subject
-
-        expect(response).to be_success
-        expect(response.payload[:environment]).to eq(environment)
-      end
-    end
-
-    context 'when setting a cluster agent to the environment' do
+    context 'when setting cluster agent configuration fields for the environment' do
       let_it_be(:agent_management_project) { create(:project) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
 
       let!(:authorization) { create(:agent_user_access_project_authorization, project: project, agent: cluster_agent) }
-      let(:params) { { cluster_agent: cluster_agent } }
+      let(:params) do
+        {
+          cluster_agent: cluster_agent,
+          kubernetes_namespace: 'default',
+          flux_resource_path: 'path/to/flux/resource'
+        }
+      end
 
       it 'returns successful response' do
         response = subject
 
         expect(response).to be_success
         expect(response.payload[:environment].cluster_agent).to eq(cluster_agent)
+        expect(response.payload[:environment].kubernetes_namespace).to eq('default')
+        expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
       end
 
       context 'when user does not have permission to read the agent' do

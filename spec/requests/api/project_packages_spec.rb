@@ -138,7 +138,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           it_behaves_like 'returns packages', :project, :maintainer
           it_behaves_like 'returns packages', :project, :developer
           it_behaves_like 'returns packages', :project, :reporter
-          it_behaves_like 'rejects packages access', :project, :no_type, :not_found
+          it_behaves_like 'rejects packages access', :project, :no_type, :forbidden
           # TODO uncomment when https://gitlab.com/gitlab-org/gitlab/-/issues/370998 is resolved
           # it_behaves_like 'rejects packages access', :project, :guest, :not_found
         end
@@ -356,7 +356,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           it_behaves_like 'returns package', :project, :reporter
           # TODO uncomment when https://gitlab.com/gitlab-org/gitlab/-/issues/370998 is resolved
           # it_behaves_like 'rejects packages access', :project, :guest, :not_found
-          it_behaves_like 'rejects packages access', :project, :no_type, :not_found
+          it_behaves_like 'rejects packages access', :project, :no_type, :forbidden
         end
 
         context 'with pipeline' do
@@ -471,8 +471,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           # :private | :guest      | true  | :job_token             | true  | 'returning response status' | :forbidden
           :private | :developer  | true  | :job_token             | false | 'returning response status' | :unauthorized
           :private | :guest      | true  | :job_token             | false | 'returning response status' | :unauthorized
-          :private | :developer  | false | :job_token             | true  | 'returning response status' | :not_found
-          :private | :guest      | false | :job_token             | true  | 'returning response status' | :not_found
+          :private | :developer  | false | :job_token             | true  | 'returning response status' | :forbidden
+          :private | :guest      | false | :job_token             | true  | 'returning response status' | :forbidden
           :private | :developer  | false | :job_token             | false | 'returning response status' | :unauthorized
           :private | :guest      | false | :job_token             | false | 'returning response status' | :unauthorized
         end

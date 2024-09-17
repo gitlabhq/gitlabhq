@@ -39,7 +39,8 @@ module Mutations
           result = ::Ml::CreateModelVersionService.new(model,
             {
               version: args[:version],
-              description: args[:description]
+              description: args[:description],
+              user: current_user
             }
           ).execute
 

@@ -123,6 +123,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
         expect(s3_config[:Region]).to eq(region)
         expect(s3_config[:PathStyle]).to eq(path_style)
         expect(s3_config[:UseIamProfile]).to eq(use_iam_profile)
+        expect(s3_config[:AwsSDK]).to eq("v2")
         expect(s3_config.keys).not_to include(%i[ServerSideEncryption SSEKMSKeyID])
       end
 
@@ -133,6 +134,16 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
 
         it 'defaults to us-east-1' do
           expect(subject[:ObjectStorage][:S3Config][:Region]).to eq('us-east-1')
+        end
+      end
+
+      context 'when workhorse_use_aws_sdk_v2 is set to false' do
+        before do
+          stub_feature_flags(workhorse_use_aws_sdk_v2: false)
+        end
+
+        it 'sets AwsSDK to v1' do
+          expect(subject[:ObjectStorage][:S3Config][:AwsSDK]).to eq("v1")
         end
       end
 

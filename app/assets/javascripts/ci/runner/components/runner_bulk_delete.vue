@@ -166,9 +166,9 @@ export default {
     <div
       v-if="checkedCount"
       data-testid="runner-bulk-delete-banner"
-      class="gl-my-4 gl-p-4 gl-border-1 gl-border-solid gl-border-gray-100"
+      class="gl-my-4 gl-border-1 gl-border-solid gl-border-gray-100 gl-p-4"
     >
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-items-center">
         <div>
           <gl-sprintf :message="bannerMessage">
             <template #strong="{ content }">

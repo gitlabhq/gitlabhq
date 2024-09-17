@@ -102,6 +102,9 @@ export default class Todos {
     }
     currentTarget.setAttribute('disabled', true);
     currentTarget.classList.add('disabled');
+    const loadingSpinner = currentTarget.querySelector('.gl-spinner-container');
+
+    loadingSpinner.classList.remove('hidden');
 
     currentTarget.querySelector('.js-todo-button-icon').classList.add('hidden');
 
@@ -122,10 +125,12 @@ export default class Todos {
     const row = target.closest('li');
     const restoreBtn = row.querySelector('.js-undo-todo');
     const doneBtn = row.querySelector('.js-done-todo');
+    const loadingSpinner = row.querySelector('.gl-spinner-container');
 
     target.classList.add('hidden');
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
+    loadingSpinner.classList.add('hidden');
 
     target.querySelector('.js-todo-button-icon').classList.remove('hidden');
 
@@ -150,6 +155,9 @@ export default class Todos {
     const { currentTarget } = e;
     currentTarget.setAttribute('disabled', true);
     currentTarget.classList.add('disabled');
+    const loadingSpinner = currentTarget.querySelector('.gl-spinner-container');
+
+    loadingSpinner.classList.remove('hidden');
 
     currentTarget.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
 
@@ -172,9 +180,11 @@ export default class Todos {
     const undoAllBtn = document.querySelector('.js-todos-undo-all');
     const todoListContainer = document.querySelector('.js-todos-list-container');
     const nothingHereContainer = document.querySelector('.js-nothing-here-container');
+    const loadingSpinner = target.querySelector('.gl-spinner-container');
 
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
+    loadingSpinner.classList.add('hidden');
 
     target.querySelector('.gl-spinner-container').classList.remove('gl-mr-2');
 

@@ -1,9 +1,0 @@
----
-name: ai_settings_vue_admin
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13782
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470519
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470584
-milestone: '17.2'
-group: group::ai framework
-type: wip
-default_enabled: false

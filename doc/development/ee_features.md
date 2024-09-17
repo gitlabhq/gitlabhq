@@ -188,10 +188,10 @@ Use the following questions to guide you:
    - Based on the plan you choose to use the feature in, add the feature identifier to `PREMIUM_FEATURES`
      or `ULTIMATE_FEATURES`.
 1. Will this feature be available globally (system-wide for the GitLab instance)?
-    - Features such as [Geo](../administration/geo/index.md) and
-      [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
-      and cannot be restricted to individual user namespaces. These features are defined in the instance license.
-      Add these features to `GLOBAL_FEATURES`.
+   - Features such as [Geo](../administration/geo/index.md) and
+     [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
+     and cannot be restricted to individual user namespaces. These features are defined in the instance license.
+     Add these features to `GLOBAL_FEATURES`.
 
 ### Guard your EE feature
 
@@ -856,8 +856,7 @@ module EE
 end
 ```
 
-Note that due to namespace differences, we need to use the full qualifier for some
-constants.
+We need to use the full qualifier for some constants due to namespace differences.
 
 #### EE parameters
 
@@ -1005,7 +1004,7 @@ end
 API::MergeRequests.prepend_mod_with('API::MergeRequests')
 ```
 
-Note that `update_merge_request_ee` doesn't do anything in CE, but
+`update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
 ```ruby
@@ -1188,7 +1187,7 @@ Instead place EE specs in the `ee/spec` folder.
 
 Use `FactoryBot.modify` to extend factories already defined in CE.
 
-Note that you cannot define new factories (even nested ones) inside the `FactoryBot.modify` block. You can do so in a
+You cannot define new factories (even nested ones) inside the `FactoryBot.modify` block. You can do so in a
 separate `FactoryBot.define` block as shown in the example below:
 
 ```ruby

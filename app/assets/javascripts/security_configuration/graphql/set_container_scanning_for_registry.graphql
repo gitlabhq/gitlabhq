@@ -1,6 +1,0 @@
-mutation SetContainerScanningForRegistry($input: SetContainerScanningForRegistryInput!) {
-  setContainerScanningForRegistry(input: $input) {
-    containerScanningForRegistryEnabled
-    errors
-  }
-}

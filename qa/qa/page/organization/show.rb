@@ -5,6 +5,7 @@ module QA
     module Organization
       class Show < QA::Page::Base
         include QA::Page::Component::Dropdown
+
         view 'app/assets/javascripts/organizations/show/components/organization_avatar.vue' do
           element 'organization-name'
         end

@@ -1,0 +1,10 @@
+- title = _('No results found')
+- description = filter? ? _('To widen your search, change or remove filters above.') : _('Edit your search and try again.')
+- svg_path = 'illustrations/empty-state/empty-search-md.svg'
+
+= render Pajamas::EmptyStateComponent.new(svg_path: svg_path,
+  title: title,
+  empty_state_options: { **@html_options })  do |c|
+
+  - c.with_description do
+    = description

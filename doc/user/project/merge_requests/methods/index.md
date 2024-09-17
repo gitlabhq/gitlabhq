@@ -57,58 +57,47 @@ These diagrams show how the `feature` branch merges into `main` if you use the
 **Merge commit** strategy. They are equivalent to the command `git merge --no-ff <feature>`,
 and selecting `Merge commit` as the **Merge method** in the GitLab UI:
 
-The merge strategy:
-
-```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
-gitGraph
-   accTitle: Diagram of a merge commit
-   accDescr: A Git graph showing how merge commits are created in GitLab when a feature branch is merged.
-   commit id: "A"
-   branch feature
-   commit id: "B"
-   commit id: "D"
-   checkout main
-   commit id: "C"
-   commit id: "E"
-   merge feature
-```
-
-After a feature branch is merged with the **Merge commit** method, your `main` branch
+- After a feature branch is merged with the **Merge commit** method, your `main` branch
 looks like this:
 
-```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
-gitGraph
-   accTitle: Diagram of the Merge Commit method
-   accDescr: A Git graph showing the structure of a Git repository after a feature branch is merged.
-   commit id: "A"
-   commit id: "C"
-   commit id: "E"
-   commit id: "squash commit"
-   commit id: "merge commit"
-```
+  ```mermaid
+  %%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
+  gitGraph
+     accTitle: Diagram of a merge commit
+     accDescr: A Git graph showing how merge commits are created in GitLab when a feature branch is merged.
+     commit id: "A"
+     branch feature
+     commit id: "B"
+     commit id: "D"
+     checkout main
+     commit id: "C"
+     commit id: "E"
+     merge feature
+  ```
 
-In comparison, a **squash merge** constructs a squash commit, a virtual copy of all commits
+- In comparison, a **squash merge** constructs a squash commit, a virtual copy of all commits
 from the `feature` branch. The original commits (B and D) remain unchanged
-on the `feature` branch, and the squash commit is placed on the `main` branch:
+on the `feature` branch, and then a merge commit is made on the `main` branch to merge in the squashed branch:
 
-```mermaid
-%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
-gitGraph
-   accTitle: Diagram of of a squash merge
-   accDescr: A Git graph showing repository and branch structure after a squash commit is added to the main branch.
-   commit id:"A"
-   branch feature
-   checkout main
-   commit id:"C"
-   checkout feature
-   commit id:"B"
-   commit id:"D"
-   checkout main
-   commit id:"E"
-   commit id:"squash commit" type: HIGHLIGHT
-```
+  ```mermaid
+  %%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
+  gitGraph
+     accTitle: Diagram of of a squash merge
+     accDescr: A Git graph showing repository and branch structure after a squash commit is added to the main branch.
+     commit id:"A"
+     branch feature
+     checkout main
+     commit id:"C"
+     checkout feature
+     commit id:"B"
+     commit id:"D"
+     checkout main
+     commit id:"E"
+     branch "B+D"
+     commit id: "B+D"
+     checkout main
+     merge "B+D"
+  ```
 
 The squash merge graph is equivalent to these settings in the GitLab UI:
 
@@ -121,9 +110,10 @@ The squash merge graph is also equivalent to these commands:
 
   ```shell
   git checkout `git merge-base feature main`
-  git merge --squash <feature>
+  git merge --squash feature
+  git commit --no-edit
   SOURCE_SHA=`git rev-parse HEAD`
-  git checkout <main>
+  git checkout main
   git merge --no-ff $SOURCE_SHA
   ```
 
@@ -188,8 +178,10 @@ gitGraph
   commit id: "Merge squash-mr"
 ```
 
-This method is equivalent to `git merge --ff <source-branch>` for regular merges, and to
-`git merge --squash <source-branch>` for squash merges.
+This method is equivalent to:
+
+- `git merge --ff <source-branch>` for regular merges.
+- `git merge --squash <source-branch>` followed by `git commit` for squash merges.
 
 When the fast-forward merge
 ([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
@@ -198,18 +190,8 @@ Merging is only allowed if the branch can be fast-forwarded.
 When a fast-forward merge is not possible, the user is given the option to rebase, see
 [Rebasing in (semi-)linear merge methods](#rebasing-in-semi-linear-merge-methods).
 
-NOTE:
-Projects that use the fast-forward merge strategy can't
-[filter merge requests](../index.md#filter-the-list-of-merge-requests)
-by deployment date, because no merge commit is created.
-Features that rely on the deployment-MR relationship do not work when fast-forward merges are
-enabled.
-This bug is tracked in [issue 398611](https://gitlab.com/gitlab-org/gitlab/-/issues/398611).
-
 When you visit the merge request page with `Fast-forward merge`
 method selected, you can accept it **only if a fast-forward merge is possible**.
-
-![Fast-forward merge request](../img/ff_merge_mr.png)
 
 ## Rebasing in (semi-)linear merge methods
 
@@ -230,14 +212,12 @@ conditions are true:
 - The target branch is ahead of the source branch.
 - A conflict-free rebase is not possible.
 
-![Fast forward merge rebase locally](../img/ff_merge_rebase_locally.png)
-
 Rebasing may be required before squashing, even though squashing can itself be
 considered equivalent to rebasing.
 
 ### Rebase without CI/CD pipeline
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
+> - Changed to [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.

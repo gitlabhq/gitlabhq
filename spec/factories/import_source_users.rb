@@ -23,6 +23,7 @@ FactoryBot.define do
     end
 
     trait :awaiting_approval do
+      with_reassign_to_user
       status { 1 }
     end
 

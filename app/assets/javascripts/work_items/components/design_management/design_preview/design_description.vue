@@ -21,8 +21,8 @@ export default {
 <template>
   <div class="design-description-container">
     <div class="design-description-view">
-      <div class="design-description-header gl-flex gl-justify-between gl-mb-2">
-        <h3 class="!gl-leading-20 gl-font-lg gl-m-0">
+      <div class="design-description-header gl-mb-2 gl-flex gl-justify-between">
+        <h3 class="gl-m-0 gl-text-lg !gl-leading-20">
           {{ $options.i18n.descriptionLabel }}
         </h3>
       </div>

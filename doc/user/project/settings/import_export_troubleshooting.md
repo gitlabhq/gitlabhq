@@ -6,7 +6,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Troubleshooting file export project migrations
 
-If you have problems with [migrating projects using file exports](import_export.md), see the possible solutions below.
+If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
 ## Troubleshooting commands
 
@@ -110,7 +110,7 @@ reduce the repository size for another import attempt:
    use `git remote set-url origin <new-url> && git push --force --all`
    to complete the import.
 1. Update the imported repository's
-   [branch protection rules](../protected_branches.md) and
+   [branch protection rules](../repository/branches/protected.md) and
    its [default branch](../repository/branches/default.md), and
    delete the temporary, `smaller-tmp-main` branch, and
    the local, temporary data.
@@ -199,6 +199,13 @@ e.send(:design_repo_saver).send(:save)
 # The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....
 s = Gitlab::ImportExport::Saver.new(exportable: p, shared: p.import_export_shared, user: u)
 
+# Prior to GitLab 17.0, the `user` parameter was not supported. If you encounter an
+# error with the above or are unsure whether or not to supply the `user`
+# argument, use the following check:
+Gitlab::ImportExport::Saver.instance_method(:initialize).parameters.include?([:keyreq, :user])
+# If the preceding check returns false, omit the user argument:
+s = Gitlab::ImportExport::Saver.new(exportable: p, shared: p.import_export_shared)
+
 # To try and upload use:
 s.send(:compress_and_save)
 s.send(:save_upload)
@@ -228,6 +235,14 @@ out, but makes migrations slower.
 
 To have the batch sized reduced, you must have a feature flag enabled. For more information, see
 [issue 456948](https://gitlab.com/gitlab-org/gitlab/-/issues/456948).
+
+## Error: `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]`
+
+You might receive the error `command exited with error code 15 and Unable to save [FILTERED] into [FILTERED]` in logs
+when migrating projects by using file exports. If you receive this error:
+
+- When exporting a file export, you can safely ignore the error. GitLab retries the exited command.
+- When importing a file import, you must retry the import. GitLab doesn't automatically retry the import.
 
 ## Troubleshooting performance issues
 

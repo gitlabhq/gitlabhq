@@ -47,13 +47,13 @@ export default {
 };
 </script>
 <template>
-  <div class="file-header-content gl-flex gl-align-items-center gl-leading-1">
+  <div class="file-header-content gl-flex gl-items-center gl-leading-1">
     <slot name="filepath-prepend"></slot>
 
     <template v-if="fileName">
       <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
       <strong
-        class="file-title-name mr-1 js-blob-header-filepath gl-break-all gl-text-decoration-none!"
+        class="file-title-name mr-1 js-blob-header-filepath gl-break-all !gl-no-underline"
         data-testid="file-title-content"
         >{{ fileName }}</strong
       >

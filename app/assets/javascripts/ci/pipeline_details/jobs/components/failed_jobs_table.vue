@@ -80,12 +80,10 @@ export default {
     </template>
 
     <template #cell(name)="{ item }">
-      <div
-        class="gl-display-flex gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
-      >
+      <div class="gl-flex gl-items-center gl-justify-end lg:gl-justify-start">
         <ci-icon :status="item.detailedStatus" class="gl-mr-3" />
-        <div class="gl-text-truncate">
-          <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold gl-text-gray-900!">
+        <div class="gl-truncate">
+          <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold !gl-text-gray-900">
             {{ item.name }}
           </gl-link>
         </div>
@@ -93,7 +91,7 @@ export default {
     </template>
 
     <template #cell(stage)="{ item }">
-      <div class="gl-text-truncate">
+      <div class="gl-truncate">
         <span>{{ item.stage.name }}</span>
       </div>
     </template>
@@ -115,7 +113,7 @@ export default {
     <template #row-details="{ item }">
       <pre
         v-if="item.userPermissions.readBuild"
-        class="gl-w-full gl-text-left gl-border-none"
+        class="gl-w-full gl-border-none gl-text-left"
         data-testid="job-log"
       >
         <code v-safe-html="failureSummary(item.trace)" class="gl-bg-inherit gl-p-0" data-testid="job-trace-summary">

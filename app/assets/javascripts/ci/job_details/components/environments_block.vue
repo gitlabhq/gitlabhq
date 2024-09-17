@@ -179,10 +179,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-mt-3 gl-mb-3 js-environment-container">
+  <div class="js-environment-container gl-mb-3 gl-mt-3">
     <div class="environment-information">
       <ci-icon :status="iconStatus" />
-      <p class="inline gl-mb-0">
+      <p class="gl-mb-0 gl-inline-block">
         <gl-sprintf :message="environment">
           <template #environmentLink>
             <gl-link

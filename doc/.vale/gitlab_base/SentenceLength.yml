@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.SentenceLength
+# Suggestion: gitlab_base.SentenceLength
 #
 # Counts words in a sentence and alerts if a sentence exceeds 25 words.
 #

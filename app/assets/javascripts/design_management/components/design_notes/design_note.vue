@@ -162,7 +162,7 @@ export default {
             this.$emit('delete-note', this.note);
           },
           extraAttrs: {
-            class: 'gl-text-red-500!',
+            class: '!gl-text-red-500',
           },
         },
       ];
@@ -276,12 +276,12 @@ export default {
       :href="author.webUrl"
       :data-user-id="authorId"
       :data-username="author.username"
-      class="gl-float-left gl-mr-3 link-inherit-color js-user-link"
+      class="link-inherit-color js-user-link gl-float-left gl-mr-3"
     >
       <gl-avatar :size="32" :src="author.avatarUrl" :entity-name="author.username" />
     </gl-avatar-link>
 
-    <div class="gl-display-flex gl-justify-content-space-between">
+    <div class="gl-flex gl-justify-between">
       <div>
         <gl-link
           v-if="hasAuthor"
@@ -300,7 +300,7 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-display-inline-block gl-mb-2 gl-font-sm link-inherit-color"
+            class="note-timestamp system-note-separator link-inherit-color gl-mb-2 gl-inline-block gl-text-sm"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
@@ -308,7 +308,7 @@ export default {
           <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" />
         </span>
       </div>
-      <div class="gl-display-flex gl-align-items-flex-start -gl-mt-2 -gl-mr-2">
+      <div class="-gl-mr-2 -gl-mt-2 gl-flex gl-items-start">
         <slot name="resolve-discussion"></slot>
         <emoji-picker
           v-if="canAwardEmoji"

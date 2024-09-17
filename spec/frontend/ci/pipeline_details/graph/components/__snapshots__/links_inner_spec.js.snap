@@ -2,7 +2,7 @@
 
 exports[`Links Inner component with a large number of needs matches snapshot and has expected path 1`] = `
 <div
-  class="gl-display-flex gl-relative"
+  class="gl-flex gl-relative"
   totalgroups="10"
 >
   <svg
@@ -43,7 +43,7 @@ exports[`Links Inner component with a large number of needs matches snapshot and
 
 exports[`Links Inner component with a parallel need matches snapshot and has expected path 1`] = `
 <div
-  class="gl-display-flex gl-relative"
+  class="gl-flex gl-relative"
   totalgroups="10"
 >
   <svg
@@ -64,7 +64,7 @@ exports[`Links Inner component with a parallel need matches snapshot and has exp
 
 exports[`Links Inner component with one need matches snapshot and has expected path 1`] = `
 <div
-  class="gl-display-flex gl-relative"
+  class="gl-flex gl-relative"
   totalgroups="10"
 >
   <svg
@@ -85,7 +85,7 @@ exports[`Links Inner component with one need matches snapshot and has expected p
 
 exports[`Links Inner component with same stage needs matches snapshot and has expected path 1`] = `
 <div
-  class="gl-display-flex gl-relative"
+  class="gl-flex gl-relative"
   totalgroups="10"
 >
   <svg

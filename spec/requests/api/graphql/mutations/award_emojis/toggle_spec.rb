@@ -62,7 +62,12 @@ RSpec.describe 'Toggling an AwardEmoji', feature_category: :shared do
     end
 
     context 'when the given awardable is an Awardable' do
-      context 'when the awardable is a work item' do
+      context 'when the awardable is a work item', if: Gitlab.ee? do
+        before do
+          stub_feature_flags(enforce_check_group_level_work_items_license: true)
+          stub_licensed_features(epics: true)
+        end
+
         context 'when the work item is associated directly with a group' do
           let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
           let(:awardable) { group_work_item }

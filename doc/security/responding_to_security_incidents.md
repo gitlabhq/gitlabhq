@@ -32,7 +32,7 @@ This scenario refers to security events where sensitive authentication or author
 
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
-- [Overview of GitLab tokens](../security/token_overview.md)
+- [Overview of GitLab tokens](../security/tokens/index.md)
 - [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
 
 #### Response
@@ -67,7 +67,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/token_overview.md#runner-registration-tokens-deprecated).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/index.md#runner-registration-tokens-deprecated).
 - [Reset the user's password](../security/reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
@@ -146,14 +146,14 @@ If you suspect that your GitLab instance has been compromised, you should:
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
 - Update to the latest version of GitLab and adopt a plan to update after every security patch release.
 - In addition, the following suggestions are common steps taken in incident response plans when servers are compromised by malicious actors:
-   1. Save any server state and logs to a write-once location, for later investigation.
-   1. Look for unrecognized background processes.
-   1. Check for open ports on the system. Our [default ports guide](../administration/package_information/defaults.md) can be used as a starting point.
-   1. Rebuild the host from a known-good backup or from scratch, and apply all the latest security patches.
-   1. Review network logs for uncommon traffic.
-   1. Establish network monitoring and network-level controls.
-   1. Restrict inbound and outbound network access to authorized users and servers only.
-   1. Ensure all logs are routed to an independent write-only datastore.
+  1. Save any server state and logs to a write-once location, for later investigation.
+  1. Look for unrecognized background processes.
+  1. Check for open ports on the system. Our [default ports guide](../administration/package_information/defaults.md) can be used as a starting point.
+  1. Rebuild the host from a known-good backup or from scratch, and apply all the latest security patches.
+  1. Review network logs for uncommon traffic.
+  1. Establish network monitoring and network-level controls.
+  1. Restrict inbound and outbound network access to authorized users and servers only.
+  1. Ensure all logs are routed to an independent write-only datastore.
 
 #### Event types
 

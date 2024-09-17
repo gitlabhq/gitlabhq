@@ -255,25 +255,35 @@ describe('common_utils', () => {
   });
 
   describe('scrollToElement*', () => {
+    let parentElem;
     let elem;
     const windowHeight = 550;
     const elemTop = 100;
+    const parentId = 'parent_scroll_test';
     const id = 'scroll_test';
 
     beforeEach(() => {
+      parentElem = document.createElement('div');
+      parentElem.id = parentId;
       elem = document.createElement('div');
       elem.id = id;
-      document.body.appendChild(elem);
+      parentElem.appendChild(elem);
+      document.body.appendChild(parentElem);
+
       window.innerHeight = windowHeight;
       window.mrTabs = { currentAction: 'show' };
+
       jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(parentElem, 'scrollTo').mockImplementation(() => {});
       jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
     });
 
     afterEach(() => {
       window.scrollTo.mockRestore();
+      parentElem.scrollTo.mockRestore();
       Element.prototype.getBoundingClientRect.mockRestore();
       elem.remove();
+      parentElem.remove();
     });
 
     describe('scrollToElement with HTMLElement', () => {
@@ -293,6 +303,14 @@ describe('common_utils', () => {
           top: elemTop + offset,
         });
       });
+
+      it('scrolls to element within a parent', () => {
+        commonUtils.scrollToElement(elem, { parent: parentElem });
+        expect(parentElem.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
     });
 
     describe('scrollToElement with Selector', () => {
@@ -310,6 +328,14 @@ describe('common_utils', () => {
         expect(window.scrollTo).toHaveBeenCalledWith({
           behavior: 'smooth',
           top: elemTop + offset,
+        });
+      });
+
+      it('scrolls to element within a parent', () => {
+        commonUtils.scrollToElement(`#${id}`, { parent: `#${parentId}` });
+        expect(parentElem.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
         });
       });
     });

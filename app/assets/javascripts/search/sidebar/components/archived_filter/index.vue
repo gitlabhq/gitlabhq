@@ -48,11 +48,11 @@ export default {
 
 <template>
   <gl-form-checkbox-group v-model="selectedFilter">
-    <div class="gl-mb-2 gl-font-bold gl-font-sm" data-testid="archived-filter-title">
+    <div class="gl-mb-2 gl-text-sm gl-font-bold" data-testid="archived-filter-title">
       {{ $options.archivedFilterData.headerLabel }}
     </div>
     <gl-form-checkbox
-      class="gl-flex-grow-1 gl-inline-flex gl-justify-content-space-between gl-w-full"
+      class="gl-inline-flex gl-w-full gl-grow gl-justify-between"
       :class="$options.LABEL_DEFAULT_CLASSES"
       :value="true"
     >

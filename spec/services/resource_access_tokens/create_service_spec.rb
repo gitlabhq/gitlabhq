@@ -49,6 +49,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         expect(access_token.user.reload.user_type).to eq("project_bot")
         expect(access_token.user.created_by_id).to eq(user.id)
         expect(access_token.user.namespace.organization.id).to eq(resource.organization.id)
+        expect(access_token.organization.id).to eq(resource.organization.id)
       end
 
       context 'email confirmation status' do
@@ -413,13 +414,16 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
       context 'when resource organization is not set', :enable_admin_mode do
         let_it_be(:resource) { create(:project, :private, organization_id: nil) }
         let_it_be(:default_organization) { Organizations::Organization.default_organization }
+        let(:organization) { create(:organization) }
         let(:user) { create(:admin) }
+        let(:params) { { organization_id: organization.id } }
 
         it 'uses database default' do
           response = subject
 
           access_token = response.payload[:access_token]
           expect(access_token.user.namespace.organization).to eq(default_organization)
+          expect(access_token.organization).to eq(organization)
         end
       end
     end

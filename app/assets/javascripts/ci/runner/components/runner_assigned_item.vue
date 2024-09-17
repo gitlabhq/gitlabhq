@@ -42,8 +42,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-py-5">
-    <gl-link :href="href" data-testid="item-avatar" class="gl-text-decoration-none! gl-mr-3">
+  <div class="gl-flex gl-items-center gl-py-5">
+    <gl-link :href="href" data-testid="item-avatar" class="gl-mr-3 !gl-no-underline">
       <gl-avatar
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         :entity-name="name"
@@ -54,7 +54,7 @@ export default {
     </gl-link>
     <div>
       <div class="gl-mb-1">
-        <gl-link :href="href" class="gl-font-bold gl-text-gray-900!">{{ fullName }}</gl-link>
+        <gl-link :href="href" class="gl-font-bold !gl-text-gray-900">{{ fullName }}</gl-link>
         <gl-badge v-if="isOwner" variant="info">{{ s__('Runners|Owner') }}</gl-badge>
       </div>
       <div v-if="description">{{ description }}</div>

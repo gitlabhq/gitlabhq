@@ -114,6 +114,80 @@ RSpec.describe API::API, feature_category: :system_access do
     end
   end
 
+  describe 'counter metrics', :aggregate_failures do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:user) { project.first_owner }
+    let_it_be(:http_router_rule_counter) { Gitlab::Metrics.counter(:gitlab_http_router_rule_total, 'description') }
+
+    let(:perform_request) { get(api("/projects/#{project.id}", user), headers: headers) }
+
+    context 'when the headers are present' do
+      context 'for classify action' do
+        let(:headers) do
+          {
+            'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+            'X-Gitlab-Http-Router-Rule-Type' => 'FIRST_CELL'
+          }
+        end
+
+        it 'increments the counter' do
+          expect { perform_request }
+            .to change { http_router_rule_counter.get(rule_action: 'classify', rule_type: 'FIRST_CELL') }.by(1)
+        end
+      end
+
+      context 'for proxy action' do
+        let(:headers) do
+          {
+            'X-Gitlab-Http-Router-Rule-Action' => 'proxy'
+          }
+        end
+
+        it 'increments the counter' do
+          expect { perform_request }
+            .to change { http_router_rule_counter.get(rule_action: 'proxy', rule_type: nil) }.by(1)
+        end
+      end
+    end
+
+    context 'for invalid action and type' do
+      let(:headers) do
+        {
+          'X-Gitlab-Http-Router-Rule-Action' => 'invalid',
+          'X-Gitlab-Http-Router-Rule-Type' => 'invalid'
+        }
+      end
+
+      it 'does not increment the counter' do
+        expect { perform_request }
+          .to change { http_router_rule_counter.get(rule_action: 'invalid', rule_type: 'invalid') }.by(0)
+      end
+    end
+
+    context 'when action is not present and type is present' do
+      let(:headers) do
+        {
+          'X-Gitlab-Http-Router-Rule-Type' => 'FIRST_CELL'
+        }
+      end
+
+      it 'does not increment the counter' do
+        expect { perform_request }.to change {
+          http_router_rule_counter.get(rule_action: nil, rule_type: 'FIRST_CELL')
+        }.by(0)
+      end
+    end
+
+    context 'when the headers are absent' do
+      let(:headers) { {} }
+
+      it 'does not increment the counter' do
+        expect { perform_request }
+          .to change { http_router_rule_counter.get(rule_action: nil, rule_type: nil) }.by(0)
+      end
+    end
+  end
+
   describe 'logging', :aggregate_failures do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:user) { project.first_owner }
@@ -131,11 +205,16 @@ RSpec.describe API::API, feature_category: :system_access do
               'meta.user' => user.username,
               'meta.client_id' => a_string_matching(%r{\Auser/.+}),
               'meta.feature_category' => 'team_planning',
+              'meta.http_router_rule_action' => 'classify',
+              'meta.http_router_rule_type' => 'FIRST_CELL',
               'route' => '/api/:version/projects/:id/issues'
             )
           end
 
-          get(api("/projects/#{project.id}/issues", user))
+          get(api("/projects/#{project.id}/issues", user), headers: {
+            'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+            'X-Gitlab-Http-Router-Rule-Type' => 'FIRST_CELL'
+          })
 
           expect(response).to have_gitlab_http_status(:ok)
         end

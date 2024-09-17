@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import * as types from '../mutation_types';
 
 export default {
@@ -32,8 +31,14 @@ export default {
       return;
     }
 
-    Object.keys(props).forEach((key) => {
-      Vue.set(project, key, props[key]);
-    });
+    Object.keys(props).reduce((acc, key) => {
+      project[key] = props[key];
+      return project;
+    }, project);
+
+    state.projects = {
+      ...state.projects,
+      [projectPath]: project,
+    };
   },
 };

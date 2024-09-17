@@ -15,11 +15,11 @@ RSpec.describe Ci::PipelineConfig, type: :model, feature_category: :continuous_i
     let(:pipeline_config) { create(:ci_pipeline_config, pipeline: pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns the same partition id as the one that pipeline has' do
-      expect(pipeline_config.partition_id).to eq(ci_testing_partition_id)
+      expect(pipeline_config.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

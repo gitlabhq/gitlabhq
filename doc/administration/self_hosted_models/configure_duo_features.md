@@ -65,7 +65,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To configure the AI-powered features to use your model:
+### View the configured features
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **AI-powered features**.
@@ -75,10 +75,22 @@ To configure the AI-powered features to use your model:
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
 1. Select **Features**.
+
+### Configure the features to use self-hosted models
+
+Use a self-hosted AI Gateway to execute queries to the configured self-hosted model:
+
 1. For the feature you want to set, select **Edit**.
    For example, **Code Generation**.
 1. Select the model provider for the feature:
    - From the list, select **Self-Hosted Model**.
    - Choose the self-hosted model you would like to use, for example, Mistral.
+1. Select **Save Changes**.
 
+### Configure the features to use GitLab AI Vendor models
+
+You can set a GitLab Duo feature's model provider to the GitLab AI Vendor. That feature then uses GitLab hosted models through the Cloud Connector:
+
+1. For the feature you want to set, select **Edit**.
+1. In the list of model providers for the feature, select **AI Vendor**.
 1. Select **Save Changes**.

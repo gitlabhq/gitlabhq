@@ -185,19 +185,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe '.track_ci_pipeline_created_event' do
       let(:pipeline) { build(:ci_pipeline, user: user) }
 
-      it 'tracks the creation event with user information' do
-        expect(Gitlab::InternalEvents).to receive(:track_event).with('create_ci_internal_pipeline', project: project, user: user)
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'create_ci_internal_pipeline' }
+        let(:additional_properties) do
+          {
+            label: 'push',
+            property: 'unknown_source'
+          }
+        end
 
-        pipeline.save!
+        subject { pipeline.save! }
       end
 
       context 'when pipeline is external' do
         let(:pipeline) { build(:ci_pipeline, source: :external) }
 
-        it 'does not track creation event' do
-          expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-          pipeline.save!
+        it_behaves_like 'internal event not tracked' do
+          subject { pipeline.save! }
         end
       end
     end
@@ -3835,7 +3839,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#stuck?' do
+  describe '#stuck?', :freeze_time do
     let(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     before do

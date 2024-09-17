@@ -43,6 +43,8 @@ module Ml
           user: @user
         )
 
+        audit_creation_event
+
         ServiceResponse.success(message: [], payload: { model_version: @model_version })
       end
     rescue ActiveRecord::RecordInvalid => e
@@ -74,6 +76,18 @@ module Ml
       def initialize(errors)
         @errors = errors
       end
+    end
+
+    def audit_creation_event
+      audit_context = {
+        name: 'ml_model_version_created',
+        author: @user,
+        scope: @model.project,
+        target: @model_version,
+        message: "MlModelVersion #{@model_version.name}/#{@model_version.version} created"
+      }
+
+      ::Gitlab::Audit::Auditor.audit(audit_context)
     end
   end
 end

@@ -2,31 +2,30 @@
 
 exports[`WorkItemRelationshipList renders linked item list 1`] = `
 <div
+  class="gl-p-3"
   data-testid="work-item-linked-items-list"
 >
-  <h4
-    class="gl-font-semibold gl-font-sm gl-mb-2 gl-ml-3 gl-mt-3 gl-text-gray-700"
+  <h3
+    class="gl-bg-gray-50 gl-block gl-font-semibold gl-mb-0 gl-mt-0 gl-px-3 gl-py-2 gl-rounded-base gl-text-sm gl-text-subtle"
     data-testid="work-items-list-heading"
   >
     Blocking
-  </h4>
-  <div
-    class="work-items-list-body"
+  </h3>
+  <ul
+    class="content-list work-items-list"
   >
-    <ul
-      class="content-list work-items-list"
+    <li
+      class="!gl-border-b-1 !gl-border-gray-50 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0"
+      data-testid="link-child-contents-container"
     >
-      <li
-        class="gl-border-b-0! gl-pb-0! gl-pt-0!"
-      >
-        <work-item-link-child-contents-stub
-          canupdate="true"
-          childitem="[object Object]"
-          showlabels="true"
-          workitemfullpath="test-project-path"
-        />
-      </li>
-    </ul>
-  </div>
+      <work-item-link-child-contents-stub
+        canupdate="true"
+        childitem="[object Object]"
+        showlabels="true"
+        showweight="true"
+        workitemfullpath="test-project-path"
+      />
+    </li>
+  </ul>
 </div>
 `;

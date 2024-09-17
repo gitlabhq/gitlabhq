@@ -22,7 +22,7 @@ module QA
         praefect_manager.clear_replication_queue
       end
 
-      it 'allows replication of different repository after interruption',
+      it 'allows replication of different repository after interruption', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
         # We want to fill the replication queue with 10 `in_progress` jobs,
         # while a lock has been acquired, which is when the problem occurred

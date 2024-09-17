@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { PROMO_URL } from '~/lib/utils/url_utility';
+import PromoPageLink from '~/vue_shared/components/promo_page_link/promo_page_link.vue';
 import { I18N_CLUSTERS_EMPTY_STATE } from '../constants';
 
 export default {
@@ -11,12 +11,13 @@ export default {
     GlLink,
     GlSprintf,
     GlAlert,
+    PromoPageLink,
   },
   inject: ['emptyStateHelpText', 'clustersEmptyStateImage'],
   clustersHelpUrl: helpPagePath('user/infrastructure/clusters/index', {
     anchor: 'certificate-based-kubernetes-integration-deprecated',
   }),
-  blogPostUrl: `${PROMO_URL}/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/`,
+  blogPostPath: 'blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/',
 };
 </script>
 
@@ -45,7 +46,9 @@ export default {
     <gl-alert variant="warning" :dismissible="false">
       <gl-sprintf :message="$options.i18n.alertText">
         <template #link="{ content }">
-          <gl-link :href="$options.blogPostUrl" target="_blank">{{ content }}</gl-link>
+          <promo-page-link :path="$options.blogPostPath" target="_blank">
+            {{ content }}
+          </promo-page-link>
         </template>
       </gl-sprintf>
     </gl-alert>

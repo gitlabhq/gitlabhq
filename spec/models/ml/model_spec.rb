@@ -8,6 +8,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
   let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: project1) }
   let_it_be(:another_existing_model) { create(:ml_models, name: 'an_existing_model', project: project2) }
   let_it_be(:valid_name) { 'a_valid_name' }
+  let_it_be(:valid_description) { 'Valid description' }
   let_it_be(:default_experiment) { create(:ml_experiments, name: "[model]#{valid_name}", project: project1) }
 
   describe 'associations' do
@@ -23,14 +24,31 @@ RSpec.describe Ml::Model, feature_category: :mlops do
 
     let(:name) { valid_name }
 
+    let(:description) { valid_description }
+
     subject(:errors) do
-      m = described_class.new(name: name, project: project1, default_experiment: default_experiment)
+      m = described_class.new(name: name, project: project1, default_experiment: default_experiment,
+        description: description)
       m.validate
       m.errors
     end
 
     it 'validates a valid model version' do
       expect(errors).to be_empty
+    end
+
+    describe 'description' do
+      context 'when description is too large' do
+        let(:description) { 'a' * 10_001 }
+
+        it { expect(errors).to include(:description) }
+      end
+
+      context 'when description is below threshold' do
+        let(:description) { 'a' * 100 }
+
+        it { expect(errors).not_to include(:description) }
+      end
     end
 
     describe 'name' do

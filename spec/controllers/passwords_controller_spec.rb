@@ -83,17 +83,6 @@ RSpec.describe PasswordsController, feature_category: :system_access do
           )
         end
       end
-
-      it 'sets the username and caller_id in the context' do
-        expect(controller).to receive(:update).and_wrap_original do |m, *args|
-          m.call(*args)
-
-          expect(Gitlab::ApplicationContext.current)
-            .to include('meta.user' => user.username, 'meta.caller_id' => 'PasswordsController#update')
-        end
-
-        subject
-      end
     end
   end
 

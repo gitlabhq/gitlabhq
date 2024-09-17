@@ -139,7 +139,7 @@ export default {
       :form-options="$options.formOptions.keepNDuplicatedPackageFiles"
       :label="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL"
       :description="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION"
-      dropdown-class="gl-md-max-w-50p"
+      dropdown-class="md:gl-max-w-1/2"
       name="keep-n-duplicated-package-files"
       data-testid="keep-n-duplicated-package-files-dropdown"
       @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"
@@ -147,7 +147,7 @@ export default {
     <p v-if="value.nextRunAt" data-testid="next-run-at">
       {{ nextCleanupMessage }}
     </p>
-    <div class="gl-mt-6 gl-display-flex gl-align-items-center">
+    <div class="gl-mt-6 gl-flex gl-items-center">
       <gl-button
         data-testid="save-button"
         type="submit"

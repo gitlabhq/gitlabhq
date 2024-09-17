@@ -123,7 +123,7 @@ export default {
         v-gl-tooltip.hover="dropdownTooltipTitle"
         data-testid="pipeline-mini-graph-dropdown-toggle"
         :title="dropdownTooltipTitle"
-        class="gl-rounded-full!"
+        class="!gl-rounded-full"
         variant="link"
       >
         <ci-icon :status="stage.detailedStatus" :show-tooltip="false" :use-link="false" />
@@ -133,19 +133,19 @@ export default {
     <template #header>
       <div
         data-testid="pipeline-stage-dropdown-menu-title"
-        class="gl-flex gl-items-center !gl-p-4 gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-text-sm gl-font-bold gl-leading-1"
+        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
       >
         <span>{{ dropdownHeaderText }}</span>
       </div>
     </template>
 
-    <div v-if="isLoading" class="gl-flex gl-gap-3 gl-py-3 gl-px-4">
+    <div v-if="isLoading" class="gl-flex gl-gap-3 gl-px-4 gl-py-3">
       <gl-loading-icon size="sm" />
       <p class="gl-leading-normal">{{ $options.i18n.loadingText }}</p>
     </div>
     <ul
       v-else
-      class="gl-overflow-y-auto gl-m-0 gl-p-0"
+      class="gl-m-0 gl-overflow-y-auto gl-p-0"
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
@@ -160,7 +160,7 @@ export default {
     <template #footer>
       <div
         v-if="!isLoading && isMergeTrain"
-        class="gl-text-sm gl-text-secondary gl-py-3 gl-px-4 gl-border-t"
+        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-secondary"
         data-testid="merge-train-message"
       >
         {{ $options.i18n.mergeTrainMessage }}

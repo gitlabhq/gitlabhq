@@ -15,6 +15,8 @@ source license templates. For more information on the terms of various
 licenses, see [this site](https://choosealicense.com/) or any of the many other
 resources available online.
 
+Users with the Guest role can't access the license templates. For more information, see [Project and group visibility](../../user/public_access.md).
+
 ## List license templates
 
 Get all license templates.

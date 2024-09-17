@@ -24,7 +24,7 @@ With custom roles, the customers can decide which abilities they want to assign 
 - In the default role system, reading of vulnerabilities is limited to a Developer role.
 - In the custom role system, a customer can assign this ability to a new custom role based on any default role.
 
-Like default roles, custom roles are [inherited](../../user/project/members/index.md#inherited-membership) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
+Like default roles, custom roles are [inherited](../../user/project/members/index.md#membership-types) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
 
 ## Technical overview
 

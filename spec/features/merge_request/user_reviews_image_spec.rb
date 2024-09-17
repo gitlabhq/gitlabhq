@@ -30,7 +30,7 @@ RSpec.describe 'Merge request > image review', :js, feature_category: :code_revi
 
     wait_for_requests
 
-    page.within(find('.draft-note-component')) do
+    page.within(find('.draft-note')) do
       expect(page).to have_content('image diff test comment')
     end
   end

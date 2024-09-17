@@ -556,7 +556,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
     />
   </g>
   <g
-    class="gl-font-sm"
+    class="gl-text-sm"
   >
     <foreignobject
       class="gl-overflow-visible"
@@ -567,7 +567,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="100"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58.00000000000003px; text-align: right;"
       >
         build_a
@@ -582,7 +582,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="75"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: left;"
       >
         test_a
@@ -597,7 +597,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="183.00000000000003"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58px; text-align: right;"
       >
         test_b
@@ -612,7 +612,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="266"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58.00000000000006px; text-align: right;"
       >
         post_test_a
@@ -627,7 +627,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="349.00000000000006"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58.00000000000006px; text-align: right;"
       >
         post_test_b
@@ -642,7 +642,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="75.0000000000002"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: right;"
       >
         post_test_c
@@ -657,7 +657,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="215.99999999999977"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: left;"
       >
         staging_a
@@ -672,7 +672,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="298.99999999999994"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: left;"
       >
         staging_b
@@ -687,7 +687,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="216.00000000000009"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: right;"
       >
         canary_a
@@ -702,7 +702,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="357"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 25px; text-align: right;"
       >
         canary_c
@@ -717,7 +717,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="241.18907251056908"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58px; text-align: left;"
       >
         production_a
@@ -732,7 +732,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y="382"
     >
       <div
-        class="gl-break-words gl-display-flex gl-flex-direction-column gl-justify-content-center gl-pointer-events-none"
+        class="gl-break-words gl-flex gl-flex-col gl-justify-center gl-pointer-events-none"
         style="height: 58px; text-align: left;"
       >
         production_d

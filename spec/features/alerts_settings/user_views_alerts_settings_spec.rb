@@ -21,7 +21,7 @@ RSpec.describe 'Alert integrations settings form', :js, feature_category: :incid
 
       it 'shows the alerts setting form title' do
         page.within('#js-alert-management-settings') do
-          expect(find('h4')).to have_content('Alerts')
+          expect(find('h2.gl-heading-2')).to have_content('Alerts')
         end
       end
 

@@ -8,13 +8,21 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import {
+  FILTERED_SEARCH_TERM,
+  TOKEN_TYPE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
+
 import {
   PLACEHOLDER_STATUS_FAILED,
-  QUERY_PARAM_FAILED,
+  PLACEHOLDER_STATUS_REASSIGNING,
   PLACEHOLDER_USER_STATUS,
+  PLACEHOLDER_SORT_STATUS_ASC,
+  PLACEHOLDER_SORT_SOURCE_NAME_DESC,
 } from '~/import_entities/import_groups/constants';
 import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
 
@@ -59,8 +67,8 @@ describe('PlaceholdersTabApp', () => {
       apolloProvider: mockApollo,
       store,
       provide: {
-        reassignmentCsvDownloadPath: 'foo/bar',
         group: mockGroup,
+        reassignmentCsvPath: 'foo/bar',
         ...provide,
       },
       mocks: { $toast },
@@ -76,12 +84,95 @@ describe('PlaceholdersTabApp', () => {
     });
   };
 
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTabAt = (index) => wrapper.findAllComponents(GlTab).at(index);
   const findUnassignedTable = () => wrapper.findByTestId('placeholders-table-unassigned');
   const findReassignedTable = () => wrapper.findByTestId('placeholders-table-reassigned');
   const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
   const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
+
+  describe('filter, search and sort', () => {
+    const filterByFailedStatusToken = { type: TOKEN_TYPE_STATUS, value: { data: 'failed' } };
+    const filterByReassigningStatusToken = {
+      type: TOKEN_TYPE_STATUS,
+      value: { data: 'reassignment_in_progress' },
+    };
+    const searchTerm = 'source user 1';
+    const searchTokens = [
+      { type: FILTERED_SEARCH_TERM, value: { data: searchTerm } },
+      { type: FILTERED_SEARCH_TERM, value: { data: '' } },
+    ];
+
+    it('renders FilteredSearchBar', () => {
+      createComponent();
+
+      expect(findFilteredSearchBar().exists()).toBe(true);
+    });
+
+    describe('without initial search query', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('updates URL on filter by status', async () => {
+        findFilteredSearchBar().vm.$emit('onFilter', [filterByFailedStatusToken]);
+        await nextTick();
+
+        expect(findUnassignedTable().props('queryStatuses')).toEqual([PLACEHOLDER_STATUS_FAILED]);
+        expect(window.location.search).toBe(`?tab=placeholders&status=failed`);
+      });
+
+      it('updates URL on search', async () => {
+        findFilteredSearchBar().vm.$emit('onFilter', searchTokens);
+        await nextTick();
+
+        expect(findUnassignedTable().props('querySearch')).toBe(searchTerm);
+        expect(window.location.search).toBe(`?tab=placeholders&search=source+user+1`);
+      });
+    });
+
+    describe('with status, search and sort queries present on load', () => {
+      beforeEach(() => {
+        setWindowLocation('?status=failed&search=foo&sort=STATUS_ASC');
+        createComponent();
+      });
+
+      it('passes props to table', () => {
+        expect(findUnassignedTable().props()).toMatchObject({
+          querySearch: 'foo',
+          queryStatuses: [PLACEHOLDER_STATUS_FAILED],
+          querySort: PLACEHOLDER_SORT_STATUS_ASC,
+        });
+      });
+
+      it('updates URL on new filter and search', async () => {
+        findFilteredSearchBar().vm.$emit('onFilter', [
+          filterByReassigningStatusToken,
+          ...searchTokens,
+        ]);
+        await nextTick();
+
+        expect(findUnassignedTable().props()).toMatchObject({
+          querySearch: searchTerm,
+          queryStatuses: [PLACEHOLDER_STATUS_REASSIGNING],
+        });
+        expect(window.location.search).toBe(
+          `?tab=placeholders&status=reassignment_in_progress&search=source+user+1&sort=STATUS_ASC`,
+        );
+      });
+
+      it('updates URL on new sort', async () => {
+        findFilteredSearchBar().vm.$emit('onSort', 'SOURCE_NAME_DESC');
+        await nextTick();
+
+        expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_SOURCE_NAME_DESC);
+        expect(window.location.search).toBe(
+          `?tab=placeholders&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
+        );
+      });
+    });
+  });
 
   it('renders tabs', () => {
     createComponent();
@@ -126,7 +217,7 @@ describe('PlaceholdersTabApp', () => {
 
   describe('passes the correct queryStatuses to PlaceholdersTable', () => {
     it('awaiting Reassignment - when the url includes the query param failed', () => {
-      setWindowLocation(`?status=${QUERY_PARAM_FAILED}`);
+      setWindowLocation(`?status=failed`);
       createComponent();
 
       const placeholdersTable = findUnassignedTable();

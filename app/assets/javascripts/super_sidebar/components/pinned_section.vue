@@ -112,7 +112,7 @@ export default {
     <draggable
       v-if="items.length > 0"
       v-model="draggableItems"
-      class="gl-p-0 gl-m-0 gl-list-none"
+      class="gl-m-0 gl-list-none gl-p-0"
       data-testid="pinned-nav-items"
       handle=".js-draggable-icon"
       tag="ul"
@@ -129,7 +129,7 @@ export default {
     </draggable>
     <li
       v-else
-      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-mix-blend-mode"
+      class="super-sidebar-mix-blend-mode gl-py-3 gl-text-sm gl-text-secondary"
       style="margin-left: 2.5rem"
     >
       {{ $options.i18n.emptyHint }}

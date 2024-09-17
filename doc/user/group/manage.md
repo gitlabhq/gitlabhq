@@ -54,7 +54,7 @@ member with the Owner role.
 ## Change a group's path
 
 Changing a group's path (group URL) can have unintended side effects. Read how redirects behave
-[on the project-level](../project/repository/index.md#what-happens-when-a-repository-path-changes)
+[on the project-level](../project/repository/index.md#repository-path-changes)
 and [in the API](../../api/rest/index.md#redirects)
 before you proceed.
 
@@ -101,39 +101,6 @@ first push. The group Owner can
 [customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
 for the group's projects to meet your group's needs.
 
-## Share a group with another group
-
-Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group by invitation.
-For more information about sharing conditions and behavior, see [Sharing projects and groups](../project/members/sharing_projects_groups.md).
-
-Prerequisites:
-
-- You must be a member of the invited and inviting groups.
-
-To invite a group to your group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
-1. Select **Invite a group**.
-1. In the **Select a group to invite** list, select the group you want to invite.
-1. Select a [role](../permissions.md) as maximum access level.
-1. Select **Invite**.
-
-## Remove an invited group
-
-To remove an invited group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
-1. Select the **Groups** tab.
-1. To the right of the account you want to remove, select **Remove group** (**{remove}**).
-
-When you remove the invited group from your group:
-
-- All direct members of the invited group no longer have access to the inviting group.
-- Members of the invited group no longer count towards the billable members of the inviting group.
-
 ## Transfer a group
 
 Transferring groups moves them from one place to another in the same GitLab instance. You can:
@@ -147,8 +114,8 @@ If you need to copy a group to a different GitLab instance,
 
 When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#what-happens-when-a-repository-path-changes).
-- You must have the Owner role in the source and target group.
+- Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#repository-path-changes).
+- You must have the Owner role for the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's Owners have only inherited membership, this leaves the group without an Owner. In this case, the user transferring the group becomes the group's Owner.
@@ -250,7 +217,7 @@ For more information about user caps for GitLab self-managed, see [User cap](../
 When the number of billable members reaches the user cap, new users can't be added to the group
 without being approved by the group Owner.
 
-Groups with the user cap feature enabled have [group sharing](#share-a-group-with-another-group)
+Groups with the user cap feature enabled have [group sharing](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 disabled for the group and its subgroups.
 
 ### Specify a user cap for a group
@@ -265,7 +232,7 @@ To specify a user cap:
    You can set a cap on the top-level group only.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In the **User cap** box, enter the desired number of users.
+1. From **Seat controls**, select the **Set user cap** checkbox and enter the number of users in the field.
 1. Select **Save changes**.
 
 If you already have more users in the group than the user cap value, users
@@ -286,7 +253,7 @@ To remove the user cap:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In the **User cap** box, delete the value.
+1. From **Seat controls**, select **Open access**.
 1. Select **Save changes**.
 
 Decreasing the user cap does not approve pending members.

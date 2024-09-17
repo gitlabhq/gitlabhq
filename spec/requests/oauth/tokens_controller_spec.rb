@@ -110,8 +110,11 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       it 'allows cross-origin requests' do
         expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
         expect(response.headers['Access-Control-Allow-Methods']).to eq allowed_methods
-        expect(response.headers['Access-Control-Allow-Headers']).to eq authorization_methods
         expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+
+        expect(
+          Array.wrap(response.headers['Access-Control-Allow-Headers']).join("\n")
+        ).to eq authorization_methods.join("\n")
       end
     end
 

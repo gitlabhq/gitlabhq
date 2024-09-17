@@ -8,7 +8,7 @@ module Gitlab
 
         def initialize(
           project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-          triggered_for_branch: false, ref: nil, has_pipeline_execution_policies: nil)
+          triggered_for_branch: false, ref: nil, pipeline_policy_context: nil)
           @project = project
           @sha = sha
           @custom_content = custom_content
@@ -16,7 +16,7 @@ module Gitlab
           @pipeline_source_bridge = pipeline_source_bridge
           @triggered_for_branch = triggered_for_branch
           @ref = ref
-          @has_pipeline_execution_policies = has_pipeline_execution_policies
+          @pipeline_policy_context = pipeline_policy_context
         end
 
         def exists?
@@ -42,10 +42,12 @@ module Gitlab
           nil
         end
 
+        attr_reader :pipeline_policy_context
+
         private
 
         attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge, :triggered_for_branch,
-          :ref, :has_pipeline_execution_policies
+          :ref
 
         def ci_config_path
           @ci_config_path ||= project.ci_config_path_or_default
@@ -54,3 +56,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::ProjectConfig::Source.prepend_mod

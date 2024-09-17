@@ -15,7 +15,6 @@ module RuboCop
 
           data[dictionary['queued_migration_version'].to_s] = {
             introduced_by_url: dictionary['introduced_by_url'],
-            finalize_after: dictionary['finalize_after'],
             finalized_by: dictionary['finalized_by'].to_s,
             milestone: dictionary['milestone']
           }
@@ -33,10 +32,6 @@ module RuboCop
 
     def finalized_by
       dictionary_data&.dig(:finalized_by)
-    end
-
-    def finalize_after
-      dictionary_data&.dig(:finalize_after)
     end
 
     def introduced_by_url

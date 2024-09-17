@@ -257,6 +257,13 @@ class EventCreateService
       .cache_last_push_event(event)
 
     Users::ActivityService.new(author: current_user, namespace: namespace, project: project).execute
+
+    Gitlab::EventStore.publish(
+      Users::ActivityEvent.new(data: {
+        user_id: current_user.id,
+        namespace_id: project.namespace_id
+      })
+    )
   end
 
   def create_event(resource_parent, current_user, status, attributes = {})

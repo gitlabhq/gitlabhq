@@ -55,15 +55,13 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDaysUsed,
       trialDuration,
       percentageComplete,
-      widgetUrl,
       groupId,
       featureId,
       dismissEndpoint,
     } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
-    const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
-      sidebarData.duo_pro_trial_status_popover_data_attrs,
-    );
+    const { daysRemaining, trialEndDate, purchaseNowUrl, learnAboutButtonUrl } =
+      convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_popover_data_attrs);
 
     return {
       showDuoProTrialStatusWidget: true,
@@ -71,14 +69,13 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
-      widgetUrl,
       groupId,
       featureId,
       dismissEndpoint,
       daysRemaining,
       trialEndDate: new Date(trialEndDate),
       purchaseNowUrl,
-      learnAboutButtonUrl: widgetUrl,
+      learnAboutButtonUrl,
     };
   }
 
@@ -90,7 +87,7 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  const { rootPath, sidebar, forceDesktopExpandedSidebar, commandPalette } = el.dataset;
+  const { rootPath, sidebar, forceDesktopExpandedSidebar, commandPalette, isSaas } = el.dataset;
 
   bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
   initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
@@ -138,6 +135,7 @@ export const initSuperSidebar = () => {
       canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
       labelsManagePath: sidebarData.work_items?.labels_manage_path,
       isGroup,
+      isSaas: parseBoolean(isSaas),
     },
     store: createStore({
       searchPath,

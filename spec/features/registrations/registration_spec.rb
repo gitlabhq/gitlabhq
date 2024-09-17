@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Registrations', feature_category: :system_access do
+RSpec.describe 'Registrations', :with_current_organization, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
 
   context 'when the user visits the registration page when already signed in', :clean_gitlab_redis_sessions do

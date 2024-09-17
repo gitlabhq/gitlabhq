@@ -379,7 +379,7 @@ export default {
     <gl-alert v-if="playSuccess" class="gl-my-3" variant="info" @dismiss="playSuccess = false">
       <gl-sprintf :message="$options.i18n.playSuccess">
         <template #link="{ content }">
-          <gl-link :href="pipelinesPath" class="gl-text-decoration-none!">{{ content }}</gl-link>
+          <gl-link :href="pipelinesPath" class="!gl-no-underline">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </gl-alert>
@@ -406,7 +406,7 @@ export default {
       v-else
       sync-active-tab-with-query-params
       query-param-name="scope"
-      nav-class="gl-flex-grow-1 gl-align-items-center gl-mt-2"
+      nav-class="gl-grow gl-items-center gl-mt-2"
     >
       <gl-tab
         v-for="tab in tabs"

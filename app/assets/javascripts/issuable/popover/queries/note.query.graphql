@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/author.fragment.graphql"
 
-query note($id: NoteID!) {
+query noteForTooltip($id: NoteID!) {
   note(id: $id) {
     id
     author {

@@ -62,14 +62,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         it_behaves_like 'returning a token with an encoded field', 'deploy_token'
       end
 
-      context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-        before do
-          stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-        end
-
-        it_behaves_like 'returning a token with an encoded field', 'deploy_token'
-      end
-
       context 'when the the deploy token is restricted with external_authorization' do
         before do
           allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
@@ -81,14 +73,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
 
     context 'with a human user' do
       it_behaves_like 'returning a token with an encoded field', 'user_id'
-
-      context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-        before do
-          stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-        end
-
-        it_behaves_like 'returning a token with an encoded field', 'user_id'
-      end
 
       context "when the deploy token is restricted with external_authorization" do
         before do
@@ -135,14 +119,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         subject { service.execute(authentication_abilities: authentication_abilities) }
 
         it_behaves_like 'returning a token with an encoded field', 'group_access_token'
-
-        context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-          end
-
-          it_behaves_like 'returning a token with an encoded field', 'user_id'
-        end
 
         context 'revoked' do
           before do

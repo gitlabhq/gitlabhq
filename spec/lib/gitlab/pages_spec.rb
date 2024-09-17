@@ -131,6 +131,36 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
           expect(project.project_setting.pages_unique_domain).to eq('unique-domain')
         end
       end
+
+      context 'when a unique domain is already in use and needs to generate a new one' do
+        it 'generates a different unique domain if the original is already taken' do
+          allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-domain', 'new-unique-domain')
+
+          # Simulate the existing domain being in use
+          create(:project_setting, pages_unique_domain: 'existing-domain')
+
+          described_class.add_unique_domain_to(project)
+
+          expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+          expect(project.project_setting.pages_unique_domain).to eq('new-unique-domain')
+        end
+      end
+
+      context 'when generated 10 unique domains are already in use' do
+        it 'raises an error' do
+          allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return('existing-domain')
+
+          # Simulate the existing domain being in use
+          create(:project_setting, pages_unique_domain: 'existing-domain')
+
+          expect { described_class.add_unique_domain_to(project) }.to raise_error(
+            described_class::UniqueDomainGenerationFailure,
+            "Can't generate unique domain for GitLab Pages"
+          )
+
+          expect(project.project_setting.pages_unique_domain).to be_nil
+        end
+      end
     end
   end
 end

@@ -30,6 +30,10 @@ export default {
     UpdateEmail,
   },
   props: {
+    username: {
+      type: String,
+      required: true,
+    },
     obfuscatedEmail: {
       type: String,
       required: true,
@@ -44,10 +48,6 @@ export default {
     },
     isOfferEmailReset: {
       type: Boolean,
-      required: true,
-    },
-    updateEmailPath: {
-      type: String,
       required: true,
     },
   },
@@ -160,14 +160,11 @@ export default {
 
 <template>
   <div>
-    <update-email
-      v-if="showUpdateEmail"
-      :update-email-path="updateEmailPath"
-      @verifyToken="verifyToken"
-    />
+    <update-email v-if="showUpdateEmail" @verifyToken="verifyToken" />
     <gl-form v-else @submit.prevent="verify">
       <section class="gl-mb-5">
         <gl-sprintf :message="$options.i18n.explanation">
+          <template #username>{{ username }}</template>
           <template #email>
             <strong>{{ email }}</strong>
           </template>

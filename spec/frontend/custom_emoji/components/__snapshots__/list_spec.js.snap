@@ -91,7 +91,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
               >
                 <th
                   aria-colindex="1"
-                  class="gl-border-t-0!"
+                  class="!gl-border-t-0"
                   role="columnheader"
                   scope="col"
                 >
@@ -101,7 +101,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 </th>
                 <th
                   aria-colindex="2"
-                  class="gl-border-t-0!"
+                  class="!gl-border-t-0"
                   role="columnheader"
                   scope="col"
                 >
@@ -111,7 +111,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 </th>
                 <th
                   aria-colindex="3"
-                  class="gl-border-t-0!"
+                  class="!gl-border-t-0"
                   role="columnheader"
                   scope="col"
                 >
@@ -122,7 +122,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 <th
                   aria-colindex="4"
                   aria-label="Action"
-                  class="gl-border-t-0!"
+                  class="!gl-border-t-0"
                   role="columnheader"
                   scope="col"
                 >

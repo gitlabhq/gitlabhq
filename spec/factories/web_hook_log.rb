@@ -6,17 +6,20 @@ FactoryBot.define do
     trigger { 'push_hooks' }
     url { generate(:url) }
     request_headers do
-      {}
+      {
+        'Idempotency-Key' => idempotency_key
+      }
     end
     request_data do
-      {}
-    end
-    response_headers do
       {}
     end
     response_body { '' }
     response_status { '200' }
     execution_duration { 2.0 }
     internal_error_message { nil }
+
+    transient do
+      idempotency_key { SecureRandom.uuid }
+    end
   end
 end

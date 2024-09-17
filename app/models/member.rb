@@ -66,7 +66,11 @@ class Member < ApplicationRecord
   end
 
   scope :in_hierarchy, ->(source) do
-    groups = source.root_ancestor.self_and_descendants
+    for_self_and_descendants(source.root_ancestor)
+  end
+
+  scope :for_self_and_descendants, ->(source) do
+    groups = source.self_and_descendants
     group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
 
     projects = source.root_ancestor.all_projects
@@ -154,6 +158,7 @@ class Member < ApplicationRecord
   scope :not_accepted_invitations_by_user, ->(user) { not_accepted_invitations.where(created_by: user) }
   scope :not_expired, ->(today = Date.current) { where(arel_table[:expires_at].gt(today).or(arel_table[:expires_at].eq(nil))) }
   scope :expiring_and_not_notified, ->(date) { where("expiry_notified_at is null AND expires_at >= ? AND expires_at <= ?", Date.current, date) }
+  scope :with_created_by, -> { where.associated(:created_by) }
 
   scope :created_today, -> do
     now = Date.current
@@ -185,6 +190,7 @@ class Member < ApplicationRecord
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
+  scope :including_user, -> { includes(:user) }
 
   scope :distinct_on_user_with_max_access_level, ->(for_object) do
     valid_objects = %w[Project Namespace]
@@ -306,13 +312,15 @@ class Member < ApplicationRecord
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
-  after_create :post_create_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_create :post_create_member_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_create :post_create_access_request_hook, if: [:request?, :hook_prerequisites_met?]
   after_create :update_two_factor_requirement, unless: :invite?
   after_create :create_organization_user_record
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_update :create_organization_user_record, if: :saved_change_to_user_id? # only occurs on invite acceptance
   after_destroy :destroy_notification_setting
-  after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_destroy :post_destroy_member_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_destroy :post_destroy_access_request_hook, if: [:request?, :hook_prerequisites_met?]
   after_destroy :update_two_factor_requirement, unless: :invite?
   after_save :log_invitation_token_cleanup
 
@@ -409,13 +417,15 @@ class Member < ApplicationRecord
       pluck(:user_id)
     end
 
-    def with_group_group_sharing_access(shared_groups)
+    def with_group_group_sharing_access(shared_groups, custom_role_for_group_link_enabled)
+      columns = member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
+
       joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
-        .select(member_columns_with_group_sharing_access)
+        .select(columns)
         .where(group_group_links: { shared_group_id: shared_groups })
     end
 
-    def member_columns_with_group_sharing_access
+    def member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
@@ -424,7 +434,7 @@ class Member < ApplicationRecord
           args = [group_group_link_table[:group_access], arel_table[:access_level]]
           smallest_value_arel(args, 'access_level')
         when 'member_role_id'
-          member_role_id(group_group_link_table, arel_table)
+          member_role_id(group_group_link_table, custom_role_for_group_link_enabled)
         else
           arel_table[column_name]
         end
@@ -436,8 +446,8 @@ class Member < ApplicationRecord
     end
 
     # overriden in EE
-    def member_role_id(_group_group_link_table, group_member_table)
-      group_member_table[:member_role_id]
+    def member_role_id(_group_link_table, _custom_role_for_group_link_enabled)
+      arel_table[:member_role_id]
     end
   end
 
@@ -526,7 +536,9 @@ class Member < ApplicationRecord
 
     generate_invite_token! unless @raw_invite_token
 
-    run_after_commit_or_now { notification_service.invite_member_reminder(self, @raw_invite_token, reminder_index) }
+    run_after_commit_or_now do
+      Members::InviteReminderMailer.email(self, @raw_invite_token, reminder_index).deliver_later
+    end
   end
 
   def create_notification_setting
@@ -608,7 +620,13 @@ class Member < ApplicationRecord
     todo_service.create_member_access_request_todos(self)
   end
 
-  def post_create_hook
+  def post_create_access_request_hook
+    return if Feature.disabled?(:group_access_request_webhooks, source)
+
+    system_hook_service.execute_hooks_for(self, :request)
+  end
+
+  def post_create_member_hook
     # The creator of a personal project gets added as a `ProjectMember`
     # with `OWNER` access during creation of a personal project,
     # but we do not want to trigger notifications to the same person who created the personal project.
@@ -632,8 +650,14 @@ class Member < ApplicationRecord
     system_hook_service.execute_hooks_for(self, :update)
   end
 
-  def post_destroy_hook
+  def post_destroy_member_hook
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def post_destroy_access_request_hook
+    return if Feature.disabled?(:group_access_request_webhooks, source)
+
+    system_hook_service.execute_hooks_for(self, :revoke)
   end
 
   # Refreshes authorizations of the current member.
@@ -657,7 +681,7 @@ class Member < ApplicationRecord
 
     update_two_factor_requirement
 
-    post_create_hook
+    post_create_member_hook
   end
 
   def after_decline_invite
@@ -665,7 +689,7 @@ class Member < ApplicationRecord
   end
 
   def after_accept_request
-    post_create_hook
+    post_create_member_hook
   end
 
   # rubocop: disable CodeReuse/ServiceClass

@@ -157,3 +157,17 @@
     display: none;
   }
 }
+
+.project-activity-item:not(:last-of-type) {
+  position: relative;
+
+  &::before {
+    // Avatar width is 32px, connecting line width is 2px.
+    // To center the line relatively to the avatar it should be positioned 15px from the left:
+    // (32px (avatar size) - 2px (line thickness)) / 2 = 15px
+    // stylelint-disable length-zero-no-unit
+    @include vertical-line(0px, 15px);
+    top: auto; // Override top to auto align
+    @apply gl-bg-strong;
+  }
+}

@@ -96,20 +96,20 @@ export default {
 
     <div
       v-if="runner.version || runner.description"
-      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
+      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-items-center gl-text-sm"
     >
       <template v-if="firstVersion">
-        <div class="gl-flex-shrink-0">
+        <div class="gl-shrink-0">
           <runner-upgrade-status-icon :upgrade-status="runner.upgradeStatus" />
           <gl-sprintf :message="$options.i18n.I18N_VERSION_LABEL">
             <template #version>{{ firstVersion }}</template>
           </gl-sprintf>
         </div>
-        <div v-if="runner.description" class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
+        <div v-if="runner.description" class="gl-mx-2 gl-text-secondary" aria-hidden="true">·</div>
       </template>
       <tooltip-on-truncate
         v-if="runner.description"
-        class="gl-text-truncate gl-block"
+        class="gl-block gl-truncate"
         :class="{ 'gl-text-secondary': !runner.description }"
         :title="runner.description"
       >
@@ -117,7 +117,7 @@ export default {
       </tooltip-on-truncate>
     </div>
 
-    <div class="gl-font-sm">
+    <div class="gl-text-sm">
       <runner-summary-field icon="clock" icon-size="sm">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">
           <template #timeAgo>

@@ -21,6 +21,23 @@ experiences. Several projects were started with different standards and they
 can still have specifics. They are described in their respective
 `README.md` or `PROCESS.md` files.
 
+## Project structure
+
+According to the [basic layout for Go application projects](https://github.com/golang-standards/project-layout?tab=readme-ov-file#overview), there is no official Go project layout. However, there are some good suggestions
+in Ben Johnson's [Standard Package Layout](https://www.gobeyond.dev/standard-package-layout/).
+
+The following is a list of GitLab Go-based projects for inspiration:
+
+- [Gitaly](https://gitlab.com/gitlab-org/gitaly)
+- [GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
+- [GitLab CLI](https://gitlab.com/gitlab-org/cli)
+- [GitLab Container Registry](https://gitlab.com/gitlab-org/container-registry)
+- [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
+- [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages)
+- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner)
+- [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
+- [Workhorse](https://gitlab.com/gitlab-org/gitlab/-/tree/master/workhorse)
+
 ## Go language versions
 
 The Go upgrade documentation [provides an overview](go_upgrade.md#overview)

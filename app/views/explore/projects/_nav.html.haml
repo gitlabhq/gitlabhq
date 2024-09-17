@@ -1,5 +1,5 @@
 .gl-flex
-  = gl_tabs_nav({ class: 'gl-display-flex gl-flex-grow-1 gl-border-none'}) do
+  = gl_tabs_nav({ class: 'gl-flex gl-grow gl-border-none'}) do
     = gl_tab_link_to _('Most starred'), starred_explore_projects_path, { item_active: current_page?(starred_explore_projects_path) || current_page?(explore_root_path), data: { event_tracking: 'click_tab_projects_explore', event_label: 'Most starred' } }
     = gl_tab_link_to _('Trending'), trending_explore_projects_path, { data: { event_tracking: 'click_tab_projects_explore', event_label: 'Trending' } }
     = gl_tab_link_to _('Active'), explore_projects_path, { item_active: current_page?(explore_projects_path) && !params['archived'], data: { event_tracking: 'click_tab_projects_explore', event_label: 'Active' } }

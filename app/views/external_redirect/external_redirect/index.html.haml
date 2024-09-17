@@ -1,11 +1,16 @@
 - page_title _("You're about to leave GitLab")
 
 - url = local_assigns.fetch(:url)
+- rel = local_assigns.fetch(:rel)
 
-.gl-max-w-62.gl-h-full.gl-display-flex.gl-justify-content-center.gl-align-items-center.gl-flex-direction-column.gl-mr-auto.gl-ml-auto.gl-px-3
+.gl-max-w-62.gl-h-full.gl-flex.gl-justify-center.gl-items-center.gl-flex-col.gl-mr-auto.gl-ml-auto.gl-px-3
   = sprite_icon('warning', size: 48, css_class: 'gl-text-orange-300')
   %h3.gl-mt-6= _("You're about to leave GitLab")
   %p= safe_format(_('This link will redirect you to %{url}. If this URL looks wrong, please go back or close this window. Do you want to continue?'), url: content_tag(:code, url))
-  .gl-display-flex.gl-justify-content-center.gl-w-full
-    = render Pajamas::ButtonComponent.new(variant: :default, href: url) do
-      = _("Proceed")
+  .gl-flex.gl-justify-center.gl-w-full
+    - if rel.present?
+      = render Pajamas::ButtonComponent.new(variant: :default, href: url, button_options: {rel: rel}) do
+        = _("Proceed")
+    - else
+      = render Pajamas::ButtonComponent.new(variant: :default, href: url) do
+        = _("Proceed")

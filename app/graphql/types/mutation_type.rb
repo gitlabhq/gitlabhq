@@ -210,6 +210,7 @@ module Types
     mount_mutation Mutations::WorkItems::LinkedItems::Remove, alpha: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::AddClosingMergeRequest, alpha: { milestone: '17.1' }
     mount_mutation Mutations::WorkItems::Hierarchy::Reorder, alpha: { milestone: '17.3' }
+    mount_mutation Mutations::WorkItems::BulkUpdate, alpha: { milestone: '17.4' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
@@ -219,9 +220,11 @@ module Types
     mount_mutation Mutations::WorkItems::Subscribe, alpha: { milestone: '16.3' }
     mount_mutation Mutations::Admin::AbuseReportLabels::Create, alpha: { milestone: '16.4' }
     mount_mutation Mutations::Ml::Models::Create, alpha: { milestone: '16.8' }
+    mount_mutation Mutations::Ml::Models::Edit, alpha: { milestone: '17.3' }
     mount_mutation Mutations::Ml::Models::Destroy, alpha: { milestone: '16.10' }
     mount_mutation Mutations::Ml::Models::Delete, alpha: { milestone: '17.0' }
     mount_mutation Mutations::Ml::ModelVersions::Create, alpha: { milestone: '17.1' }
+    mount_mutation Mutations::Ml::ModelVersions::Edit, alpha: { milestone: '17.4' }
     mount_mutation Mutations::Ml::ModelVersions::Delete, alpha: { milestone: '17.0' }
     mount_mutation Mutations::BranchRules::Delete, alpha: { milestone: '16.9' }
     mount_mutation Mutations::Pages::Deployment::Delete, alpha: { milestone: '17.1' }

@@ -131,12 +131,12 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	switch {
 	// This case means Workhorse is acting as an upload proxy for Rails and buffers files
 	// to disk in a temporary location, see:
-	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-disk-buffering-to-workhorse
+	// https://docs.gitlab.com/ee/development/uploads/#rails-controller-upload
 	case opts.IsLocalTempFile():
 		clientMode = "local_tempfile"
 		uploadDestination, err = fh.newLocalFile(ctx, opts)
 	// All cases below mean we are doing a direct upload to remote i.e. object storage, see:
-	// https://docs.gitlab.com/ee/development/uploads/background.html#moving-to-object-storage-and-direct-uploads
+	// https://docs.gitlab.com/ee/development/uploads/#direct-upload
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsGoCloud():
 		clientMode = fmt.Sprintf("go_cloud:%s", opts.ObjectStorageConfig.Provider)
 		p := &objectstore.GoCloudObjectParams{
@@ -147,12 +147,21 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 		}
 		uploadDestination, err = objectstore.NewGoCloudObject(p)
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsAWS() && opts.ObjectStorageConfig.IsValid():
-		clientMode = "s3_client"
-		uploadDestination, err = objectstore.NewS3Object(
-			opts.RemoteTempObjectID,
-			opts.ObjectStorageConfig.S3Credentials,
-			opts.ObjectStorageConfig.S3Config,
-		)
+		if opts.ObjectStorageConfig.S3Config.AwsSDK == "v1" {
+			clientMode = "s3_client"
+			uploadDestination, err = objectstore.NewS3Object(
+				opts.RemoteTempObjectID,
+				opts.ObjectStorageConfig.S3Credentials,
+				opts.ObjectStorageConfig.S3Config,
+			)
+		} else {
+			clientMode = "s3_client_v2"
+			uploadDestination, err = objectstore.NewS3v2Object(
+				opts.RemoteTempObjectID,
+				opts.ObjectStorageConfig.S3Credentials,
+				opts.ObjectStorageConfig.S3Config,
+			)
+		}
 	case opts.IsMultipart():
 		clientMode = "s3_multipart"
 		uploadDestination, err = objectstore.NewMultipart(

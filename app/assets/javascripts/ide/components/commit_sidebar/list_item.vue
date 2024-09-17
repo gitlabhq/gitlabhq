@@ -82,7 +82,7 @@ export default {
       :class="{
         'is-active': isActive,
       }"
-      class="multi-file-commit-list-path gl-w-full border-0 ml-0 mr-0"
+      class="multi-file-commit-list-path border-0 ml-0 mr-0 gl-w-full"
       role="button"
       @click="openFileInEditor"
     >
@@ -94,7 +94,7 @@ export default {
         {{ file.name }}
       </span>
       <div class="ml-auto gl-flex gl-items-center">
-        <div class="gl-flex gl-items-center ide-commit-list-changed-icon">
+        <div class="ide-commit-list-changed-icon gl-flex gl-items-center">
           <gl-icon :name="iconName" :size="16" :class="iconClass" />
         </div>
       </div>

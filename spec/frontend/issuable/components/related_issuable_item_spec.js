@@ -25,7 +25,7 @@ describe('RelatedIssuableItem', () => {
   let showModalSpy;
 
   const defaultProps = {
-    idKey: 1,
+    idKey: 10,
     iid: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
     pathIdSeparator: '#',
@@ -243,7 +243,7 @@ describe('RelatedIssuableItem', () => {
   });
 
   describe('work item modal', () => {
-    const workItemId = 'gid://gitlab/WorkItem/1';
+    const workItemId = 'gid://gitlab/WorkItem/10';
 
     it('renders', () => {
       mountComponent();
@@ -276,7 +276,7 @@ describe('RelatedIssuableItem', () => {
 
       it('updates the url params with the work item id', () => {
         expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?work_item_iid=1`,
+          url: `${TEST_HOST}/?show=10`,
           replace: true,
         });
       });

@@ -872,6 +872,36 @@ Get the GitHub integration settings for a project.
 GET /projects/:id/integrations/github
 ```
 
+## GitLab for Jira Cloud app
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
+
+The GitLab for Jira Cloud app integration is enabled or disabled automatically through [group linking and unlinking in Jira](../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app). You cannot enable or disable the integration with the GitLab integrations form or the API.
+
+### Update integration for a project
+
+Use this API endpoint to update an integration you create with group linking in Jira.
+
+```plaintext
+PUT /projects/:id/integrations/jira-cloud-app
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `jira_cloud_app_service_ids` | string | no | Jira Service Management Service IDs. Use commas (`,`) to separate multiple IDs. |
+| `jira_cloud_app_enable_deployment_gating` | boolean | no | Enables deployment gating for blocked GitLab deployments from Jira Service Management. |
+| `jira_cloud_app_deployment_gating_environments` | string | no | The environments (production, staging, testing, or development) to enable deployment gating. Required if deployment gating is enabled. Use commas (`,`) to separate multiple environments. |
+
+### Get GitLab for Jira Cloud app settings
+
+Get the GitLab for Jira Cloud app integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/jira-cloud-app
+```
+
 ## GitLab for Slack app
 
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.

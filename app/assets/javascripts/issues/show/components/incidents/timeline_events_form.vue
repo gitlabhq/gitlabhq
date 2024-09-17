@@ -173,14 +173,14 @@ export default {
 </script>
 
 <template>
-  <form class="gl-flex-grow-1 gl-border-gray-50">
-    <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-mt-3">
+  <form class="gl-grow gl-border-gray-50">
+    <div class="gl-mt-3 gl-flex gl-flex-col sm:gl-flex-row">
       <gl-form-group :label="__('Date')" class="gl-mr-5">
         <gl-datepicker id="incident-date" ref="datepicker" v-model="datePickerInput" />
       </gl-form-group>
-      <div class="gl-display-flex">
+      <div class="gl-flex">
         <gl-form-group :label="__('Time')">
-          <div class="gl-display-flex">
+          <div class="gl-flex">
             <label label-for="timeline-input-hours" class="sr-only"></label>
             <gl-form-input
               id="timeline-input-hours"
@@ -204,11 +204,11 @@ export default {
             />
           </div>
         </gl-form-group>
-        <p class="gl-ml-3 gl-align-self-end gl-leading-32">{{ __('UTC') }}</p>
+        <p class="gl-ml-3 gl-self-end gl-leading-32">{{ __('UTC') }}</p>
       </div>
     </div>
     <gl-form-group>
-      <label class="gl-display-flex gl-align-items-center gl-gap-3" for="timeline-input-tags">
+      <label class="gl-flex gl-items-center gl-gap-3" for="timeline-input-tags">
         {{ $options.i18n.tagsLabel }}
         <timeline-events-tags-popover />
       </label>
@@ -251,7 +251,7 @@ export default {
             <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
             <div
               aria-hidden="true"
-              class="gl-absolute gl-text-gray-500 gl-text-sm gl-right-4 gl-bottom-2"
+              class="gl-absolute gl-bottom-2 gl-right-4 gl-text-sm gl-text-gray-500"
             >
               {{ timelineTextRemainingCount }}
             </div>
@@ -263,7 +263,7 @@ export default {
       </gl-form-group>
     </div>
     <gl-form-group class="gl-mb-3">
-      <div class="gl-display-flex gl-flex-wrap gl-gap-3">
+      <div class="gl-flex gl-flex-wrap gl-gap-3">
         <gl-button
           variant="confirm"
           category="primary"

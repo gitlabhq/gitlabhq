@@ -17,7 +17,7 @@ module WorkItems
     validate :validate_cyclic_reference
     validate :validate_max_children
     validate :validate_confidentiality
-    validate :check_existing_related_link
+    validate :check_existing_related_link, on: :create
 
     scope :for_parents, ->(parent_ids) { where(work_item_parent_id: parent_ids) }
     scope :for_children, ->(children_ids) { where(work_item: children_ids) }

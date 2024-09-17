@@ -93,7 +93,7 @@ export default {
         {{ $options.i18n.lockedText }}
       </span>
     </p>
-    <gl-button-group class="gl-display-flex gl-mt-3">
+    <gl-button-group class="gl-mt-3 gl-flex">
       <gl-button
         v-if="artifact.keepPath"
         :href="artifact.keepPath"

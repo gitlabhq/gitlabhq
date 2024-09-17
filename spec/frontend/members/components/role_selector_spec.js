@@ -4,11 +4,6 @@ import { roleDropdownItems } from '~/members/utils';
 import RoleSelector from '~/members/components/role_selector.vue';
 import { member } from '../mock_data';
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  visitUrl: jest.fn(),
-}));
-
 describe('Role selector', () => {
   const dropdownItems = roleDropdownItems(member);
   let wrapper;

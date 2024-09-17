@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::IntegrationHookLogsController do
+RSpec.describe Projects::Settings::IntegrationHookLogsController, feature_category: :webhooks do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:integration) { create(:drone_ci_integration, project: project) }
@@ -42,7 +42,8 @@ RSpec.describe Projects::Settings::IntegrationHookLogsController do
     subject { post :retry, params: log_params }
 
     it 'executes the hook and redirects to the service form' do
-      expect_any_instance_of(ServiceHook).to receive(:execute)
+      expect_any_instance_of(WebHooks::Events::ResendService).to receive(:execute).and_return(instance_double(
+        ServiceResponse, success?: true))
       expect_any_instance_of(described_class).to receive(:set_hook_execution_notice)
 
       expect(subject).to redirect_to(edit_project_settings_integration_path(project, integration))

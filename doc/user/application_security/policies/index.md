@@ -29,7 +29,7 @@ The following policy types are available:
 
 - [Scan execution policy](scan_execution_policies.md). Enforce security scans, either as part of the
   pipeline or on a specified schedule.
-- [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and
+- [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
 
@@ -105,23 +105,31 @@ Assuming no policies are enforced, consider the following examples:
 
 ### Separation of duties
 
-Separation of duties is vital to successfully implementing policies. Security and compliance teams
-should be responsible for defining policies and working with development teams. Development teams
-should not be able to disable, modify, or circumvent the policies, in any way, or for any
-exceptions. Implement policies that achieve the necessary compliance and security requirements, while
-allowing development teams to achieve their goals.
+Separation of duties is vital to successfully implementing policies. Implement policies that achieve
+the necessary compliance and security requirements, while allowing development teams to achieve
+their goals.
 
-By default, to enforce a security policy project on a group, subgroup, or project, you must have the Owner role at the
-same hierarchy level.
+Security and compliance teams:
 
-| Organization unit | Group owner            | Subgroup owner         | Project owner          |
-|-------------------|------------------------|------------------------|------------------------|
-| Group             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
-| Subgroup          | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| Project           | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+- Should be responsible for defining policies and working with development teams to ensure the
+  policies meet their needs.
 
-Optionally, you can create a custom role with the `manage_security_policy_link` permission. For more
-information, see [Custom roles](../../../user/custom_roles.md).
+Development teams:
+
+- Should not be able to disable, modify, or circumvent the policies in any way.
+
+To enforce a security policy project on a group, subgroup, or project, you must have either:
+
+- The Owner role in that group, subgroup, or project.
+- A [custom role](../../../user/custom_roles.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+
+The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
+
+| Organization unit | Group owner or group `manage_security_policy_link` permission | Subgroup owner or subgroup `manage_security_policy_link` permission | Project owner or project `manage_security_policy_link` permission |
+|-------------------|---------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
+| Group             | **{check-circle}** Yes                                        | **{dotted-circle}** No                                              | **{dotted-circle}** No                                            |
+| Subgroup          | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{dotted-circle}** No                                            |
+| Project           | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{check-circle}** Yes                                            |
 
 ## Policy implementation
 
@@ -137,8 +145,9 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role with proper permissions to link to the security policy project. For
-  more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+  `manage_security_policy_link` permission to link to the security policy project. For more
+  information, see [separation of duties](#separation-of-duties).
 
 The high-level workflow for enforcing policies globally across all subgroups and projects in your GitLab.com namespace:
 
@@ -182,9 +191,12 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role (with proper permissions) to link to the security policy project. For more information, see
-  [separation of duties](#separation-of-duties).
-- To support approval groups globally across your instance, enable `security_policy_global_group_approvers_enabled` in your [GitLab instance application settings](../../../api/settings.md).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+  `manage_security_policy_link` permission to link to the security policy project. For more
+  information, see [separation of duties](#separation-of-duties).
+- To support approval groups globally across your instance, enable
+  `security_policy_global_group_approvers_enabled` in your
+  [GitLab instance application settings](../../../api/settings.md).
 
 The high-level workflow for enforcing policies across multiple groups:
 
@@ -232,8 +244,7 @@ granularly per policy, you can set a "policy scope" in each policy.
 
 Prerequisites:
 
-- You must have the Owner role (with proper permissions) to link to the security policy project.
-  For more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
 
 To link a group, subgroup, or project to a security policy project:
 
@@ -250,6 +261,33 @@ the dialog.
 
 All users who have access to the project policy page and are not project owners instead view a
 button linking out to the associated security policy project.
+
+## Policy recommendations
+
+When implementing policies, consider the following recommendations.
+
+### Branch names
+
+When specifying branch names in a policy, use a generic category of protected branches, such as
+**default branch** or **all protected branches**, not individual branch names.
+
+A policy is enforced on a project only if the specified branch exists in that project. For example,
+if your policy enforces rules on branch `main` but some projects in scope are using `production` as
+their default branch, the policy is not applied for the latter.
+
+### Push rules
+
+In GitLab 17.3 and earlier, if you use push rules to
+[validate branch names](../../project/repository/push_rules.md#validate-branch-names)
+ensure they allow creation of branches with the prefix `update-policy-`. This branch naming prefix
+is used when a security policy is created or amended. For example, `update-policy-1659094451`, where
+`1659094451` is the timestamp. If push rules block the creation of the branch the following error
+occurs:
+
+> Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
+
+In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
+projects are excluded from push rules that enforce branch name validation.
 
 ## Policy management
 
@@ -309,58 +347,17 @@ instructions and a demonstration of how to use the Vulnerability-Check Migration
 
 ## Troubleshooting
 
-### `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`
-
-When you create a new security policy or change an existing policy, a new branch is automatically
-created with the branch name following the pattern `update-policy-<timestamp>`. For example:
-`update-policy-1659094451`.
-
-If you have group or instance [push rules that do not allow branch name patterns](../../project/repository/push_rules.md#validate-branch-names) that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`.
-
-The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.
-
-### Troubleshooting common security policy issues
+When working with security policies, consider these troubleshooting tips:
 
 - Confirm that scanners are properly configured and producing results for the latest branch.
   Security Policies are designed to require approval when there are no results (no security report),
   as this ensures that no vulnerabilities are introduced. We cannot know if there are any
   vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
-- For merge request approval policies, we require artifacts for each scanner defined in the policy
-  for both the source and target branch. To ensure merge request approval policies capture the
-  necessary results, confirm your scan execution is properly implemented and enforced. If using scan
-  execution policies, enforcing on `all branches` often addresses this need.
-- Comparison in merge request approval policies depends on a successful and completed merge base
-  pipeline. If the merge base pipeline is [skipped](../../../ci/pipelines/index.md#skip-a-pipeline),
-  merge requests with the merge base pipeline are blocked.
-- When running scan execution policies based on a SAST action, ensure target repositories contain
-  proper code files. SAST runs different analyzers
-  [based on the types of files in the repository](../sast/index.md#supported-languages-and-frameworks),
-  and if no supported files are found it does not run any jobs. See the
-  [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
-  for more details.
-- Check for any branch configuration conflicts. For example, if your policy is configured to enforce
-  rules on `main` but some projects in the scope are using `master` as their default branch, the
-  policy is not applied for the latter. You can define policies to enforce rules generically on
-  `default` branches regardless of the name used in the project or on `all protected branches` to
-  address this issue.
-- Merge request approval policies created at the group or subgroup level can take some time to apply
-  to all the merge requests in the group.
-- Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more
-  [about the schedule rule type](../policies/scan_execution_policies.md#schedule-rule-type).
-- When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is
-  based on your server time for self managed instances. When testing new policies, it may appear
-  pipelines are not running properly when in fact they are scheduled in your server's time zone.
-- When enforcing scan execution policies, security policies use a bot in the target project to
-  trigger scheduled pipelines to ensure enforcement. When the bot is missing, it is automatically
-  created, and the following scheduled scan uses it.
 - You should not link a security policy project to both a development project and the group or
   subgroup the development project belongs to. Linking this way results in approval
   rules from the merge request approval policies not being applied to merge requests in the development project.
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
-  `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
-  can be left empty. For a working rule, at least one entry must exist.
-- When merge request approval policies are enforced on projects containing manual jobs in their
-  pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the
-  manual jobs are run, the policy re-evaluates the MR.
+  `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
+  can be left empty. For a working rule, at least one entry must exist for each array.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

@@ -68,6 +68,7 @@ sequenceDiagram
     participant GitLab
     participant AIGateway as AI Gateway
     participant SelfHostedModel as Self Hosted Model
+    participant CloudConnector as Cloud Connector
     participant GitLabAIVendor as GitLab AI Vendor
 
     User ->> GitLab: Send request
@@ -78,10 +79,10 @@ sequenceDiagram
         SelfHostedModel -->> AIGateway: Respond to the prompt
         AIGateway -->> GitLab: Forward AI response
     else
-        GitLab ->> AIGateway: Create prompt and send request
-        AIGateway ->> GitLabAIVendor: Perform API request to AI model
-        GitLabAIVendor -->> AIGateway: Respond to the prompt
-        AIGateway -->> GitLab: Forward AI response
+        GitLab ->> CloudConnector: Create prompt and send request
+        CloudConnector ->> GitLabAIVendor: Perform API request to AI model
+        GitLabAIVendor -->> CloudConnector: Respond to the prompt
+        CloudConnector -->> GitLab: Forward AI response
     end
     GitLab -->> User: Forward AI response
 ```

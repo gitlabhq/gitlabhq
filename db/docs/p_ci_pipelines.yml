@@ -1,0 +1,12 @@
+---
+table_name: p_ci_pipelines
+classes:
+- Ci::Pipeline
+feature_categories:
+- continuous_integration
+description: Routing table for ci_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163575
+milestone: '17.4'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

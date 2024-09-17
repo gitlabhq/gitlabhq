@@ -21,17 +21,12 @@ module Types
           Types::DesignManagement::DesignType
         when ::AlertManagement::Alert
           Types::AlertManagement::AlertType
-        when AbuseReport
-          Types::AbuseReportType
         else
           raise "Unknown GraphQL type for #{object}"
         end
       end
 
       def commenters
-        # TODO: Implement as part of completion https://gitlab.com/gitlab-org/gitlab/-/issues/458264
-        return [] if object.is_a?(AbuseReport)
-
         object.commenters(user: current_user)
       end
     end

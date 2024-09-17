@@ -74,14 +74,14 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-flex-wrap">
+    <div class="gl-flex gl-flex-wrap">
       <div
         v-for="(user, index) in uncollapsedUsers"
         :key="user.id"
         :class="{
           'gl-mb-3': index !== users.length - 1 || users.length > 5,
         }"
-        class="assignee-grid gl-display-grid gl-align-items-center gl-w-full"
+        class="assignee-grid gl-grid gl-w-full gl-items-center"
       >
         <assignee-avatar-link
           :user="user"
@@ -89,16 +89,13 @@ export default {
           class="gl-break-anywhere"
           data-css-area="user"
         >
-          <div
-            class="gl-ml-3 gl-leading-normal gl-display-grid gl-align-items-center"
-            data-testid="username"
-          >
+          <div class="gl-ml-3 gl-grid gl-items-center gl-leading-normal" data-testid="username">
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
           </div>
         </assignee-avatar-link>
       </div>
     </div>
-    <div v-if="renderShowMoreSection" class="gl-hover-text-blue-800" data-testid="user-list-more">
+    <div v-if="renderShowMoreSection" class="hover:gl-text-blue-800" data-testid="user-list-more">
       <gl-button
         category="tertiary"
         size="small"

@@ -10,7 +10,7 @@ module Gitlab
   end
 end
 
-TestProf::FactoryDefault::DefaultSyntax.prepend Gitlab::FreezeFactoryDefault
+TestProf::FactoryDefault::FactoryBotPatch::SyntaxExt.prepend Gitlab::FreezeFactoryDefault
 
 RSpec.configure do |config|
   config.after do |ex|

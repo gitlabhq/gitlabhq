@@ -1,90 +1,71 @@
 <script>
-import { GlLoadingIcon, GlCard, GlPagination } from '@gitlab/ui';
+import { GlCard, GlPagination, GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
-import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
-import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-
-import {
-  DEFAULT_FETCH_CHUNKS,
-  PROJECT_GRAPHQL_ID_TYPE,
-  GROUP_GRAPHQL_ID_TYPE,
-  SEARCH_RESULTS_DEBOUNCE,
-  DEFAULT_SHOW_CHUNKS,
-} from '~/search/results/constants';
+import { mapState, mapActions } from 'vuex';
 import BlobHeader from '~/search/results/components/blob_header.vue';
 import BlobFooter from '~/search/results/components/blob_footer.vue';
 import BlobBody from '~/search/results/components/blob_body.vue';
 import EmptyResult from '~/search/results/components/result_empty.vue';
+import {
+  getSystemColorScheme,
+  listenSystemColorSchemeChange,
+  removeListenerSystemColorSchemeChange,
+} from '~/lib/utils/css_utils';
+
+import { DEFAULT_SHOW_CHUNKS } from '~/search/results/constants';
 
 export default {
   name: 'ZoektBlobResults',
   components: {
-    GlLoadingIcon,
     GlCard,
     BlobHeader,
     BlobFooter,
     BlobBody,
     GlPagination,
     EmptyResult,
+    GlLoadingIcon,
   },
-  i18n: {
-    headerText: __('Search results'),
-    blobDataFetchError: s__(
-      'GlobalSearch|Could not load search results. Please refresh the page to try again.',
-    ),
+  props: {
+    blobSearch: {
+      type: Object,
+      required: true,
+    },
+    hasResults: {
+      type: Boolean,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      hasError: false,
-      blobSearch: [],
+      systemColorScheme: getSystemColorScheme(),
     };
-  },
-  apollo: {
-    blobSearch: {
-      query() {
-        return getBlobSearchQuery;
-      },
-      variables() {
-        return {
-          search: this.query.search,
-          groupId:
-            this.query.group_id && convertToGraphQLId(GROUP_GRAPHQL_ID_TYPE, this.query.group_id),
-          projectId:
-            this.query.project_id &&
-            convertToGraphQLId(PROJECT_GRAPHQL_ID_TYPE, this.query.project_id),
-          page: this.query.page,
-          chunkCount: DEFAULT_FETCH_CHUNKS,
-          regex: this.query.regex ? JSON.parse(this.query.regex) : false,
-        };
-      },
-      result({ data }) {
-        this.blobSearch = data?.blobSearch;
-        this.hasError = false;
-      },
-      debounce: SEARCH_RESULTS_DEBOUNCE,
-      error(error) {
-        this.hasError = true;
-        createAlert({
-          message: this.$options.i18n.blobDataFetchError,
-          captureError: true,
-          error,
-        });
-      },
-    },
   },
   computed: {
     ...mapState(['query']),
-    isLoading() {
-      return this.$apollo.queries.blobSearch.loading;
+    pagination: {
+      get() {
+        return this.currentPage;
+      },
+      set(value) {
+        this.setQuery({ key: 'page', value });
+      },
     },
-    hasResults() {
-      return this.blobSearch?.files?.length > 0;
+    currentPage() {
+      return this.query.page ? parseInt(this.query.page, 10) : 1;
     },
   },
+  mounted() {
+    listenSystemColorSchemeChange(this.changeSystemColorScheme);
+  },
+  destroyed() {
+    removeListenerSystemColorSchemeChange(this.changeSystemColorScheme);
+  },
   methods: {
+    ...mapActions(['setQuery']),
     hasMore(file) {
       const showingMatches = file.chunks
         .slice(0, DEFAULT_SHOW_CHUNKS)
@@ -99,20 +80,26 @@ export default {
     projectPathAndFilePath({ projectPath = '', path = '' }) {
       return `${projectPath}:${path}`;
     },
+    position(index) {
+      return index + 1;
+    },
+    changeSystemColorScheme(glScheme) {
+      this.systemColorScheme = glScheme;
+    },
   },
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-justify-center gl-flex-col">
-    <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="hasResults && !isLoading && !hasError" class="gl-relative">
+  <div class="gl-flex gl-flex-col gl-justify-center" :class="{ 'gl-mt-5': isLoading }">
+    <gl-loading-icon v-if="isLoading" :label="__('Loading')" size="md" variant="spinner" />
+    <div v-if="hasResults && !isLoading" class="gl-relative">
       <gl-card
-        v-for="file in blobSearch.files"
+        v-for="(file, index) in blobSearch.files"
         :key="projectPathAndFilePath(file)"
-        class="file-result-holder gl-my-5 file-holder"
+        class="file-result-holder file-holder gl-my-5"
         :header-class="{
-          'gl-border-b-0!': !hasCode(file),
+          '!gl-border-b-0': !hasCode(file),
           'gl-new-card-header file-title': true,
         }"
         footer-class="gl-new-card-footer"
@@ -123,20 +110,27 @@ export default {
             :file-path="file.path"
             :project-path="file.projectPath"
             :file-url="file.fileUrl"
+            :is-header-only="!hasCode(file)"
+            :system-color-scheme="systemColorScheme"
           />
         </template>
 
-        <blob-body v-if="hasCode(file)" :file="file" />
+        <blob-body
+          v-if="hasCode(file)"
+          :file="file"
+          :position="position(index)"
+          :system-color-scheme="systemColorScheme"
+        />
 
         <template v-if="hasMore(file)" #footer>
-          <blob-footer :file="file" />
+          <blob-footer :file="file" :position="position(index)" />
         </template>
       </gl-card>
     </div>
     <empty-result v-else-if="!hasResults && !isLoading" />
-    <template v-if="hasResults && !isLoading && !hasError">
+    <template v-if="hasResults && !isLoading">
       <gl-pagination
-        v-model="query.page"
+        v-model="pagination"
         class="gl-mx-auto"
         :per-page="blobSearch.perPage"
         :total-items="blobSearch.fileCount"

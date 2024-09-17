@@ -46,6 +46,7 @@
     = render 'groups/settings/membership', f: f, group: @group
     = render 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
+    = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
 
     %h5= _('Customer relations')
     .form-group.gl-mb-3

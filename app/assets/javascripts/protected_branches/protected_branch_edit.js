@@ -3,6 +3,14 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { initToggle } from '~/toggles';
+import {
+  REPOSITORY_SETTINGS_LABEL,
+  CHANGED_ALLOWED_TO_MERGE,
+  CHANGED_ALLOWED_TO_PUSH_AND_MERGE,
+  CHANGED_ALLOW_FORCE_PUSH,
+  CHANGED_REQUIRE_CODEOWNER_APPROVAL,
+} from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
+import { InternalEvents } from '~/tracking';
 import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
@@ -39,6 +47,9 @@ export default class ProtectedBranchEdit {
             allow_force_push: value,
           },
           () => {
+            InternalEvents.trackEvent(CHANGED_ALLOW_FORCE_PUSH, {
+              label: REPOSITORY_SETTINGS_LABEL,
+            });
             forcePushToggle.isLoading = false;
             forcePushToggle.disabled = false;
           },
@@ -57,6 +68,9 @@ export default class ProtectedBranchEdit {
               code_owner_approval_required: value,
             },
             () => {
+              InternalEvents.trackEvent(CHANGED_REQUIRE_CODEOWNER_APPROVAL, {
+                label: REPOSITORY_SETTINGS_LABEL,
+              });
               codeOwnerToggle.isLoading = false;
               codeOwnerToggle.disabled = false;
             },
@@ -73,6 +87,7 @@ export default class ProtectedBranchEdit {
       ACCESS_LEVELS.MERGE,
       gon.merge_access_levels,
       'protected-branch-allowed-to-merge',
+      CHANGED_ALLOWED_TO_MERGE,
     );
 
     // Allowed to Push dropdown
@@ -81,11 +96,12 @@ export default class ProtectedBranchEdit {
       ACCESS_LEVELS.PUSH,
       gon.push_access_levels,
       'protected-branch-allowed-to-push',
+      CHANGED_ALLOWED_TO_PUSH_AND_MERGE,
     );
   }
 
   // eslint-disable-next-line max-params
-  buildDropdown(selector, accessLevel, accessLevelsData, testId) {
+  buildDropdown(selector, accessLevel, accessLevelsData, testId, trackingEventName) {
     const [el] = this.$wrap.find(`.${selector}`);
     if (!el) return undefined;
 
@@ -103,7 +119,7 @@ export default class ProtectedBranchEdit {
     });
 
     dropdown.$on('select', (selected) => this.onSelectItems(accessLevel, selected));
-    dropdown.$on('hidden', () => this.onDropdownHide());
+    dropdown.$on('hidden', () => this.onDropdownHide(trackingEventName));
 
     this.initSelectedItems(dropdown, accessLevel);
     return dropdown;
@@ -126,9 +142,9 @@ export default class ProtectedBranchEdit {
     this.hasChanges = true;
   }
 
-  onDropdownHide() {
+  onDropdownHide(trackingEventName) {
     if (!this.hasChanges) return;
-    this.updatePermissions();
+    this.updatePermissions(trackingEventName);
   }
 
   updateProtectedBranch(formData, callback) {
@@ -142,13 +158,16 @@ export default class ProtectedBranchEdit {
       });
   }
 
-  updatePermissions() {
+  updatePermissions(trackingEventName) {
     const formData = Object.values(ACCESS_LEVELS).reduce((acc, level) => {
       acc[`${level}_attributes`] = this.selectedItems[level];
       return acc;
     }, {});
     this.updateProtectedBranch(formData, ({ data }) => {
       this.hasChanges = false;
+      InternalEvents.trackEvent(trackingEventName, {
+        label: REPOSITORY_SETTINGS_LABEL,
+      });
       Object.values(ACCESS_LEVELS).forEach((level) => {
         this.setSelectedItemsToDropdown(data[level], level);
       });

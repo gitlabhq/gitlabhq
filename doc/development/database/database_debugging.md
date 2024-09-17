@@ -104,27 +104,57 @@ The new connection should be working now.
 
 ## Access the GDK database with Visual Studio Code
 
-Use these instructions for exploring the GitLab database while developing with the GDK:
+Create a database connection using the PostgreSQL extension in Visual Studio Code to access and
+explore the GDK database.
 
-1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
-1. Install the [PostgreSQL VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
-1. In Visual Studio Code select **PostgreSQL Explorer** in the left toolbar.
-1. In the top bar of the new window, select `+` to **Add Database Connection**, and follow the prompts to fill in the details:
-   1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).
-   1. **PostgreSQL user to authenticate as**: usually your local username, unless otherwise specified during PostgreSQL installation.
-   1. **Password of the PostgreSQL user**: the password you set when installing PostgreSQL.
-   1. **Port number to connect to**: `5432` (default).
-   1. **Use an SSL connection?** This depends on your installation. Options are:
-      - **Use Secure Connection**
-      - **Standard Connection** (default)
-   1. **Optional. The database to connect to**: `gitlabhq_development`.
-   1. **The display name for the database connection**: `gitlabhq_development`.
+Prerequisites:
 
-Your database connection should now be displayed in the PostgreSQL Explorer pane and
-you can explore the `gitlabhq_development` database. If you cannot connect, ensure
-that GDK is running. For further instructions on how to use the PostgreSQL Explorer
-Extension for Visual Studio Code, read the [usage section](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres#usage)
-of the extension documentation.
+- [Visual Studio (VS) Code](https://code.visualstudio.com/download).
+- [PostgreSQL](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) VS Code extension.
+
+To create a database connection:
+
+1. In the activity bar, select the **PostgreSQL Explorer** icon.
+1. From the opened pane, select **+** to add a new database connection:
+1. Enter the **hostname** of the database. Use the path to the PostgreSQL folder in your GDK directory.
+   - Example: `/dev/gitlab-development-kit/postgresql`
+1. Enter a **PostgreSQL user to authenticate as**.
+   Use your local username unless otherwise specified during PostgreSQL installation.
+   To verify your PostgreSQL username:
+   1. Ensure you are in the `gitlab` directory.
+   1. Access the PostgreSQL database. Run `rails db`. The output should look like:
+
+         ```shell
+         psql (14.9)
+         Type "help" for help.
+
+         gitlabhq_development=#
+         ```
+
+   1. In the returned PostgreSQL prompt, run `\conninfo` to display the connected user and
+      the port used to establish the connection. For example:
+
+         ```shell
+         You are connected to database "gitlabhq_development" as user "root" on host "localhost" (address "127.0.0.1") at port "5432".
+         ```
+
+1. When prompted to enter the **password of the PostgreSQL user**, enter the password you set or leave the field blank.
+   - As you are logged in to the same machine that the Postgres server is running on, a password is not required.
+1. Enter**Port number to connect to**. The default port number is`5432`.
+1. In the **use an SSL connection?** field, select the appropriate connection for your
+installation. The options are:
+   - **Use Secure Connection**
+   - **Standard Connection** (default)
+1. In the optional **database to connect to** field, enter `gitlabhq_development`.
+1. In the **display name for the database connection** field, enter `gitlabhq_development`.
+
+Your `gitlabhq_development` database connection is now displayed in the **PostgreSQL Explorer** pane.
+Use the arrows to expand and explore the contents of the GDK database.
+
+If you cannot connect, first ensure that GDK is running and try again. For further instructions on how
+to use the PostgreSQL Explorer extension for VS Code, see
+the [usage section](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres#usage)
+of the extension's documentation.
 
 ## FAQ
 

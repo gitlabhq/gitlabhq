@@ -51,7 +51,7 @@ export default {
     ISSUES_GROUP_TITLE,
     PAGES_GROUP_TITLE,
     GROUPS_GROUP_TITLE,
-    MERGE_REQUESTS_GROUP_TITLE: s__('GlobalSearch|Merge Requests'),
+    MERGE_REQUESTS_GROUP_TITLE: s__('GlobalSearch|Merge requests'),
     RECENT_ISSUES_GROUP_TITLE: s__('GlobalSearch|Recent issues'),
     RECENT_EPICS_GROUP_TITLE: s__('GlobalSearch|Recent epics'),
     RECENT_MERGE_REQUESTS_GROUP_TITLE: s__('GlobalSearch|Recent merge requests'),

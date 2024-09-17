@@ -173,7 +173,7 @@ usually a good idea.
    - OR Run `while :; do bin/rspec <spec> || break; done` in a loop to find a `seed`
 1. Reduce the examples by bisecting the spec failure with `bin/rspec --seed <previously found> --bisect <spec>`
 1. Look at the remaining examples and watch for state leakage
-    - e.g. Updating records created with `let_it_be` is a common source of problems
+   - e.g. Updating records created with `let_it_be` is a common source of problems
 1. Once fixed, rerun the specs with `seed`
 1. Run `scripts/rspec_check_order_dependence` to ensure the spec can be run in [random order](best_practices.md#test-order)
 1. Run `while :; do bin/rspec <spec> || break; done` in a loop again (and grab lunch) to verify it's no longer flaky
@@ -231,7 +231,10 @@ bin/rspec --tag ~quarantine
 bin/rspec --tag \~quarantine
 ```
 
-Also, please add the ~"quarantine" label on the merge request.
+Also, please ensure that:
+
+1. The ~"quarantine" label is present on the merge request.
+1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).
 
 Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
 
@@ -396,9 +399,9 @@ to print the Ruby thread dump :
 1. Run the hanging spec locally.
 1. Trigger the Ruby thread dump by running this command:
 
-    ```shell
-    kill -CONT <pid>
-    ```
+   ```shell
+   kill -CONT <pid>
+   ```
 
 1. The thread dump will be saved to the `/tmp/sigdump-<pid>.log` file.
 

@@ -10,7 +10,7 @@ module Snippets::SendBlob
       snippet.repository,
       blob,
       inline: content_disposition == 'inline',
-      allow_caching: snippet.public?
+      allow_caching: ::Users::Anonymous.can?(:cache_blob, snippet)
     )
   end
 

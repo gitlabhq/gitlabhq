@@ -71,7 +71,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-gap-3">
+  <div class="gl-flex gl-gap-3">
     <gl-search-box-by-click
       v-model="searchTerm"
       data-testid="catalog-search-bar"

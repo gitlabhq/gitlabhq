@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.Level
+# Suggestion: gitlab_base.Level
 #
 # Avoid variations on the phrase "instance level" and "group level"
 #

@@ -23,6 +23,8 @@ SAML responses are base64 encoded, so we recommend the following browser plugins
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 - [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
+If you cannot install a browser plugin, you can [manually generate and capture a SAML response](#manually-generate-a-saml-response) instead.
+
 Pay specific attention to:
 
 - The `NameID`, which we use to identify which user is signing in. If the user has previously signed in, this
@@ -40,13 +42,164 @@ To generate a SAML Response:
 1. Install one of the [browser debugging tools](#saml-debugging-tools).
 1. Open a new browser tab.
 1. Open the SAML tracer console:
-   - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the opened developer
-     console.
+   - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the developer console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
-1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
-1. Select **Authorize** or attempt to sign in. A SAML response is displayed in the tracer console that resembles this
+1. For GitLab.com Groups:
+   - Go to the GitLab single sign-on URL for the group.
+   - Select **Authorize** or attempt to sign
+1. For Self Managed Instance:
+   - Go to the instance home page  
+   - Click on the `SAML Login` button to sign in
+1. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
+
+#### Manually generate a SAML response
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see this [video on manually generating a SAML response without using a browser plugin (using Google Chrome)](https://youtu.be/umMPj6ohF_I), uploaded by GitLab Support.
+<!-- Video published on 2024-09-09 -->
+
+Regardless of what browser you use, the process is similar to the following:
+
+1. Right-click on a new browser and click on **Inspect** to open the **DevTools** window.
+1. Select the **Network** tab. Make sure that **Preserve log** is selected.
+1. Switch to the browser page and sign in to GitLab using SAML SSO.
+1. Switch back to the **DevTools** window and filter for the `callback` event.
+1. Select the **Payload** tab for the callback event and right-click to copy the value.
+1. Paste this value into the following command: `echo "<value>" | base64 --decode > saml_response.xml`.
+1. Open `saml_response.xml` in a code editor.
+
+   If you have an XML "prettifier" installed in your code editor, you should be able to automatically
+   format the response to be easier to read.
+
+## Search Rails logs for a SAML sign-in
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+You can find detailed information about a SAML sign-in in the [`audit_json.log` file](../../../administration/logs/index.md#audit_jsonlog).
+
+For example, by searching for `system_access`, you can find entries that show when a user signed into GitLab using SAML:
+
+```json
+{
+  "severity": "INFO",
+  "time": "2024-08-13T06:05:35.721Z",
+  "correlation_id": "01J555EZK136DQ8S7P32G9GEND",
+  "meta.caller_id": "OmniauthCallbacksController#saml",
+  "meta.remote_ip": "45.87.213.198",
+  "meta.feature_category": "system_access",
+  "meta.user": "bbtest",
+  "meta.user_id": 16,
+  "meta.client_id": "user/16",
+  "author_id": 16,
+  "author_name": "bbtest@agounder.onmicrosoft.com",
+  "entity_id": 16,
+  "entity_type": "User",
+  "created_at": "2024-08-13T06:05:35.708+00:00",
+  "ip_address": "45.87.213.198",
+  "with": "saml",
+  "target_id": 16,
+  "target_type": "User",
+  "target_details": "bbtest@agounder.onmicrosoft.com",
+  "entity_path": "bbtest"
+}
+```
+
+If you have configured SAML Group Links, the log also shows entries detailing membership being removed:
+
+```json
+{
+  "severity": "INFO",
+  "time": "2024-08-13T05:24:07.769Z",
+  "correlation_id": "01J55330SRTKTD5CHMS96DNZEN",
+  "meta.caller_id": "Auth::SamlGroupSyncWorker",
+  "meta.remote_ip": "45.87.213.206",
+  "meta.feature_category": "system_access",
+  "meta.client_id": "ip/45.87.213.206",
+  "meta.root_caller_id": "OmniauthCallbacksController#saml",
+  "id": 179,
+  "author_id": 6,
+  "entity_id": 2,
+  "entity_type": "Group",
+  "details": {
+    "remove": "user_access",
+    "member_id": 7,
+    "author_name": "BB Test",
+    "author_class": "User",
+    "target_id": 6,
+    "target_type": "User",
+    "target_details": "BB Test",
+    "custom_message": "Membership destroyed",
+    "ip_address": "45.87.213.198",
+    "entity_path": "group1"
+  },
+```
+
+You can also see details of the user that GitLab received from the SAML provider in `auth_json.log`, for example:
+
+```json
+{
+  "severity": "INFO",
+  "time": "2024-08-20T07:01:20.979Z",
+  "correlation_id": "01J5Q9E59X4P40ZT3MCE35C2A9",
+  "meta.caller_id": "OmniauthCallbacksController#saml",
+  "meta.remote_ip": "xxx.xxx.xxx.xxx",
+  "meta.feature_category": "system_access",
+  "meta.client_id": "ip/xxx.xxx.xxx.xxx",
+  "payload_type": "saml_response",
+  "saml_response": {
+    "issuer": [
+      "https://sts.windows.net/03b8c6c5-104b-43e2-aed3-abb07df387cc/"
+    ],
+    "name_id": "ab260d59-0317-47f5-9afb-885c7a1257ab",
+    "name_id_format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+    "name_id_spnamequalifier": null,
+    "name_id_namequalifier": null,
+    "destination": "https://dh-gitlab.agounder.com/users/auth/saml/callback",
+    "audiences": [
+      "https://dh-gitlab.agounder.com/16.11.6"
+    ],
+    "attributes": {
+      "http://schemas.microsoft.com/identity/claims/tenantid": [
+        "03b8c6c5-104b-43e2-aed3-abb07df387cc"
+      ],
+      "http://schemas.microsoft.com/identity/claims/objectidentifier": [
+        "ab260d59-0317-47f5-9afb-885c7a1257ab"
+      ],
+      "http://schemas.microsoft.com/identity/claims/identityprovider": [
+        "https://sts.windows.net/03b8c6c5-104b-43e2-aed3-abb07df387cc/"
+      ],
+      "http://schemas.microsoft.com/claims/authnmethodsreferences": [
+        "http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/password"
+      ],
+      "email": [
+        "bbtest@agounder.com"
+      ],
+      "firstname": [
+        "BB"
+      ],
+      "name": [
+        "bbtest@agounder.onmicrosoft.com"
+      ],
+      "lastname": [
+        "Test"
+      ]
+    },
+    "in_response_to": "_f8863f68-b5f1-43f0-9534-e73933e6ed39",
+    "allowed_clock_drift": 2.220446049250313e-16,
+    "success": true,
+    "status_code": "urn:oasis:names:tc:SAML:2.0:status:Success",
+    "status_message": null,
+    "session_index": "_b4f253e2-aa61-46a4-902b-43592fe30800",
+    "assertion_encrypted": false,
+    "response_id": "_392cc747-7c8b-41de-8be0-23f5590d5ded",
+    "assertion_id": "_b4f253e2-aa61-46a4-902b-43592fe30800"
+  }
+}
+```
 
 ## Testing GitLab SAML
 
@@ -75,62 +228,6 @@ Replace `filename.crt` with the name of the certificate file.
 ## SSO Certificate updates
 
 When the certificate used for your identity provider changes (for example when updating or renewing the certificate), you must update the certificate fingerprint as well. You can find the certificate fingerprint in your identity provider's UI. If you cannot get the certificate in the identity provider UI, follow the steps in the [calculate the fingerprint](#calculate-the-fingerprint) documentation.
-
-## Searching Rails log for a SAML response
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-You can find the base64-encoded SAML Response in the [`production_json.log`](../../../administration/logs/index.md#production_jsonlog).
-This response is sent from the identity provider, and contains user information that is consumed by GitLab.
-Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
-
-For example, with SAML for groups,
-you should be able to find the base64 encoded SAML response by searching with the following filters:
-
-- `json.meta.caller_id`: `Groups::OmniauthCallbacksController#group_saml`
-- `json.meta.user` or `json.username`: `username`
-- `json.method`: `POST`
-- `json.path`: `/groups/GROUP-PATH/-/saml/callback`
-
-In a relevant log entry, the `json.params` should provide a valid response with:
-
-- `"key": "SAMLResponse"` and the `"value": (full SAML response)`,
-- `"key": "RelayState"` with `"value": "/group-path"`, and
-- `"key": "group_id"` with `"value": "group-path"`.
-
-You should also check the decoded SAML response with the following filters
-in case the customer has [configured SAML Group Sync](group_sync.md):
-
-- `json.class`: `GroupSamlGroupSyncWorker`
-- `json.args`: `<user ID> or <group ID>`
-
-In the relevant log entry, the:
-
-- `json.args` are in the form `<userID>, <group ID>, [group link ID 1, group link ID 2, ..., group link ID N]`.
-- `json.extra.group_saml_group_sync_worker.stats.*` fields show how many times
-  this run of group sync `added`, `removed` or `changed` the user's membership.
-
-In some cases, if the SAML response is lengthy, you may receive a `"key": "truncated"` with `"value":"..."`.
-In these cases, use one of the [SAML debugging tools](#saml-debugging-tools), or for SAML SSO for groups,
-a group owner can get a copy of the SAML response from when they select
-the "Verify SAML Configuration" button on the group SSO Settings page.
-
-Use a base64 decoder to see a human-readable version of the SAML response. To avoid pasting the SAML response online to decode it, you can use your
-browser's console in the developers tools:
-
-```javascript
-atob(decodeURI("<paste_SAML_response_here>"))
-```
-
-On MacOS, you can decode the clipboard data by running:
-
-```plaintext
-pbpaste | base64 -D
-```
-
-You should get the SAML response in XML format as output.
 
 ## Configuration errors
 

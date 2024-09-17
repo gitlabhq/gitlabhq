@@ -76,24 +76,36 @@ describe('IntegrationFormActions', () => {
 
   describe('Buttons rendering', () => {
     it.each`
-      integrationLevel              | canTest  | resetPath      | saveBtn | testBtn  | cancelBtn | resetBtn
-      ${integrationLevels.PROJECT}  | ${true}  | ${'resetPath'} | ${true} | ${true}  | ${true}   | ${false}
-      ${integrationLevels.PROJECT}  | ${false} | ${'resetPath'} | ${true} | ${false} | ${true}   | ${false}
-      ${integrationLevels.PROJECT}  | ${true}  | ${''}          | ${true} | ${true}  | ${true}   | ${false}
-      ${integrationLevels.GROUP}    | ${true}  | ${'resetPath'} | ${true} | ${true}  | ${true}   | ${true}
-      ${integrationLevels.GROUP}    | ${false} | ${'resetPath'} | ${true} | ${false} | ${true}   | ${true}
-      ${integrationLevels.GROUP}    | ${true}  | ${''}          | ${true} | ${true}  | ${true}   | ${false}
-      ${integrationLevels.INSTANCE} | ${true}  | ${'resetPath'} | ${true} | ${true}  | ${true}   | ${true}
-      ${integrationLevels.INSTANCE} | ${false} | ${'resetPath'} | ${true} | ${false} | ${true}   | ${true}
-      ${integrationLevels.INSTANCE} | ${true}  | ${''}          | ${true} | ${true}  | ${true}   | ${false}
+      integrationLevel              | canTest  | resetPath      | manualActivation | saveBtn | testBtn  | cancelBtn | resetBtn
+      ${integrationLevels.PROJECT}  | ${true}  | ${'resetPath'} | ${true}          | ${true} | ${true}  | ${true}   | ${false}
+      ${integrationLevels.PROJECT}  | ${false} | ${'resetPath'} | ${true}          | ${true} | ${false} | ${true}   | ${false}
+      ${integrationLevels.PROJECT}  | ${true}  | ${''}          | ${true}          | ${true} | ${true}  | ${true}   | ${false}
+      ${integrationLevels.GROUP}    | ${true}  | ${'resetPath'} | ${true}          | ${true} | ${true}  | ${true}   | ${true}
+      ${integrationLevels.GROUP}    | ${true}  | ${'resetPath'} | ${false}         | ${true} | ${true}  | ${true}   | ${false}
+      ${integrationLevels.GROUP}    | ${false} | ${'resetPath'} | ${true}          | ${true} | ${false} | ${true}   | ${true}
+      ${integrationLevels.GROUP}    | ${true}  | ${''}          | ${true}          | ${true} | ${true}  | ${true}   | ${false}
+      ${integrationLevels.INSTANCE} | ${true}  | ${'resetPath'} | ${true}          | ${true} | ${true}  | ${true}   | ${true}
+      ${integrationLevels.INSTANCE} | ${true}  | ${'resetPath'} | ${false}         | ${true} | ${true}  | ${true}   | ${false}
+      ${integrationLevels.INSTANCE} | ${false} | ${'resetPath'} | ${true}          | ${true} | ${false} | ${true}   | ${true}
+      ${integrationLevels.INSTANCE} | ${true}  | ${''}          | ${true}          | ${true} | ${true}  | ${true}   | ${false}
     `(
-      'on $integrationLevel when canTest="$canTest" and resetPath="$resetPath"',
-      ({ integrationLevel, canTest, resetPath, saveBtn, testBtn, cancelBtn, resetBtn }) => {
+      'on $integrationLevel when canTest="$canTest", resetPath="$resetPath" and manualActivation="$manualActivation"',
+      ({
+        integrationLevel,
+        canTest,
+        resetPath,
+        manualActivation,
+        saveBtn,
+        testBtn,
+        cancelBtn,
+        resetBtn,
+      }) => {
         createComponent({
           customStateProps: {
             integrationLevel,
             canTest,
             resetPath,
+            manualActivation,
           },
         });
 

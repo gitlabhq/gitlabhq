@@ -8,33 +8,35 @@
         = f.label :name, class: 'label-bold', for: 'project_name_edit' do
           = _('Project name')
         = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { testid: 'project-name-field' }
+        %span.form-text.text-muted
+          = _('Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
-      .form-group.col-md-7
+      .form-group.col-md-4
         = f.label :id, class: 'label-bold' do
           = _('Project ID')
-        = f.text_field :id, class: 'form-control gl-form-input w-auto', readonly: true
+        = f.text_field :id, class: 'form-control gl-form-input', readonly: true
+
+    .form-group.gl-mt-2.gl-mb-8
+      = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
+      = f.label :avatar, _('Project avatar'), class: 'label-bold gl-block'
+      = render 'shared/choose_avatar_button', f: f
+      - if @project.avatar?
+        %hr
+        = link_button_to _('Remove avatar'), project_avatar_path(@project), aria: { label: _('Remove avatar') }, data: { confirm: _('Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
+
+    .row
+      .form-group.col-md-9
+        = f.label :description, _('Project description (optional)'), class: 'label-bold'
+        = f.text_area :description, class: 'form-control gl-form-input', rows: 4
+
+    .row= render_if_exists 'projects/classification_policy_settings', f: f
+
+    = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
+    = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
     .row
       .form-group.col-md-9
         .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id } }
         = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 
-    .row
-      .form-group.col-md-9
-        = f.label :description, _('Project description (optional)'), class: 'label-bold'
-        = f.text_area :description, class: 'form-control gl-form-input', rows: 3
-
-  .row= render_if_exists 'projects/classification_policy_settings', f: f
-
-  = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
-  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
-
-  .form-group.gl-mt-3.gl-mb-3
-    = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
-    = f.label :avatar, _('Project avatar'), class: 'label-bold gl-block'
-    = render 'shared/choose_avatar_button', f: f
-    - if @project.avatar?
-      %hr
-      = link_button_to _('Remove avatar'), project_avatar_path(@project), aria: { label: _('Remove avatar') }, data: { confirm: _('Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
-
-  = f.submit _('Save changes'), pajamas_button: true, class: "gl-mt-6", data: { testid: 'save-naming-topics-avatar-button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-naming-topics-avatar-button' }

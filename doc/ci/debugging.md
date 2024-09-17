@@ -73,12 +73,12 @@ latest version of the schema.
 
 #### Verify syntax with CI Lint tool
 
-You can use the [CI Lint tool](lint.md) to verify that the syntax of a CI/CD configuration
+You can use the [CI Lint tool](yaml/lint.md) to verify that the syntax of a CI/CD configuration
 snippet is correct. Paste in full `.gitlab-ci.yml` files or individual job configurations,
 to verify the basic syntax.
 
 When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Lint
-tool to [simulate the creation of a full pipeline](lint.md#simulate-a-pipeline).
+tool to [simulate the creation of a full pipeline](yaml/lint.md#simulate-a-pipeline).
 It does deeper verification of the configuration syntax.
 
 ### Use pipeline names
@@ -241,9 +241,9 @@ You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or [simila
 to run the job's container image on your local machine. Then, run the job's `script` commands
 in the container and verify the behavior.
 
-### Troubleshoot a failed job with root cause analysis
+### Troubleshoot a failed job with Root Cause Analysis
 
-You can use root cause analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot failed CI/CD jobs](../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ## Job configuration issues
 
@@ -339,7 +339,7 @@ configuration into more independent [parent-child pipelines](../ci/pipelines/pip
 
 Pipeline configuration warnings are shown when you:
 
-- [Validate configuration with the CI Lint tool](lint.md).
+- [Validate configuration with the CI Lint tool](yaml/lint.md).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 
 ### `Job may allow multiple pipelines to run for a single action` warning
@@ -408,7 +408,7 @@ To resolve this, check that:
 - The path of the project is in the format `my-group/my-project` and does not include
   any folders in the repository.
 - The user running the pipeline is a [member of the projects](../user/project/members/index.md#add-users-to-a-project)
-  that contain the included files. Users must also have the [permission](../user/permissions.md#job-permissions)
+  that contain the included files. Users must also have the [permission](../user/permissions.md#cicd)
   to run CI/CD jobs in the same projects.
 
 ### `The parsed YAML is too big` message

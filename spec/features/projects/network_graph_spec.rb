@@ -11,6 +11,8 @@ RSpec.describe 'Project Network Graph', :js, feature_category: :groups_and_proje
   before do
     sign_in(user)
 
+    stub_feature_flags(use_list_commits_rpc_network_graph: false)
+
     project.repository.create_branch(ref_with_hash, 'master')
 
     # Stub Graph max_size to speed up test (10 commits vs. 650)

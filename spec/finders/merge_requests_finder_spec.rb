@@ -569,6 +569,73 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         it { is_expected.to contain_exactly(*expected_mr) }
       end
 
+      context 'assignee or reviewer filtering' do
+        let(:dashboard_flag_enabled) { true }
+        let(:params) { { assigned_user_id: user.id } }
+        let(:expected_mrs) { [merge_request1, merge_request2, merge_request3] }
+
+        subject { described_class.new(user, params).execute }
+
+        before do
+          stub_feature_flags(merge_request_dashboard: dashboard_flag_enabled)
+        end
+
+        context 'when merge_request_dashboard feature flag is disabled' do
+          let(:dashboard_flag_enabled) { false }
+          let(:expected_mrs) { [merge_request1, merge_request2, merge_request3, merge_request4, merge_request5] }
+
+          it { is_expected.to contain_exactly(*expected_mrs) }
+        end
+
+        it { is_expected.to contain_exactly(*expected_mrs) }
+      end
+
+      context 'assignee or reviewer filtering with assigned_review_states' do
+        let(:params) { { assigned_user_id: user.id, assigned_review_states: [:reviewed] } }
+        let(:expected_mr) { [merge_request1, merge_request3] }
+
+        subject { described_class.new(user, params).execute }
+
+        before do
+          stub_feature_flags(merge_request_dashboard: true)
+
+          merge_request1.merge_request_reviewers.update_all(state: :reviewed)
+        end
+
+        it { is_expected.to contain_exactly(*expected_mr) }
+      end
+
+      context 'assignee or reviewer filtering with reviewer_review_states' do
+        let(:params) { { assigned_user_id: user2.id, reviewer_review_states: [:reviewed] } }
+        let(:expected_mr) { [merge_request1, merge_request3] }
+
+        subject { described_class.new(user2, params).execute }
+
+        before do
+          stub_feature_flags(merge_request_dashboard: true)
+
+          merge_request1.merge_request_reviewers.update_all(state: :reviewed)
+        end
+
+        it { is_expected.to contain_exactly(*expected_mr) }
+      end
+
+      context 'assignee or reviewer filtering with assigned_review_states and reviewer_review_states' do
+        let(:params) { { assigned_user_id: user.id, assigned_review_states: [:requested_changes], reviewer_review_states: [:reviewed] } }
+        let(:expected_mr) { [merge_request1, merge_request3] }
+
+        subject { described_class.new(user, params).execute }
+
+        before do
+          stub_feature_flags(merge_request_dashboard: true)
+
+          merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+          merge_request3.merge_request_reviewers.update_all(state: :reviewed)
+        end
+
+        it { is_expected.to contain_exactly(*expected_mr) }
+      end
+
       context 'filtering by group milestone' do
         let(:group_milestone) { create(:milestone, group: group) }
 

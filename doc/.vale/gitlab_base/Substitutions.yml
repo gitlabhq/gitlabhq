@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.Substitutions
+# Error: gitlab_base.Substitutions
 #
 # Checks for misused terms that should never be used at GitLab.
 # SubstitutionWarning.yml also exists.

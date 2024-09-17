@@ -4,11 +4,8 @@ module Gitlab
   module Database
     module MigrationHelpers
       module Swapping
+        include ::Gitlab::Database::SchemaHelpers
         include ::Gitlab::Database::MigrationHelpers::V2
-
-        def reset_trigger_function(function_name)
-          execute("ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL")
-        end
 
         def swap_columns(table, column1, column2)
           ::Gitlab::Database::Migrations::SwapColumns.new(

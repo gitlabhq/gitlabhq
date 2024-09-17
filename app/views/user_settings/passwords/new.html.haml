@@ -1,13 +1,13 @@
 - page_title _('Update password')
 
-.gl-sm-w-half.gl-ml-auto.gl-mr-auto
+.gl-ml-auto.gl-mr-auto{ class: 'sm:gl-w-1/2' }
 
   %h1.gl-heading-1= _('Update password for %{current_name}') % { current_name: current_user.name }
   %p.gl-text-secondary
     = _("To continue, please update your password. After you update, you'll be directed to sign in again.")
   .info-well
     .well-segment
-      .gl-display-flex.gl-align-items-center
+      .gl-flex.gl-items-center
         = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { qa_selector: 'user_avatar_content' }, title: current_user.username })
         .gl-pl-4.gl-break-all
           %span= _('Signed in as %{username}') % { username: '@' + current_user.username }

@@ -31,6 +31,7 @@ module Gitlab
       end
 
       def clean
+        @relation_class.define_attribute_methods
         @relation_hash.reject do |key, _value|
           prohibited_key?(key) || !@relation_class.attribute_method?(key) || excluded_key?(key)
         end.except('id')

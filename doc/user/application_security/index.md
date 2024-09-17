@@ -73,7 +73,7 @@ Analysis of the web application occurs on every code commit. As part of the CI/C
 application is built, deployed to a test environment, and subjected to the following tests:
 
 - Test application for known attack vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [API Security](dast_api/index.md).
+- Analysis of APIs for known attack vectors - [API Security](api_security_testing/index.md).
 - Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
 
 ### Dependency analysis
@@ -115,7 +115,7 @@ The following vulnerability scanners and their databases are regularly updated:
 |:----------------------------------------------------------------|:---------------------------------|
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). |
-| [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST proxy-based](dast/proxy-based.md) and [browser-based](dast/browser/index.md) engines are updated on a periodic basis. [DAST proxy-based](dast/proxy-based.md) analyzer downloads the scanning rules at scan runtime. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L27). [DAST browser-based](dast/browser/index.md) rules run [different vulnerability checks](dast/browser/checks/index.md). |
+| [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST proxy-based](dast/browser/index.md) and [browser-based](dast/browser/index.md) engines are updated on a periodic basis. [DAST proxy-based](dast/browser/index.md) analyzer downloads the scanning rules at scan runtime. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L27). [DAST browser-based](dast/browser/index.md) rules run [different vulnerability checks](dast/browser/checks/index.md). |
 | [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
@@ -185,16 +185,27 @@ does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker imag
 the instructions for
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
+### Template editions
+
+Most of the GitLab application security tools have two template editions:
+
+- **Stable:** The stable template is the default. It offers a reliable and consistent application
+  security experience. You should use the stable template for most users and projects that require
+  stability and predictable behavior in their CI/CD pipelines.
+- **Latest:** The latest template is for those who want to access and test cutting-edge features. It
+  is identified by the word `latest` in the template's name. It is not considered stable and may
+  include breaking changes that are planned for the next major release. This template allows you to
+  try new features and updates before they become part of the stable release.
+
+NOTE:
+Mixing different security template editions can cause both merge request and branch pipelines to
+run. You should use **either** the stable or latest edition templates in a project.
+
 ### Use security scanning tools with merge request pipelines
 
 By default, the application security jobs are configured to run for branch pipelines only.
 To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
-you must reference the [`latest` templates](../../development/cicd/templates.md).
-
-The latest version of the template may include breaking changes. Use the stable template unless you
-need a feature provided only in the latest template.
-
-All `latest` security templates support merge request pipelines.
+you must reference their [`latest` edition template](#template-editions).
 
 For example, to run both SAST and Dependency Scanning, the following template is used:
 
@@ -203,15 +214,6 @@ include:
   - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
   - template: Jobs/SAST.latest.gitlab-ci.yml
 ```
-
-NOTE:
-Mixing `latest` and `stable` security templates can cause both MR and branch pipelines to run. We recommend choosing `latest` or `stable` for all security scanners.
-
-NOTE:
-Latest templates can receive breaking changes in any release.
-
-For more information about template versioning, see the
-[CI/CD documentation](../../development/cicd/templates.md#latest-version).
 
 ## Security scanning
 
@@ -377,7 +379,7 @@ For more details, see [extension page](https://marketplace.visualstudio.com/item
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:
 
-- A security vulnerability. For more details, read [Merge request approval policies](policies/scan-result-policies.md).
+- A security vulnerability. For more details, read [Merge request approval policies](policies/merge_request_approval_policies.md).
 
 ## Using private Maven repositories
 
@@ -494,7 +496,7 @@ For more information about overriding security jobs, see:
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
 - [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
 - [Overriding Secret Detection jobs](secret_detection/pipeline/index.md#configuration).
-- [Overriding DAST jobs](dast/proxy-based.md#customize-dast-settings).
+- [Overriding DAST jobs](dast/browser/index.md).
 
 All the security scanning tools define their stage, so this error can occur with all of them.
 

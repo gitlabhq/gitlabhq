@@ -3,10 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Email do
+  let_it_be(:user) { create(:user) }
+
   describe 'modules' do
     subject { described_class }
 
     it { is_expected.to include_module(AsyncDeviseEmail) }
+  end
+
+  describe 'relationships' do
+    subject { build(:email) }
+
+    it do
+      is_expected.to belong_to(:banned_user).class_name('::Users::BannedUser')
+        .with_foreign_key('user_id').inverse_of(:emails)
+    end
   end
 
   describe 'validations' do
@@ -15,7 +26,6 @@ RSpec.describe Email do
     end
 
     context 'when the email conflicts with the primary email of a different user' do
-      let(:user) { create(:user) }
       let(:email) { build(:email, email: user.email) }
 
       it 'is invalid' do
@@ -30,8 +40,6 @@ RSpec.describe Email do
   end
 
   describe '#update_invalid_gpg_signatures' do
-    let(:user) { create(:user) }
-
     it 'synchronizes the gpg keys when the email is updated' do
       email = user.emails.create!(email: 'new@email.com')
 
@@ -56,7 +64,8 @@ RSpec.describe Email do
         expect(described_class.confirmed).to contain_exactly(
           # after user's primary email is confirmed it is stored to 'emails' table
           confirmed_primary_email,
-          confirmed_secondary_email
+          confirmed_secondary_email,
+          user.emails.first
         )
       end
     end
@@ -114,8 +123,6 @@ RSpec.describe Email do
   end
 
   describe 'Devise emails' do
-    let!(:user) { create(:user) }
-
     describe 'behaviour' do
       it 'sends emails asynchronously' do
         expect do
@@ -202,6 +209,23 @@ RSpec.describe Email do
 
       it_behaves_like 'unconfirmed email'
       it_behaves_like 'confirms the email on force_confirm'
+    end
+  end
+
+  describe '#before_save' do
+    it 'sets the detumbled_email attribute' do
+      email = described_class.new(user: user, email: 'test.user+gitlab@example.com')
+
+      expect { email.save! }.to change { email.detumbled_email }.from(nil).to('test.user@example.com')
+    end
+
+    context 'when the email attribute has not changed' do
+      it 'does not execute the before_action' do
+        email = create(:email)
+
+        expect(email).not_to receive(:detumble_email!)
+        email.update!(confirmed_at: Time.now.utc)
+      end
     end
   end
 end

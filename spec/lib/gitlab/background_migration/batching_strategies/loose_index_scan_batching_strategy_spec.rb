@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::LooseIndexScanBa
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }
   let(:issue_base_type_enum_value) { 0 }
-  let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_base_type_enum_value) }
+  let(:issue_type) { table(:work_item_types).find_by!(base_type: issue_base_type_enum_value) }
 
   let!(:namespace1) { namespaces.create!(name: 'ns1', path: 'ns1') }
   let!(:namespace2) { namespaces.create!(name: 'ns2', path: 'ns2') }

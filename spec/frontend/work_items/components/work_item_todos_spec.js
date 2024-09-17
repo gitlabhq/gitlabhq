@@ -84,9 +84,6 @@ describe('WorkItemTodo component', () => {
         workItemFullpath: mockWorkItemFullpath,
         currentUserTodos,
       },
-      provide: {
-        isGroup: false,
-      },
     });
   };
 

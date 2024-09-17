@@ -59,7 +59,7 @@ export default {
     :translations="$options.i18n"
     :use-symbolic-ref-names="true"
     :query-params="queryParams"
-    toggle-button-class="!gl-w-auto gl-mb-0!"
+    toggle-button-class="!gl-w-auto !gl-mb-0"
     @input="setRefSelected"
   />
 </template>

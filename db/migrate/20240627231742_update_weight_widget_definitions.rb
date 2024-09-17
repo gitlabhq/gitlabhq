@@ -45,7 +45,14 @@ class UpdateWeightWidgetDefinitions < Gitlab::Database::Migration[2.2]
     @work_item_widget_definitions ||= define_batchable_model('work_item_widget_definitions')
   end
 
+  def work_item_types
+    @work_item_types ||= define_batchable_model('work_item_types')
+    @work_item_types.reset_column_information
+
+    @work_item_types
+  end
+
   def epic_type
-    @epic_type ||= define_batchable_model('work_item_types').find_by_base_type_and_namespace_id(EPIC_TYPE_ENUM, nil)
+    @epic_type ||= work_item_types.find_by_base_type_and_namespace_id(EPIC_TYPE_ENUM, nil)
   end
 end

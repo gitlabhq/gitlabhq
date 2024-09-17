@@ -64,7 +64,7 @@ To edit multiple issues at the same time:
 When bulk editing issues in a project, you can edit the following attributes:
 
 - Status (open or closed)
-- [Assignees](managing_issues.md#assignee)
+- [Assignees](managing_issues.md#assignees)
 - [Epic](../../group/epics/index.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
@@ -262,6 +262,20 @@ it inherits the issue's milestone and labels.
 
 For performance reasons, automatic issue closing is disabled for the very first
 push from an existing repository.
+
+#### User responsibility when merging
+
+When you merge a merge request, it's your responsibility to check that it's appropriate for any targeted issues
+to close. Users can include issue closing patterns in the merge request description, and also in the body
+of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
+shows information about the issue to close on merge:
+
+![This merge request closes issue #2754.](../merge_requests/img/closing_pattern_v17_4.png)
+
+When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
+In public repositories, this check is important, because external users can create both merge requests
+and commits that contain closing patterns. When you are the user who merges, it's important
+that you are aware of the effects the merge has on both the code and issues in your project.
 
 #### Default closing pattern
 
@@ -559,16 +573,22 @@ To copy the issue's email address:
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
 
-## Assignee
+## Assignees
 
 An issue can be assigned to one or [more users](multiple_assignees_for_issues.md).
 
 The assignees can be changed as often as needed. The idea is that the assignees are
-people responsible for an issue.
+people responsible for the issue.
 When an issue is assigned to someone, it appears in their **Assigned issues** page.
 
 If a user is not a member of a project, an issue can only be assigned to them if they create it
 themselves or another project member assigns them.
+
+### Change assignee on an issue
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
 
 To change the assignee on an issue:
 
@@ -606,6 +626,8 @@ You can use health status to signal to others in your organization whether issue
 as planned or need attention to stay on schedule.
 
 Incorporate a review of issue health status into your daily stand-up, project status reports, or weekly meetings to address risks to timely delivery of your planned work.
+
+### Change health status of an issue
 
 Prerequisites:
 

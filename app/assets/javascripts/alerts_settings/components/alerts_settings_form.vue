@@ -16,7 +16,7 @@ import {
 import { isEqual, isEmpty, omit } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { PROMO_URL, DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL, DOCS_URL_IN_EE_DIR } from '~/constants';
 import {
   integrationTypes,
   integrationSteps,
@@ -426,7 +426,7 @@ export default {
           <alert-settings-form-help-block
             v-if="!canAddIntegration"
             disabled="true"
-            class="gl-inline-block gl-my-4"
+            class="gl-my-4 gl-inline-block"
             :message="$options.i18n.integrationFormSteps.selectType.enterprise"
             :link="pricingLink"
             data-testid="multi-integrations-not-supported"
@@ -549,7 +549,7 @@ export default {
             </div>
           </template>
         </div>
-        <div class="gl-flex gl-gap-3 gl-justify-start gl-flex-col md:gl-flex-row">
+        <div class="gl-flex gl-flex-col gl-justify-start gl-gap-3 md:gl-flex-row">
           <gl-button
             :disabled="!canSubmitForm"
             variant="confirm"
@@ -631,7 +631,7 @@ export default {
             {{ $options.i18n.integrationFormSteps.setupCredentials.reset }}
           </gl-button>
 
-          <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">
+          <gl-button type="reset" class="js-no-auto-disable gl-ml-3">
             {{ $options.i18n.cancelAndClose }}
           </gl-button>
         </div>
@@ -685,7 +685,7 @@ export default {
             {{ $options.i18n.send }}
           </gl-button>
 
-          <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">
+          <gl-button type="reset" class="js-no-auto-disable gl-ml-3">
             {{ $options.i18n.cancelAndClose }}
           </gl-button>
         </div>

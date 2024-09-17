@@ -7,12 +7,11 @@ import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { formatGroups, timestampType } from '~/organizations/shared/utils';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-  formatGroups,
-  timestampType,
-} from 'ee_else_ce/organizations/shared/utils';
+} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import NewGroupButton from './new_group_button.vue';
@@ -200,7 +199,7 @@ export default {
       @delete="deleteGroup"
     />
 
-    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>

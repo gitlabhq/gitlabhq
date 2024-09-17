@@ -91,5 +91,17 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
         expect { seed }.not_to change { Ci::Runner.count }
       end
     end
+
+    context 'when organization cannot be created' do
+      before do
+        allow_next_instance_of(::Organizations::CreateService, current_user: user, params: anything) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'test error'))
+        end
+      end
+
+      it 'raises RuntimeError' do
+        expect { seed }.to raise_error(RuntimeError)
+      end
+    end
   end
 end

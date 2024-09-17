@@ -507,28 +507,28 @@ describe('Diffs Module Getters', () => {
       expect(getters.diffFiles({ diffFiles }, {})).toBe(diffFiles);
     });
 
-    it('pins the file', () => {
-      const pinnedFile = getDiffFileMock();
+    it('links the file', () => {
+      const linkedFile = getDiffFileMock();
       const regularFile = getDiffFileMock();
-      const diffFiles = [regularFile, pinnedFile];
-      expect(getters.diffFiles({ diffFiles }, { pinnedFile })).toStrictEqual([
-        pinnedFile,
+      const diffFiles = [regularFile, linkedFile];
+      expect(getters.diffFiles({ diffFiles }, { linkedFile })).toStrictEqual([
+        linkedFile,
         regularFile,
       ]);
     });
   });
 
-  describe('pinnedFile', () => {
-    it('returns pinnedFile', () => {
-      const pinnedFile = getDiffFileMock();
-      const diffFiles = [pinnedFile];
-      expect(getters.pinnedFile({ diffFiles, pinnedFileHash: pinnedFile.file_hash }, {})).toBe(
-        pinnedFile,
+  describe('linkedFile', () => {
+    it('returns linkedFile', () => {
+      const linkedFile = getDiffFileMock();
+      const diffFiles = [linkedFile];
+      expect(getters.linkedFile({ diffFiles, linkedFileHash: linkedFile.file_hash }, {})).toBe(
+        linkedFile,
       );
     });
 
-    it('returns null if no pinned file is set', () => {
-      expect(getters.pinnedFile({}, {})).toBe(null);
+    it('returns null if no linked file is set', () => {
+      expect(getters.linkedFile({}, {})).toBe(null);
     });
   });
 

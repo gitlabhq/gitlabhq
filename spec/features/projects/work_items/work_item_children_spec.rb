@@ -23,7 +23,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     it 'are not displayed when issue does not have work item children', :aggregate_failures do
       within_testid('work-item-links') do
-        expect(find_by_testid('links-empty')).to have_content(_('No child items are currently assigned.'))
+        expect(find_by_testid('crud-body')).to have_content(_('No child items are currently assigned.'))
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
         expect(page).not_to have_selector('[data-testid="links-child"]')
       end
@@ -31,15 +31,15 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     it 'toggles widget body', :aggregate_failures do
       within_testid('work-item-links') do
-        expect(page).to have_selector('[data-testid="widget-body"]')
+        expect(page).to have_selector('[data-testid="crud-body"]')
 
         click_button 'Collapse'
 
-        expect(page).not_to have_selector('[data-testid="widget-body"]')
+        expect(page).not_to have_selector('[data-testid="crud-body"]')
 
         click_button 'Expand'
 
-        expect(page).to have_selector('[data-testid="widget-body"]')
+        expect(page).to have_selector('[data-testid="crud-body"]')
       end
     end
 
@@ -58,7 +58,8 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       end
     end
 
-    it 'adds a new child task', :aggregate_failures do
+    it 'adds a new child task', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461666' do
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
 
       within_testid('work-item-links') do
@@ -79,7 +80,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'removes a child task and undoing', :aggregate_failures do
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(112)
       within_testid('work-item-links') do
         click_button 'Add'
         click_button 'New task'
@@ -88,7 +89,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         wait_for_all_requests
 
         expect(find_by_testid('links-child')).to have_content('Task 1')
-        expect(find_by_testid('children-count')).to have_content('1')
+        expect(find_by_testid('crud-count')).to have_content('1')
 
         find_by_testid('links-child').hover
         find_by_testid('remove-work-item-link').click
@@ -96,7 +97,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         wait_for_all_requests
 
         expect(page).not_to have_content('Task 1')
-        expect(find_by_testid('children-count')).to have_content('0')
+        expect(find_by_testid('crud-count')).to have_content('0')
       end
 
       page.within('.gl-toast') do
@@ -108,7 +109,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
       within_testid('work-item-links') do
         expect(find_by_testid('links-child')).to have_content('Task 1')
-        expect(find_by_testid('children-count')).to have_content('1')
+        expect(find_by_testid('crud-count')).to have_content('1')
       end
     end
 

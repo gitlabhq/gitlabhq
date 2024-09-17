@@ -56,17 +56,17 @@ If something unexpected happens during the migration, it is safe to start over.
 
 1. Verify available disk space:
 
-    - The database node that will store the `gitlabhq_production_ci` database needs enough space to store a copy of the existing database: we _duplicate_ `gitlabhq_production`. Run the following SQL query to find out how much space is needed. Add 25%, to ensure you will not run out of disk space.
+   - The database node that will store the `gitlabhq_production_ci` database needs enough space to store a copy of the existing database: we _duplicate_ `gitlabhq_production`. Run the following SQL query to find out how much space is needed. Add 25%, to ensure you will not run out of disk space.
 
-      ```shell
-      sudo gitlab-psql -c "SELECT pg_size_pretty( pg_database_size('gitlabhq_production') );"
-      ```
+     ```shell
+     sudo gitlab-psql -c "SELECT pg_size_pretty( pg_database_size('gitlabhq_production') );"
+     ```
 
-    - During the process, a dump of the `gitlabhq_production` database needs to be temporarily stored on the filesystem of the node that will run the migration. Execute the following SQL statement to find out how much local disk space will be used. Add 25%, to ensure you will not run out of disk space.
+   - During the process, a dump of the `gitlabhq_production` database needs to be temporarily stored on the filesystem of the node that will run the migration. Execute the following SQL statement to find out how much local disk space will be used. Add 25%, to ensure you will not run out of disk space.
 
-      ```shell
-      sudo gitlab-psql -c "select sum(pg_table_size(concat(table_schema,'.',table_name))) from information_schema.tables where table_catalog = 'gitlabhq_production' and table_type = 'BASE TABLE'"
-      ```
+     ```shell
+     sudo gitlab-psql -c "select sum(pg_table_size(concat(table_schema,'.',table_name))) from information_schema.tables where table_catalog = 'gitlabhq_production' and table_type = 'BASE TABLE'"
+     ```
 
 1. Plan for downtime. The downtime is dependent on the size of the `gitlabhq_production` database.
 
@@ -91,7 +91,7 @@ This process includes downtime. Running the migration script will stop the GitLa
 
 1. Edit `/etc/gitlab/gitlab.rb` and save the changes. Do **not** run the reconfigure command, the migration script will run that for you.
 
-    ```ruby
+   ```ruby
    gitlab_rails['env'] = { 'GITLAB_ALLOW_SEPARATE_CI_DATABASE' => 'true' }
    gitlab_rails['databases']['ci']['enable'] = true
    gitlab_rails['databases']['ci']['db_database'] = 'gitlabhq_production_ci'

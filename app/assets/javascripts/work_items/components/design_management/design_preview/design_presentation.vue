@@ -3,12 +3,14 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignImage from './image.vue';
+import DesignOverlay from './design_overlay.vue';
 
 const CLICK_DRAG_BUFFER_PX = 2;
 
 export default {
   components: {
     DesignImage,
+    DesignOverlay,
     GlLoadingIcon,
   },
   props: {
@@ -296,7 +298,8 @@ export default {
 <template>
   <div
     ref="presentationViewport"
-    class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+    data-testid="presentation-viewport"
+    class="overflow-auto gl-relative gl-h-full gl-w-full gl-p-5"
     :style="presentationStyle"
     @mousedown="onPresentationMousedown"
     @mousemove="onPresentationMousemove"
@@ -308,13 +311,26 @@ export default {
     @touchcancel="onPresentationMouseup"
   >
     <gl-loading-icon v-if="isLoading" size="xl" class="gl-flex gl-h-full gl-items-center" />
-    <div v-else class="gl-h-full gl-w-full gl-flex gl-items-center gl-relative">
+    <div v-else class="gl-relative gl-flex gl-h-full gl-w-full gl-items-center">
       <design-image
         v-if="image"
         :image="image"
         :name="imageName"
         :scale="scale"
         @resize="onImageResize"
+      />
+      <design-overlay
+        v-if="overlayDimensions && overlayPosition"
+        :dimensions="overlayDimensions"
+        :position="overlayPosition"
+        :notes="discussionStartingNotes"
+        :current-comment-form="currentCommentForm"
+        :disable-commenting="!isLoggedIn || isDraggingDesign || disableCommenting"
+        :disable-notes="false"
+        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+        @openCommentForm="openCommentForm"
+        @closeCommentForm="closeCommentForm"
+        @moveNote="moveNote"
       />
     </div>
   </div>

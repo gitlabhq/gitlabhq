@@ -23,7 +23,7 @@ export const getAccessLevels = (accessLevels = {}) => {
   const total = accessLevels.edges?.length;
   const accessLevelTypes = { total, users: [], groups: [], roles: [] };
 
-  accessLevels.edges?.forEach(({ node }) => {
+  (accessLevels.edges || []).forEach(({ node }) => {
     if (node.user) {
       const src = node.user.avatarUrl;
       accessLevelTypes.users.push({ src, ...node.user });

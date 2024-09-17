@@ -28,9 +28,6 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
             id
             name
           }
-          trace {
-            htmlSummary
-          }
           userPermissions {
             readBuild
             updateBuild

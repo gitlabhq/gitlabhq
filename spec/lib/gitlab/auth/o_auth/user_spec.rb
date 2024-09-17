@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
+RSpec.describe Gitlab::Auth::OAuth::User, aggregate_failures: true, feature_category: :system_access do
   include LdapHelpers
 
-  let(:oauth_user) { described_class.new(auth_hash) }
-  let(:oauth_user_2) { described_class.new(auth_hash_2) }
+  let_it_be(:organization) { create(:organization) }
+  let(:oauth_user) { described_class.new(auth_hash, organization_id: organization.id) }
+  let(:oauth_user_2) { described_class.new(auth_hash_2, organization_id: organization.id) }
   let(:gl_user) { oauth_user.gl_user }
   let(:gl_user_2) { oauth_user_2.gl_user }
   let(:uid) { 'my-uid' }
@@ -29,10 +30,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
 
   let(:ldap_user) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
   let(:ldap_user_2) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
-
-  around do |example|
-    Namespace.with_disabled_organization_validation { example.run }
-  end
 
   describe '.find_by_uid_and_provider' do
     let(:provider) { 'provider' }
@@ -83,7 +80,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
           nickname: 'jastrom'
         }
         special_hash = OmniAuth::AuthHash.new(uid: dn, provider: 'ldapmain', info: special_info)
-        special_chars_user = described_class.new(special_hash)
+        special_chars_user = described_class.new(special_hash, organization_id: organization.id)
         user = special_chars_user.save
 
         expect(described_class.find_by_uid_and_provider(dn, 'ldapmain')).to eq user
@@ -176,6 +173,28 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
           oauth_user.save # rubocop:disable Rails/SaveBang
 
           expect(gl_user).to be_persisted
+        end
+      end
+
+      context 'when email address is too long' do
+        def long_email_local_part
+          "reallylongemail" * 300
+        end
+
+        let(:info_hash) do
+          {
+            email: "#{long_email_local_part}@example.com"
+          }
+        end
+
+        it 'generates an empty username and produces an error' do
+          oauth_user.save # rubocop:disable Rails/SaveBang -- Not an ActiveRecord object
+
+          expect(gl_user.username).to eq("blank")
+          expect(gl_user.errors.full_messages.to_sentence)
+            .to eq("Identity provider email " + _("must be 254 characters or less."))
+          expect(oauth_user).not_to be_valid
+          expect(oauth_user).not_to be_valid_sign_in
         end
       end
 
@@ -658,7 +677,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
                 uid: uid,
                 username: uid,
                 name: 'John Doe',
-                email: ['john@mail.com'],
+                email: ['John@mail.com'],
                 dn: dn
               )
             end
@@ -703,11 +722,13 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
             context "and LDAP user has an account already" do
               let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@mail.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
-              it "adds the omniauth identity to the LDAP account" do
+              before do
                 allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
 
                 oauth_user.save # rubocop:disable Rails/SaveBang
+              end
 
+              it "adds the omniauth identity to the LDAP account" do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
                 expect(gl_user.name).to eql 'John Doe'
@@ -720,6 +741,16 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
+              end
+
+              it "has name and email set as synced" do
+                expect(gl_user.user_synced_attributes_metadata.name_synced).to be_truthy
+                expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
+              end
+
+              it "has name and email set as read-only" do
+                expect(gl_user.read_only_attribute?(:name)).to be_truthy
+                expect(gl_user.read_only_attribute?(:email)).to be_truthy
               end
             end
           end

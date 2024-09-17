@@ -1,0 +1,16 @@
+---
+table_name: prometheus_alerts
+classes:
+- PrometheusAlert
+feature_categories:
+- incident_management
+description: Persists information about prometheus alerts from an environment
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590
+milestone: '11.2'
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164288
+removed_in_milestone: '17.4'

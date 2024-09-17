@@ -153,6 +153,34 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
             end
           end
         end
+
+        context 'when runner has no associated projects' do
+          let(:runner) { create(:ci_runner, :project, :without_projects) }
+          let(:original_projects) { [] }
+          let(:owner_project) { new_projects.first }
+
+          it 'assigns associated projects and returns error response' do
+            expect(execute).to be_error
+
+            runner.reload
+
+            expect(runner.owner_project).to be_nil
+            expect(runner.projects.ids).to be_empty
+          end
+
+          context 'and no new projects are being associated' do
+            let(:new_projects) { [] }
+
+            it 'does nothing and returns error response' do
+              expect(execute).to be_error
+
+              runner.reload
+
+              expect(runner.owner_project).to be_nil
+              expect(runner.projects.ids).to be_empty
+            end
+          end
+        end
       end
     end
 
@@ -162,6 +190,38 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
 
       it_behaves_like 'with successful requests'
       it_behaves_like 'with failing destroy calls'
+
+      context 'when runner has no associated projects' do
+        let(:runner) { create(:ci_runner, :project, :without_projects) }
+        let(:original_projects) { [] }
+
+        context 'when associating projects' do
+          let(:new_projects) { [project3, project4] }
+          let(:owner_project) { new_projects.first }
+
+          it 'assigns associated projects and returns success response' do
+            expect(execute).to be_success
+
+            runner.reload
+
+            expect(runner.owner_project).to eq(owner_project)
+            expect(runner.projects.ids).to match_array(new_projects.map(&:id))
+          end
+        end
+
+        context 'when associating no projects' do
+          let(:new_projects) { [] }
+
+          it 'does nothing and returns success response' do
+            expect(execute).to be_success
+
+            runner.reload
+
+            expect(runner.owner_project).to be_nil
+            expect(runner.projects.ids).to be_empty
+          end
+        end
+      end
     end
   end
 end

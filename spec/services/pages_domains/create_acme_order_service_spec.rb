@@ -28,6 +28,14 @@ RSpec.describe PagesDomains::CreateAcmeOrderService, feature_category: :pages do
     allow(::Gitlab::LetsEncrypt::Client).to receive(:new).and_return(lets_encrypt_client)
   end
 
+  it_behaves_like 'returning a success service response', message: nil do
+    subject { service.execute }
+
+    it { expect(service.execute).to have_attributes(payload: { acme_order: PagesDomainAcmeOrder.last }) }
+
+    it { expect { service.execute }.to change { PagesDomainAcmeOrder.count }.by(1) }
+  end
+
   it 'saves order to database before requesting validation' do
     allow(pages_domain.acme_orders).to receive(:create!).and_call_original
     allow(challenge).to receive(:request_validation).and_call_original
@@ -39,25 +47,53 @@ RSpec.describe PagesDomains::CreateAcmeOrderService, feature_category: :pages do
   end
 
   it 'generates and saves private key' do
-    service.execute
+    service_response = service.execute
 
-    saved_order = PagesDomainAcmeOrder.last
+    saved_order = service_response[:acme_order]
     expect { OpenSSL::PKey::RSA.new(saved_order.private_key) }.not_to raise_error
   end
 
   it 'properly saves order attributes' do
-    service.execute
+    service_response = service.execute
 
-    saved_order = PagesDomainAcmeOrder.last
-    expect(saved_order.url).to eq(order_double.url)
-    expect(saved_order.expires_at).to be_like_time(order_double.expires)
+    expect(service_response[:acme_order]).to have_attributes(
+      url: order_double.url,
+      expires_at: be_like_time(order_double.expires)
+    )
   end
 
   it 'properly saves challenge attributes' do
-    service.execute
+    service_response = service.execute
 
-    saved_order = PagesDomainAcmeOrder.last
-    expect(saved_order.challenge_token).to eq(challenge.token)
-    expect(saved_order.challenge_file_content).to eq(challenge.file_content)
+    expect(service_response[:acme_order]).to have_attributes(
+      challenge_token: challenge.token,
+      challenge_file_content: challenge.file_content
+    )
+  end
+
+  describe 'when acme order is not created due to client error' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:lets_encrypt_client) do
+      instance_double(Gitlab::LetsEncrypt::Client).tap do |client|
+        allow(client).to receive(:new_order).with(pages_domain.domain)
+          .and_raise(lets_encrypt_client_error, lets_encrypt_client_error_message)
+      end
+    end
+
+    where(:lets_encrypt_client_error, :lets_encrypt_client_error_message) do
+      Acme::Client::Error::RejectedIdentifier | 'Invalid identifiers requested :: Cannot issue for "local": Domain name needs at least one dot' # rubocop:disable Layout/LineLength -- Ensuring one line table syntax
+      Acme::Client::Error::BadCSR             | 'Error finalizing order :: signature algorithm not supported'
+      Acme::Client::Error                     | 'Other acme client error'
+      Acme::Client::Error                     | nil
+    end
+
+    with_them do
+      it_behaves_like 'returning an error service response', message: params[:lets_encrypt_client_error_message] do
+        subject { service.execute }
+
+        it { expect(service.execute).to have_attributes(payload: { acme_order: nil }) }
+      end
+    end
   end
 end

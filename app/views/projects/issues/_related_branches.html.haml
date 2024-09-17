@@ -1,25 +1,16 @@
 - if @related_branches.any?
-  - if @related_branches.any?
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' } , body_options: { class: 'gl-new-card-body' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h3.gl-new-card-title
-            = link_to "", "#related-branches", class: "gl-link anchor position-absolute gl-text-decoration-none", "aria-hidden": true
-            = _('Related branches')
-          .gl-new-card-count
-            = sprite_icon('branch', css_class: "gl-mr-2 gl-text-gray-500 gl-icon")
-            = @related_branches.size
-      - c.with_body do
-        .gl-new-card-content
-          %ul.related-merge-requests.content-list
-            - @related_branches.each do |branch|
-              %li.list-item{ class: "gl-py-0! gl-border-0!" }
-                .item-body.gl-display-flex.gl-align-items-center.gl-px-3.gl-pr-2.-gl-mx-2
-                  .item-contents.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-flex-grow-1.gl-min-h-7
-                    .item-title.gl-display-flex.mb-xl-0.gl-min-w-0.gl-align-items-center
-                      - if branch[:pipeline_status].present?
-                        %span.-gl-mt-2.-gl-mb-2.gl-mr-3
-                          = render 'ci/status/icon', status: branch[:pipeline_status]
-                      %span.related-branch-info
-                        %strong
-                          = link_to branch[:name], branch[:link], class: "ref-name"
+  = render ::Layouts::CrudComponent.new(_('Related branches'),
+    icon: 'branch',
+    count: @related_branches.size,
+    options: { class: 'gl-mt-5' },
+    body_options: { class: 'gl-p-3' }) do |c|
+    - c.with_body do
+      %ul.related-merge-requests.content-list
+        - @related_branches.each do |branch|
+          %li{ class: '!gl-p-0 !gl-border-b-0' }
+            .item-body.gl-p-3
+              .gl-flex.gl-items-center.gl-gap-3
+                - if branch[:pipeline_status].present?
+                  %span.-gl-my-2
+                    = render 'ci/status/icon', status: branch[:pipeline_status]
+                = link_to branch[:name], branch[:link], class: 'ref-name'

@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController, type: :request, feature_category: :system_access do
-  describe 'POST #create' do
+RSpec.describe RegistrationsController, :with_current_organization, type: :request, feature_category: :system_access do
+  describe '#create' do
     let_it_be(:user_attrs) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
+    let(:expected_context) do
+      { 'meta.caller_id' => 'RegistrationsController#create' }
+    end
 
     subject(:request) { post user_registration_path, params: { user: user_attrs } }
 
     it_behaves_like 'Base action controller'
+    it_behaves_like 'set_current_context'
 
     context 'when email confirmation is required' do
       before do
@@ -28,5 +32,20 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
         expect { request }.to change { UserDetail.count }.by(1)
       end
     end
+  end
+
+  describe '#destroy' do
+    let(:user) { create(:user) }
+    let(:expected_context) do
+      { 'meta.caller_id' => 'RegistrationsController#destroy',
+        'meta.user' => user.username }
+    end
+
+    subject do
+      sign_in(user)
+      delete user_registration_path
+    end
+
+    include_examples 'set_current_context'
   end
 end

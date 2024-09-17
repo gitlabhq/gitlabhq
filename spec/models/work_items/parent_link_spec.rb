@@ -168,6 +168,66 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
       end
 
+      context 'when parent is already linked' do
+        shared_examples 'invalid link' do |link_factory|
+          let_it_be(:parent_link) { build(:parent_link, work_item_parent: issue, work_item: task1) }
+          let(:error_msg) { 'cannot assign a linked work item as a parent' }
+
+          context 'when creating new link' do
+            context 'when parent is the link target' do
+              before do
+                create(link_factory, source_id: task1.id, target_id: issue.id)
+              end
+
+              it do
+                expect(parent_link).not_to be_valid
+                expect(parent_link.errors[:work_item]).to include(error_msg)
+              end
+            end
+
+            context 'when parent is the link source' do
+              before do
+                create(link_factory, source_id: issue.id, target_id: task1.id)
+              end
+
+              it do
+                expect(parent_link).not_to be_valid
+                expect(parent_link.errors[:work_item]).to include(error_msg)
+              end
+            end
+          end
+
+          context 'when updating existing link' do
+            context 'when parent is the link target' do
+              before do
+                create(link_factory, source_id: task1.id, target_id: issue.id)
+                parent_link.save!(validate: false)
+              end
+
+              it do
+                expect(parent_link).to be_valid
+                expect(parent_link.errors[:work_item]).not_to include(error_msg)
+              end
+            end
+
+            context 'when parent is the link source' do
+              before do
+                create(link_factory, source_id: issue.id, target_id: task1.id)
+                parent_link.save!(validate: false)
+              end
+
+              it do
+                expect(parent_link).to be_valid
+                expect(parent_link.errors[:work_item]).not_to include(error_msg)
+              end
+            end
+          end
+        end
+
+        it_behaves_like 'invalid link', :work_item_link
+        it_behaves_like 'invalid link', :issue_link
+      end
+
       context 'when setting confidentiality' do
         using RSpec::Parameterized::TableSyntax
 
@@ -190,38 +250,6 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
             expect(link.valid?).to eq(valid)
           end
         end
-      end
-
-      context 'when parent is already linked' do
-        shared_examples 'invalid link' do |link_factory|
-          let_it_be(:parent_link) { build(:parent_link, work_item_parent: issue, work_item: task1) }
-          let(:error_msg) { 'cannot assign a linked work item as a parent' }
-
-          context 'when parent is the link target' do
-            before do
-              create(link_factory, source_id: task1.id, target_id: issue.id)
-            end
-
-            it do
-              expect(parent_link).not_to be_valid
-              expect(parent_link.errors[:work_item]).to include(error_msg)
-            end
-          end
-
-          context 'when parent is the link source' do
-            before do
-              create(link_factory, source_id: issue.id, target_id: task1.id)
-            end
-
-            it do
-              expect(parent_link).not_to be_valid
-              expect(parent_link.errors[:work_item]).to include(error_msg)
-            end
-          end
-        end
-
-        it_behaves_like 'invalid link', :work_item_link
-        it_behaves_like 'invalid link', :issue_link
       end
     end
   end

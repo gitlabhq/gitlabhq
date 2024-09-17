@@ -26,7 +26,7 @@ export const CONFIG = {
   deployKeys: {
     title: __('Deploy keys'),
     icon: 'key',
-    filterKey: 'name',
+    filterKey: 'id',
     component: DeployKeyItem,
   },
   projects: {

@@ -77,13 +77,6 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
           end
         end
       end
-
-      context 'when work item belongs to a group' do
-        let(:container) { group }
-        let(:target) { create(:work_item, :group_level, namespace: group) }
-
-        it_behaves_like 'find target'
-      end
     end
 
     context 'for merge request' do

@@ -60,7 +60,7 @@ export default {
       :data-project-path="projectPath"
       :data-project-id="projectId"
       :data-data="issuableTemplatesJson"
-      class="dropdown-menu-toggle js-issuable-selector gl-button gl-py-3!"
+      class="dropdown-menu-toggle js-issuable-selector gl-button !gl-py-3"
       type="button"
       data-field-name="issuable_template"
       data-selected="null"
@@ -69,11 +69,11 @@ export default {
       <span class="dropdown-toggle-text">{{ __('Choose a template') }}</span>
       <gl-icon
         name="chevron-down"
-        class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500 dropdown-menu-toggle-icon"
+        class="dropdown-menu-toggle-icon gl-absolute gl-right-3 gl-top-3 gl-text-gray-500"
       />
     </button>
     <div class="dropdown-menu dropdown-select">
-      <div class="dropdown-title gl-display-flex gl-justify-content-center">
+      <div class="dropdown-title gl-flex gl-justify-center">
         <span class="gl-ml-auto">{{ __('Choose a template') }}</span>
         <button
           class="dropdown-title-button dropdown-menu-close gl-ml-auto"

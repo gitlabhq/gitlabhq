@@ -31,6 +31,9 @@ You can use the free public cloud instance `https://kroki.io` or you can [instal
 on your own infrastructure.
 After you've installed Kroki, make sure to update the **Kroki URL** in the settings to point to your instance.
 
+NOTE:
+Kroki diagrams are not stored on GitLab, so standard GitLab access controls and other user permission restrictions are not in force.
+
 ### Docker
 
 With Docker, run a container like this:
@@ -113,7 +116,7 @@ The above blocks are converted to an HTML image tag with source pointing to the
 Kroki instance. If the Kroki server is correctly configured, this should
 render a nice diagram instead of the block:
 
-![PlantUML diagram](../img/kroki_plantuml_diagram.png)
+![A PlantUML diagram rendered from example code.](../img/kroki_plantuml_diagram.png)
 
 Kroki supports more than a dozen diagram libraries. Here's a few examples for AsciiDoc:
 
@@ -144,7 +147,7 @@ digraph finite_state_machine {
 ....
 ```
 
-![GraphViz diagram](../img/kroki_graphviz_diagram.png)
+![A GraphViz diagram generated from example code.](../img/kroki_graphviz_diagram.png)
 
 **C4 (based on PlantUML)**
 
@@ -170,7 +173,7 @@ Rel(banking_system, mainframe, "Uses")
 ....
 ```
 
-![C4 PlantUML diagram](../img/kroki_c4_diagram.png)
+![A C4 PlantUML diagram generated from example code.](../img/kroki_c4_diagram.png)
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -197,4 +200,4 @@ Rel(banking_system, mainframe, "Uses")
 ....
 ```
 
-![Diagram](../img/kroki_nomnoml_diagram.png)
+![A Nomnoml diagram generated from example code.](../img/kroki_nomnoml_diagram.png)

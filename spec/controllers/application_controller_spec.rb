@@ -113,13 +113,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
       let(:format) { :html }
 
       it_behaves_like 'setting gon variables'
-
-      it 'provides the organization_http_header_name' do
-        get :index, format: format
-
-        expect(json_response.to_h)
-          .to include('organization_http_header_name' => ::Organizations::ORGANIZATION_HTTP_HEADER)
-      end
     end
 
     context 'with json format' do
@@ -943,12 +936,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
       get :index, format: :json
 
       expect(json_response['meta.project']).to eq(project.full_path)
-    end
-
-    it 'sets the caller_id as controller#action' do
-      get :index, format: :json
-
-      expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
     end
 
     it 'sets the feature_category as defined in the controller' do

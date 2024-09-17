@@ -51,7 +51,7 @@ export default {
   <div data-testid="dropdown-header">
     <div
       v-if="!isStandalone"
-      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-2 gl-pb-4 gl-mb-0"
+      class="dropdown-title gl-mb-0 gl-flex gl-items-center gl-pb-4 gl-pt-2"
       data-testid="dropdown-header-title"
     >
       <gl-button
@@ -64,12 +64,12 @@ export default {
         data-testid="go-back-button"
         @click.stop="$emit('toggleDropdownContentsCreateView')"
       />
-      <span class="gl-flex-grow-1">{{ dropdownTitle }}</span>
+      <span class="gl-grow">{{ dropdownTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
         variant="link"
         size="small"
-        class="dropdown-header-button gl-p-0!"
+        class="dropdown-header-button !gl-p-0"
         icon="close"
         data-testid="close-labels-dropdown-button"
         @click="$emit('closeDropdown')"

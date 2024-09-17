@@ -5,6 +5,12 @@ module Types
   class CurrentUserType < ::Types::UserType
     graphql_name 'CurrentUser'
     description 'The currently authenticated GitLab user.'
+
+    field :assignee_or_reviewer_merge_requests,
+      resolver: Resolvers::MergeRequests::AssigneeOrReviewerMergeRequestsResolver,
+      description: 'Merge requests the current user is an assignee or a reviewer of.' \
+        'Ignored if `merge_request_dashboard` feature flag is disabled.',
+      alpha: { milestone: '17.4' }
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

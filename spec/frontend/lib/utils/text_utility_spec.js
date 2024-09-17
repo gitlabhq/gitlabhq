@@ -425,4 +425,37 @@ describe('text_utility', () => {
       },
     );
   });
+
+  describe('uniquifyString', () => {
+    it.each`
+      inputStr            | inputArray                       | inputModifier | outputValue
+      ${'Foo Bar'}        | ${['Foo Bar']}                   | ${' (copy)'}  | ${'Foo Bar (copy)'}
+      ${'Foo Bar'}        | ${['Foo Bar', 'Foo Bar (copy)']} | ${' (copy)'}  | ${'Foo Bar (copy) (copy)'}
+      ${'Foo Bar (copy)'} | ${['Foo Bar (copy)']}            | ${' (copy)'}  | ${'Foo Bar (copy) (copy)'}
+      ${'Foo Bar'}        | ${['Foo']}                       | ${' (copy)'}  | ${'Foo Bar'}
+    `(
+      'returns string $outputValue when called with string $inputStr, $inputArray, $inputModifier',
+      ({ inputStr, inputArray, inputModifier, outputValue }) => {
+        expect(textUtils.uniquifyString(inputStr, inputArray, inputModifier)).toBe(outputValue);
+      },
+    );
+  });
+
+  describe('wildcardMatch', () => {
+    it.each`
+      pattern                  | str                      | result
+      ${'label'}               | ${'label'}               | ${true}
+      ${'label'}               | ${'a-label'}             | ${false}
+      ${'*label'}              | ${'a-label'}             | ${true}
+      ${'label'}               | ${'label-a'}             | ${false}
+      ${'label*'}              | ${'label-a'}             | ${true}
+      ${'label*'}              | ${'a-label-a'}           | ${false}
+      ${'*label'}              | ${'a-label-a'}           | ${false}
+      ${'*label*'}             | ${'a-label-a'}           | ${true}
+      ${'l*l'}                 | ${'label'}               | ${true}
+      ${'!@#$%^&*()-=+/?[]{}'} | ${'!@#$%^&*()-=+/?[]{}'} | ${true}
+    `('returns expected result', ({ pattern, str, result }) => {
+      expect(textUtils.wildcardMatch(str, pattern)).toBe(result);
+    });
+  });
 });

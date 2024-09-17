@@ -1,36 +1,47 @@
 <script>
 import { produce } from 'immer';
-import { GlLoadingIcon, GlIcon, GlButton, GlLink, GlToggle } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlBadge } from '@gitlab/ui';
 
-import { s__ } from '~/locale';
+import { s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import {
-  WIDGET_TYPE_LINKED_ITEMS,
+  findLinkedItemsWidget,
+  saveShowLabelsToLocalStorage,
+  getShowLabelsFromLocalStorage,
+} from '../../utils';
+import {
   LINKED_CATEGORIES_MAP,
-  I18N_WORK_ITEM_SHOW_LABELS,
   LINKED_ITEMS_ANCHOR,
+  WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
+  sprintfWorkItem,
 } from '../../constants';
 
-import WidgetWrapper from '../widget_wrapper.vue';
+import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
   helpPath: helpPagePath('/user/okrs.md#linked-items-in-okrs'),
   components: {
-    GlLoadingIcon,
-    GlIcon,
+    GlAlert,
     GlButton,
     GlLink,
-    WidgetWrapper,
+    GlBadge,
+    CrudComponent,
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
-    GlToggle,
+    WorkItemMoreActions,
   },
   props: {
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -44,6 +55,10 @@ export default {
       type: String,
       required: true,
     },
+    canAdminWorkItemLink: {
+      type: Boolean,
+      required: true,
+    },
     workItemType: {
       type: String,
       required: false,
@@ -51,22 +66,21 @@ export default {
     },
   },
   apollo: {
-    workItem: {
-      query: workItemByIidQuery,
+    linkedWorkItems: {
+      query: workItemLinkedItemsQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
-      update(data) {
-        return data.workspace.workItem ?? {};
-      },
       skip() {
         return !this.workItemIid;
       },
-      error(e) {
-        this.error = e.message || this.$options.i18n.fetchError;
+      update({ workspace }) {
+        if (!workspace?.workItem) return [];
+
+        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
       },
       async result() {
         // When work items are switched in a modal, the data props are not getting reset.
@@ -86,6 +100,9 @@ export default {
           }
         });
       },
+      error(e) {
+        this.error = e.message || this.$options.i18n.fetchError;
+      },
     },
   },
   data() {
@@ -94,23 +111,16 @@ export default {
       linksRelatesTo: [],
       linksIsBlockedBy: [],
       linksBlocks: [],
-      isShownLinkItemForm: false,
       widgetName: LINKED_ITEMS_ANCHOR,
+      defaultShowLabels: true,
       showLabels: true,
+      linkedWorkItems: [],
+      showLabelsLocalStorageKey: WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
     };
   },
   computed: {
-    canAdminWorkItemLink() {
-      return this.workItem?.userPermissions?.adminWorkItemLink;
-    },
     isLoading() {
-      return this.$apollo.queries.workItem.loading;
-    },
-    linkedWorkItemsWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
-    },
-    linkedWorkItems() {
-      return this.linkedWorkItemsWidget?.linkedItems?.nodes || [];
+      return this.$apollo.queries.linkedWorkItems.loading;
     },
     childrenIds() {
       return this.linkedWorkItems.map((item) => item.workItem.id);
@@ -119,15 +129,36 @@ export default {
       return this.linkedWorkItems.length;
     },
     isEmptyRelatedWorkItems() {
-      return !this.isShownLinkItemForm && !this.error && this.linkedWorkItems.length === 0;
+      return !this.error && this.linkedWorkItems.length === 0;
     },
+    countBadgeAriaLabel() {
+      const message = sprintf(
+        n__(
+          'WorkItem|%{workItemType} has 1 linked item',
+          'WorkItem|%{workItemType} has %{itemCount} linked items',
+          this.linkedWorkItemsCount,
+        ),
+        { itemCount: this.linkedWorkItemsCount },
+      );
+      return sprintfWorkItem(message, this.workItemType);
+    },
+  },
+  mounted() {
+    this.showLabels = getShowLabelsFromLocalStorage(
+      this.showLabelsLocalStorageKey,
+      this.defaultShowLabels,
+    );
   },
   methods: {
     showLinkItemForm() {
-      this.isShownLinkItemForm = true;
+      this.$refs.widget.showForm();
     },
     hideLinkItemForm() {
-      this.isShownLinkItemForm = false;
+      this.$refs.widget.hideForm();
+    },
+    toggleShowLabels() {
+      this.showLabels = !this.showLabels;
+      saveShowLabelsToLocalStorage(this.showLabelsLocalStorageKey, this.showLabels);
     },
     async removeLinkedItem(linkedItem) {
       try {
@@ -150,7 +181,7 @@ export default {
               return;
             }
             const queryArgs = {
-              query: workItemByIidQuery,
+              query: workItemLinkedItemsQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);
@@ -163,9 +194,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  draftState.workspace.workItem.widgets?.find(
-                    (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
-                  )?.linkedItems?.nodes || [];
+                  findLinkedItemsWidget(draftState.workspace.workItem).linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {
                   return item.workItem.id === linkedItem.id;
                 });
@@ -200,128 +229,120 @@ export default {
     blockingTitle: s__('WorkItem|Blocking'),
     blockedByTitle: s__('WorkItem|Blocked by'),
     addLinkedWorkItemButtonLabel: s__('WorkItem|Add'),
-    showLabelsLabel: I18N_WORK_ITEM_SHOW_LABELS,
   },
 };
 </script>
 <template>
-  <widget-wrapper
-    :error="error"
-    class="work-item-relationships"
-    :widget-name="widgetName"
-    @dismissAlert="error = undefined"
+  <crud-component
+    ref="widget"
+    :anchor-id="widgetName"
+    :title="$options.i18n.title"
+    :is-loading="isLoading"
+    is-collapsible
+    data-testid="work-item-relationships"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">
-          {{ $options.i18n.title }}
-        </h3>
-        <div v-if="linkedWorkItemsCount" class="gl-new-card-count">
-          <gl-icon name="link" class="gl-mr-2" />
-          <span data-testid="linked-items-count">{{ linkedWorkItemsCount }}</span>
-        </div>
-      </div>
+    <template #count>
+      <gl-badge
+        :aria-label="countBadgeAriaLabel"
+        data-testid="linked-items-count-bage"
+        variant="muted"
+      >
+        {{ linkedWorkItemsCount }}
+      </gl-badge>
     </template>
-    <template #header-right>
-      <gl-toggle
-        :value="showLabels"
-        :label="$options.i18n.showLabelsLabel"
-        label-position="left"
-        label-id="relationship-toggle-labels"
-        @change="showLabels = $event"
-      />
+
+    <template #actions>
       <gl-button
         v-if="canAdminWorkItemLink"
         data-testid="link-item-add-button"
         size="small"
-        class="gl-ml-4"
         @click="showLinkItemForm"
       >
         <slot name="add-button-text">{{ $options.i18n.addLinkedWorkItemButtonLabel }}</slot>
       </gl-button>
+      <work-item-more-actions
+        :work-item-iid="workItemIid"
+        :full-path="workItemFullPath"
+        :work-item-type="workItemType"
+        :show-labels="showLabels"
+        :show-view-roadmap-action="false"
+        @toggle-show-labels="toggleShowLabels"
+      />
     </template>
-    <template #body>
-      <div class="gl-new-card-content gl-px-0">
-        <work-item-add-relationship-form
-          v-if="isShownLinkItemForm"
-          :work-item-id="workItemId"
-          :work-item-iid="workItemIid"
-          :work-item-full-path="workItemFullPath"
-          :children-ids="childrenIds"
-          :work-item-type="workItemType"
-          @submitted="hideLinkItemForm"
-          @cancel="hideLinkItemForm"
-        />
-        <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
-        <template v-else>
-          <div v-if="!isShownLinkItemForm && isEmptyRelatedWorkItems" data-testid="links-empty">
-            <p class="gl-new-card-empty">
-              {{ $options.i18n.emptyStateMessage }}
-              <gl-link :href="$options.helpPath" data-testid="help-link">
-                {{ __('Learn more.') }}
-              </gl-link>
-            </p>
-          </div>
-          <template v-else>
-            <work-item-relationship-list
-              v-if="linksBlocks.length"
-              :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
-                  linksIsBlockedBy.length,
-              }"
-              :linked-items="linksBlocks"
-              :heading="$options.i18n.blockingTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-            <work-item-relationship-list
-              v-if="linksIsBlockedBy.length"
-              :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
-                  linksRelatesTo.length,
-              }"
-              :linked-items="linksIsBlockedBy"
-              :heading="$options.i18n.blockedByTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-            <work-item-relationship-list
-              v-if="linksRelatesTo.length"
-              :linked-items="linksRelatesTo"
-              :heading="$options.i18n.relatedToTitle"
-              :can-update="canAdminWorkItemLink"
-              :show-labels="showLabels"
-              :work-item-full-path="workItemFullPath"
-              @showModal="
-                $emit('showModal', {
-                  event: $event.event,
-                  modalWorkItem: $event.child,
-                  context: widgetName,
-                })
-              "
-              @removeLinkedItem="removeLinkedItem"
-            />
-          </template>
-        </template>
-      </div>
+
+    <template #form>
+      <work-item-add-relationship-form
+        :is-group="isGroup"
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
+        :work-item-full-path="workItemFullPath"
+        :children-ids="childrenIds"
+        :work-item-type="workItemType"
+        @submitted="hideLinkItemForm"
+        @cancel="hideLinkItemForm"
+      />
     </template>
-  </widget-wrapper>
+
+    <template v-if="isEmptyRelatedWorkItems" #empty>
+      {{ $options.i18n.emptyStateMessage }}
+      <gl-link :href="$options.helpPath" data-testid="help-link">
+        {{ __('Learn more.') }}
+      </gl-link>
+    </template>
+
+    <template #default>
+      <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+        {{ error }}
+      </gl-alert>
+
+      <work-item-relationship-list
+        v-if="linksBlocks.length"
+        :linked-items="linksBlocks"
+        :heading="$options.i18n.blockingTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+      <work-item-relationship-list
+        v-if="linksIsBlockedBy.length"
+        :linked-items="linksIsBlockedBy"
+        :heading="$options.i18n.blockedByTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+      <work-item-relationship-list
+        v-if="linksRelatesTo.length"
+        :linked-items="linksRelatesTo"
+        :heading="$options.i18n.relatedToTitle"
+        :can-update="canAdminWorkItemLink"
+        :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
+        @showModal="
+          $emit('showModal', {
+            event: $event.event,
+            modalWorkItem: $event.child,
+            context: widgetName,
+          })
+        "
+        @removeLinkedItem="removeLinkedItem"
+      />
+    </template>
+  </crud-component>
 </template>

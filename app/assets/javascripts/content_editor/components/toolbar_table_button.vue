@@ -109,13 +109,13 @@ export default {
         :aria-colcount="$options.MAX_COLS"
         :aria-rowcount="$options.MAX_ROWS"
       >
-        <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex" role="row">
+        <div v-for="r of list(maxRows)" :key="r" class="gl-flex" role="row">
           <div v-for="c of list(maxCols)" :key="c" role="gridcell">
             <gl-button
               :ref="`table-${r}-${c}`"
-              :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
+              :class="{ 'active !gl-bg-blue-50': r <= rows && c <= cols }"
               :aria-label="getButtonLabel(r, c)"
-              class="table-creator-grid-item gl-inline gl-rounded-0! !gl-w-6 gl-h-6! gl-p-0!"
+              class="table-creator-grid-item gl-inline !gl-h-6 !gl-w-6 !gl-rounded-none !gl-p-0"
               @mouseover="setRowsAndCols(r, c)"
               @focus="setRowsAndCols(r, c)"
               @click="insertTable()"
@@ -124,7 +124,7 @@ export default {
           </div>
         </div>
       </div>
-      <div class="gl-border-t gl-px-4 gl-pt-3 gl-pb-2">
+      <div class="gl-border-t gl-px-4 gl-pb-2 gl-pt-3">
         {{ getButtonLabel(rows, cols) }}
       </div>
     </gl-disclosure-dropdown>

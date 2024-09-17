@@ -2,16 +2,25 @@
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
   - context = group || @project
+  - alert_class = "container-limited" unless fluid_layout
 
   - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user, organization: @organization)
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
-  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json } }
+  %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
   = render_if_exists "layouts/tanuki_bot_chat"
 
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
-    .alert-wrapper.gl-force-block-formatting-context
+
+    -# Broadcast messages
+    .broadcast-wrapper
+      = dispensable_render_if_exists "shared/token_expiration_banner"
+      = dispensable_render "layouts/broadcast"
+      = yield :group_invite_members_banner
+
+    -# Alerts
+    .alert-wrapper.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
       = dispensable_render 'shared/outdated_browser'
       = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
       = dispensable_render_if_exists "layouts/header/token_expiry_notification"
@@ -20,8 +29,6 @@
       = dispensable_render_if_exists "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
       = dispensable_render "shared/projects/inactive_project_deletion_alert"
       = dispensable_render "shared/projects/archived_alert"
-      = dispensable_render_if_exists "shared/token_expiration_banner"
-      = dispensable_render "layouts/broadcast"
       = dispensable_render "layouts/header/read_only_banner"
       = dispensable_render "layouts/header/registration_enabled_callout"
       = dispensable_render "layouts/header/openssl_callout"
@@ -36,13 +43,15 @@
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = dispensable_render_if_exists "shared/silent_mode_banner"
       = yield :page_level_alert
-      = yield :group_invite_members_banner
-      - unless @hide_top_bar
-        = render "layouts/nav/top_bar"
+      = render "layouts/flash"
+      = yield :after_flash_content
+
+    -# Top bar
+    - unless @hide_top_bar
+      = render "layouts/nav/top_bar"
+
     %div{ class: "#{container_class unless @no_container} #{@content_class}" }
       %main.content{ id: "content-body", **page_itemtype }
-        = render "layouts/flash", extra_flash_class: 'limit-container-width'
-        = yield :after_flash_content
         = yield :before_content
         = yield
     = yield :after_content

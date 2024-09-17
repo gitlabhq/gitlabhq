@@ -1,0 +1,23 @@
+---
+description: User clicks show more or show less button on the multimatch results page
+internal_events: true
+action: click_blob_results_show_more_less
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  value:
+    description: Position of the result.
+  property:
+    description: Set to 'open' if show more is activated and 'close' if it is closed again.
+product_group: global_search
+milestone: '17.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161308
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

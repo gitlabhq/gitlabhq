@@ -7,6 +7,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
   let_it_be(:user_2) { create(:user) }
   let_it_be(:group_1) { create(:group) }
   let_it_be(:group_2) { create(:group) }
+  let_it_be(:project_1) { create(:project, namespace: group_1) }
 
   def track_event(event: nil, user: nil, group: nil)
     Gitlab::InternalEvents.track_event(
@@ -110,19 +111,42 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
             .once
       end
 
+      shared_examples 'raises error for unexpected event args' do
+        specify do
+          expect { assertion }.to raise_error RSpec::Expectations::ExpectationNotMetError,
+            /received :event with unexpected arguments/
+        end
+      end
+
       it 'accepts correct additional properties' do
         assertion
+      end
+
+      context 'with extra attributes' do
+        let(:tracked_params) { super().deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it 'accepts correct extra attributes' do
+          assertion
+        end
       end
 
       context "with wrong label value" do
         let(:expected_params) { tracked_params.deep_merge(additional_properties: { label: 'wrong_label' }) }
 
-        it "doesn't accept incorrect additional_properties" do
-          expect do
-            assertion
-          end.to raise_error RSpec::Expectations::ExpectationNotMetError,
-            /received :event with unexpected arguments/
-        end
+        it_behaves_like 'raises error for unexpected event args'
+      end
+
+      context 'with extra attributes expected but not tracked' do
+        let(:expected_params) { tracked_params.deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it_behaves_like 'raises error for unexpected event args'
+      end
+
+      context 'with extra attributes tracked but not expected' do
+        let(:expected_params) { { user: user_1, namespace: group_1, additional_properties: additional_properties } }
+        let(:tracked_params) { expected_params.deep_merge(additional_properties: { other_property: 'other_prop' }) }
+
+        it_behaves_like 'raises error for unexpected event args'
       end
     end
   end
@@ -320,6 +344,45 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
       .and trigger_internal_events('g_edit_by_sfe')
       .and change { user_1.reload.updated_at }
       .and not_change { User.count }
+    end
+  end
+
+  context "when using the 'internal event tracking' shared example" do
+    context 'with identifiers' do
+      let(:event) { 'g_edit_by_sfe' }
+      let(:user) { user_1 }
+      let(:namespace) { group_1 }
+
+      subject(:assertion) { track_event }
+
+      it_behaves_like 'internal event tracking'
+    end
+
+    context 'with additional properties' do
+      let(:event) { 'push_package_to_registry' }
+      let(:user) { user_1 }
+      let(:project) { project_1 }
+
+      subject(:assertion) do
+        Gitlab::InternalEvents.track_event(
+          event,
+          user: user,
+          project: project,
+          additional_properties: { label: 'Awesome label value' }
+        )
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:additional_properties) { { label: 'Awesome label value' } }
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:label) { 'Awesome label value' }
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event_attribute_overrides) { { label: 'Awesome label value' } }
+      end
     end
   end
 end

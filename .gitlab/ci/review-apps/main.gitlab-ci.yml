@@ -14,7 +14,6 @@ include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
-  - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast-api.gitlab-ci.yml
 
 .base-before_script: &base-before_script
@@ -67,7 +66,7 @@ review-build-cng:
     GITLAB_IMAGE_REPOSITORY: "registry.gitlab.com/gitlab-org/build/cng-mirror"
     GITLAB_IMAGE_SUFFIX: "ee"
     GITLAB_REVIEW_APP_BASE_CONFIG_FILE: "scripts/review_apps/base-config.yaml"
-    GITLAB_HELM_CHART_REF: "1ec3db1320cfe5a5e96881e53b92a0644aaa149e"  # 7.9.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/1ec3db1320cfe5a5e96881e53b92a0644aaa149e
+    GITLAB_HELM_CHART_REF: "c0dd458d5a865c4c191b938ede1eef4cde8c406b"  # 8.3.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/c0dd458d5a865c4c191b938ede1eef4cde8c406b
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

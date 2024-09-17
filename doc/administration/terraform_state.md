@@ -32,9 +32,9 @@ When Terraform state administration is disabled:
 - On the left sidebar, you cannot select **Operate > Terraform states**.
 - Any CI/CD jobs that access the Terraform state fail with this error:
 
-    ```shell
-    Error refreshing state: HTTP remote state endpoint invalid auth
-    ```
+  ```shell
+  Error refreshing state: HTTP remote state endpoint invalid auth
+  ```
 
 To disable Terraform administration, follow the steps below according to your installation.
 

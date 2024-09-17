@@ -30,16 +30,6 @@ RSpec.describe Ci::MergeRequests::AddTodoWhenBuildFailsWorker, feature_category:
       end
     end
 
-    context 'when project does not exist' do
-      before do
-        job.update!(project_id: nil)
-      end
-
-      it 'returns nil' do
-        expect(described_class.new.perform(job_args)).to eq(nil)
-      end
-    end
-
     context 'when pipeline does not exist' do
       before do
         job.update_attribute('pipeline_id', nil)

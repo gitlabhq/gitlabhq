@@ -392,7 +392,7 @@ The initial replication might take some time.
 You can monitor the synchronization process on each Geo site from the primary
 site **Geo Sites** dashboard in your browser.
 
-![Geo dashboard](../replication/img/geo_dashboard_v14_0.png)
+![Geo admin dashboard showing the synchronization status of a secondary site.](../replication/img/geo_dashboard_v14_0.png)
 
 ## Configure the tracking database
 

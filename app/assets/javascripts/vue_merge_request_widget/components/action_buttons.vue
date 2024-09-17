@@ -88,7 +88,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-flex-start">
+  <div class="gl-flex gl-items-start">
     <template v-if="hasOneOption">
       <span v-for="(btn, index) in tertiaryButtons" :key="index">
         <gl-button
@@ -107,7 +107,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="md:gl-block gl-float-left"
+          class="gl-float-left md:gl-block"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}
@@ -118,7 +118,7 @@ export default {
           <span v-if="btn.popoverLink">
             <gl-sprintf :message="btn.popoverText">
               <template #link="{ content }">
-                <gl-link class="gl-font-sm" :href="btn.popoverLink" target="_blank">
+                <gl-link class="gl-text-sm" :href="btn.popoverLink" target="_blank">
                   {{ content }}</gl-link
                 >
               </template>
@@ -160,7 +160,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="gl-hidden md:gl-block gl-float-left"
+          class="gl-float-left gl-hidden md:gl-block"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}
@@ -171,7 +171,7 @@ export default {
           <span v-if="btn.popoverLink">
             <gl-sprintf :message="btn.popoverText">
               <template #link="{ content }">
-                <gl-link class="gl-font-sm" :href="btn.popoverLink" target="_blank">
+                <gl-link class="gl-text-sm" :href="btn.popoverLink" target="_blank">
                   {{ content }}</gl-link
                 >
               </template>

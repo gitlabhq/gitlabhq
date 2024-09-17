@@ -132,6 +132,8 @@ export default {
       class="gl-min-w-0 gl-grow"
       :placeholder="__('Filter results')"
       :available-tokens="tokens"
+      :search-text-option-label="__('Search for this text')"
+      terms-as-tokens
       @submit="submitSearch"
       @clear="clearSearch"
     />

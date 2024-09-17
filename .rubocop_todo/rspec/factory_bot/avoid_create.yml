@@ -178,7 +178,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/serializers/vulnerabilities/scanner_entity_spec.rb'
     - 'ee/spec/serializers/vulnerability_entity_spec.rb'
     - 'ee/spec/serializers/vulnerability_note_entity_spec.rb'
-    - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/_git_abuse_rate_limit.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/general.html.haml_spec.rb'
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'

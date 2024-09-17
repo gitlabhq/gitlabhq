@@ -198,6 +198,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
         end
       end
 
+      it "avoids N+1 database queries", :use_sql_query_cache do
+        get_show_json
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get_show_json }
+
+        create_list(:ci_build, 5, :failed, pipeline: pipeline)
+
+        expect { get_show_json }.to issue_same_number_of_queries_as(control)
+      end
+
       context 'when job is running' do
         before do
           get_show_json
@@ -415,7 +425,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       context 'when no runners are available' do
-        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:runner) { create(:ci_runner, :instance, :paused) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'exposes needed information' do

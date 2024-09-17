@@ -265,7 +265,7 @@ export default {
     },
   ),
   userPermissionsDocsPath: helpPagePath('user/permissions.md', {
-    anchor: 'gitlab-cicd-permissions',
+    anchor: 'cicd',
   }),
 };
 </script>
@@ -316,7 +316,7 @@ export default {
         </template>
 
         <template #actions>
-          <div class="gl-vertical-align-middle">
+          <div class="gl-align-middle">
             <gl-button
               variant="confirm"
               :loading="isRunningMergeRequestPipeline"
@@ -334,7 +334,7 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mt-3 gl-mb-3 lg:gl-hidden"
+        class="gl-mb-3 gl-mt-3 lg:gl-hidden"
         variant="confirm"
         data-testid="run_pipeline_button_mobile"
         :loading="isRunningMergeRequestPipeline"

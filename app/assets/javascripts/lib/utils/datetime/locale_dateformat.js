@@ -1,4 +1,6 @@
+import { DATE_ONLY_REGEX } from '~/lib/utils/datetime/date_calculation_utility';
 import { createDateTimeFormat } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 /**
  * Format a Date with the help of {@link DateTimeFormat.asDateTime}
@@ -226,6 +228,15 @@ class DateTimeFormat {
    * @returns {Date}
    */
   static castToDate(dateish) {
+    if (DATE_ONLY_REGEX.test(dateish)) {
+      const message =
+        "new Date('yyyy-mm-dd') causes day-off bugs. Convert the date-only string to a Date object with newDate() instead";
+      Sentry.captureException(new Error(message));
+    } else if (!(dateish instanceof Date)) {
+      const message = 'Consider passing a Date object with newDate() instead';
+      Sentry.captureException(new Error(message));
+    }
+
     const date = dateish instanceof Date ? dateish : new Date(dateish);
     if (Number.isNaN(date)) {
       // eslint-disable-next-line @gitlab/require-i18n-strings

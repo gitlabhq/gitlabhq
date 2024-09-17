@@ -19,7 +19,7 @@ module Projects
       end
 
       def alerting_setting_params
-        return {} unless can?(current_user, :read_prometheus_alerts, project)
+        return {} unless can?(current_user, :admin_operations, project)
 
         attr = params[:alerting_setting_attributes]
         return {} unless attr

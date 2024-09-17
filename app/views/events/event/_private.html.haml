@@ -1,5 +1,5 @@
-.event-item{ class: current_path?('users#activity') ? 'user-profile-activity gl-border-bottom-0 gl-pl-7! gl-pb-3' : '' }
-  .event-item-timestamp.gl-font-sm
+.event-item{ class: current_path?('users#activity') ? 'user-profile-activity gl-border-b-0 !gl-pl-7 gl-pb-3' : '' }
+  .event-item-timestamp.gl-text-sm
     = time_ago_with_tooltip(event.created_at)
 
   .system-note-image.gl-rounded-full.gl-bg-gray-50.gl-leading-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')

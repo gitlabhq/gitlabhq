@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require "gitlab/backup/cli"
-require 'active_support/all'
-require 'tmpdir'
-require 'fileutils'
-require 'factory_bot'
+require 'bundler/setup'
+Bundler.require(:default, :development, :test)
+
+require 'thor'
 require 'gitlab/rspec/next_instance_of'
 
 ENV["RAILS_ENV"] ||= "test"

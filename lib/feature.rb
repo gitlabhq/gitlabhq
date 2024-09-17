@@ -67,6 +67,15 @@ module Feature
       flipper.features.to_a
     end
 
+    # Preload the features with the given names.
+    #
+    # names - An Array of String or Symbol names of the features.
+    #
+    # https://github.com/flippercloud/flipper/blob/bf6a13f34fc7f45a597c3d66ec291f3e5855e830/lib/flipper/dsl.rb#L229
+    def preload(names)
+      flipper.preload(names) # rubocop:disable CodeReuse/ActiveRecord -- This cop is not relevant in the Flipper context
+    end
+
     RecursionError = Class.new(RuntimeError)
 
     def get(key)

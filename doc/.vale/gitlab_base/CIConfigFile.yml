@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.CIConfigFile
+# Error: gitlab_base.CIConfigFile
 #
 # Checks that the `.gitlab-ci.yml` file is referenced properly.
 #

@@ -6,19 +6,24 @@ group: unassigned
 
 # Documenting experimental and beta features
 
-Some features are not generally available and are instead considered
-[experimental or beta](../../policy/experiment-beta-support.md).
+When you document an [experiment or beta](../../policy/experiment-beta-support.md) feature:
 
-When you document a feature in one of these three statuses:
+- Include the status in the [product availability details](styleguide/availability_details.md#status).
+- Include [feature flag details](feature_flags.md) if behind a feature flag.
+- [Update the feature status](styleguide/availability_details.md#changed-feature-status) when it changes.
 
-- Add the tier badge after the page or topic title.
-- Do not include `(Experiment)` or `(Beta)` in the left nav.
-- Ensure the history lists the feature's status.
+## When features become generally available
 
-These features are usually behind a feature flag, which follow [these documentation guidelines](feature_flags.md).
+When the feature changes from experiment or beta to generally available:
 
-If you add details of how users should enroll, or how to contact the team with issues,
-the `FLAG:` note should be above these details.
+- Remove the **Status** from the product availability details.
+- Remove any language about the feature not being ready for production.
+- Update the [history](../documentation/styleguide/availability_details.md#history).
+
+## Features that require user enrollment or feedback
+
+To include details about how users should enroll or leave feedback,
+add it below the `FLAG:` note.
 
 For example:
 
@@ -42,24 +47,47 @@ the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](https://link).
 ```
 
-## When features become generally available
+## GitLab Duo features
 
-When the feature changes from experiment or beta to generally available, remove:
+Follow these guidelines when you document GitLab Duo features.
 
-- The **Status** from the availability details.
-- Any language about the feature not being ready for production in the body
-  description.
-- The feature flag information if available.
+### Experiment
 
-Ensure the history is up-to-date by adding a note about the production release.
+When documenting a GitLab Duo experiment:
 
-### GitLab Duo features
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), add a topic to the
+  `Experimental features` section.
+- Document the feature on the [GitLab Duo experiments page](../../user/gitlab_duo/experiments.md).
+- Make sure you add history and status values, including any
+  [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.
+
+### Beta
+
+When a GitLab Duo experiment moves to beta:
+
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
+  `Experimental features` to the `Beta features` section.
+- If the feature is documented on the [GitLab Duo experiments page](../../user/gitlab_duo/experiments.md),
+  move the content somewhere more appropriate (near other related features).
+- Make sure you update the history and status values, including any
+  [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.
+
+### Generally available
 
 When a GitLab Duo feature becomes generally available:
 
-- In the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
- `Beta features` or `Experimental features` section to the `Generally available features` section.
-- If the feature is documented in [GitLab Duo experiments](../../user/gitlab_duo/experiments.md),
-  move the content somewhere more appropriate (to other related features).
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
+  `Beta features` or `Experimental features` section to the `Generally available features` section.
+- If the feature is documented on the [GitLab Duo experiments page](../../user/gitlab_duo/experiments.md),
+  move the content somewhere more appropriate (near other related features).
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
+- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+  in the `#developer-relations-early-access-program` Slack channel,
+  post a comment that mentions the feature and its status.

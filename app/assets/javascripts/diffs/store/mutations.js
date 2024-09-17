@@ -85,7 +85,7 @@ export default {
       diffFiles: prepareDiffData({
         diff: { diff_files: diffFiles },
         priorFiles: state.diffFiles,
-        // when a pinned file is added to diffs its position may be incorrect since it's loaded out of order
+        // when a linked file is added to diffs its position may be incorrect since it's loaded out of order
         // we need to ensure when we load it in batched request it updates it position
         updatePosition,
       }),
@@ -424,7 +424,15 @@ export default {
 
     file?.drafts.push(draft);
   },
-  [types.SET_PINNED_FILE_HASH](state, fileHash) {
-    state.pinnedFileHash = fileHash;
+  [types.SET_LINKED_FILE_HASH](state, fileHash) {
+    state.linkedFileHash = fileHash;
+  },
+  [types.SET_COLLAPSED_STATE_FOR_ALL_FILES](state, { collapsed }) {
+    state.diffFiles.forEach((file) => {
+      const { viewer } = file;
+      if (!viewer) return;
+      viewer.automaticallyCollapsed = false;
+      viewer.manuallyCollapsed = collapsed;
+    });
   },
 };

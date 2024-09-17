@@ -12,6 +12,7 @@ module Ci
       class_name: 'Ci::Build',
       partition_foreign_key: :partition_id
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
+    belongs_to :plan
 
     partitionable scope: :build
 

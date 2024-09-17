@@ -309,20 +309,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       let_it_be(:project) { create(:project, :repository) }
       let(:features) { Gitlab::Json.parse(html_data[:features]) }
 
-      context 'when the feature flag is disabled' do
+      context 'when the feature flag is enabled' do
         before do
-          stub_feature_flags(pre_receive_secret_detection_beta_release: false)
-        end
-
-        it 'feature does not include pre_receive_secret_detection' do
-          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
-          expect(feature).to be_nil
-        end
-      end
-
-      context 'when the feature flags are enabled' do
-        before do
-          stub_feature_flags(pre_receive_secret_detection_beta_release: true)
           stub_feature_flags(pre_receive_secret_detection_push_check: true)
         end
 

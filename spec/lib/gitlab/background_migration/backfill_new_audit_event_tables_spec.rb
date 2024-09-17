@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillNewAuditEventTables, feature_category: :audit_events do
-  let(:audit_events_table) { table(:audit_events) }
-  let(:project_audit_events_table) { table(:project_audit_events) }
-  let(:group_audit_events_table) { table(:group_audit_events) }
-  let(:user_audit_events_table) { table(:user_audit_events) }
-  let(:instance_audit_events_table) { table(:instance_audit_events) }
+  let(:audit_events_table) { partitioned_table(:audit_events) }
+  let(:project_audit_events_table) { partitioned_table(:project_audit_events) }
+  let(:group_audit_events_table) { partitioned_table(:group_audit_events) }
+  let(:user_audit_events_table) { partitioned_table(:user_audit_events) }
+  let(:instance_audit_events_table) { partitioned_table(:instance_audit_events) }
 
   let!(:project_audit_event) do
     audit_events_table.create!(

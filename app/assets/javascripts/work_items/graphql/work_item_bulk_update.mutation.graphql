@@ -1,5 +1,5 @@
 mutation workItemBulkUpdate($input: WorkItemBulkUpdateInput!) {
-  workItemBulkUpdate(input: $input) @client {
-    updatedIssueCount
+  workItemBulkUpdate(input: $input) {
+    updatedWorkItemCount
   }
 }

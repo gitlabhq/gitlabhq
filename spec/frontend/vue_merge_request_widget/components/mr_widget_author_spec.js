@@ -37,7 +37,7 @@ describe('MrWidgetAuthor', () => {
   });
 
   it('renders image with avatar url', () => {
-    expect(wrapper.find('img').attributes('src')).toBe(
+    expect(wrapper.find('img').element.src).toBe(
       'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     );
   });
@@ -52,7 +52,7 @@ describe('MrWidgetAuthor', () => {
 
     await nextTick();
 
-    expect(wrapper.find('img').attributes('src')).toBe('no_avatar.png');
+    expect(wrapper.find('img').element.src).toBe('no_avatar.png');
   });
 
   it('renders author name', () => {

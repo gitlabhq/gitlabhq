@@ -232,6 +232,8 @@ Example response:
 
 ## Contributors
 
+> - `ref` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156852) in GitLab 17.4.
+
 Get repository contributors list. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
@@ -246,8 +248,16 @@ Supported attributes:
 | Attribute  | Type           | Required | Description |
 | :--------- | :------------- | :------- | :---------- |
 | `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `ref`      | string         | no       | The name of a repository branch or tag. If not given, the default branch. |
 | `order_by` | string         | no       | Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`. |
 | `sort`     | string         | no       | Return contributors sorted in `asc` or `desc` order. Default is `asc`. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/7/repository/contributors"
+```
 
 Example response:
 

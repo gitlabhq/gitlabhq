@@ -167,20 +167,6 @@ rspec background_migration pg14 praefect:
     - .rspec-background-migration-parallel
     - .rails:rules:praefect-with-db
 
-rspec migration pg14 clusterwide-db:
-  extends:
-    - rspec migration pg14
-    - .clusterwide-db
-    - .rspec-migration-parallel
-    - .rails:rules:clusterwide-db
-
-rspec background_migration pg14 clusterwide-db:
-  extends:
-    - rspec background_migration pg14
-    - .clusterwide-db
-    - .rspec-background-migration-parallel
-    - .rails:rules:clusterwide-db
-
 rspec unit pg14:
   extends:
     - .rspec-base-pg14
@@ -207,13 +193,6 @@ rspec unit pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-unit-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec unit pg14 clusterwide-db:
-  extends:
-    - rspec unit pg14
-    - .clusterwide-db
-    - .rspec-unit-parallel
-    - .rails:rules:clusterwide-db
 
 rspec unit pg14 praefect:
   extends:
@@ -248,13 +227,6 @@ rspec integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-integration-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec integration pg14 clusterwide-db:
-  extends:
-    - rspec integration pg14
-    - .clusterwide-db
-    - .rspec-integration-parallel
-    - .rails:rules:clusterwide-db
 
 rspec integration pg14 praefect:
   extends:
@@ -291,13 +263,6 @@ rspec system pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-system-parallel
     - .rails:rules:single-db-ci-connection
-
-rspec system pg14 clusterwide-db:
-  extends:
-    - rspec system pg14
-    - .clusterwide-db
-    - .rspec-system-parallel
-    - .rails:rules:clusterwide-db
 
 rspec system pg14 praefect:
   extends:
@@ -358,16 +323,6 @@ rspec-ee system pg14 no_gitaly_transactions:
     - rspec-ee system pg14
     - .ee-only-gitaly-without-transactions
 
-# Dedicated job to test DB library code against PG13.
-# Note that these are already tested against PG13 in the `rspec unit pg13` / `rspec-ee unit pg13` jobs.
-rspec db-library-code pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:ee-and-foss-db-library-code
-  script:
-    - !reference [.base-script, script]
-    - rspec_db_library_code
-
 rspec fast_spec_helper:
   extends:
     - .rspec-base-pg14
@@ -387,16 +342,26 @@ rspec-ee unit clickhouse:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:ee-only-clickhouse-changes
 
-rspec ci-config-validation:
+rspec ci-config-validation branch-pipelines:
   extends:
-    - .rspec-base-pg14
-    - .rails:rules:rspec-ci-config-validation
-  stage: test
+    - .ci-config-validation-base
   script:
     - !reference [.base-script, script]
-    - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/"
-  after_script:
-    - echo 'OK' # override after_script from .rspec-base
+    - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/branch_pipeline_spec.rb"
+
+rspec ci-config-validation pipeline-labels:
+  extends:
+    - .ci-config-validation-base
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/pipeline_labels_spec.rb"
+
+rspec ci-config-validation mr-pipelines:
+  extends:
+    - .ci-config-validation-base
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/merge_request_pipeline_spec.rb"
 
 gitlab:clickhouse:rollback:main:
   extends:
@@ -852,18 +817,6 @@ rspec-ee background_migration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee migration pg14 clusterwide-db:
-  extends:
-    - rspec-ee migration pg14
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
-rspec-ee background_migration pg14 clusterwide-db:
-  extends:
-    - rspec-ee background_migration pg14
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
 rspec-ee migration pg14 praefect:
   extends:
     - rspec migration pg14
@@ -910,13 +863,6 @@ rspec-ee unit pg14 single-db-ci-connection:
     - .rspec-ee-unit-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee unit pg14 clusterwide-db:
-  extends:
-    - rspec-ee unit pg14
-    - .clusterwide-db
-    - .rspec-ee-unit-parallel
-    - .rails:rules:clusterwide-db
-
 rspec-ee integration pg14:
   extends:
     - .rspec-ee-base-pg14
@@ -948,13 +894,6 @@ rspec-ee integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rspec-ee-integration-parallel
     - .rails:rules:single-db-ci-connection-ee
-
-rspec-ee integration pg14 clusterwide-db:
-  extends:
-    - rspec-ee integration pg14
-    - .clusterwide-db
-    - .rspec-ee-integration-parallel
-    - .rails:rules:clusterwide-db
 
 rspec-ee system pg14:
   extends:
@@ -988,50 +927,11 @@ rspec-ee system pg14 single-db-ci-connection:
     - .rspec-ee-system-parallel
     - .rails:rules:single-db-ci-connection-ee
 
-rspec-ee system pg14 clusterwide-db:
-  extends:
-    - rspec-ee system pg14
-    - .clusterwide-db
-    - .rspec-ee-system-parallel
-    - .rails:rules:clusterwide-db
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
-
-# PG13
-rspec migration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-migration-parallel
-
-rspec background_migration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rspec-base-migration
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-background-migration-parallel
-
-rspec unit pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-unit-parallel
-
-rspec integration pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-integration-parallel
-
-rspec system pg13:
-  extends:
-    - .rspec-base-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage
-    - .rspec-system-parallel
 
 # PG15
 rspec migration pg15:
@@ -1103,37 +1003,6 @@ rspec system pg16:
 
 #####################################
 # EE: default branch nightly scheduled jobs #
-
-# PG13
-rspec-ee unit pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-unit-parallel
-
-rspec-ee unit pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-integration-parallel
-
-rspec-ee integration pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg13 opensearch1:
-  extends:
-    - .rspec-ee-base-pg13-opensearch1
-    - .rspec-ee-system-parallel
-
-rspec-ee system pg13 opensearch2:
-  extends:
-    - .rspec-ee-base-pg13-opensearch2
-    - .rspec-ee-system-parallel
 
 # PG14
 rspec-ee unit pg14 opensearch1:
@@ -1368,7 +1237,7 @@ rspec fail-fast:
 rspec-ee fail-fast:
   extends:
     - .rspec-ee-base-pg14
-    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg13
+    - .rspec-fail-fast  # extends from .rspec-fail-fast last to override script from .rspec-ee-base-pg14
   variables:
     MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
 

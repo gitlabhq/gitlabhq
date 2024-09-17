@@ -26,8 +26,8 @@ describe('content/components/wrappers/html_comment', () => {
 
     const classList = wrapper.findComponent(NodeViewWrapper).attributes('class');
 
-    expect(classList).toContain('gl-border-gray-100 gl-border-dashed');
-    expect(classList).not.toContain('gl-border-blue-400 gl-border-solid');
+    expect(classList).toContain('gl-border-dashed gl-border-gray-100');
+    expect(classList).not.toContain('gl-border-solid gl-border-blue-400');
   });
 
   it('shows a blue focus border when selected', () => {
@@ -35,7 +35,7 @@ describe('content/components/wrappers/html_comment', () => {
 
     const classList = wrapper.findComponent(NodeViewWrapper).attributes('class');
 
-    expect(classList).toContain('gl-border-blue-400 gl-border-solid');
-    expect(classList).not.toContain('gl-border-gray-100 gl-border-dashed');
+    expect(classList).toContain('gl-border-solid gl-border-blue-400');
+    expect(classList).not.toContain('gl-border-dashed gl-border-gray-100');
   });
 });

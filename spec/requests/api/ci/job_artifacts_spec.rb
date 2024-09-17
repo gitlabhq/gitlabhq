@@ -318,7 +318,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
               it 'does not allow downloading artifacts' do
                 subject
 
-                expect(response).to have_gitlab_http_status(:not_found)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
 
               context 'when project is added to the job token scope' do
@@ -327,6 +327,17 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
                 end
 
                 it_behaves_like 'downloads artifact'
+
+                it 'logs context data about the job and route' do
+                  expect(::Gitlab::AppLogger).to receive(:info).with a_hash_including({
+                    job_id: other_job.id,
+                    job_user_id: other_job.user_id,
+                    job_project_id: other_job.project_id,
+                    'meta.caller_id' => 'GET /api/:version/projects/:id/jobs/:job_id/artifacts'
+                  })
+
+                  subject
+                end
               end
             end
           end

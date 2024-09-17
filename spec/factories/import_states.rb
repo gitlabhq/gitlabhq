@@ -11,7 +11,7 @@ FactoryBot.define do
     end
 
     trait :repository do
-      association :project, factory: [:project, :repository]
+      association :project, :repository
     end
 
     trait :none do

@@ -1194,6 +1194,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         using RSpec::Parameterized::TableSyntax
 
         where(:restricted_visibility_levels, :expected_groups) do
+          nil                                     | lazy { [private_group, internal_group, group] }
           []                                      | lazy { [private_group, internal_group, group] }
           [private_vis]                           | lazy { [internal_group, group] }
           [internal_vis]                          | lazy { [private_group, internal_group, group] }
@@ -1846,18 +1847,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     group.request_access(members[:requester])
 
     members
-  end
-
-  describe '#web_url' do
-    it 'returns the canonical URL' do
-      expect(group.web_url).to include("groups/#{group.name}")
-    end
-
-    context 'nested group' do
-      let(:nested_group) { create(:group, :nested) }
-
-      it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
-    end
   end
 
   describe 'nested group' do
@@ -3973,6 +3962,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       create(:project, :repository, namespace: group)
 
       expect(group.group_readme).to be(nil)
+    end
+  end
+
+  describe '#hook_attrs' do
+    it 'returns the hook attributes' do
+      expect(group.hook_attrs).to eq({
+        group_name: group.name,
+        group_path: group.path,
+        group_id: group.id,
+        full_path: group.full_path
+      })
     end
   end
 end

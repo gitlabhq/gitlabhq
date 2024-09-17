@@ -7,9 +7,9 @@
       = link_to help_page_path('user/project/integrations/mattermost_slash_commands'), target: '_blank' do
         = _("How do I configure this integration?")
         = sprite_icon('external-link')
-    %p.inline
+    %p.gl-inline-block
       = s_("MattermostService|After you configure the integration, view your new Mattermost commands by entering")
-    %kbd.inline /&lt;trigger&gt; help
+    %kbd.gl-inline-block /&lt;trigger&gt; help
     - if !enabled && integration.project_level?
       = render 'shared/integrations/mattermost_slash_commands/detailed_help', integration: integration
 

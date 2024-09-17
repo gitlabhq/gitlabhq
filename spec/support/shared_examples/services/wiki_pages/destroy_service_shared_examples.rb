@@ -5,6 +5,7 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
 
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }
+  let!(:wiki_page_meta) { create(:wiki_page_meta, container: container) }
 
   subject(:service) { described_class.new(container: container, current_user: user) }
 
@@ -36,10 +37,13 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     end
   end
 
-  it 'creates a new wiki page deletion event' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/216904
-    pending('group wiki support') if container_type == :group
+  # This test fails, because deleting a page seems to orphan WikiPage;:Meta and WikiPage::Slug records,
+  # but it's included for completeness for now.
+  pending 'deletes a WikiPage::Meta record' do
+    expect { service.execute(page) }.to change { WikiPage::Meta.count }.by(-1)
+  end
 
+  it 'creates a new wiki page deletion event' do
     expect { service.execute(page) }.to change { Event.count }.by 1
 
     expect(Event.recent.first).to have_attributes(

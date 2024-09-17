@@ -110,7 +110,7 @@ export default {
   <div v-show="file.showEditor">
     <div v-if="file.promptDiscardConfirmation" class="discard-changes-alert">
       {{ __('Are you sure you want to discard your changes?') }}
-      <div class="gl-ml-3 gl-display-inline-block">
+      <div class="gl-ml-3 gl-inline-block">
         <gl-button
           size="small"
           variant="danger"

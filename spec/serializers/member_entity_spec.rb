@@ -67,36 +67,36 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
     end
   end
 
-  shared_examples 'is_direct_member' do
-    context 'when `source` is the same as `member.source`' do
-      let(:source) { direct_member_source }
-
-      it 'exposes `is_direct_member` as `true`' do
-        expect(entity_hash[:is_direct_member]).to be(true)
-      end
-    end
-
-    context 'when `source` is not the same as `member.source`' do
-      let(:source) { inherited_member_source }
-
-      it 'exposes `is_direct_member` as `false`' do
-        expect(entity_hash[:is_direct_member]).to be(false)
-      end
-    end
-  end
-
   shared_examples 'user state is blocked_pending_approval' do
     it 'displays proper user state' do
       expect(entity_hash[:invite][:user_state]).to eq('blocked_pending_approval')
     end
   end
 
+  shared_examples 'exposes source type properties' do |is_direct_member, is_inherited_member, is_shared_member|
+    it "exposes `is_direct_member` as `#{is_direct_member}`" do
+      expect(entity_hash[:is_direct_member]).to be(is_direct_member)
+    end
+
+    it "exposes `is_inherited_member` as `#{is_inherited_member}`" do
+      expect(entity_hash[:is_inherited_member]).to be(is_inherited_member)
+    end
+
+    it "exposes `is_shared_member` as `#{is_shared_member}`" do
+      expect(entity_hash[:is_shared_member]).to be(is_shared_member)
+    end
+  end
+
   context 'group member' do
-    let(:group) { create(:group) }
-    let(:source) { group }
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: parent_group) }
+    let_it_be(:shared_group) { create(:group) }
+
+    let(:group) { subgroup }
+    let(:source) { subgroup }
     let(:member) do
       GroupMemberPresenter.new(
-        create(:group_member, group: group, created_by: current_user), current_user: current_user
+        create(:group_member, source: subgroup, created_by: current_user), current_user: current_user
       )
     end
 
@@ -105,7 +105,7 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
     context 'invite' do
       let(:member) do
         GroupMemberPresenter.new(
-          create(:group_member, :invited, group: group, created_by: current_user), current_user: current_user
+          create(:group_member, :invited, source: subgroup, created_by: current_user), current_user: current_user
         )
       end
 
@@ -113,11 +113,30 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
       it_behaves_like 'invite'
     end
 
-    context 'is_direct_member' do
-      let(:direct_member_source) { group }
-      let(:inherited_member_source) { create(:group) }
+    context 'direct member' do
+      it_behaves_like 'exposes source type properties', true, false, false
+    end
 
-      it_behaves_like 'is_direct_member'
+    context 'inherited member' do
+      let(:member) do
+        GroupMemberPresenter.new(
+          create(:group_member, source: parent_group, created_by: current_user), current_user: current_user
+        )
+      end
+
+      it_behaves_like 'exposes source type properties', false, true, false
+    end
+
+    context 'shared member' do
+      let(:member) do
+        GroupMemberPresenter.new(
+          create(:group_member, source: shared_group, created_by: current_user), current_user: current_user
+        )
+      end
+
+      let(:group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: subgroup) }
+
+      it_behaves_like 'exposes source type properties', false, false, true
     end
 
     context 'is_last_owner' do
@@ -144,7 +163,7 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
 
     context 'new member user state is blocked_pending_approval' do
       let(:user) { create(:user, :blocked_pending_approval) }
-      let(:group_member) { create(:group_member, :invited, group: group, invite_email: user.email) }
+      let(:group_member) { create(:group_member, :invited, group: subgroup, invite_email: user.email) }
       let(:member) { GroupMemberPresenter.new(GroupMember.with_invited_user_state.find(group_member.id), current_user: current_user) }
 
       it_behaves_like 'user state is blocked_pending_approval'
@@ -152,12 +171,16 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
   end
 
   context 'project member' do
-    let(:project) { create(:project) }
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: parent_group) }
+    let_it_be(:shared_group) { create(:group) }
+    let_it_be(:personal_project) { create(:project) }
+
     let(:group) { project.group }
     let(:source) { project }
     let(:member) do
       ProjectMemberPresenter.new(
-        create(:project_member, project: project, created_by: current_user), current_user: current_user
+        create(:project_member, source: source, created_by: current_user), current_user: current_user
       )
     end
 
@@ -166,7 +189,7 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
     context 'invite' do
       let(:member) do
         ProjectMemberPresenter.new(
-          create(:project_member, :invited, project: project, created_by: current_user), current_user: current_user
+          create(:project_member, :invited, source: source, created_by: current_user), current_user: current_user
         )
       end
 
@@ -174,16 +197,49 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
       it_behaves_like 'invite'
     end
 
-    context 'is_direct_member' do
-      let(:direct_member_source) { project }
-      let(:inherited_member_source) { group }
+    context 'direct member' do
+      it_behaves_like 'exposes source type properties', true, false, false
 
-      it_behaves_like 'is_direct_member'
+      context 'personal project' do
+        let(:source) { personal_project }
+        let(:group) { nil }
+
+        it_behaves_like 'exposes source type properties', true, false, false
+      end
+    end
+
+    context 'inherited member' do
+      let(:member) do
+        GroupMemberPresenter.new(
+          create(:group_member, source: parent_group, created_by: current_user), current_user: current_user
+        )
+      end
+
+      it_behaves_like 'exposes source type properties', false, true, false
+    end
+
+    context 'shared member' do
+      let(:member) do
+        GroupMemberPresenter.new(
+          create(:group_member, source: shared_group, created_by: current_user), current_user: current_user
+        )
+      end
+
+      let(:project_group_link) { create(:project_group_link, group: shared_group, project: project) }
+
+      it_behaves_like 'exposes source type properties', false, false, true
+
+      context 'personal project' do
+        let(:source) { personal_project }
+        let(:group) { nil }
+
+        it_behaves_like 'exposes source type properties', false, false, true
+      end
     end
 
     context 'new members user state is blocked_pending_approval' do
       let(:user) { create(:user, :blocked_pending_approval) }
-      let(:project_member) { create(:project_member, :invited, project: project, invite_email: user.email) }
+      let(:project_member) { create(:project_member, :invited, source: project, invite_email: user.email) }
       let(:member) { ProjectMemberPresenter.new(ProjectMember.with_invited_user_state.find(project_member.id), current_user: current_user) }
 
       it_behaves_like 'user state is blocked_pending_approval'

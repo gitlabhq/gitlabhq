@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Diffs tree list component pinned file files in folders pins 1.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links 1.rb file 1`] = `
 [
   "📁folder/",
   "──1.rb",
@@ -18,7 +18,7 @@ exports[`Diffs tree list component pinned file files in folders pins 1.rb file 1
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins 2.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links 2.rb file 1`] = `
 [
   "📁folder/",
   "──2.rb",
@@ -36,7 +36,7 @@ exports[`Diffs tree list component pinned file files in folders pins 2.rb file 1
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins 3.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links 3.rb file 1`] = `
 [
   "📁folder/",
   "──3.rb",
@@ -54,7 +54,7 @@ exports[`Diffs tree list component pinned file files in folders pins 3.rb file 1
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins nested-1.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links nested-1.rb file 1`] = `
 [
   "📁folder/sub-folder/",
   "──nested-1.rb",
@@ -72,7 +72,7 @@ exports[`Diffs tree list component pinned file files in folders pins nested-1.rb
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins nested-2.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links nested-2.rb file 1`] = `
 [
   "📁folder/sub-folder/",
   "──nested-2.rb",
@@ -90,7 +90,7 @@ exports[`Diffs tree list component pinned file files in folders pins nested-2.rb
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins nested-3.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links nested-3.rb file 1`] = `
 [
   "📁folder/sub-folder/",
   "──nested-3.rb",
@@ -108,7 +108,7 @@ exports[`Diffs tree list component pinned file files in folders pins nested-3.rb
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins root-first.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links root-first.rb file 1`] = `
 [
   "root-first.rb",
   "📁folder",
@@ -125,7 +125,7 @@ exports[`Diffs tree list component pinned file files in folders pins root-first.
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins root-last.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links root-last.rb file 1`] = `
 [
   "root-last.rb",
   "📁folder",
@@ -142,7 +142,7 @@ exports[`Diffs tree list component pinned file files in folders pins root-last.r
 ]
 `;
 
-exports[`Diffs tree list component pinned file files in folders pins single.rb file 1`] = `
+exports[`Diffs tree list component linked file files in folders links single.rb file 1`] = `
 [
   "📁folder-single/",
   "──single.rb",

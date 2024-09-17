@@ -76,6 +76,8 @@ RSpec.describe RuboCop::Cop::Migration::BatchedMigrationBaseClass, feature_categ
 
   it_behaves_like 'inheritance from the right base class does not register an offense', 'BatchedMigrationJob'
   it_behaves_like 'inheritance from the right base class does not register an offense', 'BackfillDesiredShardingKeyJob'
+  it_behaves_like 'inheritance from the right base class does not register an offense',
+    'BackfillDesiredShardingKeyPartitionJob'
 
   context 'when the migration class inherits from another class' do
     it 'registers an offense' do

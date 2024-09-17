@@ -90,7 +90,7 @@ RSpec.describe UserPolicy do
         subject { described_class.new(current_user, current_user) }
 
         context 'when current_user is not blocked' do
-          it { is_expected.to be_allowed(:get_user_associations_count ) }
+          it { is_expected.to be_allowed(:get_user_associations_count) }
         end
 
         context 'when current_user is blocked' do
@@ -112,7 +112,7 @@ RSpec.describe UserPolicy do
         subject { described_class.new(current_user, current_user) }
 
         context 'when current_user is not blocked' do
-          it { is_expected.to be_allowed(:get_user_associations_count ) }
+          it { is_expected.to be_allowed(:get_user_associations_count) }
         end
 
         context 'when current_user is blocked' do
@@ -299,6 +299,32 @@ RSpec.describe UserPolicy do
       context "requesting a different user's" do
         it { is_expected.not_to be_allowed(:read_user_email_address) }
         it { is_expected.not_to be_allowed(:admin_user_email_address) }
+      end
+    end
+  end
+
+  describe ':read_user_preference' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_user_preference) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:read_user_preference) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      context 'requesting their own' do
+        subject { described_class.new(current_user, current_user) }
+
+        it { is_expected.to be_allowed(:read_user_preference) }
+      end
+
+      context "requesting a different user's" do
+        it { is_expected.not_to be_allowed(:read_user_preference) }
       end
     end
   end

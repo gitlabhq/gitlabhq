@@ -136,13 +136,11 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-relative gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-align-items-center gl-my-4"
-    >
+    <div class="gl-relative gl-my-4 gl-flex gl-flex-wrap gl-items-center sm:gl-flex-nowrap">
       <gl-loading-icon
         v-if="isSwitcherLoading"
         data-testid="switcher-loading-state"
-        class="gl-absolute gl-w-full gl-bg-white gl-opacity-5 gl-z-2"
+        class="gl-absolute gl-z-2 gl-w-full gl-bg-white gl-opacity-5"
         size="lg"
       />
       <span class="gl-font-bold">{{ $options.i18n.viewLabelText }}</span>
@@ -157,11 +155,11 @@ export default {
         </gl-button>
       </gl-button-group>
 
-      <div v-if="showLinksToggle" class="gl-display-flex gl-align-items-center">
+      <div v-if="showLinksToggle" class="gl-flex gl-items-center">
         <gl-toggle
           v-model="showLinksActive"
           data-testid="show-links-toggle"
-          class="gl-sm-ml-4 gl-mt-4 gl-sm-mt-0"
+          class="gl-sm-ml-4 gl-mt-4 sm:gl-mt-0"
           :label="$options.i18n.linksLabelText"
           :is-loading="isToggleLoading"
           label-position="left"

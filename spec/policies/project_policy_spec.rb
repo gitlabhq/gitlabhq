@@ -129,6 +129,45 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'condition project_allowed_for_job_token' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new(current_user, project).project_allowed_for_job_token? }
+
+    where(:project_visibility, :role, :project_in_allowlist, :allowed) do
+      :public   | :developer | true  | true
+      :public   | :developer | false | true
+      :public   | :owner     | true  | true
+      :public   | :owner     | false | true
+      :internal | :developer | true  | true
+      :internal | :developer | false | true
+      :internal | :owner     | true  | true
+      :internal | :owner     | false | true
+      :private  | :developer | true  | true
+      :private  | :developer | false | false
+      :private  | :owner     | true  | true
+      :private  | :owner     | false | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+      let(:scope_project) { public_project }
+      let(:project) { public_send("#{project_visibility}_project") }
+      let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
+
+      before do
+        allow(current_user).to receive(:ci_job_token_scope).and_return(current_user.set_ci_job_token_scope!(job))
+        allow(current_user.ci_job_token_scope).to receive(:accessible?).with(project).and_return(project_in_allowlist)
+      end
+
+      if params[:allowed]
+        it { is_expected.to be_truthy }
+      else
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   context 'creating_merge_request_in' do
     context 'when the current_user can download_code' do
       before do
@@ -1076,56 +1115,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'read_prometheus_alerts' do
-    context 'with admin' do
-      let(:current_user) { admin }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_prometheus_alerts) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:read_prometheus_alerts) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:read_prometheus_alerts) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:read_prometheus_alerts) }
-    end
-
-    context 'with developer' do
-      let(:current_user) { developer }
-
-      it { is_expected.to be_disallowed(:read_prometheus_alerts) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:read_prometheus_alerts) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { is_expected.to be_disallowed(:read_prometheus_alerts) }
-    end
-
-    context 'with anonymous' do
-      let(:current_user) { anonymous }
-
-      it { is_expected.to be_disallowed(:read_prometheus_alerts) }
-    end
-  end
-
   describe 'metrics_dashboard feature' do
     context 'public project' do
       let(:project) { public_project }
@@ -1137,8 +1126,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do
@@ -1165,8 +1152,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do
@@ -1175,8 +1160,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_disallowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with anonymous' do
@@ -1185,8 +1168,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_disallowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_disallowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_disallowed(:create_metrics_user_starred_dashboard) }
         end
       end
     end
@@ -1201,8 +1182,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do
@@ -1231,8 +1210,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do
@@ -1241,8 +1218,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_disallowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with anonymous' do
@@ -1264,8 +1239,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do
@@ -1290,8 +1263,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           it { is_expected.to be_allowed(:metrics_dashboard) }
           it { is_expected.to be_allowed(:read_prometheus) }
           it { is_expected.to be_allowed(:read_deployment) }
-          it { is_expected.to be_allowed(:read_metrics_user_starred_dashboard) }
-          it { is_expected.to be_allowed(:create_metrics_user_starred_dashboard) }
         end
 
         context 'with guest' do

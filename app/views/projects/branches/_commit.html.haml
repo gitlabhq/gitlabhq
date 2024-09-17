@@ -1,9 +1,9 @@
 - class_name = local_assigns.fetch(:class_name, '')
 
-.branch-commit.gl-font-sm.gl-text-gray-500.gl-text-truncate{ class: class_name }
+.branch-commit.gl-text-sm.gl-text-gray-500.gl-truncate{ class: class_name }
   = link_to commit.short_id, project_commit_path(project, commit.id), class: "commit-sha"
   &middot;
   %span
-    = link_to_markdown commit.title, project_commit_path(project, commit.id), class: "commit-row-message gl-text-gray-500!"
+    = link_to_markdown commit.title, project_commit_path(project, commit.id), class: "commit-row-message !gl-text-gray-500"
   &middot;
   %span.gl-text-secondary= time_ago_with_tooltip(commit.committed_date)

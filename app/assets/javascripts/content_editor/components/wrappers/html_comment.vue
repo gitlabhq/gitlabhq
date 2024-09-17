@@ -22,10 +22,10 @@ export default {
 <template>
   <node-view-wrapper
     as="div"
-    class="content-editor-placeholder-container gl-rounded-base gl-border-1 gl-p-3 gl-relative !gl-cursor-pointer"
+    class="content-editor-placeholder-container gl-relative !gl-cursor-pointer gl-rounded-base gl-border-1 gl-p-3"
     :class="{
-      'gl-border-blue-400 gl-border-solid': selected,
-      'gl-border-gray-100 gl-border-dashed': !selected,
+      'gl-border-solid gl-border-blue-400': selected,
+      'gl-border-dashed gl-border-gray-100': !selected,
     }"
   >
     <span contenteditable="false" class="!gl-whitespace-pre-wrap gl-italic gl-text-secondary">{{

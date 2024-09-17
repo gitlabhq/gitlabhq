@@ -61,7 +61,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :fleet_v
       let(:finder) { instance_double(::Ci::RunnersFinder) }
       let(:args) do
         {
-          status: 'active',
+          status: 'online',
           type: :group_type,
           tag_list: ['active_runner'],
           search: 'abc',
@@ -71,7 +71,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :fleet_v
 
       let(:expected_params) do
         {
-          status_status: 'active',
+          status_status: 'online',
           type_type: :group_type,
           tag_name: ['active_runner'],
           preload: {},

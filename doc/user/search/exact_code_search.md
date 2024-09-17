@@ -43,7 +43,8 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 With the Zoekt search API, you can use the [search API](../../api/search.md) for exact code search.
-When this feature is disabled, [advanced search](advanced_search.md) or [basic search](index.md) is used instead.
+If you want to use [advanced search](advanced_search.md) or basic search instead, see
+[specify a search type](index.md#specify-a-search-type).
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 To request access to this feature, contact GitLab.
@@ -96,3 +97,10 @@ This table shows some example queries for regular expression and exact match mod
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`           | `foo` in files with names that end with `.js` |
 | `foo.*bar`           | `foo.*bar` (regular expression)                         | None                           |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names | `foo` in symbols like class, method, and variable names |
+
+## Known issues
+
+- You can only search files smaller than 1 MB with less than `20_000` trigrams.
+  For more information, see [issue 455073](https://gitlab.com/gitlab-org/gitlab/-/issues/455073).
+- You can use exact code search on the default branch of a project only.
+  For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).

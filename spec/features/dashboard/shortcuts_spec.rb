@@ -16,15 +16,15 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
     it 'navigate to tabs' do
       find('body').send_keys([:shift, 'I'])
 
-      check_page_title('Assigned issues')
+      check_page_title('Issues')
 
       find('body').send_keys([:shift, 'M'])
 
-      check_page_title('Assigned merge requests')
+      check_page_title('Merge requests')
 
       find('body').send_keys([:shift, 'R'])
 
-      check_page_title('Review requests')
+      check_page_title('Merge requests')
 
       find('body').send_keys([:shift, 'T'])
 

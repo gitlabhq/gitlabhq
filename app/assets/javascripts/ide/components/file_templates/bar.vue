@@ -82,7 +82,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center ide-file-templates gl-relative gl-z-1"
+    class="ide-file-templates gl-relative gl-z-1 gl-flex gl-items-center"
     data-testid="file-templates-bar"
   >
     <strong class="gl-mr-3"> {{ $options.i18n.barLabel }} </strong>

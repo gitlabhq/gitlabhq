@@ -3,9 +3,12 @@ import { GlSprintf, GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlobFooter from '~/search/results/components/blob_footer.vue';
 import eventHub from '~/search/results/event_hub';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS } from '~/search/results/tracking';
 import { mockDataForBlobBody } from '../../mock_data';
 
 describe('BlobFooter', () => {
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
   let wrapper;
   let spy;
 
@@ -28,6 +31,7 @@ describe('BlobFooter', () => {
     beforeEach(() => {
       createComponent({
         file: mockDataForBlobBody,
+        position: 1,
       });
       spy = jest.spyOn(eventHub, '$emit');
     });
@@ -51,11 +55,6 @@ describe('BlobFooter', () => {
   describe('component with too many results', () => {
     beforeEach(() => {
       createComponent({
-        // matchCountTotal: 100,
-        // matchCount: 100,
-        // filePath: 'test/file.js',
-        // projectPath: 'Testjs/Test',
-        // fileLink: 'https://gitlab.com/test/file.js',
         file: {
           ...mockDataForBlobBody,
           chunks: [
@@ -87,6 +86,7 @@ describe('BlobFooter', () => {
           ],
           matchCountTotal: 200,
         },
+        position: 1,
       });
     });
 
@@ -101,6 +101,31 @@ describe('BlobFooter', () => {
       expect(findGlLink().exists()).toBe(true);
       expect(wrapper.text()).toContain(
         'Show less - Too many matches found. Showing 50 chunks out of 200 results. Open the file to view all.',
+      );
+    });
+
+    it(`tracks show more or less click`, () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findGlButton().vm.$emit('click', { value: 1 });
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS,
+        {
+          label: '1',
+          property: 'open',
+        },
+        undefined,
+      );
+
+      findGlButton().vm.$emit('click', { value: 1 });
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS,
+        {
+          label: '1',
+          property: 'close',
+        },
+        undefined,
       );
     });
   });

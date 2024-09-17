@@ -524,7 +524,7 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 		size, err := strconv.Atoi(r.FormValue("file.size"))
 		assert.NoError(t, err)
 		assert.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
-		assert.Greater(t, size, 0, "Expected to receive non-empty file")
+		assert.Positive(t, size, 0, "Expected to receive non-empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -542,7 +542,7 @@ func TestUploadHandlerRemovingExifTiff(t *testing.T) {
 		size, err := strconv.Atoi(r.FormValue("file.size"))
 		assert.NoError(t, err)
 		assert.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
-		assert.Greater(t, size, 0, "Expected to receive not empty file")
+		assert.Positive(t, size, 0, "Expected to receive not empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")

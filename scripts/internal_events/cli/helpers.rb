@@ -6,6 +6,7 @@ require_relative './helpers/formatting'
 require_relative './helpers/group_ownership'
 require_relative './helpers/event_options'
 require_relative './helpers/metric_options'
+require_relative './helpers/service_ping_dashboards'
 
 module InternalEventsCli
   module Helpers
@@ -15,6 +16,7 @@ module InternalEventsCli
     include GroupOwnership
     include EventOptions
     include MetricOptions
+    include ServicePingDashboards
 
     MILESTONE = File.read('VERSION').strip.match(/(\d+\.\d+)/).captures.first
     NAME_REGEX = /\A[a-z0-9_]+\z/

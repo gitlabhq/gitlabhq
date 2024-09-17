@@ -9,6 +9,8 @@ module Types
 
       connection_type_class Types::LimitedCountableConnectionType
 
+      markdown_field :description_html, null: true
+
       field :id, ::Types::GlobalIDType[::Ml::ModelVersion], null: false, description: 'ID of the model version.'
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'

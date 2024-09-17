@@ -9,11 +9,9 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
   let_it_be(:merge_request) { build(:merge_request, source_project: project) }
   let(:params) { { skip_locked_lfs_files_check: skip_check } }
   let(:skip_check) { false }
-  let(:feature_flag_enabled) { true }
   let(:lfs_enabled) { true }
 
   before do
-    stub_feature_flags(locked_lfs_files_mergeability_check: feature_flag_enabled)
     allow(project).to receive(:lfs_enabled?).and_return(lfs_enabled)
   end
 
@@ -110,12 +108,6 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
       end
 
       it { expect(cache_key).to eq(expected_cache_key) }
-    end
-
-    context 'when the feature flag is disabled' do
-      let(:feature_flag_enabled) { false }
-
-      it { expect(cache_key).to eq('inactive_lfs_file_locks_mergeability_check') }
     end
 
     context 'when lfs is disabled' do

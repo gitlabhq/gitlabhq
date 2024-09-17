@@ -52,6 +52,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   include StubRequests
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
@@ -892,6 +893,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'sorting' do
+      context 'by star_count' do
+        let_it_be(:project_most_stars) { create(:project, :public, star_count: 100) }
+        let_it_be(:project_no_stars) { create(:project, :public, star_count: 0) }
+        let_it_be(:project_few_stars) { create(:project, :public, star_count: 10) }
+
+        it 'with order_by=star_count, returns list of projects sorted by star_count descending' do
+          get api(path), params: { order_by: 'star_count' }
+
+          expected_order = [project_most_stars, project_few_stars, project_no_stars, public_project]
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |x| x['id'] }).to eq(expected_order.map(&:id))
+        end
+      end
+
       context 'by project statistics' do
         %w[repository_size storage_size wiki_size packages_size].each do |order_by|
           context "sorting by #{order_by}" do
@@ -1322,6 +1340,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
           infrastructure_access_level monitor_access_level model_experiments_access_level model_registry_access_level
+          namespace
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -1345,6 +1364,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.snippets_access_level).to eq(ProjectFeature::DISABLED)
+
+      # Check namespace attributes
+      expect(project.namespace.id).to eq(user.namespace.id)
+      expect(project.namespace.name).to eq(user.namespace.name)
+      expect(project.namespace.path).to eq(user.namespace.path)
+      expect(project.namespace.kind).to eq(user.namespace.kind)
+      expect(project.namespace.full_path).to eq(user.namespace.full_path)
+      expect(project.namespace.parent_id).to be_nil
+      expect(project.namespace.avatar_url).to eq(user.namespace.avatar_url)
+      expect(project.namespace.web_url).to eq(user.namespace.web_url)
     end
 
     it 'assigns container_registry_enabled to project' do
@@ -2113,10 +2142,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(response).to have_gitlab_http_status(:created)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker has_external_wiki path storage_version].include?(k)
+        next if %i[has_external_issue_tracker has_external_wiki path storage_version namespace].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
+
+      # Check namespace
+      created_project = Project.find_by_path(project[:path])
+      expect(created_project.namespace.id).to eq(user.namespace.id)
     end
 
     it 'sets a project as public' do
@@ -3745,6 +3778,160 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user), params: { group_id: non_existing_record_id, group_access: Gitlab::Access::DEVELOPER }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/invited_groups' do
+    let_it_be(:main_group) { create(:group, :private, owners: user1) }
+    let_it_be(:direct_group1) { create(:group, :private, owners: user1) }
+    let_it_be(:direct_group2) { create(:group, :private, owners: user1) }
+    let_it_be(:inherited_group) { create(:group, :private, owners: user1) }
+    let_it_be(:main_project) { create(:project, group: main_group, owners: user1) }
+
+    let(:path) { "/projects/#{main_project.id}/invited_groups" }
+
+    before do
+      create(:group_group_link, shared_group: main_group, shared_with_group: inherited_group)
+      create(:project_group_link, group: direct_group1, project: main_project)
+      create(:project_group_link, group: direct_group2, project: main_project)
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_invited_groups_api do
+      def request
+        get api(path)
+      end
+    end
+
+    context 'when authenticated as user' do
+      it 'returns the invited groups in the project', :aggregate_failures do
+        get api(path, user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(3)
+        group_ids = json_response.map { |group| group['id'] }
+        expect(group_ids).to contain_exactly(direct_group1.id, direct_group2.id, inherited_group.id)
+      end
+    end
+
+    context 'when authenticated and user does not have the access' do
+      it 'does not return the invited groups in the project', :aggregate_failures do
+        get api(path, user2)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when unauthenticated as user' do
+      let_it_be(:main_group) { create(:group, :public, owners: user2) }
+      let_it_be(:direct_group_1) { create(:group, :public, owners: user2) }
+      let_it_be(:direct_group_2) { create(:group, :private, owners: user2) }
+      let_it_be(:new_project) { create(:project, :public, group: main_group, owners: user2) }
+
+      let(:path) { "/projects/#{new_project.id}/invited_groups" }
+
+      before do
+        create(:project_group_link, group: direct_group_1, project: new_project)
+        create(:project_group_link, group: direct_group_2, project: new_project)
+      end
+
+      it 'only returns the invited public groups in the project', :aggregate_failures do
+        get api(path)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(1)
+        group_ids = json_response.map { |group| group['id'] }
+        expect(group_ids).to contain_exactly(direct_group_1.id)
+      end
+    end
+
+    context "when search is present in request" do
+      let_it_be(:direct_group_1) { create(:group, :public, name: "new direct", owners: user1) }
+      let_it_be(:direct_group_2) { create(:group, :private, name: "other direct", owners: user1) }
+      let_it_be(:new_project) { create(:project, :public, owners: user1) }
+
+      let(:path) { "/projects/#{new_project.id}/invited_groups" }
+
+      before do
+        create(:project_group_link, group: direct_group_1, project: new_project)
+        create(:project_group_link, group: direct_group_2, project: new_project)
+      end
+
+      it 'filters the invited groups in the group based on search params', :aggregate_failures do
+        get api(path, user1), params: { search: 'new' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(direct_group_1.id)
+      end
+    end
+
+    context 'when using min_access_level in the request' do
+      let_it_be(:new_direct_group) { create(:group, :public, name: "new direct") }
+      let_it_be(:other_direct_group) { create(:group, :private, name: "other direct") }
+      let_it_be(:new_project) { create(:project, :public) }
+
+      let(:path) { "/projects/#{new_project.id}/invited_groups" }
+
+      before do
+        new_direct_group.add_developer(user1)
+        other_direct_group.add_owner(user1)
+        create(:project_group_link, group: new_direct_group, project: new_project)
+        create(:project_group_link, group: other_direct_group, project: new_project)
+      end
+
+      context 'with min_access_level parameter' do
+        it 'returns an array of groups the user has at least owner access', :aggregate_failures do
+          get api(path, user1), params: { min_access_level: Gitlab::Access::OWNER }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |group| group['id'] }).to contain_exactly(other_direct_group.id)
+        end
+      end
+    end
+
+    context "when include_relation is present in request" do
+      let_it_be(:relation_main_group) { create(:group, :private, owners: user1) }
+      let_it_be(:direct_group) { create(:group, owners: user1) }
+      let_it_be(:inherited_group) { create(:group, owners: user1) }
+      let_it_be(:new_relation_project) { create(:project, group: relation_main_group) }
+
+      let(:path) { "/projects/#{new_relation_project.id}/invited_groups" }
+
+      before do
+        create(:project_group_link, group: direct_group, project: new_relation_project)
+        create(:group_group_link, shared_group: relation_main_group, shared_with_group: inherited_group)
+      end
+
+      it 'filters the invited groups in the project based on direct relation params', :aggregate_failures do
+        get api(path, user1), params: { relation: ['direct'] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.map { |group| group['id'] }).to contain_exactly(direct_group.id)
+      end
+
+      it 'filters the invited groups in the project based on inherited relation params', :aggregate_failures do
+        get api(path, user1), params: { relation: ['inherited'] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.map { |group| group['id'] }).to contain_exactly(inherited_group.id)
+      end
+
+      it 'returns error message when include relation is invalid' do
+        get api(path, user1), params: { relation: ['some random'] }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq("relation does not have a valid value")
       end
     end
   end

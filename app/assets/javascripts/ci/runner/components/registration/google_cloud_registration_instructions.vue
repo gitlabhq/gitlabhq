@@ -250,13 +250,7 @@ export default {
         <gl-sprintf :message="tokenMessage">
           <template #token>
             <code data-testid="runner-token">{{ token }}</code>
-            <clipboard-button
-              :text="token"
-              :title="__('Copy')"
-              size="small"
-              category="tertiary"
-              class="gl-border-none!"
-            />
+            <clipboard-button :text="token" :title="__('Copy')" size="small" category="tertiary" />
           </template>
           <template #bold="{ content }">
             <span class="gl-font-bold">{{ content }}</span>

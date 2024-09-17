@@ -7,7 +7,7 @@ import { MOCK_PROJECT, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import ProjectFilter from '~/search/sidebar/components/project_filter.vue';
-import SearchableDropdown from '~/search/sidebar/components/searchable_dropdown.vue';
+import SearchableDropdown from '~/search/sidebar/components/shared/searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/sidebar/constants';
 
 Vue.use(Vuex);

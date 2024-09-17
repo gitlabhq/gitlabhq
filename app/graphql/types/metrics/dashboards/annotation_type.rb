@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+# Deprecated:
+#   All remaining references to this type always return nil.
+#   Remove during any major release.
 module Types
   module Metrics
     module Dashboards
+      # rubocop:disable Graphql/AuthorizeTypes -- there is no object to authorize
       class AnnotationType < ::Types::BaseObject
         graphql_name 'MetricsDashboardAnnotation'
-        authorize :read_metrics_dashboard_annotation
 
         field :description, GraphQL::Types::String, null: true,
           description: 'Description of the annotation.'
@@ -25,6 +28,7 @@ module Types
         field :ending_at, Types::TimeType, null: true,
           description: 'Timestamp marking end of annotated time span.'
       end
+      # rubocop:enable Graphql/AuthorizeTypes
     end
   end
 end

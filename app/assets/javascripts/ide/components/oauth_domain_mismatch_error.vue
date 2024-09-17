@@ -1,41 +1,38 @@
 <script>
-import { GlButton, GlSprintf, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlDisclosureDropdown } from '@gitlab/ui';
 import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { s__ } from '~/locale';
-import { logError } from '~/lib/logger';
+import { joinPaths, stripRelativeUrlRootFromPath } from '~/lib/utils/url_utility';
 
 export default {
   name: 'OAuthDomainMismatchError',
   components: {
     GlButton,
     GlSprintf,
-    GlCollapsibleListbox,
-    GlIcon,
+    GlDisclosureDropdown,
   },
   props: {
-    callbackUrlOrigins: {
+    expectedCallbackUrl: {
+      type: String,
+      required: true,
+    },
+    callbackUrls: {
       type: Array,
       required: true,
     },
   },
   computed: {
     dropdownItems() {
-      return this.callbackUrlOrigins.map((domain) => {
-        return {
-          value: domain,
-          text: domain,
-        };
-      });
-    },
-  },
-  methods: {
-    reloadPage(urlDomain) {
-      try {
-        const current = new URL(urlDomain + window.location.pathname);
-        window.location.replace(current.toString());
-      } catch (e) {
-        logError(s__('IDE|Error reloading page'), e);
-      }
+      const currentOrigin = window.location.origin;
+
+      return this.callbackUrls
+        .filter(({ base }) => new URL(base).origin !== currentOrigin)
+        .map(({ base }) => {
+          return {
+            href: joinPaths(base, stripRelativeUrlRootFromPath(window.location.pathname)),
+            text: base,
+          };
+        });
     },
   },
   gitlabLogo: GITLAB_LOGO_SVG_URL,
@@ -50,6 +47,7 @@ export default {
     description: s__(
       "IDE|The URL you're using to access the Web IDE and the configured OAuth callback URL do not match. This issue often occurs when you're using a proxy.",
     ),
+    expected: s__('IDE|Could not find a callback URL entry for %{expectedCallbackUrl}.'),
     contact: s__(
       'IDE|Contact your administrator or try to open the Web IDE again with another domain.',
     ),
@@ -57,34 +55,35 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-h-full flex gl-justify-center gl-items-center overflow-auto">
+  <div class="overflow-auto gl-flex gl-h-full gl-items-center gl-justify-center">
     <div class="text-center gl-max-w-75 gl-p-4">
-      <img :alt="$options.i18n.imgAlt" :src="$options.gitlabLogo" class="svg gl-w-12 gl-h-12" />
+      <img :alt="$options.i18n.imgAlt" :src="$options.gitlabLogo" class="svg gl-h-12 gl-w-12" />
       <h1 class="gl-heading-display gl-my-6">{{ $options.i18n.heading }}</h1>
       <p>
         {{ $options.i18n.description }}
       </p>
+      <gl-sprintf :message="$options.i18n.expected">
+        <template #expectedCallbackUrl>
+          <code>{{ expectedCallbackUrl }}</code>
+        </template>
+      </gl-sprintf>
       <p>
         {{ $options.i18n.contact }}
       </p>
       <div class="gl-mt-6">
-        <gl-collapsible-listbox
-          v-if="callbackUrlOrigins.length > 1"
+        <gl-disclosure-dropdown
+          v-if="dropdownItems.length > 1"
           :items="dropdownItems"
-          :header-text="$options.i18n.dropdownHeader"
-          @select="reloadPage"
+          :toggle-text="$options.i18n.buttonText.domains"
+        />
+        <gl-button
+          v-else-if="dropdownItems.length === 1"
+          variant="confirm"
+          :href="dropdownItems[0].href"
         >
-          <template #toggle>
-            <gl-button variant="confirm" class="self-center">
-              {{ $options.i18n.buttonText.domains }}
-              <gl-icon class="dropdown-chevron gl-ml-2" name="chevron-down" />
-            </gl-button>
-          </template>
-        </gl-collapsible-listbox>
-        <gl-button v-else variant="confirm" @click="reloadPage(callbackUrlOrigins[0])">
           <gl-sprintf :message="$options.i18n.buttonText.singleDomain">
             <template #domain>
-              {{ callbackUrlOrigins[0] }}
+              {{ dropdownItems[0].text }}
             </template>
           </gl-sprintf>
         </gl-button>

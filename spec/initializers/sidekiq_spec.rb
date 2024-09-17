@@ -51,7 +51,7 @@ RSpec.describe 'sidekiq', feature_category: :build do
     it 'loads the cron jobs into sidekiq-cron' do
       allow(Settings).to receive(:cron_for_service_ping).and_return(cron_for_service_ping)
 
-      expect(Sidekiq::Cron::Job).to receive(:load_from_hash!).with(cron_jobs_hash)
+      expect(Sidekiq::Cron::Job).to receive(:load_from_hash!).with(cron_jobs_hash, source: 'schedule')
 
       if Gitlab.ee?
         expect(Gitlab::Mirror).to receive(:configure_cron_job!)

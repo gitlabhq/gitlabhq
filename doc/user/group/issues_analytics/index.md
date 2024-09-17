@@ -49,7 +49,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437542) in GitLab 16.8.
 > - [Feature flag `issues_completed_analytics_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146766) removed in GitLab 16.10.
 
-Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your group over a selected period.
+Enhanced issue analytics display the additional metric `Issues closed`, which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
 
 ![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)

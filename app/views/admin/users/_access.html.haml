@@ -37,7 +37,7 @@
       s_('AdminUsers|External'),
       help_text: s_('AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.')
     .hidden{ data: user_internal_regex_data }
-    .gl-display-flex.gl-align-items-baseline
+    .gl-flex.gl-items-baseline
       %row.hidden#warning_external_automatically_set
         = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
 

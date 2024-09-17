@@ -13,6 +13,7 @@ export default {
   },
   inject: ['manualVariablesCount', 'projectPath', 'pipelineIid'],
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     variables: {
       query: getManualVariablesQuery,
       skip() {

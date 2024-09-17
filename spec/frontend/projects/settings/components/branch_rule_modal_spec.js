@@ -61,7 +61,7 @@ describe('BranchRuleModal', () => {
 
   it('renders help link', () => {
     expect(findHelpLink().attributes('href')).toBe(
-      '/help/user/project/protected_branches#protect-multiple-branches-with-wildcard-rules',
+      '/help/user/project/repository/branches/protected#protect-multiple-branches-with-wildcard-rules',
     );
   });
 

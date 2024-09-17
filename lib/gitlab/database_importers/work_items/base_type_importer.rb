@@ -29,7 +29,8 @@ module Gitlab
           time_tracking: 'Time tracking',
           designs: 'Designs',
           development: 'Development',
-          crm_contacts: 'CRM contacts'
+          crm_contacts: 'CRM contacts',
+          email_participants: 'Email participants'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -41,6 +42,7 @@ module Gitlab
             :description,
             :designs,
             :development,
+            :email_participants,
             :health_status,
             :hierarchy,
             :iteration,
@@ -61,6 +63,7 @@ module Gitlab
             :current_user_todos,
             :description,
             :development,
+            :email_participants,
             :hierarchy,
             :linked_items,
             :notes,
@@ -166,6 +169,7 @@ module Gitlab
             :crm_contacts,
             :current_user_todos,
             :description,
+            :email_participants,
             :health_status,
             :hierarchy,
             :iteration,
@@ -191,7 +195,7 @@ module Gitlab
 
           ::WorkItems::Type.upsert_all(
             base_types,
-            unique_by: :idx_work_item_types_on_namespace_id_and_name_null_namespace
+            unique_by: :index_work_item_types_on_name_unique
           )
 
           upsert_widgets
@@ -217,7 +221,7 @@ module Gitlab
 
           ::WorkItems::WidgetDefinition.upsert_all(
             widgets,
-            unique_by: :index_work_item_widget_definitions_on_default_witype_and_name
+            unique_by: :index_work_item_widget_definitions_on_type_id_and_name
           )
         end
       end

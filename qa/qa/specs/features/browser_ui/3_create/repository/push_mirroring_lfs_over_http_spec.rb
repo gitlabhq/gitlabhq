@@ -6,7 +6,7 @@ module QA
       it 'configures and syncs LFS objects for a (push) mirrored repository', :blocking, :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847',
         quarantine: {
-          only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-package-and-test-ce' } },
+          only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-test-on-omnibus-ce' } },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412268',
           type: :investigating
         } do

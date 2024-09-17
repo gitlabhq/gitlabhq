@@ -5,6 +5,7 @@ import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
+import { COMMANDS } from '../constants';
 
 function createSuggestionPlugin({
   editor,
@@ -172,17 +173,17 @@ export default Node.create({
         limit: 100,
         startOfLine: true,
         insertionMap: {
-          '/label': '~',
-          '/unlabel': '~',
-          '/relabel': '~',
-          '/assign': '@',
-          '/unassign': '@',
-          '/reassign': '@',
-          '/cc': '@',
-          '/assign_reviewer': '@',
-          '/unassign_reviewer': '@',
-          '/reassign_reviewer': '@',
-          '/milestone': '%',
+          [COMMANDS.LABEL]: '~',
+          [COMMANDS.UNLABEL]: '~',
+          [COMMANDS.RELABEL]: '~',
+          [COMMANDS.ASSIGN]: '@',
+          [COMMANDS.UNASSIGN]: '@',
+          [COMMANDS.REASSIGN]: '@',
+          [COMMANDS.CC]: '@',
+          [COMMANDS.ASSIGN_REVIEWER]: '@',
+          [COMMANDS.UNASSIGN_REVIEWER]: '@',
+          [COMMANDS.REASSIGN_REVIEWER]: '@',
+          [COMMANDS.MILESTONE]: '%',
         },
       }),
     ];

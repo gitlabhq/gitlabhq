@@ -2,7 +2,7 @@
 - new_custom_emoji_path = local_assigns.fetch(:new_custom_emoji_path, nil)
 
 .emoji-block.emoji-block-sticky
-  .row.gl-m-0.gl-justify-content-space-between
+  .row.gl-m-0.gl-justify-between
     .js-noteable-awards
       = render 'award_emoji/awards_block', awardable: issuable, inline: true, api_awards_path: api_awards_path, new_custom_emoji_path: new_custom_emoji_path
     .new-branch-col.gl-font-size-0.gl-my-2

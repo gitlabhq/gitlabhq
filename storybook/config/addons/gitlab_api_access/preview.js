@@ -71,7 +71,7 @@ export const withGitLabAPIAccess = (story, context) => {
     },
     template: `
     <div>
-      <div class="gl-display-flex gl-justify-content-end">
+      <div class="gl-flex gl-justify-end">
         <gl-badge variant="info">Requires API access</gl-badge>
       </div>
       <story />

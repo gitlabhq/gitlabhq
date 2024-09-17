@@ -93,26 +93,26 @@ export default {
   <div>
     <div
       v-if="showParticipantLabel"
-      class="gl-display-flex gl-align-items-center gl-leading-24 gl-text-gray-900 gl-font-bold gl-mb-2 gl-gap-2"
+      class="gl-mb-2 gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-24 gl-text-gray-900"
     >
       {{ participantLabel }}
       <gl-loading-icon v-if="loading" inline />
     </div>
-    <div class="gl-display-flex gl-flex-wrap gl-gap-3">
+    <div class="gl-flex gl-flex-wrap gl-gap-3">
       <a
         v-for="participant in visibleParticipants"
         :key="participant.id"
         :href="participant.web_url || participant.webUrl"
         :data-user-id="getParticipantId(participant.id)"
         :data-username="participant.username"
-        class="author-link js-user-link gl-display-inline-block gl-rounded-full"
+        class="author-link js-user-link gl-inline-block gl-rounded-full"
       >
         <user-avatar-image
           :lazy="lazy"
           :img-src="participant.avatar_url || participant.avatarUrl"
           :size="24"
           :img-alt="participant.name"
-          css-classes="gl-mr-0!"
+          css-classes="!gl-mr-0"
           tooltip-placement="bottom"
         />
       </a>

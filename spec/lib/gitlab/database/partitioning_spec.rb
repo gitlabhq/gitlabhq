@@ -163,6 +163,16 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
           .and change { find_partitions(table_names.first, conn: ci_connection).size }.from(0)
           .and change { find_partitions(table_names.last, conn: ci_connection).size }.from(0)
       end
+
+      it 'does not create partitions in each database if restricted' do
+        skip_if_shared_database(:ci)
+
+        expect { described_class.sync_partitions(models, owner_db_only: true) }
+          .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
+          .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0)
+          .and change { find_partitions(table_names.first, conn: ci_connection).size }.by_at_most(0)
+          .and change { find_partitions(table_names.last, conn: ci_connection).size }.by_at_most(0)
+      end
     end
 
     context 'without ci database' do

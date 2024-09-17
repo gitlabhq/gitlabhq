@@ -47,30 +47,32 @@ describe('SearchTypeIndicator', () => {
   // all possible combinations
 
   describe.each`
-    searchType    | searchLevel  | repository  | scope       | showSearchTypeIndicator
-    ${'advanced'} | ${'project'} | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
-    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${'advanced-disabled'}
-    ${'advanced'} | ${'group'}   | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
-    ${'advanced'} | ${'global'}  | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'master'} | ${'blobs'}  | ${'zoekt-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${'zoekt-disabled'}
-    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'blobs'}  | ${'zoekt-enabled'}
-    ${'advanced'} | ${'project'} | ${'master'} | ${'issues'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'issues'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'group'}   | ${'master'} | ${'issues'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'global'}  | ${'master'} | ${'issues'} | ${'advanced-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'master'} | ${'issues'} | ${'advanced-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'issues'} | ${'advanced-enabled'}
-    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'issues'} | ${'advanced-enabled'}
+    searchType    | searchLevel  | repository  | scope       | zoektAvailable | showSearchTypeIndicator
+    ${'advanced'} | ${'project'} | ${'master'} | ${'blobs'}  | ${false}       | ${'advanced-enabled'}
+    ${'basic'}    | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${false}       | ${'advanced-disabled'}
+    ${'advanced'} | ${'group'}   | ${'master'} | ${'blobs'}  | ${false}       | ${'advanced-enabled'}
+    ${'advanced'} | ${'global'}  | ${'master'} | ${'blobs'}  | ${false}       | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'master'} | ${'blobs'}  | ${true}        | ${'zoekt-enabled'}
+    ${'basic'}    | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${true}        | ${'zoekt-disabled'}
+    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'blobs'}  | ${true}        | ${'zoekt-enabled'}
+    ${'advanced'} | ${'project'} | ${'master'} | ${'issues'} | ${false}       | ${'advanced-enabled'}
+    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'issues'} | ${false}       | ${'advanced-enabled'}
+    ${'advanced'} | ${'group'}   | ${'master'} | ${'issues'} | ${false}       | ${'advanced-enabled'}
+    ${'advanced'} | ${'global'}  | ${'master'} | ${'issues'} | ${false}       | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'master'} | ${'issues'} | ${true}        | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'issues'} | ${true}        | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'issues'} | ${true}        | ${'advanced-enabled'}
   `(
     'search type indicator for $searchType $searchLevel $scope',
-    ({ searchType, repository, showSearchTypeIndicator, scope, searchLevel }) => {
+    ({ searchType, repository, showSearchTypeIndicator, scope, searchLevel, zoektAvailable }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
         createComponent({
           query: { repository_ref: repository, scope },
           searchType,
           searchLevel,
+          advancedSearchAvailable: true,
+          zoektAvailable,
           defaultBranchName: 'master',
         });
       });
@@ -124,22 +126,27 @@ describe('SearchTypeIndicator', () => {
   });
 
   describe.each`
-    searchType    | syntaxdocsLink
-    ${'advanced'} | ${'/help/user/search/advanced_search#syntax'}
-    ${'zoekt'}    | ${'/help/user/search/exact_code_search#syntax'}
-  `('Syntax documentation $searchType', ({ searchType, syntaxdocsLink }) => {
-    beforeEach(() => {
-      createComponent({
-        query: { repository_ref: '000', scope: 'blobs' },
-        searchType,
-        searchLevel: 'project',
-        defaultBranchName: 'master',
+    searchType | advancedSearchAvailable | zoektAvailable | syntaxdocsLink
+    ${'basic'} | ${true}                 | ${false}       | ${'/help/user/search/advanced_search#syntax'}
+    ${'basic'} | ${true}                 | ${true}        | ${'/help/user/search/exact_code_search#syntax'}
+  `(
+    'Syntax documentation $searchType',
+    ({ searchType, advancedSearchAvailable, zoektAvailable, syntaxdocsLink }) => {
+      beforeEach(() => {
+        createComponent({
+          query: { repository_ref: '000', scope: 'blobs' },
+          searchType,
+          advancedSearchAvailable,
+          zoektAvailable,
+          searchLevel: 'project',
+          defaultBranchName: 'master',
+        });
       });
-    });
-    it('has correct link', () => {
-      expect(findSyntaxDocsLink().attributes('href')).toBe(syntaxdocsLink);
-    });
-  });
+      it('has correct link', () => {
+        expect(findSyntaxDocsLink().attributes('href')).toBe(syntaxdocsLink);
+      });
+    },
+  );
 
   describe('Indicator is not using url query as source of truth', () => {
     beforeEach(() => {

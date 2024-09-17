@@ -52,7 +52,7 @@ export default {
 <template>
   <div v-if="canUpdate || canDelete">
     <!-- sm and up screens -->
-    <div class="gl-hidden sm:gl-flex gl-gap-3">
+    <div class="gl-hidden gl-gap-3 sm:gl-flex">
       <runner-edit-button v-if="canUpdate" :href="editPath" />
       <runner-pause-button v-if="canUpdate" :runner="runner" />
       <runner-delete-button v-if="canDelete" :runner="runner" @deleted="onDeleted" />

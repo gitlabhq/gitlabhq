@@ -1,0 +1,20 @@
+---
+data_category: optional
+key_path: instance_feature_flags
+description: The list of feature flags that are enabled/disabled in the instance with their respective values.
+product_group: analytics_instrumentation
+value_type: object
+status: active
+time_frame: all
+data_source: system
+instrumentation_class: InstanceFeatureFlagsMetric
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate
+milestone: "17.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161144
+value_json_schema: "config/metrics/objects_schemas/instance_feature_flags.json"

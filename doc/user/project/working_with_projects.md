@@ -379,7 +379,7 @@ Prerequisites:
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
-[redirects when renaming repositories](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+[redirects when renaming repositories](../project/repository/index.md#repository-path-changes).
 
 To rename a repository:
 
@@ -460,4 +460,4 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
 - Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names)
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)

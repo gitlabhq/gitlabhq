@@ -30,7 +30,7 @@ module QA
       context 'when user adds a new file' do
         let(:file_name) { 'first_file.txt' }
 
-        it 'shows successfully added and visible in project',
+        it 'shows successfully added and visible in project', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/432898' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_file(file_name)

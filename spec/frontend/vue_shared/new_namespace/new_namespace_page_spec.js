@@ -91,7 +91,7 @@ describe('Experimental new namespace creation app', () => {
     });
 
     it('renders images', () => {
-      expect(findImage().attributes('src')).toBe(DEFAULT_PROPS.panels[1].imageSrc);
+      expect(findImage().element.src).toBe(DEFAULT_PROPS.panels[1].imageSrc);
     });
   });
 

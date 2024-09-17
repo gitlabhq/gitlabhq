@@ -84,9 +84,9 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     end
   end
 
-  shared_examples 'a request from an unauthorized user' do
+  shared_examples 'an unauthorized request' do
     it 'returns 403' do
-      get api(path, user)
+      make_request
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
@@ -104,7 +104,9 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect_paginated_array_response(uploads.reverse.map(&:id))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { get api(path, user) }
+    end
   end
 
   describe "GET /projects/:id/uploads/:upload_id" do
@@ -120,7 +122,51 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    context 'when the upload does not exist' do
+      let(:path) { "/projects/#{project.id}/uploads/#{non_existing_record_id}" }
+
+      it 'returns a 404' do
+        get api(path, project_maintainer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { get api(path, user) }
+    end
+  end
+
+  describe "GET /projects/:id/uploads/:secret/:filename" do
+    let_it_be(:upload) { create(:upload, :issuable_upload, :with_file, model: project, filename: 'test.jpg') }
+
+    let(:path) { "/projects/#{project.id}/uploads/#{upload.secret}/#{upload.filename}" }
+
+    it 'returns the uploaded file' do
+      get api(path, project_maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Disposition'])
+        .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
+    end
+
+    context 'when the secret does not match' do
+      let(:path) { "/projects/#{project.id}/uploads/invalid_secret/#{upload.filename}" }
+
+      it 'returns a 404' do
+        get api(path, project_maintainer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with a user that does not have access to the project' do
+      it 'returns 404' do
+        get api(path, create(:user))
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe "DELETE /projects/:id/uploads/:upload_id" do
@@ -148,7 +194,27 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(json_response['message']).to include(_('Upload could not be deleted.'))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { delete api(path, user) }
+    end
+  end
+
+  describe "DELETE /projects/:id/uploads/:secret/:filename" do
+    let_it_be(:upload) { create(:upload, :issuable_upload, model: project) }
+
+    let(:path) { "/projects/#{project.id}/uploads/#{upload.secret}/#{upload.filename}" }
+
+    it 'deletes the given upload' do
+      expect do
+        delete api(path, project_maintainer)
+      end.to change { Upload.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { delete api(path, user) }
+    end
   end
 
   describe "GET /groups/:id/uploads" do
@@ -163,7 +229,9 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect_paginated_array_response(uploads.reverse.map(&:id))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { get api(path, user) }
+    end
   end
 
   describe "GET /groups/:id/uploads/:upload_id" do
@@ -179,7 +247,51 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    context 'when the upload does not exist' do
+      let(:path) { "/groups/#{group.id}/uploads/#{non_existing_record_id}" }
+
+      it 'returns a 404' do
+        get api(path, group_maintainer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { get api(path, user) }
+    end
+  end
+
+  describe "GET /groups/:id/uploads/:secret/:filename" do
+    let_it_be(:upload) { create(:upload, :namespace_upload, :with_file, model: group, filename: 'test.jpg') }
+
+    let(:path) { "/groups/#{group.id}/uploads/#{upload.secret}/#{upload.filename}" }
+
+    it 'returns the uploaded file' do
+      get api(path, group_maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Disposition'])
+        .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
+    end
+
+    context 'when the secret does not match' do
+      let(:path) { "/groups/#{group.id}/uploads/invalid_secret/#{upload.filename}" }
+
+      it 'returns a 404' do
+        get api(path, group_maintainer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with a user that does not have access to the group' do
+      it 'returns 404' do
+        get api(path, create(:user))
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe "DELETE /groups/:id/uploads/:upload_id" do
@@ -207,6 +319,26 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(json_response['message']).to include(_('Upload could not be deleted.'))
     end
 
-    it_behaves_like 'a request from an unauthorized user'
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { delete api(path, user) }
+    end
+  end
+
+  describe "DELETE /groups/:id/uploads/:secret/:filename" do
+    let_it_be(:upload) { create(:upload, :namespace_upload, model: group) }
+
+    let(:path) { "/groups/#{group.id}/uploads/#{upload.secret}/#{upload.filename}" }
+
+    it 'deletes the given upload' do
+      expect do
+        delete api(path, group_maintainer)
+      end.to change { Upload.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it_behaves_like 'an unauthorized request' do
+      subject(:make_request) { delete api(path, user) }
+    end
   end
 end

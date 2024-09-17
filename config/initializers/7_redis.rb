@@ -29,6 +29,9 @@ if Rails.application.config.cache_classes
   # this only instruments `RedisClient` used in `Sidekiq.redis`
   RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
   RedisClient.prepend(Gitlab::Patch::RedisClient)
+
+  # This specifically instruments for Redis Cluster node failures.
+  RedisClient::Cluster::Router.prepend(Gitlab::Instrumentation::RedisClusterRouter)
 end
 
 if Gitlab::Redis::Workhorse.params[:cluster].present?

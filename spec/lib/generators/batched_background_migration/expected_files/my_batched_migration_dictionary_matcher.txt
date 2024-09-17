@@ -5,6 +5,4 @@ feature_category: database
 introduced_by_url: # URL of the MR \(or issue/commit\) that introduced the migration
 milestone: '[0-9\.]+'
 queued_migration_version: [0-9]+
-# Replace with the approximate date you think it's best to ensure the completion of this BBM.
-finalize_after: # yyyy-mm-dd
 finalized_by: # version of the migration that finalized this BBM

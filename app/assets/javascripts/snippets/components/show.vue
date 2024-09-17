@@ -35,7 +35,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-pt-3 js-snippet-view">
+  <div class="js-snippet-view gl-pt-3">
     <gl-loading-icon
       v-if="isLoading"
       :label="__('Loading snippet')"

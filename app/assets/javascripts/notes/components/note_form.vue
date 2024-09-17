@@ -287,6 +287,9 @@ export default {
     onInput(value) {
       this.updatedNoteBody = value;
     },
+    append(value) {
+      this.$refs.markdownEditor.append(value);
+    },
     handleKeySubmit(forceUpdate = false) {
       if (this.showBatchCommentsActions && !forceUpdate) {
         this.handleAddToReview();
@@ -399,12 +402,12 @@ export default {
         </template>
 
         <template v-if="showBatchCommentsActions">
-          <div class="gl-display-flex gl-flex-wrap -gl-mb-3">
+          <div class="-gl-mb-3 gl-flex gl-flex-wrap">
             <gl-button
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
-              class="gl-sm-mr-3 gl-mb-3"
+              class="gl-mb-3 sm:gl-mr-3"
               data-testid="start-review-button"
               @click="handleAddToReview"
             >
@@ -416,13 +419,13 @@ export default {
               category="secondary"
               variant="confirm"
               data-testid="comment-now-button"
-              class="gl-sm-mr-3 gl-mb-3 js-comment-button"
+              class="js-comment-button gl-mb-3 sm:gl-mr-3"
               @click="handleUpdate()"
             >
               {{ __('Add comment now') }}
             </gl-button>
             <gl-button
-              class="note-edit-cancel gl-mb-3 js-close-discussion-note-form"
+              class="note-edit-cancel js-close-discussion-note-form gl-mb-3"
               category="secondary"
               variant="default"
               data-testid="cancelBatchCommentsEnabled"
@@ -433,13 +436,13 @@ export default {
           </div>
         </template>
         <template v-else>
-          <div class="gl-display-sm-flex gl-flex-wrap gl-font-size-0">
+          <div class="gl-display-sm-flex gl-font-size-0 gl-flex-wrap">
             <gl-button
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
               data-testid="reply-comment-button"
-              class="gl-sm-mr-3 gl-mb-3 gl-sm-mb-0 js-vue-issue-save js-comment-button"
+              class="js-vue-issue-save js-comment-button gl-mb-3 sm:gl-mb-0 sm:gl-mr-3"
               @click="handleUpdate()"
             >
               {{ saveButtonTitle }}

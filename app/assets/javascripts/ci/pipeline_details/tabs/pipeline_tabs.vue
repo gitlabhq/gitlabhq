@@ -3,12 +3,15 @@ import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import { isNumeric } from '~/lib/utils/number_utils';
+import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   failedJobsTabName,
   jobsTabName,
-  needsTabName,
   pipelineTabName,
   testReportTabName,
+  manualVariablesTabName,
 } from '../constants';
 
 export default {
@@ -16,33 +19,46 @@ export default {
     tabs: {
       failedJobsTitle: __('Failed Jobs'),
       jobsTitle: __('Jobs'),
-      needsTitle: __('Needs'),
       pipelineTitle: __('Pipeline'),
       testsTitle: __('Tests'),
+      manualVariables: __('Manual Variables'),
     },
   },
   tabNames: {
     pipeline: pipelineTabName,
-    needs: needsTabName,
     jobs: jobsTabName,
     failures: failedJobsTabName,
     tests: testReportTabName,
+    manualVariables: manualVariablesTabName,
   },
   components: {
     GlBadge,
     GlTab,
     GlTabs,
+    LocalStorageSync,
   },
-  mixins: [Tracking.mixin()],
-  inject: ['defaultTabValue', 'failedJobsCount', 'totalJobCount', 'testsCount'],
+  mixins: [Tracking.mixin(), featureFlagMixin()],
+  inject: [
+    'defaultTabValue',
+    'failedJobsCount',
+    'totalJobCount',
+    'testsCount',
+    'manualVariablesCount',
+  ],
   data() {
     return {
       activeTab: this.defaultTabValue,
+      isDismissedNewTab: false,
     };
   },
   computed: {
     showFailedJobsTab() {
       return this.failedJobsCount > 0;
+    },
+    manualVariablesEnabled() {
+      return (
+        this.glFeatures.ciShowManualVariablesInPipeline && isNumeric(this.manualVariablesCount)
+      );
     },
   },
   watch: {
@@ -69,7 +85,14 @@ export default {
 
       this.navigateTo(this.$options.tabNames.tests);
     },
+    manualVariablesTabClick() {
+      this.track('click_tab', { label: TRACKING_CATEGORIES.manualVariables });
+      this.isDismissedNewTab = true;
+
+      this.navigateTo(this.$options.tabNames.manualVariables);
+    },
   },
+  MANUAL_VARIABLE_TAB_DISMISS_STORAGE_KEY: 'gl-ci-pipeline-detail-manual-variables-tab-dismissed',
 };
 </script>
 
@@ -82,16 +105,6 @@ export default {
       data-testid="pipeline-tab"
       lazy
       @click="navigateTo($options.tabNames.pipeline)"
-    >
-      <router-view />
-    </gl-tab>
-    <gl-tab
-      ref="dagTab"
-      :title="$options.i18n.tabs.needsTitle"
-      :active="isActive($options.tabNames.needs)"
-      data-testid="dag-tab"
-      lazy
-      @click="navigateTo($options.tabNames.needs)"
     >
       <router-view />
     </gl-tab>
@@ -133,6 +146,31 @@ export default {
       </template>
       <router-view />
     </gl-tab>
+    <local-storage-sync
+      v-if="manualVariablesEnabled"
+      v-model="isDismissedNewTab"
+      :storage-key="$options.MANUAL_VARIABLE_TAB_DISMISS_STORAGE_KEY"
+    >
+      <gl-tab
+        :active="isActive($options.tabNames.manualVariables)"
+        data-testid="manual-variables-tab"
+        lazy
+        @click="manualVariablesTabClick"
+      >
+        <template #title>
+          <span class="gl-mr-2">{{ $options.i18n.tabs.manualVariables }}</span>
+          <gl-badge data-testid="manual-variables-counter">{{ manualVariablesCount }}</gl-badge>
+          <gl-badge
+            v-if="!isDismissedNewTab"
+            data-testid="manual-variables-new-badge"
+            class="gl-ml-2"
+            variant="info"
+            >{{ __('new') }}</gl-badge
+          >
+        </template>
+        <router-view />
+      </gl-tab>
+    </local-storage-sync>
     <slot></slot>
   </gl-tabs>
 </template>

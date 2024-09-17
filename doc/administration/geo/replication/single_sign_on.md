@@ -25,8 +25,8 @@ You only configure SAML on the primary site. Configuring `gitlab_rails['omniauth
 How you configure instance-wide SAML differs depending on your secondary site configuration. Determine if your secondary site uses a:
 
 - [Unified URL](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites), meaning the `external_url` exactly matches the `external_url` of the primary site.
-- [Separate URL](../secondary_proxy/index.md#geo-proxying-with-separate-urls) with proxying enabled. Proxying is enabled by default in GitLab 15.1 and later.
-- [Separate URL](../secondary_proxy/index.md#geo-proxying-with-separate-urls) with proxying disabled.
+- [Separate URL](../secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying enabled. Proxying is enabled by default in GitLab 15.1 and later.
+- [Separate URL](../secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying disabled.
 
 ### SAML with Unified URL
 

@@ -212,7 +212,7 @@ describe('TrainingProviderList component', () => {
           const primaryProviderRadioForCurrentCard = findPrimaryProviderRadios().at(index);
 
           // if the given provider is not enabled it should not be possible select it as primary
-          expect(primaryProviderRadioForCurrentCard.attributes('disabled')).toBe(
+          expect(primaryProviderRadioForCurrentCard.attributes().disabled).toBe(
             isEnabled ? undefined : 'true',
           );
 

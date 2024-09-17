@@ -70,3 +70,16 @@
 
 - major: 16
   minor: 11
+
+- major: 17
+  minor: 3
+
+- major: 17
+  minor: 5
+  comments: "From GitLab 17.5, required upgrade stops consistently land on minor versions X.2, X.5, X.8, and X.11."
+
+- major: 17
+  minor: 8
+
+- major: 17
+  minor: 11

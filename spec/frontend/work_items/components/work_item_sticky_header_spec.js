@@ -9,6 +9,7 @@ import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
+import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
 
 describe('WorkItemStickyHeader', () => {
   let wrapper;
@@ -17,6 +18,7 @@ describe('WorkItemStickyHeader', () => {
     confidential = false,
     discussionLocked = false,
     canUpdate = true,
+    features = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
@@ -32,6 +34,11 @@ describe('WorkItemStickyHeader', () => {
         currentUserTodos: [],
         workItemState: STATE_OPEN,
       },
+      provide: {
+        glFeatures: {
+          ...features,
+        },
+      },
     });
   };
 
@@ -44,6 +51,7 @@ describe('WorkItemStickyHeader', () => {
   const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
   const findEditButton = () => wrapper.findByTestId('work-item-edit-button-sticky');
   const findWorkItemTitle = () => wrapper.findComponent(GlLink);
+  const findWorkItemNotificationsWidget = () => wrapper.findComponent(WorkItemNotificationsWidget);
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   it('has the sticky header when the page is scrolled', async () => {
@@ -85,6 +93,32 @@ describe('WorkItemStickyHeader', () => {
 
       expect(findEditButton().exists()).toBe(false);
     });
+  });
+
+  describe('notificationsTodosButtons Feature flag', () => {
+    it.each`
+      description        | featureFlag | expected
+      ${'shows'}         | ${true}     | ${true}
+      ${'does not show'} | ${false}    | ${false}
+    `(
+      '$description new notifications button when notificationsTodoButtons feature flag is $featureFlag',
+      ({ featureFlag, expected }) => {
+        createComponent({ features: { notificationsTodosButtons: featureFlag } });
+        expect(findWorkItemNotificationsWidget().exists()).toBe(expected);
+      },
+    );
+
+    it.each`
+      description        | featureFlag | expected
+      ${'hides'}         | ${true}     | ${true}
+      ${'does not hide'} | ${false}    | ${false}
+    `(
+      '$description notifications toggle in actions menu when notificationsTodoButtons feature flag is $featureFlag',
+      ({ featureFlag, expected }) => {
+        createComponent({ features: { notificationsTodosButtons: featureFlag } });
+        expect(findWorkItemActions().props().hideSubscribe).toBe(expected);
+      },
+    );
   });
 
   describe('confidential badge', () => {

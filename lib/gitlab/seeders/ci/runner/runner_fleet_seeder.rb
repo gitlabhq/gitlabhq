@@ -97,8 +97,7 @@ module Gitlab
             return organization if organization
 
             logger.info(message: 'Creating organization', **args)
-
-            ensure_success(::Organizations::CreateService.new(current_user: @user, params: args).execute[:organization])
+            execute_service!(::Organizations::CreateService.new(current_user: @user, params: args), :organization)
           end
 
           def create_groups_and_projects
@@ -182,7 +181,7 @@ module Gitlab
           def create_group(**args)
             logger.info(message: 'Creating group', **args)
 
-            ensure_success(::Groups::CreateService.new(@user, **args).execute[:group])
+            execute_service!(::Groups::CreateService.new(@user, **args), :group)
           end
 
           def ensure_project(name:, namespace_id:, **args)
@@ -198,7 +197,7 @@ module Gitlab
           def create_project(**args)
             logger.info(message: 'Creating project', **args)
 
-            ensure_success(::Projects::CreateService.new(@user, **args).execute)
+            execute_service!(::Projects::CreateService.new(@user, **args))
           end
 
           def register_record(record, records)
@@ -212,6 +211,17 @@ module Gitlab
 
             logger.error(record.errors.full_messages.to_sentence)
             raise RuntimeError
+          end
+
+          def execute_service!(service, payload_attr = nil)
+            response = service.execute
+            if response.is_a?(ServiceResponse) && response.error?
+              logger.error(response.message)
+              raise RuntimeError
+            end
+
+            record = payload_attr ? response[payload_attr] : response
+            ensure_success(record)
           end
 
           def create_runner(name:, scope: nil, **args)

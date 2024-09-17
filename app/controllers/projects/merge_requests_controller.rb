@@ -37,16 +37,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
-  before_action only: [:show, :diffs, :rapid_diffs] do
+  before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:pinned_file, project)
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
-    push_frontend_feature_flag(:async_merge_request_pipeline_creation, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
@@ -110,6 +108,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def rapid_diffs
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
+    streaming_offset = 5
+    @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
+    @diffs_slice = @merge_request.first_diffs_slice(streaming_offset)
 
     show_merge_request
   end
@@ -458,10 +460,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-
-    if params[:pin] && Feature.enabled?(:pinned_file, @project)
-      @pinned_file_url = pinned_file_url(@project, @merge_request)
-    end
+    @linked_file_url = linked_file_url(@project, @merge_request) if params[:file]
 
     if merge_request.diffs_batch_cache_with_max_age?
       @diffs_batch_cache_key = @merge_request.merge_head_diff&.patch_id_sha
@@ -477,6 +476,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def get_diffs_count
     return @merge_request.context_commits_diff.raw_diffs.size if show_only_context_commits?
     return @merge_request.merge_request_diffs.find_by_id(params[:diff_id])&.size if params[:diff_id]
+    return @merge_request.merge_head_diff.size if @merge_request.diffable_merge_ref? && params[:start_sha].blank?
 
     @merge_request.diff_size
   end
@@ -638,13 +638,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
   end
 
-  def pinned_file_url(project, merge_request)
+  def linked_file_url(project, merge_request)
     diff_by_file_hash_namespace_project_merge_request_path(
       format: 'json',
       id: merge_request.iid,
       namespace_id: project&.namespace.to_param,
       project_id: project&.path,
-      file_hash: params[:pin],
+      file_hash: params[:file],
       diff_head: true
     )
   end

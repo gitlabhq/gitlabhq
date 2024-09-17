@@ -98,7 +98,7 @@ export default {
                 'left-secondary'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-min-w-0 gl-grow gl-items-center gl-text-sm gl-text-secondary"
+            class="gl-flex gl-min-h-6 gl-min-w-0 gl-grow gl-items-center gl-gap-3 gl-text-sm gl-text-subtle"
           >
             <slot name="left-secondary"></slot>
           </div>

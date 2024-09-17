@@ -294,10 +294,23 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
         end
 
         it 'executes project issue hooks for both projects' do
-          expect_next_instance_of(WebHookService, new_project_hook, expected_new_project_hook_payload, 'issue_hooks') do |service|
+          expect_next_instance_of(
+            WebHookService,
+            new_project_hook,
+            expected_new_project_hook_payload,
+            'issue_hooks',
+            idempotency_key: anything
+          ) do |service|
             expect(service).to receive(:async_execute).once
           end
-          expect_next_instance_of(WebHookService, old_project_hook, expected_old_project_hook_payload, 'issue_hooks') do |service|
+
+          expect_next_instance_of(
+            WebHookService,
+            old_project_hook,
+            expected_old_project_hook_payload,
+            'issue_hooks',
+            idempotency_key: anything
+          ) do |service|
             expect(service).to receive(:async_execute).once
           end
 

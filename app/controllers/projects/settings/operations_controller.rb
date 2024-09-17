@@ -5,7 +5,6 @@ module Projects
     class OperationsController < Projects::ApplicationController
       layout 'project_settings'
       before_action :authorize_admin_operations!
-      before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
 
       before_action do
         push_frontend_feature_flag(:integrated_error_tracking, project)
@@ -119,7 +118,7 @@ module Projects
 
       # overridden in EE
       def permitted_project_params
-        {
+        [
           incident_management_setting_attributes: ::Gitlab::Tracking::IncidentManagement.tracking_keys.keys,
 
           error_tracking_setting_attributes: [
@@ -129,7 +128,7 @@ module Projects
             :token,
             { project: [:slug, :name, :organization_slug, :organization_name, :sentry_project_id] }
           ]
-        }
+        ]
       end
     end
   end

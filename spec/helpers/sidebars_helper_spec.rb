@@ -135,6 +135,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it_behaves_like 'shared super sidebar context'
     it { is_expected.to include({ is_logged_in: true }) }
 
+    it 'returns terms if defined' do
+      stub_application_setting(terms: "My custom Terms of Use")
+
+      is_expected.to include({ terms: "/-/users/terms" })
+    end
+
+    it 'does not return terms if not set' do
+      is_expected.to include({ terms: nil })
+    end
+
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
       expect(subject).to include({
         is_logged_in: true,

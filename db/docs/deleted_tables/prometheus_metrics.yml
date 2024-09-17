@@ -1,0 +1,13 @@
+---
+table_name: prometheus_metrics
+classes:
+- PrometheusMetric
+feature_categories:
+- metrics
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3799
+milestone: '9.3'
+gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465327
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164288
+removed_in_milestone: '17.4'

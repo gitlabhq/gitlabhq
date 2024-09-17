@@ -47,11 +47,9 @@ export default {
   >
     <gl-sprintf :message="$options.i18n.message">
       <template #link="{ content }">
-        <help-page-link
-          href="subscriptions/gitlab_com/index"
-          anchor="change-the-linked-namespace"
-          >{{ content }}</help-page-link
-        >
+        <help-page-link href="subscriptions/gitlab_com/index" anchor="change-the-linked-group">{{
+          content
+        }}</help-page-link>
       </template>
     </gl-sprintf>
   </gl-modal>

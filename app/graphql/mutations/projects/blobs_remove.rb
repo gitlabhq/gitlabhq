@@ -31,32 +31,11 @@ module Mutations
       def resolve(project_path:, blob_oids:)
         project = authorized_find!(project_path)
 
-        begin
-          project.set_repository_read_only!
-          client = Gitlab::GitalyClient::CleanupService.new(project.repository)
-          client.rewrite_history(blobs: blob_oids)
+        result = Repositories::RewriteHistoryService.new(project, current_user).execute(blob_oids: blob_oids)
 
-          audit_removals(project, blob_oids)
+        return { errors: result.errors } if result.error?
 
-          { errors: [] }
-        ensure
-          project.set_repository_writable!
-        end
-      end
-
-      private
-
-      def audit_removals(project, blob_oids)
-        context = {
-          name: 'project_blobs_removal',
-          author: current_user,
-          scope: project,
-          target: project,
-          message: 'Project blobs removed',
-          additional_details: { blob_oids: blob_oids }
-        }
-
-        ::Gitlab::Audit::Auditor.audit(context)
+        { errors: [] }
       end
     end
   end

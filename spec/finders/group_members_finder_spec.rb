@@ -111,19 +111,6 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
           expect(result.to_a).to match_array(expected_members)
         end
       end
-
-      context 'when webui_members_inherited_users feature flag is disabled' do
-        before do
-          stub_feature_flags(webui_members_inherited_users: false)
-        end
-
-        it 'does not return private invited group members' do
-          result = described_class.new(groups[subject_group], user6).execute(include_relations: subject_relations)
-
-          expected_members = visible_members.map { |name| members[name] }
-          expect(result.to_a).to match_array(expected_members)
-        end
-      end
     end
 
     it 'returns the correct access level of the members shared through group sharing' do

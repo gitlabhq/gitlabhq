@@ -1,23 +1,23 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
-%li.gl-py-4.sm:gl-flex.gl-align-items-center.gl-justify-content-space-between.gl-border-b{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
+%li.gl-py-4.sm:gl-flex.gl-items-center.gl-justify-between.gl-border-b{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
   - unless current_path?('users#snippets')
-    .gl-hidden.sm:gl-block.gl-sm-mr-3
+    .gl-hidden.sm:gl-block.sm:gl-mr-3
       = render Pajamas::AvatarComponent.new(snippet.author, size: 32, alt: "")
 
-  .sm:gl-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1
+  .sm:gl-flex.gl-justify-between.gl-items-center.gl-grow
     %div
-      = link_to gitlab_snippet_path(snippet), class: "title gl-text-black-normal gl-font-bold" do
+      = link_to gitlab_snippet_path(snippet), class: "title gl-text-default gl-font-bold" do
         = snippet.title
       - if snippet.hidden_due_to_author_ban?
         %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 border-radius-default gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
           = sprite_icon('spam', size: '16')
 
-      .snippet-info.gl-font-sm.gl-text-gray-500!
+      .snippet-info.gl-text-sm{ class: '!gl-text-gray-500' }
         .gl-inline{ data: { testid: 'snippet-created-at'} }
           - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
-          - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-black-normal')
+          - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-default')
           #{snippet.to_reference} &middot;
           - if link_project && snippet.project_id?
             - project_link = link_to(snippet.project.full_name, project_path(snippet.project))
@@ -25,8 +25,8 @@
           - else
             = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
-    .sm:gl-flex.gl-flex-direction-column.gl-align-items-flex-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
-      .gl-display-flex.gl-gap-4.gl-align-items-center
+    .sm:gl-flex.gl-flex-col.gl-items-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
+      .gl-flex.gl-gap-4.gl-items-center
         - if notes_count > 0
           %span.has-tooltip{ title: _('Comments') }
             = sprite_icon('comments')
@@ -34,4 +34,4 @@
         = snippet_file_count(snippet)
         %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
           = visibility_level_icon(snippet.visibility_level)
-      .gl-whitespace-nowrap.gl-font-sm.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }
+      .gl-whitespace-nowrap.gl-text-sm.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

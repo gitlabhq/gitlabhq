@@ -7,7 +7,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
   let_it_be(:another_user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:entity) do
     create(
       :bulk_import_entity,
@@ -22,6 +22,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+
+  let(:importer_user_mapping_enabled) { false }
 
   let(:mr) do
     {
@@ -102,6 +104,9 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
       allow(::Projects::ImportExport::AfterImportMergeRequestsWorker).to receive(:perform_async)
       allow(pipeline).to receive(:set_source_objects_counter)
+
+      allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
+      allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
 
       pipeline.run
     end
@@ -348,6 +353,79 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
           expect(reviewers.pluck(:user_id)).to contain_exactly(user.id, another_user.id)
         end
+      end
+    end
+
+    context 'when importer_user_mapping is enabled' do
+      let(:importer_user_mapping_enabled) { true }
+
+      let(:mr) do
+        {
+          title: 'Imported MR',
+          author_id: 101,
+          iid: 38,
+          source_project_id: 1234,
+          target_project_id: 1234,
+          description: 'Description',
+          source_branch: 'feature',
+          target_branch: 'main',
+          source_branch_sha: 'ABCD',
+          target_branch_sha: 'DCBA',
+          updated_by_id: 101,
+          merge_user_id: 101,
+          last_edited_at: '2019-12-27T00:00:00.000Z',
+          last_edited_by_id: 101,
+          state: 'opened',
+          approvals: [{ user_id: 101 }],
+          metrics: { merged_by_id: 101, latest_closed_by_id: 101 },
+          merge_request_assignees: [{ user_id: 101 }],
+          merge_request_reviewers: [{ user_id: 101, state: 'unreviewed' }],
+          events: [{ author_id: 101, action: 'created', target_type: 'MergeRequest' }],
+          timelogs: [{ time_spent: 72000, spent_at: '2019-12-27T00:00:00.000Z', user_id: 101 }],
+          notes: [{ note: 'Note', noteable_type: 'Issue', author_id: 101, updated_by_id: 101, resolved_by_id: 101 }],
+          resource_label_events: [{ action: 'add', user_id: 101, label: { title: 'Ambalt', color: '#33594f' } }],
+          resource_milestone_events: [{ user_id: 101, action: 'add', state: 'opened', milestone: { title: 'Sprint' } }],
+          resource_state_events: [{ user_id: 101, state: 'closed' }],
+          award_emoji: [{ name: 'clapper', user_id: 101 }]
+        }.deep_stringify_keys
+      end
+
+      it 'imports merge_requests and maps user references to placeholder users', :aggregate_failures do
+        merge_request = project.merge_requests.last
+        approval = merge_request.approvals.first
+        metrics = merge_request.metrics
+        merge_request_assignee = merge_request.merge_request_assignees.first
+        merge_request_reviewer = merge_request.merge_request_reviewers.first
+        event = merge_request.events.first
+        note = merge_request.notes.first
+        timelog = merge_request.timelogs.first
+        resource_label_event = merge_request.resource_label_events.first
+        resource_milestone_event = merge_request.resource_milestone_events.first
+        resource_state_events = merge_request.resource_state_events.first
+        award_emoji = merge_request.award_emoji.first
+
+        expect(merge_request.author).to be_placeholder
+        expect(merge_request.merge_user).to be_placeholder
+        expect(merge_request.last_edited_by).to be_placeholder
+        expect(merge_request.updated_by).to be_placeholder
+        expect(approval.user).to be_placeholder
+        expect(metrics.merged_by).to be_placeholder
+        expect(metrics.latest_closed_by).to be_placeholder
+        expect(merge_request_assignee.assignee).to be_placeholder
+        expect(merge_request_reviewer.reviewer).to be_placeholder
+        expect(event.author).to be_placeholder
+        expect(timelog.user).to be_placeholder
+        expect(note.author).to be_placeholder
+        expect(note.updated_by).to be_placeholder
+        expect(note.resolved_by).to be_placeholder
+        expect(resource_label_event.user).to be_placeholder
+        expect(resource_milestone_event.user).to be_placeholder
+        expect(resource_state_events.user).to be_placeholder
+        expect(award_emoji.user).to be_placeholder
+
+        source_user = Import::SourceUser.find_by(source_user_identifier: 101)
+        expect(source_user.placeholder_user).to be_placeholder
+        expect(Import::PlaceholderReferences::PushService).to have_received(:from_record).exactly(18).times
       end
     end
   end

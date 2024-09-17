@@ -429,6 +429,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
       context 'when current user cannot admin issues in the project' do
         it 'filters out params that cannot be set without the :admin_issue permission' do
+          issue.update!(author: guest)
+
           described_class.new(
             container: project, current_user: guest, params: opts.merge(
               confidential: true,
@@ -774,6 +776,14 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
 
           update_issue(milestone_id: milestone.id)
+        end
+
+        context 'when also closing the issue' do
+          it 'creates a milestone resource event' do
+            expect do
+              update_issue(milestone_id: create(:milestone, project: project).id, state_event: 'close')
+            end.to change { ResourceMilestoneEvent.count }.by(1)
+          end
         end
       end
 

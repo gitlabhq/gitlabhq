@@ -1,4 +1,4 @@
-import { GlCollapse, GlButton, GlBadge, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCollapse, GlButton, GlBadge, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import RefsList from '~/projects/commit_box/info/components/refs_list.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -23,9 +23,16 @@ describe('Commit references component', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTippingRefs = () => wrapper.findAllComponents(GlBadge);
   const findContainingRefs = () => wrapper.findComponent(GlCollapse);
+  const findEmptyMessage = () => wrapper.findByText('No related branches found');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('renders a loading icon when loading', () => {
+    createComponent({ isLoading: true });
+    expect(findLoadingIcon().exists()).toBe(true);
   });
 
   it('renders the namespace passed', () => {
@@ -65,9 +72,14 @@ describe('Commit references component', () => {
     expect(refBadge.attributes('href')).toBe(refUrl);
   });
 
-  it('does not reneder list of tipping branches or tags if there is no data', () => {
+  it('does not render list of tipping branches or tags if there is no data', () => {
     createComponent({ tippingRefs: [] });
     expect(findTippingRefs().exists()).toBe(false);
+  });
+
+  it('renders an empty message when there is no tipping and containing refs', () => {
+    createComponent({ tippingRefs: [] });
+    expect(findEmptyMessage().exists()).toBe(true);
   });
 
   it('renders skeleton loader when isLoading prop has true value', () => {

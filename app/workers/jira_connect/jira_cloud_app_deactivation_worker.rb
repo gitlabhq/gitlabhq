@@ -14,8 +14,6 @@ module JiraConnect
     worker_has_external_dependencies!
 
     def perform(namespace_id)
-      return unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
-
       integration = Integrations::JiraCloudApp.for_group(namespace_id).first
 
       return unless integration

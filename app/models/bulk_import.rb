@@ -121,6 +121,23 @@ class BulkImport < ApplicationRecord
     entities.group_entity.where(parent: nil).first
   end
 
+  def destination_group_roots
+    entities.where(parent: nil).filter_map do |entity|
+      entity.group || entity.project
+    end.map(&:root_ancestor).uniq
+  end
+
+  def namespaces_with_unassigned_placeholders
+    namespaces = destination_group_roots
+    namespace_ids = namespaces.collect(&:id)
+
+    reassignable_statuses = Import::SourceUser::STATUSES.slice(*Import::SourceUser::REASSIGNABLE_STATUSES).values
+    source_users = Import::SourceUser.for_namespace(namespace_ids).by_statuses(reassignable_statuses)
+    valid_namespace_ids = source_users.collect(&:namespace_id).uniq
+
+    namespaces.select { |namespace| valid_namespace_ids.include?(namespace.id) }
+  end
+
   def source_url
     configuration&.url
   end

@@ -29,7 +29,8 @@ module Groups::GroupMembersHelper
       group_path: group.full_path,
       can_approve_access_requests: true, # true for CE, overridden in EE
       placeholder: placeholder_users,
-      available_roles: available_group_roles(group)
+      available_roles: available_group_roles(group),
+      reassignment_csv_path: bulk_reassignment_file_group_group_members_path(group)
     }
   end
   # rubocop:enable Metrics/ParameterLists
@@ -76,7 +77,7 @@ module Groups::GroupMembersHelper
 
   def group_group_links_list_data(group, include_relations, search)
     group_links = group_group_links(group, include_relations)
-    group_links = group_links.search(search) if search
+    group_links = group_links.search(search, include_parents: true) if search
 
     {
       members: group_group_links_serialized(group, group_links),

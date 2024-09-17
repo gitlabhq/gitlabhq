@@ -795,16 +795,6 @@ describe('URL utility', () => {
     });
   });
 
-  describe('sanitizeUrl', () => {
-    it.each(validURLs)('returns the url for %s', (url) => {
-      expect(urlUtils.sanitizeUrl(url)).toBe(url);
-    });
-
-    it.each(invalidURLs)('returns `about:blank` for %s', (url) => {
-      expect(urlUtils.sanitizeUrl(url)).toBe('about:blank');
-    });
-  });
-
   describe('getNormalizedURL', () => {
     it.each`
       url                       | base                                 | result
@@ -1305,5 +1295,22 @@ describe('URL utility', () => {
     `('path $path with ref $refType becomes $output', ({ path, refType, output }) => {
       expect(urlUtils.buildURLwithRefType({ base, path, refType })).toBe(output);
     });
+  });
+
+  describe('stripRelativeUrlRootFromPath', () => {
+    it.each`
+      relativeUrlRoot | path                   | expectation
+      ${''}           | ${'/foo/bar'}          | ${'/foo/bar'}
+      ${'/'}          | ${'/foo/bar'}          | ${'/foo/bar'}
+      ${'/foo'}       | ${'/foo/bar'}          | ${'/bar'}
+      ${'/gitlab/'}   | ${'/gitlab/-/ide/foo'} | ${'/-/ide/foo'}
+    `(
+      'with relative_url_root="$relativeUrlRoot", "$path" should return "$expectation"',
+      ({ relativeUrlRoot, path, expectation }) => {
+        window.gon.relative_url_root = relativeUrlRoot;
+
+        expect(urlUtils.stripRelativeUrlRootFromPath(path)).toBe(expectation);
+      },
+    );
   });
 });

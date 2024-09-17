@@ -81,9 +81,12 @@ describe('Deploy keys app component', () => {
   const findNavigationTabs = () => wrapper.findComponent(NavigationTabs);
 
   it('renders loading icon while waiting for request', async () => {
+    currentScopeMock.mockResolvedValue('enabledKeys');
+    currentPageMock.mockResolvedValue(1);
     deployKeyMock.mockReturnValue(new Promise(() => {}));
     mountComponent();
 
+    await waitForPromises();
     await nextTick();
     expect(findLoadingIcon().exists()).toBe(true);
   });
@@ -180,6 +183,8 @@ describe('Deploy keys app component', () => {
     });
 
     it('re-fetches deploy keys when disabling a key', async () => {
+      currentScopeMock.mockResolvedValue('enabledKeys');
+      currentPageMock.mockResolvedValue(1);
       confirmRemoveKeyMock.mockReturnValue(key);
       await mountComponent();
       expect(deployKeyMock).toHaveBeenCalledTimes(1);

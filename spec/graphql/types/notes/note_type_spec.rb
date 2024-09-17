@@ -5,6 +5,16 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   include GraphqlHelpers
 
+  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- we need the project and author for the test, id needed
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:user) { build_stubbed(:user) }
+
+  let_it_be(:note_text) { 'note body content' }
+  let_it_be(:note) { create(:note, note: note_text, project: project) }
+  # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
+  let(:batch_loader) { instance_double(Gitlab::Graphql::Loaders::BatchModelLoader) }
+
   it 'exposes the expected fields' do
     expected_fields = %i[
       author
@@ -42,12 +52,10 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   specify { expect(described_class).to require_graphql_authorizations(:read_note) }
 
   context 'when system note with issue_email_participants action', feature_category: :service_desk do
-    let_it_be(:user) { build_stubbed(:user) }
     let_it_be(:email) { 'user@example.com' }
     let_it_be(:note_text) { "added #{email}" }
     # Create project and issue separately because we need to public project.
     # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Notes::RenderService updates #note and #cached_markdown_version
-    let_it_be(:project) { create(:project, :public) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:note) do
       create(:note, :system, project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
@@ -72,9 +80,6 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   end
 
   describe '#body_first_line_html' do
-    let_it_be(:user) { build_stubbed(:user) }
-    let_it_be(:project) { build(:project, :public) }
-
     let(:note_text) { 'note body content' }
     let(:note) { build(:note, note: note_text, project: project) }
 
@@ -107,6 +112,30 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
           '<p>this is a note body content which is very, very, very, veeery, long and is supposed ' \
             'to be longer that 125 characters in le...</p>')
       end
+    end
+  end
+
+  describe '#project' do
+    subject(:note_project) { resolve_field(:project, note, current_user: user) }
+
+    it 'fetches the project' do
+      expect(Gitlab::Graphql::Loaders::BatchModelLoader).to receive(:new).with(Project, project.id)
+        .and_return(batch_loader)
+      expect(batch_loader).to receive(:find)
+
+      note_project
+    end
+  end
+
+  describe '#author' do
+    subject(:note_author) { resolve_field(:author, note, current_user: user) }
+
+    it 'fetches the author' do
+      expect(Gitlab::Graphql::Loaders::BatchModelLoader).to receive(:new).with(User, note.author.id)
+        .and_return(batch_loader)
+      expect(batch_loader).to receive(:find)
+
+      note_author
     end
   end
 end

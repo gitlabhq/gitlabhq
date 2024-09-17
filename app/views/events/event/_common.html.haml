@@ -4,7 +4,7 @@
 
 .event-title.gl-flex.gl-flex-wrap
   = inline_event_icon(event)
-  .event-title-block.gl-display-inline-block.gl-mr-2
+  .event-title-block.gl-inline-block.gl-mr-2
     - if event.target
       %span.event-type{ class: event.action_name + user_profile_activity_classes }
         = localized_action_name(event)
@@ -13,10 +13,10 @@
       = link_to event_target_path(event), class: 'has-tooltip event-target-link', title: event.target_title do
         = event.target.reference_link_text
       - unless event.milestone?
-        %span.event-target-title.gl-text-overflow-ellipsis.gl-overflow-hidden{ dir: "auto" }
+        %span.event-target-title.gl-text-ellipsis.gl-overflow-hidden{ dir: "auto" }
           = "&quot;".html_safe + event.target.title + "&quot".html_safe
     - else
-      %span.event-type.gl-display-inline-block{ class: event.action_name }
+      %span.event-type.gl-inline-block{ class: event.action_name }
         = event_action_name(event)
 
     = render "events/event_scope", event: event if event.resource_parent.present?

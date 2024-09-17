@@ -58,6 +58,10 @@ module Gitlab
                         'user_remove_from_team'
                       when :update
                         'user_update_for_team'
+                      when :request
+                        'user_access_request_to_project'
+                      when :revoke
+                        'user_access_request_revoked_for_project'
                       end
         { event_name: event_name }
       end

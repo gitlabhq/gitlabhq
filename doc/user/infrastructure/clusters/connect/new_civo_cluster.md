@@ -101,7 +101,7 @@ When the pipeline finishes successfully, you can see your new cluster:
 - In Civo dashboard: on your Kubernetes tab.
 - In GitLab: from your project's sidebar, select **Operate > Kubernetes clusters**.
 
-If you didn't set the `TF_VAR_civo_region` variable, the cluster will be created in the 'lon1' region. 
+If you didn't set the `TF_VAR_civo_region` variable, the cluster will be created in the 'lon1' region.
 
 ## Use your cluster
 

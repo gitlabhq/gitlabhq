@@ -12,7 +12,7 @@ module Projects
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
           max_allowed_file_size: max_allowed_file_size(project),
-          markdown_preview_path: ::Gitlab::Routing.url_helpers.project_ml_preview_markdown_url(project)
+          markdown_preview_path: preview_markdown_path(project)
         }
 
         to_json(data)
@@ -29,7 +29,8 @@ module Projects
           model_id: model.id,
           model_name: model.name,
           max_allowed_file_size: max_allowed_file_size(project),
-          latest_version: model.latest_version&.version
+          latest_version: model.latest_version&.version,
+          markdown_preview_path: preview_markdown_path(project)
         }
 
         to_json(data)
@@ -47,7 +48,8 @@ module Projects
           can_write_model_registry: can_write_model_registry?(user, project),
           import_path: model_version_artifact_import_path(project.id, model_version.id),
           model_path: project_ml_model_path(project, model_version.model),
-          max_allowed_file_size: max_allowed_file_size(project)
+          max_allowed_file_size: max_allowed_file_size(project),
+          markdown_preview_path: preview_markdown_path(project)
         }
 
         to_json(data)

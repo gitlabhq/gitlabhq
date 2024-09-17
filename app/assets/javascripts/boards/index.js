@@ -2,7 +2,6 @@ import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
-import '~/boards/filters/due_date_filters';
 import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   navigationType,
@@ -55,7 +54,7 @@ function mountBoardApp(el) {
     groupId,
     fullPath,
     rootPath,
-    hasScopedLabelsFeature,
+    wiHasScopedLabelsFeature,
     wiGroupPath,
     wiCanAdminLabel,
   } = el.dataset;
@@ -123,7 +122,7 @@ function mountBoardApp(el) {
       multipleIssueBoardsAvailable: parseBoolean(el.dataset.multipleBoardsAvailable),
       scopedIssueBoardFeatureEnabled: parseBoolean(el.dataset.scopedIssueBoardFeatureEnabled),
       allowSubEpics: false,
-      hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
+      hasScopedLabelsFeature: parseBoolean(wiHasScopedLabelsFeature),
       hasIterationsFeature: parseBoolean(el.dataset.iterationFeatureAvailable),
       hasIssueWeightsFeature: parseBoolean(el.dataset.weightFeatureAvailable),
       hasIssuableHealthStatusFeature: parseBoolean(el.dataset.healthStatusFeatureAvailable),

@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.OxfordComma
+# Warning: gitlab_base.OxfordComma
 #
 # Checks for the lack of an Oxford comma. In some cases, will catch overly complex sentence structures with lots of commas.
 #

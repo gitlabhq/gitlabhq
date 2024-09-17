@@ -1,10 +1,10 @@
 - access = note_human_max_access(note)
 - if note.noteable_author?(@noteable)
-  = render Pajamas::BadgeComponent.new(_("Author"), variant: 'neutral', class: 'has-tooltip gl-bg-transparent! !gl-shadow-inner-1-gray-100 gl-hidden md:gl-inline-block gl-mr-3', title: _("This user is the author of this %{noteable}.") % { noteable: @noteable.human_class_name })
+  = render Pajamas::BadgeComponent.new(_("Author"), variant: 'muted', class: 'has-tooltip gl-hidden md:gl-inline-block gl-mr-3', title: _("This user is the author of this %{noteable}.") % { noteable: @noteable.human_class_name })
 - if access
-  = render Pajamas::BadgeComponent.new(access, variant: 'neutral', class: 'has-tooltip gl-bg-transparent! !gl-shadow-inner-1-gray-100 gl-hidden md:gl-inline-block gl-mr-3', title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: note.project_name })
+  = render Pajamas::BadgeComponent.new(access, variant: 'muted', class: 'has-tooltip gl-hidden md:gl-inline-block gl-mr-3', title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: note.project_name })
 - elsif note.contributor?
-  = render Pajamas::BadgeComponent.new(_("Contributor"), variant: 'neutral', class: 'has-tooltip gl-bg-transparent! !gl-shadow-inner-1-gray-100 gl-hidden md:gl-inline-block gl-mr-3', title: _("This user has previously committed to the %{name} project.") % { name: note.project_name })
+  = render Pajamas::BadgeComponent.new(_("Contributor"), variant: 'muted', class: 'has-tooltip gl-hidden md:gl-inline-block gl-mr-3', title: _("This user has previously committed to the %{name} project.") % { name: note.project_name })
 
 - if can?(current_user, :award_emoji, note)
   - if note.emoji_awardable?

@@ -24,7 +24,7 @@ available as a ViewComponent in `app/components/pajamas`.
 
 NOTE:
 We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
-Reach out to the [Foundations team](https://handbook.gitlab.com/handbook/engineering/development/dev/manage/foundations/)
+Reach out to the [Design Systems team](https://handbook.gitlab.com/handbook/engineering/development/dev/foundations/design-system/)
 if the component you are looking for is not yet available.
 
 ### Available components

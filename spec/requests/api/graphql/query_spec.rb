@@ -147,5 +147,50 @@ RSpec.describe 'Query', feature_category: :shared do
         expect(graphql_data['ciPipelineStage']).to be_nil
       end
     end
+
+    context 'with expected job order' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'test') }
+      let_it_be(:bridge_job) { create(:ci_bridge, :success, ci_stage: stage, name: 'bridge_job') }
+      let_it_be(:another_job) { create(:ci_build, ci_stage: stage, status: :manual, name: 'another_job') }
+      let_it_be(:job) { create(:ci_build, :success, ci_stage: stage, name: 'job') }
+      let_it_be(:another_job_2) { create(:ci_build, ci_stage: stage, status: :skipped, name: 'another_job_2') }
+
+      let(:query) do
+        <<~GRAPHQL
+          {
+            ciPipelineStage(id: "#{stage.to_global_id}") {
+              id
+              name
+              jobs {
+                nodes {
+                  name
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'when the current user has access to the stage' do
+        before do
+          project.add_developer(current_user)
+        end
+
+        it 'returns the stage with jobs in the correct order' do
+          post_graphql(query, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          stage_data = graphql_data['ciPipelineStage']
+          expect(stage_data['name']).to eq('test')
+
+          job_names = stage_data['jobs']['nodes'].pluck('name')
+          expected_order = %w[another_job bridge_job job another_job_2]
+
+          expect(job_names).to eq(expected_order)
+        end
+      end
+    end
   end
 end

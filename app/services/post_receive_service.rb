@@ -45,8 +45,6 @@ class PostReceiveService
 
       response.add_basic_message(redirect_message)
       response.add_basic_message(project_created_message)
-
-      record_onboarding_progress
     end
 
     response
@@ -97,16 +95,6 @@ class PostReceiveService
     banner ||= System::BroadcastMessage.current_show_in_cli_banner_messages.last
 
     banner&.message
-  end
-
-  def record_onboarding_progress
-    return unless project
-
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456533 we should remove from here and place this
-    # when repository is created instead.
-    # In order to do that, we need to check for all onboarded namespaces where this action is not
-    # completed and then see if any project underneath them has a repository.
-    Onboarding::ProgressService.new(project.namespace).execute(action: :git_write)
   end
 end
 

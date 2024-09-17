@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.BadPlurals
+# Warning: gitlab_base.BadPlurals
 #
 # Don't write plural words with the '(s)' construction. 'HTTP(S)' is acceptable.
 #

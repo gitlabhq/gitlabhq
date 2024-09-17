@@ -64,7 +64,7 @@ module API
           optional :domain, type: String, desc: 'Cluster base domain'
           optional :management_project_id, type: Integer, desc: 'The ID of the management project'
           optional :managed, type: Boolean, default: true, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true'
-          requires :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
+          requires :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data' do
             requires :api_url, type: String, allow_blank: false, desc: 'URL to access the Kubernetes API'
             requires :token, type: String, desc: 'Token to authenticate against Kubernetes'
             optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
@@ -105,7 +105,7 @@ module API
           optional :domain, type: String, desc: 'Cluster base domain'
           optional :management_project_id, type: Integer, desc: 'The ID of the management project'
           optional :managed, type: Boolean, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster'
-          optional :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
+          optional :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data' do
             optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
             optional :token, type: String, desc: 'Token to authenticate against Kubernetes'
             optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'

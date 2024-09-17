@@ -178,10 +178,9 @@ export default {
     },
     discussionHolderClass() {
       return {
-        'is-replying gl-pt-0!': this.isReplying,
+        'is-replying': this.isReplying,
         'internal-note': this.isDiscussionInternal,
-        'public-note': !this.isDiscussionInternal,
-        'gl-pt-0!': !this.discussion.diff_discussion && this.isReplying,
+        '!gl-pt-0': !this.discussion.diff_discussion && this.isReplying,
       };
     },
     hasDraft() {
@@ -205,11 +204,17 @@ export default {
       'removeConvertedDiscussion',
       'expandDiscussion',
     ]),
-    showReplyForm() {
+    showReplyForm(text) {
       this.isReplying = true;
 
       if (!this.discussion.expanded) {
         this.expandDiscussion({ discussionId: this.discussion.id });
+      }
+
+      if (typeof text !== 'undefined') {
+        this.$nextTick(() => {
+          this.$refs.noteForm.append(text);
+        });
       }
     },
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm(shouldConfirm, isDirty) {
@@ -342,7 +347,7 @@ export default {
                 <li
                   v-else-if="canShowReplyActions && showReplies"
                   data-testid="reply-wrapper"
-                  class="discussion-reply-holder gl-border-t-0! gl-pb-5! clearfix"
+                  class="discussion-reply-holder clearfix gl-bg-subtle"
                   :class="discussionHolderClass"
                 >
                   <discussion-actions

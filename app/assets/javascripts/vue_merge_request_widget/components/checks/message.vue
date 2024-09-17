@@ -38,10 +38,10 @@ export default {
 
 <template>
   <div class="gl-py-3 gl-pl-7 gl-pr-4">
-    <div class="gl-display-flex">
+    <div class="gl-flex">
       <status-icon :icon-name="iconName" :level="2" />
       <div class="gl-w-full gl-min-w-0">
-        <div class="gl-display-flex">{{ failureReason }}</div>
+        <div class="gl-flex">{{ failureReason }}</div>
       </div>
       <slot></slot>
       <slot v-if="check.status === 'FAILED'" name="failed"></slot>

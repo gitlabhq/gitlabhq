@@ -1,0 +1,8 @@
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-todos-md.svg',
+      title: s_("Todos|Your To-Do List shows what to work on next")) do |c|
+
+  - c.with_description do
+    %p
+      = (s_("Todos|When an issue or merge request is assigned to you, or when you receive a %{strongStart}@mention%{strongEnd} in a comment, this automatically triggers a new item in your To-Do List.") % { strongStart: '<strong>', strongEnd: '</strong>' }).html_safe
+    %p
+      = s_("Todos|It's how you always know what to work on next.")

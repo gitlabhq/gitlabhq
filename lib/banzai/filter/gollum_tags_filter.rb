@@ -77,6 +77,7 @@ module Banzai
       def sanitized_content_tag(name, content, options = {})
         html = content_tag(name, content, options)
         node = Banzai::Filter::SanitizationFilter.new(html).call
+        node = Banzai::Filter::SanitizeLinkFilter.new(node).call
 
         node&.children&.first
       end

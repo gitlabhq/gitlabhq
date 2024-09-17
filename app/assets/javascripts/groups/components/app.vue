@@ -1,6 +1,6 @@
 <script>
-import { GlLoadingIcon, GlModal, GlEmptyState } from '@gitlab/ui';
-import emptySearchIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
+import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
@@ -11,18 +11,11 @@ import eventHub from '../event_hub';
 import GroupsComponent from './groups.vue';
 
 export default {
-  i18n: {
-    searchEmptyState: {
-      title: __('No results found'),
-      description: __('Edit your search and try again'),
-    },
-  },
-  emptySearchIllustration,
   components: {
     GroupsComponent,
     GlModal,
     GlLoadingIcon,
-    GlEmptyState,
+    EmptyResult,
   },
   props: {
     action: {
@@ -245,13 +238,7 @@ export default {
     />
     <template v-else>
       <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />
-      <gl-empty-state
-        v-else-if="fromSearch"
-        :svg-path="$options.emptySearchIllustration"
-        :title="$options.i18n.searchEmptyState.title"
-        :description="$options.i18n.searchEmptyState.description"
-        data-testid="search-empty-state"
-      />
+      <empty-result v-else-if="fromSearch" data-testid="search-empty-state" />
       <slot v-else name="empty-state"></slot>
     </template>
     <gl-modal

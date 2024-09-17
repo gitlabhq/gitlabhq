@@ -5,5 +5,4 @@ feature_category: package_registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156127
 milestone: '17.1'
 queued_migration_version: 20240612074837
-finalize_after: '2024-07-22'
 finalized_by: # version of the migration that finalized this BBM

@@ -83,9 +83,10 @@ module Ci
           .for_ref(pipeline.ref)
           .id_not_in(pipeline.id)
           .with_status(Ci::Pipeline::CANCELABLE_STATUSES)
-          .order_id_desc
+          .order_id_desc # Query the most recently created cancellable Pipelines
           .limit(MAX_CANCELLATIONS_PER_PIPELINE)
           .pluck(:id)
+          .reverse # Once we have the most recent Pipelines, cancel oldest & upstreams first
       end
       strong_memoize_attr :cancelable_status_pipeline_ids
 
@@ -102,7 +103,7 @@ module Ci
         configured_to_not_cancel = 0
 
         cancelable_status_pipeline_ids.each_slice(ID_BATCH_SIZE) do |ids_batch|
-          Ci::Pipeline.id_in(ids_batch).each do |cancelable|
+          Ci::Pipeline.id_in(ids_batch).order_id_asc.each do |cancelable|
             case cancelable.source.to_sym
             when *Enums::Ci::Pipeline.ci_sources.keys
               # Newer pipelines are not cancelable
@@ -211,7 +212,7 @@ module Ci
       end
 
       def pipelines_created_after
-        3.days.ago
+        7.days.ago
       end
 
       # Finding the pipelines to cancel is an expensive task that is not well

@@ -21,6 +21,7 @@ export default {
   },
   inject: ['fullPath', 'commitSha'],
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     project: {
       query: commitReferencesQuery,
       variables() {
@@ -71,6 +72,9 @@ export default {
       const urlPart = joinPaths(gon.relative_url_root || '', `/${this.fullPath}`, `/-/commits/`);
       return urlPart;
     },
+    isLoading() {
+      return this.$apollo.queries.project.loading;
+    },
   },
   methods: {
     async fetchContainingRefs({ query, namespace }) {
@@ -108,27 +112,29 @@ export default {
 
 <template>
   <div class="gl-border-t">
-    <refs-list
-      v-if="hasBranches"
-      :has-containing-refs="hasContainingBranches"
-      :is-loading="$apollo.queries.project.loading"
-      :tipping-refs="tippingBranches"
-      :containing-refs="containingBranches"
-      :namespace="$options.i18n.branches"
-      :url-part="commitsUrlPart"
-      :ref-type="$options.BRANCHES_REF_TYPE"
-      @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingBranches"
-    />
-    <refs-list
-      v-if="hasTags"
-      :has-containing-refs="hasContainingTags"
-      :is-loading="$apollo.queries.project.loading"
-      :tipping-refs="tippingTags"
-      :containing-refs="containingTags"
-      :namespace="$options.i18n.tags"
-      :url-part="commitsUrlPart"
-      :ref-type="$options.TAGS_REF_TYPE"
-      @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingTags"
-    />
+    <div class="well-segment">
+      <refs-list
+        :has-containing-refs="hasContainingBranches"
+        :is-loading="isLoading"
+        :tipping-refs="tippingBranches"
+        :containing-refs="containingBranches"
+        :namespace="$options.i18n.branches"
+        :url-part="commitsUrlPart"
+        :ref-type="$options.BRANCHES_REF_TYPE"
+        @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingBranches"
+      />
+    </div>
+    <div class="well-segment">
+      <refs-list
+        :has-containing-refs="hasContainingTags"
+        :is-loading="isLoading"
+        :tipping-refs="tippingTags"
+        :containing-refs="containingTags"
+        :namespace="$options.i18n.tags"
+        :url-part="commitsUrlPart"
+        :ref-type="$options.TAGS_REF_TYPE"
+        @[$options.FETCH_CONTAINING_REFS_EVENT]="fetchContainingTags"
+      />
+    </div>
   </div>
 </template>

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Atlassian::User do
-  let(:oauth_user) { described_class.new(oauth) }
+  let_it_be(:organization) { create(:organization) }
+  let(:oauth_user) { described_class.new(oauth, organization_id: organization.id) }
   let(:gl_user) { oauth_user.gl_user }
   let(:extern_uid) { generate(:username) }
   let(:oauth) do

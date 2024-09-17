@@ -178,7 +178,7 @@ export default {
     <gl-button
       v-for="awardList in groupedAwards"
       :key="awardList.name"
-      v-gl-tooltip.viewport
+      v-gl-tooltip
       class="gl-my-2 gl-mr-3"
       :class="awardList.classes"
       :title="awardList.title"

@@ -6,19 +6,25 @@ import FrequentItems from './frequent_items.vue';
 
 export default {
   name: 'FrequentlyVisitedGroups',
-  apollo: {
-    frecentGroups: {
-      query: currentUserFrecentGroupsQuery,
-    },
-  },
   components: {
     FrequentItems,
   },
   inject: ['groupsPath'],
+  apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+    frecentGroups: {
+      query: currentUserFrecentGroupsQuery,
+    },
+  },
   i18n: {
     groupName: s__('Navigation|Frequently visited groups'),
     viewAllText: s__('Navigation|View all my groups'),
     emptyStateText: s__('Navigation|Groups you visit often will appear here.'),
+  },
+  computed: {
+    items() {
+      return this.frecentGroups || [];
+    },
   },
   FREQUENTLY_VISITED_GROUPS_HANDLE,
 };
@@ -29,7 +35,7 @@ export default {
     :loading="$apollo.queries.frecentGroups.loading"
     :empty-state-text="$options.i18n.emptyStateText"
     :group-name="$options.i18n.groupName"
-    :items="frecentGroups"
+    :items="items"
     view-all-items-icon="group"
     :view-all-items-text="$options.i18n.viewAllText"
     :view-all-items-path="groupsPath"

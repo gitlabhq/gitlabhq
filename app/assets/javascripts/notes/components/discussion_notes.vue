@@ -148,7 +148,7 @@ export default {
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
           :internal-note="isDiscussionInternal"
-          :class="{ 'gl-border-top-0!': isFileDiscussion }"
+          :class="{ '!gl-border-t-0': isFileDiscussion }"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -158,7 +158,7 @@ export default {
               :edited-at="discussion.resolved_at"
               :edited-by="discussion.resolved_by"
               :action-text="resolvedText"
-              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text gl-mb-2 gl-ml-3"
+              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text -gl-mt-2 gl-mb-3 gl-ml-3"
             />
           </template>
           <template #avatar-badge>

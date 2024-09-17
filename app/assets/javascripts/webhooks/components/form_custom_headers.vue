@@ -105,7 +105,7 @@ export default {
     :title="s__('Webhooks|Custom headers')"
     icon="code"
     :count="customHeaders.length"
-    class="gl-mt-3 gl-mb-5"
+    class="gl-mb-5 gl-mt-3"
     data-testid="custom-headers-card"
   >
     <template #actions>
@@ -132,7 +132,7 @@ export default {
       :value-state="!isEmpty(value) || !isValidated"
       :invalid-key-feedback="keyErrorFeedback(key)"
       :invalid-value-feedback="valueErrorFeedback(value)"
-      :class="{ 'gl-pb-4 gl-mb-4 gl-border-b': index < customHeaders.length - 1 }"
+      :class="{ 'gl-border-b gl-mb-4 gl-pb-4': index < customHeaders.length - 1 }"
       @update:header-key="onUpdate(index, { key: $event, value })"
       @update:header-value="onUpdate(index, { key, value: $event })"
       @remove="removeItem(index)"

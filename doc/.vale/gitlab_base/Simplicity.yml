@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.Simplicity
+# Warning: gitlab_base.Simplicity
 #
 # Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
 #

@@ -1,0 +1,9 @@
+name: ml_model_version_destroyed
+description: ML model version destroyed
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/463215
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165145
+feature_category: mlops
+milestone: '17.4'
+saved_to_database: true
+scope: [Project]
+streamed: true

@@ -22,6 +22,8 @@ tags:
   description: Operations about groups
 - name: runners
   description: Operations about runners
+- name: web_commits
+  description: Operations about web commits
 - name: group_avatar
   description: Operations about group_avatars
 - name: invitations
@@ -38,8 +40,6 @@ tags:
   description: Operations about secure_files
 - name: commits
   description: Operations about commits
-- name: user_starred_dashboards
-  description: Operations about user_starred_dashboards
 - name: pages
   description: Operations about pages
 - name: pages_domains
@@ -134,8 +134,6 @@ tags:
   description: Operations related to container registry
 - name: container_registry_event
   description: Operations related to container registry events
-- name: dashboard_annotations
-  description: Operations related to dashboard annotations
 - name: debian_distribution
   description: Operations related to Debian Linux distributions
 - name: debian_packages
@@ -192,8 +190,6 @@ tags:
   description: Operations related to merge requests
 - name: metadata
   description: Operations related to metadata of the GitLab instance
-- name: metrics_user_starred_dashboards
-  description: Operations related to User-starred metrics dashboards
 - name: ml_model_registry
   description: Operations related to Model registry
 - name: npm_packages
@@ -17570,66 +17566,6 @@ paths:
       tags:
       - merge_requests
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidVersionsVersionId
-  "/api/v4/projects/{id}/metrics/user_starred_dashboards":
-    post:
-      summary: Add a star to a dashboard
-      description: Marks selected metrics dashboard as starred. Introduced in GitLab
-        13.0.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4ProjectsIdMetricsUserStarredDashboards
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdMetricsUserStarredDashboards"
-      responses:
-        '201':
-          description: Add a star to a dashboard
-          schema:
-            "$ref": "#/definitions/API_Entities_Metrics_UserStarredDashboard"
-        '400':
-          description: Bad request
-        '404':
-          description: Not found
-      tags:
-      - user_starred_dashboards
-      operationId: postApiV4ProjectsIdMetricsUserStarredDashboards
-    delete:
-      summary: Remove a star from a dashboard
-      description: Remove star from selected metrics dashboard. Introduced in GitLab
-        13.0.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: dashboard_path
-        description: Url encoded path to a file defining the dashboard from which
-          the star should be removed
-        type: string
-        required: false
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Remove a star from a dashboard
-        '400':
-          description: Bad request
-        '404':
-          description: Not found
-      tags:
-      - user_starred_dashboards
-      operationId: deleteApiV4ProjectsIdMetricsUserStarredDashboards
   "/api/v4/projects/{id}/packages/{package_id}/package_files":
     get:
       summary: List package files
@@ -36883,72 +36819,6 @@ paths:
       tags:
       - merge_requests
       operationId: getApiV4MergeRequests
-  "/api/v4/environments/{id}/metrics_dashboard/annotations":
-    post:
-      summary: Create a new annotation
-      description: Creates a new monitoring dashboard annotation
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4EnvironmentsIdMetricsDashboardAnnotations
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4EnvironmentsIdMetricsDashboardAnnotations"
-      responses:
-        '201':
-          description: Create a new annotation
-          schema:
-            "$ref": "#/definitions/API_Entities_Metrics_Dashboard_Annotation"
-        '400':
-          description: Bad Request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      tags:
-      - dashboard_annotations
-      operationId: postApiV4EnvironmentsIdMetricsDashboardAnnotations
-  "/api/v4/clusters/{id}/metrics_dashboard/annotations":
-    post:
-      summary: Create a new annotation
-      description: Creates a new monitoring dashboard annotation
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4ClustersIdMetricsDashboardAnnotations
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ClustersIdMetricsDashboardAnnotations"
-      responses:
-        '201':
-          description: Create a new annotation
-          schema:
-            "$ref": "#/definitions/API_Entities_Metrics_Dashboard_Annotation"
-        '400':
-          description: Bad Request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      tags:
-      - dashboard_annotations
-      operationId: postApiV4ClustersIdMetricsDashboardAnnotations
   "/api/v4/namespaces/{id}":
     put:
       description: Update a namespace
@@ -39624,6 +39494,23 @@ paths:
       tags:
       - metadata
       operationId: getApiV4Version
+  "/api/v4/web_commits/public_key":
+    get:
+      summary: Get the GitLab public key for signing web commits.
+      description: This feature was introduced in GitLab 17.4.
+      tags:
+        - web_commits
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Get the GitLab public key for signing web commits.
+          schema:
+            "$ref": "#/definitions/API_Entities_Web_Commits"
+        '503':
+          description: Service unavailable
+        '404':
+          description: Not found
   "/api/v4/topics":
     get:
       summary: Get topics
@@ -50261,35 +50148,6 @@ definitions:
       diffs:
         "$ref": "#/definitions/API_Entities_Diff"
     description: API_Entities_MergeRequestDiffFull model
-  postApiV4ProjectsIdMetricsUserStarredDashboards:
-    type: object
-    properties:
-      dashboard_path:
-        type: string
-        description: URL-encoded path to file defining the dashboard which should
-          be marked as favorite
-    required:
-    - dashboard_path
-    description: Add a star to a dashboard
-  API_Entities_Metrics_UserStarredDashboard:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 5
-      dashboard_path:
-        type: string
-        example: config/prometheus/common_metrics.yml
-      user_id:
-        type: integer
-        format: int32
-        example: 1
-      project_id:
-        type: integer
-        format: int32
-        example: 20
-    description: API_Entities_Metrics_UserStarredDashboard model
   API_Entities_PackageFile:
     type: object
     properties:
@@ -58278,88 +58136,6 @@ definitions:
         type: string
         example: <p dir=\"auto\">Hello world!</p>"
     description: API_Entities_Markdown model
-  postApiV4EnvironmentsIdMetricsDashboardAnnotations:
-    type: object
-    properties:
-      starting_at:
-        type: string
-        format: date-time
-        description: Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.Timestamp
-          marking start point of annotation.
-      ending_at:
-        type: string
-        format: date-time
-        description: Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.Timestamp
-          marking end point of annotation.When not supplied, an annotation displays
-          as a single event at the start point.
-      dashboard_path:
-        type: string
-        description: ID of the dashboard which needs to be annotated.Treated as a
-          CGI-escaped path, and automatically un-escaped.
-      description:
-        type: string
-        description: Description of the annotation.
-    required:
-    - starting_at
-    - dashboard_path
-    - description
-    description: Create a new annotation
-  API_Entities_Metrics_Dashboard_Annotation:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 4
-      starting_at:
-        type: string
-        format: date-time
-        example: '2016-04-08T03:45:40.000Z'
-      ending_at:
-        type: string
-        format: date-time
-        example: '2016-08-08T09:00:00.000Z'
-      dashboard_path:
-        type: string
-        example: ".gitlab/dashboards/custom_metrics.yml"
-      description:
-        type: string
-        example: annotation description
-      environment_id:
-        type: integer
-        format: int32
-        example: 1
-      cluster_id:
-        type: integer
-        format: int32
-        example: 2
-    description: API_Entities_Metrics_Dashboard_Annotation model
-  postApiV4ClustersIdMetricsDashboardAnnotations:
-    type: object
-    properties:
-      starting_at:
-        type: string
-        format: date-time
-        description: Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.Timestamp
-          marking start point of annotation.
-      ending_at:
-        type: string
-        format: date-time
-        description: Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.Timestamp
-          marking end point of annotation.When not supplied, an annotation displays
-          as a single event at the start point.
-      dashboard_path:
-        type: string
-        description: ID of the dashboard which needs to be annotated.Treated as a
-          CGI-escaped path, and automatically un-escaped.
-      description:
-        type: string
-        description: Description of the annotation.
-    required:
-    - starting_at
-    - dashboard_path
-    - description
-    description: Create a new annotation
   putApiV4NamespacesId:
     type: object
     properties:
@@ -60126,6 +59902,11 @@ definitions:
       avatar_url:
         type: string
     description: API_Entities_Projects_Topic model
+  API_Entities_Web_Commits:
+    type: object
+    properties:
+      public_key:
+        type: string
   postApiV4Topics:
     type: object
     properties:

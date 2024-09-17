@@ -2,22 +2,17 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
 .flash-container {
   margin: 0;
-  margin-bottom: $gl-padding;
   font-size: 14px;
   position: relative;
   z-index: 1;
+  @apply gl-flex;
+  @apply gl-flex-col;
+  @apply gl-gap-3;
 
   &.sticky {
     position: sticky;
     top: $calc-application-header-height;
     z-index: 251;
-
-    .flash-alert,
-    .flash-notice,
-    .flash-success,
-    .flash-warning {
-      margin-bottom: $gl-spacing-scale-4;
-    }
   }
 
   &.flash-container-page {
@@ -26,20 +21,6 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
   &:empty {
     margin: 0;
-  }
-
-  .close-icon-wrapper {
-    padding: ($gl-padding + $gl-padding-4) $gl-padding $gl-padding;
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    cursor: pointer;
-
-    .close-icon {
-      width: 16px;
-      height: 16px;
-    }
   }
 
   .flash-alert,
@@ -71,16 +52,6 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
   .flash-warning {
     background-color: $orange-50;
-  }
-
-  .flash-text,
-  .flash-action {
-    display: inline-block;
-  }
-
-  .gl-alert {
-    margin-top: $gl-spacing-scale-4;
-    margin-bottom: $gl-spacing-scale-4;
   }
 
   &.flash-container-no-margin {

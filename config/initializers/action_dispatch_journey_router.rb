@@ -41,7 +41,19 @@ module ActionDispatch
             val = match_data[i + 1]
             path_parameters[name.to_sym] = Utils.unescape_uri(val) if val
           end
-          [match_data, path_parameters, r]
+
+          # This is the minimal version to support both Rails 7.0 and Rails 7.1
+          #
+          # - https://github.com/rails/rails/blob/v7.1.3.4/actionpack/lib/action_dispatch/journey/router.rb#L131
+          #
+          # - https://github.com/rails/rails/blob/v7.0.8.4/actionpack/lib/action_dispatch/journey/router.rb#L130
+          #
+          # After the upgrade, this method can be more like the v7.1.3.4 version
+          if Gitlab.next_rails?
+            yield [match_data, path_parameters, r]
+          else
+            [match_data, path_parameters, r]
+          end
         end.compact!
 
         routes

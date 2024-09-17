@@ -193,6 +193,19 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
     end
   end
 
+  describe '.set_count' do
+    it 'returns 0 when the set does not exist' do
+      expect(described_class.set_count('foo')).to eq(0)
+    end
+
+    it 'returns count of set' do
+      described_class.set_add('foo', 10)
+      described_class.set_add('foo', 20)
+
+      expect(described_class.set_count('foo')).to eq(2)
+    end
+  end
+
   describe '.hash_add' do
     it 'adds a value to a hash' do
       described_class.hash_add('foo', 1, 1)

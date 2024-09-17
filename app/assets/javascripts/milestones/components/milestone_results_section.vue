@@ -62,17 +62,14 @@ export default {
 <template>
   <div>
     <gl-dropdown-section-header>
-      <div
-        class="gl-display-flex gl-align-items-center gl-pl-6"
-        data-testid="milestone-results-section-header"
-      >
-        <span class="gl-mr-2 gl-mb-1">{{ sectionTitle }}</span>
+      <div class="gl-flex gl-items-center gl-pl-6" data-testid="milestone-results-section-header">
+        <span class="gl-mb-1 gl-mr-2">{{ sectionTitle }}</span>
         <gl-badge variant="neutral">{{ totalCountText }}</gl-badge>
       </div>
     </gl-dropdown-section-header>
     <template v-if="error">
-      <div class="gl-display-flex align-items-start gl-text-red-500 gl-ml-4 gl-mr-4 gl-mb-3">
-        <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-flex-shrink-0" />
+      <div class="align-items-start gl-mb-3 gl-ml-4 gl-mr-4 gl-flex gl-text-red-500">
+        <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
         <span>{{ errorMessage }}</span>
       </div>
     </template>

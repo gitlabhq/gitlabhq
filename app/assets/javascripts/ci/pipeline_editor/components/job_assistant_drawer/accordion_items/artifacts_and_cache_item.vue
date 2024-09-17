@@ -76,15 +76,15 @@ export default {
       </gl-sprintf>
     </div>
     <div v-for="entry in formOptions" :key="entry.key" class="form-group">
-      <div class="gl-display-flex">
-        <label class="gl-font-bold gl-mb-3">{{ entry.title }}</label>
+      <div class="gl-flex">
+        <label class="gl-mb-3 gl-font-bold">{{ entry.title }}</label>
       </div>
       <div
         v-for="(path, index) in entry.paths"
         :key="index"
-        class="gl-display-flex gl-align-items-center gl-mb-3"
+        class="gl-mb-3 gl-flex gl-items-center"
       >
-        <div class="gl-flex-grow-1 gl-flex-basis-0 gl-mr-3">
+        <div class="gl-mr-3 gl-grow gl-basis-0">
           <gl-form-input
             class="!gl-w-full"
             :value="path"

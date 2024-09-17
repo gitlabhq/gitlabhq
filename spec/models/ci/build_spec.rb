@@ -46,6 +46,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
+  it { is_expected.to have_many(:tag_links).with_foreign_key(:build_id).class_name('Ci::BuildTag').inverse_of(:build) }
 
   it { is_expected.to have_one(:runner_manager).through(:runner_manager_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
@@ -99,6 +100,50 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'has a bidirectional relationship with project mirror' do
       expect(described_class.reflect_on_association(:project_mirror).has_inverse?).to eq(:builds)
       expect(Ci::ProjectMirror.reflect_on_association(:builds).has_inverse?).to eq(:project_mirror)
+    end
+  end
+
+  describe 'scopes' do
+    let_it_be(:old_project) { create(:project) }
+    let_it_be(:new_project) { create(:project) }
+    let_it_be(:old_build) { create(:ci_build, created_at: 1.week.ago, updated_at: 1.week.ago, project: old_project) }
+    let_it_be(:new_build) { create(:ci_build, created_at: 1.minute.ago, updated_at: 1.minute.ago, project: new_project) }
+
+    describe 'created_after' do
+      subject { described_class.created_after(1.day.ago) }
+
+      it 'returns the builds created after the given time' do
+        is_expected.to contain_exactly(new_build, build)
+      end
+    end
+
+    describe 'updated_after' do
+      subject { described_class.updated_after(1.day.ago) }
+
+      it 'returns the builds updated after the given time' do
+        is_expected.to contain_exactly(new_build, build)
+      end
+    end
+
+    describe 'with_pipeline_source_type' do
+      let_it_be(:pipeline) { create(:ci_pipeline, source: :security_orchestration_policy) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:push_pipeline) { create(:ci_pipeline, source: :push) }
+      let_it_be(:push_build) { create(:ci_build, pipeline: push_pipeline) }
+
+      subject { described_class.with_pipeline_source_type('security_orchestration_policy') }
+
+      it 'returns the builds updated after the given time' do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    describe 'for_project_ids' do
+      subject { described_class.for_project_ids([new_project.id]) }
+
+      it 'returns the builds from given projects' do
+        is_expected.to contain_exactly(new_build)
+      end
     end
   end
 
@@ -886,7 +931,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#any_runners_online?' do
+  describe '#any_runners_online?', :freeze_time do
     subject { build.any_runners_online? }
 
     context 'when no runners' do
@@ -895,32 +940,39 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when there is a runner' do
       before do
-        create(:ci_runner, *runner_traits, :project, projects: [build.project])
+        create(:ci_runner, *Array.wrap(runner_traits), :project, projects: [build.project])
       end
 
       context 'that is online' do
-        let(:runner_traits) { [:online] }
+        let(:runner_traits) { :online }
 
         it { is_expected.to be_truthy }
+
+        context 'and almost offline' do
+          let(:runner_traits) { :almost_offline }
+
+          it { is_expected.to be_truthy }
+        end
       end
 
-      context 'that is inactive' do
-        let(:runner_traits) { [:online, :inactive] }
+      context 'that is paused' do
+        let(:runner_traits) { [:online, :paused] }
 
         it { is_expected.to be_falsey }
       end
 
       context 'that is offline' do
-        let(:runner_traits) { [:offline] }
+        let(:runner_traits) { :offline }
 
         it { is_expected.to be_falsey }
       end
 
       context 'that cannot handle build' do
-        let(:runner_traits) { [:online] }
+        let(:runner_traits) { :online }
 
         before do
-          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher).and_return(false)
+          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher)
+            .and_return(false)
         end
 
         it { is_expected.to be_falsey }
@@ -1879,6 +1931,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.tags.count).to eq(1)
       expect(build.tags.first.name).to eq('tag')
+      expect(build.tag_links.count).to eq(1)
+      expect(build.tag_links.first.tag.name).to eq('tag')
     end
 
     it 'strips tags' do
@@ -1895,6 +1949,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(build.tags).to be_empty
+        expect(build.tag_links).to be_empty
       end
     end
   end
@@ -5872,7 +5927,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline, ci_stage: ci_stage) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns partition_id to job variables successfully', :aggregate_failures do
@@ -5884,8 +5939,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       ci_build.save!
 
       expect(ci_build.job_variables.count).to eq(2)
-      expect(ci_build.job_variables.first.partition_id).to eq(ci_testing_partition_id)
-      expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id)
+      expect(ci_build.job_variables.first.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 
@@ -5919,7 +5974,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'metadata partitioning', :ci_partitionable do
-    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+    let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id_for_check_constraints) }
 
     let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
     let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
@@ -5934,7 +5989,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.metadata).to be_present
       expect(build.metadata).to be_valid
-      expect(build.metadata.partition_id).to eq(ci_testing_partition_id)
+      expect(build.metadata.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 

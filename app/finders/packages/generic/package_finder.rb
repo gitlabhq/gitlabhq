@@ -8,9 +8,8 @@ module Packages
       end
 
       def execute!(package_name, package_version)
-        project
-          .packages
-          .generic
+        Packages::Generic::Package
+          .for_projects(project)
           .installable
           .by_name_and_version!(package_name, package_version)
       end

@@ -87,13 +87,13 @@ The following features are not found in standard Markdown:
 
 The following features are extended from standard Markdown:
 
-| Standard Markdown                     | Extended Markdown in GitLab                                                           |
-|---------------------------------------|---------------------------------------------------------------------------------------|
-| [Blockquotes](#blockquotes)           | [Multiline blockquotes](#multiline-blockquote)                                       |
-| [Code blocks](#code-spans-and-blocks) | [Colored code and syntax highlighting](#syntax-highlighting)         |
-| [Headings](#headings)                 | [Linkable heading IDs](#heading-ids-and-links)                                          |
-| [Images](#images)                     | [Embedded videos](#videos) and [audio](#audio)                                        |
-| [Links](#links)                       | [Automatically linking URLs](#url-auto-linking)                                       |
+| Standard Markdown                     | Extended Markdown in GitLab |
+|---------------------------------------|-----------------------------|
+| [Blockquotes](#blockquotes)           | [Multiline blockquotes](#multiline-blockquote) |
+| [Code blocks](#code-spans-and-blocks) | [Colored code and syntax highlighting](#syntax-highlighting) |
+| [Headings](#headings)                 | [Linkable heading IDs](#heading-ids-and-links) |
+| [Images](#images)                     | [Embedded videos](#videos) and [audio](#audio) |
+| [Links](#links)                       | [Automatically linking URLs](#url-auto-linking) |
 
 ## Markdown and accessibility
 
@@ -651,14 +651,14 @@ For example:
 ```markdown
 1. First ordered list item
 
-  Paragraph of first item.
+  (Paragraph of first item.)
 
 1. Another item
 ```
 
 1. First ordered list item
 
-  Paragraph of first item.
+  (Paragraph of first item.)
 
 1. Another item
 
@@ -773,14 +773,6 @@ that spans multiple lines,
 you can quote that without having to manually prepend `>` to every line!
 >>>
 ```
-
->>>
-If you paste a message from somewhere else
-
-that spans multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
 
 ## Code spans and blocks
 
@@ -1015,13 +1007,13 @@ The number of math blocks is also limited based on render time. If the limit is 
 GitLab renders the excess math instances as text. Wiki and repository files do not have
 these limits.
 
-Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
+Math written between dollar signs with backticks (``` $`...`$ ```) or single dollar signs (`$...$`)
 is rendered inline with the text.
 
 Math written between double dollar signs (`$$...$$`) or in a [code block](#code-spans-and-blocks) with
 the language declared as `math` is rendered on a separate line:
 
-````markdown
+`````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
 This math is on a separate line using a ```` ```math ```` block:
@@ -1037,7 +1029,7 @@ This math is on a separate line using a `$$...$$` block:
 $$
 a^2+b^2=c^2
 $$
-````
+`````
 
 ![Example of math in GitLab](img/markdown_math_v17_2.png)
 
@@ -1047,18 +1039,14 @@ $$
 
 When creating tables:
 
-- The first line contains the headers, separated by "pipes" (`|`).
+- The first line contains the headers, separated by pipe characters (`|`).
 - The second line separates the headers from the cells.
-  - The cells can contain only empty spaces, hyphens, and
-    (optionally) colons for horizontal alignment.
-  - Each cell must contain at least one hyphen, but adding more hyphens to a
-    cell does not change the cell's rendering.
+  - The cells can contain only empty spaces, hyphens, and (optionally) colons for horizontal alignment.
+  - Each cell must contain at least one hyphen, but adding more hyphens to a cell does not change the cell's rendering.
   - Any content other than hyphens, whitespace, or colons is not allowed
 - The third, and any following lines, contain the cell values.
-  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
-    but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
-  - The cell sizes **don't** have to match each other. They are flexible, but must be separated
-    by pipes (`|`).
+  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines, but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+  - The cell sizes **don't** have to match each other. They are flexible, but must be separated by pipes (`|`).
   - You **can** have blank cells.
 - Column widths are calculated dynamically based on the content of the cells.
 - To use the pipe character (`|`) in the text and not as table delimiter, you must [escape](#escape-characters) it with a backslash (`\|`).
@@ -2089,7 +2077,7 @@ To embed an Observability dashboard URL:
 
 ## References
 
-- The [GitLab Flavored Markdown (GLFM) Specification Guide](../development/gitlab_flavored_markdown/index.md) is a developer-facing document that describes in detail the various goals, tools, implementations, and terms related to the GLFM specification.
+- The [GitLab Flavored Markdown (GLFM) development guidelines](../development/gitlab_flavored_markdown/index.md) is a developer-facing document that describes in detail the various goals, tools, implementations, and terms related to the GLFM specification.
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax)
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.

@@ -89,10 +89,7 @@ export default {
     :avatar="packageIcon"
   >
     <template #sub-header>
-      <div
-        data-testid="sub-header"
-        class="gl-display-flex gl-flex-wrap gl-gap-2 gl-align-items-baseline"
-      >
+      <div data-testid="sub-header" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-2">
         <gl-sprintf :message="$options.i18n.packageInfo">
           <template #version>{{ packageEntity.version }}</template>
 

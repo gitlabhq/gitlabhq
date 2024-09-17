@@ -56,10 +56,29 @@ module ContainerRegistry
     end
 
     def self.rename_base_repository_path(path, name:, dry_run: false)
-      downcased_path = path&.downcase
+      raise ArgumentError, 'incomplete parameters given' unless path.present? && name.present?
+
+      downcased_path = path.downcase
 
       with_dummy_client(token_config: { type: :push_pull_nested_repositories_token, path: downcased_path }) do |client|
-        client.rename_base_repository_path(downcased_path, name: name&.downcase, dry_run: dry_run)
+        client.rename_base_repository_path(downcased_path, name: name.downcase, dry_run: dry_run)
+      end
+    end
+
+    def self.move_repository_to_namespace(path, namespace:, dry_run: false)
+      raise ArgumentError, 'incomplete parameters given' unless path.present? && namespace.present?
+
+      downcased_path = path.downcase
+      downcased_namespace = namespace.downcase
+
+      token_config = {
+        type: :push_pull_move_repositories_access_token,
+        path: downcased_path,
+        new_path: downcased_namespace
+      }
+
+      with_dummy_client(token_config: token_config) do |client|
+        client.move_repository_to_namespace(downcased_path, namespace: downcased_namespace, dry_run: dry_run)
       end
     end
 
@@ -189,11 +208,24 @@ module ContainerRegistry
     # with a successful rename, it will be 'group/subgroup/newname'
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#rename-base-repository
     def rename_base_repository_path(path, name:, dry_run: false)
+      patch_repository(path, { name: name }, dry_run: dry_run)
+    end
+
+    # Given a path 'group/subgroup/project' and a namespace 'group/subgroup_2'
+    # with a successful move, it will be 'group/subgroup_2/project'
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#renamemove-origin-repository
+    def move_repository_to_namespace(path, namespace:, dry_run: false)
+      patch_repository(path, { namespace: namespace }, dry_run: dry_run)
+    end
+
+    private
+
+    def patch_repository(path, body, dry_run: false)
       with_token_faraday do |faraday_client|
         url = "#{GITLAB_REPOSITORIES_PATH}/#{path}/"
         response = faraday_client.patch(url) do |req|
           req.params['dry_run'] = dry_run
-          req.body = { name: name }
+          req.body = body
         end
 
         unless response.success?
@@ -208,8 +240,6 @@ module ContainerRegistry
         RENAME_RESPONSES.fetch(response.status, :error)
       end
     end
-
-    private
 
     def with_token_faraday
       yield faraday

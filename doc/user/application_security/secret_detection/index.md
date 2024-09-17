@@ -41,3 +41,4 @@ replace exposed secrets as soon as possible.
 
 - [Vulnerability Report](../vulnerability_report/index.md)
 - [Automatic response to leaked secrets](automatic_response.md)
+- [Push rules](../../project/repository/push_rules.md)

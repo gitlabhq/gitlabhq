@@ -196,7 +196,7 @@ export default {
   <gl-form
     ref="integrationForm"
     method="post"
-    class="gl-mt-6 gl-mb-3 gl-show-field-errors"
+    class="gl-show-field-errors gl-mb-3 gl-mt-6"
     data-testid="integration-settings-form"
     :action="propsSource.formPath"
     :novalidate="!integrationActive"
@@ -237,7 +237,7 @@ export default {
 
     <section v-if="!hasSections">
       <active-checkbox
-        v-if="propsSource.showActive"
+        v-if="propsSource.manualActivation"
         :key="`${currentKey}-active-checkbox`"
         @toggle-integration-active="onToggleIntegrationState"
       />
@@ -255,7 +255,7 @@ export default {
         :key="section.type"
         :section="section"
         :is-validated="isValidated"
-        :class="{ 'gl-border-b gl-pb-3 gl-mb-6': index !== customState.sections.length - 1 }"
+        :class="{ 'gl-border-b gl-mb-6 gl-pb-3': index !== customState.sections.length - 1 }"
         @toggle-integration-active="onToggleIntegrationState"
         @request-jira-issue-types="onRequestJiraIssueTypes"
       />

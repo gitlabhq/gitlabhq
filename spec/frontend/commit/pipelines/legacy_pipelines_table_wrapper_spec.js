@@ -93,7 +93,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
         );
         expect(findUserPermissionsDocsLink().attributes('href')).toBe(
-          '/help/user/permissions.md#gitlab-cicd-permissions',
+          '/help/user/permissions.md#cicd',
         );
         expect(findEmptyState().text()).toContain(
           'To run a merge request pipeline, the jobs in the CI/CD configuration file must be configured to run in merge request pipelines ' +
@@ -221,35 +221,78 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
         await waitForPromises();
       });
+
       describe('success', () => {
         beforeEach(() => {
           jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
         });
-        it('displays a toast message during pipeline creation', async () => {
-          await findRunPipelineBtn().trigger('click');
 
-          expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+        describe('when the table is a merge request table', () => {
+          beforeEach(async () => {
+            createComponent({
+              props: {
+                canRunPipeline: true,
+                isMergeRequestTable: true,
+                mergeRequestId: 3,
+                projectId: '5',
+              },
+            });
+
+            await waitForPromises();
+          });
+
+          it('on desktop, shows a loading button', async () => {
+            await findRunPipelineBtn().trigger('click');
+
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+          });
+
+          it('on mobile, shows a loading button', async () => {
+            await findRunPipelineBtnMobile().trigger('click');
+
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('disabled')).toBe(false);
+          });
+
+          it('sets isCreatingPipeline to true in pipelines table', async () => {
+            expect(findPipelinesTable().props('isCreatingPipeline')).toBe(false);
+
+            await findRunPipelineBtn().trigger('click');
+
+            expect(findPipelinesTable().props('isCreatingPipeline')).toBe(true);
+          });
         });
 
-        it('on desktop, shows a loading button', async () => {
-          await findRunPipelineBtn().trigger('click');
+        describe('when the table is not a merge request table', () => {
+          it('displays a toast message during pipeline creation', async () => {
+            await findRunPipelineBtn().trigger('click');
 
-          expect(findRunPipelineBtn().props('loading')).toBe(true);
+            expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
+          });
 
-          await waitForPromises();
+          it('on desktop, shows a loading button', async () => {
+            await findRunPipelineBtn().trigger('click');
 
-          expect(findRunPipelineBtn().props('loading')).toBe(false);
-        });
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
 
-        it('on mobile, shows a loading button', async () => {
-          await findRunPipelineBtnMobile().trigger('click');
+            await waitForPromises();
 
-          expect(findRunPipelineBtn().props('loading')).toBe(true);
+            expect(findRunPipelineBtn().props('loading')).toBe(false);
+          });
 
-          await waitForPromises();
+          it('on mobile, shows a loading button', async () => {
+            await findRunPipelineBtnMobile().trigger('click');
 
-          expect(findRunPipelineBtn().props('disabled')).toBe(false);
-          expect(findRunPipelineBtn().props('loading')).toBe(false);
+            expect(findRunPipelineBtn().props('loading')).toBe(true);
+
+            await waitForPromises();
+
+            expect(findRunPipelineBtn().props('disabled')).toBe(false);
+            expect(findRunPipelineBtn().props('loading')).toBe(false);
+          });
         });
       });
 
@@ -347,7 +390,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
     });
   });
 
-  describe('unsuccessfull request', () => {
+  describe('unsuccessful request', () => {
     beforeEach(async () => {
       mock.onGet('endpoint.json').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, []);
 

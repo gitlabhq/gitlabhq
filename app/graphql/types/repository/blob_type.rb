@@ -53,7 +53,7 @@ module Types
       field :raw_blob, GraphQL::Types::String, null: true, method: :data,
         description: 'Raw content of the blob.'
 
-      field :base64_encoded_blob, GraphQL::Types::String, null: true, method: :base64_encoded_blob,
+      field :base64_encoded_blob, GraphQL::Types::String, null: true,
         alpha: { milestone: '17.1' }, description: 'Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled.'
 
       field :raw_text_blob, GraphQL::Types::String, null: true, method: :text_only_data,
@@ -62,7 +62,7 @@ module Types
       field :stored_externally, GraphQL::Types::Boolean, null: true, method: :stored_externally?,
         description: "Whether the blob's content is stored externally (for instance, in LFS)."
 
-      field :external_storage, GraphQL::Types::String, null: true, method: :external_storage,
+      field :external_storage, GraphQL::Types::String, null: true,
         description: "External storage being used, if enabled (for instance, 'LFS')."
 
       field :edit_blob_path, GraphQL::Types::String, null: true,

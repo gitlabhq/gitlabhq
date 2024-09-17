@@ -1,5 +1,10 @@
+- primary_button_text = local_assigns.fetch(:button_text, nil)
+- primary_button_link = local_assigns.fetch(:button_path, nil)
+
 = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
-  title: _('There are no topics to show'))  do |c|
+  title: _('There are no topics to show'),
+  primary_button_text: primary_button_text,
+  primary_button_link: primary_button_link)  do |c|
 
   - c.with_description do
     = _('Add topics to projects to help users find them.')

@@ -94,6 +94,25 @@ RSpec.describe API::Submodules, feature_category: :source_code_management do
           expect(project.repository.blob_at(branch, submodule).id).to eq commit_sha
         end
       end
+
+      context 'when the submodule name contains a dot' do
+        let(:branch) { 'submodule-with-dot' }
+        let(:submodule) { '.dot-submodule' }
+        let(:commit_sha) { '272ff231b7c36f7d0fdbfb55cb3c1856bd8014ae' }
+
+        it 'returns the commit' do
+          expect(Submodules::UpdateService)
+            .to receive(:new)
+                  .with(any_args, hash_including(submodule: submodule))
+                  .and_call_original
+
+          put api(route(submodule), user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['id']).to eq project.repository.commit(branch).id
+          expect(project.repository.blob_at(branch, submodule).id).to eq commit_sha
+        end
+      end
     end
   end
 end

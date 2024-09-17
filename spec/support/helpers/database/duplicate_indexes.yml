@@ -82,12 +82,6 @@ related_epic_links:
 requirements_management_test_reports:
   idx_test_reports_on_issue_id_created_at_and_id:
   - index_requirements_management_test_reports_on_issue_id
-sbom_component_versions:
-  index_sbom_component_versions_on_component_id_and_version:
-  - index_sbom_component_versions_on_component_id
-sbom_occurrences:
-  index_unarchived_occurrences_on_version_id_and_traversal_ids:
-  - index_sbom_occurrences_on_component_version_id
 search_namespace_index_assignments:
   index_search_namespace_index_assignments_uniqueness_index_type:
   - index_search_namespace_index_assignments_on_namespace_id
@@ -105,21 +99,6 @@ term_agreements:
 todos:
   index_todos_on_author_id_and_created_at:
   - index_todos_on_author_id
-vulnerabilities:
-  index_vulnerabilities_project_id_state_severity_default_branch:
-  - index_vulnerabilities_on_project_id_and_state_and_severity
-vulnerability_external_issue_links:
-  idx_vulnerability_ext_issue_links_on_vulne_id_and_ext_issue:
-  - index_vulnerability_external_issue_links_on_vulnerability_id
-vulnerability_finding_links:
-  finding_link_name_url_idx:
-  - finding_links_on_vulnerability_occurrence_id
-vulnerability_finding_signatures:
-  idx_vuln_signatures_uniqueness_signature_sha:
-  - index_vulnerability_finding_signatures_on_finding_id
-vulnerability_flags:
-  index_vulnerability_flags_on_unique_columns:
-  - index_vulnerability_flags_on_vulnerability_occurrence_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
   - index_work_item_hierarchy_restrictions_on_parent_type_id

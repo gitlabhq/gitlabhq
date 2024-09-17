@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <p v-once class="mr-info-list gl-ml-7 gl-pb-5 gl-mb-0">
+  <p v-once class="mr-info-list gl-mb-0 gl-ml-7 gl-pb-5">
     <span class="status-text">
       {{ $options.i18n.removesBranchText }}
     </span>

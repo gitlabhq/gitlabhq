@@ -77,6 +77,15 @@ end
 
 # Usage:
 #
+#   it_behaves_like 'does not use pipeline timing check'
+RSpec.shared_examples 'does not use pipeline timing check' do
+  it 'does not include Concerns::PipelineTimingCheck' do
+    expect(described_class).not_to include Banzai::Filter::Concerns::PipelineTimingCheck
+  end
+end
+
+# Usage:
+#
 #   it_behaves_like 'limits the number of filtered items' do
 #     let(:text) { 'some text' }
 #     let(:ends_with) { 'result should end with this text' }

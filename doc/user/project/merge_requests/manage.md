@@ -61,7 +61,7 @@ When bulk editing merge requests in a group, you can edit the following attribut
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 To update multiple group merge requests at the same time:
 

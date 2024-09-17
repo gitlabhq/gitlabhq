@@ -18,6 +18,8 @@ export const getGroupContactsQueryResponse = {
               __typename: 'CustomerRelationsOrganization',
               id: 'gid://gitlab/CustomerRelations::Organization/2',
               name: 'Tech Giant Inc',
+              description: null,
+              defaultRate: null,
             },
           },
           {

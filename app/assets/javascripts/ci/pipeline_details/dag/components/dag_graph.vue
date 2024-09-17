@@ -25,9 +25,7 @@ export default {
     labelMargin: 8,
 
     baseOpacity: 0.8,
-    containerClasses: ['dag-graph-container', 'gl-display-flex', 'gl-flex-direction-column'].join(
-      ' ',
-    ),
+    containerClasses: ['dag-graph-container', 'gl-flex', 'gl-flex-col'].join(' '),
     hoverFadeClasses: ['gl-cursor-pointer', 'gl-duration-slow', 'gl-ease-ease'].join(' '),
   },
   gitLabColorRotation: [
@@ -131,10 +129,10 @@ export default {
       });
 
       const labelClasses = [
-        'gl-display-flex',
+        'gl-flex',
         'gl-pointer-events-none',
-        'gl-flex-direction-column',
-        'gl-justify-content-center',
+        'gl-flex-col',
+        'gl-justify-center',
         'gl-break-words',
       ].join(' ');
 
@@ -288,7 +286,7 @@ export default {
     labelNodes(svg, nodeData) {
       return svg
         .append('g')
-        .classed('gl-font-sm', true)
+        .classed('gl-text-sm', true)
         .selectAll('text')
         .data(nodeData)
         .enter()

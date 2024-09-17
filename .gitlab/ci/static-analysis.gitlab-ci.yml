@@ -48,7 +48,7 @@ static-verification-with-database:
 generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
-    - .frontend:rules:default-frontend-jobs-with-docs-changes
+    - .frontend:rules:default-frontend-jobs
   image:
     name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:apollo
     entrypoint: [""]
@@ -67,13 +67,24 @@ eslint:
   extends:
     - .static-analysis-base
     - .yarn-cache
-    - .frontend:rules:default-frontend-jobs-with-docs-changes
+    - .frontend:rules:default-frontend-jobs
   needs: ['generate-apollo-graphql-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
     - yarn_install_script
     - run_timed_command "yarn run lint:eslint:all"
+
+eslint-docs:
+  extends:
+    - .static-analysis-base
+    - .yarn-cache
+    - .frontend:rules:default-frontend-jobs-with-docs-changes
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - yarn_install_script
+    - run_timed_command "scripts/frontend/lint_docs_links.mjs"
 
 haml-lint:
   extends:

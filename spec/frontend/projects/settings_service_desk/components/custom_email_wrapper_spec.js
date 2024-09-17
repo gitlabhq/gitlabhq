@@ -190,7 +190,9 @@ describe('CustomEmailWrapper', () => {
 
   describe('when initial resource loading returns failed verification', () => {
     beforeEach(async () => {
-      axiosMock.onGet(defaultProps.customEmailEndpoint).reply(200, MOCK_CUSTOM_EMAIL_FAILED);
+      axiosMock
+        .onGet(defaultProps.customEmailEndpoint)
+        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_FAILED);
       createWrapper();
       await waitForPromises();
     });

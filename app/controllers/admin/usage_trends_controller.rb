@@ -13,8 +13,7 @@ class Admin::UsageTrendsController < Admin::ApplicationController
 
   urgency :low
 
-  def index
-  end
+  def index; end
 
   def tracking_namespace_source
     @group

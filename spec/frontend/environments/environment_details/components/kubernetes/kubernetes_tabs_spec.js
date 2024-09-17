@@ -145,16 +145,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       expect(wrapper.emitted('update-failed-state')).toEqual([[eventData]]);
     });
 
-    it('emits show-resource-details event when gets it from the component', () => {
-      findKubernetesPods().vm.$emit('show-resource-details', mockPodsTableItems[0]);
+    it('emits select-item event when gets it from the component', () => {
+      findKubernetesPods().vm.$emit('select-item', mockPodsTableItems[0]);
 
-      expect(wrapper.emitted('show-resource-details')).toEqual([[mockPodsTableItems[0]]]);
-    });
-
-    it('emits remove-selection event when gets it from the component', () => {
-      findKubernetesPods().vm.$emit('remove-selection');
-
-      expect(wrapper.emitted('remove-selection')).toBeDefined();
+      expect(wrapper.emitted('select-item')).toEqual([[mockPodsTableItems[0]]]);
     });
 
     it('emits a cluster error event when gets it from the component', () => {

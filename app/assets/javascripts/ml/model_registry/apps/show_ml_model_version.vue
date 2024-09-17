@@ -163,13 +163,11 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-justify-content-space-between gl-py-3"
-    >
-      <div class="gl-flex-direction-column gl-flex-grow-1 gl-min-w-0">
+    <div class="gl-flex gl-flex-wrap gl-justify-between gl-py-3 sm:gl-flex-nowrap">
+      <div class="gl-min-w-0 gl-grow gl-flex-col">
         <title-area :title="title" />
       </div>
-      <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-mt-3">
+      <div class="gl-mt-3 gl-flex gl-items-start gl-gap-3">
         <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
       </div>
     </div>

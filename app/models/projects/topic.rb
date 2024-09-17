@@ -10,21 +10,24 @@ module Projects
     SLUG_ALLOWED_REGEX = %r{\A[a-zA-Z0-9_\-.]+\z}
 
     validates :name, presence: true, length: { maximum: 255 }
-    validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
+    validates :name, uniqueness: { scope: :organization_id, case_sensitive: false }, if: :name_changed?
     validate :validate_name_format, if: :name_changed?
 
     validates :slug,
       length: { maximum: 255 },
-      uniqueness: { case_sensitive: false },
+      uniqueness: { scope: :organization_id, case_sensitive: false },
       format: { with: SLUG_ALLOWED_REGEX, message: "can contain only letters, digits, '_', '-', '.'" },
       if: :slug_changed?
 
     validates :title, presence: true, length: { maximum: 255 }, on: :create
     validates :description, length: { maximum: 1024 }
 
+    belongs_to :organization, class_name: 'Organizations::Organization'
+
     has_many :project_topics, class_name: 'Projects::ProjectTopic'
     has_many :projects, through: :project_topics
 
+    scope :for_organization, ->(organization_id) { where(organization_id: organization_id) }
     scope :without_assigned_projects, -> { where(total_projects_count: 0) }
     scope :order_by_non_private_projects_count, -> { order(non_private_projects_count: :desc).order(id: :asc) }
     scope :reorder_by_similarity, ->(search) do

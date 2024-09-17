@@ -5,5 +5,4 @@ feature_category: code_review_workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151630
 milestone: '17.0'
 queued_migration_version: 20240501044351
-finalize_after: '2024-06-22'
 finalized_by: # version of the migration that finalized this BBM

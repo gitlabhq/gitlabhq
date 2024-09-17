@@ -13,7 +13,7 @@ DETAILS:
 
 There are two main ways to have a merge request flow with GitLab:
 
-1. Working with [protected branches](../protected_branches.md) in a single repository.
+1. Working with [protected branches](../repository/branches/protected.md) in a single repository.
 1. Working with forks of an authoritative project.
 
 ## Protected branch flow
@@ -48,7 +48,7 @@ To set up a protected branch flow:
    explicitly has the option to push or force push, consider making those branches protected:
 
    - [Manage and Protect Branches](../repository/branches/index.md#manage-and-protect-branches)
-   - [Protected Branches](../protected_branches.md)
+   - [Protected Branches](../repository/branches/protected.md)
 
 1. Each change to the code comes through as a commit.
    You can specify the format and security measures such as requiring SSH key signing for changes

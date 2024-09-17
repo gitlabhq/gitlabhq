@@ -75,7 +75,7 @@ License scanning is supported for the following languages and package managers:
       <td>No</td>
     </tr>
     <tr>
-      <td>Go</td>
+      <td>Go<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
       <td><a href="https://go.dev/">Go</a></td>
       <td>Yes</td>
       <td>No</td>
@@ -159,6 +159,17 @@ License scanning is supported for the following languages and package managers:
     </tr>
   </tbody>
 </table>
+
+<ol>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
+    <p>
+      Go standard libraries such as `stdlib` are not supported and will appear with an `unknown`
+      license. Support for these is tracked in
+      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/480305">issue 480305</a>.
+    </p>
+  </li>
+</ol>
 <!-- markdownlint-disable MD044 -->
 
 The supported files and versions are the ones supported by
@@ -256,3 +267,14 @@ To remove the unneeded data:
    PackageMetadata::PackageVersionLicense.delete_all
    PackageMetadata::PackageVersion.delete_all
    ```
+
+### Dependency licenses are unknown
+
+Open source license information is stored in the database and used to resolve licenses for a
+project's dependencies. A dependency's license may appear as `unknown` if license information does
+not exist or if that data is not yet available in the database.
+
+Lookups for a dependency's licenses are done upon pipeline completion, so if this data was not
+available at that time an `unknown` license is recorded. This license is shown up until a subsequent
+pipeline is executed at which point another license lookup is made. If a lookup confirms the
+dependency's license has changed, the new license is shown at this time.

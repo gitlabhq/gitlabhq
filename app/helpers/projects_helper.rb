@@ -236,7 +236,7 @@ module ProjectsHelper
     project.last_pipeline
   end
 
-  def show_no_ssh_key_message?
+  def show_no_ssh_key_message?(project)
     Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
       cookies[:hide_no_ssh_message].blank? &&
       !current_user.hide_no_ssh_key &&
@@ -268,21 +268,17 @@ module ProjectsHelper
   end
 
   def no_password_message
-    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('topics/git/terminology', anchor: 'pull-and-push') }
-    clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }
     set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_user_settings_password_path }
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: user_settings_personal_access_tokens_path }
 
     message = if current_user.require_password_creation_for_git?
-                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+                _('Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password.')
               else
-                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+                _('Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password.')
               end
 
     ERB::Util.html_escape(message) % {
-      push_pull_link_start: push_pull_link_start,
       protocol: gitlab_config.protocol.upcase,
-      clone_with_https_link_start: clone_with_https_link_start,
       set_password_link_start: set_password_link_start,
       set_up_pat_link_start: set_up_pat_link_start,
       link_end: '</a>'.html_safe
@@ -401,6 +397,16 @@ module ProjectsHelper
   def show_terraform_banner?(project)
     Feature.enabled?(:show_terraform_banner, type: :ops) &&
       project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+  end
+
+  def show_lfs_misconfiguration_banner?(project)
+    return false unless Feature.enabled?(:lfs_misconfiguration_banner)
+    return false unless project.repository
+    return false unless project.lfs_enabled?
+
+    Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
+      project.lfs_objects.any? && !project.repository.has_gitattributes?
+    end
   end
 
   def project_permissions_panel_data(project)
@@ -905,6 +911,16 @@ module ProjectsHelper
     end
 
     ERB::Util.html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
+  end
+
+  def project_permissions_data(project, target_form_id = nil)
+    data = visibility_confirm_modal_data(project, target_form_id)
+    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path))
+    data.merge!(
+      {
+        cascading_settings_data: cascading_settings_data
+      }
+    )
   end
 
   def visibility_confirm_modal_data(project, target_form_id = nil)

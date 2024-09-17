@@ -155,7 +155,7 @@ To purge files from a GitLab repository:
    git push origin --force 'refs/heads/*'
    ```
 
-   [Protected branches](../protected_branches.md) cause this to fail. To proceed, you must
+   [Protected branches](../repository/branches/protected.md) cause this to fail. To proceed, you must
    remove branch protection, push, and then re-enable protected branches.
 
 1. To remove large files from tagged releases, force push your changes to all tags on GitLab:
@@ -205,8 +205,8 @@ To clean up a repository:
    `filter-repo` directory.
 
    If your `commit-map` file is too large, the background cleanup process might time out and fail.
-   As a result, the repository size isn't reduced as expected.
-   To address this, split the file and upload it in parts, for example:
+   As a result, the repository size isn't reduced as expected. To address this, split the file and
+   upload it in parts. Start with `20000` and reduce as needed. For example:
 
    ```shell
    split -l 20000 filter-repo/commit-map filter-repo/commit-map-
@@ -247,11 +247,6 @@ When using repository cleanup, note:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.

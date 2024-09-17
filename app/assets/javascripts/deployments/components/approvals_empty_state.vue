@@ -67,7 +67,7 @@ export default {
       >
         <p>{{ $options.i18n.bannerDescription }}</p>
 
-        <div class="gl-border-l gl-border-t gl-border-r gl-rounded-base gl-mb-5">
+        <div class="gl-border-t gl-border-r gl-border-l gl-mb-5 gl-rounded-base">
           <div class="gl-m-5">
             <slot name="table-header">
               <gl-badge class="gl-mr-2 gl-align-middle" icon="license" variant="tier">{{

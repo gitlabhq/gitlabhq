@@ -24,7 +24,7 @@ describe('AlertMappingBuilder', () => {
   });
 
   const findColumnInRow = (row, column) =>
-    wrapper.findAll('.gl-display-table-row').at(row).findAll('.gl-display-table-cell ').at(column);
+    wrapper.findAll('.gl-table-row').at(row).findAll('.gl-table-cell ').at(column);
 
   const getMappingOptions = (types) => {
     return parsedMapping.payloadAlertFields.filter(({ type }) => types.includes(type));
@@ -46,7 +46,7 @@ describe('AlertMappingBuilder', () => {
       const input = findColumnInRow(index + 1, 0).findComponent(GlFormInput);
       const types = field.types.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(' or ');
       expect(input.attributes('value')).toBe(`${field.label} (${types})`);
-      expect(input.attributes('disabled')).toBe('');
+      expect(input.attributes('disabled')).toBeDefined();
     });
   });
 

@@ -2,8 +2,9 @@
 import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { fetchPolicies } from '~/lib/graphql';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
-import { addHierarchyChild } from '../../graphql/cache_utils';
+import { addHierarchyChild, addHierarchyChildren } from '../../graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
 import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hierarchy.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -35,11 +36,16 @@ export default {
     WorkItemProjectsListbox,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIterationsFeature', 'isGroup'],
+  inject: ['hasIterationsFeature'],
   props: {
     fullPath: {
       type: String,
       required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     issuableGid: {
       type: String,
@@ -278,11 +284,16 @@ export default {
       this.error = null;
       this.isInputValid = true;
     },
+    markFormSubmitInProgress(value) {
+      this.submitInProgress = value;
+      this.$emit('update-in-progress', this.submitInProgress);
+    },
     addChild() {
-      this.submitInProgress = true;
+      this.markFormSubmitInProgress(true);
       this.$apollo
         .mutate({
           mutation: updateWorkItemHierarchyMutation,
+          fetchPolicy: fetchPolicies.NO_CACHE,
           variables: {
             input: {
               id: this.issuableGid,
@@ -291,8 +302,25 @@ export default {
               },
             },
           },
+          update: (
+            cache,
+            {
+              data: {
+                workItemUpdate: { workItem },
+              },
+            },
+          ) =>
+            addHierarchyChildren({
+              cache,
+              id: this.issuableGid,
+              workItem,
+              newItemsToAddCount: this.workItemsToAdd?.length,
+            }),
         })
         .then(({ data }) => {
+          // Marking submitInProgress cannot be in finally block
+          // as the form may get close before the event is emitted
+          this.markFormSubmitInProgress(false);
           if (data.workItemUpdate?.errors?.length) {
             [this.error] = data.workItemUpdate.errors;
           } else {
@@ -304,17 +332,17 @@ export default {
         .catch(() => {
           this.error = this.$options.i18n.addChildErrorMessage;
           this.isInputValid = false;
+          this.markFormSubmitInProgress(false);
         })
         .finally(() => {
           this.search = '';
-          this.submitInProgress = false;
         });
     },
     createChild() {
       if (!this.canSubmitForm) {
         return;
       }
-      this.submitInProgress = true;
+      this.markFormSubmitInProgress(true);
       this.$apollo
         .mutate({
           mutation: createWorkItemMutation,
@@ -329,6 +357,9 @@ export default {
             }),
         })
         .then(({ data }) => {
+          // Marking submitInProgress cannot be in finally block
+          // as the form may get close before the event is emitted
+          this.markFormSubmitInProgress(false);
           if (data.workItemCreate?.errors?.length) {
             [this.error] = data.workItemCreate.errors;
           } else {
@@ -340,11 +371,11 @@ export default {
         .catch(() => {
           this.error = this.$options.i18n.createChildErrorMessage;
           this.isInputValid = false;
+          this.markFormSubmitInProgress(false);
         })
         .finally(() => {
           this.search = '';
           this.childToCreateTitle = null;
-          this.submitInProgress = false;
         });
     },
     closeForm() {
@@ -369,13 +400,9 @@ export default {
 </script>
 
 <template>
-  <gl-form
-    class="gl-new-card-add-form"
-    data-testid="add-item-form"
-    @submit.prevent="addOrCreateMethod"
-  >
+  <gl-form data-testid="add-item-form" @submit.prevent="addOrCreateMethod">
     <template v-if="isCreateForm">
-      <div class="gl-display-flex gl-gap-x-3">
+      <div class="gl-flex gl-gap-x-3">
         <gl-form-group
           class="gl-w-full"
           :label="$options.i18n.titleInputLabel"
@@ -413,7 +440,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-mb-5 gl-md-mb-3!"
+        class="gl-mb-5 md:!gl-mb-3"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >
@@ -428,6 +455,7 @@ export default {
       <work-item-token-input
         v-model="workItemsToAdd"
         :is-create-form="isCreateForm"
+        :is-group="isGroup"
         :parent-work-item-id="issuableGid"
         :children-type="childrenType"
         :children-ids="childrenIds"
@@ -436,12 +464,12 @@ export default {
       />
       <div
         v-if="showWorkItemsToAddInvalidMessage"
-        class="gl-text-red-500"
+        class="gl-text-danger"
         data-testid="work-items-invalid"
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500 gl-mt-3" data-testid="work-items-error">
+      <div v-if="error" class="gl-mt-3 gl-text-danger" data-testid="work-items-error">
         {{ error }}
       </div>
       <div
@@ -452,20 +480,21 @@ export default {
         {{ $options.i18n.maxItemsErrorMessage }}
       </div>
     </div>
-    <gl-button
-      category="primary"
-      variant="confirm"
-      size="small"
-      type="submit"
-      :disabled="!canSubmitForm"
-      :loading="submitInProgress"
-      data-testid="add-child-button"
-      class="gl-mr-2"
-    >
-      {{ addOrCreateButtonLabel }}
-    </gl-button>
-    <gl-button category="secondary" size="small" @click="closeForm">
-      {{ s__('WorkItem|Cancel') }}
-    </gl-button>
+    <div class="gl-flex gl-gap-3">
+      <gl-button
+        category="primary"
+        variant="confirm"
+        size="small"
+        type="submit"
+        :disabled="!canSubmitForm"
+        :loading="submitInProgress"
+        data-testid="add-child-button"
+      >
+        {{ addOrCreateButtonLabel }}
+      </gl-button>
+      <gl-button category="secondary" size="small" @click="closeForm">
+        {{ s__('WorkItem|Cancel') }}
+      </gl-button>
+    </div>
   </gl-form>
 </template>

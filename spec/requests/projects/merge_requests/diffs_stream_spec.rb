@@ -24,6 +24,8 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
     let_it_be_with_reload(:merge_request) do
       create(
         :merge_request_with_diffs,
+        source_branch: 'expand-collapse-files',
+        target_branch: 'master',
         target_project: project,
         source_project: project
       )
@@ -89,6 +91,33 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
         go
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with diffs_blob option' do
+      context 'when offset is not given' do
+        it 'streams all diffs' do
+          go(diff_blobs: true)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response.body).to include(*file_identifier_hashes(merge_request.merge_request_diff))
+        end
+      end
+
+      context 'when offset is given' do
+        let(:offset) { 5 }
+
+        it 'streams diffs except the offset' do
+          go(diff_blobs: true, offset: offset)
+
+          diff_files = merge_request.merge_request_diff.diffs.diff_files.to_a
+          offset_file_identifier_hashes = diff_files.take(offset).map(&:file_identifier_hash)
+          remaining_file_identifier_hashes = diff_files.slice(offset..).map(&:file_identifier_hash)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response.body).not_to include(*offset_file_identifier_hashes)
+          expect(response.body).to include(*remaining_file_identifier_hashes)
+        end
       end
     end
   end

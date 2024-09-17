@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="session" class="ide-terminal gl-flex flex-column">
+  <div v-if="session" class="ide-terminal flex-column gl-flex">
     <header class="ide-job-header gl-flex gl-items-center">
       <h5>{{ __('Web Terminal') }}</h5>
       <div class="ml-auto align-self-center">

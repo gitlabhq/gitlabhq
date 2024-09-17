@@ -14,6 +14,7 @@
  */
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { sanitize } from '~/lib/dompurify';
 
 import { __ } from '~/locale';
 import {
@@ -107,6 +108,9 @@ export default {
         boundary: this.tooltipBoundary,
       };
     },
+    sanitizedLocalTitle() {
+      return sanitize(this.localTitle);
+    },
   },
   created() {
     this.id = uniqueId('clipboard-button-');
@@ -131,16 +135,16 @@ export default {
   <gl-button
     :id="id"
     ref="copyButton"
-    v-gl-tooltip.hover.focus.click.viewport="tooltipDirectiveOptions"
+    v-gl-tooltip.hover.focus.click.viewport.html="tooltipDirectiveOptions"
     :class="cssClass"
-    :title="localTitle"
+    :title="sanitizedLocalTitle"
     :data-clipboard-text="clipboardText"
     data-clipboard-handle-tooltip="false"
     :category="category"
     :size="size"
     icon="copy-to-clipboard"
     :variant="variant"
-    :aria-label="localTitle"
+    :aria-label="sanitizedLocalTitle"
     aria-live="polite"
     @[$options.CLIPBOARD_SUCCESS_EVENT]="updateTooltip($options.i18n.copied)"
     @[$options.CLIPBOARD_ERROR_EVENT]="updateTooltip($options.i18n.error)"

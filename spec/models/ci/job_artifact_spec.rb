@@ -843,6 +843,10 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
         expect(attributes[:file_store]).to eq(artifact.file_store)
       end
 
+      it 'returns the project_id' do
+        expect(attributes[:project_id]).to eq(artifact.project_id)
+      end
+
       context 'when pick_up_at is present' do
         let(:pick_up_at) { 2.hours.ago }
 
@@ -864,6 +868,16 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
           it 'sets current time as pick_up_at' do
             freeze_time do
               expect(attributes[:pick_up_at]).to eq(Time.current)
+            end
+          end
+        end
+
+        context 'when expire_at is far away in the future' do
+          let(:expire_at) { 1.year.from_now }
+
+          it 'sets pick_up_at to 1 hour in the future' do
+            freeze_time do
+              expect(attributes[:pick_up_at]).to eq(1.hour.from_now)
             end
           end
         end

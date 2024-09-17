@@ -78,7 +78,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
 
             within('[data-testid="deploy_key-dropdown-item"]') do
               deploy_key_checkbox = find('[data-testid="dropdown-item-checkbox"]')
-              expect(deploy_key_checkbox).to have_no_css("gl-visibility-hidden")
+              expect(deploy_key_checkbox).to have_no_css("gl-invisible")
             end
           end
         end

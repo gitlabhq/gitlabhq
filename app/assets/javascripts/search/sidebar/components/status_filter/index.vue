@@ -1,5 +1,5 @@
 <script>
-import RadioFilter from '../radio_filter.vue';
+import RadioFilter from '../shared/radio_filter.vue';
 import { statusFilterData } from './data';
 
 export default {

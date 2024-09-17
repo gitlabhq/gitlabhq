@@ -5,8 +5,7 @@ module Import
     prepend_before_action :check_feature_flag!
 
     before_action :source_user
-    before_action :check_current_user_matches_invite!
-    before_action :check_source_user_status!
+    before_action :check_source_user_valid!
 
     respond_to :html
     feature_category :importers
@@ -14,20 +13,22 @@ module Import
     def accept
       result = ::Import::SourceUsers::AcceptReassignmentService.new(source_user, current_user: current_user).execute
 
-      if result.status == :success
+      if result.success?
         flash[:raw] = banner('accept_invite')
-        redirect_to(dashboard_groups_path)
+        redirect_to(root_path)
       else
-        redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation could not be accepted.'))
+        redirect_to(root_path, alert: s_('UserMapping|The invitation could not be accepted.'))
       end
     end
 
     def decline
-      if source_user.reject
+      result = ::Import::SourceUsers::RejectReassignmentService.new(source_user, current_user: current_user).execute
+
+      if result.success?
         flash[:raw] = banner('reject_invite')
-        redirect_to(dashboard_groups_path)
+        redirect_to(root_path)
       else
-        redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation could not be declined.'))
+        redirect_to(root_path, alert: s_('UserMapping|The invitation could not be declined.'))
       end
     end
 
@@ -35,17 +36,11 @@ module Import
 
     private
 
-    def check_source_user_status!
-      return if source_user.awaiting_approval?
+    def check_source_user_valid!
+      return if source_user.awaiting_approval? && current_user_matches_invite?
 
-      redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation is no longer valid.'))
-    end
-
-    def check_current_user_matches_invite!
-      return if current_user_matches_invite?
-
-      flash[:raw] = banner('cancel_invite')
-      redirect_to(dashboard_groups_path)
+      flash[:raw] = banner('invalid_invite')
+      redirect_to(root_path)
     end
 
     def current_user_matches_invite?

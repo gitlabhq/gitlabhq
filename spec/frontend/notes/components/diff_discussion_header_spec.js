@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
-
 import { nextTick } from 'vue';
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
+import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import createStore from '~/notes/stores';
 
 import mockDiffFile from 'jest/diffs/mock_data/diff_discussions';
@@ -13,7 +13,7 @@ describe('diff_discussion_header component', () => {
   let wrapper;
 
   const createComponent = ({ propsData = {} } = {}) => {
-    wrapper = shallowMount(diffDiscussionHeader, {
+    wrapper = shallowMountExtended(diffDiscussionHeader, {
       store,
       propsData: {
         discussion: discussionMock,
@@ -164,6 +164,43 @@ describe('diff_discussion_header component', () => {
 
         expect(commitElement).not.toBe(null);
       });
+    });
+  });
+
+  describe('replies toggle', () => {
+    it('renders replies toggle', () => {
+      createComponent();
+      expect(wrapper.findComponent(ToggleRepliesWidget).exists()).toBe(true);
+      expect(wrapper.findComponent(ToggleRepliesWidget).props()).toMatchObject({
+        collapsed: false,
+        replies: discussionMock.notes,
+      });
+    });
+
+    it('skips system notes', () => {
+      createComponent({
+        propsData: {
+          discussion: {
+            ...discussionMock,
+            notes: [...discussionMock.notes, { system: true }],
+          },
+        },
+      });
+      expect(wrapper.findComponent(ToggleRepliesWidget).props('replies')).toStrictEqual(
+        discussionMock.notes,
+      );
+    });
+
+    it('passes collapsed state', () => {
+      createComponent({
+        propsData: {
+          discussion: {
+            ...discussionMock,
+            expanded: false,
+          },
+        },
+      });
+      expect(wrapper.findComponent(ToggleRepliesWidget).props('collapsed')).toBe(true);
     });
   });
 });

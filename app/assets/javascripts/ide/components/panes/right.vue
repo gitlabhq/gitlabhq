@@ -48,7 +48,7 @@ export default {
 
 <template>
   <resizable-panel
-    class="gl-display-flex gl-overflow-hidden"
+    class="gl-flex gl-overflow-hidden"
     side="right"
     :initial-width="$options.WIDTH"
     :min-size="$options.WIDTH"

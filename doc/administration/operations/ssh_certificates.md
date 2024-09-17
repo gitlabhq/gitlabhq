@@ -137,24 +137,17 @@ message about this being an invalid user.
 
 ## Interaction with the `authorized_keys` file
 
-SSH certificates can be used in conjunction with the `authorized_keys`
-file, and if set up as configured above the `authorized_keys` file
-still serves as a fallback.
+If SSH certificates are set up as described above, they can be used with the `authorized_keys` file so that the `authorized_keys` file serves as a fallback.
 
-This is because if the `AuthorizedPrincipalsCommand` can't
-authenticate the user, OpenSSH falls back on
-`~/.ssh/authorized_keys` (or the `AuthorizedKeysCommand`).
+When the `AuthorizedPrincipalsCommand` is unable to authenticate a user, OpenSSH reverts to checking the `~/.ssh/authorized_keys` file or using the `AuthorizedKeysCommand`.
+Therefore, you might still need to use [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) with SSH certificates.
 
-Therefore there may still be a reason to use the [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) method
-in conjunction with this. Since you are using SSH certificates for
-all your typical users, and relying on the `~/.ssh/authorized_keys`
-fallback for deploy keys, if you make use of those.
+For most users, SSH certificates handle authentication by using the `AuthorizedPrincipalsCommand`, with the `~/.ssh/authorized_keys` file primarily serving as a fallback for
+specific cases such as deploy keys. However, depending on your setup, you might find that using the `AuthorizedPrincipalsCommand` exclusively for typical users is sufficient.
+In such cases, the `authorized_keys` file is only necessary for automated deployment key access or other specific scenarios.
 
-But you may find that there's no reason to do that, since all your
-typical users use the fast `AuthorizedPrincipalsCommand` path, and
-only automated deployment key access falls back on
-`~/.ssh/authorized_keys`, or that you have a lot more keys for typical
-users (especially if they're renewed) than you have deploy keys.
+Consider the balance between the number of keys for typical users (especially if they are frequently renewed) and deploy keys to help you determine whether maintaining the
+`authorized_keys` fallback is necessary for your environment.
 
 ## Other security caveats
 

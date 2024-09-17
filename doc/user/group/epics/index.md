@@ -64,8 +64,6 @@ accDescr: How issues and child epics relate to parent epics
     Child_epic --> Issue2
 ```
 
-Also, read more about possible [planning hierarchies](../planning_hierarchy/index.md).
-
 ### Child issues from different group hierarchies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371081) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`. Disabled by default.

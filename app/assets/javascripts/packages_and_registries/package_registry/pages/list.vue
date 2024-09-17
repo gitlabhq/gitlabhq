@@ -247,7 +247,7 @@ export default {
         </package-list>
       </template>
     </delete-packages>
-    <div v-if="!isDeleteInProgress" class="gl-display-flex gl-justify-content-center">
+    <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-center">
       <persisted-pagination
         class="gl-mt-3"
         :pagination="pageInfo"

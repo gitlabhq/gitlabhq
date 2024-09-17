@@ -221,7 +221,7 @@ export default {
       >
         <div
           v-if="file"
-          class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+          class="card upload-dropzone-card upload-dropzone-border gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-3"
         >
           <img v-if="filePreviewURL" :src="filePreviewURL" class="gl-h-11" />
           <div>{{ formattedFileSize }}</div>

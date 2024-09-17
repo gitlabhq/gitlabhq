@@ -61,7 +61,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
   >
     <div
       aria-label="5 comments, 100 file additions, 50 file deletions"
-      class="gl-flex gl-justify-end"
+      class="gl-flex gl-gap-3 gl-justify-end"
     >
       <div
         class="gl-whitespace-nowrap"
@@ -75,7 +75,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         5
       </div>
       <div
-        class="gl-ml-5 gl-whitespace-nowrap"
+        class="gl-whitespace-nowrap"
       >
         <gl-icon-stub
           name="doc-code"
@@ -87,7 +87,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         </span>
       </div>
       <div
-        class="gl-flex gl-font-bold gl-items-center gl-ml-3 gl-text-green-600"
+        class="gl-flex gl-font-bold gl-items-center gl-text-green-600"
       >
         <span>
           +
@@ -97,7 +97,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         </span>
       </div>
       <div
-        class="gl-flex gl-font-bold gl-items-center gl-ml-3 gl-text-red-500"
+        class="gl-flex gl-font-bold gl-items-center gl-text-red-500"
       >
         <span>
           −

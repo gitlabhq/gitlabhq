@@ -5,7 +5,7 @@ import OrganizationAvatar from '~/organizations/show/components/organization_ava
 import {
   VISIBILITY_TYPE_ICON,
   ORGANIZATION_VISIBILITY_TYPE,
-  VISIBILITY_LEVEL_PUBLIC_STRING,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
 } from '~/visibility_level/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -16,6 +16,7 @@ describe('OrganizationAvatar', () => {
     organization: {
       id: 1,
       name: 'GitLab',
+      visibility: VISIBILITY_LEVEL_PRIVATE_STRING,
     },
   };
 
@@ -49,8 +50,8 @@ describe('OrganizationAvatar', () => {
     const icon = wrapper.findComponent(GlIcon);
     const tooltip = getBinding(icon.element, 'gl-tooltip');
 
-    expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PUBLIC_STRING]);
-    expect(tooltip.value).toBe(ORGANIZATION_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]);
+    expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]);
+    expect(tooltip.value).toBe(ORGANIZATION_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
   });
 
   it('renders button to copy organization ID', () => {

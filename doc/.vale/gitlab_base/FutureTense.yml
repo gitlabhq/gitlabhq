@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.FutureTense
+# Warning: gitlab_base.FutureTense
 #
 # Checks for use of future tense in sentences. Present tense is strongly preferred.
 #

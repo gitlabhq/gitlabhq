@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'getting project information', feature_category: :groups_and_projects do
   include GraphqlHelpers
 
+  let_it_be(:current_user) { create(:user) }
+
   let(:query) { graphql_query_for('metadata', {}, all_graphql_fields_for('Metadata')) }
 
   context 'logged in' do
@@ -29,7 +31,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
       before do
         allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-        post_graphql(query, current_user: create(:user))
+        post_graphql(query, current_user: current_user)
       end
 
       it 'returns version, revision, kas_enabled, kas_version, kas_external_url' do
@@ -44,13 +46,62 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
       before do
         allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
-        post_graphql(query, current_user: create(:user))
+        post_graphql(query, current_user: current_user)
       end
 
       it 'returns version and revision' do
         expect(graphql_errors).to be_nil
         expect(graphql_data).to eq(expected_data)
       end
+    end
+  end
+
+  context 'logged in and featureFlags field' do
+    feature_flags_field = <<~NODE
+      featureFlags(names: ["foo", "bar", "lorem", "ipsum", "dolar"]) {
+        name
+        enabled
+      }
+    NODE
+
+    let(:query) { graphql_query_for('metadata', {}, feature_flags_field) }
+
+    before do
+      stub_feature_flag_definition('foo')
+      stub_feature_flag_definition('ipsum')
+      stub_feature_flag_definition('dolar')
+
+      stub_feature_flags(foo: true)
+      stub_feature_flags(ipsum: current_user)
+      stub_feature_flags(dolar: false)
+    end
+
+    it 'returns feature flags', :aggregate_failures do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_errors).to be_nil
+      expect(graphql_data).to eq({
+        'metadata' => {
+          'featureFlags' => [
+            { 'name' => 'foo', 'enabled' => true },
+            { 'name' => 'ipsum', 'enabled' => true },
+            { 'name' => 'dolar', 'enabled' => false }
+          ]
+        }
+      })
+    end
+
+    it 'avoids N+1 queries' do
+      first_user = create(:user)
+      second_user = create(:user)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: first_user)
+      end
+
+      expect do
+        post_graphql(query, current_user: second_user)
+      end.not_to exceed_query_limit(control_count)
     end
   end
 

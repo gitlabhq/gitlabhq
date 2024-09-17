@@ -1,5 +1,8 @@
 import { padWithZeros } from '~/lib/utils/datetime/date_format_utility';
 import { isValidDate, differenceInMinutes } from '~/lib/utils/datetime_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { TYPE_ISSUE } from '~/issues/constants';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -13,7 +16,7 @@ import {
  * Return the data range for the given time period
  * Accepted values are numbers followed by the unit 'm', 'h', 'd', e.g. '5m', '3h', '7d'
  *
- *  e.g. timePerdio: '5m'
+ *  e.g. timePeriod: '5m'
  *      returns: { min: Date(_now - 5min_), max: Date(_now_) }
  *
  * @param {String} timePeriod The 'period' string
@@ -192,4 +195,46 @@ export function isTracingDateRangeOutOfBounds({ value, startDate, endDate }) {
     return differenceInMinutes(startDate, endDate) > HOURS_QUERY_LIMIT * 60;
   }
   return false;
+}
+
+/**
+ * Creates a URL for creating an issue with prefilled details.
+ *
+ * @param {string} createIssueUrl - The base URL for creating an issue.
+ * @param {Object} detailsPayload - An object containing the details used to generate the issue title and description
+ * @param {string} paramName - The name of the parameter to be used for the details in the URL.
+ * @returns {string} The URL with the added details for creating an issue.
+ */
+
+export function createIssueUrlWithDetails(createIssueUrl, detailsPayload, paramName) {
+  return mergeUrlParams(
+    {
+      [paramName]: JSON.stringify(detailsPayload),
+      'issue[confidential]': true,
+    },
+    createIssueUrl,
+    {
+      spreadArrays: true,
+    },
+  );
+}
+
+function parseGraphQLObject(obj) {
+  if (!obj) return null;
+
+  return {
+    ...obj,
+    id: getIdFromGraphQLId(obj.id),
+  };
+}
+
+export function parseGraphQLIssueLinksToRelatedIssues(issueLinks) {
+  return issueLinks.map(({ issue }) => ({
+    ...issue,
+    id: getIdFromGraphQLId(issue.id),
+    path: issue.webUrl,
+    type: TYPE_ISSUE,
+    milestone: parseGraphQLObject(issue.milestone),
+    assignees: issue.assignees.nodes.map(parseGraphQLObject),
+  }));
 }

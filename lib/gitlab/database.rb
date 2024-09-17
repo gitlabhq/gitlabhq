@@ -32,9 +32,6 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/61974
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
-    # Migrations before this version may have been removed
-    MIN_SCHEMA_GITLAB_VERSION = '16.11'
-
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic
 
@@ -140,6 +137,18 @@ module Gitlab
         (ENV["DB_POOL_HEADROOM"].presence || DEFAULT_POOL_HEADROOM).to_i
 
       Gitlab::Runtime.max_threads + headroom
+    end
+
+    # Expose path information so that we can use it to make sure migrations are
+    # healthy
+    def self.upgrade_path
+      path_data = YAML.safe_load_file(Rails.root.join('config/upgrade_path.yml'))
+      Gitlab::Utils::UpgradePath.new(path_data, Gitlab.version_info)
+    end
+
+    # Migrations before this version may have been removed.
+    def self.min_schema_gitlab_version
+      upgrade_path.last_required_stop
     end
 
     # Database configured. Returns true even if the database is shared
@@ -282,7 +291,14 @@ module Gitlab
       return unless connection.respond_to?(:pool) &&
         connection.pool.respond_to?(:db_config)
 
-      connection.pool.db_config
+      db_config = connection.pool.db_config
+      db_config unless empty_config?(db_config)
+    end
+
+    def self.empty_config?(db_config)
+      return true unless db_config
+
+      ::Gitlab.next_rails? && db_config.is_a?(ActiveRecord::ConnectionAdapters::NullPool::NullConfig)
     end
 
     # At the moment, the connection can only be retrieved by
@@ -353,10 +369,14 @@ module Gitlab
 
           ::Gitlab::Database::Metrics.subtransactions_increment(self.name) if transaction_type == :sub_transaction
 
-          payload = { connection: connection, transaction_type: transaction_type }
-
-          ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
+          if ::Gitlab.next_rails?
             super(**options, &block)
+          else
+            payload = { connection: connection, transaction_type: transaction_type }
+
+            ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
+              super(**options, &block)
+            end
           end
         end
 

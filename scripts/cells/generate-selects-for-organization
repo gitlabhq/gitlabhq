@@ -4,234 +4,322 @@
 require 'optparse'
 require 'open3'
 
-class GenerateSelectsForOrganization
-  attr_reader :organization_ids, :root_namespace_ids, :psql_command
+module Cells
+  class GenerateSelectsForOrganization
+    attr_reader :organization_ids, :root_namespace_ids, :psql_command, :force
 
-  def self.for_cli
-    options = parse_options
+    def self.for_cli
+      options = parse_options
 
-    new(**options)
-  end
-
-  def self.parse_options
-    options = {}
-
-    OptionParser.new do |opts|
-      opts.banner = "Usage: generate-selects-for-organization [options]"
-
-      opts.on('-o', '--organization-ids IDS', 'Organization ID(s). Integer, or a comma-separated list of integers.
-                                     Required if --root-namespace-ids is not specified.') do |value|
-        options[:organization_ids] = value.split(',').map(&:to_i)
-      end
-      opts.on('-n', '--root-namespace-ids IDS', 'Root namespace ID(s). Integer, or a comma-separated list of integers.
-                                     Required if --organization-ids is not specified.') do |value|
-        options[:root_namespace_ids] = value.split(',').map(&:to_i)
-      end
-      opts.on('-p', '--psql COMMAND', 'Default: gdk psql -c') do |value|
-        options[:psql_command] = value
-      end
-      opts.on('--debug', 'Enable debugging output') { options[:debug] = true }
-    end.parse!
-
-    if options[:organization_ids].nil? && options[:root_namespace_ids].nil?
-      raise '--organization-ids or --root-namespace-ids is required'
+      new(**options)
     end
 
-    options
-  end
+    def self.parse_options
+      options = {}
 
-  def initialize(organization_ids: nil, root_namespace_ids: nil, psql_command: 'gdk psql -c', debug: false)
-    @organization_ids = organization_ids.sort if organization_ids
-    @root_namespace_ids = root_namespace_ids.sort if root_namespace_ids
-    @psql_command = psql_command
-    @debug = debug
-  end
+      OptionParser.new do |opts|
+        opts.banner = "Usage: generate-selects-for-organization [options]"
 
-  def execute
-    if organization_ids
-      print_selects_for_organizations
-    else
-      print_selects_for_root_namespaces
+        opts.on('-o', '--organization-ids IDS', 'Organization ID(s). Integer, or a comma-separated list of integers.
+                                      Required if --root-namespace-ids is not specified.') do |value|
+          options[:organization_ids] = value.split(',').map(&:to_i)
+        end
+        opts.on('-n', '--root-namespace-ids IDS', 'Root namespace ID(s). Integer, or a comma-separated list of integers.
+                                      Required if --organization-ids is not specified.') do |value|
+          options[:root_namespace_ids] = value.split(',').map(&:to_i)
+        end
+        opts.on('-p', '--psql COMMAND', 'Default: gdk psql -c') do |value|
+          options[:psql_command] = value
+        end
+        opts.on('--debug', 'Enable debugging output') { options[:debug] = true }
+        opts.on('--force', 'Ignore missing tables error (not recommended)') { options[:force] = true }
+      end.parse!
+
+      if options[:organization_ids].nil? && options[:root_namespace_ids].nil?
+        raise '--organization-ids or --root-namespace-ids is required'
+      end
+
+      options
     end
-  end
 
-  def print_selects_for_organizations
-    print_selects_by_organization_id(organization_ids)
+    def initialize(
+      organization_ids: nil, root_namespace_ids: nil, psql_command: 'gdk psql -c', debug: false,
+      force: false)
+      @organization_ids = organization_ids.sort if organization_ids
+      @root_namespace_ids = root_namespace_ids.sort if root_namespace_ids
+      @psql_command = psql_command
+      @debug = debug
+      @force = force
+    end
 
-    namespace_ids = get_namespace_ids_for_organizations(organization_ids)
-    return unless namespace_ids.any?
+    def execute
+      if organization_ids
+        print_selects_for_organizations
+      else
+        print_selects_for_root_namespaces
+      end
+    end
 
-    print_selects_by_namespace_id(namespace_ids)
+    def print_selects_for_organizations
+      print_selects_by_organization_id(organization_ids)
 
-    project_ids = get_project_ids_for_namespaces(namespace_ids)
-    return unless project_ids.any?
+      namespace_ids = get_namespace_ids_for_organizations(organization_ids)
+      return unless namespace_ids.any?
 
-    print_selects_by_project_id(project_ids)
-  end
+      print_selects_by_namespace_id(namespace_ids)
 
-  def print_selects_for_root_namespaces
-    namespace_ids = get_namespace_ids_for_root_namespaces(root_namespace_ids)
-    print_selects_by_namespace_id(namespace_ids)
+      project_ids = get_project_ids_for_namespaces(namespace_ids)
+      return unless project_ids.any?
 
-    project_ids = get_project_ids_for_namespaces(namespace_ids)
-    return unless project_ids.any?
+      print_selects_by_project_id(project_ids)
+    end
 
-    print_selects_by_project_id(project_ids)
-  end
+    def print_selects_for_root_namespaces
+      namespace_ids = get_namespace_ids_for_root_namespaces(root_namespace_ids)
+      print_selects_by_namespace_id(namespace_ids)
 
-  def print_selects_by_organization_id(organization_ids)
-    print_selects_of_tables(
-      with_column: 'organization_id', with_ids: organization_ids)
-  end
+      project_ids = get_project_ids_for_namespaces(namespace_ids)
+      return unless project_ids.any?
 
-  def print_selects_by_namespace_id(namespace_ids)
-    print_selects_of_tables(
-      with_column: 'namespace_id', with_ids: namespace_ids, without_columns: %w[organization_id])
-  end
+      print_selects_by_project_id(project_ids)
+    end
 
-  def print_selects_by_project_id(project_ids)
-    print_selects_of_tables(
-      with_column: 'project_id', with_ids: project_ids, without_columns: %w[organization_id namespace_id])
-  end
+    def print_selects_by_organization_id(organization_ids)
+      print_selects_of_tables(
+        with_column: 'organization_id', with_ids: organization_ids)
+    end
 
-  def print_selects_of_tables(with_column: nil, with_ids: nil, without_columns: nil)
-    table_names = get_table_names(with_column: with_column, without_columns: without_columns)
+    def print_selects_by_namespace_id(namespace_ids)
+      print_selects_of_tables(
+        with_column: 'namespace_id', with_ids: namespace_ids, without_columns: %w[organization_id])
+    end
 
-    table_names.each do |table_name|
-      with_column_and_ids_clause = <<~SQL
-        WHERE #{table_name}.#{with_column}
-        IN (#{with_ids.join(',')})
+    def print_selects_by_project_id(project_ids)
+      print_selects_of_tables(
+        with_column: 'project_id', with_ids: project_ids, without_columns: %w[organization_id namespace_id])
+    end
+
+    def print_selects_of_tables(with_column: nil, with_ids: nil, without_columns: nil)
+      table_names = get_table_names(with_column: with_column, without_columns: without_columns)
+      puts "Initial table names: #{table_names}" if debug?
+
+      table_dependencies = get_table_dependencies(table_names)
+      puts "Table dependencies: #{table_dependencies}" if debug?
+
+      ordered_tables = order_tables_by_dependencies(table_names, table_dependencies)
+      puts "Ordered table names: #{ordered_tables}" if debug?
+
+      return if debug?
+
+      ordered_tables.each do |table_name|
+        with_column_and_ids_clause = <<~SQL
+          WHERE #{table_name}.#{with_column}
+          IN (#{with_ids.join(',')})
+        SQL
+
+        copy_select_sql = <<~SQL
+          COPY (
+            SELECT #{table_name}.*
+            FROM #{table_name}
+            #{with_column_and_ids_clause if with_ids}
+          )
+          TO STDOUT
+          WITH (FORMAT CSV, HEADER)
+        SQL
+
+        puts copy_select_sql.split.join(' ')
+      end
+    end
+
+    def get_table_dependencies(table_names)
+      table_names_str = table_names.map { |name| "'#{name}'" }.join(", ")
+
+      command = <<-SQL
+        COPY (
+          SELECT conname AS constraint_name,
+            conrelid::regclass AS table_name,
+            confrelid::regclass AS foreign_table_name
+          FROM pg_constraint
+          WHERE contype = 'f'
+            AND (conrelid::regclass::text IN (#{table_names_str})
+              OR confrelid::regclass::text IN (#{table_names_str}))
+        ) TO STDOUT
       SQL
 
-      copy_select_sql = <<~SQL
-        COPY (
-          SELECT #{table_name}.*
-          FROM #{table_name}
-          #{with_column_and_ids_clause if with_ids}
-        )
-        TO STDOUT
-        WITH (FORMAT CSV, HEADER)
-      SQL
+      dependencies_str, status = psql(command)
+      raise "Failed to get table dependencies" unless status.success?
 
-      puts copy_select_sql.split.join(' ')
+      dependencies = dependencies_str.split("\n").map { |line| line.split("\t") }
+      dependencies.group_by { |d| d[1] }.transform_values { |v| v.map { |d| d[2] } } # rubocop:disable Rails/Pluck -- not using Rails
     end
-  end
 
-  def get_namespace_ids_for_root_namespaces(root_namespace_ids)
-    command = <<-SQL
-      COPY (
-        SELECT DISTINCT namespaces.id
-        FROM namespaces
-        WHERE namespaces.traversal_ids[1] IN (#{root_namespace_ids.join(',')})
-        ORDER BY namespaces.id ASC
-      )
-      TO STDOUT
-    SQL
+    def order_tables_by_dependencies(tables, dependencies)
+      ordered = []
+      visited = {}
+      all_required_tables = dependencies.values.flatten.uniq
 
-    namespace_ids_str, status = psql(command)
-    raise "Failed to get namespace ids for root namespaces" unless status.success?
+      cyclic_dependencies = []
 
-    namespace_ids_str.split("\n")
-  end
+      visit = ->(table, stack) do
+        return if visited[table]
 
-  def get_table_names(with_column: nil, without_columns: nil)
-    command = <<-SQL
-      COPY (
-        SELECT DISTINCT table_name
-        FROM information_schema.columns
-        WHERE
-          table_schema = 'public'
-          #{with_column_clause(with_column)}
-          #{without_columns_clause(without_columns)}
-      ) TO STDOUT
-    SQL
+        if stack.include?(table)
+          cycle = stack[stack.index(table)..] + [table]
+          cyclic_dependencies << cycle
+          return
+        end
 
-    table_names_str, status = psql(command)
-    raise "Failed to get tables with #{column_name} column" unless status.success?
+        stack.push(table)
 
-    table_names_str.split("\n")
-  end
+        (dependencies[table] || []).each do |dependency|
+          visit.call(dependency, stack)
+        end
 
-  def with_column_clause(with_column)
-    return unless with_column
+        stack.pop
+        visited[table] = true
+        ordered << table
+      end
 
-    "AND column_name = '#{with_column}'"
-  end
+      # Sort the tables by the number of dependencies in descending order
+      tables_sorted_by_dependencies = tables.sort_by { |table| -(dependencies[table] || []).size }
 
-  def without_columns_clause(without_columns)
-    return unless without_columns
+      tables_sorted_by_dependencies.each do |table|
+        visit.call(table, [])
+      end
 
-    <<-SQL
-      AND table_name NOT IN (
-        SELECT table_name
-        FROM information_schema.columns
-        WHERE
-          table_schema = 'public'
-          AND column_name IN ('#{without_columns.join("','")}')
-      )
-    SQL
-  end
+      # Filter only those tables that are in get_table_names
+      ordered_tables = ordered.select { |table| tables.include?(table) }
 
-  # @return [Array<String>]
-  def get_namespace_ids_for_organizations(organization_ids)
-    namespace_ids_str, status = psql(
-      <<~SQL
+      # Output cyclic dependencies
+      puts "[WARNING] Cyclic dependencies detected: #{cyclic_dependencies}" if cyclic_dependencies.any? && debug?
+
+      # Check for missing tables
+      missing_tables = all_required_tables - tables
+      abort "[ERROR] Missing tables to cover all dependencies: #{missing_tables}" if missing_tables.any? && !force
+
+      ordered_tables
+    end
+
+    def get_namespace_ids_for_root_namespaces(root_namespace_ids)
+      command = <<-SQL
         COPY (
-          SELECT namespaces.id
+          SELECT DISTINCT namespaces.id
           FROM namespaces
-          WHERE namespaces.organization_id
-          IN (#{organization_ids.join(',')})
+          WHERE namespaces.traversal_ids[1] IN (#{root_namespace_ids.join(',')})
           ORDER BY namespaces.id ASC
         )
         TO STDOUT
       SQL
-    )
-    raise "Failed to get namespace ids for organizations" unless status.success?
 
-    namespace_ids_str.split("\n")
-  end
+      namespace_ids_str, status = psql(command)
+      raise "Failed to get namespace ids for root namespaces" unless status.success?
 
-  def get_project_ids_for_namespaces(namespace_ids)
-    project_ids_str, status = psql(
-      <<~SQL
+      namespace_ids_str.split("\n")
+    end
+
+    def get_table_names(with_column: nil, without_columns: nil)
+      command = <<-SQL
         COPY (
-          SELECT projects.id
-          FROM projects
-          WHERE projects.namespace_id
-          IN (#{namespace_ids.join(',')})
-          ORDER BY projects.id ASC
-        )
-        TO STDOUT
+          SELECT DISTINCT table_name
+          FROM information_schema.columns
+          WHERE
+            table_schema = 'public'
+            #{with_column_clause(with_column)}
+            #{without_columns_clause(without_columns)}
+        ) TO STDOUT
       SQL
-    )
-    raise "Failed to get project ids for organizations" unless status.success?
 
-    project_ids_str.split("\n")
-  end
+      table_names_str, status = psql(command)
+      raise "Failed to get tables with #{with_column} column" unless status.success?
 
-  def psql(query)
-    command = psql_command.split << query.split.join(' ')
+      table_names_str.split("\n")
+    end
 
-    capture2(command)
-  end
+    def with_column_clause(with_column)
+      return unless with_column
 
-  def capture2(command)
-    debug %(Run command: #{command.inspect})
+      "AND column_name = '#{with_column}'"
+    end
 
-    stdout_str, status = Open3.capture2(*command)
+    def without_columns_clause(without_columns)
+      return unless without_columns
 
-    debug %(Run command: stdout: "#{stdout_str}", exitstatus: "#{status.exitstatus}")
+      <<-SQL
+        AND table_name NOT IN (
+          SELECT table_name
+          FROM information_schema.columns
+          WHERE
+            table_schema = 'public'
+            AND column_name IN ('#{without_columns.join("','")}')
+        )
+      SQL
+    end
 
-    [stdout_str, status]
-  end
+    # @return [Array<String>]
+    def get_namespace_ids_for_organizations(organization_ids)
+      namespace_ids_str, status = psql(
+        <<~SQL
+          COPY (
+            SELECT namespaces.id
+            FROM namespaces
+            WHERE namespaces.organization_id
+            IN (#{organization_ids.join(',')})
+            ORDER BY namespaces.id ASC
+          )
+          TO STDOUT
+        SQL
+      )
+      raise "Failed to get namespace ids for organizations" unless status.success?
 
-  def debug(output)
-    puts "[DEBUG] #{output}" if debug?
-  end
+      namespace_ids_str.split("\n")
+    end
 
-  def debug?
-    !!@debug
+    def get_project_ids_for_namespaces(namespace_ids)
+      project_ids_str, status = psql(
+        <<~SQL
+          COPY (
+            SELECT projects.id
+            FROM projects
+            WHERE projects.namespace_id
+            IN (#{namespace_ids.join(',')})
+            ORDER BY projects.id ASC
+          )
+          TO STDOUT
+        SQL
+      )
+      raise "Failed to get project ids for organizations" unless status.success?
+
+      project_ids_str.split("\n")
+    end
+
+    def psql(query)
+      command = psql_command.split << query.split.join(' ')
+
+      capture2(command)
+    end
+
+    def capture2(command)
+      debug %(Run command: #{command.inspect})
+
+      stdout_str, status = Open3.capture2(*command)
+
+      debug %(Run command: stdout: "#{stdout_str}", exitstatus: "#{status.exitstatus}")
+
+      [stdout_str, status]
+    end
+
+    def debug(output)
+      puts "[DEBUG] #{output}" if debug?
+    end
+
+    def debug?
+      !!@debug
+    end
+
+    def force?
+      !!@force
+    end
   end
 end
 
-GenerateSelectsForOrganization.for_cli.execute
+Cells::GenerateSelectsForOrganization.for_cli.execute

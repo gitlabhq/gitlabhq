@@ -214,8 +214,8 @@ module LoginHelpers
   def mock_saml_config_with_upstream_two_factor_authn_contexts
     config = mock_saml_config
     config.args[:upstream_two_factor_authn_contexts] = %w[urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
-                                                          urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
-                                                          urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN]
+      urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
+      urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN]
     config
   end
 

@@ -11,6 +11,7 @@ export const FORM_FIELD_ID = 'id';
 export const FORM_FIELD_PATH = 'path';
 export const FORM_FIELD_DESCRIPTION = 'description';
 export const FORM_FIELD_AVATAR = 'avatar';
+export const FORM_FIELD_VISIBILITY_LEVEL = 'visibilityLevel';
 
 export const MAX_DESCRIPTION_COUNT = 1024;
 

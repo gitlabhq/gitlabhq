@@ -71,7 +71,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     context 'when variables are supplied' do
       let(:job_variables) do
         [{ key: 'first', secret_value: 'first' },
-         { key: 'second', secret_value: 'second' }]
+          { key: 'second', secret_value: 'second' }]
       end
 
       subject { service.execute(build, job_variables) }

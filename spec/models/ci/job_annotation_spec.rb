@@ -6,11 +6,12 @@ RSpec.describe Ci::JobAnnotation, feature_category: :job_artifacts do
   let_it_be_with_refind(:job) { create(:ci_build, :success) }
 
   describe 'validations' do
-    subject { create(:ci_job_annotation, job: job) }
+    let!(:annotations) { create(:ci_job_annotation, job: job) }
 
     it { is_expected.to belong_to(:job).class_name('Ci::Build').inverse_of(:job_annotations) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_presence_of(:project_id) }
   end
 
   describe '.create' do
@@ -64,16 +65,6 @@ RSpec.describe Ci::JobAnnotation, feature_category: :job_artifacts do
         it 'does not change the partition_id value' do
           expect { annotation.valid? }.not_to change { annotation.partition_id }
         end
-      end
-    end
-
-    context 'without job' do
-      let(:annotation) { build(:ci_job_annotation, job: nil) }
-
-      it { is_expected.to validate_presence_of(:partition_id) }
-
-      it 'does not change the partition_id value' do
-        expect { annotation.valid? }.not_to change { annotation.partition_id }
       end
     end
   end

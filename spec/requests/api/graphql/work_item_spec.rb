@@ -91,19 +91,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       )
     end
 
-    context 'when work item is created at the group level' do
-      let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
-      let(:global_id) { group_work_item.to_gid.to_s }
-
-      it 'always returns false in the archived field' do
-        expect(work_item_data).to include(
-          'id' => group_work_item.to_gid.to_s,
-          'iid' => group_work_item.iid.to_s,
-          'archived' => false
-        )
-      end
-    end
-
     context 'when querying work item type information' do
       include_context 'with work item types request context'
 
@@ -184,13 +171,19 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 hasParent
                 rolledUpCountsByType {
                   workItemType {
-                    id
+                    name
                   }
                   countsByState {
                     all
                     opened
                     closed
                   }
+                }
+                depthLimitReachedByType {
+                  workItemType {
+                    name
+                  }
+                  depthLimitReached
                 }
               }
             }
@@ -213,20 +206,18 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'hasParent' => false,
                 'rolledUpCountsByType' => match_array([
                   hash_including(
-                    'workItemType' => hash_including('id' => anything),
+                    'workItemType' => hash_including('name' => 'Task'),
                     'countsByState' => {
-                      'all' => 0,
-                      'opened' => 0,
+                      'all' => 2,
+                      'opened' => 2,
                       'closed' => 0
                     }
-                  ),
+                  )
+                ]),
+                'depthLimitReachedByType' => match_array([
                   hash_including(
-                    'workItemType' => hash_including('id' => anything),
-                    'countsByState' => {
-                      'all' => 0,
-                      'opened' => 0,
-                      'closed' => 0
-                    }
+                    'workItemType' => hash_including('name' => 'Task'),
+                    'depthLimitReached' => false
                   )
                 ])
               )
@@ -837,26 +828,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(4)
           expect_graphql_errors_to_be_empty
         end
-
-        context 'when work item is associated with a group' do
-          let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
-          let_it_be(:group_work_item_note) { create(:note, noteable: group_work_item, author: developer, project: nil) }
-          let(:global_id) { group_work_item.to_gid.to_s }
-
-          before_all do
-            create(:award_emoji, awardable: group_work_item_note, name: 'rocket', user: developer)
-          end
-
-          it 'returns notes for the group work item' do
-            all_widgets = graphql_dig_at(work_item_data, :widgets)
-            notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
-            notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
-
-            expect(notes).to contain_exactly(
-              hash_including('body' => group_work_item_note.note)
-            )
-          end
-        end
       end
     end
 
@@ -1105,7 +1076,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       context 'when work item base type is non issue' do
-        let_it_be(:epic) { create(:work_item, :task, namespace: group) }
+        let_it_be(:epic) { create(:work_item, :task, project: project) }
         let_it_be(:global_id) { epic.to_gid.to_s }
 
         it 'returns without design' do

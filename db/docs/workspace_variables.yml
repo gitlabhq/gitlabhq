@@ -3,7 +3,7 @@ table_name: workspace_variables
 classes:
 - RemoteDevelopment::WorkspaceVariable
 feature_categories:
-- remote_development
+- workspaces
 description: Remote Development Workspace variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129688
 milestone: '16.4'

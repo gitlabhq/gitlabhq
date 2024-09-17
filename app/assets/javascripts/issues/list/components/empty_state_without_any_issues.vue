@@ -129,7 +129,7 @@ export default {
 
           <new-resource-dropdown
             v-if="showNewIssueDropdown"
-            class="gl-self-center gl-mx-2 gl-mb-3"
+            class="gl-mx-2 gl-mb-3 gl-self-center"
             :query="$options.searchProjectsQuery"
             :query-variables="newIssueDropdownQueryVariables"
             :extract-projects="extractProjects"
@@ -138,10 +138,10 @@ export default {
         </template>
       </gl-empty-state>
       <hr />
-      <p class="gl-text-center gl-font-bold gl-mb-0">
+      <p class="gl-mb-0 gl-text-center gl-font-bold">
         {{ s__('JiraService|Using Jira for issue tracking?') }}
       </p>
-      <p class="gl-text-center gl-mb-0">
+      <p class="gl-mb-0 gl-text-center">
         <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
           <template #jiraDocsLink="{ content }">
             <gl-link

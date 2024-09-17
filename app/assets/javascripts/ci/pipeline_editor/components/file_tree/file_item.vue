@@ -34,12 +34,12 @@ export default {
     :href="filePath"
     :title="fileName"
     target="_blank"
-    class="file-tree-includes-link gl-display-flex gl-justify-content-space-between gl-hover-bg-gray-50 gl-text-body gl-hover-text-gray-900 gl-hover-text-decoration-none gl-py-2 gl-px-3 gl-rounded-base"
+    class="file-tree-includes-link gl-flex gl-justify-between gl-rounded-base gl-px-3 gl-py-2 gl-text-primary hover:gl-bg-gray-50 hover:gl-text-gray-900 hover:gl-no-underline"
   >
     <span class="file-row-name gl-str-truncated" :title="fileName">
       <file-icon class="file-row-icon" :file-name="fileName" />
       <span>{{ fileName }}</span>
     </span>
-    <gl-icon class="gl-hidden gl-relative gl-text-gray-500" name="external-link" />
+    <gl-icon class="gl-relative gl-hidden gl-text-gray-500" name="external-link" />
   </gl-link>
 </template>

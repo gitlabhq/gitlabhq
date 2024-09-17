@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <gl-form class="gl-max-w-62 gl-mx-auto" @submit.prevent="onSubmit">
+  <gl-form class="gl-mx-auto gl-max-w-62" @submit.prevent="onSubmit">
     <div v-if="showVersionSelect">
       <h5 class="gl-mb-5">{{ $options.i18n.title }}</h5>
       <gl-form-radio-group v-model="selected" class="gl-mb-3" name="gitlab_version">
@@ -117,7 +117,7 @@ export default {
       <self-managed-alert v-if="isSelfManagedSelected" />
       <dot-com-alert v-else />
 
-      <div class="gl-flex gl-justify-end gl-mt-5">
+      <div class="gl-mt-5 gl-flex gl-justify-end">
         <gl-button variant="confirm" type="submit" :loading="loading" data-testid="submit-button">{{
           submitText
         }}</gl-button>

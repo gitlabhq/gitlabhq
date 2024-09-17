@@ -41,10 +41,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column issuable-assignees">
+  <div class="issuable-assignees gl-flex gl-flex-col">
     <div
       v-if="emptyUsers"
-      class="gl-display-flex gl-align-items-center gl-text-gray-500 hide-collapsed"
+      class="hide-collapsed gl-flex gl-items-center gl-text-gray-500"
       data-testid="none"
     >
       <span> {{ __('None') }}</span>
@@ -57,7 +57,7 @@ export default {
           class="gl-ml-2"
           @click="$emit('assign-self')"
         >
-          <span class="gl-text-gray-500 gl-hover-text-blue-800">{{ __('assign yourself') }}</span>
+          <span class="gl-text-gray-500 hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
         </gl-button>
       </template>
     </div>
@@ -65,7 +65,7 @@ export default {
       v-else
       :users="users"
       :issuable-type="issuableType"
-      class="gl-text-gray-800 hide-collapsed gl-pt-2"
+      class="hide-collapsed gl-pt-2 gl-text-gray-800"
     />
   </div>
 </template>

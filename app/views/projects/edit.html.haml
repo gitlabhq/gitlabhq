@@ -3,16 +3,18 @@
 - add_page_specific_style 'page_bundles/projects_edit'
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
+- project_docs_path = help_page_path('user/project/working_with_projects')
+- project_docs_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: project_docs_path }
 
 %h1.gl-sr-only= @breadcrumb_title
 
 - if can?(current_user, :admin_project, @project)
-  = render ::Layouts::SettingsBlockComponent.new(_('Naming, topics, avatar'),
+  = render ::Layouts::SettingsBlockComponent.new(_('Naming, description, topics'),
     id: 'js-general-settings',
     testid: 'general-settings-content',
     expanded: true) do |c|
     - c.with_description do
-      = _('Update your project name, topics, description, and avatar.')
+      = html_escape(_('Update your project name, description, avatar, and topics. %{link_start}Learn more about projects%{link_end}.')) % { link_start: project_docs_link_start, link_end: '</a>'.html_safe }
     - c.with_body do
       = render 'projects/settings/general'
 
@@ -26,7 +28,7 @@
       = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
-        .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
+        .js-project-permissions-form{ data: project_permissions_data(@project, reduce_visibility_form_id) }
 
   = render ::Layouts::SettingsBlockComponent.new(s_('ProjectSettings|Badges'),
     id: 'js-badges-settings',

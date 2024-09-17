@@ -7,7 +7,8 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
 
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:other_project) { create(:project, :private) }
-  let_it_be(:package_protection_rule) { create(:package_protection_rule, project: project) }
+  let_it_be(:protection_rule) { create(:package_protection_rule, project: project) }
+  let_it_be(:protection_rule_id) { protection_rule.id }
 
   let_it_be(:maintainer) { create(:user, maintainer_of: [project, other_project]) }
   let_it_be(:api_user) { create(:user) }
@@ -15,29 +16,13 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
   let_it_be(:invalid_token) { 'invalid-token123' }
   let_it_be(:headers_with_invalid_token) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => invalid_token } }
 
+  let(:path) { 'packages/protection/rules' }
+  let(:url) { "/projects/#{project.id}/#{path}" }
+
   let(:params) do
     { package_name_pattern: '@my-new-scope/my-package-*',
-      package_type: package_protection_rule.package_type,
-      minimum_access_level_for_push: package_protection_rule.minimum_access_level_for_push }
-  end
-
-  shared_examples 'rejecting project packages protection rules request when not enough permissions' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:user_role, :status) do
-      :reporter  | :forbidden
-      :developer | :forbidden
-      :guest     | :forbidden
-      nil        | :not_found
-    end
-
-    with_them do
-      before do
-        project.send(:"add_#{user_role}", api_user) if user_role
-      end
-
-      it_behaves_like 'returning response status', params[:status]
-    end
+      package_type: protection_rule.package_type,
+      minimum_access_level_for_push: protection_rule.minimum_access_level_for_push }
   end
 
   shared_examples 'rejecting project packages protection rules request when enough permissions' do
@@ -49,37 +34,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
       it_behaves_like 'returning response status', :not_found
     end
 
-    context 'when the project id is invalid' do
-      let(:url) { "/projects/invalid/packages/protection/rules" }
-
-      it_behaves_like 'returning response status', :not_found
-    end
-
-    context 'when the project id does not exist' do
-      let(:url) { "/projects/#{non_existing_record_id}/packages/protection/rules" }
-
-      it_behaves_like 'returning response status', :not_found
-    end
-  end
-
-  shared_examples 'rejecting project packages protection rules request when handling rule ids' do
-    context 'when the rule id is invalid' do
-      let(:url) { "/projects/#{project.id}/packages/protection/rules/invalid" }
-
-      it_behaves_like 'returning response status', :bad_request
-    end
-
-    context 'when the rule id does not exist' do
-      let(:url) { "/projects/#{project.id}/packages/protection/rules/#{non_existing_record_id}" }
-
-      it_behaves_like 'returning response status', :not_found
-    end
-
-    context 'when the package protection rule does belong to another project' do
-      let(:url) { "/projects/#{other_project.id}/packages/protection/rules/#{package_protection_rule.id}" }
-
-      it_behaves_like 'returning response status', :not_found
-    end
+    it_behaves_like 'rejecting protection rules request when invalid project'
   end
 
   describe 'GET /projects/:id/packages/protection/rules' do
@@ -87,7 +42,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
 
     subject(:get_package_rules) { get(api(url, api_user)) }
 
-    it_behaves_like 'rejecting project packages protection rules request when not enough permissions'
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -118,7 +73,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
 
     subject(:post_package_rule) { post(api(url, api_user), params: params) }
 
-    it_behaves_like 'rejecting project packages protection rules request when not enough permissions'
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -152,7 +107,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
 
       context 'with already existing package_name_pattern' do
         before do
-          params[:package_name_pattern] = package_protection_rule.package_name_pattern
+          params[:package_name_pattern] = protection_rule.package_name_pattern
         end
 
         it 'does not create a package protection rule' do
@@ -172,11 +127,11 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
   end
 
   describe 'PATCH /projects/:id/packages/protection/rules/:package_protection_rule_id' do
-    let(:url) { "/projects/#{project.id}/packages/protection/rules/#{package_protection_rule.id}" }
+    let(:path) { "packages/protection/rules/#{protection_rule_id}" }
 
     subject(:patch_package_rule) { patch(api(url, api_user), params: params) }
 
-    it_behaves_like 'rejecting project packages protection rules request when not enough permissions'
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -192,7 +147,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["package_name_pattern"]).to eq(changed_scope)
-          expect(json_response["package_type"]).to eq(package_protection_rule.package_type)
+          expect(json_response["package_type"]).to eq(protection_rule.package_type)
         end
       end
 
@@ -233,7 +188,7 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
         it_behaves_like 'returning response status', :unprocessable_entity
       end
 
-      it_behaves_like 'rejecting project packages protection rules request when handling rule ids'
+      it_behaves_like 'rejecting protection rules request when handling rule ids'
       it_behaves_like 'rejecting project packages protection rules request when enough permissions'
     end
 
@@ -245,11 +200,11 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
   end
 
   describe 'DELETE /projects/:id/packages/protection/rules/:package_protection_rule_id' do
-    let(:url) { "/projects/#{project.id}/packages/protection/rules/#{package_protection_rule.id}" }
+    let(:path) { "packages/protection/rules/#{protection_rule_id}" }
 
     subject(:destroy_package_rule) { delete(api(url, api_user)) }
 
-    it_behaves_like 'rejecting project packages protection rules request when not enough permissions'
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -257,12 +212,12 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
       it 'deletes the package protection rule' do
         destroy_package_rule
         expect do
-          Packages::Protection::Rule.find(package_protection_rule.id)
+          Packages::Protection::Rule.find(protection_rule.id)
         end.to raise_error(ActiveRecord::RecordNotFound)
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
-      it_behaves_like 'rejecting project packages protection rules request when handling rule ids'
+      it_behaves_like 'rejecting protection rules request when handling rule ids'
       it_behaves_like 'rejecting project packages protection rules request when enough permissions'
     end
 

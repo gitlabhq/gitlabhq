@@ -1,0 +1,36 @@
+#import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_metadata_widgets_extras.fragment.graphql"
+
+fragment WorkItemLinkedItemsFragment on WorkItem {
+  widgets {
+    ... on WorkItemWidgetLinkedItems {
+      type
+      linkedItems {
+        nodes {
+          linkId
+          linkType
+          workItem {
+            id
+            iid
+            confidential
+            workItemType {
+              id
+              name
+              iconName
+            }
+            title
+            state
+            createdAt
+            closedAt
+            webUrl
+            reference(full: true)
+            widgets {
+              ...WorkItemMetadataWidgets
+              ...WorkItemMetadataWidgetsExtras
+            }
+          }
+        }
+      }
+    }
+  }
+}

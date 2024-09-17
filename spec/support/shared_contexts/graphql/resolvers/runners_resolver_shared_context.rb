@@ -9,8 +9,8 @@ RSpec.shared_context 'runners resolver setup' do
   let_it_be(:project) { create(:project, :public, group: group) }
 
   let_it_be(:inactive_project_runner) do
-    create(:ci_runner, :project, :inactive, :online, projects: [project],
-      description: 'inactive project runner', token: 'abcdef', tag_list: %w[project_runner])
+    create(:ci_runner, :project, :paused, :online, projects: [project],
+      description: 'paused project runner', token: 'abcdef', tag_list: %w[project_runner])
   end
 
   let_it_be(:offline_project_runner) do

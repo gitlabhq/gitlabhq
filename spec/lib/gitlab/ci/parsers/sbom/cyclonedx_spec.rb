@@ -189,6 +189,41 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
         parse!
       end
     end
+
+    context 'when a component has license information' do
+      let(:license_id) { "Apache-2.0" }
+      let(:license_url) { "https://www.apache.org/licenses/LICENSE-2.0.txt" }
+      let(:components) do
+        [
+          {
+            "type" => "library",
+            "group" => "com.acme",
+            "name" => "tomcat-catalina",
+            "version" => "9.0.14",
+            "licenses" => [
+              {
+                "license" => {
+                  "id" => license_id,
+                  "url" => license_url
+                }
+              }
+            ]
+          }
+        ]
+      end
+
+      it 'adds component with license information' do
+        expected_license = an_object_having_attributes(
+          id: license_id,
+          name: nil,
+          url: license_url)
+
+        expect(report).to receive(:add_component)
+                            .with(an_object_having_attributes(licenses: [expected_license]))
+
+        parse!
+      end
+    end
   end
 
   context 'when report has container_scanning components' do

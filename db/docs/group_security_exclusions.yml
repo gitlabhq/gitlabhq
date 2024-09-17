@@ -1,0 +1,12 @@
+---
+table_name: group_security_exclusions
+classes:
+- Security::GroupSecurityExclusion
+feature_categories:
+- secret_detection
+description: Store group-level exclusions to exclude from security analyzers scanning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163733
+milestone: '17.4'
+gitlab_schema: gitlab_sec
+sharding_key:
+  group_id: namespaces

@@ -6,7 +6,7 @@
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions')
 - mr_action = j(params[:tab].presence || 'show')
-- add_page_specific_style 'page_bundles/issuable'
+- add_issuable_stylesheet
 - add_page_specific_style 'page_bundles/design_management'
 - add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/pipelines'
@@ -14,7 +14,7 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
 - add_page_startup_api_call @endpoint_metadata_url
-- add_page_startup_api_call @pinned_file_url if @pinned_file_url
+- add_page_startup_api_call @linked_file_url if @linked_file_url
 - if mr_action == 'diffs' && !@file_by_file_default
   - add_page_startup_api_call @endpoint_diff_batch_url
 
@@ -24,8 +24,8 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .gl-static.merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
-      .merge-request-tabs-container.gl-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if !fluid_layout}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-lg-w-auto
+      .merge-request-tabs-container.gl-flex.gl-justify-between{ class: "#{'is-merge-request' if !fluid_layout}" }
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.lg:gl-w-auto
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -40,6 +40,7 @@
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
                 = gl_badge_tag @number_of_pipelines, { class: 'js-pipelines-mr-count' }
+          = render_if_exists "projects/merge_requests/reports_tab"
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
@@ -93,6 +94,7 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
+      = render_if_exists "projects/merge_requests/reports_tab_pane"
       - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 

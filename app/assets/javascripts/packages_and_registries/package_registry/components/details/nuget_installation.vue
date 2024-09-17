@@ -58,7 +58,7 @@ export default {
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
-    <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
 
     <code-instruction
       :label="s__('PackageRegistry|Add NuGet Source')"

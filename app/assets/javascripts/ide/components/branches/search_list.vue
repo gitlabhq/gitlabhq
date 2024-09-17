@@ -59,7 +59,7 @@ export default {
 <template>
   <div>
     <label
-      class="dropdown-input gl-pt-3 gl-pb-5 gl-mb-0 gl-border-b-1 gl-border-b-solid gl-block"
+      class="dropdown-input gl-mb-0 gl-block gl-border-b-1 gl-pb-5 gl-pt-3 gl-border-b-solid"
       @click.stop
     >
       <input
@@ -70,7 +70,7 @@ export default {
         class="form-control dropdown-input-field"
         @input="searchBranches"
       />
-      <gl-icon name="search" class="gl-ml-5 gl-mt-1 input-icon" />
+      <gl-icon name="search" class="input-icon gl-ml-5 gl-mt-1" />
     </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content !gl-flex">
       <gl-loading-icon

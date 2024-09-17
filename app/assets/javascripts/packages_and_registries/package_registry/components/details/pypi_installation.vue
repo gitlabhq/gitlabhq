@@ -91,7 +91,7 @@ password = <your personal access token>`;
       </template>
     </gl-form-group>
 
-    <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
     <p>
       <gl-sprintf :message="$options.i18n.setupText">
         <template #code="{ content }">

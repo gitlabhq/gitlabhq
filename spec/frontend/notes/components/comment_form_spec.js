@@ -109,6 +109,7 @@ describe('issue_comment_form component', () => {
     features = {},
     mountFunction = shallowMountExtended,
     store = createStore(),
+    stubs = {},
   } = {}) => {
     store.dispatch('setNoteableData', noteableData);
     store.dispatch('setNotesData', notesData);
@@ -127,6 +128,7 @@ describe('issue_comment_form component', () => {
       provide: {
         glFeatures: features,
       },
+      stubs,
     });
   };
 
@@ -909,5 +911,12 @@ describe('issue_comment_form component', () => {
         });
       });
     });
+  });
+
+  it('calls append on a markdown editor', () => {
+    mountComponent({ stubs: { MarkdownEditor } });
+    const spy = jest.spyOn(findMarkdownEditor().vm, 'append');
+    wrapper.vm.append('foo');
+    expect(spy).toHaveBeenCalledWith('foo');
   });
 });

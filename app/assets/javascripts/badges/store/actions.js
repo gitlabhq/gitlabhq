@@ -1,5 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { isValidURL } from '~/lib/utils/url_utility';
 import types from './mutation_types';
 
 export const transformBackendBadge = (badge) => ({
@@ -100,7 +101,14 @@ export default {
   renderBadge({ dispatch, state }) {
     const badge = state.isEditing ? state.badgeInEditForm : state.badgeInAddForm;
     const { linkUrl, imageUrl } = badge;
-    if (!linkUrl || linkUrl.trim() === '' || !imageUrl || imageUrl.trim() === '') {
+    if (
+      !linkUrl ||
+      linkUrl.trim() === '' ||
+      !isValidURL(linkUrl) ||
+      !imageUrl ||
+      imageUrl.trim() === '' ||
+      !isValidURL(imageUrl)
+    ) {
       return Promise.resolve(badge);
     }
 

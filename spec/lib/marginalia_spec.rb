@@ -147,6 +147,7 @@ RSpec.describe 'Marginalia spec' do
   def make_request(correlation_id, action_name)
     request_env = Rack::MockRequest.env_for('/')
 
+    ::Labkit::Context.push(caller_id: MarginaliaTestController.endpoint_id_for_action(action_name))
     ::Labkit::Correlation::CorrelationId.use_id(correlation_id) do
       MarginaliaTestController.action(action_name).call(request_env)
     end

@@ -238,7 +238,7 @@ export default {
         <gl-popover :target="fluxBadgeId" :title="syncStatusBadge.popoverTitle">
           <gl-sprintf :message="syncStatusBadge.popoverText">
             <template #link="{ content }">
-              <gl-link :href="syncStatusBadge.popoverLink" class="gl-font-sm">{{
+              <gl-link :href="syncStatusBadge.popoverLink" class="gl-text-sm">{{
                 content
               }}</gl-link></template
             >

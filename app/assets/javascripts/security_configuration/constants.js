@@ -8,14 +8,11 @@ import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SAST_IAC,
   REPORT_TYPE_SECRET_DETECTION,
-  REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY,
 } from '~/vue_shared/security_reports/constants';
 
 import configureSastMutation from './graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from './graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from './graphql/configure_secret_detection.mutation.graphql';
-
-import ContainerScanningForRegistry from './components/container_scanning_for_registry.vue';
 
 /**
  * Translations for Security Configuration Page
@@ -70,12 +67,6 @@ export const SCANNER_NAMES_MAP = {
   CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
   PRE_RECEIVE_SECRET_DETECTION: PRE_RECEIVE_SECRET_DETECTION_NAME,
   GENERIC: s__('ciReport|Manually added'),
-};
-
-export const securityFeatures = {
-  [REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY]: {
-    slotComponent: ContainerScanningForRegistry,
-  },
 };
 
 export const featureToMutationMap = {

@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex align-items-lg-center">
+  <div class="align-items-lg-center gl-flex">
     <gl-tabs content-class="gl-py-0" class="gl-w-full">
       <gl-tab
         v-for="tab in tabs"

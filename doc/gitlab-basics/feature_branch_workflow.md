@@ -1,9 +1,9 @@
 ---
-redirect_to: 'add-file.md'
+redirect_to: '../topics/git/add_files.md'
 remove_date: '2024-09-26'
 ---
 
-This document was moved to [another location](add-file.md).
+This document was moved to [another location](../topics/git/add_files.md).
 
 <!-- This redirect file can be deleted after <2024-09-26>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

@@ -126,7 +126,7 @@ module Gitlab
           })
 
         recursive_cte << base_namespace_class.select(
-          Arel.sql(cursor[:current_id].to_s).as('current_id'),
+          Arel.sql("#{cursor[:current_id]}::bigint").as('current_id'),
           Arel.sql("ARRAY[#{cursor[:depth].join(',')}]::bigint[]").as('depth'),
           Arel.sql("ARRAY[#{ids}]::bigint[]").as('ids'),
           Arel.sql('1::bigint AS count'),

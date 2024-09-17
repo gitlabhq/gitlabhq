@@ -49,6 +49,8 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     isFullCodequalityReportAvailable,
     securityPoliciesPath,
     testsCount,
+    manualVariablesCount,
+    canReadVariables,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -98,6 +100,8 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       artifactsExpiredImagePath,
       securityPoliciesPath,
       testsCount,
+      manualVariablesCount: Number.parseInt(manualVariablesCount, 10),
+      canReadVariables: parseBoolean(canReadVariables),
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);

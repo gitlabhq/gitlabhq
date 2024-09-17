@@ -3,8 +3,10 @@
 module Ci
   class BuildTag < Ci::ApplicationRecord
     include Ci::Partitionable
+    include BulkInsertSafe
 
     self.table_name = :p_ci_build_tags
+    self.primary_key = :id
 
     query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true

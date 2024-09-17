@@ -50,18 +50,5 @@ RSpec.describe JiraConnect::JiraCloudAppDeactivationWorker, feature_category: :i
       expect(other_jira_cloud_app_project_integration.reload).to be_active
       expect(other_jira_cloud_app_group_integration.reload).to be_active
     end
-
-    it 'does not disable any JiraCloudApp integrations when the flag is disabled' do
-      stub_feature_flags(enable_jira_connect_configuration: false)
-
-      expect { perform }.not_to change { Integration.count }
-
-      expect(inheriting_jira_cloud_app_integration.reload).to be_active
-      expect(inheriting_jira_cloud_app_project_integration.reload).to be_active
-      expect(non_inheriting_jira_cloud_app_integration.reload).to be_active
-      expect(non_inheriting_asana_integration.reload).to be_active
-      expect(other_jira_cloud_app_project_integration.reload).to be_active
-      expect(other_jira_cloud_app_group_integration.reload).to be_active
-    end
   end
 end

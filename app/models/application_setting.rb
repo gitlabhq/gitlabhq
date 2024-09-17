@@ -7,20 +7,19 @@ class ApplicationSetting < ApplicationRecord
   include ChronicDurationAttribute
   include IgnorableColumns
   include Sanitizable
-  include SafelyChangeColumnDefault
 
-  ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
-  ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
-  ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
-  ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
-  ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
-  ignore_columns %i[openai_api_key anthropic_api_key vertex_ai_credentials vertex_ai_access_token], remove_with: '17.3', remove_after: '2024-08-15'
-  ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'
-
-  columns_changing_default %i[ci_max_total_yaml_size_bytes max_yaml_size_bytes]
+  ignore_columns %i[
+    encrypted_openai_api_key
+    encrypted_openai_api_key_iv
+    encrypted_anthropic_api_key
+    encrypted_anthropic_api_key_iv
+    encrypted_vertex_ai_credentials
+    encrypted_vertex_ai_credentials_iv
+    encrypted_vertex_ai_access_token
+    encrypted_vertex_ai_access_token_iv
+  ], remove_with: '17.5', remove_after: '2024-09-19'
+  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.6', remove_after: '2024-10-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -43,6 +42,8 @@ class ApplicationSetting < ApplicationRecord
   PACKAGE_REGISTRY_SETTINGS = [:nuget_skip_metadata_url_validation].freeze
 
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
+
+  INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
 
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
@@ -600,8 +601,10 @@ class ApplicationSetting < ApplicationRecord
       :notes_create_limit,
       :package_registry_cleanup_policies_worker_capacity,
       :packages_cleanup_package_file_worker_capacity,
+      :pages_extra_deployments_default_expiry_seconds,
       :pipeline_limit_per_project_user_sha,
       :project_api_limit,
+      :project_invited_groups_api_limit,
       :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
@@ -628,6 +631,7 @@ class ApplicationSetting < ApplicationRecord
     groups_api_limit: [:integer, { default: 200 }],
     members_delete_limit: [:integer, { default: 60 }],
     project_api_limit: [:integer, { default: 400 }],
+    project_invited_groups_api_limit: [:integer, { default: 60 }],
     projects_api_limit: [:integer, { default: 2000 }],
     user_contributed_projects_api_limit: [:integer, { default: 100 }],
     user_projects_api_limit: [:integer, { default: 300 }],
@@ -729,6 +733,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
+
+  jsonb_accessor :pages,
+    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
+
+  validates :pages, json_schema: { filename: "application_setting_pages" }
 
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,

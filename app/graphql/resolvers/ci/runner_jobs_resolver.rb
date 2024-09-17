@@ -45,7 +45,6 @@ module Resolvers
           web_path: [{ project: { namespace: [:route] } }],
           short_sha: [:pipeline],
           tags: [:tags],
-          ai_failure_analysis: [{ project: [:project_feature, :namespace] }],
           trace: [{ project: [:namespace] }, :job_artifacts_trace]
         }
       end

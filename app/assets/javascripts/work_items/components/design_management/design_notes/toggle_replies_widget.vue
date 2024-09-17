@@ -44,14 +44,18 @@ export default {
       }
       return '';
     },
+    ariaState() {
+      return String(!this.collapsed);
+    },
   },
 };
 </script>
 
 <template>
   <li
-    class="toggle-comments gl-bg-gray-10 gl-flex gl-items-center gl-p-3 gl-min-h-8 gl-rounded-bl-base gl-rounded-br-base"
+    class="toggle-comments gl-flex gl-min-h-8 gl-items-center gl-rounded-bl-base gl-rounded-br-base gl-bg-gray-10 gl-p-3"
     :class="{ expanded: !collapsed }"
+    :aria-expanded="ariaState"
     data-testid="toggle-comments-wrapper"
   >
     <gl-button
@@ -71,7 +75,7 @@ export default {
         :avatar-size="24"
         badge-tooltip-prop="name"
         :badge-sr-only-text="authorCollapsedTooltip"
-        class="gl-whitespace-nowrap gl-mr-3"
+        class="gl-mr-3 gl-whitespace-nowrap"
       >
         <template #avatar="{ avatar }">
           <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">

@@ -9,11 +9,11 @@ module Ci
     ##
     # Variables in the environment name scope.
     #
-    def scoped_variables(environment: expanded_environment_name, dependencies: true, job_attributes: {})
+    def scoped_variables(environment: expanded_environment_name, dependencies: true)
       track_duration do
         pipeline
           .variables_builder
-          .scoped_variables(self, environment: environment, dependencies: dependencies, job_attributes: job_attributes)
+          .scoped_variables(self, environment: environment, dependencies: dependencies)
       end
     end
 

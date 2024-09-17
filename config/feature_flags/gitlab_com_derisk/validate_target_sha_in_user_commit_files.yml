@@ -1,0 +1,9 @@
+---
+name: validate_target_sha_in_user_commit_files
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384017
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161981
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/479424
+milestone: '17.4'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

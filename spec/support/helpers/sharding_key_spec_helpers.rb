@@ -67,13 +67,17 @@ module ShardingKeySpecHelpers
     end
   end
 
-  def has_foreign_key?(from_table_name, column_name, to_table_name: nil)
+  def has_foreign_key?(from_table_name, column_name, to_table_name: nil, foreign_key_name: nil)
     where_clause = {
       constrained_table_name: from_table_name,
       constrained_columns: [column_name]
     }
 
     where_clause[:referenced_table_name] = to_table_name if to_table_name
+    if foreign_key_name
+      where_clause[:name] = foreign_key_name
+      where_clause.delete(:constrained_columns)
+    end
 
     fk = ::Gitlab::Database::PostgresForeignKey.where(where_clause).first
 

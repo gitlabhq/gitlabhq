@@ -15,6 +15,9 @@ GitLab package.
 
 ## Prerequisites
 
+- Create an [upgrade plan](../plan_your_upgrade.md).
+  We recommend upgrading in a test environment first and having a [rollback plan](../plan_your_upgrade.md#rollback-plan)
+  to reduce the risk of unplanned outages and extended downtime.
 - Decide when to upgrade by viewing the [supported upgrade paths](../index.md#upgrade-paths).
   You can't directly skip major versions (for example, go from 10.3 to 12.7 in one step).
 - If you are upgrading from a non-package installation to a GitLab package installation, see

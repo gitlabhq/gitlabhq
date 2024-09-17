@@ -24,6 +24,8 @@ export const rawMockData = {
   passwordSymbolRequired: 'true',
   promotionManagementAvailable: 'true',
   enableMemberPromotionManagement: 'true',
+  canDisableMemberPromotionManagement: false,
+  rolePromotionRequestsPath: '/admin/role_promotion',
 };
 
 export const mockData = {
@@ -52,4 +54,6 @@ export const mockData = {
   passwordSymbolRequired: true,
   promotionManagementAvailable: true,
   enableMemberPromotionManagement: true,
+  canDisableMemberPromotionManagement: false,
+  rolePromotionRequestsPath: '/admin/role_promotion',
 };

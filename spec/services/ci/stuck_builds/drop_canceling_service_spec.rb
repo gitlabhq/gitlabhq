@@ -23,6 +23,7 @@ RSpec.describe Ci::StuckBuilds::DropCancelingService, feature_category: :continu
         let!(:updated_at) { outdated_time }
 
         it_behaves_like 'job is canceled'
+        it_behaves_like 'when invalid dooms the job bypassing validations'
       end
 
       context 'when job is fresh' do

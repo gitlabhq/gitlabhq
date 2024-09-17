@@ -11,7 +11,7 @@ export default {
     LegacyLinkedPipelinesMiniList,
     LegacyPipelineStages,
   },
-  arrowStyles: ['arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
+  arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
   props: {
     downstreamPipelines: {
       type: Array,

@@ -145,7 +145,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe '.default_by_type' do
-    let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
+    let(:default_issue_type) { described_class.find_by(base_type: :issue) }
     let(:base_type) { :issue }
 
     subject { described_class.default_by_type(base_type) }
@@ -190,23 +190,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
           expect do
             subject
           end.not_to raise_error
-        end
-      end
-
-      context 'when rely_on_work_item_type_seeder feature flag is disabled' do
-        before do
-          stub_feature_flags(rely_on_work_item_type_seeder: false)
-        end
-
-        it 'creates types and restrictions and returns default work item type by base type' do
-          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types).and_call_original
-          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_widgets)
-          expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
-          expect(
-            Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter
-          ).to receive(:upsert_restrictions)
-
-          expect(subject).to eq(default_issue_type)
         end
       end
     end
@@ -338,6 +321,24 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         expect(work_item_type).not_to receive(:with_reactive_cache)
         is_expected.to eq([parent_type])
       end
+    end
+  end
+
+  describe '#descendant_types' do
+    let(:epic_type) { create(:work_item_type, :non_default) }
+    let(:issue_type) { create(:work_item_type, :non_default) }
+    let(:task_type) { create(:work_item_type, :non_default) }
+
+    subject { epic_type.descendant_types }
+
+    before do
+      create(:hierarchy_restriction, parent_type: epic_type, child_type: epic_type)
+      create(:hierarchy_restriction, parent_type: epic_type, child_type: issue_type)
+      create(:hierarchy_restriction, parent_type: issue_type, child_type: task_type)
+    end
+
+    it 'returns all possible descendant types' do
+      is_expected.to contain_exactly(epic_type, issue_type, task_type)
     end
   end
 

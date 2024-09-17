@@ -225,6 +225,19 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
       end
     end
 
+    context 'when running the service twice for a user with no personal projects' do
+      let!(:project) { nil }
+
+      it 'does not create a second ghost user migration and does not raise an exception' do
+        expect { described_class.new(user).execute(user) }
+          .to change { Users::GhostUserMigration.where(user: user).count }.by(1)
+
+        expect do
+          expect { described_class.new(user).execute(user) }.not_to raise_exception
+        end.not_to change { Users::GhostUserMigration.where(user: user).count }
+      end
+    end
+
     it 'allows users to delete their own account' do
       expect { described_class.new(user).execute(user) }
         .to(

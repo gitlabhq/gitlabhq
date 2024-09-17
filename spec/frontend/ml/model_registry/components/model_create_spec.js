@@ -26,7 +26,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 jest.mock('~/ml/model_registry/services/upload_model', () => ({
-  uploadModel: jest.fn(),
+  uploadModel: jest.fn(() => Promise.resolve()),
 }));
 
 describe('ModelCreate', () => {
@@ -34,6 +34,8 @@ describe('ModelCreate', () => {
   let apolloProvider;
 
   const file = { name: 'file.txt', size: 1024 };
+  const anotherFile = { name: 'another file.txt', size: 10 };
+  const files = [file, anotherFile];
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -229,7 +231,6 @@ describe('ModelCreate', () => {
         expect(findImportArtifactZone().props()).toEqual({
           path: null,
           submitOnSelect: false,
-          value: { file: null, subfolder: '' },
         });
       });
 
@@ -354,7 +355,7 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
@@ -387,19 +388,18 @@ describe('ModelCreate', () => {
       );
     });
 
-    it('Uploads a file mutation upon confirm', () => {
+    it('Uploads a files mutation upon confirm', () => {
       expect(uploadModel).toHaveBeenCalledWith({
         file,
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
         subfolder: '',
         maxAllowedFileSize: 99999,
         onUploadProgress: expect.any(Function),
+        cancelToken: expect.any(Object),
       });
     });
 
-    it('Visits the model versions page upon successful create mutation', async () => {
-      createWrapper();
-      await submitForm();
+    it('Visits the model versions page upon successful create mutation', () => {
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
     });
   });
@@ -414,9 +414,7 @@ describe('ModelCreate', () => {
       await submitForm();
     });
 
-    it('Visits the model page upon successful create mutation without a version', async () => {
-      createWrapper();
-      await submitForm();
+    it('Visits the model page upon successful create mutation without a version', () => {
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1');
     });
   });
@@ -433,7 +431,7 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       await submitForm();
     });
 
@@ -483,13 +481,12 @@ describe('ModelCreate', () => {
       findDescriptionInput().vm.$emit('input', 'My model description');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
-      zone().vm.$emit('change', file);
+      zone().vm.$emit('change', files);
       uploadModel.mockRejectedValueOnce('Artifact import error.');
       await submitForm();
     });
 
     it('Visits the model versions page upon successful create mutation', async () => {
-      expect(findGlAlert().text()).toBe('Artifact import error.');
       await submitForm(); // retry submit
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
     });
@@ -502,6 +499,7 @@ describe('ModelCreate', () => {
         subfolder: '',
         maxAllowedFileSize: 99999,
         onUploadProgress: expect.any(Function),
+        cancelToken: expect.any(Object),
       });
     });
   });

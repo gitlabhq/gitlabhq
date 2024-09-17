@@ -337,6 +337,14 @@ RSpec.describe Projects::SnippetsController do
 
       it_behaves_like 'project cache control headers'
       it_behaves_like 'content disposition headers'
+
+      context 'when user is logged in' do
+        before do
+          sign_in(user)
+        end
+
+        it_behaves_like 'project cache control headers'
+      end
     end
   end
 end

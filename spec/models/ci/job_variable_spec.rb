@@ -10,6 +10,7 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
 
     it { is_expected.to belong_to(:job).class_name('Ci::Build').with_foreign_key(:job_id).inverse_of(:job_variables) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:job_id) }
+    it { is_expected.to validate_presence_of(:project_id) }
   end
 
   describe 'partitioning' do
@@ -31,25 +32,17 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
       end
     end
 
-    context 'without build' do
-      subject(:job_variable) { build(:ci_job_variable, job: nil, partition_id: 125) }
-
-      it { is_expected.to validate_presence_of(:partition_id) }
-
-      it 'does not change the partition_id value' do
-        expect { job_variable.valid? }.not_to change { job_variable.partition_id }
-      end
-    end
-
     context 'when using bulk_insert', :ci_partitionable do
       include Ci::PartitioningHelpers
 
       let(:new_pipeline) { create(:ci_pipeline) }
+      let(:project) { create(:project) }
       let(:ci_build) { create(:ci_build, pipeline: new_pipeline) }
-      let(:job_variable_2) { build(:ci_job_variable, job: ci_build) }
+      let(:job_variable_2) { build(:ci_job_variable, job: ci_build, project_id: project.id) }
 
       before do
         stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+        job_variable.project_id = project.id
       end
 
       it 'creates job variables successfully', :aggregate_failures do
@@ -59,6 +52,28 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
         expect(described_class.first.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
         expect(described_class.last.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
       end
+    end
+  end
+
+  describe '#set_project_id' do
+    it 'sets the project_id before validation' do
+      variable = build(:ci_job_variable)
+
+      expect(variable.project_id).to eq(variable.job.project_id)
+    end
+
+    it 'does not override the project_id if set' do
+      another_project = create(:project)
+      variable = build(:ci_job_variable, project_id: another_project.id)
+
+      expect(variable.project_id).to eq(another_project.id)
+    end
+  end
+
+  context 'with loose foreign key on ci_job_variables.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:project) }
+      let!(:model) { create(:ci_job_variable, project_id: parent.id) }
     end
   end
 end

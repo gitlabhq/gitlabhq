@@ -46,7 +46,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-text-center gl-p-5">
+  <div class="gl-p-5 gl-text-center">
     <div v-if="illustrationPath" class="svg-content svg-130"><img :src="illustrationPath" /></div>
     <h4>{{ __('Web Terminal') }}</h4>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />

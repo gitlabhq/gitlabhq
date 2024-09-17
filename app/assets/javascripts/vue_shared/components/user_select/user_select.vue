@@ -334,7 +334,7 @@ export default {
             :is-checked="selectedIsEmpty"
             is-check-centered
             data-testid="unassign"
-            @click.native.capture.stop="unassign"
+            @click.capture.native.stop="unassign"
           >
             <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-bold">{{
               $options.i18n.unassigned
@@ -351,7 +351,7 @@ export default {
           is-checked
           is-check-centered
           data-testid="selected-participant"
-          @click.native.capture.stop="unselect(item.username)"
+          @click.capture.native.stop="unselect(item.username)"
         >
           <sidebar-participant :user="item" :issuable-type="issuableType" selected />
         </gl-dropdown-item>
@@ -359,7 +359,7 @@ export default {
           <gl-dropdown-divider />
           <gl-dropdown-item
             data-testid="current-user"
-            @click.native.capture.stop="selectAssignee(currentUser)"
+            @click.capture.native.stop="selectAssignee(currentUser)"
           >
             <sidebar-participant
               :user="currentUser"
@@ -371,7 +371,7 @@ export default {
         <gl-dropdown-item
           v-if="showAuthor"
           data-testid="issuable-author"
-          @click.native.capture.stop="selectAssignee(issuableAuthor)"
+          @click.capture.native.stop="selectAssignee(issuableAuthor)"
         >
           <sidebar-participant
             :user="issuableAuthor"
@@ -386,7 +386,7 @@ export default {
           :title="tooltipText(unselectedUser)"
           boundary="viewport"
           data-testid="unselected-participant"
-          @click.native.capture.stop="selectAssignee(unselectedUser)"
+          @click.capture.native.stop="selectAssignee(unselectedUser)"
         >
           <sidebar-participant
             :user="unselectedUser"

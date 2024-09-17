@@ -15,8 +15,10 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateTopicsSlugColumn, feature_ca
     )
   end
 
+  let(:organizations) { table(:organizations) }
   let(:topics) { table(:topics) }
 
+  let!(:default_organization) { organizations.create!(id: 1, visibility_level: 0, name: 'default', path: 'path') }
   let!(:topic1) { topics.create!(name: 'dog 🐶') }
   let!(:topic2) { topics.create!(name: 'some topic') }
   let!(:topic3) { topics.create!(name: 'topic', slug: 'topic') }

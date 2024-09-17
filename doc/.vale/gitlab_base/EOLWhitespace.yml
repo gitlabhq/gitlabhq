@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.EOLWhitespace
+# Warning: gitlab_base.EOLWhitespace
 #
 # Checks that there is no useless whitespace at the end of lines.
 #

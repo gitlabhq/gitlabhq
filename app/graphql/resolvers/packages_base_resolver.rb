@@ -46,7 +46,7 @@ module Resolvers
       type_asc: { order_by: 'type', sort: 'asc' }
     }.freeze
 
-    def resolve
+    def resolve(**_args)
       raise NotImplementedError
     end
 

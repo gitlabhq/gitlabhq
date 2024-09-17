@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillProtectedEnvironmentDeployAccessLevelsProtectedEnvironmentProjectId
+description: Backfills sharding key `protected_environment_deploy_access_levels.protected_environment_project_id` from `protected_environments`.
+feature_category: continuous_delivery
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162834
+milestone: '17.4'
+queued_migration_version: 20240815083838
+finalized_by: # version of the migration that finalized this BBM

@@ -69,7 +69,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-m-0 gl-pt-2 gl-list-none">
+  <ul class="gl-m-0 gl-list-none gl-p-0 gl-pt-2">
     <component
       :is="componentFromName(name)"
       v-for="(name, index) in componentNames"

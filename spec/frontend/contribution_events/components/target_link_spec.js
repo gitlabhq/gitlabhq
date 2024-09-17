@@ -55,7 +55,7 @@ describe('TargetLink', () => {
     });
 
     it('renders nothing', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
   });
 });

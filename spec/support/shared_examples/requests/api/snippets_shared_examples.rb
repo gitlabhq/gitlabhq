@@ -72,6 +72,12 @@ RSpec.shared_examples 'raw snippet files' do
     end
 
     with_them do
+      before do
+        # TODO: remove path traversal specs once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+      end
+
       it 'returns the proper response code and message' do
         subject
 

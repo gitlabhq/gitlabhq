@@ -17,6 +17,10 @@ module Model
       migration_template "create_table_migration.rb", File.join(db_migrate_path, "create_#{table_name}.rb")
     end
 
+    def create_database_dictionary
+      template "database_dictionary.yml", Rails.root.join("db", "docs", "#{table_name}.yml").to_s
+    end
+
     # Override to find templates from superclass as well
     def source_paths
       super + [self.class.superclass.default_source_root]

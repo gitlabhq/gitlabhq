@@ -76,7 +76,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-display-contents">
+  <ul class="gl-contents">
     <gl-disclosure-dropdown-item
       v-if="showExportButton"
       v-gl-modal="exportModalId"

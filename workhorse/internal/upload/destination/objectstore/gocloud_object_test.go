@@ -2,7 +2,6 @@ package objectstore
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -49,5 +48,5 @@ func TestGoCloudObjectUpload(t *testing.T) {
 		require.NoError(t, err)
 
 		return !exists
-	}, 5*time.Second, time.Millisecond, fmt.Sprintf("file %s is still present", objectName))
+	}, 5*time.Second, time.Millisecond, "file %s is still present", objectName)
 }

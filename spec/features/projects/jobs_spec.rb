@@ -232,14 +232,14 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           expect(page).to have_link('New issue')
         end
 
-        it 'links to issues/new with the title and description filled in', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408222' do
+        it 'links to issues/new with the title and description filled in' do
           button_title = "Job Failed ##{job.id}"
           job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
 
-          page.within('aside.right-sidebar') do
+          page.within(find_by_testid('job-sidebar')) do
             expect(find_by_testid('job-new-issue')['href']).to include(href)
           end
         end
@@ -928,7 +928,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       context 'without active runners available' do
-        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:runner) { create(:ci_runner, :instance, :paused) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'renders message about job being stuck because no runners are active' do
@@ -938,7 +938,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       context 'when available runners can not run specified tag' do
-        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:runner) { create(:ci_runner, :instance, :paused) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w[docker linux]) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
@@ -950,7 +950,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       context 'when runners are offline and build has tags' do
-        let(:runner) { create(:ci_runner, :instance, active: true) }
+        let(:runner) { create(:ci_runner, :instance) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w[docker linux]) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
@@ -971,7 +971,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       context 'without available runners online' do
-        let(:runner) { create(:ci_runner, :instance, active: true) }
+        let(:runner) { create(:ci_runner, :instance) }
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'renders message about job being stuck because runners are offline' do

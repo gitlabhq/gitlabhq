@@ -48,6 +48,9 @@ export default {
       update(data) {
         return data?.project?.deployKeys || [];
       },
+      skip() {
+        return !this.currentPage || !this.currentScope;
+      },
       error(error) {
         createAlert({
           message: s__('DeployKeys|Error getting deploy keys'),
@@ -79,6 +82,8 @@ export default {
     return {
       deployKeys: [],
       pageInfo: {},
+      currentPage: null,
+      currentScope: null,
       deployKeyToRemove: null,
     };
   },

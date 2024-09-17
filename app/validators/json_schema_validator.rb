@@ -30,10 +30,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
 
     if options[:detail_errors]
       validator.validate(value).each do |error|
-        message = format(
-          _("'%{data_pointer}' must be a valid '%{type}'"),
-          data_pointer: error['data_pointer'], type: error['type']
-        )
+        message = format_error_message(error)
         record.errors.add(attribute, message)
       end
     else
@@ -44,6 +41,32 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   private
 
   attr_reader :base_directory
+
+  def format_error_message(error)
+    case error['type']
+    when 'oneOf'
+      format_one_of_error(error)
+    else
+      error['error']
+    end
+  end
+
+  def format_one_of_error(error)
+    schema_options = error['schema']['oneOf']
+    required_props = schema_options.flat_map { |option| option['required'] }.uniq
+
+    message = if error['root_schema']['type'] == 'array'
+                _("value at %{data_pointer} should use only one of: %{requirements}")
+              else
+                _("should use only one of: %{requirements}")
+              end
+
+    format(
+      message,
+      requirements: required_props.join(', '),
+      data_pointer: error['data_pointer']
+    )
+  end
 
   def valid_schema?(value)
     validator.valid?(value)

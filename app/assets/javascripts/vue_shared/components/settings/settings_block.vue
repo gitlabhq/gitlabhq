@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <section class="vue-settings-block">
+  <section :id="id" class="vue-settings-block settings no-animate">
     <div class="gl-flex gl-items-start gl-justify-between">
       <div class="gl-grow">
         <h2
@@ -75,6 +75,7 @@ export default {
           class="gl-min-w-12 gl-shrink-0"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
+          data-testid="settings-block-toggle"
           @click="toggleExpanded"
         >
           <span aria-hidden="true">
@@ -88,7 +89,7 @@ export default {
         </gl-button>
       </div>
     </div>
-    <gl-collapse :id="collapseId" v-model="expanded">
+    <gl-collapse :id="collapseId" v-model="expanded" data-testid="settings-block-content">
       <div class="gl-pt-5">
         <slot></slot>
       </div>

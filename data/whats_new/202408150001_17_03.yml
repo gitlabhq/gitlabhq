@@ -1,0 +1,100 @@
+- name: Troubleshoot failed jobs with root cause analysis
+  description: |
+    Root cause analysis is now generally available. With root cause analysis, you can troubleshoot failed jobs in CI/CD pipelines faster. This AI-powered feature analyzes the failed job log, quickly determines the root cause of the job failure, and suggests a fix for you.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat/examples.html#troubleshoot-failed-cicd-jobs-with-root-cause-analysis
+  image_url: https://img.youtube.com/vi/Yf7Iidf2GW8/hqdefault.jpg
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: Resolve a vulnerability with AI
+  description: |
+    Vulnerability resolution uses AI to give specific code suggestions for users to fix vulnerabilities. With the click of a button you can open a merge request to get started resolving any SAST vulnerability from the [list of supported CWE identifiers](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#availability).
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-resolution
+  image_url: https://about.gitlab.com/images/17_3/vulnerability_resolution.png
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: Add multiple compliance frameworks to a single project
+  description: |
+    You can create a compliance framework to identify that your project has certain compliance requirements or needs additional oversight.
+    The compliance framework can optionally enforce compliance pipeline configuration to the projects on which it is applied.
+
+    Previously, you could apply only one compliance framework to a project, which limited how many compliance requirements could be set on a project.
+    We have now provided the ability for a user to apply multiple different compliance frameworks per project. The project is then set with the compliance requirements of each framework.
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#add-a-compliance-framework-to-a-project
+  image_url: https://about.gitlab.com/images/17_3/multiple-compliance-frameworks.png
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: Delete a pod from the GitLab UI
+  description: |
+    Have you ever needed to restart or delete a failing pod in Kubernetes? Until now, you had to leave GitLab, use another tool to connect to the cluster, stop the pod, and wait for a new pod to start. GitLab now has built-in support for deleting pods, so you can smoothly troubleshoot your Kubernetes clusters.
+
+     You can stop a pod from a [dashboard for Kubernetes](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html), which lists all the pods across your cluster or namespace.
+  stage: deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html#delete-a-pod
+  image_url: https://about.gitlab.com/images/17_3/delete-pod.png
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: Easily connect to a cluster from your local terminal
+  description: |
+    Do you want to connect to a Kubernetes cluster from your local terminal or using one of the desktop Kubernetes GUI tools?
+    GitLab allows you to connect to a terminal using the [user access feature of the agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/user_access.html). Previously, finding commands required navigating out of GitLab to browse the documentation. Now, GitLab provides the **connect** command from the UI. GitLab can even help you configure user access!
+
+    To retrieve the connection command, either go to a [Kubernetes dashboard](https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html), or to the [agent list](https://docs.gitlab.com/ee/user/clusters/agent/work_with_agent.html#view-your-agents).
+  stage: deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/clusters/agent/user_access.html
+  image_url: https://about.gitlab.com/images/17_3/17-3-connect-agent.png
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: Health check for GitLab Duo in beta
+  description: |
+    You can now troubleshoot the setup for GitLab Duo on your self-managed instance. In the **Admin** area, on the GitLab Duo page, select **Run health check**. This health check performs a series of validations and suggests appropriate corrective actions to ensure GitLab Duo is operational.
+
+    The health check for GitLab Duo is available on Self-managed and GitLab Dedicated as a beta feature.
+  stage: data_store
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo/turn_on_off.html#run-a-health-check-for-gitlab-duo
+  image_url: https://about.gitlab.com/images/17_3/Failed_GitLab_Duo_health_check.png
+  published_at: 2024-08-15
+  release: 17.3
+
+- name: "AI Impact analytics: Code Suggestions acceptance rate and GitLab Duo seats usage"
+  description: |
+    These two new metrics highlight the effectiveness and utilization of GitLab Duo, and are now included in the [AI Impact analytics in the Value Streams Dashboard](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/), which helps organizations understand the impact of GitLab Duo on delivering business value.
+
+    The **Code Suggestions acceptance rate** metric indicates how frequently developers accept code suggestions made by GitLab Duo. This metric reflects both the effectiveness of these suggestions and the level of trust contributors have in AI capabilities. Specifically, the metric represents the percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+
+    The **GitLab Duo seats assigned and used** metric shows the percentage of consumed licensed seats, helping organizations plan effectively for license utilization, resource allocation, and understanding of usage patterns. This metric tracks the ratio of assigned seats that have used at least one AI feature in the last 30 days.
+
+    With the addition of these new metrics, we have also introduced new overview tiles — a new visualization which provides a clear summary of the metrics, helping you quickly assess the current state of your AI features.
+  stage: data_store
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#ai-impact-analytics
+  image_url: https://about.gitlab.com/images/17_3/173_ai_tiles.png
+  published_at: 2024-08-15
+  release: 17.3

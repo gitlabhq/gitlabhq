@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <div ref="calendarContainer" class="gl-pb-5 gl-border-b">
+  <div ref="calendarContainer" class="gl-border-b gl-pb-5">
     <gl-loading-icon v-if="isLoading" size="sm" />
     <gl-alert
       v-else-if="hasError"
@@ -69,9 +69,9 @@ export default {
       :primary-button-text="$options.i18n.retry"
       @primaryAction="renderActivityCalendar"
     />
-    <div v-else class="gl-display-inline-block gl-relative gl-w-full">
+    <div v-else class="gl-relative gl-inline-block gl-w-full">
       <div ref="calendarSvgContainer"></div>
-      <p class="gl-absolute gl-right-0 gl-bottom-0 gl-mb-0 gl-font-sm gl-text-secondary">
+      <p class="gl-absolute gl-bottom-0 gl-right-0 gl-mb-0 gl-text-sm gl-text-secondary">
         {{ $options.i18n.calendarHint }}
       </p>
     </div>

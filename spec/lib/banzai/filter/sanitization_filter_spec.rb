@@ -8,9 +8,6 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
   it_behaves_like 'default allowlist'
 
   describe 'custom allowlist' do
-    it_behaves_like 'XSS prevention'
-    it_behaves_like 'sanitize link'
-
     it 'customizes the allowlist only once' do
       instance = described_class.new('Foo')
       control_count = instance.allowlist[:transformers].size
@@ -223,6 +220,8 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
       end
     end
   end
+
+  it_behaves_like 'does not use pipeline timing check'
 
   it_behaves_like 'a filter timeout' do
     let(:text) { 'text' }

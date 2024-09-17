@@ -49,7 +49,7 @@ export default {
       'viewedDiffFileIds',
       'realSize',
     ]),
-    ...mapGetters('diffs', ['allBlobs', 'pinnedFile']),
+    ...mapGetters('diffs', ['allBlobs', 'linkedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
@@ -101,41 +101,41 @@ export default {
 
       return result;
     },
-    flatListWithPinnedFile() {
+    flatListWithLinkedFile() {
       const result = [...this.flatFilteredTreeList];
-      const pinnedIndex = result.findIndex((item) => item.path === this.pinnedFile.file_path);
-      const [pinnedItem] = result.splice(pinnedIndex, 1);
+      const linkedFileIndex = result.findIndex((item) => item.path === this.linkedFile.file_path);
+      const [linkedFileItem] = result.splice(linkedFileIndex, 1);
 
-      if (pinnedItem.parentPath === '/')
-        return [{ ...pinnedItem, level: 0, pinned: true, hidden: false }, ...result];
+      if (linkedFileItem.parentPath === '/')
+        return [{ ...linkedFileItem, level: 0, linked: true, hidden: false }, ...result];
 
       // remove detached folder from the tree
-      const next = result[pinnedIndex];
-      const prev = result[pinnedIndex - 1];
+      const next = result[linkedFileIndex];
+      const prev = result[linkedFileIndex - 1];
       const hasContainingFolder =
-        prev && prev.type === 'tree' && prev.level === pinnedItem.level - 1;
-      const hasSibling = next && next.type !== 'tree' && next.level === pinnedItem.level;
+        prev && prev.type === 'tree' && prev.level === linkedFileItem.level - 1;
+      const hasSibling = next && next.type !== 'tree' && next.level === linkedFileItem.level;
       if (hasContainingFolder && !hasSibling) {
         // folder tree is always condensed so we only need to remove the parent folder
-        result.splice(pinnedIndex - 1, 1);
+        result.splice(linkedFileIndex - 1, 1);
       }
 
       return [
         {
           level: 0,
-          key: 'pinned-path',
+          key: 'linked-path',
           isHeader: true,
           opened: true,
-          path: pinnedItem.parentPath,
+          path: linkedFileItem.parentPath,
           type: 'tree',
           hidden: false,
         },
-        { ...pinnedItem, level: 1, pinned: true, hidden: false },
+        { ...linkedFileItem, level: 1, linked: true, hidden: false },
         ...result,
       ];
     },
     treeList() {
-      const list = this.pinnedFile ? this.flatListWithPinnedFile : this.flatFilteredTreeList;
+      const list = this.linkedFile ? this.flatListWithLinkedFile : this.flatFilteredTreeList;
       if (this.search) return list;
       return list.filter((item) => !item.hidden);
     },
@@ -150,9 +150,9 @@ export default {
 </script>
 
 <template>
-  <div class="tree-list-holder gl-flex flex-column" data-testid="file-tree-container">
-    <div class="gl-flex gl-items-center gl-mb-3">
-      <h5 class="gl-display-inline-block gl-my-0">{{ __('Files') }}</h5>
+  <div class="tree-list-holder flex-column gl-flex" data-testid="file-tree-container">
+    <div class="gl-mb-3 gl-flex gl-items-center">
+      <h5 class="gl-my-0 gl-inline-block">{{ __('Files') }}</h5>
       <gl-badge class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
       <gl-button-group class="gl-ml-auto">
         <gl-button
@@ -185,7 +185,7 @@ export default {
       :clear-button-title="__('Clear search')"
       class="gl-mb-3"
     />
-    <tree-list-height class="gl-flex-grow-1 gl-min-h-0" :items-count="treeList.length">
+    <tree-list-height class="gl-min-h-0 gl-grow" :items-count="treeList.length">
       <template #default="{ scrollerHeight, rowHeight }">
         <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
           <recycle-scroller

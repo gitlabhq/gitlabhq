@@ -16,17 +16,6 @@ RSpec.shared_examples(
       expect(work_item_definitions.all.pluck(:name)).to include(widget_name)
     end
 
-    it 'logs a warning if the type is missing' do
-      type_name = work_item_types.first
-
-      allow(described_class::WorkItemType).to receive(find_method_name).and_call_original
-      allow(described_class::WorkItemType).to receive(find_method_name)
-        .with(type_name, nil).and_return(nil)
-
-      expect(Gitlab::AppLogger).to receive(:warn).with("type #{type_name} is missing, not adding widget")
-      migrate!
-    end
-
     context 'when the widget already exists' do
       let(:work_item_types_table) { table(:work_item_types) }
 

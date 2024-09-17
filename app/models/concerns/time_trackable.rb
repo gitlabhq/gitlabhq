@@ -17,13 +17,11 @@ module TimeTrackable
 
     alias_method :time_spent?, :time_spent
 
-    attribute :time_estimate, default: 0
-
     validate :check_time_estimate
     validate :check_negative_time_spent
 
     has_many :timelogs, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
-    after_initialize :set_time_estimate_default_value
+    before_save :set_time_estimate_default_value
     after_save :clear_memoized_total_time_spent
   end
 
@@ -95,11 +93,18 @@ module TimeTrackable
     val.is_a?(Integer) ? super([val, Gitlab::Database::MAX_INT_VALUE].min) : super(val)
   end
 
+  def time_estimate
+    super || self.class.column_defaults['time_estimate']
+  end
+
   def set_time_estimate_default_value
     return if new_record?
     return unless has_attribute?(:time_estimate)
+    # time estimate can be set to nil, in case of an invalid value, e.g. a String instead of a number, in which case
+    # we should not be overwriting it to default value, but rather have the validation catch the error
+    return if time_estimate_changed?
 
-    self.time_estimate ||= self.class.column_defaults['time_estimate']
+    self.time_estimate = self.class.column_defaults['time_estimate'] if read_attribute(:time_estimate).nil?
   end
 
   private
@@ -136,8 +141,9 @@ module TimeTrackable
   end
 
   def check_time_estimate
-    return unless new_record? || time_estimate_changed?
-    return if time_estimate.is_a?(Numeric) && time_estimate >= 0
+    # we'll set the time_tracking to zero at DB level through default value
+    return unless time_estimate_changed?
+    return if read_attribute(:time_estimate).is_a?(Numeric) && read_attribute(:time_estimate) >= 0
 
     errors.add(:time_estimate, _('must have a valid format and be greater than or equal to zero.'))
   end

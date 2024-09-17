@@ -210,6 +210,7 @@ describe('IssuableListRoot component', () => {
         showWorkItemTypeIcon: false,
         preventRedirect: false,
         isActive: false,
+        fullPath: null,
       });
     });
 

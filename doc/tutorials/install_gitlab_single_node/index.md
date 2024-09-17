@@ -352,7 +352,7 @@ You should now be able to send emails. To test that the configuration worked:
 
 1. Run the following command at the console prompt to make GitLab send a test email:
 
-   ```irb
+   ```ruby
    Notify.test_email('<email_address>', 'Message Subject', 'Message Body').deliver_now
    ```
 

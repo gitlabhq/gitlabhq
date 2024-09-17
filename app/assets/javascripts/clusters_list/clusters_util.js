@@ -5,12 +5,12 @@ function getTruncatedName(name) {
 }
 
 export function generateAgentRegistrationCommand({ name, token, version, address }) {
+  const versionValue = window.gon.dot_com ? '' : `\n    --set image.tag=v${version} \\`;
   return `helm repo add gitlab https://charts.gitlab.io
 helm repo update
 helm upgrade --install ${name} gitlab/gitlab-agent \\
     --namespace gitlab-agent-${getTruncatedName(name)} \\
-    --create-namespace \\
-    --set image.tag=v${version} \\
+    --create-namespace \\${versionValue}
     --set config.token=${token} \\
     --set config.kasAddress=${address}`;
 }

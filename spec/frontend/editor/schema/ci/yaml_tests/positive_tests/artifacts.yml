@@ -63,3 +63,8 @@ artifacts-access-all:
 artifacts-access-none:
   artifacts:
     access: none
+
+annotations-report-annotations-normal:
+  artifacts:
+    reports:
+      annotations: upload_report.json

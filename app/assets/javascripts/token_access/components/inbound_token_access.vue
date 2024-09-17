@@ -127,7 +127,6 @@ export default {
       projectCount: 0,
       projectName: '',
       groupCount: 0,
-      isAddFormVisible: false,
     };
   },
   computed: {
@@ -261,14 +260,12 @@ export default {
     },
     clearGroupOrProjectPath() {
       this.groupOrProjectPath = '';
-      this.isAddFormVisible = false;
       this.$refs.jobTokenCrud.hideForm();
     },
     getGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
     showAddForm() {
-      this.isAddFormVisible = true;
       this.$refs.jobTokenCrud.showForm();
     },
   },
@@ -349,13 +346,13 @@ export default {
             </span>
           </template>
 
-          <template v-if="!isAddFormVisible" #actions>
+          <template #actions>
             <gl-button size="small" data-testid="toggle-form-btn" @click="showAddForm">{{
               $options.i18n.addGroupOrProject
             }}</gl-button>
           </template>
 
-          <template v-if="isAddFormVisible" #form>
+          <template #form>
             <strong>{{ $options.i18n.addGroupOrProject }}</strong>
             <gl-form @submit.prevent="addGroupOrProject">
               <gl-form-group
@@ -370,7 +367,7 @@ export default {
                   @select="setGroupOrProjectPath"
                 />
               </gl-form-group>
-              <div class="gl-flex gl-gap-3 gl-mt-5">
+              <div class="gl-mt-5 gl-flex gl-gap-3">
                 <gl-button
                   variant="confirm"
                   :disabled="isGroupOrProjectPathEmpty || isGroupOrProjectPathInScope"

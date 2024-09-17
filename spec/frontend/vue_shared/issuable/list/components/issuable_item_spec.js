@@ -49,7 +49,6 @@ describe('IssuableItem', () => {
 
   const findTimestampWrapper = () => wrapper.findByTestId('issuable-timestamp');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
-  const findIssuableTitleLink = () => wrapper.findComponentByTestId('issuable-title-link');
   const findIssuableItemWrapper = () => wrapper.findByTestId('issuable-item-wrapper');
   const findIssuablePrefetchTrigger = () => wrapper.findByTestId('issuable-prefetch-trigger');
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
@@ -160,7 +159,7 @@ describe('IssuableItem', () => {
       it('returns `issuable.assignees` reference when it is available', () => {
         wrapper = createComponent();
 
-        expect(wrapper.vm.assignees).toBe(mockIssuable.assignees);
+        expect(wrapper.vm.assignees).toStrictEqual(mockIssuable.assignees);
       });
     });
 
@@ -630,16 +629,37 @@ describe('IssuableItem', () => {
   });
 
   describe('when preventing redirect on clicking the link', () => {
-    it('emits an event on item click', () => {
-      const { iid, webUrl } = mockIssuable;
+    beforeEach(() => {
+      window.open = jest.fn();
+    });
+    it('emits an event on row click', async () => {
+      const { iid, webUrl, type: workItemType } = mockIssuable;
 
       wrapper = createComponent({
         preventRedirect: true,
+        showCheckbox: false,
       });
 
-      findIssuableTitleLink().vm.$emit('click', new MouseEvent('click'));
+      await findIssuableItemWrapper().trigger('click');
 
-      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl }]]);
+      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl, workItemType }]]);
+    });
+
+    it('includes fullPath in emitted event for work items', async () => {
+      const { iid, webUrl, type: workItemType } = mockIssuable;
+      const fullPath = 'gitlab-org/gitlab';
+
+      wrapper = createComponent({
+        preventRedirect: true,
+        showCheckbox: false,
+        issuable: { ...mockIssuable, namespace: { fullPath } },
+      });
+
+      await findIssuableItemWrapper().trigger('click');
+
+      expect(wrapper.emitted('select-issuable')).toEqual([
+        [{ iid, webUrl, fullPath, workItemType }],
+      ]);
     });
 
     it('does not apply highlighted class when item is not active', () => {

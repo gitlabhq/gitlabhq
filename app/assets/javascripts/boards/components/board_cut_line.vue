@@ -11,8 +11,8 @@ export default {
 </script>
 
 <template>
-  <div class="board-cut-line gl-display-flex gl-mb-3 gl-text-red-700 gl-align-items-center">
-    <span class="gl-px-2 gl-font-sm gl-font-bold" data-testid="cut-line-text">{{
+  <div class="board-cut-line gl-mb-3 gl-flex gl-items-center gl-text-red-700">
+    <span class="gl-px-2 gl-text-sm gl-font-bold" data-testid="cut-line-text">{{
       cutLineText
     }}</span>
   </div>

@@ -84,15 +84,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def show
-  end
+  def show; end
 
   def new
     @environment = project.environments.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def k8s
     render action: :show

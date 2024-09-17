@@ -2,7 +2,7 @@
 
 exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
 <div
-  class="file-header-content gl-align-items-center gl-flex gl-leading-1"
+  class="file-header-content gl-flex gl-items-center gl-leading-1"
 >
   <file-icon-stub
     aria-hidden="true"
@@ -12,7 +12,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
     size="16"
   />
   <strong
-    class="file-title-name gl-break-all gl-text-decoration-none! js-blob-header-filepath mr-1"
+    class="!gl-no-underline file-title-name gl-break-all js-blob-header-filepath mr-1"
     data-testid="file-title-content"
   >
     foo/bar/dummy.md

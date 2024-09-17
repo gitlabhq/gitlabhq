@@ -3,7 +3,7 @@ table_name: ai_testing_terms_acceptances
 classes:
 - Ai::TestingTermsAcceptance
 feature_categories:
-- custom_models
+- self-hosted_models
 description: Records that an admin has accepted GitLab Testing Terms for an instance
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155231
 milestone: '17.1'

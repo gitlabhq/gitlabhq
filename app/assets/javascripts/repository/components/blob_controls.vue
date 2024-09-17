@@ -30,7 +30,7 @@ export default {
     permalinkTooltip: __('Go to permalink'),
     errorMessage: __('An error occurred while loading the blob controls.'),
   },
-  buttonClassList: 'gl-sm-w-auto gl-w-full gl-sm-mt-0 gl-mt-3',
+  buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
   components: {
     GlButton,
   },
@@ -156,7 +156,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showBlobControls" class="gl-display-flex gl-gap-3 gl-align-items-baseline">
+  <div v-if="showBlobControls" class="gl-flex gl-items-baseline gl-gap-3">
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"

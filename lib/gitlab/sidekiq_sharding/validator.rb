@@ -45,6 +45,14 @@ module Gitlab
         end
       end
 
+      Sidekiq::RedisClientAdapter::CompatMethods::USED_COMMANDS.each do |name|
+        define_method(name) do |*args, **kwargs|
+          validate! if Thread.current[:validate_sidekiq_shard_awareness]
+
+          super(*args, **kwargs)
+        end
+      end
+
       # This is used to patch the Sidekiq::RedisClientAdapter to validate all Redis commands are routed
       # rubocop:disable Style/MissingRespondToMissing -- already defined in the module we are patching
       def method_missing(*args, &block)

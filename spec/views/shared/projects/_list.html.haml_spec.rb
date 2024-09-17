@@ -35,7 +35,7 @@ RSpec.describe 'shared/projects/_list' do
     end
 
     it 'renders list in list view' do
-      expect(rendered).not_to have_css('.gl-new-card')
+      expect(rendered).not_to have_css('.gl-card')
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe 'shared/projects/_list' do
     it 'renders card mode when set to true' do
       render template: 'shared/projects/_list', locals: { card_mode: true }
 
-      expect(rendered).to have_css('.gl-new-card')
+      expect(rendered).to have_css('.gl-card')
     end
   end
 

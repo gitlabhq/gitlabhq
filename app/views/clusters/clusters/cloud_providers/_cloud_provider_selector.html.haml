@@ -6,10 +6,10 @@
 - gke_help_path = help_page_path('user/infrastructure/clusters/connect/new_gke_cluster')
 - civo_help_path = help_page_path('user/infrastructure/clusters/connect/new_civo_cluster')
 
-.gl-py-5.gl-md-pl-5.gl-md-pr-5
+.gl-py-5.md:gl-pl-5.md:gl-pr-5
   %h4.gl-mb-5
     = create_cluster_label
-  .gl-display-flex.gl-gap-5
+  .gl-flex.gl-gap-5
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
       locals: { label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg', help_path: eks_help_path }
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',

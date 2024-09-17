@@ -24,9 +24,9 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 1. Select **+ Add** in the left sidebar under **APIS AND FEATURES**.
 1. Select **Add** for **Jira platform REST API** and then **Configure**.
 1. Select **Add** next to the following scopes:
-    - **View Jira issue data**
-    - **View user profiles**
-    - **Create and manage issues**
+   - **View Jira issue data**
+   - **View user profiles**
+   - **Create and manage issues**
 
 ## GitLab configuration
 

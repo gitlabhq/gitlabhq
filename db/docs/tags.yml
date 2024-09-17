@@ -9,4 +9,4 @@ description: Tags applied to arbitrary models through the 'taggings' table
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b946da44695c9c8fe8867bb87bcdf801c52177d3
 milestone: "<6.0"
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443884
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470872

@@ -3,6 +3,7 @@ import { GlButton, GlIcon, GlAlert } from '@gitlab/ui';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
+import ActionDropdown from './action_dropdown.vue';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
+    ActionDropdown,
   },
   props: {
     lists: {
@@ -25,7 +27,10 @@ export default {
 <template>
   <div>
     <div class="page-title-holder gl-flex">
-      <h1 class="page-title gl-font-size-h-display">{{ __('Merge Requests') }}</h1>
+      <h1 class="page-title gl-text-size-h-display">{{ __('Merge Requests') }}</h1>
+      <div class="gl-ml-auto gl-self-center">
+        <action-dropdown />
+      </div>
     </div>
     <merge-requests-query
       v-for="(list, i) in lists"
@@ -37,7 +42,7 @@ export default {
       <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
         <collapsible-section :count="count" :loading="loading || error" :title="list.title">
           <div>
-            <div class="gl-overflow-x-scroll">
+            <div class="gl-overflow-x-auto">
               <table class="gl-w-full">
                 <colgroup>
                   <col style="width: 60px" />
@@ -47,22 +52,22 @@ export default {
                   <col style="width: 120px" />
                   <col style="min-width: 200px" />
                 </colgroup>
-                <thead class="gl-bg-gray-10 gl-border-b">
+                <thead class="gl-border-b gl-bg-gray-10">
                   <tr>
-                    <th class="gl-pl-5 gl-pr-3 gl-pb-3" :aria-label="__('Pipeline status')">
+                    <th class="gl-pb-3 gl-pl-5 gl-pr-3" :aria-label="__('Pipeline status')">
                       <gl-icon name="pipeline" />
                     </th>
-                    <th class="gl-pb-3 gl-px-3" :aria-label="__('Approvals')">
+                    <th class="gl-px-3 gl-pb-3" :aria-label="__('Approvals')">
                       <gl-icon name="approval" />
                     </th>
-                    <th class="gl-pb-3 gl-px-3 gl-text-sm gl-text-gray-700">{{ __('Title') }}</th>
-                    <th class="gl-pb-3 gl-px-3 gl-text-sm gl-text-gray-700 gl-text-center">
+                    <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-gray-700">{{ __('Title') }}</th>
+                    <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-gray-700">
                       {{ __('Assignee') }}
                     </th>
-                    <th class="gl-pb-3 gl-px-3 gl-text-sm gl-text-gray-700 gl-text-center">
+                    <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-gray-700">
                       {{ __('Reviewers') }}
                     </th>
-                    <th class="gl-pr-5 gl-pl-3 gl-pb-3 gl-text-sm gl-text-gray-700 gl-text-right">
+                    <th class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-gray-700">
                       {{ __('Activity') }}
                     </th>
                   </tr>
@@ -93,7 +98,7 @@ export default {
             </div>
           </div>
           <template #pagination>
-            <div v-if="hasNextPage" class="gl-flex gl-justify-center gl-mt-4">
+            <div v-if="hasNextPage" class="gl-mt-4 gl-flex gl-justify-center">
               <gl-button :loading="loading" data-testid="load-more" @click="loadMore">{{
                 __('Show more')
               }}</gl-button>

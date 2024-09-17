@@ -14,7 +14,7 @@ func wrapRaven(h http.Handler) http.Handler {
 	// clashes with gitlab-rails.
 	sentryDSN := os.Getenv("GITLAB_WORKHORSE_SENTRY_DSN")
 	sentryEnvironment := os.Getenv("GITLAB_WORKHORSE_SENTRY_ENVIRONMENT")
-	raven.SetDSN(sentryDSN) // sentryDSN may be empty
+	_ = raven.SetDSN(sentryDSN) // sentryDSN may be empty
 
 	if sentryEnvironment != "" {
 		raven.SetEnvironment(sentryEnvironment)

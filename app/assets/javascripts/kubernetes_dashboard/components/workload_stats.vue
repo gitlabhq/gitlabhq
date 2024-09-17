@@ -31,11 +31,11 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap -gl-mx-3">
+  <div class="-gl-mx-3 gl-flex gl-flex-wrap sm:gl-flex-nowrap">
     <gl-single-stat
       v-for="(stat, index) in stats"
       :key="index"
-      class="gl-w-full gl-flex-col gl-items-center gl-justify-center gl-bg-white gl-border gl-border-gray-a-08 gl-mx-3 gl-p-3 gl-mt-3 gl-cursor-pointer"
+      class="gl-border gl-mx-3 gl-mt-3 gl-w-full gl-cursor-pointer gl-flex-col gl-items-center gl-justify-center gl-border-alpha-dark-8 gl-bg-white gl-p-3"
       :value="stat.value"
       :title="stat.title"
       :class="{ 'gl-shadow-inner-b-2-blue-500': active === stat.title }"

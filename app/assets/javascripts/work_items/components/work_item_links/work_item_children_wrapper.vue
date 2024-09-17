@@ -1,17 +1,24 @@
 <script>
-import produce from 'immer';
 import Draggable from 'vuedraggable';
+import { cloneDeep } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { ESC_KEY } from '~/lib/utils/keys';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
+import { sortableStart, sortableEnd } from '~/sortable/utils';
 
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, DEFAULT_PAGE_SIZE_CHILD_ITEMS } from '../../constants';
-import { findHierarchyWidgets } from '../../utils';
-import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
-import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
+import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
+import { findHierarchyWidgetChildren } from '../../utils';
+import {
+  addHierarchyChild,
+  removeHierarchyChild,
+  optimisticUserPermissions,
+} from '../../graphql/cache_utils';
+import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
+import moveWorkItem from '../../graphql/move_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
@@ -54,10 +61,45 @@ export default {
       required: false,
       default: true,
     },
+    disableContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    isTopLevel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    parent: {
+      type: Object,
+      required: true,
+    },
+    showTaskWeight: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    hasIndirectChildren: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
       prefetchedWorkItem: null,
+      updateInProgress: false,
+      currentClientX: 0,
+      currentClientY: 0,
+      childrenWorkItems: [],
+      toParent: {},
+      dragCancelled: false,
     };
   },
   computed: {
@@ -74,6 +116,7 @@ export default {
         group: 'sortable-container',
         tag: 'ul',
         'data-parent-id': this.workItemId,
+        'data-parent-title': this.parent.title,
         value: this.children,
         delay: DRAG_DELAY,
         delayOnTouchOnly: true,
@@ -81,11 +124,15 @@ export default {
 
       return this.canReorder ? options : {};
     },
-    hasIndirectChildren() {
-      return this.children
-        .map((child) => findHierarchyWidgets(child.widgets) || {})
-        .some((hierarchy) => hierarchy.hasChildren);
+    disableList() {
+      return this.disableContent || this.updateInProgress;
     },
+    apolloClient() {
+      return this.$apollo.provider.clients.defaultClient;
+    },
+  },
+  mounted() {
+    this.handleDocumentKeyup = this.handleKeyUp.bind(this);
   },
   methods: {
     async removeChild(child) {
@@ -121,6 +168,7 @@ export default {
     },
     async undoChildRemoval(child) {
       try {
+        this.updateInProgress = true;
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
@@ -140,6 +188,8 @@ export default {
       } catch (error) {
         this.$emit('error', s__('WorkItem|Something went wrong while undoing child removal.'));
         Sentry.captureException(error);
+      } finally {
+        this.updateInProgress = false;
       }
     },
     addWorkItemQuery({ iid }) {
@@ -167,6 +217,28 @@ export default {
         clearTimeout(this.prefetch);
       }
     },
+    async fetchChildren(id) {
+      await this.$apollo.addSmartQuery('childrenWorkItems', {
+        query: getWorkItemTreeQuery,
+        variables: {
+          id,
+        },
+        update: (data) => findHierarchyWidgetChildren(data?.workItem),
+        result({ data }) {
+          const { workItem } = data;
+          this.toParent = {
+            id: workItem.id,
+            title: workItem.title,
+            confidential: workItem.confidential,
+            workItemType: workItem.workItemType,
+          };
+        },
+        error() {
+          this.$emit('error', s__('Hierarchy|Something went wrong while fetching children.'));
+        },
+      });
+    },
+
     getReorderParams({ oldIndex, newIndex }) {
       let relativePosition;
 
@@ -200,43 +272,133 @@ export default {
         adjacentWorkItemId,
       };
     },
-    handleDragOnEnd(params) {
-      const { oldIndex, newIndex } = params;
+    async getMoveItemParams({ toParentId, newIndex }) {
+      await this.fetchChildren(toParentId);
+      let adjacentWorkItemId;
+      let relativePosition;
+      if (this.childrenWorkItems.length > 0) {
+        relativePosition = 'BEFORE';
+        adjacentWorkItemId = this.childrenWorkItems[newIndex]?.id;
+        if (!adjacentWorkItemId) {
+          adjacentWorkItemId = this.childrenWorkItems[this.childrenWorkItems.length - 1].id;
+          relativePosition = 'AFTER';
+        }
+      }
+      return {
+        adjacentWorkItemId,
+        relativePosition,
+        parentId: toParentId,
+      };
+    },
+    handleDragOnStart() {
+      sortableStart();
+      this.dragCancelled = false;
+      // Attach listener to detect `ESC` key press to cancel drag.
+      document.addEventListener('keyup', this.handleDocumentKeyup);
+    },
+    async handleDragOnEnd(params) {
+      clearTimeout(this.toggleTimer);
+      sortableEnd();
+      document.removeEventListener('keyup', this.handleDocumentKeyup);
+      // Drag was cancelled, prevent reordering.
+      if (this.dragCancelled) return;
 
-      if (oldIndex === newIndex) return;
-
+      const { oldIndex, newIndex, from, to } = params;
+      const fromParentId = from.dataset.parentId;
+      const toParentId = to.dataset.parentId;
+      const toParentTitle = to.dataset.parentTitle;
       const targetItem = this.children[oldIndex];
+      let hierarchyWidgetParams;
+      let updatedChildren;
+      let toParentHasChildren;
 
-      const updatedChildren = this.children.slice();
-      updatedChildren.splice(oldIndex, 1);
+      this.updateInProgress = true;
+      if (fromParentId === toParentId) {
+        if (oldIndex === newIndex) {
+          this.updateInProgress = false;
+          return;
+        }
+        hierarchyWidgetParams = this.getReorderParams({ oldIndex, newIndex });
+        updatedChildren = cloneDeep(this.children);
+        updatedChildren.splice(oldIndex, 1);
+      } else {
+        hierarchyWidgetParams = await this.getMoveItemParams({ toParentId, newIndex });
+        updatedChildren = cloneDeep(this.childrenWorkItems);
+        toParentHasChildren = updatedChildren.length > 0;
+      }
+
       updatedChildren.splice(newIndex, 0, targetItem);
+      const currentPageSize = updatedChildren.length;
 
       this.$apollo
         .mutate({
-          mutation: reorderWorkItem,
+          mutation: moveWorkItem,
           variables: {
+            pageSize: currentPageSize,
+            endCursor: '',
             input: {
               id: targetItem.id,
-              hierarchyWidget: this.getReorderParams({ oldIndex, newIndex }),
+              ...hierarchyWidgetParams,
             },
           },
-          update: (store) => {
-            store.updateQuery(
-              {
-                query: getWorkItemTreeQuery,
-                variables: { id: this.workItemId, pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS },
-              },
-              (sourceData) =>
-                produce(sourceData, (draftData) => {
-                  const { widgets } = draftData.workItem;
-                  const hierarchyWidget = findHierarchyWidgets(widgets);
-                  hierarchyWidget.children.nodes = updatedChildren;
-                }),
-            );
+          update: async (cache) => {
+            if (fromParentId !== toParentId) {
+              removeHierarchyChild({
+                cache,
+                id: fromParentId,
+                workItem: targetItem,
+              });
+              // When the new parent does not have existing children, it needs to be expanded
+              if (!toParentHasChildren) {
+                this.openChild(toParentId);
+              }
+            }
           },
           optimisticResponse: {
-            workItemUpdate: {
-              __typename: 'WorkItemUpdatePayload',
+            workItemsHierarchyReorder: {
+              __typename: 'workItemsHierarchyReorderPayload',
+              workItem: {
+                ...targetItem,
+                userPermissions: optimisticUserPermissions,
+                widgets: [
+                  {
+                    __typename: 'WorkItemWidgetHierarchy',
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                    rolledUpCountsByType: [],
+                    parent: { id: toParentId },
+                    children: [],
+                  },
+                ],
+              },
+              parentWorkItem: {
+                __typename: 'WorkItem',
+                id: toParentId,
+                userPermissions: optimisticUserPermissions,
+                confidential: this.toParent.confidential || this.parent.confidential,
+                title: toParentTitle,
+                workItemType: this.toParent.workItemType || this.parent.workItemType,
+                widgets: [
+                  {
+                    __typename: 'WorkItemWidgetHierarchy',
+                    type: 'HIERARCHY',
+                    hasChildren: true,
+                    rolledUpCountsByType: [],
+                    parent: null,
+                    children: {
+                      __typename: 'WorkItemConnection',
+                      pageInfo: {
+                        hasNextPage: false,
+                        hasPreviousPage: false,
+                        startCursor: '',
+                        endCursor: '',
+                      },
+                      count: updatedChildren.length,
+                      nodes: [...updatedChildren],
+                    },
+                  },
+                ],
+              },
               errors: [],
             },
           },
@@ -244,7 +406,7 @@ export default {
         .then(
           ({
             data: {
-              workItemUpdate: { errors },
+              workItemsHierarchyReorder: { errors },
             },
           }) => {
             if (errors?.length) {
@@ -255,7 +417,80 @@ export default {
         .catch((error) => {
           this.$emit('error', error.message);
           Sentry.captureException(error);
+          if (fromParentId !== toParentId) {
+            const { cache } = this.apolloClient;
+            addHierarchyChild({
+              cache,
+              id: fromParentId,
+              workItem: targetItem,
+              atIndex: oldIndex,
+            });
+          }
+        })
+        .finally(() => {
+          this.updateInProgress = false;
         });
+    },
+    onMove(e, originalEvent) {
+      const item = e.relatedContext.element;
+      const { clientX, clientY } = originalEvent;
+
+      // Cache current cursor position
+      this.currentClientX = clientX;
+      this.currentClientY = clientY;
+
+      // Check if current item is an Epic
+      if (
+        [WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_OBJECTIVE].includes(
+          item?.workItemType.name,
+        )
+      ) {
+        const { top, left } = originalEvent.target.getBoundingClientRect();
+
+        // Check if user has paused cursor on top of current item's boundary
+        if (clientY >= top && clientX >= left) {
+          // Wait for moment before expanding
+          this.toggleTimer = setTimeout(() => {
+            // Ensure that current cursor position is still within item's boundary
+            if (this.currentClientX === clientX && this.currentClientY === clientY) {
+              this.openChild(item.id);
+            }
+          }, 1000);
+        } else {
+          clearTimeout(this.toggleTimer);
+        }
+      }
+    },
+    onClick(event, child) {
+      if (this.isTopLevel) {
+        this.$emit('show-modal', { event, child: event.childItem || child });
+      } else {
+        // To avoid incorrect work item to be bubbled up
+        // Assign the correct child item
+        if (!event.childItem) {
+          Object.assign(event, { childItem: child });
+        }
+        this.$emit('click', event);
+      }
+    },
+    openChild(id) {
+      this.$apollo.mutate({
+        mutation: toggleHierarchyTreeChildMutation,
+        variables: {
+          id,
+          isExpanded: true,
+        },
+      });
+    },
+    handleKeyUp(e) {
+      if (e.code === ESC_KEY) {
+        this.dragCancelled = true;
+        // Sortable.js internally listens for `mouseup` event on document
+        // to register drop event, see https://github.com/SortableJS/Sortable/blob/master/src/Sortable.js#L625
+        // We need to manually trigger it to simulate cancel behaviour as VueDraggable doesn't
+        // natively support it, see https://github.com/SortableJS/Vue.Draggable/issues/968.
+        document.dispatchEvent(new Event('mouseup'));
+      }
     },
   },
 };
@@ -265,26 +500,37 @@ export default {
   <component
     :is="treeRootWrapper"
     v-bind="treeRootOptions"
+    data-testid="child-items-container"
     class="content-list"
-    :class="{ 'gl-cursor-grab sortable-container': canReorder }"
+    :class="{
+      'sortable-container gl-cursor-grab': canReorder,
+      'disabled-content': disableList,
+    }"
+    :move="onMove"
+    @start="handleDragOnStart"
     @end="handleDragOnEnd"
   >
     <work-item-link-child
       v-for="child in children"
       :key="child.id"
       :can-update="canUpdate"
-      :issuable-gid="workItemId"
+      :issuable-gid="child.id"
       :child-item="child"
       :confidential="child.confidential"
-      :work-item-type="workItemType"
+      :work-item-type="child.workItemType.name"
       :has-indirect-children="hasIndirectChildren"
       :show-labels="showLabels"
       :work-item-full-path="fullPath"
-      is-top-level
+      :show-task-weight="showTaskWeight"
+      :allowed-child-types="allowedChildTypes"
+      :is-top-level="isTopLevel"
+      :data-child-title="child.title"
+      class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-border-gray-50 !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"
-      @click="$emit('show-modal', { event: $event, child: $event.childItem || child })"
+      @error="$emit('error', $event)"
+      @click="onClick($event, child)"
     />
   </component>
 </template>

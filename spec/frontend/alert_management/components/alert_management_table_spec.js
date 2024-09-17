@@ -97,7 +97,7 @@ describe('AlertManagementTable', () => {
       });
       expect(findAlertsTable().exists()).toBe(true);
       expect(findLoader().exists()).toBe(true);
-      expect(findAlerts().at(0).classes()).not.toContain('gl-hover-bg-blue-50');
+      expect(findAlert().exists()).toBe(false);
     });
 
     it('error state', () => {
@@ -108,8 +108,8 @@ describe('AlertManagementTable', () => {
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlertsTable().text()).toContain('No alerts to display');
       expect(findLoader().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(true);
       expect(findAlert().props().variant).toBe('danger');
-      expect(findAlerts().at(0).classes()).not.toContain('gl-hover-bg-blue-50');
     });
 
     it('empty state', () => {
@@ -128,8 +128,8 @@ describe('AlertManagementTable', () => {
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlertsTable().text()).toContain('No alerts to display');
       expect(findLoader().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(true);
       expect(findAlert().props().variant).toBe('info');
-      expect(findAlerts().at(0).classes()).not.toContain('gl-hover-bg-blue-50');
     });
 
     it('has data state', () => {
@@ -140,8 +140,9 @@ describe('AlertManagementTable', () => {
       expect(findLoader().exists()).toBe(false);
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlerts()).toHaveLength(mockAlerts.length);
-      expect(findAlerts().at(0).classes()).toContain('hover:gl-bg-gray-50');
-      expect(findAlerts().at(0).classes()).not.toContain('hover:gl-border-blue-200');
+      for (let i = 0; i < mockAlerts.length; i += 1) {
+        expect(findAlerts().at(i).props().variant).toBe(null);
+      }
     });
 
     it('displays the alert ID and title as a link', () => {

@@ -65,6 +65,10 @@ class WebHookLog < ApplicationRecord
     self[:request_headers].merge('X-Gitlab-Token' => _('[REDACTED]'))
   end
 
+  def idempotency_key
+    self[:request_headers]['Idempotency-Key']
+  end
+
   def url_current?
     # URL hash hasn't been set, so we must assume there's no prior value to
     # compare to.

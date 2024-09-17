@@ -48,7 +48,7 @@ For scanning websites, use one of:
 
 For scanning APIs, use:
 
-- The [DAST API analyzer](../dast_api/index.md) for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
+- The [API security testing analyzer](../api_security_testing/index.md) for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
 
 Analyzers follow the architectural patterns described in [Secure your application](../index.md).
 Each analyzer can be configured in the pipeline using a CI template and runs the scan in a Docker container. Scans output a [DAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdast)
@@ -89,7 +89,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Analyzer configuration
 
-See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser/index.md) or [DAST API analyzer](../dast_api/index.md) for
+See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser/index.md) or [API security testing analyzer](../api_security_testing/index.md) for
 analyzer-specific configuration instructions.
 
 ### View scan results
@@ -98,9 +98,9 @@ Detected vulnerabilities appear in [merge requests](../index.md#merge-request), 
 and the [vulnerability report](../index.md#vulnerability-report).
 
 1. To see all vulnerabilities detected, either:
-    - From your project, select **Security & Compliance**, then **Vulnerability report**.
-    - From your pipeline, select the **Security** tab.
-    - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
+   - From your project, select **Security & Compliance**, then **Vulnerability report**.
+   - From your pipeline, select the **Security** tab.
+   - From the merge request, go to the **Security scanning** widget and select **Full report** tab.
 
 1. Select a DAST vulnerability's description. The following fields are examples of what a DAST analyzer may produce to aid investigation and rectification of the underlying cause. Each analyzer may output different fields.
 

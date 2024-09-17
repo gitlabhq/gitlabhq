@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectsWorker, feature_category: :system_access do
+RSpec.describe AuthorizedProjectsWorker, feature_category: :permissions do
   it_behaves_like "refreshes user's project authorizations"
 end

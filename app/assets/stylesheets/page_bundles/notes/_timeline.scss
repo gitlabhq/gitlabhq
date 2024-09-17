@@ -1,0 +1,97 @@
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &::before {
+    @include notes-media('max', map-get($grid-breakpoints, sm)) {
+      background: none;
+    }
+  }
+
+  .system-note {
+    .note-text {
+      color: var(--gl-text-color-default);
+    }
+  }
+
+  .diff-file {
+    border: 1px solid $border-color;
+    margin: 0;
+  }
+
+  &.text-file .diff-file {
+    border-bottom: 0;
+  }
+}
+
+.timeline-entry {
+  color: var(--gl-text-color-default);
+
+  &:not(.note-form).internal-note .timeline-content {
+    background-color: var(--orange-50) !important;
+  }
+
+  .timeline-entry-inner {
+    position: relative;
+  }
+
+  &:target,
+  &.target {
+    .timeline-content {
+      background-color: var(--blue-50) !important;
+    }
+
+    + .discussion-reply-holder {
+      padding-top: $gl-padding-12 !important;
+    }
+
+    &.system-note .note-body .note-text.system-note-commit-list::after {
+      background: linear-gradient(rgba(var(--blue-50), 0.1) -100px, var(--blue-50) 100%);
+    }
+  }
+
+  .controls {
+    padding-top: 10px;
+    float: right;
+  }
+}
+
+.discussion .timeline-entry {
+  margin: 0;
+  border-right: 0;
+  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
+}
+
+.issuable-discussion:not(.incident-timeline-events),
+.limited-width-notes {
+  .main-notes-list::before,
+  .timeline-entry:last-child::before {
+    @include vertical-line(15px, 15px);
+  }
+
+  .main-notes-list::before {
+    @apply gl-bg-strong;
+  }
+
+  .timeline-entry:not(.draft-note):last-child::before {
+    @apply gl-bg-default;
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-dark & {
+      @apply gl-bg-subtle;
+    }
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .gl-dark .modal-body & {
+      @apply gl-bg-strong;
+    }
+  }
+}
+
+// Timeline avatars
+// stylelint-disable-next-line gitlab/no-gl-class
+.timeline-avatar .gl-avatar-link {
+  @apply gl-bg-default;
+  border-radius: 50%;
+}

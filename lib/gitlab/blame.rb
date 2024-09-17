@@ -29,7 +29,7 @@ module Gitlab
           current_group = { commit: commit, lines: [], previous_path: previous_path, span: span, lineno: i + 1 }
         end
 
-        current_group[:lines] << (highlight ? highlighted_lines[i].html_safe : line)
+        current_group[:lines] << (highlight && highlighted_lines[i] ? highlighted_lines[i].html_safe : line)
 
         prev_sha = commit.sha
         i += 1

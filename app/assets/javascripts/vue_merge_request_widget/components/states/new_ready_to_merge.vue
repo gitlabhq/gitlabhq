@@ -37,7 +37,7 @@ export default {
 <template>
   <div class="mr-widget-body media">
     <status-icon status="success" />
-    <p class="media-body gl-mt-1 gl-mb-0! gl-font-bold gl-text-gray-900!">
+    <p class="media-body !gl-mb-0 gl-mt-1 gl-font-bold !gl-text-gray-900">
       <template v-if="canMerge">
         {{ __('Ready to merge!') }}
       </template>

@@ -1,7 +1,7 @@
 - subscribed = params[:subscribed]
 
 .top-area.adjust
-  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
+  = gl_tabs_nav({ class: 'gl-grow gl-border-0' }) do
     = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' }
     - if current_user
       = gl_tab_link_to _('Subscribed'), labels_filter_path(subscribed: 'true'), { item_active: subscribed == 'true' }

@@ -1,4 +1,6 @@
 - page_title s_('WorkItem|Work items')
 - add_page_specific_style 'page_bundles/issuable_list'
+- add_work_items_stylesheet
+- add_page_specific_style 'page_bundles/design_management'
 
-.js-work-items-list-root{ data: work_items_list_data(@group, current_user) }
+#js-work-items{ data: work_items_show_data(@group, current_user) }

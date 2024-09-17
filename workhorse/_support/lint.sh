@@ -1,10 +1,8 @@
 #!/bin/bash
 
-GO_VERSION_MAJOR_MINOR="$(go version | sed -E 's/(.+)(go1\.[0-9]+)(.+)/\2/')"
-
 # Unfortunately, workhorse fails many lint checks which we currently ignore
 #
-LINT_KNOWN_ACCEPTABLE_FILE="_support/lint_last_known_acceptable_${GO_VERSION_MAJOR_MINOR}.txt"
+LINT_KNOWN_ACCEPTABLE_FILE="_support/lint_last_known_acceptable.txt"
 LINT_KNOWN_ACCEPTABLE="$(cat ${LINT_KNOWN_ACCEPTABLE_FILE})"
 
 LINT_RESULT_FILE=$(mktemp /tmp/lint_result.XXXXXX)

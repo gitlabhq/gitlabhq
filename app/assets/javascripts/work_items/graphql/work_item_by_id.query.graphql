@@ -1,0 +1,7 @@
+#import "./work_item.fragment.graphql"
+
+query workItemById($id: WorkItemID!) {
+  workItem(id: $id) {
+    ...WorkItem
+  }
+}

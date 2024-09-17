@@ -2,7 +2,7 @@
 
 exports[`StatisticsList displays the counts data with labels 1`] = `
 <div
-  class="gl-display-flex gl-flex-wrap gl-gap-6 gl-mb-6"
+  class="gl-flex gl-flex-wrap gl-gap-6 gl-mb-6"
 >
   <div>
     <gl-single-stat-stub

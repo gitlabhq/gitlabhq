@@ -66,6 +66,8 @@ You can leave the file blank for now, and [configure it](../work_with_agent.md#c
 
 ### Register the agent with GitLab
 
+#### Option 1: Agent connects to GitLab
+
 You can create a new agent record directly from the GitLab UI.
 The agent can be registered without creating an agent configuration file.
 
@@ -88,6 +90,49 @@ You must register an agent before you can install the agent in your cluster. To 
 1. Copy the command under **Recommended installation method**. You need it when you use
    the one-liner installation method to install the agent in your cluster.
 
+#### Option 2: GitLab connects to agent (receptive agent)
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+NOTE:
+The GitLab Agent Helm Chart release does not fully support mTLS authentication.
+You should authenticate with the JWT method instead.
+Support for mTLS is tracked in
+[issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
+
+[Receptive agents](../index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
+cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
+
+1. Follow the steps in option 1 to register an agent in your cluster.
+   Save the agent token and install command for later, but don't install the agent yet.
+1. Prepare an authentication method.
+
+   The GitLab-to-agent connection can be cleartext gRPC (`grpc://`) or encrypted gRPC (`grpcs://`, recommended).
+   GitLab can authenticate to the agent in your cluster using:
+   - A JWT token. Available in both `grpc://` and `grpcs://` configurations. You don't need to generate client certificates with this method.
+1. Add a URL configuration to the agent with the [cluster agents API](../../../../api/cluster_agents.md#create-an-agent-url-configuration). If you delete the URL configuration, the receptive agent becomes an ordinary agent. You can associate a receptive agent with only one URL configuration at a time.
+
+1. Install the agent into the cluster. Use the command you copied when you registered the agent, but remove the `--set config.kasAddress=...` parameter.
+
+   JWT token authentication example. Note the added `config.receptive.enabled=true` and `config.api.jwt` settings:
+
+   ```shell
+   helm repo add gitlab https://charts.gitlab.io
+   helm repo update
+   helm upgrade --install my-agent gitlab/gitlab-agent \
+    --namespace ns \
+    --create-namespace \
+    --set config.token=.... \
+    --set config.receptive.enabled=true \
+    --set config.api.jwtPublicKey=<public_key from the response>
+   ```
+
+It might take up to 10 minutes for GitLab to start trying to establish a connection to the new agent.
+
 ### Install the agent in the cluster
 
 GitLab recommends using Helm to install the agent.
@@ -99,6 +144,8 @@ in your cluster. You can either:
 - Or, follow the [advanced installation method](#advanced-installation-method).
 
 If you do not know which one to choose, we recommend starting with Helm.
+
+To install a receptive agent, follow the steps in [GitLab connects to agent (receptive agent)](#option-2-gitlab-connects-to-agent-receptive-agent).
 
 NOTE:
 To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
@@ -242,7 +289,7 @@ To update the agent to the latest version, you can run:
 ```shell
 helm repo update
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
-  --namespace gitlab-agent \
+  --namespace gitlab-agent
 ```
 
 To set a specific version, you can override the `image.tag` value. For example, to install version `v14.9.1`, run:

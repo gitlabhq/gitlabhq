@@ -22,7 +22,7 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
   shared_examples 'time limits pipeline cancellation' do
     context 'with old pipelines' do
-      let(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 5.days.ago) }
+      let(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 8.days.ago) }
 
       before do
         create(:ci_build, :interruptible, :pending, pipeline: old_pipeline)
@@ -248,6 +248,22 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
               end
             end
           end
+        end
+
+        it 'cancels the parent first' do
+          create(:ci_build, :interruptible, :running, pipeline: child_pipeline)
+
+          expect(Ci::CancelPipelineService)
+            .to receive(:new).with(a_hash_including({ pipeline: prev_pipeline }))
+            .and_call_original
+            .ordered
+
+          expect(Ci::CancelPipelineService)
+            .to receive(:new).with(a_hash_including({ pipeline: child_pipeline }))
+            .and_call_original
+            .ordered
+
+          execute
         end
       end
 

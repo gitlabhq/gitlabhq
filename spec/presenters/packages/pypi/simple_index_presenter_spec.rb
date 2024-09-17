@@ -38,6 +38,10 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
         end
       end
 
+      it 'strips leading whitespace from the output' do
+        expect(presenter.first).not_to eq(' ')
+      end
+
       it 'avoids n+1 database queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           described_class.new(project.packages.reload, project_or_group).body

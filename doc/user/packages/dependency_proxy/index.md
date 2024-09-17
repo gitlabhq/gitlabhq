@@ -82,7 +82,7 @@ NOTE:
 For example, to manually sign in:
 
 ```shell
-docker login gitlab.example.com --username my_username --password my_password
+echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username my_username --password-stdin
 ```
 
 You can authenticate using:
@@ -170,7 +170,7 @@ services:
 build:
   image: docker:20.10.16
   before_script:
-    - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
+    - echo "$CI_DEPENDENCY_PROXY_PASSWORD" | docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER --password-stdin
   script:
     - docker build -t test .
 ```
@@ -349,7 +349,7 @@ Make sure you are using the expected authentication mechanism.
 ### `Not Found` or `404` error when pulling image
 
 Errors like these might indicate that the user running the job doesn't have
-a minimum of the Guest role in the Dependency Proxy group:
+a minimum of the Guest role for the Dependency Proxy group:
 
 - ```plaintext
   ERROR: gitlab.example.com:443/group1/dependency_proxy/containers/alpine:latest: not found

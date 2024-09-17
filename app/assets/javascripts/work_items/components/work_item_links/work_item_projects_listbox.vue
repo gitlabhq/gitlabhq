@@ -228,7 +228,7 @@ export default {
           :project-name="item.text"
         />
         <span>
-          <span class="gl-block gl-mr-2"> {{ item.text }} </span>
+          <span class="gl-mr-2 gl-block"> {{ item.text }} </span>
           <span class="gl-block gl-text-secondary"> {{ item.namespace }} </span>
         </span>
       </div>

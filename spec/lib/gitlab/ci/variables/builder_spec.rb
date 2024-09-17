@@ -27,149 +27,160 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     )
   end
 
+  let(:predefined_project_vars) do
+    [
+      { key: 'CI',
+        value: 'true' },
+      { key: 'GITLAB_CI',
+        value: 'true' },
+      { key: 'CI_SERVER_FQDN',
+        value: Gitlab.config.gitlab_ci.server_fqdn },
+      { key: 'CI_SERVER_URL',
+        value: Gitlab.config.gitlab.url },
+      { key: 'CI_SERVER_HOST',
+        value: Gitlab.config.gitlab.host },
+      { key: 'CI_SERVER_PORT',
+        value: Gitlab.config.gitlab.port.to_s },
+      { key: 'CI_SERVER_PROTOCOL',
+        value: Gitlab.config.gitlab.protocol },
+      { key: 'CI_SERVER_SHELL_SSH_HOST',
+        value: Gitlab.config.gitlab_shell.ssh_host.to_s },
+      { key: 'CI_SERVER_SHELL_SSH_PORT',
+        value: Gitlab.config.gitlab_shell.ssh_port.to_s },
+      { key: 'CI_SERVER_NAME',
+        value: 'GitLab' },
+      { key: 'CI_SERVER_VERSION',
+        value: Gitlab::VERSION },
+      { key: 'CI_SERVER_VERSION_MAJOR',
+        value: Gitlab.version_info.major.to_s },
+      { key: 'CI_SERVER_VERSION_MINOR',
+        value: Gitlab.version_info.minor.to_s },
+      { key: 'CI_SERVER_VERSION_PATCH',
+        value: Gitlab.version_info.patch.to_s },
+      { key: 'CI_SERVER_REVISION',
+        value: Gitlab.revision },
+      { key: 'GITLAB_FEATURES',
+        value: project.licensed_features.join(',') },
+      { key: 'CI_PROJECT_ID',
+        value: project.id.to_s },
+      { key: 'CI_PROJECT_NAME',
+        value: project.path },
+      { key: 'CI_PROJECT_TITLE',
+        value: project.title },
+      { key: 'CI_PROJECT_DESCRIPTION',
+        value: project.description },
+      { key: 'CI_PROJECT_PATH',
+        value: project.full_path },
+      { key: 'CI_PROJECT_PATH_SLUG',
+        value: project.full_path_slug },
+      { key: 'CI_PROJECT_NAMESPACE',
+        value: project.namespace.full_path },
+      { key: 'CI_PROJECT_NAMESPACE_ID',
+        value: project.namespace.id.to_s },
+      { key: 'CI_PROJECT_ROOT_NAMESPACE',
+        value: project.namespace.root_ancestor.path },
+      { key: 'CI_PROJECT_URL',
+        value: project.web_url },
+      { key: 'CI_PROJECT_VISIBILITY',
+        value: "private" },
+      { key: 'CI_PROJECT_REPOSITORY_LANGUAGES',
+        value: project.repository_languages.map(&:name).join(',').downcase },
+      { key: 'CI_PROJECT_CLASSIFICATION_LABEL',
+        value: project.external_authorization_classification_label },
+      { key: 'CI_DEFAULT_BRANCH',
+        value: project.default_branch },
+      { key: 'CI_CONFIG_PATH',
+        value: project.ci_config_path_or_default },
+      { key: 'CI_PAGES_DOMAIN',
+        value: Gitlab.config.pages.host },
+      { key: 'CI_PAGES_URL',
+        value: Gitlab::Pages::UrlBuilder.new(project).pages_url },
+      { key: 'CI_API_V4_URL',
+        value: API::Helpers::Version.new('v4').root_url },
+      { key: 'CI_API_GRAPHQL_URL',
+        value: Gitlab::Routing.url_helpers.api_graphql_url },
+      { key: 'CI_TEMPLATE_REGISTRY_HOST',
+        value: template_registry_host }
+    ]
+  end
+
+  let(:predefined_user_vars) do
+    [
+      { key: 'GITLAB_USER_ID',
+        value: user.id.to_s },
+      { key: 'GITLAB_USER_EMAIL',
+        value: user.email },
+      { key: 'GITLAB_USER_LOGIN',
+        value: user.username },
+      { key: 'GITLAB_USER_NAME',
+        value: user.name }
+    ]
+  end
+
   let(:builder) { described_class.new(pipeline) }
 
-  #
-  # When removing ci_variables_optimization_for_yaml_and_node, move this to a normal `describe` block and
-  # handle the next two describe blocks.
-  #
-  shared_context '#scoped_variables' do
+  describe '#scoped_variables' do
     let(:environment_name) { job.expanded_environment_name }
     let(:dependencies) { true }
     let(:predefined_variables) do
-      [
-        { key: 'CI_JOB_NAME',
-          value: 'rspec:test 1' },
-        { key: 'CI_JOB_NAME_SLUG',
-          value: 'rspec-test-1' },
-        { key: 'CI_JOB_STAGE',
-          value: job.stage_name },
-        { key: 'CI_NODE_TOTAL',
-          value: '1' },
-        { key: 'CI_ENVIRONMENT_NAME',
-          value: 'review/master' },
-        { key: 'CI_ENVIRONMENT_ACTION',
-          value: 'prepare' },
-        { key: 'CI_ENVIRONMENT_TIER',
-          value: 'testing' },
-        { key: 'CI_ENVIRONMENT_URL',
-          value: 'https://gitlab.com' },
-        { key: 'CI',
-          value: 'true' },
-        { key: 'GITLAB_CI',
-          value: 'true' },
-        { key: 'CI_SERVER_FQDN',
-          value: Gitlab.config.gitlab_ci.server_fqdn },
-        { key: 'CI_SERVER_URL',
-          value: Gitlab.config.gitlab.url },
-        { key: 'CI_SERVER_HOST',
-          value: Gitlab.config.gitlab.host },
-        { key: 'CI_SERVER_PORT',
-          value: Gitlab.config.gitlab.port.to_s },
-        { key: 'CI_SERVER_PROTOCOL',
-          value: Gitlab.config.gitlab.protocol },
-        { key: 'CI_SERVER_SHELL_SSH_HOST',
-          value: Gitlab.config.gitlab_shell.ssh_host.to_s },
-        { key: 'CI_SERVER_SHELL_SSH_PORT',
-          value: Gitlab.config.gitlab_shell.ssh_port.to_s },
-        { key: 'CI_SERVER_NAME',
-          value: 'GitLab' },
-        { key: 'CI_SERVER_VERSION',
-          value: Gitlab::VERSION },
-        { key: 'CI_SERVER_VERSION_MAJOR',
-          value: Gitlab.version_info.major.to_s },
-        { key: 'CI_SERVER_VERSION_MINOR',
-          value: Gitlab.version_info.minor.to_s },
-        { key: 'CI_SERVER_VERSION_PATCH',
-          value: Gitlab.version_info.patch.to_s },
-        { key: 'CI_SERVER_REVISION',
-          value: Gitlab.revision },
-        { key: 'GITLAB_FEATURES',
-          value: project.licensed_features.join(',') },
-        { key: 'CI_PROJECT_ID',
-          value: project.id.to_s },
-        { key: 'CI_PROJECT_NAME',
-          value: project.path },
-        { key: 'CI_PROJECT_TITLE',
-          value: project.title },
-        { key: 'CI_PROJECT_DESCRIPTION',
-          value: project.description },
-        { key: 'CI_PROJECT_PATH',
-          value: project.full_path },
-        { key: 'CI_PROJECT_PATH_SLUG',
-          value: project.full_path_slug },
-        { key: 'CI_PROJECT_NAMESPACE',
-          value: project.namespace.full_path },
-        { key: 'CI_PROJECT_NAMESPACE_ID',
-          value: project.namespace.id.to_s },
-        { key: 'CI_PROJECT_ROOT_NAMESPACE',
-          value: project.namespace.root_ancestor.path },
-        { key: 'CI_PROJECT_URL',
-          value: project.web_url },
-        { key: 'CI_PROJECT_VISIBILITY',
-          value: "private" },
-        { key: 'CI_PROJECT_REPOSITORY_LANGUAGES',
-          value: project.repository_languages.map(&:name).join(',').downcase },
-        { key: 'CI_PROJECT_CLASSIFICATION_LABEL',
-          value: project.external_authorization_classification_label },
-        { key: 'CI_DEFAULT_BRANCH',
-          value: project.default_branch },
-        { key: 'CI_CONFIG_PATH',
-          value: project.ci_config_path_or_default },
-        { key: 'CI_PAGES_DOMAIN',
-          value: Gitlab.config.pages.host },
-        { key: 'CI_PAGES_URL',
-          value: Gitlab::Pages::UrlBuilder.new(project).pages_url },
-        { key: 'CI_API_V4_URL',
-          value: API::Helpers::Version.new('v4').root_url },
-        { key: 'CI_API_GRAPHQL_URL',
-          value: Gitlab::Routing.url_helpers.api_graphql_url },
-        { key: 'CI_TEMPLATE_REGISTRY_HOST',
-          value: template_registry_host },
-        { key: 'CI_PIPELINE_IID',
-          value: pipeline.iid.to_s },
-        { key: 'CI_PIPELINE_SOURCE',
-          value: pipeline.source },
-        { key: 'CI_PIPELINE_CREATED_AT',
-          value: pipeline.created_at.iso8601 },
-        { key: 'CI_PIPELINE_NAME',
-          value: pipeline.name },
-        { key: 'CI_COMMIT_SHA',
-          value: job.sha },
-        { key: 'CI_COMMIT_SHORT_SHA',
-          value: job.short_sha },
-        { key: 'CI_COMMIT_BEFORE_SHA',
-          value: job.before_sha },
-        { key: 'CI_COMMIT_REF_NAME',
-          value: job.ref },
-        { key: 'CI_COMMIT_REF_SLUG',
-          value: job.ref_slug },
-        { key: 'CI_COMMIT_BRANCH',
-          value: job.ref },
-        { key: 'CI_COMMIT_MESSAGE',
-          value: pipeline.git_commit_message },
-        { key: 'CI_COMMIT_TITLE',
-          value: pipeline.git_commit_title },
-        { key: 'CI_COMMIT_DESCRIPTION',
-          value: pipeline.git_commit_description },
-        { key: 'CI_COMMIT_REF_PROTECTED',
-          value: (!!pipeline.protected_ref?).to_s },
-        { key: 'CI_COMMIT_TIMESTAMP',
-          value: pipeline.git_commit_timestamp },
-        { key: 'CI_COMMIT_AUTHOR',
-          value: pipeline.git_author_full_text },
-        { key: 'YAML_VARIABLE',
-          value: 'value' },
-        { key: 'GITLAB_USER_ID',
-          value: user.id.to_s },
-        { key: 'GITLAB_USER_EMAIL',
-          value: user.email },
-        { key: 'GITLAB_USER_LOGIN',
-          value: user.username },
-        { key: 'GITLAB_USER_NAME',
-          value: user.name }
-      ].map { |var| var.merge(public: true, masked: false) }
+      (
+        [
+          { key: 'CI_JOB_NAME',
+            value: 'rspec:test 1' },
+          { key: 'CI_JOB_NAME_SLUG',
+            value: 'rspec-test-1' },
+          { key: 'CI_JOB_STAGE',
+            value: job.stage_name },
+          { key: 'CI_NODE_TOTAL',
+            value: '1' },
+          { key: 'CI_ENVIRONMENT_NAME',
+            value: 'review/master' },
+          { key: 'CI_ENVIRONMENT_ACTION',
+            value: 'prepare' },
+          { key: 'CI_ENVIRONMENT_TIER',
+            value: 'testing' },
+          { key: 'CI_ENVIRONMENT_URL',
+            value: 'https://gitlab.com' }
+        ] + predefined_project_vars + [
+          { key: 'CI_PIPELINE_IID',
+            value: pipeline.iid.to_s },
+          { key: 'CI_PIPELINE_SOURCE',
+            value: pipeline.source },
+          { key: 'CI_PIPELINE_CREATED_AT',
+            value: pipeline.created_at.iso8601 },
+          { key: 'CI_PIPELINE_NAME',
+            value: pipeline.name },
+          { key: 'CI_COMMIT_SHA',
+            value: job.sha },
+          { key: 'CI_COMMIT_SHORT_SHA',
+            value: job.short_sha },
+          { key: 'CI_COMMIT_BEFORE_SHA',
+            value: job.before_sha },
+          { key: 'CI_COMMIT_REF_NAME',
+            value: job.ref },
+          { key: 'CI_COMMIT_REF_SLUG',
+            value: job.ref_slug },
+          { key: 'CI_COMMIT_BRANCH',
+            value: job.ref },
+          { key: 'CI_COMMIT_MESSAGE',
+            value: pipeline.git_commit_message },
+          { key: 'CI_COMMIT_TITLE',
+            value: pipeline.git_commit_title },
+          { key: 'CI_COMMIT_DESCRIPTION',
+            value: pipeline.git_commit_description },
+          { key: 'CI_COMMIT_REF_PROTECTED',
+            value: (!!pipeline.protected_ref?).to_s },
+          { key: 'CI_COMMIT_TIMESTAMP',
+            value: pipeline.git_commit_timestamp },
+          { key: 'CI_COMMIT_AUTHOR',
+            value: pipeline.git_author_full_text },
+          { key: 'YAML_VARIABLE',
+            value: 'value' }
+        ] + predefined_user_vars
+      ).map { |var| var.merge(public: true, masked: false) }
     end
+
+    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
 
     it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
@@ -269,20 +280,286 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         end
       end
     end
+
+    context 'when environment tier and url is not passed' do
+      let(:job2) do
+        create(:ci_build,
+          name: 'rspec:test 2',
+          pipeline: pipeline,
+          user: user,
+          environment: 'test/$CI_COMMIT_REF_NAME',
+          options: {
+            environment: {
+              name: 'test/$CI_COMMIT_REF_NAME',
+              action: 'prepare'
+            }
+          }
+        )
+      end
+
+      subject { builder.scoped_variables(job2, environment: environment_name, dependencies: dependencies) }
+
+      it 'returns CI_ENVIRONMENT_TIER as nil and not return CI_ENVIRONMENT_URL' do
+        expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => nil)
+        expect(subject.to_hash).not_to have_key('CI_ENVIRONMENT_URL')
+      end
+
+      context 'when there is an existing environment with the same name' do
+        let!(:environment) do
+          create(:environment, name: 'test/master', external_url: 'https://hello.test', project: project)
+        end
+
+        it 'fetches CI_ENVIRONMENT_TIER and CI_ENVIRONMENT_URL from an old environment' do
+          expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => 'testing')
+          expect(subject.to_hash).to include('CI_ENVIRONMENT_URL' => 'https://hello.test')
+        end
+      end
+    end
   end
 
-  describe '#scoped_variables without job_attributes' do
-    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+  describe '#scoped_variables_for_pipeline_seed' do
+    let(:environment_name) { 'test/master' }
+    let(:kubernetes_namespace) { nil }
+    let(:extra_attributes) { {} }
+    let(:trigger_request) { nil }
+    let(:yaml_variables) { [{ key: 'YAML_VARIABLE', value: 'value' }] }
 
-    it_behaves_like '#scoped_variables'
-  end
+    let(:predefined_variables) do
+      (
+        [
+          { key: 'CI_JOB_NAME',
+            value: 'rspec:test 2' },
+          { key: 'CI_JOB_NAME_SLUG',
+            value: 'rspec-test-2' },
+          { key: 'CI_JOB_STAGE',
+            value: 'test' },
+          { key: 'CI_NODE_TOTAL',
+            value: '1' },
+          { key: 'CI_ENVIRONMENT_NAME',
+            value: 'test/master' },
+          { key: 'CI_ENVIRONMENT_ACTION',
+            value: 'prepare' },
+          { key: 'CI_ENVIRONMENT_TIER',
+            value: 'testing' },
+          { key: 'CI_ENVIRONMENT_URL',
+            value: 'https://gitlab.com' }
+        ] + predefined_project_vars + [
+          { key: 'CI_PIPELINE_IID',
+            value: pipeline.iid.to_s },
+          { key: 'CI_PIPELINE_SOURCE',
+            value: pipeline.source },
+          { key: 'CI_PIPELINE_CREATED_AT',
+            value: nil },
+          { key: 'CI_PIPELINE_NAME',
+            value: pipeline.name },
+          { key: 'CI_COMMIT_SHA',
+            value: pipeline.sha },
+          { key: 'CI_COMMIT_SHORT_SHA',
+            value: pipeline.short_sha },
+          { key: 'CI_COMMIT_BEFORE_SHA',
+            value: pipeline.before_sha },
+          { key: 'CI_COMMIT_REF_NAME',
+            value: pipeline.ref },
+          { key: 'CI_COMMIT_REF_SLUG',
+            value: pipeline.ref },
+          { key: 'CI_COMMIT_BRANCH',
+            value: pipeline.ref },
+          { key: 'CI_COMMIT_MESSAGE',
+            value: pipeline.git_commit_message },
+          { key: 'CI_COMMIT_TITLE',
+            value: pipeline.git_commit_title },
+          { key: 'CI_COMMIT_DESCRIPTION',
+            value: pipeline.git_commit_description },
+          { key: 'CI_COMMIT_REF_PROTECTED',
+            value: (!!pipeline.protected_ref?).to_s },
+          { key: 'CI_COMMIT_TIMESTAMP',
+            value: pipeline.git_commit_timestamp },
+          { key: 'CI_COMMIT_AUTHOR',
+            value: pipeline.git_author_full_text },
+          { key: 'YAML_VARIABLE',
+            value: 'value' }
+        ] + predefined_user_vars
+      ).map { |var| var.merge(public: true, masked: false) }
+    end
 
-  describe '#scoped_variables with job_attributes' do
-    let(:job_attributes) { { yaml_variables: job.yaml_variables, options: job.options } }
+    let(:pipeline) { build(:ci_pipeline, project: project) }
 
-    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies, job_attributes: job_attributes) }
+    let(:job_attr) do
+      {
+        name: 'rspec:test 2',
+        stage: 'test',
+        yaml_variables: yaml_variables,
+        options: {
+          environment: {
+            name: 'review/$CI_COMMIT_REF_NAME',
+            action: 'prepare',
+            deployment_tier: 'testing',
+            url: 'https://gitlab.com'
+          }
+        },
+        **extra_attributes
+      }
+    end
 
-    it_behaves_like '#scoped_variables'
+    subject do
+      builder.scoped_variables_for_pipeline_seed(
+        job_attr,
+        environment: environment_name,
+        kubernetes_namespace: kubernetes_namespace,
+        user: user,
+        trigger_request: trigger_request
+      )
+    end
+
+    it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
+
+    it { expect(subject.to_runner_variables).to eq(predefined_variables) }
+
+    context 'variables ordering' do
+      def var(name, value)
+        { key: name, value: value.to_s, public: true, masked: false }
+      end
+
+      let(:yaml_variables) { [var('G', 7), var('H', 7)] }
+
+      before do
+        pipeline_variables_builder = double(
+          ::Gitlab::Ci::Variables::Builder::Pipeline,
+          predefined_variables: [var('C', 3), var('D', 3)]
+        )
+
+        allow(builder).to receive(:predefined_variables_from_job_attr) { [var('A', 1), var('B', 1)] }
+        allow(pipeline.project).to receive(:predefined_variables) { [var('B', 2), var('C', 2)] }
+        allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
+        allow(pipeline).to receive(:predefined_variables) { [var('C', 3), var('D', 3)] }
+        allow(builder).to receive(:kubernetes_variables) { [var('E', 5), var('F', 5)] }
+        allow(builder).to receive(:user_variables) { [var('H', 8), var('I', 8)] }
+        allow(builder).to receive(:secret_instance_variables) { [var('J', 10), var('K', 10)] }
+        allow(builder).to receive(:secret_group_variables) { [var('K', 11), var('L', 11)] }
+        allow(builder).to receive(:secret_project_variables) { [var('L', 12), var('M', 12)] }
+        allow(pipeline).to receive(:variables) { [var('M', 13), var('N', 13)] }
+        allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('N', 14), var('O', 14)]) }
+        allow(builder).to receive(:release_variables) { [var('P', 15), var('Q', 15)] }
+      end
+
+      it 'returns variables in order depending on resource hierarchy' do
+        expect(subject.to_runner_variables).to eq(
+          [var('A', 1), var('B', 1),
+           var('B', 2), var('C', 2),
+           var('C', 3), var('D', 3),
+           var('E', 5), var('F', 5),
+           var('G', 7), var('H', 7),
+           var('H', 8), var('I', 8),
+           var('J', 10), var('K', 10),
+           var('K', 11), var('L', 11),
+           var('L', 12), var('M', 12),
+           var('M', 13), var('N', 13),
+           var('N', 14), var('O', 14),
+           var('P', 15), var('Q', 15)])
+      end
+
+      it 'overrides duplicate keys depending on resource hierarchy' do
+        expect(subject.to_hash).to match(
+          'A' => '1', 'B' => '2',
+          'C' => '3', 'D' => '3',
+          'E' => '5', 'F' => '5',
+          'G' => '7', 'H' => '8',
+          'I' => '8', 'J' => '10',
+          'K' => '11', 'L' => '12',
+          'M' => '13', 'N' => '14',
+          'O' => '14', 'P' => '15',
+          'Q' => '15')
+      end
+    end
+
+    context 'with schedule variables' do
+      let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
+      let_it_be(:schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: schedule) }
+
+      before do
+        pipeline.update!(pipeline_schedule_id: schedule.id)
+      end
+
+      it 'includes schedule variables' do
+        expect(subject.to_runner_variables)
+          .to include(a_hash_including(key: schedule_variable.key, value: schedule_variable.value))
+      end
+    end
+
+    context 'with release variables' do
+      let(:release_description_key) { 'CI_RELEASE_DESCRIPTION' }
+
+      let_it_be(:tag) { project.repository.tags.first }
+      let_it_be(:release) { create(:release, tag: tag.name, project: project) }
+      let_it_be(:pipeline) { build(:ci_pipeline, project: project, tag: true, ref: tag.name) }
+
+      it 'includes release variables' do
+        expect(subject.to_hash).to include(release_description_key => release.description)
+      end
+
+      context 'when there is no release' do
+        let_it_be(:pipeline) { build(:ci_pipeline, project: project, tag: false, ref: 'master') }
+        let(:release) { nil }
+
+        it 'does not include release variables' do
+          expect(subject.to_hash).not_to have_key(release_description_key)
+        end
+      end
+    end
+
+    ::Ci::Processable::ACTIONABLE_WHEN.each do |when_attr|
+      context "when job is #{when_attr}" do
+        let(:extra_attributes) { { when: when_attr } }
+
+        it 'includes CI_JOB_MANUAL as true' do
+          expect(subject.to_hash).to include('CI_JOB_MANUAL' => 'true')
+        end
+      end
+    end
+
+    context 'when pipeline has trigger request' do
+      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+
+      it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+        expect(subject.to_hash).to include(
+          'CI_PIPELINE_TRIGGERED' => 'true',
+          'CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token
+        )
+      end
+    end
+
+    context 'when environment tier and url are not passed' do
+      let(:job_attr) do
+        {
+          name: 'rspec:test 2',
+          stage: 'test',
+          yaml_variables: yaml_variables,
+          options: {
+            environment: {
+              name: 'test/$CI_COMMIT_REF_NAME',
+              action: 'prepare'
+            }
+          },
+          **extra_attributes
+        }
+      end
+
+      it 'returns CI_ENVIRONMENT_TIER and CI_ENVIRONMENT_URL as nil' do
+        expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => nil)
+        expect(subject.to_hash).to include('CI_ENVIRONMENT_URL' => nil)
+      end
+
+      context 'when there is an existing environment with the same name' do
+        let!(:environment) do
+          create(:environment, name: 'test/master', external_url: 'https://hello.test', project: project)
+        end
+
+        it 'fetches CI_ENVIRONMENT_TIER and CI_ENVIRONMENT_URL from an old environment' do
+          expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => 'testing')
+          expect(subject.to_hash).to include('CI_ENVIRONMENT_URL' => 'https://hello.test')
+        end
+      end
+    end
   end
 
   describe '#user_variables' do
@@ -312,8 +589,15 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     let(:service) { double(execute: template) }
     let(:template) { double(to_yaml: 'example-kubeconfig', valid?: template_valid) }
     let(:template_valid) { true }
+    let(:environment) { nil }
 
-    subject { builder.kubernetes_variables(environment: nil, job: job) }
+    subject(:kubernetes_variables) do
+      builder.kubernetes_variables(
+        environment: environment,
+        token: -> { job.token },
+        kubernetes_namespace: -> { job.expanded_kubernetes_namespace }
+      )
+    end
 
     before do
       allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: anything).and_return(service)
@@ -333,24 +617,28 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       it { is_expected.not_to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
     end
 
-    it 'includes #deployment_variables and merges the KUBECONFIG values', :aggregate_failures do
-      expect(builder).to receive(:deployment_variables).and_return(
-        [
-          { key: 'KUBECONFIG', value: 'deployment-kubeconfig' },
-          { key: 'OTHER', value: 'some value' }
-        ])
-      expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
-      expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
-      expect(subject['OTHER'].value).to eq('some value')
-    end
-
     context 'when environment is not nil' do
-      subject { builder.kubernetes_variables(environment: 'production', job: job) }
+      let(:environment) { 'production' }
 
       it 'passes the environment when generating the KUBECONFIG' do
         expect(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: 'production')
 
         subject
+      end
+
+      it 'includes #deployment_variables and merges the KUBECONFIG values', :aggregate_failures do
+        allow(pipeline.project).to receive(:deployment_variables)
+        expect(pipeline.project).to receive(:deployment_variables)
+          .with(environment: environment, kubernetes_namespace: job.expanded_kubernetes_namespace)
+          .and_return(
+            [
+              { key: 'KUBECONFIG', value: 'deployment-kubeconfig' },
+              { key: 'OTHER', value: 'some value' }
+            ])
+
+        expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
+        expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
+        expect(subject['OTHER'].value).to eq('some value')
       end
     end
   end
@@ -358,18 +646,19 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   describe '#deployment_variables' do
     let(:environment) { 'production' }
     let(:kubernetes_namespace) { 'namespace' }
-    let(:project_variables) { double }
+    let(:project_deployment_variables) { double }
 
-    subject { builder.deployment_variables(environment: environment, job: job) }
+    subject(:deployment_variables) do
+      builder.deployment_variables(environment: environment, kubernetes_namespace: -> { kubernetes_namespace })
+    end
 
     before do
-      allow(job).to receive(:expanded_kubernetes_namespace)
-        .and_return(kubernetes_namespace)
-
-      allow(project).to receive(:deployment_variables)
+      allow(pipeline.project).to receive(:deployment_variables)
         .with(environment: environment, kubernetes_namespace: kubernetes_namespace)
-        .and_return(project_variables)
+        .and_return(project_deployment_variables)
     end
+
+    it { is_expected.to eq(project_deployment_variables) }
 
     context 'environment is nil' do
       let(:environment) { nil }

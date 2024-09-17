@@ -90,15 +90,18 @@ export default {
     },
     canEdit: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     canAwardEmoji: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     canDelete: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     canResolve: {
       type: Boolean,

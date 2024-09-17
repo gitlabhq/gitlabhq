@@ -159,10 +159,17 @@ table.pipeline-project-metrics tr td {
     }
 
     .description {
+      z-index: 1;
+      position: relative;
+
       p {
         @include str-truncated;
 
         max-width: 100%;
+      }
+
+      mark {
+        @include str-highlighted;
       }
     }
 

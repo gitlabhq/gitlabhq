@@ -10,5 +10,5 @@ Automate with GitLab and integrate with external applications.
 
 | | | |
 |--|--|--|
-| [**Integrate with GitLab**](../integration/index.md) **{chevron-right}**<br><br> Projects, issues, authentication, security providers. | [**Webhooks**](../user/project/integrations/webhooks.md) **{chevron-right}**<br><br> Custom HTTP callbacks, used to send events. | [**REST API**](rest/index.md) **{chevron-right}**<br><br> Programmatic interaction with GitLab. |
-| [**GraphQL API**](graphql/index.md) **{chevron-right}**<br><br> Programmatic interaction with GitLab. | [**OAuth 2.0 identity provider API**](oauth2.md) **{chevron-right}**<br><br> Third-party authorization to GitLab. | [**Editor and IDE extensions**](../editor_extensions/index.md) **{chevron-right}**<br><br> Visual Studio Code, JetBrains, Neovim, GitLab CLI. |
+| [**Integrate with GitLab**](../integration/index.md)<br>Projects, issues, authentication, security providers. | [**Webhooks**](../user/project/integrations/webhooks.md)<br>Custom HTTP callbacks, used to send events. | [**REST API**](rest/index.md)<br>Programmatic interaction with GitLab. |
+| [**GraphQL API**](graphql/index.md)<br>Programmatic interaction with GitLab. | [**OAuth 2.0 identity provider API**](oauth2.md)<br>Third-party authorization to GitLab. | [**Editor and IDE extensions**](../editor_extensions/index.md)<br>Visual Studio Code, JetBrains, Neovim, GitLab CLI. |

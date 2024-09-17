@@ -1,0 +1,8 @@
+%table
+  %thead.gl-sr-only
+    %tr
+      - column_titles.each do |title|
+        %th= title
+  %tbody
+    - diff_hunks.each do |diff_hunk|
+      = render hunk_view(diff_hunk)

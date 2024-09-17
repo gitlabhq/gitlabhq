@@ -63,6 +63,6 @@ run_timed_command "webpack-compare-reports --job ${CI_JOB_ID} --to-file ./bundle
 
 # Execute danger
 danger_id=$(echo -n "${DANGER_GITLAB_API_TOKEN}" | md5sum | awk '{print $1}' | cut -c5-10)
-run_timed_command "danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}"
+run_timed_command "bundle exec danger --dangerfile=danger/Dangerfile-bundle_size --fail-on-errors=true --verbose --danger_id=bundle-size-review-${danger_id}"
 
 exit "0"

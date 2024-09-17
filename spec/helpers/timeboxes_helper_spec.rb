@@ -65,6 +65,20 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
     end
   end
 
+  describe '#milestone_releases_tooltip_list' do
+    let_it_be(:project) { milestone_upcoming.project }
+
+    it 'returns comma separated list of the names of supplied releases and adds the more count when defined' do
+      test_releases = create_list(:release, 3, project: project, milestones: [milestone_upcoming], released_at: '2022-01-01T18:00:00Z')
+
+      releases_list_text = test_releases.map(&:name).join(', ')
+
+      expect(helper.milestone_releases_tooltip_list(test_releases)).to eq(releases_list_text)
+
+      expect(helper.milestone_releases_tooltip_list(test_releases, 7)).to eq("#{releases_list_text}, and 7 more")
+    end
+  end
+
   describe '#milestone_status_string' do
     where(:milestone, :status) do
       lazy { milestone_expired }            | 'Expired'
@@ -84,8 +98,8 @@ RSpec.describe TimeboxesHelper, feature_category: :team_planning do
   describe '#milestone_badge_variant' do
     where(:milestone, :variant) do
       lazy { milestone_expired }            | :warning
-      lazy { milestone_closed }             | :danger
-      lazy { milestone_closed_and_expired } | :danger
+      lazy { milestone_closed }             | :info
+      lazy { milestone_closed_and_expired } | :info
       lazy { milestone_upcoming }           | :neutral
       lazy { milestone_open }               | :success
     end

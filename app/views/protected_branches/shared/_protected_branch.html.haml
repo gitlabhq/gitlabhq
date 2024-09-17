@@ -29,12 +29,12 @@
       - else
         .gl-relative
           - if local_assigns[:protected_from_deletion]
-            %span.gl-absolute.gl-display-inline-block.gl-w-full.gl-h-full{ data: { container: 'body', toggle: 'popover', placement: local_assigns[:placemet], html: 'true', triggers: 'hover', content: local_assigns[:popover_content] } }
+            %span.gl-absolute.gl-inline-block.gl-w-full.gl-h-full{ data: { container: 'body', toggle: 'popover', placement: local_assigns[:placemet], html: 'true', triggers: 'hover', content: local_assigns[:popover_content] } }
           = render Pajamas::ButtonComponent.new(size: :small,
             variant: :danger,
             href: [protected_branch_entity, protected_branch, { update_section: 'js-protected-branches-settings' }],
             method: :delete,
             disabled: local_assigns[:protected_from_deletion],
-            button_options: { update_section: 'js-protected-branches-settings', aria: { label: s_('ProtectedBranch|Unprotect branch') }, data: { confirm: s_('ProtectedBranch|Branch will be writable for developers. Are you sure?'), confirm_btn_variant: 'danger' } },
+            button_options: { update_section: 'js-protected-branches-settings', aria: { label: s_('ProtectedBranch|Unprotect branch') }, data: { confirm: s_('ProtectedBranch|Branch will be writable for developers. Are you sure?'), confirm_btn_variant: 'danger', tracking_event_name: 'unprotect_branch', tracking_event_label: 'repository_settings' } },
             category: :secondary) do
             = s_('ProtectedBranch|Unprotect')

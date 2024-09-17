@@ -18,6 +18,16 @@
 
 #js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
 .results.lg:gl-flex.gl-mt-0
-  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type, search_level: search_service.level, group_initial_json: group_attributes.to_json, project_initial_json: project_attributes.to_json, } }
+  #js-search-sidebar{
+    data: {
+      navigation_json: search_navigation_json,
+      search_type: search_service.search_type,
+      advanced_search_available: @search_service_presenter.advanced_search_enabled?.to_s,
+      zoekt_available: @search_service_presenter.zoekt_enabled?.to_s,
+      search_level: search_service.level,
+      group_initial_json: group_attributes.to_json,
+      project_initial_json: project_attributes.to_json,
+      ref: @project.present? ? repository_ref(@project) : nil
+    } }
   - if @search_term
     = render 'search/results'

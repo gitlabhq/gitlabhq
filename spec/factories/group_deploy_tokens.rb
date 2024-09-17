@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :group_deploy_token do
     group
-    association :deploy_token, factory: [:deploy_token, :group]
+    association :deploy_token, :group
   end
 end

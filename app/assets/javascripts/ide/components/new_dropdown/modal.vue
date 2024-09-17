@@ -178,7 +178,7 @@ export default {
             :placeholder="placeholder"
           />
         </form>
-        <ul v-if="isCreatingNewFile" class="file-templates gl-mt-3 list-inline">
+        <ul v-if="isCreatingNewFile" class="file-templates list-inline gl-mt-3">
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <gl-button
               variant="dashed"

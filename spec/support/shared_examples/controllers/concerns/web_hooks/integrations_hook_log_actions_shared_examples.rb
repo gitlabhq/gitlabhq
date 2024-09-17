@@ -29,7 +29,9 @@ RSpec.shared_examples WebHooks::HookLogActions do
       stub_request(:post, web_hook.interpolated_url)
 
       expect_next_found_instance_of(web_hook.class) do |hook|
-        expect(hook).to receive(:execute).and_call_original
+        expect(hook).to receive(:execute).with(web_hook_log.request_data,
+          web_hook_log.trigger, idempotency_key: web_hook_log.idempotency_key
+        ).and_call_original
       end
 
       post retry_path

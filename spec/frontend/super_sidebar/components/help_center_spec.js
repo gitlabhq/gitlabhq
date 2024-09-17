@@ -4,7 +4,7 @@ import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { FORUM_URL, PROMO_URL } from '~/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -27,10 +27,14 @@ describe('HelpCenter component', () => {
   const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
   // eslint-disable-next-line no-shadow
-  const createWrapper = (sidebarData) => {
+  const createWrapper = (sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
       propsData: { sidebarData },
       stubs: { GlEmoji },
+      provide: {
+        isSaas: false,
+        ...provide,
+      },
     });
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
@@ -41,6 +45,12 @@ describe('HelpCenter component', () => {
       'data-track-property': 'nav_help_menu',
       'data-track-label': label,
     };
+  };
+
+  const PRIVACY_HELP_ITEM = {
+    text: HelpCenter.i18n.privacy,
+    href: `${PROMO_URL}/privacy`,
+    extraAttrs: trackingAttrs('privacy'),
   };
 
   const DEFAULT_HELP_ITEMS = [
@@ -77,6 +87,8 @@ describe('HelpCenter component', () => {
     },
   ];
 
+  const ALL_HELP_ITEMS = [...DEFAULT_HELP_ITEMS, PRIVACY_HELP_ITEM];
+
   describe('default', () => {
     beforeEach(() => {
       createWrapper(sidebarData);
@@ -89,6 +101,18 @@ describe('HelpCenter component', () => {
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
         expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
       ]);
+    });
+
+    it('doesn`t render privacy item if not in `SaaS` mode', () => {
+      createWrapper({ ...sidebarData }, { isSaas: false });
+
+      expect(findDropdownGroup(0).props('group').items).toEqual(DEFAULT_HELP_ITEMS);
+    });
+
+    it('renders privacy item if in `SaaS` mode', () => {
+      createWrapper({ ...sidebarData }, { isSaas: true });
+
+      expect(findDropdownGroup(0).props('group').items).toEqual(ALL_HELP_ITEMS);
     });
 
     it('passes custom offset to the dropdown', () => {
@@ -111,6 +135,45 @@ describe('HelpCenter component', () => {
             extraAttrs: trackingAttrs('version_help_dropdown'),
           },
         ]);
+      });
+    });
+
+    describe('if Terms of Service and Data Privacy is set', () => {
+      it('shows link to Terms of Service and Data Privacy', () => {
+        createWrapper({ ...sidebarData, terms: '/-/users/terms' });
+
+        expect(findDropdownGroup(0).props('group').items).toEqual([
+          ...DEFAULT_HELP_ITEMS,
+          expect.objectContaining({
+            text: HelpCenter.i18n.terms,
+            href: '/-/users/terms',
+            extraAttrs: {
+              ...trackingAttrs('terms'),
+            },
+          }),
+        ]);
+      });
+
+      it('does not show link to Terms of Service and Data Privacy on SaaS even if it is set', () => {
+        createWrapper({ ...sidebarData, terms: '/-/users/terms' }, { isSaas: true });
+
+        expect(findDropdownGroup(0).props('group').items).toEqual([
+          ...DEFAULT_HELP_ITEMS,
+          PRIVACY_HELP_ITEM,
+        ]);
+      });
+    });
+
+    describe('If Terms of Service and Data Privacy is undefined', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, terms: undefined });
+      });
+
+      it('does not show link to Terms of Service and Data Privacy', () => {
+        const menuItems = findDropdownGroup(0)
+          .props('group')
+          .items.map(({ text }) => text);
+        expect(menuItems).not.toContain('Terms and privacy');
       });
     });
 

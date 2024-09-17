@@ -2,7 +2,6 @@
 
 module WorkItems
   class CreateService < Issues::CreateService
-    extend ::Gitlab::Utils::Override
     include WidgetableService
 
     def initialize(container:, perform_spam_check: true, current_user: nil, params: {}, widget_params: {})
@@ -70,15 +69,6 @@ module WorkItems
     end
 
     private
-
-    override :handle_quick_actions
-    def handle_quick_actions(work_item)
-      # Do not handle quick actions unless the work item is the default Issue.
-      # The available quick actions for a work item depend on its type and widgets.
-      return if work_item.work_item_type != WorkItems::Type.default_by_type(:issue)
-
-      super
-    end
 
     def authorization_action
       :create_work_item

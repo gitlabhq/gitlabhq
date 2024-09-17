@@ -13,6 +13,16 @@ module Sidekiq
     end
 
     def self.skip_transaction_check
+      # When transactional tests are in use, Rails calls
+      # ConnectionPool#lock_thread= to ensure all application threads
+      # get the same connection so they can all see the data in the
+      # uncommited transaction. If Puma is in use, check the state of
+      # the lock thread.
+      if ::Rails.env.test?
+        lock_thread = ::ApplicationRecord.connection_pool.instance_variable_get(:@lock_thread)
+        return true if lock_thread && lock_thread[:sidekiq_worker_skip_transaction_check]
+      end
+
       Thread.current[:sidekiq_worker_skip_transaction_check]
     end
 

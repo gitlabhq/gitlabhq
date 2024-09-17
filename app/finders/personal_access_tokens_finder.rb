@@ -24,6 +24,7 @@ class PersonalAccessTokensFinder
     tokens = by_last_used_before(tokens)
     tokens = by_last_used_after(tokens)
     tokens = by_search(tokens)
+    tokens = by_organization(tokens)
     tokens = tokens.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436657")
 
     sort(tokens)
@@ -128,5 +129,12 @@ class PersonalAccessTokensFinder
     return tokens unless params[:search]
 
     tokens.search(params[:search])
+  end
+
+  def by_organization(tokens)
+    return tokens unless params[:organization]
+    return tokens unless Feature.enabled?('pat_organization_filter', current_user)
+
+    tokens.for_organization(params[:organization])
   end
 end

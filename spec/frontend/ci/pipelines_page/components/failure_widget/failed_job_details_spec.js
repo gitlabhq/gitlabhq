@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlIcon, GlLink } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -44,13 +43,10 @@ describe('FailedJobDetails component', () => {
     });
   };
 
-  const findArrowIcon = () => wrapper.findComponent(GlIcon);
-  const findJobId = () => wrapper.findComponent(GlLink);
-  const findJobLog = () => wrapper.findByTestId('job-log');
-  const findJobName = () => wrapper.findByText(defaultProps.job.name);
-  const findRetryButton = () => wrapper.findByLabelText('Retry');
-  const findRow = () => wrapper.findByTestId('widget-row');
-  const findStageName = () => wrapper.findByText(defaultProps.job.stage.name);
+  const findJobId = () => wrapper.findByTestId('job-id-link');
+  const findJobName = () => wrapper.findByTestId('job-name-link');
+  const findRetryButton = () => wrapper.findByTestId('retry-button');
+  const findStageName = () => wrapper.findByTestId('job-stage-name');
 
   beforeEach(() => {
     mockRetryResponse = jest.fn();
@@ -75,10 +71,6 @@ describe('FailedJobDetails component', () => {
 
       expect(findJobId().exists()).toBe(true);
       expect(findJobId().text()).toContain(String(jobId));
-    });
-
-    it('does not renders the job lob', () => {
-      expect(findJobLog().exists()).toBe(false);
     });
   });
 
@@ -174,79 +166,6 @@ describe('FailedJobDetails component', () => {
 
         it('disables the retry button', () => {
           expect(findRetryButton().props().disabled).toBe(true);
-        });
-      });
-    });
-  });
-
-  describe('Job log', () => {
-    describe('without permissions', () => {
-      beforeEach(async () => {
-        createComponent({ props: { job: { ...job, userPermissions: { readBuild: false } } } });
-        await findRow().trigger('click');
-      });
-
-      it('does not renders the received html of the job log', () => {
-        expect(findJobLog().html()).not.toContain(defaultProps.job.trace.htmlSummary);
-      });
-
-      it('shows a permission error message', () => {
-        expect(findJobLog().text()).toBe("You do not have permission to read this job's log.");
-      });
-    });
-
-    describe('with permissions', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      describe('when clicking on the row', () => {
-        beforeEach(async () => {
-          await findRow().trigger('click');
-        });
-
-        describe('while collapsed', () => {
-          it('expands the job log', () => {
-            expect(findJobLog().exists()).toBe(true);
-          });
-
-          it('renders the down arrow', () => {
-            expect(findArrowIcon().props().name).toBe('chevron-down');
-          });
-
-          it('renders the received html of the job log', () => {
-            expect(findJobLog().html()).toContain(defaultProps.job.trace.htmlSummary);
-          });
-        });
-
-        describe('while expanded', () => {
-          it('collapes the job log', async () => {
-            expect(findJobLog().exists()).toBe(true);
-
-            await findRow().trigger('click');
-
-            expect(findJobLog().exists()).toBe(false);
-          });
-
-          it('renders the right arrow', async () => {
-            expect(findArrowIcon().props().name).toBe('chevron-down');
-
-            await findRow().trigger('click');
-
-            expect(findArrowIcon().props().name).toBe('chevron-right');
-          });
-        });
-      });
-
-      describe('when clicking on a link element within the row', () => {
-        it('does not expands/collapse the job log', async () => {
-          expect(findJobLog().exists()).toBe(false);
-          expect(findArrowIcon().props().name).toBe('chevron-right');
-
-          await findJobId().vm.$emit('click');
-
-          expect(findJobLog().exists()).toBe(false);
-          expect(findArrowIcon().props().name).toBe('chevron-right');
         });
       });
     });

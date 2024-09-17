@@ -104,7 +104,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-w-full">
+  <div class="gl-flex gl-w-full">
     <input
       v-if="fieldName"
       :name="fieldName"
@@ -120,7 +120,7 @@ export default {
       :search-placeholder="$options.i18n.searchPlaceholder"
       :searching="isLoading"
       :selected="selectedNamespaceId"
-      toggle-class="gl-w-full gl-flex-direction-column gl-align-items-stretch!"
+      toggle-class="gl-w-full gl-flex-col !gl-items-stretch"
       searchable
       @reset="onReset"
       @search="search"

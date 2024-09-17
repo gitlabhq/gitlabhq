@@ -5,5 +5,4 @@ feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147509
 milestone: '17.1'
 queued_migration_version: 20240522183910
-finalize_after: '2024-06-20'
 finalized_by: 20240701182755

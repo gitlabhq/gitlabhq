@@ -85,18 +85,18 @@ export default {
 
 <template>
   <gl-button-group class="gl-w-full">
-    <gl-button class="gl-text-truncate gl-flex-grow-0! gl-max-w-34" label :title="rootUrl">{{
+    <gl-button class="gl-max-w-34 !gl-grow-0 gl-truncate" label :title="rootUrl">{{
       rootUrl
     }}</gl-button>
     <gl-collapsible-listbox
-      class="gl-flex-grow-1"
+      class="gl-grow"
       data-testid="select-namespace-dropdown"
       :items="namespaceItems"
       :header-text="__('Namespaces')"
       :no-results-text="__('No matches found')"
       :searchable="true"
       :searching="loading"
-      toggle-class="gl-flex-direction-column gl-align-items-stretch! gl-rounded-top-left-none! gl-rounded-bottom-left-none! !gl-w-full"
+      toggle-class="gl-flex-col !gl-items-stretch !gl-rounded-tl-none !gl-rounded-bl-none !gl-w-full"
       :toggle-text="dropdownText"
       @search="searchNamespaces"
       @select="setNamespace"

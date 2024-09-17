@@ -13,9 +13,7 @@ RSpec.describe Mutations::Issues::UnlinkAlert, feature_category: :incident_manag
   let_it_be(:external_alert) { create(:alert_management_alert, project: another_project) }
   let_it_be(:issue) { create(:incident, project: project, alert_management_alerts: [internal_alert, external_alert]) }
 
-  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
-  let(:mutation) { described_class.new(object: nil, context: context, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
 
@@ -31,7 +29,7 @@ RSpec.describe Mutations::Issues::UnlinkAlert, feature_category: :incident_manag
     end
 
     context 'when the user is a guest' do
-      let(:user) { guest }
+      let(:current_user) { guest }
 
       it 'raises an error' do
         expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
@@ -39,7 +37,7 @@ RSpec.describe Mutations::Issues::UnlinkAlert, feature_category: :incident_manag
     end
 
     context 'when the user is a developer' do
-      let(:user) { developer }
+      let(:current_user) { developer }
 
       shared_examples 'unlinking an alert' do
         it 'unlinks the alert' do

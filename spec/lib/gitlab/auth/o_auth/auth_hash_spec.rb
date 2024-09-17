@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management do
+RSpec.describe Gitlab::Auth::OAuth::AuthHash, aggregate_failures: true, feature_category: :user_management do
   let(:provider) { 'openid_connect' }
   let(:auth_hash) do
     described_class.new(
@@ -67,6 +67,7 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management
     it { expect(auth_hash.name).to eql name_utf8 }
     it { expect(auth_hash.password).not_to be_empty }
     it { expect(auth_hash.location).to eq 'some locality, some country' }
+    it { expect(auth_hash.errors).to be_empty }
   end
 
   context 'email not provided' do
@@ -181,6 +182,86 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, feature_category: :user_management
 
     it 'forces utf8 encoding on password' do
       expect(auth_hash.password.encoding).to eql Encoding::UTF_8
+    end
+  end
+
+  context 'for email address length validation prior to generating a username' do
+    let(:info_hash) do
+      {
+        email: email,
+        name: 'GitLab test',
+        uid: uid_ascii
+      }
+    end
+
+    context 'when the email address is not too long' do
+      let(:local_part) { generate(:username) }
+      let(:email) { "#{local_part}@example.com" }
+
+      it 'normalizes the string' do
+        expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
+
+        expect(auth_hash.username).to eq(local_part)
+        expect(auth_hash.errors).to eq({})
+      end
+    end
+
+    context 'when the whole email address is longer than 254 characters' do
+      # Email with unicode characters
+      def long_email_local_part
+        "longemail𒐫" * 300
+      end
+
+      let(:email) { "#{long_email_local_part}@example.com" }
+
+      it 'produces an error and does not normalize the string' do
+        expect(auth_hash).not_to receive(:mb_chars_unicode_normalize).and_call_original
+
+        expect(auth_hash.username).to be_empty
+        expect(auth_hash.errors).to eq({ identity_provider_email: _("must be 254 characters or less.") })
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_validate_email_length: false)
+        end
+
+        it 'normalizes the string' do
+          expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
+
+          expect(auth_hash.username).to eq('longemail' * 300)
+          expect(auth_hash.errors).to be_empty
+        end
+      end
+    end
+
+    context 'when the local part of the email address is longer than 254 characters after normalization' do
+      # Email with unicode characters that normalize to multiple characters
+      def long_email_local_part
+        "email℀℀℀℀℀" * 24
+      end
+
+      let(:email) { "#{long_email_local_part}@example.com" }
+
+      it 'normalizes the string and produces an error' do
+        expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
+
+        expect(auth_hash.username).to be_empty
+        expect(auth_hash.errors).to eq({ identity_provider_email: _("must be 254 characters or less.") })
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_validate_email_length: false)
+        end
+
+        it 'normalizes the string' do
+          expect(auth_hash).to receive(:mb_chars_unicode_normalize).and_call_original
+
+          expect(auth_hash.username).not_to be_empty
+          expect(auth_hash.errors).to be_empty
+        end
+      end
     end
   end
 

@@ -22,6 +22,8 @@ module Packages
       def group_packages
         if Feature.enabled?(:maven_remove_permissions_check_from_finder, @project_or_group)
           packages_for(@current_user, within_group: @project_or_group)
+        elsif ::Feature.enabled?(:allow_anyone_to_pull_public_maven_packages_on_group_level, @project_or_group)
+          packages_visible_to_user_including_public_registries(@current_user, within_group: @project_or_group)
         else
           super
         end

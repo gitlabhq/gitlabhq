@@ -24,6 +24,18 @@ RSpec.describe BlobViewer::GitlabCiYml, feature_category: :source_code_managemen
       validation_message
     end
 
+    it 'calls Gitlab::Ci::Lint#validate with proper parameters' do
+      lint = instance_double(
+        Gitlab::Ci::Lint, validate: instance_double(Gitlab::Ci::Lint::Result, errors: [])
+      )
+
+      expect(Gitlab::Ci::Lint).to receive(:new).with(
+        project: project, current_user: user, sha: sha, verify_project_sha: false
+      ).and_return(lint)
+
+      validation_message
+    end
+
     context 'when the configuration is valid' do
       it 'returns nil' do
         expect(validation_message).to be_nil
@@ -37,28 +49,19 @@ RSpec.describe BlobViewer::GitlabCiYml, feature_category: :source_code_managemen
         expect(validation_message).to eq('Invalid configuration format')
       end
     end
+  end
 
-    context 'when the sha is from a fork' do
-      include_context 'when a project repository contains a forked commit'
+  describe '#visible_to?' do
+    it 'returns true when the ref is a branch' do
+      expect(blob_viewer.visible_to?(user, 'master')).to be_truthy
+    end
 
-      let(:sha) { forked_commit_sha }
+    it 'returns true when the ref is a tag' do
+      expect(blob_viewer.visible_to?(user, 'v1.0.0')).to be_truthy
+    end
 
-      context 'when a project ref contains the sha' do
-        before do
-          mock_branch_contains_forked_commit_sha
-        end
-
-        it 'returns nil' do
-          expect(validation_message).to be_nil
-        end
-      end
-
-      context 'when a project ref does not contain the sha' do
-        it 'returns an error' do
-          expect(validation_message).to match(
-            /configuration originates from an external project or a commit not associated with a Git reference/)
-        end
-      end
+    it 'returns false when the ref is a commit' do
+      expect(blob_viewer.visible_to?(user, sha)).to be_falsey
     end
   end
 end

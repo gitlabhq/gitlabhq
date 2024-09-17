@@ -117,6 +117,7 @@ func watchForRunnerChange(ctx context.Context, watchHandler WatchKeyHandler, tok
 	return watchHandler(ctx, runnerBuildQueue+token, lastUpdate, duration)
 }
 
+// RegisterHandler with key watch logic if polling is enabled.
 func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDuration time.Duration) http.Handler {
 	if pollingDuration == 0 {
 		return h
@@ -135,16 +136,8 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 
 		newRequest := cloneRequestWithNewBody(r, requestBody)
 
-		runnerRequest, err := readRunnerRequest(r, requestBody)
-		if err != nil {
-			registerHandlerBodyParseErrors.Inc()
-			proxyRegisterRequest(h, w, newRequest)
-			return
-		}
-
-		if runnerRequest.Token == "" || runnerRequest.LastUpdate == "" {
-			registerHandlerMissingValues.Inc()
-			proxyRegisterRequest(h, w, newRequest)
+		runnerRequest, shouldReturn := getRunnerRequest(r, requestBody, h, w, newRequest)
+		if shouldReturn {
 			return
 		}
 
@@ -184,6 +177,22 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 			w.WriteHeader(http.StatusNoContent)
 		}
 	})
+}
+
+func getRunnerRequest(r *http.Request, requestBody []byte, h http.Handler, w http.ResponseWriter, newRequest *http.Request) (*runnerRequest, bool) {
+	runnerRequest, err := readRunnerRequest(r, requestBody)
+	if err != nil {
+		registerHandlerBodyParseErrors.Inc()
+		proxyRegisterRequest(h, w, newRequest)
+		return nil, true
+	}
+
+	if runnerRequest.Token == "" || runnerRequest.LastUpdate == "" {
+		registerHandlerMissingValues.Inc()
+		proxyRegisterRequest(h, w, newRequest)
+		return nil, true
+	}
+	return runnerRequest, false
 }
 
 func cloneRequestWithNewBody(r *http.Request, body []byte) *http.Request {

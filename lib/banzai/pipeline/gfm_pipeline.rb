@@ -13,9 +13,10 @@ module Banzai
         @filters ||= FilterArray[
           Filter::CodeLanguageFilter,
           Filter::PlantumlFilter,
-          # Must always be before the SanitizationFilter to prevent XSS attacks
+          # Must always be before the SanitizationFilter/SanitizeLinkFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
+          Filter::SanitizeLinkFilter,
           Filter::EscapedCharFilter,
           Filter::KrokiFilter,
           Filter::GollumTagsFilter,

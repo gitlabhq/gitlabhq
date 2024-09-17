@@ -1,3 +1,13 @@
+// Defines min height of the header
+// to avoid a 1px flickering between
+// expanded/collapsed mode
+// and with/without actions
+$crud-header-min-height: px-to-rem(49px);
+
+.crud-header {
+  min-height: $crud-header-min-height;
+}
+
 .crud-body:has(.gl-table) {
   margin-block: -1px;
   margin-inline: 0;

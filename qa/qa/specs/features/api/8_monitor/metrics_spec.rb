@@ -26,7 +26,7 @@ module QA
         let(:port) { '8083' }
         let(:path) { '/metrics' }
 
-        it 'returns 200 OK and serves metrics',
+        it 'returns 200 OK and serves metrics', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/362912' do
           expect(response.code).to be(200)
           expect(response.body).to match(/^puma_/)

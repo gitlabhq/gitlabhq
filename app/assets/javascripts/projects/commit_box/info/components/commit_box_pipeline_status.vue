@@ -61,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-inline-block gl-align-middle gl-mr-2">
+  <div class="gl-mr-2 gl-inline-block gl-align-middle">
     <gl-loading-icon v-if="loading" />
     <ci-icon v-else-if="pipelineStatus" :status="pipelineStatus" />
   </div>

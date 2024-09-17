@@ -18,30 +18,28 @@ module Gitlab
         end
 
         def batch_unlink(keys, redis)
-          expired_count = 0
-          keys.each_slice(pipeline_batch_size) do |subset|
-            expired_count += redis.pipelined do |pipeline|
-              subset.each { |key| pipeline.unlink(key) }
-            end.sum
-          end
-          expired_count
+          batch(keys, redis) do |pipeline, subset|
+            subset.each { |key| pipeline.unlink(key) }
+          end.sum
         end
 
         def batch_del(keys, redis)
-          expired_count = 0
-          keys.each_slice(pipeline_batch_size) do |subset|
-            expired_count += redis.pipelined do |pipeline|
-              subset.each { |key| pipeline.del(key) }
-            end.sum
-          end
-          expired_count
+          batch(keys, redis) do |pipeline, subset|
+            subset.each { |key| pipeline.del(key) }
+          end.sum
         end
 
         # Redis cluster alternative to mget
         def batch_get(keys, redis)
-          keys.each_slice(pipeline_batch_size).flat_map do |subset|
+          batch(keys, redis) do |pipeline, subset|
+            subset.map { |key| pipeline.get(key) }
+          end.flatten
+        end
+
+        def batch(entries, redis)
+          entries.each_slice(pipeline_batch_size).flat_map do |subset|
             redis.pipelined do |pipeline|
-              subset.map { |key| pipeline.get(key) }
+              yield pipeline, subset
             end
           end
         end

@@ -26,7 +26,7 @@ module Ci
       private
 
       def set_associated_projects
-        new_project_ids = [runner.owner_project.id] + project_ids
+        new_project_ids = [runner.owner_project&.id].compact + project_ids
 
         response = ServiceResponse.success
         runner.transaction do

@@ -70,6 +70,16 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
         expect(subject.user).to be_from_ci_job_token
         expect(subject.user.ci_job_token_scope.current_project).to eq(job.project)
       end
+
+      it 'logs context data about the job' do
+        expect(::Gitlab::AppLogger).to receive(:info).with a_hash_including({
+          job_id: job.id,
+          job_user_id: job.user_id,
+          job_project_id: job.project_id
+        })
+
+        execute
+      end
     end
   end
 end

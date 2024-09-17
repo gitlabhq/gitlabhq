@@ -49,12 +49,6 @@ mapping:
   - source: 'config/initializers/(?<rest>.+)\.rb'
     test: 'spec/initializers/%{rest}_spec.rb'
 
-  # Snowplow definitions map to schema validation spec
-  - source:
-      - '(?<prefix>ee/)?config/events/.+\.yml'
-      - 'config/events/schema\.json'
-    test: 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
-
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'
     test: 'spec/db/schema_spec.rb'
@@ -119,12 +113,6 @@ mapping:
   - source: '(?<prefix>ee/)?app/mailers/(?<inner_prefix>ee/)?previews/.+\.rb'
     test: 'spec/mailers/previews_spec.rb'
 
-  ## GLFM spec and config files for CE and EE should map to respective markdown snapshot specs
-  - source: 'glfm_specification/.+'
-    test:
-      - 'spec/requests/api/markdown_snapshot_spec.rb'
-      - 'ee/spec/requests/api/markdown_snapshot_spec.rb'
-
   ## Remote development GraphQL resolvers
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_agent_resolver\.rb'
     test:
@@ -142,13 +130,46 @@ mapping:
     test:
       - 'ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb'
 
-  # Any change to metrics definition should trigger the specs in the ee/spec/config/metrics/ folder.
-  #
-  # Note: We only have those tests for ee, even though we have non-ee metrics.
-  #
+  # Usage metric schema changes should trigger validations for all metrics and tooling
+  - source: 'config/metrics/schema/.*\.json'
+    test:
+      - 'spec/config/metrics/every_metric_definition_spec.rb'
+      - 'ee/spec/config/metrics/every_metric_definition_spec.rb'
+      - 'spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb'
+      - 'spec/scripts/internal_events/cli_spec.rb'
+      - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
+
+  # Internal events schema changes should trigger validations for all events and tooling
+  - source: 'config/events/schema\.json'
+    test:
+      - 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
+      - 'spec/scripts/internal_events/cli_spec.rb'
+      - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
+
+  # Any change to metric/event definitions should trigger the specs in the ee/spec/config/metrics/ folder.
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/287#note_1192008962
-  - source: 'ee/config/metrics/.*\.yml'
-    test: 'ee/spec/config/metrics/every_metric_definition_spec.rb'
+  - source:
+      - '(ee/)?config/metrics/.*\.yml'
+    test:
+      - 'spec/config/metrics/every_metric_definition_spec.rb'
+      - 'ee/spec/config/metrics/every_metric_definition_spec.rb'
+      - 'spec/lib/gitlab/usage/metric_definition_validate_all_spec.rb'
+
+  # Internal event/Snowplow event definitions map to schema validation spec
+  - source:
+      - '(ee/)?config/events/.+\.yml'
+    test: 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
+
+  # Changes to Internal Events behavior should trigger tests for the CLI and shared matchers
+  - source:
+      - 'lib/gitlab/internal_events\.rb'
+      - 'scripts/internal_events/cli(/.+)?\.rb'
+      - 'spec/support/shared_examples/controllers/internal_event_tracking_examples\.rb'
+      - 'spec/support/matchers/internal_events_matchers\.rb'
+      - 'spec/fixtures/scripts/internal_events/.+\.yml'
+    test:
+      - 'spec/scripts/internal_events/cli_spec.rb'
+      - 'spec/support_specs/matchers/internal_events_matchers_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146
   - source: 'config/feature_categories\.yml'
@@ -165,7 +186,6 @@ mapping:
       - 'spec/db/docs_spec.rb'
       - 'spec/lib/gitlab/database/dictionary_spec.rb'
       - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
-      - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_pm_schema_spec.rb'
       - 'spec/lib/gitlab/database/sharding_key_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
@@ -183,3 +203,8 @@ mapping:
     test:
       - 'spec/lib/gitlab/ci/templates/templates_spec.rb'
       - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/8021
+  - source: 'public/robots\.txt'
+    test:
+      - 'spec/requests/robots_txt_spec.rb'

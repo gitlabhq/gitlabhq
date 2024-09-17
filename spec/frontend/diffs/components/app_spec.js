@@ -18,6 +18,7 @@ import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import FindingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
+import DiffAppControls from '~/diffs/components/diff_app_controls.vue';
 
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
@@ -39,7 +40,6 @@ import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
@@ -68,7 +68,7 @@ describe('diffs/components/app', () => {
     provisions = {},
     baseConfig = {},
     actions = {},
-  }) => {
+  } = {}) => {
     fakeApollo = createMockApollo([
       [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
     ]);
@@ -277,7 +277,7 @@ describe('diffs/components/app', () => {
       });
 
       expect(wrapper.findComponent(NoChanges).exists()).toBe(false);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
         store.state.diffs.diffFiles,
       );
     });
@@ -490,20 +490,58 @@ describe('diffs/components/app', () => {
 
   describe('diffs', () => {
     it('should render compare versions component', () => {
+      createComponent();
+      expect(wrapper.findComponent(CompareVersions).exists()).toBe(true);
+      expect(wrapper.findComponent(CompareVersions).props()).toMatchObject({
+        toggleFileTreeVisible: false,
+      });
+    });
+
+    it('should render file tree toggle in compare versions', () => {
       createComponent({
         extendStore: ({ state }) => {
-          state.diffs.mergeRequestDiffs = diffsMockData;
-          state.diffs.targetBranchName = 'target-branch';
-          state.diffs.mergeRequestDiff = mergeRequestDiff;
+          state.diffs.diffFiles = [getDiffFileMock()];
         },
       });
 
-      expect(wrapper.findComponent(CompareVersions).exists()).toBe(true);
-      expect(wrapper.findComponent(CompareVersions).props()).toEqual(
+      expect(wrapper.findComponent(CompareVersions).props()).toMatchObject({
+        toggleFileTreeVisible: true,
+      });
+    });
+
+    it('should render app controls component', () => {
+      createComponent({
+        extendStore: ({ state }) => {
+          state.diffs.diffFiles = diffsMockData;
+          state.diffs.realSize = '10';
+          state.diffs.addedLines = 15;
+          state.diffs.removedLines = 20;
+        },
+      });
+
+      expect(wrapper.findComponent(DiffAppControls).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffAppControls).props()).toEqual(
         expect.objectContaining({
-          diffFilesCountText: null,
+          hasChanges: true,
+          diffsCount: '10',
+          addedLines: 15,
+          removedLines: 20,
         }),
       );
+    });
+
+    it('collapses all files', async () => {
+      createComponent();
+      const spy = jest.spyOn(store, 'dispatch');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('collapseAllFiles');
+      expect(spy).toHaveBeenCalledWith('diffs/collapseAllFiles', undefined);
+    });
+
+    it('expands all files', async () => {
+      createComponent();
+      jest.spyOn(store, 'dispatch');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('expandAllFiles');
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/expandAllFiles', undefined);
     });
 
     describe('warnings', () => {
@@ -583,7 +621,7 @@ describe('diffs/components/app', () => {
       });
 
       expect(wrapper.findComponent({ name: 'DynamicScroller' }).exists()).toBe(true);
-      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toBe(
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')).toStrictEqual(
         store.state.diffs.diffFiles,
       );
     });
@@ -991,26 +1029,26 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('pinned file', () => {
-    const pinnedFileUrl = 'http://localhost.test/pinned-file';
-    let pinnedFile;
+  describe('linked file', () => {
+    const linkedFileUrl = 'http://localhost.test/linked-file';
+    let linkedFile;
 
     beforeEach(() => {
-      pinnedFile = getDiffFileMock();
-      mock.onGet(pinnedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [pinnedFile] });
+      linkedFile = getDiffFileMock();
+      mock.onGet(linkedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [linkedFile] });
       mock
         .onGet(new RegExp(ENDPOINT_BATCH_URL))
         .reply(HTTP_STATUS_OK, { diff_files: [], pagination: {} });
       mock.onGet(new RegExp(ENDPOINT_METADATA_URL)).reply(HTTP_STATUS_OK, diffMetadata);
 
-      createComponent({ props: { shouldShow: true, pinnedFileUrl } });
+      createComponent({ props: { shouldShow: true, linkedFileUrl } });
     });
 
-    it('fetches and displays pinned file', async () => {
+    it('fetches and displays the file', async () => {
       await waitForPromises();
 
       expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')[0].file_hash).toBe(
-        pinnedFile.file_hash,
+        linkedFile.file_hash,
       );
     });
 

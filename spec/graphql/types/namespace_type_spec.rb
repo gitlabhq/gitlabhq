@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['Namespace'] do
   specify { expect(described_class.graphql_name).to eq('Namespace') }
 
+  specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
+
   it 'has the expected fields' do
     expected_fields = %w[
       id name path full_name full_path achievements_path description description_html visibility

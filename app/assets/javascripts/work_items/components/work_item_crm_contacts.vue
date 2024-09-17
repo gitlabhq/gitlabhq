@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
+import { GlLink, GlPopover, GlTooltipDirective, GlTruncateText } from '@gitlab/ui';
 import { difference, groupBy, xor } from 'lodash';
 import { findWidget } from '~/issues/list/utils';
 import { __, n__, s__ } from '~/locale';
@@ -18,10 +18,13 @@ import {
 import { newWorkItemFullPath, newWorkItemId } from '../utils';
 
 export default {
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
-    GlIcon,
     GlLink,
     GlPopover,
+    GlTruncateText,
     WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
@@ -48,6 +51,7 @@ export default {
       searchTerm: '',
       searchStarted: false,
       updateInProgress: false,
+      selectedCount: 0,
     };
   },
   computed: {
@@ -97,10 +101,11 @@ export default {
       return this.workItem?.userPermissions?.updateWorkItem;
     },
     dropdownLabelText() {
-      return n__('%d contact', '%d contacts', this.selectedItemIds.length);
+      return n__('%d contact', '%d contacts', this.selectedCount);
     },
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     searchItems: {
       query: getGroupContactsQuery,
       variables() {
@@ -119,6 +124,7 @@ export default {
         this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS);
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {
@@ -129,6 +135,9 @@ export default {
       },
       update(data) {
         return data?.workspace?.workItem ?? {};
+      },
+      result() {
+        this.selectedCount = this.selectedItemIds.length;
       },
       skip() {
         return !this.workItemIid;
@@ -246,7 +255,14 @@ export default {
         this.updateInProgress = false;
       }
     },
+    rateText(rate) {
+      return `${s__('Crm|Rate')}: ${rate}`;
+    },
+    updateCount(items) {
+      this.selectedCount = items.length;
+    },
   },
+  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
 };
 </script>
 
@@ -266,42 +282,69 @@ export default {
     data-testid="work-item-crm-contacts"
     @dropdownShown="search"
     @searchStarted="search"
+    @updateSelected="updateCount"
     @updateValue="updateItems"
   >
     <template #readonly>
-      <div class="gl-gap-2 gl-mt-1">
+      <div class="gl-mt-1 gl-gap-2">
         <div
           v-for="[organizationName, contacts] in selectedOrganizations"
           :key="organizationName"
           data-testid="organization"
         >
-          <div class="gl-text-secondary gl-mt-3">{{ organizationName }}</div>
-          <div
-            v-for="contact in contacts"
-            :id="`contact_container_${contact.id}`"
-            :key="contact.id"
-            data-testid="contact"
-          >
-            <gl-link :id="`contact_${contact.id}`" class="gl-text-inherit">
+          <div class="gl-mt-3 gl-text-secondary">{{ organizationName }}</div>
+          <div v-for="contact in contacts" :key="contact.id" data-testid="contact">
+            <gl-link
+              :id="`contact_${contact.id}`"
+              v-gl-tooltip
+              class="gl-text-inherit"
+              :title="s__('Crm|View contact details')"
+            >
               {{ contact.firstName }} {{ contact.lastName }}
             </gl-link>
             <gl-popover
               :target="`contact_${contact.id}`"
-              :container="`contact_container_${contact.id}`"
-              triggers="hover focus"
-              placement="top"
+              :title="`${contact.firstName} ${contact.lastName}`"
+              triggers="click blur focus"
+              placement="left"
+              show-close-button
+              boundary="viewport"
             >
-              <div>{{ contact.firstName }} {{ contact.lastName }}</div>
-              <div class="gl-text-secondary">
-                <div>{{ contact.description }}</div>
-                <div v-if="contact.email">
-                  <gl-icon name="mail" class="gl-mr-2" />{{ contact.email }}
+              <div class="gl-flex gl-flex-col gl-gap-3">
+                <gl-truncate-text
+                  v-if="contact.description"
+                  :toggle-button-props="$options.truncateTextToggleButtonProps"
+                  ><div>{{ contact.description }}</div></gl-truncate-text
+                >
+                <div v-if="contact.email" class="gl-flex gl-flex-col gl-gap-1">
+                  <div class="gl-text-secondary">{{ __('Email') }}</div>
+                  <a :href="`mailto:${contact.email}`">{{ contact.email }}</a>
                 </div>
-                <div v-if="contact.phone">
-                  <gl-icon name="mobile" class="gl-mr-2" />{{ contact.phone }}
+                <div v-if="contact.phone" class="gl-flex gl-flex-col gl-gap-1">
+                  <div class="gl-text-secondary">{{ __('Phone') }}</div>
+                  <div>{{ contact.phone }}</div>
                 </div>
-                <div v-if="organizationName !== s__('Crm|No organization')">
-                  <gl-icon name="building" class="gl-mr-2" />{{ organizationName }}
+                <div
+                  v-if="organizationName !== s__('Crm|No organization')"
+                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-gray-50 gl-p-3"
+                >
+                  <div class="gl-font-bold">{{ organizationName }}</div>
+                  <div
+                    v-if="contact.organization.description || contact.organization.defaultRate"
+                    class="gl-text-gray-600"
+                  >
+                    <gl-truncate-text
+                      v-if="contact.organization.description"
+                      :toggle-button-props="$options.truncateTextToggleButtonProps"
+                    >
+                      <div>
+                        {{ contact.organization.description }}
+                      </div>
+                    </gl-truncate-text>
+                    <div v-if="contact.organization.defaultRate">
+                      {{ rateText(contact.organization.defaultRate) }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </gl-popover>

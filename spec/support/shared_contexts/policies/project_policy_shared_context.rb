@@ -26,7 +26,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       award_emoji create_issue create_note
       create_project read_issue_board read_issue read_issue_iid read_issue_link
-      read_label read_planning_hierarchy read_issue_board_list read_milestone read_note read_project
+      read_label read_issue_board_list read_milestone read_note read_project
       read_project_for_iids read_project_member read_release read_snippet
       read_wiki upload_file
     ]
@@ -39,7 +39,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       download_wiki_code fork_project metrics_dashboard read_build
       read_commit_status read_confidential_issues read_container_image
       read_harbor_registry read_deployment read_environment read_merge_request
-      read_metrics_dashboard_annotation read_pipeline read_prometheus
+      read_pipeline read_prometheus
       read_sentry_issue update_issue create_merge_request_in
       read_external_emails read_internal_note export_work_items
     ]
@@ -54,7 +54,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_merge_request admin_tag create_build
       create_commit_status create_container_image create_deployment
       create_environment create_merge_request_from
-      admin_metrics_dashboard_annotation create_pipeline create_release
+      create_pipeline create_release
       create_wiki destroy_container_image push_code read_pod_logs
       read_terraform_state resolve_note update_build cancel_build update_commit_status
       update_container_image update_deployment update_environment

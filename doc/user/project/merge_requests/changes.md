@@ -39,10 +39,10 @@ The diff also includes navigation and comment aids to the left of the file, in t
 
 - **Show more context**: Select **Previous 20 lines** (**{expand-up}**) to display
   the previous 20 unchanged lines, or **Next 20 lines** (**{expand-down}**) to
-  display the next 20 unchanged lines.
+  show the next 20 unchanged lines.
 - **Line numbers** are shown in two columns. Previous line numbers are shown on
   the left, and proposed line numbers on the right. To interact with a line:
-  - To display [comment options](#add-a-comment-to-a-merge-request-file), hover over a line number.
+  - To show [comment options](#add-a-comment-to-a-merge-request-file), hover over a line number.
   - To copy a link to the line, press <kbd>Command</kbd> and select (or right-click)
     a line number, then select **Copy link address**.
   - To highlight a line, select the line number.
@@ -67,14 +67,35 @@ To view the diff of changes included in a merge request:
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
-   1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to display the file tree.
+   1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to show the file tree.
    1. Select the file you want to view.
    1. To hide the file browser, select **Show file browser** or press <kbd>F</kbd> again.
 
 GitLab collapses files with many changes to improve performance, and displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
-### Collapse generated files
+### Show a linked file first
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387246) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `pinned_file`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162503) in GitLab 17.4. Feature flag `pinned_file` removed.
+
+When you share a merge request link with a team member, you might want to show a specific file
+first in the list of changed files. To copy a merge request link that shows your desired file first:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Below the merge request title, select **Changes**.
+1. Find the file you want to show first. Right-click the name of the file to copy the link to it.
+1. When you visit that link, your chosen file is shown at the top of the list. The file browser
+   shows a link icon (**{link}**) next to the file name:
+
+   ![A merge request showing a YAML file at the top of the list.](img/linked_file_v17_4.png)
+
+## Collapse generated files
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -98,14 +119,14 @@ they rarely require code reviews:
 To mark a file or path as generated, set the `gitlab-generated` attribute for it
 in your [`.gitattributes` file](../git_attributes.md).
 
-#### View a collapsed file
+### View a collapsed file
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to view, and select **Expand file**.
 
-#### Configure collapse behavior for a file type
+### Configure collapse behavior for a file type
 
 To change the default collapse behavior for a file type:
 
@@ -198,11 +219,11 @@ To change how a merge request shows changed lines:
 ## Explain code in a merge request
 
 DETAILS:
-**Tier:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 15.11 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 
 If you spend a lot of time trying to understand code that others have created, or
 you struggle to understand code written in a language you are not familiar with,
@@ -237,7 +258,7 @@ We cannot guarantee that the large language model produces results that are corr
 You can also explain code in:
 
 - A [file](../../../user/project/repository/code_explain.md).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code-in-the-ide).
+- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-selected-code).
 
 ## Expand or collapse comments
 

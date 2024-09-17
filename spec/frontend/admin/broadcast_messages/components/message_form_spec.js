@@ -67,7 +67,7 @@ describe('MessageForm', () => {
           props: ['value'],
         }),
         GlFormGroup: stubComponent(GlFormGroup, {
-          props: ['state', 'invalidFeedback'],
+          props: ['state', 'invalidFeedback', 'description'],
         }),
       },
     });
@@ -148,15 +148,17 @@ describe('MessageForm', () => {
       await nextTick();
 
       expect(targetPath.isVisible()).toBe(true);
-      expect(targetPath.text()).toContain(MessageForm.i18n.targetPathDescription);
+      expect(targetPath.props('description')).toBe(MessageForm.i18n.targetPathDescription);
       expect(targetPath.text()).not.toContain(MessageForm.i18n.targetPathWithRolesReminder);
       expect(findTargetRoles().isVisible()).toBe(false);
 
       targetSelect.vm.$emit('input', TARGET_OPTIONS[2].value);
       await nextTick();
       expect(targetPath.isVisible()).toBe(true);
-      expect(targetPath.text()).toContain(MessageForm.i18n.targetPathDescription);
-      expect(targetPath.text()).toContain(MessageForm.i18n.targetPathWithRolesReminder);
+      expect(targetPath.props('description')).toContain(MessageForm.i18n.targetPathDescription);
+      expect(targetPath.props('description')).toContain(
+        MessageForm.i18n.targetPathWithRolesReminder,
+      );
       expect(findTargetRoles().isVisible()).toBe(true);
     });
 

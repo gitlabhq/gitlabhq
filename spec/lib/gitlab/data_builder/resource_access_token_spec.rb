@@ -45,7 +45,8 @@ RSpec.describe Gitlab::DataBuilder::ResourceAccessToken, feature_category: :syst
       expect(data[:group]).to eq({
         group_name: resource.name,
         group_path: resource.path,
-        group_id: resource.id
+        group_id: resource.id,
+        full_path: resource.full_path
       })
       expect(data[:event_name]).to eq("expiring_access_token")
     end

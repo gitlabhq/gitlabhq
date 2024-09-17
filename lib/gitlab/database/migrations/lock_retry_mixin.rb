@@ -49,7 +49,7 @@ module Gitlab
                 connection: migration.migration_connection,
                 klass: migration.migration_class,
                 logger: Gitlab::BackgroundMigration::Logger
-              ).run(raise_on_exhaustion: false, &block)
+              ).run(raise_on_exhaustion: true, &block)
             else
               super
             end

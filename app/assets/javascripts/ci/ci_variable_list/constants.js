@@ -18,11 +18,22 @@ export const variableOptions = [
   { value: variableTypes.fileType, text: __('File') },
 ];
 
+export const VISIBILITY_HIDDEN = 'MASKED_AND_HIDDEN';
+export const VISIBILITY_MASKED = 'MASKED';
+export const VISIBILITY_VISIBLE = 'VISIBLE';
+
+export const visibilityToAttributesMap = {
+  [VISIBILITY_HIDDEN]: { masked: true, hidden: true },
+  [VISIBILITY_MASKED]: { masked: true, hidden: false },
+  [VISIBILITY_VISIBLE]: { masked: false, hidden: false },
+};
+
 export const defaultVariableState = {
   description: null,
   environmentScope: '*',
   key: '',
   masked: false,
+  hidden: false,
   protected: false,
   raw: false,
   value: '',

@@ -71,7 +71,7 @@ export default {
       return {
         text: this.deleteTemplateText,
         extraAttrs: {
-          class: 'gl-text-red-500!',
+          class: '!gl-text-red-500',
           'data-testid': 'page-delete-button',
         },
       };

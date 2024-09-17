@@ -67,17 +67,35 @@ RSpec.describe Boards::Issues::ListService, feature_category: :portfolio_managem
           )
         end
 
-        context 'when filtering by type' do
-          it 'only returns the specified type' do
+        let_it_be(:task) do
+          create(
+            :labeled_issue,
+            :task,
+            project: project,
+            milestone: m1,
+            labels: [development, p1]
+          )
+        end
+
+        context 'when filtering by incident type' do
+          it 'only returns the incident type' do
             params = { board_id: board.id, id: list1.id, issue_types: 'incident' }
 
             expect(described_class.new(parent, user, params).execute).to eq [incident]
           end
         end
 
+        context 'when filtering by task type' do
+          it 'only returns the task type' do
+            params = { board_id: board.id, id: list1.id, issue_types: 'task' }
+
+            expect(described_class.new(parent, user, params).execute).to eq [task]
+          end
+        end
+
         context 'when filtering by negated type' do
           it 'only returns the specified type' do
-            params = { board_id: board.id, id: list1.id, not: { issue_types: ['issue'] } }
+            params = { board_id: board.id, id: list1.id, not: { issue_types: %w[issue task] } }
 
             expect(described_class.new(parent, user, params).execute).to contain_exactly(incident)
           end

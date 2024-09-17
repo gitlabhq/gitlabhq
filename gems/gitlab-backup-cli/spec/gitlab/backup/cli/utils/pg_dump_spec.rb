@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::Backup::Cli::Utils::PgDump do
   let(:cmd_args) { pg_dump.send(:cmd_args) }
   let(:database_name) { 'gitlab_database' }

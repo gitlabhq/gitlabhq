@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'rejected container repository access' do |user_type, status|
+RSpec.shared_examples 'rejected container repository access' do |user_type, status, body_message = nil|
   context "for #{user_type}" do
     let(:api_user) { users[user_type] }
 
@@ -8,6 +8,8 @@ RSpec.shared_examples 'rejected container repository access' do |user_type, stat
       subject
 
       expect(response).to have_gitlab_http_status(status)
+
+      expect(Gitlab::Json.parse(response.body)['message']).to eq(body_message) if body_message
     end
   end
 end

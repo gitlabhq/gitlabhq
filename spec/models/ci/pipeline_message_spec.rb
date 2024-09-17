@@ -58,11 +58,11 @@ RSpec.describe Ci::PipelineMessage, feature_category: :continuous_integration do
     let(:pipeline_message) { create(:ci_pipeline_message, pipeline: pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns the same partition id as the one that pipeline has' do
-      expect(pipeline_message.partition_id).to eq(ci_testing_partition_id)
+      expect(pipeline_message.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

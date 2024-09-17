@@ -37,5 +37,10 @@ module Namespaces
 
       groups.by_min_access_level(current_user, params[:min_access_level])
     end
+
+    def apply_filters(groups)
+      by_search(groups)
+      .then { |filtered_groups| by_min_access_level(filtered_groups) }
+    end
   end
 end

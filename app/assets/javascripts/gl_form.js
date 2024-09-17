@@ -83,6 +83,12 @@ export default class GLForm {
     if (this.textarea.data('autofocus') === true) this.textarea.focus();
   }
 
+  updateAutocompleteDataSources(dataSources) {
+    if (this.autoComplete) {
+      this.autoComplete.updateDataSources(dataSources);
+    }
+  }
+
   setupAutosize() {
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('autosize:resized').on('autosize:resized', this.setHeightData.bind(this));

@@ -1271,37 +1271,65 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '.available_integration_names' do
     subject { described_class.available_integration_names }
 
+    it { is_expected.not_to include('jira_cloud_app') }
+
+    context 'when instance is configured for Jira Cloud app' do
+      before do
+        stub_application_setting(jira_connect_application_key: 'mock_app_oauth_key')
+      end
+
+      it { is_expected.to include('jira_cloud_app') }
+    end
+  end
+
+  describe '.available_integration_names (stubbed)' do
+    subject { described_class.available_integration_names }
+
     before do
       allow(described_class).to receive_messages(
         integration_names: %w[foo disabled],
-        project_specific_integration_names: ['bar'],
-        dev_integration_names: ['baz'],
-        instance_specific_integration_names: ['instance-specific'],
+        project_specific_integration_names: ['project'],
+        project_and_group_specific_integration_names: ['project-and-group'],
+        dev_integration_names: ['dev'],
+        instance_specific_integration_names: ['instance'],
         disabled_integration_names: ['disabled']
       )
     end
 
-    it { is_expected.to include('foo', 'bar', 'baz') }
+    it { is_expected.to include('foo', 'project', 'project-and-group', 'instance', 'dev') }
+    it { is_expected.not_to include('disabled') }
 
     context 'when `include_project_specific` is false' do
       subject { described_class.available_integration_names(include_project_specific: false) }
 
-      it { is_expected.to include('foo', 'baz', 'instance-specific') }
-      it { is_expected.not_to include('bar', 'disabled') }
+      it { is_expected.to include('foo', 'dev', 'project-and-group', 'instance') }
+      it { is_expected.not_to include('project', 'disabled') }
     end
 
     context 'when `include_dev` is false' do
       subject { described_class.available_integration_names(include_dev: false) }
 
-      it { is_expected.to include('foo', 'bar', 'instance-specific') }
-      it { is_expected.not_to include('baz', 'disabled') }
+      it { is_expected.to include('foo', 'project', 'project-and-group', 'instance') }
+      it { is_expected.not_to include('dev', 'disabled') }
     end
 
     context 'when `include_instance_specific` is false' do
       subject { described_class.available_integration_names(include_instance_specific: false) }
 
-      it { is_expected.to include('foo', 'baz', 'bar') }
-      it { is_expected.not_to include('instance-specific', 'disabled') }
+      it { is_expected.to include('foo', 'dev', 'project', 'project-and-group') }
+      it { is_expected.not_to include('instance', 'disabled') }
+    end
+
+    context 'when `include_project_specific` and `include_group_specific` are false' do
+      subject do
+        described_class.available_integration_names(
+          include_project_specific: false,
+          include_group_specific: false
+        )
+      end
+
+      it { is_expected.to include('foo', 'dev', 'instance') }
+      it { is_expected.not_to include('project', 'project-and-group', 'disabled') }
     end
 
     context 'when `include_disabled` is true' do
@@ -1316,22 +1344,6 @@ RSpec.describe Integration, feature_category: :integrations do
 
     it { is_expected.to include(*described_class::INTEGRATION_NAMES - ['jira_cloud_app']) }
     it { is_expected.to include('gitlab_slack_application') }
-
-    context 'when instance is configured for Jira Cloud app' do
-      before do
-        stub_application_setting(jira_connect_application_key: 'mock_app_oauth_key')
-      end
-
-      it { is_expected.to include('jira_cloud_app') }
-
-      context 'when the enable_jira_connect_configuration flag is disabled' do
-        before do
-          stub_feature_flags(enable_jira_connect_configuration: false)
-        end
-
-        it { is_expected.not_to include('jira_cloud_app') }
-      end
-    end
 
     context 'when Rails.env is not test' do
       before do
@@ -1361,7 +1373,7 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '.project_specific_integration_names' do
     subject { described_class.project_specific_integration_names }
 
-    it { is_expected.to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES) }
+    it { is_expected.to include(*described_class::PROJECT_LEVEL_ONLY_INTEGRATION_NAMES) }
     it { is_expected.not_to include('gitlab_slack_application') }
 
     context 'when feature flag is disabled' do

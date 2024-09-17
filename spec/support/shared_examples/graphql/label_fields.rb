@@ -106,6 +106,16 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
       end
     end
 
+    context 'title search' do
+      let(:labels_params) { { title: label_a.title } }
+
+      it 'finds the labels with exact title matching' do
+        expect(labels_response.pluck('title')).to contain_exactly(
+          label_a.title
+        )
+      end
+    end
+
     context 'the label does not exist' do
       let(:label_title) { 'not-a-label' }
 

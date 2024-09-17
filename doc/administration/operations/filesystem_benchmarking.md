@@ -107,9 +107,9 @@ executed, and then reads the same 1,000 files.
 
 1. Remove the test files:
 
-  ```shell
-  cd ../; rm -rf test
-  ```
+   ```shell
+   cd ../; rm -rf test
+   ```
 
 The output of the `time for ...` commands resemble the following. The
 important metric is the `real` time.

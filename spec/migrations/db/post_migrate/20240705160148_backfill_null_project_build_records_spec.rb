@@ -4,7 +4,10 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe BackfillNullProjectBuildRecords, migration: :gitlab_ci, feature_category: :database do
-  let!(:pipeline_with_project) { table(:ci_pipelines, database: :ci).create!(project_id: 10, partition_id: 100) }
+  let!(:pipeline_with_project) do
+    table(:ci_pipelines, primary_key: :id, database: :ci).create!(project_id: 10, partition_id: 100)
+  end
+
   let(:builds_table) { table(:p_ci_builds, database: :ci) }
   let!(:build_to_be_backfilled) do
     builds_table.create!(name: "backfilled", commit_id: pipeline_with_project.id, partition_id: 100)

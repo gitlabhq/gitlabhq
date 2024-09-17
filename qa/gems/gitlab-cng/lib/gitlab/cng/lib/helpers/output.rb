@@ -16,6 +16,22 @@ module Gitlab
           error: :red
         }.freeze
 
+        class << self
+          # Global instance of rainbow colorization class
+          #
+          # @return [Rainbow]
+          def rainbow
+            @rainbow ||= Rainbow.new.tap { |rb| rb.enabled = true if @force_color }
+          end
+
+          # Force color output
+          #
+          # @return [Boolean]
+          def force_color!
+            @force_color = true
+          end
+        end
+
         private
 
         # Print colorized log message to stdout
@@ -44,7 +60,7 @@ module Gitlab
         # @param [Boolean] bright
         # @return [String]
         def colorize(message, color, bright: false)
-          rainbow.wrap(message)
+          Output.rainbow.wrap(message)
             .then { |m| bright ? m.bright : m }
             .then { |m| color ? m.color(color) : m }
         end
@@ -60,13 +76,6 @@ module Gitlab
           raise ArgumentError, "secrets must be an array of strings" unless secrets.is_a?(Array) && secrets.all?(String)
 
           message.gsub(/#{secrets.join('|')}/, "*****")
-        end
-
-        # Instance of rainbow colorization class
-        #
-        # @return [Rainbow]
-        def rainbow
-          @rainbow ||= Rainbow.new
         end
       end
     end

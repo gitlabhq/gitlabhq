@@ -18,7 +18,7 @@ RSpec.describe 'Namespace Pages Deployments query', feature_category: :pages do
         # primary deployment, inactive
         create(:pages_deployment, project: project, deleted_at: Time.now - 2.hours),
         # versioned deployment, still active
-        create(:pages_deployment, project: project, path_prefix: 'foo'),
+        create(:pages_deployment, project: project, path_prefix: 'foo', expires_at: 1.day.from_now),
         # versioned deployment, inactive
         create(:pages_deployment, project: project, path_prefix: 'foo', deleted_at: Time.now - 2.hours)
       ]
@@ -65,6 +65,7 @@ RSpec.describe 'Namespace Pages Deployments query', feature_category: :pages do
       'rootDirectory' => deployment.root_directory,
       'size' => deployment.size,
       'updatedAt' => deployment.updated_at.iso8601,
+      'expiresAt' => deployment.expires_at&.iso8601,
       'url' => deployment.url
     }
   end

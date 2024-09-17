@@ -36,7 +36,7 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-reply-holder gl-flex clearfix">
+  <div class="discussion-reply-holder clearfix gl-flex">
     <template v-if="userCanReply">
       <slot v-if="hasForm" name="form"></slot>
       <template v-else-if="renderReplyPlaceholder">

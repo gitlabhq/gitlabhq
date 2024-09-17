@@ -17,7 +17,7 @@
         %p.gl-mb-0
           = s_("SlackIntegration|You don't have to reauthorize this application if the permission scope changes in future releases.")
       - c.with_footer do
-        .gl-display-flex
+        .gl-flex
           = form_tag profile_chat_names_path, method: :post do
             = hidden_field_tag :token, @chat_name_token.token
             = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger, button_options: { data: { testid: 'authorize-button' } }) do

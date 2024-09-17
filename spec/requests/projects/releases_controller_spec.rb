@@ -53,7 +53,7 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
 
             expect(response).to render_template(:redirect)
             expect(response.body).to have_text(_("You are being redirected away from GitLab"))
-            expect(response.body).to have_link(_(redirect_text))
+            expect(response.body).to have_link(_(redirect_text), href: external_redirect_url)
           end
         end
       end

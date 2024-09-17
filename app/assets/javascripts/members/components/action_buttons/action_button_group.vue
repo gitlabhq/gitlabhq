@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-justify-content-end -gl-mx-1">
+  <div class="-gl-mx-1 gl-flex gl-items-center gl-justify-end">
     <slot></slot>
   </div>
 </template>

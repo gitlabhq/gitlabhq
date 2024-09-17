@@ -79,7 +79,7 @@ module Projects::ProjectMembersHelper
 
     if include_relations.include?(:inherited)
       group_group_links = project.group_group_links.distinct_on_shared_with_group_id_with_group_access
-      group_group_links = group_group_links.search(search) if search
+      group_group_links = group_group_links.search(search, include_parents: true) if search
       members += group_group_links_serialized(project, group_group_links)
     end
 

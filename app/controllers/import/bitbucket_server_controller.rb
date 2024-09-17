@@ -25,8 +25,7 @@ class Import::BitbucketServerController < Import::BaseController
   VALID_BITBUCKET_PROJECT_CHARS = /\A~?[\w\-\.\s]+\z/
   VALID_BITBUCKET_CHARS = /\A[\w\-\.\s]+\z/
 
-  def new
-  end
+  def new; end
 
   def create
     repo = client.repo(@project_key, @repo_slug)

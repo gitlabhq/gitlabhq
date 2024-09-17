@@ -1,10 +1,11 @@
 <script>
-import { GlBadge, GlIntersectionObserver, GlLink } from '@gitlab/ui';
+import { GlBadge, GlIntersectionObserver, GlLink, GlSprintf } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { issuableStatusText, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
+import { STATUS_OPEN, STATUS_REOPENED, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import { __, s__ } from '~/locale';
 
 export default {
   WORKSPACE_PROJECT,
@@ -13,6 +14,7 @@ export default {
     GlBadge,
     GlIntersectionObserver,
     GlLink,
+    GlSprintf,
     HiddenBadge,
     ImportedBadge,
     LockedBadge,
@@ -38,7 +40,7 @@ export default {
       required: false,
       default: false,
     },
-    issuableStatus: {
+    issuableState: {
       type: String,
       required: true,
     },
@@ -55,16 +57,52 @@ export default {
       type: String,
       required: true,
     },
+    duplicatedToIssueUrl: {
+      type: String,
+      required: true,
+    },
+    movedToIssueUrl: {
+      type: String,
+      required: true,
+    },
+    promotedToEpicUrl: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
+    isOpen() {
+      return this.issuableState === STATUS_OPEN || this.issuableState === STATUS_REOPENED;
+    },
     isClosed() {
-      return this.issuableStatus === STATUS_CLOSED;
+      return this.issuableState === STATUS_CLOSED;
     },
     statusIcon() {
       return this.isClosed ? 'issue-close' : 'issue-open-m';
     },
     statusText() {
-      return issuableStatusText[this.issuableStatus];
+      if (this.isOpen) {
+        return __('Open');
+      }
+      if (this.closedStatusLink) {
+        return s__('IssuableStatus|Closed (%{link})');
+      }
+      return s__('IssuableStatus|Closed');
+    },
+    closedStatusLink() {
+      return this.duplicatedToIssueUrl || this.movedToIssueUrl || this.promotedToEpicUrl;
+    },
+    closedStatusText() {
+      if (this.duplicatedToIssueUrl) {
+        return s__('IssuableStatus|duplicated');
+      }
+      if (this.movedToIssueUrl) {
+        return s__('IssuableStatus|moved');
+      }
+      if (this.promotedToEpicUrl) {
+        return s__('IssuableStatus|promoted');
+      }
+      return '';
     },
     statusVariant() {
       return this.isClosed ? 'info' : 'success';
@@ -78,12 +116,22 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="show"
-        class="issue-sticky-header gl-fixed gl-z-3 gl-bg-default gl-border-b gl-py-3"
+        class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-3"
         data-testid="issue-sticky-header"
       >
-        <div class="issue-sticky-header-text gl-flex gl-items-center gl-gap-2 gl-mx-auto">
+        <div class="issue-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-2">
           <gl-badge :variant="statusVariant" :icon="statusIcon" class="gl-shrink-0">
-            {{ statusText }}
+            <gl-sprintf v-if="closedStatusLink" :message="statusText">
+              <template #link>
+                <gl-link
+                  data-testid="sticky-header-closed-status-link"
+                  class="!gl-text-inherit gl-underline"
+                  :href="closedStatusLink"
+                  >{{ closedStatusText }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+            <template v-else>{{ statusText }}</template>
           </gl-badge>
           <confidentiality-badge
             v-if="isConfidential"
@@ -94,11 +142,7 @@ export default {
           <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
           <imported-badge v-if="isImported" :importable-type="issuableType" />
 
-          <gl-link
-            class="gl-font-bold gl-text-black-normal gl-text-truncate"
-            href="#top"
-            :title="title"
-          >
+          <gl-link class="gl-truncate gl-font-bold gl-text-default" href="#top" :title="title">
             {{ title }}
           </gl-link>
         </div>

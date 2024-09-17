@@ -10,7 +10,7 @@
       %h4.gl-my-0
         = page_title
   %p.gl-text-secondary
-    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens') }
+    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens.md') }
     - if current_user.can?(:create_resource_access_tokens, @project)
       = _('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
       = _('You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}').html_safe % { link_start: help_link_start, link_end: '</a>'.html_safe }

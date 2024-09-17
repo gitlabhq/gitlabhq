@@ -60,7 +60,7 @@ export default {
       <div class="gl-inline-flex gl-items-center">
         <gl-icon
           :name="itemType(item)"
-          class="gl-mr-3 gl-flex-shrink-0"
+          class="gl-mr-3 gl-shrink-0"
           :data-testid="`token-access-${itemType(item)}-icon`"
         />
         <project-avatar

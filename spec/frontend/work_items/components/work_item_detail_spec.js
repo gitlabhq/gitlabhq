@@ -24,6 +24,7 @@ import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vu
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import { i18n } from '~/work_items/constants';
+import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
@@ -32,6 +33,7 @@ import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed
 import {
   mockParent,
   workItemByIidResponseFactory,
+  workItemQueryResponse,
   objectiveType,
   epicType,
   mockWorkItemCommentNote,
@@ -46,7 +48,10 @@ describe('WorkItemDetail component', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemByIidQueryResponse = workItemByIidResponseFactory({
+    canUpdate: true,
+    canDelete: true,
+  });
   const workItemQueryResponseWithNoPermissions = workItemByIidResponseFactory({
     canUpdate: false,
     canDelete: false,
@@ -56,12 +61,13 @@ describe('WorkItemDetail component', () => {
     canUpdate: true,
     canDelete: true,
   });
-  const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const workItemByIdQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const successHandler = jest.fn().mockResolvedValue(workItemByIidQueryResponse);
   const successHandlerWithNoPermissions = jest
     .fn()
     .mockResolvedValue(workItemQueryResponseWithNoPermissions);
   const showModalHandler = jest.fn();
-  const { id } = workItemQueryResponse.data.workspace.workItem;
+  const { id } = workItemByIidQueryResponse.data.workspace.workItem;
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
@@ -93,32 +99,36 @@ describe('WorkItemDetail component', () => {
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
 
   const createComponent = ({
-    isGroup = false,
     isModal = false,
     isDrawer = false,
     updateInProgress = false,
+    workItemId = '',
     workItemIid = '1',
     handler = successHandler,
+    workItemByIdHandler = workItemByIdQueryHandler,
     mutationHandler,
     error = undefined,
     workItemsAlphaEnabled = false,
-    workItemsBeta = false,
     namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
     router = true,
+    modalIsGroup = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, handler],
+        [workItemByIdQuery, workItemByIdHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
         [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
+        workItemId,
         isModal,
         workItemIid,
         isDrawer,
+        modalIsGroup,
       },
       data() {
         return {
@@ -129,18 +139,11 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
-          workItemsBeta,
           namespaceLevelWorkItems,
         },
-        hasIssueWeightsFeature: true,
-        hasIterationsFeature: true,
-        hasOkrsFeature: true,
         hasSubepicsFeature,
-        hasIssuableHealthStatusFeature: true,
-        projectNamespace: 'namespace',
         fullPath: 'group/project',
         groupPath: 'group',
-        isGroup,
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {
@@ -469,8 +472,28 @@ describe('WorkItemDetail component', () => {
     expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
   });
 
-  it('skips calling the work item query when there is no workItemIid', async () => {
-    createComponent({ workItemIid: null });
+  it('calls the work item query by workItemId', async () => {
+    const workItemId = workItemQueryResponse.data.workItem.id;
+    createComponent({ workItemId });
+    await waitForPromises();
+
+    expect(workItemByIdQueryHandler).toHaveBeenCalledWith({ id: workItemId });
+    expect(successHandler).not.toHaveBeenCalled();
+  });
+
+  it('shows work item modal if "show" query param set', async () => {
+    const workItemId = workItemQueryResponse.data.workItem.id;
+    setWindowLocation(`?show=${workItemId}`);
+
+    createComponent();
+    await waitForPromises();
+
+    expect(findModal().exists()).toBe(true);
+    expect(findModal().props('workItemId')).toBe(workItemId);
+  });
+
+  it('skips calling the work item query when there is no workItemIid and no workItemId', async () => {
+    createComponent({ workItemIid: null, workItemId: null });
     await waitForPromises();
 
     expect(successHandler).not.toHaveBeenCalled();
@@ -674,7 +697,7 @@ describe('WorkItemDetail component', () => {
       createComponent();
       await waitForPromises();
 
-      const { confidential } = workItemQueryResponse.data.workspace.workItem;
+      const { confidential } = workItemByIidQueryResponse.data.workspace.workItem;
 
       expect(findNotesWidget().exists()).toBe(true);
       expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
@@ -867,6 +890,15 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
         expect(findEditButton().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('calculates correct isGroup prop for attributes wrapper', () => {
+    it('equal to modalIsGroup prop when provided', async () => {
+      createComponent({ modalIsGroup: true });
+      await waitForPromises();
+
+      expect(findWorkItemAttributesWrapper().props('isGroup')).toBe(true);
     });
   });
 });

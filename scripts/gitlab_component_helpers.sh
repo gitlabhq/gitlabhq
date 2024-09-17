@@ -47,6 +47,11 @@ export GITLAB_WORKHORSE_TREE=${GITLAB_WORKHORSE_TREE:-$(git rev-parse HEAD:workh
 export GITLAB_WORKHORSE_PACKAGE="workhorse-${GITLAB_WORKHORSE_TREE}.tar.gz"
 export GITLAB_WORKHORSE_PACKAGE_URL="${API_PACKAGES_BASE_URL}/${GITLAB_WORKHORSE_FOLDER}/${GITLAB_WORKHORSE_TREE}/${GITLAB_WORKHORSE_PACKAGE}"
 
+# Graphql Schema dump constants
+export GRAPHQL_SCHEMA_PACKAGE="graphql-schema.tar.gz"
+export GRAPHQL_SCHEMA_PATH="tmp/tests/graphql/"
+export GRAPHQL_SCHEMA_PACKAGE_URL="${API_PACKAGES_BASE_URL}/graphql-schema/master/${GRAPHQL_SCHEMA_PACKAGE}"
+
 # Assets constants
 export GITLAB_ASSETS_PATHS_LIST="cached-assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/"
 export GITLAB_ASSETS_PACKAGE_VERSION="v2" # bump this version each time GITLAB_ASSETS_PATHS_LIST is changed
@@ -172,6 +177,11 @@ function check_fixtures_reuse() {
 
 function create_fixtures_package() {
   create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
+}
+
+function create_and_upload_graphql_schema_package() {
+  create_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PATH}"
+  upload_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PACKAGE_URL}"
 }
 
 function download_and_extract_fixtures() {

@@ -5,11 +5,11 @@ module Types
     graphql_name 'Todo'
     description 'Representing a to-do entry'
 
+    connection_type_class Types::CountableConnectionType
+
     present_using TodoPresenter
 
     authorize :read_todo
-
-    connection_type_class Types::CountableConnectionType
 
     field :id, GraphQL::Types::ID,
       description: 'ID of the to-do item.',
@@ -34,11 +34,21 @@ module Types
     field :target, Types::TodoableInterface,
       description: 'Target of the to-do item.',
       calls_gitaly: true,
+      deprecated: { reason: 'Use `target_entity` field', milestone: '17.4' },
       null: false
+
+    field :target_entity, Types::TodoableInterface,
+      description: 'Target of the to-do item',
+      calls_gitaly: true,
+      null: true
 
     field :target_type, Types::TodoTargetEnum,
       description: 'Target type of the to-do item.',
       null: false
+
+    field :target_url, GraphQL::Types::String, # rubocop:disable GraphQL/ExtractType -- Target already exists
+      description: 'URL of the to-do item target.',
+      null: true
 
     field :body, GraphQL::Types::String,
       description: 'Body of the to-do item.',
@@ -57,6 +67,10 @@ module Types
       description: 'Note which created this to-do item.',
       null: true
 
+    field :member_access_type, GraphQL::Types::String,
+      description: 'Access type of access request to-do items.',
+      null: true
+
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
     end
@@ -70,6 +84,10 @@ module Types
     end
 
     def target
+      target_entity
+    end
+
+    def target_entity
       if object.for_commit?
         Gitlab::Graphql::Loaders::BatchCommitLoader.new(
           container_class: Project,

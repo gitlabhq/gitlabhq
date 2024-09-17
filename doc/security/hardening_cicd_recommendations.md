@@ -44,7 +44,7 @@ of the users of a project. They are a core component of CD/CD.
 
 By default, only the default branch gets a protected pipeline. An owner of a project
 can ensure that other branches are protected by
-[configuring a protected branch](../user/project/protected_branches.md).
+[configuring a protected branch](../user/project/repository/branches/protected.md).
 This allows for more restricted security on pipelines. For more information, see
 [pipeline security on a protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 

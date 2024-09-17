@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'diff_match_patch'
 
-RSpec.describe Gitlab::Diff::CharDiff do
+RSpec.describe Gitlab::Diff::CharDiff, feature_category: :product_planning do
   let(:old_string) { "Helo \n Worlld" }
   let(:new_string) { "Hello \n World" }
 
@@ -74,6 +74,23 @@ RSpec.describe Gitlab::Diff::CharDiff do
         '<span class="idiff deletion">l</span>' \
         '<span class="idiff">d</span>'
       )
+    end
+
+    context 'when changes involve newlines' do
+      let(:old_string) { "Hello\nWorld" }
+      let(:new_string) { "Hello World\n" }
+
+      it 'replaces newlines with ↵' do
+        subject.generate_diff
+
+        expect(subject.to_html).to eq(
+          '<span class="idiff">Hello</span>' \
+          "<span class=\"idiff deletion\">↵\n</span>" \
+          '<span class="idiff addition"> </span>' \
+          '<span class="idiff">World</span>' \
+          "<span class=\"idiff addition\">↵\n</span>"
+        )
+      end
     end
   end
 end

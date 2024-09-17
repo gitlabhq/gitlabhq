@@ -1,4 +1,4 @@
-# Error: gitlab.InternalLinksCode
+# Error: gitlab_docs.InternalLinksCode
 #
 # Checks that internal links don't link to files outside the docs directory
 #

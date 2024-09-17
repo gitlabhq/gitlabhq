@@ -47,6 +47,11 @@ domains:
       - insider_threat
       - instance_resiliency
 
+  AppConfig:
+    description: Top-level configuration at the GitLab instance level
+    feature_categories:
+      - settings
+
   AuditEvents:
     description:
     feature_categories:
@@ -79,7 +84,6 @@ domains:
     feature_categories:
       - continuous_integration
       - pipeline_composition
-      - secrets_management
       - fleet_visibility
       - job_artifacts
       - pipeline_reports
@@ -112,11 +116,6 @@ domains:
     feature_categories:
       - container_registry
 
-  DependencyManagement:
-    description:
-    feature_categories:
-      - dependency_management
-
   DependencyProxy:
     description: Dependency Proxy for container images.
     feature_categories:
@@ -142,11 +141,12 @@ domains:
       - geo_replication
 
   GitlabSubscriptions:
-    description:
+    description: Managing subscription related code for GitLab.com and Self-Managed
     feature_categories:
       - seat_cost_management
       - plan_provisioning
       - subscription_management
+      - add-on_provisioning
 
   Import:
     description:
@@ -242,6 +242,11 @@ domains:
     feature_categories:
       - groups_and_projects
 
+  ResourceAccessTokens:
+    description: Managing groups and projects access tokens
+    feature_categories:
+      - system_access
+
   Releases:
     description:
     feature_categories:
@@ -251,7 +256,7 @@ domains:
   RemoteDevelopment:
     description:
     feature_categories:
-      - remote_development
+      - workspaces
 
   Repositories:
     description: Git repositories and workflow including Gitaly client
@@ -270,6 +275,11 @@ domains:
     feature_categories:
       - global_search
 
+  SecretsManagement:
+    description: Management of native and external secrets
+    feature_categories:
+      - secrets_management
+
   Security:
     description: Manage and execute security scanners and policies
     feature_categories:
@@ -278,6 +288,7 @@ domains:
       - security_policy_management
       - software_composition_analysis
       - static_application_security_testing
+      - secret_detection
 
   ServiceDesk:
     description:

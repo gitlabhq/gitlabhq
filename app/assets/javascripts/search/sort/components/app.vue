@@ -100,7 +100,7 @@ export default {
       v-model="selectedSortOptionTitle"
       placement="bottom-end"
       class="gl-z-1"
-      toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+      toggle-class="!gl-rounded-tr-none !gl-rounded-br-none"
       :toggle-text="selectedSortOptionTitle"
       :items="listboxOptions"
       @select="handleSortChange"

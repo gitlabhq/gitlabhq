@@ -114,7 +114,7 @@ Prerequisites:
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 
-### GitLab self-managed and GitLab Dedicated
+### GitLab self-managed
 
 Prerequisites:
 
@@ -175,8 +175,9 @@ If you are assigning a custom role to an existing:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage > Members**.
-1. Select the **Max role** dropdown list for the member you want to select a custom role for.
-1. On the **Change role** dialog, select a different custom role.
+1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
+1. Using the **Role** dropdown list, select the custom role you want to assign to the member.
+1. Select **Update role** to assign the role.
 
 ### Use the API to assign a custom role
 
@@ -225,8 +226,9 @@ To remove a custom role from a group member:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
-1. Select the **Max role** dropdown list for the member you want to remove a custom role from.
-1. On the **Change role** dialog, select a default role.
+1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
+1. Using the **Role** dropdown list, select the default role you want to assign to the member.
+1. Select **Update role** to assign the role.
 
 ### Use the API to change user role
 
@@ -243,7 +245,7 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 ## Inheritance
 
 If a user belongs to a group, they are a _direct member_ of the group
-and an [inherited member](project/members/index.md#inherited-membership)
+and an [inherited member](project/members/index.md#membership-types)
 of any subgroups or projects. If a user is assigned a custom role
 by the top-level group, the permissions of the role are also inherited by subgroups
 and projects.
@@ -269,6 +271,38 @@ This does not apply when the user's custom role only has the `read_code` permiss
 enabled. Guest users with that specific permission only are not considered billable users
 and do not use a seat.
 
+## Assign a custom role to an invited group
+
+> - Support for custom roles for invited groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) in GitLab 17.4 behind a feature flag named `assign_custom_roles_to_group_links_sm`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+When a group is invited to another group with a custom role, the following rules determine each user's custom permissions in the new group:
+
+- When a user has a custom permission in one group with a base access level that is the same or higher than the default role in the other group, the user's maximum role is the default role. That is, the user is granted the lower of the two access levels.
+- When a user is invited with a custom permission with the same base access level as their original group, the user is always granted the custom permission from their original group.
+
+For example, let's say we have 5 users in Group A, and they are assigned the following roles:
+
+- User A: Guest role
+- User B: Guest role + `read_code` custom permission
+- User C: Guest role + `read_vulnerability` custom permission
+- User D: Developer role
+- User E: Developer + `admin_vulnerability` custom permission
+
+Group B invites Group A. The following table shows the maximum role that each the users in Group A will have in Group B:
+
+| Scenario                                                       | User A | User B              | User C                       | User D    | User E                            |
+|----------------------------------------------------------------|--------|---------------------|------------------------------|-----------|-----------------------------------|
+| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest     | Guest                             |
+| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
+| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
+| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer                         |
+| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer + `admin_vulnerability` |
+
+When User C is invited to Group B with the same default role (Guest), but different custom permissions with the same base access level (`read_code` and `read_vulnerability`), User C retains the custom permission from Group A (`read_vulnerability`).
+
 ## Supported objects
 
 You can assign custom roles and permissions to the following:
@@ -284,8 +318,7 @@ You can assign custom roles and permissions to the following:
 You can sync users to custom roles with following authentication providers:
 
 - See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
-- LDAP Group Links are not supported, but [issue 435229](https://gitlab.com/gitlab-org/gitlab/-/issues/435229)
-  proposes to change this.
+- See [Manage group memberships via LDAP](group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
 ## Known issues
 

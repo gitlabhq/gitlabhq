@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController, feature_category: :user_profile do
+RSpec.describe RegistrationsController, :with_current_organization, feature_category: :user_profile do
   include TermsHelper
   include FullNameHelper
 
@@ -209,7 +209,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
                   category: 'RegistrationsController',
                   action: 'accepted',
                   label: 'invite_email',
-                  property: member.id.to_s,
                   user: member.reload.user
                 )
               end
@@ -505,17 +504,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       expect(User.last.name).to eq full_name(base_user_params[:first_name], base_user_params[:last_name])
     end
 
-    it 'sets the caller_id in the context' do
-      expect(controller).to receive(:create).and_wrap_original do |m, *args|
-        m.call(*args)
-
-        expect(Gitlab::ApplicationContext.current)
-          .to include('meta.caller_id' => 'RegistrationsController#create')
-      end
-
-      subject
-    end
-
     context 'when the password is weak' do
       render_views
       let_it_be(:new_user_params) { { new_user: base_user_params.merge({ password: "password" }) } }
@@ -717,17 +705,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
         expect_failure(s_('Profiles|You must accept the Terms of Service in order to perform this action.'))
       end
-    end
-
-    it 'sets the username and caller_id in the context' do
-      expect(controller).to receive(:destroy).and_wrap_original do |m, *args|
-        m.call(*args)
-
-        expect(Gitlab::ApplicationContext.current)
-          .to include('meta.user' => user.username, 'meta.caller_id' => 'RegistrationsController#destroy')
-      end
-
-      post :destroy
     end
   end
 end

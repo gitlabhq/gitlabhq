@@ -11,15 +11,13 @@ import { frecentProjectsMock } from '../../../mock_data';
 
 Vue.use(VueApollo);
 
-describe('FrequentlyVisitedProjects', () => {
-  let wrapper;
+const TEST_PROJECTS_PATH = '/mock/project/path';
 
-  const projectsPath = '/mock/project/path';
-  const currentUserFrecentProjectsQueryHandler = jest.fn().mockResolvedValue({
-    data: {
-      frecentProjects: frecentProjectsMock,
-    },
-  });
+describe('FrequentlyVisitedProjects', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
+  let wrapper;
+  /** @type {jest.Mock} */
+  let currentUserFrecentProjectsQueryHandler;
 
   const createComponent = (options) => {
     const mockApollo = createMockApollo([
@@ -29,7 +27,7 @@ describe('FrequentlyVisitedProjects', () => {
     wrapper = shallowMount(FrequentProjects, {
       apolloProvider: mockApollo,
       provide: {
-        projectsPath,
+        projectsPath: TEST_PROJECTS_PATH,
       },
       ...options,
     });
@@ -41,6 +39,14 @@ describe('FrequentlyVisitedProjects', () => {
     ...wrapperInstance.vm.$attrs,
   });
 
+  beforeEach(() => {
+    currentUserFrecentProjectsQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        frecentProjects: frecentProjectsMock,
+      },
+    });
+  });
+
   it('passes project-specific props', () => {
     createComponent();
 
@@ -49,7 +55,7 @@ describe('FrequentlyVisitedProjects', () => {
       groupName: 'Frequently visited projects',
       viewAllItemsIcon: 'project',
       viewAllItemsText: 'View all my projects',
-      viewAllItemsPath: projectsPath,
+      viewAllItemsPath: TEST_PROJECTS_PATH,
     });
   });
 
@@ -94,6 +100,23 @@ describe('FrequentlyVisitedProjects', () => {
     it('emits action on click', () => {
       findFrequentItems().vm.$emit('action');
       expect(wrapper.emitted('action')).toStrictEqual([[FREQUENTLY_VISITED_PROJECTS_HANDLE]]);
+    });
+  });
+
+  describe('when query returns null', () => {
+    beforeEach(async () => {
+      currentUserFrecentProjectsQueryHandler = jest.fn().mockResolvedValue({
+        data: {
+          frecentProjects: null,
+        },
+      });
+
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('passes empty array to items', () => {
+      expect(findFrequentItems().props('items')).toEqual([]);
     });
   });
 });

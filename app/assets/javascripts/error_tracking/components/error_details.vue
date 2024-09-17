@@ -298,11 +298,11 @@ export default {
       </gl-alert>
 
       <div
-        class="error-details-header gl-border-b gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-py-3 gl-justify-content-space-between"
+        class="error-details-header gl-border-b gl-flex gl-flex-col gl-justify-between gl-py-3 md:gl-flex-row"
       >
         <div
           v-if="!loadingStacktrace && stacktrace"
-          class="gl-my-auto gl-text-truncate"
+          class="gl-my-auto gl-truncate"
           data-testid="reported-text"
         >
           <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
@@ -346,7 +346,7 @@ export default {
               ref="sentryIssueForm"
               :action="projectIssuesPath"
               method="POST"
-              class="gl-display-inline-block gl-ml-3"
+              class="gl-ml-3 gl-inline-block"
             >
               <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
               <input name="issue[description]" :value="issueDescription" type="hidden" />
@@ -380,7 +380,7 @@ export default {
       </div>
       <div>
         <tooltip-on-truncate :title="error.title" truncate-target="child" placement="top">
-          <h2 class="gl-text-truncate">{{ error.title }}</h2>
+          <h2 class="gl-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
           <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="gl-mr-3">

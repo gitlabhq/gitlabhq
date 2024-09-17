@@ -1,6 +1,6 @@
-.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between.gl-align-items-center.gl-pt-3
-  .gl-my-3.gl-display-flex.gl-align-items-center.gl-gap-3
-    %h1.page-title.gl-font-size-h-display.gl-m-0
+.gl-flex.gl-flex-wrap.gl-justify-between.gl-items-center.gl-pt-3
+  .gl-my-3.gl-flex.gl-items-center.gl-gap-3
+    %h1.page-title.gl-text-size-h-display.gl-m-0
       = @user.name
     - if @user.blocked_pending_approval?
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Pending approval'), variant: :warning)
@@ -19,7 +19,7 @@
     = render_if_exists 'admin/users/auditor_user_badge'
     = render_if_exists 'admin/users/gma_user_badge'
 
-  .gl-my-3.gl-display-flex.gl-flex-wrap.-gl-my-2.-gl-mx-2
+  .gl-my-3.gl-flex.gl-flex-wrap.-gl-my-2.-gl-mx-2
     - if @user != current_user
       - if impersonation_enabled?
         .gl-p-2

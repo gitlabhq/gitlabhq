@@ -1,10 +1,10 @@
 - group = local_assigns.fetch(:group)
 - remove_form_id = "js-remove-group-#{group.id}-form"
 
-%li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { testid: 'group-row-content' } }
+%li.group-row.gl-py-3.gl-items-center{ class: '!gl-flex', data: { testid: 'group-row-content' } }
   = render Pajamas::AvatarComponent.new(group, size: 32, alt: '')
 
-  .gl-min-w-0.gl-flex-grow-1.gl-ml-3
+  .gl-min-w-0.gl-grow.gl-ml-3
     .title
       = link_to [:admin, group], class: 'group-name', data: { testid: 'group-name-link' } do
         = group.full_name
@@ -13,24 +13,24 @@
       .description
         = markdown_field(group, :description)
 
-  .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex
+  .stats.gl-text-gray-500.gl-shrink-0.gl-hidden.sm:gl-flex
     = gl_badge_tag storage_counter(group.storage_size)
 
     = render_if_exists 'admin/namespace_plan_badge', namespace: group, css_class: 'gl-ml-5 gl-mr-0'
     = render_if_exists 'admin/groups/marked_for_deletion_badge', group: group, css_class: 'gl-ml-5'
 
     %span.gl-ml-5
-      = sprite_icon('bookmark', css_class: 'gl-vertical-align-text-bottom')
+      = sprite_icon('bookmark', css_class: 'gl-align-text-bottom')
       = number_with_delimiter(group.projects.count)
 
     %span.gl-ml-5
-      = sprite_icon('users', css_class: 'gl-vertical-align-text-bottom')
+      = sprite_icon('users', css_class: 'gl-align-text-bottom')
       = number_with_delimiter(group.users_count)
 
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level)
 
-  .controls.gl-flex.gl-flex-shrink-0.gl-ml-5
+  .controls.gl-flex.gl-shrink-0.gl-ml-5
     = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(group), button_options: { id: "edit_#{dom_id(group)}" }) do
       = _('Edit')
 

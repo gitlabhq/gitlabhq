@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Duo Chat
 
 DETAILS:
-**Tier: GitLab.com and Self-managed:** Premium or Ultimate for a limited time. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
+**Tier: GitLab.com and Self-managed:** For a limited time, Premium or Ultimate. In the future, Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). **GitLab Dedicated:** GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
@@ -44,6 +44,9 @@ Visual Studio support is
 You can express interest in other IDE extension support
 [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
+NOTE:
+If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+
 ## The context Chat is aware of
 
 GitLab Duo Chat is sometimes aware of the context you're working in.
@@ -59,12 +62,11 @@ In the GitLab UI, GitLab Duo Chat knows about these areas:
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area                          | How to ask Chat       |
-|-------------------------------|-----------------------|
-| Selected lines in the editor  | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.  |
-| Epics                         | Ask about the URL.    |
-| Issues                        | Ask about the URL.    |
-| Open files                    | Start working in a file, making sure that you have opened the files you want as used as context. For details, see [open tabs as context](../project/repository/code_suggestions/index.md#open-tabs-as-context). |
+| Area    | How to ask Chat  |
+|---------|------------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Epics   | Ask about the URL. |
+| Issues  | Ask about the URL. |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the

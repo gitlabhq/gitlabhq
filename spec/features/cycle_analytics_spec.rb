@@ -52,7 +52,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'shows active stage with empty message' do
-        expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Issue')
+        expect(page).to have_selector('.gl-path-active-item', text: 'Issue')
         expect(page).to have_content("There are 0 items to show in this stage, for these filters, within this time range.")
       end
     end
@@ -174,7 +174,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         visit project_cycle_analytics_path(project, created_before: '2019-12-31', created_after: '2019-11-01', stage_id: 'code', milestone_title: milestone.title)
         wait_for_requests
 
-        expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Code')
+        expect(page).to have_selector('.gl-path-active-item', text: 'Code')
         expect(page.find(".js-daterange-picker-from input").value).to eq("2019-11-01")
         expect(page.find(".js-daterange-picker-to input").value).to eq("2019-12-31")
 

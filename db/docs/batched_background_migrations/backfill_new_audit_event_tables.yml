@@ -5,5 +5,4 @@ feature_category: audit_events
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158316
 milestone: '17.3'
 queued_migration_version: 20240704030747
-finalize_after: '2024-09-20'
 finalized_by: # version of the migration that finalized this BBM

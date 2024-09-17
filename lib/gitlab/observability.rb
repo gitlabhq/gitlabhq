@@ -9,17 +9,14 @@ module Gitlab
     def observability_url
       return ENV['OVERRIDE_OBSERVABILITY_URL'] if ENV['OVERRIDE_OBSERVABILITY_URL']
       # TODO Make observability URL configurable https://gitlab.com/gitlab-org/opstrace/opstrace-ui/-/issues/80
-      return 'https://observe.staging.gitlab.com' if Gitlab.staging?
+      # Dev, test and staging instances can all point to `observe.staging.gitlab.com` by default
+      return 'https://observe.staging.gitlab.com' if Gitlab.staging? || Gitlab.dev_or_test_env?
 
       'https://observe.gitlab.com'
     end
 
-    def oauth_url
-      "#{Gitlab::Observability.observability_url}/v1/auth/start"
-    end
-
-    def provisioning_url(project)
-      "#{Gitlab::Observability.observability_url}/v3/tenant/#{project.id}"
+    def alerts_url
+      "#{Gitlab::Observability.observability_url}/observability/v1/alerts"
     end
 
     def should_enable_observability_auth_scopes?(resource)

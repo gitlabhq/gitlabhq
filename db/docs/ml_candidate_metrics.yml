@@ -1,9 +1,9 @@
 ---
 table_name: ml_candidate_metrics
 classes:
-  - Ml::CandidateMetric
+- Ml::CandidateMetric
 feature_categories:
-  - mlops
+- mlops
 description: Metrics recorded for a Machine Learning model candidate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95168
 milestone: '15.4'
@@ -17,3 +17,4 @@ desired_sharding_key:
         table: ml_candidates
         sharding_key: project_id
         belongs_to: candidate
+desired_sharding_key_migration_job_name: BackfillMlCandidateMetricsProjectId

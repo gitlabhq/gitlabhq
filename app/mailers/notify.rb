@@ -4,7 +4,6 @@ class Notify < ApplicationMailer
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
   include EmailsHelper
-  include ReminderEmailsHelper
   include IssuablesHelper
 
   mattr_accessor :override_layout_lookup_table, default: {}
@@ -34,7 +33,6 @@ class Notify < ApplicationMailer
   helper DiffHelper
   helper BlobHelper
   helper EmailsHelper
-  helper ReminderEmailsHelper
   helper MembersHelper
   helper AvatarsHelper
   helper GitlabRoutingHelper

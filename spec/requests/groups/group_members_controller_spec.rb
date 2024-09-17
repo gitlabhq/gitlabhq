@@ -6,7 +6,7 @@ require_relative '../concerns/membership_actions_shared_examples'
 
 RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:membershipable) { create(:group, :public) }
+  let_it_be(:membershipable) { create(:group, :public, parent: create(:group, :public)) }
 
   let(:membershipable_path) { group_path(membershipable) }
 
@@ -20,7 +20,6 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
 
       expect(response.body).to have_pushed_frontend_feature_flags(importerUserMapping: true)
       expect(response.body).to have_pushed_frontend_feature_flags(serviceAccountsCrud: true)
-      expect(response.body).to have_pushed_frontend_feature_flags(webuiMembersInheritedUsers: true)
     end
   end
 

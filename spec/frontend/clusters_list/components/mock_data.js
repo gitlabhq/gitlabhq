@@ -260,3 +260,151 @@ export const clusterAgents = [
     tokens: null,
   },
 ];
+
+const agentProject = {
+  id: '1',
+  fullPath: 'path/to/project',
+};
+
+const timestamp = '2023-05-12T15:39:58Z';
+
+const agents = [
+  {
+    __typename: 'ClusterAgent',
+    id: '1',
+    name: 'agent-1',
+    webPath: '/agent-1',
+    createdAt: timestamp,
+    userAccessAuthorizations: null,
+    connections: null,
+    tokens: null,
+    project: agentProject,
+  },
+  {
+    __typename: 'ClusterAgent',
+    id: '2',
+    name: 'agent-2',
+    webPath: '/agent-2',
+    createdAt: timestamp,
+    userAccessAuthorizations: null,
+    connections: null,
+    tokens: {
+      nodes: [
+        {
+          id: 'token-1',
+          lastUsedAt: timestamp,
+        },
+      ],
+    },
+    project: agentProject,
+  },
+];
+const ciAccessAuthorizedAgentsNodes = [
+  {
+    agent: {
+      __typename: 'ClusterAgent',
+      id: '3',
+      name: 'ci-agent-1',
+      webPath: 'shared-project/agent-1',
+      createdAt: timestamp,
+      userAccessAuthorizations: null,
+      connections: null,
+      tokens: null,
+      project: agentProject,
+    },
+  },
+];
+const userAccessAuthorizedAgentsNodes = [
+  {
+    agent: {
+      ...agents[0],
+    },
+  },
+];
+
+export const clusterAgentsResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      clusterAgents: {
+        nodes: agents,
+      },
+      ciAccessAuthorizedAgents: {
+        nodes: ciAccessAuthorizedAgentsNodes,
+      },
+      userAccessAuthorizedAgents: {
+        nodes: userAccessAuthorizedAgentsNodes,
+      },
+    },
+  },
+};
+
+const trees = [
+  {
+    id: 'tree-1',
+    name: 'agent-2',
+    path: '.gitlab/agents/agent-2',
+    webPath: '/project/path/.gitlab/agents/agent-2',
+  },
+];
+
+export const treeListResponseData = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      repository: {
+        tree: {
+          trees: { nodes: trees },
+        },
+      },
+    },
+  },
+};
+
+export const expectedAgentsList = [
+  {
+    id: '1',
+    name: 'agent-1',
+    webPath: '/agent-1',
+    configFolder: undefined,
+    status: 'unused',
+    lastContact: null,
+    connections: null,
+    tokens: null,
+    project: agentProject,
+  },
+  {
+    id: '2',
+    name: 'agent-2',
+    configFolder: {
+      name: 'agent-2',
+      path: '.gitlab/agents/agent-2',
+      webPath: '/project/path/.gitlab/agents/agent-2',
+    },
+    webPath: '/agent-2',
+    status: 'active',
+    lastContact: new Date(timestamp).getTime(),
+    connections: null,
+    tokens: {
+      nodes: [
+        {
+          lastUsedAt: timestamp,
+        },
+      ],
+    },
+    project: agentProject,
+  },
+  {
+    id: '3',
+    name: 'ci-agent-1',
+    configFolder: undefined,
+    webPath: 'shared-project/agent-1',
+    status: 'unused',
+    isShared: true,
+    lastContact: null,
+    connections: null,
+    tokens: null,
+    project: agentProject,
+  },
+];

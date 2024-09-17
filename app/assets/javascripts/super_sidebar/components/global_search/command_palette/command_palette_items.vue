@@ -5,10 +5,11 @@ import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import Tracking from '~/tracking';
+import Tracking, { InternalEvents } from '~/tracking';
 import { logError } from '~/lib/logger';
 import { getFormattedItem } from '../utils';
 
+import { EVENT_CLICK_PROJECT_SETTING_IN_COMMAND_PALETTE } from '../tracking_constants';
 import {
   COMMON_HANDLES,
   COMMAND_HANDLE,
@@ -27,6 +28,8 @@ import {
 import SearchItem from './search_item.vue';
 import { commandMapper, linksReducer, autocompleteQuery, fileMapper } from './utils';
 
+const trackingMixin = InternalEvents.mixin();
+
 export default {
   name: 'CommandPaletteItems',
   components: {
@@ -34,7 +37,7 @@ export default {
     GlLoadingIcon,
     SearchItem,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), trackingMixin],
   inject: [
     'commandPaletteCommands',
     'commandPaletteLinks',
@@ -261,6 +264,19 @@ export default {
         this.loading = false;
       }
     },
+    trackingCommands({ text: command }) {
+      if (!this.isCommandMode || !this.searchContext.project?.id) {
+        return;
+      }
+      const isSettings = this.settings.some((setting) => setting.text === command);
+      if (!isSettings) {
+        return;
+      }
+
+      this.trackEvent(EVENT_CLICK_PROJECT_SETTING_IN_COMMAND_PALETTE, {
+        label: command,
+      });
+    },
   },
 };
 </script>
@@ -276,6 +292,7 @@ export default {
         :group="group"
         bordered
         :class="{ '!gl-mt-0': index === 0 }"
+        @action="trackingCommands"
       >
         <template #list-item="{ item }">
           <search-item :item="item" :search-query="searchQuery" />

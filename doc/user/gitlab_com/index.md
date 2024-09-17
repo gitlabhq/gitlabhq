@@ -273,9 +273,15 @@ this limit. Repository limits apply to both public and private projects.
 The [import sources](../project/import/index.md#supported-import-sources) that are available to you by default depend on
 which GitLab you use:
 
-- GitLab.com: all available import sources are enabled by default.
-- GitLab self-managed: no import sources are enabled by default and must be
+- GitLab.com: All available import sources are enabled by default.
+- GitLab self-managed: No import sources are enabled by default and must be
   [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+
+## Import placeholder user limits
+
+The number of [placeholder users](../../user/project/import/index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
+differ depending on your plan and seat count.
+For more information, see the [table of placeholder user limits for GitLab.com](../../user/project/import/index.md#placeholder-user-limits).
 
 ## IP range
 
@@ -286,9 +292,11 @@ from those IPs and allow them.
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP addresses.
-All GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`.
-Any IP-based firewall can be configured by looking up
+Most GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`, except _Linux GPU-enabled_ and _Linux Arm64_, hosted in `us-central1`.
+You can configure any IP-based firewall by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
+MacOS runners are hosted on AWS and have a different IP range.
+For more information, see [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html).
 
 ## Hostname list
 
@@ -334,13 +342,13 @@ For self-managed instance limits, see:
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
-- [Multiple Pages deployments](../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
+- [Parallel Pages deployments](../../administration/instance_limits.md#number-of-parallel-pages-deployments).
 
-## Runner SaaS
+## GitLab-hosted runners
 
-Runner SaaS is the hosted, secure, and managed build environment you can use to run CI/CD jobs for your GitLab.com hosted project.
+You can use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to seamlessly build, test, and deploy your application on different environments.
 
-For more information, see [Runner SaaS](../../ci/runners/index.md).
+For more information, see [GitLab-hosted runners](../../ci/runners/index.md).
 
 ## Puma
 

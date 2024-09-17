@@ -144,6 +144,13 @@ describe('~/environments/environment_details/components/kubernetes/delete_pod_mo
 
         expect(showToast).toHaveBeenCalledWith('Pod deleted successfully');
       });
+
+      it('emits `pod-deleted` event', async () => {
+        expect(wrapper.emitted('pod-deleted')).toBeUndefined();
+        await waitForPromises();
+
+        expect(wrapper.emitted('pod-deleted')).toBeDefined();
+      });
     });
 
     describe('error on pod deletion', () => {

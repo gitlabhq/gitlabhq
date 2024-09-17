@@ -983,3 +983,14 @@ export const MOCK_WIKIS = [
     path: '/gitlab-org/gitlab-test/-/wikis/changelog',
   },
 ];
+
+export const MOCK_NEW_MEMBERS = [
+  {
+    type: 'User',
+    username: 'walker.finn',
+    name: 'Finneas Walker',
+    avatar_url:
+      'https://www.gravatar.com/avatar/ac82b5615d3308ecbcacedad361af8e7?s=80\u0026d=identicon',
+    availability: null,
+  },
+];

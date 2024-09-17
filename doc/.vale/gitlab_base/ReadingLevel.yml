@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.ReadingLevel
+# Suggestion: gitlab_base.ReadingLevel
 #
 # Checks the Flesch-Kincaid reading level.
 #

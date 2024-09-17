@@ -119,7 +119,7 @@ The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
-Users can also be unblocked using the [GitLab API](../api/users.md#unblock-user).
+Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-a-user).
 
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
@@ -152,7 +152,7 @@ Prerequisites:
 
 - The user has had no activity in the last 90 days.
 
-To deactivate a user:
+To deactivate a user from a self-managed GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -162,7 +162,10 @@ To deactivate a user:
 The user receives an email notification that their account has been deactivated. After this email, they no longer receive notifications.
 For more information, see [user deactivation emails](../administration/settings/email.md#user-deactivation-emails).
 
-To deactivate users with the GitLab API, see [deactivate user](../api/users.md#deactivate-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
+To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
+
+To remove a user from a GitLab.com subscription, see
+[Remove users from your subscription](../subscriptions/gitlab_com/index.md#remove-users-from-your-subscription).
 
 ### Automatically deactivate dormant users
 
@@ -240,7 +243,7 @@ The user's state is set to active and they consume a
 
 NOTE:
 A deactivated user can also activate their account themselves by logging back in via the UI.
-Users can also be activated using the [GitLab API](../api/users.md#activate-user).
+Users can also be activated using the [GitLab API](../api/user_moderation.md#activate-a-user).
 
 ## Ban and unban users
 

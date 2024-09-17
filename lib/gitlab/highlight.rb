@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def self.file_size_limit
-      Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      Gitlab.config.extra['maximum_text_highlight_size_kilobytes'].kilobytes
     end
 
     private

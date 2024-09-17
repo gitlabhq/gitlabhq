@@ -33,7 +33,6 @@
     .diff-comments-more-count {
       padding-left: 2px;
       padding-right: 2px;
-      width: auto;
     }
   }
 }
@@ -48,7 +47,6 @@
   border-color: var(--white, $white);
   cursor: pointer;
   transition: all 0.1s ease-out;
-  @include code-icon-size();
 
   @for $i from 1 through 4 {
     &:nth-child(#{$i}) {
@@ -65,7 +63,6 @@
   padding-left: 0;
   padding-right: 0;
   overflow: hidden;
-  @include code-icon-size();
 }
 
 .diff-file-changes {
@@ -1092,6 +1089,12 @@
 .diff-file-discussions-wrapper {
   width: 100%;
 
+  .timeline-entry.note-discussion {
+    > .timeline-entry-inner {
+      border-bottom: 0 !important;
+    }
+  }
+
   .diff-discussions:not(:first-child) >.notes {
     padding-top: 0;
   }
@@ -1107,6 +1110,10 @@
     border-bottom-width: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+
+    .notes {
+      @apply gl-bg-subtle;
+    }
   }
 }
 

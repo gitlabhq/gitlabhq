@@ -21,6 +21,8 @@ RSpec.describe Banzai::Pipeline::DescriptionPipeline, feature_category: :team_pl
     stub_commonmark_sourcepos_disabled
   end
 
+  it_behaves_like 'sanitize pipeline'
+
   it 'uses a limited allowlist' do
     doc = parse('# Description')
 

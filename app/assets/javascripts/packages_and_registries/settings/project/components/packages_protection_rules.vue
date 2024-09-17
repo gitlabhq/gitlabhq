@@ -62,7 +62,6 @@ export default {
   data() {
     return {
       packageProtectionRules: [],
-      protectionRuleFormVisibility: false,
       packageProtectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       packageProtectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
       protectionRuleMutationInProgress: false,
@@ -89,9 +88,6 @@ export default {
     },
     isLoadingPackageProtectionRules() {
       return this.$apollo.queries.packageProtectionRulesQueryPayload.loading;
-    },
-    isAddProtectionRuleButtonDisabled() {
-      return this.protectionRuleFormVisibility;
     },
     modalActionPrimary() {
       return {
@@ -133,11 +129,9 @@ export default {
   },
   methods: {
     showProtectionRuleForm() {
-      this.protectionRuleFormVisibility = true;
       this.$refs.packagesCrud.showForm();
     },
     hideProtectionRuleForm() {
-      this.protectionRuleFormVisibility = false;
       this.$refs.packagesCrud.hideForm();
     },
     refetchProtectionRules() {
@@ -266,18 +260,12 @@ export default {
     :description="$options.i18n.settingBlockDescription"
   >
     <template #default>
-      <crud-component ref="packagesCrud" :title="$options.i18n.settingBlockTitle">
-        <template #actions>
-          <gl-button
-            size="small"
-            :disabled="isAddProtectionRuleButtonDisabled"
-            @click="showProtectionRuleForm"
-          >
-            {{ s__('PackageRegistry|Add protection rule') }}
-          </gl-button>
-        </template>
-
-        <template v-if="protectionRuleFormVisibility" #form>
+      <crud-component
+        ref="packagesCrud"
+        :title="$options.i18n.settingBlockTitle"
+        :toggle-text="s__('PackageRegistry|Add protection rule')"
+      >
+        <template #form>
           <packages-protection-rule-form
             @cancel="hideProtectionRuleForm"
             @submit="refetchProtectionRules"

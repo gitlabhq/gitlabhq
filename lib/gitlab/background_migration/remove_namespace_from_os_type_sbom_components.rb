@@ -7,6 +7,7 @@ module Gitlab
       feature_category :software_composition_analysis
 
       INDEX_NAME = 'index_sbom_components_on_component_type_name_and_purl_type'
+      OTHER_INDEX = 'idx_sbom_components_on_name_purl_type_component_type_and_org_id'
 
       OS_PURL_TYPES = {
         apk: 9,
@@ -25,7 +26,7 @@ module Gitlab
             .each do |component| # rubocop:disable Rails/FindEach -- using find_each is not needed here because of the slow iteration implementation
             component.update!(name: delete_os_namespace_prefix(component.name))
           rescue ActiveRecord::RecordNotUnique => e # rubocop:disable BackgroundMigration/AvoidSilentRescueExceptions -- we catch a specific known not unique error
-            raise unless e.message.include?(INDEX_NAME)
+            raise unless e.message.include?(INDEX_NAME) || e.message.include?(OTHER_INDEX)
 
             Gitlab::BackgroundMigration::Logger.warn(
               message: "Error updating sbom_component name based on #{INDEX_NAME}",

@@ -314,8 +314,8 @@ Example database (oversimplified) execution plan:
 
 1. The database parses the SQL query and detects the `JOIN`.
 1. The database splits the query into two subqueries.
-    - `SELECT "issue_assignees".* FROM "issue_assignees" WHERE "issue_assignees"."user_id" = 10`
-    - `SELECT "issues".* FROM "issues" WHERE "issues"."project_id" = 5`
+   - `SELECT "issue_assignees".* FROM "issue_assignees" WHERE "issue_assignees"."user_id" = 10`
+   - `SELECT "issues".* FROM "issues" WHERE "issues"."project_id" = 5`
 1. The database estimates the number of rows and the costs to run these queries.
 1. The database executes the cheapest query first.
 1. Using the query result, load the rows from the other table (from the other query) using the `JOIN` column and filter the rows further.

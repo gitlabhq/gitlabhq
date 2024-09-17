@@ -61,5 +61,4 @@ Style/RedundantReturn:
     - 'qa/qa/support/formatters/allure_metadata_formatter.rb'
     - 'qa/qa/support/formatters/context_formatter.rb'
     - 'rubocop/cop/background_migration/dictionary_file.rb'
-    - 'scripts/api/get_package_and_test_job.rb'
     - 'tooling/lib/tooling/mappings/graphql_base_type_mappings.rb'

@@ -9,7 +9,7 @@
     = f.text_field :title, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { testid: 'deploy-key-title-field' }
   .form-group
     = f.label :key, class: "label-bold"
-    = f.text_area :key, class: 'form-control gl-form-input gl-form-input-xl gl-h-auto!', rows: 5, required: true, data: { testid: 'deploy-key-field' }
+    = f.text_area :key, class: 'form-control gl-form-input gl-form-input-xl !gl-h-auto', rows: 5, required: true, data: { testid: 'deploy-key-field' }
     .form-text.text-muted
       = _('Paste a public key here.')
       = link_to _('How do I generate it?'), help_page_path("user/ssh")

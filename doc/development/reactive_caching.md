@@ -305,3 +305,16 @@ self.reactive_cache_hard_limit = 5.megabytes
     along with the parameters passed to `with_reactive_cache`.
   - The custom `reactive_cache_worker_finder` calls `.from_cache` with the parameters
     passed to `with_reactive_cache`.
+
+## Changing the cache keys
+
+Due to [how reactive caching works](#how-it-works), changing parameters for the `calculate_reactive_cache` method is like
+changing parameters for a Sidekiq worker.
+So [the same rules](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker)
+need to be followed.
+
+For example, if a new parameter is added to the `calculate_reactive_cache` method;
+
+1. Add the argument to the `calculate_reactive_cache` method with a default value (Release M).
+1. Add the new argument to all the invocations of the `with_reactive_cache` method (Release M+1).
+1. Remove the default value (Release M+2).

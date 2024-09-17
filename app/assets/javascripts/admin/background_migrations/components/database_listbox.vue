@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-align-items-center gl-grow gl-justify-end">
+  <div class="gl-flex gl-grow gl-items-center gl-justify-end">
     <gl-collapsible-listbox
       v-model="selected"
       :items="databases"

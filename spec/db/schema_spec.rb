@@ -10,40 +10,43 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
-    application_settings: %w[instance_administration_project_id instance_administrators_group_id],
+    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
+    ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
+    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_build_needs: %w[project_id], # we will create async index, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163429#note_2065627176
+    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
+    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
+    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
+    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
+    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
+    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
+    p_ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
+    p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    snippets: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
-    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
-    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-    p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
-    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
-    ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
-    snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    subscription_add_on_purchases: [["subscription_add_on_id"]] # index handled via composite index with namespace_id
   }.with_indifferent_access.freeze
-
-  TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
 
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
   REMOVED_FKS = {
     # example_table: %w[example_column]
+    alert_management_alerts: %w[prometheus_alert_id]
   }.with_indifferent_access.freeze
 
   # List of columns historically missing a FK, don't add more columns
@@ -51,6 +54,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
     abuse_report_notes: %w[discussion_id],
+    ai_code_suggestion_events: %w[user_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
     approvals: %w[user_id project_id],
     approver_groups: %w[target_id],
@@ -71,7 +75,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    ci_builds_metadata: %w[partition_id project_id build_id],
+    ci_build_needs: %w[project_id],
     ci_daily_build_group_report_results: %w[partition_id],
+    ci_deleted_objects: %w[project_id],
     ci_job_artifacts: %w[partition_id project_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_artifacts: %w[partition_id],
@@ -79,8 +86,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipelines_config: %w[partition_id],
     ci_pipeline_messages: %w[partition_id],
     ci_pipeline_metadata: %w[partition_id],
-    ci_pipeline_variables: %w[partition_id],
+    ci_pipeline_variables: %w[partition_id pipeline_id project_id],
     ci_pipelines: %w[partition_id auto_canceled_by_partition_id],
+    p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id],
+    p_ci_runner_machine_builds: %w[project_id],
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],
@@ -135,13 +144,15 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_device_grants: %w[resource_owner_id application_id],
     packages_package_files: %w[project_id],
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
+    p_ci_builds_metadata: %w[project_id build_id partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
     p_ci_finished_build_ch_sync_events: %w[build_id],
     p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id project_namespace_id],
+    p_ci_job_annotations: %w[partition_id job_id project_id],
     p_ci_job_artifacts: %w[partition_id project_id job_id],
-    p_ci_pipeline_variables: %w[partition_id],
+    p_ci_pipeline_variables: %w[partition_id pipeline_id project_id],
     p_ci_builds_execution_configs: %w[partition_id],
     p_ci_stages: %w[partition_id project_id pipeline_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
@@ -171,9 +182,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     vulnerability_identifiers: %w[external_id],
     vulnerability_occurrence_identifiers: %w[project_id],
     vulnerability_scanners: %w[external_id],
-    security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
+    vulnerability_state_transitions: %w[state_changed_at_pipeline_id],
+    security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
     dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
-    vulnerability_reads: %w[cluster_agent_id],
+    vulnerability_reads: %w[cluster_agent_id namespace_id], # namespace_id is a denormalization of `project.namespace`
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
     # Fixes performance issues with the deletion of web-hooks with many log entries
     web_hook_logs: %w[web_hook_id],
@@ -191,13 +203,14 @@ RSpec.describe 'Database schema', feature_category: :database do
     scan_result_policy_violations: %w[approval_policy_rule_id],
     software_license_policies: %w[approval_policy_rule_id],
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
-    namespace_settings: %w[early_access_program_joined_by_id] # isn't used inside product itself. Only through Snowflake
+    namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
+    workspaces_agent_config_versions: %w[item_id] # polymorphic associations
   }.with_indifferent_access.freeze
 
   context 'for table' do
     Gitlab::Database::EachDatabase.each_connection do |connection, _|
       schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
-      (connection.tables - TABLE_PARTITIONS).sort.each do |table|
+      connection.tables.sort.each do |table|
         table_schema = Gitlab::Database::GitlabSchema.table_schema(table)
         next unless schemas_for_connection.include?(table_schema)
 
@@ -320,11 +333,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     'NotificationSetting' => %w[level],
     'Project' => %w[auto_cancel_pending_pipelines],
     'ProjectAutoDevops' => %w[deploy_strategy],
-    'PrometheusMetric' => %w[group],
     'ResourceLabelEvent' => %w[action],
     'User' => %w[layout dashboard project_view],
-    'Users::Callout' => %w[feature_name],
-    'PrometheusAlert' => %w[operator]
+    'Users::Callout' => %w[feature_name]
   }.freeze
 
   context 'for enums', :eager_load do
@@ -358,7 +369,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
     "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
-    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata] # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+    "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes] # Managed by paper_trail gem
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity
@@ -457,6 +469,10 @@ RSpec.describe 'Database schema', feature_category: :database do
 
       expect(problematic_indexes).to be_empty
     end
+  end
+
+  context 'ID columns' do
+    it_behaves_like 'All IDs are bigint'
   end
 
   private

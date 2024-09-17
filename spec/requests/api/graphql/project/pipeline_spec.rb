@@ -84,7 +84,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
       query_graphql_field(:jobs, nil,
         query_graphql_field(
           :nodes, {},
-          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 1)
+          all_graphql_fields_for('CiJob', max_depth: 1)
         )
       )
     end

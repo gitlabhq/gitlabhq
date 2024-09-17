@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-10'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-1'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(
@@ -50,6 +50,7 @@ module Gitlab
         {
           environment: environment,
           source: source,
+          correlation_id: Labkit::Correlation::CorrelationId.current_or_new_id,
           plan: plan_name,
           extra: extra,
           user_id: user_id,
@@ -57,6 +58,10 @@ module Gitlab
           namespace_id: namespace_id,
           project_id: project_id,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
+          realm: realm,
+          instance_id: instance_id,
+          host_name: Gitlab::Environment.hostname,
+          instance_version: Gitlab.version_info.to_s,
           context_generated_at: Time.current
         }
       end
@@ -71,6 +76,14 @@ module Gitlab
 
       # Overridden in EE
       def gitlab_team_member?(_user_id)
+        nil
+      end
+
+      def realm
+        nil
+      end
+
+      def instance_id
         nil
       end
     end

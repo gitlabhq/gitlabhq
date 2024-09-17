@@ -60,7 +60,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'mit' }
+      expect(json_response).to satisfy_one { |template| template['key'] == '0bsd' }
     end
 
     it 'returns issue templates' do
@@ -227,6 +227,12 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
     end
 
     shared_examples 'path traversal attempt' do |template_type|
+      before do
+        # TODO: remove spec once the feature flag is removed
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
+        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
+      end
+
       it 'rejects invalid filenames' do
         get api("/projects/#{public_project.id}/templates/#{template_type}/%2e%2e%2fPython%2ea")
 

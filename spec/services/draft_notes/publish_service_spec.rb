@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let_it_be(:merge_request) { create(:merge_request, reviewers: create_list(:user, 1)) }
+  let_it_be(:merge_request) { create(:merge_request, reviewers: create_list(:user, 1), assignees: create_list(:user, 1)) }
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }
   let(:commit) { project.commit(sample_commit.id) }
@@ -150,6 +150,14 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       publish
     end
 
+    it 'invalidates cache counts' do
+      expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
+
+      stub_feature_flags(merge_request_dashboard: true)
+
+      publish
+    end
+
     context 'capturing diff notes positions and keeping around commits' do
       before do
         # Need to execute this to ensure that we'll be able to test creation of
@@ -235,7 +243,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-      expect(recorder.count).not_to be > 111
+      expect(recorder.count).not_to be > 112
     end
   end
 
@@ -348,7 +356,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       create(:draft_note, merge_request: merge_request, author: user, note: "/assign #{user.to_reference}")
 
       expect { publish }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(1)
-      expect(merge_request.reload.assignees).to eq([user])
+      expect(merge_request.reload.assignees).to include(user)
       expect(merge_request.notes.last).to be_system
     end
   end

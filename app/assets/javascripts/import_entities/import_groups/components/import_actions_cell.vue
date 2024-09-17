@@ -27,9 +27,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
-  projectCreationHelp: helpPagePath('user/group/import/index', {
-    anchor: 'ensure-projects-can-be-imported',
+  projectCreationHelp: helpPagePath('user/group/import/direct_transfer_migrations', {
+    anchor: 'configuration',
   }),
   props: {
     id: {
@@ -80,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-whitespace-nowrap gl-inline-flex gl-align-items-center gl-gap-3">
+  <div class="gl-inline-flex gl-items-center gl-gap-3 gl-whitespace-nowrap">
     <template v-if="isProjectCreationAllowed">
       <gl-button-group v-if="showImportActions">
         <gl-button

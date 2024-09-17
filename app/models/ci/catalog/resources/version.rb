@@ -15,9 +15,12 @@ module Ci
         belongs_to :release, inverse_of: :catalog_resource_version
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :versions
         belongs_to :project, inverse_of: :catalog_resource_versions
+        belongs_to :published_by, class_name: 'User'
         has_many :components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :version
 
         validates :release, :catalog_resource, :project, presence: true
+        validates :published_by, presence: true, on: :create
+        validate :validate_published_by_is_release_author, on: :create
 
         scope :for_catalog_resources, ->(catalog_resources) { where(catalog_resource_id: catalog_resources) }
         scope :preloaded, -> { includes(:catalog_resource, project: [:route, { namespace: :route }], release: :author) }
@@ -85,6 +88,14 @@ module Ci
 
         def update_catalog_resource
           catalog_resource.update_latest_released_at!
+        end
+
+        # We require the published_by to be the same as the release author because
+        # creating a release and publishing a version must be done in a single session via release-cli.
+        def validate_published_by_is_release_author
+          return if published_by == release.author
+
+          errors.add(:published_by, 'must be the same as the release author')
         end
       end
     end

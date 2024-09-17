@@ -42,7 +42,7 @@ export default {
 
     const checkedIcon = h(GlIcon, {
       class: {
-        'gl-mr-3 gl-flex-shrink-0 has-tooltip': true,
+        'gl-mr-3 gl-shrink-0 has-tooltip': true,
         hidden: !isLabelSet,
       },
       attrs: {
@@ -56,7 +56,7 @@ export default {
 
     const indeterminateIcon = h(GlIcon, {
       class: {
-        'gl-mr-3 gl-flex-shrink-0 has-tooltip': true,
+        'gl-mr-3 gl-shrink-0 has-tooltip': true,
         hidden: !isLabelIndeterminate,
       },
       attrs: {
@@ -83,7 +83,7 @@ export default {
     const labelLink = h(
       GlLink,
       {
-        class: 'gl-display-flex gl-align-items-center label-item gl-text-body',
+        class: 'gl-flex gl-items-center label-item gl-text-primary',
         on: {
           click: () => {
             listeners.clickLabel(label);

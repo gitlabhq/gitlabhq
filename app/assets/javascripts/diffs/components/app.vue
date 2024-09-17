@@ -16,7 +16,6 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
-import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -60,6 +59,7 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 import DiffsFileTree from './diffs_file_tree.vue';
+import DiffAppControls from './diff_app_controls.vue';
 import getMRCodequalityAndSecurityReports from './graphql/get_mr_codequality_and_security_reports.query.graphql';
 
 export const FINDINGS_STATUS_PARSED = 'PARSED';
@@ -71,6 +71,7 @@ export default {
   FINDINGS_STATUS_PARSED,
   FINDINGS_STATUS_ERROR,
   components: {
+    DiffAppControls,
     DiffsFileTree,
     FindingsDrawer,
     DynamicScroller,
@@ -143,7 +144,7 @@ export default {
       required: false,
       default: '',
     },
-    pinnedFileUrl: {
+    linkedFileUrl: {
       type: String,
       required: false,
       default: '',
@@ -157,7 +158,7 @@ export default {
       autoScrolled: false,
       activeProject: undefined,
       hasScannerError: false,
-      pinnedFileStatus: '',
+      linkedFileStatus: '',
       codequalityData: {},
       sastData: {},
       keydownTime: undefined,
@@ -165,6 +166,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     getMRCodequalityAndSecurityReports: {
       query: getMRCodequalityAndSecurityReports,
       pollInterval: FINDINGS_POLL_INTERVAL,
@@ -237,6 +239,8 @@ export default {
       'targetBranchName',
       'branchName',
       'showTreeList',
+      'addedLines',
+      'removedLines',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -315,6 +319,9 @@ export default {
         this.$root.$emit(BV_HIDE_TOOLTIP);
       };
       return throttle(hide, 100);
+    },
+    hasChanges() {
+      return this.diffFiles.length > 0;
     },
   },
   watch: {
@@ -447,8 +454,10 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
-      'fetchPinnedFile',
+      'fetchLinkedFile',
       'toggleTreeList',
+      'expandAllFiles',
+      'collapseAllFiles',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -529,24 +538,18 @@ export default {
     refetchDiffData({ refetchMeta = true } = {}) {
       this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
     },
-    needsReload() {
-      return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
-    },
-    needsFirstLoad() {
-      return !this.diffFiles.length;
-    },
     fetchData({ toggleTree = true, fetchMeta = true } = {}) {
-      if (this.pinnedFileUrl && this.pinnedFileStatus !== 'loaded') {
-        this.pinnedFileStatus = 'loading';
-        this.fetchPinnedFile(this.pinnedFileUrl)
+      if (this.linkedFileUrl && this.linkedFileStatus !== 'loaded') {
+        this.linkedFileStatus = 'loading';
+        this.fetchLinkedFile(this.linkedFileUrl)
           .then(() => {
-            this.pinnedFileStatus = 'loaded';
+            this.linkedFileStatus = 'loaded';
             if (toggleTree) this.setTreeDisplay();
           })
           .catch(() => {
-            this.pinnedFileStatus = 'error';
+            this.linkedFileStatus = 'error';
             createAlert({
-              message: __("Couldn't fetch the pinned file."),
+              message: __("Couldn't fetch the linked file."),
             });
           });
       }
@@ -580,7 +583,7 @@ export default {
       }
 
       if (!this.viewDiffsFileByFile) {
-        this.fetchDiffFilesBatch(Boolean(this.pinnedFileUrl))
+        this.fetchDiffFilesBatch(Boolean(this.linkedFileUrl))
           .then(() => {
             if (toggleTree) this.setTreeDisplay();
             // Guarantee the discussions are assigned after the batch finishes.
@@ -748,7 +751,18 @@ export default {
     <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
-      <compare-versions :diff-files-count-text="numTotalFiles" />
+      <div class="gl-flex gl-flex-wrap">
+        <compare-versions :toggle-file-tree-visible="hasChanges" />
+        <diff-app-controls
+          class="gl-ml-auto"
+          :has-changes="hasChanges"
+          :diffs-count="numTotalFiles"
+          :added-lines="addedLines"
+          :removed-lines="removedLines"
+          @expandAllFiles="expandAllFiles"
+          @collapseAllFiles="collapseAllFiles"
+        />
+      </div>
 
       <template v-if="!isBatchLoadingError">
         <collapsed-files-warning v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES" />
@@ -756,7 +770,7 @@ export default {
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files gl-flex gl-mt-2"
+        class="files gl-mt-2 gl-flex"
       >
         <diffs-file-tree :visible="renderFileTree" @toggled="fileTreeToggled" />
         <div class="col-12 col-md-auto diff-files-holder">
@@ -774,7 +788,7 @@ export default {
             <gl-loading-icon size="lg" />
           </div>
           <template v-else-if="renderDiffFiles">
-            <div v-if="pinnedFileStatus === 'loading'" class="loading">
+            <div v-if="linkedFileStatus === 'loading'" class="loading">
               <gl-loading-icon size="lg" />
             </div>
             <hidden-files-warning
@@ -835,7 +849,7 @@ export default {
             <div
               v-if="showFileByFileNavigation"
               data-testid="file-by-file-navigation"
-              class="gl-display-grid gl-text-center"
+              class="gl-grid gl-text-center"
             >
               <gl-pagination
                 class="gl-mx-auto"

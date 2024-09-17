@@ -42,11 +42,11 @@ To create an API token:
 1. In the API section sidebar go to **Personal access tokens** page.
 1. Select **Create token**. The token creation dialog opens.
 1. Provide your token information:
-    - Give your API token a meaningful name to identify its purpose.
-      For example, `GitLab integration token`.
-    - Select an appropriate expiration.
-    - Select the **scan scope** checkbox.
-      It is the only one needed for the integration.
+   - Give your API token a meaningful name to identify its purpose.
+     For example, `GitLab integration token`.
+   - Select an appropriate expiration.
+   - Select the **scan scope** checkbox.
+     It is the only one needed for the integration.
 1. Select **Create token**.
 1. After you've generated a token, copy it to your clipboard.
    This token is sensitive information, so keep it secure.
@@ -82,7 +82,7 @@ secret detection for all commits in a push are identical to the options for
 [Native Secret Detection](../../application_security/secret_detection/secret_push_protection/index.md#skip-secret-push-protection). Either:
 
 - Add `[skip secret push protection]` to one of the commit messages.
-- Use the `secret_push_protection.skip_all` [push option](../../../gitlab-basics/add-file.md#push-options-for-gitguardian-integration).
+- Use the `secret_push_protection.skip_all` [push option](../../../topics/git/commit.md#push-options-for-gitguardian-integration).
 
 ## Known issues
 

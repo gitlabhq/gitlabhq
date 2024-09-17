@@ -171,11 +171,11 @@ export default {
     :css-classes="['gl-min-w-fit']"
     show
   >
-    <div class="gl-display-flex gl-align-items-center gl-gap-2">
+    <div class="gl-flex gl-items-center gl-gap-2">
       <gl-badge v-if="!loading && showDetails" :variant="status.variant">{{
         status.text
       }}</gl-badge>
-      <span class="gl-text-secondary gl-display-flex" data-testid="milestone-label">
+      <span class="gl-flex gl-text-secondary" data-testid="milestone-label">
         <gl-icon name="milestone" class="gl-mr-1" /> {{ __('Milestone') }}
       </span>
       <span v-if="showTimeframe" class="gl-text-secondary" data-testid="milestone-timeframe"
@@ -188,15 +188,15 @@ export default {
     <h5 class="gl-my-3 gl-max-w-30">{{ title }}</h5>
     <div
       v-if="!loading && showProgress"
-      class="gl-display-flex gl-align-items-center gl-gap-2 gl-mt-2"
+      class="gl-mt-2 gl-flex gl-items-center gl-gap-2"
       data-testid="milestone-progress"
     >
-      <gl-progress-bar :value="progress" variant="primary" class="gl-flex-grow-1 gl-h-3" />
+      <gl-progress-bar :value="progress" variant="primary" class="gl-h-3 gl-grow" />
       <span>{{ percentageComplete }}</span>
     </div>
     <div
       v-if="showDetails"
-      class="gl-display-flex gl-align-items-center gl-gap-2 gl-mt-2"
+      class="gl-mt-2 gl-flex gl-items-center gl-gap-2"
       data-testid="milestone-path"
     >
       <gl-icon :name="milestoneParentIcon" class="gl-mr-1" />

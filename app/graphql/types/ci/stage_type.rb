@@ -52,7 +52,7 @@ module Types
 
       def jobs
         GraphQL::Pagination::ActiveRecordRelationConnection.new(
-          object.latest_statuses,
+          object.ordered_latest_statuses,
           max_page_size: Gitlab::CurrentSettings.current_application_settings.jobs_per_stage_page_size
         )
       end

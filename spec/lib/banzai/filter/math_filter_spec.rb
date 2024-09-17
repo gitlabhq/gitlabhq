@@ -314,6 +314,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
       doc = Banzai::Pipeline::PlainMarkdownPipeline.call(doc[:output], context)
       doc = Banzai::Filter::CodeLanguageFilter.call(doc[:output], context, nil)
       doc = Banzai::Filter::SanitizationFilter.call(doc, context, nil)
+      doc = Banzai::Filter::SanitizeLinkFilter.call(doc, context, nil)
 
       filter(doc, context)
     end

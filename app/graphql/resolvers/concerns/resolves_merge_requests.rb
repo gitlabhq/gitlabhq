@@ -57,6 +57,7 @@ module ResolvesMergeRequests
       participants: MergeRequest.participant_includes,
       author: [:author],
       merged_at: [:metrics],
+      closed_at: [:metrics],
       commit_count: [:metrics],
       diff_stats_summary: [:metrics],
       approved_by: [:approved_by_users],

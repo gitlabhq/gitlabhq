@@ -109,7 +109,7 @@ module IntegrationsHelper
       id: integration.id,
       project_id: integration.project_id,
       group_id: integration.group_id,
-      show_active: integration.show_active_box?.to_s,
+      manual_activation: integration.manual_activation?.to_s,
       activated: (integration.active || (integration.new_record? && integration.activate_disabled_reason.nil?)).to_s,
       activate_disabled: integration.activate_disabled_reason.present?.to_s,
       type: integration.to_param,

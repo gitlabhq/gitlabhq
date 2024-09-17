@@ -86,9 +86,24 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 16.11.0
 
+- A [`groups_direct` field was added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146881)
+  to the [JSON web token (ID token)](../../ci/secrets/id_token_authentication.md).
+  - If you use GitLab CI/CD ID tokens to authenticate with third party services,
+    this change can cause the HTTP header size to increase. Proxy servers might reject
+    the request if the headers get too big.
+  - If possible, increase the header limit on the receiving system.
+  - See [issue 467253](https://gitlab.com/gitlab-org/gitlab/-/issues/467253) for more details.
+- After upgrading to GitLab 16.11 some users with large environments and databases experience
+  timeouts loading source code pages in the web UI.
+  - These timeouts are caused by slow PostgreSQL queries for pipeline data, which then
+    exceed the internal 60 second timeout.
+  - You can still clone Git repositories, and other requests for repository data works.
+  - See [issue 472420](https://gitlab.com/gitlab-org/gitlab/-/issues/472420) for more details,
+    including steps to confirm you're affected and housekeeping to run in PostgreSQL to correct it.
+
 ### Linux package installations
 
-In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for the following cases:
+In GitLab 16.11, PostgreSQL is automatically upgraded to 14.x except for the following cases:
 
 - You are running the database in high availability using Patroni.
 - Your database nodes are part of a GitLab Geo configuration.
@@ -114,6 +129,17 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   | 16.9                    |  All                    | None     |
   | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
   | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
+- In GitLab 16.11 through GitLab 17.2, a missing PostgreSQL index can cause high CPU usage, slow job artifact verification progress, and slow or timed out Geo metrics status updates. The index was added in GitLab 17.3. To manually add the index, see [Geo Troubleshooting - High CPU usage on primary during job artifact verification](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.11                   |  All                    | None     |
+  | 17.0                    |  All                    | None     |
+  | 17.1                    |  All                    | None     |
+  | 17.2                    |  All                    | None     |
 
 ## 16.10.0
 
@@ -241,7 +267,7 @@ planned for release in 16.9.1.
 
 ### Linux package installations
 
-- The [Sidekiq `min_concurrency` and `max_concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-min_concurrency-and-max_concurrency-fields-deprecated) options are deprecated in GitLab 16.9.0 and due for removal in GitLab 17.0.0. In GitLab 16.9.0 and later, to avoid breaking changes in GitLab 17.0.0, set the new [`concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-concurrency-field) option and remove the `min_concurrency` and `max_concurrency` options.
+- The Sidekiq `min_concurrency` and `max_concurrency` options are deprecated in GitLab 16.9.0 and due for removal in GitLab 17.0.0. In GitLab 16.9.0 and later, to avoid breaking changes in GitLab 17.0.0, set the new [`concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-concurrency-field) option and remove the `min_concurrency` and `max_concurrency` options.
 
 ## 16.8.0
 
@@ -1067,7 +1093,7 @@ You are not impacted:
 |-------------------------|-------------------------|----------|
 | 15.1 - 16.2             | All                     | 16.3 and later    |
 
-Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/index.md#disable-geo-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/index.md#disable-secondary-site-http-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
 
 ## 16.1.0
 
@@ -1163,7 +1189,7 @@ by this issue.
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
-  [throw errors on startup](../../install/docker_troubleshooting.md#threaderror-cant-create-thread-operation-not-permitted).
+  [throw errors on startup](../../install/docker/troubleshooting.md#threaderror-cant-create-thread-operation-not-permitted).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
@@ -1220,8 +1246,8 @@ date set at one year from the date of upgrade.
 
 Before this automatic expiry date is applied, you should do the following to minimize disruption:
 
-1. [Identify any access tokens without an expiration date](../../security/token_overview.md#find-tokens-with-no-expiration-date).
-1. [Give those tokens an expiration date](../../security/token_overview.md#extend-token-lifetime).
+1. [Identify any access tokens without an expiration date](../../security/tokens/token_troubleshooting.md#find-tokens-with-no-expiration-date).
+1. [Give those tokens an expiration date](../../security/tokens/token_troubleshooting.md#extend-token-lifetime).
 
 For more information, see the:
 
@@ -1272,13 +1298,13 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 1. If you're running Gitaly Cluster, ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
-1. When applying the new structure to your configuration
-   - Replace the `...` with the value from the old key.
-   - When configuring `storage` to replace `git_data_dirs`, **you must append `repositories` to the path** as documented below.
-     If you miss this out your Git repositories are inaccessible until the configuration is fixed.
-     This misconfiguration can cause metadata deletion, and is the reason for disabling repository verification.
-   - Skip any keys you haven't configured a value for previously.
-   - Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+1. To apply the new structure to your configuration:
+   1. Replace the `...` with the value from the old key.
+   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented below. If
+      you don't complete this step, your Git repositories are inaccessible until the configuration is fixed. This
+      misconfiguration can cause metadata deletion.
+   1. Skip any keys you haven't configured a value for previously.
+   1. Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
@@ -1286,6 +1312,9 @@ To protect against configuration mistakes, temporarily disable repository verifi
    by removing `verification_interval: 0`.
 
 The new structure is documented below with the old keys described in a comment above the new keys.
+
+WARNING:
+Double check your update to `storage`. You must append `/repositories` to the value of `path`.
 
 ```ruby
 gitaly['configuration'] = {

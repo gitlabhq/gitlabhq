@@ -111,6 +111,24 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, fea
       expect(graphql_data_at(:project, :pipelineAnalytics, :weekPipelinesLabels).length).to eq(8)
     end
 
+    context 'when only weekPipelines* fields are requested' do
+      let(:fields) do
+        <<~QUERY
+          weekPipelinesTotals
+          weekPipelinesLabels
+          weekPipelinesSuccessful
+        QUERY
+      end
+
+      it "contains three arrays of 8 elements each for the week pipelines" do
+        perform_request
+
+        expect(graphql_data_at(:project, :pipelineAnalytics, :weekPipelinesTotals).length).to eq(8)
+        expect(graphql_data_at(:project, :pipelineAnalytics, :weekPipelinesLabels).length).to eq(8)
+        expect(graphql_data_at(:project, :pipelineAnalytics, :weekPipelinesSuccessful).length).to eq(8)
+      end
+    end
+
     context 'when user has no permissions' do
       let(:user) { guest }
 
@@ -188,6 +206,25 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, fea
         expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesTotals).length).to eq(expected_quantity)
         expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesLabels).length).to eq(expected_quantity)
       end
+
+      context 'when only monthPipelines* fields are requested' do
+        let(:fields) do
+          <<~QUERY
+            monthPipelinesTotals
+            monthPipelinesLabels
+            monthPipelinesSuccessful
+          QUERY
+        end
+
+        it "contains three arrays of #{expected_quantity} elements each for the month pipelines" do
+          perform_request
+
+          expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesTotals).length).to eq(expected_quantity)
+          expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesLabels).length).to eq(expected_quantity)
+          expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesSuccessful).length)
+            .to eq(expected_quantity)
+        end
+      end
     end
 
     it_behaves_like 'monthly statistics', Time.zone.local(2019, 2, 28), 32
@@ -248,6 +285,24 @@ RSpec.describe 'rendering project pipeline statistics', :aggregate_failures, fea
 
       expect(graphql_data_at(:project, :pipelineAnalytics, :yearPipelinesTotals).length).to eq(13)
       expect(graphql_data_at(:project, :pipelineAnalytics, :yearPipelinesLabels).length).to eq(13)
+    end
+
+    context 'when only yearPipelines* fields are requested' do
+      let(:fields) do
+        <<~QUERY
+          yearPipelinesTotals
+          yearPipelinesLabels
+          yearPipelinesSuccessful
+        QUERY
+      end
+
+      it "contains three arrays of 13 elements each for the year pipelines" do
+        perform_request
+
+        expect(graphql_data_at(:project, :pipelineAnalytics, :yearPipelinesTotals).length).to eq(13)
+        expect(graphql_data_at(:project, :pipelineAnalytics, :yearPipelinesLabels).length).to eq(13)
+        expect(graphql_data_at(:project, :pipelineAnalytics, :yearPipelinesSuccessful).length).to eq(13)
+      end
     end
 
     context 'when user has no permissions' do

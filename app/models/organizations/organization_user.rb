@@ -33,15 +33,6 @@ module Organizations
       )
     end
 
-    def self.update_default_organization_record_for(user_id, user_is_admin:)
-      find_or_initialize_by(
-        user_id: user_id, organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID
-      ).tap do |record|
-        record.access_level = default_organization_access_level(user_is_admin: user_is_admin)
-        record.save
-      end
-    end
-
     def self.default_organization_access_level(user_is_admin: false)
       if user_is_admin
         :owner

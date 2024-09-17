@@ -1,41 +1,24 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MemberSource from '~/members/components/table/member_source.vue';
 import PrivateIcon from '~/members/components/icons/private_icon.vue';
+import { directMember, inheritedMember, sharedMember, privateGroup } from '../../mock_data';
 
 describe('MemberSource', () => {
   let wrapper;
 
-  const memberSource = {
-    id: 102,
-    fullName: 'Foo bar',
-    webUrl: 'https://gitlab.com/groups/foo-bar',
-  };
-
-  const createdBy = {
-    name: 'Administrator',
-    webUrl: 'https://gitlab.com/root',
-  };
-
   const createComponent = (propsData) => {
     wrapper = mountExtended(MemberSource, {
       propsData: {
-        memberSource,
+        member: directMember,
         ...propsData,
-      },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
 
-  const getTooltipDirective = (elementWrapper) => getBinding(elementWrapper.element, 'gl-tooltip');
-
   describe('when source is private', () => {
     beforeEach(() => {
       createComponent({
-        isSharedWithGroupPrivate: true,
-        isDirectMember: false,
+        member: privateGroup,
       });
     });
 
@@ -48,22 +31,22 @@ describe('MemberSource', () => {
   describe('direct member', () => {
     describe('when created by is available', () => {
       it('displays "Direct member by <user name>"', () => {
-        createComponent({
-          isDirectMember: true,
-          createdBy,
-        });
+        createComponent();
 
-        expect(wrapper.text()).toBe('Direct member by Administrator');
-        expect(wrapper.findByRole('link', { name: createdBy.name }).attributes('href')).toBe(
-          createdBy.webUrl,
-        );
+        expect(wrapper.text()).toBe(`Direct member by ${directMember.createdBy.name}`);
+        expect(
+          wrapper.findByRole('link', { name: directMember.createdBy.name }).attributes('href'),
+        ).toBe(directMember.createdBy.webUrl);
       });
     });
 
     describe('when created by is not available', () => {
       it('displays "Direct member"', () => {
         createComponent({
-          isDirectMember: true,
+          member: {
+            ...directMember,
+            createdBy: undefined,
+          },
         });
 
         expect(wrapper.text()).toBe('Direct member');
@@ -72,58 +55,32 @@ describe('MemberSource', () => {
   });
 
   describe('inherited member', () => {
-    describe('when created by is available', () => {
-      beforeEach(() => {
-        createComponent({
-          isDirectMember: false,
-          createdBy,
-        });
-      });
-
-      it('displays "<group name> by <user name>"', () => {
-        expect(wrapper.text()).toBe('Foo bar by Administrator');
-        expect(wrapper.findByRole('link', { name: memberSource.fullName }).attributes('href')).toBe(
-          memberSource.webUrl,
-        );
-        expect(wrapper.findByRole('link', { name: createdBy.name }).attributes('href')).toBe(
-          createdBy.webUrl,
-        );
+    beforeEach(() => {
+      createComponent({
+        member: inheritedMember,
       });
     });
 
-    describe('when created by is not available', () => {
-      beforeEach(() => {
-        createComponent({
-          isDirectMember: false,
-        });
+    it('displays "Inherited from <group name>"', () => {
+      expect(wrapper.text()).toBe(`Inherited from ${inheritedMember.source.fullName}`);
+      expect(
+        wrapper.findByRole('link', { name: inheritedMember.source.fullName }).attributes('href'),
+      ).toBe(inheritedMember.source.webUrl);
+    });
+  });
+
+  describe('shared member', () => {
+    beforeEach(() => {
+      createComponent({
+        member: sharedMember,
       });
+    });
 
-      it('displays a link to source group', () => {
-        expect(wrapper.text()).toBe(memberSource.fullName);
-        expect(wrapper.attributes('href')).toBe(memberSource.webUrl);
-      });
-
-      it('displays tooltip with "Inherited"', () => {
-        const tooltipDirective = getTooltipDirective(wrapper);
-
-        expect(tooltipDirective).not.toBeUndefined();
-        expect(tooltipDirective.value).toBe('Inherited');
-      });
-      describe('when `webuiMembersInheritedUsers` FF is on', () => {
-        beforeEach(() => {
-          gon.features = { webuiMembersInheritedUsers: true };
-          createComponent({
-            isDirectMember: false,
-          });
-        });
-
-        it('displays tooltip with "Indirect"', () => {
-          const tooltipDirective = getTooltipDirective(wrapper);
-
-          expect(tooltipDirective).not.toBeUndefined();
-          expect(tooltipDirective.value).toBe('Indirect');
-        });
-      });
+    it('displays "Invited group <group name>"', () => {
+      expect(wrapper.text()).toBe(`Invited group ${sharedMember.source.fullName}`);
+      expect(
+        wrapper.findByRole('link', { name: sharedMember.source.fullName }).attributes('href'),
+      ).toBe(sharedMember.source.webUrl);
     });
   });
 });

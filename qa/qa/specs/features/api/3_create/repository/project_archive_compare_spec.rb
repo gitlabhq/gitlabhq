@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'airborne'
 require 'digest'
 
 module QA
@@ -59,7 +58,7 @@ module QA
       def download_project_archive_via_api(api_client, project, type = 'tar.gz')
         get_project_archive_zip = Runtime::API::Request.new(api_client, project.api_get_archive_path(type))
         project_archive_download = Support::API.get(get_project_archive_zip.url, raw_response: true)
-        expect(project_archive_download.code).to eq(200)
+        expect(project_archive_download.code).to eq(Support::API::HTTP_STATUS_OK)
 
         project_archive_download.file
       end

@@ -720,8 +720,8 @@ module KubernetesHelpers
         },
         "conditions" =>
           [{ "lastTransitionTime" => "2019-10-22T21:20:25Z", "status" => "True", "type" => "ConfigurationsReady" },
-           { "lastTransitionTime" => "2019-10-22T21:20:25Z", "status" => "True", "type" => "Ready" },
-           { "lastTransitionTime" => "2019-10-22T21:20:25Z", "status" => "True", "type" => "RoutesReady" }],
+            { "lastTransitionTime" => "2019-10-22T21:20:25Z", "status" => "True", "type" => "Ready" },
+            { "lastTransitionTime" => "2019-10-22T21:20:25Z", "status" => "True", "type" => "RoutesReady" }],
         "domain" => "#{name}.#{namespace}.#{domain}",
         "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
         "latestCreatedRevisionName" => "#{name}-bskx6",
@@ -774,8 +774,8 @@ module KubernetesHelpers
         { "address" => { "url" => "http://#{name}.#{namespace}.svc.cluster.local" },
           "conditions" =>
             [{ "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "ConfigurationsReady" },
-             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
-             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
+              { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
+              { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
           "latestCreatedRevisionName" => "#{name}-92tsj",
           "latestReadyRevisionName" => "#{name}-92tsj",
           "observedGeneration" => 1,
@@ -825,8 +825,8 @@ module KubernetesHelpers
         { "address" => { "url" => "http://#{name}.#{namespace}.svc.cluster.local" },
           "conditions" =>
             [{ "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "ConfigurationsReady" },
-             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
-             { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
+              { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "Ready" },
+              { "lastTransitionTime" => "2019-10-22T21:20:15Z", "status" => "True", "type" => "RoutesReady" }],
           "latestCreatedRevisionName" => "#{name}-92tsj",
           "latestReadyRevisionName" => "#{name}-92tsj",
           "observedGeneration" => 1,
@@ -878,8 +878,8 @@ module KubernetesHelpers
         { "address" => { "hostname" => "#{name}.#{namespace}.svc.cluster.local" },
           "conditions" =>
             [{ "lastTransitionTime" => "2019-10-22T21:20:24Z", "status" => "True", "type" => "ConfigurationsReady" },
-             { "lastTransitionTime" => "2019-10-22T21:20:24Z", "status" => "True", "type" => "Ready" },
-             { "lastTransitionTime" => "2019-10-22T21:20:24Z", "status" => "True", "type" => "RoutesReady" }],
+              { "lastTransitionTime" => "2019-10-22T21:20:24Z", "status" => "True", "type" => "Ready" },
+              { "lastTransitionTime" => "2019-10-22T21:20:24Z", "status" => "True", "type" => "RoutesReady" }],
           "domain" => "#{name}.#{namespace}.#{domain}",
           "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
           "latestCreatedRevisionName" => "#{name}-58qgr",

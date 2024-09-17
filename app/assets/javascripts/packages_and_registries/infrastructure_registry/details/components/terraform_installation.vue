@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div>
-    <h3 class="gl-font-lg">{{ __('Provision instructions') }}</h3>
+    <h3 class="gl-text-lg">{{ __('Provision instructions') }}</h3>
 
     <code-instruction
       :label="
@@ -60,7 +60,7 @@ export default {
       multiline
     />
 
-    <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
 
     <code-instruction
       :label="s__('InfrastructureRegistry|To authorize access to the Terraform registry:')"

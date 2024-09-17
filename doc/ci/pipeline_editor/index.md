@@ -52,7 +52,7 @@ This tool checks for syntax and logical errors but goes into more detail than th
 automatic [validation](#validate-ci-configuration) in the editor.
 
 The results are updated in real-time. Any changes you make to the configuration are
-reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../lint.md).
+reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../yaml/lint.md).
 
 ![Linting errors in a CI configuration](img/pipeline_editor_lint_v13_8.png)
 
@@ -63,7 +63,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 To look for pipeline syntax and logic issues, you can simulate the creation of a
 GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find
 problems such as incorrect `rules` and `needs` job dependencies, and is similar to
-simulations in the [CI Lint tool](../lint.md#simulate-a-pipeline).
+simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
 
 ## View included CI/CD configuration
 

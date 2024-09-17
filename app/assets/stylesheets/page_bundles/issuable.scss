@@ -1,5 +1,4 @@
 @import 'mixins_and_variables_and_functions';
-@import 'system_note_styles';
 
 .issuable-details {
   section {
@@ -44,15 +43,6 @@
   .author-link {
     color: var(--gray-700, $gray-700);
     font-size: $gl-font-size-small;
-  }
-}
-
-.user-item {
-  padding: 5px;
-  flex-basis: 20%;
-
-  .user-link {
-    display: inline-block;
   }
 }
 

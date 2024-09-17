@@ -80,7 +80,7 @@ When available, the vendor severity level takes precedence and is used by the an
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`API security testing`](../dast_api/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
+| [`API security testing`](../api_security_testing/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
 
 ## Dependency Scanning
 

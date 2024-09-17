@@ -30,6 +30,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
     return if service.async?
 
     if result[:status] == :error
+      project.reset_counters_and_iids
       fail_import(result[:message])
     else
       project.after_import

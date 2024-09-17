@@ -2,10 +2,8 @@
 stage: AI-powered
 group: AI Model Validation
 description: AI-powered features and functionality.
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
 ---
-
-<!-- This page is maintained by Developer Relations, author @dnsmichi. -->
 
 # GitLab Duo use cases
 
@@ -13,8 +11,11 @@ The following use cases provide practical examples, exercises, and workflows wit
 Learn how to:
 
 - Refactor existing source code.
-- Use root cause analysis to debug problems.
+- Use GitLab Duo Root Cause Analysis to debug problems.
 - Solve security vulnerabilities.
+
+NOTE:
+If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
 ## Use GitLab Duo to solve development challenges
 
@@ -216,7 +217,7 @@ Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Refactor C++ fu
   How to instantiate an object from a class in C++, call the constructor with the SQLite DB path and call the functions. Prefer shared pointers. Explain which header includes are necessary.
   ```
 
-- Code Suggestions help generate the correct syntax for `std::shared_ptr` pointer arithmetic and help improve the code quality.
+- Code Suggestions helps generate the correct syntax for `std::shared_ptr` pointer arithmetic and help improve the code quality.
 
   ```cpp
   // Define the SQLite path in a variable, default value database.db
@@ -550,7 +551,7 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
 ```
 
 [SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) to understand the problem.
-Vulnerability resolution helps to generate an MR.
+Vulnerability Resolution helps to generate an MR.
 If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Duo Chat to refine. For example:
 
 1. Open VS Code or the Web IDE with GitLab Duo enabled, and add a comment with instructions:
@@ -596,9 +597,9 @@ Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Solve problems 
 
 - You can use GitLab Duo Chat to explain CI/CD errors.
 
-   ```markdown
-   Explain this CI/CD error: build.sh: line 14: go command not found
-   ```
+  ```markdown
+  Explain this CI/CD error: build.sh: line 14: go command not found
+  ```
 
 - What happens when you are impatient, and input just one or two words?
 
@@ -1521,7 +1522,7 @@ The [GitLab Duo Coffee Chat](https://handbook.gitlab.com/handbook/marketing/deve
 
 The following blog posts provide tutorials for these use cases:
 
-- [Top tips for efficient AI-powered code suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
+- [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
 - [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
 - [GitLab Duo Chat 101: Get more done on GitLab with our AI assistant](https://about.gitlab.com/blog/2024/05/29/gitlab-duo-chat-101-get-more-done-on-gitlab-with-our-ai-assistant/)
 - [Developing GitLab Duo: How we are dogfooding our AI features](https://about.gitlab.com/blog/2024/05/20/developing-gitlab-duo-how-we-are-dogfooding-our-ai-features/)

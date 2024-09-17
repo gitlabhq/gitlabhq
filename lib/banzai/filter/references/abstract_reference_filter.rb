@@ -10,8 +10,6 @@ module Banzai
         prepend Concerns::TimeoutFilterHandler
         prepend Concerns::PipelineTimingCheck
 
-        RENDER_TIMEOUT = 2.seconds
-
         def initialize(doc, context = nil, result = nil)
           super
 

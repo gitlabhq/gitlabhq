@@ -325,7 +325,7 @@ The steps for doing this vary depending on which registrar you use and is beyond
 ## PostgreSQL with RDS
 
 For our database server we use Amazon RDS for PostgreSQL which offers Multi AZ
-for redundancy ([Aurora is **not** supported](https://gitlab.com/gitlab-com/partners/alliance/aws/public-tracker/-/issues/12)). First we create a security group and subnet group, then we
+for redundancy ([Aurora is **not** supported](https://gitlab.com/gitlab-partners-public/aws/aws-known-issues/-/issues/10)). First we create a security group and subnet group, then we
 create the actual RDS instance.
 
 ### RDS Security Group
@@ -359,7 +359,7 @@ Now, it's time to create the database:
 
 1. Go to the RDS dashboard, select **Databases** from the left menu, and select **Create database**.
 1. Select **Standard Create** for the database creation method.
-1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../../install/requirements.md#postgresql-requirements).
+1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../../install/requirements.md#postgresql).
 1. Because this is a production server, let's choose **Production** from the **Templates** section.
 1. Under **Availability & durability**, select **Multi-AZ DB instance** to have a standby RDS instance provisioned in a different [Availability Zone](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
 1. Under **Settings**, use:
@@ -517,7 +517,7 @@ From the EC2 dashboard:
 
 1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
-1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
+1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitlab`) and save the `gitlab.pem` file for later use.
 1. In the **Network settings** section:

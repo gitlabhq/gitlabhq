@@ -2,7 +2,8 @@
 - edit_sidebar_text = @sidebar_page ? s_('Wiki|Edit custom sidebar') : s_('Wiki|Add custom sidebar')
 - has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
-%aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
+%aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar.gl-hidden{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
+  .js-wiki-sidebar-resizer
   .sidebar-container
     .block.gl-mb-3.gl-mx-5.gl-mt-5.gl-block.sm:gl-hidden{ class: '!gl-pt-0' }
       %a.gutter-toggle.gl-float-right.gl-block.md:gl-hidden.js-sidebar-wiki-toggle{ href: "#" }

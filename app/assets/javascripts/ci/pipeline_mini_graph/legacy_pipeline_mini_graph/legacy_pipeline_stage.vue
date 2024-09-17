@@ -128,16 +128,16 @@ export default {
         v-gl-tooltip.ds0="$options.tooltipConfig"
         :title="isDropdownOpen ? '' : stage.title"
         variant="link"
-        class="gl-rounded-full!"
+        class="!gl-rounded-full"
         data-testid="pipeline-mini-graph-dropdown-toggle"
       >
-        <ci-icon :status="stage.status" :show-tooltip="false" :use-link="false" class="gl-mb-0!" />
+        <ci-icon :status="stage.status" :show-tooltip="false" :use-link="false" class="!gl-mb-0" />
       </gl-button>
     </template>
 
     <template #header>
       <div
-        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-font-sm gl-font-bold gl-leading-1"
+        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-gray-200 !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
       >
         <template v-if="isLoading">
           <span>{{ $options.i18n.stage }}</span>
@@ -151,15 +151,15 @@ export default {
 
     <div
       v-if="isLoading"
-      class="gl-display-flex gl-py-3 gl-px-4"
+      class="gl-flex gl-px-4 gl-py-3"
       data-testid="pipeline-stage-loading-state"
     >
       <gl-loading-icon size="sm" class="gl-mr-3" />
-      <p class="gl-leading-normal gl-mb-0">{{ $options.i18n.loadingText }}</p>
+      <p class="gl-mb-0 gl-leading-normal">{{ $options.i18n.loadingText }}</p>
     </div>
     <ul
       v-else
-      class="mini-pipeline-graph-dropdown-menu gl-overflow-y-auto gl-m-0 gl-p-0"
+      class="mini-pipeline-graph-dropdown-menu gl-m-0 gl-overflow-y-auto gl-p-0"
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
@@ -175,7 +175,7 @@ export default {
     <template #footer>
       <div
         v-if="!isLoading && isMergeTrain"
-        class="gl-font-sm gl-text-secondary gl-py-3 gl-px-4 gl-border-t"
+        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-secondary"
         data-testid="warning-message-merge-trains"
       >
         {{ $options.i18n.mergeTrainMessage }}

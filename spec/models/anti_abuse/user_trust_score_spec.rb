@@ -112,17 +112,21 @@ RSpec.describe AntiAbuse::UserTrustScore, feature_category: :instance_resiliency
   end
 
   describe '#remove_old_scores' do
+    let(:source) { :spamcheck }
+
+    subject(:remove_old_scores) { described_class.new(user1).remove_old_scores(source) }
+
     context 'if max events is exceeded' do
       before do
         stub_const('AntiAbuse::UserTrustScore::MAX_EVENTS', 2)
       end
 
       it 'removes the oldest events' do
-        first = create(:abuse_trust_score, user: user1)
-        create(:abuse_trust_score, user: user1)
-        create(:abuse_trust_score, user: user1)
+        first = create(:abuse_trust_score, source: source, user: user1)
+        create(:abuse_trust_score, source: source, user: user1)
+        create(:abuse_trust_score, source: source, user: user1)
 
-        expect(user1.abuse_trust_scores.count).to eq(2)
+        expect { remove_old_scores }.to change { user1.abuse_trust_scores.count }.from(3).to(2)
         expect(AntiAbuse::TrustScore.find_by_id(first.id)).to eq(nil)
       end
     end

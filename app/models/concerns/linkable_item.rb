@@ -12,7 +12,7 @@ module LinkableItem
   include IssuableLink
 
   included do
-    validate :check_existing_parent_link
+    validate :check_existing_parent_link, on: :create
 
     scope :for_source, ->(item) { where(source_id: item.id) }
     scope :for_target, ->(item) { where(target_id: item.id) }

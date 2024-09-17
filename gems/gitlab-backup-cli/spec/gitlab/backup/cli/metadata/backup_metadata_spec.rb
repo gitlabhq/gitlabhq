@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Gitlab::Backup::Cli::Metadata::BackupMetadata do
   subject(:metadata) { build(:backup_metadata) }
 

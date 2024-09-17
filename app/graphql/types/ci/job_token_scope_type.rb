@@ -10,7 +10,7 @@ module Types
       field :projects,
         Types::ProjectType.connection_type,
         null: false,
-        description: 'Allow list of projects that can be accessed by CI Job tokens created by this project.',
+        description: 'Allow list of projects that can be accessed by CI Job tokens created by the project.',
         method: :outbound_projects,
         deprecated: {
           reason: 'The `projects` attribute is being deprecated. Use `outbound_allowlist`',

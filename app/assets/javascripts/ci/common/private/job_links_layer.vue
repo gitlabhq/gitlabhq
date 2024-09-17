@@ -68,7 +68,7 @@ export default {
     <slot></slot>
   </links-inner>
   <div v-else>
-    <div class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-relative">
+    <div class="gl-relative gl-flex gl-flex-wrap sm:gl-flex-nowrap">
       <slot></slot>
     </div>
   </div>

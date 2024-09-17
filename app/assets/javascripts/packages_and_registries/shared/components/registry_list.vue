@@ -96,11 +96,8 @@ export default {
 
 <template>
   <div>
-    <div
-      v-if="!hiddenDelete"
-      class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-mt-5 gl-align-items-center"
-    >
-      <div class="gl-display-flex gl-align-items-center">
+    <div v-if="!hiddenDelete" class="gl-mb-3 gl-mt-5 gl-flex gl-items-center gl-justify-between">
+      <div class="gl-flex gl-items-center">
         <gl-form-checkbox
           class="gl-ml-2 gl-pt-2"
           :aria-label="label"
@@ -110,7 +107,7 @@ export default {
           @change="onChange"
         />
 
-        <p class="gl-font-bold gl-mb-0">{{ title }}</p>
+        <p class="gl-mb-0 gl-font-bold">{{ title }}</p>
       </div>
 
       <gl-button
@@ -124,7 +121,7 @@ export default {
     </div>
 
     <ul class="gl-pl-0">
-      <li v-for="(item, index) in items" :key="index" class="gl-list-style-none">
+      <li v-for="(item, index) in items" :key="index" class="gl-list-none">
         <slot
           :select-item="selectItem"
           :is-selected="isSelected"
@@ -134,7 +131,7 @@ export default {
       </li>
     </ul>
 
-    <div class="gl-display-flex gl-justify-content-center">
+    <div class="gl-flex gl-justify-center">
       <gl-keyset-pagination
         v-bind="pagination"
         class="gl-mt-3"

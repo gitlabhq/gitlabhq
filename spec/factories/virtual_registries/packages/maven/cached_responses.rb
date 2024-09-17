@@ -5,7 +5,7 @@ FactoryBot.define do
     class: 'VirtualRegistries::Packages::Maven::CachedResponse' do
     upstream { association :virtual_registries_packages_maven_upstream }
     group { upstream.group }
-    relative_path { '/a/relative/path/test.txt' }
+    relative_path { |n| "/a/relative/path/test-#{n}.txt" }
     size { 1.kilobyte }
     upstream_etag { OpenSSL::Digest.hexdigest('SHA256', 'test') }
     content_type { 'text/plain' }
@@ -18,6 +18,11 @@ FactoryBot.define do
     after(:build) do |entry, evaluator|
       entry.upstream.registry_upstream.group = entry.group
       entry.file = fixture_file_upload(evaluator.file_fixture)
+    end
+
+    trait :upstream_checked do
+      upstream_checked_at { 30.minutes.ago }
+      upstream_etag { 'test' }
     end
   end
 end

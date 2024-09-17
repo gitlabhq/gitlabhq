@@ -28,6 +28,10 @@ module LooseForeignKeys
       loose_foreign_key_definition.on_delete == :async_nullify
     end
 
+    def update_column_to?
+      loose_foreign_key_definition.on_delete == :update_column_to
+    end
+
     private
 
     attr_reader :loose_foreign_key_definition, :connection, :deleted_parent_records, :with_skip_locked, :logger
@@ -37,6 +41,8 @@ module LooseForeignKeys
                 delete_query
               elsif async_nullify?
                 update_query
+              elsif update_column_to? && Feature.enabled?(:loose_foreign_keys_update_column_to, Feature.current_request)
+                update_target_column_query
               else
                 logger.error("Invalid on_delete argument: #{loose_foreign_key_definition.on_delete}")
                 return ""
@@ -75,6 +81,19 @@ module LooseForeignKeys
       query.set([[arel_table[loose_foreign_key_definition.column], nil]])
 
       add_in_query_with_limit(query, UPDATE_LIMIT)
+    end
+
+    def update_target_column_query
+      column, value = loose_foreign_key_definition.options.values_at(:target_column, :target_value)
+
+      query = Arel::UpdateManager.new
+      query.table(quoted_table_name)
+      query.set([[arel_table[column], value]])
+
+      columns = Arel::Nodes::Grouping.new(primary_keys)
+      in_query = in_query_with_limit(UPDATE_LIMIT)
+      in_query.where(arel_table[column].not_eq(value))
+      query.where(columns.in(in_query)).to_sql
     end
 
     # IN query with one or composite primary key

@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [beta](../../../../policy/experiment-beta-support.md).
 
-API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [DAST API](../../dast_api/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
+API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 
 ## Supported frameworks
 
@@ -57,18 +57,18 @@ When running in this method, you provide a container image that has the required
 1. In a job in the `build` stage, build your application and configure the resulting Spring Boot executable JAR as a job artifact.
 1. Include the API Discovery template in your `.gitlab-ci.yml` file.
 
-    ```yaml
-    include:
-       - template: Security/API-Discovery.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+      - template: Security/API-Discovery.gitlab-ci.yml
+   ```
 
    Only a single `include` statement is allowed per `.gitlab-ci.yml` file. If you are including other files, combine them into a single `include` statement.
 
-    ```yaml
-    include:
-       - template: Security/API-Discovery.gitlab-ci.yml
-       - template: Security/DAST-API.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+      - template: Security/API-Discovery.gitlab-ci.yml
+      - template: Security/DAST-API.gitlab-ci.yml
+   ```
 
 1. Create a new job that extends from `.api_discovery_java_spring_boot`. The default stage is `test` which can be optionally changed to any value.
 

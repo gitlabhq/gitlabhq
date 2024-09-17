@@ -88,10 +88,6 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
-    it_behaves_like 'records an onboarding progress action', :merge_request_created do
-      let(:namespace) { merge_request.target_project.namespace }
-    end
-
     context 'when merge request is in unchecked state' do
       before do
         merge_request.mark_as_unchecked!

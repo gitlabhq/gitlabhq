@@ -2,7 +2,7 @@
 - show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
 - show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
-.label-name.gl-flex-shrink-0.gl-mr-5
+.label-name.gl-shrink-0.gl-mr-5
   = render_label(label, link: '#', tooltip: true, tooltip_shows_title: true)
   - if show_labels_full_path?(@project, @group)
     .gl-mt-2

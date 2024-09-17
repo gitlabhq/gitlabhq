@@ -2,6 +2,7 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+ignore_in_report: true
 ---
 
 # Back up and Restore GitLab with `gitlab-backup-cli`
@@ -24,6 +25,66 @@ To take a backup of the current GitLab installation:
 ```shell
 sudo gitlab-backup-cli backup all
 ```
+
+### Backing up object storage
+
+Only Google cloud is supported. See [epic 11577](https://gitlab.com/groups/gitlab-org/-/epics/11577) for the plan to add more vendors.
+
+#### GCP
+
+`gitlab-backup-cli` creates and runs jobs with [Google Transfer Service](https://cloud.google.com/storage-transfer-service/) to copy GitLab data to a separate backup bucket.
+
+Prerequisites:
+
+- Follow [Google's documentation](https://cloud.google.com/docs/authentication) for authentication.
+- This document assumes you are setting up and using a dedicated Google Cloud service account for managing backups.
+- If no other credentials are provided, and you are running inside Google Cloud, then the tool attempts to use the access of the infrastructure it is running on. It is recommended to run with separate credentials, and restrict access to the created backups from the application.
+
+To create a backup:
+
+1. [Create a role](https://cloud.google.com/iam/docs/creating-custom-roles):
+   1. Create a file `role.yaml` with the following definition:
+
+   ```yaml
+   ---
+   description: Role for backing up GitLab object storage
+   includedPermissions:
+      - storagetransfer.jobs.create
+      - storagetransfer.jobs.get
+      - storagetransfer.jobs.run
+      - storagetransfer.jobs.update
+      - storagetransfer.operations.get
+      - storagetransfer.projects.getServiceAccount
+   stage: GA
+   title: GitLab Backup Role
+   ```
+
+   1. Apply the role:
+
+      ```shell
+      gcloud iam roles create --project=<YOUR_PROJECT_ID> <ROLE_NAME> --file=role.yaml
+      ```
+
+1. Create a service account for backups, and add it to the role:
+
+   ```shell
+   gcloud iam service-accounts create "gitlab-backup-cli" --display-name="GitLab Backup Service Account"
+   # Get the service account email from the output of the following
+   gcloud iam service-accounts list
+   # Add the account to the role created previously
+   gcloud projects add-iam-policy-binding <YOUR_PROJECT_ID> --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" --role="roles/<ROLE_NAME>"
+   ```
+
+1. Follow [Google's documentation](https://cloud.google.com/docs/authentication) for authentication with the service account. In general, the credentials can be saved to a file, or stored in a predefined environment variable.
+1. Create a destination bucket to backup to in [Google Cloud Storage](https://cloud.google.com/storage/). The options here are highly dependent on your requirements.
+1. Run the backup:
+
+   ```shell
+   sudo gitlab-backup-cli backup all --backup-bucket=<BUCKET_NAME>
+   ```
+
+   If you want to backup the container registry bucket, add the option `--registry-bucket=<REGISTRY_BUCKET_NAME>`.
+1. The backup creates a backup under `backups/<BACKUP_ID>/<BUCKET>` for each of the object storage types in the bucket.
 
 ## Backup directory structure
 
@@ -101,3 +162,23 @@ A workaround of this issue, is either to:
 - Restrict traffic to the servers during backup to preserve instance resources.
 
 We're investigating an alternative to the copy strategy, see [issue 428520](https://gitlab.com/gitlab-org/gitlab/-/issues/428520).
+
+## What data is backed up?
+
+1. Git Repository Data
+1. Databases
+1. Blobs
+
+## What data is NOT backed up?
+
+1. Secrets and Configurations
+
+   - Follow the documentation on how to [backup secrets and configuration](backup_gitlab.md#storing-configuration-files).
+
+1. Transient and Cache Data
+
+   - Redis: Cache
+   - Redis: Sidekiq Data
+   - Logs
+   - Elasticsearch
+   - Observability Data / Prometheus Metrics

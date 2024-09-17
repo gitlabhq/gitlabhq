@@ -27,8 +27,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
     service.instance_variable_set(:@nameserver_ttl, Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL)
 
     allow(Net::DNS::Resolver).to receive(:start)
-      .with('localhost', Net::DNS::A)
-      .and_return(packet)
+                                   .with('localhost', Net::DNS::A)
+                                   .and_return(packet)
   end
 
   describe '#initialize' do
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
     before do
       allow(service)
         .to receive(:loop)
-        .and_yield
+              .and_yield
     end
 
     it 'starts service discovery in a new thread with proper assignments' do
@@ -107,11 +107,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
         expect(service)
           .to receive(:refresh_if_necessary)
-          .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times.ordered
+                .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times.ordered
 
         expect(service)
           .to receive(:sleep).with(valid_retry_sleep_duration)
-          .exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times
+                             .exactly(described_class::MAX_DISCOVERY_RETRIES - 1).times
 
         expect(service).to receive(:refresh_if_necessary).and_return(45).ordered
 
@@ -123,11 +123,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
         expect(service)
           .to receive(:refresh_if_necessary)
-          .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+                .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
         expect(service)
           .to receive(:sleep).with(valid_retry_sleep_duration)
-          .exactly(described_class::MAX_DISCOVERY_RETRIES).times
+                             .exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
         service.perform_service_discovery
       end
@@ -156,17 +156,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       before do
         allow(service)
           .to receive(:addresses_from_load_balancer)
-          .and_return(%w[localhost])
+                .and_return(%w[localhost])
 
         allow(service)
           .to receive(:addresses_from_dns)
-          .and_return([10, [address_foo, address_bar]])
+                .and_return([10, [address_foo, address_bar]])
       end
 
       it 'refreshes the load balancer hosts' do
         expect(service)
           .to receive(:replace_hosts)
-          .with([address_foo, address_bar])
+                .with([address_foo, address_bar])
 
         expect(service.refresh_if_necessary).to eq(10)
       end
@@ -176,11 +176,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       before do
         allow(service)
           .to receive(:addresses_from_load_balancer)
-          .and_return(%w[localhost])
+                .and_return(%w[localhost])
 
         allow(service)
           .to receive(:addresses_from_dns)
-          .and_return([10, %w[localhost]])
+                .and_return([10, %w[localhost]])
       end
 
       it 'does not refresh the load balancer hosts' do
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
   describe '#replace_hosts' do
     before do
       allow(service)
-              .to receive(:load_balancer)
+        .to receive(:load_balancer)
               .and_return(load_balancer)
     end
 
@@ -220,7 +220,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
       allow(service)
         .to receive(:disconnect_timeout)
-        .and_return(2)
+              .and_return(2)
 
       expect(host)
         .to receive(:try_disconnect).and_return(true)
@@ -277,8 +277,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
     before do
       allow(service.resolver)
         .to receive(:search)
-        .with('foo', described_class::RECORD_TYPES[record_type])
-        .and_return(packet)
+              .with('foo', described_class::RECORD_TYPES[record_type])
+              .and_return(packet)
     end
 
     context 'with an A record' do
@@ -542,10 +542,18 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
         expect(h).not_to receive(:force_disconnect!)
       end
 
+      gentle_disconnected_hosts = service.load_balancer.host_list.hosts.map { |h| "#{h.host}:#{h.port}" }
+      allow(::Gitlab::Database::LoadBalancing::Logger).to receive(:info).and_call_original
+      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:info)
+                                                             .with(hash_including(
+                                                               event: :host_list_disconnection,
+                                                               gentle_disconnected_hosts: gentle_disconnected_hosts,
+                                                               force_disconnected_hosts: []
+                                                             ))
       expect { service.perform_service_discovery }.to change { host.pool.stat[:connections] }.from(1).to(0)
     end
 
-    it 'swaps the hosts out forcefully when contended' do
+    it 'swaps the hosts out forcefully when contended', :unlimited_max_formatted_output_length do
       host = service.load_balancer.host_list.next
 
       # Check out a connection and leave it checked out (simulate a web request)
@@ -557,7 +565,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       expect(connection).to receive(:steal!).and_call_original
 
       allow(service).to receive(:addresses_from_dns).and_return([Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL, []])
-
+      allow(::Gitlab::Database::LoadBalancing::Logger).to receive(:info).and_call_original
+      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:info)
+                                                             .with(hash_including(
+                                                               event: :host_list_disconnection,
+                                                               force_disconnected_hosts: ["#{host.host}:#{host.port}"]
+                                                             ))
       service.perform_service_discovery
     end
   end

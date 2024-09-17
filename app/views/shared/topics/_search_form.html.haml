@@ -1,7 +1,7 @@
-= form_tag page_filter_path, method: :get, class: "topic-filter-form js-topic-filter-form", id: 'topic-filter-form' do |f|
+= form_tag page_filter_path, method: :get, class: "topic-filter-form js-topic-filter-form gl-grow", id: 'topic-filter-form' do |f|
   = search_field_tag :search, params[:search],
     placeholder: _('Filter by name'),
-    class: 'topic-filter-form-field form-control input-short',
+    class: 'topic-filter-form-field form-control',
     spellcheck: false,
     id: 'topic-filter-form-field',
     autofocus: local_assigns[:autofocus]

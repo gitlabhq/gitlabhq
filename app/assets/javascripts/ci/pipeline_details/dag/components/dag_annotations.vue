@@ -27,11 +27,11 @@ export default {
     },
     wrapperClasses() {
       return [
-        'gl-display-flex',
-        'gl-flex-direction-column',
+        'gl-flex',
+        'gl-flex-col',
         'gl-fixed',
         'gl-right-1',
-        'gl-deprecated-top-66vh',
+        'gl-top-2/3',
         'gl-w-max',
         'gl-px-5',
         'gl-py-4',
@@ -50,19 +50,15 @@ export default {
 <template>
   <div :class="wrapperClasses">
     <div v-if="showList">
-      <div
-        v-for="note in annotations"
-        :key="note.uid"
-        class="gl-display-flex gl-align-items-center"
-      >
+      <div v-for="note in annotations" :key="note.uid" class="gl-flex gl-items-center">
         <div
           data-testid="dag-color-block"
-          class="gl-w-6 gl-h-5"
+          class="gl-h-5 gl-w-6"
           :style="{
             background: `linear-gradient(0.25turn, ${note.source.color} 40%, ${note.target.color} 60%)`,
           }"
         ></div>
-        <div data-testid="dag-note-text" class="gl-px-2 gl-font-base gl-align-items-center">
+        <div data-testid="dag-note-text" class="gl-items-center gl-px-2 gl-text-base">
           {{ note.source.name }} → {{ note.target.name }}
         </div>
       </div>

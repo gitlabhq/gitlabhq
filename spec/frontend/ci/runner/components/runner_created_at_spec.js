@@ -92,6 +92,6 @@ describe('RunnerCreatedAt', () => {
       },
     });
 
-    expect(wrapper.html()).toBe('');
+    expect(wrapper.find('*').exists()).toBe(false);
   });
 });

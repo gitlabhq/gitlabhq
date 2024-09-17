@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require "spec_helper"
 
-RSpec.describe Pajamas::ButtonComponent, type: :component do
+RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :design_system do
   subject do
     described_class.new(**options)
   end
@@ -41,7 +42,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         end
       end
 
-      context 'overriding base attributes' do
+      context 'when overriding base attributes' do
         let(:options) { { button_options: { type: 'submit' } } }
 
         it 'overrides type' do
@@ -59,7 +60,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
 
     describe 'disabled' do
-      context 'by default (false)' do
+      context 'with defaults (false)' do
         it 'does not have  disabled styling and behavior' do
           expect(page).not_to have_css ".disabled[disabled][aria-disabled]"
         end
@@ -75,7 +76,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
 
     describe 'loading' do
-      context 'by default (false)' do
+      context 'with defaults (false)' do
         it 'is not disabled' do
           expect(page).not_to have_css ".disabled[disabled]"
         end
@@ -99,7 +100,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
 
     describe 'block' do
-      context 'by default (false)' do
+      context 'with defaults (false)' do
         it 'is inline' do
           expect(page).not_to have_css ".btn-block"
         end
@@ -115,7 +116,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
 
     describe 'selected' do
-      context 'by default (false)' do
+      context 'with defaults (false)' do
         it 'does not have selected styling and behavior' do
           expect(page).not_to have_css ".selected"
         end
@@ -172,7 +173,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
 
     describe 'size' do
-      context 'by default (medium)' do
+      context 'with defaults (medium)' do
         it 'applies medium class' do
           expect(page).to have_css ".btn-md"
         end
@@ -181,7 +182,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
       context 'when set to small' do
         let(:options) { { size: :small } }
 
-        it "applies the small class to the button" do
+        it 'applies the small class to the button' do
           expect(page).to have_css ".btn-sm"
         end
       end
@@ -230,11 +231,11 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     end
   end
 
-  context 'button component renders a button' do
+  context 'when button component renders a button' do
     include_examples 'basic button behavior'
 
     describe 'type' do
-      context 'by default' do
+      context 'with defaults' do
         it 'has type "button"' do
           expect(page).to have_css "button[type='button']"
         end
@@ -260,12 +261,35 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         end
       end
     end
+
+    context 'when it renders a button_to form' do
+      let(:button_options) { { data: { testid: 'button-form' } } }
+      let(:options) do
+        { href: 'some_post/path', method: :post, form: true, button_options: button_options }
+      end
+
+      it 'renders a form' do
+        expect(page).to have_css "form[method='post'][action='some_post/path']"
+      end
+
+      it 'passes the data attributes to the created button' do
+        expect(page).to have_css "button[data-testid='button-form']"
+      end
+
+      context 'when params are passed in as a button option' do
+        let(:button_options) { { params: { some_param: true } } }
+
+        it 'adds the params to the form as hidden inputs' do
+          expect(page).to have_css "input[name='some_param'][value='true']", visible: :hidden
+        end
+      end
+    end
   end
 
-  context 'button component renders a link' do
+  context 'when button component renders a link' do
     let(:options) { { href: 'https://gitlab.com', target: '_self' } }
 
-    it "renders a link instead of the button" do
+    it 'renders a link instead of the button' do
       expect(page).not_to have_css "button[type='button']"
       expect(page).to have_css "a[href='https://gitlab.com'][target='_self']"
     end

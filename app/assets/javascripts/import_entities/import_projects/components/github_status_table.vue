@@ -65,12 +65,12 @@ export default {
 <template>
   <import-projects-table v-bind="$attrs">
     <template #filter="{ importAllButtonText, showImportAllModal }">
-      <gl-tabs v-model="selectedRelationTypeTabIdx" content-class="gl-py-0! gl-mb-3">
+      <gl-tabs v-model="selectedRelationTypeTabIdx" content-class="!gl-py-0 gl-mb-3">
         <gl-tab v-for="tab in $options.relationTypes" :key="tab.title" :title="tab.title">
           <div
-            class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-gap-3 gl-p-5 gl-bg-gray-10 gl-border-solid gl-border-0 gl-border-b-gray-100 gl-border-b-1"
+            class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3 gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-gray-100 gl-bg-gray-10 gl-p-5"
           >
-            <form class="gl-display-flex gl-flex-grow-1 gl-mr-3" novalidate @submit.prevent>
+            <form class="gl-mr-3 gl-flex gl-grow" novalidate @submit.prevent>
               <github-organizations-box
                 v-if="tab.showOrganizationFilter"
                 class="gl-mr-3"

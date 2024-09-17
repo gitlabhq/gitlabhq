@@ -3,6 +3,8 @@
 module AntiAbuse
   module Reports
     class Discussion < ::Discussion
+      delegate :abuse_report, to: :first_note
+
       def self.base_discussion_id(_note)
         [:discussion, :abuse_report_id]
       end

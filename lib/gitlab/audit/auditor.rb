@@ -52,11 +52,13 @@ module Gitlab
       def self.audit(context, &block)
         auditor = new(context)
 
-        return unless auditor.audit_enabled?
-
         if block
+          return yield unless auditor.audit_enabled?
+
           auditor.multiple_audit(&block)
         else
+          return unless auditor.audit_enabled?
+
           auditor.single_audit
         end
       end

@@ -51,14 +51,14 @@ export default {
       <gl-icon
         :size="16"
         :name="confidentialIcon"
-        class="sidebar-item-icon inline"
+        class="sidebar-item-icon gl-inline-block"
         :class="{ 'is-active': confidential }"
       />
     </div>
     <gl-icon
       :size="16"
       :name="confidentialIcon"
-      class="sidebar-item-icon inline hide-collapsed"
+      class="sidebar-item-icon hide-collapsed gl-inline-block"
       :class="{ 'is-active': confidential }"
     />
     <span class="hide-collapsed" data-testid="confidential-text">

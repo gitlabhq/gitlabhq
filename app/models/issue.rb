@@ -98,9 +98,7 @@ class Issue < ApplicationRecord
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
-  has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue, validate: false
-  has_many :prometheus_alerts, through: :prometheus_alert_events
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
   has_many :incident_management_timeline_events, class_name: 'IncidentManagement::TimelineEvent', foreign_key: :issue_id, inverse_of: :incident
@@ -180,7 +178,6 @@ class Issue < ApplicationRecord
   scope :preload_routables, -> { preload(project: [:route, { namespace: :route }]) }
 
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
-  scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
     preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },

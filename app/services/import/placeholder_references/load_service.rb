@@ -37,7 +37,7 @@ module Import
       attr_accessor :error_count, :processed_count
 
       def next_batch
-        cache.limited_values_from_set(cache_key, limit: BATCH_LIMIT)
+        store.get(BATCH_LIMIT)
       end
 
       def load!(batch)
@@ -79,7 +79,7 @@ module Import
 
         self.processed_count += processed_count
 
-        cache.set_remove(cache_key, batch)
+        store.remove(batch)
       end
 
       def log_error(item, exception)

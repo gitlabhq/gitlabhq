@@ -150,7 +150,7 @@ export default {
   >
     <gl-disclosure-dropdown-item v-if="isActionsLoading">
       <template #list-item>
-        <div class="gl-display-flex">
+        <div class="gl-flex">
           <gl-loading-icon class="mr-2" />
           <span>{{ __('Loading...') }}</span>
         </div>
@@ -165,7 +165,7 @@ export default {
       @action="onClickAction(action)"
     >
       <template #list-item>
-        <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
+        <div class="gl-flex gl-flex-wrap gl-justify-between">
           {{ action.name }}
           <span v-if="action.scheduledAt">
             <gl-icon name="clock" />
@@ -178,7 +178,7 @@ export default {
     <template #footer>
       <gl-disclosure-dropdown-item v-if="isDropdownLimitReached">
         <template #list-item>
-          <span class="gl-font-sm gl-text-gray-300!" data-testid="limit-reached-msg">
+          <span class="gl-text-sm !gl-text-gray-300" data-testid="limit-reached-msg">
             {{ __('Showing first 50 actions.') }}
           </span>
         </template>

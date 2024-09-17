@@ -93,6 +93,10 @@ module GitlabSettings
       @options = to_hash.merge(other.deep_stringify_keys)
     end
 
+    def reverse_merge!(other)
+      @options = to_hash.reverse_merge(other.deep_stringify_keys)
+    end
+
     def deep_merge(other)
       self.class.build(to_hash.deep_merge(other.deep_stringify_keys))
     end

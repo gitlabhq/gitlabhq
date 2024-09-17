@@ -9,7 +9,7 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, developers: current_user) }
   let_it_be(:public_project) { create(:project, :public) }
-  let_it_be(:unauthorize_project) { create(:project) }
+  let_it_be(:unauthorized_project) { create(:project) }
   let_it_be(:commit_todo) { create(:on_commit_todo, user: current_user, project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:confidential_issue) { create(:issue, :confidential, project: public_project) }
@@ -17,7 +17,7 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
   let_it_be(:confidential_issue_todo) { create(:todo, project: project, user: current_user, target: confidential_issue) }
   let_it_be(:merge_request_todo) { create(:todo, project: project, user: current_user, target: create(:merge_request, source_project: project)) }
   let_it_be(:design_todo) { create(:todo, project: project, user: current_user, target: create(:design, issue: issue)) }
-  let_it_be(:unauthorized_todo) { create(:todo, user: current_user, project: unauthorize_project, target: create(:issue, project: unauthorize_project)) }
+  let_it_be(:unauthorized_todo) { create(:todo, user: current_user, project: unauthorized_project, target: create(:issue, project: unauthorized_project)) }
 
   let(:fields) do
     <<~QUERY

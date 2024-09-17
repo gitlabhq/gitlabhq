@@ -10,13 +10,13 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-This guide provides you with basics of setting up integrated error tracking for
+This guide provides basic information on how to set up integrated error tracking for
 your project, using examples from different languages.
 
 Error tracking provided by GitLab Observability is based on
-[Sentry SDK](https://docs.sentry.io/). Check the
-[Sentry SDK documentation](https://docs.sentry.io/platforms/) for more thorough
-examples of how you can use Sentry SDK in your application.
+[Sentry SDK](https://docs.sentry.io/).
+For more information and examples of how you can use Sentry SDK in your application,
+see the [Sentry SDK documentation](https://docs.sentry.io/platforms/).
 
 ## Enable error tracking for a project
 
@@ -25,8 +25,8 @@ for your GitLab project. This guide uses the `GitLab.com` instance.
 
 Prerequisites:
 
-- You have a project for which you want to enable error tracking. To learn how to
-  create a new one, see [Create a project](../user/project/index.md).
+- You must have a project for which you want to enable error tracking.
+  See how to [create a project](../user/project/index.md).
 
 To enable error tracking with GitLab as the backend:
 
@@ -62,7 +62,9 @@ those errors are available in the GitLab UI. To view them:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to **Monitor > Error Tracking** to see the list of open errors:
+
    ![MonitorListErrors](img/list_errors_v16_0.png)
+
 1. Select an error to see the **Error details** view:
 
    ![MonitorDetailErrors](img/detail_errors_v16_0.png)
@@ -71,9 +73,9 @@ those errors are available in the GitLab UI. To view them:
 
    - Total number of occurrences.
    - Total users affected.
-   - First seen: the date, and the commit (**{commit}**).
-   - Last seen date, shown as a relative date. To see the timestamp, hover over the date with your mouse.
-   - A bar graph of error frequency per hour. Hover over a bar to see the total number of errors in that hour.
+   - First seen: the date and commit (**{commit}**).
+   - Last seen date, shown as a relative date. To view the timestamp, hover over the date.
+   - A bar graph of error frequency per hour. To view the total number of errors in a specific hour, hover over a bar.
    - A stack trace.
 
 ### Create an issue from an error
@@ -86,8 +88,11 @@ An issue is created. The issue description contains the error stack trace.
 
 ### Analyze an error's details
 
-On the **Error details** page, point to the **Last seen** date to see a full
-timestamp of the error. In this example, the error happened at 11:41 CEST:
+To view the full timestamp of an error:
+
+- On the **Error details** page, hover over to the **Last seen** date.
+
+In the following example, the error happened at 11:41 CEST:
 
 ![MonitorDetailErrors](img/last_seen_v16.10.png)
 
@@ -119,15 +124,13 @@ GitLab Error Tracking supports these event types:
 For a detailed version of this table, see
 [issue 1737](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1737).
 
-Working examples for each of the
-[supported language SDKs](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/sentry-sdk/testdata/supported-sdk-clients)
-are available. Each example shows how to capture exceptions, events, or messages
-with that SDK. For more in-depth documentation, see
-[Sentry SDK's documentation](https://docs.sentry.io/) for that specific language.
+See also working [examples for supported language SDKs](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/test/sentry-sdk/testdata/supported-sdk-clients), showing how to capture exceptions, events, or messages with that SDK.
+For more information, see the [Sentry SDK documentation](https://docs.sentry.io/) for a specific language.
 
 ## Rotate generated DSN
 
-The Sentry Data Source Name (DSN), also known as a client key, is a secret.
+WARNING:
+The Sentry DSN, also known as a client key, is a secret.
 Don't expose it to the public. If it is leaked or exposed, rotate the Sentry DSN.
 
 Prerequisites:
@@ -140,7 +143,7 @@ To rotate the Sentry DSN:
 1. [Create an access token](../user/profile/personal_access_tokens.md#create-a-personal-access-token)
    with the `api` scope. Copy off this value, as you need it in future steps.
 1. Use the [error tracking API](../api/error_tracking.md) to create a new Sentry DSN,
-   replacing `<your_access_token>` and `<your_project_number>`:
+   replacing `<your_access_token>` and `<your_project_number>` with your values:
 
    ```shell
    curl --request POST \
@@ -150,15 +153,15 @@ To rotate the Sentry DSN:
    ```
 
 1. Get the available client keys (Sentry DSNs). Ensure your newly-created Sentry DSN
-   is in place. Run this command with the key ID of the old client key, replacing `<your_access_token>`
-   and `<your_project_number>`:
+   is in place. Run the following command with the key ID of the old client key, replacing `<your_access_token>`
+   and `<your_project_number>` with your values:
 
    ```shell
    curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_number>/error_tracking/client_keys"
    ```
 
-1. Delete the old client key.
+1. Delete the old client key:
 
    ```shell
    curl --request DELETE \

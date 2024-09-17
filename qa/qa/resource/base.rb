@@ -8,6 +8,7 @@ module QA
     class Base
       include ApiFabricator
       extend Capybara::DSL
+
       using Rainbow
 
       NoValueError = Class.new(RuntimeError)
@@ -226,6 +227,15 @@ module QA
       def wait_until(max_duration: 60, sleep_interval: 0.1, message: nil, &block)
         QA::Support::Waiter.wait_until(
           max_duration: max_duration, sleep_interval: sleep_interval, message: message, &block
+        )
+      end
+
+      def retry_until(max_duration: 60, sleep_interval: 0.1, retry_on_exception: true, &block)
+        Support::Retrier.retry_until(
+          max_duration: max_duration,
+          sleep_interval: sleep_interval,
+          retry_on_exception: retry_on_exception,
+          &block
         )
       end
 

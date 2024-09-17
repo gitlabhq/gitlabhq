@@ -6,14 +6,24 @@ module API
 
     feature_category :team_planning
 
+    FILENAME_QUERY_PARAM_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      filename: API::NO_SLASH_URL_PART_REGEX
+    )
+
     helpers do
       def find_uploads(parent)
         uploads = Banzai::UploadsFinder.new(parent: parent).execute
         uploads.preload_uploaded_by_user
       end
 
-      def find_upload(parent, upload_id)
-        Banzai::UploadsFinder.new(parent: parent).find(upload_id)
+      def find_upload(parent, upload_id: nil, secret: nil, filename: nil)
+        finder = Banzai::UploadsFinder.new(parent: parent)
+
+        if upload_id
+          finder.find(upload_id)
+        else
+          finder.find_by_secret_and_filename(secret, filename)
+        end
       end
     end
 
@@ -71,7 +81,7 @@ module API
         present paginate(uploads), with: Entities::MarkdownUploadAdmin
       end
 
-      desc 'Download a single project upload' do
+      desc 'Download a single project upload by ID' do
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -83,14 +93,36 @@ module API
         requires :upload_id, type: Integer, desc: 'The ID of a project upload'
       end
       get ':id/uploads/:upload_id' do
+        # Fetching uploads by ID is maintainer-only because it can be used to enumerate uploads
+        # even without the secret
         authorize! :admin_upload, user_project
 
-        upload = find_upload(user_project, params[:upload_id])
+        upload = find_upload(user_project, upload_id: params[:upload_id])
 
         present_carrierwave_file!(upload.retrieve_uploader)
       end
 
-      desc 'Delete a single project upload' do
+      desc 'Download a single project upload by secret and filename' do
+        success File
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
+      params do
+        requires :secret, type: String, desc: 'The 32-character secret of a project upload'
+        requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
+      end
+      get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
+        authorize! :read_upload, user_project
+
+        upload = find_upload(user_project, secret: params[:secret], filename: params[:filename])
+
+        present_carrierwave_file!(upload&.retrieve_uploader)
+      end
+
+      desc 'Delete a single project upload by ID' do
         success code: 204
         failure [
           { code: 400, message: 'Bad request' },
@@ -105,7 +137,33 @@ module API
       delete ':id/uploads/:upload_id' do
         authorize! :destroy_upload, user_project
 
-        upload = find_upload(user_project, params[:upload_id])
+        upload = find_upload(user_project, upload_id: params[:upload_id])
+        result = Uploads::DestroyService.new(user_project, current_user).execute(upload)
+
+        if result[:status] == :success
+          status 204
+        else
+          bad_request!(result[:message])
+        end
+      end
+
+      desc 'Delete a single project upload by secret and filename' do
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
+      params do
+        requires :secret, type: String, desc: 'The 32-character secret of a project upload'
+        requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
+      end
+      delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
+        authorize! :destroy_upload, user_project
+
+        upload = find_upload(user_project, secret: params[:secret], filename: params[:filename])
         result = Uploads::DestroyService.new(user_project, current_user).execute(upload)
 
         if result[:status] == :success
@@ -137,7 +195,7 @@ module API
         present paginate(uploads), with: Entities::MarkdownUploadAdmin
       end
 
-      desc 'Download a single group upload' do
+      desc 'Download a single group upload by ID' do
         success File
         failure [
           { code: 403, message: 'Unauthenticated' },
@@ -149,11 +207,33 @@ module API
         requires :upload_id, type: Integer, desc: 'The ID of a group upload'
       end
       get ':id/uploads/:upload_id' do
+        # Fetching uploads by ID is maintainer-only because it can be used to enumerate uploads
+        # even without the secret
         authorize! :admin_upload, user_group
 
-        upload = find_upload(user_group, params[:upload_id])
+        upload = find_upload(user_group, upload_id: params[:upload_id])
 
         present_carrierwave_file!(upload.retrieve_uploader)
+      end
+
+      desc 'Download a single project upload by secret and filename' do
+        success File
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[groups]
+      end
+      params do
+        requires :secret, type: String, desc: 'The 32-character secret of a group upload'
+        requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
+      end
+      get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
+        authorize! :read_upload, user_group
+
+        upload = find_upload(user_group, secret: params[:secret], filename: params[:filename])
+
+        present_carrierwave_file!(upload&.retrieve_uploader)
       end
 
       desc 'Delete a single group upload' do
@@ -171,7 +251,33 @@ module API
       delete ':id/uploads/:upload_id' do
         authorize! :destroy_upload, user_group
 
-        upload = find_upload(user_group, params[:upload_id])
+        upload = find_upload(user_group, upload_id: params[:upload_id])
+        result = Uploads::DestroyService.new(user_group, current_user).execute(upload)
+
+        if result[:status] == :success
+          status 204
+        else
+          bad_request!(result[:message])
+        end
+      end
+
+      desc 'Delete a single group upload by secret and filename' do
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[groups]
+      end
+      params do
+        requires :secret, type: String, desc: 'The 32-character secret of a group upload'
+        requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
+      end
+      delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
+        authorize! :destroy_upload, user_group
+
+        upload = find_upload(user_group, secret: params[:secret], filename: params[:filename])
         result = Uploads::DestroyService.new(user_group, current_user).execute(upload)
 
         if result[:status] == :success

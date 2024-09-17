@@ -97,7 +97,6 @@ RSpec.describe Projects::Alerting::NotifyService, feature_category: :groups_and_
                 service: nil,
                 fingerprint: nil,
                 ended_at: nil,
-                prometheus_alert_id: nil,
                 environment_id: nil
               )
             end

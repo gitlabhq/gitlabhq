@@ -1,5 +1,11 @@
 import { useLocalStorageSpy } from './local_storage_helper';
 
+afterEach(() => {
+  if (jest.isMockFunction(localStorage.setItem)) {
+    throw new Error('Helper did not correctly restore original localStorage implementation');
+  }
+});
+
 describe('block before helper is installed', () => {
   it('should leave original localStorage intact', () => {
     expect(localStorage.getItem).toEqual(expect.any(Function));
@@ -24,5 +30,35 @@ describe('localStorage helper', () => {
     localStorage.clear();
 
     expect(localStorage.getItem('test2')).toBe(null);
+  });
+});
+
+describe('in multiple describe blocks', () => {
+  describe('first', () => {
+    useLocalStorageSpy();
+
+    it('works', () => {
+      expect(jest.isMockFunction(localStorage.setItem)).toBe(true);
+    });
+  });
+
+  describe('second', () => {
+    useLocalStorageSpy();
+
+    it('also works', () => {
+      expect(jest.isMockFunction(localStorage.setItem)).toBe(true);
+    });
+  });
+});
+
+describe('nested calls', () => {
+  useLocalStorageSpy();
+
+  describe('...', () => {
+    useLocalStorageSpy();
+
+    it('also still work', () => {
+      expect(jest.isMockFunction(localStorage.setItem)).toBe(true);
+    });
   });
 });

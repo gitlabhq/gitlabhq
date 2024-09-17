@@ -18,21 +18,18 @@ Each member gets a role, which determines what they can do in the project.
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
 > - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
 
 Users can become members of a group or project directly or indirectly.
 Indirect membership can be inherited, shared, or inherited shared.
 
 | Membership type                               | Membership process |
 | --------------------------------------------- | ------------------ |
-| [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
-| [Indirect](#indirect-membership)  | The user is not added directly to the current group or project. Instead, the user becomes a member by inheriting from a parent group, or inviting the current group or project to another group. |
-| [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
-| [Shared](share_project_with_groups.md) | The user is a member of a group or project invited to the current group or project or one of its ancestors. |
-| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project invited to the current group or project. |
+| Direct | The user is added directly to the current group or project. |
+| Inherited | The user is a member of a parent group that contains the current group or project. |
+| [Shared](share_project_with_groups.md) | The user is a member of a group invited to the current group or project. |
+| [Inherited shared](../members/sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
+| Indirect | An umbrella term for inherited, shared, or inherited shared members. |
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -62,9 +59,20 @@ flowchart RL
   G-->|Group C invited to Project X|E
 ```
 
+![Project members page](img/project_members_v17_4.png)
+
+In the above example:
+
+- **Administrator** is an inherited member from the **demo** group.
+- **User 0** is an inherited member from the **demo** group.
+- **User 1** is a shared member from the **Acme** group that is invited to this project.
+- **User 2** is an inherited shared member from the **Toolbox** group that is invited to the **demo** group.
+- **User 3** is a direct member added to this project.
+
 ## Add users to a project
 
 > - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
 
 Add users to a project so they become direct members and have permission
 to perform actions.
@@ -115,98 +123,16 @@ role for the group. For example, the maximum role you can set is:
 
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
-## Inherited membership
-
-When your project belongs to a group, project members inherit their role
-from the group.
-
-![Project members page](img/project_members_v14_4.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
-  which contains the project.
-- **User 1** has been added directly to the project. In the **Source** column, they are listed
-  as a **Direct member**.
-- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
-  They have inherited their role in the project from the **demo** group.
+## Updating expiration and role
 
 If a user is:
 
-- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
-- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group that the member originates from.
-
-## Indirect membership
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/444476) in GitLab 16.10 [with a flag](../../feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-If your project belongs to a group, the users gain membership to the project through either inheritance from a parent group or through sharing the project or the project's parent group with another group.
-
-![Project members page](img/project_members_v16_10.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** and **User 1** have the Guest role in the project. They have indirect membership through **Twitter** group, which contains the project.
-- **Administrator** is the [Owner](../../permissions.md) of the group.
-
-If a user is:
-
-- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly in the project.
-- An indirect member from a parent group or shared group, the **Expiration** and **Max role** fields must be updated in the group that the member originates from.
-
-## Add groups to a project
-
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-When you add a group to a project, every group member (direct or inherited) gets access to the project.
-Each member's access is based on the:
-
-- Role they're assigned in the group.
-- Maximum role you choose when you invite the group.
-
-If a group member has a role in the group with fewer permissions than the maximum project role, the member keeps the permissions of their group role.
-For example, if you add a member with the Guest role to a project with a maximum role of Maintainer, the member has only the permissions of the Guest role in the project.
-
-Prerequisites:
-
-- You must have the Maintainer or Owner role.
-- Sharing the project with other groups must not be [prevented](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
-
-To add a group to a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
-1. Select **Invite a group**.
-1. Select a group.
-1. Select the highest [role](../../permissions.md) for users in the group.
-1. Optional. Select an **Access expiration date**.
-   From that date onward, the group can no longer access the project.
-1. Select **Invite**.
-
-The invited group is displayed on the **Groups** tab.
-Private groups are masked from unauthorized users.
-Private groups are displayed in project settings for protected branches, protected tags, and protected environments.
-The members of the invited group are not displayed on the **Members** tab, but are displayed if the `webui_members_inherited_users` feature flag is enabled.
-The **Members** tab shows:
-
-- Members who were directly added to the project.
-- Inherited members of the group [namespace](../../namespace/index.md) that the project was added to.
+- A direct member of a project, the **Expiration** and **Role** fields can be updated directly on the project.
+- An inherited, shared, or inherited shared member, the **Expiration** and **Role** fields must be updated on the group that the member originates from.
 
 ## Share a project with a group
 
-Instead of adding users one by one, you can [share a project with an entire group](share_project_with_groups.md).
+Instead of adding users one by one, you can [share a project with an entire group](sharing_projects_groups.md).
 
 ## Import members from another project
 
@@ -220,10 +146,10 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role.
 
-If the importing member's role in the target project is:
+If the importing member's role for the target project is:
 
-- Maintainer, then members with the Owner role in the source project are imported with the Maintainer role.
-- Owner, then members with the Owner role in the source project are imported with the Owner role.
+- Maintainer, then members with the Owner role for the source project are imported with the Maintainer role.
+- Owner, then members with the Owner role for the source project are imported with the Owner role.
 
 To import a project's members:
 
@@ -291,11 +217,11 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
-### Display inherited members
+### Display indirect members
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
-1. In the **Filter members** box, select `Membership` `=` `Inherited`.
+1. In the **Filter members** box, select `Membership` `=` `Indirect`.
 1. Press <kbd>Enter</kbd>.
 
 ### Search for members in a project
@@ -313,7 +239,7 @@ You can sort members in ascending or descending order by:
 
 - **Account** name
 - **Access granted** date
-- **Max role** the members have in the group
+- **Role** the members have in the project
 - **User created** date
 - **Last activity** date
 - **Last sign-in** date

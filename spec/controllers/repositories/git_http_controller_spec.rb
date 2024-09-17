@@ -26,11 +26,45 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
     end
   end
 
-  shared_examples 'increments fetch statistics' do
-    it 'calls Projects::FetchStatisticsIncrementService service' do
-      expect(Projects::FetchStatisticsIncrementService).to receive(:new).with(project).and_call_original
+  shared_examples 'handles user activity' do
+    it 'updates the user activity' do
+      activity_project = container.is_a?(PersonalSnippet) ? nil : project
 
-      send_request
+      activity_service = instance_double(Users::ActivityService)
+
+      args = { author: user, project: activity_project, namespace: activity_project&.namespace }
+      expect(Users::ActivityService).to receive(:new).with(args).and_return(activity_service)
+
+      expect(activity_service).to receive(:execute)
+
+      get :info_refs, params: params
+    end
+
+    it 'publishes activity events accordingly' do
+      if container.is_a?(Project)
+        expect { get :info_refs, params: params }
+          .to publish_event(Users::ActivityEvent)
+          .with({
+            user_id: user.id,
+            namespace_id: project.namespace_id
+          })
+      else
+        expect { get :info_refs, params: params }
+          .not_to publish_event(Users::ActivityEvent)
+      end
+    end
+  end
+
+  shared_examples 'handles logging git upload pack operation' do
+    before do
+      password = user.try(:password) || user.try(:token)
+      request.headers.merge! auth_env(user.username, password, nil)
+    end
+
+    context 'with git pull/fetch/clone action' do
+      let(:params) { super().merge(service: 'git-upload-pack') }
+
+      it_behaves_like 'handles user activity'
     end
   end
 
@@ -41,6 +75,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccess }
 
       it_behaves_like 'handles unavailable Gitaly'
+      it_behaves_like 'handles logging git upload pack operation'
 
       describe 'POST #ssh_upload_pack' do
         it 'returns not found error' do
@@ -90,40 +125,15 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
           }.from(0).to(1)
         end
 
-        context "when project_daily_statistic_counter_attribute_fetch features flag is disabled" do
-          it 'updates project statistics sync for projects' do
-            stub_feature_flags(disable_git_http_fetch_writes: false)
-            stub_feature_flags(project_daily_statistic_counter_attribute_fetch: false)
-
-            expect { send_request }.to change {
-              Projects::DailyStatisticsFinder.new(container).total_fetch_count
-            }.from(0).to(1)
-          end
-        end
-
         context 'when disable_git_http_fetch_writes is enabled' do
           before do
             stub_feature_flags(disable_git_http_fetch_writes: true)
           end
 
-          context 'and allow_git_http_fetch_writes is disabled' do
-            before do
-              stub_feature_flags(allow_git_http_fetch_writes: false)
-            end
+          it 'does not increment statistics' do
+            expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
 
-            it 'does not increment statistics' do
-              expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
-
-              send_request
-            end
-          end
-
-          context 'and allow_git_http_fetch_writes is enabled' do
-            before do
-              stub_feature_flags(allow_git_http_fetch_writes: true)
-            end
-
-            it_behaves_like 'increments fetch statistics'
+            send_request
           end
         end
 
@@ -132,20 +142,10 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
             stub_feature_flags(disable_git_http_fetch_writes: false)
           end
 
-          context 'and allow_git_http_fetch_writes is disabled' do
-            before do
-              stub_feature_flags(allow_git_http_fetch_writes: false)
-            end
+          it 'increments statistics' do
+            expect(Projects::FetchStatisticsIncrementService).to receive(:new).with(project).and_call_original
 
-            it_behaves_like 'increments fetch statistics'
-          end
-
-          context 'and allow_git_http_fetch_writes is enabled' do
-            before do
-              stub_feature_flags(allow_git_http_fetch_writes: true)
-            end
-
-            it_behaves_like 'increments fetch statistics'
+            send_request
           end
         end
       end
@@ -156,6 +156,8 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
         let(:container) { project }
         let(:user) { create(:deploy_token, :project, projects: [project]) }
         let(:access_checker_class) { Gitlab::GitAccess }
+
+        it_behaves_like 'handles logging git upload pack operation'
       end
     end
   end
@@ -165,6 +167,8 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:container) { create(:project_wiki, :empty_repo, project: project) }
       let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccessWiki }
+
+      it_behaves_like 'handles logging git upload pack operation'
     end
   end
 
@@ -175,6 +179,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccessSnippet }
 
       it_behaves_like 'handles unavailable Gitaly'
+      it_behaves_like 'handles logging git upload pack operation'
     end
   end
 
@@ -185,6 +190,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccessSnippet }
 
       it_behaves_like 'handles unavailable Gitaly'
+      it_behaves_like 'handles logging git upload pack operation'
     end
   end
 

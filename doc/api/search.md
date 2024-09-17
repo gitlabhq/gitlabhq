@@ -21,6 +21,9 @@ these additional scopes are available for the [advanced search](#advanced-search
 - `blobs`
 - `notes`
 
+If you want to use basic search instead, see
+[specify a search type](../user/search/index.md#specify-a-search-type).
+
 ## Advanced search API
 
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.

@@ -331,14 +331,14 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
       let(:supported_widgets) do
         [
-          { klass: WorkItems::Callbacks::Description, callback: :after_initialize },
-          { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
+          { klass: Issuable::Callbacks::Description, callback: :after_initialize },
+          { klass: WorkItems::Callbacks::Hierarchy, callback: :after_update }
         ]
       end
     end
 
     context 'when updating widgets' do
-      let(:widget_service_class) { WorkItems::Callbacks::Description }
+      let(:widget_service_class) { Issuable::Callbacks::Description }
       let(:widget_params) { { description_widget: { description: 'changed' } } }
 
       context 'when widget service is not present' do

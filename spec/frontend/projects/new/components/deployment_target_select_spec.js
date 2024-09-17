@@ -1,4 +1,4 @@
-import { GlFormGroup, GlFormSelect, GlFormText, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -19,14 +19,14 @@ describe('Deployment target select', () => {
 
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
-  const findText = () => wrapper.findComponent(GlFormText);
+  const findText = () => wrapper.findComponent(GlSprintf);
   const findLink = () => wrapper.findComponent(GlLink);
 
   const createdWrapper = () => {
     wrapper = shallowMount(DeploymentTargetSelect, {
       stubs: {
+        GlFormGroup,
         GlFormSelect,
-        GlFormText,
         GlSprintf,
       },
     });

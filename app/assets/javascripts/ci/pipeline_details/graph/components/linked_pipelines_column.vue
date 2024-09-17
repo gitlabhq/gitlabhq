@@ -58,13 +58,13 @@ export default {
       pipelineExpanded: false,
     };
   },
-  titleClasses: ['gl-font-bold', 'gl-pipeline-job-width', 'gl-text-truncate', 'gl-leading-36'],
+  titleClasses: ['gl-font-bold', 'gl-pipeline-job-width', 'gl-truncate', 'gl-leading-36'],
   minWidth: `${ONE_COL_WIDTH}px`,
   computed: {
     columnClass() {
       const positionValues = {
         right: 'gl-mx-5',
-        left: 'gl-mx-4 gl-flex-basis-full',
+        left: 'gl-mx-4 gl-basis-full',
       };
 
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
@@ -190,7 +190,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-w-full gl-sm-w-auto">
+  <div class="gl-flex gl-w-full sm:gl-w-auto">
     <div :class="columnClass" class="linked-pipelines-column">
       <div data-testid="linked-column-title" :class="computedTitleClasses">
         {{ columnTitle }}
@@ -199,10 +199,10 @@ export default {
         <li
           v-for="pipeline in linkedPipelines"
           :key="pipeline.id"
-          class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-mb-6"
+          class="gl-mb-6 gl-flex gl-flex-wrap sm:gl-flex-nowrap"
         >
           <linked-pipeline
-            class="gl-display-inline-block"
+            class="gl-inline-block"
             :is-loading="isLoadingPipeline(pipeline.id)"
             :pipeline="pipeline"
             :column-title="columnTitle"
@@ -216,7 +216,7 @@ export default {
           <div
             v-if="showContainer(pipeline.id)"
             :style="{ minWidth }"
-            class="gl-display-inline-block pipeline-show-container"
+            class="pipeline-show-container gl-inline-block"
           >
             <pipeline-graph
               v-if="isExpanded(pipeline.id)"

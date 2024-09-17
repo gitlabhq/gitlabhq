@@ -11,6 +11,7 @@ module Gitlab
         # See https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/presenters/README.md#validate-accidental-overrides
         # for more information.
         include Gitlab::View::Presenter::Base
+
         delegator_override_with Gitlab::Routing.url_helpers
         delegator_override :can?
         delegator_override :can_all?

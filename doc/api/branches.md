@@ -231,7 +231,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 Deletes all branches that are merged into the project's default branch.
 
 NOTE:
-[Protected branches](../user/project/protected_branches.md) are not deleted as part of this operation.
+[Protected branches](../user/project/repository/branches/protected.md) are not deleted as part of this operation.
 
 ```plaintext
 DELETE /projects/:id/repository/merged_branches
@@ -253,5 +253,5 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ## Related topics
 
 - [Branches](../user/project/repository/branches/index.md)
-- [Protected branches](../user/project/protected_branches.md)
+- [Protected branches](../user/project/repository/branches/protected.md)
 - [Protected branches API](protected_branches.md)

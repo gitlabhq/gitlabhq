@@ -303,7 +303,7 @@ export default {
       />
       <a
         :v-once="!viewDiffsFileByFile"
-        class="gl-mr-2 gl-text-decoration-none! gl-break-all"
+        class="gl-mr-2 gl-break-all !gl-no-underline"
         :href="titleLink"
         data-testid="file-title"
         @click="handleFileNameClick"
@@ -365,7 +365,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions gl-flex gl-items-center gl-ml-auto gl-align-self-start"
+      class="file-actions gl-ml-auto gl-flex gl-items-center gl-self-start"
     >
       <diff-stats
         :diff-file="diffFile"
@@ -376,7 +376,7 @@ export default {
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover.focus.left
         data-testid="fileReviewCheckbox"
-        class="gl-mr-5 -gl-mb-3 gl-flex gl-items-center"
+        class="-gl-mb-3 gl-mr-5 gl-flex gl-items-center"
         :title="$options.i18n.fileReviewTooltip"
         :checked="reviewed"
         @change="toggleReview"
@@ -391,11 +391,11 @@ export default {
         icon="comment"
         category="tertiary"
         size="small"
-        class="gl-mr-3 btn-icon"
+        class="btn-icon gl-mr-3"
         data-testid="comment-files-button"
         @click="toggleFileCommentForm(diffFile.file_path)"
       />
-      <gl-button-group class="gl-pt-0!">
+      <gl-button-group class="!gl-pt-0">
         <gl-button
           v-if="diffFile.external_url"
           ref="externalLink"
@@ -415,7 +415,7 @@ export default {
           category="tertiary"
           right
           toggle-class="btn-icon js-diff-more-actions"
-          class="gl-pt-0!"
+          class="!gl-pt-0"
           data-testid="options-dropdown-button"
           lazy
           @show="setMoreActionsShown(true)"
@@ -492,7 +492,7 @@ export default {
 
     <div
       v-if="diffFile.submodule_compare"
-      class="file-actions gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap"
+      class="file-actions gl-hidden gl-flex-wrap gl-items-center sm:gl-flex"
     >
       <gl-button
         v-gl-tooltip.hover

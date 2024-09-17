@@ -107,7 +107,7 @@ The process for creating a cluster is as follows:
    by `:provision_role_arn` and stores a set of temporary credentials on the
    provider record. By default these credentials are valid for one hour.
 1. A CloudFormation stack is created, based on the
-   [`AWS CloudFormation EKS template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/aws/cloudformation/eks_cluster.yaml).
+   [`AWS CloudFormation EKS template`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17036/diffs#diff-content-b79f1d78113a9b1ab02b37ca4a756c3a9b8c2ae8).
    This triggers creation of all resources required for an EKS cluster.
 1. GitLab polls the status of the stack until all resources are ready,
    which takes somewhere between 10 and 15 minutes in most cases.

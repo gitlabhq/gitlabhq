@@ -16,7 +16,7 @@ DETAILS:
 Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
 can enable in a user-friendly interface. Push rules give you more control over what
 can and can't be pushed to your repository. While GitLab offers
-[protected branches](../protected_branches.md), you may need more specific rules, such as:
+[protected branches](../repository/branches/protected.md), you may need more specific rules, such as:
 
 - Evaluating the contents of a commit.
 - Confirming commit messages match expected formats.
@@ -65,6 +65,9 @@ for an existing project to match new global push rules:
 ## Verify users
 
 Use these rules to validate users who make commits.
+
+NOTE:
+These push rules apply only to commits and not [tags](tags/index.md).
 
 - **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
 - **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.
@@ -290,8 +293,8 @@ to use them as standard characters in a match condition.
 - [Signing commits with GPG](signed_commits/gpg.md)
 - [Signing commits with SSH](signed_commits/ssh.md)
 - [Signing commits with X.509](signed_commits/x509.md)
-- [Protected branches](../protected_branches.md)
-- [Client-side secret detection](../../application_security/secret_detection/client/index.md)
+- [Protected branches](../repository/branches/protected.md)
+- [Secret detection](../../application_security/secret_detection/index.md)
 
 ## Troubleshooting
 
@@ -320,7 +323,7 @@ read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
 To update the push rules to be the same for all projects,
 you need to use [the rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
-or write a script to update each project using the [push rules API endpoint](../../../api/projects.md#push-rules).
+or write a script to update each project using the [push rules API endpoint](../../../api/project_push_rules.md).
 
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
 and create a filter for allowing commits from a specific email domain only through rails console:

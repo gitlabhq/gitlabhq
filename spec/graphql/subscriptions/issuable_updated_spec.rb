@@ -18,7 +18,7 @@ RSpec.describe Subscriptions::IssuableUpdated do
     subject { resolver.resolve_with_support(issuable_id: issuable_id) }
 
     context 'initial subscription' do
-      let(:resolver) { resolver_instance(described_class, ctx: { current_user: current_user }, subscription_update: false) }
+      let(:resolver) { resolver_instance(described_class, ctx: query_context, subscription_update: false) }
 
       it 'returns nil' do
         expect(subject).to eq(nil)
@@ -42,7 +42,7 @@ RSpec.describe Subscriptions::IssuableUpdated do
     end
 
     context 'subscription updates' do
-      let(:resolver) { resolver_instance(described_class, obj: issue, ctx: { current_user: current_user }, subscription_update: true) }
+      let(:resolver) { resolver_instance(described_class, obj: issue, ctx: query_context, subscription_update: true) }
 
       it 'returns the resolved object' do
         expect(subject).to eq(issue)

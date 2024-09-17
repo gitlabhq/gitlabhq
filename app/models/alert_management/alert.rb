@@ -10,15 +10,18 @@ module AlertManagement
     include Sortable
     include Noteable
     include Mentionable
+    include Todoable
     include Gitlab::SQL::Pattern
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include Referable
     include ::IncidentManagement::Escalatable
+    include IgnorableColumns
+
+    ignore_column :prometheus_alert_id, remove_with: '17.6', remove_after: '2024-10-12'
 
     belongs_to :project
     belongs_to :issue, optional: true
-    belongs_to :prometheus_alert, optional: true
     belongs_to :environment, optional: true
 
     has_many :alert_assignees, inverse_of: :alert
@@ -81,7 +84,6 @@ module AlertManagement
     scope :for_assignee_username, ->(assignee_username) { joins(:assignees).merge(User.by_username(assignee_username)) }
     scope :search, ->(query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
     scope :not_resolved, -> { without_status(:resolved) }
-    scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
     scope :with_operations_alerts, -> { where(domain: :operations) }
 
     scope :order_start_time,    ->(sort_order) { order(started_at: sort_order) }
@@ -92,7 +94,7 @@ module AlertManagement
     # Descending sort order sorts severity from more critical to less critical.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
     scope :order_severity,      ->(sort_order) { order(severity: sort_order == :asc ? :desc : :asc) }
-    scope :order_severity_with_open_prometheus_alert, -> { open.with_prometheus_alert.order(severity: :asc, started_at: :desc) }
+    scope :open_order_by_severity, -> { open.order(severity: :asc, started_at: :desc) }
 
     scope :counts_by_project_id, -> { group(:project_id).count }
 
@@ -121,11 +123,6 @@ module AlertManagement
 
     def self.find_unresolved_alert(project, fingerprint)
       for_fingerprint(project, fingerprint).not_resolved.take
-    end
-
-    def self.last_prometheus_alert_by_project_id
-      ids = select(arel_table[:id].maximum).group(:project_id)
-      with_prometheus_alert.where(id: ids)
     end
 
     def self.reference_prefix

@@ -187,8 +187,11 @@ For a quick overview, items that are exported include:
 - Protected branches and tags
 - Push rules
 - Emoji reactions
-- Project and inherited group members, as long as the user has the Maintainer role in the
+- Project and inherited group members, as long as the user has the Maintainer role for the
   exported project's group or is an administrator
+- Some merge request approval rules:
+  - [Approvals for protected branches](../merge_requests/approvals/rules.md#approvals-for-protected-branches).
+  - [Users that are eligible approvers](../merge_requests/approvals/rules.md#eligible-approvers).
 
 #### Project items that are not exported
 

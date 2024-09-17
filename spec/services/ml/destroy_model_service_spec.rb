@@ -9,8 +9,21 @@ RSpec.describe ::Ml::DestroyModelService, feature_category: :mlops do
 
   let(:model) { model0 }
   let(:service) { described_class.new(model, user) }
+  let(:audit_event) do
+    {
+      name: 'ml_model_destroyed',
+      author: user,
+      scope: model.project,
+      message: "MlModel #{model.name} destroyed",
+      target: model
+    }
+  end
 
-  describe '#execute' do
+  before do
+    allow(Gitlab::Audit::Auditor).to receive(:audit).and_call_original
+  end
+
+  describe '#execute', :aggregate_failures do
     subject(:service_result) { service.execute }
 
     context 'when model fails to delete' do
@@ -18,17 +31,19 @@ RSpec.describe ::Ml::DestroyModelService, feature_category: :mlops do
         allow(model).to receive(:destroy).and_return(false)
 
         expect(service_result).to be_error
+        expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
       end
     end
 
     context 'when a model exists' do
-      it 'destroys the model', :aggregate_failures do
+      it 'destroys the model' do
         allow_next_instance_of(Packages::MarkPackagesForDestructionService) do |instance|
           allow(instance).to receive(:execute).and_return ServiceResponse.success(message: "")
         end
 
         expect { service_result }.to change { Ml::Model.count }.by(-1).and change { Ml::ModelVersion.count }.by(-1)
         expect(service_result).to be_success
+        expect(Gitlab::Audit::Auditor).to have_received(:audit).with(audit_event)
       end
 
       context 'when a package cannot be marked for destruction' do
@@ -40,10 +55,11 @@ RSpec.describe ::Ml::DestroyModelService, feature_category: :mlops do
           end
         end
 
-        it 'returns success with warning', :aggregate_failures do
+        it 'returns success with warning' do
           expect { service_result }.not_to change { Ml::Model.count }
           expect(service_result).to be_error
           expect(service_result.message).to eq("An error")
+          expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
         end
       end
     end

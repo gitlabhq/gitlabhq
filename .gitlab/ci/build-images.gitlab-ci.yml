@@ -11,8 +11,7 @@
   retry: 2
 
 # This image is used by:
-# - The `review-qa-*` jobs
-# - The `e2e:package-and-test` child pipeline test stage jobs
+# - The `e2e:test-on-omnibus` child pipeline test stage jobs
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
@@ -27,7 +26,7 @@ build-qa-image as-if-foss:
   extends:
     - build-qa-image
     - .as-if-foss
-    - .qa:rules:package-and-test-ce:follow-up
+    - .qa:rules:test-on-omnibus-ce:follow-up
 
 follow-up:build-qa-image:
   extends:
@@ -87,7 +86,7 @@ build-assets-image as-if-foss:
   extends:
     - build-assets-image
     - .as-if-foss
-    - .qa:rules:package-and-test-ce:follow-up
+    - .qa:rules:test-on-omnibus-ce:follow-up
   needs: ["compile-production-assets as-if-foss"]
 
 follow-up:build-assets-image:

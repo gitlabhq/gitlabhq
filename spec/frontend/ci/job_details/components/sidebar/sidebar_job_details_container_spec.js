@@ -36,7 +36,7 @@ describe('Job Sidebar Details Container', () => {
     });
 
     it('should render an empty container', () => {
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
     });
 
     it.each(['duration', 'erased_at', 'finished_at', 'queued_at', 'runner', 'coverage'])(
@@ -150,7 +150,7 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { metadata });
       const detailsRow = findAllDetailsRow();
 
-      expect(wrapper.html()).toBe('');
+      expect(wrapper.find('*').exists()).toBe(false);
       expect(detailsRow.exists()).toBe(false);
     });
 

@@ -188,7 +188,7 @@ export default {
       @update-search-term="onUpdateSearchTerm"
       @update-sorting="onUpdateSorting"
     />
-    <catalog-list-skeleton-loader v-if="isLoading" class="gl-w-full gl-mt-3" />
+    <catalog-list-skeleton-loader v-if="isLoading" class="gl-mt-3 gl-w-full" />
     <empty-state v-else-if="!hasResources" :search-term="searchTerm" />
     <template v-else>
       <ci-resources-list

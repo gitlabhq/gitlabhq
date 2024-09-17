@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.Uppercase
+# Suggestion: gitlab_base.Uppercase
 #
 # Checks for use of all uppercase letters with unknown reason.
 #

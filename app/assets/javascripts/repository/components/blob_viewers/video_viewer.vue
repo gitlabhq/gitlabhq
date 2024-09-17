@@ -14,7 +14,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-text-center gl-p-7 gl-bg-gray-50">
+  <div class="gl-bg-gray-50 gl-p-7 gl-text-center">
     <video :src="url" controls data-testid="video" class="gl-max-w-full"></video>
   </div>
 </template>

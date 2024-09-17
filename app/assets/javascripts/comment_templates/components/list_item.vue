@@ -76,7 +76,7 @@ export default {
 <template>
   <li>
     <div class="gl-flex">
-      <h6 class="gl-mr-3 gl-my-0" data-testid="comment-template-name">{{ template.name }}</h6>
+      <h6 class="gl-my-0 gl-mr-3" data-testid="comment-template-name">{{ template.name }}</h6>
       <div class="gl-ml-auto">
         <gl-disclosure-dropdown
           :items="dropdownItems"
@@ -94,7 +94,7 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="gl-line-clamp-6 gl-font-monospace gl-whitespace-pre-line gl-text-sm -gl-mt-6">
+    <div class="-gl-mt-6 gl-line-clamp-6 gl-whitespace-pre-line gl-text-sm gl-font-monospace">
       {{ template.content }}
     </div>
     <gl-modal

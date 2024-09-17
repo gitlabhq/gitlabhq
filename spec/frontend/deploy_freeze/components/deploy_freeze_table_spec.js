@@ -1,8 +1,8 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
 import { RECEIVE_FREEZE_PERIODS_SUCCESS } from '~/deploy_freeze/store/mutation_types';
@@ -15,13 +15,13 @@ describe('Deploy freeze table', () => {
   let wrapper;
   let store;
 
-  const createComponent = () => {
+  const createComponent = (mountFn = mountExtended) => {
     store = createStore({
       projectId: '8',
       timezoneData: timezoneDataFixture,
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
-    wrapper = mountExtended(DeployFreezeTable, {
+    wrapper = mountFn(DeployFreezeTable, {
       attachTo: document.body,
       store,
     });
@@ -35,26 +35,33 @@ describe('Deploy freeze table', () => {
   const findDeleteDeployFreezeModal = () => wrapper.findComponent(GlModal);
   const findCount = () => wrapper.findByTestId('crud-count');
 
-  beforeEach(() => {
-    createComponent();
-  });
+  describe('When mounting', () => {
+    beforeEach(() => {
+      createComponent(shallowMountExtended);
+    });
 
-  it('dispatches fetchFreezePeriods when mounted', () => {
-    expect(store.dispatch).toHaveBeenCalledWith('fetchFreezePeriods');
+    it('dispatches fetchFreezePeriods when mounted', () => {
+      expect(store.dispatch).toHaveBeenCalledWith('fetchFreezePeriods');
+    });
   });
 
   describe('Renders correct data', () => {
-    it('displays empty', () => {
-      expect(findEmptyFreezePeriods().exists()).toBe(true);
-      expect(findEmptyFreezePeriods().text()).toBe(
-        `No deploy freezes exist for this project. To add one, select 
-            Add deploy freeze
-           above.`,
-      );
+    describe('without empty data', () => {
+      beforeEach(() => {
+        createComponent(shallowMountExtended);
+      });
+
+      it('displays empty', () => {
+        expect(findEmptyFreezePeriods().exists()).toBe(true);
+        expect(wrapper.findComponent(GlSprintf).attributes('message')).toBe(
+          'No deploy freezes exist for this project. To add one, select %{strongStart}Add deploy freeze%{strongEnd} above.',
+        );
+      });
     });
 
     describe('with data', () => {
       beforeEach(async () => {
+        createComponent();
         store.commit(RECEIVE_FREEZE_PERIODS_SUCCESS, freezePeriodsFixture);
         await nextTick();
       });
@@ -108,6 +115,10 @@ describe('Deploy freeze table', () => {
   });
 
   describe('Table click actions', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('displays add deploy freeze button', () => {
       expect(findAddDeployFreezeButton().exists()).toBe(true);
       expect(findAddDeployFreezeButton().text()).toBe('Add deploy freeze');

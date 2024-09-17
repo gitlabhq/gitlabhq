@@ -68,12 +68,12 @@ export default {
   <div>
     <div class="gl-relative" data-testid="terms-content">
       <div
-        class="terms-fade gl-z-1 gl-absolute gl-left-5 gl-right-5 gl-bottom-0 gl-h-11 gl-pointer-events-none"
+        class="terms-fade gl-pointer-events-none gl-absolute gl-bottom-0 gl-left-5 gl-right-5 gl-z-1 gl-h-11"
       ></div>
       <div
         ref="scrollableViewport"
         data-testid="scrollable-viewport"
-        class="gl-h-screen gl-overflow-y-auto gl-pb-11 gl-p-7"
+        class="gl-h-screen gl-overflow-y-auto gl-p-7 gl-pb-11"
       >
         <div ref="gfmContainer" v-safe-html="terms"></div>
         <gl-intersection-observer @appear="handleBottomReached">

@@ -27,21 +27,32 @@ an unstarted job with the same arguments is already in the queue.
 
 ## Ensuring a worker is idempotent
 
-Make sure the worker tests pass using the following shared example:
+Use the following shared example to see the effects of running a job twice.
+
+```ruby
+it_behaves_like 'an idempotent worker'
+```
+
+The shared example requires `job_args` to be defined. If not given, it
+calls the job without arguments.
+
+When the shared example runs, there should be no mocking in place that would avoid
+side-effects of the job. For example, allow the worker to call a service without
+stubbing its execute method. This way, we can assert that the job is truly idempotent.
+
+The shared examples include some basic tests. You can add more idempotency tests
+specific to the worker in the shared examples block.
 
 ```ruby
 it_behaves_like 'an idempotent worker' do
-  it 'marks the MR as merged' do
-    # Using subject inside this block will process the job multiple times
+  it 'checks the side-effects for multiple calls' do
+    # `subject` will call the job's perform method 2 times
     subject
 
-    expect(merge_request.state).to eq('merged')
+    expect(model.state).to eq('state')
   end
 end
 ```
-
-Use the `perform_multiple` method directly instead of `job.perform` (this
-helper method is automatically included for workers).
 
 ## Declaring a worker as idempotent
 

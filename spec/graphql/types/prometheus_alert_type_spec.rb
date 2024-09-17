@@ -13,5 +13,5 @@ RSpec.describe GitlabSchema.types['PrometheusAlert'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_prometheus_alerts) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }
 end

@@ -684,7 +684,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 
 #### PostgreSQL
 
-- [Project page](https://github.com/postgres/postgres/blob/master/README)
+- [Project page](https://github.com/postgres/postgres/)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
@@ -876,8 +876,8 @@ Git operations over HTTP use the stateless "smart" protocol described in the
 [Git documentation](https://git-scm.com/docs/http-protocol), but responsibility
 for handling these operations is split across several GitLab components.
 
-Here is a sequence diagram for `git fetch`. Note that all requests pass through
-NGINX as well as any other HTTP load balancers, but are not transformed in any
+Here is a sequence diagram for `git fetch`. All requests pass through
+NGINX and any other HTTP load balancers, but are not transformed in any
 way by them. All paths are presented relative to a `/namespace/project.git` URL.
 
 ```mermaid
@@ -927,7 +927,7 @@ To the SSH server, all connections are authenticated as the `git` user; GitLab
 users are differentiated by the SSH key presented by the client.
 
 Here is a sequence diagram for `git fetch`, assuming [Fast SSH key lookup](../administration/operations/fast_ssh_key_lookup.md)
-is enabled. Note that `AuthorizedKeysCommand` is an executable provided by
+is enabled. `AuthorizedKeysCommand` is an executable provided by
 [GitLab Shell](#gitlab-shell):
 
 ```mermaid

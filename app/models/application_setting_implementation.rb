@@ -162,6 +162,7 @@ module ApplicationSettingImplementation
         push_event_hooks_limit: 3,
         raw_blob_request_limit: 300,
         recaptcha_enabled: false,
+        receptive_cluster_agents_enabled: false,
         repository_checks_enabled: true,
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,
@@ -285,6 +286,7 @@ module ApplicationSettingImplementation
         group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
         project_api_limit: 400,
+        project_invited_groups_api_limit: 60,
         projects_api_limit: 2000,
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,
@@ -292,7 +294,9 @@ module ApplicationSettingImplementation
         nuget_skip_metadata_url_validation: false,
         ai_action_api_rate_limit: 160,
         code_suggestions_api_rate_limit: 60,
-        require_personal_access_token_expiry: true
+        require_personal_access_token_expiry: true,
+        pages_extra_deployments_default_expiry_seconds: 86400,
+        scan_execution_policies_action_limit: 10
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

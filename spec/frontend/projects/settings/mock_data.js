@@ -1,38 +1,37 @@
-const accessLevelsMockResponse = [
-  {
-    __typename: 'PushAccessLevelEdge',
-    node: {
-      __typename: 'PushAccessLevel',
-      accessLevel: 40,
-      accessLevelDescription: 'Jona Langworth',
-      group: null,
-      user: {
-        __typename: 'UserCore',
-        id: '123',
-        webUrl: 'test.com',
-        name: 'peter',
-        avatarUrl: 'test.com/user.png',
+export const accessLevelsMockResponse = {
+  __typename: 'PushAccessLevelConnection',
+  edges: [
+    {
+      __typename: 'PushAccessLevelEdge',
+      node: {
+        __typename: 'PushAccessLevel',
+        accessLevel: 40,
+        accessLevelDescription: 'Jona Langworth',
+        group: null,
+        user: {
+          __typename: 'UserCore',
+          id: '123',
+          webUrl: 'test.com',
+          name: 'peter',
+          avatarUrl: 'test.com/user.png',
+        },
+        deployKey: null,
       },
     },
-  },
-  {
-    __typename: 'PushAccessLevelEdge',
-    node: {
-      __typename: 'PushAccessLevel',
-      accessLevel: 40,
-      accessLevelDescription: 'Maintainers',
-      group: null,
-      user: null,
+    {
+      __typename: 'PushAccessLevelEdge',
+      node: {
+        __typename: 'PushAccessLevel',
+        accessLevel: 40,
+        accessLevelDescription: 'Maintainers',
+        group: null,
+        user: null,
+      },
     },
-  },
-];
-
-export const pushAccessLevelsMockResponse = {
-  __typename: 'PushAccessLevelConnection',
-  edges: accessLevelsMockResponse,
+  ],
 };
 
-export const pushAccessLevelsMockResult = {
+export const accessLevelsMockResult = {
   total: 2,
   users: [
     {

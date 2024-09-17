@@ -8,6 +8,7 @@ import {
   setMemberRole,
 } from '~/members/components/table/drawer/utils';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { member as memberMock } from '../../../mock_data';
 
 const getRoles = (member) => roleDropdownItems(member).flatten;
@@ -41,16 +42,14 @@ describe('Role details drawer utils', () => {
       async ({ namespace, propertyName }) => {
         const memberPath = 'member/path/123';
         const mockAxios = new MockAdapter(axios);
-        mockAxios.onPut(memberPath).replyOnce(200);
+        mockAxios.onPut(memberPath).replyOnce(HTTP_STATUS_OK);
 
         const member = { ...memberMock, memberPath, namespace };
         const role = getRoles(member)[1];
         await callRoleUpdateApi(member, role);
 
         expect(mockAxios.history.put).toHaveLength(1);
-        expect(mockAxios.history.put[0].data).toBe(
-          JSON.stringify({ [propertyName]: 10, member_role_id: null }),
-        );
+        expect(mockAxios.history.put[0].data).toBe(JSON.stringify({ [propertyName]: 10 }));
       },
     );
   });

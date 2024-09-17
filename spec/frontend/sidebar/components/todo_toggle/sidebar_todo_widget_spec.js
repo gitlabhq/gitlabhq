@@ -140,7 +140,7 @@ describe('Sidebar Todo Widget', () => {
       });
 
       expect(findTodoButton().attributes('loading')).toBeUndefined();
-      expect(findTodoButton().attributes('disabled')).toBe('true');
+      expect(findTodoButton().attributes().disabled).toBe('true');
     });
   });
 });

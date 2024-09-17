@@ -237,7 +237,7 @@ export default {
       category="secondary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
-      class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! !gl-shadow-none"
+      class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
       @click="toggleSubscribed"
     >
       <gl-icon :name="notificationIcon" :size="16" :class="{ '!gl-fill-blue-500': subscribed }" />
@@ -275,7 +275,7 @@ export default {
         <gl-loading-icon v-if="isLoading" size="sm" class="sidebar-item-icon is-active" />
         <gl-icon v-else :name="notificationIcon" :size="16" class="sidebar-item-icon is-active" />
       </span>
-      <div v-show="emailsDisabled" class="gl-mt-3 hide-collapsed gl-text-gray-500">
+      <div v-show="emailsDisabled" class="hide-collapsed gl-mt-3 gl-text-gray-500">
         {{ subscribeDisabledDescription }}
       </div>
     </template>

@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="board-new-issue-form gl-z-3 gl-m-3">
-    <div class="board-card position-relative gl-p-5 rounded">
+    <div class="board-card position-relative rounded gl-p-5">
       <gl-form @submit.prevent="handleFormSubmit" @reset="handleFormCancel">
         <label :for="inputFieldId" class="gl-font-bold">{{ __('Title') }}</label>
         <gl-form-input
@@ -75,17 +75,17 @@ export default {
           name="issue_title"
         />
         <slot></slot>
-        <div class="gl-clearfix gl-mt-4">
+        <div class="gl-mt-4 gl-clearfix">
           <gl-button
             data-testid="create-button"
             :disabled="isCreatingIssueDisabled"
-            class="gl-float-left js-no-auto-disable"
+            class="js-no-auto-disable gl-float-left"
             variant="confirm"
             type="submit"
           >
             {{ submitButtonTitle }}
           </gl-button>
-          <gl-button class="gl-float-right js-no-auto-disable" type="reset">
+          <gl-button class="js-no-auto-disable gl-float-right" type="reset">
             {{ $options.i18n.cancel }}
           </gl-button>
         </div>

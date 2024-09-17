@@ -8,15 +8,16 @@ describe('EmptyState', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findComponentsDocLink = () => wrapper.findComponent(GlLink);
+  const findDescription = () => wrapper.findComponent(GlSprintf);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, stubGlSprintf = false } = {}) => {
     wrapper = shallowMountExtended(EmptyState, {
       propsData: {
         ...props,
       },
       stubs: {
         GlEmptyState,
-        GlSprintf,
+        GlSprintf: stubGlSprintf ? GlSprintf : true,
       },
     });
   };
@@ -34,6 +35,7 @@ describe('EmptyState', () => {
       expect(emptyState.props().description).toBe(
         'Create a pipeline component repository and make reusing pipeline configurations faster and easier.',
       );
+      expect(emptyState.props().svgPath).toBe('file-mock');
     });
   });
 
@@ -44,18 +46,6 @@ describe('EmptyState', () => {
       });
     });
 
-    it('renders the search description', () => {
-      expect(findEmptyState().text()).toContain(
-        'Edit your search and try again. Or learn to create a component repository.',
-      );
-    });
-
-    it('renders the link to the components documentation', () => {
-      const docsLink = findComponentsDocLink();
-      expect(docsLink.exists()).toBe(true);
-      expect(docsLink.attributes().href).toBe(COMPONENTS_DOCS_URL);
-    });
-
     describe('and it is less than 3 characters', () => {
       beforeEach(() => {
         createComponent({
@@ -64,7 +54,13 @@ describe('EmptyState', () => {
       });
 
       it('render the too few chars empty state title', () => {
-        expect(findEmptyState().props().title).toBe('Search must be at least 3 characters');
+        expect(findEmptyState().props().title).toBe('Search incomplete');
+      });
+
+      it('renders the too small search description', () => {
+        expect(findDescription().attributes().message).toContain(
+          'Search keyword must have at least 3 characters',
+        );
       });
     });
 
@@ -75,8 +71,24 @@ describe('EmptyState', () => {
         });
       });
 
-      it('renders the search empty state title', () => {
-        expect(findEmptyState().props().title).toBe('No result found');
+      it('renders the search empty state title and description', () => {
+        expect(findEmptyState().props().title).toBe('No components match your search criteria');
+      });
+
+      it('renders the search empty description', () => {
+        expect(findDescription().attributes().message).toContain(
+          'Edit your search and try again, or %{linkStart}learn how to create a component project%{linkEnd}.',
+        );
+      });
+
+      it('renders the link to the components documentation', () => {
+        createComponent({
+          props: { searchTerm: 'my component' },
+          stubGlSprintf: true,
+        });
+        const docsLink = findComponentsDocLink();
+        expect(docsLink.exists()).toBe(true);
+        expect(docsLink.attributes().href).toBe(COMPONENTS_DOCS_URL);
       });
     });
   });

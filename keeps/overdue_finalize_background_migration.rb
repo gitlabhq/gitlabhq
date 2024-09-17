@@ -216,7 +216,7 @@ module Keeps
     end
 
     def before_cuttoff_milestone?(milestone)
-      Gem::Version.new(milestone) <= Gem::Version.new(::Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION)
+      Gem::Version.new(milestone) <= Gem::Version.new(::Gitlab::Database.min_schema_gitlab_version)
     end
 
     def each_batched_background_migration

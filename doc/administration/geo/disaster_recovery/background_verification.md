@@ -37,7 +37,7 @@ On the **primary** site:
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
 
-   ![Verification status](img/verification_status_primary_v14_0.png)
+   ![Verification information tab with an overview of a healthy primary Geo instance.](img/verification_status_primary_v14_0.png)
 
 On the **secondary** site:
 
@@ -47,7 +47,7 @@ On the **secondary** site:
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
 
-   ![Verification status](img/verification_status_secondary_v14_0.png)
+   ![Verification information tab with an overview of a healthy secondary Geo instance.](img/verification_status_secondary_v14_0.png)
 
 ## Using checksums to compare Geo sites
 
@@ -74,7 +74,7 @@ On the **primary** site:
 1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:
 
-   ![Re-verification interval](img/reverification-interval.png)
+   ![Window with configuration attributes of a Geo node.](img/reverification-interval.png)
 
 ## Reset verification for projects where verification has failed
 

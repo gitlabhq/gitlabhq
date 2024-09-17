@@ -221,6 +221,12 @@
 .job-log-line-content {
   flex-grow: 1;
   white-space: pre-wrap;
+
+  span {
+    // Our default 1.5 line-height leave gaps between lines with `xterm-bg` backgrounds classes.
+    // Add extra padding to fill the line. Helps with ANSI art.
+    padding: 1.25px 0;
+  }
 }
 
 .job-log-line-header {

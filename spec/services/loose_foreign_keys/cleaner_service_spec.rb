@@ -46,7 +46,7 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
 
   describe 'query generation' do
     context 'when single primary key is used' do
-      let(:issue) { create(:issue) }
+      let(:issue) { create(:issue, :opened) }
 
       let(:deleted_records) do
         [
@@ -73,6 +73,43 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         cleaner_service.execute
 
         expect(Issue.exists?(id: issue.id)).to eq(false)
+      end
+
+      context 'when updating target column', :aggregate_failures do
+        let(:target_column) { 'state_id' }
+        let(:target_value) { 2 }
+        let(:update_query) do
+          %{UPDATE "issues" SET "#{target_column}" = #{target_value} WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) AND "issues"."#{target_column}" != #{target_value} LIMIT 500)}
+        end
+
+        before do
+          loose_fk_definition.options[:on_delete] = :update_column_to
+          loose_fk_definition.options[:target_column] = target_column
+          loose_fk_definition.options[:target_value] = target_value
+        end
+
+        it 'performs an UPDATE query' do
+          expect(ApplicationRecord.connection).to receive(:execute).with(update_query).and_call_original
+
+          cleaner_service.execute
+
+          issue.reload
+          expect(issue[target_column]).to eq(target_value)
+        end
+
+        context 'when loose_foreign_keys_update_column_to is disabled' do
+          before do
+            stub_feature_flags(loose_foreign_keys_update_column_to: false)
+          end
+
+          it 'does not perform UPDATE query' do
+            allow(ApplicationRecord.connection).to receive(:execute).and_call_original
+            expect(ApplicationRecord.connection).not_to receive(:execute).with(update_query)
+            expect(Sidekiq.logger).to receive(:error).with('Invalid on_delete argument: update_column_to')
+
+            cleaner_service.execute
+          end
+        end
       end
     end
 

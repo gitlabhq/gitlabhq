@@ -245,14 +245,14 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
 
-      context 'when has pinned file' do
+      context 'when has linked file' do
         let(:file) { merge_request.merge_request_diff.diffs.diff_files.first }
         let(:file_hash) { file.file_hash }
 
-        it 'adds pinned file url' do
-          go(pin: file_hash)
+        it 'adds linked file url' do
+          go(file: file_hash)
 
-          expect(assigns['pinned_file_url']).to eq(
+          expect(assigns['linked_file_url']).to eq(
             diff_by_file_hash_namespace_project_merge_request_path(
               format: 'json',
               id: merge_request.iid,
@@ -363,7 +363,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       }
     end
 
-    it_behaves_like "issuables list meta-data", :merge_request
+    context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450217' do
+      it_behaves_like "issuables list meta-data", :merge_request
+    end
 
     it_behaves_like 'set sort order from user preference' do
       let(:sorting_param) { 'updated_asc' }

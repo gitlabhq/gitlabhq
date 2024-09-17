@@ -7,5 +7,7 @@
     source_hostname: source_user.source_hostname,
     destination_group: source_user.namespace.name)
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/group/import/index'), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
+    = render Pajamas::ButtonComponent.new(variant: :default,
+      href: help_page_path('user/project/import/index', anchor: 'accept-contribution-reassignment'),
+      button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
       = _('Learn more')

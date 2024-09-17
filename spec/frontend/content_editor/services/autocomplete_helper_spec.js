@@ -5,6 +5,7 @@ import AutocompleteHelper, {
   customSorter,
   createDataSource,
 } from '~/content_editor/services/autocomplete_helper';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import {
   MOCK_MEMBERS,
   MOCK_COMMANDS,
@@ -18,6 +19,7 @@ import {
   MOCK_ASSIGNEES,
   MOCK_REVIEWERS,
   MOCK_WIKIS,
+  MOCK_NEW_MEMBERS,
 } from './autocomplete_mock_data';
 
 jest.mock('~/emoji', () => ({
@@ -78,7 +80,7 @@ describe('createDataSource', () => {
       { name: 'bcd', description: 'wxy' },
       { name: 'cde', description: 'vwx' },
     ];
-    mock.onGet('/source').reply(200, data);
+    mock.onGet('/source').reply(HTTP_STATUS_OK, data);
 
     const dataSource = createDataSource({
       source: '/source',
@@ -93,7 +95,7 @@ describe('createDataSource', () => {
   });
 
   it('handles source fetch errors', async () => {
-    mock.onGet('/source').reply(500);
+    mock.onGet('/source').reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
     const dataSource = createDataSource({
       source: '/source',
@@ -126,16 +128,18 @@ describe('AutocompleteHelper', () => {
       wikis: '/wikis',
     };
 
-    mock.onGet('/members').reply(200, MOCK_MEMBERS);
-    mock.onGet('/issues').reply(200, MOCK_ISSUES);
-    mock.onGet('/snippets').reply(200, MOCK_SNIPPETS);
-    mock.onGet('/labels').reply(200, MOCK_LABELS);
-    mock.onGet('/epics').reply(200, MOCK_EPICS);
-    mock.onGet('/milestones').reply(200, MOCK_MILESTONES);
-    mock.onGet('/mergeRequests').reply(200, MOCK_MERGE_REQUESTS);
-    mock.onGet('/vulnerabilities').reply(200, MOCK_VULNERABILITIES);
-    mock.onGet('/commands').reply(200, MOCK_COMMANDS);
-    mock.onGet('/wikis').reply(200, MOCK_WIKIS);
+    mock.onGet('/members').reply(HTTP_STATUS_OK, MOCK_MEMBERS);
+    mock.onGet('/issues').reply(HTTP_STATUS_OK, MOCK_ISSUES);
+    mock.onGet('/snippets').reply(HTTP_STATUS_OK, MOCK_SNIPPETS);
+    mock.onGet('/labels').reply(HTTP_STATUS_OK, MOCK_LABELS);
+    mock.onGet('/epics').reply(HTTP_STATUS_OK, MOCK_EPICS);
+    mock.onGet('/milestones').reply(HTTP_STATUS_OK, MOCK_MILESTONES);
+    mock.onGet('/mergeRequests').reply(HTTP_STATUS_OK, MOCK_MERGE_REQUESTS);
+    mock.onGet('/vulnerabilities').reply(HTTP_STATUS_OK, MOCK_VULNERABILITIES);
+    mock.onGet('/commands').reply(HTTP_STATUS_OK, MOCK_COMMANDS);
+    mock.onGet('/wikis').reply(HTTP_STATUS_OK, MOCK_WIKIS);
+
+    mock.onGet('/new/members').reply(HTTP_STATUS_OK, MOCK_NEW_MEMBERS);
 
     const sidebarMediator = {
       store: {
@@ -229,5 +233,43 @@ describe('AutocompleteHelper', () => {
     const results = await dataSource.search('');
 
     expect(results).toEqual([{ emoji: { name: 'thumbsup' }, fieldValue: 'thumbsup' }]);
+  });
+
+  it('updates dataSourcesUrl correctly', () => {
+    const newDataSources = {
+      members: '/new/members',
+      issues: '/new/issues',
+      snippets: '/new/snippets',
+      labels: '/new/labels',
+      epics: '/new/epics',
+      milestones: '/new/milestones',
+      mergeRequests: '/new/mergeRequests',
+      vulnerabilities: '/new/vulnerabilities',
+      commands: '/new/commands',
+      wikis: '/new/wikis',
+    };
+
+    autocompleteHelper.updateDataSources(newDataSources);
+    expect(autocompleteHelper.dataSourceUrls).toEqual(newDataSources);
+  });
+
+  it('returns expected results before and after updating data sources', async () => {
+    // Retrieve the initial data source and search for 'user'
+    let dataSource = autocompleteHelper.getDataSource('user');
+    let results = await dataSource.search('');
+
+    expect(results.map(({ username }) => username)).toMatchSnapshot();
+
+    // Update the data sources
+    const newDataSources = {
+      members: '/new/members',
+    };
+    autocompleteHelper.updateDataSources(newDataSources);
+
+    // Retrieve the updated data source and search for 'user'
+    dataSource = autocompleteHelper.getDataSource('user');
+    results = await dataSource.search('');
+
+    expect(results.map(({ username }) => username)).toMatchSnapshot();
   });
 });

@@ -82,7 +82,7 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
               project.team.truncate
             end
 
-            it_behaves_like 'handling job token and returning', status: :not_found
+            it_behaves_like 'handling job token and returning', status: :forbidden
           end
 
           context 'a user with access to the project' do
@@ -241,7 +241,7 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
         let_it_be_with_refind(:project) { create(:project, :private) }
 
         context 'a user without access to the project' do
-          it_behaves_like 'handling job token and returning', status: :not_found
+          it_behaves_like 'handling job token and returning', status: :forbidden
         end
 
         context 'a user without enough permissions' do

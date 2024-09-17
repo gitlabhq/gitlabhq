@@ -98,7 +98,7 @@ module Repositories
       return unless project
       return if Gitlab::Database.read_only?
       return unless repo_type.project?
-      return if skip_fetch_statistics_increment?
+      return if Feature.enabled?(:disable_git_http_fetch_writes)
 
       Projects::FetchStatisticsIncrementService.new(project).execute
     end
@@ -129,6 +129,15 @@ module Repositories
 
     def log_user_activity
       Users::ActivityService.new(author: user, project: project, namespace: project&.namespace).execute
+
+      return unless project && user
+
+      Gitlab::EventStore.publish(
+        Users::ActivityEvent.new(data: {
+          user_id: user.id,
+          namespace_id: project.namespace_id
+        })
+      )
     end
 
     def append_info_to_payload(payload)
@@ -136,14 +145,6 @@ module Repositories
 
       payload[:metadata] ||= {}
       payload[:metadata][:repository_storage] = project&.repository_storage
-    end
-
-    def skip_fetch_statistics_increment?
-      # Since disable_git_http_fetch_writes FF does not define a feature flag actor,
-      # it is currently not possible to increment the project statistics without enabling
-      # or disabling it for all projects. The allow_git_http_fetch_writes FF allow us to control this.
-      Feature.enabled?(:disable_git_http_fetch_writes) &&
-        Feature.disabled?(:allow_git_http_fetch_writes, project, type: :beta)
     end
   end
 end

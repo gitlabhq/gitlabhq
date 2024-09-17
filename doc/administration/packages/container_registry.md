@@ -48,6 +48,11 @@ Otherwise, the container registry is not enabled. To enable it:
 The container registry works under HTTPS by default. You can use HTTP
 but it's not recommended and is beyond the scope of this document.
 
+### Helm Charts installations
+
+For Helm Charts installations, see [Using the Container Registry](https://docs.gitlab.com/charts/charts/registry/).
+in the Helm Charts documentation.
+
 ### Self-compiled installations
 
 If you self-compiled your GitLab installation:
@@ -511,16 +516,16 @@ To configure the `s3` storage driver for a Linux package installation:
    set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/http-5xx-errors-s3):
 
    ```ruby
-      registry['storage'] = {
-      's3' => {
-        'accesskey' => 's3-access-key',
-        'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket',
-        'region' => 'your-s3-region',
-        'regionendpoint' => 'your-s3-regionendpoint',
-        'maxrequestspersecond' => 100
-      }
-    }
+   registry['storage'] = {
+     's3' => {
+       'accesskey' => 's3-access-key',
+       'secretkey' => 's3-secret-key-for-access-key',
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region',
+       'regionendpoint' => 'your-s3-regionendpoint',
+       'maxrequestspersecond' => 100
+     }
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
@@ -530,14 +535,14 @@ To configure the `gcs` storage driver for a Linux package installation:
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-      registry['storage'] = {
-      'gcs' => {
-        'bucket' => 'BUCKET_NAME',
-        'keyfile' => 'PATH/TO/KEYFILE',
-        # If you have the bucket shared with other apps beyond the registry, uncomment the following:
-        # 'rootdirectory' => '/gcs/object/name/prefix'
-      }
-    }
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => 'BUCKET_NAME',
+       'keyfile' => 'PATH/TO/KEYFILE',
+       # If you have the bucket shared with other apps beyond the registry, uncomment the following:
+       # 'rootdirectory' => '/gcs/object/name/prefix'
+     }
+   }
    ```
 
    GitLab supports all available parameters.
@@ -642,12 +647,6 @@ you can pull from the container registry, but you cannot push.
 
 #### Moving to Azure Object Storage
 
-> - The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
-
-When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
-Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
-Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
-
 ::Tabs
 
 :::TabTitle Linux package (Omnibus)
@@ -655,10 +654,9 @@ Without this configuration, the Azure storage driver uses `//` instead of `/` as
 ```ruby
 registry['storage'] = {
   'azure' => {
-    'accountname' => 'accountname',
-    'accountkey' => 'base64encodedaccountkey',
-    'container' => 'containername',
-    'rootdirectory' => '/azure/virtual/container',
+    'accountname' => '<your_storage_account_name>',
+    'accountkey' => '<base64_encoded_account_key>',
+    'container' => '<container_name>',
     'trimlegacyrootprefix' => true
   }
 }
@@ -669,10 +667,9 @@ registry['storage'] = {
 ```yaml
 storage:
   azure:
-    accountname: accountname
-    accountkey: base64encodedaccountkey
-    container: containername
-    rootdirectory: /azure/virtual/container
+    accountname: <your_storage_account_name>
+    accountkey: <base64_encoded_account_key>
+    container: <container_name>
     trimlegacyrootprefix: true
 ```
 
@@ -695,11 +692,11 @@ However, this behavior is undesirable for registries used by internal hosts that
    ```ruby
    registry['storage'] = {
      's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint'
+       'accesskey' => '<s3_access_key>',
+       'secretkey' => '<s3_secret_key_for_access_key>',
+       'bucket' => '<your_s3_bucket>',
+       'region' => '<your_s3_region>',
+       'regionendpoint' => '<your_s3_regionendpoint>'
      },
      'redirect' => {
        'disable' => true
@@ -716,11 +713,11 @@ However, this behavior is undesirable for registries used by internal hosts that
    ```yaml
    storage:
      s3:
-       accesskey: 'AKIAKIAKI'
-       secretkey: 'secret123'
-       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
-       region: 'your-s3-region'
-       regionendpoint: 'your-s3-regionendpoint'
+       accesskey: '<s3_access_key>'
+       secretkey: '<s3_secret_key_for_access_key>'
+       bucket: '<your_s3_bucket>'
+       region: '<your_s3_region>'
+       regionendpoint: '<your_s3_regionendpoint>'
      redirect:
        disable: true
      cache:
@@ -752,11 +749,11 @@ on how you installed GitLab. Follow the instructions here that match your instal
    ```ruby
    registry['storage'] = {
      's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint',
+       'accesskey' => '<s3_access_key>',
+       'secretkey' => '<s3_secret_key_for_access_key>',
+       'bucket' => '<your_s3_bucket>',
+       'region' => '<your_s3_region>',
+       'regionendpoint' => '<your_s3_regionendpoint>',
        'encrypt' => true
      }
    }
@@ -772,11 +769,11 @@ on how you installed GitLab. Follow the instructions here that match your instal
    ```yaml
    storage:
      s3:
-       accesskey: 'AKIAKIAKI'
-       secretkey: 'secret123'
-       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
-       region: 'your-s3-region'
-       regionendpoint: 'your-s3-regionendpoint'
+       accesskey: '<s3_access_key>'
+       secretkey: '<s3_secret_key_for_access_key>'
+       bucket: '<your_s3_bucket>'
+       region: '<your_s3_region>'
+       regionendpoint: '<your_s3_regionendpoint>'
        encrypt: true
    ```
 
@@ -1203,16 +1200,16 @@ To enable the read-only mode:
 1. In `/etc/gitlab/gitlab.rb`, specify the read-only mode:
 
    ```ruby
-     registry['storage'] = {
-       'filesystem' => {
-         'rootdirectory' => "<your_registry_storage_path>"
-       },
-       'maintenance' => {
-         'readonly' => {
-           'enabled' => true
-         }
+   registry['storage'] = {
+     'filesystem' => {
+       'rootdirectory' => "<your_registry_storage_path>"
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => true
        }
      }
+   }
    ```
 
 1. Save and reconfigure GitLab:
@@ -1238,16 +1235,16 @@ To enable the read-only mode:
 1. Once done, in `/etc/gitlab/gitlab.rb` change it back to read-write mode:
 
    ```ruby
-    registry['storage'] = {
-      'filesystem' => {
-        'rootdirectory' => "<your_registry_storage_path>"
-      },
-      'maintenance' => {
-        'readonly' => {
-          'enabled' => false
-        }
-      }
-    }
+   registry['storage'] = {
+     'filesystem' => {
+       'rootdirectory' => "<your_registry_storage_path>"
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => false
+       }
+     }
+   }
    ```
 
 1. Save and reconfigure GitLab:

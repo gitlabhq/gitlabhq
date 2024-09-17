@@ -37,8 +37,6 @@ module API
       post 'import/authorize' do
         require_gitlab_workhorse!
 
-        Gitlab::Workhorse.verify_api_request!(headers)
-
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 

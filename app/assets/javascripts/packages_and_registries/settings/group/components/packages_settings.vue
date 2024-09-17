@@ -29,17 +29,17 @@ export default {
     {
       key: 'packageFormat',
       label: PACKAGE_FORMATS_TABLE_HEADER,
-      thClass: 'gl-bg-gray-10!',
+      thClass: '!gl-bg-gray-10',
     },
     {
       key: 'allowDuplicates',
       label: DUPLICATES_TOGGLE_LABEL,
-      thClass: 'gl-bg-gray-10!',
+      thClass: '!gl-bg-gray-10',
     },
     {
       key: 'exceptions',
       label: DUPLICATES_SETTING_EXCEPTION_TITLE,
-      thClass: 'gl-bg-gray-10!',
+      thClass: '!gl-bg-gray-10',
     },
   ],
   components: {

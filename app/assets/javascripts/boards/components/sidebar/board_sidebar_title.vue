@@ -155,7 +155,7 @@ export default {
   >
     <template #title>
       <span data-testid="item-title">
-        <gl-link class="gl-text-inherit gl-hover-text-blue-800" :href="activeItem.webUrl">
+        <gl-link class="gl-text-inherit hover:gl-text-blue-800" :href="activeItem.webUrl">
           {{ activeItem.title }}
         </gl-link>
       </span>
@@ -176,7 +176,7 @@ export default {
         />
       </gl-form-group>
 
-      <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-mt-5">
+      <div class="gl-mt-5 gl-flex gl-w-full gl-justify-between">
         <gl-button
           variant="confirm"
           size="small"

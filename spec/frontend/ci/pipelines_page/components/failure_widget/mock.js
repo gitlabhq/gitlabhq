@@ -20,9 +20,6 @@ export const job = {
     id: '1',
     name: 'build',
   },
-  trace: {
-    htmlSummary: '<h1>Hello</h1>',
-  },
   userPermissions: {
     readBuild: true,
     updateBuild: true,

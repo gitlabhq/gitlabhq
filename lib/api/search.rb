@@ -3,6 +3,7 @@
 module API
   class Search < ::API::Base
     include PaginationParams
+    include APIGuard
 
     before do
       authenticate!
@@ -10,6 +11,8 @@ module API
       check_rate_limit!(:search_rate_limit, scope: [current_user],
         users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
     end
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     feature_category :global_search
     urgency :low
@@ -50,7 +53,6 @@ module API
             state: params[:state],
             confidential: params[:confidential],
             snippets: snippets?,
-            basic_search: params[:basic_search],
             num_context_lines: params[:num_context_lines],
             search_type: params[:search_type],
             page: params[:page],

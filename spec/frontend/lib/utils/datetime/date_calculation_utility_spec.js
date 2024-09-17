@@ -8,8 +8,28 @@ import {
   isInTimePeriod,
   differenceInMinutes,
   getMonthsBetweenDates,
+  newDate,
+  convertNanoToMs,
+  convertMsToNano,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
+
+describe('newDate', () => {
+  it.each`
+    string                             | expected
+    ${'2022-03-22'}                    | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00'}              | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00'}           | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00.000'}       | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T00:00:00.000Z'}      | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${'2022-03-22T01:00:00.000+01:00'} | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${1647907200000}                   | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${new Date('2022-03-22T00:00')}    | ${new Date('2022-03-22T00:00:00.000Z')}
+    ${null}                            | ${new Date('1970-01-01T00:00:00.000Z')}
+  `('returns $expected given $string when timezone=GMT', ({ string, expected }) => {
+    expect(newDate(string)).toEqual(expected);
+  });
+});
 
 describe('newDateAsLocaleTime', () => {
   it.each`
@@ -168,5 +188,36 @@ describe('getMonthsBetweenDates', () => {
       { month: 1, year: 2026 },
       { month: 2, year: 2026 },
     ]);
+  });
+});
+
+describe('convertNanoToMs', () => {
+  it('converts nanoseconds to milliseconds correctly', () => {
+    expect(convertNanoToMs(1e6)).toBe(1);
+    expect(convertNanoToMs(5e6)).toBe(5);
+    expect(convertNanoToMs(1e9)).toBe(1000);
+  });
+
+  it('handles zero', () => {
+    expect(convertNanoToMs(0)).toBe(0);
+  });
+
+  it('handles fractional nanoseconds', () => {
+    expect(convertNanoToMs(1567000)).toBe(1.567);
+  });
+});
+
+describe('convertMsToNano', () => {
+  it('converts milliseconds to nanoseconds correctly', () => {
+    expect(convertMsToNano(5)).toBe(5e6);
+    expect(convertMsToNano(1234)).toBe(1234000000);
+  });
+
+  it('handles zero', () => {
+    expect(convertMsToNano(0)).toBe(0);
+  });
+
+  it('handles fractional milliseconds', () => {
+    expect(convertMsToNano(1.5)).toBe(1500000);
   });
 });

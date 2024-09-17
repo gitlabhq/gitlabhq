@@ -18,24 +18,29 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
     }
   end
 
-  describe '#feature_enabled?' do
-    where(:web_ide_extensions_marketplace, :web_ide_oauth, :expectation) do
-      ref(:current_user) | false | false
-      ref(:current_user) | true | true
-      false | false | false
-      false | true | false
+  describe 'feature enabled methods' do
+    where(:vscode_web_ide, :web_ide_extensions_marketplace, :web_ide_oauth, :expectation) do
+      ref(:current_user) | ref(:current_user) | ref(:current_user) | true
+      ref(:current_user) | false              | ref(:current_user) | false
+      ref(:current_user) | ref(:current_user) | false              | false
+      false              | ref(:current_user) | false              | false
     end
 
     with_them do
-      it 'returns the expected value' do
-        stub_feature_flags(web_ide_extensions_marketplace: web_ide_extensions_marketplace)
+      before do
+        stub_feature_flags(
+          vscode_web_ide: vscode_web_ide,
+          web_ide_extensions_marketplace: web_ide_extensions_marketplace,
+          web_ide_oauth: web_ide_oauth
+        )
+      end
 
-        if web_ide_extensions_marketplace
-          expect(::WebIde::DefaultOauthApplication)
-            .to receive(:feature_enabled?).with(current_user).and_return(web_ide_oauth)
-        end
+      describe '#feature_enabled?' do
+        it { expect(described_class.feature_enabled?(user: current_user)).to be(expectation) }
+      end
 
-        expect(described_class.feature_enabled?(user: current_user)).to be(expectation)
+      describe '#feature_enabled_for_any_user?' do
+        it { expect(described_class.feature_enabled_for_any_user?).to be(expectation) }
       end
     end
   end

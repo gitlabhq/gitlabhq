@@ -95,6 +95,7 @@ In addition to the [beta details](#beta) for users, beta features should:
 - Not be required or necessary for most features.
 - Have documentation that reflects the beta status.
 - Have [UI that reflects the beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Have a feedback issue to engage with internal and external users.
 - Be behind a feature flag that is on by default.
 - Be behind a toggle that is off by default.
 - Be announced in a release post that reflects the beta status, if desired.

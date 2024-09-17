@@ -47,10 +47,10 @@ export default {
 
 <template>
   <div>
-    <h2 class="gl-font-size-h2 gl-text-gray-900">{{ $options.I18N.title }}</h2>
+    <h2 class="gl-text-size-h2 gl-text-gray-900">{{ $options.I18N.title }}</h2>
 
-    <h2 class="gl-font-lg gl-text-gray-900">{{ $options.I18N.learnBasics.title }}</h2>
-    <p class="gl-text-gray-800 gl-mb-6">
+    <h2 class="gl-text-lg gl-text-gray-900">{{ $options.I18N.learnBasics.title }}</h2>
+    <p class="gl-mb-6 gl-text-gray-800">
       <gl-sprintf :message="$options.I18N.learnBasics.subtitle">
         <template #code="{ content }">
           <code>{{ content }}</code>
@@ -58,21 +58,21 @@ export default {
       </gl-sprintf>
     </p>
 
-    <div class="gl-display-flex gl-flex-direction-row gl-flex-wrap">
+    <div class="gl-flex gl-flex-row gl-flex-wrap">
       <div
         v-if="showJenkinsCiPrompt"
-        class="gl-lg-w-25p gl-md-w-half gl-w-full gl-md-pr-5 gl-pb-8"
+        class="gl-w-full gl-pb-8 md:gl-w-1/2 md:gl-pr-5 lg:gl-w-1/4"
         data-testid="migrate-from-jenkins-prompt"
       >
         <gl-card class="gl-bg-blue-50">
-          <div class="gl-flex-direction-row">
+          <div class="gl-flex-row">
             <div class="gl-py-5"><gl-emoji class="gl-text-size-h2-xl" data-name="rocket" /></div>
             <div class="gl-mb-3">
-              <strong class="gl-text-gray-800 gl-mb-2">{{
+              <strong class="gl-mb-2 gl-text-gray-800">{{
                 $options.I18N.learnBasics.migrateFromJenkins.title
               }}</strong>
             </div>
-            <p class="gl-font-sm gl-h-13">
+            <p class="gl-h-13 gl-text-sm">
               {{ $options.I18N.learnBasics.migrateFromJenkins.description }}
             </p>
           </div>
@@ -89,16 +89,16 @@ export default {
         </gl-card>
       </div>
 
-      <div class="gl-lg-w-25p gl-md-w-half gl-w-full gl-pb-8">
+      <div class="gl-w-full gl-pb-8 md:gl-w-1/2 lg:gl-w-1/4">
         <gl-card>
-          <div class="gl-flex-direction-row">
+          <div class="gl-flex-row">
             <div class="gl-py-5"><gl-emoji class="gl-text-size-h2-xl" data-name="wave" /></div>
             <div class="gl-mb-3">
-              <strong class="gl-text-gray-800 gl-mb-2">
+              <strong class="gl-mb-2 gl-text-gray-800">
                 {{ $options.I18N.learnBasics.gettingStarted.title }}
               </strong>
             </div>
-            <p class="gl-font-sm gl-h-13">
+            <p class="gl-h-13 gl-text-sm">
               {{ $options.I18N.learnBasics.gettingStarted.description }}
             </p>
           </div>
@@ -116,8 +116,8 @@ export default {
       </div>
     </div>
 
-    <h2 class="gl-font-lg gl-text-gray-900">{{ $options.I18N.templates.title }}</h2>
-    <p class="gl-text-gray-800 gl-mb-6">{{ $options.I18N.templates.subtitle }}</p>
+    <h2 class="gl-text-lg gl-text-gray-900">{{ $options.I18N.templates.title }}</h2>
+    <p class="gl-mb-6 gl-text-gray-800">{{ $options.I18N.templates.subtitle }}</p>
 
     <ci-templates />
   </div>

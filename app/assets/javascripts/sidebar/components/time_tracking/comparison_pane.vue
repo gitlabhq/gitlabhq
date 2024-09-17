@@ -83,9 +83,7 @@ export default {
         :value="timeRemainingPercent"
         :variant="progressBarVariant"
       />
-      <div
-        class="compare-display-container gl-display-flex gl-justify-content-space-between gl-mt-2"
-      >
+      <div class="compare-display-container gl-mt-2 gl-flex gl-justify-between">
         <div class="gl-float-left">
           <span class="gl-text-gray-400">{{ s__('TimeTracking|Spent') }}</span>
           <span class="compare-value spent">{{ timeSpentHumanReadable }}</span>

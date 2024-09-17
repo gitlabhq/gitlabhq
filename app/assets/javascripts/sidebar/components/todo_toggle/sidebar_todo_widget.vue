@@ -52,6 +52,7 @@ export default {
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     todoId: {
       query() {
         return todoQueries[this.issuableType].query;
@@ -220,7 +221,7 @@ export default {
       :title="tootltipTitle"
       category="tertiary"
       type="reset"
-      class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! !gl-shadow-none"
+      class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
       @click.stop.prevent="toggleTodo"
     >
       <gl-icon :class="{ 'todo-undone': hasTodo }" :name="collapsedButtonIcon" />

@@ -100,6 +100,10 @@ class CustomEnvironment extends TestEnvironment {
       }
       this.global[observer] = NoopObserver;
     });
+
+    // This is used internally by Sentry
+    // https://github.com/getsentry/sentry-javascript/blob/8.26.0/packages/browser/src/tracing/browserTracingIntegration.ts#L221
+    this.global.PerformanceObserver.supportedEntryTypes = ['noop'];
   }
 
   async teardown() {

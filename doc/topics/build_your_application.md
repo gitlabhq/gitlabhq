@@ -9,11 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use CI/CD to generate your application.
 
-| | | |
+|  |  |  |
 |--|--|--|
-| [**Getting started**](../ci/index.md) **{chevron-right}** | [**CI/CD YAML syntax reference**](../ci/yaml/index.md) **{chevron-right}** | [**Runners**](https://docs.gitlab.com/runner/) **{chevron-right}** |
-| [**Pipelines**](../ci/pipelines/index.md) **{chevron-right}** | [**Jobs**](../ci/jobs/index.md) **{chevron-right}** | [**CI/CD components**](../ci/components/index.md) **{chevron-right}**  | 
-| [**Variables**](../ci/variables/index.md) **{chevron-right}** | [**Pipeline security**](../ci/pipelines/pipeline_security.md) **{chevron-right}** | [**Services**](../ci/services/index.md) **{chevron-right}** |
-| [**Auto DevOps**](autodevops/index.md) **{chevron-right}** | [**Testing**](../ci/testing/index.md) **{chevron-right}** | [**SSH keys**](../ci/ssh_keys/index.md) **{chevron-right}** |
-| [**ChatOps**](../ci/chatops/index.md) **{chevron-right}** | [**Mobile DevOps**](../ci/mobile_devops.md) **{chevron-right}** | [**Google cloud integration**](../ci/gitlab_google_cloud_integration/index.md) **{chevron-right}** |
-|[**External repository integrations**](../ci/ci_cd_for_external_repos/index.md) **{chevron-right}** | | |
+| [**Getting started**](../ci/index.md)<br>Overview of how CI/CD features fit together.                                | [**CI/CD YAML syntax reference**](../ci/yaml/index.md)<br>Pipeline configuration keywords, syntax, examples, inputs.           | [**Runners**](https://docs.gitlab.com/runner/)<br>Installation, configuration, job execution. |
+| [**Pipelines**](../ci/pipelines/index.md)<br>Configuration, automation, stages, schedules, efficiency.               | [**Jobs**](../ci/jobs/index.md)<br>Configuration, rules, caching, artifacts, logs.                                             | [**CI/CD components**](../ci/components/index.md)<br>Reusable, versioned CI/CD components for pipelines. |
+| [**CI/CD variables**](../ci/variables/index.md)<br>Configuration, usage, security.                                   | [**Pipeline security**](../ci/pipelines/pipeline_security.md)<br>Secrets management, job tokens, secure files, cloud security. | [**Debugging**](../ci/debugging.md)<br>Configuration validation, warnings, errors, troubleshooting. |
+| [**Auto DevOps**](autodevops/index.md)<br>Automated DevOps, language detection, deployment, customization.           | [**Testing**](../ci/testing/index.md)<br>Unit tests, integration tests, test reports, coverage, quality assurance.             | [**Google cloud integration**](../ci/gitlab_google_cloud_integration/index.md)<br>Cloud services, Kubernetes deployments. |
+| [**Migrate to GitLab CI/CD**](../ci/migration/plan_a_migration.md)<br> Migrate from Jenkins, GitHub Actions, others. | [**External repository integrations**](../ci/ci_cd_for_external_repos/index.md)<br>GitHub, Bitbucket, external sources, mirroring, cross-platform. |  |

@@ -33,57 +33,23 @@ RSpec.describe Groups::DependencyProxyAuthController, feature_category: :contain
         end
 
         context 'group bot user' do
-          context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-            let_it_be(:user) { create(:user, :project_bot) }
+          let_it_be(:bot_user) { create(:user, :project_bot) }
+          let_it_be(:user) { create(:personal_access_token, user: bot_user) }
 
-            before do
-              stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-            end
-
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
-
-          context 'with packages_dependency_proxy_pass_token_to_policy enabled' do
-            let_it_be(:bot_user) { create(:user, :project_bot) }
-            let_it_be(:user) { create(:personal_access_token, user: bot_user) }
-
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
+          it { is_expected.to have_gitlab_http_status(:success) }
         end
 
         context 'service account user' do
-          context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-            let_it_be(:user) { create(:user, :service_account) }
+          let_it_be(:service_account_user) { create(:user, :service_account) }
+          let_it_be(:user) { create(:personal_access_token, user: service_account_user) }
 
-            before do
-              stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-            end
-
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
-
-          context 'with packages_dependency_proxy_pass_token_to_policy enabled' do
-            let_it_be(:service_account_user) { create(:user, :service_account) }
-            let_it_be(:user) { create(:personal_access_token, user: service_account_user) }
-
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
+          it { is_expected.to have_gitlab_http_status(:success) }
         end
 
         context 'deploy token' do
           let_it_be(:user) { create(:deploy_token) }
 
-          context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
-            before do
-              stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
-            end
-
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
-
-          context 'with packages_dependency_proxy_pass_token_to_policy enabled' do
-            it { is_expected.to have_gitlab_http_status(:success) }
-          end
+          it { is_expected.to have_gitlab_http_status(:success) }
         end
       end
 

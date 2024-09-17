@@ -16,6 +16,12 @@ RSpec.shared_context 'with scan result policy' do
   before do
     policy_configuration.update_attribute(:security_policy_management_project, policy_project)
 
+    if policy_project.repository.blob_at(default_branch, policy_path)
+      policy_project.repository.delete_file(
+        policy_project.creator, policy_path, message: 'delete policy', branch_name: default_branch
+      )
+    end
+
     create_file_in_repo(policy_project, default_branch, default_branch, policy_path, policy_yaml)
 
     stub_licensed_features(security_orchestration_policies: true)

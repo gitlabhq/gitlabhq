@@ -67,13 +67,13 @@ Prerequisites:
 1. Define some rules in the file following the [Code Owners syntax reference](reference.md).
    Some suggestions:
    - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
-   - [Require Code Owner approval](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
+   - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 
 ### `CODEOWNERS` file
 
 A `CODEOWNERS` file (with no extension) specifies the users or
-[shared groups](../members/share_project_with_groups.md) responsible for
+[shared groups](../members/sharing_projects_groups.md) responsible for
 specific files and directories in a repository.
 
 Each repository uses a single `CODEOWNERS` file. GitLab checks these locations
@@ -137,7 +137,7 @@ The eligible Code Owners are:
 
 ##### Inviting subgroups to projects in parent groups
 
-You can [invite](../members/share_project_with_groups.md) **Subgroup Y** to **Project A**
+You can [invite](../members/sharing_projects_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.
 
 ```mermaid

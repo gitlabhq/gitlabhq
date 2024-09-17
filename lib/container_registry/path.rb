@@ -16,8 +16,14 @@ module ContainerRegistry
 
     LEVELS_SUPPORTED = 3
 
-    def initialize(path)
+    attr_reader :project
+
+    # The 'project' argument is optional.
+    # If provided during initialization, it will limit the path to the specified project,
+    # potentially reducing the need for a database query.
+    def initialize(path, project: nil)
       @path = path.to_s.downcase
+      @project = project
     end
 
     def valid?

@@ -90,10 +90,14 @@ module Gitlab
                          .batch(key: context.user) do |projects, loader, args|
                 projects.uniq.each do |project|
                   context.logger.instrument(:config_file_project_validate_access) do
-                    loader.call(project, Ability.allowed?(args[:key], :download_code, project))
+                    loader.call(project, project_access_allowed?(args[:key], project))
                   end
                 end
               end
+            end
+
+            def project_access_allowed?(user, project)
+              Ability.allowed?(user, :download_code, project)
             end
 
             def sha
@@ -179,3 +183,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Config::External::File::Project.prepend_mod

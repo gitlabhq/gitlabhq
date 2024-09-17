@@ -356,10 +356,10 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     it 'produces a suitable title chunk on the user profile' do
       allow(helper).to receive(:user_profile_activity_classes).and_return(
-        'gl-font-semibold gl-text-black-normal')
+        'gl-font-semibold gl-text-default')
 
       html = [
-        "<span class=\"event-target-type gl-font-semibold gl-text-black-normal\">wiki page </span>",
+        "<span class=\"event-target-type gl-font-semibold gl-text-default\">wiki page </span>",
         "<a title=\"#{title}\" class=\"has-tooltip event-target-link\" href=\"#{url}\">",
         title,
         "</a>"
@@ -548,7 +548,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     context 'when on the user activity page' do
       it 'returns the expected class names' do
-        expect(helper.user_profile_activity_classes).to eq(' gl-font-semibold gl-text-black-normal')
+        expect(helper.user_profile_activity_classes).to eq(' gl-font-semibold gl-text-default')
       end
     end
 

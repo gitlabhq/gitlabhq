@@ -82,7 +82,7 @@ export default {
           <gl-icon
             ref="informationIcon"
             name="information-o"
-            class="gl-text-blue-600 gl-hover-cursor-pointer"
+            class="gl-text-blue-600 hover:gl-cursor-pointer"
           />
           <gl-popover
             :target="() => $refs.informationIcon.$el"
@@ -105,7 +105,7 @@ export default {
               </gl-sprintf>
             </li>
             <li class="gl-list-none">
-              <div class="gl-display-flex align-items-start">
+              <div class="align-items-start gl-flex">
                 <pre
                   :id="modalInfoCopyId"
                   class="gl-w-full"

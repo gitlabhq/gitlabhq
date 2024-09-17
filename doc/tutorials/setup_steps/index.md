@@ -21,8 +21,9 @@ In this tutorial, use the GitLab CLI (`glab`) to:
 
 ## Before you begin
 
-To complete this tutorial, you must install [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`)
-and be signed in.
+- You must install and sign in to the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`).
+- On GitLab.com and self-managed in GitLab 17.3 and later, you must include the
+  `image: registry.gitlab.com/gitlab-org/step-runner:v0` runner image in the `.gitlab-ci.yml` file.
 
 ## Create a step
 
@@ -33,9 +34,9 @@ First, create a step with:
 
 1. Create a GitLab project named `zero-to-steps` in your namespace:
 
-    ```shell
-    glab project create zero-to-steps
-    ```
+   ```shell
+   glab project create zero-to-steps
+   ```
 
 1. Go to the root of the project repository:
 
@@ -45,9 +46,9 @@ First, create a step with:
 
 1. Create a `step.yml` file.
 
-    ```shell
-    touch step.yml
-    ```
+   ```shell
+   touch step.yml
+   ```
 
 1. Use a text editor to add a specification to the `step.yml`:
 
@@ -58,23 +59,23 @@ First, create a step with:
          default: world
    ```
 
-    - `spec` has one input called `who`.
-    - The input `who` is optional because there is a default value.
+   - `spec` has one input called `who`.
+   - The input `who` is optional because there is a default value.
 
 1. To add an implementation to the `step.yml`, add a second YAML document after `spec`, with the `exec` key:
 
-    ```yaml
-    spec:
-      inputs:
-        who:
-          default: world
-    ---
-    exec:
-      command:
-        - bash
-        - -c
-        - "echo hello ${{ inputs.who }}"
-    ```
+   ```yaml
+   spec:
+     inputs:
+       who:
+         default: world
+   ---
+   exec:
+     command:
+       - bash
+       - -c
+       - "echo hello ${{ inputs.who }}"
+   ```
 
 The triple em dash (`---`) separates the file into two YAML documents:
 
@@ -123,12 +124,12 @@ This expression accesses `inputs` and reads the value of `who`:
 
 1. Commit both files and push the project repository. This triggers a pipeline that runs the job:
 
-    ```shell
-    git add .
-    git commit -m 'Part 1 complete'
-    git push --set-upstream origin master
-    glab ci status
-    ```
+   ```shell
+   git add .
+   git commit -m 'Part 1 complete'
+   git push --set-upstream origin master
+   glab ci status
+   ```
 
 1. Follow the job under "View Logs" until the pipeline completes. Here's an example of a successful job:
 

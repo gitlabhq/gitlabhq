@@ -13,7 +13,7 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateCiPipelineArtifactsUnknownLock
 
     let(:namespaces) { table(:namespaces) }
     let(:projects) { table(:projects) }
-    let(:pipelines) { table(:ci_pipelines, database: :ci) }
+    let(:pipelines) { table(:ci_pipelines, primary_key: :id, database: :ci) }
     let(:pipeline_artifacts) { table(:ci_pipeline_artifacts, database: :ci) }
 
     let(:namespace) { namespaces.create!(name: 'name', path: 'path') }

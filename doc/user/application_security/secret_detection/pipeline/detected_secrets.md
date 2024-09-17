@@ -26,6 +26,7 @@ This table lists the secrets detected by [pipeline secret detection](index.md).
 | Age secret key                                                     | Age secret key                                | AGE-SECRET-KEY-1                      |
 | Alibaba AccessKey ID                                               | Alibaba AccessKey ID                          | LTAI                                  |
 | Alibaba Secret Key                                                 | Alibaba Secret Key                            | alibaba                               |
+| Anthropic keys                                                     | anthropic_key                                 | sk-ant-                               |
 | Asana Client ID                                                    | Asana Client ID                               | asana                                 |
 | Asana Client Secret                                                | Asana Client Secret                           | asana                                 |
 | Atlassian API token                                                | Atlassian API token                           | atlassian                             |

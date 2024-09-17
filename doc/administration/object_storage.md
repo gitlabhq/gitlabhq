@@ -196,7 +196,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `aws_access_key_id`                         | AWS credentials, or compatible.    | |
 | `aws_secret_access_key`                     | AWS credentials, or compatible.    | |
 | `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
+| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. GitLab 17.4 changed the default from `true` to `false`.  | `false` |
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
 | `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
@@ -431,7 +431,7 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 ### Hitachi Vantara HCP
 
 NOTE:
-Connections to HCP may return an error stating `SigntureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
+Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
 
 [HCP](https://docs.hitachivantara.com/r/en-us/content-platform-for-cloud-scale/2.6.x/mk-hcpcs008/getting-started/introducing-hcp-for-cloud-scale/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
@@ -1004,36 +1004,36 @@ In some situations, it may be helpful to test object storage settings using the 
 1. Start a [Rails console](operations/rails_console.md).
 1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:
 
-Example connection using access keys:
+   Example connection using access keys:
 
-  ```ruby
-  connection = Fog::Storage.new(
-    {
-      provider: 'AWS',
-      region: `eu-central-1`,
-      aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
-      aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
-    }
-  )
-  ```
+   ```ruby
+   connection = Fog::Storage.new(
+     {
+       provider: 'AWS',
+       region: `eu-central-1`,
+       aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
+       aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
+     }
+   )
+   ```
 
-Example connection using AWS IAM Profiles:
+   Example connection using AWS IAM Profiles:
 
-  ```ruby
-  connection = Fog::Storage.new(
-    {
-      provider: 'AWS',
-      use_iam_profile: true,
-      region: 'us-east-1'
-    }
-  )
-  ```
+   ```ruby
+   connection = Fog::Storage.new(
+     {
+       provider: 'AWS',
+       use_iam_profile: true,
+       region: 'us-east-1'
+     }
+   )
+   ```
 
 1. Specify the bucket name to test against, write, and finally read a test file.
 
-  ```ruby
-  dir = connection.directories.new(key: '<bucket-name-here>')
-  f = dir.files.create(key: 'test.txt', body: 'test')
-  pp f
-  pp dir.files.head('test.txt')
-  ```
+   ```ruby
+   dir = connection.directories.new(key: '<bucket-name-here>')
+   f = dir.files.create(key: 'test.txt', body: 'test')
+   pp f
+   pp dir.files.head('test.txt')
+   ```

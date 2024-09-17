@@ -23,10 +23,17 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
 
   let_it_be(:pipeline3) do
     create(:ci_pipeline, :failed, project: project2, ref: 'feature/a', source: :api,
-      started_at: 1.minute.before(1.day.ago), finished_at: 1.day.ago, duration: 60)
+      committed_at: nil, started_at: 1.minute.before(1.day.ago), finished_at: 1.day.ago,
+      duration: -2) # we do actually have negative durations in the database
   end
 
-  let_it_be(:pipeline4) { create(:ci_pipeline, :pending, project: project1, ref: 'feature/b') }
+  let_it_be(:pipeline4) do
+    create(:ci_pipeline, :failed, project: project2, ref: 'UAT', source: :api,
+      committed_at: nil, started_at: nil, finished_at: 1.day.ago,
+      duration: nil) # we do actually have null durations in the database
+  end
+
+  let_it_be(:pipeline5) { create(:ci_pipeline, :pending, project: project1, ref: 'feature/b') }
 
   before_all do
     create_sync_events(*Ci::Pipeline.finished.order(id: :desc))
@@ -36,26 +43,26 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
     it 'processes the pipelines' do
       expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(3)
+      expect { execute }.to change { ci_finished_pipelines_row_count }.by(4)
       expect(execute).to have_attributes({
         payload: {
           reached_end_of_table: true,
-          records_inserted: 3,
+          records_inserted: 4,
           worker_index: 0, total_workers: 1
         }
       })
 
       records = ci_finished_pipelines
-      expect(records.count).to eq 3
-      expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3)
+      expect(records.count).to eq 4
+      expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4)
     end
 
     it 'processes only pipelines from Ci::FinishedPipelineChSyncEvent' do
       pipeline = create(:ci_pipeline, :failed, finished_at: 1.minute.ago)
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(3)
+      expect { execute }.to change { ci_finished_pipelines_row_count }.by(4)
       expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 3)
+        payload: a_hash_including(reached_end_of_table: true, records_inserted: 4)
       })
 
       create_sync_events(pipeline)
@@ -69,7 +76,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
           .tap(&:save!)
 
         expect { execute }
-          .to change { ci_finished_pipelines_row_count }.by(3)
+          .to change { ci_finished_pipelines_row_count }.by(4)
           .and change { sync_event.reload.processed }.to(true)
       end
     end
@@ -83,9 +90,9 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
     it 'processes the pipelines' do
       expect(ClickHouse::Client).to receive(:insert_csv).once.and_call_original
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(3)
+      expect { execute }.to change { ci_finished_pipelines_row_count }.by(4)
       expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 3)
+        payload: a_hash_including(reached_end_of_table: true, records_inserted: 4)
       })
     end
   end
@@ -103,9 +110,9 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
 
       expect(ClickHouse::Client).to receive(:insert_csv).twice.and_call_original
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(3)
+      expect { execute }.to change { ci_finished_pipelines_row_count }.by(4)
       expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 3)
+        payload: a_hash_including(reached_end_of_table: true, records_inserted: 4)
       })
     end
 
@@ -147,39 +154,39 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
         expect(iterator).to receive(:each_batch).once.with(of: described_class::PIPELINES_BATCH_SIZE).and_call_original
       end
 
-      expect { execute }.to change { ci_finished_pipelines_row_count }.by(3)
+      expect { execute }.to change { ci_finished_pipelines_row_count }.by(4)
       expect(execute).to have_attributes({
-        payload: a_hash_including(reached_end_of_table: true, records_inserted: 3)
+        payload: a_hash_including(reached_end_of_table: true, records_inserted: 4)
       })
 
-      pipeline5 = create(:ci_pipeline, :failed, finished_at: 1.minute.ago)
-      create_sync_events(pipeline5)
+      pipeline6 = create(:ci_pipeline, :failed, finished_at: 1.minute.ago)
+      create_sync_events(pipeline6)
 
       expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(1)
       records = ci_finished_pipelines
-      expect(records.count).to eq 4
-      expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline5)
+      expect(records.count).to eq 5
+      expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline6)
     end
 
     context 'with same updated_at value' do
       it 'processes the pipelines' do
-        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(3)
+        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(4)
 
-        pipeline5 = create(:ci_pipeline, :failed, finished_at: 1.second.ago, updated_at: 1.second.ago)
         pipeline6 = create(:ci_pipeline, :failed, finished_at: 1.second.ago, updated_at: 1.second.ago)
-        create_sync_events(pipeline5, pipeline6)
+        pipeline7 = create(:ci_pipeline, :failed, finished_at: 1.second.ago, updated_at: 1.second.ago)
+        create_sync_events(pipeline6, pipeline7)
 
         expect { execute }.to change { ci_finished_pipelines_row_count }.by(2)
 
         records = ci_finished_pipelines
-        expect(records.count).to eq 5
-        expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline5, pipeline6)
+        expect(records.count).to eq 6
+        expect(records).to contain_exactly_pipelines(pipeline1, pipeline2, pipeline3, pipeline4, pipeline6, pipeline7)
       end
     end
 
     context 'with older finished_at value' do
       it 'does not process the pipeline' do
-        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(3)
+        expect { service.execute }.to change { ci_finished_pipelines_row_count }.by(4)
 
         create(:ci_pipeline, :failed, finished_at: 2.days.ago)
 
@@ -252,7 +259,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
       created_at: a_value_within(0.001.seconds).of(pipeline.created_at || Time.at(0).utc),
       started_at: a_value_within(0.001.seconds).of(pipeline.started_at || Time.at(0).utc),
       finished_at: a_value_within(0.001.seconds).of(pipeline.finished_at),
-      duration: pipeline.duration || 0,
+      duration: [0, pipeline.duration || 0].max,
       status: pipeline.status || '',
       source: pipeline.source || '',
       ref: pipeline.ref || '',

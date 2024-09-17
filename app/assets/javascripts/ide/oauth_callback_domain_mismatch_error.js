@@ -1,48 +1,43 @@
 import Vue from 'vue';
 import OAuthDomainMismatchError from './components/oauth_domain_mismatch_error.vue';
+import { parseCallbackUrls, getOAuthCallbackUrl } from './lib/gitlab_web_ide/oauth_callback_urls';
 
 export class OAuthCallbackDomainMismatchErrorApp {
   #el;
-  #callbackUrlOrigins;
+  #callbackUrls;
+  #expectedCallbackUrl;
 
-  constructor(el, callbackUrls) {
+  constructor(el) {
     this.#el = el;
-    this.#callbackUrlOrigins =
-      OAuthCallbackDomainMismatchErrorApp.#getCallbackUrlOrigins(callbackUrls);
+    this.#callbackUrls = parseCallbackUrls(el.dataset.callbackUrls);
+    this.#expectedCallbackUrl = getOAuthCallbackUrl();
   }
 
-  isVisitingFromNonRegisteredOrigin() {
-    return (
-      this.#callbackUrlOrigins.length && !this.#callbackUrlOrigins.includes(window.location.origin)
-    );
+  shouldRenderError() {
+    if (!this.#callbackUrls.length) {
+      return false;
+    }
+
+    return this.#callbackUrls.every(({ url }) => url !== this.#expectedCallbackUrl);
   }
 
   renderError() {
-    const callbackUrlOrigins = this.#callbackUrlOrigins;
+    const callbackUrls = this.#callbackUrls;
+    const expectedCallbackUrl = this.#expectedCallbackUrl;
     const el = this.#el;
 
     if (!el) return null;
 
     return new Vue({
       el,
-      data() {
-        return {
-          callbackUrlOrigins,
-        };
-      },
       render(createElement) {
         return createElement(OAuthDomainMismatchError, {
           props: {
-            callbackUrlOrigins,
+            expectedCallbackUrl,
+            callbackUrls,
           },
         });
       },
     });
-  }
-
-  static #getCallbackUrlOrigins(callbackUrls) {
-    if (!callbackUrls) return [];
-
-    return JSON.parse(callbackUrls).map((url) => new URL(url).origin);
   }
 }

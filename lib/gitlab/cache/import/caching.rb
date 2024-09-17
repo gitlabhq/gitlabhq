@@ -143,6 +143,17 @@ module Gitlab
           end
         end
 
+        # Returns the number of values in the set.
+        #
+        # raw_key - The key of the set to check.
+        def self.set_count(raw_key)
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.scard(key)
+          end
+        end
+
         # Returns the values of the given set.
         #
         # raw_key - The key of the set to check.

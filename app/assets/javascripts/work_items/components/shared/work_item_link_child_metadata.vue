@@ -2,12 +2,14 @@
 import { GlTooltipDirective } from '@gitlab/ui';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
+import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
 
-import { WIDGET_TYPE_MILESTONE } from '../../constants';
+import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_HIERARCHY } from '../../constants';
 
 export default {
   components: {
     ItemMilestone,
+    WorkItemRolledUpCount,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -31,18 +33,33 @@ export default {
     milestone() {
       return this.metadataWidgets[WIDGET_TYPE_MILESTONE]?.milestone;
     },
+    hierarchyWidget() {
+      return this.metadataWidgets[WIDGET_TYPE_HIERARCHY];
+    },
+    showRolledUpCounts() {
+      return this.hierarchyWidget && this.rolledUpCountsByType.length > 0;
+    },
+    rolledUpCountsByType() {
+      return this.hierarchyWidget?.rolledUpCountsByType || [];
+    },
   },
 };
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-space-between">
-    <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-align-items-center">
-      <span class="gl-text-secondary gl-font-sm">{{ reference }}</span>
+  <div class="gl-flex gl-justify-between">
+    <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-text-sm gl-text-secondary">
+      <span>{{ reference }}</span>
+      <work-item-rolled-up-count
+        v-if="showRolledUpCounts"
+        hide-count-when-zero
+        :rolled-up-counts-by-type="rolledUpCountsByType"
+        info-type="detailed"
+      />
       <item-milestone
         v-if="milestone"
         :milestone="milestone"
-        class="gl-display-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-leading-normal gl-text-gray-900! gl-cursor-help! gl-text-decoration-none!"
+        class="gl-flex gl-max-w-15 !gl-cursor-help gl-items-center gl-gap-2 gl-leading-normal !gl-no-underline"
       />
       <slot name="left-metadata"></slot>
     </div>

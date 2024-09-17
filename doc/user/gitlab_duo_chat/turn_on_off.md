@@ -20,10 +20,11 @@ you must have the following prerequisites.
 
 Prerequisites:
 
-- You must have GitLab version 16.8 or later. You should use the latest GitLab version to benefit from the latest improvements to GitLab Duo Chat. The generally available version of GitLab Duo Chat in GitLab 16.11 has significant improvements in the quality of the answers.
+- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 - You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
   [manually synchronize your subscription](#manually-synchronize-your-subscription).
 - You must have [enabled network connectivity](../gitlab_duo/turn_on_off.md#configure-gitlab-duo-on-a-self-managed-instance).
+- [Silent Mode](../../administration/silent_mode/index.md) must not be turned on.
 - All of the users in your instance must have the latest version of their IDE extension.
 
 Then, depending on the version of GitLab you have, you can enable GitLab Duo Chat.

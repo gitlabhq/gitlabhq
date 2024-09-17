@@ -209,11 +209,11 @@ module ApplicationHelper
   def edited_time_ago_with_tooltip(editable_object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return unless editable_object.edited?
 
-    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-font-sm' do
+    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-text-sm' do
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by
-        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline gl-text-gray-700', author_class: nil)
+        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'hover:gl-underline gl-text-gray-700', author_class: nil)
         output = safe_format(_("Edited %{timeago} by %{author}"), timeago: timeago, author: author_link)
       else
         output = safe_format(_("Edited %{timeago}"), timeago: timeago)
@@ -389,7 +389,11 @@ module ApplicationHelper
 
     url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
 
-    external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
+    if url && Feature.enabled?(:verify_mastodon_user, user)
+      external_redirect_path(url: "https://#{url[2]}/@#{url[1]}", rel: 'me')
+    else
+      external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
+    end
   end
 
   def collapsed_super_sidebar?
@@ -428,6 +432,16 @@ module ApplicationHelper
     content_for :page_specific_styles do
       universal_stylesheet_link_tag path
     end
+  end
+
+  def add_work_items_stylesheet
+    add_page_specific_style('page_bundles/work_items')
+    add_page_specific_style('page_bundles/notes_shared')
+  end
+
+  def add_issuable_stylesheet
+    add_page_specific_style('page_bundles/issuable')
+    add_page_specific_style('page_bundles/notes_shared')
   end
 
   def page_startup_api_calls
@@ -500,7 +514,7 @@ module ApplicationHelper
     return unless title
 
     content_tag(:span, class: 'has-tooltip', title: title) do
-      sprite_icon('spam', css_class: ['gl-vertical-align-text-bottom', css_class].compact_blank.join(' '))
+      sprite_icon('spam', css_class: ['gl-align-text-bottom', css_class].compact_blank.join(' '))
     end
   end
 

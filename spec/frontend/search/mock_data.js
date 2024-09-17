@@ -7,7 +7,7 @@ export const MOCK_QUERY = {
   confidential: null,
   group_id: 1,
   language: ['C', 'JavaScript'],
-  labels: ['60', '37'],
+  label_name: ['Aftersync', 'Brist'],
   search: '*',
 };
 
@@ -903,6 +903,19 @@ export const CURRENT_SCOPE = 'blobs';
 export const defaultProvide = {
   paths: {
     adminUser: '///',
+  },
+};
+
+export const mockGetBlobSearchQueryEmpty = {
+  data: {
+    blobSearch: {
+      fileCount: 0,
+      files: [],
+      matchCount: 0,
+      perPage: 0,
+      searchLevel: 'PROJECT',
+      searchType: 'ZOEKT',
+    },
   },
 };
 

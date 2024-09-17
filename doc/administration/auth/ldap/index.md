@@ -473,11 +473,11 @@ you must do so in an `attributes` hash.
 
 | Setting      | Description | Examples |
 |--------------|-------------|----------|
-| `username`   | Used in paths for the user's own projects (for example, `gitlab.example.com/username/project`) and when mentioning them in issues, merge request and comments (for example, `@username`). If the attribute specified for `username` contains an email address, the GitLab username is part of the email address before the `@`. | `['uid', 'userid', 'sAMAccountName']` |
-| `email`      | LDAP attribute for user email. | `['mail', 'email', 'userPrincipalName']` |
-| `name`       | LDAP attribute for user display name. If `name` is blank, the full name is taken from the `first_name` and `last_name`. | Attributes `'cn'`, or `'displayName'` commonly carry full names. Alternatively, you can force the use of `first_name` and `last_name` by specifying an absent attribute such as `'somethingNonExistent'`. |
-| `first_name` | LDAP attribute for user first name. Used when the attribute configured for `name` does not exist. | `'givenName'` |
-| `last_name`  | LDAP attribute for user last name. Used when the attribute configured for `name` does not exist. | `'sn'` |
+| `username`   | Used in paths for the user's own projects (for example, `gitlab.example.com/username/project`) and when mentioning them in issues, merge request and comments (for example, `@username`). If the attribute specified for `username` contains an email address, the GitLab username is part of the email address before the `@`. Defaults to the LDAP attribute [specified as `uid`](#basic-configuration-settings). | `['uid', 'userid', 'sAMAccountName']` |
+| `email`      | LDAP attribute for user email. Defaults to `['mail', 'email', 'userPrincipalName']` | `['mail', 'email', 'userPrincipalName']` |
+| `name`       | LDAP attribute for user display name. If `name` is blank, the full name is taken from the `first_name` and `last_name`. Defaults to `'cn'`. | Attributes `'cn'`, or `'displayName'` commonly carry full names. Alternatively, you can force the use of `first_name` and `last_name` by specifying an absent attribute such as `'somethingNonExistent'`. |
+| `first_name` | LDAP attribute for user first name. Used when the attribute configured for `name` does not exist. Defaults to `'givenName'`. | `'givenName'` |
+| `last_name`  | LDAP attribute for user last name. Used when the attribute configured for `name` does not exist. Defaults to `'sn'`. | `'sn'` |
 
 ### LDAP sync configuration settings
 

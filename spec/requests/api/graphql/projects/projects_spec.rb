@@ -9,6 +9,7 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
   let_it_be(:group) { create(:group, name: 'public-group', developers: current_user) }
   let_it_be(:projects) { create_list(:project, 5, :public, group: group) }
   let_it_be(:other_project) { create(:project, :public, group: group) }
+  let_it_be(:archived_project) { create(:project, :archived, group: group) }
 
   let(:filters) { {} }
 
@@ -18,6 +19,46 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       filters,
       "nodes {#{all_graphql_fields_for('Project', max_depth: 1, excluded: ['productAnalyticsState'])} }"
     )
+  end
+
+  context 'when archived argument is ONLY' do
+    let(:filters) { { archived: :ONLY } }
+
+    it 'returns only archived projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(a_graphql_entity_for(archived_project))
+    end
+  end
+
+  context 'when archived argument is INCLUDE' do
+    let(:filters) { { archived: :INCLUDE } }
+
+    it 'returns archived and non-archived projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:projects, :nodes))
+      .to contain_exactly(
+        *projects.map { |project| a_graphql_entity_for(project) },
+        a_graphql_entity_for(other_project),
+        a_graphql_entity_for(archived_project)
+      )
+    end
+  end
+
+  context 'when archived argument is EXCLUDE' do
+    let(:filters) { { archived: :EXCLUDE } }
+
+    it 'returns only non-archived projects' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:projects, :nodes))
+      .to contain_exactly(
+        *projects.map { |project| a_graphql_entity_for(project) },
+        a_graphql_entity_for(other_project)
+      )
+    end
   end
 
   context 'when providing full_paths filter' do

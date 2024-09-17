@@ -10,9 +10,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="job-log-viewer-top-bar gl-display-flex gl-align-items-center gl-justify-content-space-between"
-  >
+  <div class="job-log-viewer-top-bar gl-flex gl-items-center gl-justify-between">
     <div>{{ s__('Job|Full log viewer') }}<gl-experiment-badge /></div>
     <div>
       <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/454817" target="_blank">{{

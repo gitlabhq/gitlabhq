@@ -100,7 +100,7 @@ export default {
 
 <template>
   <div>
-    <h1 class="page-title gl-font-size-h-display">
+    <h1 class="page-title gl-text-size-h-display">
       {{ $options.i18n.pageTitle }}
     </h1>
     <hr />
@@ -122,7 +122,7 @@ export default {
         </li>
       </ul>
     </gl-card>
-    <div class="-gl-my-2 -gl-mx-2 gl-display-flex gl-flex-wrap">
+    <div class="-gl-mx-2 -gl-my-2 gl-flex gl-flex-wrap">
       <div class="gl-p-2">
         <clipboard-button
           :title="$options.i18n.copyButton"

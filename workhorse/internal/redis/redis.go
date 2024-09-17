@@ -176,7 +176,9 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 	}
 
 	opt.DB = getOrDefault(cfg.DB, 0)
-	opt.Password = cfg.Password
+	if cfg.Password != "" {
+		opt.Password = cfg.Password
+	}
 
 	opt.PoolSize = getOrDefault(cfg.MaxActive, defaultMaxActive)
 	opt.MaxIdleConns = getOrDefault(cfg.MaxIdle, defaultMaxIdle)

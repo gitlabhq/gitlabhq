@@ -47,7 +47,6 @@ RSpec.describe 'Test coverage of the Project Import', feature_category: :importe
       project.ci_pipelines.notes.events
       project.ci_pipelines.notes.events.push_event_payload
       project.protected_branches.unprotect_access_levels
-      project.prometheus_metrics
       project.boards.lists.label.priorities
       project.service_desk_setting
       project.security_setting

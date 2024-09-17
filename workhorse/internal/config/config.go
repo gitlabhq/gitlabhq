@@ -89,6 +89,7 @@ type S3Config struct {
 	UseIamProfile        bool   `toml:"-"`
 	ServerSideEncryption string `toml:"-"` // Server-side encryption mode (e.g. AES256, aws:kms)
 	SSEKMSKeyID          string `toml:"-"` // Server-side encryption key-management service key ID (e.g. arn:aws:xxx)
+	AwsSDK               string `toml:"-"` // Use "v1" to force using AWS SDK v1. Default is v2.
 }
 
 type GoCloudConfig struct {

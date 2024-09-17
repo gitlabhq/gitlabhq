@@ -206,5 +206,23 @@ module Ci
     def latest_stage_status
       statuses.latest.composite_status || 'skipped'
     end
+
+    def ordered_latest_statuses
+      preload_metadata(statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).latest_ordered)
+    end
+
+    def ordered_retried_statuses
+      preload_metadata(statuses.in_order_of(:status, Ci::HasStatus::ORDERED_STATUSES).retried_ordered)
+    end
+
+    private
+
+    def preload_metadata(statuses)
+      relations = [:metadata, :pipeline, { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }]
+
+      Preloaders::CommitStatusPreloader.new(statuses).execute(relations)
+
+      statuses
+    end
   end
 end

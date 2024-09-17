@@ -21,6 +21,11 @@ module Gitlab
             end
           rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")
+          rescue ActiveRecord::RecordNotUnique => e
+            raise unless e.message.include?('iid')
+
+            ::InternalId.flush_records!(project: project, usage: :ci_pipelines)
+            error("Failed to persist the pipeline, please retry")
           end
 
           def break?

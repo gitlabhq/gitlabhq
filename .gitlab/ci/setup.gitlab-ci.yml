@@ -214,7 +214,7 @@ e2e-test-pipeline-generate:
 # This is the manual start of the chain of E2E jobs
 # After playing this, it'll follow up with:
 # follow-up:compile-production-assets -> follow-up:build-assets-image --\
-#                                                                       \-> follow-up:e2e:package-and-test-ee
+#                                                                       \-> follow-up:e2e:test-on-omnibus-ee
 # follow-up:build-qa-image ---------------------------------------------/
 manual:e2e-test-pipeline-generate:
   extends:
@@ -224,9 +224,9 @@ manual:e2e-test-pipeline-generate:
 # This is the start of the chain of E2E jobs for CE
 # After playing this, it'll follow up with:
 # compile-production-assets as-if-foss -> build-assets-image as-if-foss --\
-#                                                                         \-> e2e:package-and-test-ce
+#                                                                         \-> e2e:test-on-omnibus-ce
 # build-qa-image as-if-foss ----------------------------------------------/
 e2e-test-pipeline-generate as-if-foss:
   extends:
     - e2e-test-pipeline-generate
-    - .qa:rules:package-and-test-ce:start
+    - .qa:rules:test-on-omnibus-ce:start

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::AlterWebhookDeletedAuditEvent, featu
     )
   end
 
-  let(:audit_events) { table(:audit_events) }
+  let(:audit_events) { partitioned_table(:audit_events) }
   let(:attributes) do
     { author_id: 1,
       entity_id: 2,

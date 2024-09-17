@@ -228,7 +228,8 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             Feature.enabled?(:issue_email_participants, parent) &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
+            issue_or_work_item_feature_flag_enabled?
         end
         command :add_email do |emails = ""|
           response = ::IssueEmailParticipants::CreateService.new(
@@ -369,6 +370,14 @@ module Gitlab
 
       def timeline_event_create_service(event_text, event_date_time)
         ::IncidentManagement::TimelineEvents::CreateService.new(quick_action_target, current_user, { note: event_text, occurred_at: event_date_time, editable: true })
+      end
+
+      def issue_or_work_item_feature_flag_enabled?
+        !quick_action_target.is_a?(WorkItem) ||
+          (
+            quick_action_target.resource_parent.is_a?(Project) &&
+            quick_action_target.resource_parent.work_items_alpha_feature_flag_enabled?
+          )
       end
     end
   end

@@ -233,6 +233,33 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.assignee_or_reviewer' do
+      let_it_be(:merge_request5) do
+        create(:merge_request, :prepared, :unique_branches, assignees: [user1], reviewers: [user2], created_at:
+              2.days.ago)
+      end
+
+      it 'returns merge requests that the user is a reviewer or an assignee of' do
+        expect(described_class.assignee_or_reviewer(user1, nil, nil)).to match_array([merge_request1, merge_request2, merge_request5])
+      end
+
+      context 'when the user is an assignee and a reviewer reviewed' do
+        before_all do
+          merge_request5.merge_request_reviewers.update_all(state: :reviewed)
+        end
+
+        it { expect(described_class.assignee_or_reviewer(user1, MergeRequestReviewer.states[:reviewed], nil)).to match_array([merge_request1, merge_request2, merge_request5]) }
+
+        it { expect(described_class.assignee_or_reviewer(user1, MergeRequestReviewer.states[:requested_changes], nil)).to match_array([merge_request1, merge_request2]) }
+      end
+
+      context 'when the user is a reviewer and left a review' do
+        it { expect(described_class.assignee_or_reviewer(user1, nil, MergeRequestReviewer.states[:reviewed])).to match_array([merge_request2, merge_request5]) }
+
+        it { expect(described_class.assignee_or_reviewer(user1, nil, MergeRequestReviewer.states[:requested_changes])).to match_array([merge_request1, merge_request5]) }
+      end
+    end
+
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])
@@ -1324,55 +1351,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end.to not_change { subject.merge_requests_closing_issues.count }.from(1).and(
         change { existing_association.reload.from_mr_description }.from(false).to(true)
       )
-    end
-
-    context 'when merge request closing issues exist' do
-      let_it_be(:issue2) { create(:issue, project: project) }
-
-      before do
-        create(
-          :merge_requests_closing_issues,
-          issue: issue,
-          merge_request: subject,
-          from_mr_description: false
-        )
-        create(
-          :merge_requests_closing_issues,
-          issue: issue2,
-          merge_request: subject,
-          from_mr_description: true
-        )
-      end
-
-      context 'when new merge request closing issue records are created' do
-        it 'triggers a workItemUpdated subscription for all affected work items (added/removed/updated)' do
-          issue3 = create(:issue, project: project)
-
-          # issue is updated, issue 2 is removed, issue 3 is added
-          WorkItem.where(id: [issue, issue2, issue3]).find_each do |work_item|
-            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
-          end
-
-          expect do
-            subject.update_columns(description: "Fixes #{issue.to_reference} Closes #{issue3.to_reference}")
-            subject.cache_merge_request_closes_issues!(subject.author)
-          end.to not_change { subject.merge_requests_closing_issues.count }.from(2)
-        end
-      end
-
-      context 'when new merge request closing issue records are not created' do
-        it 'triggers a workItemUpdated subscription for all affected work items (removed/updated)' do
-          # issue is updated, issue 2 is removed
-          WorkItem.where(id: [issue, issue2]).find_each do |work_item|
-            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
-          end
-
-          expect do
-            subject.update_columns(description: "Fixes #{issue.to_reference}")
-            subject.cache_merge_request_closes_issues!(subject.author)
-          end.to change { subject.merge_requests_closing_issues.count }.from(2).to(1)
-        end
-      end
     end
 
     it 'does not cache closed issues when merge request is closed' do
@@ -7008,6 +6986,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.diffs_for_streaming).to eq(['HEAD diff'])
       end
     end
+
+    context 'when block is given' do
+      let(:diff_refs) { instance_double(Gitlab::Diff::DiffRefs) }
+      let(:expected_block) { proc {} }
+      let(:repository) { merge_request.source_project.repository }
+
+      before do
+        allow(base_diff).to receive(:diff_refs).and_return(diff_refs)
+      end
+
+      it 'calls diffs_by_changed_paths with given offset' do
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+          expect(block).to be(expected_block)
+        end
+
+        merge_request.diffs_for_streaming(&expected_block)
+      end
+
+      context 'when offset_index is given' do
+        let(:offset) { 5 }
+
+        it 'calls diffs_by_changed_paths with given offset' do
+          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+            expect(block).to be(expected_block)
+          end
+
+          merge_request.diffs_for_streaming({ offset_index: offset }, &expected_block)
+        end
+      end
+    end
   end
 
   describe '#merge_exclusive_lease' do
@@ -7121,6 +7129,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         subject.remove_from_locked_set
       end
+    end
+  end
+
+  describe '#first_diffs_slice' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+    let_it_be(:limit) { 5 }
+
+    subject { merge_request.first_diffs_slice(limit) }
+
+    it 'returns limited diffs' do
+      expect(subject.count).to eq(limit)
     end
   end
 end

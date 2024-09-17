@@ -14,87 +14,147 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
   let_it_be(:private_package) { create(:conan_package, project: private_project) }
 
   describe '#execute' do
-    let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
-    let(:finder) { described_class.new(user, params) }
-    let(:params) { { query: query } }
+    context 'without package user name' do
+      let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+      let(:finder) { described_class.new(user, params) }
+      let(:params) { { query: query } }
 
-    subject { finder.execute }
+      subject { finder.execute }
 
-    where(:visibility, :role, :packages_visible) do
-      :private  | :maintainer | true
-      :private  | :developer  | true
-      :private  | :reporter   | true
-      :private  | :guest      | false
-      :private  | :anonymous  | false
+      where(:visibility, :role, :packages_visible) do
+        :private  | :maintainer | true
+        :private  | :developer  | true
+        :private  | :reporter   | true
+        :private  | :guest      | false
+        :private  | :anonymous  | false
 
-      :internal | :maintainer | true
-      :internal | :developer  | true
-      :internal | :reporter   | true
-      :internal | :guest      | true
-      :internal | :anonymous  | false
+        :internal | :maintainer | true
+        :internal | :developer  | true
+        :internal | :reporter   | true
+        :internal | :guest      | true
+        :internal | :anonymous  | false
 
-      :public   | :maintainer | true
-      :public   | :developer  | true
-      :public   | :reporter   | true
-      :public   | :guest      | true
-      :public   | :anonymous  | true
+        :public   | :maintainer | true
+        :public   | :developer  | true
+        :public   | :reporter   | true
+        :public   | :guest      | true
+        :public   | :anonymous  | true
+      end
+
+      with_them do
+        let(:expected_packages) { packages_visible ? [conan_package2, conan_package] : [] }
+        let(:user) { role == :anonymous ? nil : super() }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options[visibility.to_s])
+          project.add_member(user, role) unless role == :anonymous
+        end
+
+        it { is_expected.to eq(expected_packages) }
+      end
+
+      context 'with project' do
+        let(:finder) { described_class.new(user, params, project: project) }
+
+        it { is_expected.to match_array([conan_package2, conan_package]) }
+
+        it 'respects the limit' do
+          stub_const("#{described_class}::MAX_PACKAGES_COUNT", 1)
+
+          expect(subject).to match_array([conan_package2])
+        end
+
+        context 'with version' do
+          let_it_be(:conan_package3) do
+            create(:conan_package, project: project, name: conan_package.name, version: '1.2.3')
+          end
+
+          let(:query) { "#{conan_package3.name}/#{conan_package3.version}" }
+
+          it 'matches the correct package' do
+            expect(subject).to match_array([conan_package3])
+          end
+        end
+
+        context 'with nil query' do
+          let(:query) { nil }
+
+          it 'returns an empty array' do
+            expect(subject).to match_array([])
+          end
+        end
+
+        context 'without name' do
+          let(:query) { "/1.0.0" }
+
+          it 'returns an empty array' do
+            expect(subject).to match_array([])
+          end
+        end
+
+        context 'with a different project' do
+          let_it_be(:project) { private_project }
+
+          it { is_expected.to match_array([private_package]) }
+        end
+      end
     end
 
-    with_them do
-      let(:expected_packages) { packages_visible ? [conan_package2, conan_package] : [] }
-      let(:user) { role == :anonymous ? nil : super() }
+    context 'with package user name' do
+      let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+      let(:finder) { described_class.new(user, params) }
+      let(:params) { { query: package.conan_recipe } }
 
-      before do
-        project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options[visibility.to_s])
-        project.add_member(user, role) unless role == :anonymous
-      end
+      subject { finder.execute }
 
-      it { is_expected.to eq(expected_packages) }
-    end
-
-    context 'with project' do
-      let(:finder) { described_class.new(user, params, project: project) }
-
-      it { is_expected.to match_array([conan_package2, conan_package]) }
-
-      it 'respects the limit' do
-        stub_const("#{described_class}::MAX_PACKAGES_COUNT", 1)
-
-        expect(subject).to match_array([conan_package2])
-      end
-
-      context 'with version' do
-        let_it_be(:conan_package3) do
-          create(:conan_package, project: project, name: conan_package.name, version: '1.2.3')
+      context 'with a valid query and user with permissions' do
+        before do
+          allow_next_instance_of(described_class) do |service|
+            allow(service).to receive(:can_access_project_package?).and_return(true)
+          end
         end
 
-        let(:query) { "#{conan_package.name}/#{conan_package3.version}" }
-
-        it 'matches the correct package' do
-          expect(subject).to match_array([conan_package3])
+        context "with conan_recipe as query" do
+          it 'returns the correct package' do
+            [conan_package, conan_package2].each do |package|
+              params = { query: package.conan_recipe }
+              result = described_class.new(user, params).execute
+              expect(result).to match_array([package])
+            end
+          end
         end
-      end
 
-      context 'with nil query' do
-        let(:query) { nil }
-
-        it 'returns an empty array' do
-          expect(subject).to match_array([])
+        context "without version in query" do
+          it 'returns the correct package' do
+            [conan_package, conan_package2].each do |package|
+              params = { query: package.conan_recipe.sub(package.version, '') }
+              result = described_class.new(user, params).execute
+              expect(result).to match_array([package])
+            end
+          end
         end
-      end
 
-      context 'without name' do
-        let(:query) { "/1.0.0" }
+        context 'with a user without permissions' do
+          before do
+            allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:can_access_project_package?).and_return(false)
+            end
+          end
 
-        it 'returns an empty array' do
-          expect(subject).to match_array([])
+          it 'returns an empty array' do
+            params = { query: conan_package.conan_recipe }
+            result = described_class.new(user, params).execute
+            expect(result).to match_array([])
+          end
         end
-      end
 
-      context 'with a different project' do
-        let_it_be(:project) { private_project }
-
-        it { is_expected.to match_array([private_package]) }
+        context 'with a specified project' do
+          it 'return the pacakge from the specified project' do
+            params = { query: private_package.conan_recipe }
+            result = described_class.new(user, params, project: private_project).execute
+            expect(result).to match_array([private_package])
+          end
+        end
       end
     end
   end

@@ -6,24 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Undo changes
 
-Git provides options for undoing changes. The method for undoing a change depends on whether the change is unstaged, staged, committed, or pushed.
+Git provides options for undoing changes. You can undo changes at any point in the
+[Git workflow](get_started.md#step-3-understand-the-git-workflow).
 
-## When you can undo changes
+The method to use to undo changes depends on if the changes are:
 
-In the standard Git workflow:
-
-1. You create or edit a file. It starts in the unstaged state. If it's new, it is not yet tracked by Git.
-1. You add the file to your local repository (`git add`), which puts the file into the staged state.
-1. You commit the file to your local repository (`git commit`).
-1. You can then share the file with other developers, by committing to a remote repository (`git push`).
-
-You can undo changes at any point in this workflow:
-
-- [When you're working locally](#undo-local-changes) and haven't yet pushed to a remote repository.
-- When you have already pushed to a remote repository and you want to:
-  - [Keep the history intact](#undo-remote-changes-without-changing-history) (preferred).
-  - [Change the history](#undo-remote-changes-while-changing-history) (requires
-    coordination with team and force pushes).
+- Only on your local computer.
+- Stored remotely on a Git server such as GitLab.com.
 
 ## Undo local changes
 
@@ -54,12 +43,6 @@ When you make a change, but have not yet staged it, you can undo your work.
 
      ```shell
      git checkout -- <file>
-     ```
-
-   - To save local changes so you can [re-use them later](#quickly-save-local-changes):
-
-     ```shell
-     git stash
      ```
 
    - To discard local changes to all files, permanently:
@@ -104,37 +87,11 @@ If you added a file to staging, you can undo it.
      git reset HEAD <file>
      ```
 
-   - To discard all local changes, but save them for [later](#quickly-save-local-changes):
-
-     ```shell
-     git stash
-     ```
-
    - To discard everything permanently:
 
      ```shell
      git reset --hard
      ```
-
-### Quickly save local changes
-
-If you want to change to another branch, you can use [`git stash`](https://www.git-scm.com/docs/git-stash).
-
-1. From the branch where you want to save your work, type `git stash`.
-1. Swap to another branch (`git checkout <branchname>`).
-1. Commit, push, and test.
-1. Return to the branch where you want to resume your changes.
-1. Use `git stash list` to list all previously stashed commits.
-
-   ```shell
-   stash@{0}: WIP on submit: 6ebd0e2... Update git-stash documentation
-   stash@{1}: On master: 9cc0589... Add git-stash
-   ```
-
-1. Run a version of `git stash`:
-
-   - Use `git stash pop` to redo previously stashed changes and remove them from stashed list.
-   - Use `git stash apply` to redo previously stashed changes, but keep them on stashed list.
 
 ## Undo committed local changes
 
@@ -204,7 +161,8 @@ which clashes with what other developers have locally.
 
 ### Undo staged local changes with history modification
 
-The following tasks rewrite Git history.
+The following sections document tasks that rewrite Git history. For more information, see
+[What happens during rebase](git_rebase.md#what-happens-during-rebase).
 
 #### Delete a specific commit
 
@@ -362,11 +320,6 @@ git rebase -i commit-id
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.
@@ -573,6 +526,10 @@ git checkout -- <file>
   ```shell
   git rm <filename> --cache
   ```
+
+These commands remove the file from current branches, but do not expunge it from your repository's history.
+To completely remove all traces of the file, past and present, from your repository, see
+[Remove blobs](../../user/project/repository/reducing_the_repo_size_using_git.md#remove-blobs).
 
 ## Related topics
 

@@ -1,0 +1,9 @@
+---
+migration_job_name: RerunEpicDatesToWorkItemDatesSourcesSync
+description: >
+  We backfilled work_item_dates_sources with epic dates data in 17.1,
+  but we now need to re-do the migration due to a fix in the syncing mechanism in 17.4.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162876
+milestone: '17.4'
+queued_migration_version: 20240816110844

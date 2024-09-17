@@ -1,6 +1,6 @@
 import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { updateHistory, getParameterValues, setUrlParams } from '~/lib/utils/url_utility';
 import EnvironmentsDetailPage from '~/environments/environment_details/index.vue';
@@ -90,19 +90,6 @@ describe('~/environments/environment_details/index.vue', () => {
 
     it('renders tabs component with the correct prop', () => {
       expect(findTabs().props('syncActiveTabWithQueryParams')).toBe(true);
-    });
-
-    it('sets proper CSS class to the active tab', () => {
-      expect(findTabByIndex(0).props('titleLinkClass')).toBe('gl-shadow-inner-b-2-theme-accent');
-      expect(findTabByIndex(1).props('titleLinkClass')).toBe('');
-    });
-
-    it('updates the CSS class when the active tab changes', async () => {
-      findTabs().vm.$emit('input', 1);
-      await nextTick();
-
-      expect(findTabByIndex(0).props('titleLinkClass')).toBe('');
-      expect(findTabByIndex(1).props('titleLinkClass')).toBe('gl-shadow-inner-b-2-theme-accent');
     });
   });
 

@@ -24,6 +24,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import SearchItem from '~/super_sidebar/components/global_search/command_palette/search_item.vue';
 import { COMMANDS, LINKS, USERS, FILES, SETTINGS } from './mock_data';
 
 const links = LINKS.reduce(linksReducer, []);
@@ -47,6 +48,7 @@ describe('CommandPaletteItems', () => {
       stubs: {
         GlDisclosureDropdownGroup,
         GlDisclosureDropdownItem,
+        SearchItem,
       },
       provide: {
         commandPaletteCommands: COMMANDS,
@@ -324,6 +326,25 @@ describe('CommandPaletteItems', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'activate_command_palette', {
         label,
       });
+    });
+
+    it('tracks command settings', async () => {
+      createComponent({ handle: COMMAND_HANDLE });
+      await waitForPromises();
+
+      wrapper.setProps({ searchQuery: 'ava' });
+      await waitForPromises();
+
+      trackingSpy.mockClear();
+      findGroups().at(0).vm.$emit('action', { text: 'Avatar' });
+
+      expect(trackingSpy).toHaveBeenCalledWith(
+        undefined,
+        'click_project_setting_in_command_palette',
+        expect.objectContaining({
+          label: 'Avatar',
+        }),
+      );
     });
   });
 });

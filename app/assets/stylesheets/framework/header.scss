@@ -158,3 +158,9 @@
     }
   }
 }
+
+// Override Bootstrap class with offset for system-header and
+// performance bar when present
+.fixed-top {
+  top: $calc-system-headers-height;
+}

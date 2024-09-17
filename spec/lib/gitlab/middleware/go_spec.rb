@@ -89,16 +89,6 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                 end
               end
             end
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(not_found_response_for_go_get: false)
-              end
-
-              it 'returns the full project path', :unlimited_max_formatted_output_length do
-                expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
-              end
-            end
           end
         end
 
@@ -244,18 +234,6 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
           it 'returns 404' do
             expect_404_response(go)
-          end
-
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(not_found_response_for_go_get: false)
-            end
-
-            it 'skips go-import generation' do
-              expect(app).to receive(:call).and_return('no-go')
-
-              go
-            end
           end
         end
 

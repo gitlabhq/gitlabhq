@@ -36,18 +36,18 @@ describe('IntegrationSectionConnection', () => {
   describe('template', () => {
     describe('ActiveCheckbox', () => {
       describe.each`
-        showActive
+        manualActivation
         ${true}
         ${false}
-      `('when `showActive` is $showActive', ({ showActive }) => {
-        it(`${showActive ? 'renders' : 'does not render'} ActiveCheckbox`, () => {
+      `('when `manualActivation` is $manualActivation', ({ manualActivation }) => {
+        it(`${manualActivation ? 'renders' : 'does not render'} ActiveCheckbox`, () => {
           createComponent({
             customStateProps: {
-              showActive,
+              manualActivation,
             },
           });
 
-          expect(findActiveCheckbox().exists()).toBe(showActive);
+          expect(findActiveCheckbox().exists()).toBe(manualActivation);
         });
       });
     });

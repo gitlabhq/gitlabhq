@@ -22,7 +22,6 @@ module Types
         description: 'Name of the pipeline.'
 
       field :sha, GraphQL::Types::String, null: true,
-        method: :sha,
         description: "SHA of the pipeline's commit." do
         argument :format,
           type: Types::ShaFormatEnum,
@@ -107,7 +106,7 @@ module Types
         type: ::Types::Ci::JobType,
         null: true,
         authorize: :read_build,
-        description: 'Specific job in this pipeline, either by name or ID.' do
+        description: 'Specific job in the pipeline, either by name or ID.' do
         argument :id,
           type: ::Types::GlobalIDType[::CommitStatus],
           required: false,
@@ -130,7 +129,7 @@ module Types
         description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
-        description: 'Pipelines this pipeline will trigger.',
+        description: 'Pipelines the pipeline will trigger.',
         method: :triggered_pipelines_with_preloads
 
       field :upstream, Types::Ci::PipelineType, null: true,
@@ -182,27 +181,27 @@ module Types
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
         description: "Event type of the pipeline associated with a merge request."
 
-      field :total_jobs, GraphQL::Types::Int, null: false, method: :total_size, description: "The total number of jobs in the pipeline"
+      field :total_jobs, GraphQL::Types::Int, null: false, method: :total_size, description: "Total number of jobs in the pipeline."
 
-      field :failure_reason, GraphQL::Types::String, null: true, description: "The reason why the pipeline failed"
+      field :failure_reason, GraphQL::Types::String, null: true, description: "Reason why the pipeline failed."
 
-      field :triggered_by_path, GraphQL::Types::String, null: true, description: "The path that triggered this pipeline"
+      field :triggered_by_path, GraphQL::Types::String, null: true, description: "Path that triggered the pipeline."
 
-      field :source, GraphQL::Types::String, null: true, method: :source, description: "The source of the pipeline"
+      field :source, GraphQL::Types::String, null: true, description: "Source of the pipeline."
 
-      field :child, GraphQL::Types::Boolean, null: false, method: :child?, description: "If the pipeline is a child or not"
+      field :child, GraphQL::Types::Boolean, null: false, method: :child?, description: "If the pipeline is a child or not."
 
-      field :latest, GraphQL::Types::Boolean, null: false, method: :latest?, calls_gitaly: true, description: "If the pipeline is the latest one or not"
+      field :latest, GraphQL::Types::Boolean, null: false, method: :latest?, calls_gitaly: true, description: "If the pipeline is the latest one or not."
 
-      field :ref_text, GraphQL::Types::String, null: false, method: :ref_text, description: "The reference text from the presenter", calls_gitaly: true
+      field :ref_text, GraphQL::Types::String, null: false, description: "Reference text from the presenter.", calls_gitaly: true
 
-      field :merge_request, Types::MergeRequestType, null: true, description: "The MR which the Pipeline is attached to"
+      field :merge_request, Types::MergeRequestType, null: true, description: "MR which the Pipeline is attached to."
 
       field :stuck, GraphQL::Types::Boolean, method: :stuck?, null: false, description: "If the pipeline is stuck."
 
       field :yaml_errors, GraphQL::Types::Boolean, method: :yaml_errors?, null: false, description: "If the pipeline has YAML errors."
 
-      field :yaml_error_messages, GraphQL::Types::String, method: :yaml_errors, null: true, description: "The pipeline YAML errors."
+      field :yaml_error_messages, GraphQL::Types::String, method: :yaml_errors, null: true, description: "Pipeline YAML errors."
 
       field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
 

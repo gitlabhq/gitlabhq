@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
+  include Ci::PipelineMessageHelpers
+
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('npm') }
 
   describe 'the created pipeline' do
@@ -43,7 +45,7 @@ RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
     shared_examples 'no pipeline created' do
       it 'does not create a pipeline because the only job (publish) is not created' do
         expect(build_names).to be_empty
-        expect(pipeline.errors.full_messages).to match_array([Ci::Pipeline.rules_failure_message])
+        expect(pipeline.errors.full_messages).to match_array([sanitize_message(Ci::Pipeline.rules_failure_message)])
       end
     end
 

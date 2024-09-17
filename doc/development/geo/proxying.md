@@ -6,8 +6,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Geo proxying
 
-With Geo proxying, secondaries now proxy web requests through Workhorse to the primary, so users navigating to the
+Secondaries proxy nearly all HTTP requests through Workhorse to the primary, so users navigating to the
 secondary see a read-write UI, and are able to do all operations that they can do on the primary.
+
+## High-level components
+
+Proxying of GitLab UI and API HTTP requests is handled by the [`gitlab-workhorse`](../../development/architecture.md#gitlab-workhorse) component. Traffic usually sent to the Rails application on the Geo secondary site is proxied to the [internal URL](../../administration/geo/index.md#internal-url) of the primary Geo site instead.
+
+Proxying of Git over HTTP requests is handled by the [`gitlab-workhorse`](../../development/architecture.md#gitlab-workhorse) component, but the decision to proxy or not is handled by the Rails application, taking into account whether the request is push or pull, and whether the desired Git data is up-to-date.
+
+Proxying of Git over SSH traffic is handled by the [`gitlab-shell`](../../development/architecture.md#gitlab-shell) component, but the decision to proxy or not is handled by the Rails application, taking into account whether the request is push or pull, and whether the desired Git data is up-to-date.
 
 ## Request life cycle
 

@@ -38,9 +38,22 @@ RSpec.shared_examples 'request_accessable' do
       end
     end
 
-    context 'when already a member' do
+    context 'when already a direct member' do
       before do
         membershipable.add_developer(user)
+      end
+
+      it 'redirects back to group members page and displays the relevant notice' do
+        request
+
+        expect(response).to redirect_to(membershipable_path)
+        expect(flash[:notice]).to eq(_('You already have access.'))
+      end
+    end
+
+    context 'when already an indirect member' do
+      before do
+        membershipable.parent.add_developer(user)
       end
 
       it 'redirects back to group members page and displays the relevant notice' do

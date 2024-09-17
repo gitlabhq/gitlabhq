@@ -194,19 +194,4 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
       it { is_expected.to eq features_hash }
     end
   end
-
-  describe '#security_features - when feature flag is disabled' do
-    before do
-      stub_feature_flags(pre_receive_secret_detection_beta_release: false)
-    end
-
-    subject { scan.security_features }
-
-    with_them do
-      let(:type) { :pre_receive_secret_detection }
-      let(:configured) { true }
-
-      it { is_expected.not_to include features_hash }
-    end
-  end
 end

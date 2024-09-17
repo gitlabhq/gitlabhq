@@ -12,6 +12,7 @@ module Ci
     self.table_name = 'ci_runner_machines'
 
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
+    AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
@@ -126,6 +127,10 @@ module Ci
         .transform_values { |s| Ci::RunnerVersion.statuses.key(s).to_sym }
     end
 
+    def uncached_contacted_at
+      read_attribute(:contacted_at)
+    end
+
     def heartbeat(values, update_contacted_at: true)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
@@ -157,7 +162,7 @@ module Ci
       # Use a random threshold to prevent beating DB updates.
       contacted_at_max_age = Random.rand(UPDATE_CONTACT_COLUMN_EVERY)
 
-      real_contacted_at = read_attribute(:contacted_at)
+      real_contacted_at = uncached_contacted_at
       real_contacted_at.nil? ||
         (Time.current - real_contacted_at) >= contacted_at_max_age
     end

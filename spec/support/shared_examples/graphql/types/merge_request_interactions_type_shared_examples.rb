@@ -57,6 +57,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       lastActivityOn
       pronouns
       ide
+      userPreferences
     ]
 
     # TODO: 'workspaces' needs to be included, but only when this spec is run in EE context, to account for the

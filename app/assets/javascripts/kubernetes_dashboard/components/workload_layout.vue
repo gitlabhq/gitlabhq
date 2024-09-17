@@ -1,20 +1,16 @@
 <script>
-import { GlLoadingIcon, GlAlert, GlDrawer } from '@gitlab/ui';
-import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import eventHub from '~/environments/event_hub';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import WorkloadStats from './workload_stats.vue';
 import WorkloadTable from './workload_table.vue';
-import WorkloadDetails from './workload_details.vue';
+import WorkloadDetailsDrawer from './workload_details_drawer.vue';
 
 export default {
   components: {
     GlLoadingIcon,
     GlAlert,
-    GlDrawer,
     WorkloadStats,
     WorkloadTable,
-    WorkloadDetails,
+    WorkloadDetailsDrawer,
   },
   props: {
     loading: {
@@ -43,15 +39,10 @@ export default {
   },
   data() {
     return {
-      showDetailsDrawer: false,
-      selectedItem: {},
       filterOption: '',
     };
   },
   computed: {
-    getDrawerHeaderHeight() {
-      return getContentWrapperHeight();
-    },
     filteredItems() {
       if (!this.filterOption) return this.items;
 
@@ -59,19 +50,13 @@ export default {
     },
   },
   methods: {
-    closeDetailsDrawer() {
-      eventHub.$emit('closeDetailsDrawer');
-      this.showDetailsDrawer = false;
-    },
     onItemSelect(item) {
-      this.selectedItem = item;
-      this.showDetailsDrawer = true;
+      this.$refs.detailsDrawer?.toggle(item);
     },
     filterItems(status) {
       this.filterOption = status;
     },
   },
-  DRAWER_Z_INDEX,
 };
 </script>
 <template>
@@ -86,23 +71,7 @@ export default {
       :fields="fields"
       class="gl-mt-8"
       @select-item="onItemSelect"
-      @remove-selection="closeDetailsDrawer"
     />
-
-    <gl-drawer
-      :open="showDetailsDrawer"
-      :header-height="getDrawerHeaderHeight"
-      :z-index="$options.DRAWER_Z_INDEX"
-      @close="closeDetailsDrawer"
-    >
-      <template #title>
-        <h4 class="gl-font-bold gl-font-size-h2 gl-m-0 gl-break-anywhere">
-          {{ selectedItem.name }}
-        </h4>
-      </template>
-      <template #default>
-        <workload-details :item="selectedItem" />
-      </template>
-    </gl-drawer>
+    <workload-details-drawer ref="detailsDrawer" />
   </div>
 </template>

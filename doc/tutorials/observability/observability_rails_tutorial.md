@@ -6,14 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Use GitLab Observability with a Ruby on Rails application
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
+<!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a Ruby on Rails application using GitLab Observability features.
 
@@ -21,7 +17,7 @@ In this tutorial, you'll learn how to create, configure, instrument, and monitor
 
 Take a moment and make sure you have the following:
 
-- A GitLab Ultimate subscription for GitLab.com
+- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
 - A local installation of Ruby on Rails
 - Basic knowledge of Git, Ruby on Rails, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -36,7 +32,7 @@ This tutorial uses the project name `animals`.
    - In the **Project name** field, enter `animals`.
 1. Select **Create project**.
 1. In the `animals` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create a new access token with the Owner role and the `read_api` and `write_observability` scopes. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe—you'll need it later.
 
 ## Create a Rails application
 
@@ -92,10 +88,6 @@ To create an application:
    end
    ```
 
-1. Find your group ID:
-   1. On the left sidebar, select **Search or go to** and find the top-level group with the `animal` project. For example, if your project URL is `https://gitlab.com/tankui/observability/animal`, the top-level group is `tanuki`.
-   1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
-   1. Select **Copy group ID**. Save the copied ID for later.
 1. Find your project ID:
    1. On the `animal` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
    1. Select **Copy project ID**. Save the copied ID for later.
@@ -104,12 +96,13 @@ To create an application:
 
    ```shell
    OTEL_EXPORTER = "otlphttp"
-   OTEL_EXPORTER_OTLP_ENDPOINT = "https://observe.gitlab.com/v3/{{GROUP_ID}}/{{PROJECT_ID}}/ingest"
+   OTEL_EXPORTER_OTLP_ENDPOINT = "https://gitlab.com/api/v4/projects/{{PROJECT_ID}}/observability"
    OTEL_EXPORTER_OTLP_HEADERS = "PRIVATE-TOKEN={{ACCESS_TOKEN}}"
    OTEL_LOG_LEVEL = "debug"
    ```
 
-   Be sure to replace the `GROUP_ID`, `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
+   Be sure to replace the `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
+   If using a self-managed GitLab instance, replace `gitlab.com` with your self-managed instance hostname.
 
 ## View traces
 

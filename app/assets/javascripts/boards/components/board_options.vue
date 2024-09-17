@@ -129,7 +129,7 @@ export default {
           label-position="left"
           aria-describedby="board-labels-toggle-text"
           data-testid="show-labels-toggle"
-          class="board-dropdown-toggle gl-flex-direction-row gl-justify-between gl-w-full"
+          class="board-dropdown-toggle gl-w-full gl-flex-row gl-justify-between"
         />
       </template>
     </gl-disclosure-dropdown-item>

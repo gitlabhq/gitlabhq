@@ -1,5 +1,5 @@
 <script>
-import { isEqual } from 'lodash';
+import { isEqual, omit } from 'lodash';
 import {
   GlAlert,
   GlButton,
@@ -8,7 +8,7 @@ import {
   GlFormCombobox,
   GlFormGroup,
   GlFormInput,
-  GlFormSelect,
+  GlCollapsibleListbox,
   GlFormTextarea,
   GlIcon,
   GlLink,
@@ -35,6 +35,10 @@ import {
   FLAG_LINK_TITLE,
   MASKED_VALUE_MIN_LENGTH,
   VARIABLE_ACTIONS,
+  VISIBILITY_HIDDEN,
+  VISIBILITY_MASKED,
+  VISIBILITY_VISIBLE,
+  visibilityToAttributesMap,
   variableOptions,
   WHITESPACE_REG_EX,
 } from '../constants';
@@ -64,8 +68,12 @@ export const i18n = {
   keyHelpText: s__(
     'CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}',
   ),
+  maskedAndHiddenField: s__('CiVariables|Masked and hidden'),
   maskedField: s__('CiVariables|Masked'),
   visibleField: s__('CiVariables|Visible'),
+  maskedAndHiddenDescription: s__(
+    'CiVariables|Masked in job logs, and can never be revealed in the CI/CD settings after the variable is saved.',
+  ),
   maskedDescription: s__(
     'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements.',
   ),
@@ -87,6 +95,7 @@ export const i18n = {
   valueFeedback: {
     rawHelpText: s__('CiVariables|Variable value will be evaluated as raw string.'),
   },
+  variableIsHidden: s__('CiVariables|The value is masked and hidden permanently.'),
   variableReferenceTitle: s__('CiVariables|Value might contain a variable reference'),
   variableReferenceDescription: s__(
     'CiVariables|Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
@@ -111,7 +120,7 @@ export default {
     GlFormCombobox,
     GlFormGroup,
     GlFormInput,
-    GlFormSelect,
+    GlCollapsibleListbox,
     GlFormTextarea,
     GlIcon,
     GlLink,
@@ -127,6 +136,10 @@ export default {
   inject: ['environmentScopeLink', 'isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
   props: {
     areEnvironmentsLoading: {
+      type: Boolean,
+      required: true,
+    },
+    areHiddenVariablesAvailable: {
       type: Boolean,
       required: true,
     },
@@ -167,12 +180,13 @@ export default {
     return {
       isMutationAlertVisible: false,
       variable: { ...defaultVariableState, ...this.selectedVariable },
+      visibility: VISIBILITY_VISIBLE,
       trackedValidationErrorProperty: undefined,
     };
   },
   computed: {
     isValueMaskable() {
-      return this.variable.masked && !this.isValueMasked;
+      return this.variable.masked && !this.isEditingHiddenVariable && !this.isValueMasked;
     },
     isValueMasked() {
       const regex = RegExp(this.maskedRegexToUse);
@@ -194,7 +208,7 @@ export default {
       return KEY_REGEX.test(this.variable.key);
     },
     isMaskedReqsMet() {
-      return !this.variable.masked || this.isValueMasked;
+      return !this.variable.masked || this.isEditingHiddenVariable || this.isValueMasked;
     },
     isValueEmpty() {
       return this.variable.value === '';
@@ -204,6 +218,9 @@ export default {
     },
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
+    },
+    isEditingHiddenVariable() {
+      return this.selectedVariable.hidden && this.isEditing;
     },
     isMaskedValueContainsWhitespaceChars() {
       return this.isValueMaskable && WHITESPACE_REG_EX.test(this.variable.value);
@@ -292,6 +309,12 @@ export default {
     removeVariableMessage() {
       return sprintf(this.$options.i18n.modalDeleteMessage, { key: this.variable.key });
     },
+    variableToEmit() {
+      if (this.isEditingHiddenVariable) {
+        return omit(this.variable, 'value');
+      }
+      return this.variable;
+    },
   },
   watch: {
     mutationResponse: {
@@ -323,13 +346,20 @@ export default {
     if (this.isProtectedByDefault && !this.isEditing) {
       this.variable = { ...this.variable, protected: true };
     }
+
+    // translate masked and hidden flags to visibility options
+    let visibility = VISIBILITY_VISIBLE;
+    if (this.variable.hidden) visibility = VISIBILITY_HIDDEN;
+    else if (this.variable.masked) visibility = VISIBILITY_MASKED;
+
+    this.visibility = visibility;
   },
   methods: {
     close() {
       this.$emit('close-form');
     },
     deleteVariable() {
-      this.$emit('delete-variable', this.variable);
+      this.$emit('delete-variable', this.variableToEmit);
       this.close();
     },
     getTrackingErrorProperty() {
@@ -358,11 +388,18 @@ export default {
     setRaw(expanded) {
       this.variable = { ...this.variable, raw: !expanded };
     },
+    setVisibility(visibility) {
+      this.visibility = visibility;
+      this.variable = {
+        ...this.variable,
+        ...visibilityToAttributesMap[visibility],
+      };
+    },
     showMutationAlert() {
       this.isMutationAlertVisible = true;
     },
     submit() {
-      this.$emit(this.isEditing ? 'update-variable' : 'add-variable', this.variable);
+      this.$emit(this.isEditing ? 'update-variable' : 'add-variable', this.variableToEmit);
     },
     trackVariableValidationErrors() {
       const property = this.getTrackingErrorProperty();
@@ -395,6 +432,9 @@ export default {
       },
     },
   },
+  VISIBILITY_HIDDEN,
+  VISIBILITY_MASKED,
+  VISIBILITY_VISIBLE,
 };
 </script>
 <template>
@@ -412,7 +452,7 @@ export default {
       <gl-alert
         v-if="isMutationAlertVisible"
         :variant="mutationAlertVariant"
-        class="gl-m-4 gl-pl-9! gl-border-bottom-0"
+        class="gl-m-4 gl-border-b-0 !gl-pl-9"
         data-testid="ci-variable-mutation-alert"
         @dismiss="hideMutationAlert"
       >
@@ -427,25 +467,26 @@ export default {
           '-gl-mb-1': hideEnvironmentScope,
         }"
       >
-        <gl-form-select
-          id="ci-variable-type"
+        <gl-collapsible-listbox
           v-model="variable.variableType"
-          :options="$options.variableOptions"
+          :items="$options.variableOptions"
+          block
+          fluid-width
         />
       </gl-form-group>
       <gl-form-group
         v-if="!hideEnvironmentScope"
-        class="gl-border-none -gl-mb-5"
+        class="-gl-mb-5 gl-border-none"
         label-for="ci-variable-env"
         data-testid="environment-scope"
       >
         <template #label>
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-flex gl-items-center">
             <span class="gl-mr-2">
               {{ $options.i18n.environments }}
             </span>
             <gl-link
-              class="gl-display-flex"
+              class="gl-flex"
               :title="$options.i18n.environmentScopeLinkTitle"
               :href="environmentScopeLink"
               target="_blank"
@@ -467,35 +508,53 @@ export default {
         <gl-form-input
           v-else
           :value="$options.i18n.defaultScope"
-          class="gl-w-full gl-mb-5"
+          class="gl-mb-5 gl-w-full"
           readonly
         />
       </gl-form-group>
-      <gl-form-group class="gl-border-none -gl-mb-3">
+      <gl-form-group class="-gl-mb-3 gl-border-none">
         <template #label>
           <div class="-gl-mb-3">
             {{ $options.i18n.visibility }}
           </div>
         </template>
-        <gl-form-radio-group v-model="variable.masked" data-testid="ci-variable-masked">
-          <gl-form-radio :value="false" data-testid="ci-variable-visible-radio">
+        <gl-form-radio-group
+          v-model="visibility"
+          :disabled="isEditingHiddenVariable"
+          data-testid="ci-variable-visibility"
+          @change="setVisibility"
+        >
+          <gl-form-radio
+            :value="$options.VISIBILITY_VISIBLE"
+            data-testid="ci-variable-visible-radio"
+          >
             {{ $options.i18n.visibleField }}
             <template #help> {{ $options.i18n.visibleDescription }} </template>
           </gl-form-radio>
-          <gl-form-radio :value="true" data-testid="ci-variable-masked-radio">
+          <gl-form-radio :value="$options.VISIBILITY_MASKED" data-testid="ci-variable-masked-radio">
             {{ $options.i18n.maskedField }}
             <template #help> {{ $options.i18n.maskedDescription }} </template>
           </gl-form-radio>
+          <gl-form-radio
+            v-if="areHiddenVariablesAvailable"
+            :value="$options.VISIBILITY_HIDDEN"
+            data-testid="ci-variable-masked-and-hidden-radio"
+          >
+            {{ $options.i18n.maskedAndHiddenField }}
+            <template #help>
+              {{ $options.i18n.maskedAndHiddenDescription }}
+            </template>
+          </gl-form-radio>
         </gl-form-radio-group>
       </gl-form-group>
-      <gl-form-group class="gl-border-none -gl-mb-8">
+      <gl-form-group class="-gl-mb-8 gl-border-none">
         <template #label>
-          <div class="gl-display-flex gl-align-items-center -gl-mb-3">
+          <div class="-gl-mb-3 gl-flex gl-items-center">
             <span class="gl-mr-2">
               {{ $options.i18n.flags }}
             </span>
             <gl-link
-              class="gl-display-flex"
+              class="gl-flex"
               :title="$options.i18n.flagsLinkTitle"
               :href="$options.flagLink"
               data-testid="ci-variable-flags-docs-link"
@@ -529,7 +588,7 @@ export default {
       <gl-form-group
         label-for="ci-variable-description"
         :label="$options.i18n.description"
-        class="gl-border-none -gl-mb-5"
+        class="-gl-mb-5 gl-border-none"
         data-testid="ci-variable-description-label"
         :description="$options.i18n.descriptionHelpText"
         optional
@@ -545,16 +604,16 @@ export default {
         v-model="variable.key"
         :token-list="$options.awsTokenList"
         :label-text="$options.i18n.key"
-        class="gl-border-none gl-pb-0! -gl-mb-5"
+        class="-gl-mb-5 gl-border-none !gl-pb-0"
         data-testid="ci-variable-key"
       />
       <p
         v-if="variable.key.length > 0 && !isKeyValid"
-        class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-red-500 gl-border-none"
+        class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-red-500"
       >
         {{ $options.i18n.keyFeedback }}
       </p>
-      <p class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-secondary gl-border-none">
+      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-secondary">
         <gl-sprintf :message="$options.i18n.keyHelpText">
           <template #link="{ content }"
             ><gl-link
@@ -568,12 +627,16 @@ export default {
       <gl-form-group
         :label="$options.i18n.value"
         label-for="ci-variable-value"
-        class="gl-border-none -gl-mb-2"
+        class="-gl-mb-2 gl-border-none"
         data-testid="ci-variable-value-label"
         :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
+        <p v-if="isEditingHiddenVariable" class="gl-mb-0 gl-mt-2" data-testid="hidden-variable-tip">
+          {{ $options.i18n.variableIsHidden }}
+        </p>
         <gl-form-textarea
+          v-else
           id="ci-variable-value"
           v-model="variable.value"
           :spellcheck="false"
@@ -584,7 +647,7 @@ export default {
         />
         <p
           v-if="variable.raw"
-          class="gl-mt-2 gl-mb-0 text-secondary"
+          class="text-secondary gl-mb-0 gl-mt-2"
           data-testid="raw-variable-tip"
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}
@@ -595,12 +658,12 @@ export default {
         :title="$options.i18n.variableReferenceTitle"
         :dismissible="false"
         variant="warning"
-        class="gl-mx-4 gl-pl-9! gl-border-bottom-0"
+        class="gl-mx-4 gl-border-b-0 !gl-pl-9"
         data-testid="has-variable-reference-alert"
       >
         {{ $options.i18n.variableReferenceDescription }}
       </gl-alert>
-      <div class="gl-display-flex">
+      <div class="gl-flex">
         <gl-button
           category="primary"
           class="gl-mr-3"

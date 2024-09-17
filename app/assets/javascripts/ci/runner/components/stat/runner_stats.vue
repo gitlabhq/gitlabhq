@@ -83,7 +83,7 @@ export default {
 </script>
 <template>
   <runner-count #default="{ count }" :scope="scope" :variables="variables">
-    <div v-if="count" class="gl-display-flex gl-flex-wrap gl-py-6">
+    <div v-if="count" class="gl-flex gl-flex-wrap gl-py-6">
       <runner-single-stat
         v-for="stat in stats"
         :key="stat.key"
@@ -93,11 +93,7 @@ export default {
         :data-testid="`runner-stats-${stat.key.toLowerCase()}`"
       />
 
-      <runner-upgrade-status-stats
-        class="gl-display-contents"
-        :scope="scope"
-        :variables="variables"
-      />
+      <runner-upgrade-status-stats class="gl-contents" :scope="scope" :variables="variables" />
 
       <runner-performance-stat class="gl-px-5" />
     </div>

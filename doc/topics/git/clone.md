@@ -31,9 +31,6 @@ Clone with SSH when you want to authenticate only one time.
    cd <new directory>
    ```
 
-You can also
-[clone a repository and open it directly in Visual Studio Code](../../user/project/repository/index.md#clone-and-open-in-visual-studio-code).
-
 ## Clone with HTTPS
 
 Clone with HTTPS when you want to authenticate each time you perform an operation between your computer and GitLab.
@@ -88,6 +85,49 @@ For example:
 ```shell
 git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.git
 ```
+
+## Clone and open in Apple Xcode
+
+Projects that contain a `.xcodeproj` or `.xcworkspace` directory can be cloned
+into Xcode on macOS.
+
+1. From the GitLab UI, go to the project's overview page.
+1. In the upper-right corner, select **Code**.
+1. Select **Xcode**.
+
+The project is cloned onto your computer and you are
+prompted to open Xcode.
+
+## Clone and open in Visual Studio Code
+
+All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
+can also install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/index.md) to clone from
+Visual Studio Code:
+
+- From the GitLab interface:
+  1. Go to the project's overview page.
+  1. In the upper-right corner, select **Code**.
+  1. Under **Open in your IDE**, select **Visual Studio Code (SSH)** or **Visual Studio Code (HTTPS)**.
+  1. Select a folder to clone the project into.
+
+     After Visual Studio Code clones your project, it opens the folder.
+- From Visual Studio Code, with the [extension](../../editor_extensions/visual_studio_code/index.md) installed, use the
+  extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
+
+## Clone and open in IntelliJ IDEA
+
+All projects can be cloned into [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+from the GitLab user interface.
+
+Prerequisites:
+
+- The [JetBrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
+
+To do this:
+
+1. Go to the project's overview page.
+1. In the upper-right corner, select **Code**.
+1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
 
 ## Reduce clone size
 

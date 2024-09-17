@@ -1,0 +1,13 @@
+---
+table_name: ci_platform_metrics
+classes:
+- CiPlatformMetric
+feature_categories:
+- continuous_integration
+description: Instrumentation for https://docs.gitlab.com/ee/ci/cloud_deployment/ecs/quick_start_guide.html
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40036
+milestone: '13.4'
+gitlab_schema: gitlab_ci
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458497
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163859
+removed_in_milestone: '17.4'

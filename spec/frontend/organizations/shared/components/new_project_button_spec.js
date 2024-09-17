@@ -36,7 +36,7 @@ describe('NewProjectButton', () => {
       });
 
       it('renders nothing', () => {
-        expect(wrapper.html()).toBe('');
+        expect(wrapper.find('*').exists()).toBe(false);
       });
     },
   );
@@ -69,7 +69,7 @@ describe('NewProjectButton', () => {
       it(`renders GlButton as ${disabled ? 'disabled' : 'not disabled'} with ${
         tooltip ? 'tooltip' : 'no tooltip'
       }`, () => {
-        expect(findGlButton().attributes('disabled')).toBe(disabled);
+        expect(findGlButton().attributes().disabled).toBe(disabled);
         expect(findTooltipContainer().attributes('title')).toBe(tooltip);
       });
     },

@@ -25,7 +25,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_categor
       visibility_select.select('Private')
 
       expect(visibility_select.value).to eq '0'
-      expect(visibility_select_container).to have_content 'Only accessible by project members. Membership must be explicitly granted to each user.'
+      expect(visibility_select_container).to have_content 'Only accessible by project members. Membership must be explicitly granted.'
     end
 
     context 'disable email notifications' do

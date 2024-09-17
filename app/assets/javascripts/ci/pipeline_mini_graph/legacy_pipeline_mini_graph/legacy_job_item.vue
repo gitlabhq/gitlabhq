@@ -172,7 +172,7 @@ export default {
     :class="[
       cssClassJobName,
       {
-        'gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none':
+        'gl-text-gray-900 hover:gl-no-underline focus:gl-no-underline active:gl-no-underline':
           hasDetails,
         'js-job-component-tooltip non-details-job-component': !hasDetails,
       },
@@ -180,7 +180,7 @@ export default {
     :data-testid="testid"
   >
     <template #list-item>
-      <div class="gl-flex gl-items-center gl-justify-between -gl-my-1 -gl-ml-2">
+      <div class="-gl-my-1 -gl-ml-2 gl-flex gl-items-center gl-justify-between">
         <job-name-component
           v-gl-tooltip.viewport.left
           :title="tooltipText"

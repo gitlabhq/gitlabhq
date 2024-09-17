@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Abuse::TrustScoreWorker, :clean_gitlab_redis_shared_state, feature_category: :instance_resiliency do
   let(:worker) { described_class.new }
+  let(:source) { Enums::Abuse::Source.sources[:telesign] }
   let_it_be(:user) { create(:user) }
 
-  subject(:perform) { worker.perform(user.id, :telesign, 0.85, 'foo') }
+  subject(:perform) { worker.perform(user.id, source, 0.85, 'foo') }
 
   it_behaves_like 'an idempotent worker' do
-    let(:job_args) { [user.id, :telesign, 0.5] }
+    let(:job_args) { [user.id, source, 0.5] }
   end
 
   context "when the user does not exist" do
@@ -41,6 +42,12 @@ RSpec.describe Abuse::TrustScoreWorker, :clean_gitlab_redis_shared_state, featur
         score: 0.85,
         correlation_id_value: 'foo'
       }.stringify_keys)
+    end
+
+    it 'executes the abuse trust score cleanup worker' do
+      expect(AntiAbuse::TrustScoreCleanupWorker).to receive(:perform_async).with(user.id, source)
+
+      perform
     end
   end
 end

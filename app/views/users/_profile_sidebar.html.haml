@@ -1,23 +1,23 @@
 .user-profile-sidebar
-  .profile-header.gl-pb-5.gl-pt-3.gl-overflow-y-auto.gl-sm-pr-4
+  .profile-header.gl-pb-5.gl-pt-3.gl-overflow-y-auto.sm:gl-pr-4
     .gl-align-top.gl-text-left.gl-max-w-80.gl-wrap-anywhere
       .user-info
         - if @user.confirmed?
-          .gl-flex.gl-gap-4.gl-flex-direction-column
+          .gl-flex.gl-gap-4.gl-flex-col
             - if @user.pronouns.present? || @user.pronunciation.present? || @user.bio.present?
               %div
-                %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|About')
-                .gl-flex.gl-gap-2.gl-flex-direction-column
+                %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|About')
+                .gl-flex.gl-gap-2.gl-flex-col
                   - if @user.pronouns.present? || @user.pronunciation.present?
                     .gl-mb-2
                       - if @user.pronunciation.present?
                         %p.gl-m-0
                           = s_("UserProfile|Pronounced as:")
-                          %span.gl-font-sm.gl-text-secondary.gl-inline-flex= @user.pronunciation
+                          %span.gl-text-sm.gl-text-secondary.gl-inline-flex= @user.pronunciation
                       - if @user.pronouns.present?
                         %p.gl-m-0
                           = s_("UserProfile|Pronouns:")
-                          %span.gl-font-sm.gl-text-secondary.gl-inline-flex= @user.pronouns
+                          %span.gl-text-sm.gl-text-secondary.gl-inline-flex= @user.pronouns
                   - if @user.bio.present?
                     %p.profile-user-bio.gl-mb-0
                       = @user.bio
@@ -27,7 +27,7 @@
 
             - user_local_time = local_time(@user.timezone)
             %div{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
-              %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
+              %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
               - if work_information(@user).present?
                 .gl-flex.gl-gap-2.gl-mb-2
                   = sprite_icon('work', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
@@ -49,7 +49,7 @@
 
             - if has_contact_info?(@user)
               .gl-text-gray-900
-                %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Contact')
+                %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|Contact')
                 - if @user.website_url.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('earth', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
@@ -77,7 +77,7 @@
                 - if @user.mastodon.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('mastodon', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                    = link_to @user.mastodon, mastodon_url(@user), class: 'gl-text-gray-900', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow'
+                    = link_to @user.mastodon, mastodon_url(@user), class: 'gl-text-gray-900', title: "Mastodon", target: '_blank', rel: 'noopener noreferrer nofollow me'
                 - if @user.discord.present?
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('discord', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')

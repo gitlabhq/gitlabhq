@@ -1,7 +1,7 @@
 export const mockIntegrationProps = {
   id: 25,
   initialActivated: true,
-  showActive: true,
+  manualActivation: true,
   editable: true,
   triggerFieldsProps: {
     initialTriggerCommit: false,

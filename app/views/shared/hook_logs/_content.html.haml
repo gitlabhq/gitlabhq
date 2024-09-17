@@ -1,4 +1,4 @@
-%span.gl-display-flex.gl-align-items-center
+%span.gl-flex.gl-items-center
   %h5
     = gl_badge_tag "POST", { variant: :info }
     = hook_log.url
@@ -16,7 +16,7 @@
     - c.with_body do
       = _('Error: %{error}') % { error: hook_log.internal_error_message }
 
-%span.gl-display-flex.gl-align-items-center
+%span.gl-flex.gl-items-center
   %h3
     = _('Response')
     = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }

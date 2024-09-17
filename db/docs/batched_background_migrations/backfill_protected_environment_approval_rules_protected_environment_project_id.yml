@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillProtectedEnvironmentApprovalRulesProtectedEnvironmentProjectId
+description: Backfills sharding key `protected_environment_approval_rules.protected_environment_project_id` from `protected_environments`.
+feature_category: continuous_delivery
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162704
+milestone: '17.3'
+queued_migration_version: 20240814104154
+finalized_by: # version of the migration that finalized this BBM

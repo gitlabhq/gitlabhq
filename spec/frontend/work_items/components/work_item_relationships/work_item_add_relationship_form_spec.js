@@ -34,9 +34,6 @@ describe('WorkItemAddRelationshipForm', () => {
 
     wrapper = shallowMountExtended(WorkItemAddRelationshipForm, {
       apolloProvider: mockApolloProvider,
-      provide: {
-        isGroup: false,
-      },
       propsData: {
         workItemId,
         workItemIid,
@@ -67,7 +64,7 @@ describe('WorkItemAddRelationshipForm', () => {
       { text: 'blocks', value: LINKED_ITEM_TYPE_VALUE.BLOCKS },
       { text: 'is blocked by', value: LINKED_ITEM_TYPE_VALUE.BLOCKED_BY },
     ]);
-    expect(findLinkWorkItemButton().attributes('disabled')).toBe('true');
+    expect(findLinkWorkItemButton().attributes().disabled).toBe('true');
     expect(findMaxWorkItemNote().text()).toBe('Add a maximum of 10 items at a time.');
   });
 
@@ -99,7 +96,7 @@ describe('WorkItemAddRelationshipForm', () => {
       await selectWorkItemTokens(generateWorkItemsListWithId(MAX_WORK_ITEMS + 1));
 
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
-      expect(findLinkWorkItemButton().attributes('disabled')).toBe('true');
+      expect(findLinkWorkItemButton().attributes().disabled).toBe('true');
     });
 
     it.each`

@@ -104,6 +104,7 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 - [Integrate EKS clusters for application deployment](../../../user/infrastructure/clusters/connect/new_eks_cluster.md). `[GitLab Built]`
 - [GitLab pushing a build Artifact to a CodePipeline monitored S3 location](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`
 - [GitLab Pushing a container to a CodePipeline monitored AWS ECR](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`
+- [Use GitLab.com's Container Registry as an Upstream Registry for AWS ECR via Pull-Through Cache Rules](https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html) [Configuration Tutorial](tutorials/aws_ecr_pull_through_cache.md) `[AWS Built]`
 
 ## End-to-End Solutions for development and deployment of specific development frameworks or ecosystems
 
@@ -113,7 +114,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 - [Enterprise DevOps Blueprint: Serverless Framework Apps on AWS](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws) - working example code and tutorials. `[GitLab Solution]` `[CI Solution]`
   - [Tutorial: Serverless Framework Deployment to AWS with GitLab Serverless SAST Scanning](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/master/TUTORIAL.md) `[GitLab Solution]` `[CI Solution]`
-  - [Tutorial: Secure Serverless Framework Development with GitLab Security Policy Approval Rules and Managed DevOps Environments](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/master/TUTORIAL2-SecurityAndManagedEnvs.md) `[GitLab Solution]` `[CI Solution]`
+  - [Tutorial: Secure Serverless Framework Development with GitLab Security Policy Approval Rules and Managed DevOps Environments](https://gitlab.com/guided-explorations/aws/serverless/serverless-framework-aws/-/blob/prod/TUTORIAL2-SecurityAndManagedEnvs.md?ref_type=heads) `[GitLab Solution]` `[CI Solution]`
 
 ### Terraform
 

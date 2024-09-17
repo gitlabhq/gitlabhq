@@ -42,8 +42,9 @@
       box-shadow: inset 0 -2px 0 0 $blue-500;
 
       .badge.badge-pill {
-        color: $black;
         font-weight: $gl-font-weight-bold;
+        color: var(--gl-badge-neutral-text-color-default);
+        background-color: var(--gl-badge-neutral-background-color-default);
       }
     }
 
@@ -200,11 +201,6 @@
             margin-left: 0;
             float: none;
           }
-        }
-
-        .btn-full {
-          flex: 1 1 100%;
-          margin-left: 0;
         }
       }
     }

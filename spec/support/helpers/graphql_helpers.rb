@@ -143,7 +143,7 @@ module GraphqlHelpers
     arg_style: :internal_prepared, # Args are in internal format, but should use more rigorous processing
     query: nil                     # Query to evaluate the field
   )
-    field = to_base_field(field, object_type)
+    field = to_base_field(field, object_type).ensure_loaded
     ctx[:current_user] = current_user unless current_user == :not_given
     query ||= GraphQL::Query.new(schema, context: ctx.to_h)
     extras[:lookahead] = negative_lookahead if extras[:lookahead] == :not_given && field.extras.include?(:lookahead)
@@ -172,9 +172,9 @@ module GraphqlHelpers
   end
 
   # create a valid query context object
-  def query_context(user: current_user)
+  def query_context(user: current_user, request: {})
     query = GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {})
-    GraphQL::Query::Context.new(query: query, values: { current_user: user })
+    GraphQL::Query::Context.new(query: query, values: { current_user: user, request: request })
   end
 
   # rubocop:enable Metrics/ParameterLists
@@ -233,9 +233,11 @@ module GraphqlHelpers
     if ctx.is_a?(Hash)
       q = double('Query', schema: schema, subscription_update?: subscription_update, warden: GraphQL::Schema::Warden::PassThruWarden)
       allow(q).to receive(:after_lazy) { |value, &block| schema.after_lazy(value, &block) }
+
       ctx = GraphQL::Query::Context.new(query: q, values: ctx)
     end
 
+    allow(ctx.query).to receive(:subscription_update?).and_return(subscription_update)
     resolver_class.new(object: obj, context: ctx, field: field)
   end
 

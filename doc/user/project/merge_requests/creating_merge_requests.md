@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab provides many different ways to create a merge request.
+GitLab provides many different ways to create a merge request, including by [using Git commands](../../../topics/git/merge.md).
 
 NOTE:
 GitLab enforces [branch naming rules](../repository/branches/index.md#name-your-branch)
@@ -112,46 +112,6 @@ You can create a merge request when you create a branch.
 1. Above the file list, select **Create merge request**.
    A merge request is created. The default branch is the target.
 1. Fill out the fields and select **Create merge request**.
-
-## When you use Git commands locally
-
-You can create a merge request by running Git commands on your local machine.
-
-1. Create a branch:
-
-   ```shell
-   git checkout -b my-new-branch
-   ```
-
-1. Create, edit, or delete files as needed.
-
-1. Mark the files as ready to commit (staging them) and commit them locally:
-
-   ```shell
-   # Mark the files as ready to commit
-   git add .
-   # Commit the changes locally
-   git commit -m "My commit message"
-   ```
-
-1. Push your branch and its commits to GitLab:
-
-   ```shell
-   git push origin my-new-branch
-   ```
-
-   To reduce the number of fields to edit later in the merge request, use
-   [push options](../../../gitlab-basics/add-file.md#push-options-for-merge-requests) to set the value of fields.
-
-1. In the response to the `git push`, GitLab provides a direct link to create the merge request:
-
-   ```plaintext
-   ...
-   remote: To create a merge request for my-new-branch, visit:
-   remote:   https://gitlab.example.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch
-   ```
-
-1. Copy the link and paste it in your browser.
 
 ## When you work in a fork
 

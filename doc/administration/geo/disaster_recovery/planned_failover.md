@@ -158,14 +158,11 @@ On the **secondary** site:
    objects aren't yet replicated (shown in gray), consider giving the site more
    time to complete
 
-   ![Replication status](../replication/img/geo_dashboard_v14_0.png)
+   ![Geo admin dashboard showing the synchronization status of a secondary site](../replication/img/geo_dashboard_v14_0.png)
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. Following a planned failover, anything that
 failed to replicate is **lost**.
-
-You can use the [Geo status API](../../../api/geo_nodes.md#retrieve-project-sync-or-verification-failures-that-occurred-on-the-current-node) to review failed objects and
-the reasons for failure.
 
 A common cause of replication failures is the data being missing on the
 **primary** site - you can resolve these failures by restoring the data from backup,

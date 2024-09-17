@@ -4,7 +4,7 @@ RSpec.shared_examples 'runner with status scope' do
   describe '.with_status' do
     subject(:scope) { described_class.with_status(status) }
 
-    described_class::AVAILABLE_STATUSES.each do |status|
+    described_class::AVAILABLE_STATUSES_INCL_DEPRECATED.each do |status|
       context "with #{status} status" do
         let(:status) { status }
 

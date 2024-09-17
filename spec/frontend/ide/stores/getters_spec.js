@@ -407,7 +407,7 @@ describe('IDE store getters', () => {
 
       localState.projects[TEST_PROJECT_ID] = { [projectField]: obj };
 
-      expect(callGetter(TEST_PROJECT_ID)).toBe(obj);
+      expect(callGetter(TEST_PROJECT_ID)).toStrictEqual(obj);
     });
   });
 

@@ -19,7 +19,7 @@ export default {
 </script>
 <template>
   <div>
-    <h3 class="gl-font-lg gl-mt-0 gl-mb-5">{{ $options.i18n.title }}</h3>
+    <h3 class="gl-mb-5 gl-mt-0 gl-text-lg">{{ $options.i18n.title }}</h3>
     <p class="gl-mb-3">{{ $options.i18n.firstParagraph }}</p>
     <p class="gl-mb-0">
       <gl-sprintf :message="$options.i18n.secondParagraph">

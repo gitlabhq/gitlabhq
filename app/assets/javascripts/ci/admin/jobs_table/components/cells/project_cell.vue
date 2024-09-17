@@ -22,7 +22,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-text-truncate">
+  <div class="gl-truncate">
     <gl-link :href="projectUrl" data-testid="job-project-link">{{ projectName }}</gl-link>
   </div>
 </template>

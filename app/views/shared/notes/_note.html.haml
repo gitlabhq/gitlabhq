@@ -6,7 +6,7 @@
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
 %li.timeline-entry.note-wrapper{ id: dom_id(note),
-  class: ["note", "note-comment", "note-row-#{note.id}", ('system-note' if note.system)],
+  class: ["note", "note-comment", "note-row-#{note.id}", ('system-note system-note-legacy' if note.system)],
   data: { author_id: note.author.id,
     editable: note_editable,
     note_id: note.id } }
@@ -26,18 +26,18 @@
             - elsif note_counter == 0
               - counter = badge_counter if local_assigns[:badge_counter]
               - badge_class = "hidden" if @fresh_discussion || counter.nil?
-              %span.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-font-sm.design-note-pin.small.user-avatar{ class: badge_class }
+              %span.gl-flex.gl-items-center.gl-justify-center.gl-text-sm.design-note-pin.small.user-avatar{ class: badge_class }
                 = counter
-    .timeline-content
+    %div{ class: ('timeline-content' unless note.system) }
       .note-header
-        .note-header-info
+        .note-header-info{ class: ('!gl-pt-0 -gl-mt-1' if note.system) }
           %a{ href: user_path(note.author) }
             %span.note-header-author-name.gl-font-bold
               = note.author.name
             = user_status(note.author)
           %span.note-headline-light{ data: { testid: 'note-author-content' } }
             = note.author.to_reference
-          %span.note-headline-light.note-headline-meta
+          %span.note-headline-light.note-headline-meta{ class: ('gl-flex gl-flex-wrap gl-gap-2' if note.system) }
             - if note.system
               %span.system-note-message
                 = markdown_field(note, :note)
@@ -67,8 +67,8 @@
           - if note.system
             .system-note-commit-list-toggler.hide
               = _("Toggle commit list")
-              = sprite_icon('chevron-down', css_class: 'js-chevron-down gl-ml-1 gl-vertical-align-text-bottom')
-              = sprite_icon('chevron-up', css_class: 'js-chevron-up gl-ml-1 gl-vertical-align-text-bottom gl-hidden')
+              = sprite_icon('chevron-down', css_class: 'js-chevron-down gl-ml-1 gl-align-text-bottom')
+              = sprite_icon('chevron-up', css_class: 'js-chevron-up gl-ml-1 gl-align-text-bottom gl-hidden')
         - if note.attachment.url
           .note-attachment
             - if note.attachment.image?

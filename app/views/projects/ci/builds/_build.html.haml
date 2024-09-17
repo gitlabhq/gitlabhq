@@ -18,9 +18,9 @@
 
   %td
     - if can?(current_user, :read_build, job)
-      = link_to job.name, project_job_path(job.project, job), class: 'gl-text-blue-600!'
+      = link_to job.name, project_job_path(job.project, job), class: '!gl-text-blue-600'
     - else
-      %span.gl-text-blue-600!
+      %span{ class: '!gl-text-blue-600' }
         = job.name
 
   %td.branch-commit.gl-text-gray-900
@@ -28,7 +28,7 @@
 
     - if ref
       - if job.ref
-        .icon-container.gl-display-inline-block
+        .icon-container.gl-inline-block
           = job.tag? ? sprite_icon('label', css_class: 'sprite') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else

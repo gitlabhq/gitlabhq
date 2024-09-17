@@ -13,7 +13,6 @@ Gitlab/Rails/SafeFormat:
     - 'app/helpers/merge_requests_helper.rb'
     - 'app/helpers/profiles_helper.rb'
     - 'app/helpers/projects_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
     - 'app/helpers/search_helper.rb'
     - 'app/helpers/sourcegraph_helper.rb'
     - 'app/helpers/whats_new_helper.rb'

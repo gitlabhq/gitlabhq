@@ -140,8 +140,8 @@ describe('TokenAccess component', () => {
         );
 
         await waitForPromises();
-
         findToggle().vm.$emit('change', false);
+        findToggle().vm.$emit('change');
 
         expect(updateScopeSuccessHandler).toHaveBeenCalledWith({
           input: {

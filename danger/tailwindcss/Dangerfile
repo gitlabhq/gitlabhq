@@ -29,66 +29,6 @@ module Danger
       MARKDOWN
     end
 
-    def report_legacy_utils_usage
-      `yarn tailwindcss:build`
-
-      legacy_utils = File
-        .read("./config/helpers/tailwind/css_in_js.js")
-        .scan(/'(\.[^\']*)'/).flatten.map do |legacy_util|
-          legacy_util.gsub('.', 'gl-').gsub('\\\\!', '!')
-        end
-
-      files_with_legacy_utils = @helper.all_changed_files.flat_map do |file|
-        next [] if file.end_with?('tailwind_equivalents.json')
-
-        diff = @git.diff_for_file(file)
-
-        # When a file is just moved around it appears in the changed files list
-        # but the diff is empty so we are skipping it.
-        next [] if diff.nil?
-
-        used_legacy_utils = diff.patch.each_line.flat_map do |line|
-          next [] unless line.start_with?('+')
-
-          legacy_utils.select do |legacy_util|
-            legacy_util_regex = if legacy_util.end_with?('!')
-                                  /#{legacy_util.gsub('\\\\!', '!')}/
-                                else
-                                  /#{legacy_util}(?!!)/
-                                end
-
-            line.match?(legacy_util_regex)
-          end
-        end
-
-        next [] if used_legacy_utils.empty?
-
-        [[file, used_legacy_utils]]
-      end
-
-      return "" if files_with_legacy_utils.empty?
-
-      <<~MARKDOWN
-      ### Legacy CSS utility classes
-
-      The following files contain legacy CSS utility classes:
-      #{format_files_with_legacy_utils_list(files_with_legacy_utils)}
-
-      We are in the process of migrating our CSS utility classes to [Tailwind CSS](https://tailwindcss.com/).
-      The above CSS utility classes do not comply with Tailwind CSS naming conventions.
-      Please use the Tailwind CSS equivalent if it is available.
-      For more information see [Tailwind CSS developer documentation](https://docs.gitlab.com/ee/development/fe_guide/style/scss.html#tailwind-css).
-
-      If the Tailwind CSS equivalent is not available, it is okay to use the legacy CSS utility class for now.
-      The Tailwind CSS equivalent will be made available when the corresponding migration issue
-      in [&13521](https://gitlab.com/groups/gitlab-org/-/epics/13521) is completed.
-
-      If a legacy CSS utility class is listed above but you did not change it in this MR it is okay to leave for now.
-      If it is a small or simple MR, feel free to leave the code better than you found it and migrate those
-      legacy CSS utility classes to Tailwind CSS.
-      MARKDOWN
-    end
-
     private
 
     def frontend_tailwindy_files(files)
@@ -122,30 +62,11 @@ module Danger
         "- `#{file}`"
       end.join("\n")
     end
-
-    def format_files_with_legacy_utils_list(files)
-      # rubocop:disable Gitlab/Json -- we are outside of the GitLab Rails context
-      # and therefore do not have access to the dependencies required for
-      # Gitlab::Json.parse to work.
-      tailwind_equivalents = JSON.parse(
-        File.read("./scripts/frontend/tailwind_equivalents.json")
-      )
-      # rubocop:enable Gitlab/Json
-
-      files.map do |file, legacy_utils|
-        legacy_utils_bullet_points = legacy_utils.map do |legacy_util|
-          tailwind_equivalent = tailwind_equivalents[legacy_util] || "Not available"
-          "  - `#{legacy_util}` - Tailwind CSS equivalent: `#{tailwind_equivalent}`"
-        end.join("\n")
-
-        "- `#{file}`\n" + legacy_utils_bullet_points
-      end.join("\n")
-    end
   end
 end
 
 danger_tailwind = Danger::Tailwind.new(helper, git)
-report = danger_tailwind.report_interpolated_utils + danger_tailwind.report_legacy_utils_usage
+report = danger_tailwind.report_interpolated_utils
 
 unless report.empty?
   markdown <<~MSG

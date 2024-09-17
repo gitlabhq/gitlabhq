@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "agent_id",
+    "url",
+    "public_key",
+    "client_cert",
+    "ca_cert",
+    "tls_host"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "agent_id": {
+      "type": "integer"
+    },
+    "url": {
+      "type": "string"
+    },
+    "public_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "client_cert": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ca_cert": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tls_host": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

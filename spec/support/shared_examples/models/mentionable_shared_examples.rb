@@ -100,7 +100,7 @@ RSpec.shared_examples 'a mentionable' do
 
   it 'creates cross-reference notes', :clean_gitlab_redis_cache do
     mentioned_objects = [mentioned_issue, mentioned_mr, mentioned_commit,
-                         ext_issue, ext_mr, ext_commit]
+      ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
       expect(SystemNoteService).to receive(:cross_reference)

@@ -26,6 +26,11 @@ is to blame as in this case reducing the number of SQL queries can take a lot of
 effort. Newly added controllers and endpoints are not allowed to execute more
 than 100 SQL queries and no exceptions are made for this rule.
 
+## Pipeline Stability
+
+If specs start getting a query limit error in default branch pipelines, please follow the [instruction](#disable-query-limiting) to disable the query limit.
+Disabling the limit should always associate and prioritize an issue, so the excessive amount of queries can be investigated.
+
 ## Disable query limiting
 
 In the event that you _have_ to disable query limits for a controller, you must first

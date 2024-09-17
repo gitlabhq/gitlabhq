@@ -6,13 +6,13 @@
       = key.title
 
   %td{ data: { label: s_('Profiles|Key'), testid: 'key' } }
-    .gl-align-items-center{ class: 'gl-display-flex! gl-pl-0!' }
+    .gl-items-center{ class: '!gl-flex !gl-pl-0' }
       - if key.valid? && !key.expired?
         = sprite_icon('key', css_class: icon_classes)
       - else
-        %span.gl-display-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
+        %span.gl-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
           = sprite_icon('warning-solid', css_class: icon_classes)
-      %span.gl-text-truncate.gl-sm-ml-3
+      %span.gl-truncate.sm:gl-ml-3
         = key.fingerprint
 
   %td{ data: { label: s_('Profiles|Usage type'), testid: 'usage-type' } }
@@ -22,12 +22,7 @@
     = html_escape(s_('%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at).html_safe}
 
   %td{ data: { label: s_('Profiles|Last used'), testid: 'last-used' } }
-    -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
-    - if Feature.enabled?(:disable_ssh_key_used_tracking)
-      = _('Unavailable')
-      = link_to sprite_icon('question-o'), help_page_path('user/ssh', anchor: 'view-your-accounts-ssh-keys')
-    - else
-      = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
+    = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
 
   %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
     - if key.expired?

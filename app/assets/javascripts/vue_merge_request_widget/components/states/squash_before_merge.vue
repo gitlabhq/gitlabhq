@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-flex">
     <gl-form-checkbox
       v-gl-tooltip
       :checked="value"
@@ -57,7 +57,7 @@ export default {
       v-gl-tooltip
       :href="helpPath"
       :title="$options.i18n.helpLabel"
-      class="gl-text-blue-600 gl-leading-1"
+      class="gl-leading-1 gl-text-blue-600"
       target="_blank"
     >
       <gl-icon name="question-o" />

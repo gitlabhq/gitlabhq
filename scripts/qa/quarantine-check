@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+
+missing_issues = []
+missing_issue_message = %(\n*** The following quarantined tests are missing issue links:\n\n%s\n)
+
+test_metadata_file = ARGV.shift
+
+unless test_metadata_file
+  puts "usage: #{__FILE__} <test_metadata_file>"
+  exit 1
+end
+
+file = File.read(test_metadata_file)
+data_hash = JSON.parse(file)
+
+unless data_hash['examples'].count > 1
+  puts "\nRspec output does not contain examples. Check test-metadata.json file.\n"
+  exit 1
+end
+
+puts "\nAnalyzing quarantined test data...\n"
+
+tests = data_hash['examples']
+
+tests.each do |test|
+  next unless test['quarantine']
+
+  missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n") unless test['quarantine']['issue']
+end
+
+if missing_issues.empty?
+  puts "\nNo errors found."
+else
+  puts "\n*** Quarantine format violations detected! ***\n"
+
+  puts missing_issue_message % missing_issues unless missing_issues.empty?
+  puts "See https://about.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#quarantining-tests"
+  exit 1
+end

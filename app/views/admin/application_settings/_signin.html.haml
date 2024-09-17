@@ -12,7 +12,7 @@
         help_text: Gitlab::Auth::Ldap::Config.enabled? ? _('Clear this checkbox to use a personal access token or LDAP password instead.') : _('Clear this checkbox to use a personal access token instead.')
     - if omniauth_enabled? && button_based_providers.any?
       %fieldset.form-group
-        %legend.gl-font-base.gl-mb-3.gl-border-none.gl-font-bold= _('Enabled OAuth authentication sources')
+        %legend.gl-text-base.gl-mb-3.gl-border-none.gl-font-bold= _('Enabled OAuth authentication sources')
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'
         - oauth_providers_checkboxes(f).each do |source|
           = source

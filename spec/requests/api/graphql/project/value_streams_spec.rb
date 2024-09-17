@@ -104,6 +104,17 @@ RSpec.describe 'Project.value_streams', feature_category: :value_stream_manageme
 
     it_behaves_like 'a working graphql query'
 
+    context 'when querying related stage items' do
+      let_it_be(:resource) { create(:project) }
+      let_it_be(:project) { resource }
+
+      let(:stage_id_to_paginate) do
+        Gitlab::GlobalId.as_global_id('test', model_name: Analytics::CycleAnalytics::Stage.to_s).to_s
+      end
+
+      it_behaves_like 'value stream related stage items query', 'project'
+    end
+
     it 'returns only `default` value stream' do
       expect(graphql_data).to eq(expected_value_stream)
     end

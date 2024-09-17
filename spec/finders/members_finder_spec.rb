@@ -256,16 +256,6 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       it 'includes members from invited groups not visible to the user' do
         expect(members).to contain_exactly(linked_group_member, private_linked_group_member, project_member)
       end
-
-      context 'when webui_members_inherited_users feature flag is disabled' do
-        before do
-          stub_feature_flags(webui_members_inherited_users: false)
-        end
-
-        it 'excludes members from invited groups not visible to the user' do
-          expect(members).to contain_exactly(linked_group_member, project_member)
-        end
-      end
     end
 
     context 'when the user is a member of invited group and ancestor groups' do

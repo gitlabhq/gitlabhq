@@ -14,7 +14,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackinglabel="code_instruction"
   />
   <h3
-    class="gl-font-lg"
+    class="gl-text-lg"
   >
     Registry setup
   </h3>

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
+  include Ci::PipelineMessageHelpers
+
   let(:project)  { create(:project) }
   let(:user)     { create(:user) }
   let(:pipeline) { build(:ci_pipeline, project: project) }
@@ -33,7 +35,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
       end
 
       it 'attaches an error to the pipeline' do
-        expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
+        expect(pipeline.errors[:base]).to include(sanitize_message(Ci::Pipeline.workflow_rules_failure_message))
       end
 
       it 'saves workflow_rules_result' do

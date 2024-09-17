@@ -75,7 +75,7 @@ export default {
   <div class="gl-field-error-anchor input-icon-wrapper">
     <gl-form-input
       :id="id"
-      class="js-password-complexity-validation js-track-error gl-pr-8!"
+      class="js-password-complexity-validation js-track-error !gl-pr-8"
       required
       :autocomplete="autocomplete"
       :name="name"

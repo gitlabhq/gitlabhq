@@ -1,7 +1,7 @@
 - diff_file = local_assigns.fetch(:diff_file, nil)
 - file_hash = hexdigest(diff_file.file_path)
 
-.diff-content.gl-rounded-bottom-base
+.diff-content.gl-rounded-b-base
   - if diff_file.has_renderable?
     .hidden{ id: "#raw-diff-#{file_hash}", data: { file_hash: file_hash, diff_toggle_entity: 'rawViewer' } }
       = render 'projects/diffs/viewer', viewer: diff_file.viewer

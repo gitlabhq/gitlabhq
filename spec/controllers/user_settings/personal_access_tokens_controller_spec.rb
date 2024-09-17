@@ -10,7 +10,7 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
     sign_in(access_token_user)
   end
 
-  describe '#create' do
+  describe '#create', :with_current_organization do
     def created_token
       PersonalAccessToken.order(:created_at).last
     end

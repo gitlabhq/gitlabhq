@@ -1,5 +1,5 @@
 - noteable_name = @note.noteable.human_class_name
 
-.js-comment-type-dropdown.float-left.gl-sm-mr-3{ data: { noteable_name: noteable_name } }
+.js-comment-type-dropdown.float-left.sm:gl-mr-3{ data: { noteable_name: noteable_name } }
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'js-comment-button js-comment-submit-button', value: _('Comment'), data: { testid: 'comment-button' }}) do
     = _('Comment')

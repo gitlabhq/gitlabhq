@@ -157,8 +157,8 @@ export default {
 <template>
   <form class="feature-flags-form">
     <fieldset>
-      <div class="gl-display-flex gl-flex-wrap -gl-mx-5">
-        <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
+      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
+        <div class="gl-mb-5 gl-w-full gl-px-5 md:gl-basis-1/3">
           <label for="feature-flag-name" class="gl-font-bold"
             >{{ s__('FeatureFlags|Name') }} *</label
           >
@@ -166,8 +166,8 @@ export default {
         </div>
       </div>
 
-      <div class="gl-display-flex gl-flex-wrap -gl-mx-5">
-        <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
+      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
+        <div class="gl-mb-5 gl-w-full gl-px-5 md:gl-basis-1/3">
           <label for="feature-flag-description" class="gl-font-bold">
             {{ s__('FeatureFlags|Description') }}
           </label>
@@ -187,10 +187,10 @@ export default {
         :show-categorized-issues="false"
       />
 
-      <div class="gl-display-flex gl-flex-wrap -gl-mx-5">
-        <div class="gl-mb-5 gl-px-5 gl-w-full">
+      <div class="-gl-mx-5 gl-flex gl-flex-wrap">
+        <div class="gl-mb-5 gl-w-full gl-px-5">
           <h4>{{ s__('FeatureFlags|Strategies') }}</h4>
-          <div class="gl-display-flex gl-align-items-baseline gl-justify-content-space-between">
+          <div class="gl-flex gl-items-baseline gl-justify-between">
             <p class="gl-mr-5">{{ $options.translations.newHelpText }}</p>
             <gl-button variant="confirm" category="secondary" @click="addStrategy">
               {{ s__('FeatureFlags|Add strategy') }}
@@ -208,7 +208,7 @@ export default {
           @delete="deleteStrategy(strategy)"
         />
       </div>
-      <div v-else class="gl-display-flex gl-justify-content-center gl-border-t gl-py-6 gl-w-full">
+      <div v-else class="gl-border-t gl-flex gl-w-full gl-justify-center gl-py-6">
         <span>{{ $options.translations.noStrategiesText }}</span>
       </div>
     </fieldset>
