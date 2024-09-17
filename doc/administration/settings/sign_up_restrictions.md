@@ -136,6 +136,51 @@ To remove the user cap:
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
 
+## Turn on restricted access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
+
+> -Introduced in GitLab 17.5.
+
+This feature is in [beta](../../policy/experiment-beta-support.md).
+
+Use restricted access to prevent overage fees. Overage fees occur when you exceed the number of seats
+in your subscription, and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, groups cannot add new billable users when there are no seats
+left in the subscription.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+- The group or one of its subgroups or projects must not be shared externally.
+
+To turn on restricted access:
+
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Seat controls**, select **Restricted access**.
+
+### Known issues
+
+When you turn on restricted access, the following known issues might occur and result in overages:
+
+- The number of seats can still be exceeded if:
+  - Multiple users with the Owner role add members simultaneously.
+  - New billable members delay accepting an invitation.
+  - You change from using the user cap to restricted access, and have members pending approval 
+    from before you changed to restricted access, those members remain in a pending state. If 
+    pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
+- If you renew your subscription through the GitLab Sales Team for less users than your current
+subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
+renewal starts. For example:
+  - You have 20 users.
+  - You renew your subscription for 15 users.
+  - You will be charged overages for the five additional users.
+
 ## Minimum password length limit
 
 You can [change](../../security/password_length_limits.md#modify-minimum-password-length)

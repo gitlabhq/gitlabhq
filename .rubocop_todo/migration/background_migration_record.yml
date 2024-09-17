@@ -17,5 +17,4 @@ Migration/BackgroundMigrationRecord:
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
     - 'lib/gitlab/background_migration/project_namespaces/models/namespace.rb'
     - 'lib/gitlab/background_migration/project_namespaces/models/project.rb'
-    - 'lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'

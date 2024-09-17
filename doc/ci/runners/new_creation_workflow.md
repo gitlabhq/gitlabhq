@@ -84,6 +84,10 @@ To continue using registration tokens after GitLab 17.0:
 
 Existing runners will continue to work as usual even after 18.0. This change only affects registration of new runners.
 
+The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
+For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
+In GitLab 18.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
+
 ## Changes to the `gitlab-runner register` command syntax
 
 The `gitlab-runner register` command will stop accepting registration tokens and instead accept new runner

@@ -125,7 +125,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'lib/gitlab/auth/otp/strategies/forti_token_cloud.rb'
     - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests_with_corrected_regex.rb'
-    - 'lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
     - 'lib/gitlab/ci/config/interpolation/config.rb'
     - 'lib/gitlab/cluster/rack_timeout_observer.rb'

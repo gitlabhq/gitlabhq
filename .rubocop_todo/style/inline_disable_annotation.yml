@@ -2081,7 +2081,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces.rb'
     - 'lib/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'lib/gitlab/background_migration/redis/backfill_project_pipeline_status_ttl.rb'
-    - 'lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
     - 'lib/gitlab/background_migration/update_workspaces_config_version.rb'
     - 'lib/gitlab/background_task.rb'

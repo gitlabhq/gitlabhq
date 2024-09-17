@@ -186,6 +186,10 @@ For example, if you purchase a subscription for 10 users:
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
+To prevent charges from seats owed, you can
+[turn on restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
+This setting restricts groups from adding new billable users when there are no seats left in the subscription.
+
 ### Free Guest users
 
 DETAILS:

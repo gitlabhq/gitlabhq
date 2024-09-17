@@ -142,7 +142,8 @@ translations to the GitLab project.
    In the merge request description, include links to any projects you have previously translated.
 
 1. [GitLab team members](https://about.gitlab.com/company/team/),
-   [Core team members](https://about.gitlab.com/community/core-team/),
+   [core team members](https://about.gitlab.com/community/core-team/),
+   [globalization and localization team members](https://handbook.gitlab.com/handbook/marketing/localization/),
    or current proofreaders fluent in the language consider your request to become a proofreader
    based on the merits of your previous translations.
 

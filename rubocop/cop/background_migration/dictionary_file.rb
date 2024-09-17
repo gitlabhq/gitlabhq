@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../migration_helpers'
-require_relative '../../batched_background_migrations_dictionary'
+require_relative '../../../lib/gitlab/utils/batched_background_migrations_dictionary'
 
 URL_PATTERN = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/merge_requests/\d+\z}
 
@@ -52,7 +52,7 @@ module RuboCop
         end
 
         def external_dependency_checksum
-          RuboCop::BatchedBackgroundMigrationsDictionary.checksum
+          ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary.checksum
         end
 
         private
@@ -78,7 +78,7 @@ module RuboCop
             return [:missing_dictionary, { file_name: dictionary_file_path(migration_name) }]
           end
 
-          bbm_dictionary = RuboCop::BatchedBackgroundMigrationsDictionary.new(version(node))
+          bbm_dictionary = ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary.new(version(node))
 
           return [:missing_key, { key: :milestone }] unless bbm_dictionary.milestone.present?
 

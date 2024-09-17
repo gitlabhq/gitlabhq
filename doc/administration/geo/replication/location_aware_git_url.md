@@ -57,20 +57,20 @@ routing configurations.
    [Route53 dashboard](https://console.aws.amazon.com/route53/home) and select
    **Traffic policies**.
 
-   ![Traffic policies](img/single_git_traffic_policies.png)
+   ![Traffic policies section of Route53 dashboard](img/single_git_traffic_policies.png)
 
 1. Select **Create traffic policy**.
 
-   ![Name policy](img/single_git_name_policy.png)
+   ![Naming the traffic policy](img/single_git_name_policy.png)
 
 1. Fill in the **Policy Name** field with `Single Git Host` and select **Next**.
 
-   ![Policy diagram](img/single_git_policy_diagram.png)
+   ![Selecting DNS type for traffic policy](img/single_git_policy_diagram.png)
 
 1. Leave **DNS type** as `A: IP Address in IPv4 format`.
 1. Select **Connect to** and select **Geolocation rule**.
 
-   ![Add geolocation rule](img/single_git_add_geolocation_rule.png)
+   ![Adding the geolocation rule](img/single_git_add_geolocation_rule.png)
 
 1. For the first **Location**, leave it as `Default`.
 1. Select **Connect to** and select **New endpoint**.
@@ -79,16 +79,16 @@ routing configurations.
 1. Select **Connect to** and select **New endpoint**.
 1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
-   ![Add traffic policy endpoints](img/single_git_add_traffic_policy_endpoints.png)
+   ![Setting locations and endpoints to geolocation rule](img/single_git_add_traffic_policy_endpoints.png)
 
 1. Select **Create traffic policy**.
 
-   ![Create policy records with traffic policy](img/single_git_create_policy_records_with_traffic_policy.png)
+   ![Setting up policy records in traffic policy](img/single_git_create_policy_records_with_traffic_policy.png)
 
 1. Fill in **Policy record DNS name** with `git`.
 1. Select **Create policy records**.
 
-   ![Created policy record](img/single_git_created_policy_record.png)
+   ![Successfully created traffic policy with policy records](img/single_git_created_policy_record.png)
 
 You have successfully set up a single host, for example, `git.example.com` which
 distributes traffic to your Geo sites by geolocation!
@@ -102,7 +102,7 @@ on the external URL of the current host. For example:
 - `git@secondary.example.com:group1/project1.git`
 - `https://secondary.example.com/group1/project1.git`
 
-![Clone panel](img/single_git_clone_panel.png)
+![SSH and HTTPS URLs of repository](img/single_git_clone_panel.png)
 
 You can customize the:
 

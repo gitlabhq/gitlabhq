@@ -23,7 +23,7 @@ To use this API, you must [authenticate yourself](rest/index.md#authentication) 
 ## Get all SSH certificates for a particular group
 
 ```plaintext
-GET groups/:id/ssh_certificates
+GET /groups/:id/ssh_certificates
 ```
 
 Parameters:

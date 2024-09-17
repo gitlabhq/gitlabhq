@@ -285,6 +285,32 @@ As a workaround:
 
 For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).
 
+### Update the OAuth callback URL
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+The Web IDE uses an [instance-wide OAuth application](../../../integration/oauth_provider.md#create-an-instance-wide-application) for authentication.
+If the OAuth callback URL is misconfigured, you might encounter a `Cannot open Web IDE` error page with the following message:
+
+```plaintext
+The URL you're using to access the Web IDE and the configured OAuth callback URL do not match. This issue often occurs when you're using a proxy.
+```
+
+To resolve this issue, you must update the OAuth callback URL to match the URL used to access the GitLab instance.
+
+To update the OAuth callback URL:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Applications**.
+1. For **GitLab Web IDE**, select **Edit**.
+1. Enter the OAuth callback URL.
+   You can enter multiple URLs separated by newlines.
+
 ### Report a problem
 
 To report a problem, [create a new issue](https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/new)

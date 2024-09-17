@@ -472,7 +472,6 @@ Style/ClassAndModuleChildren:
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'lib/api/error_tracking/client_keys.rb'
     - 'lib/api/error_tracking/project_settings.rb'
-    - 'lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings.rb'
     - 'lib/gitlab/ci/badge/base.rb'
     - 'lib/gitlab/ci/badge/coverage/metadata.rb'
     - 'lib/gitlab/ci/badge/coverage/report.rb'

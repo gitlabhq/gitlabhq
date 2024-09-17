@@ -113,7 +113,7 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
 
     before do
       allow(helper).to receive(:described_class)
-      allow(::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary).to(
+      allow(::Gitlab::Utils::BatchedBackgroundMigrationsDictionary).to(
         receive(:entry).and_return(dictionary_entry)
       )
     end
@@ -125,7 +125,7 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
     context 'when finalized_by is a string' do
       let(:dictionary_entry) do
         instance_double(
-          ::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary::Entry,
+          ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary,
           finalized_by: '20240104155616'
         )
       end

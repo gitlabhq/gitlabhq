@@ -267,4 +267,52 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
       expect { metadata.config_options }.not_to change(metadata, :changes)
     end
   end
+
+  describe '#manual_confirmation_message' do
+    context 'with user defined variables' do
+      describe 'variable matched' do
+        it 'return message with substituted variables matched' do
+          metadata.config_options = { manual_confirmation: "Deploy to $ENVIRONMENT_NAME and region $REGION_NAME" }
+          metadata.config_variables = [{ key: 'ENVIRONMENT_NAME', value: 'production' },
+            { key: 'REGION_NAME', value: 'us-east' }]
+          expect(metadata.manual_confirmation_message)
+            .to eq('Deploy to $ENVIRONMENT_NAME=production and region $REGION_NAME=us-east')
+        end
+
+        it 'escaped single quotes removal' do
+          metadata.config_options = { manual_confirmation: "Deploy to $ENVIRONMENT. Confirm it\'s done" }
+          metadata.config_variables = [{ key: 'ENVIRONMENT', value: 'production' }]
+          expect(metadata.manual_confirmation_message).to eq("Deploy to $ENVIRONMENT=production. Confirm it's done")
+        end
+      end
+
+      context 'variable not matched' do
+        it 'return original message' do
+          metadata.config_options = { manual_confirmation: "Deploy to $ENVIRONMENT_NAME" }
+          metadata.config_variables = [{ key: 'REGION_NAME', value: 'us-east' }]
+          expect(metadata.manual_confirmation_message).to eq("Deploy to $ENVIRONMENT_NAME")
+        end
+
+        it 'return original message if partial matched' do
+          metadata.config_options = { manual_confirmation: "Deploy to $ENVIRONMENT_NAME_REAL" }
+          metadata.config_variables = [{ key: '$ENVIRONMENT_NAME', value: 'Production' }]
+          expect(metadata.manual_confirmation_message).to eq("Deploy to $ENVIRONMENT_NAME_REAL")
+        end
+      end
+    end
+
+    context 'without user defined variables' do
+      it 'return original message' do
+        metadata.config_options = { manual_confirmation: "Deploy to production" }
+        expect(metadata.manual_confirmation_message).to eq('Deploy to production')
+      end
+    end
+
+    context 'manual_confirmation is nil' do
+      it 'return nil' do
+        metadata.config_options = {}
+        expect(metadata.manual_confirmation_message).to be_nil
+      end
+    end
+  end
 end

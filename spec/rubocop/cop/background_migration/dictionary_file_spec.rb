@@ -140,12 +140,13 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
           before do
             allow(File).to receive(:exist?).and_call_original
             allow(File).to receive(:exist?).with(dictionary_file_path).and_return(true)
-            allow(::RuboCop::BatchedBackgroundMigrationsDictionary).to receive(:dictionary_data).and_return({
-              '20231118100907' => {
-                introduced_by_url: introduced_by_url,
-                milestone: milestone
-              }
-            })
+            allow(Gitlab::Utils::BatchedBackgroundMigrationsDictionary)
+              .to receive(:entries).and_return({
+                '20231118100907' => {
+                  introduced_by_url: introduced_by_url,
+                  milestone: milestone
+                }
+              })
           end
 
           context 'without introduced_by_url' do
@@ -221,8 +222,9 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
   end
 
   describe '#external_dependency_checksum' do
-    it 'uses the RuboCop::BatchedBackgroundMigrationsDictionary.checksum' do
-      allow(RuboCop::BatchedBackgroundMigrationsDictionary).to receive(:checksum).and_return('aaaaa')
+    it 'uses the Utils::BatchedBackgroundMigrationsDictionary.checksum' do
+      allow(Gitlab::Utils::BatchedBackgroundMigrationsDictionary)
+        .to receive(:checksum).and_return('aaaaa')
 
       expect(cop.external_dependency_checksum).to eq('aaaaa')
     end

@@ -406,7 +406,7 @@ GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
 restrictive per IP address. For more information about the rate limits
 for GitLab.com, see
-[an overview](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/rate-limiting).
+[the documentation in the handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting).
 
 ### Rate limiting responses
 

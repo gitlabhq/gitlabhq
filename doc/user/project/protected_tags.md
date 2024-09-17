@@ -27,8 +27,8 @@ This feature evolved out of [protected branches](repository/branches/protected.m
 
 By default:
 
-- To create tags, you must have the Maintainer role.
-- No one can update or delete tags.
+- To create or delete tags, you must have the Maintainer role.
+- Protected tags [can only be deleted](#delete-a-protected-tag) using the UI or API.
 
 ## Configuring protected tags
 
