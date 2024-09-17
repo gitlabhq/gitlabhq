@@ -69,7 +69,7 @@ gem 'bcrypt', '~> 3.1', '>= 3.1.14' # rubocop:todo Gemfile/MissingFeatureCategor
 gem 'doorkeeper', '~> 5.6', '>= 5.6.6' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'doorkeeper-openid_connect', '~> 1.8', '>= 1.8.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rexml', '~> 3.2.6' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'ruby-saml', '~> 1.15.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'ruby-saml', '~> 1.17.0', feature_category: :system_access
 gem 'omniauth', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-auth0', '~> 3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-azure-activedirectory-v2', '~> 2.0' # rubocop:todo Gemfile/MissingFeatureCategory
