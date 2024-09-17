@@ -58,7 +58,7 @@ RSpec.describe 'gitlab-backup-cli backup subcommand', type: :thor do
       expect { cli.start(%w[backup all]) }.to output(expected_backup_output).to_stdout
     end
 
-    it 'displays an error message when a Backup::Error is raised' do
+    it 'displays an error message when an error is raised' do
       backup_error = Gitlab::Backup::Cli::Error.new('Custom error message')
 
       # Simulate an error during execution

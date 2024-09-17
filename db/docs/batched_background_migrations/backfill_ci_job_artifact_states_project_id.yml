@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillCiJobArtifactStatesProjectId
+description: Backfills sharding key `ci_job_artifact_states.project_id` from `p_ci_job_artifacts`.
+feature_category: geo_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165940
+milestone: '17.5'
+queued_migration_version: 20240912122440
+finalize_after: '2024-10-22'
+finalized_by: # version of the migration that finalized this BBM

@@ -14,6 +14,7 @@ module Gitlab
       autoload :BackupExecutor, 'gitlab/backup/cli/backup_executor'
       autoload :Commands, 'gitlab/backup/cli/commands'
       autoload :Dependencies, 'gitlab/backup/cli/dependencies'
+      autoload :Errors, 'gitlab/backup/cli/errors'
       autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'
       autoload :Metadata, 'gitlab/backup/cli/metadata'
       autoload :Output, 'gitlab/backup/cli/output'

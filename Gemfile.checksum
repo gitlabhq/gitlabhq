@@ -277,7 +277,7 @@
 {"name":"grape-entity","version":"1.0.1","platform":"ruby","checksum":"e00f9e94e407aff77aa2945d741f544d07e48501927942988799913151d02634"},
 {"name":"grape-path-helpers","version":"2.0.1","platform":"ruby","checksum":"ad5216e52c6e796738a9118087352ab4c962900dbad1d8f8c0f96e093c6702d7"},
 {"name":"grape-swagger","version":"2.1.0","platform":"ruby","checksum":"b64b310101628c697f7d3297dbf454af1125c970289e0f3f9101a97c00cd211e"},
-{"name":"grape-swagger-entity","version":"0.5.4","platform":"ruby","checksum":"34c1644de6523c64cee922988bad3d1057634224f26dd48b9b5c1f90709bb571"},
+{"name":"grape-swagger-entity","version":"0.5.5","platform":"ruby","checksum":"a2a0eb28964b1a56775a3571358a9f0a300b703dbaee1ee535adb2a7bed7ece6"},
 {"name":"grape_logging","version":"1.8.4","platform":"ruby","checksum":"efcc3e322dbd5d620a68f078733b7db043cf12680144cd03c982f14115c792d1"},
 {"name":"graphiql-rails","version":"1.10.0","platform":"ruby","checksum":"b557f989a737c8b9e985142609bec52fb1e9393a701eb50e02a7c14422891040"},
 {"name":"graphlient","version":"0.8.0","platform":"ruby","checksum":"98c408da1d083454e9f5e274f3b0b6261e2a0c2b5f2ed7b3ef9441d46f8e7cb1"},

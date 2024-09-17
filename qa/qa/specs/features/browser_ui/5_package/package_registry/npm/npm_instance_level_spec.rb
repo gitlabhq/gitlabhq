@@ -68,7 +68,7 @@ module QA
           end
         end
 
-        it 'push and pull a npm package via CI', testcase: params[:testcase] do
+        it 'push and pull a npm package via CI', :blocking, testcase: params[:testcase] do
           npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
             'npm_upload_package_instance.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)

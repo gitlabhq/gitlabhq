@@ -1311,7 +1311,7 @@
   rules:
     - <<: *if-not-dot-com-gitlab-org-default-branch
       when: never
-    - !reference [.frontend:rules:default-frontend-jobs-with-docs-changes, rules]
+    - !reference [.frontend:rules:default-frontend-jobs, rules]
 
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:frontend_fixture:

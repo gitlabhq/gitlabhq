@@ -3621,6 +3621,9 @@ msgstr ""
 msgid "AdminAiPoweredFeatures|%{feature_name}"
 msgstr ""
 
+msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"
+msgstr ""
+
 msgid "AdminAiPoweredFeatures|AI vendor"
 msgstr ""
 

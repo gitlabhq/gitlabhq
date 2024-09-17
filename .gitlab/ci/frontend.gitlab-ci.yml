@@ -216,7 +216,7 @@ graphql-schema-dump:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .frontend:rules:default-frontend-jobs-with-docs-changes
+    - .frontend:rules:default-frontend-jobs
   stage: fixtures
   needs: []
   script:

@@ -905,7 +905,7 @@ GEM
     grape-swagger (2.1.0)
       grape (>= 1.7, < 3.0)
       rack-test (~> 2)
-    grape-swagger-entity (0.5.4)
+    grape-swagger-entity (0.5.5)
       grape-entity (~> 1)
       grape-swagger (~> 2)
     grape_logging (1.8.4)

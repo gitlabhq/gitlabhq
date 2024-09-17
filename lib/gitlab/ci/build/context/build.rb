@@ -43,7 +43,7 @@ module Gitlab
             # The `expanded_environment_name` method uses `metadata&.expanded_environment_name` first to check
             # but we don't need it here because `metadata.expanded_environment_name` is only set in
             # `app/services/environments/create_for_job_service.rb` which is after the pipeline creation.
-            ExpandVariables.expand(attributes[:environment], -> { simple_variables })
+            ExpandVariables.expand(attributes[:environment], -> { simple_variables.sort_and_expand_all })
           end
 
           # Copied from `app/models/concerns/ci/deployable.rb#expanded_kubernetes_namespace`

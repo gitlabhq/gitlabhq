@@ -9,7 +9,7 @@ module Gitlab
 
       class << self
         def entries
-          return @entries if @entries.present? && !Rails.env.test?
+          return @entries if @entries.present? && defined?(Rails) && !Rails.env.test?
 
           @entries = Dir.glob("*.yml", base: DICTIONARY_BASE_DIR).each_with_object({}) do |file_name, data|
             dictionary = YAML.load_file(File.join(DICTIONARY_BASE_DIR, file_name))

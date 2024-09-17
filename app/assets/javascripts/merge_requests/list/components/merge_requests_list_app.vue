@@ -6,7 +6,6 @@ import { createAlert } from '~/alert';
 import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
-import axios from '~/lib/utils/axios_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -43,6 +42,7 @@ import {
   TOKEN_TITLE_RELEASE,
   TOKEN_TYPE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { AutocompleteCache } from '~/issues/dashboard/utils';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -401,6 +401,7 @@ export default {
   },
   created() {
     this.updateData(this.initialSort);
+    this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
     fetchBranches(search) {
@@ -414,8 +415,13 @@ export default {
           });
         });
     },
-    fetchEmojis() {
-      return axios.get(this.autocompleteAwardEmojisPath);
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        cacheName: 'emojis',
+        searchProperty: 'name',
+        search,
+      });
     },
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo

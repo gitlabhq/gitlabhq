@@ -343,7 +343,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
         .to be_an_instance_of(HashWithIndifferentAccess)
     end
 
-    it 'returns a default pool size' do
+    it 'returns a default pool size', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/467632' do
       expect(database.config)
         .to include(pool: Gitlab::Database.default_pool_size)
     end

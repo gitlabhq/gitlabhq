@@ -66,7 +66,7 @@ module BulkImports
           object.save!
         end
 
-        push_placeholder_references(object, original_users_map) if context.importer_user_mapping_enabled?
+        push_placeholder_references(original_users_map) if context.importer_user_mapping_enabled?
       end
 
       def deep_transform_relation!(relation_hash, relation_key, relation_definition, &block)
@@ -190,57 +190,29 @@ module BulkImports
         end
       end
 
-      # Method recursively scans through the relationships of an object based
-      # on the relation_definition and places all objects into a flattened list
-      # of objects.
+      # Pushes a placeholder reference for each source_user_identifier contained in
+      # the original_users_map.
       #
-      # For example, if the relation_definition is: { "notes" => { "events" => {} } }
+      # The `original_users_map` is a hash where the key is an object built by the
+      # RelationFactory, and the value is another hash. This second hash maps
+      # attributes that reference user IDs to the user IDs from the source instance,
+      # essentially the information present in the NDJSON file.
       #
-      # and the relation_object a merge_request with the following notes:
+      # For example, below is an example of `original_users_map`:
       #
-      # event1 = Event.new
-      # note1 = Note.new(events: [event1])
-      # event2 = Event.new
-      # note2 = Note.new(events: [event2])
-      # merge_request = MergeRequest.new(notes:[note1, note2])
-      #
-      # the flatten_objects list will contain:
-      # [note1, event1, note2, event2]
-      #
-      # rubocop:disable GitlabSecurity/PublicSend -- only methods in the relation_definition are called
-      def scan_objects(relation_definition, relation_object, flatten_objects)
-        relation_definition.each_key do |definition|
-          subrelation = relation_object.public_send(definition)
-          association = relation_object.class.reflect_on_association(definition)
-
-          next if subrelation.nil? || association.nil?
-
-          if association.collection?
-            subrelation.records.each do |record|
-              flatten_objects << record
-
-              scan_objects(relation_definition[definition], record, flatten_objects)
-            end
-          else
-            flatten_objects << subrelation
-          end
-        end
-      end
-      # rubocop:enable GitlabSecurity/PublicSend
-
-      def push_placeholder_references(object, original_users_map)
-        flatten_objects = [object]
-
-        scan_objects(relation_definition, object, flatten_objects)
-
-        flatten_objects.each do |object|
+      # {
+      #   #<Issue:0x0001: {"author_id"=>1, "updated_by_id"=>2, "last_edited_by_id"=>2, "closed_by_id"=>2 },
+      #   #<ResourceStateEvent:0x0002: {"user_id"=>1"]},
+      #   #<ResourceStateEvent:0x0003: {"user_id"=>2"]},
+      #   #<ResourceStateEvent:0x0004: {"user_id"=>2"]},
+      #   #<Note:0x0005: {"author_id"=>1"]},
+      #   #<Note:0x0006: {"author_id"=>2"]}
+      # }
+      def push_placeholder_references(original_users_map)
+        original_users_map.each do |object, user_references|
           next unless object.persisted?
 
-          original_users = original_users_map[object]
-
-          next unless original_users
-
-          original_users.each do |attribute, source_user_identifier|
+          user_references.each do |attribute, source_user_identifier|
             source_user = source_user_mapper.find_source_user(source_user_identifier)
 
             # Do not create a reference if the object is already associated

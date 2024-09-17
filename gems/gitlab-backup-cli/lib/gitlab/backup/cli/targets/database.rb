@@ -70,7 +70,7 @@ module Gitlab
                 backup_connection = ::Backup::DatabaseConnection.new(database_connection_name)
                 backup_connection.restore_timeouts!
               rescue ActiveRecord::ConnectionNotEstablished
-                raise ::Backup::DatabaseBackupError.new(
+                raise DatabaseBackupError.new(
                   backup_connection.database_configuration.activerecord_variables,
                   file_name(destination_dir, database_connection_name)
                 )
@@ -245,7 +245,7 @@ module Gitlab
                 # Trigger a transaction snapshot export that will be used by pg_dump later on
                 backup_connection.export_snapshot!
               rescue ActiveRecord::ConnectionNotEstablished
-                raise ::Backup::DatabaseBackupError.new(
+                raise DatabaseBackupError.new(
                   backup_connection.database_configuration.activerecord_variables,
                   file_name(destination_dir, database_connection_name)
                 )

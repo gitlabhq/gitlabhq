@@ -636,6 +636,13 @@ vulnerability_scanners:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_state_transitions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_nullify
 vulnerability_statistics:
   - table: ci_pipelines
     column: latest_pipeline_id

@@ -1833,6 +1833,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_a465de38164e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "p_ci_job_artifacts"
+  WHERE "p_ci_job_artifacts"."id" = NEW."job_artifact_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_a4e4fb2451d9() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8100,6 +8116,7 @@ CREATE TABLE ci_job_artifact_states (
     verification_checksum bytea,
     verification_failure text,
     partition_id bigint NOT NULL,
+    project_id bigint,
     CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -33042,6 +33059,8 @@ CREATE TRIGGER trigger_a1bc7c70cbdf BEFORE INSERT OR UPDATE ON vulnerability_use
 
 CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
 
+CREATE TRIGGER trigger_a465de38164e BEFORE INSERT OR UPDATE ON ci_job_artifact_states FOR EACH ROW EXECUTE FUNCTION trigger_a465de38164e();
+
 CREATE TRIGGER trigger_a4e4fb2451d9 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_a4e4fb2451d9();
 
 CREATE TRIGGER trigger_a7e0fb195210 BEFORE INSERT OR UPDATE ON vulnerability_finding_evidences FOR EACH ROW EXECUTE FUNCTION trigger_a7e0fb195210();
@@ -34390,9 +34409,6 @@ ALTER TABLE ONLY ci_builds
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY vulnerability_state_transitions
-    ADD CONSTRAINT fk_d3ede71c58 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7_p FOREIGN KEY (source_partition_id, source_pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -34497,9 +34513,6 @@ ALTER TABLE ONLY packages_debian_group_components
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_e719a85f8a FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY vulnerability_state_transitions
-    ADD CONSTRAINT fk_e719dc63df FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT fk_e71bb44f1f FOREIGN KEY (target_id) REFERENCES issues(id) ON DELETE CASCADE;
