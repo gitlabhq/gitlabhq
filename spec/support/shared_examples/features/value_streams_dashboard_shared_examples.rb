@@ -36,18 +36,6 @@ RSpec.shared_examples 'does not render usage overview metrics' do
   end
 end
 
-RSpec.shared_examples 'renders usage overview background aggregation not enabled alert' do
-  let(:vsd_background_aggregation_disabled_alert) { find_by_testid('vsd-background-aggregation-disabled-warning') }
-
-  it 'renders background aggregation not enabled alert' do
-    expect(vsd_background_aggregation_disabled_alert).to be_visible
-
-    expect(vsd_background_aggregation_disabled_alert).to have_content _('Background aggregation not enabled')
-    expect(vsd_background_aggregation_disabled_alert).to have_content _("To see usage overview, you must enable " \
-    "background aggregation.")
-  end
-end
-
 RSpec.shared_examples 'does not render usage overview background aggregation not enabled alert' do
   let(:vsd_background_aggregation_disabled_alert) { "[data-testid='vsd-background-aggregation-disabled-warning']" }
 
@@ -104,27 +92,23 @@ RSpec.shared_examples 'renders dora performers score' do
   end
 end
 
-RSpec.shared_examples 'renders link to the feedback survey' do
+RSpec.shared_examples 'VSD renders as an analytics dashboard' do
+  let(:dashboard_list_item_testid) { "[data-testid='dashboard-list-item']" }
   let(:feedback_survey) { find_by_testid('vsd-feedback-survey') }
+  let(:vsd_background_aggregation_disabled_alert) { find_by_testid('vsd-background-aggregation-disabled-warning') }
 
-  it 'renders feedback survey' do
+  it 'renders VSD page correctly' do
+    expect(find_by_testid('gridstack-grid')).to be_visible
+    expect(page).not_to have_selector(dashboard_list_item_testid)
+    expect(page).to have_content _('Value Streams Dashboard')
     expect(feedback_survey).to be_visible
     expect(feedback_survey).to have_content _("To help us improve the Value Stream Management Dashboard, " \
                                               "please share feedback about your experience in this survey.")
-  end
-end
+    expect(vsd_background_aggregation_disabled_alert).to be_visible
 
-RSpec.shared_examples 'VSD renders as an analytics dashboard' do
-  let(:dashboard_list_item_testid) { "[data-testid='dashboard-list-item']" }
-
-  it 'renders as an analytics dashboard' do
-    expect(find_by_testid('gridstack-grid')).to be_visible
-  end
-
-  it 'does not render the group dashboard listing' do
-    expect(page).not_to have_selector(dashboard_list_item_testid)
-
-    expect(page).to have_content _('Value Streams Dashboard')
+    expect(vsd_background_aggregation_disabled_alert).to have_content _('Background aggregation not enabled')
+    expect(vsd_background_aggregation_disabled_alert).to have_content _("To see usage overview, you must enable " \
+    "background aggregation.")
   end
 end
 

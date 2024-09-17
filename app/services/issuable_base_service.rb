@@ -665,16 +665,13 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   # override if needed
-  def handle_changes(issuable, options)
-  end
+  def handle_changes(issuable, options); end
 
   # override if needed
-  def handle_task_changes(issuable)
-  end
+  def handle_task_changes(issuable); end
 
   # override if needed
-  def execute_hooks(issuable, action = 'open', params = {})
-  end
+  def execute_hooks(issuable, action = 'open', params = {}); end
 
   def update_project_counter_caches?(issuable)
     issuable.state_id_changed?

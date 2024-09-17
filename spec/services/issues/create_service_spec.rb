@@ -539,12 +539,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           end
         end
       end
-
-      it 'schedules a namespace onboarding create action worker' do
-        expect(Onboarding::IssueCreatedWorker).to receive(:perform_async).with(project.project_namespace_id)
-
-        issue
-      end
     end
 
     context 'issue create service' do

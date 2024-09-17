@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, :external_api_calls, product_group: :package_registry, quarantine: {
-    only: {
-      job: /object_storage|cng-instance|release-environments-qa|qa_gke.*|qa_eks.*|debug_review_gke125/,
-      condition: -> { QA::Support::FIPS.enabled? }
-    },
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
-    type: :bug
-  } do
+  RSpec.describe 'Package', :object_storage, :skip_fips_env, :external_api_calls, product_group: :package_registry,
+    quarantine: {
+      only: {
+        job: /object_storage|cng-instance|release-environments-qa|qa_gke.*|qa_eks.*|debug_review_gke125/,
+        condition: -> { QA::Support::FIPS.enabled? }
+      },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
+      type: :bug
+    } do
     describe 'Conan Repository' do
       include Runtime::Fixtures
 

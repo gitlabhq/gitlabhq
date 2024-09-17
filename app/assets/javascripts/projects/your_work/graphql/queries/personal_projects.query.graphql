@@ -1,0 +1,9 @@
+#import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
+
+query getPersonalProjects {
+  projects(personal: true) {
+    nodes {
+      ...Project
+    }
+  }
+}

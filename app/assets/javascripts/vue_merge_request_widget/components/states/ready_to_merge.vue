@@ -85,6 +85,7 @@ export default {
           ...data.project.mergeRequest,
           mergeRequestsFfOnlyEnabled: data.project.mergeRequestsFfOnlyEnabled,
           onlyAllowMergeIfPipelineSucceeds: data.project.onlyAllowMergeIfPipelineSucceeds,
+          mergeTrainsCount: data.project?.mergeTrains?.nodes[0]?.cars?.count,
         };
         this.loading = false;
 

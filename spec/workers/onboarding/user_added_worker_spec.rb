@@ -7,5 +7,5 @@ RSpec.describe Onboarding::UserAddedWorker, '#perform', feature_category: :onboa
 
   subject { described_class.new.perform(namespace.id) }
 
-  it_behaves_like 'records an onboarding progress action', :user_added
+  it_behaves_like 'does not record an onboarding progress action'
 end

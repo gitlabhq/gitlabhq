@@ -58,8 +58,7 @@ module CrossDatabaseModification
       false
     end
 
-    def before_committed!
-    end
+    def before_committed!; end
 
     def rolledback!(force_restore_state: false, should_run_callbacks: true)
       done!

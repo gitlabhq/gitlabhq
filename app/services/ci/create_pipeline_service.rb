@@ -104,7 +104,7 @@ module Ci
           Ci::PipelineCreatedEvent.new(data: { pipeline_id: pipeline.id })
         )
 
-        create_namespace_onboarding_action
+        after_successful_creation_hook
       else
         # If pipeline is not persisted, try to recover IID
         pipeline.reset_project_iid
@@ -124,6 +124,10 @@ module Ci
 
     private
 
+    def after_successful_creation_hook
+      # overridden in EE
+    end
+
     # rubocop:disable Gitlab/NoCodeCoverageComment
     # :nocov: Tested in FOSS and fully overridden and tested in EE
     def validate_options!(_)
@@ -131,10 +135,6 @@ module Ci
     end
     # :nocov:
     # rubocop:enable Gitlab/NoCodeCoverageComment
-
-    def create_namespace_onboarding_action
-      Onboarding::PipelineCreatedWorker.perform_async(project.namespace_id)
-    end
 
     def extra_options(content: nil, dry_run: false)
       { content: content, dry_run: dry_run }

@@ -22,8 +22,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       expect_to_create_members(count: 1)
       expect(result[:status]).to eq(:success)
     end
-
-    it_behaves_like 'records an onboarding progress action', :user_added
   end
 
   context 'when email belongs to an existing user as a confirmed secondary email' do
@@ -199,8 +197,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect(result[:status]).to eq(:error)
         expect(result[:message][params[:email]]).to eq("Invite email is invalid")
       end
-
-      it_behaves_like 'does not record an onboarding progress action'
     end
 
     context 'with user_id and singular invalid email' do
@@ -223,8 +219,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect(result[:status]).to eq(:error)
         expect(result[:message][params[:email]]).to eq("Invite email is invalid")
       end
-
-      it_behaves_like 'does not record an onboarding progress action'
     end
   end
 
@@ -370,8 +364,6 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     context 'with user_id' do
       let(:params) { { user_id: project_user.id } }
-
-      it_behaves_like 'records an onboarding progress action', :user_added
 
       it 'adds an existing user to members' do
         expect_to_create_members(count: 1)

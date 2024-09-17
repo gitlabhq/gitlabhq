@@ -96,23 +96,9 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .trigger-build-variable {
-    font-weight: $gl-font-weight-normal;
-    color: var(--gray-950, $gray-950);
-  }
-
   .trigger-build-value {
     padding: 2px 4px;
     color: var(--black, $black);
-  }
-
-  .trigger-variables-table-cell {
-    font-size: $gl-font-size-small;
-    line-height: $gl-line-height;
-    border: 1px solid $gray-100;
-    padding: $gl-padding-4 6px;
-    width: 50%;
-    vertical-align: top;
   }
 
   .blocks-container {

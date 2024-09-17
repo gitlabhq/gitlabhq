@@ -509,5 +509,6 @@ recent obsolete migration.
 
 The MR assignee must:
 
+1. Backup migrations from the default branch to the [migration graveyard](https://gitlab.com/gitlab-org/search-team/migration-graveyard)
 1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
 1. Push any required changes to the merge request.

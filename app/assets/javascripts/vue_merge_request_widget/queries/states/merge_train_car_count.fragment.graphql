@@ -1,0 +1,4 @@
+fragment MergeTrainCarCount on Project {
+  # Overridden in EE
+  id
+}

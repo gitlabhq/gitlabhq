@@ -272,7 +272,7 @@
     "chokidar": "^3.5.3",
     "commander": "^2.20.3",
     "custom-jquery-matchers": "^2.1.0",
-    "eslint": "8.57.0",
+    "eslint": "8.57.1",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.9",
     "eslint-plugin-import": "^2.30.0",

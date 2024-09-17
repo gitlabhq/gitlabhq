@@ -98,8 +98,7 @@ class WebHook < ApplicationRecord
 
   # Returns the associated Project or Group for the WebHook if one exists.
   # Overridden by inheriting classes.
-  def parent
-  end
+  def parent; end
 
   # Custom attributes to be included in the worker context.
   def application_context

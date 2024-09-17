@@ -39,8 +39,7 @@ module ReactiveCaching
       raise NotImplementedError
     end
 
-    def reactive_cache_updated(*args)
-    end
+    def reactive_cache_updated(*args); end
 
     def with_reactive_cache(*args, &blk)
       unless within_reactive_cache_lifetime?(*args)

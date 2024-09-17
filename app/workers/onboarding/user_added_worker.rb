@@ -13,9 +13,9 @@ module Onboarding
 
     idempotent!
 
-    def perform(namespace_id)
-      namespace = Namespace.find(namespace_id)
-      Onboarding::ProgressService.new(namespace).execute(action: :user_added)
+    def perform(_namespace_id)
+      # Deprecating per guide: https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#removing-worker-classes
+      # TODO: cleanup in https://gitlab.com/gitlab-org/gitlab/-/issues/472664
     end
   end
 end

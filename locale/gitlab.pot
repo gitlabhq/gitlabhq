@@ -29528,6 +29528,9 @@ msgstr ""
 msgid "InviteMembersModal|Show more (%{count})"
 msgstr ""
 
+msgid "InviteMembersModal|Some requests have been sent for administrator approval"
+msgstr ""
+
 msgid "InviteMembersModal|Something went wrong"
 msgstr ""
 
@@ -45929,6 +45932,9 @@ msgstr ""
 msgid "Request for a Duo Code Review queued."
 msgstr ""
 
+msgid "Request queued for administrator approval."
+msgstr ""
+
 msgid "Request review from"
 msgstr ""
 
@@ -57916,6 +57922,9 @@ msgid "Unable to save your preference"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unable to send approval request to administrator."
 msgstr ""
 
 msgid "Unable to sign in to group with SAML: \"%{reason}\""

@@ -19,7 +19,7 @@ Naming/HeredocDelimiterNaming:
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/needs_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/runnable_builds_spec.rb'
-    - 'ee/spec/services/ci/create_pipeline_service_spec.rb'
+    - 'ee/spec/services/ee/ci/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/policy_commit_service_spec.rb'
     - 'ee/spec/support/helpers/ee/ldap_helpers.rb'

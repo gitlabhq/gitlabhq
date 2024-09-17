@@ -615,7 +615,7 @@ RSpec/ContextWording:
     - 'ee/spec/services/boards/epics/move_service_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/ci/copy_cross_database_associations_service_spec.rb'
-    - 'ee/spec/services/ci/create_pipeline_service_spec.rb'
+    - 'ee/spec/services/ee/ci/create_pipeline_service_spec.rb'
     - 'ee/spec/services/ci/minutes/update_project_and_namespace_usage_service_spec.rb'
     - 'ee/spec/services/ci/pipeline_trigger_service_spec.rb'
     - 'ee/spec/services/ci/register_job_service_spec.rb'

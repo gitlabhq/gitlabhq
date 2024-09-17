@@ -29,8 +29,7 @@ module Namespaces
 
     private
 
-    def notify_storage_usage(namespace)
-    end
+    def notify_storage_usage(namespace); end
   end
 end
 

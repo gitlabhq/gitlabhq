@@ -1,5 +1,6 @@
 import { __ } from '~/locale';
 import contributedProjectsQuery from './graphql/queries/contributed_projects.query.graphql';
+import personalProjectsQuery from './graphql/queries/personal_projects.query.graphql';
 
 export const CONTRIBUTED_TAB = {
   text: __('Contributed'),
@@ -16,6 +17,8 @@ export const STARRED_TAB = {
 export const PERSONAL_TAB = {
   text: __('Personal'),
   value: 'personal',
+  query: personalProjectsQuery,
+  queryPath: 'projects',
 };
 
 export const MEMBER_TAB = {

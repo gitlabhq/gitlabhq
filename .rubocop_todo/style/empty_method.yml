@@ -2,23 +2,6 @@
 # Cop supports --autocorrect.
 Style/EmptyMethod:
   Exclude:
-    - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
-    - 'app/helpers/subscribable_banner_helper.rb'
-    - 'app/helpers/users/callouts_helper.rb'
-    - 'app/models/ci/job_artifact.rb'
-    - 'app/models/concerns/cross_database_modification.rb'
-    - 'app/models/concerns/reactive_caching.rb'
-    - 'app/models/concerns/relative_positioning.rb'
-    - 'app/models/hooks/web_hook.rb'
-    - 'app/models/integrations/microsoft_teams.rb'
-    - 'app/models/integrations/pumble.rb'
-    - 'app/models/integrations/unify_circuit.rb'
-    - 'app/models/integrations/webex_teams.rb'
-    - 'app/services/auto_merge/base_service.rb'
-    - 'app/services/groups/transfer_service.rb'
-    - 'app/services/issuable_base_service.rb'
-    - 'app/services/projects/transfer_service.rb'
-    - 'app/workers/namespaces/root_statistics_worker.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'
     - 'ee/app/controllers/admin/geo/settings_controller.rb'
     - 'ee/app/controllers/admin/push_rules_controller.rb'
