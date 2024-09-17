@@ -187,9 +187,40 @@ For an overview, see [this video](https://youtu.be/-DK-XFFllwg).
 
 ### Building Datasets for Eval
 
+#### Why Do I Need A Dataset?
+
+A dataset in its most simple form as a bunch of inputs with roughly expected outputs. Now there are cases (such as chat applications) where having a defined expected output is impossible, in which case a dataset is still very useful but the evaluation technique would change. For now as we are all more or less comfortable with the idea of testing code, let's keep it simple and work with datasets that have expected outputs.
+
+Once we decide to start making an application, thinking about ways in which it could break and ways in which it should succeed is paramount. Having those potentential input and thier expected outputs collected in a dataset that we can run through our application is highly useful in both early and late development.
+
+Once we have developed our application being able to assure that it behaves as expected across a broad range of inputs is paramount. It is preferable to have as broad a range of prompts as we can achieve within reason. When we want to make a change to our prompt, tool selection, or choose a new model being able to compare how successful our changes are requires a dataset to evaluate against that possesses a large number of inputs paired with expected outputs.
+
+#### Key Considerations When Making a Dataset
+
+When first starting out building applications ontop of LLMs we will want to do evaluation. A common first question to ask is how many records should we have in our dataset. This question is a little premature for reasons that should be clear soon.
+
+First things first, before thinking about how much data, lets think about how representative our data needs to be of the problem your app needs to solve and where we can get that. 
+
+As an example where we are constantly itterating on this at GitLab, let's consider the evaluation of our code completion offering. What we use in practice for evaluation is a dataset made up of functions taken from GitLab codebase that have been split in half. The first half is the prompt (input) the second half is the part we will compare to what the model produces (expected output).
+
+As said we evaluate our code completion application with a dataset that was created from GitLab code, this means a lot of Ruby, Go, Python, and several other languages. Let's remember many of our customers write their code in Java. At this point a worth while question to ask is, would you characterise our dataset as representative? Honestly, in the beginning probably not. There are times where we must accept in the begining that the best we can do is the best we can do, but keeping this in mind and trying to improve the alignment between what we evaluate against and what our application is the best thing to focus on when creating / improving a dataset. As part of this dataset creation / improvment effort we also want to keep a diverse spread of types of prompts. Following our code 
+completion example, as mentioned before we probalby want to have more Java prompts but we don't just want leet-code style interview questions. We also want examples that would be in enterprise backend applications, android applcations, gradle plugins, yes even some basic interview questions, and any more diverse places where Java would be used.
+
+Now that we have thought about having representative data, let's think about how many datapoints we need. In evaluation we are trying to make an assesment of how well our application is doing. If you could imagine flipping a coin that may be unfair, flipping it 10 times wouldn't give you a lot of confidence but flipping it 10,000 times probably would. That said similarly to how flipping a coin 10,000 times would take a while to do, running 10,000 prompts would take longer than running about a 100 or so. In the early stages of development we would want to balance iteration speed and accuracy, and to that end we recommend 70 to 120 prompts, but if you can add more without comprimising your iteration time this is strongly encouraged. As you move toward an internal beta and definately as you
+move toward GA we recommend running evaluation with several thousand prompts.
+
+#### What is an output, ground truth, or expected answer?
+
+**Output**: The result of sending a message to your chosen LLM. If I ask "In *The Hitchhickers Guide to the Galaxy* what is the number that was the meaning of life?" the ouput could be something like "In *The Hitchhiker's Guide to the Galaxy*, the number that represents the meaning of life is **42**".
+
+**Ground Truth** or **Expected Result**: The examples from our real would situation that we know to be true. Let's imagine we are trying to predict housing prices and we have a bunch of validation data that we pulled from a realtor listing sight. This data contains information about the house, and how much the houses cost. That data could be called our ground truth.
+
 ### Using CEF dashboard and troubleshooting
 
 ### Using automated evaluation pipelines for CEF
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of using promptlib in a Docker container, see [this video](https://www.youtube.com/watch?v=ZGKXQYZTBFg).
 
 ### Continuous monitoring and applying as guidance for Prompt Tuning
 

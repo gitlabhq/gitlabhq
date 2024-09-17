@@ -58,7 +58,7 @@ To create a new account with the same email address, before you delete your acco
    to your account.
 1. [Change your primary email](../index.md#change-your-primary-email) to this
    new secondary email address.
-1. [Remove the now-secondary email address](../index.md#delete-emails-from-your-user-profile)
+1. [Remove the now-secondary email address](../index.md#delete-email-addresses-from-your-user-profile)
    from your account.
 1. [Delete your own account](#delete-your-own-account).
 
@@ -117,7 +117,7 @@ An alternative to deleting is [blocking a user](../../../administration/moderate
 When a user is deleted from an [abuse report](../../../administration/review_abuse_reports.md) or spam log, these associated
 records are always removed.
 
-The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
+The deleting associated records option can be requested in the [API](../../../api/users.md#delete-a-user) as well as
 the **Admin** area.
 
 WARNING:

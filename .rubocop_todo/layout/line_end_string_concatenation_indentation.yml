@@ -239,7 +239,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/workers/requirements_management/process_requirements_reports_worker.rb'
     - 'ee/bin/custom-ability'
     - 'ee/db/fixtures/development/90_productivity_analytics.rb'
-    - 'ee/elastic/migrate/20230518064300_backfill_project_permissions_in_blobs.rb'
     - 'ee/lib/api/geo_sites.rb'
     - 'ee/lib/api/iterations.rb'
     - 'ee/lib/api/protected_environments.rb'

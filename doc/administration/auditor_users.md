@@ -68,4 +68,5 @@ If you are signed in with auditor access, you:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
-Administrators can use the GitLab API to [create](../api/users.md#user-creation) and [modify](../api/users.md#user-modification) auditor users.
+Administrators can use the GitLab API to [create](../api/users.md#create-a-user) and
+[modify](../api/users.md#modify-a-user) auditor users.

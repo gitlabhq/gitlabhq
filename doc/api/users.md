@@ -18,13 +18,15 @@ For information on user activities that update the user event timestamps, see [g
 
 Get a list of users.
 
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+Takes [pagination parameters](rest/index.md#offset-based-pagination) `page` and `per_page` to restrict the list of users.
 
-### For non-administrator users
+### As a regular user
 
 ```plaintext
 GET /users
 ```
+
+Supported attributes:
 
 | Attribute              | Type     | Required | Description |
 |:-----------------------|:---------|:---------|:------------|
@@ -41,6 +43,8 @@ GET /users
 | `exclude_humans`       | boolean  | no       | Filters only bot or internal users. Default is `false`. |
 | `exclude_internal`     | boolean  | no       | Filters only non internal users. Default is `false`. |
 | `without_project_bots` | boolean  | no       | Filters user without project bots. Default is `false`. |
+
+Example response:
 
 ```json
 [
@@ -69,7 +73,8 @@ This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
-- Public email, you must use the full email address to get an exact match. A search might return a partial match. For example, if you search for the email `on@example.com`, the search can return both `on@example.com` and `jon@example.com`.
+- Public email, you must use the full email address to get an exact match. A search might return a partial match. For
+  example, if you search for the email `on@example.com`, the search can return both `on@example.com` and `jon@example.com`.
 - Name or username, you do not have to get an exact match because this is a fuzzy search.
 
 In addition, you can lookup users by username:
@@ -134,7 +139,7 @@ parameter `without_project_bots=true`.
 GET /users?without_project_bots=true
 ```
 
-### For administrators
+### As an administrator
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -149,7 +154,10 @@ DETAILS:
 GET /users
 ```
 
-You can use all [parameters available for everyone](#for-non-administrator-users) plus these additional parameters available only for administrators.
+You can use all [parameters available for everyone](#as-a-regular-user) plus these additional attributes
+available only for administrators.
+
+Supported attributes:
 
 | Attribute          | Type    | Required | Description |
 |:-------------------|:--------|:---------|:------------|
@@ -163,6 +171,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 | `auditors`         | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users. Premium and Ultimate only. |
 | `saml_provider_id` | number  | no       | Return only users created by the specified SAML provider ID. If not included, it returns all users. Premium and Ultimate only. |
 | `skip_ldap`        | boolean | no       | Skip LDAP users. Premium and Ultimate only. |
+
+Example response:
 
 ```json
 [
@@ -252,7 +262,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 ]
 ```
 
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the
+`shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -338,11 +349,13 @@ You can use the `created_by` parameter to see if a user account was created:
 
 If the returned value is `null`, the account was created by a user who registered an account themselves.
 
-## Single user
+## Get a single user
 
 Get a single user.
 
-### For user
+### As a regular user
+
+Get a single user as a regular user.
 
 Prerequisites:
 
@@ -352,11 +365,13 @@ Prerequisites:
 GET /users/:id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a user |
+
+Example response:
 
 ```json
 {
@@ -388,7 +403,7 @@ Parameters:
 }
 ```
 
-### For administrators
+### As an administrator
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -397,17 +412,19 @@ DETAILS:
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
+Get a single user as an administrator.
+
 ```plaintext
 GET /users/:id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a user |
 
-Example Responses:
+Example response:
 
 ```json
 {
@@ -531,7 +548,7 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## User creation
+## Create a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -539,13 +556,21 @@ DETAILS:
 
 > - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
-Creates a new user. Note only administrators can create new
-users. Either `password`, `reset_password`, or `force_random_password`
-must be specified. If `reset_password` and `force_random_password` are
-both `false`, then `password` is required.
+Create a user.
 
-`force_random_password` and `reset_password` take priority
-over `password`. In addition, `reset_password` and
+Prerequisites:
+
+- You must be an administrator.
+
+When you create a user, you must specify at least one of the following:
+
+- `password`
+- `reset_password`
+- `force_random_password`
+
+If `reset_password` and `force_random_password` are both `false`, then `password` is required.
+
+`force_random_password` and `reset_password` take priority over `password`. Also, `reset_password` and
 `force_random_password` can be used together.
 
 NOTE:
@@ -557,7 +582,7 @@ NOTE:
 POST /users
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute                            | Required | Description |
 |:-------------------------------------|:---------|:------------|
@@ -596,7 +621,7 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
 | `website_url`                        | No       | Website URL |
 
-## User modification
+## Modify a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -604,15 +629,20 @@ DETAILS:
 
 > - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
-Modifies an existing user. Only administrators can change attributes of a user.
+Modify an existing user.
 
-The `email` field is the user's primary email address. You can only change this field to an already-added secondary email address for that user. To add more email addresses to the same user, use the [add email function](#add-email).
+Prerequisites:
+
+- You must be an administrator.
+
+The `email` field is the user's primary email address. You can only change this field to an already-added secondary
+email address for that user. To add more email addresses to the same user, use the [add email endpoint](#add-an-email-address).
 
 ```plaintext
 PUT /users/:id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute                            | Required | Description |
 |:-------------------------------------|:---------|:------------|
@@ -650,38 +680,47 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
 | `website_url`                        | No       | Website URL |
 
-On password update, the user is forced to change it upon next login.
-Note, at the moment this method does only return a `404` error,
-even in cases where a `409` (Conflict) would be more appropriate.
-For example, when renaming the email address to some existing one.
+If you update a user's password, they are forced to change it when they next sign in.
 
-## Delete authentication identity from user
+Returns a `404` error, even in cases where a `409` (Conflict) would be more appropriate.
+For example, when renaming the email address to an existing one.
+
+## Delete authentication identity from a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
+Delete a user's authentication identity using the provider name associated with that identity.
+
+Prerequisites:
+
+- You must be an administrator.
 
 ```plaintext
 DELETE /users/:id/identities/:provider
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
 | `id`       | integer | yes      | ID of a user |
 | `provider` | string  | yes      | External provider name |
 
-## User deletion
+## Delete a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Deletes a user. Available only for administrators.
-This returns a:
+Delete a user.
+
+Prerequisites:
+
+- You must be an administrator.
+
+Returns:
 
 - `204 No Content` status code if the operation was successful.
 - `404` if the resource was not found.
@@ -691,24 +730,26 @@ This returns a:
 DELETE /users/:id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute     | Type    | Required | Description |
 |:--------------|:--------|:---------|:------------|
 | `id`          | integer | yes      | ID of a user |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
 
-## List current user
+## List the current user
 
-Get current user.
+Get the current user.
 
-### For non-administrator users
+### As a regular user
 
-Gets the authenticated user.
+Get your user details.
 
 ```plaintext
 GET /user
 ```
+
+Example response:
 
 ```json
 {
@@ -760,7 +801,7 @@ GET /user
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
-### For administrators
+### As an administrator
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -769,11 +810,13 @@ DETAILS:
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
+Get your user details, or the details of another user.
+
 ```plaintext
 GET /user
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
@@ -837,13 +880,15 @@ parameters:
 - `provisioned_by_group_id`
 - `using_license_seat`
 
-## User status
+## Get user status
 
 Get the status of the authenticated user.
 
 ```plaintext
 GET /user/status
 ```
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/status"
@@ -863,18 +908,22 @@ Example response:
 
 ## Get the status of a user
 
-Get the status of a user. This endpoint can be accessed without authentication.
+Get the status of a user. You can access this endpoint without authentication.
 
 ```plaintext
 GET /users/:id_or_username/status
 ```
 
+Supported attributes:
+
 | Attribute        | Type   | Required | Description |
 |:-----------------|:-------|:---------|:------------|
 | `id_or_username` | string | yes      | ID or username of the user to get a status of |
 
+Example request:
+
 ```shell
-curl "https://gitlab.example.com/users/janedoe/status"
+curl "https://gitlab.example.com/users/<username>/status"
 ```
 
 Example response:
@@ -898,6 +947,8 @@ PUT /user/status
 PATCH /user/status
 ```
 
+Supported attributes:
+
 | Attribute            | Type   | Required | Description |
 |:---------------------|:-------|:---------|:------------|
 | `emoji`              | string | no       | Name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
@@ -906,14 +957,17 @@ PATCH /user/status
 
 Difference between `PUT` and `PATCH`
 
-When using `PUT` any parameters that are not passed are set to `null` and therefore cleared. When using `PATCH` any parameters that are not passed are ignored. Explicitly pass `null` to clear a field.
+When using `PUT` any parameters that are not passed are set to `null` and therefore cleared. When using `PATCH` any
+parameters that are not passed are ignored. Explicitly pass `null` to clear a field.
+
+Example request:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
      --data "message=I crave coffee" "https://gitlab.example.com/api/v4/user/status"
 ```
 
-Example responses
+Example response:
 
 ```json
 {
@@ -944,10 +998,6 @@ Example response:
 }
 ```
 
-Parameters:
-
-- **none**
-
 ## User preference modification
 
 Update the current user's preferences.
@@ -966,7 +1016,7 @@ PUT /user/preferences
 }
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute                        | Required | Description |
 |:---------------------------------|:---------|:------------|
@@ -976,7 +1026,10 @@ Parameters:
 
 ## User follow
 
-### Follow and unfollow users
+You can [follow and unfollow a user](../user/profile/index.md#follow-users) by using the REST API. You can also get the
+details of who a user is following, and who is following them.
+
+### Follow and unfollow a user
 
 Follow a user.
 
@@ -990,9 +1043,13 @@ Unfollow a user.
 POST /users/:id/unfollow
 ```
 
+Supported attributes:
+
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of the user to follow |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/users/3/follow"
@@ -1012,7 +1069,7 @@ Example response:
 }
 ```
 
-### Followers and following
+### Get details of followers of a user and who's following them
 
 Get the followers of a user.
 
@@ -1026,9 +1083,13 @@ Get the list of users being followed.
 GET /users/:id/following
 ```
 
+Supported attributes:
+
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of the user to follow |
+
+Example request:
 
 ```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.example.com/users/3/followers"
@@ -1063,6 +1124,8 @@ Example response:
 
 Get the counts (same as in the upper-left menu) of the authenticated user.
 
+Supported attributes:
+
 | Attribute                         | Type   | Description |
 |:----------------------------------|:-------|:------------|
 | `assigned_issues`                 | number | Number of issues that are open and assigned to the current user. |
@@ -1074,6 +1137,8 @@ Get the counts (same as in the upper-left menu) of the authenticated user.
 ```plaintext
 GET /user_counts
 ```
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
@@ -1110,7 +1175,7 @@ Administrators can query any user, but non-administrators can only query themsel
 GET /users/:id/associations_count
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
@@ -1127,16 +1192,18 @@ Example response:
 }
 ```
 
-## List emails
+## List email addresses
 
-Get a list of the authenticated user's emails.
+Get a list of the authenticated user's email addresses.
 
-NOTE:
-This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077) proposes to change this behavior.
+This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077)
+proposes to change this behavior.
 
 ```plaintext
 GET /user/emails
 ```
+
+Example response:
 
 ```json
 [
@@ -1153,44 +1220,46 @@ GET /user/emails
 ]
 ```
 
-Parameters:
-
-- **none**
-
-## List emails for user
+## List email addresses for a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Get a list of a specified user's emails. Available only for administrator
+Get a list of a specified user's emails.
 
-NOTE:
-This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077) proposes to change this behavior.
+Prerequisites:
+
+- You must be an administrator.
+
+This endpoint does not return the primary email address, but [issue 25077](https://gitlab.com/gitlab-org/gitlab/-/issues/25077)
+proposes to change this behavior.
 
 ```plaintext
 GET /users/:id/emails
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of specified user |
 
-## Single email
+## Get a single email address
 
-Get a single email.
+Get a single email address.
 
 ```plaintext
 GET /user/emails/:email_id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
 | `email_id` | integer | yes      | Email ID    |
+
+Example response:
 
 ```json
 {
@@ -1200,7 +1269,7 @@ Parameters:
 }
 ```
 
-## Add email
+## Add an email address
 
 Creates a new email owned by the authenticated user.
 
@@ -1208,7 +1277,7 @@ Creates a new email owned by the authenticated user.
 POST /user/emails
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
@@ -1235,19 +1304,23 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add email for user
+## Add an email address for a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Create new email owned by specified user. Available only for administrator
+Create a new email address owned by the specified user.
+
+Prerequisites:
+
+- You must be an administrator.
 
 ```plaintext
 POST /users/:id/emails
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute           | Type    | Required | Description |
 |:--------------------|:--------|:---------|:------------|
@@ -1255,13 +1328,12 @@ Parameters:
 | `email`             | string  | yes      | Email address |
 | `skip_confirmation` | boolean | no       | Skip confirmation and assume email is verified - true or false (default) |
 
-## Delete email for current user
+## Delete an email address for the current user
 
-Deletes the specified email address owned by the authenticated user. Cannot be used to delete a primary email address.
+Delete the specified email address owned by the authenticated user. Cannot be used to delete a primary email address.
 
 If the deleted email address is used for any user emails, those user emails are sent to the primary email address instead.
 
-NOTE:
 Because of [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
 the deleted email address.
 
@@ -1269,7 +1341,7 @@ the deleted email address.
 DELETE /user/emails/:email_id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
@@ -1280,15 +1352,17 @@ Returns:
 - `204 No Content` if the operation was successful.
 - `404` if the resource was not found.
 
-## Delete email for given user
+## Delete an email address for a given user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
+Delete an email address for a given user.
+
 Prerequisites:
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator.
 
 Deletes an email address owned by a specified user. This cannot delete a primary email address.
 
@@ -1296,16 +1370,12 @@ Deletes an email address owned by a specified user. This cannot delete a primary
 DELETE /users/:id/emails/:email_id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type    | Required | Description |
 |:-----------|:--------|:---------|:------------|
 | `id`       | integer | yes      | ID of specified user |
 | `email_id` | integer | yes      | Email ID    |
-
-## Get user contribution events
-
-See the [Events API documentation](events.md#get-user-contribution-events)
 
 ## Get user activities
 
@@ -1313,7 +1383,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Pre-requisite:
+Prerequisites:
 
 - You must be an administrator to view the activity of users with private profiles.
 
@@ -1334,11 +1404,13 @@ amended by using the `from` parameter.
 GET /user/activities
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `from`    | string | no       | Date string in the format `YEAR-MM-DD`. For example, `2016-03-11`. Defaults to 6 months ago. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/activities"
@@ -1379,7 +1451,8 @@ Pre-requisite:
 - You must be an administrator.
 
 Lists all projects and groups a user is a member of.
-It returns the `source_id`, `source_name`, `source_type`, and `access_level` of a membership.
+
+Returns the `source_id`, `source_name`, `source_type`, and `access_level` of a membership.
 Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
 Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
 
@@ -1387,19 +1460,14 @@ Access levels are represented by an integer value. For more details, read about 
 GET /users/:id/memberships
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a specified user |
 | `type`    | string  | no       | Filter memberships by type. Can be either `Project` or `Namespace` |
 
-Returns:
-
-- `200 OK` on success.
-- `404 User Not Found` if user can't be found.
-- `403 Forbidden` when not requested by an administrator.
-- `400 Bad Request` when requested type is not supported.
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/:user_id/memberships"
@@ -1424,7 +1492,14 @@ Example response:
 ]
 ```
 
-## Disable two factor authentication
+Returns:
+
+- `200 OK` on success.
+- `404 User Not Found` if user can't be found.
+- `403 Forbidden` when not requested by an administrator.
+- `400 Bad Request` when requested type is not supported.
+
+## Disable two-factor authentication
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1436,7 +1511,7 @@ Pre-requisite:
 
 - You must be an administrator.
 
-Disables two factor authentication (2FA) for the specified user.
+Disables two-factor authentication (2FA) for the specified user.
 
 Administrators cannot disable 2FA for their own user account or other administrators using the API. Instead, they can disable an
 administrator's 2FA [using the Rails console](../security/two_factor_authentication.md#for-a-single-user).
@@ -1445,11 +1520,13 @@ administrator's 2FA [using the Rails console](../security/two_factor_authenticat
 PATCH /users/:id/disable_two_factor
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute | Type    | Required | Description |
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of the user |
+
+Example request:
 
 ```shell
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
@@ -1468,7 +1545,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Creates a runner linked to the current user.
+Create a runner linked to the current user.
 
 Prerequisites:
 
@@ -1483,6 +1560,8 @@ Be sure to copy or save the `token` in the response, the value cannot be retriev
 POST /user/runners
 ```
 
+Supported attributes:
+
 | Attribute          | Type         | Required | Description |
 |:-------------------|:-------------|:---------|:------------|
 | `runner_type`      | string       | yes      | Specifies the scope of the runner; `instance_type`, `group_type`, or `project_type`. |
@@ -1496,6 +1575,8 @@ POST /user/runners
 | `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`. |
 | `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs. |
 | `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters). |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "runner_type=instance_type" \
@@ -1522,6 +1603,8 @@ Upload an avatar to current user.
 PUT /user/avatar
 ```
 
+Supported attributes:
+
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `avatar`  | string | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
@@ -1539,15 +1622,15 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/user/avatar"
 ```
 
-Returned object:
-
-Returns `400 Bad Request` for file sizes greater than 200 KiB.
-
-If successful, returns [`200`](rest/index.md#status-codes) and the following
-response attributes:
+Example response:
 
 ```json
 {
   "avatar_url": "http://gdk.test:3000/uploads/-/system/user/avatar/76/avatar.png",
 }
 ```
+
+Returns:
+
+- `200` if successful.
+- `400 Bad Request` for file sizes greater than 200 KiB.

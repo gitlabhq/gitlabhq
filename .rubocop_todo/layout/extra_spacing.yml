@@ -8,7 +8,6 @@ Layout/ExtraSpacing:
     - 'ee/app/models/search/namespace_index_assignment.rb'
     - 'ee/app/services/dependencies/export_serializers/group_dependencies_service.rb'
     - 'ee/app/workers/pull_mirrors/reenable_configuration_worker.rb'
-    - 'ee/elastic/migrate/20230702000000_backfill_existing_group_wiki.rb'
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/spec/controllers/projects/settings/merge_requests_controller_spec.rb'

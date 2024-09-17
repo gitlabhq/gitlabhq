@@ -329,7 +329,7 @@ To do this:
 NOTE:
 When this ability is disabled, GitLab administrators can still use the
 [**Admin** area](../../administration/admin_area.md#administering-users) or the
-[API](../../api/users.md#user-modification) to update usernames.
+[API](../../api/users.md#modify-a-user) to update usernames.
 
 ## Prevent users from creating organizations
 

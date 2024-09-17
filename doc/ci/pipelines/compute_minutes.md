@@ -87,7 +87,7 @@ To set a compute quota for a namespace:
 1. Select **Save changes**.
 
 You can also use the [update group API](../../api/groups.md#update-group) or the
-[update user API](../../api/users.md#user-modification) instead.
+[update user API](../../api/users.md#modify-a-user) instead.
 
 NOTE:
 You can set a compute quota for only top-level groups or user namespaces.

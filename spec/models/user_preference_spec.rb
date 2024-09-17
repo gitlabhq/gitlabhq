@@ -95,6 +95,10 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     describe 'user belongs to the home organization' do
       let_it_be(:organization) { create(:organization) }
 
+      before do
+        user_preference.home_organization = organization
+      end
+
       context 'when user is an organization user' do
         before do
           create(:organization_user, organization: organization, user: user)

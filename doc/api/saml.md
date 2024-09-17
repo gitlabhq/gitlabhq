@@ -146,15 +146,15 @@ Example response:
 
 ### Get a single SAML identity
 
-Use the Users API to [get a single SAML identity](../api/users.md#for-administrators).
+Use the Users API to [get a single SAML identity](../api/users.md#as-an-administrator).
 
 ### Update `extern_uid` field for a SAML identity
 
-Use the Users API to [update the `extern_uid` field of a user](../api/users.md#user-modification).
+Use the Users API to [update the `extern_uid` field of a user](../api/users.md#modify-a-user).
 
 ### Delete a single SAML identity
 
-Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-user).
+Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-a-user).
 
 ## SAML group links
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
+RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#execute',
   :click_house, :freeze_time, feature_category: :fleet_visibility do
   subject(:execute) { service.execute }
 
@@ -14,7 +14,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
   let_it_be(:pipeline1) do
     create(:ci_pipeline, :success, project: project1, ref: 'master', source: :push,
       committed_at: 2.hours.before(1.month.ago), started_at: 1.hour.before(1.month.ago), finished_at: 1.month.ago,
-      duration: 60 * 60)
+      duration: 1.hour.in_seconds)
   end
 
   let_it_be(:pipeline2) do
@@ -251,10 +251,11 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
 
   def expected_pipeline_attributes(pipeline)
     project = pipeline.project
+    project.reload if project.project_namespace.traversal_ids.empty? # reload required to calculate traversal path
 
     {
       id: pipeline.id,
-      path: project.namespace.traversal_path + "#{project.project_namespace_id}/",
+      path: project.project_namespace.traversal_path,
       committed_at: a_value_within(0.001.seconds).of(pipeline.committed_at || Time.at(0).utc),
       created_at: a_value_within(0.001.seconds).of(pipeline.created_at || Time.at(0).utc),
       started_at: a_value_within(0.001.seconds).of(pipeline.started_at || Time.at(0).utc),

@@ -173,7 +173,7 @@ Prerequisites:
 
 - You must be an administrator for the instance the service account is associated with.
 
-To delete a service account, [use the users API to delete the service account user](../../api/users.md#user-deletion).
+To delete a service account, [use the users API to delete the service account user](../../api/users.md#delete-a-user).
 
 ### Disable a service account
 

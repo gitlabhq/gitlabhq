@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
 
 You can reset user passwords by using the UI, a Rake task, a Rails console, or the
-[Users API](../api/users.md#user-modification).
+[Users API](../api/users.md#modify-a-user).
 
 ## Prerequisites
 

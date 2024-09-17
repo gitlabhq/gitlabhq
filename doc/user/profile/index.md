@@ -78,7 +78,7 @@ NOTE:
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
 [project imports](../project/import/index.md), and [group migrations](../group/import/index.md).
 
-## Delete emails from your user profile
+## Delete email addresses from your user profile
 
 > - Automatic deletion of unverified secondary email addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151562) in GitLab 17.0.
 
@@ -101,7 +101,7 @@ To delete an email address from your account:
 1. On the left sidebar, select **Emails**.
 1. Select **Delete** (**{remove}**) and confirm you want to **Remove**.
 
-You can also [use the API to delete a secondary email address](../../api/users.md#delete-email-for-current-user).
+You can also [use the API to delete a secondary email address](../../api/users.md#delete-an-email-address-for-the-current-user).
 
 ## Make your user profile page private
 
@@ -244,7 +244,7 @@ To set your current status:
 1. Select a value from the **Clear status after** dropdown list.
 1. Select **Set status**. Alternatively, you can select **Remove status** to remove your user status entirely.
 
-You can also set your current status from [your user settings](#access-your-user-settings) or by [using the API](../../api/users.md#user-status).
+You can also set your current status from [your user settings](#access-your-user-settings) or by [using the API](../../api/users.md#get-user-status).
 
 If you select the **Busy** checkbox, remember to clear it when you become available again.
 

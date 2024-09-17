@@ -1,7 +1,3 @@
-cmd/gitlab-resize-image/main.go:1:1: package-comments: should have a package comment (revive)
-cmd/gitlab-resize-image/png/reader.go:1:1: package-comments: should have a package comment (revive)
-cmd/gitlab-resize-image/png/reader.go:26:1: exported: exported function NewReader should have comment or be unexported (revive)
-cmd/gitlab-resize-image/png/reader.go:78:17: var-declaration: should omit type []byte from declaration of var magicBytes; it will be inferred from the right-hand side (revive)
 cmd/gitlab-workhorse/config_test.go:191: cmd/gitlab-workhorse/config_test.go:191: Line contains TODO/BUG/FIXME/NOTE/OPTIMIZE/HACK: "TODO this is meant to be 50*time.Second ..." (godox)
 cmd/gitlab-workhorse/listener.go:26:16: G402: TLS MinVersion too low. (gosec)
 cmd/gitlab-workhorse/main.go:9:2: G108: Profiling endpoint is automatically exposed on /debug/pprof (gosec)

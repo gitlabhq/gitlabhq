@@ -545,7 +545,7 @@ your current provider for the same user.
 
 There are two methods to update the `extern_uid`:
 
-- Using the [Users API](../api/users.md#user-modification). Pass the provider name and the new `extern_uid`.
+- Using the [Users API](../api/users.md#modify-a-user). Pass the provider name and the new `extern_uid`.
 - Using the [Rails console](../administration/operations/rails_console.md):
 
   ```ruby
