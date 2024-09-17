@@ -67,6 +67,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
+    push_frontend_feature_flag(:work_items_view_preference, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -138,6 +139,15 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     respond_with(@issue)
+  end
+
+  def show
+    return super unless show_work_item? && request.format.html?
+
+    @right_sidebar = false
+    @work_item = issue.becomes(::WorkItem) # rubocop:disable Cop/AvoidBecomes -- We need the instance to be a work item
+
+    render 'projects/work_items/show'
   end
 
   def edit
@@ -389,6 +399,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   private
+
+  def show_work_item?
+    Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+  end
 
   def work_item_redirect_except_actions
     ISSUES_EXCEPT_ACTIONS

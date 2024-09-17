@@ -87,20 +87,20 @@ describe('Work items router', () => {
   });
 
   it('renders work item on `/1` route', async () => {
-    await createComponent('/1');
+    await createComponent('/work_items/1');
 
     expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 
   it('does not render create work item page on `/new` route if `workItemsAlpha` feature flag is off', async () => {
-    await createComponent('/new');
+    await createComponent('/work_items/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(false);
   });
 
   it('renders create work item page on `/new` route', async () => {
     window.gon.features.workItemsAlpha = true;
-    await createComponent('/new');
+    await createComponent('/work_items/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);
   });
@@ -109,18 +109,24 @@ describe('Work items router', () => {
     gon.relative_url_root = '/my-org';
     const router = createRouter({ fullPath: '/work_item' });
 
-    expect(router.options.base).toBe('/my-org/work_item/-/work_items');
+    expect(router.options.base).toBe('/my-org/work_item/-');
   });
 
   it('includes groups in path for groups', () => {
     const router = createRouter({ fullPath: '/work_item', workspaceType: 'group' });
 
-    expect(router.options.base).toBe('/groups/work_item/-/work_items');
+    expect(router.options.base).toBe('/groups/work_item/-');
   });
 
-  it('includes workItemType if provided', () => {
-    const router = createRouter({ fullPath: '/work_item', workItemType: 'epics' });
+  it('renders work item on `/issues/1` route', async () => {
+    await createComponent('/issues/1');
 
-    expect(router.options.base).toBe('/work_item/-/epics');
+    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
+  });
+
+  it('renders work item on `/epics/1` route', async () => {
+    await createComponent('/epics/1');
+
+    expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 });

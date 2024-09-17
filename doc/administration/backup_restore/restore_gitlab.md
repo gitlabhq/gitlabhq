@@ -504,4 +504,4 @@ To resolve this, you can update the Git [server hooks](../server_hooks.md) for G
 ### Successful restore with repositories showing as empty when using `fapolicyd`
 
 When using `fapolicyd` for increased security, GitLab can report that a restore was successful but repositories show as empty. For more troubleshooting help, see
-[Gitaly Troubleshooting documentation](../../administration/gitaly/troubleshooting.md#repositories-are-shown-as-empty-after-a-gitlab-restore).
+[Gitaly Troubleshooting documentation](../gitaly/troubleshooting.md#repositories-are-shown-as-empty-after-a-gitlab-restore).

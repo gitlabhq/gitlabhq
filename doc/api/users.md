@@ -26,21 +26,21 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 GET /users
 ```
 
-| Attribute          | Type    | Required | Description                                                 |
-| ------------------ | ------- | -------- | ------------------------------------------------------------|
-| `username`         | string  | no       | Get a single user with a specific username.                 |
-| `search`           | string  | no       | Search for a username.                                      |
-| `active`           | boolean | no       | Filters only active users. Default is `false`.              |
-| `external`         | boolean | no       | Filters only external users. Default is `false`.            |
-| `blocked`          | boolean | no       | Filters only blocked users. Default is `false`.             |
-| `humans`           | boolean | no       | Filters only regular users that are not bot or internal users. Default is `false`. |
-| `created_after`    | DateTime| no       | Returns users created after specified time.                 |
-| `created_before`   | DateTime| no       | Returns users created before specified time.                |
-| `exclude_active`   | boolean | no       | Filters only non active users. Default is `false`.          |
-| `exclude_external` | boolean | no       | Filters only non external users. Default is `false`.        |
-| `exclude_humans`   | boolean | no       | Filters only bot or internal users. Default is `false`.     |
-| `exclude_internal` | boolean | no       | Filters only non internal users. Default is `false`.        |
-| `without_project_bots`| boolean | no    | Filters user without project bots. Default is `false`.      |
+| Attribute              | Type     | Required | Description |
+|:-----------------------|:---------|:---------|:------------|
+| `username`             | string   | no       | Get a single user with a specific username. |
+| `search`               | string   | no       | Search for a username. |
+| `active`               | boolean  | no       | Filters only active users. Default is `false`. |
+| `external`             | boolean  | no       | Filters only external users. Default is `false`. |
+| `blocked`              | boolean  | no       | Filters only blocked users. Default is `false`. |
+| `humans`               | boolean  | no       | Filters only regular users that are not bot or internal users. Default is `false`. |
+| `created_after`        | DateTime | no       | Returns users created after specified time. |
+| `created_before`       | DateTime | no       | Returns users created before specified time. |
+| `exclude_active`       | boolean  | no       | Filters only non active users. Default is `false`. |
+| `exclude_external`     | boolean  | no       | Filters only non external users. Default is `false`. |
+| `exclude_humans`       | boolean  | no       | Filters only bot or internal users. Default is `false`. |
+| `exclude_internal`     | boolean  | no       | Filters only non internal users. Default is `false`. |
+| `without_project_bots` | boolean  | no       | Filters user without project bots. Default is `false`. |
 
 ```json
 [
@@ -151,18 +151,18 @@ GET /users
 
 You can use all [parameters available for everyone](#for-non-administrator-users) plus these additional parameters available only for administrators.
 
-| Attribute          | Type    | Required | Description                                                                                                           |
-| ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID.                                                |
-| `provider`         | string  | no       | The external provider.                                                                                                 |
-| `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id`               |
-| `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
+| Attribute          | Type    | Required | Description |
+|:-------------------|:--------|:---------|:------------|
+| `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID. |
+| `provider`         | string  | no       | The external provider. |
+| `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
+| `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc` |
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
-| `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
+| `admins`           | boolean | no       | Return only administrators. Default is `false` |
 | `auditors`         | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users. Premium and Ultimate only. |
-| `saml_provider_id` | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. Premium and Ultimate only. |
-| `skip_ldap`        | boolean | no     | Skip LDAP users. Premium and Ultimate only. |
+| `saml_provider_id` | number  | no       | Return only users created by the specified SAML provider ID. If not included, it returns all users. Premium and Ultimate only. |
+| `skip_ldap`        | boolean | no       | Skip LDAP users. Premium and Ultimate only. |
 
 ```json
 [
@@ -354,8 +354,8 @@ GET /users/:id
 
 Parameters:
 
-| Attribute | Type    | Required | Description      |
-|-----------|---------|----------|------------------|
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a user |
 
 ```json
@@ -394,7 +394,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
@@ -404,8 +403,8 @@ GET /users/:id
 
 Parameters:
 
-| Attribute | Type    | Required | Description      |
-|-----------|---------|----------|------------------|
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a user |
 
 Example Responses:
@@ -538,7 +537,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Creates a new user. Note only administrators can create new
@@ -561,42 +559,42 @@ POST /users
 
 Parameters:
 
-| Attribute                            | Required | Description                                                                                                                                             |
-| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Attribute                            | Required | Description |
+|:-------------------------------------|:---------|:------------|
 | `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
-| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only.                                                                                       |
-| `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
-| `bio`                                | No       | User's biography                                                                                                                                        |
-| `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
+| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only. |
+| `avatar`                             | No       | Image file for user's avatar |
+| `bio`                                | No       | User's biography |
+| `can_create_group`                   | No       | User can create top-level groups - true or false |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme)) |
-| `commit_email`                       | No       | User's commit email address                                                                                                                        |
-| `email`                              | Yes      | Email                                                                                                                                                   |
-| `extern_uid`                         | No       | External UID                                                                                                                                            |
-| `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only.                                                                        |
-| `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
-| `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
-| `linkedin`                           | No       | LinkedIn                                                                                                                                                |
-| `location`                           | No       | User's location                                                                                                                                         |
-| `name`                               | Yes      | Name                                                                                                                                                    |
-| `note`                               | No       | Administrator notes for this user                                                                                                                               |
-| `organization`                       | No       | Organization name                                                                                                                                       |
-| `password`                           | No       | Password                                                                                                                                                |
+| `commit_email`                       | No       | User's commit email address |
+| `email`                              | Yes      | Email       |
+| `extern_uid`                         | No       | External UID |
+| `external`                           | No       | Flags the user as external - true or false (default) |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
+| `force_random_password`              | No       | Set user password to a random value - true or false (default) |
+| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
+| `linkedin`                           | No       | LinkedIn    |
+| `location`                           | No       | User's location |
+| `name`                               | Yes      | Name        |
+| `note`                               | No       | Administrator notes for this user |
+| `organization`                       | No       | Organization name |
+| `password`                           | No       | Password    |
 | `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
-| `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
-| `pronouns`                           | No       | User's pronouns                                                                                                                                    |
-| `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | User's public email address                                                                                                                        |
-| `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only.                                                                                          |
-| `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
-| `skype`                              | No       | Skype ID                                                                                                                                                |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
-| `twitter`                            | No       | X (formerly Twitter) account                                                                                                                                         |
-| `discord`                            | No       | Discord account                                                                                                                                         |
-| `username`                           | Yes      | Username                                                                                                                                                |
-| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
-| `website_url`                        | No       | Website URL                                                                                                                                             |
+| `projects_limit`                     | No       | Number of projects user can create |
+| `pronouns`                           | No       | User's pronouns |
+| `provider`                           | No       | External provider name |
+| `public_email`                       | No       | User's public email address |
+| `reset_password`                     | No       | Send user password reset link - true or false(default) |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only. |
+| `skip_confirmation`                  | No       | Skip confirmation - true or false (default) |
+| `skype`                              | No       | Skype ID    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `twitter`                            | No       | X (formerly Twitter) account |
+| `discord`                            | No       | Discord account |
+| `username`                           | Yes      | Username    |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
+| `website_url`                        | No       | Website URL |
 
 ## User modification
 
@@ -604,7 +602,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Modifies an existing user. Only administrators can change attributes of a user.
@@ -617,41 +614,41 @@ PUT /users/:id
 
 Parameters:
 
-| Attribute                            | Required | Description                                                                                                                                             |
-| :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       |User is an administrator. Valid values are `true` or `false`. Defaults to false. |
-| `auditor`                            | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default) Premium and Ultimate only.                                                                                                          |
-| `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
-| `bio`                                | No       | User's biography                                                                                                                                        |
-| `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
+| Attribute                            | Required | Description |
+|:-------------------------------------|:---------|:------------|
+| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
+| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default) Premium and Ultimate only. |
+| `avatar`                             | No       | Image file for user's avatar |
+| `bio`                                | No       | User's biography |
+| `can_create_group`                   | No       | User can create groups - true or false |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme) for more information) |
 | `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
-| `email`                              | No       | Email                                                                                                                                                   |
-| `extern_uid`                         | No       | External UID                                                                                                                                            |
-| `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only.                                                                                                 |
-| `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
-| `id`                                 | Yes      | ID of the user                                                                                                                                      |
-| `linkedin`                           | No       | LinkedIn                                                                                                                                                |
-| `location`                           | No       | User's location                                                                                                                                         |
-| `name`                               | No       | Name                                                                                                                                                    |
-| `note`                               | No       | Administration notes for this user                                                                                                                               |
-| `organization`                       | No       | Organization name                                                                                                                                       |
-| `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true or false.                                                                 |
-| `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
-| `pronouns`                           | No       | Pronouns                                                                                                                                                |
-| `provider`                           | No       | External provider name                                                                                                                                  |
-| `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only.                                                                                                     |
-| `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
-| `skype`                              | No       | Skype ID                                                                                                                                                |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
-| `twitter`                            | No       | X (formerly Twitter) account                                                                                                                                         |
-| `discord`                            | No       | Discord account                                                                                                                                         |
-| `username`                           | No       | Username                                                                                                                                                |
-| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
-| `website_url`                        | No       | Website URL                                                                                                                                             |
+| `email`                              | No       | Email       |
+| `extern_uid`                         | No       | External UID |
+| `external`                           | No       | Flags the user as external - true or false (default) |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
+| `group_id_for_saml`                  | No       | ID of group where SAML has been configured |
+| `id`                                 | Yes      | ID of the user |
+| `linkedin`                           | No       | LinkedIn    |
+| `location`                           | No       | User's location |
+| `name`                               | No       | Name        |
+| `note`                               | No       | Administration notes for this user |
+| `organization`                       | No       | Organization name |
+| `password`                           | No       | Password    |
+| `private_profile`                    | No       | User's profile is private - true or false. |
+| `projects_limit`                     | No       | Limit projects each user can create |
+| `pronouns`                           | No       | Pronouns    |
+| `provider`                           | No       | External provider name |
+| `public_email`                       | No       | Public email of the user (must be already verified) |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only. |
+| `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default) |
+| `skype`                              | No       | Skype ID    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `twitter`                            | No       | X (formerly Twitter) account |
+| `discord`                            | No       | Discord account |
+| `username`                           | No       | Username    |
+| `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
+| `website_url`                        | No       | Website URL |
 
 On password update, the user is forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -672,9 +669,9 @@ DELETE /users/:id/identities/:provider
 
 Parameters:
 
-| Attribute  | Type    | Required | Description            |
-|------------|---------|----------|------------------------|
-| `id`       | integer | yes      | ID of a user       |
+| Attribute  | Type    | Required | Description |
+|:-----------|:--------|:---------|:------------|
+| `id`       | integer | yes      | ID of a user |
 | `provider` | string  | yes      | External provider name |
 
 ## User deletion
@@ -696,9 +693,9 @@ DELETE /users/:id
 
 Parameters:
 
-| Attribute     | Type    | Required | Description                                  |
-|---------------|---------|----------|----------------------------------------------|
-| `id`          | integer | yes      | ID of a user                             |
+| Attribute     | Type    | Required | Description |
+|:--------------|:--------|:---------|:------------|
+| `id`          | integer | yes      | ID of a user |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
 
 ## List current user
@@ -769,7 +766,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
@@ -779,8 +775,8 @@ GET /user
 
 Parameters:
 
-| Attribute | Type    | Required | Description                                      |
-|-----------|---------|----------|--------------------------------------------------|
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `sudo`    | integer | no       | ID of a user to make the call in their place |
 
 ```json
@@ -873,8 +869,8 @@ Get the status of a user. This endpoint can be accessed without authentication.
 GET /users/:id_or_username/status
 ```
 
-| Attribute        | Type   | Required | Description                                       |
-| ---------------- | ------ | -------- | ------------------------------------------------- |
+| Attribute        | Type   | Required | Description |
+|:-----------------|:-------|:---------|:------------|
 | `id_or_username` | string | yes      | ID or username of the user to get a status of |
 
 ```shell
@@ -902,10 +898,10 @@ PUT /user/status
 PATCH /user/status
 ```
 
-| Attribute            | Type   | Required | Description                                                                                                                                                                                                             |
-| -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Attribute            | Type   | Required | Description |
+|:---------------------|:-------|:---------|:------------|
 | `emoji`              | string | no       | Name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
-| `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters.                                                                                                                                                      |
+| `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters. |
 | `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days` |
 
 Difference between `PUT` and `PATCH`
@@ -972,10 +968,10 @@ PUT /user/preferences
 
 Parameters:
 
-| Attribute                        | Required | Description                                                                  |
-| :------------------------------- | :------- | :--------------------------------------------------------------------------- |
-| `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page.                   |
-| `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs.                   |
+| Attribute                        | Required | Description |
+|:---------------------------------|:---------|:------------|
+| `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page. |
+| `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs. |
 | `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
 
 ## User follow
@@ -994,8 +990,8 @@ Unfollow a user.
 POST /users/:id/unfollow
 ```
 
-| Attribute | Type    | Required | Description                  |
-| --------- | ------- | -------- | ---------------------------- |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of the user to follow |
 
 ```shell
@@ -1030,8 +1026,8 @@ Get the list of users being followed.
 GET /users/:id/following
 ```
 
-| Attribute | Type    | Required | Description                  |
-| --------- | ------- | -------- | ---------------------------- |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of the user to follow |
 
 ```shell
@@ -1067,13 +1063,13 @@ Example response:
 
 Get the counts (same as in the upper-left menu) of the authenticated user.
 
-| Attribute                         | Type   | Description                                                                  |
-| --------------------------------- | ------ | ---------------------------------------------------------------------------- |
-| `assigned_issues`                 | number | Number of issues that are open and assigned to the current user.             |
-| `assigned_merge_requests`         | number | Number of merge requests that are active and assigned to the current user.   |
-| `merge_requests`                  | number | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50026) in GitLab 13.8. Equivalent to and replaced by `assigned_merge_requests`.        |
+| Attribute                         | Type   | Description |
+|:----------------------------------|:-------|:------------|
+| `assigned_issues`                 | number | Number of issues that are open and assigned to the current user. |
+| `assigned_merge_requests`         | number | Number of merge requests that are active and assigned to the current user. |
+| `merge_requests`                  | number | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50026) in GitLab 13.8. Equivalent to and replaced by `assigned_merge_requests`. |
 | `review_requested_merge_requests` | number | Number of merge requests that the current user has been requested to review. |
-| `todos`                           | number | Number of pending to-do items for current user.                              |
+| `todos`                           | number | Number of pending to-do items for current user. |
 
 ```plaintext
 GET /user_counts
@@ -1116,8 +1112,8 @@ GET /users/:id/associations_count
 
 Parameters:
 
-| Attribute | Type    | Required | Description      |
-|-----------|---------|----------|------------------|
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of a user |
 
 Example response:
@@ -1178,8 +1174,8 @@ GET /users/:id/emails
 
 Parameters:
 
-| Attribute | Type    | Required | Description          |
-|-----------|---------|----------|----------------------|
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of specified user |
 
 ## Single email
@@ -1193,7 +1189,7 @@ GET /user/emails/:email_id
 Parameters:
 
 | Attribute  | Type    | Required | Description |
-|------------|---------|----------|-------------|
+|:-----------|:--------|:---------|:------------|
 | `email_id` | integer | yes      | Email ID    |
 
 ```json
@@ -1215,7 +1211,7 @@ POST /user/emails
 Parameters:
 
 | Attribute | Type   | Required | Description |
-|-----------|--------|----------|-------------|
+|:----------|:-------|:---------|:------------|
 | `email`   | string | yes      | Email address |
 
 ```json
@@ -1253,10 +1249,10 @@ POST /users/:id/emails
 
 Parameters:
 
-| Attribute           | Type    | Required | Description                                                               |
-|---------------------|---------|----------|---------------------------------------------------------------------------|
-| `id`                | string  | yes      | ID of specified user                                                      |
-| `email`             | string  | yes      | Email address                                                             |
+| Attribute           | Type    | Required | Description |
+|:--------------------|:--------|:---------|:------------|
+| `id`                | string  | yes      | ID of specified user |
+| `email`             | string  | yes      | Email address |
 | `skip_confirmation` | boolean | no       | Skip confirmation and assume email is verified - true or false (default) |
 
 ## Delete email for current user
@@ -1276,7 +1272,7 @@ DELETE /user/emails/:email_id
 Parameters:
 
 | Attribute  | Type    | Required | Description |
-|------------|---------|----------|-------------|
+|:-----------|:--------|:---------|:------------|
 | `email_id` | integer | yes      | Email ID    |
 
 Returns:
@@ -1302,10 +1298,10 @@ DELETE /users/:id/emails/:email_id
 
 Parameters:
 
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
+| Attribute  | Type    | Required | Description |
+|:-----------|:--------|:---------|:------------|
 | `id`       | integer | yes      | ID of specified user |
-| `email_id` | integer | yes      | Email ID             |
+| `email_id` | integer | yes      | Email ID    |
 
 ## Get user contribution events
 
@@ -1327,7 +1323,7 @@ The activities that update the user event timestamps (`last_activity_on` and `cu
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in to GitLab
-- User visiting pages related to dashboards, projects, issues, and merge requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8)
+- User visiting pages related to dashboards, projects, issues, and merge requests
 - User using the API
 - User using the GraphQL API
 
@@ -1340,8 +1336,8 @@ GET /user/activities
 
 Parameters:
 
-| Attribute | Type   | Required | Description                                                                                    |
-| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
 | `from`    | string | no       | Date string in the format `YEAR-MM-DD`. For example, `2016-03-11`. Defaults to 6 months ago. |
 
 ```shell
@@ -1378,8 +1374,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
-
 Pre-requisite:
 
 - You must be an administrator.
@@ -1395,9 +1389,9 @@ GET /users/:id/memberships
 
 Parameters:
 
-| Attribute | Type    | Required | Description                                                        |
-| --------- | ------- | -------- | ------------------------------------------------------------------ |
-| `id`      | integer | yes      | ID of a specified user                                         |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of a specified user |
 | `type`    | string  | no       | Filter memberships by type. Can be either `Project` or `Namespace` |
 
 Returns:
@@ -1453,9 +1447,9 @@ PATCH /users/:id/disable_two_factor
 
 Parameters:
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | ID of the user    |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of the user |
 
 ```shell
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
@@ -1489,19 +1483,19 @@ Be sure to copy or save the `token` in the response, the value cannot be retriev
 POST /user/runners
 ```
 
-| Attribute          | Type         | Required | Description                                                                                       |
-|--------------------|--------------|----------|---------------------------------------------------------------------------------------------------|
-| `runner_type`      | string       | yes      | Specifies the scope of the runner; `instance_type`, `group_type`, or `project_type`.              |
-| `group_id`         | integer      | no       | The ID of the group that the runner is created in. Required if `runner_type` is `group_type`.     |
+| Attribute          | Type         | Required | Description |
+|:-------------------|:-------------|:---------|:------------|
+| `runner_type`      | string       | yes      | Specifies the scope of the runner; `instance_type`, `group_type`, or `project_type`. |
+| `group_id`         | integer      | no       | The ID of the group that the runner is created in. Required if `runner_type` is `group_type`. |
 | `project_id`       | integer      | no       | The ID of the project that the runner is created in. Required if `runner_type` is `project_type`. |
-| `description`      | string       | no       | Description of the runner.                                                                        |
-| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs.                                                   |
-| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project.                                 |
-| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs.                                              |
-| `tag_list`         | string array | no       | A list of runner tags.                                                                            |
-| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`.                               |
-| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs.            |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters).                                     |
+| `description`      | string       | no       | Description of the runner. |
+| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs. |
+| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project. |
+| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs. |
+| `tag_list`         | string array | no       | A list of runner tags. |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`. |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs. |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "runner_type=instance_type" \
@@ -1528,9 +1522,9 @@ Upload an avatar to current user.
 PUT /user/avatar
 ```
 
-| Attribute | Type              | Required | Description                                                                                                 |
-|-----------|-------------------|----------|-------------------------------------------------------------------------------------------------------------|
-| `avatar`  | string            | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `avatar`  | string | Yes      | The file to be uploaded. The ideal image size is 192 x 192 pixels. The maximum file size allowed is 200 KiB. |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The

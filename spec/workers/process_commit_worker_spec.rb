@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :public, :repository) }
+  let(:auto_close_issues) { true }
+  let(:project) { create(:project, :public, :repository, autoclose_referenced_issues: auto_close_issues) }
   let(:issue) { create(:issue, project: project, author: user) }
   let(:commit) { project.commit }
 
@@ -112,6 +113,31 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
               it 'updates issue metrics' do
                 expect { perform }.to change { issue.metrics.reload.first_mentioned_in_commit_at }
                   .to(commit.committed_date)
+              end
+            end
+          end
+
+          context 'when project has issue auto close disabled' do
+            let(:auto_close_issues) { false }
+
+            it 'does not close related issues' do
+              expect { perform }.to not_change { Issues::CloseWorker.jobs.size }
+            end
+
+            context 'when issue is an external issue' do
+              let(:issue) { ExternalIssue.new('JIRA-123', project) }
+              let(:project) do
+                create(
+                  :project,
+                  :with_jira_integration,
+                  :public,
+                  :repository,
+                  autoclose_referenced_issues: auto_close_issues
+                )
+              end
+
+              it 'closes issues that should be closed per the commit message' do
+                expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
               end
             end
           end

@@ -1,0 +1,9 @@
+---
+name: work_items_view_preference
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461855
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165085
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/482931
+milestone: '17.4'
+group: group::project management
+type: beta
+default_enabled: false

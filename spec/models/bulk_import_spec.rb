@@ -154,13 +154,13 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe 'completion notification trigger' do
-    RSpec::Matchers.define :notify_owner_of_completion do
+    RSpec::Matchers.define :send_completion_notification do
       def supports_block_expectations?
         true
       end
 
       match(notify_expectation_failures: true) do |proc|
-        expect(Notify).to receive(:bulk_import_complete).with(user.id, import.id).and_call_original
+        expect(Notify).to receive(:bulk_import_complete).with(import.user.id, import.id).and_call_original
 
         proc.call
         true
@@ -174,44 +174,20 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       end
     end
 
-    subject(:import) do
-      create(:bulk_import, :started, entities: [
-        create(
-          :bulk_import_entity,
-          group: create(:group, owners: user)
-        )
-      ])
-    end
+    subject(:import) { create(:bulk_import, :started) }
 
-    let(:user) { create(:user) }
     let(:non_triggering_events) do
       import.status_paths.events - %i[finish cleanup_stale fail_op]
     end
 
-    it { expect { import.finish! }.to notify_owner_of_completion }
-    it { expect { import.fail_op! }.to notify_owner_of_completion }
-    it { expect { import.cleanup_stale! }.to notify_owner_of_completion }
+    it { expect { import.finish! }.to send_completion_notification }
+    it { expect { import.fail_op! }.to send_completion_notification }
+    it { expect { import.cleanup_stale! }.to send_completion_notification }
 
     it "does not email after non-completing events" do
       non_triggering_events.each do |event|
-        expect { import.send(:"#{event}!") }.not_to notify_owner_of_completion
+        expect { import.send(:"#{event}!") }.not_to send_completion_notification
       end
-    end
-  end
-
-  describe '#parent_group_entity' do
-    subject(:import) do
-      create(:bulk_import, :started, entities: [
-        root_node,
-        create(:bulk_import_entity, parent: root_node),
-        create(:bulk_import_entity, parent: root_node)
-      ])
-    end
-
-    let_it_be(:root_node) { create(:bulk_import_entity) }
-
-    it 'returns the topmost node of the first tree of the import entity structure' do
-      expect(import.parent_group_entity).to eq(root_node)
     end
   end
 

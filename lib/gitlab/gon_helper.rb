@@ -67,6 +67,7 @@ module Gitlab
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
         gon.time_display_format = current_user.time_display_format
+        gon.current_user_use_work_items_view = current_user.user_preference&.use_work_items_view || false
       end
 
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
@@ -81,6 +82,7 @@ module Gitlab
       push_frontend_feature_flag(:organization_switching, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
+      push_frontend_feature_flag(:work_items_view_preference, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

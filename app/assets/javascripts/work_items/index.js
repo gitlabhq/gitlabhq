@@ -81,6 +81,14 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     },
   });
 
+  if (gon.features.workItemsViewPreference) {
+    import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
+      .then(({ initWorkItemsFeedback }) => {
+        initWorkItemsFeedback();
+      })
+      .catch({});
+  }
+
   return new Vue({
     el,
     name: 'WorkItemsRoot',

@@ -155,6 +155,30 @@ To update multiple epics at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
 
+### Open epics in a drawer
+
+DETAILS:
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+When this feature is enabled, when you select an epic from the list or epic board, it opens in a drawer.
+You can then edit the epic or create comments.
+
+To open the epic in full view:
+
+- Open the epic in a new tab. From the list of epics, either:
+  - Right-click the epic and open it in a new browser tab.
+  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and click the epic.
+- From the drawer, in the top-left corner, select **Open in full view**.
+
+![Epic opened in a drawer.](img/epic_drawer_v17_4.png)
+
 ## Assignees
 
 DETAILS:

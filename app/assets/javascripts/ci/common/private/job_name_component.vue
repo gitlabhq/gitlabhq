@@ -37,7 +37,7 @@ export default {
       :use-link="false"
       class="gl-leading-0"
     />
-    <span class="mw-70p gl-inline-block gl-truncate gl-pl-3" :title="name">
+    <span class="gl-inline-block gl-max-w-7/10 gl-truncate gl-pl-3" :title="name">
       {{ name }}
     </span>
   </span>

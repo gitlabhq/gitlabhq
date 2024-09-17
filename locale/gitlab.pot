@@ -35685,6 +35685,9 @@ msgid_plural "New issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New issue look"
+msgstr ""
+
 msgid "New issue title"
 msgstr ""
 
@@ -41305,6 +41308,9 @@ msgid "Preview diagram"
 msgstr ""
 
 msgid "Preview payload"
+msgstr ""
+
+msgid "Preview the new issues experience, with real time updates and refreshed design. Some features are not yet supported, see feedback issue for details."
 msgstr ""
 
 msgid "Previous commit"

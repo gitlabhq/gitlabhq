@@ -477,7 +477,27 @@ Or:
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
 - On the left sidebar, at the top, select **Assigned issues** (**{issues}**).
 
-## Filter the list of issues
+## Issue list
+
+The issue list shows all issues in your project or group.
+You can use it to view, sort, and manage issues.
+
+To view the issue list:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+
+From the issue list, you can:
+
+- View issue details like title, assignees, labels, and milestone.
+- [Sort issues](sorting_issue_lists.md) by various criteria.
+- Filter issues to find specific ones.
+- Edit issues individually or in bulk.
+- Create new issues.
+
+The following sections describe how to work with the issue list.
+
+### Filter the list of issues
 
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 > - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
@@ -499,7 +519,7 @@ To filter the list of issues:
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
-### Filter by title or description
+#### Filter by title or description
 
 To filter the list issues for text in a title or description:
 
@@ -520,7 +540,7 @@ However, GitLab won't match the sentence or the words `I`, `am` or `M&A` exactly
 as they aren't deemed lexically meaningful or significant.
 It's a limitation of PostgreSQL full text search.
 
-### Filter with the OR operator
+#### Filter with the OR operator
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
 > - OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
@@ -536,13 +556,37 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 `is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
 `Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.
 
-### Filter issues by ID
+#### Filter issues by ID
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
 
 ![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
+
+### Open issues in a drawer
+
+DETAILS:
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+When this feature is enabled, when you select an issue from the list or issue board, it opens in a drawer.
+You can then edit the issue or create comments.
+
+To open the issue in full view:
+
+- Open the issue in a new tab. From the list of issues, either:
+  - Right-click the issue and open it in a new browser tab.
+  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and click the issue.
+- From the drawer, in the top-left corner, select **Open in full view**.
+
+![Issue opened in a drawer.](img/issue_drawer_v17_4.png)
 
 ## Copy issue reference
 

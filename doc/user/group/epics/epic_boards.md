@@ -125,6 +125,14 @@ To create an epic from a list in epic board:
 
 ![Create a GitLab epic from an epic board](img/epic_board_epic_create_v15_10.png)
 
+### Edit an epic
+
+<!-- When issues_list_drawer feature flag is removed, change the info below into a proper task topic -->
+
+If your administrator enabled the [epic drawer](manage_epics.md#open-epics-in-a-drawer),
+when you select an epic card from the epic board, the epic opens in a drawer.
+There, you can edit all the fields, including the description, comments, or related items.
+
 ### Filter epics
 
 Use the filters on top of your epic board to show only

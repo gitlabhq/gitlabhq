@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import WorkItemFeedback from './components/work_item_feedback.vue';
+import WorkItemViewToggle from './components/work_item_view_toggle.vue';
 
 Vue.use(VueApollo);
 
@@ -12,7 +13,7 @@ export const initWorkItemsFeedback = ({
   content,
   expiry,
   featureName,
-}) => {
+} = {}) => {
   if (expiry) {
     const expiryDate = new Date(expiry);
     if (Date.now() > expiryDate) {
@@ -34,7 +35,7 @@ export const initWorkItemsFeedback = ({
       featureName,
     },
     render(h) {
-      return h(WorkItemFeedback);
+      return h(feedbackIssue ? WorkItemFeedback : WorkItemViewToggle);
     },
   });
 };

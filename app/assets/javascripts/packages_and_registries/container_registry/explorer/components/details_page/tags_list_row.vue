@@ -116,7 +116,7 @@ export default {
       return this.tag.layers ? n__('%d layer', '%d layers', this.tag.layers) : '';
     },
     mobileClasses() {
-      return this.isMobile ? 'mw-s' : '';
+      return this.isMobile ? 'gl-max-w-20' : '';
     },
     shortDigest() {
       // remove sha256: from the string, and show only the first 7 char

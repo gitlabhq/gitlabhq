@@ -404,24 +404,12 @@ To group issues by epic in an issue board:
 
 ![Epics Swimlanes](img/epics_swimlanes_v17_1.png)
 
-To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
-appears on the right. There you can see and edit the issue's:
+You can then [edit](#edit-an-issue) issues without leaving this view and [drag](#move-issues-and-lists)
+them to change their position and epic assignment:
 
-- Title
-- Assignees
-- [Epic](../group/epics/index.md)
-- Milestone
-- Time tracking value (view only)
-- Due date
-- Labels
-- Weight
-- Notifications setting
-
-You can also [drag issues](#move-issues-and-lists) to change their position and epic assignment:
-
-- To reorder an issue, drag it to the new position within a list.
+- To reorder an issue, drag it to the new position in a list.
 - To assign an issue to another epic, drag it to the epic's horizontal lane.
-- To unassign an issue from an epic, drag it to the **Issues with no epic assigned** lane.
+- To remove an issue from an epic, drag it to the **Issues with no epic assigned** lane.
 - To move an issue to another epic _and_ another list, at the same time, drag the issue diagonally.
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
@@ -506,6 +494,13 @@ You can edit the following issue attributes in the right sidebar:
 
 Additionally, you can also see the time tracking value.
 
+<!-- When issues_list_drawer feature flag is removed, use the info below
+and in issues/managing_issues.md#open-issues-in-a-drawer to update the main topic above -->
+
+If your administrator enabled the [issue drawer](issues/managing_issues.md#open-issues-in-a-drawer),
+when you select an issue card from the issue board, the issue opens in a drawer.
+There, you can edit all the fields, including the description, comments, or related items.
+
 ### Create a new list
 
 To create a new list:
@@ -515,7 +510,7 @@ To create a new list:
 
    ![creating a new list in an issue board](img/issue_board_add_list_v17_1.png)
 
-1. Choose the label, user, milestone or iteration to base the new list on.
+1. Choose the label, user, milestone, or iteration to base the new list on.
 1. Select **Add to board**.
 
 The new list is inserted at the right end of the lists, before **Closed**.

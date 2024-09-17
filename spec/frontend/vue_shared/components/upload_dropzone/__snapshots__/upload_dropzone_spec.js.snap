@@ -43,7 +43,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
       style="display: none;"
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -54,7 +54,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
       >
         <h3>
           Incoming!
@@ -113,7 +113,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
       style=""
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -124,7 +124,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
       >
         <h3>
           Incoming!
@@ -183,7 +183,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
       style=""
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -194,7 +194,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
       >
         <h3>
           Incoming!
@@ -253,7 +253,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
       style=""
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style=""
       >
         <h3>
@@ -264,7 +264,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -324,7 +324,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
       style=""
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style=""
       >
         <h3>
@@ -335,7 +335,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -395,7 +395,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
       style="display: none;"
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style=""
       >
         <h3>
@@ -406,7 +406,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -466,7 +466,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
       style="display: none;"
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -477,7 +477,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
       >
         <h3>
           Incoming!
@@ -506,7 +506,7 @@ exports[`Upload dropzone component when slot provided renders dropzone with slot
       style="display: none;"
     >
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
         style="display: none;"
       >
         <h3>
@@ -517,7 +517,7 @@ exports[`Upload dropzone component when slot provided renders dropzone with slot
         </span>
       </div>
       <div
-        class="gl-text-center mw-50"
+        class="gl-max-w-1/2 gl-text-center"
       >
         <h3>
           Incoming!
