@@ -41,11 +41,13 @@ module QA
         setup_pipeline_emails(emails)
       end
 
-      describe 'when pipeline passes', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366240' do
+      describe 'when pipeline passes',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366240' do
         include_examples 'notifies on a pipeline', 0
       end
 
-      describe 'when pipeline fails', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366241' do
+      describe 'when pipeline fails',
+        :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366241' do
         include_examples 'notifies on a pipeline', 1
       end
 

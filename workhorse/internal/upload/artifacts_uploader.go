@@ -59,7 +59,7 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer, cfg *config.Config) h
 	}, "/authorize")
 }
 
-func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler, readerLimit int64) (*destination.FileHandler, error) {
+func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler, readerLimit int64) (*destination.FileHandler, error) { //nolint: funlen
 	metaOpts := &destination.UploadOpts{
 		LocalTempPath: a.tempDir,
 	}
