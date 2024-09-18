@@ -37,10 +37,10 @@
     }
 
     .gfm-project_member {
-      @apply gl-text-blue-700;
+      color: var(--gl-link-mention-text-color-default);
 
       &.current-user {
-        @apply gl-text-orange-800;
+        color: var(--gl-link-mention-text-color-current);
       }
     }
   }

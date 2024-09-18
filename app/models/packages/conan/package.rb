@@ -7,6 +7,8 @@ module Packages
 
       has_one :conan_metadatum, inverse_of: :package, class_name: 'Packages::Conan::Metadatum'
 
+      has_many :conan_recipe_revisions, inverse_of: :package, class_name: 'Packages::Conan::RecipeRevision'
+
       accepts_nested_attributes_for :conan_metadatum
 
       delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan

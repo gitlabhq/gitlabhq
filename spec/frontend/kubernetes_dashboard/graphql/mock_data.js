@@ -643,13 +643,15 @@ export const k8sEventsMock = [
     reason: 'Reason 1',
     message: 'Event 1',
     lastTimestamp: '2023-05-01T10:00:00Z',
+    eventTime: '',
   },
   {
     type: 'normal',
     source: { component: 'my-component' },
     reason: 'Reason 2',
     message: 'Event 2',
-    lastTimestamp: '2023-05-01T11:00:00Z',
+    lastTimestamp: '',
+    eventTime: '2023-05-01T11:00:00Z',
   },
   {
     type: 'normal',
@@ -657,5 +659,6 @@ export const k8sEventsMock = [
     reason: 'Reason 3',
     message: 'Event 3',
     lastTimestamp: '2023-05-01T12:00:00Z',
+    eventTime: '',
   },
 ];

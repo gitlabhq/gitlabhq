@@ -121,14 +121,14 @@ This feature is an [experiment](../../../policy/experiment-beta-support.md). If 
 
 ### Placeholder users
 
-Instead of immediately attempting to assign contributions to users on the destination instance, a
-placeholder user is created for:
-
-- Each imported membership.
-- Any user whose contributions were imported.
+Instead of immediately assigning contributions and memberships to users on the destination instance, a
+placeholder user is created for any user whose contributions or memberships were imported.
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
-to existing users on destination instance.
+to existing users on the destination instance.
+
+Until they are reassigned, contributions display as associated with the placeholder. Placeholder memberships
+do not display in member lists.
 
 #### Placeholder user attributes
 

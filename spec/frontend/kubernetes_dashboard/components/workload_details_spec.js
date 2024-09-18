@@ -64,6 +64,7 @@ const findButton = (at) => findAllButtons().at(at);
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findAlert = () => wrapper.findComponent(GlAlert);
 const findAllK8sEventItems = () => wrapper.findAllComponents(K8sEventItem);
+const findK8sEventItem = (at) => findAllK8sEventItems().at(at);
 
 describe('Workload details component', () => {
   describe('when minimal fields are provided', () => {
@@ -257,6 +258,29 @@ describe('Workload details component', () => {
 
         expect(findAllK8sEventItems()).toHaveLength(k8sEventsMock.length);
       });
+
+      it.each`
+        lastTimestamp             | eventTime                 | timestamp
+        ${'2023-05-01T12:00:00Z'} | ${''}                     | ${'2023-05-01T12:00:00Z'}
+        ${''}                     | ${'2023-07-02T12:00:00Z'} | ${'2023-07-02T12:00:00Z'}
+        ${'2023-05-01T12:00:00Z'} | ${'2023-07-02T12:00:00Z'} | ${'2023-05-01T12:00:00Z'}
+        ${''}                     | ${''}                     | ${''}
+      `(
+        'renders timestamp as "$timestamp" when lastTimestamp is "$lastTimestamp" and eventTime is "$eventTime"',
+        async ({ lastTimestamp, eventTime, timestamp }) => {
+          const eventMock = {
+            ...k8sEventsMock[0],
+            lastTimestamp,
+            eventTime,
+          };
+
+          getK8sEventsQuery = jest.fn().mockResolvedValue([eventMock]);
+          createWrapperWithApollo();
+          await waitForPromises();
+
+          expect(findK8sEventItem(0).props('event').timestamp).toBe(timestamp);
+        },
+      );
     });
   });
 });

@@ -14748,6 +14748,24 @@ CREATE SEQUENCE packages_conan_metadata_id_seq
 
 ALTER SEQUENCE packages_conan_metadata_id_seq OWNED BY packages_conan_metadata.id;
 
+CREATE TABLE packages_conan_recipe_revisions (
+    id bigint NOT NULL,
+    package_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    revision bytea NOT NULL
+);
+
+CREATE SEQUENCE packages_conan_recipe_revisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_conan_recipe_revisions_id_seq OWNED BY packages_conan_recipe_revisions.id;
+
 CREATE TABLE packages_debian_file_metadata (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -22098,6 +22116,8 @@ ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_conan_recipe_revisions ALTER COLUMN id SET DEFAULT nextval('packages_conan_recipe_revisions_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_debian_group_architectures ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_architectures_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_debian_group_component_files ALTER COLUMN id SET DEFAULT nextval('packages_debian_group_component_files_id_seq'::regclass);
@@ -24561,6 +24581,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT packages_conan_metadata_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_conan_recipe_revisions
+    ADD CONSTRAINT packages_conan_recipe_revisions_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT packages_debian_file_metadata_pkey PRIMARY KEY (package_file_id);
 
@@ -26738,6 +26761,12 @@ CREATE INDEX idx_group_audit_events_on_project_created_at_id ON ONLY group_audit
 
 CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
 
+CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_group_id ON import_placeholder_memberships USING btree (source_user_id, group_id);
+
+CREATE INDEX idx_import_placeholder_memberships_on_source_user_id_and_id ON import_placeholder_memberships USING btree (source_user_id, id);
+
+CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_project_id ON import_placeholder_memberships USING btree (source_user_id, project_id);
+
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
@@ -26819,6 +26848,8 @@ CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_name ON external_a
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON external_status_checks USING btree (project_id, external_url);
 
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
+
+CREATE UNIQUE INDEX idx_on_packages_conan_recipe_revisions_package_id_revision ON packages_conan_recipe_revisions USING btree (package_id, revision);
 
 CREATE INDEX idx_on_protected_branch ON approval_group_rules_protected_branches USING btree (protected_branch_id);
 
@@ -28622,8 +28653,6 @@ CREATE INDEX index_import_placeholder_memberships_on_namespace_id ON import_plac
 
 CREATE INDEX index_import_placeholder_memberships_on_project_id ON import_placeholder_memberships USING btree (project_id);
 
-CREATE INDEX index_import_placeholder_memberships_on_source_user_id ON import_placeholder_memberships USING btree (source_user_id);
-
 CREATE INDEX index_import_source_user_placeholder_references_on_namespace_id ON import_source_user_placeholder_references USING btree (namespace_id);
 
 CREATE INDEX index_import_source_user_placeholder_references_on_source_user_ ON import_source_user_placeholder_references USING btree (source_user_id);
@@ -29495,6 +29524,8 @@ CREATE UNIQUE INDEX index_packages_conan_file_metadata_on_package_file_id ON pac
 CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel ON packages_conan_metadata USING btree (package_id, package_username, package_channel);
 
 CREATE INDEX index_packages_conan_metadata_on_project_id ON packages_conan_metadata USING btree (project_id);
+
+CREATE INDEX index_packages_conan_recipe_revisions_on_project_id ON packages_conan_recipe_revisions USING btree (project_id);
 
 CREATE INDEX index_packages_debian_group_architectures_on_group_id ON packages_debian_group_architectures USING btree (group_id);
 
@@ -33638,6 +33669,9 @@ ALTER TABLE ONLY user_namespace_callouts
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_conan_recipe_revisions
+    ADD CONSTRAINT fk_4d18bd6f82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_4d6ba63ba5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34069,6 +34103,9 @@ ALTER TABLE ONLY agent_activity_events
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_9c4516d665 FOREIGN KEY (duplicated_to_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_conan_recipe_revisions
+    ADD CONSTRAINT fk_9cdec8a86b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_9d480c64b2 FOREIGN KEY (start_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;

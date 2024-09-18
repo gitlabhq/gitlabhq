@@ -6,31 +6,36 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
   let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
   let(:import_uid) { 1 }
 
-  shared_examples 'raises error' do
+  shared_examples 'invalid reference' do |model, validation_error|
     it 'raises Import::PlaceholderReferences::InvalidReferenceError error' do
       expect { result }.to raise_error(
         Import::PlaceholderReferences::InvalidReferenceError, "Invalid placeholder user reference"
       )
     end
-  end
 
-  shared_examples 'does not push data to Redis' do |model|
-    it 'does not push data to Redis' do
-      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-        an_instance_of(Import::PlaceholderReferences::InvalidReferenceError),
-        model: model,
-        errors: 'numeric_key or composite_key must be present'
-      )
+    context 'when in production environment' do
+      before do
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+      end
 
-      expect(result).to be_error
-      expect(result.message).to include('numeric_key or composite_key must be present')
-      expect(set).to be_empty
+      it 'does not push data to Redis' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          an_instance_of(Import::PlaceholderReferences::InvalidReferenceError),
+          model: model,
+          errors: validation_error
+        )
+
+        expect(result).to be_error
+        expect(result.message).to include(validation_error)
+        expect(set).to be_empty
+      end
     end
   end
 
   describe '#execute' do
     let(:composite_key) { nil }
     let(:numeric_key) { 9 }
+    let(:model) { MergeRequest }
 
     subject(:result) do
       described_class.new(
@@ -38,7 +43,7 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
         import_uid: import_uid,
         source_user_id: 123,
         source_user_namespace_id: 234,
-        model: MergeRequest,
+        model: model,
         user_reference_column: 'author_id',
         numeric_key: numeric_key,
         composite_key: composite_key
@@ -77,18 +82,16 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
       end
     end
 
-    context 'when is invalid' do
+    context 'when both numeric_key and composite_key are present' do
       let(:composite_key) { { 'foo' => 1 } }
 
-      it_behaves_like 'raises error'
+      it_behaves_like 'invalid reference', 'MergeRequest', 'one of numeric_key or composite_key must be present'
+    end
 
-      context 'when in production environment' do
-        before do
-          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-        end
+    context 'when numeric_key and composite_key are blank' do
+      let(:numeric_key) { nil }
 
-        it_behaves_like 'does not push data to Redis', 'MergeRequest'
-      end
+      it_behaves_like 'invalid reference', 'MergeRequest', 'one of numeric_key or composite_key must be present'
     end
   end
 
@@ -119,7 +122,7 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     context 'when record is an IssueAssignee' do
       let(:record) { IssueAssignee.new(issue_id: 1, user_id: 2) }
 
-      it 'pushes a composition key' do
+      it 'pushes a composite key' do
         expected_result = [
           { issue_id: 1, user_id: 2 }, 'IssueAssignee', source_user.namespace_id, nil, source_user.id, 'author_id', 1
         ].to_json
@@ -138,33 +141,17 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'raises error'
-
-      context 'when in production environment' do
-        before do
-          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-        end
-
-        it_behaves_like 'does not push data to Redis', 'RSpec::Mocks::Double'
-      end
+      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double', 'one of numeric_key or composite_key must be present'
     end
 
-    context 'when record id is an string' do
+    context 'when record id is a string' do
       let(:record) { double(:record, id: 'string') }
 
       before do
         allow(Import::PlaceholderReferences::AliasResolver).to receive(:version_for_model).and_return(1)
       end
 
-      it_behaves_like 'raises error'
-
-      context 'when in production environment' do
-        before do
-          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-        end
-
-        it_behaves_like 'does not push data to Redis', 'RSpec::Mocks::Double'
-      end
+      it_behaves_like 'invalid reference', 'RSpec::Mocks::Double', 'one of numeric_key or composite_key must be present'
     end
     # rubocop:enable RSpec/VerifiedDoubles
   end

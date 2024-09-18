@@ -31392,6 +31392,9 @@ msgstr ""
 msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
+msgid "KubernetesDashboard|unknown"
+msgstr ""
+
 msgid "KubernetesLogs|Agent ID"
 msgstr ""
 

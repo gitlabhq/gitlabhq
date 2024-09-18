@@ -175,6 +175,7 @@ export const apolloProvider = (endpoint) => {
     query: k8sEventsQuery,
     data: {
       lastTimestamp: '',
+      eventTime: '',
       message: '',
       reason: '',
       source: {},

@@ -44,6 +44,15 @@ export const mapWorkloadItem = (item) => {
   return { status, spec, metadata, __typename: 'LocalWorkloadItem' };
 };
 
+export const mapEventItem = ({
+  lastTimestamp = '',
+  eventTime = '',
+  message,
+  reason,
+  source,
+  type,
+}) => ({ lastTimestamp, eventTime, message, reason, source, type });
+
 export const watchWorkloadItems = ({
   client,
   query,
