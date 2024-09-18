@@ -1,4 +1,4 @@
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import Token from '~/access_tokens/components/token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
@@ -20,7 +20,7 @@ describe('Token', () => {
   };
 
   const createComponent = () => {
-    wrapper = mountExtended(Token, { propsData: defaultPropsData, slots: defaultSlots });
+    wrapper = shallowMountExtended(Token, { propsData: defaultPropsData, slots: defaultSlots });
   };
 
   it('renders title slot', () => {

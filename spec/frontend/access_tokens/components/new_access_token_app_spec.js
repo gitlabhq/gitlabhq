@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
 import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -17,7 +17,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   const accessTokenType = 'personal access token';
 
   const createComponent = (provide = { accessTokenType }) => {
-    wrapper = mountExtended(NewAccessTokenApp, {
+    wrapper = shallowMountExtended(NewAccessTokenApp, {
       provide,
     });
   };

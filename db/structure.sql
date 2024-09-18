@@ -2169,6 +2169,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_ec1934755627() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "alert_management_alerts"
+  WHERE "alert_management_alerts"."id" = NEW."alert_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_f6c61cdddf31() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5210,6 +5226,7 @@ CREATE TABLE alert_management_alert_metric_images (
     file text NOT NULL,
     url text,
     url_text text,
+    project_id bigint,
     CONSTRAINT check_2587666252 CHECK ((char_length(url_text) <= 128)),
     CONSTRAINT check_4d811d9007 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_70fafae519 CHECK ((char_length(file) <= 255))
@@ -27069,6 +27086,8 @@ CREATE INDEX index_alert_management_alert_assignees_on_project_id ON alert_manag
 
 CREATE INDEX index_alert_management_alert_metric_images_on_alert_id ON alert_management_alert_metric_images USING btree (alert_id);
 
+CREATE INDEX index_alert_management_alert_metric_images_on_project_id ON alert_management_alert_metric_images USING btree (project_id);
+
 CREATE INDEX index_alert_management_alerts_on_domain ON alert_management_alerts USING btree (domain);
 
 CREATE INDEX index_alert_management_alerts_on_environment_id ON alert_management_alerts USING btree (environment_id) WHERE (environment_id IS NOT NULL);
@@ -33105,6 +33124,8 @@ CREATE TRIGGER trigger_e49ab4d904a0 BEFORE INSERT OR UPDATE ON vulnerability_fin
 
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
+CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
+
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
 CREATE TRIGGER trigger_f6f59d8216b3 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_f6f59d8216b3();
@@ -33907,6 +33928,9 @@ ALTER TABLE ONLY packages_debian_project_components
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT fk_80aa8a1f95 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY alert_management_alert_metric_images
+    ADD CONSTRAINT fk_80b75a6094 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_8257080565 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

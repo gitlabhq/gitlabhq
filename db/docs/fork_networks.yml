@@ -10,4 +10,4 @@ description: When a project is first forked, a row is created in this table. Als
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3098
 milestone: '10.1'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462136
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490480

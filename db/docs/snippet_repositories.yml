@@ -8,4 +8,4 @@ description: Stores repository information used to version control snippets.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23796
 milestone: '12.8'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462136
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490490

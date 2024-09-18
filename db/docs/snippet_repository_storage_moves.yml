@@ -8,4 +8,4 @@ description: Keeps track of snippet repositories being moved across storages.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45990
 milestone: '13.6'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462136
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490491

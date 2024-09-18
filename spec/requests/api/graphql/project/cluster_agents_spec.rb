@@ -128,7 +128,7 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
       })
     end
 
-    it 'preloads associations to prevent N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/350868' do
+    it 'preloads associations to prevent N+1 queries' do
       user = create(:user)
       token = create(:cluster_agent_token, agent: agents.second)
       create(:agent_activity_event, agent: agents.second, agent_token: token, user: user)

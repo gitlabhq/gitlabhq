@@ -40,7 +40,7 @@ describe('InputCopyToggleVisibility', () => {
     return event;
   };
   const triggerCopyShortcut = () => {
-    wrapper.vm.$options.mousetrap.trigger(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
+    wrapper.vm.mousetrap.trigger(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
   };
 
   function expectInputToBeMasked() {

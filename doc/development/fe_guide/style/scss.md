@@ -183,11 +183,69 @@ Inspiration:
 - <https://tailwindcss.com/docs/utility-first>
 - <https://tailwindcss.com/docs/extracting-components>
 
-### Leveraging Tailwind CSS in stylesheets
+### Leveraging Tailwind CSS in HTML and in stylesheets
 
-When writing custom SCSS, you may want to inherit style definitions from the design system without
-needing to figure out the relevant properties or values. To simplify this process, you can use
-Tailwind CSS's [`@apply` directive](https://tailwindcss.com/docs/reusing-styles#extracting-classes-with-apply)
+When writing component classes, it's important to effectively integrate Tailwind CSS's utility classes to
+maintain consistency with the design system and keeping the CSS bundles small.
+
+**Utility CSS Classes in HTML vs. in stylesheets:**
+
+By using the utility classes directly in the HTML, we can keep the CSS file size smaller and adhere
+to the utility-first philosophy. By avoiding to combine utility classes with custom styles in one components class
+unless absolutely necessary, we can prevent confusion and potential conflicts.
+
+- **Reasons for the Preference:**
+  - **Smaller CSS File Size:** Utilizing utility classes directly can lead to more compact CSS files and
+  promote a more consistent design system.
+  - **Clarity and Maintainability:** When utility classes are used in HTML, it's clearer how styles are
+  applied, reducing the risk of conflicts and regressions.
+
+- **Potential Issues with Combining Styles:**
+  - **Conflicts:** If utility classes and custom styles are combined in a single class, conflicts can arise,
+  especially when the styles have interdependencies.
+  - **Regressions:** It becomes less obvious how styles should resolve, leading to possible regressions
+  or unexpected behavior.
+
+By following these guidelines, we can create clean, maintainable stylesheets that leverage Tailwind CSS effectively.
+
+#### 1. Use utility classes directly in HTML (preferred approach)
+
+For better maintainability and to adhere to the utility-first principle, add utility classes directly
+to the HTML element. A component class should primarily contain only the non-utility CSS styles.
+In the following example, you add the utility classes `gl-fixed` and `gl-inset-x-0`, instead of adding
+`position: fixed; right: 0; left: 0;` to the SCSS file:
+
+```html
+<!-- Bad -->
+<div class="my-class"></div>
+
+<style>
+  .my-class {
+    top: $header-height;
+    z-index: 999;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+ }
+</style>
+
+<!-- Good -->
+<div class="my-class gl-fixed gl-inset-x-0"></div>
+
+<style>
+  .my-class {
+    top: $header-height;
+    z-index: 999;
+  }
+</style>
+```
+
+#### 2. Apply utility classes in component classes (when necessary)
+
+Sometime it might not feasible to use utility classes directly in HTML and you need to include them in our
+custom SCSS files. Then, you might want to inherit style definitions from the design system without needing to figure
+out the relevant properties or values. To simplify this process, you can use Tailwind CSS's
+[`@apply` directive](https://tailwindcss.com/docs/reusing-styles#extracting-classes-with-apply)
 to include utilities' style definitions in your custom styles.
 
 Using `@apply` is _encouraged_ for applying CSS properties that depend on the design system (e.g. `margin`, `padding`).
