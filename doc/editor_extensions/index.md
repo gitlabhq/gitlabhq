@@ -23,7 +23,7 @@ between your coding environment and GitLab.
 
 GitLab offers extensions for the following development environments:
 
-- [GitLab Workflow for VS Code](visual_studio_code/index.md): Bring GitLab Duo,
+- [GitLab Workflow extension for VS Code](visual_studio_code/index.md): Bring GitLab Duo,
   and other GitLab features, into Visual Studio Code.
 - [GitLab Duo for JetBrains IDEs](jetbrains_ide/index.md): Bring GitLab Duo AI capabilities
   to IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs.

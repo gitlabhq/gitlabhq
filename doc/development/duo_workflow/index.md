@@ -144,12 +144,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
      $GDK_GITLAB_URL/api/v4/ai/duo_workflows/workflows/$WORKFLOW_ID/checkpoints
    ```
 
-## Configure the GitLab VS Code Extension
+## Configure the GitLab Duo Workflow extension for VS Code
 
 The above steps show how to start a workflow directly from the Duo Workflow
 Executor.
 
-If you would like to start Duo Workflow with the VS Code Extension instead,
+If you would like to start Duo Workflow with the VS Code extension instead,
 follow [these steps](../../user/duo_workflow/index.md#prerequisites).
 
 If you are debugging or making changes to the VSCode extension and need to run the extension in development mode, you can do that following [these instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment).

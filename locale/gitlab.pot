@@ -14110,10 +14110,10 @@ msgstr ""
 msgid "ComplianceFrameworks|Policy name"
 msgstr ""
 
-msgid "ComplianceFrameworks|Project description"
+msgid "ComplianceFrameworks|Project name"
 msgstr ""
 
-msgid "ComplianceFrameworks|Project name"
+msgid "ComplianceFrameworks|Project path"
 msgstr ""
 
 msgid "ComplianceFrameworks|Projects"
@@ -59991,9 +59991,6 @@ msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly 
 msgstr ""
 
 msgid "Versions"
-msgstr ""
-
-msgid "View"
 msgstr ""
 
 msgid "View File Metadata"

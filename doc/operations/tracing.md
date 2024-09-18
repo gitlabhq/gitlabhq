@@ -24,6 +24,17 @@ With distributed tracing, you can troubleshoot application performance issues by
 
 This feature is in [beta](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2590) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
 
+## Tracing ingestion limits
+
+Tracing ingests a maximum of 102,400 bytes per minute.
+When the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 1,048,576 bytes per minute, contact [GitLab support](https://about.gitlab.com/support/).
+
+## Data retention
+
+GitLab retains all traces for 30 days.
+
 ## Configure distributed tracing for a project
 
 Configure distributed tracing to enable it for a project.
@@ -62,29 +73,17 @@ To view the list of traces:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Traces**.
+1. Optional. To view the details of a trace, select it from the list.
 
-To see the details of a trace, select it from the list.
+   ![list of traces](img/tracing_list_v16.11.png)
 
-![list of traces](img/tracing_list_v16.11.png)
+   The trace details page and a list of spans are displayed.
 
-The trace details page and a list of spans are displayed.
+   ![tracing details](img/tracing_details_v16_7.png)
 
-![tracing details](img/tracing_details_v16_7.png)
+1. Optional. To view the attributes for a single span, select it from the list.
 
-To view the attributes for a single span, select it from the list.
-
-![tracing drawer](img/tracing_drawer_v16_7.png)
-
-## Tracing ingestion limits
-
-Tracing ingests a maximum of 102,400 bytes per minute.
-After the limit is exceeded, a `429 Too Many Requests` response is returned.
-
-To request a limit increase to 1,048,576 bytes per minute, contact GitLab support.
-
-## Data retention
-
-GitLab has a retention limit of 30 days for all traces.
+   ![tracing drawer](img/tracing_drawer_v16_7.png)
 
 ## Create an issue for a trace
 

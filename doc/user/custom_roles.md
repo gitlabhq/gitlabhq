@@ -293,13 +293,13 @@ For example, let's say we have 5 users in Group A, and they are assigned the fol
 
 Group B invites Group A. The following table shows the maximum role that each the users in Group A will have in Group B:
 
-| Scenario                                                       | User A | User B              | User C                       | User D    | User E                            |
-|----------------------------------------------------------------|--------|---------------------|------------------------------|-----------|-----------------------------------|
-| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest     | Guest                             |
-| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
-| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest     | Guest                             |
-| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer                         |
-| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer | Developer + `admin_vulnerability` |
+| Scenario                                                       | User A | User B              | User C                       | User D                       | User E                            |
+|----------------------------------------------------------------|--------|---------------------|------------------------------|------------------------------|-----------------------------------|
+| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest                        | Guest                             |
+| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_vulnerability` | Guest + `read_vulnerability`      |
+| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_vulnerability` | Guest + `read_vulnerability`      |
+| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer                         |
+| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer + `admin_vulnerability` |
 
 When User C is invited to Group B with the same default role (Guest), but different custom permissions with the same base access level (`read_code` and `read_vulnerability`), User C retains the custom permission from Group A (`read_vulnerability`).
 

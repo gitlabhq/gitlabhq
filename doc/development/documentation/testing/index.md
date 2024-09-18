@@ -364,7 +364,7 @@ We also run some documentation tests in the:
   <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>.
 - Gitaly project: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>.
 - GitLab Duo Plugin for JetBrains: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/.gitlab-ci.yml>
-- GitLab VS Code Extension project: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>.
+- GitLab Workflow extension for VS Code project: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>.
 - GitLab Plugin for Neovim project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>.
 - GitLab Language Server project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>.
 - GitLab Extension for Visual Studio project: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>.

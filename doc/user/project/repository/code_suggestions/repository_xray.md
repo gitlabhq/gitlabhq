@@ -39,10 +39,12 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 
 | Language   | Package manager | Configuration file   | GitLab version |
 | ---------- |-----------------| -------------------- | -------------- |
+| C++        | Conan           | `conanfile.py`       | 17.5 or later  |
 | C++        | Conan           | `conanfile.txt`      | 17.4 or later  |
 | Go         | Go Modules      | `go.mod`             | 17.4 or later  |
 | Java       | Gradle          | `build.gradle`       | 17.4 or later  |
 | Java       | Maven           | `pom.xml`            | 17.4 or later  |
+| Kotlin     | Gradle          | `build.gradle.kts`   | 17.5 or later  |
 | Ruby       | RubyGems        | `Gemfile.lock`       | 17.4 or later  |
 
 ## Enable Repository X-Ray in your CI pipeline (deprecated)

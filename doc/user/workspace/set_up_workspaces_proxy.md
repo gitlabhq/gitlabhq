@@ -17,6 +17,7 @@ To set up `gitlab-workspaces-proxy`, you're going to:
 1. [Generate an SSH host key](#generate-an-ssh-host-key).
 1. [Export the GitLab URL](#export-the-gitlab-url).
 1. [Create a configuration secret](#create-a-configuration-secret).
+1. [Install the GitLab Helm chart](#install-the-gitlab-helm-chart).
 1. [Verify the Kubernetes resources](#verify-the-kubernetes-resources).
 1. [Update your DNS records](#update-your-dns-records).
 
@@ -140,6 +141,10 @@ To create a configuration secret for the proxy:
    export SIGNING_KEY="make_up_a_random_key_consisting_of_letters_numbers_and_special_chars"
    ```
 
+## Install the GitLab Helm chart
+
+To install the GitLab Helm chart:
+
 1. Add the `helm` repository:
 
    ```shell
@@ -154,7 +159,7 @@ To create a configuration secret for the proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version 0.1.14 \
+     --version 0.1.15 \
      --namespace=gitlab-workspaces \
      --create-namespace \
      --set="auth.client_id=${CLIENT_ID}" \

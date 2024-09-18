@@ -1,0 +1,124 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+ENV['RAILS_ENV'] = 'test'
+
+require 'optparse'
+require 'open3'
+require 'fileutils'
+require 'uri'
+require 'gitlab-chronic'
+
+class MigrationsTimestampRefresher
+  ##
+  # Directories where migrations are stored
+  MIGRATION_DIRS = %w[db/migrate db/post_migrate].join(' ').freeze
+
+  def initialize(options)
+    @options = options
+  end
+
+  def execute
+    Dir.chdir(File.expand_path('..', __dir__)) do
+      refresh_migrations
+      regenerate_schema
+    end
+  end
+
+  private
+
+  attr_reader :options
+
+  def refresh_migrations
+    migrations = untracked_schema_migrations + committed_schema_migrations
+    migrations = migrations.sort_by { |file| file.slice(/\d{14}/) }
+    migrations.each do |file|
+      new_file = file.gsub(/\d{14}/, next_migration_number)
+      puts "\e[32m$ mv #{file} #{new_file}\e[37m"
+
+      FileUtils.mv(file, new_file)
+    end
+  end
+
+  def regenerate_schema
+    run('./scripts/regenerate-schema')
+  end
+
+  def next_migration_number
+    @next_migration_number ||= seed_migration_number.to_i
+    @next_migration_number += rand(2..5)
+    @next_migration_number.to_s
+  end
+
+  def seed_migration_number
+    Chronic
+      .parse(options.fetch(:after, 'now'))
+      .utc.strftime("%Y%m%d%H%M%S")
+  end
+
+  def untracked_schema_migrations
+    git_command = "git ls-files --others --exclude-standard -- #{MIGRATION_DIRS}"
+    run(git_command).chomp.split("\n")
+  end
+
+  def committed_schema_migrations
+    git_command = "git diff --name-only --diff-filter=A #{merge_base} -- #{MIGRATION_DIRS}"
+    run(git_command).chomp.split("\n")
+  end
+
+  ##
+  # Run the given +cmd+.
+  #
+  # The command is colored green, and the output of the command is
+  # colored gray.
+  # When the command failed an exception is raised.
+  def run(cmd)
+    puts "\e[32m$ #{cmd}\e[37m"
+    stdout_str, stderr_str, status = Open3.capture3(cmd)
+    puts "#{stdout_str}#{stderr_str}\e[0m"
+    raise("Command failed: #{stderr_str}") unless status.success?
+
+    stdout_str
+  end
+
+  ##
+  # Return the base commit between source and target branch.
+  def merge_base
+    @merge_base ||= run("git merge-base #{target_branch} #{source_ref}").chomp
+  end
+
+  ##
+  # Return the name of the target branch
+  #
+  # Get source ref from CI environment variable, or read the +TARGET+
+  # environment+ variable, or default to +HEAD+.
+  def target_branch
+    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || ENV['CI_DEFAULT_BRANCH'] || 'master'
+  end
+
+  ##
+  # Return the source ref
+  #
+  # Get source ref from CI environment variable, or default to +HEAD+.
+  def source_ref
+    ENV['CI_COMMIT_SHA'] || 'HEAD'
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  options = {}
+
+  OptionParser.new do |opts|
+    opts.on("-a", "--after VALUE", String, "Start value for the timestamp") do |value|
+      options[:after] = value
+    end
+
+    opts.on("-h", "--help", "Prints this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  MigrationsTimestampRefresher.new(options).execute
+end
