@@ -1,10 +1,12 @@
 import { GlForm, GlFormInput } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
+import EmailForm from '~/sessions/new/components/email_form.vue';
 import UpdateEmail from '~/sessions/new/components/update_email.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -14,6 +16,8 @@ import {
   I18N_UPDATE_EMAIL,
   I18N_RESEND_LINK,
   I18N_EMAIL_RESEND_SUCCESS,
+  I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
+  I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
 } from '~/sessions/new/constants';
 
 jest.mock('~/alert');
@@ -34,18 +38,21 @@ describe('EmailVerification', () => {
     isOfferEmailReset: true,
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props, provide } = { props: {}, provide: {} }) => {
     wrapper = mountExtended(EmailVerification, {
       propsData: { ...defaultPropsData, ...props },
-      provide: { updateEmailPath: '/users/update_email' },
+      provide: { ...provide, updateEmailPath: '/users/update_email' },
     });
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
+  const findSecondaryEmailForm = () => wrapper.findComponent(EmailForm);
   const findCodeInput = () => wrapper.findComponent(GlFormInput);
   const findUpdateEmail = () => wrapper.findComponent(UpdateEmail);
   const findSubmitButton = () => wrapper.find('[type="submit"]');
   const findResendLink = () => wrapper.findByText(I18N_RESEND_LINK);
+  const findShowSecondaryEmailFormLink = () =>
+    wrapper.findByText(I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT);
   const findUpdateEmailLink = () => wrapper.findByText(I18N_UPDATE_EMAIL);
   const enterCode = (code) => findCodeInput().setValue(code);
   const submitForm = () => findForm().trigger('submit');
@@ -67,6 +74,38 @@ describe('EmailVerification', () => {
 
     it("contains the user's username", () => {
       expect(wrapper.text()).toContain(`You are signed in as ${defaultPropsData.username}`);
+    });
+
+    it('contains help text linking the user to support page', () => {
+      expect(wrapper.text()).toContain(
+        "If you've lost access to the email associated to this account or having trouble with the code, here are some other steps you can take.",
+      );
+    });
+
+    it('does not render the link to show secondary email form', () => {
+      expect(findShowSecondaryEmailFormLink().exists()).toBe(false);
+    });
+
+    describe('when sendVerificationCodeToSecondaryEmail feature flag is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
+        });
+      });
+
+      it('contains help text describing option to verification code to secondary email and a link to support page', () => {
+        expect(wrapper.text()).toMatch(
+          /If you don't have access to the primary email address, you can.*send a code to another address associated with this account, or you can try to verify another way./,
+        );
+      });
+
+      it('renders the link to show secondary email form', () => {
+        expect(findShowSecondaryEmailFormLink().exists()).toBe(true);
+      });
+
+      it('does not render EmailForm for sending code to secondary email initially', () => {
+        expect(findSecondaryEmailForm().exists()).toBe(false);
+      });
     });
   });
 
@@ -191,25 +230,50 @@ describe('EmailVerification', () => {
       error: expect.any(Error),
     };
 
-    it.each`
+    describe.each`
       scenario                                    | statusCode               | response                                         | alertObject
-      ${'the code was successfully resend'}       | ${HTTP_STATUS_OK}        | ${{ status: 'success' }}                         | ${successAlertObject}
+      ${'resend was successful'}                  | ${HTTP_STATUS_OK}        | ${{ status: 'success' }}                         | ${successAlertObject}
       ${'there was a problem resending the code'} | ${HTTP_STATUS_OK}        | ${{ status: 'failure', message: failedMessage }} | ${failedAlertObject}
-      ${'when the request is undefined'}          | ${HTTP_STATUS_OK}        | ${{ status: undefined }}                         | ${undefinedAlertObject}
-      ${'when the request failed'}                | ${HTTP_STATUS_NOT_FOUND} | ${null}                                          | ${genericAlertObject}
-    `(`shows an alert message when $scenario`, async ({ statusCode, response, alertObject }) => {
-      enterCode('xxx');
+      ${'the response status is undefined'}       | ${HTTP_STATUS_OK}        | ${{ status: undefined }}                         | ${undefinedAlertObject}
+      ${'the request failed'}                     | ${HTTP_STATUS_NOT_FOUND} | ${null}                                          | ${genericAlertObject}
+    `(`displayed alert message when $scenario`, ({ statusCode, response, alertObject }) => {
+      beforeEach(() => {
+        createComponent({
+          provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
+        });
 
-      await submitForm();
+        enterCode('xxx');
+      });
 
-      axiosMock.onPost(defaultPropsData.resendPath).replyOnce(statusCode, response);
+      it('is correct when "Resend" button (resend to primary email) is clicked', async () => {
+        axiosMock
+          .onPost(defaultPropsData.resendPath, { user: { email: '' } })
+          .replyOnce(statusCode, response);
 
-      findResendLink().trigger('click');
+        findResendLink().trigger('click');
 
-      await axios.waitForAll();
+        await axios.waitForAll();
 
-      expect(createAlert).toHaveBeenCalledWith(alertObject);
-      expect(findCodeInput().element.value).toBe('');
+        expect(createAlert).toHaveBeenCalledWith(alertObject);
+        expect(findCodeInput().element.value).toBe('');
+      });
+
+      it('is correct when resending to secondary email', async () => {
+        const secondaryEmail = 'user_secondary@ema.il';
+
+        axiosMock
+          .onPost(defaultPropsData.resendPath, { user: { email: secondaryEmail } })
+          .replyOnce(statusCode, response);
+
+        await findShowSecondaryEmailFormLink().trigger('click');
+
+        findSecondaryEmailForm().vm.$emit('submit-email', secondaryEmail);
+
+        await axios.waitForAll();
+
+        expect(createAlert).toHaveBeenCalledWith(alertObject);
+        expect(findCodeInput().element.value).toBe('');
+      });
     });
   });
 
@@ -220,7 +284,7 @@ describe('EmailVerification', () => {
 
     describe('when the isOfferEmailReset property is set to false', () => {
       beforeEach(() => {
-        createComponent({ isOfferEmailReset: false });
+        createComponent({ props: { isOfferEmailReset: false } });
       });
 
       it('does not contain the link to show the update email form', () => {
@@ -248,6 +312,59 @@ describe('EmailVerification', () => {
       it('hides the UpdateEmail component, shows the updated email address and resets the form', () => {
         expect(findUpdateEmail().exists()).toBe(false);
         expect(wrapper.text()).toContain(newEmail);
+        expect(findCodeInput().element.value).toBe('');
+      });
+    });
+  });
+
+  describe('secondary email form', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: { glFeatures: { sendVerificationCodeToSecondaryEmail: true } },
+      });
+    });
+
+    it('is shown when the show link is clicked', async () => {
+      expect(findSecondaryEmailForm().exists()).toBe(false);
+
+      await findShowSecondaryEmailFormLink().trigger('click');
+
+      expect(findSecondaryEmailForm().exists()).toBe(true);
+      expect(findSecondaryEmailForm().props()).toMatchObject({
+        formInfo: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
+        submitText: I18N_RESEND_LINK,
+      });
+    });
+
+    describe('when it emits a submit-email event', () => {
+      it('hides the email form, shows the submitted secondary email, and resets the verification code form', async () => {
+        const secondaryEmail = 'user_secondary@ema.il';
+
+        enterCode('123');
+
+        await findShowSecondaryEmailFormLink().trigger('click');
+
+        findSecondaryEmailForm().vm.$emit('submit-email', secondaryEmail);
+
+        await nextTick();
+
+        expect(findSecondaryEmailForm().exists()).toBe(false);
+        expect(wrapper.text()).toContain(secondaryEmail);
+        expect(findCodeInput().element.value).toBe('');
+      });
+    });
+
+    describe('when it emits a cancel event', () => {
+      it('hides the email form, and resets the verification code form', async () => {
+        enterCode('123');
+
+        await findShowSecondaryEmailFormLink().trigger('click');
+
+        findSecondaryEmailForm().vm.$emit('cancel');
+
+        await nextTick();
+
+        expect(findSecondaryEmailForm().exists()).toBe(false);
         expect(findCodeInput().element.value).toBe('');
       });
     });

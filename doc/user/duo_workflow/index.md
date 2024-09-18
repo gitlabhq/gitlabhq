@@ -38,52 +38,13 @@ Before you can use GitLab Duo Workflow in VS Code:
 
 ### Install Docker and set the socket file path
 
-1. Install Docker:
+1. Download the [script](https://gitlab.com/-/snippets/3745948). This downloads Docker, Colima, pulls workflow generic image and updates VS code settings to update Docker context for Duo Workflow. You will need to [Authenticate with the GitLab container registry](../packages/container_registry/authenticate_with_container_registry.md) to pull the generic workflow image. You can run the script with `--dry-run` flag to know the dependencies that will be installed with the script.
+1. Run the script.
 
    ```shell
-   brew install docker
-   ```
-
-1. Install Colima by using Homebrew:
-
-   ```shell
-   brew install colima
-   ```
-
-1. Start Colima:
-
-   ```shell
-   colima start
-   ```
-
-1. Set Docker context:
-
-   ```shell
-   docker context use colima
-   ```
-
-1. [Authenticate with the GitLab container registry](../packages/container_registry/authenticate_with_container_registry.md).
-
-1. Manually pull the
-   [latest version of the Workflow Docker image](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry/6740066)
-   from the container registry:
-
-   ```shell
-   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
-   ```
-
-1. Access VS Code settings:
-   - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
-1. In the upper-right corner, select the **Open Settings (JSON)** icon.
-1. Add this line:
-
-   ```json
-   "gitlab.duoWorkflow.dockerSocket": "/Users/<username>/.colima/default/docker.sock"
-   "gitlab.featureFlags.languageServerWebviews": true
-   ```
-
-1. Save the settings file.
+        chmod +x duo_workflow_runtime.sh
+        ./duo_workflow_runtime.sh
+    ```
 
 ## Use GitLab Duo Workflow in VS Code
 

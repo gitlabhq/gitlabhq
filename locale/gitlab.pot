@@ -18303,9 +18303,6 @@ msgstr ""
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr ""
 
-msgid "Dependencies|Error parsing SBOM reports"
-msgstr ""
-
 msgid "Dependencies|Export as CSV"
 msgstr ""
 
@@ -18348,9 +18345,6 @@ msgstr ""
 msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
 msgstr ""
 
-msgid "Dependencies|The following SBOM reports could not be parsed, and the list of components may be incomplete. Please investigate the provided reports and ensure they conform to %{helpPageLinkStart}the requirements for SBOM documents%{helpPageLinkEnd}."
-msgstr ""
-
 msgid "Dependencies|There may be multiple paths"
 msgstr ""
 
@@ -18382,9 +18376,6 @@ msgid "Dependencies|Unknown path"
 msgstr ""
 
 msgid "Dependencies|Vulnerable components"
-msgstr ""
-
-msgid "Dependencies|report-%{index} (%{length})"
 msgstr ""
 
 msgid "Dependencies|unknown"
@@ -24504,9 +24495,6 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
-msgid "GitLab 17.5 and later will require that all network connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "GitLab API"
 msgstr ""
 
@@ -27602,6 +27590,9 @@ msgstr ""
 msgid "IdentityVerification|Enter a valid code."
 msgstr ""
 
+msgid "IdentityVerification|Enter a verified email address associated with this account. A new code will be sent to this address."
+msgstr ""
+
 msgid "IdentityVerification|For added security, you'll need to verify your identity."
 msgstr ""
 
@@ -27626,13 +27617,16 @@ msgstr ""
 msgid "IdentityVerification|Help us protect your account"
 msgstr ""
 
+msgid "IdentityVerification|If you don't have access to the primary email address, you can %{sendToSecondaryEmailButtonStart}%{sendToSecondaryEmailButtonEnd}, or you can %{supportLinkStart}try to verify another way.%{supportLinkEnd}"
+msgstr ""
+
 msgid "IdentityVerification|If you have not recently tried to sign into GitLab, we recommend %{password_link_start}changing your password%{link_end} and %{two_fa_link_start}setting up Two-Factor Authentication%{link_end} to keep your account safe. Your verification code expires after %{expires_in_minutes} minutes."
 msgstr ""
 
 msgid "IdentityVerification|If you have not recently tried to sign into GitLab, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe."
 msgstr ""
 
-msgid "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{link_start}here are some other steps you can take.%{link_end}"
+msgid "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{supportLinkStart}here are some other steps you can take.%{supportLinkEnd}"
 msgstr ""
 
 msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
@@ -27762,6 +27756,9 @@ msgid "IdentityVerification|Your account has been successfully verified. You'll 
 msgstr ""
 
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
+msgstr ""
+
+msgid "IdentityVerification|send a code to another address associated with this account"
 msgstr ""
 
 msgid "Identity|Active"
@@ -32124,6 +32121,9 @@ msgid "LicenseManagement|Denied"
 msgstr ""
 
 msgid "LicenseManagement|Uncategorized"
+msgstr ""
+
+msgid "LicenseScanningReport|The following SBOM reports could not be parsed. Therefore the list of components and their licenses may be incomplete."
 msgstr ""
 
 msgid "Licensed Enterprise Edition features can be used if the project namespace's plan includes the feature, or if the project is public."
@@ -47669,6 +47669,18 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
+msgid "SbomErrors|Error parsing SBOM reports"
+msgstr ""
+
+msgid "SbomErrors|Please investigate the provided reports and ensure they conform to %{helpPageLinkStart}the requirements for SBOM documents%{helpPageLinkEnd}."
+msgstr ""
+
+msgid "SbomErrors|The following SBOM reports could not be parsed. Therefore the list of components may be incomplete."
+msgstr ""
+
+msgid "SbomErrors|report-%{index} (%{length})"
+msgstr ""
+
 msgid "Scan pushed document contents for policy breaks. %{docs_link}"
 msgstr ""
 
@@ -50160,6 +50172,9 @@ msgstr ""
 msgid "SecurityReports|The Vulnerability Report shows results of successful scans on your project's default branch, manually added vulnerability records, and vulnerabilities found from scanning operational environments. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityReports|The following SBOM reports could not be parsed. Therefore the list of reported vulnerabilities may be incomplete."
+msgstr ""
+
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
@@ -52622,6 +52637,9 @@ msgid "Started asynchronous removal of all repository check states."
 msgstr ""
 
 msgid "Started escalation for this incident."
+msgstr ""
+
+msgid "Starting with GitLab 17.5, OpenSSL 3 will be used. All TLS connections require TLS 1.2 or higher. Weaker ciphers are no longer supported. Encryption must have at least of 112 bits of security. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Starting..."

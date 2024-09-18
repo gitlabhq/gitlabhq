@@ -56,8 +56,9 @@ module EmailHelpers
     ActionMailer::Base.deliveries.flat_map(&kind)
   end
 
-  def find_email_for(user)
-    ActionMailer::Base.deliveries.find { |d| d.to.include?(user.notification_email_or_default) }
+  def find_email_for(user, email: nil)
+    to = email || user.notification_email_or_default
+    ActionMailer::Base.deliveries.find { |d| d.to.include?(to) }
   end
 
   def have_referable_subject(referable, include_project: true, reply: false)

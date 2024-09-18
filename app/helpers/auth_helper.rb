@@ -179,10 +179,10 @@ module AuthHelper
 
     if owner.is_a?(Group)
       group_link = link_to(owner.name, group_path(owner))
-      _("%{group_link} added this OAuth application ").html_safe % { group_link: group_link }
+      safe_format(_("%{group_link} added this OAuth application "), group_link: group_link)
     else
       user_link = link_to(owner.name, user_path(owner))
-      _("%{user_link} added this OAuth application ").html_safe % { user_link: user_link }
+      safe_format(_("%{user_link} added this OAuth application "), user_link: user_link)
     end
   end
 

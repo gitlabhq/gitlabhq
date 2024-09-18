@@ -9,18 +9,33 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
   let(:user) { create(:user) }
 
-  shared_examples_for 'send verification instructions' do
+  shared_examples_for 'does not send verification instructions' do
+    let(:recipient_email) { nil }
+
+    specify do
+      mail = find_email_for(user, email: recipient_email)
+      expect(mail&.subject).not_to eq(s_('IdentityVerification|Verify your identity'))
+    end
+  end
+
+  shared_examples_for 'locks the user and sends verification instructions' do
+    let(:recipient_email) { nil }
+
     it 'locks the user' do
       user.reload
       expect(user.unlock_token).not_to be_nil
       expect(user.locked_at).not_to be_nil
     end
 
-    it 'sends an email' do
-      mail = find_email_for(user)
-      expect(mail.to).to match_array([user.email])
+    it 'sends an email', :aggregate_failures do
+      mail = find_email_for(user, email: recipient_email)
+      expect(mail.to).to match_array([recipient_email || user.email])
       expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
     end
+  end
+
+  shared_examples_for 'send verification instructions' do
+    it_behaves_like 'locks the user and sends verification instructions'
 
     context 'when an unconfirmed verification email exists' do
       let(:new_email) { 'new@email' }
@@ -34,10 +49,12 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
   end
 
   shared_examples_for 'prompt for email verification' do
-    it 'sets the verification_user_id session variable and renders the email verification template' do
+    it 'sets the verification_user_id session variable and renders the email verification template',
+      :aggregate_failures do
       expect(request.session[:verification_user_id]).to eq(user.id)
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template('devise/sessions/email_verification')
+      expect(response.body).to have_pushed_frontend_feature_flags(sendVerificationCodeToSecondaryEmail: true)
     end
   end
 
@@ -292,9 +309,11 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
   end
 
   describe 'resend_verification_code' do
+    let(:params) { { user: { email: '' } } }
+
     context 'when no verification_user_id session variable exists' do
       before do
-        post(users_resend_verification_code_path)
+        post(users_resend_verification_code_path, params: params)
       end
 
       it 'returns 204 No Content' do
@@ -304,15 +323,62 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     context 'when a verification_user_id session variable exists' do
+      let(:send_verification_code_to_secondary_email) { true }
+
       before do
         stub_session(session_data: { verification_user_id: user.id })
+        stub_feature_flags(send_verification_code_to_secondary_email: send_verification_code_to_secondary_email)
 
         perform_enqueued_jobs do
-          post(users_resend_verification_code_path)
+          post(users_resend_verification_code_path, params: params)
         end
       end
 
       it_behaves_like 'send verification instructions'
+
+      context 'when user => email param is present' do
+        context 'when email param matches the user\'s verified primary email' do
+          let(:params) { { user: { email: user.email } } }
+
+          it_behaves_like 'locks the user and sends verification instructions'
+        end
+
+        context 'when email param matches one of the user\'s verified secondary emails' do
+          let(:secondary_email) { create(:email, :confirmed, user: user) }
+          let(:params) { { user: { email: secondary_email.email } } }
+
+          it_behaves_like 'locks the user and sends verification instructions' do
+            let(:recipient_email) { secondary_email.email }
+          end
+
+          context 'when send_verification_code_to_secondary_email feature flag is disabled' do
+            let(:send_verification_code_to_secondary_email) { false }
+
+            it 'does not send verification instructions to email address specified by email param' do
+              sent_email = ActionMailer::Base.deliveries.find { |d| d.to.include?(secondary_email.email) }
+              expect(sent_email).to be_nil
+            end
+          end
+        end
+
+        context 'when email param matches one of the user\'s unverified secondary emails' do
+          let(:secondary_email) { create(:email, user: user) }
+          let(:params) { { user: { email: secondary_email.email } } }
+
+          it_behaves_like 'does not send verification instructions' do
+            let(:recipient_email) { secondary_email.email }
+          end
+        end
+
+        context 'when email param does not match any of the user\'s verified emails' do
+          let(:bad_actor) { create(:user) }
+          let(:params) { { user: { email: bad_actor.email } } }
+
+          it_behaves_like 'does not send verification instructions' do
+            let(:recipient_email) { bad_actor.email }
+          end
+        end
+      end
     end
 
     context 'when exceeding the rate limit' do
@@ -322,7 +388,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         stub_session(session_data: { verification_user_id: user.id })
 
         perform_enqueued_jobs do
-          post(users_resend_verification_code_path)
+          post(users_resend_verification_code_path, params: params)
         end
       end
 

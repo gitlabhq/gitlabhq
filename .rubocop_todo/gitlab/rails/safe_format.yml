@@ -4,7 +4,6 @@ Gitlab/Rails/SafeFormat:
   Exclude:
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
     - 'app/graphql/types/project_type.rb'
-    - 'app/helpers/auth_helper.rb'
     - 'app/helpers/emails_helper.rb'
     - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'

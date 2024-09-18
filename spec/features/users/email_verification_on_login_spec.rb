@@ -97,6 +97,31 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         expect(page).to have_content format(s_("IdentityVerification|You've reached the maximum amount of resends. "\
                                                'Wait %{interval} and try again.'), interval: 'about 1 hour')
       end
+
+      describe 'to a verified secondary email' do
+        let(:secondary_email) { create(:email, :confirmed, user: user) }
+
+        it 'resends a new code' do
+          perform_enqueued_jobs do
+            gitlab_sign_in(user)
+
+            code_from_primary_email = expect_instructions_email_and_extract_code
+
+            click_button s_('IdentityVerification|send a code to another address associated with this account')
+
+            fill_in _('Email'), with: secondary_email.email
+
+            click_button s_('IdentityVerification|Resend code')
+
+            expect(page).to have_content(s_('IdentityVerification|A new code has been sent.'))
+            expect_log_message('Instructions Sent', 2)
+
+            code_from_secondary_email = expect_instructions_email_and_extract_code(email: secondary_email.email)
+
+            expect(code_from_primary_email).not_to eq(code_from_secondary_email)
+          end
+        end
+      end
     end
 
     describe 'resending a new code when an existing code expires' do
@@ -436,9 +461,9 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     instructions_email.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
   end
 
-  def expect_instructions_email_and_extract_code
-    mail = find_email_for(user)
-    expect(mail.to).to match_array([user.email])
+  def expect_instructions_email_and_extract_code(email: nil)
+    mail = find_email_for(user, email: email)
+    expect(mail.to).to match_array([email || user.email])
     expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
     code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
     reset_delivered_emails!

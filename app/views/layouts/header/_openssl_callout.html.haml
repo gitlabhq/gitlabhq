@@ -3,7 +3,7 @@
 -# rubocop:disable Gitlab/DocUrl -- This documentation section is only available in version 17.4 onward in GitLab.com.
 - link = link_to('', 'https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html#1750', target: '_blank', rel: 'noopener noreferrer')
 -# rubocop:enable Gitlab/DocUrl
-- message = safe_format(_('GitLab 17.5 and later will require that all network connections use OpenSSL version 3. %{link_start}Learn more%{link_end}.'), tag_pair(link, :link_start, :link_end))
+- message = safe_format(_('Starting with GitLab 17.5, OpenSSL 3 will be used. All TLS connections require TLS 1.2 or higher. Weaker ciphers are no longer supported. Encryption must have at least of 112 bits of security. %{link_start}Learn more%{link_end}.'), tag_pair(link, :link_start, :link_end))
 
 = render Pajamas::AlertComponent.new(title: _('OpenSSL version 3'),
   variant: :warning,

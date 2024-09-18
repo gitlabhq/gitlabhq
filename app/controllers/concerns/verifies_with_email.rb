@@ -22,6 +22,8 @@ module VerifiesWithEmail
       # when the password is correct, which could be a giveaway when brute-forced.
       return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: user) { true }
 
+      push_frontend_feature_flag(:send_verification_code_to_secondary_email, user)
+
       # Verify the email if the user has logged in successfully.
       verify_email(user) if user.valid_password?(user_params[:password])
     end
@@ -37,7 +39,15 @@ module VerifiesWithEmail
       )
       render json: { status: :failure, message: message }
     else
-      send_verification_instructions(user)
+      secondary_email = user_secondary_email(user, email_params[:email])
+
+      if Feature.enabled?(:send_verification_code_to_secondary_email, user) &&
+          email_params[:email].present? && secondary_email.present?
+        send_verification_instructions(user, secondary_email: secondary_email)
+      elsif email_params[:email].blank?
+        send_verification_instructions(user)
+      end
+
       render json: { status: :success }
     end
   end
@@ -76,18 +86,18 @@ module VerifiesWithEmail
     User.find_by_id(session[:verification_user_id])
   end
 
-  def send_verification_instructions(user, reason: nil)
+  def send_verification_instructions(user, secondary_email: nil, reason: nil)
     service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token, user: user)
     raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
     user.lock_access!({ send_instructions: false, reason: reason })
-    send_verification_instructions_email(user, raw_token)
+    send_verification_instructions_email(user, raw_token, secondary_email)
   end
 
-  def send_verification_instructions_email(user, token)
+  def send_verification_instructions_email(user, token, secondary_email)
     return unless user.can?(:receive_notifications)
 
-    email = verification_email(user)
+    email = secondary_email || verification_email(user)
     Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
@@ -176,6 +186,10 @@ module VerifiesWithEmail
 
   def email_params
     params.require(:user).permit(:email)
+  end
+
+  def user_secondary_email(user, email)
+    user.emails.confirmed.find_by_email(email)&.email
   end
 
   def log_verification(user, event, reason = nil)

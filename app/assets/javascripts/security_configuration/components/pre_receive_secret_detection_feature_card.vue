@@ -1,6 +1,7 @@
 <script>
 import {
   GlCard,
+  GlExperimentBadge,
   GlIcon,
   GlLink,
   GlPopover,
@@ -10,7 +11,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -18,12 +18,12 @@ export default {
   name: 'PreReceiveSecretDetectionFeatureCard',
   components: {
     GlCard,
+    GlExperimentBadge,
     GlIcon,
     GlLink,
     GlPopover,
     GlToggle,
     GlAlert,
-    BetaBadge,
     GlButton,
   },
   directives: {
@@ -172,7 +172,7 @@ export default {
         data-testid="feature-status"
         :data-qa-feature="`${feature.type}_${enabled}_status`"
       >
-        <beta-badge size="sm" />
+        <gl-experiment-badge type="beta" popover-placement="top" class="!gl-mx-0" />
 
         <template v-if="enabled">
           <span>

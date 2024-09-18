@@ -1,5 +1,6 @@
 <script>
-import { GlSprintf, GlForm, GlFormGroup, GlFormInput, GlButton } from '@gitlab/ui';
+import { GlSprintf, GlForm, GlFormGroup, GlFormInput, GlButton, GlLink } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -13,11 +14,21 @@ import {
   I18N_EMAIL_RESEND_SUCCESS,
   I18N_GENERIC_ERROR,
   I18N_UPDATE_EMAIL,
+  I18N_HELP_TEXT,
+  I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
+  I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
+  I18N_CHECK_SUPPORT_PAGE_TEXT,
+  SUPPORT_URL,
   VERIFICATION_CODE_REGEX,
   SUCCESS_RESPONSE,
   FAILURE_RESPONSE,
 } from '../constants';
+import EmailForm from './email_form.vue';
 import UpdateEmail from './update_email.vue';
+
+const VERIFY_TOKEN_FORM = 'VERIFY_TOKEN_FORM';
+const UPDATE_EMAIL_FORM = 'UPDATE_EMAIL_FORM';
+const SEND_TO_SECONDARY_EMAIL_FORM = 'SEND_TO_SECONDARY_EMAIL_FORM';
 
 export default {
   name: 'EmailVerification',
@@ -27,8 +38,11 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlButton,
+    GlLink,
+    EmailForm,
     UpdateEmail,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     username: {
       type: String,
@@ -57,7 +71,7 @@ export default {
       verificationCode: '',
       submitted: false,
       verifyError: '',
-      showUpdateEmail: false,
+      activeForm: VERIFY_TOKEN_FORM,
     };
   },
   computed: {
@@ -108,12 +122,16 @@ export default {
         this.verifyError = response.data.message;
       }
     },
-    resend() {
+    resend(email = '') {
       axios
-        .post(this.resendPath)
+        .post(this.resendPath, { user: { email } })
         .then(this.handleResendResponse)
         .catch(this.handleError)
         .finally(this.resetForm);
+    },
+    sendToSecondaryEmail(email) {
+      this.verifyToken(email);
+      this.resend(email);
     },
     handleResendResponse(response) {
       if (response.data.status === undefined) {
@@ -139,11 +157,8 @@ export default {
       this.submitted = false;
       this.$refs.input.$el.focus();
     },
-    updateEmail() {
-      this.showUpdateEmail = true;
-    },
     verifyToken(email = '') {
-      this.showUpdateEmail = false;
+      this.activeForm = this.$options.forms.verifyTokenForm;
       if (email.length) this.email = email;
       this.$nextTick(this.resetForm);
     },
@@ -154,14 +169,31 @@ export default {
     submitButton: I18N_SUBMIT_BUTTON,
     resendLink: I18N_RESEND_LINK,
     updateEmail: I18N_UPDATE_EMAIL,
+    helpText: I18N_HELP_TEXT,
+    sendToSecondaryEmailButtonText: I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
+    sendToSecondaryEmailGuide: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
+    checkSupportPageText: I18N_CHECK_SUPPORT_PAGE_TEXT,
+    supportUrl: SUPPORT_URL,
+  },
+  forms: {
+    verifyTokenForm: VERIFY_TOKEN_FORM,
+    updateEmailForm: UPDATE_EMAIL_FORM,
+    sendToSecondaryEmailForm: SEND_TO_SECONDARY_EMAIL_FORM,
   },
 };
 </script>
 
 <template>
   <div>
-    <update-email v-if="showUpdateEmail" @verifyToken="verifyToken" />
-    <gl-form v-else @submit.prevent="verify">
+    <update-email v-if="activeForm === $options.forms.updateEmailForm" @verifyToken="verifyToken" />
+    <email-form
+      v-else-if="activeForm === $options.forms.sendToSecondaryEmailForm"
+      :form-info="$options.i18n.sendToSecondaryEmailGuide"
+      :submit-text="$options.i18n.resendLink"
+      @submit-email="sendToSecondaryEmail"
+      @cancel="verifyToken"
+    />
+    <gl-form v-else-if="activeForm === $options.forms.verifyTokenForm" @submit.prevent="verify">
       <section class="gl-mb-5">
         <gl-sprintf :message="$options.i18n.explanation">
           <template #username>{{ username }}</template>
@@ -191,7 +223,7 @@ export default {
         <gl-button block variant="confirm" type="submit" :disabled="!inputValidation.state">{{
           $options.i18n.submitButton
         }}</gl-button>
-        <gl-button block variant="link" class="gl-mt-3 gl-h-7" @click="resend">{{
+        <gl-button block variant="link" class="gl-mt-3 gl-h-7" @click="() => resend()">{{
           $options.i18n.resendLink
         }}</gl-button>
         <gl-button
@@ -199,10 +231,33 @@ export default {
           block
           variant="link"
           class="gl-mt-3 gl-h-7"
-          @click="updateEmail"
+          @click="() => (activeForm = $options.forms.updateEmailForm)"
           >{{ $options.i18n.updateEmail }}</gl-button
         >
       </section>
+      <p class="gl-mt-3 gl-text-secondary">
+        <gl-sprintf
+          v-if="glFeatures.sendVerificationCodeToSecondaryEmail"
+          :message="$options.i18n.helpText"
+        >
+          <template #sendToSecondaryEmailButton>
+            <gl-button
+              class="gl-align-baseline"
+              variant="link"
+              @click="() => (activeForm = $options.forms.sendToSecondaryEmailForm)"
+              >{{ $options.i18n.sendToSecondaryEmailButtonText }}</gl-button
+            >
+          </template>
+          <template #supportLink="{ content }">
+            <gl-link :href="$options.i18n.supportUrl" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+        <gl-sprintf v-else :message="$options.i18n.checkSupportPageText">
+          <template #supportLink="{ content }">
+            <gl-link :href="$options.i18n.supportUrl" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
     </gl-form>
   </div>
 </template>

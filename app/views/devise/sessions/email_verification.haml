@@ -1,6 +1,2 @@
 = render 'devise/shared/tab_single', tab_title: s_('IdentityVerification|Help us protect your account')
 .js-email-verification{ data: verification_data(resource) }
-
-.gl-mt-3.gl-text-secondary
-  - support_link_start = '<a href="https://about.gitlab.com/support/" target="_blank" rel="noopener noreferrer">'.html_safe
-  = s_("IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{link_start}here are some other steps you can take.%{link_end}").html_safe % { link_start: support_link_start, link_end: '</a>'.html_safe }

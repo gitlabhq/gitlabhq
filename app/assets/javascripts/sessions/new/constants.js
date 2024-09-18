@@ -1,5 +1,7 @@
+import { PROMO_URL } from '~/constants';
 import { s__, __ } from '~/locale';
 
+export const SUPPORT_URL = `${PROMO_URL}/support/`;
 export const I18N_EXPLANATION = s__(
   "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity. We've sent a verification code to %{email}",
 );
@@ -17,6 +19,18 @@ export const I18N_EMAIL = __('Email');
 export const I18N_UPDATE_EMAIL = s__('IdentityVerification|Update email');
 export const I18N_UPDATE_EMAIL_GUIDANCE = s__(
   "EmailVerification|Update your email to a valid permanent address. If you use a temporary email, you won't be able to sign in later.",
+);
+export const I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT = s__(
+  'IdentityVerification|send a code to another address associated with this account',
+);
+export const I18N_HELP_TEXT = s__(
+  "IdentityVerification|If you don't have access to the primary email address, you can %{sendToSecondaryEmailButtonStart}%{sendToSecondaryEmailButtonEnd}, or you can %{supportLinkStart}try to verify another way.%{supportLinkEnd}",
+);
+export const I18N_SEND_TO_SECONDARY_EMAIL_GUIDE = s__(
+  'IdentityVerification|Enter a verified email address associated with this account. A new code will be sent to this address.',
+);
+export const I18N_CHECK_SUPPORT_PAGE_TEXT = s__(
+  "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{supportLinkStart}here are some other steps you can take.%{supportLinkEnd}",
 );
 export const I18N_CANCEL = __('Cancel');
 export const I18N_EMAIL_INVALID = s__('IdentityVerification|Please enter a valid email address.');

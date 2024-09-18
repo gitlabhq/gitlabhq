@@ -141,10 +141,6 @@
   .diff-grid-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-
-    &.diff-grid-row-full {
-      grid-template-columns: 1fr;
-    }
   }
 
   .diff-grid-left,
@@ -273,21 +269,8 @@
   }
 }
 
-.tree-list-scroll {
-  max-height: 100%;
-  padding-bottom: $grid-size;
-  overflow-y: scroll;
-  overflow-x: auto;
-}
-
 .tree-list-gutter {
   height: $grid-size;
-}
-
-.tree-list-clear-icon {
-  right: 10px;
-  left: auto;
-  line-height: 0;
 }
 
 .file-row-header {
@@ -498,10 +481,6 @@
     border-radius: $gl-border-radius-base;
   }
 
-  .mr-widget-alert-container + .mr-widget-section {
-    border-top: 0;
-  }
-
   .commits-list {
     > li {
       padding: $gl-padding;
@@ -536,13 +515,6 @@
     font-size: $gl-font-size;
   }
 
-  .accept-merge-holder {
-    .accept-action {
-      display: inline-block;
-      float: left;
-    }
-  }
-
   .ci-widget {
     color: var(--gl-text-color-default);
     display: flex;
@@ -562,10 +534,6 @@
 
   .mr-widget-icon {
     font-size: 22px;
-  }
-
-  .mr-loading-icon {
-    margin: 3px 0;
   }
 
   .normal {
@@ -639,11 +607,6 @@
       margin: 0 0 0 10px;
     }
 
-    .state-label {
-      font-weight: $gl-font-weight-bold;
-      padding-right: 10px;
-    }
-
     .danger {
       color: var(--red-500, $red-500);
     }
@@ -651,14 +614,6 @@
     .dropdown-menu {
       li a {
         padding: 5px;
-      }
-
-      .merge-opt-icon {
-        line-height: 1.5;
-      }
-
-      .merge-opt-title {
-        margin-left: 8px;
       }
     }
 
@@ -684,29 +639,6 @@
       }
     }
 
-    &.mr-widget-empty-state {
-      line-height: 20px;
-      padding: $gl-padding;
-
-      .artwork {
-
-        @include media-breakpoint-down(md) {
-          margin-bottom: $gl-padding;
-        }
-      }
-
-      .text {
-        p {
-          margin-top: $gl-padding;
-        }
-
-        .highlight {
-          margin: 0 0 $gl-padding;
-          font-weight: $gl-font-weight-bold;
-        }
-      }
-    }
-
     &.mr-pipeline-suggest {
       border-radius: $gl-border-radius-base;
       line-height: 20px;
@@ -715,19 +647,6 @@
       .circle-icon-container {
         color: var(--gray-100, $gray-100);
       }
-    }
-  }
-
-  .ci-coverage {
-    float: right;
-  }
-
-  .stop-env-container {
-    color: var(--gl-text-color-default);
-    float: right;
-
-    a {
-      color: var(--gl-text-color-default);
     }
   }
 }
