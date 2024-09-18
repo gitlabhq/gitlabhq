@@ -358,15 +358,6 @@ class Namespace < ApplicationRecord
       coalesce.as(column.to_s)
     end
 
-    def with_disabled_organization_validation
-      current_value = Gitlab::SafeRequestStore[:require_organization]
-      Gitlab::SafeRequestStore[:require_organization] = false
-
-      yield
-    ensure
-      Gitlab::SafeRequestStore[:require_organization] = current_value
-    end
-
     def username_reserved?(username)
       without_project_namespaces.where(parent_id: nil).find_by_path_or_name(username).present?
     end

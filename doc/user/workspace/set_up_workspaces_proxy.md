@@ -17,7 +17,7 @@ To set up `gitlab-workspaces-proxy`, you're going to:
 1. [Generate an SSH host key](#generate-an-ssh-host-key).
 1. [Export the GitLab URL](#export-the-gitlab-url).
 1. [Create a configuration secret](#create-a-configuration-secret).
-1. [Install the GitLab Helm chart](#install-the-gitlab-helm-chart).
+1. [Install the Helm chart for the proxy](#install-the-helm-chart-for-the-proxy).
 1. [Verify the Kubernetes resources](#verify-the-kubernetes-resources).
 1. [Update your DNS records](#update-your-dns-records).
 
@@ -141,9 +141,9 @@ To create a configuration secret for the proxy:
    export SIGNING_KEY="make_up_a_random_key_consisting_of_letters_numbers_and_special_chars"
    ```
 
-## Install the GitLab Helm chart
+## Install the Helm chart for the proxy
 
-To install the GitLab Helm chart:
+To install the Helm chart for the proxy:
 
 1. Add the `helm` repository:
 
@@ -200,7 +200,7 @@ Let's now verify the Kubernetes resources.
      kubectl -n gitlab-workspaces get ingress
      ```
 
-     If you deploy the GitLab Helm chart to any namespace other than `gitlab-workspaces`,
+     If you deploy the Helm chart for the proxy to any namespace other than `gitlab-workspaces`,
      update the namespace in the [GitLab agent configuration](gitlab_agent_configuration.md):
 
      ```yaml

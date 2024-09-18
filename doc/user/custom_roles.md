@@ -52,7 +52,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
@@ -60,7 +60,7 @@ Prerequisites:
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
-In **Settings > Roles and Permissions**, the list of all custom roles displays the:
+In **Settings > Roles and permissions**, the list of all custom roles displays the:
 
 - Custom role name.
 - Role ID.
@@ -76,7 +76,7 @@ Prerequisites:
 After you create a custom role for your self-managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
@@ -84,7 +84,7 @@ After you create a custom role for your self-managed instance, you can assign th
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
-In **Settings > Roles and Permissions**, the list of all custom roles displays the:
+In **Settings > Roles and permissions**, the list of all custom roles displays the:
 
 - Custom role name.
 - Role ID.
@@ -108,7 +108,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
@@ -121,7 +121,7 @@ Prerequisites:
 - You must be an administrator for the self-managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
@@ -140,7 +140,7 @@ You can remove a custom role from a group only if no members have that role. See
 1. On the left sidebar:
    - For self-managed, at the bottom, select **Admin**.
    - For SaaS, select **Search or go to** and find your group.
-1. Select **Settings > Roles and Permissions**.
+1. Select **Settings > Roles and permissions**.
 1. Select **Custom Roles**.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
 

@@ -30888,9 +30888,6 @@ msgstr ""
 msgid "Jobs|Jobs are the building blocks of a GitLab CI/CD pipeline. Each job has a specific task, like testing code. To set up jobs in a CI/CD pipeline, add a CI/CD configuration file to your project."
 msgstr ""
 
-msgid "Jobs|No jobs to show"
-msgstr ""
-
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr ""
 
@@ -46313,7 +46310,7 @@ msgstr ""
 msgid "Role"
 msgstr ""
 
-msgid "Roles and Permissions"
+msgid "Roles and permissions"
 msgstr ""
 
 msgid "Roll up totals may reflect child items you don’t have access to."

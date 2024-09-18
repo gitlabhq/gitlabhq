@@ -35633,6 +35633,10 @@ LLMs supported by the self-hosted model features.
 | <a id="aiacceptedselfhostedmodelscodellama_13b_code"></a>`CODELLAMA_13B_CODE` | Code-Llama 13b-code: Suitable for code completion. |
 | <a id="aiacceptedselfhostedmodelscodestral"></a>`CODESTRAL` | Codestral 22B: Suitable for code completion and code generation. |
 | <a id="aiacceptedselfhostedmodelsdeepseekcoder"></a>`DEEPSEEKCODER` | Deepseek Coder 1.3b, 6.7b and 33b base or instruct. |
+| <a id="aiacceptedselfhostedmodelsllama3"></a>`LLAMA3` | LLaMA 3 - 8B: Suitable for code generation and completion. |
+| <a id="aiacceptedselfhostedmodelsllama3_70b"></a>`LLAMA3_70B` | LLaMA 3 - 70B: Suitable for code generation and completion. |
+| <a id="aiacceptedselfhostedmodelsllama3_70b_text"></a>`LLAMA3_70B_TEXT` | LLaMA 3 Text - 70B Text: Suitable for code generation and completion. |
+| <a id="aiacceptedselfhostedmodelsllama3_text"></a>`LLAMA3_TEXT` | LLaMA 3 Text - 8B: Suitable for code generation and completion. |
 | <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral 7B: Suitable for code generation and duo chat. |
 | <a id="aiacceptedselfhostedmodelsmistral_text"></a>`MISTRAL_TEXT` | Mistral-7B Text: Suitable for code completion. |
 | <a id="aiacceptedselfhostedmodelsmixtral"></a>`MIXTRAL` | Mixtral 8x7B: Suitable for code generation and duo chat. |

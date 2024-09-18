@@ -477,6 +477,17 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context "when a thread name is set" do
+      it "includes the name in the payload" do
+        allow(Thread.current).to receive(:name).and_return("sidekiq-worker")
+
+        expect(logger).to receive(:info).with(a_hash_including('sidekiq_thread_name' => 'sidekiq-worker')).ordered
+        expect(logger).to receive(:info).with(a_hash_including('sidekiq_thread_name' => 'sidekiq-worker')).ordered
+
+        call_subject(job, 'test_queue') {}
+      end
+    end
   end
 
   describe '#add_time_keys!' do

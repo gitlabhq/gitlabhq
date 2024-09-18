@@ -157,8 +157,8 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
     end
   end
 
-  describe '#parse_trivy_source' do
-    subject(:parse_trivy_source_from_properties) { described_class.parse_trivy_source(properties) }
+  describe '#parse_component_source' do
+    subject(:parse_component_source_from_properties) { described_class.parse_component_source(properties) }
 
     it_behaves_like 'handling invalid properties'
 
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
       it 'does not call source parsers' do
         expect(Gitlab::Ci::Parsers::Sbom::Source::Trivy).not_to receive(:source)
 
-        parse_trivy_source_from_properties
+        parse_component_source_from_properties
       end
     end
 
@@ -200,7 +200,27 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
       it 'passes only supported properties to the trivy parser' do
         expect(Gitlab::Ci::Parsers::Sbom::Source::Trivy).to receive(:source).with(expected_input)
 
-        parse_trivy_source_from_properties
+        parse_component_source_from_properties
+      end
+    end
+
+    context 'when dependency_scanning_component properties are present' do
+      let(:properties) do
+        [
+          { 'name' => 'gitlab:dependency_scanning_component:reachability', 'value' => 'unknown' }
+        ]
+      end
+
+      let(:expected_input) do
+        {
+          'reachability' => 'unknown'
+        }
+      end
+
+      it 'passes only supported properties to the container scanning for registry parser' do
+        expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanningComponent).to receive(:source).with(expected_input)
+
+        parse_component_source_from_properties
       end
     end
   end

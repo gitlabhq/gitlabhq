@@ -1,0 +1,15 @@
+---
+table_name: ci_job_token_authorizations
+classes:
+- Ci::JobToken::Authorization
+feature_categories:
+- secrets_management
+description: |
+  Model where we log all inbound authorizations from CI_JOB_TOKEN.
+  The purpose of this model is to assist project owners in enabling the job token scope
+  and making informed decisions on what to add to the allowlist.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162645
+milestone: '17.5'
+gitlab_schema: gitlab_ci
+sharding_key:
+  accessed_project_id: projects

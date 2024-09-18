@@ -35,6 +35,13 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+ci_job_token_authorizations:
+  - table: projects
+    column: origin_project_id
+    on_delete: async_delete
+  - table: projects
+    column: accessed_project_id
+    on_delete: async_delete
 ci_job_token_group_scope_links:
   - table: users
     column: added_by_id

@@ -40,7 +40,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         find_by_testid('jobs-finished-tab').click
         wait_for_requests
 
-        expect(page).to have_content('No jobs to show')
+        expect(page).to have_content('No results found')
       end
     end
 

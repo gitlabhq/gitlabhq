@@ -14,7 +14,7 @@ variables:
   NODE_VERSION: "20.12"
   OS_VERSION: "bookworm"
   RUBY_VERSION_DEFAULT: "3.1.5"
-  RUBY_VERSION_NEXT: "3.2.5"
+  RUBY_VERSION_NEXT: "3.2.5" # Keep this value consistent with the `[Nightly] Caches update for Ruby 3.2` gitlab-foss pipeline schedule setting. See https://gitlab.com/gitlab-org/gitlab/-/issues/488386#note_2115955499
   RUBYGEMS_VERSION: "3.4"
   RUST_VERSION: "1.73"
   UBI_VERSION: "8.6"

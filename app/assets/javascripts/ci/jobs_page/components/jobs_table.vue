@@ -1,6 +1,6 @@
 <script>
 import { GlTable } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
 import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
 import { JOBS_DEFAULT_FIELDS } from '../constants';
@@ -10,9 +10,6 @@ import JobCell from './job_cells/job_cell.vue';
 import PipelineCell from './job_cells/pipeline_cell.vue';
 
 export default {
-  i18n: {
-    emptyText: s__('Jobs|No jobs to show'),
-  },
   components: {
     ActionsCell,
     StatusCell,
@@ -21,6 +18,7 @@ export default {
     ProjectCell,
     RunnerCell,
     GlTable,
+    EmptyResult,
   },
   props: {
     jobs: {
@@ -51,12 +49,11 @@ export default {
 
 <template>
   <gl-table
+    v-if="jobs.length > 0"
     :items="jobs"
     :fields="tableFields"
     :tbody-tr-attr="{ 'data-testid': 'jobs-table-row' }"
-    :empty-text="$options.i18n.emptyText"
     data-testid="jobs-table"
-    show-empty
     stacked="lg"
     fixed
   >
@@ -102,4 +99,5 @@ export default {
       <actions-cell class="gl-float-right" :job="item" />
     </template>
   </gl-table>
+  <empty-result v-else type="search" />
 </template>

@@ -2910,6 +2910,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_job_token_log_authorization
+  :worker_name: Ci::JobToken::LogAuthorizationWorker
+  :feature_category: :secrets_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_low_urgency_cancel_redundant_pipelines
   :worker_name: Ci::LowUrgencyCancelRedundantPipelinesWorker
   :feature_category: :continuous_integration

@@ -17,6 +17,7 @@ module Gitlab
           AQUASECURITY_PREFIX = 'aquasecurity:'
           SOURCE_PARSERS = {
             'dependency_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning,
+            'dependency_scanning_component' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanningComponent,
             'container_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning,
             'container_scanning_for_registry' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanningForRegistry,
             'trivy' => ::Gitlab::Ci::Parsers::Sbom::Source::Trivy
@@ -29,6 +30,7 @@ module Gitlab
             dependency_scanning:source_file:path
             dependency_scanning:package_manager:name
             dependency_scanning:language:name
+            dependency_scanning_component:reachability
             container_scanning:image:name
             container_scanning:image:tag
             container_scanning:operating_system:name
@@ -53,8 +55,8 @@ module Gitlab
             new(...).parse_source
           end
 
-          def self.parse_trivy_source(...)
-            new(...).parse_trivy_source
+          def self.parse_component_source(...)
+            new(...).parse_component_source
           end
 
           def initialize(properties)
@@ -68,7 +70,7 @@ module Gitlab
             source
           end
 
-          def parse_trivy_source
+          def parse_component_source
             return unless properties.present?
 
             source

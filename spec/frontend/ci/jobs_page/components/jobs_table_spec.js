@@ -1,5 +1,6 @@
 import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -13,6 +14,7 @@ describe('Jobs Table', () => {
   let wrapper;
 
   const findTable = () => wrapper.findComponent(GlTable);
+  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findTableRows = () => wrapper.findAllByTestId('jobs-table-row');
   const findJobStage = () => wrapper.findByTestId('job-stage-name');
@@ -85,6 +87,18 @@ describe('Jobs Table', () => {
 
     it('hides the job project link', () => {
       expect(findJobProject().exists()).toBe(false);
+    });
+  });
+
+  describe('EmptyResult component', () => {
+    it('does not display Empty result with jobs defined', () => {
+      createComponent({ jobs: mockJobsNodes });
+      expect(findEmptyResult().exists()).toBe(false);
+    });
+
+    it('displays Empty result when there are no jobs', () => {
+      createComponent({ jobs: [] });
+      expect(findEmptyResult().exists()).toBe(true);
     });
   });
 

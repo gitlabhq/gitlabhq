@@ -8168,6 +8168,22 @@ CREATE SEQUENCE ci_job_artifacts_id_seq
 
 ALTER SEQUENCE ci_job_artifacts_id_seq OWNED BY p_ci_job_artifacts.id;
 
+CREATE TABLE ci_job_token_authorizations (
+    id bigint NOT NULL,
+    accessed_project_id bigint NOT NULL,
+    origin_project_id bigint NOT NULL,
+    last_authorized_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE ci_job_token_authorizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_job_token_authorizations_id_seq OWNED BY ci_job_token_authorizations.id;
+
 CREATE TABLE ci_job_token_group_scope_links (
     id bigint NOT NULL,
     source_project_id bigint NOT NULL,
@@ -20926,7 +20942,9 @@ CREATE TABLE zoekt_repositories (
     state smallint DEFAULT 0 NOT NULL,
     size_bytes bigint DEFAULT 0 NOT NULL,
     index_file_count integer DEFAULT 0 NOT NULL,
-    CONSTRAINT c_zoekt_repositories_on_project_id_and_project_identifier CHECK (((project_id IS NULL) OR (project_identifier = project_id)))
+    retries_left smallint DEFAULT 10 NOT NULL,
+    CONSTRAINT c_zoekt_repositories_on_project_id_and_project_identifier CHECK (((project_id IS NULL) OR (project_identifier = project_id))),
+    CONSTRAINT c_zoekt_repositories_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
 );
 
 CREATE SEQUENCE zoekt_repositories_id_seq
@@ -21563,6 +21581,8 @@ ALTER TABLE ONLY ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('ci_freez
 ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_group_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('ci_instance_variables_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_job_token_authorizations ALTER COLUMN id SET DEFAULT nextval('ci_job_token_authorizations_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_job_token_group_scope_links ALTER COLUMN id SET DEFAULT nextval('ci_job_token_group_scope_links_id_seq'::regclass);
 
@@ -23563,6 +23583,9 @@ ALTER TABLE ONLY p_ci_job_artifacts
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT ci_job_artifacts_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY ci_job_token_authorizations
+    ADD CONSTRAINT ci_job_token_authorizations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_job_token_group_scope_links
     ADD CONSTRAINT ci_job_token_group_scope_links_pkey PRIMARY KEY (id);
@@ -26711,6 +26734,8 @@ CREATE UNIQUE INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ON ONLY
 
 CREATE UNIQUE INDEX idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq ON ci_job_artifacts USING btree (job_id, file_type, partition_id);
 
+CREATE UNIQUE INDEX idx_ci_job_token_authorizations_on_accessed_and_origin_project ON ci_job_token_authorizations USING btree (accessed_project_id, origin_project_id);
+
 CREATE INDEX p_ci_pipelines_ci_ref_id_id_idx ON ONLY p_ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
@@ -27608,6 +27633,8 @@ CREATE INDEX index_ci_job_artifacts_on_project_id_and_id ON ci_job_artifacts USI
 CREATE INDEX p_ci_job_artifacts_project_id_idx1 ON ONLY p_ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
+
+CREATE INDEX index_ci_job_token_authorizations_on_origin_project_id ON ci_job_token_authorizations USING btree (origin_project_id);
 
 CREATE INDEX index_ci_job_token_group_scope_links_on_added_by_id ON ci_job_token_group_scope_links USING btree (added_by_id);
 

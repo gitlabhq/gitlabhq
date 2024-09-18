@@ -179,7 +179,11 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     describe 'metrics' do
       include_context 'with accessible and inaccessible projects'
 
-      context 'when the access project has ci_inbound_job_token_scope_enabled' do
+      context 'when the accessed project has ci_inbound_job_token_scope_enabled' do
+        before do
+          fully_accessible_project.update!(ci_inbound_job_token_scope_enabled: true)
+        end
+
         it 'increments the counter metric with legacy: false' do
           expect(Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter)
             .to receive(:increment)
@@ -187,15 +191,51 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
           scope.accessible?(fully_accessible_project)
         end
+
+        it 'does not log authorizations' do
+          expect(Ci::JobToken::Authorization).not_to receive(:log)
+
+          scope.accessible?(fully_accessible_project)
+        end
       end
 
-      context 'when the access project does not have ci_inbound_job_token_scope_enabled' do
-        it 'increments the counter metric with legacy: true' do
+      context 'when the accessed project has ci_inbound_job_token_scope_enabled false' do
+        before do
+          fully_accessible_project.update!(ci_inbound_job_token_scope_enabled: false)
+        end
+
+        it 'increments the counter metric with legacy: false' do
           expect(Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter)
             .to receive(:increment)
-            .with(legacy: false)
+            .with(legacy: true)
 
-          scope.accessible?(unscoped_public_project)
+          scope.accessible?(fully_accessible_project)
+        end
+
+        it 'captures authorizations', :request_store do
+          expect(Ci::JobToken::Authorization)
+            .to receive(:capture)
+            .with(origin_project: current_project, accessed_project: fully_accessible_project)
+            .once
+            .and_call_original
+
+          scope.accessible?(fully_accessible_project)
+
+          expect(Ci::JobToken::Authorization.captured_authorizations).to eq(
+            accessed_project_id: fully_accessible_project.id,
+            origin_project_id: current_project.id)
+        end
+
+        context 'when feature flag ci_job_token_authorizations_log is disabled' do
+          before do
+            stub_feature_flags(ci_job_token_authorizations_log: false)
+          end
+
+          it 'does not log authorizations', :request_store do
+            scope.accessible?(fully_accessible_project)
+
+            expect(Ci::JobToken::Authorization.captured_authorizations).to be_nil
+          end
         end
       end
     end

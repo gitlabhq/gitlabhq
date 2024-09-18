@@ -214,7 +214,6 @@ RSpec.configure do |config|
   config.include UserWithNamespaceShim
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
-  config.include DisableNamespaceOrganizationValidationHelper
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 

@@ -26,8 +26,12 @@ module Ci
 
       def accessible?(accessed_project)
         return true if self_referential?(accessed_project)
+        return false unless outbound_accessible?(accessed_project) && inbound_accessible?(accessed_project)
 
-        outbound_accessible?(accessed_project) && inbound_accessible?(accessed_project)
+        # We capture only successful inbound authorizations
+        Ci::JobToken::Authorization.capture(origin_project: current_project, accessed_project: accessed_project)
+
+        true
       end
 
       def outbound_projects

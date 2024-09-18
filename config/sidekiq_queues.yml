@@ -187,6 +187,8 @@
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
   - 1
+- - ci_job_token_log_authorization
+  - 1
 - - ci_low_urgency_cancel_redundant_pipelines
   - 1
 - - ci_parse_secure_file_metadata
@@ -758,6 +760,8 @@
 - - search_zoekt_project_transfer
   - 1
 - - search_zoekt_repo_marked_as_to_delete_event
+  - 1
+- - search_zoekt_task_failed_event
   - 1
 - - secrets_management_provision_project_secrets_manager
   - 1

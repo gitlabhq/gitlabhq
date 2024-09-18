@@ -169,10 +169,13 @@ To turn on restricted access:
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
+  - You promote a user that is a member of the root group and has the Minimal Access role to a higher role.
+  - For Ultimate, you promote a user with the Guest role to a higher role.
+  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with the Owner role add members simultaneously.
   - New billable members delay accepting an invitation.
-  - You change from using the user cap to restricted access, and have members pending approval 
-    from before you changed to restricted access, those members remain in a pending state. If 
+  - You change from using the user cap to restricted access, and have members pending approval
+    from before you changed to restricted access. In this case, those members remain in a pending state. If
     pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
 - If you renew your subscription through the GitLab Sales Team for less users than your current
 subscription, you will incur an overage fee. To avoid this fee, remove additional users before your

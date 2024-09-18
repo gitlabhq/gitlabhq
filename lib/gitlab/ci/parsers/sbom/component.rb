@@ -39,7 +39,7 @@ module Gitlab
           strong_memoize_attr :purl
 
           def properties
-            CyclonedxProperties.parse_trivy_source(data['properties'])
+            CyclonedxProperties.parse_component_source(data['properties'])
           end
           strong_memoize_attr :properties
 
