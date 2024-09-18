@@ -970,11 +970,27 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.errors.messages[:email].first).to eq(expected_error)
         end
 
+        it 'allows example@test.com if user is placeholder or import user' do
+          placeholder_user = build(:user, :placeholder, email: "example@test.com")
+          import_user = build(:user, :import_user, email: "example@test.com")
+
+          expect(placeholder_user).to be_valid
+          expect(import_user).to be_valid
+        end
+
         it 'does not allow user to update email to a non-allowlisted domain' do
           user = create(:user, email: "info@test.example.com")
 
           expect { user.update!(email: "test@notexample.com") }
             .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
+        end
+
+        it 'allows placeholder and import users to update email to a non-allowlisted domain' do
+          placeholder_user = create(:user, :placeholder, email: "info@test.example.com")
+          import_user = create(:user, :import_user, email: "info2@test.example.com")
+
+          expect(placeholder_user.update!(email: "test@notexample.com")).to eq(true)
+          expect(import_user.update!(email: "test2@notexample.com")).to eq(true)
         end
       end
 

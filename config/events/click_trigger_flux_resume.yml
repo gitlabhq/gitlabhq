@@ -1,0 +1,18 @@
+---
+description: Click on the resume Flux resource reconciliation button
+internal_events: true
+action: click_trigger_flux_resume
+identifiers:
+- project
+- namespace
+- user
+product_group: environments
+milestone: '17.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165955
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

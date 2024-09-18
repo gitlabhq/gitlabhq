@@ -181,6 +181,13 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## 17.5.0
 
+- The [Linux Package](https://docs.gitlab.com/omnibus/) upgrades OpenSSL from v1.1.1w to v3.0.0.
+
+- Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
+  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/index.md#recommended-cloud-providers-and-services) installations
+  use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
+  the TLS versions, ciphers, and certificates that are used work with the security level changes discussed below.
+
 With the upgrade to OpenSSL version 3:
 
 - GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
@@ -210,6 +217,10 @@ Check the [GitLab documentation for the upgrade to OpenSSL 3](https://docs.gitla
     new environment as the database restore removes the existing database schema definition and uses the definition
     that's stored as part of the backup.
 - Git 2.46.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- S3 object storage uploads in Workhorse are now handled by default using the [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597). If you experience issues
+  with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature).
+- GitLab Runner v17.4.0 also [switched from the MinIO S3 client to the AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) for distributed cache access.
+  The MinIO client can be enabled again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER` [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
 
 ## 17.3.0
 

@@ -632,6 +632,7 @@ You may face the following error when running the [health check Rake task](commo
 Can connect to the primary node ... no
 Reason:
 end of file reached
+```
 
 It might happen if the incorrect URL to the primary site was specified in the setting. To troubleshoot it, 
 run the following commands in [the Rails Console](../../../operations/rails_console.md):

@@ -2292,7 +2292,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 |----------------------|-------------------------|-----------------|--------------|
 | Webservice           | 308 vCPU<br/>385 GB memory (request)<br/>539 GB memory (limit) | 11 x `n1-standard-32` | 11 x `c5.9xlarge` |
 | Sidekiq              | 12.6 vCPU<br/>28 GB memory (request)<br/>56 GB memory (limit) | 4 x `n1-standard-4` | 4 x `m5.xlarge`  |
-| Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-4` | 2 x `m5.xlarge`   |
+| Supporting services  | 8 vCPU<br/>30 GB memory | 2 x `n1-standard-4` | 2 x `m5.xlarge`   |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
   [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.

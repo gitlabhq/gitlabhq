@@ -70,10 +70,4 @@ export const AWS_EASY_BUTTONS = [
   },
 ];
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-export const LEGACY_REGISTER_HELP_URL = helpPagePath(
-  'architecture/blueprints/runner_tokens/index.md',
-  {
-    anchor: 'using-the-authentication-token-in-place-of-the-registration-token',
-  },
-);
+export const LEGACY_REGISTER_HELP_URL = helpPagePath('architecture/blueprints/runner_tokens/index');

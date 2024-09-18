@@ -28,6 +28,9 @@ export default {
   },
   computed: {
     compiledHref() {
+      // This component is a wrapper around `helpPagePath`, so it's okay to disable the
+      // `local-rules/require-valid-help-page-path` ESLint rule here. Usages of this component are
+      // being checked by the `local-rules/vue-require-valid-help-page-link-component` rule.
       // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath(this.href, { anchor: this.anchor });
     },

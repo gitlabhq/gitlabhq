@@ -207,7 +207,7 @@
 {"name":"gemoji","version":"3.0.1","platform":"ruby","checksum":"80553f2f4932a7a95fb1b3c7c63f7dd937e7c8c610164bbdea28fd06eba5f36d"},
 {"name":"get_process_mem","version":"0.2.7","platform":"ruby","checksum":"4afd3c3641dd6a817c09806c7d6d509d8a9984512ac38dea8b917426bbf77eba"},
 {"name":"gettext","version":"3.4.9","platform":"ruby","checksum":"292864fe6a15c224cee4125a4a72fab426fdbb280e4cff3cfe44935f549b009a"},
-{"name":"gettext_i18n_rails","version":"1.12.0","platform":"ruby","checksum":"6ac4817731a9e2ce47e1e83381ac34f9142263bc2911aaaafb2526d2f1afc1be"},
+{"name":"gettext_i18n_rails","version":"1.13.0","platform":"ruby","checksum":"d4a4739d928b6ce52a2d694d33a831dcb06c7c8e197b3172fc73dfaa20ac8ee6"},
 {"name":"git","version":"1.18.0","platform":"ruby","checksum":"c9b80462e4565cd3d7a9ba8440c41d2c52244b17b0dad0bfddb46de70630c465"},
 {"name":"gitaly","version":"17.4.0.pre.rc1","platform":"ruby","checksum":"72c69dfa77871be78dd2e017be3131b9515b396d779df5785f77df291219f7b3"},
 {"name":"gitlab","version":"4.19.0","platform":"ruby","checksum":"3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679"},

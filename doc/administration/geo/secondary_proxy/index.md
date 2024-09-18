@@ -248,7 +248,11 @@ for details.
 
 ### Disable secondary site HTTP proxying per site
 
-If there are multiple secondary sites, you can disable HTTP proxying on each secondary site separately, by following these steps on a Linux package installation:
+If there are multiple secondary sites, you can disable HTTP proxying on each secondary site separately, by following these steps:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
@@ -269,7 +273,9 @@ If there are multiple secondary sites, you can disable HTTP proxying on each sec
    sudo gitlab-ctl reconfigure
    ```
 
-In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
+:::TabTitle Helm chart (Kubernetes)
+
+You can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
 or specify the following in your values file:
 
 ```yaml
@@ -278,6 +284,8 @@ gitlab:
     extraEnv:
       GEO_SECONDARY_PROXY: "0"
 ```
+
+::EndTabs
 
 ### Disable secondary site Git proxying
 

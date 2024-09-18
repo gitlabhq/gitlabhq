@@ -287,7 +287,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 Prerequisites:
 
 - You must have at least the Reporter role.
-- You must create a [custom value stream](#create-a-value-stream-with-gitlab-default-stages). Value stream analytics only shows custom value streams created for your group or project.
+- You must create a [custom value stream](#create-a-value-stream). Value stream analytics only shows custom value streams created for your group or project.
 
 To view value stream analytics for your group or project:
 

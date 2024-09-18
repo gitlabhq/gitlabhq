@@ -217,3 +217,30 @@ export const TREE_ITEM_STATUS_ICONS = {
   [STATUS_READY]: SUCCESS_STATUS_ICON,
   [STATUS_FAILED]: FAILED_STATUS_ICON,
 };
+
+export const DELETE_POD_ACTION = {
+  name: 'delete-pod',
+  text: s__('KubernetesDashboard|Delete pod'),
+  icon: 'remove',
+  variant: 'danger',
+  class: '!gl-text-red-500',
+};
+
+export const FLUX_RECONCILE_ACTION = {
+  name: 'flux-reconcile',
+  text: s__('KubernetesDashboard|Trigger reconciliation'),
+  icon: 'retry',
+};
+
+export const FLUX_SUSPEND_ACTION = {
+  name: 'flux-suspend',
+  text: s__('KubernetesDashboard|Suspend reconciliation'),
+  variant: 'danger',
+  icon: 'stop',
+};
+
+export const FLUX_RESUME_ACTION = {
+  name: 'flux-resume',
+  text: s__('KubernetesDashboard|Resume reconciliation'),
+  icon: 'play',
+};

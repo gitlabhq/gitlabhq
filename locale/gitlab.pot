@@ -31344,6 +31344,9 @@ msgstr ""
 msgid "KubernetesDashboard|ReplicaSets"
 msgstr ""
 
+msgid "KubernetesDashboard|Resume reconciliation"
+msgstr ""
+
 msgid "KubernetesDashboard|Running"
 msgstr ""
 
@@ -31369,6 +31372,9 @@ msgid "KubernetesDashboard|Status"
 msgstr ""
 
 msgid "KubernetesDashboard|Succeeded"
+msgstr ""
+
+msgid "KubernetesDashboard|Suspend reconciliation"
 msgstr ""
 
 msgid "KubernetesDashboard|Suspended"
