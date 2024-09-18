@@ -23648,9 +23648,6 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
-msgid "GitLab 17.5 and later will require that incoming connections use OpenSSL version 3. %{link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "GitLab API"
 msgstr ""
 
@@ -51127,6 +51124,9 @@ msgid "Started asynchronous removal of all repository check states."
 msgstr ""
 
 msgid "Started escalation for this incident."
+msgstr ""
+
+msgid "Starting with GitLab 17.5, OpenSSL 3 will be used. All TLS connections require TLS 1.2 or higher. Weaker ciphers are no longer supported. Encryption must have at least of 112 bits of security. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Starting..."
