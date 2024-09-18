@@ -4,7 +4,7 @@
 
     %fieldset
       .form-group
-        - devops_help_link_url = help_page_path('topics/autodevops/index')
+        - devops_help_link_url = help_page_path('topics/autodevops/index.md')
         - devops_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: devops_help_link_url }
         = f.gitlab_ui_checkbox_component :auto_devops_enabled, s_('CICD|Default to Auto DevOps pipeline for all projects'), help_text: s_('CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}').html_safe % { link_start: devops_help_link_start, link_end: '</a>'.html_safe }
       .form-group
@@ -12,7 +12,7 @@
         = f.text_field :auto_devops_domain, class: 'form-control gl-form-input', placeholder: 'example.com'
         .form-text.text-muted
           = s_("AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects.")
-          = link_to _('Learn more.'), help_page_path('topics/autodevops/stages', anchor: 'auto-review-apps'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to _('Learn more.'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-review-apps'), target: '_blank', rel: 'noopener noreferrer'
 
       .form-group
         = f.gitlab_ui_checkbox_component :shared_runners_enabled, s_("AdminSettings|Enable instance runners for new projects"), help_text: s_("AdminSettings|All new projects can use instance runners by default.")
@@ -28,13 +28,18 @@
         = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
         .form-text.text-muted
           = _("The maximum file size for job artifacts.")
-          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size')
+      .form-group
+        = f.label :max_artifacts_content_include_size, _('Maximum artifacts archive size (bytes)'), class: 'label-bold'
+        = f.number_field :max_artifacts_content_include_size, class: 'form-control gl-form-input'
+        .form-text.text-muted
+          = _("The maximum file size for job artifacts archive.")
       .form-group
         = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
         = f.text_field :default_artifacts_expire_in, class: 'form-control gl-form-input'
         .form-text.text-muted
           = html_escape(_("Set the default expiration time for job artifacts in all projects. Set to %{code_open}0%{code_close} to never expire artifacts by default. If no unit is written, it defaults to seconds. For example, these are all equivalent: %{code_open}3600%{code_close}, %{code_open}60 minutes%{code_close}, or %{code_open}one hour%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'default-artifacts-expiration')
       .form-group
         = f.gitlab_ui_checkbox_component :keep_latest_artifact, s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines'), help_text: s_('AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire.')
       .form-group
@@ -42,7 +47,7 @@
         = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input'
         .form-text.text-muted
           = html_escape(_("Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'archive-jobs')
+          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'archive-jobs')
       .form-group
         = f.gitlab_ui_checkbox_component :protected_ci_variables, s_('AdminSettings|Protect CI/CD variables by default'), help_text: s_('AdminSettings|New CI/CD variables in projects and groups default to protected.')
       .form-group
@@ -60,7 +65,7 @@
         = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
         %p.form-text.text-muted
           = _("The default CI/CD configuration file and path for new projects.").html_safe
-          = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank', rel: 'noopener noreferrer'
       .form-group
         = f.gitlab_ui_checkbox_component :suggest_pipeline_enabled, s_('AdminSettings|Enable pipeline suggestion banner'), help_text: s_('AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file.')
       #js-runner-token-expiration-intervals{ data: runner_token_expiration_interval_attributes }

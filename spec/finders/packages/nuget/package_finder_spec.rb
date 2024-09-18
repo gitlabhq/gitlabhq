@@ -170,14 +170,6 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
       end
 
       it { is_expected.to match_array([package1, package2]) }
-
-      context 'when allow_anyone_to_pull_public_nuget_packages_on_group_level FF is disabled' do
-        before do
-          stub_feature_flags(allow_anyone_to_pull_public_nuget_packages_on_group_level: false)
-        end
-
-        it { is_expected.to be_empty }
-      end
     end
   end
 end

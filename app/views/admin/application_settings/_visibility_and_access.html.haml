@@ -20,7 +20,7 @@
         %small.form-text.gl-text-secondary
           = s_('AdminSettings|Prevent non-administrators from using the selected visibility levels for groups, projects and snippets.')
           = s_('AdminSettings|The selected level must be different from the selected default group and project visibility.')
-          = link_to _('Learn more.'), help_page_path('administration/settings/visibility_and_access_controls', anchor: 'restrict-visibility-levels'), target: '_blank', rel: 'noopener noreferrer'
+          = link_to _('Learn more.'), help_page_path('administration/settings/visibility_and_access_controls.md', anchor: 'restrict-visibility-levels'), target: '_blank', rel: 'noopener noreferrer'
       = hidden_field_tag 'application_setting[restricted_visibility_levels][]'
       .gl-form-checkbox-group
         - restricted_level_checkboxes(f).each do |checkbox|

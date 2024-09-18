@@ -8,7 +8,7 @@
     - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://sourcegraph.com/' }
     - link_end = "#{sprite_icon('external-link', size: 12, css_class: 'ml-1 vertical-align-center')}</a>".html_safe
     = s_('SourcegraphAdmin|Enable code intelligence powered by %{link_start}Sourcegraph%{link_end} on your GitLab instance\'s code views and merge requests.').html_safe % { link_start: link_start, link_end: link_end }
-    %span= link_to s_('SourcegraphAdmin|Learn more.'), help_page_path('integration/sourcegraph'), target: '_blank', rel: 'noopener noreferrer'
+    %span= link_to s_('SourcegraphAdmin|Learn more.'), help_page_path('integration/sourcegraph.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form', id: 'sourcegraph-settings' } do |f|
       = form_errors(@application_setting)

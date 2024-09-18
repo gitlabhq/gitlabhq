@@ -21,7 +21,7 @@
       %h4= _("Housekeeping")
       .form-group
         - help_text = _("Run housekeeping tasks to automatically optimize Git repositories. Disabling this option will cause performance to degenerate over time.")
-        - help_link = link_to _('Learn more.'), help_page_path('administration/housekeeping', anchor: 'heuristical-housekeeping'), target: '_blank', rel: 'noopener noreferrer'
+        - help_link = link_to _('Learn more.'), help_page_path('administration/housekeeping.md', anchor: 'heuristical-housekeeping'), target: '_blank', rel: 'noopener noreferrer'
         = f.gitlab_ui_checkbox_component :housekeeping_enabled,
           _("Enable automatic repository housekeeping"),
           help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }

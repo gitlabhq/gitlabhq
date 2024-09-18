@@ -151,6 +151,7 @@ Registry disables all package registry operations.
 ### Allow anyone to pull from package registry
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468058) in GitLab 17.4 to support NuGet group endpoints.
 
 To allow anyone to pull from the package registry, regardless of project visibility:
 
@@ -176,7 +177,9 @@ Anonymous downloads are disabled, even for projects that turned on the **Allow a
 
 Several known issues exist when you allow anyone to pull from the package registry:
 
-- Project-level endpoints are supported. Group-level and instance-level endpoints are not supported. Support for group-level endpoints is proposed in [issue 383537](https://gitlab.com/gitlab-org/gitlab/-/issues/383537).
+- Endpoints for projects are supported.
+- NuGet registry endpoints for groups are supported. However, because of how NuGet clients send the authentication credentials, anonymous downloads are not allowed. Only GitLab users can pull from the package registry, even if this feature is enabled.
+- Other group and instance endpoints are not fully supported. Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
 - It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
 - It works with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
 

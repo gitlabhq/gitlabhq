@@ -8,12 +8,12 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = s_('CiVariables|Variables store information that you can use in job scripts. All projects on the instance can use these variables.')
-    = link_to _('Learn more.'), help_page_path('ci/variables/index', anchor: 'for-an-instance'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('ci/variables/index.md', anchor: 'for-an-instance'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'ci/variables/attributes'
     - if ci_variable_protected_by_default?
       %p.settings-message.gl-text-center
-        - help_link = link_to('', help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
+        - help_link = link_to('', help_page_path('ci/variables/index.md', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
         = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 

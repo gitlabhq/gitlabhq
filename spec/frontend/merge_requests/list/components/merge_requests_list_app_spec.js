@@ -26,6 +26,8 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_DEPLOYED_AFTER,
+  TOKEN_TYPE_DEPLOYED_BEFORE,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -156,6 +158,8 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_DEPLOYED_BEFORE },
+          { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });
@@ -211,6 +215,8 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_SOURCE_BRANCH },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_DEPLOYED_BEFORE },
+          { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_MY_REACTION },
         ]);
       });

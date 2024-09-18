@@ -86,8 +86,10 @@ export const formatAncestors = (workItem) =>
     href: ancestor.webUrl,
   }));
 
-export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
-  widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
+export const findHierarchyWidgetDefinition = (workItem) =>
+  workItem.workItemType.widgetDefinitions?.find(
+    (widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY,
+  );
 
 const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
   const domain = gon.relative_url_root || '';

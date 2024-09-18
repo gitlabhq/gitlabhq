@@ -7,9 +7,9 @@
       = f.number_field :container_registry_token_expire_delay, class: 'form-control gl-form-input'
     .form-group
       - label = _("Enable cleanup policies for projects created earlier than GitLab 12.7.")
-      - label_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'cleanup-policy')
+      - label_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'cleanup-policy')
       - help_text = _("Existing projects will be able to use cleanup policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project.")
-      - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'use-with-external-container-registries')
+      - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'use-with-external-container-registries')
       = f.gitlab_ui_checkbox_component :container_expiration_policies_enable_historic_entries,
         '%{label} %{label_link}'.html_safe % { label: label, label_link: label_link },
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
@@ -30,7 +30,7 @@
           = _("The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0.")
       .form-group
         - help_text = _("When enabled, cleanup policies execute faster but put more load on Redis.")
-        - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'set-cleanup-limits-to-conserve-resources')
+        - help_link = link_to sprite_icon('question-o'), help_page_path('user/packages/container_registry/reduce_container_registry_storage.md', anchor: 'set-cleanup-limits-to-conserve-resources')
         = f.gitlab_ui_checkbox_component :container_registry_expiration_policies_caching, _("Enable cleanup policy caching."),
           help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
 

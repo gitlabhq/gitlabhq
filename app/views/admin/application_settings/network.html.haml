@@ -19,7 +19,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set limits for web and API requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'ip_limits'
 
@@ -29,7 +29,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
 
@@ -57,7 +57,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
-    = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
@@ -66,7 +66,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for Git HTTP requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'git_http_limits'
 
@@ -75,7 +75,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'git_lfs_limits'
 
@@ -87,7 +87,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = s_('OutboundRequests|Allow requests to the local network from hooks and integrations.')
-    = link_to _('Learn more.'), help_page_path('security/webhooks'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('security/webhooks.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'outbound'
 
@@ -96,7 +96,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Rate limit access to specified paths.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/protected_paths'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/protected_paths.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'protected_paths'
 
@@ -106,7 +106,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'issue_limits'
 
@@ -115,7 +115,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set the per-user rate limit for notes created by web or API requests.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'note_limits'
 
@@ -125,7 +125,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set the per-user rate limit for getting a user by ID via the API.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'users_api_limits'
 
@@ -140,7 +140,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set per-user rate limits for imports and exports of projects and groups.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/import_export_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/import_export_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'import_export_limits'
 
@@ -150,7 +150,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'pipeline_limits'
 

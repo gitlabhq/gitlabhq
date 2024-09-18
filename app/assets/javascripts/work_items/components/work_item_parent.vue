@@ -11,13 +11,14 @@ import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../graphql/work_items_by_references.query.graphql';
+import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
-  SUPPORTED_PARENT_TYPE_MAP,
   WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
-import { isReference } from '../utils';
+import { isReference, findHierarchyWidgetDefinition } from '../utils';
 
 export default {
   name: 'WorkItemParent',
@@ -82,6 +83,9 @@ export default {
       searchStarted: false,
       localSelectedItem: this.parent?.id,
       oldParent: this.parent,
+      workspaceWorkItems: [],
+      workItemsByReference: [],
+      allowedParentTypes: [],
     };
   },
   computed: {
@@ -107,9 +111,6 @@ export default {
     workItems() {
       return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
     },
-    parentType() {
-      return SUPPORTED_PARENT_TYPE_MAP[this.workItemType];
-    },
     parentWebUrl() {
       return this.parent?.webUrl;
     },
@@ -128,7 +129,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workspaceWorkItems: {
       query() {
         // TODO: Remove the this.isIssue check once issues are migrated to work items
@@ -139,7 +139,7 @@ export default {
         return {
           fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.searchTerm,
-          types: this.parentType,
+          types: this.allowedParentTypes,
           in: this.searchTerm ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,
@@ -147,7 +147,7 @@ export default {
         };
       },
       skip() {
-        return !this.searchStarted;
+        return !this.searchStarted && !this.allowedChildTypes?.length;
       },
       update(data) {
         return data.workspace.workItems.nodes.filter((wi) => this.workItemId !== wi.id) || [];
@@ -156,7 +156,6 @@ export default {
         this.$emit('error', this.$options.i18n.workItemsFetchError);
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemsByReference: {
       query: workItemsByReferencesQuery,
       variables() {
@@ -173,6 +172,24 @@ export default {
       },
       error() {
         this.$emit('error', this.$options.i18n.workItemsFetchError);
+      },
+    },
+    allowedParentTypes: {
+      query: workItemAllowedParentTypesQuery,
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      skip() {
+        return !this.searchStarted && !this.workItemId;
+      },
+      update(data) {
+        return (
+          findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
+            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+          ) || []
+        );
       },
     },
   },

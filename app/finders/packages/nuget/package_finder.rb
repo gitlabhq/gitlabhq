@@ -40,10 +40,6 @@ module Packages
 
       override :group_packages
       def group_packages
-        if ::Feature.disabled?(:allow_anyone_to_pull_public_nuget_packages_on_group_level, @project_or_group)
-          return super
-        end
-
         packages_visible_to_user_including_public_registries(@current_user, within_group: @project_or_group)
       end
 

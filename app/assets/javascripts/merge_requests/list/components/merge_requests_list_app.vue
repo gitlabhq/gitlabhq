@@ -41,6 +41,10 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TITLE_RELEASE,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TITLE_DEPLOYED_BEFORE,
+  TOKEN_TYPE_DEPLOYED_BEFORE,
+  TOKEN_TITLE_DEPLOYED_AFTER,
+  TOKEN_TYPE_DEPLOYED_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import {
@@ -80,6 +84,7 @@ const LabelToken = () =>
 const ReleaseToken = () => import('./tokens/release_client_search_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 
 export default {
   name: 'MergeRequestsListApp',
@@ -332,6 +337,20 @@ export default {
           token: ReleaseToken,
           operators: OPERATORS_IS_NOT,
           releasesEndpoint: this.releasesEndpoint,
+        },
+        {
+          type: TOKEN_TYPE_DEPLOYED_BEFORE,
+          title: TOKEN_TITLE_DEPLOYED_BEFORE,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
+        },
+        {
+          type: TOKEN_TYPE_DEPLOYED_AFTER,
+          title: TOKEN_TITLE_DEPLOYED_AFTER,
+          icon: 'clock',
+          token: DateToken,
+          operators: OPERATORS_IS,
         },
       ];
 

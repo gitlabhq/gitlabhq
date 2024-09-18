@@ -347,13 +347,13 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       it 'suggests objects correctly' do
         fill_in 'Comment', with: object.class.reference_prefix
 
-        find_autocomplete_menu.find('li').click
+        find_autocomplete_menu.find('li', text: object.title).click
 
         expect(find_field('Comment').value).to have_text(expected_body)
       end
     end
 
-    context 'issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471790' do
+    context 'issues' do
       let(:object) { issue }
       let(:expected_body) { object.to_reference }
 

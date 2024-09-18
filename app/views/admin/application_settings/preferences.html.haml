@@ -28,7 +28,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Additional text for the Help page.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/help_page'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/help_page.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'help_page'
 
@@ -47,7 +47,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Adjust how frequently the GitLab UI polls for updates.')
-    = link_to _('Learn more.'), help_page_path('administration/polling'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/polling.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'realtime'
 
@@ -57,7 +57,7 @@
   - c.with_description do
     = _('Configure Gitaly timeouts.')
     %span
-      = link_to _('Learn more.'), help_page_path('administration/settings/gitaly_timeouts'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/gitaly_timeouts.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'gitaly'
 
@@ -75,7 +75,7 @@
   - c.with_description do
     = _('Limit the size of Sidekiq jobs stored in Redis.')
     %span
-      = link_to _('Learn more.'), help_page_path('administration/settings/sidekiq_job_limits'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/sidekiq_job_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'sidekiq_job_limits'
 
@@ -84,6 +84,6 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = s_('TerraformLimits|Limits for Terraform features')
-    = link_to s_('TerraformLimits|Learn more about Terraform limits.'), help_page_path('administration/settings/terraform_limits'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to s_('TerraformLimits|Learn more about Terraform limits.'), help_page_path('administration/settings/terraform_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'terraform_limits'

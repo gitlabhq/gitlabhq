@@ -19,7 +19,7 @@
     .form-group
       = f.label :two_factor_authentication, _('Two-factor authentication'), class: 'label-bold'
       - help_text = _('Enforce two-factor authentication for all user sign-ins.')
-      - help_link = link_to _('Learn more.'), help_page_path('security/two_factor_authentication'), target: '_blank', rel: 'noopener noreferrer'
+      - help_link = link_to _('Learn more.'), help_page_path('security/two_factor_authentication.md'), target: '_blank', rel: 'noopener noreferrer'
       = f.gitlab_ui_checkbox_component :require_two_factor_authentication,
         _('Enforce two-factor authentication'),
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
@@ -34,14 +34,14 @@
     .form-group
       = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
       - help_text = _('Require additional authentication for administrative tasks.')
-      - help_link = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions', anchor: 'admin-mode'), target: '_blank', rel: 'noopener noreferrer'
+      - help_link = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'admin-mode'), target: '_blank', rel: 'noopener noreferrer'
       = f.gitlab_ui_checkbox_component :admin_mode,
         _('Enable Admin Mode'),
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :unknown_sign_in, _('Email notification for unknown sign-ins'), class: 'label-bold'
       - help_text = _('Notify users by email when sign-in location is not recognized.')
-      - help_link = link_to _('Learn more.'), help_page_path('user/profile/notifications', anchor: 'notifications-for-unknown-sign-ins'), target: '_blank', rel: 'noopener noreferrer'
+      - help_link = link_to _('Learn more.'), help_page_path('user/profile/notifications.md', anchor: 'notifications-for-unknown-sign-ins'), target: '_blank', rel: 'noopener noreferrer'
       = f.gitlab_ui_checkbox_component :notify_on_unknown_sign_in,
         _('Enable email notification'),
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }

@@ -5,7 +5,7 @@
   testid: 'snowplow-settings-content',
   expanded: expanded) do |c|
   - c.with_description do
-    - help_link = link_to('', help_page_path('development/internal_analytics/internal_event_instrumentation/index'), target: '_blank', rel: 'noopener noreferrer')
+    - help_link = link_to('', help_page_path('development/internal_analytics/internal_event_instrumentation/index.md'), target: '_blank', rel: 'noopener noreferrer')
     - snowplow_link = link_to('', 'https://snowplow.io/', target: '_blank', rel: 'noopener noreferrer')
     = safe_format(_('Configure %{snowplow_link_start}Snowplow%{snowplow_link_end} to track events. %{help_link_start}Learn more.%{help_link_end}'), tag_pair(snowplow_link, :snowplow_link_start, :snowplow_link_end), tag_pair(help_link, :help_link_start, :help_link_end))
   - c.with_body do

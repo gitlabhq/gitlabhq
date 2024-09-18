@@ -7,7 +7,7 @@
   expanded: expanded) do |c|
   - c.with_description do
     = s_('SlackIntegration|Configure your GitLab for Slack app.')
-    = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app'), target: '_blank', rel: 'noopener noreferrer')
+    = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app.md'), target: '_blank', rel: 'noopener noreferrer')
   - c.with_body do
     - unless gitlab_com
       %h5
@@ -24,7 +24,7 @@
       - tag_pair_slack_apps = tag_pair(link_to('', 'https://api.slack.com/apps', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
       - tag_pair_strong = tag_pair(tag.strong, :strong_open, :strong_close)
       = safe_format(s_('SlackIntegration|Copy the %{link_start}settings%{link_end} from %{strong_open}%{settings_heading}%{strong_close} in your GitLab for Slack app.'), tag_pair_slack_apps, tag_pair_strong, settings_heading: 'App Credentials')
-      = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app', anchor: 'configure-the-settings'), target: '_blank', rel: 'noopener noreferrer')
+      = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app.md', anchor: 'configure-the-settings'), target: '_blank', rel: 'noopener noreferrer')
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-slack-settings'), html: { class: 'fieldset-form' } do |f|
       = form_errors(@application_setting) if expanded
       %fieldset
@@ -56,7 +56,7 @@
         = s_('SlackIntegration|Update your Slack app')
       %p
         = s_('SlackIntegration|When GitLab releases new features for the GitLab for Slack app, you might have to manually update your copy to use the new features.')
-        = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app', anchor: 'update-the-gitlab-for-slack-app'), target: '_blank', rel: 'noopener noreferrer')
+        = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app.md', anchor: 'update-the-gitlab-for-slack-app'), target: '_blank', rel: 'noopener noreferrer')
       %p
         = render Pajamas::ButtonComponent.new(href: slack_app_manifest_download_admin_application_settings_path, icon: 'download') do
           = s_("SlackIntegration|Download latest manifest file")

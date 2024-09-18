@@ -1,9 +1,0 @@
----
-name: allow_anyone_to_pull_public_nuget_packages_on_group_level
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383537
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155119
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464556
-milestone: '17.1'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group
-      - help_link = help_page_path('administration/operations/fast_ssh_key_lookup')
+      - help_link = help_page_path('administration/operations/fast_ssh_key_lookup.md')
       - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_link }
       = f.gitlab_ui_checkbox_component :authorized_keys_enabled, _('Use authorized_keys file to authenticate SSH keys'),
       help_text: _('Authenticate user SSH keys without requiring additional configuration. Performance of GitLab can be improved by using the GitLab database instead. %{link_start}How do I configure authentication using the GitLab database? %{link_end}').html_safe % { link_start: help_link_start, link_end: '</a>'.html_safe}

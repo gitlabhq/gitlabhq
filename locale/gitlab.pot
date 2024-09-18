@@ -32896,6 +32896,9 @@ msgstr ""
 msgid "Maximum allowed lifetime for SSH keys (days)"
 msgstr ""
 
+msgid "Maximum artifacts archive size (bytes)"
+msgstr ""
+
 msgid "Maximum artifacts size"
 msgstr ""
 
@@ -54697,6 +54700,9 @@ msgid "The maximum compute minutes that jobs in a namespace can use on instance 
 msgstr ""
 
 msgid "The maximum file size allowed is %{size}."
+msgstr ""
+
+msgid "The maximum file size for job artifacts archive."
 msgstr ""
 
 msgid "The maximum file size for job artifacts."

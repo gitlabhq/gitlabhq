@@ -4,7 +4,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Set the per-user and per-IP address rate limits for the requests to Projects API.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-projects-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
       = form_errors(@application_setting)

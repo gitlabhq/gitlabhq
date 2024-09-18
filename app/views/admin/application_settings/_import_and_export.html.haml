@@ -5,8 +5,8 @@
     .form-group
       = f.label :import_sources, s_('AdminSettings|Import sources'), class: 'label-bold gl-mb-0'
       %span.form-text.gl-mt-0.gl-mb-3#import-sources-help
-        - tag_pair_github_docs = tag_pair(link_to('', help_page_path('integration/github'), target: '_blank', rel: 'noopener noreferrer'), :github_docs_link_start, :github_docs_link_end)
-        - tag_pair_bitbucket_docs = tag_pair(link_to('', help_page_path('integration/bitbucket'), target: '_blank', rel: 'noopener noreferrer'), :bitbucket_docs_link_start, :bitbucket_docs_link_end)
+        - tag_pair_github_docs = tag_pair(link_to('', help_page_path('integration/github.md'), target: '_blank', rel: 'noopener noreferrer'), :github_docs_link_start, :github_docs_link_end)
+        - tag_pair_bitbucket_docs = tag_pair(link_to('', help_page_path('integration/bitbucket.md'), target: '_blank', rel: 'noopener noreferrer'), :bitbucket_docs_link_start, :bitbucket_docs_link_end)
         = safe_format(s_('AdminSettings|Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub %{github_docs_link_start}%{icon}%{github_docs_link_end} and Bitbucket %{bitbucket_docs_link_start}%{icon}%{bitbucket_docs_link_end}.'), tag_pair_github_docs, tag_pair_bitbucket_docs, icon: sprite_icon('question-o'))
       = hidden_field_tag 'application_setting[import_sources][]'
       - import_sources_checkboxes(f).each do |source|
@@ -18,7 +18,7 @@
       = f.label :bulk_import, s_('AdminSettings|Allow migrating GitLab groups and projects by direct transfer'), class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :bulk_import_enabled, s_('AdminSettings|Enabled')
     .form-group{ data: { testid: 'silent-admin-exports' } }
-      - tag_pair_silent_admin_exports = tag_pair(link_to('', help_page_path('administration/settings/import_and_export_settings', anchor: 'enable-silent-admin-exports'), target: '_blank', rel: 'noopener noreferrer'), :silent_admin_exports_link_start, :silent_admin_exports_link_end)
+      - tag_pair_silent_admin_exports = tag_pair(link_to('', help_page_path('administration/settings/import_and_export_settings.md', anchor: 'enable-silent-admin-exports'), target: '_blank', rel: 'noopener noreferrer'), :silent_admin_exports_link_start, :silent_admin_exports_link_end)
       - silent_admin_exports_label_text = safe_format(s_('AdminSettings|Silent exports by admins %{silent_admin_exports_link_start}%{icon}%{silent_admin_exports_link_end}'), tag_pair_silent_admin_exports, icon: sprite_icon('question-o'))
       = f.label :silent_admin_exports_enabled, silent_admin_exports_label_text, class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :silent_admin_exports_enabled, s_('AdminSettings|Enabled')

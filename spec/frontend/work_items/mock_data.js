@@ -4498,6 +4498,36 @@ export const allowedChildrenTypesResponse = {
   },
 };
 
+export const allowedParentTypesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedParentTypes: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItems::Type/6',
+                  name: 'Objective',
+                  __typename: 'WorkItemType',
+                },
+              ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));
 

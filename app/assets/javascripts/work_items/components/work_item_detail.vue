@@ -214,10 +214,7 @@ export default {
         return !this.workItem?.id;
       },
       update(data) {
-        return (
-          findHierarchyWidgetDefinition(data.workItem.workItemType.widgetDefinitions)
-            ?.allowedChildTypes?.nodes || []
-        );
+        return findHierarchyWidgetDefinition(data.workItem)?.allowedChildTypes?.nodes || [];
       },
     },
   },

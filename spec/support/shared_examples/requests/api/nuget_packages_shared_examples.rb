@@ -544,14 +544,6 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
       it_behaves_like 'successful response'
     end
   end
-
-  context 'when the FF allow_anyone_to_pull_public_nuget_packages_on_group_level is disabled' do
-    before do
-      stub_feature_flags(allow_anyone_to_pull_public_nuget_packages_on_group_level: false)
-    end
-
-    it_behaves_like 'returning response status', :not_found
-  end
 end
 
 RSpec.shared_examples 'nuget authorize upload endpoint' do

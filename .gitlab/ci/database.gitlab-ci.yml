@@ -165,9 +165,3 @@ db:rollback geo:
   script:
     - bundle exec rake db:migrate:geo VERSION=20170627195211
     - bundle exec rake db:migrate:geo
-
-db:docs-up-to-date:
-  extends: .db-job-base
-  script:
-    - bundle exec rake gitlab:db:dictionary:generate
-    - git diff --exit-code

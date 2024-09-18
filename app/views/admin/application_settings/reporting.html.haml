@@ -22,7 +22,7 @@
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Receive notification of abuse reports by email.')
-    = link_to _('Learn more.'), help_page_path('administration/review_abuse_reports'), target: '_blank', rel: 'noopener noreferrer'
+    = link_to _('Learn more.'), help_page_path('administration/review_abuse_reports.md'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'abuse'
 

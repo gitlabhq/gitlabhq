@@ -86,6 +86,8 @@ export const TOKEN_TITLE_VERSION = __('Version');
 export const TOKEN_TITLE_SEARCH_WITHIN = __('Search Within');
 export const TOKEN_TITLE_CREATED = __('Created date');
 export const TOKEN_TITLE_CLOSED = __('Closed date');
+export const TOKEN_TITLE_DEPLOYED_BEFORE = __('Deployed-before');
+export const TOKEN_TITLE_DEPLOYED_AFTER = __('Deployed-after');
 
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_MERGE_USER = 'merge-user';
@@ -120,3 +122,5 @@ export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';
 export const TOKEN_TYPE_CREATED = 'created';
 export const TOKEN_TYPE_CLOSED = 'closed';
+export const TOKEN_TYPE_DEPLOYED_BEFORE = 'deployed-before';
+export const TOKEN_TYPE_DEPLOYED_AFTER = 'deployed-after';
