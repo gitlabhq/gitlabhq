@@ -18,14 +18,11 @@ export const DEFAULT = 'default';
 export const DELETE_FAILURE = 'delete_pipeline_failure';
 export const DRAW_FAILURE = 'draw_failure';
 export const LOAD_FAILURE = 'load_failure';
-export const PARSE_FAILURE = 'parse_failure';
 export const POST_FAILURE = 'post_failure';
-export const UNSUPPORTED_DATA = 'unsupported_data';
 
 // Pipeline tabs
 
 export const pipelineTabName = 'graph';
-export const needsTabName = 'dag';
 export const jobsTabName = 'builds';
 export const failedJobsTabName = 'failures';
 export const testReportTabName = 'test_report';
@@ -35,7 +32,6 @@ export const licensesTabName = 'licenses';
 export const codeQualityTabName = 'codequality_report';
 
 export const validPipelineTabNames = [
-  needsTabName,
   jobsTabName,
   failedJobsTabName,
   testReportTabName,

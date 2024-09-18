@@ -25,32 +25,35 @@ DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
 Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the sole discretion of GitLab Inc.
 
-When you deploy a self-hosted large language model (LLM), you can:
+When you deploy a self-hosted model, you can:
 
-- Manage the end-to-end transmission of requests to enterprise-hosted LLM backends for GitLab Duo features.
-- Keep all of these requests within their enterprise network, ensuring no calls to external architecture.
-- Isolate the GitLab instance, AI Gateway, and self-hosted AI model within their own
+- Manage the end-to-end transmission of requests to enterprise-hosted large
+  language model (LLM) backends for GitLab Duo features.
+- Keep all of these requests within that enterprise network, ensuring no calls
+  to external architecture.
+- Isolate the GitLab instance, AI Gateway, and self-hosted model within their own
   environment, ensuring complete privacy and high security for using AI features, with
   no reliance on public services.
 
 When you use self-hosted models, you:
 
-- Can choose any GitLab-approved LLM model.
+- Can choose any GitLab-approved LLM.
 - Can keep all data and request/response logs in your own domain.
 - Can select specific GitLab Duo features for your users.
 - Do not have to rely on the GitLab shared AI Gateway.
 
 You can connect supported models to LLM features. Model-specific prompts
-and GitLab Duo feature support is provided by the self-hosted models feature. For
-more information about this offering, see [subscriptions](../../subscriptions/self_managed/index.md) and the [Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
+and GitLab Duo feature support is provided by the GitLab Duo Self-Hosted Models
+feature. For more information about this offering, see
+[subscriptions](../../subscriptions/self_managed/index.md) and the
+[Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
 
 ## Prerequisites
 
 - You must be able to manage your own LLM infrastructure.
-- You must have the [GitLab Enterprise Edition](../../administration/license.md).
+- You must have [GitLab Enterprise Edition](../../administration/license.md).
 
 ## Deploy a self-hosted model
 

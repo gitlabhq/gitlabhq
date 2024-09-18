@@ -1,5 +1,4 @@
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
-import { createSankey } from '~/ci/pipeline_details/dag/utils/drawing_utils';
 import {
   makeLinksFromNodes,
   filterByAncestors,
@@ -7,15 +6,14 @@ import {
   keepLatestDownstreamPipelines,
   listByLayers,
   parseData,
-  removeOrphanNodes,
   getMaxNodes,
 } from '~/ci/pipeline_details/utils/parsing_utils';
 import { createNodeDict } from '~/ci/pipeline_details/utils';
 
 import { mockDownstreamPipelinesRest } from '../../../vue_merge_request_widget/mock_data';
 import { mockDownstreamPipelinesGraphql } from '../../../commit/mock_data';
-import { mockParsedGraphQLNodes, missingJob } from '../dag/mock_data';
 import { generateResponse } from '../graph/mock_data';
+import { mockParsedGraphQLNodes, missingJob } from './mock_data';
 
 describe('DAG visualization parsing utilities', () => {
   const nodeDict = createNodeDict(mockParsedGraphQLNodes);
@@ -79,27 +77,6 @@ describe('DAG visualization parsing utilities', () => {
       expect(parsed).toHaveProperty('links');
       expect(Array.isArray(parsed.links)).toBe(true);
       expect(parsed.links.filter(Boolean)).not.toHaveLength(0);
-    });
-  });
-
-  describe('removeOrphanNodes', () => {
-    it('removes sankey nodes that have no needs and are not needed', () => {
-      const layoutSettings = {
-        width: 200,
-        height: 200,
-        nodeWidth: 10,
-        nodePadding: 20,
-        paddingForLabels: 100,
-      };
-
-      const sankeyLayout = createSankey(layoutSettings)(parsed);
-      const cleanedNodes = removeOrphanNodes(sankeyLayout.nodes);
-      /*
-        These lengths are determined by the mock data.
-        If the data changes, the numbers may also change.
-      */
-      expect(parsed.nodes).toHaveLength(mockParsedGraphQLNodes.length);
-      expect(cleanedNodes).toHaveLength(12);
     });
   });
 

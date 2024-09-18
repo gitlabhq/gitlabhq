@@ -25,7 +25,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 ## Configure self-hosted models
 
 1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-the-self-hosted-model) to configure self-hosted models
-1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-the-features-to-your-models) to configure features to use the models
+1. Follow the [instructions](../../administration/self_hosted_models/configure_duo_features.md#configure-gitlab-duo-features-to-use-self-hosted-models) to configure features to use the models
 
 AI-powered features are now powered by self-hosted models.
 

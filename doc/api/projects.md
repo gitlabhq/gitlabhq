@@ -3019,6 +3019,60 @@ Example response:
 }
 ```
 
+## Real-time security scan
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/experiment-beta-support.md).
+
+Returns SAST scan results for a single file in real-time.
+
+```plaintext
+POST /projects/:id/security_scans/sast/scan
+```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+ --header "Content-Type: application/json" \
+ --data '{
+  "file_path":"src/main.c",
+  "content":"#include<string.h>\nint main(int argc, char **argv) {\n  char buff[128];\n  strcpy(buff, argv[1]);\n  return 0;\n}\n"
+ }' \
+ --url "https://gitlab.example.com/api/v4/projects/:id/security_scans/sast/scan"
+```
+
+Example response:
+
+```json
+{
+  "vulnerabilities": [
+    {
+      "name": "Insecure string processing function (strcpy)",
+      "description": "The `strcpy` family of functions do not provide the ability to limit or check buffer\nsizes before copying to a destination buffer. This can lead to buffer overflows. Consider\nusing more secure alternatives such as `strncpy` and provide the correct limit to the\ndestination buffer and ensure the string is null terminated.\n\nFor more information please see: https://linux.die.net/man/3/strncpy\n\nIf developing for C Runtime Library (CRT), more secure versions of these functions should be\nused, see:\nhttps://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/strncpy-s-strncpy-s-l-wcsncpy-s-wcsncpy-s-l-mbsncpy-s-mbsncpy-s-l?view=msvc-170\n",
+      "severity": "High",
+      "location": {
+        "file": "src/main.c",
+        "start_line": 5,
+        "end_line": 5,
+        "start_column": 3,
+        "end_column": 23
+      }
+    }
+  ]
+}
+```
+
 ## Get a project's pull mirror details
 
 DETAILS:

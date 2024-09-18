@@ -1,6 +1,6 @@
 import { memoize } from 'lodash';
 import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
-import { createSankey } from '../dag/utils/drawing_utils';
+import { createSankey } from './drawing_utils';
 import { createNodeDict } from './index';
 
 /*
@@ -104,16 +104,6 @@ export const getMaxNodes = (nodes) => {
   }, []);
 
   return Math.max(...counts);
-};
-
-/*
-  Because we cannot know if a node is part of a relationship until after we
-  generate the links with createSankey, this function is used after the first call
-  to find nodes that have no relations.
-*/
-
-export const removeOrphanNodes = (sankeyfiedNodes) => {
-  return sankeyfiedNodes.filter((node) => node.sourceLinks.length || node.targetLinks.length);
 };
 
 /*

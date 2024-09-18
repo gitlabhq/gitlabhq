@@ -61,7 +61,7 @@ in your `.gitlab-ci.yml` file. The component supports these languages:
    the LSIF artifact for `golang`:
 
    ```yaml
-   - component: ${CI_SERVER_FQDN}/components/code-intelligence/golang-code-intel@v0.0.2
+   - component: ${CI_SERVER_FQDN}/components/code-intelligence/golang-code-intel@v0.0.3
     inputs:
       golang_version: ${GO_VERSION}
    ```
@@ -78,11 +78,11 @@ To enable code intelligence for a project, add GitLab CI/CD jobs to your project
 
 :::TabTitle With a SCIP indexer
 
-1. Add two jobs to your `.gitlab-ci.yml` configuration. The first job (`code_navigation_generate`)
-   generates the SCIP index. The second job (`code_navigation_convert`) converts the SCIP index to LSIF for use in GitLab:
+1. Add a job to your `.gitlab-ci.yml` configuration. This job generates the
+SCIP index and converts it to LSIF for use in GitLab:
 
    ```yaml
-   code_navigation_generate:
+   "code_navigation":
       rules:
       - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # the job only needs to run against the default branch
       image: node:latest
@@ -92,23 +92,15 @@ To enable code intelligence for a project, add GitLab CI/CD jobs to your project
          - npm install -g @sourcegraph/scip-typescript
          - npm install
          - scip-typescript index
-      artifacts:
-         paths:
-            - index.scip
-
-   code_navigation_convert:
-      rules:
-      - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # the job only needs to run against the default branch
-      image: golang
-      stage: test
-      allow_failure: true # recommended
-      needs: ["code_navigation_generate"]
-      script:
-         - git clone --branch v0.4.0 --depth 1 https://github.com/sourcegraph/scip.git
-         - cd scip
-         - go build ./cmd/scip
+         - |
+            env \
+            TAG="v0.4.0" \
+            OS="$(uname -s | tr '[:upper:]' '[:lower:]')" \
+            ARCH="$(uname -m | sed -e 's/x86_64/amd64/')" \
+            bash -c 'curl --location "https://github.com/sourcegraph/scip/releases/download/$TAG/scip-$OS-$ARCH.tar.gz"' \
+            | tar xzf - scip
          - chmod +x scip
-         - ./scip convert --from ../index.scip --to ../dump.lsif
+         - ./scip convert --from index.scip --to dump.lsif
       artifacts:
          reports:
             lsif: dump.lsif

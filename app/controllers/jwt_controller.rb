@@ -18,6 +18,9 @@ class JwtController < ApplicationController
     ::Auth::DependencyProxyAuthenticationService::AUDIENCE => ::Auth::DependencyProxyAuthenticationService
   }.freeze
 
+  # Currently POST requests for this route return a 404 by default and are allowed through in our readonly middleware -
+  # ee/lib/ee/gitlab/middleware/read_only/controller.rb
+  # If the action here changes to allow POST requests then a check for maintenance mode should be added
   def auth
     service = SERVICES[params[:service]]
     return head :not_found unless service

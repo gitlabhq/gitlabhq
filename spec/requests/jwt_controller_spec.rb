@@ -61,6 +61,18 @@ RSpec.describe JwtController, feature_category: :system_access do
     end
   end
 
+  context 'POST /jwt/auth when in maintenance mode' do
+    before do
+      stub_maintenance_mode_setting(true)
+    end
+
+    it 'returns 404' do
+      post '/jwt/auth'
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   context 'authenticating against container registry' do
     context 'existing service' do
       subject! { get '/jwt/auth', params: parameters }

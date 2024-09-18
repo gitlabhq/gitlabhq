@@ -77,7 +77,7 @@ PUT /application/plan_limits
 | `ci_active_jobs`                  | integer | no       | Total number of jobs in currently active pipelines. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_project_subscriptions`        | integer | no       | Maximum number of pipeline subscriptions to and from a project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_pipeline_schedules`           | integer | no       | Maximum number of pipeline schedules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
-| `ci_needs_size_limit`             | integer | no       | Maximum number of [`needs`](../ci/directed_acyclic_graph/index.md) dependencies that a job can have. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
+| `ci_needs_size_limit`             | integer | no       | Maximum number of [`needs`](../ci/yaml/needs.md) dependencies that a job can have. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_registered_group_runners`     | integer | no       | Maximum number of runners registered per group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_registered_project_runners`   | integer | no       | Maximum number of runners registered per project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `dotenv_size`                     | integer | no       | Maximum size of a dotenv artifact in bytes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432529) in GitLab 17.1. |

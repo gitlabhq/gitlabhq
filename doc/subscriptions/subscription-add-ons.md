@@ -49,6 +49,8 @@ To use GitLab Duo features in any project or group, you must assign the user to 
 1. Select **Settings > GitLab Duo**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
+The user is sent a confirmation email.
+
 ### For self-managed
 
 Prerequisites:
@@ -63,6 +65,10 @@ Prerequisites:
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
+
+The user is sent a confirmation email.
+
+To turn off these emails, an administrator can [disable the `duo_seat_assignment_email_for_sm` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
 #### Configure network and proxy settings
 

@@ -2981,7 +2981,7 @@ In this example, a new pipeline causes a running pipeline to cancel `step-1` and
 ### `needs`
 
 Use `needs` to execute jobs out-of-order. Relationships between jobs
-that use `needs` can be visualized as a [directed acyclic graph](../directed_acyclic_graph/index.md).
+that use `needs` can be visualized as a [directed acyclic graph](../yaml/needs.md).
 
 You can ignore stage ordering and run some jobs without waiting for others to complete.
 Jobs in multiple stages can run concurrently.
@@ -3173,8 +3173,8 @@ build_job:
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for
-  the needed job to complete. [Directed acyclic graph](../directed_acyclic_graph/index.md)
-  behavior is limited to jobs in the same pipeline. Make sure that the needed job in the other
+  the needed job to complete. [Using `needs` to wait for jobs to complete](../yaml/needs.md)
+  is limited to jobs in the same pipeline. Make sure that the needed job in the other
   pipeline completes before the job that needs it tries to download the artifacts.
 - You can't download artifacts from jobs that run in [`parallel`](#parallel).
 - Support [CI/CD variables](../variables/index.md) in `project`, `job`, and `ref`.

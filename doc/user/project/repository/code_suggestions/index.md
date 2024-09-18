@@ -181,6 +181,13 @@ This API connection securely transmits a context window from your IDE/editor to 
   - Algorithms or large code blocks might take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
 
+### Use a self-hosted model
+
+Instead of using the default model to manage Code Suggestions requests, you can
+[deploy a self-hosted model](../../../../administration/self_hosted_models/index.md).
+This maximizes security and privacy by making sure nothing is sent to an
+external model.
+
 ### Disable direct connections to the AI Gateway
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.

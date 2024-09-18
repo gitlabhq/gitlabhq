@@ -45,7 +45,7 @@ Pipelines can be configured in many different ways:
 
 - [Basic pipelines](pipeline_architectures.md#basic-pipelines) run everything in each stage concurrently,
   followed by the next stage.
-- [Pipelines that use the `needs` keyword](../directed_acyclic_graph/index.md) run based on dependencies
+- [Pipelines that use the `needs` keyword](../yaml/needs.md) run based on dependencies
   between jobs and can run more quickly than basic pipelines.
 - [Merge request pipelines](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).

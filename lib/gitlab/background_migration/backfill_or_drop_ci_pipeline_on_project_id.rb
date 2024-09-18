@@ -44,6 +44,8 @@ module Gitlab
         return false unless project_id
 
         pipeline.update_column(:project_id, project_id)
+      rescue StandardError # rubocop:disable BackgroundMigration/AvoidSilentRescueExceptions -- only rescuing in one method
+        false
       end
     end
   end

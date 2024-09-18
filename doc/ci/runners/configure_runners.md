@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-If you have installed your own runners, you can configure and secure them in GitLab.
+This document describes how to configure runners in the GitLab UI.
 
 If you need to configure runners on the machine where you installed GitLab Runner, see
 [the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration/).

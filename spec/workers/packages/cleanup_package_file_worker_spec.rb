@@ -89,6 +89,18 @@ RSpec.describe Packages::CleanupPackageFileWorker, feature_category: :package_re
           .and change { Packages::Package.count }.by(-1)
       end
     end
+
+    describe 'removing the last package file in an ML model package' do
+      let_it_be_with_reload(:package) { create(:ml_model_package) }
+      let_it_be(:package_file) { create(:package_file, :pending_destruction, package: package) }
+
+      it 'deletes the package file but keeps the package' do
+        expect(worker).to receive(:log_extra_metadata_on_done).twice
+
+        expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+          .and change { Packages::Package.count }.by(0)
+      end
+    end
   end
 
   describe '#max_running_jobs' do

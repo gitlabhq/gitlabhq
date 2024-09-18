@@ -276,7 +276,7 @@ artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my
    The Google attribute `my_project_maintainer` is mapped to the GitLab claims
    `maintainer_access==true` and the `project_path=="gitlab-org/my-project"`.
 
-1. In the Google Cloud Console, select [**IAM**](https://console.google.com/iam-admin/iam?supportedpurview=project).
+1. In the Google Cloud Console, go to the [**IAM** page](https://console.cloud.google.com/iam-admin/iam?supportedpurview=project).
 
 1. Select **Grant access**.
 1. In the **New principals** text box, enter the principal set including the

@@ -77,6 +77,21 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOrDropCiPipelineOnProjectId,
       end
     end
 
+    context 'when backfill will create an invalid record' do
+      before do
+        table(:ci_pipelines, primary_key: :id, database: :ci)
+          .create!(id: 100, iid: 100, partition_id: 100, project_id: 137)
+
+        pipeline_with_builds.update!(iid: 100)
+      end
+
+      it 'deletes the pipeline instead' do
+        migration.perform
+
+        expect { pipeline_with_builds.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     context 'when associations are invalid as well' do
       let!(:pipeline_with_bad_build) do
         table(:ci_pipelines, primary_key: :id, database: :ci).create!(id: 5, partition_id: 100)

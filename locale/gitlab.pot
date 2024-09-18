@@ -27192,9 +27192,6 @@ msgstr ""
 msgid "Hide host keys manual input"
 msgstr ""
 
-msgid "Hide list"
-msgstr ""
-
 msgid "Hide marketing-related entries from the Help page"
 msgstr ""
 
@@ -27816,9 +27813,6 @@ msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
-msgstr ""
-
-msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} dependencies between jobs in this tab."
 msgstr ""
 
 msgid "If you are unable to sign in or recover your password, contact a GitLab administrator."
@@ -31800,9 +31794,6 @@ msgstr ""
 msgid "Learn more about max seats used"
 msgstr ""
 
-msgid "Learn more about needs dependencies"
-msgstr ""
-
 msgid "Learn more about seats owed"
 msgstr ""
 
@@ -35564,9 +35555,6 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Needs attention"
-msgstr ""
-
-msgid "Needs visualization requires at least 3 dependent jobs."
 msgstr ""
 
 msgid "Network"
@@ -40332,9 +40320,6 @@ msgstr ""
 msgid "Pipelines|The GitLab CI configuration could not be updated."
 msgstr ""
 
-msgid "Pipelines|The visualization in this tab will be %{linkStart}removed%{linkEnd}. Instead, view %{codeStart}needs%{codeEnd} relationships with the %{strongStart}Job dependency%{strongEnd} option in the %{strongStart}Pipeline%{strongEnd} tab."
-msgstr ""
-
 msgid "Pipelines|There are currently no finished pipelines."
 msgstr ""
 
@@ -40405,9 +40390,6 @@ msgid "Pipelines|Unable to create pipeline"
 msgstr ""
 
 msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
-msgstr ""
-
-msgid "Pipelines|Upcoming visualization change"
 msgstr ""
 
 msgid "Pipelines|Update Trigger"
@@ -51360,9 +51342,6 @@ msgstr ""
 msgid "Show less"
 msgstr ""
 
-msgid "Show list"
-msgstr ""
-
 msgid "Show more"
 msgstr ""
 
@@ -52488,9 +52467,6 @@ msgid "Specify IP ranges that are always allowed for inbound traffic, for use wi
 msgstr ""
 
 msgid "Specify an email address regex pattern to identify default internal users."
-msgstr ""
-
-msgid "Speed up your pipelines with Needs relationships"
 msgstr ""
 
 msgid "Spent at can't be a future date and time."
@@ -55285,9 +55261,6 @@ msgid "There was an error loading related feature flags"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
-msgstr ""
-
-msgid "There was an error parsing the data for this graph."
 msgstr ""
 
 msgid "There was an error removing the e-mail."
@@ -59680,9 +59653,6 @@ msgstr ""
 msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
-msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines."
-msgstr ""
-
 msgid "Validate"
 msgstr ""
 
@@ -60748,9 +60718,6 @@ msgid "We also use email for avatar detection if no avatar is uploaded."
 msgstr ""
 
 msgid "We are currently unable to fetch data for the pipeline header."
-msgstr ""
-
-msgid "We are currently unable to fetch data for this graph."
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"

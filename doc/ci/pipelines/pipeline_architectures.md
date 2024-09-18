@@ -119,7 +119,7 @@ deploy_b:
 ## Pipelines with the `needs` keyword
 
 If efficiency is important and you want everything to run as quickly as possible,
-you can use the [`needs` keyword](../directed_acyclic_graph/index.md) to define dependencies
+you can use the [`needs` keyword](../yaml/needs.md) to define dependencies
 between your jobs. When GitLab knows the dependencies between your jobs,
 jobs can run as fast as possible, even starting earlier than other jobs in the same stage.
 

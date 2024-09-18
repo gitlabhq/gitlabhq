@@ -28,11 +28,10 @@ Please do not rely on this information for purchasing or planning purposes.
 The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
 sole discretion of GitLab Inc.
 
-To configure your GitLab instance to access the available self-hosted large language
-models (LLMs) in your infrastructure:
+To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
 1. Configure the self-hosted model.
-1. Configure the GitLab Duo AI-powered features to use your self-hosted models.
+1. Configure the GitLab Duo features to use your self-hosted model.
 
 ## Configure the self-hosted model
 
@@ -50,22 +49,23 @@ To configure a self-hosted model:
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
 1. Select **Models**.
-1. Set your model details by selecting **New self-hosted model**.
+1. Select **New self-hosted model**.
 1. Complete the fields:
-   - Enter the model name, for example, Mistral.
-   - From the **Model** dropdown list, select the model. Only GitLab-approved models are listed here.
-   - For **Endpoint**, select the self-hosted model endpoint, for example, the server hosting the model.
+   - Enter the model name, for example, `Mistral`.
+   - From the **Model** dropdown list, select the model. Only GitLab-approved models
+     are in this list.
+   - For **Endpoint**, select the self-hosted model endpoint. For example, the
+     server hosting the model.
    - Optional. For **API token**, add an API key if you need one to access the model.
-
 1. Select **Create model**.
 
-## Configure the features to your models
+## Configure GitLab Duo features to use self-hosted models
 
 Prerequisites:
 
 - You must be an administrator.
 
-### View the configured features
+### View configured features
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **AI-powered features**.
@@ -76,21 +76,22 @@ Prerequisites:
         synchronize subscription (**{retry}**).
 1. Select **Features**.
 
-### Configure the features to use self-hosted models
+### Configure the feature to use a self-hosted model
 
-Use a self-hosted AI Gateway to execute queries to the configured self-hosted model:
+Configure the GitLab Duo feature to send queries to the configured self-hosted model:
 
-1. For the feature you want to set, select **Edit**.
+1. In **Features**, for the feature you want to set, select **Edit**.
    For example, **Code Generation**.
 1. Select the model provider for the feature:
    - From the list, select **Self-Hosted Model**.
-   - Choose the self-hosted model you would like to use, for example, Mistral.
+   - Choose the self-hosted model you want to use, for example, `Mistral`.
 1. Select **Save Changes**.
 
 ### Configure the features to use GitLab AI Vendor models
 
-You can set a GitLab Duo feature's model provider to the GitLab AI Vendor. That feature then uses GitLab hosted models through the Cloud Connector:
+You can choose a GitLab AI vendor to be the GitLab Duo feature's model provider. The
+feature then uses the GitLab-hosted model through the GitLab Cloud Connector:
 
-1. For the feature you want to set, select **Edit**.
+1. In **Features**, for the feature you want to set, select **Edit**.
 1. In the list of model providers for the feature, select **AI Vendor**.
 1. Select **Save Changes**.
