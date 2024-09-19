@@ -392,6 +392,27 @@ See also how to [prevent your runner registration workflow from breaking](https:
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Limited `scan` actions in a scan execution policy
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/472213).
+
+</div>
+
+Starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html)
+are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you
+can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit,
+only the policy's first 10 `scan` actions are run.
+
+You can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### List container registry repository tags API endpoint pagination
 
 <div class="deprecation-notes">

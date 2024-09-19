@@ -2017,7 +2017,6 @@ Layout/LineLength:
     - 'ee/spec/services/requirements_management/export_csv_service_spec.rb'
     - 'ee/spec/services/resource_events/change_weight_service_spec.rb'
     - 'ee/spec/services/search/global_service_spec.rb'
-    - 'ee/spec/services/search/group_service_spec.rb'
     - 'ee/spec/services/search/project_service_spec.rb'
     - 'ee/spec/services/search/snippet_service_spec.rb'
     - 'ee/spec/services/security/ingestion/finding_map_collection_spec.rb'

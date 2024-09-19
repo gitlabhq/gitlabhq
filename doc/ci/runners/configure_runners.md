@@ -32,7 +32,9 @@ Prerequisites:
 
 - You must be an administrator.
 
-On GitLab.com, you cannot override the job timeout for instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
+You can override the job timeout for instance runners on self-managed GitLab installations only. 
+
+On GitLab.com, you cannot override the job timeout for GitLab hosted instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
 To set the maximum job timeout:
 

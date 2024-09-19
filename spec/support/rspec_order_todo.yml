@@ -2409,7 +2409,6 @@
 - './ee/spec/services/resource_access_tokens/revoke_service_spec.rb'
 - './ee/spec/services/resource_events/change_weight_service_spec.rb'
 - './ee/spec/services/search/global_service_spec.rb'
-- './ee/spec/services/search/group_service_spec.rb'
 - './ee/spec/services/search/project_service_spec.rb'
 - './ee/spec/services/search_service_spec.rb'
 - './ee/spec/services/search/snippet_service_spec.rb'

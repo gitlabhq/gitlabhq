@@ -111,9 +111,6 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
 
-NOTE:
-GitLab Duo Chat is not available in the Web IDE on self-managed.
-
 ## Use GitLab Duo Chat in VS Code
 
 > - Introduced in GitLab 16.6 as an [experiment](../../policy/experiment-beta-support.md#experiment).

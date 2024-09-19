@@ -90,6 +90,7 @@ To view a list of status check services added to a project from the merge reques
 ### From branch rules settings
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `edit_branch_rules`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 
 To view a list of status check services when you [create](../repository/branches/index.md#create-a-branch-rule) or
 [edit](../repository/branches/index.md#edit-a-branch-rule) a branch rule:

@@ -738,7 +738,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/resource_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/resource_access_tokens/revoke_service_spec.rb'
     - 'ee/spec/services/search/global_service_spec.rb'
-    - 'ee/spec/services/search/group_service_spec.rb'
     - 'ee/spec/services/search/project_service_spec.rb'
     - 'ee/spec/services/search/snippet_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_vulnerabilities/create_spec.rb'
