@@ -1165,9 +1165,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
-  describe 'metadata partitioning', :ci_partitionable do
+  describe 'metadata partitioning' do
     let(:pipeline) do
-      create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id_for_check_constraints)
+      create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id)
     end
 
     let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
@@ -1186,7 +1186,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       expect(bridge.metadata).to be_present
       expect(bridge.metadata).to be_valid
-      expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(bridge.metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
 

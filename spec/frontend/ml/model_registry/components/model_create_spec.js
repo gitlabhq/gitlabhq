@@ -110,6 +110,13 @@ describe('ModelCreate', () => {
         expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
           MODEL_CREATION_MODAL_ID,
         );
+        expect(findModalButton().attributes()).toMatchObject({
+          buttontextclasses: '',
+          category: 'primary',
+          icon: '',
+          size: 'medium',
+          variant: 'confirm',
+        });
       });
     });
 

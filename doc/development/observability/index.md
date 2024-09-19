@@ -122,8 +122,8 @@ For GDK and Docker to communicate you may need to set up a [loopback interface](
 
 ### Run GDK with mocked Observability data
 
-Apply the following [patch](https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3744171) to override Observability API calls with local mocks:
+Apply the following [patch](https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3747939) to override Observability API calls with local mocks:
 
 ```shell
-git apply < <(curl --silent "https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3744171/raw/main/mock.patch")
+git apply < <(curl --silent "https://gitlab.com/gitlab-org/opstrace/opstrace/-/snippets/3747939/raw/main/mock.patch")
 ```

@@ -82,10 +82,10 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
       let(:ci_build) { build(:ci_build, pipeline: new_pipeline) }
 
       before do
-        stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
+        stub_current_partition_id(ci_testing_partition_id)
       end
 
-      it 'creates build needs successfully', :aggregate_failures, :ci_partitionable do
+      it 'creates build needs successfully', :aggregate_failures do
         ci_build.needs_attributes = [
           { name: "build", artifacts: true },
           { name: "build2", artifacts: true },
@@ -99,8 +99,8 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
         end
 
         expect(described_class.count).to eq(3)
-        expect(described_class.first.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
-        expect(described_class.second.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+        expect(described_class.first.partition_id).to eq(ci_testing_partition_id)
+        expect(described_class.second.partition_id).to eq(ci_testing_partition_id)
       end
     end
   end

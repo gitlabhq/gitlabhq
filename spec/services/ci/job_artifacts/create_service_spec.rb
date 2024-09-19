@@ -467,8 +467,8 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
     end
 
     shared_examples_for 'handling partitioning' do
-      context 'with job partitioned', :ci_partitionable do
-        let(:partition_id) { ci_testing_partition_id_for_check_constraints }
+      context 'with job partitioned' do
+        let(:partition_id) { ci_testing_partition_id }
         let(:pipeline) { create(:ci_pipeline, project: project, partition_id: partition_id) }
         let(:job) { create(:ci_build, pipeline: pipeline) }
 

@@ -37,15 +37,15 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
     end
   end
 
-  describe 'partitioning', :ci_partitionable, :aggregate_failures do
+  describe 'partitioning', :aggregate_failures do
     include Ci::PartitioningHelpers
 
     before do
       stub_current_partition_id(current_partition)
     end
 
-    let_it_be(:current_partition) { ci_testing_partition_id_for_check_constraints }
-    let_it_be(:older_partition) { ci_testing_partition_id_for_check_constraints - 1 }
+    let_it_be(:current_partition) { ci_testing_partition_id }
+    let_it_be(:older_partition) { ci_testing_partition_id - 1 }
     let_it_be(:pipeline) { create(:ci_pipeline, partition_id: older_partition) }
 
     context 'with child pipelines' do
