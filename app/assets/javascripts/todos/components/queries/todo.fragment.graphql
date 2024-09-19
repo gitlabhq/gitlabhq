@@ -24,7 +24,7 @@ fragment Todo on Todo {
     id
     nameWithNamespace
   }
-  target {
+  targetEntity {
     ... on Issue {
       issueState: state
       title

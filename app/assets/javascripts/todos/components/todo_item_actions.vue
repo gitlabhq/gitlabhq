@@ -31,9 +31,6 @@ export default {
     isPending() {
       return this.todo.state === TODO_STATE_PENDING;
     },
-    targetPath() {
-      return this.todo.targetPath;
-    },
   },
   methods: {
     showMarkAsDoneError() {

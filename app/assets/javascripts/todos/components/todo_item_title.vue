@@ -58,15 +58,15 @@ export default {
     },
     issuableState() {
       if (this.isMergeRequest) {
-        return this.todo.target.mergeRequestState;
+        return this.todo.targetEntity?.mergeRequestState;
       }
 
       if (this.isIssue) {
-        return this.todo.target.issueState;
+        return this.todo.targetEntity?.issueState;
       }
 
       if (this.isAlert) {
-        return this.todo.target.alertState;
+        return this.todo.targetEntity?.alertState;
       }
 
       throw new Error(`Unknown target type: ${this.todo.targetType}`);
@@ -76,28 +76,26 @@ export default {
         (this.isMergeRequest || this.isIssue || this.isAlert) && this.issuableState !== STATUS_OPEN
       );
     },
-    hasTitle() {
-      return this.todo.target && !this.isDesign && !this.isMemberAccessRequestAction;
-    },
     targetTitle() {
-      if (!this.hasTitle) {
+      if (this.isDesign || this.isMemberAccessRequestAction) {
         return '';
       }
 
-      return this.todo.target.title;
+      return this.todo.targetEntity?.title ?? '';
     },
     targetReference() {
-      return this.todo.target.reference ?? '';
-    },
-    targetPath() {
-      return this.todo.targetPath;
+      return this.todo.targetEntity?.reference ?? '';
     },
     parentPath() {
       if (this.todo.group) {
         return this.todo.group.fullName;
       }
 
-      return this.todo.project.nameWithNamespace;
+      if (this.todo.project) {
+        return this.todo.project.nameWithNamespace;
+      }
+
+      return '';
     },
   },
   i18n: {
@@ -112,7 +110,7 @@ export default {
   >
     <status-badge v-if="showStatusBadge" :issuable-type="issuableType" :state="issuableState" />
     <div class="gl-overflow-hidden gl-text-ellipsis">
-      <span v-if="hasTitle" class="todo-target-title">{{ targetTitle }}</span>
+      <span v-if="targetTitle" class="todo-target-title">{{ targetTitle }}</span>
       <span v-if="!isDesign && !isMemberAccessRequestAction">&middot;</span>
       <span>{{ parentPath }}</span>
       <span v-if="targetReference">{{ targetReference }}</span>

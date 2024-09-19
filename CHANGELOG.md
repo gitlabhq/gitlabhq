@@ -5508,6 +5508,10 @@ No changes.
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
 
+## 16.10.10 (2024-09-19)
+
+No changes.
+
 ## 16.10.9 (2024-07-23)
 
 ### Added (1 change)
@@ -6303,6 +6307,10 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.11 (2024-09-19)
+
+No changes.
 
 ## 16.9.10 (2024-07-23)
 

@@ -2,11 +2,7 @@
 
 module WorkItems
   class WidgetDefinition < ApplicationRecord
-    include IgnorableColumns
-
     self.table_name = 'work_item_widget_definitions'
-
-    ignore_column :namespace_id, remove_with: '17.5', remove_after: '2024-09-19'
 
     belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :widget_definitions
 

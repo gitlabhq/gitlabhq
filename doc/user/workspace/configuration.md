@@ -35,6 +35,7 @@ To set up infrastructure for workspaces:
    1. Point [`dns_zone`](gitlab_agent_configuration.md#dns_zone) and `*.<dns_zone>`
       to the load balancer exposed by the Ingress controller.
    1. [Set up the GitLab workspaces proxy](set_up_workspaces_proxy.md).
+1. Optional. [Configure sudo access for workspace](#configure-sudo-access-for-workspace).
 
 ## Create a workspace
 
@@ -71,6 +72,57 @@ To create a workspace:
 The workspace might take a few minutes to start.
 To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
+
+## Configure sudo access for workspace
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+A developer environment often requires sudo permissions to install, configure, and use development dependencies during runtime.
+There are three methods to achieve secure sudo access in a workspace:
+
+- [With Sysbox](#with-sysbox)
+- [With Kata Containers](#with-kata-containers)
+- [With User namespaces](#with-user-namespaces)
+
+Prerequisites:
+
+- Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids). Configuring sudo access for a workspace does not imply that the container image used in a [devfile](index.md#devfile) can run with user ID `0`.
+
+### With Sysbox
+
+[Sysbox](https://github.com/nestybox/sysbox) is a container runtime that enhances containers to
+improves container isolation and enables containers to run same workloads as VMs.
+
+To configure your workspace to use Sysbox:
+
+1. [Install Sysbox in the Kubernetes cluster](https://github.com/nestybox/sysbox#installation).
+1. Configure the following settings in the GitLab agent for workspaces:
+   - Set [`default_runtime_class`](gitlab_agent_configuration.md#default_runtime_class) to the runtime class set up by Sysbox. For example, `sysbox-runc`.
+   - Set [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+
+### With Kata Containers
+
+[Kata Containers](https://github.com/kata-containers/kata-containers) is a standard implementation of lightweight virtual machines (VMs)
+that feel and perform like containers, but provide the workload isolation and security advantages of VMs.
+
+To configure your workspace to use Kata Containers:
+
+1. [Install Kata Containers in the Kubernetes cluster](https://github.com/kata-containers/kata-containers/tree/main/docs/install).
+1. Configure the following settings in the GitLab agent for workspaces:
+   - Set [`default_runtime_class`](gitlab_agent_configuration.md#default_runtime_class) to one of the runtime classes set up by Kata Containers. For example, `kata-qemu`.
+   - Set [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+
+### With User namespaces
+
+User namespaces isolate the user running inside the container from the user in the host.
+In Kubernetes 1.30, this feature is in beta.
+
+To configure your workspace to use the user namespaces feature in Kubernetes:
+
+1. [Configure Kubernetes cluster with User namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
+1. Configure the following settings in GitLab agent for workspaces:
+   - Set [`use_kubernetes_user_namespaces`](gitlab_agent_configuration.md#use_kubernetes_user_namespaces) to `true`.
+   - Set [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
 
 ## Connect to a workspace with SSH
 

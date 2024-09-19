@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 To use Google Cloud integrations like the

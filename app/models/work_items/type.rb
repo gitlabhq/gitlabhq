@@ -6,14 +6,11 @@
 # 3. an emoji, with the format of `:smile:`
 module WorkItems
   class Type < ApplicationRecord
-    include IgnorableColumns
     include Gitlab::Utils::StrongMemoize
 
     DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
 
     self.table_name = 'work_item_types'
-
-    ignore_column :namespace_id, remove_with: '17.5', remove_after: '2024-09-19'
 
     include CacheMarkdownField
     include ReactiveCaching
