@@ -16,7 +16,7 @@ class LabelNote < SyntheticNote
     resource ||= events.first.issuable
 
     label_note = from_event(events.first, resource: resource, resource_parent: resource_parent)
-    label_note.events = events
+    label_note.events = events.sort_by(&:id)
 
     label_note
   end

@@ -29,7 +29,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     # code correctly on page update that adds the `revert` button
   end
 
-  it 'reverts a merge request', :sidekiq_might_not_need_inline do
+  it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450869' do
     revert_commit
 
     wait_for_requests

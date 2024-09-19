@@ -248,7 +248,7 @@ export default {
         data-testid="child-contents-container"
         class="gl-w-full"
         :class="{
-          '!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-border-gray-50 !gl-pb-2':
+          '!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid gl-border-default !gl-pb-2':
             isExpanded && hasChildren && !isLoadingChildren,
         }"
       >

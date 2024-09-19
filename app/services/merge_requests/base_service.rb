@@ -88,7 +88,6 @@ module MergeRequests
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
       trigger_merge_request_reviewers_updated(merge_request)
 
-      capture_suggested_reviewers_accepted(merge_request)
       set_first_reviewer_assigned_at_metrics(merge_request) if new_reviewers.any?
     end
 
@@ -274,10 +273,6 @@ module MergeRequests
 
     def trigger_merge_request_approval_state_updated(merge_request)
       GraphqlTriggers.merge_request_approval_state_updated(merge_request)
-    end
-
-    def capture_suggested_reviewers_accepted(merge_request)
-      # Implemented in EE
     end
 
     def set_first_reviewer_assigned_at_metrics(merge_request)

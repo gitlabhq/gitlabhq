@@ -71,7 +71,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       visit(merge_request_path(merge_request))
     end
 
-    it 'accepts a merge request' do
+    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471380' do
       click_merge_button
 
       expect(page).to have_content('Changes merged into')

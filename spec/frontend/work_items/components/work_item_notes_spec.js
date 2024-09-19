@@ -143,7 +143,9 @@ describe('WorkItemNotes component', () => {
   });
 
   describe('when notes have been loaded', () => {
-    it('does not render skeleton loader', () => {
+    it('does not render skeleton loader', async () => {
+      await waitForPromises();
+
       expect(findNotesLoading().exists()).toBe(true);
     });
 

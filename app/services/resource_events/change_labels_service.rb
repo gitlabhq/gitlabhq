@@ -26,8 +26,8 @@ module ResourceEvents
       ids = ApplicationRecord.legacy_bulk_insert(ResourceLabelEvent.table_name, labels, return_ids: true) # rubocop:disable Gitlab/BulkInsert
 
       if resource.is_a?(Issue)
-        events = ResourceLabelEvent.id_in(ids)
-        events.first.trigger_note_subscription_create(events: events.to_a) if events.any?
+        events = ResourceLabelEvent.id_in(ids).to_a
+        events.first.trigger_note_subscription_create(events: events) if events.any?
       end
 
       create_timeline_events_from(added_labels: added_labels, removed_labels: removed_labels)

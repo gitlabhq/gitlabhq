@@ -525,7 +525,7 @@ export default {
       :allowed-child-types="allowedChildTypes"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
-      class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-border-gray-50 !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
+      class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

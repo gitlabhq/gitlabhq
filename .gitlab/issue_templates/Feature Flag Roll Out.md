@@ -38,7 +38,7 @@ Note: Please make sure to run the chatops commands in the Slack channel that get
       The best environment to validate the feature in is [`staging-canary`](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#staging-canary)
       as this is the first environment deployed to. Make sure you are [configured to use canary](https://next.gitlab.com/).
 - [ ] If the feature flag causes end-to-end tests to fail, disable the feature flag on staging to avoid blocking [deployments](https://about.gitlab.com/handbook/engineering/deployments-and-releases/deployments/).
-   - See [`#qa-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
+   - See [`#e2e-run-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
       - test kicked off: `Feature flag <feature-flag-name> has been set to true on **gstg**`
       - test result: `This pipeline was triggered due to toggling of <feature-flag-name> feature flag`
 

@@ -6,7 +6,13 @@ RSpec.shared_examples 'label note created from events' do
     resource_key = resource.class.name.underscore.to_s
     event_params[resource_key] = resource
 
-    build(:resource_label_event, event_params.merge(params))
+    if params[:label].nil?
+      build(:resource_label_event, event_params.merge(params)).tap do |e|
+        e.save!(validate: false)
+      end
+    else
+      create(:resource_label_event, event_params.merge(params))
+    end
   end
 
   def label_refs(events)
@@ -30,8 +36,8 @@ RSpec.shared_examples 'label note created from events' do
       expect(note.noteable).to eq event.issuable
       expect(note.note).to be_present
       expect(note.note_html).to be_present
-      expect(note.created_at).to eq create_event.created_at
-      expect(note.updated_at).to eq create_event.created_at
+      expect(note.created_at).to be_like_time create_event.created_at
+      expect(note.updated_at).to be_like_time create_event.created_at
     end
 
     it 'updates markdown cache if reference is not set yet' do
@@ -66,6 +72,17 @@ RSpec.shared_examples 'label note created from events' do
       note = described_class.from_events(events)
 
       expect(note.note).to eq "added #{label_refs(events)} + 1 deleted label"
+    end
+
+    it 'orders label events by id' do
+      events = [
+        create_event(created_at: time, label: label),
+        create_event(created_at: time, label: label2)
+      ]
+
+      note = described_class.from_events(events.reverse)
+
+      expect(note.note).to eq "added #{label_refs(events)} labels"
     end
 
     it 'returns text note for removed labels' do
