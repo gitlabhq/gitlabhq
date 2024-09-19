@@ -531,7 +531,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         expect(response).to have_gitlab_http_status(:found)
       end
 
-      it 'prevents users from scheduling the same pipeline repeatedly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446117' do
+      it 'prevents users from scheduling the same pipeline repeatedly', :freeze_time do
         2.times { go }
 
         expect(flash.to_a.size).to eq(2)

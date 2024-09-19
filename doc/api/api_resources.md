@@ -202,6 +202,7 @@ The following API resources are available outside of project and group contexts 
 | [Suggestions](suggestions.md)                                                                | `/suggestions`                                                                                   |
 | [System hooks](system_hooks.md)                                                              | `/hooks`                                                                                         |
 | [To-dos](todos.md)                                                                           | `/todos`                                                                                         |
+| [Token information](admin/token.md)                                                          | `/admin/token`                                                                                   |
 | [Topics](topics.md)                                                                          | `/topics`                                                                                        |
 | [Users](users.md)                                                                            | `/users`                                                                                         |
 | [Validate `.gitlab-ci.yml` file](lint.md)                                                    | `/lint`                                                                                          |

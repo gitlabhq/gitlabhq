@@ -10,11 +10,10 @@
     = render Pajamas::ButtonComponent.new(category: :tertiary,
       icon: 'close',
       size: :small,
-      button_options: { class: 'gl-close-btn-color-inherit gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification',
+      button_options: { class: 'gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification',
         'aria-label': _('Close'),
         data: { id: @id,
                 expire_date: @expire_date,
                 dismissal_path: @dismissal_path,
                 cookie_key: @cookie_key,
-                testid: @button_testid } },
-      icon_classes: 'gl-text-white')
+                testid: @button_testid } })

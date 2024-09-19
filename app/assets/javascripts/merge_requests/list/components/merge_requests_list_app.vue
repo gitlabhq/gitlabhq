@@ -73,6 +73,7 @@ import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.qu
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
+import EmptyState from './empty_state.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
@@ -99,6 +100,7 @@ export default {
     MergeRequestStatistics,
     MergeRequestMoreActionsDropdown,
     ApprovalCount,
+    EmptyState,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -417,6 +419,9 @@ export default {
         })
       );
     },
+    isOpenTab() {
+      return this.state === STATUS_OPEN;
+    },
   },
   created() {
     this.updateData(this.initialSort);
@@ -633,5 +638,10 @@ export default {
         <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
       </li>
     </template>
+
+    <template #empty-state>
+      <empty-state :has-search="hasSearch" :is-open-tab="isOpenTab" />
+    </template>
   </issuable-list>
+  <empty-state v-else :has-merge-requests="false" />
 </template>

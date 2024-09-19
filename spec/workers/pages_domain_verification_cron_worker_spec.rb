@@ -7,7 +7,7 @@ RSpec.describe PagesDomainVerificationCronWorker, feature_category: :pages do
 
   describe '#perform', :sidekiq do
     let!(:verified) { create(:pages_domain) }
-    let!(:reverify) { create(:pages_domain, :reverify, :with_project) }
+    let!(:reverify) { create(:pages_domain, :reverify) }
     let!(:disabled) { create(:pages_domain, :disabled) }
 
     it 'does nothing if the database is read-only' do
@@ -28,7 +28,7 @@ RSpec.describe PagesDomainVerificationCronWorker, feature_category: :pages do
     end
 
     it_behaves_like 'a pages cronjob scheduling jobs with context', PagesDomainVerificationWorker do
-      let(:extra_domain) { create(:pages_domain, :reverify, :with_project) }
+      let(:extra_domain) { create(:pages_domain, :reverify) }
     end
   end
 end

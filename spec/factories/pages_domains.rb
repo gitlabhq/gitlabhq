@@ -902,8 +902,6 @@ x6zG6WoibsbsJMj70nwseUnPTBQNDP+j61RJjC/r
       usage { :serverless }
     end
 
-    trait :with_project do
-      association :project
-    end
+    association :project
   end
 end

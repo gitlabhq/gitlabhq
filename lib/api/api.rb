@@ -222,6 +222,7 @@ module API
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
+        mount ::API::Admin::Token
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
         mount ::API::Applications

@@ -13,7 +13,7 @@ RSpec.describe PagesDomain, feature_category: :pages do
 
   describe '.for_project' do
     it 'returns domains assigned to project' do
-      domain = create(:pages_domain, :with_project)
+      domain = create(:pages_domain)
       create(:pages_domain) # unrelated domain
 
       expect(described_class.for_project(domain.project)).to eq([domain])
@@ -66,42 +66,67 @@ RSpec.describe PagesDomain, feature_category: :pages do
     describe "HTTPS-only" do
       let(:domain) { 'my.domain.com' }
 
-      let(:project) do
-        instance_double(Project, pages_https_only?: pages_https_only, can_create_custom_domains?: true)
+      let(:pages_domain) do
+        build(:pages_domain, certificate: certificate, key: key, auto_ssl_enabled: auto_ssl_enabled)
       end
 
-      let(:pages_domain) do
-        build(:pages_domain, certificate: certificate, key: key, auto_ssl_enabled: auto_ssl_enabled).tap do |pd|
-          allow(pd).to receive(:project).and_return(project)
-          pd.valid?
+      before do
+        allow(pages_domain.project)
+          .to receive(:can_create_custom_domains?)
+                .and_return(true)
+      end
+
+      context 'when project is set to use pages https only' do
+        before do
+          allow(pages_domain.project)
+            .to receive(:pages_https_only?)
+                  .and_return(true)
+        end
+
+        where(:certificate, :key, :auto_ssl_enabled, :errors_on) do
+          attributes = attributes_for(:pages_domain)
+          cert, key = attributes.fetch_values(:certificate, :key)
+
+          nil  | nil | false | %i[certificate key]
+          nil  | nil | true  | []
+          cert | nil | false | %i[key]
+          cert | nil | true  | %i[key]
+          nil  | key | false | %i[certificate key]
+          nil  | key | true  | %i[key]
+          cert | key | false | []
+          cert | key | true  | []
+        end
+
+        with_them do
+          it "is adds the expected errors" do
+            pages_domain.valid?
+
+            expect(pages_domain.errors.attribute_names).to eq errors_on
+          end
         end
       end
 
-      where(:pages_https_only, :certificate, :key, :auto_ssl_enabled, :errors_on) do
-        attributes = attributes_for(:pages_domain)
-        cert, key = attributes.fetch_values(:certificate, :key)
+      context 'when project is not set to https only' do
+        where(:certificate, :key, :auto_ssl_enabled, :errors_on) do
+          attributes = attributes_for(:pages_domain)
+          cert, key = attributes.fetch_values(:certificate, :key)
 
-        true  | nil  | nil | false | %i[certificate key]
-        true  | nil  | nil | true  | []
-        true  | cert | nil | false | %i[key]
-        true  | cert | nil | true  | %i[key]
-        true  | nil  | key | false | %i[certificate key]
-        true  | nil  | key | true  | %i[key]
-        true  | cert | key | false | []
-        true  | cert | key | true  | []
-        false | nil  | nil | false | []
-        false | nil  | nil | true  | []
-        false | cert | nil | false | %i[key]
-        false | cert | nil | true  | %i[key]
-        false | nil  | key | false | %i[key]
-        false | nil  | key | true  | %i[key]
-        false | cert | key | false | []
-        false | cert | key | true  | []
-      end
+          nil  | nil | false | []
+          nil  | nil | true  | []
+          cert | nil | false | %i[key]
+          cert | nil | true  | %i[key]
+          nil  | key | false | %i[key]
+          nil  | key | true  | %i[key]
+          cert | key | false | []
+          cert | key | true  | []
+        end
 
-      with_them do
-        it "is adds the expected errors" do
-          expect(pages_domain.errors.attribute_names).to eq errors_on
+        with_them do
+          it "is adds the expected errors" do
+            pages_domain.valid?
+
+            expect(pages_domain.errors.attribute_names).to eq errors_on
+          end
         end
       end
     end

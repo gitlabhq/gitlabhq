@@ -50,7 +50,7 @@ RSpec.describe PagesDomainSslRenewalCronWorker, feature_category: :pages do
     end
 
     it_behaves_like 'a pages cronjob scheduling jobs with context', PagesDomainSslRenewalWorker do
-      let(:extra_domain) { create(:pages_domain, :with_project, auto_ssl_enabled: true) }
+      let(:extra_domain) { create(:pages_domain, auto_ssl_enabled: true) }
     end
 
     shared_examples 'does nothing' do

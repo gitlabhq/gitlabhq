@@ -79,43 +79,36 @@ module QA
           end
 
           it "pushes image and deletes tag", :blocking, :registry, testcase: params[:testcase] do
-            Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-              create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
-                {
-                  action: 'create',
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~YAML
-                    build:
-                      image: "docker:24.0.1"
-                      stage: build
-                      services:
-                      - name: "docker:24.0.1-dind"
-                        command: ["--insecure-registry=gitlab.test:5050"]
-                      variables:
-                        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-                      script:
-                        - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
-                        - docker build -t $IMAGE_TAG .
-                        - docker push $IMAGE_TAG
-                      tags:
-                        - "runner-for-#{project.name}"
-                  YAML
-                }
-              ])
-            end
+            create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              {
+                action: 'create',
+                file_path: '.gitlab-ci.yml',
+                content: <<~YAML
+                  build:
+                    image: "docker:24.0.1"
+                    stage: build
+                    services:
+                    - name: "docker:24.0.1-dind"
+                      command: ["--insecure-registry=gitlab.test:5050"]
+                    variables:
+                      IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+                    script:
+                      - docker login -u #{auth_user} -p #{auth_token} gitlab.test:5050
+                      - docker build -t $IMAGE_TAG .
+                      - docker push $IMAGE_TAG
+                    tags:
+                      - "runner-for-#{project.name}"
+                YAML
+              }
+            ])
 
-            Flow::Pipeline.visit_latest_pipeline
-
-            Page::Project::Pipeline::Show.perform do |pipeline|
-              pipeline.click_job('build')
-            end
-
+            Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+            project.visit_job('build')
             Page::Project::Job::Show.perform do |job|
               expect(job).to be_successful(timeout: 800)
             end
 
             Page::Project::Menu.perform(&:go_to_container_registry)
-
             Page::Project::Registry::Show.perform do |registry|
               expect(registry).to have_registry_repository(project.name)
 
@@ -132,12 +125,11 @@ module QA
           :registry_tls,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347591'
         ) do
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              {
-                action: 'create',
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: <<~YAML
                   build:
                     image: "docker:24.0.1"
                     stage: build
@@ -159,27 +151,18 @@ module QA
                       - docker push $IMAGE_TAG
                     tags:
                       - "runner-for-#{project.name}"
-                YAML
-              }
-            ])
-          end
+              YAML
+            }
+          ])
 
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('build')
-          end
-
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+          project.visit_job('build')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 200)
           end
 
-          Support::Retrier.retry_until(max_duration: 500, sleep_interval: 10) do
-            project.pipelines.last[:status] == 'success'
-          end
-
+          Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
           Page::Project::Menu.perform(&:go_to_container_registry)
-
           Page::Project::Registry::Show.perform do |registry|
             expect(registry).to have_registry_repository(project.name)
 

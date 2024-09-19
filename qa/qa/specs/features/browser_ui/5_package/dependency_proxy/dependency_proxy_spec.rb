@@ -30,14 +30,7 @@ module QA
 
       before do
         Flow::Login.sign_in
-
         project.group.visit!
-
-        Page::Group::Menu.perform(&:go_to_package_settings)
-
-        Page::Group::Settings::PackageRegistries.perform do |index|
-          expect(index).to have_dependency_proxy_enabled
-        end
       end
 
       after do
@@ -95,12 +88,16 @@ module QA
         end
 
         it "pulls an image using the dependency proxy", :blocking, testcase: params[:testcase] do
-          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-            create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
-              {
-                action: 'create',
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
+          Page::Group::Menu.perform(&:go_to_package_settings)
+          Page::Group::Settings::PackageRegistries.perform do |index|
+            expect(index).to have_dependency_proxy_enabled
+          end
+
+          create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
+            {
+              action: 'create',
+              file_path: '.gitlab-ci.yml',
+              content: <<~YAML
                   dependency-proxy-pull-test:
                     image: "#{docker_client_version}"
                     services:
@@ -117,26 +114,19 @@ module QA
                       - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
                     tags:
                     - "runner-for-#{project.name}"
-                YAML
-              }
-            ])
-          end
+              YAML
+            }
+          ])
 
           project.visit!
-          Flow::Pipeline.visit_latest_pipeline
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('dependency-proxy-pull-test')
-          end
-
+          Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+          project.visit_job('dependency-proxy-pull-test')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
           end
 
           project.group.visit!
-
           Page::Group::Menu.perform(&:go_to_dependency_proxy)
-
           Page::Group::DependencyProxy.perform do |index|
             expect(index).to have_blob_count(/Contains [1-9]\d* blobs of images/)
           end
