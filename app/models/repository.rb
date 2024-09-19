@@ -890,7 +890,7 @@ class Repository
     end
 
     skip_target_sha = options.delete(:skip_target_sha)
-    unless skip_target_sha || Feature.disabled?(:validate_target_sha_in_user_commit_files, project)
+    unless skip_target_sha
       options[:target_sha] = self.commit(options[:branch_name])&.sha
     end
 

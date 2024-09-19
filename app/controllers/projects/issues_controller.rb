@@ -74,8 +74,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   respond_to :html
 
-  alias_method :designs, :show
-
   feature_category :team_planning, [
     :index, :calendar, :show, :new, :create, :edit, :update,
     :destroy, :move, :reorder, :designs, :toggle_subscription,
@@ -149,6 +147,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     render 'projects/work_items/show'
   end
+
+  alias_method :designs, :show
 
   def edit
     respond_with(@issue)

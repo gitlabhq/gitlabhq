@@ -73,7 +73,7 @@ coverage in the tool's output:
 | JaCoCo | Java/Kotlin | None | `/Total.*?([0-9]{1,3})%/` |
 | go test | Go | `go test -cover` | `/coverage: \d+.\d+% of statements/` |
 | OpenCover | .NET | None | `/(Visited Points).*\((.*)\)/` |
-| dotnet test | .NET | `dotnet test` | `/Total\s*\|\s*(\d+(?:\.\d+)?)/` |
+| dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\|\s*(\d+(?:\.\d+)?)/` |
 | tarpaulin | Rust | None | `/^\d+.\d+% coverage/` |
 | Pester | PowerShell | None | `/Covered (\d+\.\d+%)/` |
 

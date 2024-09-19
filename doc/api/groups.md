@@ -1657,16 +1657,6 @@ And to switch pages add:
 /groups?per_page=100&page=2
 ```
 
-## Group badges
-
-Read more in the [Group Badges](group_badges.md) documentation.
-
-## Group Import/Export
-
-Read more in the [Group Import/Export](group_import_export.md)
-and [Group Relations Export](group_relations_export.md)
-documentation.
-
 ## Share Groups with Groups
 
 These endpoints create and delete links for sharing a group with another group. For more information, see the related discussion in the [GitLab Groups](../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) page.

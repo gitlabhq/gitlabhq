@@ -8055,6 +8055,72 @@ Input type: `ProjectSecretsManagerInitializeInput`
 | <a id="mutationprojectsecretsmanagerinitializeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsecretsmanagerinitializeprojectsecretsmanager"></a>`projectSecretsManager` | [`ProjectSecretsManager`](#projectsecretsmanager) | Project secrets manager. |
 
+### `Mutation.projectSecurityExclusionCreate`
+
+Input type: `ProjectSecurityExclusionCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusioncreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the exclusion is active. |
+| <a id="mutationprojectsecurityexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusioncreatedescription"></a>`description` | [`String`](#string) | Optional description for the exclusion. |
+| <a id="mutationprojectsecurityexclusioncreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the exclusion will be associated with. |
+| <a id="mutationprojectsecurityexclusioncreatescanner"></a>`scanner` | [`ExclusionScannerEnum!`](#exclusionscannerenum) | Scanner to ignore values for based on the exclusion. |
+| <a id="mutationprojectsecurityexclusioncreatetype"></a>`type` | [`ExclusionTypeEnum!`](#exclusiontypeenum) | Type of the exclusion. |
+| <a id="mutationprojectsecurityexclusioncreatevalue"></a>`value` | [`String!`](#string) | Value of the exclusion. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusioncreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecurityexclusioncreatesecurityexclusion"></a>`securityExclusion` | [`ProjectSecurityExclusion`](#projectsecurityexclusion) | Project security exclusion created. |
+
+### `Mutation.projectSecurityExclusionDelete`
+
+Input type: `ProjectSecurityExclusionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusiondeleteid"></a>`id` | [`SecurityProjectSecurityExclusionID!`](#securityprojectsecurityexclusionid) | Global ID of the exclusion to be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.projectSecurityExclusionUpdate`
+
+Input type: `ProjectSecurityExclusionUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusionupdateactive"></a>`active` | [`Boolean`](#boolean) | Whether the exclusion is active. |
+| <a id="mutationprojectsecurityexclusionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusionupdatedescription"></a>`description` | [`String`](#string) | Optional description for the exclusion. |
+| <a id="mutationprojectsecurityexclusionupdateid"></a>`id` | [`SecurityProjectSecurityExclusionID!`](#securityprojectsecurityexclusionid) | Global ID of the exclusion to be updated. |
+| <a id="mutationprojectsecurityexclusionupdatescanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Scanner to ignore values for based on the exclusion. |
+| <a id="mutationprojectsecurityexclusionupdatetype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Type of the exclusion. |
+| <a id="mutationprojectsecurityexclusionupdatevalue"></a>`value` | [`String`](#string) | Value of the exclusion. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecurityexclusionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecurityexclusionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecurityexclusionupdatesecurityexclusion"></a>`securityExclusion` | [`ProjectSecurityExclusion`](#projectsecurityexclusion) | Project security exclusion updated. |
+
 ### `Mutation.projectSetComplianceFramework`
 
 Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
@@ -31557,10 +31623,12 @@ Represents a project-level security scanner exclusion.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecurityexclusionactive"></a>`active` | [`Boolean!`](#boolean) | Whether the exclusion is active. |
+| <a id="projectsecurityexclusioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the exclusion was created. |
 | <a id="projectsecurityexclusiondescription"></a>`description` | [`String`](#string) | Optional description for the exclusion. |
 | <a id="projectsecurityexclusionid"></a>`id` | [`SecurityProjectSecurityExclusionID!`](#securityprojectsecurityexclusionid) | ID of the exclusion. |
 | <a id="projectsecurityexclusionscanner"></a>`scanner` | [`ExclusionScannerEnum!`](#exclusionscannerenum) | Security scanner the exclusion will be used for. |
 | <a id="projectsecurityexclusiontype"></a>`type` | [`ExclusionTypeEnum!`](#exclusiontypeenum) | Type of the exclusion. |
+| <a id="projectsecurityexclusionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the exclusion was updated. |
 | <a id="projectsecurityexclusionvalue"></a>`value` | [`String!`](#string) | Value of the exclusion. |
 
 ### `ProjectSecurityPolicySource`

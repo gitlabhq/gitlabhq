@@ -4371,24 +4371,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       subject
     end
 
-    context 'when validate_target_sha_in_user_commit_files feature flag is disabled' do
-      let_it_be(:project) { create(:project, :repository) }
-      let(:target_sha) { nil }
-
-      before do
-        stub_feature_flags(validate_target_sha_in_user_commit_files: false)
-      end
-
-      it 'does not find or pass the branches target_sha' do
-        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
-          expect(client).to receive(:user_commit_files).with(*expected_params)
-        end
-        expect(repository).not_to receive(:commit)
-
-        subject
-      end
-    end
-
     context 'with an empty branch' do
       let_it_be(:project) { create(:project, :empty_repo) }
       let(:target_sha) { nil }
