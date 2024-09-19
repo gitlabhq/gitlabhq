@@ -678,6 +678,7 @@ export default {
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"
                 :update-in-progress="updateInProgress"
+                :without-heading-anchors="isDrawer"
                 @updateWorkItem="updateWorkItem"
                 @updateDraft="updateDraft('description', $event)"
                 @cancelEditing="cancelEditing"

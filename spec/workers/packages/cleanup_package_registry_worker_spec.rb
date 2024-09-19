@@ -59,7 +59,7 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :packag
     end
 
     context 'with npm metadata caches pending destruction' do
-      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, :stale) }
+      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, :pending_destruction) }
 
       it_behaves_like 'an idempotent worker'
 

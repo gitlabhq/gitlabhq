@@ -29600,7 +29600,7 @@ CREATE INDEX index_packages_maven_metadata_on_project_id ON packages_maven_metad
 
 CREATE UNIQUE INDEX index_packages_npm_metadata_caches_on_object_storage_key ON packages_npm_metadata_caches USING btree (object_storage_key);
 
-CREATE INDEX index_packages_npm_metadata_caches_on_project_id ON packages_npm_metadata_caches USING btree (project_id);
+CREATE INDEX index_packages_npm_metadata_caches_on_project_id_status ON packages_npm_metadata_caches USING btree (project_id, status);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
@@ -34232,9 +34232,6 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT fk_ad89c59858 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY packages_npm_metadata_caches
-    ADD CONSTRAINT fk_ada23b1d30 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;

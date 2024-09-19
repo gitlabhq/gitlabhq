@@ -4,6 +4,10 @@ require 'spec_helper'
 
 # rubocop: disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shared do
+  before do
+    allow(Thread.current).to receive(:name=)
+  end
+
   shared_examples "a metrics middleware" do
     context "with mocked prometheus" do
       include_context 'server metrics with mocked prometheus'

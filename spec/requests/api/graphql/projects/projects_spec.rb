@@ -61,6 +61,40 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
     end
   end
 
+  describe 'min_access_level' do
+    let_it_be(:project_with_owner_access) { create(:project, :private) }
+
+    before_all do
+      project_with_owner_access.add_owner(current_user)
+    end
+
+    context 'when min_access_level is OWNER' do
+      let(:filters) { { min_access_level: :OWNER } }
+
+      it 'returns only projects user has owner access to' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:projects, :nodes))
+          .to contain_exactly(a_graphql_entity_for(project_with_owner_access))
+      end
+    end
+
+    context 'when min_access_level is DEVELOPER' do
+      let(:filters) { { min_access_level: :DEVELOPER } }
+
+      it 'returns only projects user has developer or higher access to' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(
+          *projects.map { |project| a_graphql_entity_for(project) },
+          a_graphql_entity_for(other_project),
+          a_graphql_entity_for(project_with_owner_access)
+        )
+      end
+    end
+  end
+
   context 'when providing full_paths filter' do
     let(:project_full_paths) { projects.map(&:full_path) }
     let(:filters) { { full_paths: project_full_paths } }

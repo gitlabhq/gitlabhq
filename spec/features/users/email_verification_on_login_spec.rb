@@ -462,7 +462,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
   end
 
   def expect_instructions_email_and_extract_code(email: nil)
-    mail = find_email_for(user, email: email)
+    mail = find_email_for(email || user)
     expect(mail.to).to match_array([email || user.email])
     expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
     code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]

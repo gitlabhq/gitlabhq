@@ -56,8 +56,8 @@ module EmailHelpers
     ActionMailer::Base.deliveries.flat_map(&kind)
   end
 
-  def find_email_for(user, email: nil)
-    to = email || user.notification_email_or_default
+  def find_email_for(user_or_email)
+    to = user_or_email.is_a?(User) ? user_or_email.notification_email_or_default : user_or_email
     ActionMailer::Base.deliveries.find { |d| d.to.include?(to) }
   end
 

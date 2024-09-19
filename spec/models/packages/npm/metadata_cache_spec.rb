@@ -9,6 +9,14 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a Packages::Downloadable }
 
+  describe 'loose foreign keys' do
+    it_behaves_like 'update by a loose foreign key' do
+      let_it_be(:model) { create(:npm_metadata_cache, status: :default) }
+
+      let!(:parent) { model.project }
+    end
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project).inverse_of(:npm_metadata_caches) }
   end
@@ -149,23 +157,14 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
     end
   end
 
-  describe '.stale' do
-    let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
-    let_it_be(:npm_metadata_cache_stale) { create(:npm_metadata_cache, :stale) }
-
-    subject { described_class.stale }
-
-    it { is_expected.to contain_exactly(npm_metadata_cache_stale) }
-  end
-
   describe '.pending_destruction' do
     let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache) }
-    let_it_be(:npm_metadata_cache_stale_default) { create(:npm_metadata_cache, :stale) }
-    let_it_be(:npm_metadata_cache_stale_processing) { create(:npm_metadata_cache, :stale, :processing) }
+    let_it_be(:npm_metadata_cache_processing) { create(:npm_metadata_cache, :processing) }
+    let_it_be(:npm_metadata_cache_pending_destruction) { create(:npm_metadata_cache, :pending_destruction) }
 
     subject { described_class.pending_destruction }
 
-    it { is_expected.to contain_exactly(npm_metadata_cache_stale_default) }
+    it { is_expected.to contain_exactly(npm_metadata_cache_pending_destruction) }
   end
 
   describe '.next_pending_destruction' do
@@ -173,11 +172,11 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
     let_it_be(:npm_metadata_cache2) { create(:npm_metadata_cache, created_at: 1.year.ago, updated_at: 1.year.ago) }
 
     let_it_be(:npm_metadata_cache3) do
-      create(:npm_metadata_cache, :stale, created_at: 2.years.ago, updated_at: 1.month.ago)
+      create(:npm_metadata_cache, :pending_destruction, created_at: 2.years.ago, updated_at: 1.month.ago)
     end
 
     let_it_be(:npm_metadata_cache4) do
-      create(:npm_metadata_cache, :stale, created_at: 3.years.ago, updated_at: 2.weeks.ago)
+      create(:npm_metadata_cache, :pending_destruction, created_at: 3.years.ago, updated_at: 2.weeks.ago)
     end
 
     it 'returns the oldest pending destruction item based on updated_at' do

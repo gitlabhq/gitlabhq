@@ -72,6 +72,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    withoutHeadingAnchors: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -93,6 +98,9 @@ export default {
       return this.workItemDescription?.description;
     },
     descriptionHtml() {
+      if (this.withoutHeadingAnchors) {
+        return this.stripHeadingAnchors(this.workItemDescription?.descriptionHtml);
+      }
       return this.workItemDescription?.descriptionHtml;
     },
     isDescriptionEmpty() {
@@ -335,6 +343,10 @@ export default {
       this.trackEvent('expand_description_on_workitem', {
         label: this.workItemTypeName,
       });
+    },
+    stripHeadingAnchors(htmlString) {
+      const regex = /(<a[^>]+?aria-hidden="true" class="anchor)(")/g;
+      return htmlString?.replace(regex, '$1 after:!gl-hidden$2');
     },
   },
 };

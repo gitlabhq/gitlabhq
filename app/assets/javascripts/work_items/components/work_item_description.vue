@@ -80,6 +80,11 @@ export default {
       required: false,
       default: '',
     },
+    withoutHeadingAnchors: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -379,6 +384,7 @@ export default {
       :disable-truncation="disableTruncation"
       :is-group="isGroup"
       :is-updating="isSubmitting"
+      :without-heading-anchors="withoutHeadingAnchors"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />

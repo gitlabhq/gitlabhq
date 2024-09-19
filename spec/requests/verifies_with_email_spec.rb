@@ -13,7 +13,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     let(:recipient_email) { nil }
 
     specify do
-      mail = find_email_for(user, email: recipient_email)
+      mail = find_email_for(recipient_email || user)
       expect(mail&.subject).not_to eq(s_('IdentityVerification|Verify your identity'))
     end
   end
@@ -28,7 +28,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     it 'sends an email', :aggregate_failures do
-      mail = find_email_for(user, email: recipient_email)
+      mail = find_email_for(recipient_email || user)
       expect(mail.to).to match_array([recipient_email || user.email])
       expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
     end

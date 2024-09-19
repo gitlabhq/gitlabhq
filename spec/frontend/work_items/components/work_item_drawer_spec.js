@@ -29,12 +29,14 @@ describe('WorkItemDrawer', () => {
     open = false,
     activeItem = { iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
+    clickOutsideExcludeSelector = undefined,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDrawer, {
       propsData: {
         activeItem,
         open,
         issuableType,
+        clickOutsideExcludeSelector,
       },
       listeners: {
         customEvent: mockListener,
@@ -77,12 +79,49 @@ describe('WorkItemDrawer', () => {
     ).toBe('test');
   });
 
-  it('emits `close` event when drawer is closed', () => {
-    createComponent({ open: true });
+  describe('closing the drawer', () => {
+    it('emits `close` event when drawer is closed', () => {
+      createComponent({ open: true });
 
-    findGlDrawer().vm.$emit('close');
+      findGlDrawer().vm.$emit('close');
 
-    expect(wrapper.emitted('close')).toHaveLength(1);
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    });
+
+    it('emits `close` event when clicking outside of drawer', () => {
+      createComponent({ open: true });
+
+      document.dispatchEvent(new MouseEvent('click'));
+
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    });
+
+    describe('`clickOutsideExcludeSelector` prop', () => {
+      let fakeParent;
+      let otherElement;
+
+      beforeEach(() => {
+        createComponent({ open: true, clickOutsideExcludeSelector: '.selector' });
+
+        fakeParent = document.createElement('div');
+        fakeParent.classList.add('selector');
+        document.body.appendChild(fakeParent);
+
+        otherElement = document.createElement('div');
+        document.body.appendChild(otherElement);
+      });
+      it('emits `close` event when clicking outside of drawer and not on excluded element', () => {
+        otherElement.dispatchEvent(new MouseEvent('click'));
+
+        expect(wrapper.emitted('close')).toHaveLength(1);
+      });
+
+      it('does not emit `close` event when clicking outside of drawer on excluded element', () => {
+        fakeParent.dispatchEvent(new MouseEvent('click'));
+
+        expect(wrapper.emitted('close')).toBeUndefined();
+      });
+    });
   });
 
   it('passes listeners correctly to WorkItemDetail', () => {

@@ -2,13 +2,13 @@
 import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
 import {
-  dateInWords,
   getTimeRemainingInWords,
   humanTimeframe,
   isInFuture,
   isInPast,
   isToday,
-  newDateAsLocaleTime,
+  localeDateFormat,
+  newDate,
 } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED } from '~/work_items/constants';
@@ -35,7 +35,7 @@ export default {
     milestoneDate() {
       if (this.milestone.dueDate) {
         const { dueDate, startDate } = this.milestone;
-        const date = dateInWords(newDateAsLocaleTime(dueDate), true);
+        const date = localeDateFormat.asDate.format(newDate(dueDate));
         const remainingTime = this.milestoneRemainingTime(dueDate, startDate);
         return `${date} (${remainingTime})`;
       }
@@ -52,7 +52,7 @@ export default {
         return humanTimeframe(this.startDate, this.dueDate);
       }
       if (this.dueDate) {
-        return dateInWords(newDateAsLocaleTime(this.dueDate), true);
+        return localeDateFormat.asDate.format(newDate(this.dueDate));
       }
       return null;
     },
@@ -63,7 +63,7 @@ export default {
       if (!this.dueDate) {
         return false;
       }
-      return isInPast(newDateAsLocaleTime(this.dueDate)) && !this.isClosed;
+      return isInPast(newDate(this.dueDate)) && !this.isClosed;
     },
     startDate() {
       return this.issue.widgets?.find(isStartAndDueDateWidget)?.startDate;
@@ -74,8 +74,8 @@ export default {
   },
   methods: {
     milestoneRemainingTime(dueDate, startDate) {
-      const due = newDateAsLocaleTime(dueDate);
-      const start = newDateAsLocaleTime(startDate);
+      const due = newDate(dueDate);
+      const start = newDate(startDate);
 
       if (dueDate && isInPast(due)) {
         return __('Past due');

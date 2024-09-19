@@ -48829,6 +48829,33 @@ msgstr ""
 msgid "SecurityDescription|The linked group refers to the groups that are linked to security policy projects. Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityExclusions|Add exclusion"
+msgstr ""
+
+msgid "SecurityExclusions|Enforcement"
+msgstr ""
+
+msgid "SecurityExclusions|Modified"
+msgstr ""
+
+msgid "SecurityExclusions|Secret push protection"
+msgstr ""
+
+msgid "SecurityExclusions|Specify file paths, raw values, and regex that should be excluded by secret detection in this project."
+msgstr ""
+
+msgid "SecurityExclusions|Status"
+msgstr ""
+
+msgid "SecurityExclusions|Toggle exclusion"
+msgstr ""
+
+msgid "SecurityExclusions|Type"
+msgstr ""
+
+msgid "SecurityExclusions|Value"
+msgstr ""
+
 msgid "SecurityOrchestration| and "
 msgstr ""
 

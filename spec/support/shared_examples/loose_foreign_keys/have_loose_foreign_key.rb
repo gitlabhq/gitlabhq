@@ -59,22 +59,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
 end
 
 RSpec.shared_examples 'cleanup by a loose foreign key' do
-  include LooseForeignKeysHelper
-
-  let(:foreign_key_definition) do
-    foreign_keys_for_parent = Gitlab::Database::LooseForeignKeys.definitions_by_table[parent.class.table_name]
-    foreign_keys_for_parent.find { |definition| definition.from_table == model.class.table_name }
-  end
-
-  def find_model
-    query = model.class
-    # handle composite primary keys
-    primary_keys = model.class.connection.primary_keys(model.class.table_name) - model.class.ignored_columns
-    primary_keys.each do |primary_key|
-      query = query.where(primary_key => model.public_send(primary_key))
-    end
-    query.first
-  end
+  include_context 'for loose foreign keys'
 
   it 'cleans up (delete or nullify) the model' do
     parent.delete
@@ -88,5 +73,23 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
     else
       expect(find_model[foreign_key_definition.column]).to eq(nil)
     end
+  end
+end
+
+RSpec.shared_examples 'update by a loose foreign key' do
+  let(:options) { foreign_key_definition.options }
+
+  include_context 'for loose foreign keys'
+
+  it 'updates the model' do
+    unless foreign_key_definition.on_delete.eql?(:update_column_to)
+      raise ArgumentError, 'Loose foreign key definition should have `update_column_to` on_delete option'
+    end
+
+    parent.delete
+
+    process_loose_foreign_key_deletions(record: parent)
+
+    expect(find_model.read_attribute_before_type_cast(options[:target_column])).to eq(options[:target_value])
   end
 end

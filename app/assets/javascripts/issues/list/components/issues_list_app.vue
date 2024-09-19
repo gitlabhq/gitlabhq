@@ -894,6 +894,7 @@ export default {
       :open="isIssuableSelected"
       :active-item="activeIssuable"
       :issuable-type="$options.issuableType"
+      click-outside-exclude-selector=".issuable-list"
       @close="activeIssuable = null"
       @work-item-updated="updateIssuablesCache"
       @work-item-emoji-updated="updateIssuableEmojis"

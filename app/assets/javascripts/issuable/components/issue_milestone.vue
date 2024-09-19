@@ -1,6 +1,6 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate, timeFor } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -20,12 +20,12 @@ export default {
     milestoneDue() {
       const dueDate = this.milestone.due_date || this.milestone.dueDate;
 
-      return dueDate ? parsePikadayDate(dueDate) : null;
+      return dueDate ? newDate(dueDate) : null;
     },
     milestoneStart() {
       const startDate = this.milestone.start_date || this.milestone.startDate;
 
-      return startDate ? parsePikadayDate(startDate) : null;
+      return startDate ? newDate(startDate) : null;
     },
     isMilestoneStarted() {
       if (!this.milestoneStart) {
@@ -41,10 +41,10 @@ export default {
     },
     milestoneDatesAbsolute() {
       if (this.milestoneDue) {
-        return `(${dateInWords(this.milestoneDue)})`;
+        return `(${localeDateFormat.asDate.format(this.milestoneDue)})`;
       }
       if (this.milestoneStart) {
-        return `(${dateInWords(this.milestoneStart)})`;
+        return `(${localeDateFormat.asDate.format(this.milestoneStart)})`;
       }
       return '';
     },

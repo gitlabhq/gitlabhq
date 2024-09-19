@@ -30,7 +30,8 @@ module QA
       end
 
       shared_examples 'upload a file' do
-        it "verifies it successfully uploads and commits to a MR" do
+        it "verifies it successfully uploads and commits to a MR",
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/491469' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.upload_file(file_path)
             Support::Waiter.wait_until { ide.has_pending_changes? }

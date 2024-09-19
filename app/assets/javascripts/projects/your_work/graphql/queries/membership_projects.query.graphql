@@ -1,0 +1,9 @@
+#import "ee_else_ce/graphql_shared/fragments/project.fragment.graphql"
+
+query getMembershipProjects {
+  projects(membership: true) {
+    nodes {
+      ...Project
+    }
+  }
+}

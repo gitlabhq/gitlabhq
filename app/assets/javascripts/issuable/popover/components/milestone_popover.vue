@@ -8,8 +8,7 @@ import {
   GlBadge,
 } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import { humanTimeframe, dateInWords } from '~/lib/utils/datetime/date_format_utility';
-import { parsePikadayDate } from '~/lib/utils/datetime/pikaday_utility';
+import { humanTimeframe, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   TYPE_MILESTONE,
@@ -122,24 +121,16 @@ export default {
       if (startDate && dueDate) {
         timeframe = humanTimeframe(startDate, dueDate);
       } else if (startDate && !dueDate) {
-        const parsedStartDate = parsePikadayDate(startDate);
-        const startDateInWords = dateInWords(
-          parsedStartDate,
-          true,
-          parsedStartDate.getFullYear === today.getFullYear(),
-        );
+        const parsedStartDate = newDate(startDate);
+        const startDateInWords = localeDateFormat.asDate.format(parsedStartDate);
         if (parsedStartDate.getTime() > today.getTime()) {
           timeframe = sprintf(__('Starts %{startDate}'), { startDate: startDateInWords });
         } else {
           timeframe = sprintf(__('Started %{startDate}'), { startDate: startDateInWords });
         }
       } else if (!startDate && dueDate) {
-        const parsedDueDate = parsePikadayDate(dueDate);
-        const dueDateInWords = dateInWords(
-          parsedDueDate,
-          true,
-          parsedDueDate.getFullYear === today.getFullYear(),
-        );
+        const parsedDueDate = newDate(dueDate);
+        const dueDateInWords = localeDateFormat.asDate.format(parsedDueDate);
         if (parsedDueDate.getTime() > today.getTime()) {
           timeframe = sprintf(__('Ends %{dueDate}'), { dueDate: dueDateInWords });
         } else {

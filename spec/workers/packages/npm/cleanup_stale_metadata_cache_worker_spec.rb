@@ -14,22 +14,22 @@ RSpec.describe Packages::Npm::CleanupStaleMetadataCacheWorker, type: :worker, fe
 
     context 'with work to do' do
       let_it_be(:npm_metadata_cache1) { create(:npm_metadata_cache) }
-      let_it_be(:npm_metadata_cache2) { create(:npm_metadata_cache, :stale) }
+      let_it_be(:npm_metadata_cache2) { create(:npm_metadata_cache, :pending_destruction) }
 
       let_it_be(:npm_metadata_cache3) do
-        create(:npm_metadata_cache, :stale, updated_at: 1.year.ago, created_at: 1.year.ago)
+        create(:npm_metadata_cache, :pending_destruction, updated_at: 1.year.ago, created_at: 1.year.ago)
       end
 
-      it 'deletes the oldest stale metadata cache based on id', :aggregate_failures do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:npm_metadata_cache_id, npm_metadata_cache2.id)
+      it 'deletes the oldest pending destruction metadata cache based on updated_at', :aggregate_failures do
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:npm_metadata_cache_id, npm_metadata_cache3.id)
 
         expect { subject }.to change { Packages::Npm::MetadataCache.count }.by(-1)
-        expect { npm_metadata_cache2.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { npm_metadata_cache3.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
-    context 'with a stale metadata cache' do
-      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, :stale) }
+    context 'with a pending destruction metadata cache' do
+      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, :pending_destruction) }
 
       context 'with an error during the destroy' do
         before do
