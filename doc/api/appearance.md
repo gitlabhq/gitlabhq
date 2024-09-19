@@ -22,6 +22,8 @@ List the current appearance configuration of the GitLab instance.
 GET /application/appearance
 ```
 
+Example request:
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance"
 ```
@@ -78,6 +80,8 @@ PUT /application/appearance
 | `message_font_color`              | string  | no       | Font color for the system header / footer bar |
 | `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled |
 
+Example request:
+
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"
 ```
@@ -133,7 +137,7 @@ curl --location --request PUT "https://gitlab.example.com/api/v4/application/app
 --form "logo=@/path/to/logo.png"
 ```
 
-Returned object:
+Example response:
 
 ```json
 {

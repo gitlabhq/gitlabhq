@@ -460,6 +460,7 @@ export const setNewWorkItemCache = async (
           hasChildren: false,
           hasParent: false,
           parent: null,
+          depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
             nodes: [],

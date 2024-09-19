@@ -1,8 +1,0 @@
----
-name: increase_diff_file_performance
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136674
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432600
-milestone: '16.9'
-type: development
-group: group::code review
-default_enabled: true

@@ -62157,6 +62157,9 @@ msgstr ""
 msgid "WorkItem|Yes, close %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels."
+msgstr ""
+
 msgid "WorkItem|You don't have the necessary permission to view the ancestor."
 msgstr ""
 

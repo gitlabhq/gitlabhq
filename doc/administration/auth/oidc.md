@@ -271,6 +271,58 @@ gitlab_rails['omniauth_providers'] = [
 
 Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
 
+#### Microsoft Entra custom signing keys
+
+If your application has custom signing keys because you use the
+[SAML claims-mapping feature](https://learn.microsoft.com/en-us/entra/identity-platform/saml-claims-customization),
+you must configure the OpenID provider in the following ways:
+
+- Disable OpenID Connect Discovery by omitting `args.discovery`, or setting it to `false`.
+- In `client_options`, specify the following:
+  - A `jwks_uri` with the `appid` query parameter: `https://login.microsoftonline.com/<YOUR-TENANT-ID>/discovery/v2.0/keys?appid=<YOUR APP CLIENT ID>`.
+  - `end_session_endpoint`.
+  - `authorization_endpoint`.
+  - `userinfo_endpoint`.
+
+Example configuration for Linux package installations:
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+ {
+    name: "openid_connect", # do not change this parameter
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "openid_connect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "basic",
+      discovery: false,
+      uid_field: "preferred_username",
+      pkce: true,
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback",
+        end_session_endpoint: "https://login.microsoftonline.com/<YOUR-TENANT-ID>/oauth2/v2.0/logout",
+        authorization_endpoint: "https://login.microsoftonline.com/<YOUR-TENANT-ID>/oauth2/v2.0/authorize",
+        token_endpoint: "https://login.microsoftonline.com/<YOUR-TENANT-ID>/oauth2/v2.0/token",
+        userinfo_endpoint: "https://graph.microsoft.com/oidc/userinfo",
+        jwks_uri: "https://login.microsoftonline.com/<YOUR-TENANT-ID>/discovery/v2.0/keys?appid=<YOUR APP CLIENT ID>"
+      }
+    }
+  }
+]
+```
+
+If you see authentication failures with a `KidNotFound` message, this
+is probably because of a missing or incorrect `appid` query
+parameter. GitLab raises that error if the ID token returned by
+Microsoft cannot be validated with the keys provided by the `jwks_uri`
+endpoint.
+
+For more information, see the [Microsoft Entra documentation on validating tokens](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#validate-tokens).
+
 #### Migrate to Generic OpenID Connect configuration
 
 You can migrate to the Generic OpenID Connect configuration from both `azure_activedirectory_v2` and `azure_oauth2`.

@@ -401,36 +401,16 @@ RSpec.describe Gitlab::Diff::File do
   end
 
   describe '#old_blob and #new_blob' do
-    context 'when increase_diff_file_performance is on' do
-      let(:diff_file) do
-        described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, max_blob_size: max_blob_size)
-      end
+    let(:diff_file) do
+      described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, max_blob_size: max_blob_size)
+    end
 
-      let(:max_blob_size) { 1000 }
+    let(:max_blob_size) { 1000 }
 
-      before do
-        stub_feature_flags(increase_diff_file_performance: true)
-      end
+    context 'when the blobs are truncated' do
+      let(:max_blob_size) { 10 }
 
-      context 'when the blobs are truncated' do
-        let(:max_blob_size) { 10 }
-
-        it 'returns the truncated blobs' do
-          items = [
-            [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
-          ]
-
-          expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: max_blob_size).and_call_original
-
-          old_data = diff_file.old_blob.data
-          data = diff_file.new_blob.data
-
-          expect(old_data.size).to eq(max_blob_size)
-          expect(data.size).to eq(max_blob_size)
-        end
-      end
-
-      it 'returns blob of base commit and the new commit' do
+      it 'returns the truncated blobs' do
         items = [
           [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
         ]
@@ -440,33 +420,23 @@ RSpec.describe Gitlab::Diff::File do
         old_data = diff_file.old_blob.data
         data = diff_file.new_blob.data
 
-        expect(old_data).to include('raise "System commands must be given as an array of strings"')
-        expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
+        expect(old_data.size).to eq(max_blob_size)
+        expect(data.size).to eq(max_blob_size)
       end
     end
 
-    context 'when increase_diff_file_performance is off' do
-      let(:diff_file) do
-        described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository)
-      end
+    it 'returns blob of base commit and the new commit' do
+      items = [
+        [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
+      ]
 
-      before do
-        stub_feature_flags(increase_diff_file_performance: false)
-      end
+      expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: max_blob_size).and_call_original
 
-      it 'returns blob of base commit and the new commit' do
-        items = [
-          [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
-        ]
+      old_data = diff_file.old_blob.data
+      data = diff_file.new_blob.data
 
-        expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE).and_call_original
-
-        old_data = diff_file.old_blob.data
-        data = diff_file.new_blob.data
-
-        expect(old_data).to include('raise "System commands must be given as an array of strings"')
-        expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
-      end
+      expect(old_data).to include('raise "System commands must be given as an array of strings"')
+      expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
     end
   end
 

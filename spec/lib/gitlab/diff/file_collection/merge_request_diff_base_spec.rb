@@ -48,35 +48,23 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
   describe '.max_blob_size' do
     let(:project) { merge_request.project }
 
-    context 'when increase_diff_file_performance is enabled' do
-      before do
-        allow(Gitlab::Highlight).to receive(:file_size_limit).and_return(max_config)
-      end
+    before do
+      allow(Gitlab::Highlight).to receive(:file_size_limit).and_return(max_config)
+    end
 
-      context 'when MAX_BLOB_SIZE constant is larger' do
-        let(:max_config) { described_class::MAX_BLOB_SIZE - 1 }
+    context 'when MAX_BLOB_SIZE constant is larger' do
+      let(:max_config) { described_class::MAX_BLOB_SIZE - 1 }
 
-        it 'returns the MAX_BLOB_SIZE constant' do
-          expect(described_class.max_blob_size(project)).to eq(described_class::MAX_BLOB_SIZE)
-        end
-      end
-
-      context 'when maximum_text_highlight_size_kilobytes setting is larger' do
-        let(:max_config) { described_class::MAX_BLOB_SIZE + 1 }
-
-        it 'returns the maximum_text_highlight_size_kilobytes setting' do
-          expect(described_class.max_blob_size(project)).to eq(max_config)
-        end
+      it 'returns the MAX_BLOB_SIZE constant' do
+        expect(described_class.max_blob_size(project)).to eq(described_class::MAX_BLOB_SIZE)
       end
     end
 
-    context 'when increase_diff_file_performance is disabled' do
-      before do
-        stub_feature_flags(increase_diff_file_performance: false)
-      end
+    context 'when maximum_text_highlight_size_kilobytes setting is larger' do
+      let(:max_config) { described_class::MAX_BLOB_SIZE + 1 }
 
-      it 'returns nil' do
-        expect(described_class.max_blob_size(project)).to eq(nil)
+      it 'returns the maximum_text_highlight_size_kilobytes setting' do
+        expect(described_class.max_blob_size(project)).to eq(max_config)
       end
     end
   end

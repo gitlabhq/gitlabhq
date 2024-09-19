@@ -85,7 +85,7 @@ export default {
           mutation: createNoteMutation,
           variables: {
             input: {
-              noteableId: this.abuseReportId,
+              abuseReportId: this.abuseReportId,
               body: commentText,
               discussionId: this.discussionId || null,
             },

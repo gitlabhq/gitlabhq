@@ -63,6 +63,11 @@ export default {
       required: false,
       default: null,
     },
+    titleClass: {
+      type: [String, Object],
+      required: false,
+      default: null,
+    },
     bodyClass: {
       type: [String, Object],
       required: false,
@@ -144,7 +149,10 @@ export default {
     >
       <div class="gl-flex gl-flex-col gl-self-center">
         <h2
-          class="gl-m-0 gl-inline-flex gl-items-start gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
+          :class="[
+            'gl-m-0 gl-inline-flex gl-items-start gl-gap-3 gl-text-base gl-font-bold gl-leading-normal',
+            titleClass,
+          ]"
           data-testid="crud-title"
         >
           <gl-link

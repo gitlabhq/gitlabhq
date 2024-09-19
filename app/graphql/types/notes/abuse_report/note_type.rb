@@ -6,6 +6,8 @@ module Types
       class NoteType < BaseObject
         graphql_name 'AbuseReportNote'
 
+        include ActionView::Helpers::SanitizeHelper
+
         implements Types::Notes::BaseNoteInterface
 
         authorize :read_note

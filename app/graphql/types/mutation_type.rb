@@ -106,6 +106,7 @@ module Types
       reason: 'Underlying feature was removed in 16.0',
       milestone: '16.0'
     }
+    mount_mutation Mutations::Notes::AbuseReport::Create
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true

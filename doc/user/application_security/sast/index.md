@@ -4,6 +4,43 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+<style>
+table.sast-table tr:nth-child(even) {
+    background-color: transparent;
+}
+
+table.sast-table td {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+table.sast-table tr td:first-child {
+    border-left: 0;
+}
+
+table.sast-table tr td:last-child {
+    border-right: 0;
+}
+
+table.sast-table ul {
+    font-size: 1em;
+    list-style-type: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+
+table.no-vertical-table-lines td {
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+table.no-vertical-table-lines tr {
+    border-top: none;
+}
+</style>
+
 # Static Application Security Testing (SAST)
 
 DETAILS:
@@ -626,10 +663,70 @@ To allow some customization of scanner behavior, you can add a limited set of fl
 underlying scanner. Specify the flags in the `SAST_SCANNER_ALLOWED_CLI_OPTS` CI/CD variable. These
 flags are added to the scanner's CLI options.
 
-| Analyzer                                                                     | CLI option         | Description |
-|------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
-| [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
-| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | `-effort` | Sets the analysis effort level. Valid values are `min`, `less`, `more` and `max`, defined in increasing order of scan's precision and ability to detect more vulnerabilities. Default value is set to `max` which may require more memory and time to complete the scan, depending on the project's size. In case you face memory or performance issues, you may reduce the analysis effort level to a lower value. For example: `-effort less`. |
+<table class="sast-table">
+  <thead>
+    <tr>
+      <th>Analyzer</th>
+      <th>CLI option</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3">
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a>
+      </td>
+      <td>
+        <code>--max-memory</code>
+      </td>
+      <td>
+        Sets the maximum system memory in MB to use when running a rule on a single file.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>--max-target-bytes</code>
+      </td>
+      <td>
+        <p>
+          Maximum size for a file to be scanned. Any input program larger than this is ignored.
+          Set to <code>0</code> or a negative value to disable this filter. Bytes can be specified with or without a unit of measurement,
+          for example: <code>12.5kb</code>, <code>1.5MB</code>, or <code>123</code>. Defaults to <code>1000000</code> bytes.
+        </p>
+        <p>
+          <b>Note:</b>
+          You should keep this flag set to the default value. Also, avoid changing this flag to scan minified
+          JavaScript, which is unlikely to work well, <code>DLLs</code>, <code>JARs</code> or other binary files
+          because binary files are not scanned.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>--timeout</code>
+      </td>
+      <td>
+        Maximum time in seconds to spend running a rule on a single file. Set to <code>0</code> to have no time limit.
+        Timeout value must be an integer, for example: <code>10</code> or <code>15</code>. Defaults to <code>5</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs">SpotBugs</a>
+      </td>
+      <td>
+        <code>-effort</code>
+      </td>
+      <td>
+        Sets the analysis effort level. Valid values are, in increasing order of precision and ability to detect more vulnerabilities
+        <code>min</code>, <code>less</code>, <code>more</code> and <code>max</code>. Default value is set to
+        <code>max</code> which may require more memory and time to complete the scan, depending on the project's size. If you
+        face memory or performance issues, you can reduce the analysis effort level to a lower value. For example:
+        <code>-effort less</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 #### Custom CI/CD variables
 

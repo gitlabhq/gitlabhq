@@ -68,68 +68,36 @@ RSpec.describe Blob do
       end
     end
 
-    context 'when increase_diff_file_performance is turned off' do
-      before do
-        stub_feature_flags(increase_diff_file_performance: false)
-      end
+    context 'with project' do
+      let_it_be(:container) { create(:project, :repository) }
+      let_it_be(:same_container) { Project.find(container.id) }
+      let_it_be(:other_container) { create(:project, :repository) }
 
-      context 'with project' do
-        let_it_be(:container) { create(:project, :repository) }
-        let_it_be(:same_container) { Project.find(container.id) }
-        let_it_be(:other_container) { create(:project, :repository) }
+      it_behaves_like '.lazy checks'
 
-        it_behaves_like '.lazy checks'
-      end
+      context 'when the blob size limit is different' do
+        it 'fetches all blobs for the same repository and same blob size limit when one is accessed' do
+          expect(container.repository).to receive(:blobs_at)
+            .with([[commit_id, 'CHANGELOG']], blob_size_limit: 10)
+            .once.and_call_original
 
-      context 'with personal snippet' do
-        let_it_be(:container) { create(:personal_snippet, :repository) }
-        let_it_be(:same_container) { PersonalSnippet.find(container.id) }
-        let_it_be(:other_container) { create(:personal_snippet, :repository) }
+          expect(same_container.repository).to receive(:blobs_at)
+            .with([[commit_id, 'CONTRIBUTING.md'], [commit_id, 'README.md']], blob_size_limit: 20)
+            .once.and_call_original
 
-        it_behaves_like '.lazy checks'
-      end
+          expect(other_container.repository).not_to receive(:blobs_at)
 
-      context 'with project snippet' do
-        let_it_be(:container) { create(:project_snippet, :repository) }
-        let_it_be(:same_container) { ProjectSnippet.find(container.id) }
-        let_it_be(:other_container) { create(:project_snippet, :repository) }
+          changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG', blob_size_limit: 10)
+          contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md',
+            blob_size_limit: 20)
+          described_class.lazy(same_container.repository, commit_id, 'README.md',
+            blob_size_limit: 20)
 
-        it_behaves_like '.lazy checks'
-      end
-    end
+          described_class.lazy(other_container.repository, commit_id, 'CHANGELOG', blob_size_limit: 30)
 
-    context 'when increase_diff_file_performance is turned on' do
-      context 'with project' do
-        let_it_be(:container) { create(:project, :repository) }
-        let_it_be(:same_container) { Project.find(container.id) }
-        let_it_be(:other_container) { create(:project, :repository) }
-
-        it_behaves_like '.lazy checks'
-
-        context 'when the blob size limit is different' do
-          it 'fetches all blobs for the same repository and same blob size limit when one is accessed' do
-            expect(container.repository).to receive(:blobs_at)
-              .with([[commit_id, 'CHANGELOG']], blob_size_limit: 10)
-              .once.and_call_original
-
-            expect(same_container.repository).to receive(:blobs_at)
-              .with([[commit_id, 'CONTRIBUTING.md'], [commit_id, 'README.md']], blob_size_limit: 20)
-              .once.and_call_original
-
-            expect(other_container.repository).not_to receive(:blobs_at)
-
-            changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG', blob_size_limit: 10)
-            contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md',
-              blob_size_limit: 20)
-            described_class.lazy(same_container.repository, commit_id, 'README.md',
-              blob_size_limit: 20)
-
-            described_class.lazy(other_container.repository, commit_id, 'CHANGELOG', blob_size_limit: 30)
-
-            # Access property so the values are loaded
-            changelog.id
-            contributing.id
-          end
+          # Access property so the values are loaded
+          changelog.id
+          contributing.id
         end
       end
 

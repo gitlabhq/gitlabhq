@@ -517,15 +517,15 @@ export const mockNotesByIdResponse = {
 
 export const createAbuseReportNoteResponse = {
   data: {
-    createNote: {
+    createAbuseReportNote: {
       note: {
-        id: 'gid://gitlab/Note/6',
+        id: 'gid://gitlab/AntiAbuse::Reports::Note/6',
         discussion: {
           id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
           notes: {
             nodes: [
               {
-                id: 'gid://gitlab/Note/6',
+                id: 'gid://gitlab/AntiAbuse::Reports::Note/6',
                 body: 'Another comment',
                 bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Another comment</p>',
                 createdAt: '2023-11-02T02:45:46Z',
@@ -542,15 +542,12 @@ export const createAbuseReportNoteResponse = {
                   webPath: '/root',
                 },
                 lastEditedBy: null,
-                userPermissions: {
-                  resolveNote: true,
-                },
                 discussion: {
                   id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
                   notes: {
                     nodes: [
                       {
-                        id: 'gid://gitlab/Note/6',
+                        id: 'gid://gitlab/AntiAbuse::Reports::Note/6',
                       },
                     ],
                   },

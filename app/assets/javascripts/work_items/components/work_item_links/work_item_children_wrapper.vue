@@ -365,6 +365,7 @@ export default {
                     __typename: 'WorkItemWidgetHierarchy',
                     type: 'HIERARCHY',
                     hasChildren: false,
+                    depthLimitReachedByType: [],
                     rolledUpCountsByType: [],
                     parent: { id: toParentId },
                     children: [],
@@ -383,6 +384,7 @@ export default {
                     __typename: 'WorkItemWidgetHierarchy',
                     type: 'HIERARCHY',
                     hasChildren: true,
+                    depthLimitReachedByType: [],
                     rolledUpCountsByType: [],
                     parent: null,
                     children: {
