@@ -67,6 +67,7 @@ class ProcessCommitWorker
     Gitlab::ClosingIssueExtractor
       .new(project, user)
       .closed_by_message(commit.safe_message)
+      .reject { |issue| issue.is_a?(Issue) && !issue.autoclose_by_merged_closing_merge_request? }
   end
 
   def update_issue_metrics(commit, author)
