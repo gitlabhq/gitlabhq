@@ -63,6 +63,8 @@ There are various other options to install GitLab, please refer to the [installa
 
 ## Contributing
 
+[![Open in DevZero](https://assets.devzero.io/open-in-devzero.svg)](https://www.devzero.io/dashboard/recipes/new?repo-url=https://github.com/gitlabhq/gitlabhq)
+
 GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
 
 ## Install a development environment
